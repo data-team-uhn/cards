@@ -27,6 +27,7 @@ import MaterialTable from "material-table";
 
 import { escapeJQL } from "../escape.jsx";
 import { getHierarchy, getSubjectIdFromPath } from "./Subject.jsx";
+import ResponsiveDialog from "../components/ResponsiveDialog"; // commons
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
@@ -83,11 +84,8 @@ function UnstyledNewSubjectDialog (props) {
 
   return(
     <React.Fragment>
-      <Dialog open={open} onClose={onClose} disableBackdropClick>
-        <DialogTitle id="new-form-title">
-          Create new subject
-        </DialogTitle>
-        <DialogContent dividers className={classes.NewFormDialog}>
+      <ResponsiveDialog title="Create new subject" open={open} onClose={onClose}>
+        <DialogContent dividers>
           { error && <Typography color="error">{error}</Typography>}
           <Input
             autoFocus
@@ -153,7 +151,7 @@ function UnstyledNewSubjectDialog (props) {
             {requiresParents ? "Continue" : "Create"}
           </Button>
         </DialogActions>
-      </Dialog>
+      </ResponsiveDialog>
     </React.Fragment>
   )
 }
@@ -199,11 +197,8 @@ function UnstyledSelectParentDialog (props) {
   let initialized = parentType && childType;
 
   return(
-    <Dialog open={open} onClose={onClose} keepMounted disableBackdropClick>
-      <DialogTitle id="new-form-title">
-        Select parent {parentType?.['label']} for new {childType?.['label']}
-      </DialogTitle>
-      <DialogContent dividers className={classes.NewFormDialog}>
+    <ResponsiveDialog open={open} onClose={onClose} keepMounted title={`Select parent ${parentType?.['label']} for new ${childType?.['label']}`}>
+      <DialogContent dividers>
         { error && <Typography color="error">{error}</Typography>}
         {
           initialized &&
@@ -292,7 +287,7 @@ function UnstyledSelectParentDialog (props) {
           { isLast ? "Create" : "Continue" }
         </Button>
       </DialogActions>
-    </Dialog>
+    </ResponsiveDialog>
   )
 }
 
@@ -657,9 +652,8 @@ function UnstyledSelectorDialog (props) {
       onSubmit={handleSubmitNew}
       open={open && newSubjectPopperOpen}
       />
-    <Dialog open={open} onClose={onClose} disableBackdropClick>
-      {title && <DialogTitle>{title}</DialogTitle>}
-      <DialogContent className={classes.NewFormDialog}>
+    <ResponsiveDialog title={title} open={open} onClose={onClose}>
+      <DialogContent>
         {isPosting && <CircularProgress />}
         {error && (!newSubjectPopperOpen) && <Typography color='error'>{error}</Typography>}
         <StyledSubjectSelectorList
@@ -702,7 +696,7 @@ function UnstyledSelectorDialog (props) {
           Confirm
         </Button>
       </DialogActions>
-    </Dialog>
+    </ResponsiveDialog>
   </React.Fragment>);
 }
 
