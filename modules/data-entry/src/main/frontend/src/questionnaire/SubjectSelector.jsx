@@ -197,7 +197,7 @@ function UnstyledSelectParentDialog (props) {
   let initialized = parentType && childType;
 
   return(
-    <ResponsiveDialog open={open} onClose={onClose} keepMounted title={"Select parent " + parentType?.['label'] + " for new " + childType?.['label']}>
+    <ResponsiveDialog open={open} onClose={onClose} keepMounted title={`Select parent ${parentType?.['label']} for new ${childType?.['label']}`}>
       <DialogContent dividers>
         { error && <Typography color="error">{error}</Typography>}
         {
