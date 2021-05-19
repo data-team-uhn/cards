@@ -105,7 +105,7 @@ function UserDashboard(props) {
         }
       </Grid>
       <ResponsiveDialog title="New" width="xs" open={open} onClose={onClose}>
-        <DialogContent dividers>
+        <DialogContent dividers className={classes.dialogContentWithTable}>
           <MaterialTable
             columns={[
               { field: 'lfs:extensionName' },

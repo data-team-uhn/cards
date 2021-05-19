@@ -21,9 +21,10 @@ import React, { useRef, useEffect, useState, useContext } from "react";
 import { useHistory } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
-import { Avatar, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Input, ListItem, ListItemAvatar, Typography, withStyles } from "@material-ui/core";
+import { Avatar, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, ListItem, ListItemAvatar, TextField, withStyles } from "@material-ui/core";
 import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import MaterialTable from "material-table";
+import Alert from '@material-ui/lab/Alert';
 
 import { escapeJQL } from "../escape.jsx";
 import { getHierarchy, getSubjectIdFromPath } from "./Subject.jsx";
@@ -85,16 +86,19 @@ function UnstyledNewSubjectDialog (props) {
   return(
     <React.Fragment>
       <ResponsiveDialog title="Create new subject" open={open} onClose={onClose}>
-        <DialogContent dividers>
-          { error && <Typography color="error">{error}</Typography>}
-          <Input
-            autoFocus
-            disabled={disabled}
-            value={value}
-            onChange={onChangeSubject}
-            className={classes.newSubjectInput}
-            placeholder={"Enter subject identifier here"}
-            />
+        <DialogContent dividers className={classes.dialogContentWithTable}>
+          { error && <Alert severity="error">{error}</Alert>}
+          <div className={classes.newSubjectInput}>
+            <TextField
+              label="Enter subject identifier"
+              variant="outlined"
+              fullWidth
+              autoFocus
+              disabled={disabled}
+              value={value}
+              onChange={onChangeSubject}
+              />
+          </div>
           <MaterialTable
             title="Select a type"
             columns={COLUMNS}
@@ -120,6 +124,7 @@ function UnstyledNewSubjectDialog (props) {
             }
             options={{
               search: true,
+              header: false,
               addRowPosition: 'first',
               pageSize: pageSize,
               rowStyle: rowData => ({
@@ -198,8 +203,8 @@ function UnstyledSelectParentDialog (props) {
 
   return(
     <ResponsiveDialog open={open} onClose={onClose} keepMounted title={`Select parent ${parentType?.['label']} for new ${childType?.['label']}`}>
-      <DialogContent dividers>
-        { error && <Typography color="error">{error}</Typography>}
+      <DialogContent dividers className={classes.dialogContentWithTable}>
+        { error && <Alert severity="error">{error}</Alert>}
         {
           initialized &&
             <MaterialTable
@@ -232,6 +237,7 @@ function UnstyledSelectParentDialog (props) {
               }
               options={{
                 search: true,
+                header: false,
                 addRowPosition: 'first',
                 pageSize: pageSize,
                 rowStyle: rowData => ({
@@ -653,9 +659,9 @@ function UnstyledSelectorDialog (props) {
       open={open && newSubjectPopperOpen}
       />
     <ResponsiveDialog title={title} open={open} onClose={onClose}>
-      <DialogContent>
+      <DialogContent dividers className={classes.dialogContentWithTable}>
         {isPosting && <CircularProgress />}
-        {error && (!newSubjectPopperOpen) && <Typography color='error'>{error}</Typography>}
+        {error && (!newSubjectPopperOpen) && <Alert severity="error">{error}</Alert>}
         <StyledSubjectSelectorList
           allowedTypes={allowedTypes}
           disabled={disabled_controls}
@@ -967,6 +973,7 @@ function SubjectSelectorList(props) {
         }}
         options={{
           search: true,
+          header: false,
           actionsColumnIndex: -1,
           addRowPosition: 'first',
           pageSize: pageSize,
