@@ -20,6 +20,7 @@
   under the License.
 """
 
+import os
 import sys
 import socket
 import argparse
@@ -31,6 +32,9 @@ args = argparser.parse_args()
 exit_status = 0
 try:
   sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+  #If we are in WSL, SO_REUSEADDR will not work correctly, allowing to rebind on an unavailable port
+  if "Microsoft" not in os.uname().release:
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
   sock.bind(('0.0.0.0', args.tcp_port))
   sock.listen()
 except:
