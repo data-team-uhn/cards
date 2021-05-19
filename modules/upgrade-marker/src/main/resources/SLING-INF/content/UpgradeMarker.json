@@ -1,0 +1,6 @@
+{
+    "value": false,
+    "security:acl": [
+        { "principal": "github", "granted": ["jcr:all"] }
+    ]
+}
