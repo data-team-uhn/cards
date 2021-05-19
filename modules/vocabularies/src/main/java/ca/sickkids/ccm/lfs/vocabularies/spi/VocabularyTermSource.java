@@ -42,6 +42,8 @@ public class VocabularyTermSource
 
     private final MultiValuedMap<String, String> allProperties;
 
+    private final String uri;
+
     /**
      * Constructor passing all required information.
      *
@@ -59,6 +61,28 @@ public class VocabularyTermSource
         this.parents = parents;
         this.ancestors = ancestors;
         this.allProperties = allProperties;
+        this.uri = null;
+    }
+
+    /**
+     * Constructor passing all required information.
+     *
+     * @param id the identifier, see {@link #getId()}
+     * @param label the label, see {@link #getLabel()}
+     * @param parents the parents, see {@link #getParents()}
+     * @param ancestors the ancestors, see {@link #getAncestors()}
+     * @param allProperties all the term properties, see {@link #getAllProperties()}
+     * @param uri the URI of the term from the OWL file
+     */
+    public VocabularyTermSource(final String id, final String label, final String[] parents, final String[] ancestors,
+        final MultiValuedMap<String, String> allProperties, final String uri)
+    {
+        this.id = id;
+        this.label = StringUtils.defaultString(label, id);
+        this.parents = parents;
+        this.ancestors = ancestors;
+        this.allProperties = allProperties;
+        this.uri = uri;
     }
 
     /**
@@ -126,4 +150,18 @@ public class VocabularyTermSource
     {
         return this.allProperties;
     }
+
+    /**
+     * Gets the URI of this term.
+     *
+     * @return the URI for this VocabularyTerm if it is available
+     */
+    public String getURI()
+    {
+        if (this.uri == null) {
+            return "";
+        }
+        return this.uri;
+    }
+
 }

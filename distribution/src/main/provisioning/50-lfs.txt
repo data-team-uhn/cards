@@ -55,6 +55,9 @@
     # Favicon
     ca.sickkids.ccm.lfs/lfs-modules-favicon/${lfs.version}
 
+    # Ignore unwanted terms when installing vocabularies from BioPortal
+    ca.sickkids.ccm.lfs/lfs-modules-vocabularies-ignore/${lfs.version}
+
 [artifacts runModes=permissions_ownership]
     ca.sickkids.ccm.lfs/lfs-permissions-ownership/${lfs.version}
 

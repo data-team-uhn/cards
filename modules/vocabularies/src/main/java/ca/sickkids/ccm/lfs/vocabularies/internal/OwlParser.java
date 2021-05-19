@@ -136,10 +136,6 @@ public class OwlParser implements SourceParser
     private void processTerm(final OntClass term, final Consumer<VocabularyTermSource> consumer)
         throws VocabularyIndexException
     {
-        String termURI = term.getURI();
-        if (termURI != null && termURI.startsWith("https://creativecommons.org/licenses/")) {
-            return;
-        }
         // Identifier code is the local name of the term
         String identifier = term.getLocalName();
 
@@ -172,7 +168,8 @@ public class OwlParser implements SourceParser
         String label = term.getLabel(null);
 
         // Create VocabularyTerm node as child of vocabularyNode using inherited protected method
-        consumer.accept(new VocabularyTermSource(identifier, label, parents, ancestors, gatheredProperties));
+        consumer.accept(new VocabularyTermSource(identifier, label, parents, ancestors, gatheredProperties,
+            term.getURI()));
     }
 
     /**
