@@ -458,7 +458,7 @@ const questionnaireStyle = theme => ({
         marginRight: 'auto',
     },
     newSubjectInput: {
-        width: '100%'
+        padding: theme.spacing(3, 3, 5),
     },
     invalidSubjectText: {
         fontStyle: "italic"
@@ -477,6 +477,22 @@ const questionnaireStyle = theme => ({
     },
     dialogTitle: {
         marginRight: theme.spacing(5)
+    },
+    dialogContentWithTable: {
+        padding: 0,
+        "& .MuiPaper-root": {
+          boxShadow: "0 none",
+        },
+        "& .MuiPaper-root > .MuiToolbar-root" : {
+          paddingRight: theme.spacing(3),
+        },
+        "& .MuiTableCell-root" : {
+          padding: theme.spacing(2, 3),
+        },
+        "& .MuiTableCell-footer" : {
+          paddingRight: theme.spacing(1),
+          paddingBottom: 0,
+        },
     },
     fileInfo: {
         padding: theme.spacing(1),

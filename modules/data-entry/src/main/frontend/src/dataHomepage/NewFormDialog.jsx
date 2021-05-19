@@ -29,6 +29,7 @@ import {
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import MaterialTable from "material-table";
+import Alert from '@material-ui/lab/Alert';
 
 import SubjectSelectorList, { NewSubjectDialog, parseToArray } from "../questionnaire/SubjectSelector.jsx";
 import NewItemButton from "../components/NewItemButton.jsx";
@@ -257,8 +258,8 @@ function NewFormDialog(props) {
           }
         }}
       >
-        <DialogContent dividers>
-          {error && (!newSubjectPopperOpen) && <Typography color='error'>{error}</Typography>}
+        <DialogContent dividers className={classes.dialogContentWithTable}>
+          {error && (!newSubjectPopperOpen) && <Alert severity="error">{error}</Alert>}
           {progress === PROGRESS_SELECT_QUESTIONNAIRE ?
           <React.Fragment>
             {relatedForms &&
