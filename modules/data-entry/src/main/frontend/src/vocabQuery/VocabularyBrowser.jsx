@@ -201,6 +201,7 @@ function VocabularyBrowser(props) {
           path={browsePath}
           onTermClick={!browseRoots ? focusTerm : null}
           onClose={closeBrowser}
+          onCloseInfoBox={() => {setTermInfoVisible(false);}}
           onError={logError}
           registerInfo={registerInfoButton}
           getInfo={getInfo}

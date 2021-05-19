@@ -41,9 +41,10 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 //  onTermClick: Callback to change the term path being looked up
 //  vocabulary: Vocabulary info
 //  browseRoots: Boolean representing whether or not the vocabulary tree shows roots
+//  onCloseInfoBox: Callback to close term info box
 //
 function VocabularyTree(props) {
-  const { open, path, onTermClick, registerInfo, getInfo, onClose, onError, browserRef, classes, vocabulary, browseRoots, ...rest } = props;
+  const { open, path, onTermClick, registerInfo, getInfo, onClose, onCloseInfoBox, onError, browserRef, classes, vocabulary, browseRoots, ...rest } = props;
 
   const [ lastKnownTerm, setLastKnownTerm ] = useState("");
   const [ parentNode, setParentNode ] = useState();
@@ -124,6 +125,7 @@ function VocabularyTree(props) {
         path={path}
         name={name.trim()}
         onTermClick={onTermClick}
+        onCloseInfoBox={onCloseInfoBox}
         registerInfo={registerInfo}
         getInfo={getInfo}
         expands={ischildnode}
@@ -172,6 +174,7 @@ VocabularyTree.propTypes = {
   registerInfo: PropTypes.func.isRequired,
   getInfo: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
+  onCloseInfoBox: PropTypes.func,
   onError: PropTypes.func.isRequired,
   browserRef: PropTypes.object.isRequired,
   browseRoots: PropTypes.bool,

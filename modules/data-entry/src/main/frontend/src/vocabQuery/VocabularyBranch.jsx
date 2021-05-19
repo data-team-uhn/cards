@@ -46,11 +46,12 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 //
 // Optional arguments:
 //  onTermClick: callback when a term's label is clicked
+//  onCloseInfoBox: Callback to close term info box
 //  focused: boolean determining whether this entry is focused and should be visually emphasized
 //           (a focused term entry is displayed as a root of a subtree, with only its parents above and its descendants below)
 //
 function VocabularyBranch(props) {
-  const { defaultOpen, id, path, name, onTermClick, registerInfo, getInfo, expands, headNode, focused, onError, knownHasChildren, classes } = props;
+  const { defaultOpen, id, path, name, onTermClick, onCloseInfoBox, registerInfo, getInfo, expands, headNode, focused, onError, knownHasChildren, classes } = props;
 
   const [ lastKnownID, setLastKnownID ] = useState();
   const [ currentlyLoading, setCurrentlyLoading ] = useState(typeof knownHasChildren === "undefined" && expands);
@@ -67,6 +68,7 @@ function VocabularyBranch(props) {
       onTermClick(path);
     } else {
       toggleShowChildren();
+      onCloseInfoBox();
     }
   }
 
@@ -100,6 +102,7 @@ function VocabularyBranch(props) {
         path={row["@path"]}
         name={row["label"].trim()}
         onTermClick={onTermClick}
+        onCloseInfoBox={onCloseInfoBox}
         registerInfo={registerInfo}
         getInfo={getInfo}
         expands={true}
@@ -227,6 +230,7 @@ VocabularyBranch.propTypes = {
   path: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   onTermClick: PropTypes.func,
+  onCloseInfoBox: PropTypes.func,
   registerInfo: PropTypes.func.isRequired,
   getInfo: PropTypes.func.isRequired,
   expands: PropTypes.bool.isRequired,
