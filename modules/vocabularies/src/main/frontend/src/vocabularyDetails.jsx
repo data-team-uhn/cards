@@ -36,8 +36,9 @@ import CloseIcon from "@material-ui/icons/Close";
 
 import VocabularyAction from "./vocabularyAction";
 import VocabularyBrowser from "./vocabQuery/VocabularyBrowser.jsx";
-
 import { REST_URL, MakeRequest } from "./vocabQuery/util.jsx";
+
+const Phase = require("./phaseCodes.json");
 
 const useStyles = makeStyles(theme => ({
   about: {
@@ -108,7 +109,7 @@ export default function VocabularyDetails(props) {
         </DialogContent>
 
         <DialogActions>
-          { type == "local" &&
+          {(phase == Phase["Latest"] || phase == Phase["Update Available"]) && 
             <Button onClick={() => {setBrowserOpened(true);}} variant="contained" className={classes.browseAction} color="primary">Browse</Button>
           }
           <VocabularyAction
@@ -122,7 +123,6 @@ export default function VocabularyDetails(props) {
 
       </Dialog>
 
-      { type == "local" &&
         <VocabularyBrowser
           browserRef={browserRef}
           infoboxRef={infoboxRef}
@@ -131,7 +131,6 @@ export default function VocabularyDetails(props) {
           browseRoots={true}
           onClose={closeBrowser}
         />
-      }
 
     </React.Fragment>
     );
