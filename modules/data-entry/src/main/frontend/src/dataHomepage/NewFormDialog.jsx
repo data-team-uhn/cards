@@ -58,7 +58,7 @@ function NewFormDialog(props) {
   const [ error, setError ] = useState("");
   const [ relatedForms, setRelatedForms ] = useState();
   const [ disableProgress, setDisableProgress ] = useState(false);
-  const [ pageSize, setPageSize ] = useState(10);
+  const [ pageSize, setPageSize ] = useState(5);
   const [ wasOpen, setWasOpen ] = useState(false);
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
@@ -264,10 +264,17 @@ function NewFormDialog(props) {
             {relatedForms &&
               <MaterialTable
                 title=""
-                columns={[
-                  { title: 'Questionnaire', field: 'title' },
-                  { title: 'Description', field: 'description' },
-                ]}
+                columns={[{
+                  field: 'title',
+                  render: q => (<>
+                                <Typography component="div">{q.title}</Typography>
+                                { q.description && <Typography component="div" variant="caption" color="textSecondary">{q.description}</Typography> }
+                                </>)
+                }, {
+                  field: 'description',
+                  searchable: true,
+                  hidden: true
+                }]}
                 isLoading={isFetching}
                 data={query => {
                   let url = new URL("/query", window.location.origin);
@@ -323,6 +330,7 @@ function NewFormDialog(props) {
                 }}
                 options={{
                   search: true,
+                  header: false,
                   actionsColumnIndex: -1,
                   addRowPosition: 'first',
                   pageSize: pageSize,

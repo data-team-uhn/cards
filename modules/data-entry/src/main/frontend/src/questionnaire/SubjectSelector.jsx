@@ -62,7 +62,7 @@ let createQueryURL = (query, type, order) => {
 function UnstyledNewSubjectDialog (props) {
   const { allowedTypes, classes, continueDisabled, disabled, error, open, onClose, onChangeSubject, onChangeType, onSubmit, requiresParents, theme, value } = props;
   const [ newSubjectType, setNewSubjectType ] = useState();
-  const [ pageSize, setPageSize ] = useState(10);
+  const [ pageSize, setPageSize ] = useState(5);
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -182,7 +182,7 @@ function UnstyledSelectParentDialog (props) {
   const { classes, childName, childType, continueDisabled, currentSubject, disabled, error, isLast, open, onBack, onChangeParent, onCreateParent, onClose, onSubmit, parentType, tableRef, theme, value } = props;
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
-  const [ pageSize, setPageSize ] = useState(10);
+  const [ pageSize, setPageSize ] = useState(5);
 
   const COLUMNS = [
     { title: 'Subject', field: 'hierarchy' },
@@ -829,7 +829,7 @@ function SubjectSelectorList(props) {
     { title: 'Identifier', field: 'hierarchy' },
   ];
   const [ relatedSubjects, setRelatedSubjects ] = useState();
-  const [ pageSize, setPageSize ] = useState(10);
+  const [ pageSize, setPageSize ] = useState(5);
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
