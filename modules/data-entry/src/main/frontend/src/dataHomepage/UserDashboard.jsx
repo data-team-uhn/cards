@@ -22,6 +22,7 @@ import MaterialTable from "material-table";
 
 import { loadExtensions } from "../uiextension/extensionManager";
 import NewItemButton from "../components/NewItemButton.jsx";
+import ResponsiveDialog from "../components/ResponsiveDialog"; // commons
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import { MODE_DIALOG } from "../dataHomepage/NewFormDialog.jsx";
 
@@ -103,8 +104,7 @@ function UserDashboard(props) {
           })
         }
       </Grid>
-      <Dialog fullWidth maxWidth="xs" open={open} onClose={onClose} disableBackdropClick>
-        <DialogTitle className={classes.dialogTitle}>New</DialogTitle>
+      <ResponsiveDialog title="New" width="xs" open={open} onClose={onClose}>
         <DialogContent dividers>
           <MaterialTable
             columns={[
@@ -147,7 +147,7 @@ function UserDashboard(props) {
             Next
           </Button>
         </DialogActions>
-      </Dialog>
+      </ResponsiveDialog>
       <NewItemButton
         title="New..."
         onClick={() => setOpen(true)}
