@@ -122,7 +122,7 @@ export default function VocabularyDetails(props) {
         </DialogActions>
 
       </Dialog>
-
+      { browserOpened &&
         <VocabularyBrowser
           browserRef={browserRef}
           infoboxRef={infoboxRef}
@@ -131,7 +131,7 @@ export default function VocabularyDetails(props) {
           browseRoots={true}
           onClose={closeBrowser}
         />
-
+      }
     </React.Fragment>
     );
 }

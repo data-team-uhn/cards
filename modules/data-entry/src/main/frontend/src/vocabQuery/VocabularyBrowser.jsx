@@ -206,7 +206,6 @@ function VocabularyBrowser(props) {
           registerInfo={registerInfoButton}
           getInfo={getInfo}
           browseRoots={browseRoots}
-          roots={vocab.roots}
         />}
         { /* Error snackbar */}
         <Snackbar
