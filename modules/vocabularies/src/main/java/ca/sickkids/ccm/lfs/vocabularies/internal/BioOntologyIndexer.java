@@ -104,7 +104,7 @@ public class BioOntologyIndexer implements VocabularyIndexer
         // Obtain the resource of the request and adapt it to a JCR node. This must be the /Vocabularies homepage node.
         Node homepage = request.getResource().adaptTo(Node.class);
         try {
-            Node vocabulariesIgnore = homepage.getSession().getNode("/VocabulariesIgnore");
+            Node vocabulariesIgnore = homepage.getSession().getNode("/VocabulariesIgnore/" + identifier);
             NodeIterator vocabulariesIgnoreIter = vocabulariesIgnore.getNodes();
             this.vocabularyIgnoreURIs.set(new ArrayList<String>());
             while (vocabulariesIgnoreIter.hasNext()) {
