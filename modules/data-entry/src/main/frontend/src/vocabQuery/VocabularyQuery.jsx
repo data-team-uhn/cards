@@ -43,18 +43,14 @@ const MAX_RESULTS = 10;
 //
 // Optional arguments:
 //  disabled: Boolean representing whether or not this element is disabled
-//  onInputFocus: Callback when the input is focused on
-//  label: Default text to display in search bar when nothing has been entered (default: 'Search')
-//  overrideText: When not undefined, this will overwrite the contents of the search bar
-//  defaultValue: Default chosen term ID, which will be converted to the real ID when the vocabulary loads
-//  noMargin: Removes the margin from the search wrapper
+//  variant: Removes the margin from the search wrapper, values: standard|inline, defaulting on standard
 //  isNested: If true, restyles the element to remove most padding and apply a negative margin for better nesting
 //  placeholder: String to display as the input element's placeholder
 //  value: String to use as the input element value
 //  onChange: Callback in term input change event
-
+//
 function VocabularyQuery(props) {
-  const { clearOnClick, onClick, focusAfterSelecting, disabled, onInputFocus, label, overrideText, defaultValue, noMargin, isNested, placeholder,
+  const { clearOnClick, onClick, focusAfterSelecting, disabled, variant, isNested, placeholder,
     value, questionDefinition, onChange, classes } = props;
 
   const [suggestions, setSuggestions] = useState([]);
@@ -65,7 +61,7 @@ function VocabularyQuery(props) {
   // Holds term path on dropdown info button click
   const [termPath, setTermPath] = useState("");
 
-  const [inputValue, setInputValue] = useState(defaultValue);
+  const [inputValue, setInputValue] = useState(value);
   const [error, setError] = useState("");
 
   // Holds dropdown info buttons refs to be used as anchor elements by term infoBoxes
@@ -106,13 +102,10 @@ function VocabularyQuery(props) {
         }
       }}
       onFocus={(status) => {
-        if (onInputFocus !== undefined) {
-          onInputFocus(status);
-        }
         delayLookup(status);
         anchorEl.current.select();
       }}
-      className={noMargin ? "" : classes.searchInput}
+      className={variant == "inline" ? "" : classes.searchInput}
       multiline={true}
       endAdornment={(
         <InputAdornment position="end" onClick={()=>{anchorEl.current.select();}} className = {classes.searchButton}>
@@ -276,15 +269,15 @@ function VocabularyQuery(props) {
   if (disabled) {
     // Alter our text to either the override ("Please select at most X options")
     // or empty it
-    anchorEl.current.value = disabled ? overrideText : "";
+    anchorEl.current.value = "";
   }
 
   return (
       <div>
         {props.children}
 
-        <div className={noMargin ? "" : classes.searchWrapper}>
-          {noMargin ?
+        <div className={variant == "inline" ? "" : classes.searchWrapper}>
+          {variant == "inline" ?
           inputEl
           :
           <FormControl className={isNested ? classes.nestedSearchInput : classes.search}>
@@ -294,10 +287,10 @@ function VocabularyQuery(props) {
                 shrink: classes.searchShrink,
               }}
             >
-              { /* Cover up a bug that causes the label to overlap the defaultValue:
+              { /* Cover up a bug that causes the label to overlap the value:
                    if it has a displayed value and isn't focused, don't show the label
                  */ }
-              { (document.activeElement === anchorEl.current || (!defaultValue && !(anchorEl.current?.value))) ? label : ''}
+              { (document.activeElement === anchorEl.current || (!value && !(anchorEl.current?.value))) ? 'Search' : ''}
             </InputLabel>
             {inputEl}
           </FormControl>}
@@ -365,13 +358,8 @@ VocabularyQuery.propTypes = {
     clearOnClick: PropTypes.bool.isRequired,
     onClick: PropTypes.func.isRequired,
     focusAfterSelecting: PropTypes.bool.isRequired,
-    onInputFocus: PropTypes.func,
-    defaultValue: PropTypes.string,
     disabled: PropTypes.bool,
-    label: PropTypes.string,
-    overrideText: PropTypes.string,
-    defaultValue: PropTypes.string,
-    noMargin: PropTypes.bool,
+    variant: PropTypes.string,
     isNested: PropTypes.bool,
     placeholder: PropTypes.string,
     value: PropTypes.string,
@@ -380,10 +368,9 @@ VocabularyQuery.propTypes = {
 };
 
 VocabularyQuery.defaultProps = {
-  label: 'Search',
-  overrideText: '',
   clearOnClick: true,
-  focusAfterSelecting: true
+  focusAfterSelecting: true,
+  variant: 'standard'
 };
 
 export default withStyles(QueryStyle)(VocabularyQuery);

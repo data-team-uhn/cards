@@ -49,8 +49,8 @@ const VocabularyFilter = forwardRef((props, ref) => {
       questionDefinition={questionDefinition}
       placeholder="empty"
       inputRef={ref}
-      defaultValue={defaultLabel}
-      noMargin
+      value={defaultLabel}
+      variant="inline"
       {...rest}
       />
   )
