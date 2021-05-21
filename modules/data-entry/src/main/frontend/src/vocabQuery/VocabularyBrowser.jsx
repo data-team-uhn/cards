@@ -66,14 +66,13 @@ function VocabularyBrowser(props) {
 
   // Event handler for clicking away from the info box or browser while they are open
   let clickAwayInfo = (event) => {
-    if ( browserRef?.current?.contains(event.target)
+    if ( !infoAboveBackground && browserRef?.current?.contains(event.target)
          || infoboxRef?.current?.contains(event.target)) {
       return;
     }
 
     setTermInfoVisible(false);
     setInfoAboveBackground(false);
-    onClose && onClose();
   }
 
   // Register a button reference that the info box can use to align itself to
