@@ -19,10 +19,8 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-import { withStyles } from "@material-ui/core";
-import { Button, Dialog, DialogContent, DialogTitle, IconButton } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
-
+import { withStyles, DialogContent } from '@material-ui/core';
+import ResponsiveDialog from "../components/ResponsiveDialog";
 import VocabularyBranch from "./VocabularyBranch.jsx";
 import BrowseTheme from "./browseStyle.jsx";
 
@@ -110,25 +108,19 @@ function VocabularyTree(props) {
   rebuildBrowser();
 
   return (
-    <Dialog
+    <ResponsiveDialog
+      title="Related terms"
+      withCloseButton
       open={open}
       ref={browserRef}
-      fullWidth
-      maxWidth="sm"
-      className={classes.dialog}
       onClose={onClose}
+      className={classes.dialog}
       classes={{
         paper: classes.dialogPaper,
         root: classes.infoDialog
       }}
       {...rest}
     >
-      <DialogTitle>
-        Related terms
-        <IconButton aria-label="close" className={classes.closeButton} onClick={onClose}>
-          <CloseIcon />
-        </IconButton>
-      </DialogTitle>
       <DialogContent className={classes.treeContainer} dividers>
         {parentNode?.length ?
         <div className={classes.treeRoot}>
@@ -139,7 +131,7 @@ function VocabularyTree(props) {
           {currentNode}
         </div>
       </DialogContent>
-    </Dialog>
+    </ResponsiveDialog>
   );
 }
 

@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React from "react";
+import React, { forwardRef } from "react";
 import PropTypes from "prop-types";
 
 import {
@@ -72,7 +72,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function ResponsiveDialog(props) {
+const ResponsiveDialog = forwardRef((props, ref) => {
   const { title, width, children, withCloseButton, onClose, ...rest } = props;
 
   const classes = useStyles();
@@ -88,6 +88,7 @@ export default function ResponsiveDialog(props) {
 
   return (
     <Dialog
+      ref={ref}
       className={withCloseButton ? classes.withCloseButton : undefined}
       maxWidth={width}
       fullWidth
@@ -100,7 +101,7 @@ export default function ResponsiveDialog(props) {
       { children }
     </Dialog>
   );
-}
+})
 
 ResponsiveDialog.propTypes = {
   title: PropTypes.string,
@@ -116,3 +117,5 @@ ResponsiveDialog.propTypes = {
 ResponsiveDialog.defaultProps = {
   width: "sm",
 };
+
+export default ResponsiveDialog;
