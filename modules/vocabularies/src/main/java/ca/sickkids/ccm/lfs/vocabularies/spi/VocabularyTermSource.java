@@ -56,12 +56,7 @@ public class VocabularyTermSource
     public VocabularyTermSource(final String id, final String label, final String[] parents, final String[] ancestors,
         final MultiValuedMap<String, String> allProperties)
     {
-        this.id = id;
-        this.label = StringUtils.defaultString(label, id);
-        this.parents = parents;
-        this.ancestors = ancestors;
-        this.allProperties = allProperties;
-        this.uri = null;
+        this(id, label, parents, ancestors, allProperties, null);
     }
 
     /**
