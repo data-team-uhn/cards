@@ -105,7 +105,7 @@ public class BioOntologyIndexer implements VocabularyIndexer
         Node homepage = request.getResource().adaptTo(Node.class);
         this.vocabularyIgnoreURIs.set(new ArrayList<String>());
         try {
-            Node vocabulariesIgnore = homepage.getSession().getNode("/VocabulariesIgnore/" + identifier);
+            Node vocabulariesIgnore = homepage.getSession().getNode("/apps/lfs/VocabulariesIgnore/" + identifier);
             NodeIterator vocabulariesIgnoreIter = vocabulariesIgnore.getNodes();
             while (vocabulariesIgnoreIter.hasNext()) {
                 String ignoreTerm = vocabulariesIgnoreIter.nextNode().getProperty("value").getString();
