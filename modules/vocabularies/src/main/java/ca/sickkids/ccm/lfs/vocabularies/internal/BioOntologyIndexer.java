@@ -21,9 +21,12 @@ package ca.sickkids.ccm.lfs.vocabularies.internal;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -80,6 +83,8 @@ public class BioOntologyIndexer implements VocabularyIndexer
     /** The vocabulary node where the indexed data must be placed. */
     private InheritableThreadLocal<Node> vocabularyNode = new InheritableThreadLocal<>();
 
+    private InheritableThreadLocal<List> vocabularyIgnoreURIs = new InheritableThreadLocal<>();
+
     @Override
     public boolean canIndex(String source)
     {
@@ -98,6 +103,17 @@ public class BioOntologyIndexer implements VocabularyIndexer
 
         // Obtain the resource of the request and adapt it to a JCR node. This must be the /Vocabularies homepage node.
         Node homepage = request.getResource().adaptTo(Node.class);
+        this.vocabularyIgnoreURIs.set(new ArrayList<String>());
+        try {
+            Node vocabulariesIgnore = homepage.getSession().getNode("/apps/lfs/VocabulariesIgnore/" + identifier);
+            NodeIterator vocabulariesIgnoreIter = vocabulariesIgnore.getNodes();
+            while (vocabulariesIgnoreIter.hasNext()) {
+                String ignoreTerm = vocabulariesIgnoreIter.nextNode().getProperty("value").getString();
+                this.vocabularyIgnoreURIs.get().add(ignoreTerm);
+            }
+        } catch (RepositoryException e) {
+            LOGGER.warn("Unable to get the list of vocabulary entity classes to ignore");
+        }
 
         File temporaryFile = null;
         try {
@@ -151,8 +167,21 @@ public class BioOntologyIndexer implements VocabularyIndexer
         }
     }
 
+    private boolean shouldIncludeVocabularyTermNode(VocabularyTermSource term)
+    {
+        String termURI = term.getURI();
+        for (String ignoreTerm : (List<String>) this.vocabularyIgnoreURIs.get()) {
+            if (termURI.startsWith(ignoreTerm)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private void createVocabularyTermNode(VocabularyTermSource term)
     {
-        OntologyIndexerUtils.createVocabularyTermNode(term, this.vocabularyNode);
+        if (shouldIncludeVocabularyTermNode(term)) {
+            OntologyIndexerUtils.createVocabularyTermNode(term, this.vocabularyNode);
+        }
     }
 }

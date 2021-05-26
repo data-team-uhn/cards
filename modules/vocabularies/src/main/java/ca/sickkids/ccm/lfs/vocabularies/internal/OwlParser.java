@@ -168,7 +168,8 @@ public class OwlParser implements SourceParser
         String label = term.getLabel(null);
 
         // Create VocabularyTerm node as child of vocabularyNode using inherited protected method
-        consumer.accept(new VocabularyTermSource(identifier, label, parents, ancestors, gatheredProperties));
+        consumer.accept(new VocabularyTermSource(identifier, label, parents, ancestors, gatheredProperties,
+            term.getURI()));
     }
 
     /**
