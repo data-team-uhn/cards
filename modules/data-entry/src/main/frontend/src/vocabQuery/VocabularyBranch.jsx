@@ -84,8 +84,8 @@ function VocabularyBranch(props) {
     if (status === null) {
       setHasChildren(data["lfs:children"].length > 0);
       setChildrenData(data["lfs:children"]);
-      setCurrentlyLoading(false);
       buildChildren(data["lfs:children"]);
+      setCurrentlyLoading(false);
     } else {
       onError("Error: children lookup failed with code " + status);
     }

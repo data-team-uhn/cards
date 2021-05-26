@@ -21,18 +21,9 @@ import queryStyle from "./queryStyle.jsx";
 
 const browseStyle = theme => ({
     ...queryStyle(theme),
-    dialog: {
-      // The dialogue appears in the wrong location without the following
-      padding: theme.spacing(1),
-    },
     dialogPaper: {
       top: "0px",
       position: "absolute",
-    },
-    closeButton: {
-      position: 'absolute',
-      right: theme.spacing(1),
-      top: theme.spacing(1),
     },
     infoName: {
       whiteSpace: "normal", // Enable line wrapping
