@@ -89,7 +89,7 @@ function _p_escapeHTML(str) {
     // If free text entries allowed, mark them as such. Default: false.
     markFreeText: false,
     // The id of the element that will hold the suggest element
-    //parentContainer : "body",
+    parentContainer : "pedigreeEditor",
     // Should results fragments be highlighted when matching typed input
     highlight: true,
     // Fade the suggestion container on clear
@@ -909,7 +909,7 @@ function _p_escapeHTML(str) {
       var div = PElement("div", { 'class': "suggestItems "+ this.options.className });
 
       // Get position of target textfield
-      var pos = $(this.options.parentContainer).tagName.toLowerCase() == 'body' ? this.fld._p_cumulativeOffset() : this.fld.positionedOffset();
+      var pos = this.fld._p_cumulativeOffset();
 
       // Container width is passed as an option, or field width if no width provided.
       // The 2px substracted correspond to one pixel of border on each side of the field,

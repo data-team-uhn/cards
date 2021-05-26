@@ -152,8 +152,7 @@ var NodeMenu = Class.create({
           enableHierarchy: false,
           tooltip : false,
           fadeOnClear : false,
-          timeout : 30000,
-          parentContainer : $('body')
+          timeout : 30000
         });
         if (item._p_hasClassName('multi') && typeof(PSuggestPicker) != 'undefined') {
           item._suggestPicker = new PSuggestPicker(item, item._suggest, {
@@ -195,8 +194,7 @@ var NodeMenu = Class.create({
           enableHierarchy: false,
           tooltip : false,
           fadeOnClear : false,
-          timeout : 30000,
-          parentContainer : $('body')
+          timeout : 30000
         });
         if (item._p_hasClassName('multi') && typeof(PSuggestPicker) != 'undefined') {
           item._suggestPicker = new PSuggestPicker(item, item._suggest, {
@@ -237,8 +235,7 @@ var NodeMenu = Class.create({
           enableHierarchy: false,
           resultParent : 'is_a',
           fadeOnClear : false,
-          timeout : 30000,
-          parentContainer : $('body')
+          timeout : 30000
         });
         if (item._p_hasClassName('multi') && typeof(PSuggestPicker) != 'undefined') {
           item._suggestPicker = new PSuggestPicker(item, item._suggest, {
