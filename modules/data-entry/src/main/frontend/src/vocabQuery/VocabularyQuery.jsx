@@ -237,7 +237,7 @@ function VocabularyQuery(props) {
       return;
     }
 
-    setInputValue("");
+    !anchorEl?.current?.contains(event.target) && setInputValue("");
     setSuggestionsVisible(false);
     setError("");
   };

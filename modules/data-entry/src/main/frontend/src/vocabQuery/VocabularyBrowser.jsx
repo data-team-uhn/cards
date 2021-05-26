@@ -32,7 +32,7 @@ import QueryStyle from "./queryStyle.jsx";
 // Required arguments:
 // onClose: Callback for the vocabulary browser close event
 // infoPath: Term @path to get the term info
-// infoButtonRefs: References to the term info buttons
+// infoButtonRefs: References to the term info buttons forwarded from the dropdown menu
 // infoboxRef: Reference to the term info dialog node
 // browserRef: Reference to the vocabulary tree dialog node
 //
@@ -57,7 +57,8 @@ function VocabularyBrowser(props) {
   const [infoAboveBackground, setInfoAboveBackground] = useState(false);
   const [infoAnchor, setInfoAnchor] = useState(null);
 
-  const [buttonRefs, setButtonRefs] = useState(infoButtonRefs || {});
+  // References to the term info buttons generated in the vocabulary tree dialog
+  const [buttonRefs, setButtonRefs] = useState({});
   const [noResults, setNoResults] = useState(false);
 
   useEffect(() => {
@@ -71,8 +72,8 @@ function VocabularyBrowser(props) {
       return;
     }
 
-    setTermInfoVisible(false);
-    setInfoAboveBackground(false);
+    setButtonRefs({});
+    closeInfo();
   }
 
   // Register a button reference that the info box can use to align itself to
@@ -118,7 +119,7 @@ function VocabularyBrowser(props) {
                alsoKnownAs: data["synonyms"] || data["has_exact_synonym"] || [],
                typeOf: data["parents"]?.map(p => p["label"] || p["name"] || p["identifier"] || p["id"]) || [],
                path: data["@path"],
-               infoAnchor: buttonRefs[data["identifier"]]
+               infoAnchor: browserOpened ? buttonRefs[data["identifier"]] : infoButtonRefs[data["identifier"]]
              });
       setTermInfoVisible(true);
       setInfoAboveBackground(browserOpened);
@@ -142,8 +143,7 @@ function VocabularyBrowser(props) {
 
   let closeBrowser = () => {
     setBrowserOpened(false);
-    setTermInfoVisible(false);
-    setInfoAboveBackground(false);
+    closeInfo();
   }
 
   let logError = (message) => {
@@ -171,16 +171,16 @@ function VocabularyBrowser(props) {
           onClickAway={clickAwayInfo}
         />
         { /* Browse dialog box */}
-        <VocabularyTree
+        {browserOpened && <VocabularyTree
           browserRef={browserRef}
-          open={browserOpened || false}
+          open={browserOpened}
           path={browsePath}
           onTermClick={focusTerm}
           onClose={closeBrowser}
           onError={logError}
           registerInfo={registerInfoButton}
           getInfo={getInfo}
-        />
+        />}
         { /* Error snackbar */}
         <Snackbar
           open={snackbarVisible}
