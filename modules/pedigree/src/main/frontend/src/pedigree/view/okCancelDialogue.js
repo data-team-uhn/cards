@@ -53,7 +53,7 @@ var OkCancelDialogue = Class.create( {
           mainDiv._p_insert(buttons);
 
           var closeShortcut = ['Esc'];
-          this.dialog = new PModalPopup(mainDiv, {close: {method : this.hide.bind(this), keys : closeShortcut}}, {extraClassName: "pedigree-okcancel", title: "?", displayCloseButton: false});
+          this.dialog = new PModalPopup(mainDiv, {close: {method : this.hide.bind(this), keys : closeShortcut}}, {extraClassName: "pedigree-okcancel", title: "?", displayCloseButton: false, verticalPosition: "top"});
       },
 
       /**
@@ -139,11 +139,7 @@ var OkCancelDialogue = Class.create( {
               this._buttons[buttonID]._p_writeAttribute("value", buttonTitle);
               this._onButtonActions[buttonID] = actionFunction;
           }
-          if (bottomRightButton) {
-              this._buttons[buttonID]._p_setStyle({"marginLeft": "-200px", "marginRight": "10px", "float": "right"});
-          } else {
-              this._buttons[buttonID]._p_setStyle({"marginLeft": (buttonID == 0 ? "0px" : "10px"), "marginRight": "0px", "float": "none"});
-          }
+          this._buttons[buttonID]._p_setStyle({"marginLeft": (buttonID == 0 ? "0px" : "10px")});
       }
 });
 

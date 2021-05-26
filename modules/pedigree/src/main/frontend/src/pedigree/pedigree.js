@@ -162,7 +162,7 @@ var PedigreeEditor = Class.create({
          editor.getOkCancelDialogue().showCustomized('There are unsaved changes, do you want to save the pedigree before closing the pedigree editor?',
             'Save before closing?',
             " Save and quit ", saveAndQuitFunc,
-            " Don't save and quit ", performPedigreeClose,
+            " Quit without saving ", performPedigreeClose,
             " Keep editing pedigree ", undefined, true );
       } else {
          performPedigreeClose();
