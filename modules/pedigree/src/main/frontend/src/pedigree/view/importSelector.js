@@ -126,7 +126,7 @@ var ImportSelector = Class.create( {
     });
 
     var closeShortcut = ['Esc'];
-    this.dialog = new PModalPopup(mainDiv, {close: {method : this.hide.bind(this), keys : closeShortcut}}, {extraClassName: 'pedigree-import-chooser', title: 'Pedigree import', displayCloseButton: true});
+    this.dialog = new PModalPopup(mainDiv, {close: {method : this.hide.bind(this), keys : closeShortcut}}, {extraClassName: 'pedigree-import-chooser', title: 'Pedigree import', displayCloseButton: true, verticalPosition : "top"});
   },
 
   /*
