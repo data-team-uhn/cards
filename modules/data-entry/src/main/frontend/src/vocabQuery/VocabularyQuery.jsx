@@ -17,7 +17,7 @@
 //  under the License.
 //
 import classNames from "classnames";
-import React, { useRef, useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 import { withStyles, ClickAwayListener, Grow, IconButton, Input, InputAdornment, InputLabel, FormControl, Typography } from "@material-ui/core"
@@ -59,6 +59,7 @@ function VocabularyQuery(props) {
   const [suggestionsLoading, setSuggestionsLoading] = useState(false);
   const [suggestionsVisible, setSuggestionsVisible] = useState(false);
   const [lookupTimer, setLookupTimer] = useState(null);
+  const [selectedTerms, setSelectedTerms] = useState(initialSelection);
 
   // Holds term path on dropdown info button click
   const [termPath, setTermPath] = useState("");
@@ -76,6 +77,11 @@ function VocabularyQuery(props) {
 
   let infoboxRef = useRef();
   let browserRef = useRef();
+
+  // Update a list of currently selected terms upon any interaction with the multiple choice list
+  useEffect(() => {
+    setSelectedTerms(initialSelection);
+  }, [initialSelection])
 
   const inputEl = (
     <Input
@@ -279,6 +285,19 @@ function VocabularyQuery(props) {
     setSuggestionsVisible(false);
   }
 
+  let onAddOption = (path, name) => {
+    let newPaths = selectedTerms.slice();
+    newPaths.push(path);
+    setSelectedTerms(newPaths);
+    onClick(path, name);
+  }
+
+  let onRemoveOption = (path, name) => {
+    let newPaths = selectedTerms.filter(item => item!= path);
+    setSelectedTerms(newPaths);
+    removeOption(path, name);
+  }
+
   if (disabled && anchorEl?.current) {
     // Alter our text to either the override ("Please select at most X options")
     // or empty it
@@ -363,8 +382,8 @@ function VocabularyQuery(props) {
           infoboxRef={infoboxRef}
           maxAnswers={questionDefinition?.maxAnswers}
           allowTermSelection={allowTermSelection}
-          initialSelection={initialSelection}
-          addOption={onClick}
+          initialSelection={selectedTerms}
+          addOption={onAddOption}
           removeOption={removeOption}
         />
       </div>
