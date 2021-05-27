@@ -231,14 +231,14 @@ function VocabularyBranch(props) {
         {/* Browser term select tools */}
 	    { addCheckbox &&
 	      <Checkbox
-	        color="primary"
+	        color="secondary"
 	        checked={selectedPaths.includes(path)}
 	        onClick={(evt) => {onTermSelect(evt, path, name);}}
 	      /> }
 	    { addRadio &&
 	       <Radio
 	         checked={selectedPaths.includes(path)}
-	         color="primary"
+	         color="secondary"
 	         onChange={(evt) => {onTermSelect(evt, path, name);}}
 	       /> }
         {name.split(" ").length > 1 ? name.split(" ").slice(0,-1).join(" ") + " " : ''}
