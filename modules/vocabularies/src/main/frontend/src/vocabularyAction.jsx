@@ -204,9 +204,9 @@ export default function VocabularyAction(props) {
           <span className={classes.wrapper}>
           <Typography variant="body1">The following variables are linked to this vocabulary:</Typography>
           <ul>
-            {linkedQuestions.map((question) => {
+            {linkedQuestions.map((question, index) => {
               return (
-                <li key={question["jcr:uuid"]}>
+                <li key={index}>
                   <ListItemText primary={question.text + " (" + question.questionnaireName + ")"}>
                   </ListItemText>
                 </li>
