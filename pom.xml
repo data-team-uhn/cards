@@ -155,6 +155,7 @@
     <checkstyle.skip>false</checkstyle.skip>
     <dependencyCheck.skip>false</dependencyCheck.skip>
     <coverage.instructionRatio>1.00</coverage.instructionRatio>
+    <webpackArguments>--mode=development</webpackArguments>
   </properties>
 
   <dependencyManagement>
@@ -586,6 +587,9 @@
               <goals>
                 <goal>webpack</goal>
               </goals>
+              <configuration>
+                <arguments>${webpackArguments}</arguments>
+              </configuration>
             </execution>
           </executions>
           <configuration>
@@ -806,6 +810,9 @@
       <!-- Profile used when the release plugin executes. We want javadocs and source jars to be released
            + ensure we sign files using GPG. -->
       <id>release</id>
+      <properties>
+        <webpackArguments>--mode=production</webpackArguments>
+      </properties>
       <activation>
         <property>
           <!-- This property is automatically defined by the Maven release plugin when executing
