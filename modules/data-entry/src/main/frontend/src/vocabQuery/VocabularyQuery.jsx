@@ -113,7 +113,7 @@ function VocabularyQuery(props) {
         </InputAdornment>
       )}
       placeholder={placeholder}
-      value={value || inputValue}
+      value={inputValue}
     />
   );
 
