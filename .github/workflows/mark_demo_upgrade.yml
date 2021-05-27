@@ -1,0 +1,11 @@
+name: Mark Demo Upgrade
+
+on: workflow_dispatch
+
+jobs:
+  markupgrade:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Placeholder
+        run: |
+          echo "Commands to be executed go here..."
