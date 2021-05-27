@@ -30,17 +30,19 @@ import QueryStyle from "./queryStyle.jsx";
 // Component that renders a vocabulary info box and browser.
 //
 // Required arguments:
-// onCloseInfo: Callback for the vocabulary info box close event
-// infoboxRef: Reference to the term info dialog node
+// infoboxRef: Reference to the term info box node
 // browserRef: Reference to the vocabulary tree dialog node
 //
 // Optional arguments:
+// onCloseInfo: Callback for the vocabulary info box close event
+// onCloseBrowser: Callback for the vocabulary tree dialog close event
 // infoButtonRefs: References to the term info buttons forwarded from the dropdown menu
 // infoPath: Term @path to get the term info
 // browserOpen: Boolean representing whether or not the vocabulary tree dialog is open
 //
 function VocabularyBrowser(props) {
-  const { browserOpen, onCloseInfo, infoPath, infoButtonRefs, infoboxRef, browserRef, browseRoots, vocabulary, classes } = props;
+  const { browserOpen, onCloseInfo, onCloseBrowser, infoPath, infoButtonRefs, infoboxRef,
+    browserRef, browseRoots, vocabulary, classes } = props;
 
   const [termInfoVisible, setTermInfoVisible] = useState(false);
   const [term, setTerm] = useState({});
@@ -166,7 +168,10 @@ function VocabularyBrowser(props) {
       clearTimeout(closeupTimer);
     }
 
-    setCloseupTimer(setTimeout(() => {setBrowserOpened(false);}, 300));
+    setCloseupTimer(setTimeout(() => {
+      setBrowserOpened(false);
+      onCloseBrowser && onCloseBrowser();
+    }, 300));
   }
 
   let logError = (message) => {
@@ -230,7 +235,8 @@ function VocabularyBrowser(props) {
 
 VocabularyBrowser.propTypes = {
   browserOpen: PropTypes.bool,
-  onCloseInfo: PropTypes.func.isRequired,
+  onCloseInfo: PropTypes.func,
+  onCloseBrowser: PropTypes.func,
   infoPath: PropTypes.string,
   infoButtonRefs: PropTypes.object,
   infoboxRef: PropTypes.object.isRequired,

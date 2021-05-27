@@ -129,7 +129,7 @@ export default function VocabularyDetails(props) {
           browserOpen={browserOpened}
           vocabulary={vocabulary}
           browseRoots={true}
-          onClose={closeBrowser}
+          onCloseBrowser={closeBrowser}
         />
       }
     </React.Fragment>
