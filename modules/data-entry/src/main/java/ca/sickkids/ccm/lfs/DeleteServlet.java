@@ -222,15 +222,15 @@ public class DeleteServlet extends SlingAllMethodsServlet
     {
         // Check if this node or its children are referenced by other nodes
         iterateChildren(node, this.traverseReferences, true);
+        String referencedNodes = listReferrersFromTraversal(node);
 
-        if (this.nodesTraversed.get().size() == 0) {
+        if (this.nodesTraversed.get().size() == 0 || StringUtils.isEmpty(referencedNodes)) {
             this.deleteNode.accept(node);
             this.resolver.get().adaptTo(Session.class).save();
         } else {
             // Will not be able to delete node due to references. Inform user.
-            String referencedNodes = listReferrersFromTraversal(node);
             sendJsonError(response, SlingHttpServletResponse.SC_CONFLICT, String.format("This item is referenced %s.",
-                StringUtils.isEmpty(referencedNodes) ? "by unknown item(s)" : "in " + referencedNodes));
+                "in " + referencedNodes));
         }
     }
 
