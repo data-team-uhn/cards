@@ -1,4 +1,5 @@
-# LFS Data Core based on Apache Sling
+# CARDS (Clinical Archive for Data Science)
+###### Based on Apache Sling
 
 [![Build Status](https://travis-ci.com/ccmbioinfo/lfs.svg?branch=dev)](https://travis-ci.com/ccmbioinfo/lfs)
 
@@ -25,7 +26,7 @@ Additional options include:
 
 To specify a different password, use `-Dsling.password=newPassword`
 
-To specify a different URL, use `-Dsling.url=https://lfs.server:8443/system/console` (the URL must end with `/system/console` to work properly)
+To specify a different URL, use `-Dsling.url=https://cards.server:8443/system/console` (the URL must end with `/system/console` to work properly)
 
 `mvn install -PintegrationTests` to run integration tests
 
@@ -50,7 +51,7 @@ If Docker is installed, then the build will also create a new image named `lfs/l
 
 ### Test/Development Environments
 
-LFS can be ran as a *single* Docker container using the file system (instead of Mongo)
+CARDS can be ran as a *single* Docker container using the file system (instead of Mongo)
 as a data storage back-end for Apache Sling.
 
 ```bash
@@ -59,14 +60,14 @@ docker run --rm -e INITIAL_SLING_NODE=true -e OAK_FILESYSTEM=true -p 127.0.0.1:8
 
 ### Production Environments
 
-Before the LFS Docker container can be started, an isolated network providing MongoDB must be established. To do so:
+Before the Docker container can be started, an isolated network providing MongoDB must be established. To do so:
 
 ```bash
 docker network create lfsbridge
 docker run --rm --network lfsbridge --name mongo -d mongo
 ```
 
-For basic testing of the LFS Docker image, run:
+For basic testing of the CARDS Docker image, run:
 
 ```bash
 docker run --rm --network lfsbridge -e INITIAL_SLING_NODE=true -d -p 8080:8080 lfs/lfs
@@ -103,7 +104,7 @@ To enable debug mode, also add `--env DEBUG=true` to the `docker run` command. N
 
 ## Running with Docker-Compose
 
-Docker-Compose can be employed to create a cluster of *N* MongoDB Shards, *M* MongoDB Replicas, and *one* LFS instance.
+Docker-Compose can be employed to create a cluster of *N* MongoDB Shards, *M* MongoDB Replicas, and *one* CARDS instance.
 
 ### Installing/Starting
 
@@ -141,7 +142,7 @@ Apache Sling
 docker-compose up -d
 ```
 
-5. The LFS instance should be available at `http://localhost:8080/`
+5. The CARDS instance should be available at `http://localhost:8080/`
 
 5.1. To inspect the data split between the MongoDB shards:
 ```bash
@@ -152,7 +153,7 @@ exit
 
 ### Stopping gracefully, without losing data
 
-1. To stop the MongoDB/LFS cluster:
+1. To stop the MongoDB/CARDS cluster:
 
 ```bash
 docker-compose down
@@ -160,7 +161,7 @@ docker-compose down
 
 ### Restarting
 
-1. To restart the MongoDB/LFS cluster while preserving the entered data
+1. To restart the MongoDB/CARDS cluster while preserving the entered data
 from the previous execution:
 
 ```bash
@@ -169,7 +170,7 @@ LFS_RELOAD=true docker-compose up -d
 
 ### Cleaning up
 
-1. To stop the MongoDB/LFS cluster and **delete all entered data**:
+1. To stop the MongoDB/CARDS cluster and **delete all entered data**:
 
 ```
 docker-compose down #Stop all containers
