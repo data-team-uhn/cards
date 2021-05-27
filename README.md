@@ -26,7 +26,7 @@ Additional options include:
 
 To specify a different password, use `-Dsling.password=newPassword`
 
-To specify a different URL, use `-Dsling.url=https://lfs.server:8443/system/console` (the URL must end with `/system/console` to work properly)
+To specify a different URL, use `-Dsling.url=https://cards.server:8443/system/console` (the URL must end with `/system/console` to work properly)
 
 `mvn install -PintegrationTests` to run integration tests
 
