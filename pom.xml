@@ -586,6 +586,9 @@
               <goals>
                 <goal>webpack</goal>
               </goals>
+              <configuration>
+                <arguments>--mode=production</arguments>
+              </configuration>
             </execution>
           </executions>
           <configuration>
