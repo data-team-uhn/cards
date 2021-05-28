@@ -69,6 +69,7 @@ function VocabularyQuery(props) {
 
   let menuPopperRef = useRef();
   let anchorEl = useRef();
+  let searchButtonRef = useRef();
   let menuRef = useRef();
 
   let infoboxRef = useRef();
@@ -83,8 +84,7 @@ function VocabularyQuery(props) {
         "aria-label": "Search"
       }}
       onChange={(event) => {
-        setError("");
-        delayLookup(event);
+        delayLookup(event.target.value);
         setInputValue(event.target.value)
         onChange && onChange(event);
       }}
@@ -110,7 +110,11 @@ function VocabularyQuery(props) {
       className={variant == "labeled" ? classes.searchInput : ""}
       multiline={true}
       endAdornment={(
-        <InputAdornment position="end" onClick={()=>{anchorEl.current.select();}} className = {classes.searchButton}>
+        <InputAdornment position="end" ref={searchButtonRef} onClick={() => {
+              queryInput(anchorEl.current.value);
+            }
+          }
+          className = {classes.searchButton}>
           <Search />
         </InputAdornment>
       )}
@@ -121,12 +125,12 @@ function VocabularyQuery(props) {
 
   // Lookup the search term after a short interval
   // This will reset the interval if called before the interval hangs up
-  let delayLookup = (status) => {
+  let delayLookup = (value) => {
     if (lookupTimer !== null) {
       clearTimeout(lookupTimer);
     }
 
-    setLookupTimer(setTimeout(queryInput, 500, status.target.value));
+    setLookupTimer(setTimeout(queryInput, 500, value));
     setSuggestionsVisible(true);
     setSuggestions([]);
   }
@@ -163,6 +167,7 @@ function VocabularyQuery(props) {
     if (input.trim() === "") {
       return;
     }
+    setError("");
 
     // Grab suggestions
     //...Make a queue of vocabularies to search through
@@ -239,7 +244,9 @@ function VocabularyQuery(props) {
       return;
     }
 
-    !anchorEl?.current?.contains(event.target) && setInputValue("");
+    !anchorEl?.current?.contains(event.target)
+      && !searchButtonRef?.current?.contains(event.target)
+      && setInputValue("");
     setSuggestionsVisible(false);
     setTermPath("");
     setError("");
