@@ -30,7 +30,7 @@ import QueryStyle from "./queryStyle.jsx";
 // Component that renders a vocabulary info box and browser.
 //
 // Required arguments:
-// onClose: Callback for the vocabulary browser close event
+// onCloseInfo: Callback for the vocabulary info box close event
 // infoPath: Term @path to get the term info
 // infoButtonRefs: References to the term info buttons forwarded from the dropdown menu
 // infoboxRef: Reference to the term info dialog node
@@ -40,13 +40,14 @@ import QueryStyle from "./queryStyle.jsx";
 // browserOpen: Boolean representing whether or not the vocabulary tree dialog is open
 //
 function VocabularyBrowser(props) {
-  const { browserOpen, onClose, infoPath, infoButtonRefs, infoboxRef, browserRef, classes } = props;
+  const { browserOpen, onCloseInfo, infoPath, infoButtonRefs, infoboxRef, browserRef, classes } = props;
 
   const [termInfoVisible, setTermInfoVisible] = useState(false);
   const [term, setTerm] = useState({});
 
   const [browsePath, setBrowsePath] = useState("");
   const [browserOpened, setBrowserOpened] = useState(!!browserOpen);
+  const [closeupTimer, setCloseupTimer] = useState(null);
 
   const [vocab, setVocab] = useState({});
 
@@ -62,17 +63,26 @@ function VocabularyBrowser(props) {
   const [noResults, setNoResults] = useState(false);
 
   useEffect(() => {
-    infoPath ? getInfo(infoPath) : setTermInfoVisible(false);
+    if (infoPath) {
+      getInfo(infoPath);
+    } else {
+      closeInfo();
+    }
   }, [infoPath])
 
-  // Event handler for clicking away from the info box or browser while they are open
+  // Event handler for clicking away from the info box
   let clickAwayInfo = (event) => {
-    if ( !infoAboveBackground && browserRef?.current?.contains(event.target)
+    if (!infoAboveBackground && browserRef?.current?.contains(event.target)
          || infoboxRef?.current?.contains(event.target)) {
       return;
     }
 
-    setButtonRefs({});
+    for (const [key, value] of Object.entries(browserOpened ? buttonRefs : infoButtonRefs)) {
+      if (value.contains(event.target)) {
+        return;
+      }
+    }
+
     closeInfo();
   }
 
@@ -130,20 +140,28 @@ function VocabularyBrowser(props) {
 
   // Event handler for clicking close button for the info box
   let closeInfo = (event) => {
-    setTermInfoVisible(false);
-    setInfoAboveBackground(false);
-    onClose && onClose();
+    if (closeupTimer !== null) {
+      clearTimeout(closeupTimer);
+    }
+
+    setCloseupTimer(setTimeout(() => {setTermInfoVisible(false);
+    setTerm({});
+    onCloseInfo && onCloseInfo();}, 300));
   }
 
   let openBrowser = () => {
+    setButtonRefs({});
     setBrowsePath(term.path);
     setInfoAboveBackground(false);
     setBrowserOpened(true);
   }
 
   let closeBrowser = () => {
-    setBrowserOpened(false);
-    closeInfo();
+    if (closeupTimer !== null) {
+      clearTimeout(closeupTimer);
+    }
+
+    setCloseupTimer(setTimeout(() => {setBrowserOpened(false);}, 300));
   }
 
   let logError = (message) => {
@@ -184,7 +202,7 @@ function VocabularyBrowser(props) {
         { /* Error snackbar */}
         <Snackbar
           open={snackbarVisible}
-          onClose={() => {setSnackbarVisible(false);}}
+          onClose={() => {setSnackbarVisible(false); setSnackbarMessage("");}}
           autoHideDuration={6000}
           anchorOrigin={{
             vertical: 'bottom',
@@ -204,7 +222,7 @@ function VocabularyBrowser(props) {
 
 VocabularyBrowser.propTypes = {
   browserOpen: PropTypes.bool,
-  onClose: PropTypes.func.isRequired,
+  onCloseInfo: PropTypes.func.isRequired,
   infoPath: PropTypes.string.isRequired,
   infoButtonRefs: PropTypes.object.isRequired,
   infoboxRef: PropTypes.object.isRequired,

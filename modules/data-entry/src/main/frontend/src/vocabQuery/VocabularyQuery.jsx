@@ -102,8 +102,10 @@ function VocabularyQuery(props) {
         }
       }}
       onFocus={(status) => {
-        delayLookup(status);
         anchorEl.current.select();
+        setSuggestionsVisible(false);
+        setTermPath("");
+        setError("");
       }}
       className={variant == "inline" ? "" : classes.searchInput}
       multiline={true}
@@ -231,14 +233,15 @@ function VocabularyQuery(props) {
 
   // Event handler for clicking away from the autocomplete while it is open
   let closeAutocomplete = event => {
-    if ( menuPopperRef?.current?.contains(event.target)
-      || infoboxRef?.current?.contains(event.target)
-      || browserRef?.current?.contains(event.target)) {
+    if ( browserRef?.current
+      || menuPopperRef?.current?.contains(event.target)
+      || infoboxRef?.current?.contains(event.target)) {
       return;
     }
 
     !anchorEl?.current?.contains(event.target) && setInputValue("");
     setSuggestionsVisible(false);
+    setTermPath("");
     setError("");
   };
 
@@ -254,7 +257,7 @@ function VocabularyQuery(props) {
   // Event handler for clicking away from the info window while it is open
   let closeInfo = (event) => {
     setTermPath("");
-  };
+  }
 
   let closeSuggestions = () => {
     if (clearOnClick) {
@@ -344,7 +347,7 @@ function VocabularyQuery(props) {
         </Popper>
         <VocabularyBrowser
           infoPath={termPath}
-          onClose={closeInfo}
+          onCloseInfo={closeInfo}
           infoButtonRefs={buttonRefs}
           browserRef={browserRef}
           infoboxRef={infoboxRef}

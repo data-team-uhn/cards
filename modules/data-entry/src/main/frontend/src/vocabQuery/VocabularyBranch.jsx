@@ -81,11 +81,11 @@ function VocabularyBranch(props) {
   // Callback from checkForChildren to update whether or not this node has children
   // This does not recreate the child elements
   let updateChildrenData = (status, data) => {
+    setCurrentlyLoading(false);
     if (status === null) {
       setHasChildren(data["lfs:children"].length > 0);
       setChildrenData(data["lfs:children"]);
       buildChildren(data["lfs:children"]);
-      setCurrentlyLoading(false);
     } else {
       onError("Error: children lookup failed with code " + status);
     }
@@ -112,6 +112,7 @@ function VocabularyBranch(props) {
       );
     setLoadedChildren(true);
     setChildren(children);
+    setExpanded(true);
   }
 
   // Update state with children elements
@@ -160,9 +161,9 @@ function VocabularyBranch(props) {
     // children again
     if (!loadedChildren) {
       loadChildren();
+    } else {
+      setExpanded(!expanded);
     }
-    setExpanded(!expanded);
-    setLoadedChildren(true);
   }
 
   // Ensure we know whether or not we have children, if this is expandable

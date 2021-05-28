@@ -40,6 +40,10 @@ import QueryStyle from "./queryStyle.jsx";
 function InfoBox(props) {
   const { open, infoboxRef, vocabulary, term, infoAboveBackground, browserOpened, onActionClick, onClickAway, onClose, classes } = props;
 
+  if (!term?.infoAnchor) {
+    return null;
+  }
+
   return (
     <Popper
       ref={infoboxRef}
