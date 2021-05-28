@@ -43,7 +43,7 @@ const MAX_RESULTS = 10;
 //
 // Optional arguments:
 //  disabled: Boolean representing whether or not this element is disabled
-//  variant: Removes the margin from the search wrapper, values: standard|inline, defaulting on standard
+//  variant: Adds the label to the search wrapper, values: default|labeled, defaulting on default
 //  isNested: If true, restyles the element to remove most padding and apply a negative margin for better nesting
 //  placeholder: String to display as the input element's placeholder
 //  value: String to use as the input element value
@@ -107,7 +107,7 @@ function VocabularyQuery(props) {
         setTermPath("");
         setError("");
       }}
-      className={variant == "inline" ? "" : classes.searchInput}
+      className={variant == "labeled" ? classes.searchInput : ""}
       multiline={true}
       endAdornment={(
         <InputAdornment position="end" onClick={()=>{anchorEl.current.select();}} className = {classes.searchButton}>
@@ -279,10 +279,8 @@ function VocabularyQuery(props) {
       <div>
         {props.children}
 
-        <div className={variant == "inline" ? "" : classes.searchWrapper}>
-          {variant == "inline" ?
-          inputEl
-          :
+        <div className={variant == "labeled" ? classes.searchWrapper : ""}>
+          {variant == "labeled" ?
           <FormControl className={isNested ? classes.nestedSearchInput : classes.search}>
             <InputLabel
               classes={{
@@ -296,7 +294,9 @@ function VocabularyQuery(props) {
               { (document.activeElement === anchorEl.current || (!value && !(anchorEl.current?.value))) ? 'Search' : ''}
             </InputLabel>
             {inputEl}
-          </FormControl>}
+          </FormControl>
+          :
+          inputEl}
           <LinearProgress className={classes.progressIndicator + " " + (suggestionsLoading ? "" : classes.inactiveProgress)}/>
           { error && <Typography component="div" color="error" variant="caption">{error}</Typography> }
         </div>
@@ -373,7 +373,7 @@ VocabularyQuery.propTypes = {
 VocabularyQuery.defaultProps = {
   clearOnClick: true,
   focusAfterSelecting: true,
-  variant: 'standard'
+  variant: 'default'
 };
 
 export default withStyles(QueryStyle)(VocabularyQuery);

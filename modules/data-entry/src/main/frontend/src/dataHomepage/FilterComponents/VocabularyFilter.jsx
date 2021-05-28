@@ -50,7 +50,6 @@ const VocabularyFilter = forwardRef((props, ref) => {
       placeholder="empty"
       inputRef={ref}
       value={defaultLabel}
-      variant="inline"
       {...rest}
       />
   )
