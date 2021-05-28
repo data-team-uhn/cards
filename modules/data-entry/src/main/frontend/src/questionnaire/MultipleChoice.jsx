@@ -185,7 +185,7 @@ function MultipleChoice(props) {
     return setSelection( (old) => {
       let newSelection = old.slice().filter(
         (element) => {
-          return !(element[VALUE_POS] === id && element[LABEL_POS] === name)
+          return !(element[VALUE_POS] === id)
         });
       // Insert the empty string if nothing currently exists
       if (newSelection.length == 0) {
@@ -337,7 +337,16 @@ function MultipleChoice(props) {
               onUpdate && onUpdate(value);
             }}
             initialSelection={selection}
-            removeOption={removeOption}
+            removeOption={(value, label) => {
+              let isDefault = defaults.filter((option) => {
+                return (option[VALUE_POS] === value || option[LABEL_POS] === label)
+              })[0];
+              if (!isDefault) {
+                removeOption(value, label);
+              } else {
+                selectNonGhostOption(value, label, true);
+              }
+            }}
             onChange = {ghostUpdateEvent}
             value={ghostSelected ? ghostName : undefined}
             disabled={disabled}
