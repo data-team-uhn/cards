@@ -290,6 +290,7 @@ function VocabularyQuery(props) {
     newPaths.push(path);
     setSelectedTerms(newPaths);
     onClick(path, name);
+    questionDefinition?.maxAnswers === 1 && setInputValue(name);
   }
 
   let onRemoveOption = (path, name) => {

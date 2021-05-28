@@ -227,19 +227,20 @@ function VocabularyBranch(props) {
 
       {/* Term name */}
       <Typography onClick={(evt) => {(evt.target.type != "checkbox") && loadTerm(id, path)}}
-                  className={classes.infoName + (focused ? (" " + classes.focusedTermName) : " ")}>
+                  className={classes.infoName + (focused ? (" " + classes.focusedTermName) : " ")}
+                  component="div">
         {/* Browser term select tools */}
 	    { addCheckbox &&
 	      <Checkbox
 	        color="secondary"
 	        checked={selectedPaths.includes(path)}
-	        onClick={(evt) => {onTermSelect(evt, path, name);}}
+	        onClick={(evt) => {event.stopPropagation(); onTermSelect(evt, path, name);}}
 	      /> }
 	    { addRadio &&
 	       <Radio
 	         checked={selectedPaths.includes(path)}
 	         color="secondary"
-	         onChange={(evt) => {onTermSelect(evt, path, name);}}
+	         onChange={(evt) => {event.stopPropagation(); onTermSelect(evt, path, name);}}
 	       /> }
         {name.split(" ").length > 1 ? name.split(" ").slice(0,-1).join(" ") + " " : ''}
         <span className={classes.infoIcon}>
