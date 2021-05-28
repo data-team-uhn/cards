@@ -200,7 +200,7 @@ function VocabularyQuery(props) {
                 onClick={(e) => {
                   if (e.target.localName === "li") {
                     onClick(element["@path"], name);
-                    setInputValue(clearOnClick ? "" : name);
+                    setInputValue((questionDefinition?.maxAnswers !== 1 && clearOnClick) ? "" : name);
                     closeSuggestions();
                   }}
                 }
