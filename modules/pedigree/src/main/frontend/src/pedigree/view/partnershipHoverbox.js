@@ -185,9 +185,9 @@ var PartnershipHoverbox = Class.create(AbstractHoverbox, {
       var position = editor.getWorkspace().canvasToDiv(this.getNodeX(), (this.getNodeY() + PedigreeEditorParameters.attributes.partnershipHandleLength + 15));
       var canBeChildless = !editor.getGraph().hasNonPlaceholderNonAdoptedChildren(this.getNode().getID());
       if (canBeChildless) {
-        editor.getNodetypeSelectionBubble()._p_show(this.getNode(), position.x, position.y);
+        editor.getNodetypeSelectionBubble().show(this.getNode(), position.x, position.y);
       } else {
-        editor.getSiblingSelectionBubble()._p_show(this.getNode(), position.x, position.y);
+        editor.getSiblingSelectionBubble().show(this.getNode(), position.x, position.y);
       }
       // if user selects anything the bubble will fire an even on its own
     }
