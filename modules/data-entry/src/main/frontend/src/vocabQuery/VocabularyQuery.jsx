@@ -81,6 +81,8 @@ function VocabularyQuery(props) {
   // Update a list of currently selected terms upon any interaction with the multiple choice list
   useEffect(() => {
     setSelectedTerms(initialSelection);
+    // Clear input field if maxAnswers=1
+    questionDefinition?.maxAnswers === 1 && inputValue != initialSelection[0][1] && setInputValue("");
   }, [initialSelection])
 
   const inputEl = (
