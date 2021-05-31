@@ -132,10 +132,10 @@ export default function VocabularyActions(props) {
   return(
       <React.Fragment>
         <VocabularyAction
-          acronym={vocabulary.acronym}
           install={install}
           uninstall={uninstall}
           phase={phase}
+          vocabulary={vocabulary}
         />
         { vocabulary.description &&
           <VocabularyDetails

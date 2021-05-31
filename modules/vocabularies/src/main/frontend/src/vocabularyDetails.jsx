@@ -90,7 +90,7 @@ export default function VocabularyDetails(props) {
         </DialogContent>
 
         <DialogActions>
-          <VocabularyAction acronym={props.acronym} install={props.install} uninstall={props.uninstall} exit={handleClose} phase={props.phase} />
+          <VocabularyAction install={install} uninstall={uninstall} exit={handleClose} phase={phase} vocabulary={vocabulary}/>
         </DialogActions>
 
       </Dialog>
