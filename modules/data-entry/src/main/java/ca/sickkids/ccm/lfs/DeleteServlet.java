@@ -73,15 +73,13 @@ public class DeleteServlet extends SlingAllMethodsServlet
     private final ThreadLocal<ResourceResolver> resolver = new ThreadLocal<>();
 
     /** A list of all nodes traversed by {@code traverseNode}. */
-    private final ThreadLocal<List<Node>> nodesTraversed = ThreadLocal.withInitial(() -> new ArrayList<>());
+    private final ThreadLocal<Set<Node>> nodesTraversed = ThreadLocal.withInitial(() -> new HashSet<>());
 
     /** A set of all nodes that should be deleted. */
     private final ThreadLocal<Set<Node>> nodesToDelete = ThreadLocal.withInitial(() -> new HashSet<>());
 
     /** A set of all nodes that are children of nodes in {@code nodesToDelete}. */
     private final ThreadLocal<Set<Node>> childNodesDeleted = ThreadLocal.withInitial(() -> new HashSet<>());
-
-    private final ThreadLocal<Node> childNodeExamined = new ThreadLocal<>();
 
     /**
      * A function that operates on a {@link Node}. As opposed to a simple {@code Consumer}, it can forward a
@@ -163,12 +161,11 @@ public class DeleteServlet extends SlingAllMethodsServlet
         try {
             final ResourceResolver resourceResolver = request.getResourceResolver();
             this.resolver.set(resourceResolver);
-            this.nodesTraversed.set(new ArrayList<Node>());
+            this.nodesTraversed.set(new HashSet<Node>());
             this.nodesToDelete.set(new HashSet<Node>());
             this.childNodesDeleted.set(new HashSet<Node>());
             Set<Node> parentNodes = new HashSet<Node>();
 
-            final String path = request.getResource().getPath();
             final Boolean recursive = Boolean.parseBoolean(request.getParameter("recursive"));
 
             Node node = request.getResource().adaptTo(Node.class);
@@ -222,15 +219,20 @@ public class DeleteServlet extends SlingAllMethodsServlet
     {
         // Check if this node or its children are referenced by other nodes
         iterateChildren(node, this.traverseReferences, true);
-        String referencedNodes = listReferrersFromTraversal(node);
 
-        if (this.nodesTraversed.get().size() == 0 || StringUtils.isEmpty(referencedNodes)) {
+        // Remove parent nodes
+        while (nodeSetContains(this.nodesTraversed.get(), node) != null) {
+            this.nodesTraversed.get().remove(nodeSetContains(this.nodesTraversed.get(), node));
+        }
+
+        if (this.nodesTraversed.get().size() == 0) {
             this.deleteNode.accept(node);
             this.resolver.get().adaptTo(Session.class).save();
         } else {
+            String referencedNodes = listReferrersFromTraversal();
             // Will not be able to delete node due to references. Inform user.
             sendJsonError(response, SlingHttpServletResponse.SC_CONFLICT, String.format("This item is referenced %s.",
-                "in " + referencedNodes));
+                StringUtils.isEmpty(referencedNodes) ? "by unknown item(s)" : "in " + referencedNodes));
         }
     }
 
@@ -329,12 +331,11 @@ public class DeleteServlet extends SlingAllMethodsServlet
     }
 
     /**
-     * Get a string explaining which nodes refer to the node traversed by {@code parentNode}.
+     * Get a string explaining which nodes refer to the node traversed by parent node.
      *
-     * @param parentNode the node originally traversed
      * @return a string in the format "2 forms, 1 subject(subjectName)" for all traversed nodes
      */
-    private String listReferrersFromTraversal(Node parentNode)
+    private String listReferrersFromTraversal()
     {
         try {
             int formCount = 0;
@@ -344,9 +345,6 @@ public class DeleteServlet extends SlingAllMethodsServlet
             List<String> questionnaires = new ArrayList<String>();
 
             for (Node n : this.nodesTraversed.get()) {
-                if (n.isSame(parentNode)) {
-                    continue;
-                }
                 switch (n.getPrimaryNodeType().getName()) {
                     case "lfs:Form":
                         formCount++;
