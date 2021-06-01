@@ -63,7 +63,8 @@ function VocabularyQuestion(props) {
           questionDefinition: questionDefinition,
           focusAfterSelecting: !singleInput,
           isNested: isBare,
-          variant: "labeled"
+          variant: "labeled",
+          clearOnClick: !singleInput
         }}
         answerNodeType = "lfs:VocabularyAnswer"
         {...props}
