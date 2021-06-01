@@ -70,8 +70,8 @@ export default function VocabularyActions(props) {
   const handleClose = () => {setError(false)};
 
   useEffect(() => {
-    setPhase(props.initPhase);
-  }, [props.initPhase])
+    setPhase(initPhase);
+  }, [initPhase])
 
   function install() {
     const oldPhase = phase;
@@ -139,13 +139,10 @@ export default function VocabularyActions(props) {
         />
         { vocabulary.description &&
           <VocabularyDetails
-            acronym={vocabulary.acronym}
             install={install}
             uninstall={uninstall}
             phase={phase}
-            name={vocabulary.name}
-            version={vocabulary.version}
-            description={vocabulary.description}
+            vocabulary={vocabulary}
           />
         }
 
