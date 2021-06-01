@@ -69,6 +69,9 @@ public class DeleteServlet extends SlingAllMethodsServlet
 
     private static final long serialVersionUID = 1L;
 
+    /** The node that was requested to be deleted. */
+    private final ThreadLocal<Node> nodeToDelete = new ThreadLocal<>();
+
     /** The Resource Resolver for the current request. */
     private final ThreadLocal<ResourceResolver> resolver = new ThreadLocal<>();
 
@@ -160,6 +163,8 @@ public class DeleteServlet extends SlingAllMethodsServlet
     {
         try {
             final ResourceResolver resourceResolver = request.getResourceResolver();
+            final Node node = request.getResource().adaptTo(Node.class);
+            this.nodeToDelete.set(node);
             this.resolver.set(resourceResolver);
             this.nodesTraversed.set(new HashSet<Node>());
             this.nodesToDelete.set(new HashSet<Node>());
@@ -168,7 +173,6 @@ public class DeleteServlet extends SlingAllMethodsServlet
 
             final Boolean recursive = Boolean.parseBoolean(request.getParameter("recursive"));
 
-            Node node = request.getResource().adaptTo(Node.class);
             if (recursive) {
                 handleRecursiveDeleteChildren(node);
             } else {
@@ -219,11 +223,6 @@ public class DeleteServlet extends SlingAllMethodsServlet
     {
         // Check if this node or its children are referenced by other nodes
         iterateChildren(node, this.traverseReferences, true);
-
-        // Remove parent nodes
-        while (nodeSetContains(this.nodesTraversed.get(), node) != null) {
-            this.nodesTraversed.get().remove(nodeSetContains(this.nodesTraversed.get(), node));
-        }
 
         if (this.nodesTraversed.get().size() == 0) {
             this.deleteNode.accept(node);
@@ -282,8 +281,15 @@ public class DeleteServlet extends SlingAllMethodsServlet
     ) throws RepositoryException
     {
         final PropertyIterator references = node.getReferences();
+        final String rootPath = this.nodeToDelete.get().getPath() + "/";
         while (references.hasNext()) {
-            iterateReferrers(references.nextProperty().getParent(), consumer, true);
+            final Node referrer = references.nextProperty().getParent();
+            final String path = referrer.getPath();
+            if (path.startsWith(rootPath)) {
+                // This a reference within the subtree to delete, ignore it
+                continue;
+            }
+            iterateReferrers(referrer, consumer, true);
         }
 
         if (includeRoot) {
