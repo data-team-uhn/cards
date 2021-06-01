@@ -82,7 +82,7 @@ function VocabularyQuery(props) {
   useEffect(() => {
     setSelectedTerms(initialSelection);
     // Clear input field if maxAnswers=1
-    questionDefinition?.maxAnswers === 1 && inputValue != initialSelection[0][1] && setInputValue("");
+    questionDefinition?.maxAnswers === 1 && inputValue && initialSelection && inputValue != initialSelection[0][1] && setInputValue("");
   }, [initialSelection])
 
   const inputEl = (
