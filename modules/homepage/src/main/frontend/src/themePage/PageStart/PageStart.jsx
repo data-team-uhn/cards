@@ -60,6 +60,8 @@ export default function PageStart(props) {
     loadExtensions("PageStart")
       .then((resp) => {
         if (resp.length > 0) {
+          console.log("ExtensionData is ...");
+          console.log(resp);
           setExtensionData(resp);
           let zeros = [];
           for (let i = 0; i < resp.length; i++) {
@@ -82,6 +84,8 @@ export default function PageStart(props) {
 
   let visualComponents = [];
   for (let i = 0; i < extensionData.length; i++) {
+    console.log("Logging extensionRender");
+    console.log(extensionData[i]["lfs:extensionRender"]);
     visualComponents.push(extensionData[i]["lfs:extensionRender"]);
   }
 

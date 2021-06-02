@@ -99,6 +99,8 @@ var loadAsset = async function(assetURL) {
           return fetch(url)
             .then(response => response.ok ? response.text() : Promise.reject(response))
             .then(remoteComponentSrc => {
+              console.log("remoteComponentSrc for assetURL: " + assetURL + " value is...");
+              console.log(remoteComponentSrc);
               var returnVal = window.eval(remoteComponentSrc);
               return parameters.has("component") ? returnVal[parameters.get("component")] : returnVal.default;
             });

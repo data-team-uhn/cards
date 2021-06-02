@@ -127,47 +127,11 @@ class Main extends React.Component {
           }
         }}
       >
-        <PageStart
-          setTotalHeight={(th) => {
-              if (this.state.contentOffset != th) {
-                this.setState({contentOffset: th});
-              }
-            }
-          }
-        />
-        <DialogueLoginContainer
-          isOpen={this.state.loginDialogOpen}
-          handleLogin={(success) => {
-            if (success) {
-              for (let i = 0; i < this.state.loginHandlers.length; i++) {
-                this.state.loginHandlers[i](success);
-              }
-              this.setState({loginHandlers: []});
-            }
-          }}
-        />
+      <PageStart setTotalHeight={() => console.log("Placeholder for total height")}/>
         <div className={classes.wrapper} style={ { position: 'relative', top: this.state.contentOffset + 'px' } }>
           <Suspense fallback={<div>Loading...</div>}>
-            <Sidebar
-              contentOffset={this.state.contentOffset}
-              logoImage={"/libs/lfs/resources/logo.png"}
-              image={this.state.image}
-              handleDrawerToggle={this.handleDrawerToggle}
-              open={this.state.mobileOpen}
-              color={ this.state.color }
-              {...rest}
-            />
-            <div className={classes.mainPanel} ref={this.mainPanel} id="main-panel">
-              <div className={classes.content}>
-                <div className={classes.container}>{this.switchRoutes(this.state.routes)}</div>
-              </div>
-              <Navbar
-                routes={ this.state.routes }
-                handleDrawerToggle={this.handleDrawerToggle}
-                color={ this.state.color }
-                {...rest}
-              />
-            </div>
+            <div>Sidebar has been removed</div>
+            <div>Main Panel has been removed</div>
           </Suspense>
         </div>
       </GlobalLoginContext.Provider>

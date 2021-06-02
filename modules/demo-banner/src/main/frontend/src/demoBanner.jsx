@@ -36,6 +36,7 @@ const appbarStyle = theme => ({
 });
 
 export default function DemoBanner(props) {
+  console.log("Invoking the DemoBanner constructor!");
   const StyledAppBar = withStyles(appbarStyle)(AppBar);
 
   return (
