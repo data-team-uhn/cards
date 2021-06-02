@@ -220,7 +220,6 @@ export default function VocabularyAction(props) {
           <Typography variant="body1">No variables are linked to this vocabulary.</Typography>
         )}
 
-        <Typography variant="h6">{vocabulary.name}</Typography>
         <Typography variant="body1">Uninstalling this vocabulary may result in data not being properly standardized. Proceed?</Typography>
       </DialogContent>
 
