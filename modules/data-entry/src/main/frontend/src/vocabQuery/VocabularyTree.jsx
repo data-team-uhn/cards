@@ -18,12 +18,10 @@
 //
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-// @material-ui/core
-import { withStyles } from "@material-ui/core";
-import { Button, Dialog, DialogContent, DialogTitle, IconButton } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
 
-import BrowseListChild from "./browseListChild.jsx";
+import { withStyles, DialogContent } from '@material-ui/core';
+import ResponsiveDialog from "../components/ResponsiveDialog";
+import VocabularyBranch from "./VocabularyBranch.jsx";
 import BrowseTheme from "./browseStyle.jsx";
 
 import { REST_URL, MakeRequest } from "./util.jsx";
@@ -31,18 +29,17 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 // Component that renders a modal dialog, to browse related terms of an input term.
 //
 // Required arguments:
-//  id: Term ID to search
+//  open: Boolean representing whether or not the tree dialog is open
 //  path: Term @path to get the term info
-//  changeTerm: callback to change the term id and path being looked up
-//  registerInfo: callback to add a possible hook point for the info box
-//  getInfo: callback to change the currently displayed info box term
-//  onClose: callback when this dialog is closed
-//  onError: callback when an error occurs
+//  onTermClick: Callback to change the term path being looked up
+//  registerInfo: Callback to add a possible hook point for the info box
+//  getInfo: Callback to change the currently displayed info box term
+//  onClose: Callback when this dialog is closed
+//  onError: Callback when an error occurs
+//  browserRef: Reference to the vocabulary tree node
 //
-// Optional arguments:
-//  fullscreen: whether or not the dialog is fullscreen (default: false)
-function VocabularyBrowser(props) {
-  const { classes, fullscreen, id, path, changeTerm, registerInfo, getInfo, onClose, onError, ...rest } = props;
+function VocabularyTree(props) {
+  const { open, path, onTermClick, registerInfo, getInfo, onClose, onError, browserRef, classes, ...rest } = props;
 
   const [ lastKnownTerm, setLastKnownTerm ] = useState("");
   const [ parentNode, setParentNode ] = useState();
@@ -51,22 +48,22 @@ function VocabularyBrowser(props) {
   // Rebuild the browser tree centered around the given term.
   let rebuildBrowser = () => {
     // Do not re-grab suggestions for the same term, or if our lookup has failed (to prevent infinite loops)
-    if (id === lastKnownTerm) {
+    if (path === lastKnownTerm) {
       return;
     }
 
     // If the search is empty, remove every component
-    if (id === "" || id === null) {
+    if (!path) {
       setParentNode(null);
       setCurrentNode(null);
-      setLastKnownTerm(id);
+      setLastKnownTerm(path);
       return;
     }
 
     // Create the XHR request
     var url = new URL(path + ".info.json", window.location.origin);
     MakeRequest(url, rebuildTree);
-    setLastKnownTerm(id);
+    setLastKnownTerm(path);
   }
 
   // Callback from an onload to generate the tree from a /suggest query about the parent
@@ -88,22 +85,22 @@ function VocabularyBrowser(props) {
   }
 
   // Construct a branch element for rendering
-  let constructBranch = (id, path, name, ischildnode, defaultexpanded, bolded, hasChildren) => {
+  let constructBranch = (id, path, name, ischildnode, defaultexpanded, focused, hasChildren) => {
     return(
-      <BrowseListChild
+      <VocabularyBranch
         id={id}
         path={path}
         name={name.trim()}
-        changeTerm={changeTerm}
+        onTermClick={onTermClick}
         registerInfo={registerInfo}
         getInfo={getInfo}
         expands={ischildnode}
         defaultOpen={defaultexpanded}
         key={id}
         headNode={!ischildnode}
-        bolded={bolded}
+        focused={focused}
         onError={onError}
-        knownHasChildren={hasChildren}
+        knownHasChildren={!!hasChildren}
       />
     );
   }
@@ -111,24 +108,19 @@ function VocabularyBrowser(props) {
   rebuildBrowser();
 
   return (
-    <Dialog
-      fullWidth
-      maxWidth="sm"
-      fullscreen={fullscreen.toString()}
-      className={classes.dialog}
+    <ResponsiveDialog
+      title="Related terms"
+      withCloseButton
+      open={open}
+      ref={browserRef}
       onClose={onClose}
+      className={classes.dialog}
       classes={{
         paper: classes.dialogPaper,
         root: classes.infoDialog
       }}
       {...rest}
     >
-      <DialogTitle>
-        Related terms
-        <IconButton aria-label="close" className={classes.closeButton} onClick={onClose}>
-          <CloseIcon />
-        </IconButton>
-      </DialogTitle>
       <DialogContent className={classes.treeContainer} dividers>
         {parentNode?.length ?
         <div className={classes.treeRoot}>
@@ -139,24 +131,20 @@ function VocabularyBrowser(props) {
           {currentNode}
         </div>
       </DialogContent>
-    </Dialog>
+    </ResponsiveDialog>
   );
 }
 
-VocabularyBrowser.propTypes = {
-  classes: PropTypes.object.isRequired,
-  fullscreen: PropTypes.bool,
-  id: PropTypes.string.isRequired,
+VocabularyTree.propTypes = {
+  open: PropTypes.bool.isRequired,
   path: PropTypes.string.isRequired,
-  changeTerm: PropTypes.func.isRequired,
+  onTermClick: PropTypes.func.isRequired,
   registerInfo: PropTypes.func.isRequired,
   getInfo: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
-  onError: PropTypes.func.isRequired
+  onError: PropTypes.func.isRequired,
+  browserRef: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 };
 
-VocabularyBrowser.defaultProps = {
-  fullscreen: true
-}
-
-export default withStyles(BrowseTheme)(VocabularyBrowser);
+export default withStyles(BrowseTheme)(VocabularyTree);
