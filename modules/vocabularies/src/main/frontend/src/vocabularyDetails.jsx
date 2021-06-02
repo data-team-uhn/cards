@@ -81,11 +81,10 @@ export default function VocabularyDetails(props) {
       <Dialog onClose={handleClose} open={displayPopup}>
 
         <DialogTitle disableTypography>
-          <Typography variant="h4" className={classes.dialogTitle}>{vocabulary.acronym}</Typography>
+          <Typography variant="h4" className={classes.dialogTitle}>{vocabulary.name} ({vocabulary.acronym})</Typography>
         </DialogTitle>
 
         <DialogContent dividers>
-          <Typography variant="h6">{vocabulary.name}</Typography>
           <Typography variant="subtitle1" paragraph>{vocabulary.version}</Typography>
           <Typography variant="body1"><span dangerouslySetInnerHTML={{__html: vocabulary.description}} /></Typography>
         </DialogContent>
