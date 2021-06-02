@@ -64,6 +64,7 @@ const useStyles = makeStyles(theme => ({
 
 
 export default function VocabularyDetails(props) {
+  const { install, uninstall, phase, vocabulary } = props;
   const [displayPopup, setDisplayPopup] = React.useState(false);
   const handleOpen = () => {setDisplayPopup(true);}
   const handleClose = () => {setDisplayPopup(false);}
@@ -80,17 +81,22 @@ export default function VocabularyDetails(props) {
       <Dialog onClose={handleClose} open={displayPopup}>
 
         <DialogTitle disableTypography>
-          <Typography variant="h4" className={classes.dialogTitle}>{props.acronym}</Typography>
+          <Typography variant="h4" className={classes.dialogTitle}>{vocabulary.name} ({vocabulary.acronym})</Typography>
         </DialogTitle>
 
         <DialogContent dividers>
-          <Typography variant="h6">{props.name}</Typography>
-          <Typography variant="subtitle1" paragraph>{props.version}</Typography>
-          <Typography variant="body1"><span dangerouslySetInnerHTML={{__html: props.description}} /></Typography>
+          <Typography variant="subtitle1" paragraph>{vocabulary.version}</Typography>
+          <Typography variant="body1"><span dangerouslySetInnerHTML={{__html: vocabulary.description}} /></Typography>
         </DialogContent>
 
         <DialogActions>
-          <VocabularyAction acronym={props.acronym} install={props.install} uninstall={props.uninstall} exit={handleClose} phase={props.phase} />
+          <VocabularyAction
+            install={install}
+            uninstall={uninstall}
+            phase={phase}
+            exit={handleClose}
+            vocabulary={vocabulary}
+          />
         </DialogActions>
 
       </Dialog>

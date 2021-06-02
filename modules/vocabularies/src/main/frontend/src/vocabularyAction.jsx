@@ -83,20 +83,21 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function VocabularyAction(props) {
+  const { install, uninstall, phase, vocabulary, exit } = props;
   const classes = useStyles();
   const [displayPopup, setDisplayPopup] = React.useState(false);
   const [linkedQuestions, setLinkedQuestions] = useState([]);
   const [questionnaires, setQuestionnaires] = useState([]);
   const handleOpen = () => {fetchQuestionnaires();}
   const handleClose = () => {setDisplayPopup(false);}
-  const handleUninstall = () => {setDisplayPopup(false); props.uninstall();}
+  const handleUninstall = () => {setDisplayPopup(false); uninstall();}
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
   let fetchQuestionnaires = () => {
     if (questionnaires.length === 0) {
       // Send a fetch request to determine the questionnaires available
-      const query = `select n.* from [lfs:Questionnaire] as n inner join [lfs:Question] as q on isdescendantnode(q, n) where contains(q.sourceVocabularies, '${props.acronym}')`;
+      const query = `select n.* from [lfs:Questionnaire] as n inner join [lfs:Question] as q on isdescendantnode(q, n) where contains(q.sourceVocabularies, '${vocabulary.acronym}')`;
       fetchWithReLogin(globalLoginDisplay, `/query?query=${encodeURIComponent(query)}&limit=100`)
         .then((response) => response.ok ? response.json() : Promise.reject(response))
         .then((json) => {
@@ -142,7 +143,7 @@ export default function VocabularyAction(props) {
 
     data && Object.entries(data)
       .forEach( ([key, value]) => {
-        if (value["jcr:primaryType"] == "lfs:Question" && value['dataType'] == 'vocabulary' && value['sourceVocabularies'].includes(props.acronym)) {
+        if (value["jcr:primaryType"] == "lfs:Question" && value['dataType'] == 'vocabulary' && value['sourceVocabularies'].includes(vocabulary.acronym)) {
           value.questionnaireName = title;
           vocQuestions.push(value);
         }
@@ -156,47 +157,47 @@ export default function VocabularyAction(props) {
 
   return(
     <React.Fragment>
-    {(props.phase == Phase["Not Installed"]) && (
+    {(phase == Phase["Not Installed"]) && (
       <Tooltip title="Install this vocabulary">
-        <Button onClick={props.install} variant="contained" className={classes.vocabularyAction + " " + classes.install}>Install</Button>
+        <Button onClick={install} variant="contained" className={classes.vocabularyAction + " " + classes.install}>Install</Button>
       </Tooltip>
     )}
-    {(props.phase == Phase["Installing"]) && (
+    {(phase == Phase["Installing"]) && (
       <span className={classes.wrapper}>
         <Button disabled variant="contained" className={classes.vocabularyAction}>Installing</Button>
         <CircularProgress size={24} className={classes.buttonProgress + " " + classes.installingColor} />
       </span>
     )}
-    {(props.phase == Phase["Update Available"]) && (
+    {(phase == Phase["Update Available"]) && (
       <React.Fragment>
         <Tooltip title="Update this vocabulary">
-          <Button onClick={props.install} variant="contained" className={classes.vocabularyAction + " " + classes.update}>Update</Button>
+          <Button onClick={install} variant="contained" className={classes.vocabularyAction + " " + classes.update}>Update</Button>
         </Tooltip>
         <Tooltip title="Remove this vocabulary">
-          <Button onClick={props.uninstall} variant="contained" className={classes.vocabularyAction + " " + classes.uninstall}>Uninstall</Button>
+          <Button onClick={uninstall} variant="contained" className={classes.vocabularyAction + " " + classes.uninstall}>Uninstall</Button>
         </Tooltip>
       </React.Fragment>
     )}
-    {(props.phase == Phase["Uninstalling"]) && (
+    {(phase == Phase["Uninstalling"]) && (
       <span className={classes.wrapper}>
         <Button disabled variant="contained" className={classes.vocabularyAction}>Uninstalling</Button>
         <CircularProgress size={24} className={classes.buttonProgress + " " + classes.uninstallingColor} />
       </span>
     )}
-    {(props.phase == Phase["Latest"]) && (
+    {(phase == Phase["Latest"]) && (
       <Tooltip title="Remove this vocabulary">
         <Button onClick={handleOpen} variant="contained" className={classes.vocabularyAction + " " + classes.uninstall}>Uninstall</Button>
       </Tooltip>
     )}
-    {props.exit && (
+    {exit && (
       <Tooltip title="Close">
-        <Button onClick={props.exit} variant="contained" color="default" className={classes.vocabularyAction}>Close</Button>
+        <Button onClick={exit} variant="contained" color="default" className={classes.vocabularyAction}>Close</Button>
       </Tooltip>
     )}
     <Dialog onClose={handleClose} open={displayPopup}>
 
       <DialogTitle disableTypography>
-        <Typography variant="h4" className={classes.dialogTitle}>{props.acronym}</Typography>
+        <Typography variant="h4" className={classes.dialogTitle}>{vocabulary.name} ({vocabulary.acronym})</Typography>
       </DialogTitle>
 
       <DialogContent dividers>
@@ -204,9 +205,9 @@ export default function VocabularyAction(props) {
           <span className={classes.wrapper}>
           <Typography variant="body1">The following variables are linked to this vocabulary:</Typography>
           <ul>
-            {linkedQuestions.map((question) => {
+            {linkedQuestions.map((question, index) => {
               return (
-                <li key={question["jcr:uuid"]}>
+                <li key={index}>
                   <ListItemText primary={question.text + " (" + question.questionnaireName + ")"}>
                   </ListItemText>
                 </li>
@@ -219,7 +220,6 @@ export default function VocabularyAction(props) {
           <Typography variant="body1">No variables are linked to this vocabulary.</Typography>
         )}
 
-        <Typography variant="h6">{props.name}</Typography>
         <Typography variant="body1">Uninstalling this vocabulary may result in data not being properly standardized. Proceed?</Typography>
       </DialogContent>
 
