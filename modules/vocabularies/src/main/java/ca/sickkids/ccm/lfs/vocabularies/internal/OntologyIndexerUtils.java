@@ -48,7 +48,7 @@ public final class OntologyIndexerUtils
     /** The list which holds all JCR vocabulary nodes associated with a vocabulary to be checked-in. */
     private static final ThreadLocal<List<Node>> NODES_TO_CHECK_IN = ThreadLocal.withInitial(ArrayList::new);
 
-    /** The list which holds all root vocabulary nodes to add to vocabulary node. */
+    /** The list which holds all root terms. */
     private static final ThreadLocal<List<Node>> ROOT_NODES = ThreadLocal.withInitial(ArrayList::new);
 
     //Hide the utility class constructor
