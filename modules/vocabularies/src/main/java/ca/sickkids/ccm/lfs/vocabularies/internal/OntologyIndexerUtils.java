@@ -190,20 +190,22 @@ public final class OntologyIndexerUtils
      * Vocabulary nodes.
      *
      * @param vocabulariesHomepage the <code>VocabulariesHomepage</code> node obtained from the request
+     * @param vocabularyNode The vocabulary node that holds indexed data
      * @throws VocabularyIndexException if the JCR session is not successfully saved or the checking-in of a Node fails
      */
-    public static void finalizeInstall(Node vocabulariesHomepage) throws VocabularyIndexException
+    public static void finalizeInstall(Node vocabulariesHomepage, InheritableThreadLocal<Node> vocabularyNode)
+        throws VocabularyIndexException
     {
+        setRootNodes(vocabularyNode);
         saveSession(vocabulariesHomepage);
         checkInVocabulary(vocabulariesHomepage);
     }
 
     /**
-     * Returns root Vocabulary nodes.
-     *
-     * @return the roots array of <code>Values</code>
+     * Sets root Vocabulary nodes.
+     * @param vocabularyNode The vocabulary node that holds indexed data
      */
-    public static Value[] getRootNodes()
+    private static void setRootNodes(InheritableThreadLocal<Node> vocabularyNode)
     {
         Value[] roots = ROOT_NODES.get().stream()
                                         .map(item ->
@@ -218,6 +220,10 @@ public final class OntologyIndexerUtils
                                         .collect(Collectors.toList()).toArray(new Value[0]);
         //Cleanup
         ROOT_NODES.remove();
-        return roots;
+        try {
+            vocabularyNode.get().setProperty("roots", roots);
+        } catch (Exception e) {
+            LOGGER.error("Failed to set vocabulary roots: {}", e.getMessage(), e);
+        }
     }
 }

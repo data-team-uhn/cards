@@ -147,14 +147,12 @@ public class FileUploadIndexer implements VocabularyIndexer
             // Parse the source file and create VocabularyTerm node children
             parser.parse(temporaryFile, description, this::createVocabularyTermNode);
 
-            this.vocabularyNode.get().setProperty("roots", OntologyIndexerUtils.getRootNodes());
-
             /*
              * Save the JCR session and check-in nodes. If any errors occur before this step, all proposed changes
              * will not be applied and the repository will remain in its original state. Lucene indexing is
              * automatically performed by the Jackrabbit Oak repository when this is performed.
              */
-            OntologyIndexerUtils.finalizeInstall(homepage);
+            OntologyIndexerUtils.finalizeInstall(homepage, this.vocabularyNode);
 
             // Success response json
             this.utils.writeStatusJson(request, response, true, null);
