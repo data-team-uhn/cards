@@ -152,7 +152,7 @@ public class BioOntologyIndexer implements VocabularyIndexer
              * will not be applied and the repository will remain in its original state. Lucene indexing is
              * automatically performed by the Jackrabbit Oak repository when this is performed.
              */
-            OntologyIndexerUtils.finalizeInstall(homepage);
+            OntologyIndexerUtils.finalizeInstall(homepage, this.vocabularyNode);
 
             // Success response json
             this.utils.writeStatusJson(request, response, true, null);

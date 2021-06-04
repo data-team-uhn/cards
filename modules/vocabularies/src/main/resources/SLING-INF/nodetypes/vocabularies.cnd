@@ -103,6 +103,9 @@
   // Optional citation for vocabulary.
   - citation (STRING)
 
+  // An array of references to the root nodes
+  - roots (reference) multiple
+
   // Children
 
   // The terms that make up the vocabulary.

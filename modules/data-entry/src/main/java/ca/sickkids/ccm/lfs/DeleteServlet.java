@@ -281,11 +281,11 @@ public class DeleteServlet extends SlingAllMethodsServlet
     ) throws RepositoryException
     {
         final PropertyIterator references = node.getReferences();
-        final String rootPath = this.nodeToDelete.get().getPath() + "/";
+        final String rootPath = this.nodeToDelete.get().getPath();
         while (references.hasNext()) {
             final Node referrer = references.nextProperty().getParent();
             final String path = referrer.getPath();
-            if (path.startsWith(rootPath)) {
+            if (path.equals(rootPath) || path.startsWith(rootPath + "/")) {
                 // This a reference within the subtree to delete, ignore it
                 continue;
             }

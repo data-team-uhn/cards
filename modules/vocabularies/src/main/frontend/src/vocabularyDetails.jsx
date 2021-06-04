@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React from "react";
+import React, { useRef, useState } from "react";
 
 import {
   Button,
@@ -35,6 +35,10 @@ import {
 import CloseIcon from "@material-ui/icons/Close";
 
 import VocabularyAction from "./vocabularyAction";
+import VocabularyBrowser from "./vocabQuery/VocabularyBrowser.jsx";
+import { REST_URL, MakeRequest } from "./vocabQuery/util.jsx";
+
+const Phase = require("./phaseCodes.json");
 
 const useStyles = makeStyles(theme => ({
   about: {
@@ -60,16 +64,31 @@ const useStyles = makeStyles(theme => ({
   dialogTitle: {
     marginRight: theme.spacing(5)
   },
+  browseAction: {
+    margin: theme.spacing(1),
+    textTransform: "none",
+    marginRight: "auto"
+  },
 }));
 
 
 export default function VocabularyDetails(props) {
-  const { install, uninstall, phase, vocabulary } = props;
+  const { install, uninstall, phase, type, vocabulary } = props;
+
   const [displayPopup, setDisplayPopup] = React.useState(false);
   const handleOpen = () => {setDisplayPopup(true);}
   const handleClose = () => {setDisplayPopup(false);}
 
+  const [browserOpened, setBrowserOpened] = useState(false);
+
+  let infoboxRef = useRef();
+  let browserRef = useRef();
+
   const classes = useStyles();
+
+  let closeBrowser = (event) => {
+    setBrowserOpened(false);
+  };
 
   return(
     <React.Fragment>
@@ -90,6 +109,9 @@ export default function VocabularyDetails(props) {
         </DialogContent>
 
         <DialogActions>
+          {(phase == Phase["Latest"] || phase == Phase["Update Available"]) && 
+            <Button onClick={() => {setBrowserOpened(true);}} variant="contained" className={classes.browseAction} color="primary">Browse</Button>
+          }
           <VocabularyAction
             install={install}
             uninstall={uninstall}
@@ -100,7 +122,16 @@ export default function VocabularyDetails(props) {
         </DialogActions>
 
       </Dialog>
-
+      { browserOpened &&
+        <VocabularyBrowser
+          browserRef={browserRef}
+          infoboxRef={infoboxRef}
+          browserOpen={browserOpened}
+          vocabulary={vocabulary}
+          browseRoots={true}
+          onCloseBrowser={closeBrowser}
+        />
+      }
     </React.Fragment>
     );
 }

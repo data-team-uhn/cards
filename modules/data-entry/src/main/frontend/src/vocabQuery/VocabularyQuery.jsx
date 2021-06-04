@@ -268,16 +268,16 @@ function VocabularyQuery(props) {
   }
 
   let closeSuggestions = () => {
-    if (clearOnClick) {
+    if (clearOnClick && anchorEl?.current) {
       anchorEl.current.value = "";
     }
     if (focusAfterSelecting) {
-      anchorEl.current.select();
+      anchorEl?.current?.select();
     }
     setSuggestionsVisible(false);
   }
 
-  if (disabled) {
+  if (disabled && anchorEl?.current) {
     // Alter our text to either the override ("Please select at most X options")
     // or empty it
     anchorEl.current.value = "";

@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 import { withStyles, DialogContent } from '@material-ui/core';
@@ -31,22 +31,55 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 // Required arguments:
 //  open: Boolean representing whether or not the tree dialog is open
 //  path: Term @path to get the term info
-//  onTermClick: Callback to change the term path being looked up
 //  registerInfo: Callback to add a possible hook point for the info box
 //  getInfo: Callback to change the currently displayed info box term
 //  onClose: Callback when this dialog is closed
 //  onError: Callback when an error occurs
 //  browserRef: Reference to the vocabulary tree node
 //
+// Optional arguments:
+//  onTermClick: Callback to change the term path being looked up
+//  vocabulary: Vocabulary info
+//  browseRoots: Boolean representing whether or not the vocabulary tree shows roots
+//  onCloseInfoBox: Callback to close term info box
+//
 function VocabularyTree(props) {
-  const { open, path, onTermClick, registerInfo, getInfo, onClose, onError, browserRef, classes, ...rest } = props;
+  const { open, path, onTermClick, registerInfo, getInfo, onClose, onCloseInfoBox, onError, browserRef, classes, vocabulary, browseRoots, ...rest } = props;
 
   const [ lastKnownTerm, setLastKnownTerm ] = useState("");
   const [ parentNode, setParentNode ] = useState();
   const [ currentNode, setCurrentNode ] = useState();
+  const [ roots, setRoots ] = useState(vocabulary.roots);
+
+  useEffect(() => {
+    if (browseRoots && !vocabulary.roots) {
+      // if vocab was just installed -> grab the info to get the roots for browser population
+      var url = new URL(`${vocabulary.acronym}.json`, REST_URL);
+      MakeRequest(url, getRoots);
+    } else {
+      rebuildBrowser();
+    }
+  }, [path, vocabulary])
+
+  useEffect(() => {
+    rebuildBrowser();
+  }, [roots])
+
+  let getRoots = (status, data) => {
+    setRoots(data?.roots);
+  }
 
   // Rebuild the browser tree centered around the given term.
   let rebuildBrowser = () => {
+    // if we are building for roots for the first time
+    if (roots && !parentNode) {
+      let rootBranches = roots.map((row, index) => {
+        return row["identifier"] ? constructBranch(row["identifier"], row["@path"], row["label"], true, (roots.length == 1), false, true) : false;
+      }).filter(i => i);
+      setParentNode(rootBranches);
+      return;
+    }
+
     // Do not re-grab suggestions for the same term, or if our lookup has failed (to prevent infinite loops)
     if (path === lastKnownTerm) {
       return;
@@ -92,6 +125,7 @@ function VocabularyTree(props) {
         path={path}
         name={name.trim()}
         onTermClick={onTermClick}
+        onCloseInfoBox={onCloseInfoBox}
         registerInfo={registerInfo}
         getInfo={getInfo}
         expands={ischildnode}
@@ -105,11 +139,9 @@ function VocabularyTree(props) {
     );
   }
 
-  rebuildBrowser();
-
   return (
     <ResponsiveDialog
-      title="Related terms"
+      title={`${vocabulary.name} (${vocabulary.acronym})` || "Related terms"}
       withCloseButton
       open={open}
       ref={browserRef}
@@ -138,12 +170,15 @@ function VocabularyTree(props) {
 VocabularyTree.propTypes = {
   open: PropTypes.bool.isRequired,
   path: PropTypes.string.isRequired,
-  onTermClick: PropTypes.func.isRequired,
+  onTermClick: PropTypes.func,
   registerInfo: PropTypes.func.isRequired,
   getInfo: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
+  onCloseInfoBox: PropTypes.func,
   onError: PropTypes.func.isRequired,
   browserRef: PropTypes.object.isRequired,
+  browseRoots: PropTypes.bool,
+  vocabulary: PropTypes.object,
   classes: PropTypes.object.isRequired
 };
 
