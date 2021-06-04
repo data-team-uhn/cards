@@ -51,6 +51,7 @@ ENTRY_CONTENT
     extensions: ['*', '.js', '.jsx']
   },
   optimization: {
+    usedExports: false,
     runtimeChunk: 'single',
     splitChunks: {
       chunks: 'all',
