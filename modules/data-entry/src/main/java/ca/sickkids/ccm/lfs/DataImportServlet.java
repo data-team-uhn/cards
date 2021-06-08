@@ -234,6 +234,9 @@ public class DataImportServlet extends SlingAllMethodsServlet
     {
         this.cachedAnswers.set(new HashMap<>());
         final Resource form = getOrCreateForm(row, patch);
+        if (form == null) {
+            return;
+        }
         row.toMap().forEach((fieldName, fieldValue) -> {
             try {
                 if (StringUtils.isBlank(fieldValue)) {
@@ -633,8 +636,12 @@ public class DataImportServlet extends SlingAllMethodsServlet
     private Resource getOrCreateForm(final CSVRecord row, boolean patch) throws PersistenceException
     {
         final Node subject = getOrCreateSubject(row);
+        if (subject == null) {
+            LOGGER.warn("Cannot determine subject for row #{}", row.getRecordNumber());
+            return null;
+        }
         Resource result = null;
-        if (patch && subject != null) {
+        if (patch) {
             result = findForm(subject);
         }
         if (result == null) {
