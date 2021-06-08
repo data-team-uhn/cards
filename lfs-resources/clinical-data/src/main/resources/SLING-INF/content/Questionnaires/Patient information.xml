@@ -1119,11 +1119,11 @@
 			</property>
 		</node>
 		<node>
-			<name>mutation_pathogenecity</name>
+			<name>mutation_pathogenicity</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Mutation-Pathogenecity</value>
+				<value>Mutation-Pathogenicity</value>
 				<type>String</type>
 			</property>
 			<property>
