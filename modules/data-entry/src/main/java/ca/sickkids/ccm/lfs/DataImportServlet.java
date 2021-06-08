@@ -130,9 +130,6 @@ public class DataImportServlet extends SlingAllMethodsServlet
     /** The {@code /Subjects} resource. */
     private final ThreadLocal<Resource> subjectsHomepage = new ThreadLocal<>();
 
-    /** The subject type to create resource. */
-    private final ThreadLocal<Node> subjectType = new ThreadLocal<>();
-
     /** The {@code /Forms} resource. */
     private final ThreadLocal<Resource> formsHomepage = new ThreadLocal<>();
 
@@ -167,13 +164,17 @@ public class DataImportServlet extends SlingAllMethodsServlet
         } catch (RepositoryException e) {
             LOGGER.error("Failed to import data: {}", e.getMessage(), e);
         } finally {
-            this.nodesToCheckin.remove();
-            this.warnedCache.remove();
-            this.questionCache.remove();
-            this.formsHomepage.remove();
             this.subjectsHomepage.remove();
-            this.subjectType.remove();
+            this.subjectTypes.remove();
+            this.subjectCache.remove();
+            this.questionnaire.remove();
+            this.questionCache.remove();
+            this.warnedCache.remove();
+            this.formsHomepage.remove();
+            this.nodesToCheckin.remove();
+            this.cachedAnswers.remove();
             this.resolver.remove();
+            this.queryManager.remove();
         }
     }
 
