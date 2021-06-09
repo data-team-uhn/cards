@@ -244,9 +244,9 @@ public class DataImportServlet extends SlingAllMethodsServlet
                 }
 
                 if (fieldName.endsWith(NOTE_SUFFIX)) {
-                    parseNote(fieldName, fieldValue, form);
+                    parseNote(fieldName.trim(), fieldValue, form);
                 } else {
-                    parseAnswer(fieldName, fieldValue, form);
+                    parseAnswer(fieldName.trim(), fieldValue, form);
                 }
             } catch (PersistenceException | RepositoryException e) {
                 LOGGER.warn("Failed to parse row [{}]: {}", row.getRecordNumber(), e.getMessage());
@@ -301,11 +301,11 @@ public class DataImportServlet extends SlingAllMethodsServlet
             String[] rawValues = fieldValue.split("\n|,");
             Value[] values = new Value[rawValues.length];
             for (int i = 0; i < rawValues.length; ++i) {
-                values[i] = parseAnswerValue(rawValues[i], question);
+                values[i] = parseAnswerValue(rawValues[i].trim(), question);
             }
             answer.adaptTo(Node.class).setProperty(VALUE_PROPERTY, values);
         } else {
-            answer.adaptTo(Node.class).setProperty(VALUE_PROPERTY, parseAnswerValue(fieldValue, question));
+            answer.adaptTo(Node.class).setProperty(VALUE_PROPERTY, parseAnswerValue(fieldValue.trim(), question));
         }
     }
 
