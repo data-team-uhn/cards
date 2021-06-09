@@ -500,6 +500,9 @@ public class DataImportServlet extends SlingAllMethodsServlet
             case "time":
                 result = "lfs:TimeAnswer";
                 break;
+            case "vocabulary":
+                result = "lfs:VocabularyAnswer";
+                break;
             case "text":
             default:
                 result = "lfs:TextAnswer";
