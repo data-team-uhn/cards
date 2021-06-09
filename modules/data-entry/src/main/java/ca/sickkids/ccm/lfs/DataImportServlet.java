@@ -298,7 +298,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
         Resource answer = getOrCreateAnswer(form, question);
 
         if (question.getProperty("maxAnswers").getLong() == 0) {
-            String[] rawValues = fieldValue.split("\n|,");
+            String[] rawValues = fieldValue.split("\n");
             Value[] values = new Value[rawValues.length];
             for (int i = 0; i < rawValues.length; ++i) {
                 values[i] = parseAnswerValue(rawValues[i].trim(), question);
