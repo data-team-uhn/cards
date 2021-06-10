@@ -19,7 +19,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
-import { withStyles, DialogContent } from '@material-ui/core';
+import { withStyles, DialogContent, Chip, Typography } from '@material-ui/core';
 import ResponsiveDialog from "../components/ResponsiveDialog";
 import VocabularyBranch from "./VocabularyBranch.jsx";
 import BrowseTheme from "./browseStyle.jsx";
@@ -47,10 +47,11 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 //  addOption: Process term selected in browser
 //  initialSelection: Existing answers
 //  removeOption: Function to remove added answer
+//  questionText: Text of the question to list the selected terms for
 //
 function VocabularyTree(props) {
   const { open, path, onTermClick, registerInfo, getInfo, onClose, onCloseInfoBox, onError, browserRef, classes, vocabulary,
-    browseRoots, maxAnswers, allowTermSelection, addOption, removeOption, initialSelection, ...rest } = props;
+    browseRoots, maxAnswers, allowTermSelection, addOption, removeOption, initialSelection, questionText, ...rest } = props;
 
   const [ lastKnownTerm, setLastKnownTerm ] = useState("");
   const [ parentNode, setParentNode ] = useState();
@@ -125,6 +126,10 @@ function VocabularyTree(props) {
     }
   }
 
+  let removeSelection = (data) => {
+    removeOption(data[0], data[1]);
+  }
+
   // Construct a branch element for rendering
   let constructBranch = (id, path, name, ischildnode, defaultexpanded, focused, hasChildren) => {
     return(
@@ -166,6 +171,12 @@ function VocabularyTree(props) {
       }}
       {...rest}
     >
+      { allowTermSelection &&
+        <div className={classes.selectionContainer}>
+          <Typography variant="body2" component="span">{questionText}:</Typography>
+          { initialSelection?.map(s => <Chip key={s[1]} variant="outlined" size="small" label={s[0]} onDelete={() => removeSelection(s)} color="primary" className={classes.selectionChips}/>) }
+        </div>
+      }
       <DialogContent className={classes.treeContainer} dividers>
         {parentNode?.length ?
         <div className={classes.treeRoot}>
@@ -197,6 +208,7 @@ VocabularyTree.propTypes = {
   removeOption: PropTypes.func,
   addOption: PropTypes.func,
   initialSelection: PropTypes.array,
+  questionText: PropTypes.string,
   classes: PropTypes.object.isRequired
 };
 

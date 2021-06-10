@@ -44,10 +44,11 @@ import QueryStyle from "./queryStyle.jsx";
 // addOption: Process term selected in browser
 // initialSelection: Existing answers
 // removeOption: Function to remove added answer
+// questionText: Text of the question to list the selected terms for
 //
 function VocabularyBrowser(props) {
   const { browserOpen, onCloseInfo, onCloseBrowser, infoPath, infoButtonRefs, infoboxRef, browserRef, browseRoots,
-    vocabulary, maxAnswers, allowTermSelection, addOption, removeOption, initialSelection, classes } = props;
+    vocabulary, maxAnswers, allowTermSelection, addOption, removeOption, initialSelection, questionText, classes } = props;
 
   const [termInfoVisible, setTermInfoVisible] = useState(false);
   const [term, setTerm] = useState({});
@@ -221,6 +222,7 @@ function VocabularyBrowser(props) {
           initialSelection={initialSelection}
           addOption={addOption}
           removeOption={removeOption}
+          questionText={questionText}
         />}
         { /* Error snackbar */}
         <Snackbar
@@ -256,6 +258,7 @@ VocabularyBrowser.propTypes = {
   addOption: PropTypes.func,
   removeOption: PropTypes.func,
   initialSelection: PropTypes.array,
+  questionText: PropTypes.string,
   classes: PropTypes.object.isRequired
 }
 

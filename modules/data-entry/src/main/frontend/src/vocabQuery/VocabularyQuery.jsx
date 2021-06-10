@@ -60,6 +60,7 @@ function VocabularyQuery(props) {
   const [suggestionsVisible, setSuggestionsVisible] = useState(false);
   const [lookupTimer, setLookupTimer] = useState(null);
   const [selectedTerms, setSelectedTerms] = useState(initialSelection);
+  const [removedTerms, setRemovedTerms] = useState([]);
 
   // Holds term path on dropdown info button click
   const [termPath, setTermPath] = useState("");
@@ -288,17 +289,28 @@ function VocabularyQuery(props) {
   }
 
   let onAddOption = (path, name) => {
-    let newPaths = selectedTerms.slice();
-    newPaths.push(path);
-    setSelectedTerms(newPaths);
-    onClick(path, name);
-    questionDefinition?.maxAnswers === 1 && setInputValue(name);
+    let newTerms = selectedTerms.slice();
+    newTerms.push([path, name]);
+    setSelectedTerms(newTerms);
+    // remove from removed
+    let newRTerms = removedTerms.filter(item => item[1] != path);
+    setRemovedTerms(newRTerms);
   }
 
   let onRemoveOption = (path, name) => {
-    let newPaths = selectedTerms.filter(item => item!= path);
-    setSelectedTerms(newPaths);
-    removeOption(path, name);
+    let newTerms = selectedTerms.filter(item => item[1] != path);
+    setSelectedTerms(newTerms);
+    // add to removed
+    let newRTerms = removedTerms.slice();
+    newRTerms.push([path, name]);
+    setRemovedTerms(newRTerms);
+  }
+
+  let onCloseBrowser = (path, name) => {
+    selectedTerms.map(item => onClick(item[0], item[1]));
+    removedTerms.map(item => removeOption(item[0], item[1]));
+    setRemovedTerms([]);
+    questionDefinition?.maxAnswers === 1 && setInputValue(name);
   }
 
   if (disabled && anchorEl?.current) {
@@ -387,7 +399,9 @@ function VocabularyQuery(props) {
           allowTermSelection={allowTermSelection}
           initialSelection={selectedTerms}
           addOption={onAddOption}
-          removeOption={removeOption}
+          removeOption={onRemoveOption}
+          onCloseBrowser={onCloseBrowser}
+          questionText={questionDefinition?.text}
         />
       </div>
     );

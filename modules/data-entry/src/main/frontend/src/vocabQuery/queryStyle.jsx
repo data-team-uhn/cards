@@ -108,7 +108,13 @@ const thesaurusStyle = theme => ({
   },
   infoDialog: {
     zIndex: "1350 !important",
-  }
+  },
+  selectionContainer: {
+    padding: theme.spacing(0, 3, 2),
+  },
+  selectionChips: {
+    margin: theme.spacing(0.5, 0.5),
+  },
 });
 
 export default thesaurusStyle;

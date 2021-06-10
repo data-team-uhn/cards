@@ -187,11 +187,11 @@ function VocabularyBranch(props) {
       let newPaths = selectedPaths.slice();
       newPaths.push(path);
       setSelectedPaths(newPaths);
-      addOption(path, name);
+      addOption(name, path);
     } else {
       let newPaths = selectedPaths.filter(item => item!= path);
       setSelectedPaths(newPaths);
-      removeOption(path, name);
+      removeOption(name, path);
     }
   }
 
