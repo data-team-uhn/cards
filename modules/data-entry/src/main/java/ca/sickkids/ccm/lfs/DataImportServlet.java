@@ -773,7 +773,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
                 query += " and n.type = '" + typeNode.getProperty("jcr:uuid").getValue() + "'";
             }
             if (parent != null) {
-                query += " and n.parents = '" + parent.getProperty("jcr:uuid").getValue() + "'";
+                query += " and ischildnode(n, '" + parent.getPath() + "')";
             }
         } catch (RepositoryException ex) {
             // No change to query
@@ -815,8 +815,11 @@ public class DataImportServlet extends SlingAllMethodsServlet
             subjectProperties.put("parents", parent);
         }
         try {
-            Node subject = this.resolver.get().create(this.subjectsHomepage.get(), UUID.randomUUID().toString(),
-                subjectProperties).adaptTo(Node.class);
+            Resource parentResource = parent != null
+                ? this.resolver.get().getResource(parent.getPath())
+                : this.subjectsHomepage.get();
+            Node subject = this.resolver.get().create(parentResource, UUID.randomUUID().toString(), subjectProperties)
+                .adaptTo(Node.class);
             this.subjectCache.get().put(subjectKey, subject);
             this.nodesToCheckin.get().add(subject.getPath());
             return subject;
