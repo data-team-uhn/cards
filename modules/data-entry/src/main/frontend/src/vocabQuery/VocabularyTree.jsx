@@ -44,14 +44,12 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 //  onCloseInfoBox: Callback to close term info box
 //  maxAnswers: maximum answers allowed for the vocabulary question
 //  allowTermSelection: Boolean enabler for term selection from vocabulary tree browser
-//  addOption: Process term selected in browser
 //  initialSelection: Existing answers
-//  removeOption: Function to remove added answer
 //  questionText: Text of the question to list the selected terms for
 //
 function VocabularyTree(props) {
   const { open, path, onTermClick, registerInfo, getInfo, onClose, onCloseInfoBox, onError, browserRef, classes, vocabulary,
-    browseRoots, maxAnswers, allowTermSelection, addOption, removeOption, initialSelection, questionText, ...rest } = props;
+    browseRoots, maxAnswers, allowTermSelection, initialSelection, questionText, ...rest } = props;
 
   const [ lastKnownTerm, setLastKnownTerm ] = useState("");
   const [ parentNode, setParentNode ] = useState();
@@ -59,6 +57,9 @@ function VocabularyTree(props) {
   const [ roots, setRoots ] = useState(vocabulary.roots);
   const addCheckbox = allowTermSelection && Number.isInteger(maxAnswers) && maxAnswers != 1;
   const addRadio = allowTermSelection && maxAnswers == 1;
+
+  const [selectedTerms, setSelectedTerms] = useState(initialSelection);
+  const [removedTerms, setRemovedTerms] = useState([]);
 
   useEffect(() => {
     if (browseRoots && !vocabulary.roots) {
@@ -126,8 +127,26 @@ function VocabularyTree(props) {
     }
   }
 
-  let removeSelection = (data) => {
-    removeOption(data[0], data[1]);
+  let onAddOption = (name, path) => {
+    let newTerms = selectedTerms.slice();
+    newTerms.push([name, path]);
+    setSelectedTerms(newTerms);
+    // remove from removed
+    let newRTerms = removedTerms.filter(item => item[1] != path);
+    setRemovedTerms(newRTerms);
+  }
+
+  let onRemoveOption = (name, path) => {
+    let terms = selectedTerms.filter(item => item[1] == path);
+    if (terms.length > 0) {
+      let newTerms = selectedTerms.filter(item => item[1] != path);
+      setSelectedTerms(newTerms);
+    } else {
+      // they were selected before, add to removed
+      let newRTerms = removedTerms.slice();
+      newRTerms.push([name, path]);
+      setRemovedTerms(newRTerms);
+    }
   }
 
   // Construct a branch element for rendering
@@ -150,9 +169,9 @@ function VocabularyTree(props) {
         knownHasChildren={!!hasChildren}
         addCheckbox={addCheckbox}
         addRadio={addRadio}
-        addOption={addOption}
-        removeOption={removeOption}
-        initialSelection={initialSelection}
+        addOption={onAddOption}
+        removeOption={onRemoveOption}
+        initialSelection={selectedTerms}
       />
     );
   }
@@ -163,7 +182,7 @@ function VocabularyTree(props) {
       withCloseButton
       open={open}
       ref={browserRef}
-      onClose={onClose}
+      onClose={() => {onClose(selectedTerms, removedTerms); setRemovedTerms([]);}}
       className={classes.dialog}
       classes={{
         paper: classes.dialogPaper,
@@ -174,7 +193,7 @@ function VocabularyTree(props) {
       { allowTermSelection &&
         <div className={classes.selectionContainer}>
           <Typography variant="body2" component="span">{questionText}:</Typography>
-          { initialSelection?.map(s => <Chip key={s[1]} variant="outlined" size="small" label={s[0]} onDelete={() => removeSelection(s)} color="primary" className={classes.selectionChips}/>) }
+          { selectedTerms?.filter(i => i[0]).map(s => <Chip key={s[1]} variant="outlined" size="small" label={s[0]} onDelete={() => onRemoveOption(s[0], s[1])} color="primary" className={classes.selectionChips}/>) }
         </div>
       }
       <DialogContent className={classes.treeContainer} dividers>
@@ -205,8 +224,6 @@ VocabularyTree.propTypes = {
   vocabulary: PropTypes.object,
   maxAnswers: PropTypes.number,
   allowTermSelection: PropTypes.bool,
-  removeOption: PropTypes.func,
-  addOption: PropTypes.func,
   initialSelection: PropTypes.array,
   questionText: PropTypes.string,
   classes: PropTypes.object.isRequired

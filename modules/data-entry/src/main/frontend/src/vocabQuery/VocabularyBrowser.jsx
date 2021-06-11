@@ -41,14 +41,12 @@ import QueryStyle from "./queryStyle.jsx";
 // browserOpen: Boolean representing whether or not the vocabulary tree dialog is open
 // maxAnswers: max answers allowed in the vocabulary question
 // allowTermSelection: Boolean enabler for term selection from vocabulary tree browser
-// addOption: Process term selected in browser
 // initialSelection: Existing answers
-// removeOption: Function to remove added answer
 // questionText: Text of the question to list the selected terms for
 //
 function VocabularyBrowser(props) {
   const { browserOpen, onCloseInfo, onCloseBrowser, infoPath, infoButtonRefs, infoboxRef, browserRef, browseRoots,
-    vocabulary, maxAnswers, allowTermSelection, addOption, removeOption, initialSelection, questionText, classes } = props;
+    vocabulary, maxAnswers, allowTermSelection, initialSelection, questionText, classes } = props;
 
   const [termInfoVisible, setTermInfoVisible] = useState(false);
   const [term, setTerm] = useState({});
@@ -169,14 +167,14 @@ function VocabularyBrowser(props) {
     setBrowserOpened(true);
   }
 
-  let closeBrowser = () => {
+  let closeBrowser = (selectedTerms, removedTerms) => {
     if (closeupTimer !== null) {
       clearTimeout(closeupTimer);
     }
 
     setCloseupTimer(setTimeout(() => {
       setBrowserOpened(false);
-      onCloseBrowser && onCloseBrowser();
+      onCloseBrowser && onCloseBrowser(selectedTerms, removedTerms);
     }, 300));
   }
 
@@ -220,8 +218,6 @@ function VocabularyBrowser(props) {
           maxAnswers={maxAnswers}
           allowTermSelection={allowTermSelection}
           initialSelection={initialSelection}
-          addOption={addOption}
-          removeOption={removeOption}
           questionText={questionText}
         />}
         { /* Error snackbar */}
@@ -255,8 +251,6 @@ VocabularyBrowser.propTypes = {
   browserRef: PropTypes.object.isRequired,
   maxAnswers: PropTypes.number,
   allowTermSelection: PropTypes.bool,
-  addOption: PropTypes.func,
-  removeOption: PropTypes.func,
   initialSelection: PropTypes.array,
   questionText: PropTypes.string,
   classes: PropTypes.object.isRequired

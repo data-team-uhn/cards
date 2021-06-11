@@ -59,8 +59,6 @@ function VocabularyQuery(props) {
   const [suggestionsLoading, setSuggestionsLoading] = useState(false);
   const [suggestionsVisible, setSuggestionsVisible] = useState(false);
   const [lookupTimer, setLookupTimer] = useState(null);
-  const [selectedTerms, setSelectedTerms] = useState(initialSelection);
-  const [removedTerms, setRemovedTerms] = useState([]);
 
   // Holds term path on dropdown info button click
   const [termPath, setTermPath] = useState("");
@@ -81,7 +79,6 @@ function VocabularyQuery(props) {
 
   // Update a list of currently selected terms upon any interaction with the multiple choice list
   useEffect(() => {
-    setSelectedTerms(initialSelection);
     // Clear input field if maxAnswers=1
     questionDefinition?.maxAnswers === 1 && inputValue && initialSelection && inputValue != initialSelection[0][1] && setInputValue("");
   }, [initialSelection])
@@ -288,28 +285,9 @@ function VocabularyQuery(props) {
     setSuggestionsVisible(false);
   }
 
-  let onAddOption = (path, name) => {
-    let newTerms = selectedTerms.slice();
-    newTerms.push([path, name]);
-    setSelectedTerms(newTerms);
-    // remove from removed
-    let newRTerms = removedTerms.filter(item => item[1] != path);
-    setRemovedTerms(newRTerms);
-  }
-
-  let onRemoveOption = (path, name) => {
-    let newTerms = selectedTerms.filter(item => item[1] != path);
-    setSelectedTerms(newTerms);
-    // add to removed
-    let newRTerms = removedTerms.slice();
-    newRTerms.push([path, name]);
-    setRemovedTerms(newRTerms);
-  }
-
-  let onCloseBrowser = (path, name) => {
-    selectedTerms.map(item => onClick(item[0], item[1]));
-    removedTerms.map(item => removeOption(item[0], item[1]));
-    setRemovedTerms([]);
+  let onCloseBrowser = (selectedTerms, removedTerms) => {
+    selectedTerms.map(item => onClick(item[1], item[0]));
+    removedTerms.map(item => removeOption(item[1], item[0]));
     questionDefinition?.maxAnswers === 1 && setInputValue(name);
   }
 
@@ -397,9 +375,7 @@ function VocabularyQuery(props) {
           infoboxRef={infoboxRef}
           maxAnswers={questionDefinition?.maxAnswers}
           allowTermSelection={allowTermSelection}
-          initialSelection={selectedTerms}
-          addOption={onAddOption}
-          removeOption={onRemoveOption}
+          initialSelection={initialSelection}
           onCloseBrowser={onCloseBrowser}
           questionText={questionDefinition?.text}
         />
