@@ -113,7 +113,7 @@ function Form (props) {
   let formNode = React.useRef();
   let pageNameWriter = usePageNameWriterContext();
   const history = useHistory();
-  const formURL = `/Forms/${id}`;
+  const formURL = `/Forms/${id}`.replace(/\/$/, "");
   const urlBase = "/content.html";
   const isEdit = window.location.pathname.endsWith(".edit");
   let globalLoginDisplay = useContext(GlobalLoginContext);
