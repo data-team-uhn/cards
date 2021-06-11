@@ -20,6 +20,7 @@
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module_name = require("./package.json").name + ".";
 
@@ -51,6 +52,17 @@ ENTRY_CONTENT
     extensions: ['*', '.js', '.jsx']
   },
   optimization: {
+    usedExports: false,
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          mangle: {
+            reserved: ['$super']
+          }
+        }
+      })
+    ],
     runtimeChunk: 'single',
     splitChunks: {
       chunks: 'all',
