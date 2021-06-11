@@ -93,7 +93,7 @@ function message_started_cards() {
 
 #Determine the port that CARDS is to bind to
 BIND_PORT=$(ARGUMENT_KEY='-p' ARGUMENT_DEFAULT='8080' python3 Utilities/HostConfig/argparse_bash.py $@)
-CARDS_URL="http://localhost:${BIND_PORT}"
+export CARDS_URL="http://localhost:${BIND_PORT}"
 
 #Get any specified runModes
 EXPR='{"operation": "includes", "key": "sling.run.modes", "val": "test"}' python3 \
