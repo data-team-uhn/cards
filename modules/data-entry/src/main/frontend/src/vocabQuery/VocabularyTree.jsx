@@ -129,24 +129,28 @@ function VocabularyTree(props) {
   }
 
   let onAddOption = (name, path) => {
-    let newTerms = selectedTerms.slice();
-    newTerms.push([name, path]);
-    setSelectedTerms(newTerms);
+    setSelectedTerms(old => {
+      let newTerms = old.slice();
+      newTerms.push([name, path]);
+      return newTerms;
+    });
     // remove from removed
-    let newRTerms = removedTerms.filter(item => item[1] != path);
-    setRemovedTerms(newRTerms);
+    setRemovedTerms(old => {
+      return old.filter(item => item[1] != path);
+    });
   }
 
   let onRemoveOption = (name, path) => {
-    let terms = selectedTerms.filter(item => item[1] == path);
-    if (terms.length > 0) {
-      let newTerms = selectedTerms.filter(item => item[1] != path);
-      setSelectedTerms(newTerms);
-    } else {
+    setSelectedTerms(old => {
+      return old.filter(item => item[1] != path);
+    });
+    if (initialSelection.some(item => item[1] == path)) {
       // they were selected before, add to removed
-      let newRTerms = removedTerms.slice();
-      newRTerms.push([name, path]);
-      setRemovedTerms(newRTerms);
+      setRemovedTerms(old => {
+        let newRTerms = old.slice();
+        newRTerms.push([name, path]);
+        return newRTerms;
+      });
     }
   }
 
