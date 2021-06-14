@@ -647,24 +647,24 @@ export default function VariantFilesContainer() {
       let data = new FormData();
 
       // Assemble the questionnaire into our payload FormData
-      let formPath = "Forms/" + uuidv4() + "/";
-      data.append(formPath + "jcr:primaryType", "lfs:Form");
-      data.append(formPath + "questionnaire", "/Questionnaires/SomaticVariants");
-      data.append(formPath + "questionnaire@TypeHint", "Reference");
-      data.append(formPath + "subject", `/${subjectPath}/${tumorPath}` + (file?.region?.path ? `/${regionPath}` : ""));
-      data.append(formPath + "subject@TypeHint", "Reference");
+      let formPath = "Forms/" + uuidv4();
+      data.append(formPath + "/jcr:primaryType", "lfs:Form");
+      data.append(formPath + "/questionnaire", "/Questionnaires/SomaticVariants");
+      data.append(formPath + "/questionnaire@TypeHint", "Reference");
+      data.append(formPath + "/subject", `/${subjectPath}/${tumorPath}` + (file?.region?.path ? `/${regionPath}` : ""));
+      data.append(formPath + "/subject@TypeHint", "Reference");
 
       // Assemble the FileResourceAnswer
-      let answerPath = formPath + uuidv4() + "/";
-      data.append(answerPath + "jcr:primaryType", "lfs:FileResourceAnswer");
-      data.append(answerPath + "question", "/Questionnaires/SomaticVariants/file");
-      data.append(answerPath + "question@TypeHint", "Reference");
-      data.append(answerPath + "value", "/" + answerPath + file.name);
+      let answerPath = formPath + "/" + uuidv4();
+      data.append(answerPath + "/jcr:primaryType", "lfs:FileResourceAnswer");
+      data.append(answerPath + "/question", "/Questionnaires/SomaticVariants/file");
+      data.append(answerPath + "/question@TypeHint", "Reference");
+      data.append(answerPath + "/value", "/" + answerPath + "/" + file.name);
 
       // Assemble the details about the file itself
-      let filePath = answerPath + file.name;
+      let filePath = answerPath + "/" + file.name;
       data.append(filePath, file);
-      data.append(filePath + "@TypeHint", "nt:file");
+      data.append(filePath + "/@TypeHint", "nt:file");
 
       var xhr = new XMLHttpRequest();
       xhr.open('POST', '/');
@@ -841,7 +841,7 @@ export default function VariantFilesContainer() {
                     {patientSubjectLabel} <Link href={subjectPath} target="_blank"> {file.subject.id} </Link> /&nbsp;
                     {tumorSubjectLabel} <Link href={tumorPath} target="_blank"> {file.tumor.id} </Link>
                     { file?.region?.path && <> / {regionSubjectLabel} <Link href={regionPath} target="_blank"> {file.region.id} </Link> </> }
-                    { file.formPath && <> : <Link href={file.formPath.replace("/Forms", "Forms").replace(/\/$/, "")} target="_blank">{somaticVariantsTitle}</Link> </>}
+                    { file.formPath && <> : <Link href={file.formPath.replace("/Forms", "Forms")} target="_blank">{somaticVariantsTitle}</Link> </>}
                   </Typography>
                 : <div className={classes.fileFormSection}>
                   <TextField
