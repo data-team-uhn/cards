@@ -22,6 +22,7 @@ import PropTypes from "prop-types";
 import { withStyles, DialogContent, Chip, Typography } from '@material-ui/core';
 import ResponsiveDialog from "../components/ResponsiveDialog";
 import VocabularyBranch from "./VocabularyBranch.jsx";
+import { LABEL_POS, VALUE_POS } from "../questionnaire/Answer"
 import BrowseTheme from "./browseStyle.jsx";
 
 import { REST_URL, MakeRequest } from "./util.jsx";
@@ -171,7 +172,7 @@ function VocabularyTree(props) {
         addRadio={addRadio}
         addOption={onAddOption}
         removeOption={onRemoveOption}
-        initialSelection={selectedTerms}
+        currentSelection={selectedTerms?.map(item => item[VALUE_POS])}
       />
     );
   }
@@ -193,7 +194,7 @@ function VocabularyTree(props) {
       { allowTermSelection &&
         <div className={classes.selectionContainer}>
           <Typography variant="body2" component="span">{questionText}:</Typography>
-          { selectedTerms?.filter(i => i[0]).map(s => <Chip key={s[1]} variant="outlined" size="small" label={s[0]} onDelete={() => onRemoveOption(s[0], s[1])} color="primary" className={classes.selectionChips}/>) }
+          { selectedTerms?.filter(i => i[LABEL_POS]).map(s => <Chip key={s[VALUE_POS]} variant="outlined" size="small" label={s[LABEL_POS]} onDelete={() => onRemoveOption(...s)} color="primary" className={classes.selectionChips}/>) }
         </div>
       }
       <DialogContent className={classes.treeContainer} dividers>

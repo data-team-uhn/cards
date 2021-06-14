@@ -52,12 +52,12 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 //  addCheckbox: whether or not to add a checkbox control for term selection
 //  addRadio: whether or not to add a radio control for term selection
 //  addOption: Function to process term selected in browser
-//  initialSelection: Existing answers
+//  currentSelection: The ids of the terms that have been marked as selected do far in the vocabulary browser
 //  removeOption: Function to remove added answer
 //
 function VocabularyBranch(props) {
   const { defaultOpen, id, path, name, onTermClick, onCloseInfoBox, registerInfo, getInfo, expands, headNode, focused, onError,
-    knownHasChildren, addCheckbox, addRadio, addOption, removeOption, initialSelection, classes } = props;
+    knownHasChildren, addCheckbox, addRadio, addOption, removeOption, currentSelection, classes } = props;
 
   const [ lastKnownID, setLastKnownID ] = useState();
   const [ currentlyLoading, setCurrentlyLoading ] = useState(typeof knownHasChildren === "undefined" && expands);
@@ -66,7 +66,7 @@ function VocabularyBranch(props) {
   const [ childrenData, setChildrenData ] = useState();
   const [ children, setChildren ] = useState([]);
   const [ expanded, setExpanded ] = useState(defaultOpen);
-  const [ selectedPaths, setSelectedPaths] = useState(initialSelection ? initialSelection.map(item => item[1]) : []);
+  const [ selectedPaths, setSelectedPaths] = useState(currentSelection || []);
 
   let loadTerm = (id, path) => {
     if (focused) return;
@@ -122,7 +122,7 @@ function VocabularyBranch(props) {
         addRadio={addRadio}
         addOption={addOption}
         removeOption={removeOption}
-        initialSelection={initialSelection}
+        currentSelection={currentSelection}
       />)
       );
     setLoadedChildren(true);
@@ -181,7 +181,7 @@ function VocabularyBranch(props) {
     }
   }
 
-  let onTermSelect = (evt, path, name) => {
+  let onSelectionChanged = (evt) => {
     evt.stopPropagation();
     if (evt.target.checked) {
       let newPaths = selectedPaths.slice();
@@ -234,13 +234,13 @@ function VocabularyBranch(props) {
 	      <Checkbox
 	        color="secondary"
 	        checked={selectedPaths.includes(path)}
-	        onClick={(evt) => {event.stopPropagation(); onTermSelect(evt, path, name);}}
+	        onClick={onSelectionChanged}
 	      /> }
 	    { addRadio &&
 	       <Radio
 	         checked={selectedPaths.includes(path)}
 	         color="secondary"
-	         onChange={(evt) => {event.stopPropagation(); onTermSelect(evt, path, name);}}
+	         onChange={onSelectionChanged}
 	       /> }
         {name.split(" ").length > 1 ? name.split(" ").slice(0,-1).join(" ") + " " : ''}
         <span className={classes.infoIcon}>
@@ -282,7 +282,7 @@ VocabularyBranch.propTypes = {
   addRadio: PropTypes.bool,
   addOption: PropTypes.func,
   removeOption: PropTypes.func,
-  initialSelection: PropTypes.array,
+  currentSelection: PropTypes.array,
   classes: PropTypes.object.isRequired
 };
 
