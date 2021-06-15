@@ -288,9 +288,23 @@ function VocabularyQuery(props) {
 
   let onCloseBrowser = (selectedTerms, removedTerms) => {
     selectedTerms.map(item => onClick(item[VALUE_POS], item[LABEL_POS]));
-    removedTerms.push([inputValue, inputValue]);
     removedTerms.map(item => removeOption(item[VALUE_POS], item[LABEL_POS]));
-    questionDefinition?.maxAnswers === 1 && setInputValue(name);
+
+    // Set input value to selected term label or initial selection label if single answer question
+    if (questionDefinition?.maxAnswers === 1) {
+      if (selectedTerms.length > 0) {
+        // Search in default answer options
+        let isDefault = Object.values(props.questionDefinition)
+          .filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption' && value.value === selectedTerms[0][VALUE_POS]);
+        isDefault.length == 0 && setInputValue(selectedTerms[0][LABEL_POS]);
+      } else {
+        if (initialSelection.length > 0) {
+          let isDefault = Object.values(props.questionDefinition)
+            .filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption' && value.value === initialSelection[0][VALUE_POS]);
+          isDefault.length == 0 && setInputValue(initialSelection[0][LABEL_POS]);
+        }
+      }
+    }
   }
 
   if (disabled && anchorEl?.current) {
