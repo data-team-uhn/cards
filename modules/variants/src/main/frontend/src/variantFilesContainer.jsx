@@ -678,7 +678,7 @@ export default function VariantFilesContainer() {
           // state: "done" change should turn all subject inputs into the link text
           uploadProgress[file.name] = { state: "done", percentage: 100 };
 
-          file.formPath = "/" + formPath;
+          file.formPath = formPath;
           file.sent = true;
           selectedFiles[selectedFiles.findIndex(el => el.name === file.name)] = file;
           setSelectedFiles(selectedFiles);
@@ -841,7 +841,7 @@ export default function VariantFilesContainer() {
                     {patientSubjectLabel} <Link href={subjectPath} target="_blank"> {file.subject.id} </Link> /&nbsp;
                     {tumorSubjectLabel} <Link href={tumorPath} target="_blank"> {file.tumor.id} </Link>
                     { file?.region?.path && <> / {regionSubjectLabel} <Link href={regionPath} target="_blank"> {file.region.id} </Link> </> }
-                    { file.formPath && <> : <Link href={file.formPath.replace("/Forms", "Forms")} target="_blank">{somaticVariantsTitle}</Link> </>}
+                    { file.formPath && <> : <Link href={file.formPath} target="_blank">{somaticVariantsTitle}</Link> </>}
                   </Typography>
                 : <div className={classes.fileFormSection}>
                   <TextField
