@@ -41,7 +41,7 @@ import QueryStyle from "./queryStyle.jsx";
 // browserOpen: Boolean representing whether or not the vocabulary tree dialog is open
 // allowTermSelection: Boolean enabler for term selection from vocabulary tree browser
 // initialSelection: Existing answers
-//  questionDefinition: Object describing the Vocabulary Question for which this suggested input is displayed
+// questionDefinition: Object describing the Vocabulary Question for which this suggested input is displayed
 //
 function VocabularyBrowser(props) {
   const { browserOpen, onCloseInfo, onCloseBrowser, infoPath, infoButtonRefs, infoboxRef, browserRef, browseRoots,
@@ -214,10 +214,9 @@ function VocabularyBrowser(props) {
           registerInfo={registerInfoButton}
           getInfo={getInfo}
           browseRoots={browseRoots}
-          maxAnswers={questionDefinition?.maxAnswers}
           allowTermSelection={allowTermSelection}
           initialSelection={initialSelection}
-          questionText={questionDefinition?.text}
+          questionDefinition={questionDefinition}
         />}
         { /* Error snackbar */}
         <Snackbar

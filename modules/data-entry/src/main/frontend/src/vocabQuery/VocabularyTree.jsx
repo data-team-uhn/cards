@@ -22,7 +22,7 @@ import PropTypes from "prop-types";
 import { withStyles, DialogContent, Chip, Typography } from '@material-ui/core';
 import ResponsiveDialog from "../components/ResponsiveDialog";
 import VocabularyBranch from "./VocabularyBranch.jsx";
-import { LABEL_POS, VALUE_POS } from "../questionnaire/Answer"
+import { LABEL_POS, VALUE_POS } from "../questionnaire/Answer";
 import BrowseTheme from "./browseStyle.jsx";
 
 import { REST_URL, MakeRequest } from "./util.jsx";
@@ -43,19 +43,19 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 //  vocabulary: Vocabulary info
 //  browseRoots: Boolean representing whether or not the vocabulary tree shows roots
 //  onCloseInfoBox: Callback to close term info box
-//  maxAnswers: maximum answers allowed for the vocabulary question
 //  allowTermSelection: Boolean enabler for term selection from vocabulary tree browser
 //  initialSelection: Existing answers
-//  questionText: Text of the question to list the selected terms for
+//  questionDefinition: Object describing the Vocabulary Question for which this suggested input is displayed
 //
 function VocabularyTree(props) {
   const { open, path, onTermClick, registerInfo, getInfo, onClose, onCloseInfoBox, onError, browserRef, classes, vocabulary,
-    browseRoots, maxAnswers, allowTermSelection, initialSelection, questionText, ...rest } = props;
+    browseRoots, allowTermSelection, initialSelection, questionDefinition, ...rest } = props;
 
   const [ lastKnownTerm, setLastKnownTerm ] = useState("");
   const [ parentNode, setParentNode ] = useState();
   const [ currentNode, setCurrentNode ] = useState();
   const [ roots, setRoots ] = useState(vocabulary.roots);
+  const maxAnswers = questionDefinition?.maxAnswers;
   const addCheckbox = allowTermSelection && Number.isInteger(maxAnswers) && maxAnswers != 1;
   const addRadio = allowTermSelection && maxAnswers == 1;
 
@@ -197,7 +197,7 @@ function VocabularyTree(props) {
     >
       { allowTermSelection &&
         <div className={classes.selectionContainer}>
-          <Typography variant="body2" component="span">{questionText}:</Typography>
+          <Typography variant="body2" component="span">{questionDefinition?.text}:</Typography>
           { selectedTerms?.filter(i => i[LABEL_POS]).map(s => <Chip key={s[VALUE_POS]} variant="outlined" size="small" label={s[LABEL_POS]} onDelete={() => onRemoveOption(...s)} color="primary" className={classes.selectionChips}/>) }
         </div>
       }
@@ -230,7 +230,7 @@ VocabularyTree.propTypes = {
   maxAnswers: PropTypes.number,
   allowTermSelection: PropTypes.bool,
   initialSelection: PropTypes.array,
-  questionText: PropTypes.string,
+  questionDefinition: PropTypes.object,
   classes: PropTypes.object.isRequired
 };
 

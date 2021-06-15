@@ -29,6 +29,7 @@ import Info from "@material-ui/icons/Info";
 import VocabularyBrowser from "./VocabularyBrowser.jsx";
 import { REST_URL, MakeRequest } from "./util.jsx";
 import QueryStyle from "./queryStyle.jsx";
+import { LABEL_POS, VALUE_POS } from "../questionnaire/Answer";
 
 const NO_RESULTS_TEXT = "No results";
 const MAX_RESULTS = 10;
@@ -286,8 +287,8 @@ function VocabularyQuery(props) {
   }
 
   let onCloseBrowser = (selectedTerms, removedTerms) => {
-    selectedTerms.map(item => onClick(item[1], item[0]));
-    removedTerms.map(item => removeOption(item[1], item[0]));
+    selectedTerms.map(item => onClick(item[VALUE_POS], item[LABEL_POS]));
+    removedTerms.map(item => removeOption(item[VALUE_POS], item[LABEL_POS]));
     questionDefinition?.maxAnswers === 1 && setInputValue(name);
   }
 

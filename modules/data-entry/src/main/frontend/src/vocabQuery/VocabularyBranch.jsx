@@ -67,6 +67,7 @@ function VocabularyBranch(props) {
   const [ children, setChildren ] = useState([]);
   const [ expanded, setExpanded ] = useState(defaultOpen);
   const [ selectedPaths, setSelectedPaths] = useState(currentSelection || []);
+  const SelectorComponent = addCheckbox ? Checkbox : Radio;
 
   let loadTerm = (id, path) => {
     if (focused) return;
@@ -230,20 +231,12 @@ function VocabularyBranch(props) {
                   className={classes.infoName + (focused ? (" " + classes.focusedTermName) : " ")}
                   component="div">
         {/* Browser term select tools */}
-	    { addCheckbox &&
-	      <Checkbox
-	        color="secondary"
-	        checked={selectedPaths.includes(path)}
-	        onClick={onSelectionChanged}
-	        className={classes.termSelector}
-	      /> }
-	    { addRadio &&
-	       <Radio
-	         checked={selectedPaths.includes(path)}
-	         color="secondary"
-	         onChange={onSelectionChanged}
-	         className={classes.termSelector}
-	       /> }
+	    <SelectorComponent
+	      checked={selectedPaths.includes(path)}
+	      color="secondary"
+	      onChange={onSelectionChanged}
+	      className={classes.termSelector}
+	    />
         {name.split(" ").length > 1 ? name.split(" ").slice(0,-1).join(" ") + " " : ''}
         <span className={classes.infoIcon}>
           {name.split(" ").pop()}&nbsp;
