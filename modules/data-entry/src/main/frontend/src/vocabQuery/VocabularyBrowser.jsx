@@ -39,14 +39,13 @@ import QueryStyle from "./queryStyle.jsx";
 // infoButtonRefs: References to the term info buttons forwarded from the dropdown menu
 // infoPath: Term @path to get the term info
 // browserOpen: Boolean representing whether or not the vocabulary tree dialog is open
-// maxAnswers: max answers allowed in the vocabulary question
 // allowTermSelection: Boolean enabler for term selection from vocabulary tree browser
 // initialSelection: Existing answers
-// questionText: Text of the question to list the selected terms for
+//  questionDefinition: Object describing the Vocabulary Question for which this suggested input is displayed
 //
 function VocabularyBrowser(props) {
   const { browserOpen, onCloseInfo, onCloseBrowser, infoPath, infoButtonRefs, infoboxRef, browserRef, browseRoots,
-    vocabulary, maxAnswers, allowTermSelection, initialSelection, questionText, classes } = props;
+    vocabulary, allowTermSelection, initialSelection, questionDefinition, classes } = props;
 
   const [termInfoVisible, setTermInfoVisible] = useState(false);
   const [term, setTerm] = useState({});
@@ -215,10 +214,10 @@ function VocabularyBrowser(props) {
           registerInfo={registerInfoButton}
           getInfo={getInfo}
           browseRoots={browseRoots}
-          maxAnswers={maxAnswers}
+          maxAnswers={questionDefinition?.maxAnswers}
           allowTermSelection={allowTermSelection}
           initialSelection={initialSelection}
-          questionText={questionText}
+          questionText={questionDefinition?.text}
         />}
         { /* Error snackbar */}
         <Snackbar
@@ -249,10 +248,9 @@ VocabularyBrowser.propTypes = {
   infoButtonRefs: PropTypes.object,
   infoboxRef: PropTypes.object.isRequired,
   browserRef: PropTypes.object.isRequired,
-  maxAnswers: PropTypes.number,
   allowTermSelection: PropTypes.bool,
   initialSelection: PropTypes.array,
-  questionText: PropTypes.string,
+  questionDefinition: PropTypes.object,
   classes: PropTypes.object.isRequired
 }
 

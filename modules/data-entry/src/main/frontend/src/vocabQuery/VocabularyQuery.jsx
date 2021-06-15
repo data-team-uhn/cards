@@ -373,11 +373,10 @@ function VocabularyQuery(props) {
           infoButtonRefs={buttonRefs}
           browserRef={browserRef}
           infoboxRef={infoboxRef}
-          maxAnswers={questionDefinition?.maxAnswers}
+          questionDefinition={questionDefinition}
           allowTermSelection={allowTermSelection}
           initialSelection={initialSelection}
           onCloseBrowser={onCloseBrowser}
-          questionText={questionDefinition?.text}
         />
       </div>
     );

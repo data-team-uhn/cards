@@ -115,6 +115,9 @@ const thesaurusStyle = theme => ({
   selectionChips: {
     margin: theme.spacing(0.5, 0.5),
   },
+  termSelector: {
+    margin: theme.spacing(-.25, 0, 0, 1.5),
+  },
 });
 
 export default thesaurusStyle;

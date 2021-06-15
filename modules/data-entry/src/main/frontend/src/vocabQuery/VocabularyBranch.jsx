@@ -235,12 +235,14 @@ function VocabularyBranch(props) {
 	        color="secondary"
 	        checked={selectedPaths.includes(path)}
 	        onClick={onSelectionChanged}
+	        className={classes.termSelector}
 	      /> }
 	    { addRadio &&
 	       <Radio
 	         checked={selectedPaths.includes(path)}
 	         color="secondary"
 	         onChange={onSelectionChanged}
+	         className={classes.termSelector}
 	       /> }
         {name.split(" ").length > 1 ? name.split(" ").slice(0,-1).join(" ") + " " : ''}
         <span className={classes.infoIcon}>
