@@ -55,9 +55,7 @@ function VocabularyTree(props) {
   const [ parentNode, setParentNode ] = useState();
   const [ currentNode, setCurrentNode ] = useState();
   const [ roots, setRoots ] = useState(vocabulary.roots);
-  const maxAnswers = questionDefinition?.maxAnswers;
-  const addCheckbox = allowTermSelection && Number.isInteger(maxAnswers) && maxAnswers != 1;
-  const selectorComponent = addCheckbox ? Checkbox : Radio;
+  const selectorComponent = allowTermSelection ? (questionDefinition?.maxAnswers == 1 ? Radio : Checkbox) : undefined;
 
   const [selectedTerms, setSelectedTerms] = useState(initialSelection);
   const [removedTerms, setRemovedTerms] = useState([]);
