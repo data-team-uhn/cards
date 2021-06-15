@@ -19,7 +19,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
-import { withStyles, DialogContent, Chip, Typography } from '@material-ui/core';
+import { withStyles, Checkbox, DialogContent, Chip, Radio, Typography } from '@material-ui/core';
 import ResponsiveDialog from "../components/ResponsiveDialog";
 import VocabularyBranch from "./VocabularyBranch.jsx";
 import { LABEL_POS, VALUE_POS } from "../questionnaire/Answer";
@@ -57,7 +57,7 @@ function VocabularyTree(props) {
   const [ roots, setRoots ] = useState(vocabulary.roots);
   const maxAnswers = questionDefinition?.maxAnswers;
   const addCheckbox = allowTermSelection && Number.isInteger(maxAnswers) && maxAnswers != 1;
-  const addRadio = allowTermSelection && maxAnswers == 1;
+  const selectorComponent = addCheckbox ? Checkbox : Radio;
 
   const [selectedTerms, setSelectedTerms] = useState(initialSelection);
   const [removedTerms, setRemovedTerms] = useState([]);
@@ -172,8 +172,7 @@ function VocabularyTree(props) {
         focused={focused}
         onError={onError}
         knownHasChildren={!!hasChildren}
-        addCheckbox={addCheckbox}
-        addRadio={addRadio}
+        selectorComponent={selectorComponent}
         addOption={onAddOption}
         removeOption={onRemoveOption}
         currentSelection={selectedTerms?.map(item => item[VALUE_POS])}
@@ -227,7 +226,6 @@ VocabularyTree.propTypes = {
   browserRef: PropTypes.object.isRequired,
   browseRoots: PropTypes.bool,
   vocabulary: PropTypes.object,
-  maxAnswers: PropTypes.number,
   allowTermSelection: PropTypes.bool,
   initialSelection: PropTypes.array,
   questionDefinition: PropTypes.object,

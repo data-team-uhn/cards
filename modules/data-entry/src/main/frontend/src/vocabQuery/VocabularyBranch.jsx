@@ -20,7 +20,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 import { withStyles } from "@material-ui/core";
-import { Button, Checkbox, CircularProgress, IconButton, Radio, Tooltip, Typography } from '@material-ui/core';
+import { Button, CircularProgress, IconButton, Tooltip, Typography } from '@material-ui/core';
 
 import Info from "@material-ui/icons/Info";
 import ArrowDown from "@material-ui/icons/KeyboardArrowDown";
@@ -49,15 +49,14 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 //  onCloseInfoBox: Callback to close term info box
 //  focused: boolean determining whether this entry is focused and should be visually emphasized
 //           (a focused term entry is displayed as a root of a subtree, with only its parents above and its descendants below)
-//  addCheckbox: whether or not to add a checkbox control for term selection
-//  addRadio: whether or not to add a radio control for term selection
+//  selectorComponent: term selector component: Checkbox or Radio control
 //  addOption: Function to process term selected in browser
 //  currentSelection: The ids of the terms that have been marked as selected do far in the vocabulary browser
 //  removeOption: Function to remove added answer
 //
 function VocabularyBranch(props) {
   const { defaultOpen, id, path, name, onTermClick, onCloseInfoBox, registerInfo, getInfo, expands, headNode, focused, onError,
-    knownHasChildren, addCheckbox, addRadio, addOption, removeOption, currentSelection, classes } = props;
+    knownHasChildren, selectorComponent, addOption, removeOption, currentSelection, classes } = props;
 
   const [ lastKnownID, setLastKnownID ] = useState();
   const [ currentlyLoading, setCurrentlyLoading ] = useState(typeof knownHasChildren === "undefined" && expands);
@@ -67,7 +66,7 @@ function VocabularyBranch(props) {
   const [ children, setChildren ] = useState([]);
   const [ expanded, setExpanded ] = useState(defaultOpen);
   const [ selectedPaths, setSelectedPaths] = useState(currentSelection || []);
-  const SelectorComponent = addCheckbox ? Checkbox : Radio;
+  const SelectorComponent = selectorComponent;
 
   let loadTerm = (id, path) => {
     if (focused) return;
@@ -119,8 +118,7 @@ function VocabularyBranch(props) {
         headNode={false}
         onError={onError}
         knownHasChildren={row["lfs:hasChildren"]}
-        addCheckbox={addCheckbox}
-        addRadio={addRadio}
+        selectorComponent={selectorComponent}
         addOption={addOption}
         removeOption={removeOption}
         currentSelection={currentSelection}
@@ -273,8 +271,7 @@ VocabularyBranch.propTypes = {
   focused: PropTypes.bool,
   onError: PropTypes.func.isRequired,
   knownHasChildren: PropTypes.bool.isRequired,
-  addCheckbox: PropTypes.bool,
-  addRadio: PropTypes.bool,
+  selectorComponent: PropTypes.object,
   addOption: PropTypes.func,
   removeOption: PropTypes.func,
   currentSelection: PropTypes.array,
