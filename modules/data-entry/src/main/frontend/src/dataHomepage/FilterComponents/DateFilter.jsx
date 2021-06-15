@@ -27,6 +27,7 @@ import DateQuestionUtilities from "../../questionnaire/DateQuestionUtilities.jsx
 import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
 
 const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS).concat(VALUE_COMPARATORS);
+const COMPARATORS_CREATED_DATE = DEFAULT_COMPARATORS.slice().concat(VALUE_COMPARATORS);
 
 /**
  * Display a filter on a date answer of a form. This is not meant to be instantiated directly, but is returned from FilterComponentManager's
@@ -84,5 +85,7 @@ export default StyledDateFilter;
 FilterComponentManager.registerFilterComponent((questionDefinition) => {
   if (questionDefinition.dataType === "date") {
     return [COMPARATORS, StyledDateFilter, 50];
+  } else if (questionDefinition.dataType === "createddate") {
+    return [COMPARATORS_CREATED_DATE, StyledDateFilter, 50];
   }
 });

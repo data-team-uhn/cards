@@ -108,6 +108,9 @@ function Filters(props) {
       uuids["Questionnaire"] = "lfs:Questionnaire";
       titles["Questionnaire"] = "Questionnaire";
     }
+    fields.push("CreatedDate");
+    uuids["CreatedDate"] = "lfs:CreatedDate"
+    titles["CreatedDate"] = "Created Date"
     for (let [questionName, question] of Object.entries(filterJson)) {
       // For each question, save the name, data type, and answers (if necessary)
       fields.push(questionName);
@@ -122,6 +125,9 @@ function Filters(props) {
         dataType: "questionnaire"
       };
     }
+    filterJson["CreatedDate"] = {
+      dataType: "createddate"
+    };
     setFilterableFields(fields);
     setQuestionDefinitions(filterJson);
     setFilterableTitles(titles);
