@@ -157,28 +157,28 @@ function MultipleChoice(props) {
       return;
     }
 
-    let newSelection = selection.slice();
+    setSelection( old => {
+      let newSelection = old.slice().filter((option) => {
+        return (option[VALUE_POS] !== "" && option[LABEL_POS] !== "")
+          // And if we've gotten here and there's an "na" option, we remove it from the selection
+          && (!naOption || option[VALUE_POS] != naOption)
+          // The same goes for a "none of the above" option
+          && (!noneOfTheAboveOption || option[VALUE_POS] != noneOfTheAboveOption)
+      });
 
-    // If we're inserting a new entry, we should never add the empty tracker
-    newSelection = newSelection.filter((option) => {
-      return (option[VALUE_POS] !== "" && option[LABEL_POS] !== "")
-        // And if we've gotten here and there's an "na" option, we remove it from the selection
-        && (!naOption || option[VALUE_POS] != naOption)
-        // The same goes for a "none of the above" option
-        && (!noneOfTheAboveOption || option[VALUE_POS] != noneOfTheAboveOption)
-    });
-
-    // Check if any of the predefined options matches the user input. If yes, select it instead of adding a new entry
-    let defaultOption = defaults.filter((option) => {
-      return (option[VALUE_POS] === id || option[LABEL_POS] === name)
-    })[0];
-    if (defaultOption) {
-      newSelection.push([defaultOption[LABEL_POS], defaultOption[VALUE_POS]]);
-    } else {
-      // Otherwise, add a new entry
-      newSelection.push([name, id]);
+      // Check if any of the predefined options matches the user input. If yes, select it instead of adding a new entry
+      let defaultOption = defaults.filter((option) => {
+        return (option[VALUE_POS] === id || option[LABEL_POS] === name)
+      })[0];
+      if (defaultOption) {
+        newSelection.push([defaultOption[LABEL_POS], defaultOption[VALUE_POS]]);
+      } else {
+        // Otherwise, add a new entry
+        newSelection.push([name, id]);
+      }
+      return newSelection;
     }
-    setSelection(newSelection);
+    );
   }
 
   let unselect = (id, name) => {
