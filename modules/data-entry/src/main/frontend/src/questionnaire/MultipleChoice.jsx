@@ -137,7 +137,7 @@ function MultipleChoice(props) {
       setSelection((old) => {
         // Only keep options that are user-input
         let defaultOptions = defaults.filter(option => option[IS_DEFAULT_POS]).map((option) => option[VALUE_POS]);
-        let newSelection = old.slice().filter((option) => !defaultOptions.includes(option[VALUE_POS]));
+        let newSelection = old.filter((option) => !defaultOptions.includes(option[VALUE_POS]));
         newSelection.push([name, id]);
         return newSelection;
       });
@@ -158,7 +158,7 @@ function MultipleChoice(props) {
     }
 
     setSelection( old => {
-      let newSelection = old.slice().filter((option) => {
+      let newSelection = old.filter((option) => {
         return (option[VALUE_POS] !== "" && option[LABEL_POS] !== "")
           // And if we've gotten here and there's an "na" option, we remove it from the selection
           && (!naOption || option[VALUE_POS] != naOption)
@@ -183,7 +183,7 @@ function MultipleChoice(props) {
 
   let unselect = (id, name) => {
     return setSelection( (old) => {
-      let newSelection = old.slice().filter(
+      let newSelection = old.filter(
         (element) => {
           return !(element[VALUE_POS] === id)
         });

@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 import { withStyles } from "@material-ui/core";
@@ -29,6 +29,7 @@ import More from "@material-ui/icons/MoreHoriz";
 
 import BrowseTheme from "./browseStyle.jsx";
 import { REST_URL, MakeRequest } from "./util.jsx";
+import { LABEL_POS, VALUE_POS } from "../questionnaire/Answer";
 
 // Component that renders an element of the VocabularyTree, with expandable children.
 //
@@ -67,6 +68,23 @@ function VocabularyBranch(props) {
   const [ expanded, setExpanded ] = useState(defaultOpen);
   const [ selectedPaths, setSelectedPaths] = useState(currentSelection || []);
   const SelectorComponent = selectorComponent;
+
+  useEffect(() => {
+    // Remove path from selectedPaths upon term removal from chips list
+    window.addEventListener('term-unselected', removePath);
+
+    return () => {
+      window.removeEventListener('term-unselected', removePath);
+    };
+  });
+
+  let removePath = (evt) => {
+    let path = evt.detail[VALUE_POS];
+    setSelectedPaths(old => {
+        let newPaths = old.filter(item => item!= path);
+        return newPaths;
+    });
+  }
 
   let loadTerm = (id, path) => {
     if (focused) return;
@@ -229,12 +247,12 @@ function VocabularyBranch(props) {
                   className={classes.infoName + (focused ? (" " + classes.focusedTermName) : " ")}
                   component="div">
         {/* Browser term select tools */}
-	    <SelectorComponent
+	    { SelectorComponent && <SelectorComponent
 	      checked={selectedPaths.includes(path)}
 	      color="secondary"
 	      onChange={onSelectionChanged}
 	      className={classes.termSelector}
-	    />
+	    /> }
         {name.split(" ").length > 1 ? name.split(" ").slice(0,-1).join(" ") + " " : ''}
         <span className={classes.infoIcon}>
           {name.split(" ").pop()}&nbsp;

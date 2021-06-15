@@ -134,15 +134,15 @@ function VocabularyTree(props) {
     });
     // remove from removed
     setRemovedTerms(old => {
-      return old.filter(item => item[1] != path);
+      return old.filter(item => item[VALUE_POS] != path);
     });
   }
 
   let onRemoveOption = (name, path) => {
     setSelectedTerms(old => {
-      return old.filter(item => item[1] != path);
+      return old.filter(item => item[VALUE_POS] != path);
     });
-    if (initialSelection.some(item => item[1] == path)) {
+    if (initialSelection.some(item => item[VALUE_POS] == path)) {
       // they were selected before, add to removed
       setRemovedTerms(old => {
         let newRTerms = old.slice();
@@ -150,6 +150,13 @@ function VocabularyTree(props) {
         return newRTerms;
       });
     }
+    // This event is needed to pass on to all branches so they un-check selected term
+    var removedEvent = new CustomEvent('term-unselected', {
+          bubbles: true,
+          cancelable: true,
+          detail: [name, path]
+        });
+    document.dispatchEvent(removedEvent);
   }
 
   // Construct a branch element for rendering
@@ -195,7 +202,17 @@ function VocabularyTree(props) {
       { allowTermSelection &&
         <div className={classes.selectionContainer}>
           <Typography variant="body2" component="span">{questionDefinition?.text}:</Typography>
-          { selectedTerms?.filter(i => i[LABEL_POS]).map(s => <Chip key={s[VALUE_POS]} variant="outlined" size="small" label={s[LABEL_POS]} onDelete={() => onRemoveOption(...s)} color="primary" className={classes.selectionChips}/>) }
+          { selectedTerms?.filter(i => i[LABEL_POS]).map(s =>
+             <Chip
+               key={s[VALUE_POS]}
+               variant="outlined"
+               size="small"
+               color="primary"
+               label={s[LABEL_POS]}
+               onDelete={() => onRemoveOption(...s)}
+               className={classes.selectionChips}
+             />
+           )}
         </div>
       }
       <DialogContent className={classes.treeContainer} dividers>

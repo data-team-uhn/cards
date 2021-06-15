@@ -288,6 +288,7 @@ function VocabularyQuery(props) {
 
   let onCloseBrowser = (selectedTerms, removedTerms) => {
     selectedTerms.map(item => onClick(item[VALUE_POS], item[LABEL_POS]));
+    removedTerms.push([inputValue, inputValue]);
     removedTerms.map(item => removeOption(item[VALUE_POS], item[LABEL_POS]));
     questionDefinition?.maxAnswers === 1 && setInputValue(name);
   }
