@@ -109,6 +109,9 @@ function VocabularyQuery(props) {
             menuRef.current.children[0].focus();
           }
           event.preventDefault();
+        } else if (event.key == 'Tab') {
+          setInputValue("");
+          closeAutocomplete(event);
         }
       }}
       onFocus={(status) => {
