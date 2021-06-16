@@ -65,7 +65,7 @@ function VocabularyQuery(props) {
   // Holds term path on dropdown info button click
   const [termPath, setTermPath] = useState("");
 
-  const [inputValue, setInputValue] = useState(value);
+  const [inputValue, setInputValue] = useState(maxAnswers === 1 && initialSelection ? initialSelection[0][LABEL_POS] : value);
   const [error, setError] = useState("");
 
   // Holds dropdown info buttons refs to be used as anchor elements by term infoBoxes
