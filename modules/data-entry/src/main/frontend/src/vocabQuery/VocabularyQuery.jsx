@@ -96,7 +96,7 @@ function VocabularyQuery(props) {
       onChange={(event) => {
         delayLookup(event.target.value);
         setInputValue(event.target.value);
-        (maxAnswers === 0 || maxAnswers === 1 && !event.target.value) && onChange && onChange(event);
+        maxAnswers != 1 && onChange && onChange(event);
       }}
       inputRef={anchorEl}
       onKeyDown={(event) => {
@@ -205,7 +205,7 @@ function VocabularyQuery(props) {
                 onClick={(e) => {
                   if (e.target.localName === "li") {
                     onClick(element["@path"], name);
-                    setInputValue((maxAnswers !== 1 && clearOnClick) ? "" : name);
+                    setInputValue(clearOnClick ? "" : name);
                     closeSuggestions();
                   }}
                 }
@@ -312,7 +312,7 @@ function VocabularyQuery(props) {
     if (selectedTerms || removedTerms) {
       setSuggestionsVisible(false);
       setTermPath("");
-      setInputValue("");
+      maxAnswers != 1 && setInputValue("");
       setError("");
     }
   }
