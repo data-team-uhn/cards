@@ -182,7 +182,7 @@ function MultipleChoice(props) {
   }
 
   let unselect = (id, name) => {
-    return setSelection( (old) => {
+    setSelection( (old) => {
       let newSelection = old.filter(
         (element) => {
           return !(element[VALUE_POS] === id)
@@ -209,7 +209,7 @@ function MultipleChoice(props) {
       setOptions((oldOptions) => {
         let newOptions = oldOptions.slice();
         newOptions.push([name, id, false]);
-        return newOptions
+        return newOptions;
       });
     }
   }
@@ -217,11 +217,13 @@ function MultipleChoice(props) {
   // Remove a non-default option
   let removeOption = (id, name) => {
     onChange && onChange(id); // will trigger callback in Form.jsx
-    setOptions(options.filter(
-      (option) => {
-        return !(option[VALUE_POS] === id && option[LABEL_POS] === name)
-      }
-    ));
+    setOptions( (old) => {
+      let newOptions = old.filter(
+        (option) => {
+          return !(option[VALUE_POS] === id && option[LABEL_POS] === name)
+        });
+      return newOptions;
+    });
     unselect(id, name);
     return;
   }
