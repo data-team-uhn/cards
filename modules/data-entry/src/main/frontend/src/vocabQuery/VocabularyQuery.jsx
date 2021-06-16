@@ -51,11 +51,11 @@ const MAX_RESULTS = 10;
 //  onChange: Callback in term input change event
 //  allowTermSelection: Boolean enabler for term selection from vocabulary tree browser
 //  initialSelection: Existing answers
-//  removeOption: Function to remove added answer
+//  onRemoveOption: Function to remove added answer
 //
 function VocabularyQuery(props) {
   const { clearOnClick, onClick, focusAfterSelecting, disabled, variant, isNested, placeholder,
-    value, questionDefinition, onChange, allowTermSelection, initialSelection, removeOption, classes } = props;
+    value, questionDefinition, onChange, allowTermSelection, initialSelection, onRemoveOption, classes } = props;
   const [suggestions, setSuggestions] = useState([]);
   const [suggestionsLoading, setSuggestionsLoading] = useState(false);
   const [suggestionsVisible, setSuggestionsVisible] = useState(false);
@@ -292,7 +292,7 @@ function VocabularyQuery(props) {
 
   let onCloseBrowser = (selectedTerms, removedTerms) => {
     selectedTerms && selectedTerms.map(item => onClick(item[VALUE_POS], item[LABEL_POS]));
-    removedTerms && removedTerms.map(item => removeOption(item[VALUE_POS], item[LABEL_POS]));
+    removedTerms && removedTerms.map(item => onRemoveOption(item[VALUE_POS], item[LABEL_POS]));
 
     // Set input value to selected term label or initial selection label if single answer question
     if (maxAnswers === 1) {
@@ -422,7 +422,7 @@ VocabularyQuery.propTypes = {
     onChange: PropTypes.func,
     allowTermSelection: PropTypes.bool,
     initialSelection: PropTypes.array,
-    removeOption: PropTypes.func
+    onRemoveOption: PropTypes.func
 };
 
 VocabularyQuery.defaultProps = {

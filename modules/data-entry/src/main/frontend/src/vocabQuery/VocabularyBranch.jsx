@@ -51,14 +51,14 @@ import { LABEL_POS, VALUE_POS } from "../questionnaire/Answer";
 //  focused: boolean determining whether this entry is focused and should be visually emphasized
 //           (a focused term entry is displayed as a root of a subtree, with only its parents above and its descendants below)
 //  selectorComponent: term selector component: Checkbox or Radio control
-//  addOption: Function to process term selected in browser
+//  onTermSelected: Function to process term selected in browser
 //  currentSelection: The ids of the terms that have been marked as selected do far in the vocabulary browser
-//  removeOption: Function to remove added answer
+//  onTermUnselected: Function to remove added answer
 //  maxAnswers: maximum answers allowed for the vocabulary question
 //
 function VocabularyBranch(props) {
   const { defaultOpen, id, path, name, onTermClick, onCloseInfoBox, registerInfo, getInfo, expands, headNode, focused, onError,
-    knownHasChildren, selectorComponent, addOption, removeOption, currentSelection, maxAnswers, classes } = props;
+    knownHasChildren, selectorComponent, onTermSelected, onTermUnselected, currentSelection, maxAnswers, classes } = props;
 
   const [ lastKnownID, setLastKnownID ] = useState();
   const [ currentlyLoading, setCurrentlyLoading ] = useState(typeof knownHasChildren === "undefined" && expands);
@@ -146,8 +146,8 @@ function VocabularyBranch(props) {
         onError={onError}
         knownHasChildren={row["lfs:hasChildren"]}
         selectorComponent={selectorComponent}
-        addOption={addOption}
-        removeOption={removeOption}
+        onTermSelected={onTermSelected}
+        onTermUnselected={onTermUnselected}
         currentSelection={currentSelection}
         maxAnswers={maxAnswers}
       />)
@@ -213,7 +213,7 @@ function VocabularyBranch(props) {
     if (evt.target.checked) {
       if (maxAnswers == 1) {
         setSelectedPaths([path]);
-        addOption(name, path);
+        onTermSelected(name, path);
         // This event is needed to pass on to all branches so they update radio buttons states
         var changedEvent = new CustomEvent('term-changed', {
           bubbles: true,
@@ -226,12 +226,12 @@ function VocabularyBranch(props) {
         let newPaths = selectedPaths.slice();
         newPaths.push(path);
         setSelectedPaths(newPaths);
-        addOption(name, path);
+        onTermSelected(name, path);
       }
     } else {
       let newPaths = selectedPaths.filter(item => item!= path);
       setSelectedPaths(newPaths);
-      removeOption(name, path);
+      onTermUnselected(name, path);
     }
   }
 
@@ -264,12 +264,7 @@ function VocabularyBranch(props) {
           expandAction(<More/>, "Show parent categories", () => loadTerm(id, path))
         )
       }
-
-      {/* Term name */}
-      <Typography onClick={(evt) => {(evt.target.type != "checkbox") && loadTerm(id, path)}}
-                  className={classes.infoName + (focused ? (" " + classes.focusedTermName) : " ")}
-                  component="div">
-        {/* Browser term select tools */}
+      {/* Browser term select tools */}
 	    { SelectorComponent && <SelectorComponent
 	      checked={selectedPaths.includes(path)}
 	      color="secondary"
@@ -277,6 +272,10 @@ function VocabularyBranch(props) {
 	      onClick={event => event.stopPropagation()}
 	      className={classes.termSelector}
 	    /> }
+      {/* Term name */}
+      <Typography onClick={() => loadTerm(id, path)}
+                  className={classes.infoName + (focused ? (" " + classes.focusedTermName) : " ")}
+                  component="div">
         {name.split(" ").length > 1 ? name.split(" ").slice(0,-1).join(" ") + " " : ''}
         <span className={classes.infoIcon}>
           {name.split(" ").pop()}&nbsp;
@@ -314,8 +313,8 @@ VocabularyBranch.propTypes = {
   onError: PropTypes.func.isRequired,
   knownHasChildren: PropTypes.bool.isRequired,
   selectorComponent: PropTypes.object,
-  addOption: PropTypes.func,
-  removeOption: PropTypes.func,
+  onTermSelected: PropTypes.func,
+  onTermUnselected: PropTypes.func,
   currentSelection: PropTypes.array,
   maxAnswers: PropTypes.number,
   classes: PropTypes.object.isRequired

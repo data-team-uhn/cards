@@ -128,7 +128,7 @@ function VocabularyTree(props) {
     }
   }
 
-  let onAddOption = (name, path) => {
+  let addOption = (name, path) => {
     if (maxAnswers == 1) {
       setSelectedTerms([[name, path]]);
       return;
@@ -144,7 +144,7 @@ function VocabularyTree(props) {
     });
   }
 
-  let onRemoveOption = (name, path) => {
+  let removeOption = (name, path) => {
     setSelectedTerms(old => {
       return old.filter(item => item[VALUE_POS] != path);
     });
@@ -194,8 +194,8 @@ function VocabularyTree(props) {
         onError={onError}
         knownHasChildren={!!hasChildren}
         selectorComponent={selectorComponent}
-        addOption={onAddOption}
-        removeOption={onRemoveOption}
+        onTermSelected={addOption}
+        onTermUnselected={removeOption}
         currentSelection={selectedTerms?.map(item => item[VALUE_POS])}
         maxAnswers={maxAnswers}
       />
@@ -227,7 +227,7 @@ function VocabularyTree(props) {
                color="primary"
                label={s[LABEL_POS]}
                onClick={() => onTermClick(s[VALUE_POS])}
-               onDelete={() => onRemoveOption(...s)}
+               onDelete={() => removeOption(...s)}
                className={classes.selectionChips}
              />
            )}
@@ -256,7 +256,8 @@ function VocabularyTree(props) {
           <Button color="primary"
                   onClick={onDone}
                   variant="contained"
-                  disabled={maxAnswers > 0 && selectedTerms.length > maxAnswers || selectedTerms.length == 0 && removedTerms.length == 0}
+                  disabled={maxAnswers > 0 && selectedTerms.length > maxAnswers
+                         || selectedTerms.filter(([a1,a2]) => !initialSelection.some(([s1,s2]) => a2 === s2)).length == 0}
                   className={classes.browseAction} >
               Done
           </Button>

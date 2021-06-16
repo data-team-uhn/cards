@@ -339,7 +339,7 @@ function MultipleChoice(props) {
               onUpdate && onUpdate(value);
             }}
             initialSelection={selection}
-            removeOption={(value, label) => {
+            onRemoveOption={(value, label) => {
               let isDefault = defaults.filter((option) => {
                 return (option[VALUE_POS] === value || option[LABEL_POS] === label)
               })[0];
