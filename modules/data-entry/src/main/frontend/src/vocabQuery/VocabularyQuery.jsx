@@ -65,7 +65,7 @@ function VocabularyQuery(props) {
   // Holds term path on dropdown info button click
   const [termPath, setTermPath] = useState("");
 
-  const [inputValue, setInputValue] = useState(maxAnswers === 1 && initialSelection ? initialSelection[0][LABEL_POS] : value);
+  const [inputValue, setInputValue] = useState(maxAnswers === 1 && initialSelection?.length > 0 ? initialSelection[0][LABEL_POS] : value);
   const [error, setError] = useState("");
 
   // Holds dropdown info buttons refs to be used as anchor elements by term infoBoxes
@@ -82,7 +82,7 @@ function VocabularyQuery(props) {
   // Update a list of currently selected terms upon any interaction with the multiple choice list
   useEffect(() => {
     // Clear input field if maxAnswers=1
-    maxAnswers === 1 && inputValue && initialSelection && inputValue != initialSelection[0][LABEL_POS] && setInputValue("");
+    maxAnswers === 1 && inputValue && initialSelection?.length > 0 && inputValue != initialSelection[0][LABEL_POS] && setInputValue("");
   }, [initialSelection])
 
   const inputEl = (
@@ -95,8 +95,8 @@ function VocabularyQuery(props) {
       }}
       onChange={(event) => {
         delayLookup(event.target.value);
-        setInputValue(event.target.value)
-        maxAnswers === 0 && onChange && onChange(event);
+        setInputValue(event.target.value);
+        (maxAnswers === 0 || maxAnswers === 1 && !event.target.value) && onChange && onChange(event);
       }}
       inputRef={anchorEl}
       onKeyDown={(event) => {
