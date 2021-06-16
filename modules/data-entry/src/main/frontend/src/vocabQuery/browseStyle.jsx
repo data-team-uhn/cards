@@ -70,6 +70,9 @@ const browseStyle = theme => ({
     focusedTermName: {
       fontWeight: "bold",
     },
+    browseAction: {
+      margin: theme.spacing(1)
+    },
 });
 
 export default browseStyle;

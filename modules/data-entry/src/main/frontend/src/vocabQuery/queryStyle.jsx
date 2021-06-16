@@ -112,6 +112,10 @@ const thesaurusStyle = theme => ({
   selectionContainer: {
     padding: theme.spacing(0, 3, 2),
   },
+  browserAnswerInstrustions: {
+    padding: theme.spacing(1, 3, 0),
+    marginBottom: theme.spacing(-2),
+  },
   selectionChips: {
     margin: theme.spacing(0.5, 0.5),
   },

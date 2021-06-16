@@ -19,9 +19,10 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
-import { withStyles, Checkbox, DialogContent, Chip, Radio, Typography } from '@material-ui/core';
+import { withStyles, Button, Checkbox, DialogContent, DialogActions, Chip, Radio, Typography } from '@material-ui/core';
 import ResponsiveDialog from "../components/ResponsiveDialog";
 import VocabularyBranch from "./VocabularyBranch.jsx";
+import AnswerInstructions from "../questionnaire/AnswerInstructions.jsx";
 import { LABEL_POS, VALUE_POS } from "../questionnaire/Answer";
 import BrowseTheme from "./browseStyle.jsx";
 
@@ -55,7 +56,8 @@ function VocabularyTree(props) {
   const [ parentNode, setParentNode ] = useState();
   const [ currentNode, setCurrentNode ] = useState();
   const [ roots, setRoots ] = useState(vocabulary.roots);
-  const selectorComponent = allowTermSelection ? (questionDefinition?.maxAnswers == 1 ? Radio : Checkbox) : undefined;
+  const maxAnswers = questionDefinition?.maxAnswers;
+  const selectorComponent = allowTermSelection ? (maxAnswers == 1 ? Radio : Checkbox) : undefined;
 
   const [selectedTerms, setSelectedTerms] = useState(initialSelection);
   const [removedTerms, setRemovedTerms] = useState([]);
@@ -127,6 +129,10 @@ function VocabularyTree(props) {
   }
 
   let onAddOption = (name, path) => {
+    if (maxAnswers == 1) {
+      setSelectedTerms([[name, path]]);
+      return;
+    }
     setSelectedTerms(old => {
       let newTerms = old.slice();
       newTerms.push([name, path]);
@@ -159,6 +165,16 @@ function VocabularyTree(props) {
     document.dispatchEvent(removedEvent);
   }
 
+  let onDone = () => {
+    onClose(selectedTerms, removedTerms);
+    setRemovedTerms([]);
+  }
+
+  let onCancel = () => {
+    onClose();
+    setRemovedTerms([]);
+  }
+
   // Construct a branch element for rendering
   let constructBranch = (id, path, name, ischildnode, defaultexpanded, focused, hasChildren) => {
     return(
@@ -181,6 +197,7 @@ function VocabularyTree(props) {
         addOption={onAddOption}
         removeOption={onRemoveOption}
         currentSelection={selectedTerms?.map(item => item[VALUE_POS])}
+        maxAnswers={maxAnswers}
       />
     );
   }
@@ -188,10 +205,10 @@ function VocabularyTree(props) {
   return (
     <ResponsiveDialog
       title={`${vocabulary.name} (${vocabulary.acronym})` || "Related terms"}
-      withCloseButton
+      withCloseButton={!allowTermSelection}
       open={open}
       ref={browserRef}
-      onClose={() => {onClose(selectedTerms, removedTerms); setRemovedTerms([]);}}
+      onClose={onCancel}
       className={classes.dialog}
       classes={{
         paper: classes.dialogPaper,
@@ -199,7 +216,7 @@ function VocabularyTree(props) {
       }}
       {...rest}
     >
-      { allowTermSelection &&
+      { allowTermSelection && <>
         <div className={classes.selectionContainer}>
           <Typography variant="body2" component="span">{questionDefinition?.text}:</Typography>
           { selectedTerms?.filter(i => i[LABEL_POS]).map(s =>
@@ -209,11 +226,20 @@ function VocabularyTree(props) {
                size="small"
                color="primary"
                label={s[LABEL_POS]}
+               onClick={() => onTermClick(s[VALUE_POS])}
                onDelete={() => onRemoveOption(...s)}
                className={classes.selectionChips}
              />
            )}
         </div>
+        <div className={classes.browserAnswerInstrustions}>
+          <AnswerInstructions
+            className={classes.answerInstrustions}
+            currentAnswers={selectedTerms.length}
+            {...questionDefinition}
+          />
+        </div>
+      </>
       }
       <DialogContent className={classes.treeContainer} dividers>
         {parentNode?.length ?
@@ -225,6 +251,23 @@ function VocabularyTree(props) {
           {currentNode}
         </div>
       </DialogContent>
+      { allowTermSelection &&
+        <DialogActions>
+          <Button color="primary"
+                  onClick={onDone}
+                  variant="contained"
+                  disabled={maxAnswers > 0 && selectedTerms.length > maxAnswers || selectedTerms.length == 0 && removedTerms.length == 0}
+                  className={classes.browseAction} >
+              Done
+          </Button>
+          <Button color="default"
+                  onClick={onCancel}
+                  variant="contained"
+                  className={classes.browseAction} >
+            Cancel
+          </Button>
+        </DialogActions>
+      }
     </ResponsiveDialog>
   );
 }

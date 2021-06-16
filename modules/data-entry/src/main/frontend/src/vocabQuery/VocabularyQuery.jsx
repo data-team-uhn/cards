@@ -60,6 +60,7 @@ function VocabularyQuery(props) {
   const [suggestionsLoading, setSuggestionsLoading] = useState(false);
   const [suggestionsVisible, setSuggestionsVisible] = useState(false);
   const [lookupTimer, setLookupTimer] = useState(null);
+  const maxAnswers = questionDefinition?.maxAnswers;
 
   // Holds term path on dropdown info button click
   const [termPath, setTermPath] = useState("");
@@ -81,7 +82,7 @@ function VocabularyQuery(props) {
   // Update a list of currently selected terms upon any interaction with the multiple choice list
   useEffect(() => {
     // Clear input field if maxAnswers=1
-    questionDefinition?.maxAnswers === 1 && inputValue && initialSelection && inputValue != initialSelection[0][LABEL_POS] && setInputValue("");
+    maxAnswers === 1 && inputValue && initialSelection && inputValue != initialSelection[0][LABEL_POS] && setInputValue("");
   }, [initialSelection])
 
   const inputEl = (
@@ -201,7 +202,7 @@ function VocabularyQuery(props) {
                 onClick={(e) => {
                   if (e.target.localName === "li") {
                     onClick(element["@path"], name);
-                    setInputValue((questionDefinition?.maxAnswers !== 1 && clearOnClick) ? "" : name);
+                    setInputValue((maxAnswers !== 1 && clearOnClick) ? "" : name);
                     closeSuggestions();
                   }}
                 }
@@ -255,7 +256,7 @@ function VocabularyQuery(props) {
 
     !anchorEl?.current?.contains(event.target)
       && !searchButtonRef?.current?.contains(event.target)
-      && questionDefinition?.maxAnswers !== 1
+      && maxAnswers !== 1
       && setInputValue("");
     setSuggestionsVisible(false);
     setTermPath("");
@@ -287,11 +288,11 @@ function VocabularyQuery(props) {
   }
 
   let onCloseBrowser = (selectedTerms, removedTerms) => {
-    selectedTerms.map(item => onClick(item[VALUE_POS], item[LABEL_POS]));
-    removedTerms.map(item => removeOption(item[VALUE_POS], item[LABEL_POS]));
+    selectedTerms && selectedTerms.map(item => onClick(item[VALUE_POS], item[LABEL_POS]));
+    removedTerms && removedTerms.map(item => removeOption(item[VALUE_POS], item[LABEL_POS]));
 
     // Set input value to selected term label or initial selection label if single answer question
-    if (questionDefinition?.maxAnswers === 1) {
+    if (maxAnswers === 1) {
       if (selectedTerms.length > 0) {
         // Search in default answer options
         let isDefault = Object.values(props.questionDefinition)
@@ -304,6 +305,11 @@ function VocabularyQuery(props) {
           isDefault.length == 0 && setInputValue(initialSelection[0][LABEL_POS]);
         }
       }
+    }
+    if (selectedTerms || removedTerms) {
+      setSuggestionsVisible(false);
+      setTermPath("");
+      setError("");
     }
   }
 

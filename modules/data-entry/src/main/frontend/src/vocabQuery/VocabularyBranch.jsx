@@ -54,10 +54,11 @@ import { LABEL_POS, VALUE_POS } from "../questionnaire/Answer";
 //  addOption: Function to process term selected in browser
 //  currentSelection: The ids of the terms that have been marked as selected do far in the vocabulary browser
 //  removeOption: Function to remove added answer
+//  maxAnswers: maximum answers allowed for the vocabulary question
 //
 function VocabularyBranch(props) {
   const { defaultOpen, id, path, name, onTermClick, onCloseInfoBox, registerInfo, getInfo, expands, headNode, focused, onError,
-    knownHasChildren, selectorComponent, addOption, removeOption, currentSelection, classes } = props;
+    knownHasChildren, selectorComponent, addOption, removeOption, currentSelection, maxAnswers, classes } = props;
 
   const [ lastKnownID, setLastKnownID ] = useState();
   const [ currentlyLoading, setCurrentlyLoading ] = useState(typeof knownHasChildren === "undefined" && expands);
@@ -72,11 +73,19 @@ function VocabularyBranch(props) {
   useEffect(() => {
     // Remove path from selectedPaths upon term removal from chips list
     window.addEventListener('term-unselected', removePath);
+    // Update selected path and radio buttons state upon term selection change if single answer question
+    maxAnswers == 1 && window.addEventListener('term-changed', updatePath);
 
     return () => {
       window.removeEventListener('term-unselected', removePath);
+      maxAnswers == 1 && window.removeEventListener('term-changed', updatePath);
     };
   });
+
+  let updatePath = (evt) => {
+    let path = evt.detail[VALUE_POS];
+    setSelectedPaths([path]);
+  }
 
   let removePath = (evt) => {
     let path = evt.detail[VALUE_POS];
@@ -140,6 +149,7 @@ function VocabularyBranch(props) {
         addOption={addOption}
         removeOption={removeOption}
         currentSelection={currentSelection}
+        maxAnswers={maxAnswers}
       />)
       );
     setLoadedChildren(true);
@@ -201,10 +211,23 @@ function VocabularyBranch(props) {
   let onSelectionChanged = (evt) => {
     evt.stopPropagation();
     if (evt.target.checked) {
-      let newPaths = selectedPaths.slice();
-      newPaths.push(path);
-      setSelectedPaths(newPaths);
-      addOption(name, path);
+      if (maxAnswers == 1) {
+        setSelectedPaths([path]);
+        addOption(name, path);
+        // This event is needed to pass on to all branches so they update radio buttons states
+        var changedEvent = new CustomEvent('term-changed', {
+          bubbles: true,
+          cancelable: true,
+          detail: [name, path]
+        });
+        document.dispatchEvent(changedEvent);
+        return;
+      } else {
+        let newPaths = selectedPaths.slice();
+        newPaths.push(path);
+        setSelectedPaths(newPaths);
+        addOption(name, path);
+      }
     } else {
       let newPaths = selectedPaths.filter(item => item!= path);
       setSelectedPaths(newPaths);
@@ -251,6 +274,7 @@ function VocabularyBranch(props) {
 	      checked={selectedPaths.includes(path)}
 	      color="secondary"
 	      onChange={onSelectionChanged}
+	      onClick={event => event.stopPropagation()}
 	      className={classes.termSelector}
 	    /> }
         {name.split(" ").length > 1 ? name.split(" ").slice(0,-1).join(" ") + " " : ''}
@@ -293,6 +317,7 @@ VocabularyBranch.propTypes = {
   addOption: PropTypes.func,
   removeOption: PropTypes.func,
   currentSelection: PropTypes.array,
+  maxAnswers: PropTypes.number,
   classes: PropTypes.object.isRequired
 };
 
