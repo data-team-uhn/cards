@@ -96,7 +96,7 @@ function VocabularyQuery(props) {
       onChange={(event) => {
         delayLookup(event.target.value);
         setInputValue(event.target.value)
-        onChange && onChange(event);
+        maxAnswers === 0 && onChange && onChange(event);
       }}
       inputRef={anchorEl}
       onKeyDown={(event) => {
@@ -293,13 +293,13 @@ function VocabularyQuery(props) {
 
     // Set input value to selected term label or initial selection label if single answer question
     if (maxAnswers === 1) {
-      if (selectedTerms.length > 0) {
+      if (selectedTerms?.length > 0) {
         // Search in default answer options
         let isDefault = Object.values(props.questionDefinition)
           .filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption' && value.value === selectedTerms[0][VALUE_POS]);
         isDefault.length == 0 && setInputValue(selectedTerms[0][LABEL_POS]);
       } else {
-        if (initialSelection.length > 0) {
+        if (initialSelection?.length > 0) {
           let isDefault = Object.values(props.questionDefinition)
             .filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption' && value.value === initialSelection[0][VALUE_POS]);
           isDefault.length == 0 && setInputValue(initialSelection[0][LABEL_POS]);
@@ -309,6 +309,7 @@ function VocabularyQuery(props) {
     if (selectedTerms || removedTerms) {
       setSuggestionsVisible(false);
       setTermPath("");
+      setInputValue("");
       setError("");
     }
   }
