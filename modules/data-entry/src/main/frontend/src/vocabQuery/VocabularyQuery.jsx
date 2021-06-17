@@ -65,7 +65,14 @@ function VocabularyQuery(props) {
   // Holds term path on dropdown info button click
   const [termPath, setTermPath] = useState("");
 
-  const [inputValue, setInputValue] = useState(maxAnswers === 1 && initialSelection?.length > 0 ? initialSelection[0][LABEL_POS] : value);
+  // Checks whether path is listed in the default answer options in the question definition
+  let isDefaultOption = (path) => {
+    return Object.values(props.questionDefinition)
+          .filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption' && value.value === path)
+          .length > 0;
+  }
+
+  const [inputValue, setInputValue] = useState(maxAnswers === 1 && initialSelection?.length > 0 && !isDefaultOption(initialSelection[0][VALUE_POS]) ? initialSelection[0][LABEL_POS] : value);
   const [error, setError] = useState("");
 
   // Holds dropdown info buttons refs to be used as anchor elements by term infoBoxes
@@ -298,14 +305,10 @@ function VocabularyQuery(props) {
     if (maxAnswers === 1) {
       if (selectedTerms?.length > 0) {
         // Search in default answer options
-        let isDefault = Object.values(props.questionDefinition)
-          .filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption' && value.value === selectedTerms[0][VALUE_POS]);
-        isDefault.length == 0 && setInputValue(selectedTerms[0][LABEL_POS]);
+        !isDefaultOption(selectedTerms[0][VALUE_POS]) && setInputValue(selectedTerms[0][LABEL_POS]);
       } else {
         if (initialSelection?.length > 0) {
-          let isDefault = Object.values(props.questionDefinition)
-            .filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption' && value.value === initialSelection[0][VALUE_POS]);
-          isDefault.length == 0 && setInputValue(initialSelection[0][LABEL_POS]);
+          !isDefaultOption(initialSelection[0][VALUE_POS]) && setInputValue(initialSelection[0][LABEL_POS]);
         }
       }
     }
