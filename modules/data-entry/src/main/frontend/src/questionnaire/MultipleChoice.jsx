@@ -107,7 +107,7 @@ function MultipleChoice(props) {
 
   let selectOption = (id, name, checked = false) => {
     // Selecting a radio button option will select only that option
-    if (isRadio) {
+    if (isRadio || isBare) {
       let defaultOption = defaults.filter((option) => {return option[VALUE_POS] === name || option[LABEL_POS] === name})[0];
       if (defaultOption) {
         setSelection([[defaultOption[LABEL_POS], defaultOption[VALUE_POS]]]);
@@ -334,7 +334,6 @@ function MultipleChoice(props) {
                 // In all other cases, we want to clear the ghost value
                 setGhostValue(GHOST_SENTINEL);
               }
-              updateGhost(value, label);
               acceptEnteredOption(value, label);
               onUpdate && onUpdate(value);
             }}
