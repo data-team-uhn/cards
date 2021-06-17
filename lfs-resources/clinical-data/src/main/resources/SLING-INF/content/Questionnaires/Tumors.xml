@@ -200,6 +200,11 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>enableNotes</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 		</node>
 		<node>
 			<name>morphology_code</name>
@@ -383,6 +388,11 @@
 					<value>HP</value>
 				</values>
 				<type>String</type>
+			</property>
+			<property>
+				<name>enableNotes</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 		</node>
 		<node>
@@ -1242,6 +1252,11 @@
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>enableNotes</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 		</node>
 		<node>
