@@ -86,10 +86,11 @@ function VocabularyQuery(props) {
   let infoboxRef = useRef();
   let browserRef = useRef();
 
-  // Update a list of currently selected terms upon any interaction with the multiple choice list
+  // Update input field if maxAnswers=1
   useEffect(() => {
-    // Clear input field if maxAnswers=1
-    maxAnswers === 1 && inputValue && initialSelection?.length > 0 && inputValue != initialSelection[0][LABEL_POS] && setInputValue("");
+    if (maxAnswers === 1) {
+      initialSelection.length == 0 || isDefaultOption(initialSelection[0][VALUE_POS]) ? setInputValue("") : setInputValue(initialSelection[0][LABEL_POS]);
+    }
   }, [initialSelection])
 
   const inputEl = (

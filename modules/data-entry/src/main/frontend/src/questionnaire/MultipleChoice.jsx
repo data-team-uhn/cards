@@ -98,7 +98,7 @@ function MultipleChoice(props) {
   const [ghostName, setGhostName] = useState(inputPrefill?.displayedValue);
   const [ghostValue, setGhostValue] = useState(inputPrefill?.value || GHOST_SENTINEL);
   const ghostSelected = selection.some(element => {return element.includes(ghostValue);});
-  const disabled = maxAnswers > 0 && selection.length >= maxAnswers && !isRadio && !ghostSelected;
+  const disabled = maxAnswers > 0 && selection.length >= maxAnswers && maxAnswers !== 1 && !ghostSelected;
   let inputEl = null;
   const [separatorDetectionEnabled, setSeparatorDetectionEnabled] = useState(enableSeparatorDetection);
   const [separatorDetected, setSeparatorDetected] = useState(false);
@@ -337,7 +337,7 @@ function MultipleChoice(props) {
               acceptEnteredOption(value, label);
               onUpdate && onUpdate(value);
             }}
-            initialSelection={selection}
+            initialSelection={selection.filter(option => option[VALUE_POS])}
             onRemoveOption={(value, label) => {
               let isDefault = defaults.filter((option) => {
                 return (option[VALUE_POS] === value || option[LABEL_POS] === label)
