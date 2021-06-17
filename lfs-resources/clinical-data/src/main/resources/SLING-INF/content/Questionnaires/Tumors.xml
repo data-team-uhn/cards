@@ -99,16 +99,16 @@
 			</property>
 		</node>
 		<node>
-			<name>diagnosis_description</name>
+			<name>short_diagnosis</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Diagnosis description</value>
+				<value>Short diagnosis</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
-				<value>1</value>
+				<value>0</value>
 				<type>Long</type>
 			</property>
 			<property>
