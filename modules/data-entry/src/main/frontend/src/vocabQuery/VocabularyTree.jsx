@@ -258,7 +258,7 @@ function VocabularyTree(props) {
                   variant="contained"
                   disabled={maxAnswers > 0 && selectedTerms.length > maxAnswers
                          || removedTerms.length == 0
-                         || selectedTerms.filter(([a1,a2]) => !initialSelection.some(([s1,s2]) => a2 === s2)).length == 0}
+                            && selectedTerms.every(([a1,a2]) => initialSelection.find(([s1,s2]) => a2 === s2))}
                   className={classes.browseAction} >
               Done
           </Button>
