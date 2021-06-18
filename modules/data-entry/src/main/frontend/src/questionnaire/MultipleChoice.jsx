@@ -352,7 +352,7 @@ function MultipleChoice(props) {
             className={classes.textField + (isRadio ? (' ' + classes.nestedInput) : '')}
             onChange={ghostUpdateEvent}
             disabled={disabled}
-            onFocus={() => {maxAnswers === 1 && selectOption(ghostValue, ghostName)}}
+            onFocus={() => {maxAnswers === 1 && ghostName && selectOption(ghostValue, ghostName)}}
             onBlur={separatorDetected ? ()=>{} : () => acceptEnteredOption()}
             inputProps={Object.assign({
               onKeyDown: (event) => {
