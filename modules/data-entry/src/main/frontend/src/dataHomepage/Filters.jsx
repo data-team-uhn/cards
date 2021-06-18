@@ -328,6 +328,7 @@ function Filters(props) {
           // Include the label (if available) or value for this filter iff the comparator is not unary
           (UNARY_COMPARATORS.includes(activeFilter.comparator) ? ""
             : (" " + (activeFilter.label != undefined ? activeFilter.label : activeFilter.value)));
+        label = (activeFilter.type === "createddate") ? label.split('T')[0] : label;
         return(
           <React.Fragment key={label}>
             <Chip
