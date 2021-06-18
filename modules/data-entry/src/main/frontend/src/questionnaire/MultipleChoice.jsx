@@ -98,7 +98,7 @@ function MultipleChoice(props) {
   const [ghostName, setGhostName] = useState(inputPrefill?.displayedValue);
   const [ghostValue, setGhostValue] = useState(inputPrefill?.value || GHOST_SENTINEL);
   const ghostSelected = selection.some(element => {return element.includes(ghostValue);});
-  const disabled = maxAnswers > 0 && selection.length >= maxAnswers && maxAnswers !== 1 && !ghostSelected;
+  const disabled = maxAnswers > 1 && selection.length >= maxAnswers;
   let inputEl = null;
   const [separatorDetectionEnabled, setSeparatorDetectionEnabled] = useState(enableSeparatorDetection);
   const [separatorDetected, setSeparatorDetected] = useState(false);
