@@ -1012,6 +1012,25 @@
 				<type>Boolean</type>
 			</property>
 			<node>
+				<name>NA</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>value</name>
+					<value>NA</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>label</name>
+					<value>N/A</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>notApplicable</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
 				<name>Low</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
