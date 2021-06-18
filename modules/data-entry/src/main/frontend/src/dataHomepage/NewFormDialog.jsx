@@ -410,6 +410,7 @@ function NewFormDialog(props) {
         disabled={isFetching}
         onClose={() => {
           setSelectedSubject(null);
+          setSelectedQuestionnaire(null);
           setNewSubjectPopperOpen(false);
           setError();
           if (onClose) {
