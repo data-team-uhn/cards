@@ -339,14 +339,7 @@ function MultipleChoice(props) {
             }}
             initialSelection={selection.filter(option => option[VALUE_POS])}
             onRemoveOption={(value, label) => {
-              let isDefault = defaults.filter((option) => {
-                return (option[VALUE_POS] === value || option[LABEL_POS] === label)
-              })[0];
-              if (!isDefault) {
-                removeOption(value, label);
-              } else {
-                selectNonGhostOption(value, label, true);
-              }
+              removeOption(value, label);
             }}
             onChange = {ghostUpdateEvent}
             value={ghostSelected ? ghostName : undefined}
