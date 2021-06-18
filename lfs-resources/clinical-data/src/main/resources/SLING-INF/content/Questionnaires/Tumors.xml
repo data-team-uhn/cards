@@ -266,7 +266,7 @@
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>ICD Morphology Code (only if reported)</value>
+				<value>ICD Morphology Code</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -538,7 +538,7 @@
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>ICD Topography Code (only if reported)</value>
+				<value>ICD Topography Code</value>
 				<type>String</type>
 			</property>
 			<property>
