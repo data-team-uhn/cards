@@ -803,6 +803,20 @@
 				</property>
 			</node>
 			<node>
+				<name>BP</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>value</name>
+					<value>BP</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>label</name>
+					<value>Benign/premalignant</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
 				<name>P</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
@@ -813,6 +827,20 @@
 				<property>
 					<name>label</name>
 					<value>Premalignant</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>PM</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>value</name>
+					<value>PM</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>label</name>
+					<value>Premalignant/malignant</value>
 					<type>String</type>
 				</property>
 			</node>
