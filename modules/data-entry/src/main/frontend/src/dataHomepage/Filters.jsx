@@ -134,11 +134,49 @@ function Filters(props) {
     setFilterableUUIDs(uuids);
   }
 
+  let removeCreatedDateTimezone = (filters) => {
+    let newFilters = [];
+    filters.forEach( (filter) => {
+      if (filter.type === "createddate") {
+        newFilters.push({ ...filter, value: filter.value.split('T')[0]});
+      } else {
+        newFilters.push({ ...filter });
+      }
+    });
+    return newFilters;
+  };
+
+  let addCreatedDateTimezone = (filters) => {
+    const getClientTimezoneOffset = () => {
+      const padTwo = (s) => {
+        if (s.length < 2) {
+          return '0' + s;
+        }
+        return s;
+      };
+      let totalOffsetMinutes = new Date().getTimezoneOffset();
+      let offsetSign = (totalOffsetMinutes < 0) ? '+' : '-';
+      let offsetMinute = Math.abs(totalOffsetMinutes) % 60;
+      let offsetHour = Math.floor(Math.abs(totalOffsetMinutes) / 60);
+      return offsetSign + padTwo(offsetHour.toString()) + ":" + padTwo(offsetMinute.toString());
+    };
+    let newFilters = [];
+    filters.forEach( (filter) => {
+      if (filter.type === "createddate") {
+        newFilters.push({ ...filter, value: filter.value + "T00:00:00" + getClientTimezoneOffset() });
+      } else {
+        newFilters.push({ ...filter });
+      }
+    });
+    return newFilters;
+  };
+
   // Open the filter selection dialog
   let openDialogAndAdd = () => {
     setDialogOpen(true);
     // Replace our defaults with a deep copy of what's actually active, plus an empty one
     let newFilters = deepCopyFilters(activeFilters);
+    newFilters = removeCreatedDateTimezone(newFilters);
     setEditingFilters(newFilters);
 
     // Bugfix: also reload every active outputChoice, in order to refresh its copy of the state variables
@@ -239,6 +277,7 @@ function Filters(props) {
         toCheck
         :
         {...toCheck, comparator: (toCheck.comparator == "=" ? "is empty" : "is not empty")}));
+    newFilters = addCreatedDateTimezone(newFilters);
     setActiveFilters(newFilters);
     onChangeFilters && onChangeFilters(newFilters);
     setDialogOpen(false);

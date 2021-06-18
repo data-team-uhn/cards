@@ -21,7 +21,7 @@ package ca.sickkids.ccm.lfs;
 import java.io.IOException;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
@@ -293,7 +293,8 @@ public class PaginationServlet extends SlingSafeMethodsServlet
          * IF (<=) THEN CHECK (< nextDay)
          * IF (>=) THEN CHECK (>= day)
          */
-        final LocalDate nextDay = LocalDate.parse(thisDayStr).plusDays(1);
+        final ZonedDateTime thisDay = ZonedDateTime.parse(thisDayStr);
+        final ZonedDateTime nextDay = thisDay.plusDays(1);
         final String nextDayStr = nextDay.toString();
         String compareQuery;
         switch (operator) {
