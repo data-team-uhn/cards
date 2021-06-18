@@ -68,8 +68,7 @@ function VocabularyQuery(props) {
   // Checks whether path is listed in the default answer options in the question definition
   let isDefaultOption = (path) => {
     return Object.values(props.questionDefinition)
-          .filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption' && value.value === path)
-          .length > 0;
+          .find(value => value['jcr:primaryType'] == 'lfs:AnswerOption' && value.value === path)
   }
 
   const [inputValue, setInputValue] = useState(maxAnswers === 1 && initialSelection?.length > 0 && !isDefaultOption(initialSelection[0][VALUE_POS]) ? initialSelection[0][LABEL_POS] : value);
