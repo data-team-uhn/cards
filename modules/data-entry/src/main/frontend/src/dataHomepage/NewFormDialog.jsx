@@ -409,6 +409,7 @@ function NewFormDialog(props) {
         allowedTypes={filteredAllowedSubjectTypes}
         disabled={isFetching}
         onClose={() => {
+          setSelectedSubject(null);
           setNewSubjectPopperOpen(false);
           setError();
           if (onClose) {
