@@ -338,9 +338,7 @@ function MultipleChoice(props) {
               onUpdate && onUpdate(value);
             }}
             initialSelection={selection.filter(option => option[VALUE_POS])}
-            onRemoveOption={(value, label) => {
-              removeOption(value, label);
-            }}
+            onRemoveOption={removeOption}
             onChange = {ghostUpdateEvent}
             value={ghostSelected ? ghostName : undefined}
             disabled={disabled}
