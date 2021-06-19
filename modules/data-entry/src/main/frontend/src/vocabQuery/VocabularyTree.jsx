@@ -61,6 +61,7 @@ function VocabularyTree(props) {
 
   const [selectedTerms, setSelectedTerms] = useState(initialSelection);
   const [removedTerms, setRemovedTerms] = useState([]);
+  const [selectionChanged, setSelectionChanged] = useState(false);
 
   useEffect(() => {
     if (browseRoots && !vocabulary.roots) {
@@ -75,6 +76,10 @@ function VocabularyTree(props) {
   useEffect(() => {
     rebuildBrowser();
   }, [roots])
+
+  useEffect(() => {
+    setSelectionChanged(true);
+  }, [selectedTerms, removedTerms])
 
   let getRoots = (status, data) => {
     setRoots(data?.roots);
@@ -256,9 +261,7 @@ function VocabularyTree(props) {
           <Button color="primary"
                   onClick={onDone}
                   variant="contained"
-                  disabled={maxAnswers > 0 && selectedTerms.length > maxAnswers
-                         || removedTerms.length == 0
-                            && selectedTerms.every(([a1,a2]) => initialSelection.find(([s1,s2]) => a2 === s2))}
+                  disabled={!selectionChanged || maxAnswers > 0 && selectedTerms.length > maxAnswers}
                   className={classes.browseAction} >
               Done
           </Button>

@@ -220,7 +220,7 @@ function MultipleChoice(props) {
     setOptions( (old) => {
       let newOptions = old.filter(
         (option) => {
-          return !(option[VALUE_POS] === id && option[LABEL_POS] === name)
+          return !(option[VALUE_POS] === id && option[LABEL_POS] === name) || option[IS_DEFAULT_POS]
         });
       return newOptions;
     });

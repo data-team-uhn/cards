@@ -307,10 +307,6 @@ function VocabularyQuery(props) {
       if (selectedTerms?.length > 0) {
         // Search in default answer options
         !isDefaultOption(selectedTerms[0][VALUE_POS]) && setInputValue(selectedTerms[0][LABEL_POS]);
-      } else {
-        if (initialSelection?.length > 0) {
-          !isDefaultOption(initialSelection[0][VALUE_POS]) && setInputValue(initialSelection[0][LABEL_POS]);
-        }
       }
     }
     if (selectedTerms || removedTerms) {

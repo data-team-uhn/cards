@@ -73,6 +73,19 @@ const browseStyle = theme => ({
     browseAction: {
       margin: theme.spacing(1)
     },
+    selectionContainer: {
+      padding: theme.spacing(0, 3, 2),
+    },
+    browserAnswerInstrustions: {
+      padding: theme.spacing(1, 3, 0),
+      marginBottom: theme.spacing(-2),
+    },
+    selectionChips: {
+      margin: theme.spacing(0.5, 0.5),
+    },
+    termSelector: {
+      margin: theme.spacing(-.25, 0, 0, -1.5),
+    },
 });
 
 export default browseStyle;
