@@ -29,19 +29,17 @@ import {
   DialogContent, 
   DialogTitle,
   Grid,
-  withStyles, 
-  MenuItem, 
-  Select, 
-  TextField,
-  Typography 
+  IconButton,
+  Tooltip,
+  Typography,
+  withStyles,
 } from "@material-ui/core";
-import Filters from "../dataHomepage/Filters.jsx";
 import statisticsStyle from "./statisticsStyle.jsx";
 import NewItemComponent from "../components/NewItemButton.jsx";
 import LiveTable from "../dataHomepage/LiveTable.jsx";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
-import EditButton from "../dataHomepage/EditButton.jsx";
 import Fields from "../questionnaireEditor/Fields.jsx";
+import EditIcon from "@material-ui/icons/Edit";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
 /**
@@ -71,6 +69,17 @@ function CreateTableCell(node) {
     return node.label || node.text;
   }
 
+}
+
+function EditStatisticButton(props) {
+  const { onClick } = props;
+  return(
+    <Tooltip title={"Edit Statistic"}>
+      <IconButton onClick={onClick}>
+        <EditIcon />
+      </IconButton>
+    </Tooltip>
+  )
 }
 
 function AdminStatistics(props) {
@@ -113,11 +122,24 @@ function AdminStatistics(props) {
       "label": "Order",
       "format": "string",
     },
+    {
+      "key": "",
+      "label": "Actions",
+      "type": "actions",
+      "format": (row) => (<>
+                            <DeleteButton
+                              entryPath={row["@path"]}
+                              entryName={row.label}
+                              onComplete={dialogSuccess}
+                              entryType={"Subject Type"}
+                              admin={true}
+                            />
+                            <EditStatisticButton
+                              onClick={() => {setDialogOpen(true); setNewStat(false); setCurrentId(row["@name"]);}}
+                            />
+                          </>),
+    },
   ]
-  const actions = [
-    DeleteButton,
-    EditButton
-  ];
 
   let dialogClose = () => {
     setDialogOpen(false);
@@ -151,7 +173,6 @@ function AdminStatistics(props) {
         <CardContent>
           <LiveTable
             columns={columns}
-            actions={actions}
             entryType={"Statistic"}
             admin={true}
             updateData={numNewEntries}
@@ -173,24 +194,20 @@ function AdminStatistics(props) {
  */
 function StatisticDialog(props) {
   const { onClose, onSuccess, open, classes, isNewStatistic, currentId } = props;
-  const [ numFetchRequests, setNumFetchRequests ] = useState(0);
-  const [ availableSubjects, setAvailableSubjects ] = useState([]);
   const [ existingData, setExistingData ] = useState(false);
-  const [ initialized, setInitialized ] = useState(false);
   const [ error, setError ] = useState();
-  const [ currentUrl, setCurrentUrl ] = useState();
   const [ saveInProgress, setSaveInProgress ] = useState(false);
+  const [ initialized, setInitialized ] = useState(false);
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
   let statisticsSpecs = require('./Statistics.json');
-  let [ userInput, setUserInput ] = useState({});
 
   let reset = () => {
     // reset all fields
     setError();
     setExistingData(false);
-    setUserInput({});
+    setInitialized(false);
   }
 
   let handleError = console.log;
@@ -198,35 +215,26 @@ function StatisticDialog(props) {
   useEffect(() => {
     if (!open) {
       reset();
+      return;
     }
-    if (!isNewStatistic && currentId) { // TO FIX: date of birth appears twice (in 2 diff forms), so it has 2 uuids.
-      setCurrentUrl("/Statistics/" + currentId);
+    if (!isNewStatistic && currentId) {
       let fetchExistingData = () => {
-        fetch(`/Statistics/${currentId}.deep.json`)
+        // We want to keep references the way they are, since reference inputs will expect their UUIDs
+        fetch(`/Statistics/${currentId}.-dereference.json`)
           .then((response) => response.ok ? response.json() : Promise.reject(response))
-          .then(handleResponse)
-          .catch(handleFetchError);
-      };
-      let handleResponse = (json) => {
-        // if data alread exists, fill out fields
-        setExistingData(true);
-        setName(json.name);
-        onYChange(json.yVar.label);
-        onXChange(json.xVar, true);
-        if (json.splitVar) {
-          onSplitChange(json.splitVar, true);
-        }
+          .then(setExistingData)
+          .then(() => setInitialized(true))
+          .catch(handleError);
       };
       if (!existingData) {
         fetchExistingData();
       }
     } else {
-      setCurrentUrl("/Statistics/" + uuidv4());
+      setInitialized(true);
     }
   }, [open]);
 
   let saveData = (event) => {
-    console.log("saveData");
     event.preventDefault();
 
     setSaveInProgress(true);
@@ -234,7 +242,6 @@ function StatisticDialog(props) {
     requestData.append('jcr:primaryType', 'lfs:Statistic');
     // If this statistic does not exist, we need to create a new path for it
     let URL = isNewStatistic ? "/Statistics/" + uuidv4() : currentId;
-    console.log("Sending data");
     fetchWithReLogin(globalLoginDisplay,
       URL,
       {
@@ -244,100 +251,16 @@ function StatisticDialog(props) {
       .then((response) => {
         if (response.ok) {
           setSaveInProgress(false);
+          onSuccess && onSuccess();
           onClose();
         } else {
-          handleError(response);
+          setError(response);
         }
       })
-      .catch(handleError);
+      .catch(setError);
   }
 
-  let saveStatistic = () => {
-    // Handle unfilled form errors
-    if (!name) {
-      setError("Please enter a name for this statistic.");
-    } else if (!xVar) {
-      setError("Please select a variable for the x-axis.");
-    } else if (!yVar) {
-      setError("Please select a variable for the y-axis.");
-    }
-    else {
-      const URL = currentUrl;
-      var request_data = new FormData();
-      request_data.append('jcr:primaryType', 'lfs:Statistic');
-      request_data.append('name', name);
-      xVar.split(",").forEach((variable) => request_data.append('xVar', variable));
-      request_data.append('xVar@TypeHint', 'Reference');
-      request_data.append('yVar', yVar);
-      request_data.append('yVar@TypeHint', 'Reference');
-      if (splitVar) {
-        splitVar.split(",").forEach((variable) => request_data.append('splitVar', variable));
-        request_data.append('splitVar@TypeHint', 'Reference');
-      }
-      fetch( URL, { method: 'POST', body: request_data })
-        .then( (response) => {
-          setNumFetchRequests((num) => (num-1));
-          if (response.ok) {
-            reset();
-            // successful callback to parent
-            onSuccess();
-            // close dialog
-            onClose();
-          } else {
-            setError(response.statusText ? response.statusText : response.toString());
-            return(Promise.reject(response));
-          }
-        })
-      setNumFetchRequests((num) => (num+1));
-    }
-  }
-
-  let initialize = () => {
-    setInitialized(true);
-    // Fetch the SubjectTypes
-    fetch("/query?query=select * from [lfs:SubjectType]")
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((response) => {
-        setAvailableSubjects(response["rows"]);
-      })
-      .catch(handleFetchError);
-  }
-
-  let handleFetchError = (response) => {
-    setError(response.statusText ? response.statusText : response.toString());
-    setAvailableSubjects([]);  // Prevent an infinite loop if data was not set
-    setExistingData([]);
-  };
-
-  // update each
-  let onXChange = (e, onLoad) => {
-    if (onLoad) {
-      // this is called if previous data is being loaded
-      setXVarLabel(e['@name']);
-      setXVar(e['jcr:uuid']);
-    } else {
-      setXVar(e);
-    }
-  }
-
-  let onYChange = (e) => {
-    setYVarLabel(e);
-    setYVar(availableSubjects.filter((x) => x['label'] == e)[0]['jcr:uuid']);
-  }
-
-  let onSplitChange = (e, onLoad) => {
-    if (onLoad) {
-      // this is called if previous data is being loaded
-      setSplitVarLabel(e['@name']);
-      setSplitVar(e['jcr:uuid']);
-    } else {
-      setSplitVar(e);
-    }
-  }
-
-  if (!initialized) {
-    initialize();
-  }
+  console.log(existingData);
 
   return (
     <form action='/Statistics' method='POST' onSubmit={saveData} onChange={() => ({/*setLastSaveStatus(undefined)*/}) }>
@@ -346,37 +269,11 @@ function StatisticDialog(props) {
       <DialogContent>
         { error && <Typography color="error">{error}</Typography>}
         <Grid container direction="column" spacing={2}>
-          <Fields data={{}} JSON={statisticsSpecs} edit={true} />
-          {/*Object.keys(statisticsSpecs).map((spec) => {
-            console.log(statisticsSpecs[spec]);
-            return <>
-              <Grid item xs={2}>
-                <Typography>{spec}:</Typography>
-              </Grid>
-              <Grid item xs={10}>
-                <>Text: {statisticsSpecs[spec].toString()}</>
-              </Grid>
-            </>
-          })*/
-          
-          /*<Grid item xs={2}>
-            <Typography>Name:</Typography>
-          </Grid>
-          <Grid item xs={10}>
-            <TextField value={name} onChange={(event)=> { setName(event.target.value); }} className={classes.subjectFilterInput} placeholder="Enter Statistic Name"/>
-          </Grid>
-          <Grid item xs={2}>
-            <Typography>X-axis:</Typography>
-          </Grid>
-          <Filters statisticFilters={true} parentHandler={onXChange} statisticFiltersValue={xVarLabel} />
-          <Grid item xs={2}>
-            <Typography>Y-axis:</Typography>
-          </Grid>
-          {subjectTypeFilters}
-          <Grid item xs={2}>
-            <Typography>Split:</Typography>
-          </Grid>*/}
-          {/*<Filters statisticFilters={true} parentHandler={onSplitChange} statisticFiltersValue={splitVarLabel} />*/}
+          {
+            // We don't want to load the Fields component until we are fully initialized
+            // since otherwise the default values will be empty and cannot be assigned
+            initialized && <Fields data={existingData || {}} JSON={statisticsSpecs} edit />
+          }
         </Grid>
       </DialogContent>
       <DialogActions>
