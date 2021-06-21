@@ -1,11 +1,30 @@
 name: Mark Demo Upgrade
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
 
 jobs:
   markupgrade:
     runs-on: ubuntu-latest
     steps:
-      - name: Placeholder
+      - name: Code Checkout
+        uses: actions/checkout@v2
+      - name: Fetch Tags
         run: |
-          echo "Commands to be executed go here..."
+          git fetch --tags
+      - name: Get Latest Release Tag
+        run: |
+          LATEST_GIT_TAG=$(git tag  | python3 ${{ github.workspace }}/Utilities/RepositoryManagement/get_latest_tagged_version.py)
+          echo "latest_git_tag=$LATEST_GIT_TAG" >> $GITHUB_ENV
+      - name: Print Latest Release Tag
+        run: |
+          echo "The latest CARDS version is ${{ env.latest_git_tag }}"
+      - name: Conditionally Mark Deployment For Upgrade
+        env:
+          CARDS_URL: ${{ secrets.DEMO_SERVER_URL }}
+          SLING_GITHUB_PASSWORD: ${{ secrets.DEMO_SLING_GITHUB_PASSWORD }}
+          LATEST_GIT_TAG: ${{ env.latest_git_tag }}
+        run: |
+          python3 ${{ github.workspace }}/Utilities/Administration/mark_for_upgrade.py
