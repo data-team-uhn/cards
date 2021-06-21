@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 import { 
@@ -42,6 +42,7 @@ import LiveTable from "../dataHomepage/LiveTable.jsx";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 import EditButton from "../dataHomepage/EditButton.jsx";
 import Fields from "../questionnaireEditor/Fields.jsx";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
 /**
  * Createa the LIveTable cell contents for a given node. This generates a link to the
@@ -178,31 +179,21 @@ function StatisticDialog(props) {
   const [ initialized, setInitialized ] = useState(false);
   const [ error, setError ] = useState();
   const [ currentUrl, setCurrentUrl ] = useState();
+  const [ saveInProgress, setSaveInProgress ] = useState(false);
 
-  const [ name, setName ] = useState('');
-  const [ xVar, setXVar ] = useState();
-  const [ yVar, setYVar ] = useState();
-  const [ splitVar, setSplitVar ] = useState();
-  const [ yVarLabel, setYVarLabel ] = useState('');
-  const [ xVarLabel, setXVarLabel ] = useState('');
-  const [ splitVarLabel, setSplitVarLabel ] = useState('');
+  const globalLoginDisplay = useContext(GlobalLoginContext);
 
   let statisticsSpecs = require('./Statistics.json');
   let [ userInput, setUserInput ] = useState({});
 
   let reset = () => {
     // reset all fields
-    setXVar(null);
-    setYVar(null);
-    setSplitVar(null);
-    setName('');
-    setYVarLabel('');
-    setXVarLabel('');
-    setSplitVarLabel('');
     setError();
     setExistingData(false);
     setUserInput({});
   }
+
+  let handleError = console.log;
 
   useEffect(() => {
     if (!open) {
@@ -232,7 +223,34 @@ function StatisticDialog(props) {
     } else {
       setCurrentUrl("/Statistics/" + uuidv4());
     }
-  }, [open])
+  }, [open]);
+
+  let saveData = (event) => {
+    console.log("saveData");
+    event.preventDefault();
+
+    setSaveInProgress(true);
+    let requestData = new FormData(event.currentTarget);
+    requestData.append('jcr:primaryType', 'lfs:Statistic');
+    // If this statistic does not exist, we need to create a new path for it
+    let URL = isNewStatistic ? "/Statistics/" + uuidv4() : currentId;
+    console.log("Sending data");
+    fetchWithReLogin(globalLoginDisplay,
+      URL,
+      {
+        method: 'POST',
+        body: requestData
+      })
+      .then((response) => {
+        if (response.ok) {
+          setSaveInProgress(false);
+          onClose();
+        } else {
+          handleError(response);
+        }
+      })
+      .catch(handleError);
+  }
 
   let saveStatistic = () => {
     // Handle unfilled form errors
@@ -321,83 +339,65 @@ function StatisticDialog(props) {
     initialize();
   }
 
-  // 'filter' for y-axis
-  const subjectTypeFilters = (
-    <Grid item xs={10}>
-        <Select
-          value={(yVarLabel || "")}
-          onChange={(event) => {onYChange(event.target.value)}}
-          className={classes.subjectFilterInput}
-          displayEmpty
-          >
-            <MenuItem value="" disabled>
-              <span className={classes.filterPlaceholder}>Select Variable</span>
-            </MenuItem>
-            {(availableSubjects.map( (subjectType) =>
-                <MenuItem value={subjectType.label} key={subjectType.label} className={classes.categoryOption}>{subjectType.label}</MenuItem>
-            ))}
-        </Select>
-      </Grid>
-  )
-
-  let test = require('./Statistics.json');
-  console.log(test);
-
   return (
-    <Dialog open={open} onClose={onClose}>
-    <DialogTitle>{isNewStatistic ? "Create New Statistic" : "Edit Statistic"}</DialogTitle>
-    <DialogContent>
-      { error && <Typography color="error">{error}</Typography>}
-      <Grid container direction="column" spacing={2}>
-        <Fields data={{}} JSON={require('./Statistics.json')} edit={true} />
-        {/*Object.keys(statisticsSpecs).map((spec) => {
-          console.log(statisticsSpecs[spec]);
-          return <>
-            <Grid item xs={2}>
-              <Typography>{spec}:</Typography>
-            </Grid>
-            <Grid item xs={10}>
-              <>Text: {statisticsSpecs[spec].toString()}</>
-            </Grid>
-          </>
-        })*/
-        /*<Grid item xs={2}>
-          <Typography>Name:</Typography>
+    <form action='/Statistics' method='POST' onSubmit={saveData} onChange={() => ({/*setLastSaveStatus(undefined)*/}) }>
+      <Dialog disablePortal open={open} onClose={onClose}>
+      <DialogTitle>{isNewStatistic ? "Create New Statistic" : "Edit Statistic"}</DialogTitle>
+      <DialogContent>
+        { error && <Typography color="error">{error}</Typography>}
+        <Grid container direction="column" spacing={2}>
+          <Fields data={{}} JSON={statisticsSpecs} edit={true} />
+          {/*Object.keys(statisticsSpecs).map((spec) => {
+            console.log(statisticsSpecs[spec]);
+            return <>
+              <Grid item xs={2}>
+                <Typography>{spec}:</Typography>
+              </Grid>
+              <Grid item xs={10}>
+                <>Text: {statisticsSpecs[spec].toString()}</>
+              </Grid>
+            </>
+          })*/
+          
+          /*<Grid item xs={2}>
+            <Typography>Name:</Typography>
+          </Grid>
+          <Grid item xs={10}>
+            <TextField value={name} onChange={(event)=> { setName(event.target.value); }} className={classes.subjectFilterInput} placeholder="Enter Statistic Name"/>
+          </Grid>
+          <Grid item xs={2}>
+            <Typography>X-axis:</Typography>
+          </Grid>
+          <Filters statisticFilters={true} parentHandler={onXChange} statisticFiltersValue={xVarLabel} />
+          <Grid item xs={2}>
+            <Typography>Y-axis:</Typography>
+          </Grid>
+          {subjectTypeFilters}
+          <Grid item xs={2}>
+            <Typography>Split:</Typography>
+          </Grid>*/}
+          {/*<Filters statisticFilters={true} parentHandler={onSplitChange} statisticFiltersValue={splitVarLabel} />*/}
         </Grid>
-        <Grid item xs={10}>
-          <TextField value={name} onChange={(event)=> { setName(event.target.value); }} className={classes.subjectFilterInput} placeholder="Enter Statistic Name"/>
-        </Grid>
-        <Grid item xs={2}>
-          <Typography>X-axis:</Typography>
-        </Grid>
-        <Filters statisticFilters={true} parentHandler={onXChange} statisticFiltersValue={xVarLabel} />
-        <Grid item xs={2}>
-          <Typography>Y-axis:</Typography>
-        </Grid>
-        {subjectTypeFilters}
-        <Grid item xs={2}>
-          <Typography>Split:</Typography>
-        </Grid>*/}
-        {/*<Filters statisticFilters={true} parentHandler={onSplitChange} statisticFiltersValue={splitVarLabel} />*/}
-      </Grid>
-    </DialogContent>
-    <DialogActions>
-      <Button
-          onClick={onClose}
-          variant="contained"
-          color="default"
-          >
-          Cancel
-        </Button>
+      </DialogContent>
+      <DialogActions>
         <Button
-          onClick={saveStatistic}
-          variant="contained"
-          color="primary"
-          >
-          {isNewStatistic ? "Create" : "Save"}
-        </Button>
-    </DialogActions>
-  </Dialog>
+            onClick={onClose}
+            variant="contained"
+            color="default"
+            >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={saveInProgress}
+            >
+            {isNewStatistic ? "Create" : "Save"}
+          </Button>
+      </DialogActions>
+    </Dialog>
+  </form>
   )
 }
 
