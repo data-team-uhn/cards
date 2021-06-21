@@ -237,11 +237,21 @@ function StatisticDialog(props) {
   let saveData = (event) => {
     event.preventDefault();
 
-    setSaveInProgress(true);
     let requestData = new FormData(event.currentTarget);
     requestData.append('jcr:primaryType', 'lfs:Statistic');
+
+    // Verify that the name, xVar, and yVar variables have been filled out
+    let mandatoryFields = ["name", "xVar", "yVar"];
+    for (const fieldName of mandatoryFields) {
+      if ((!requestData.has(fieldName)) || requestData.get(fieldName) == "") {
+        setError(`The ${fieldName} field is mandatory`);
+        return;
+      }
+    }
+
     // If this statistic does not exist, we need to create a new path for it
     let URL = isNewStatistic ? "/Statistics/" + uuidv4() : currentId;
+    setSaveInProgress(true);
     fetchWithReLogin(globalLoginDisplay,
       URL,
       {
@@ -260,10 +270,8 @@ function StatisticDialog(props) {
       .catch(setError);
   }
 
-  console.log(existingData);
-
   return (
-    <form action='/Statistics' method='POST' onSubmit={saveData} onChange={() => ({/*setLastSaveStatus(undefined)*/}) }>
+    <form action='/Statistics' method='POST' onSubmit={saveData}>
       <Dialog disablePortal open={open} onClose={onClose}>
       <DialogTitle>{isNewStatistic ? "Create New Statistic" : "Edit Statistic"}</DialogTitle>
       <DialogContent>
