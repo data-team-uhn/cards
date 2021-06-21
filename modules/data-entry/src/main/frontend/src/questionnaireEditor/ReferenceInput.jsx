@@ -19,7 +19,7 @@
 
 import React, { useContext, useState } from "react";
 import PropTypes, { object } from 'prop-types';
-import { Chip, Input, MenuItem, Select, Typography, withStyles } from "@material-ui/core";
+import { Input, MenuItem, Select, Typography, withStyles } from "@material-ui/core";
 
 import EditorInput from "./EditorInput";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle";
@@ -35,10 +35,8 @@ let SUBJECT_TYPE_URL = "/SubjectTypes.paginate?offset=0&limit=100&req=0";
 let ReferenceInput = (props) => {
   const { objectKey, data, value } = props;
 
-  let [ curValue, setCurValue ] = useState(data[objectKey] || []);
-  let [ uuidMap, setUUIDMap ] = useState({});
+  let [ curValue, setCurValue ] = useState(data[objectKey] ? [data[objectKey]] : []);
   let [ titleMap, setTitleMap ] = useState({});
-  let [ error, setError ] = useState("");
   const [ options, setOptions ] = React.useState([]);
   const [ initialized, setInitialized ] = React.useState(false);
 
@@ -94,7 +92,6 @@ let ReferenceInput = (props) => {
       dataType: "questionnaire"
     };
     setOptions(fields);
-    setUUIDMap(uuids);
     setTitleMap(titles);
   }
 
@@ -120,13 +117,6 @@ let ReferenceInput = (props) => {
     hiddenInput = curValue.split(",").map((thisUUID) => <input type="hidden" name={objectKey} value={thisUUID} key={thisUUID}/>);
   }
 
-  console.log("Reference value:");
-  console.log(curValue);
-  console.log(titleMap);
-  console.log(titleMap[curValue]);
-  console.log(uuidMap);
-  console.log(uuidMap[curValue]);
-
   return (
     <EditorInput name={objectKey}>
       <input type="hidden" name={objectKey + "@TypeHint"} value='Reference' />
@@ -135,7 +125,7 @@ let ReferenceInput = (props) => {
         // Delete the current values within this list if nothing is selected
         curValue.length == 0 ? <input type="hidden" name={objectKey + "@Delete"} value="" />
         // Otherwise place the final value in a hidden input
-        : <input type="hidden" name={objectKey} value={uuidMap[curValue]} />
+        : <input type="hidden" name={objectKey} value={curValue} />
       }
       <Select
         id={objectKey}
