@@ -35,7 +35,7 @@ let SUBJECT_TYPE_URL = "/SubjectTypes.paginate?offset=0&limit=100&req=0";
 let ReferenceInput = (props) => {
   const { objectKey, data, value } = props;
 
-  let [ curValue, setCurValue ] = useState(data[objectKey] ? [data[objectKey]] : []);
+  let [ curValue, setCurValue ] = useState(data[objectKey] || []);
   let [ titleMap, setTitleMap ] = useState({});
   const [ options, setOptions ] = React.useState([]);
   const [ initialized, setInitialized ] = React.useState(false);
@@ -117,16 +117,24 @@ let ReferenceInput = (props) => {
     hiddenInput = curValue.split(",").map((thisUUID) => <input type="hidden" name={objectKey} value={thisUUID} key={thisUUID}/>);
   }
 
+  // The form of the hidden input depends on the value of curValue
+  // The fallback is to just use its value as-is in a hidden input
+  let hiddenInput = <input type="hidden" name={objectKey} value={curValue} />;
+  if (Array.isArray(curValue)) {
+    // Delete the current values within this list if nothing is selected
+    hiddenInput = curValue.length == 0 ? <input type="hidden" name={objectKey + "@Delete"} value="" />
+    // Otherwise it is a list of multiple inputs
+      : curValue.map((thisUUID) => <input type="hidden" name={objectKey} value={thisUUID} key={thisUUID}/>);
+  } else if (typeof curValue == "string") {
+    // If a question shows up in multiple questionnaires, it may show up as a comma delimited list of UUIDs
+    // If so, we need to map it to multiple inputs
+    hiddenInput = curValue.split(",").map((thisUUID) => <input type="hidden" name={objectKey} value={thisUUID} key={thisUUID}/>);
+  }
+
   return (
     <EditorInput name={objectKey}>
       <input type="hidden" name={objectKey + "@TypeHint"} value='Reference' />
       {hiddenInput}
-      {
-        // Delete the current values within this list if nothing is selected
-        curValue.length == 0 ? <input type="hidden" name={objectKey + "@Delete"} value="" />
-        // Otherwise place the final value in a hidden input
-        : <input type="hidden" name={objectKey} value={curValue} />
-      }
       <Select
         id={objectKey}
         value={curValue || []}
