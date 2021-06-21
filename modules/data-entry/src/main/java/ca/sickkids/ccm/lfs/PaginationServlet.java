@@ -428,17 +428,26 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                     )
                 );
             } else {
-                joindata.append(
-                    String.format(
-                        " and %s%d.'question'='%s' and %s%d.'value'%s",
-                        childprefix,
-                        i,
-                        sanitizedFieldName,
-                        childprefix,
-                        i,
-                        comparison
-                    )
-                );
+                final String[] possibleQuestions = fieldnames[i].split(",");
+                joindata.append(" and (");
+                for (int j = 0; j < possibleQuestions.length; j++) {
+                    joindata.append(
+                        String.format(
+                            " %s%d.'question'='%s' and %s%d.'value'%s",
+                            childprefix,
+                            i,
+                            this.sanitizeField(possibleQuestions[j]),
+                            childprefix,
+                            i,
+                            comparison
+                        )
+                    );
+                    // Add an 'or' if there are more possible conditions
+                    if (j + 1 != possibleQuestions.length) {
+                        joindata.append(" or");
+                    }
+                }
+                joindata.append(")");
             }
         }
         return joindata.toString();
