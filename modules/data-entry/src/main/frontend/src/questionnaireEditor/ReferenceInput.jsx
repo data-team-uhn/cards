@@ -36,7 +36,9 @@ let ReferenceInput = (props) => {
   const { objectKey, data, value } = props;
 
   let [ curValue, setCurValue ] = useState(data[objectKey] || []);
+  let [ uuidMap, setUUIDMap ] = useState({});
   let [ titleMap, setTitleMap ] = useState({});
+  let [ error, setError ] = useState("");
   const [ options, setOptions ] = React.useState([]);
   const [ initialized, setInitialized ] = React.useState(false);
 
@@ -85,8 +87,14 @@ let ReferenceInput = (props) => {
       fields.push(subjectType["jcr:uuid"]);
       titles[subjectType["jcr:uuid"]] = subjectType["label"];
     }
-
+    subjectTypeJson["Subject"] = {
+      dataType: "subject"
+    };
+    subjectTypeJson["Questionnaire"] = {
+      dataType: "questionnaire"
+    };
     setOptions(fields);
+    setUUIDMap(uuids);
     setTitleMap(titles);
   }
 
@@ -112,10 +120,23 @@ let ReferenceInput = (props) => {
     hiddenInput = curValue.split(",").map((thisUUID) => <input type="hidden" name={objectKey} value={thisUUID} key={thisUUID}/>);
   }
 
+  console.log("Reference value:");
+  console.log(curValue);
+  console.log(titleMap);
+  console.log(titleMap[curValue]);
+  console.log(uuidMap);
+  console.log(uuidMap[curValue]);
+
   return (
     <EditorInput name={objectKey}>
       <input type="hidden" name={objectKey + "@TypeHint"} value='Reference' />
       {hiddenInput}
+      {
+        // Delete the current values within this list if nothing is selected
+        curValue.length == 0 ? <input type="hidden" name={objectKey + "@Delete"} value="" />
+        // Otherwise place the final value in a hidden input
+        : <input type="hidden" name={objectKey} value={uuidMap[curValue]} />
+      }
       <Select
         id={objectKey}
         value={curValue || []}
