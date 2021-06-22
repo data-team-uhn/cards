@@ -52,9 +52,10 @@ const MAX_RESULTS = 10;
 //  allowTermSelection: Boolean enabler for term selection from vocabulary tree browser
 //  initialSelection: Existing answers
 //  onRemoveOption: Function to remove added answer
+//  isFilter: Boolean flag whether component is used as a filter input
 //
 function VocabularyQuery(props) {
-  const { clearOnClick, onClick, focusAfterSelecting, disabled, variant, isNested, placeholder,
+  const { clearOnClick, onClick, focusAfterSelecting, disabled, variant, isNested, placeholder, isFilter,
     value, questionDefinition, onChange, allowTermSelection, initialSelection, onRemoveOption, classes } = props;
   const [suggestions, setSuggestions] = useState([]);
   const [suggestionsLoading, setSuggestionsLoading] = useState(false);
@@ -269,6 +270,7 @@ function VocabularyQuery(props) {
     !anchorEl?.current?.contains(event.target)
       && !searchButtonRef?.current?.contains(event.target)
       && maxAnswers !== 1
+      && !isFilter
       && setInputValue("");
     setSuggestionsVisible(false);
     setTermPath("");
@@ -425,7 +427,8 @@ VocabularyQuery.propTypes = {
     onChange: PropTypes.func,
     allowTermSelection: PropTypes.bool,
     initialSelection: PropTypes.array,
-    onRemoveOption: PropTypes.func
+    onRemoveOption: PropTypes.func,
+    isFilter: PropTypes.bool
 };
 
 VocabularyQuery.defaultProps = {
