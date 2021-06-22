@@ -134,7 +134,7 @@ function VocabularyBrowser(props) {
                id: data["identifier"],
                definition: data["def"] || data["description"] || data["definition"],
                alsoKnownAs: data["synonyms"] || data["has_exact_synonym"] || [],
-               typeOf: data["parents"]?.map(p => p["label"] || p["name"] || p["identifier"] || p["id"]) || [],
+               typeOf: data["parents"]?.filter(p => typeof p === 'object').map(p => p["label"] || p["name"] || p["identifier"] || p["id"]) || [],
                path: data["@path"],
                infoAnchor: browserOpened ? buttonRefs[data["identifier"]] : infoButtonRefs[data["identifier"]]
              });
