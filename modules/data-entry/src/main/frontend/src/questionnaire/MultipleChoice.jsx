@@ -97,7 +97,7 @@ function MultipleChoice(props) {
   let inputPrefill = (isBare || (isRadio && default_values.indexOf(initialSelection[0]?.[VALUE_POS]) < 0)) && existingAnswer?.[1] || '';
   const [ghostName, setGhostName] = useState(inputPrefill?.displayedValue);
   const [ghostValue, setGhostValue] = useState(inputPrefill?.value || GHOST_SENTINEL);
-  const ghostSelected = selection.some(element => {return element.includes(ghostValue);});
+  const ghostSelected = selection.some(element => {return element[VALUE_POS] === ghostValue || element[LABEL_POS] === ghostName});
   const disabled = maxAnswers > 1 && selection.length >= maxAnswers;
   let inputEl = null;
   const [separatorDetectionEnabled, setSeparatorDetectionEnabled] = useState(enableSeparatorDetection);
@@ -460,6 +460,7 @@ function MultipleChoice(props) {
             <FormControlLabel
               control={
               <Radio
+                checked={ghostSelected}
                 onChange={() => {
                   selectOption(ghostValue, ghostName);
                   onUpdate && onUpdate(ghostSelected ? undefined : ghostName);
