@@ -95,8 +95,8 @@ function VocabularyQuery(props) {
           event.preventDefault();
         } else if (event.key == 'ArrowDown') {
           // Move the focus to the suggestions list
-          if (menuRef?.children?.length > 0) {
-            menuRef.children[0].focus();
+          if (menuRef?.current?.children?.length > 0) {
+            menuRef.current.children[0].focus();
           }
           event.preventDefault();
         }
