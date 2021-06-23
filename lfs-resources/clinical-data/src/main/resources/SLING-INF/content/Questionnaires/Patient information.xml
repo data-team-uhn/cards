@@ -192,7 +192,7 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
-					<value>alive and NED</value>
+					<value>Alive and NED</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -201,7 +201,7 @@
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
-					<value>alive with disease</value>
+					<value>Alive with disease</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -215,8 +215,27 @@
 				</property>
 				<property>
 					<name>label</name>
-					<value>died of disease</value>
+					<value>Died of disease</value>
 					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>U</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Unknown</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>U</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>noneOfTheAbove</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 			</node>
 		</node>
@@ -565,6 +584,20 @@
 					<name>value</name>
 					<value>Cousin</value>
 					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Unknown</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>value</name>
+					<value>Unknown</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>noneOfTheAbove</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 			</node>
 		</node>
@@ -1119,11 +1152,11 @@
 			</property>
 		</node>
 		<node>
-			<name>mutation_pathogenecity</name>
+			<name>mutation_pathogenicity</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Mutation-Pathogenecity</value>
+				<value>Mutation-Pathogenicity</value>
 				<type>String</type>
 			</property>
 			<property>

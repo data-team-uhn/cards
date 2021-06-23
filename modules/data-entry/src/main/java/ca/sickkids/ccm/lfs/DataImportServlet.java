@@ -130,9 +130,6 @@ public class DataImportServlet extends SlingAllMethodsServlet
     /** The {@code /Subjects} resource. */
     private final ThreadLocal<Resource> subjectsHomepage = new ThreadLocal<>();
 
-    /** The subject type to create resource. */
-    private final ThreadLocal<Node> subjectType = new ThreadLocal<>();
-
     /** The {@code /Forms} resource. */
     private final ThreadLocal<Resource> formsHomepage = new ThreadLocal<>();
 
@@ -167,13 +164,17 @@ public class DataImportServlet extends SlingAllMethodsServlet
         } catch (RepositoryException e) {
             LOGGER.error("Failed to import data: {}", e.getMessage(), e);
         } finally {
-            this.nodesToCheckin.remove();
-            this.warnedCache.remove();
-            this.questionCache.remove();
-            this.formsHomepage.remove();
             this.subjectsHomepage.remove();
-            this.subjectType.remove();
+            this.subjectTypes.remove();
+            this.subjectCache.remove();
+            this.questionnaire.remove();
+            this.questionCache.remove();
+            this.warnedCache.remove();
+            this.formsHomepage.remove();
+            this.nodesToCheckin.remove();
+            this.cachedAnswers.remove();
             this.resolver.remove();
+            this.queryManager.remove();
         }
     }
 
@@ -233,6 +234,9 @@ public class DataImportServlet extends SlingAllMethodsServlet
     {
         this.cachedAnswers.set(new HashMap<>());
         final Resource form = getOrCreateForm(row, patch);
+        if (form == null) {
+            return;
+        }
         row.toMap().forEach((fieldName, fieldValue) -> {
             try {
                 if (StringUtils.isBlank(fieldValue)) {
@@ -240,9 +244,9 @@ public class DataImportServlet extends SlingAllMethodsServlet
                 }
 
                 if (fieldName.endsWith(NOTE_SUFFIX)) {
-                    parseNote(fieldName, fieldValue, form);
+                    parseNote(fieldName.trim(), fieldValue, form);
                 } else {
-                    parseAnswer(fieldName, fieldValue, form);
+                    parseAnswer(fieldName.trim(), fieldValue, form);
                 }
             } catch (PersistenceException | RepositoryException e) {
                 LOGGER.warn("Failed to parse row [{}]: {}", row.getRecordNumber(), e.getMessage());
@@ -294,14 +298,14 @@ public class DataImportServlet extends SlingAllMethodsServlet
         Resource answer = getOrCreateAnswer(form, question);
 
         if (question.getProperty("maxAnswers").getLong() == 0) {
-            String[] rawValues = fieldValue.split("\n|,");
+            String[] rawValues = fieldValue.split("\n");
             Value[] values = new Value[rawValues.length];
             for (int i = 0; i < rawValues.length; ++i) {
-                values[i] = parseAnswerValue(rawValues[i], question);
+                values[i] = parseAnswerValue(rawValues[i].trim(), question);
             }
             answer.adaptTo(Node.class).setProperty(VALUE_PROPERTY, values);
         } else {
-            answer.adaptTo(Node.class).setProperty(VALUE_PROPERTY, parseAnswerValue(fieldValue, question));
+            answer.adaptTo(Node.class).setProperty(VALUE_PROPERTY, parseAnswerValue(fieldValue.trim(), question));
         }
     }
 
@@ -496,6 +500,9 @@ public class DataImportServlet extends SlingAllMethodsServlet
             case "time":
                 result = "lfs:TimeAnswer";
                 break;
+            case "vocabulary":
+                result = "lfs:VocabularyAnswer";
+                break;
             case "text":
             default:
                 result = "lfs:TextAnswer";
@@ -632,8 +639,12 @@ public class DataImportServlet extends SlingAllMethodsServlet
     private Resource getOrCreateForm(final CSVRecord row, boolean patch) throws PersistenceException
     {
         final Node subject = getOrCreateSubject(row);
+        if (subject == null) {
+            LOGGER.warn("Cannot determine subject for row #{}", row.getRecordNumber());
+            return null;
+        }
         Resource result = null;
-        if (patch && subject != null) {
+        if (patch) {
             result = findForm(subject);
         }
         if (result == null) {
@@ -762,7 +773,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
                 query += " and n.type = '" + typeNode.getProperty("jcr:uuid").getValue() + "'";
             }
             if (parent != null) {
-                query += " and n.parents = '" + parent.getProperty("jcr:uuid").getValue() + "'";
+                query += " and ischildnode(n, '" + parent.getPath() + "')";
             }
         } catch (RepositoryException ex) {
             // No change to query
@@ -804,8 +815,11 @@ public class DataImportServlet extends SlingAllMethodsServlet
             subjectProperties.put("parents", parent);
         }
         try {
-            Node subject = this.resolver.get().create(this.subjectsHomepage.get(), UUID.randomUUID().toString(),
-                subjectProperties).adaptTo(Node.class);
+            Resource parentResource = parent != null
+                ? this.resolver.get().getResource(parent.getPath())
+                : this.subjectsHomepage.get();
+            Node subject = this.resolver.get().create(parentResource, UUID.randomUUID().toString(), subjectProperties)
+                .adaptTo(Node.class);
             this.subjectCache.get().put(subjectKey, subject);
             this.nodesToCheckin.get().add(subject.getPath());
             return subject;

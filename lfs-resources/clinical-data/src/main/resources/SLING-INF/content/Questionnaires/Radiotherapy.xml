@@ -521,6 +521,11 @@
 				<value>True</value>
 				<type>Boolean</type>
 			</property>
+			<property>
+				<name>enableNotes</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 		</node>
 		<node>
 			<name>boost_details</name>

@@ -41,6 +41,35 @@
 		<name>diagnosis_section</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<node>
+			<name>date_of_diagnosis</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Date of diagnosis</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dateFormat</name>
+				<value>yyyy-MM-dd</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
 			<name>age_at_diagnosis</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
@@ -70,16 +99,16 @@
 			</property>
 		</node>
 		<node>
-			<name>diagnosis_description</name>
+			<name>short_diagnosis</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Diagnosis description</value>
+				<value>Short diagnosis</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
-				<value>1</value>
+				<value>0</value>
 				<type>Long</type>
 			</property>
 			<property>
@@ -171,68 +200,18 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-		</node>
-		<node>
-			<name>morphology_code</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
-				<name>text</name>
-				<value>Morphology code</value>
-				<type>String</type>
+				<name>enableNotes</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>0</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>input</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>vocabulary</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>sourceVocabularies</name>
-				<values>
-					<value>ORDO</value>
-					<value>HP</value>
-				</values>
-				<type>String</type>
-			</property>
-			<node>
-				<name>vocabularyFilters</name>
-				<primaryNodeType>lfs:VocabularyFilterGroup</primaryNodeType>
-				<property>
-					<name>ORDO</name>
-					<values>
-						<value>Orphanet_C001</value>
-					</values>
-					<type>String</type>
-				</property>
-				<property>
-					<name>HP</name>
-					<values>
-						<value>HP:0000118</value>
-					</values>
-					<type>String</type>
-				</property>
-			</node>
 		</node>
 		<node>
 			<name>ICD_morphology_code</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>ICD Morphology Code (only if reported)</value>
+				<value>ICD Morphology Code</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -354,6 +333,11 @@
 					<value>HP</value>
 				</values>
 				<type>String</type>
+			</property>
+			<property>
+				<name>enableNotes</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 		</node>
 		<node>
@@ -499,7 +483,7 @@
 			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>ICD Topography Code (only if reported)</value>
+				<value>ICD Topography Code</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -593,11 +577,115 @@
 					<type>String</type>
 				</property>
 			</node>
+			<node>
+				<name>3</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>value</name>
+					<value>3</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>label</name>
+					<value>Bilateral</value>
+					<type>String</type>
+				</property>
+			</node>
 		</node>
 	</node>
 	<node>
 		<name>status_section</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
+		<node>
+			<name>recurrence</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Recurrence</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<node>
+				<name>NA</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>value</name>
+					<value>NA</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>label</name>
+					<value>N/A</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>notApplicable</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>P</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>value</name>
+					<value>P</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>label</name>
+					<value>Progression</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>R</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>value</name>
+					<value>R</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>label</name>
+					<value>Relapse</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>RC</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>value</name>
+					<value>RC</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>label</name>
+					<value>Recurrence</value>
+					<type>String</type>
+				</property>
+			</node>
+		</node>
 		<node>
 			<name>malignancy</name>
 			<primaryNodeType>lfs:Question</primaryNodeType>
@@ -660,6 +748,20 @@
 				</property>
 			</node>
 			<node>
+				<name>BP</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>value</name>
+					<value>BP</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>label</name>
+					<value>Benign/premalignant</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
 				<name>P</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 				<property>
@@ -670,6 +772,20 @@
 				<property>
 					<name>label</name>
 					<value>Premalignant</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>PM</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>value</name>
+					<value>PM</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>label</name>
+					<value>Premalignant/malignant</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -840,6 +956,25 @@
 				<value>True</value>
 				<type>Boolean</type>
 			</property>
+			<node>
+				<name>NA</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>value</name>
+					<value>NA</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>label</name>
+					<value>N/A</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>notApplicable</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
 			<node>
 				<name>Low</name>
 				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
@@ -1213,6 +1348,11 @@
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>enableNotes</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 		</node>
 		<node>
