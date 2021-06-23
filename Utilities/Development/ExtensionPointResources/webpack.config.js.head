@@ -1,0 +1,8 @@
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const WebpackAssetsManifest = require('webpack-assets-manifest');
+
+module_name = require("./package.json").name + ".";
+
+module.exports = {
+  mode: 'development',
+  entry: {
