@@ -323,6 +323,11 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>description</name>
+					<value>Date paused</value>
+					<type>String</type>
+				</property>
+				<property>
 					<name>dataType</name>
 					<value>date</value>
 					<type>String</type>
@@ -394,6 +399,11 @@
 				<property>
 					<name>text</name>
 					<value>Reason</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Reason for pausing</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -527,6 +537,11 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>description</name>
+					<value>Any additional information regarding pausing</value>
+					<type>String</type>
+				</property>
+				<property>
 					<name>dataType</name>
 					<value>text</value>
 					<type>String</type>
@@ -583,6 +598,11 @@
 				<property>
 					<name>text</name>
 					<value>Effective Date</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Date resumed</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -657,6 +677,11 @@
 				<property>
 					<name>text</name>
 					<value>Comment</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Any additional information regarding resuming</value>
 					<type>String</type>
 				</property>
 				<property>
