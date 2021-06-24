@@ -866,6 +866,10 @@ function SubjectSelectorList(props) {
     }
   }
 
+  if (!relatedSubjects) {
+    return null;
+  }
+
   return(
     <React.Fragment>
       <MaterialTable
