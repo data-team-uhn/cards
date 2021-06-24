@@ -21,6 +21,7 @@ package ca.sickkids.ccm.lfs;
 import java.io.IOException;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
@@ -65,6 +66,7 @@ import org.slf4j.LoggerFactory;
  *
  * @version $Id$
  */
+@SuppressWarnings({"checkstyle:MultipleStringLiterals"})
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(
     resourceTypes = { "lfs/QuestionnairesHomepage", "lfs/FormsHomepage", "lfs/SubjectsHomepage",
@@ -84,6 +86,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
 
     private static final String SUBJECT_IDENTIFIER = "lfs:Subject";
     private static final String QUESTIONNAIRE_IDENTIFIER = "lfs:Questionnaire";
+    private static final String CREATED_DATE_IDENTIFIER = "lfs:CreatedDate";
 
     @Override
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
@@ -259,7 +262,9 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         StringBuilder joindata = new StringBuilder();
         for (int i = 0; i < joins.length; i++) {
             // Skip this join if it is on lfs:Subject, which does not require a child inner join
-            if (SUBJECT_IDENTIFIER.equals(joins[i]) || QUESTIONNAIRE_IDENTIFIER.equals(joins[i])) {
+            if (SUBJECT_IDENTIFIER.equals(joins[i])
+                || QUESTIONNAIRE_IDENTIFIER.equals(joins[i])
+                || CREATED_DATE_IDENTIFIER.equals(joins[i])) {
                 continue;
             }
 
@@ -276,6 +281,68 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         }
 
         return joindata.toString();
+    }
+
+    private String generateDateCompareQuery(String jcrVariable, String thisDayStr, String operator)
+    {
+        /*
+         * IF (=) THEN CHECK (>= day AND < nextDay)
+         * IF (<>) THEN CHECK (< day OR >= nextDay)
+         * IF (<) THEN CHECK (< day)
+         * IF (>) THEN CHECK (>= nextDay)
+         * IF (<=) THEN CHECK (< nextDay)
+         * IF (>=) THEN CHECK (>= day)
+         */
+        final ZonedDateTime thisDay = ZonedDateTime.parse(thisDayStr);
+        final ZonedDateTime nextDay = thisDay.plusDays(1);
+        final String nextDayStr = nextDay.toString();
+        String compareQuery;
+        switch (operator) {
+            case "=":
+                compareQuery = String.format("(%s>='%s' and %s<'%s')",
+                    jcrVariable,
+                    thisDayStr,
+                    jcrVariable,
+                    nextDayStr
+                );
+                break;
+            case "<>":
+                compareQuery = String.format("(%s<'%s' or %s>='%s')",
+                    jcrVariable,
+                    thisDayStr,
+                    jcrVariable,
+                    nextDayStr
+                );
+                break;
+            case "<":
+                compareQuery = String.format("(%s<'%s')",
+                    jcrVariable,
+                    thisDayStr
+                );
+                break;
+            case ">":
+                compareQuery = String.format("(%s>='%s')",
+                    jcrVariable,
+                    nextDayStr
+                );
+                break;
+            case "<=":
+                compareQuery = String.format("(%s<'%s')",
+                    jcrVariable,
+                    nextDayStr
+                );
+                break;
+            case ">=":
+                compareQuery = String.format("(%s>='%s')",
+                    jcrVariable,
+                    thisDayStr
+                );
+                break;
+            default:
+                compareQuery = null;
+                break;
+        }
+        return compareQuery;
     }
 
     /**
@@ -332,6 +399,15 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                     String.format(" and n.'questionnaire'%s'%s'",
                         this.sanitizeComparator(comparators[i]),
                         this.sanitizeField(values[i])
+                    )
+                );
+            } else if (CREATED_DATE_IDENTIFIER.equals(fields[i])) {
+                filterdata.append(" and ");
+                filterdata.append(
+                    generateDateCompareQuery(
+                        "n.'jcr:created'",
+                        this.sanitizeField(values[i]),
+                        this.sanitizeComparator(comparators[i])
                     )
                 );
             } else {

@@ -108,6 +108,9 @@ function Filters(props) {
       uuids["Questionnaire"] = "lfs:Questionnaire";
       titles["Questionnaire"] = "Questionnaire";
     }
+    fields.push("CreatedDate");
+    uuids["CreatedDate"] = "lfs:CreatedDate"
+    titles["CreatedDate"] = "Created Date"
     for (let [questionName, question] of Object.entries(filterJson)) {
       // For each question, save the name, data type, and answers (if necessary)
       fields.push(questionName);
@@ -122,17 +125,58 @@ function Filters(props) {
         dataType: "questionnaire"
       };
     }
+    filterJson["CreatedDate"] = {
+      dataType: "createddate"
+    };
     setFilterableFields(fields);
     setQuestionDefinitions(filterJson);
     setFilterableTitles(titles);
     setFilterableUUIDs(uuids);
   }
 
+  let removeCreatedDateTimezone = (filters) => {
+    let newFilters = [];
+    filters.forEach( (filter) => {
+      if (filter.type === "createddate") {
+        newFilters.push({ ...filter, value: filter.value.split('T')[0]});
+      } else {
+        newFilters.push({ ...filter });
+      }
+    });
+    return newFilters;
+  };
+
+  let addCreatedDateTimezone = (filters) => {
+    const getClientTimezoneOffset = () => {
+      const padTwo = (s) => {
+        if (s.length < 2) {
+          return '0' + s;
+        }
+        return s;
+      };
+      let totalOffsetMinutes = new Date().getTimezoneOffset();
+      let offsetSign = (totalOffsetMinutes < 0) ? '+' : '-';
+      let offsetMinute = Math.abs(totalOffsetMinutes) % 60;
+      let offsetHour = Math.floor(Math.abs(totalOffsetMinutes) / 60);
+      return offsetSign + padTwo(offsetHour.toString()) + ":" + padTwo(offsetMinute.toString());
+    };
+    let newFilters = [];
+    filters.forEach( (filter) => {
+      if (filter.type === "createddate") {
+        newFilters.push({ ...filter, value: filter.value + "T00:00:00" + getClientTimezoneOffset() });
+      } else {
+        newFilters.push({ ...filter });
+      }
+    });
+    return newFilters;
+  };
+
   // Open the filter selection dialog
   let openDialogAndAdd = () => {
     setDialogOpen(true);
     // Replace our defaults with a deep copy of what's actually active, plus an empty one
     let newFilters = deepCopyFilters(activeFilters);
+    newFilters = removeCreatedDateTimezone(newFilters);
     setEditingFilters(newFilters);
 
     // Bugfix: also reload every active outputChoice, in order to refresh its copy of the state variables
@@ -233,6 +277,7 @@ function Filters(props) {
         toCheck
         :
         {...toCheck, comparator: (toCheck.comparator == "=" ? "is empty" : "is not empty")}));
+    newFilters = addCreatedDateTimezone(newFilters);
     setActiveFilters(newFilters);
     onChangeFilters && onChangeFilters(newFilters);
     setDialogOpen(false);
@@ -283,6 +328,7 @@ function Filters(props) {
           // Include the label (if available) or value for this filter iff the comparator is not unary
           (UNARY_COMPARATORS.includes(activeFilter.comparator) ? ""
             : (" " + (activeFilter.label != undefined ? activeFilter.label : activeFilter.value)));
+        label = (activeFilter.type === "createddate") ? label.split('T')[0] : label;
         return(
           <React.Fragment key={label}>
             <Chip
