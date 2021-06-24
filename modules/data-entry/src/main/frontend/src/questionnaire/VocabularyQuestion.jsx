@@ -30,6 +30,8 @@ import AnswerComponentManager from "./AnswerComponentManager";
 import MultipleChoice from "./MultipleChoice";
 import VocabularyQuery from "../vocabQuery/VocabularyQuery.jsx";
 
+import NCRNote from "./NCRNote.jsx";
+
 // Component that renders a vocabulary question.
 //
 // Sample usage:
@@ -68,6 +70,10 @@ function VocabularyQuestion(props) {
           allowTermSelection: true
         }}
         answerNodeType = "lfs:VocabularyAnswer"
+        noteComponent={NCRNote}
+        noteProps={{
+          vocabulary: questionDefinition.sourceVocabularies
+        }}
         {...props}
         />
     </Question>);
