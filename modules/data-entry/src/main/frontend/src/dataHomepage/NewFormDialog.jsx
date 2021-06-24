@@ -64,6 +64,12 @@ function NewFormDialog(props) {
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
+  let resetDialogState = () => {
+    setSelectedQuestionnaire(null);
+    setSelectedSubject(null);
+    setDisableProgress(false);
+  }
+
   let createForm = (subject) => {
     setError("");
 
@@ -252,6 +258,7 @@ function NewFormDialog(props) {
         title={progress === PROGRESS_SELECT_QUESTIONNAIRE ? "Select a questionnaire" : "Select a subject"}
         open={mode === MODE_ACTION ? dialogOpen : open}
         onClose={() => {
+          resetDialogState();
           setDialogOpen(false);
           if (onClose) {
             onClose();
@@ -409,8 +416,7 @@ function NewFormDialog(props) {
         allowedTypes={filteredAllowedSubjectTypes}
         disabled={isFetching}
         onClose={() => {
-          setSelectedSubject(null);
-          setSelectedQuestionnaire(null);
+          resetDialogState();
           setNewSubjectPopperOpen(false);
           setError();
           if (onClose) {
