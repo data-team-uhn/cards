@@ -849,9 +849,11 @@ function SubjectSelectorList(props) {
     )
   }
 
-  if (!relatedSubjects) {
-    filterArray();
-  }
+  useEffect(() => {
+    if (!relatedSubjects) {
+      filterArray();
+    }
+  }, [relatedSubjects]);
 
   // if the number of related forms of a certain questionnaire/subject is at the maxPerSubject, an error is set
   let handleSelection = (rowData) => {
