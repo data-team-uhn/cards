@@ -422,6 +422,7 @@ function MultipleChoice(props) {
           answers={answers}
           existingAnswer={existingAnswer}
           questionName={questionName}
+          onAddSuggestion={acceptEnteredOption}
           {...rest}
           />
       </React.Fragment>
@@ -435,6 +436,7 @@ function MultipleChoice(props) {
           answers={answers}
           existingAnswer={existingAnswer}
           questionName={questionName}
+          onAddSuggestion={acceptEnteredOption}
           {...rest}
           />
       </React.Fragment>
@@ -483,6 +485,7 @@ function MultipleChoice(props) {
           answers={answers}
           existingAnswer={existingAnswer}
           questionName={questionName}
+          onAddSuggestion={acceptEnteredOption}
           {...rest}
           />
       </React.Fragment>
@@ -500,6 +503,7 @@ function MultipleChoice(props) {
           existingAnswer={existingAnswer}
           questionName={questionName}
           isMultivalued={true}
+          onAddSuggestion={acceptEnteredOption}
           {...rest}
           />
       </React.Fragment>
