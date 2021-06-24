@@ -95,7 +95,8 @@
             "compact" : "boolean",
             "answerOptions" : "options"
           }
-        }
+        },
+        "enableNotes": "boolean"
       },
       "computed": {
         "expression": "string",
