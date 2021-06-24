@@ -93,10 +93,11 @@ function VocabularyQuery(props) {
         if (event.key == 'Enter') {
           queryInput(anchorEl.current.value);
           event.preventDefault();
-        } else if (event.key == 'ArrowDown') {
-          // Move the focus to the suggestions list
+        } else if (event.key == 'ArrowDown' || event.key == 'ArrowUp') {
+          // Move the focus to the 1st or last item of suggestions list
           if (menuRef?.current?.children?.length > 0) {
-            menuRef.current.children[0].focus();
+            let index = (event.key == 'ArrowDown') ? 0 : menuRef.current.children.length -1;
+            menuRef.current.children[index].focus();
           }
           event.preventDefault();
         }
