@@ -68,6 +68,12 @@ function NewFormDialog(props) {
     setSelectedQuestionnaire(null);
     setSelectedSubject(null);
     setDisableProgress(false);
+    setError();
+  }
+
+  let closeAllDialogs = () => {
+    setDialogOpen(false);
+    setNewSubjectPopperOpen(false);
   }
 
   let createForm = (subject) => {
@@ -259,7 +265,7 @@ function NewFormDialog(props) {
         open={mode === MODE_ACTION ? dialogOpen : open}
         onClose={() => {
           resetDialogState();
-          setDialogOpen(false);
+          closeAllDialogs();
           if (onClose) {
             onClose();
           }
@@ -417,8 +423,7 @@ function NewFormDialog(props) {
         disabled={isFetching}
         onClose={() => {
           resetDialogState();
-          setNewSubjectPopperOpen(false);
-          setError();
+          closeAllDialogs();
           if (onClose) {
             onClose();
           }
