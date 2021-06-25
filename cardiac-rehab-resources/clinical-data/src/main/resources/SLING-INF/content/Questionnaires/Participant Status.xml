@@ -469,16 +469,16 @@
 					</property>
 				</node>
 				<node>
-					<name>Familly Illness-Injury</name>
+					<name>Family Illness-Injury</name>
 					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Familly Illness/Injury</value>
+						<value>Family Illness/Injury</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>Familly Illness/Injury</value>
+						<value>Family Illness/Injury</value>
 						<type>String</type>
 					</property>
 				</node>
