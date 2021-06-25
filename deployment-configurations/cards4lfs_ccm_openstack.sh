@@ -128,11 +128,6 @@ then
     --savedir $PROJECT_ROOT/compose-cluster/NCR_MODEL || exit -1
 fi
 
-#Set up LDAP
-#cd $PROJECT_ROOT/Utilities/Administration
-#TODO: Set the environment variables accordingly
-#python3 configure_ldap.py || exit -1
-
 #Start up everything else
 cd $PROJECT_ROOT/compose-cluster
 docker-compose up -d
@@ -158,5 +153,6 @@ docker-compose up -d
 #  --fasttext $PROJECT_ROOT/compose-cluster/NCR_MODEL/pmc_model_new.bin \
 #  --threshold 0.6 || exit -1
 
-#Ready to go
+#Almost ready to go, but a few things will need to be configured manually
+echo "Please login to CARDS through the localhost address and configure the user accounts, including LDAP"
 echo "cards4lfs_ccm_openstack deployment is now ready at https://lfs.ccm.sickkids.ca"
