@@ -21,16 +21,16 @@
 export const REST_URL = window.location.origin + "/Vocabularies/";
 
 // Make a request for a json file, calling callback with parameters (xhr status, json data)
-export function MakeRequest(URL, callback) {
+export function MakeRequest(URL, callback, params) {
     var xhr = window.Sling.getXHR();
     xhr.open('GET', URL, true);
     xhr.responseType = 'json';
     xhr.onload = () => {
         var status = (xhr.status === 200 ? null : xhr.status);
-        callback(status, xhr.response);
+        callback(status, xhr.response, params);
     }
     xhr.onerror = () => {
-        callback(xhr.status, xhr.response);
+        callback(xhr.status, xhr.response, params);
     }
     xhr.send();
 }

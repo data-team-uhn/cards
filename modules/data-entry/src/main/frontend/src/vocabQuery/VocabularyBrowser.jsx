@@ -105,7 +105,7 @@ function VocabularyBrowser(props) {
   }
 
   // Grab information about the given ID and populate the info box
-  let getInfo = (path) => {
+  let getInfo = (path, parentId = "") => {
     // If we don't yet know anything about our vocabulary, fill it in
     var vocabPath = path.split("/").slice(0, -1).join("/");
     if (vocab.path != vocabPath) {
@@ -114,7 +114,7 @@ function VocabularyBrowser(props) {
     }
 
     var url = new URL(path + ".info.json", window.location.origin);
-    MakeRequest(url, showInfo);
+    MakeRequest(url, showInfo, {parentInfoId : parentId});
   }
 
   let parseVocabInfo = (status, data) => {
@@ -131,7 +131,7 @@ function VocabularyBrowser(props) {
   }
 
   // callback for getInfo to populate info box
-  let showInfo = (status, data) => {
+  let showInfo = (status, data, params) => {
     if (status === null && data) {
       setTerm({name: data["label"],
                id: data["identifier"],
@@ -139,7 +139,7 @@ function VocabularyBrowser(props) {
                alsoKnownAs: data["synonyms"] || data["has_exact_synonym"] || [],
                typeOf: data["parents"]?.filter(p => typeof p === 'object').map(p => p["label"] || p["name"] || p["identifier"] || p["id"]) || [],
                path: data["@path"],
-               infoAnchor: browserOpened ? buttonRefs[data["identifier"]] : infoButtonRefs[data["identifier"]]
+               infoAnchor: browserOpened ? buttonRefs[data["identifier"] + params.parentInfoId] : infoButtonRefs[data["identifier"]]
              });
       setTermInfoVisible(true);
       setInfoAboveBackground(browserOpened);

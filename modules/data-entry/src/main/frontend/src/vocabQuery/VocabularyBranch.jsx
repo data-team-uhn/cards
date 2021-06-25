@@ -55,10 +55,11 @@ import { LABEL_POS, VALUE_POS } from "../questionnaire/Answer";
 //  currentSelection: The ids of the terms that have been marked as selected do far in the vocabulary browser
 //  onTermUnselected: Function to remove added answer
 //  maxAnswers: maximum answers allowed for the vocabulary question
+//  parentId: id of a parent brunch term
 //
 function VocabularyBranch(props) {
   const { defaultOpen, id, path, name, onTermClick, onCloseInfoBox, registerInfo, getInfo, expands, headNode, focused, onError,
-    knownHasChildren, selectorComponent, onTermSelected, onTermUnselected, currentSelection, maxAnswers, classes } = props;
+    knownHasChildren, selectorComponent, onTermSelected, onTermUnselected, currentSelection, maxAnswers, parentId, classes } = props;
 
   const [ lastKnownID, setLastKnownID ] = useState();
   const [ currentlyLoading, setCurrentlyLoading ] = useState(typeof knownHasChildren === "undefined" && expands);
@@ -121,7 +122,7 @@ function VocabularyBranch(props) {
     if (status === null) {
       setHasChildren(data["lfs:children"].length > 0);
       setChildrenData(data["lfs:children"]);
-      buildChildren(data["lfs:children"]);
+      buildChildren(data);
     } else {
       onError("Error: children lookup failed with code " + status);
     }
@@ -129,7 +130,7 @@ function VocabularyBranch(props) {
 
   // Given information about our children, create elements to display their data
   let buildChildren = (data) => {
-    var children = data.map((row, index) =>
+    var children = data["lfs:children"].map((row, index) =>
       (<VocabularyBranch
         classes={classes}
         id={row["identifier"]}
@@ -150,6 +151,7 @@ function VocabularyBranch(props) {
         onTermUnselected={onTermUnselected}
         currentSelection={currentSelection}
         maxAnswers={maxAnswers}
+        parentId={data["identifier"]}
       />)
       );
     setLoadedChildren(true);
@@ -283,8 +285,8 @@ function VocabularyBranch(props) {
           <IconButton
             size="small"
             color="primary"
-            buttonRef={(node) => {registerInfo(id, node)}}
-            onClick={(event) => {event.stopPropagation(); getInfo(path)}}
+            buttonRef={(node) => {registerInfo(id + parentId, node)}}
+            onClick={(event) => {event.stopPropagation(); getInfo(path, parentId)}}
             className={classes.infoButton}
           >
             <Info color="primary" fontSize="small" className={classes.infoButton}/>
@@ -317,7 +319,12 @@ VocabularyBranch.propTypes = {
   onTermUnselected: PropTypes.func,
   currentSelection: PropTypes.array,
   maxAnswers: PropTypes.number,
+  parentId: PropTypes.string,
   classes: PropTypes.object.isRequired
+};
+
+VocabularyBranch.defaultProps = {
+  parentId: ""
 };
 
 export default withStyles(BrowseTheme)(VocabularyBranch);
