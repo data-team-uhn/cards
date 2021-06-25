@@ -91,7 +91,7 @@ function VocabularyBranch(props) {
   let removePath = (evt) => {
     let path = evt.detail[VALUE_POS];
     setSelectedPaths(old => {
-        let newPaths = old.filter(item => item!= path);
+        let newPaths = old.filter(item => item != path);
         return newPaths;
     });
   }
@@ -231,7 +231,7 @@ function VocabularyBranch(props) {
         onTermSelected(name, path);
       }
     } else {
-      let newPaths = selectedPaths.filter(item => item!= path);
+      let newPaths = selectedPaths.filter(item => item != path);
       setSelectedPaths(newPaths);
       onTermUnselected(name, path);
     }
