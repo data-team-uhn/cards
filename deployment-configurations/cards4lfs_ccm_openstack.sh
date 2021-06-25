@@ -132,27 +132,6 @@ fi
 cd $PROJECT_ROOT/compose-cluster
 docker-compose up -d
 
-#Wait for NeuralCR to start
-#while true
-#do
-#  echo "Waiting for NeuralCR to start"
-#  #It is safe to use --insecure here as we are only connecting to localhost
-#  curl --fail --insecure https://127.0.0.1/ncr/models/ && break
-#  sleep 5
-#done
-
-#Install the required NCR models
-#echo "Installing NCR models..."
-#cd $PROJECT_ROOT/Utilities/Administration
-
-#echo "Installing HP NCR model"
-#python3 install_neuralcr_model.py \
-#  --model_name HP \
-#  --model_type neural \
-#  --param_dir $PROJECT_ROOT/compose-cluster/NCR_MODEL/HP \
-#  --fasttext $PROJECT_ROOT/compose-cluster/NCR_MODEL/pmc_model_new.bin \
-#  --threshold 0.6 || exit -1
-
 #Almost ready to go, but a few things will need to be configured manually
 echo "Please login to CARDS through the localhost address and configure the user accounts, including LDAP"
 echo "cards4lfs_ccm_openstack deployment is now ready at https://lfs.ccm.sickkids.ca"
