@@ -72,12 +72,15 @@ function VocabularyBranch(props) {
   const SelectorComponent = selectorComponent;
 
   useEffect(() => {
+    // Add path to selectedPaths upon term selection from other branches
+    window.addEventListener('term-selected', addPath);
     // Remove path from selectedPaths upon term removal from chips list
     window.addEventListener('term-unselected', removePath);
     // Update selected path and radio buttons state upon term selection change if single answer question
     maxAnswers == 1 && window.addEventListener('term-changed', updatePath);
 
     return () => {
+      window.removeEventListener('term-selected', addPath);
       window.removeEventListener('term-unselected', removePath);
       maxAnswers == 1 && window.removeEventListener('term-changed', updatePath);
     };
@@ -86,6 +89,15 @@ function VocabularyBranch(props) {
   let updatePath = (evt) => {
     let path = evt.detail[VALUE_POS];
     setSelectedPaths([path]);
+  }
+
+  let addPath = (evt) => {
+    let path = evt.detail[VALUE_POS];
+    setSelectedPaths(old => {
+        let newPaths = old.slice();
+        newPaths.push(path);
+        return newPaths;
+    });
   }
 
   let removePath = (evt) => {

@@ -147,6 +147,13 @@ function VocabularyTree(props) {
     setRemovedTerms(old => {
       return old.filter(item => item[VALUE_POS] != path);
     });
+    // This event is needed to pass on to all branches so they check selected term
+    var addedEvent = new CustomEvent('term-selected', {
+          bubbles: true,
+          cancelable: true,
+          detail: [name, path]
+        });
+    document.dispatchEvent(addedEvent);
   }
 
   let removeOption = (name, path) => {
