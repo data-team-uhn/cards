@@ -128,10 +128,12 @@ then
     --savedir $PROJECT_ROOT/compose-cluster/NCR_MODEL || exit -1
 fi
 
-#Start up everything else
-cd $PROJECT_ROOT/compose-cluster
-docker-compose up -d
-
 #Almost ready to go, but a few things will need to be configured manually
 echo "Please login to CARDS through the localhost address and configure the user accounts, including LDAP"
-echo "cards4lfs_ccm_openstack deployment is now ready at https://lfs.ccm.sickkids.ca"
+echo "Once configured (ensuring that all default login credentials are changed) start everything else with:"
+echo ""
+echo "cd $PROJECT_ROOT/compose-cluster"
+echo "docker-compose up -d"
+echo ""
+echo "cards4lfs_ccm_openstack deployment will be ready at https://lfs.ccm.sickkids.ca"
+echo "It is recommended to login and ensure that all services, including NCR, are working as expected"
