@@ -116,8 +116,8 @@ function VocabularyQuery(props) {
             menuRef.current.children[0].focus();
           }
           event.preventDefault();
-        } else if (event.key == 'Tab') {
-          setInputValue("");
+        } else if (event.key == 'Tab' || event.key == "Escape") {
+          maxAnswers != 1 && setInputValue("");
           closeAutocomplete(event);
         }
       }}
@@ -198,62 +198,63 @@ function VocabularyQuery(props) {
 
   // Callback for queryInput to populate the suggestions bar
   let showSuggestions = (status, data) => {
-    if (!status) {
-        // Populate suggestions
-        var suggestions = [];
+    setSuggestionsLoading(false);
 
-        if (data["rows"].length > 0) {
-          data["rows"].forEach((element) => {
-            var name = element["label"] || element["name"] || element["identifier"];
-            suggestions.push(
-              <MenuItem
-                className={classes.dropdownItem}
-                key={element["@path"]}
-                onClick={(e) => {
-                  if (e.target.localName === "li") {
-                    onClick(element["@path"], name);
-                    setInputValue(clearOnClick ? "" : name);
-                    closeSuggestions();
-                  }}
-                }
-              >
-                {name}
-                <IconButton
-                  size="small"
-                  buttonRef={node => {
-                    registerInfoButton(element["identifier"], node);
-                  }}
-                  color="primary"
-                  aria-owns={"menu-list-grow"}
-                  aria-haspopup={true}
-                  onClick={(e) => setTermPath(element["@path"])}
-                  className={classes.infoButton}
-                >
-                  <Info color="primary" />
-                </IconButton>
-              </MenuItem>
-              );
-          });
-        } else {
-          suggestions.push(
-            <MenuItem
-              className={classes.dropdownItem}
-              key={NO_RESULTS_TEXT}
-              onClick={onClick}
-              disabled={true}
-            >
-              {NO_RESULTS_TEXT}
-            </MenuItem>
-          )
-        }
-
-        setSuggestions(suggestions);
-        setSuggestionsVisible(true);
-        setSuggestionsLoading(false);
-    } else {
+    if (status && data["rows"]?.length == 0) {
       setError("Cannot load answer suggestions for this question. Please inform your administrator.");
-      setSuggestionsLoading(false);
+      return;
     }
+
+    // Populate suggestions
+    var suggestions = [];
+
+    if (data["rows"].length > 0) {
+      data["rows"].forEach((element) => {
+        var name = element["label"] || element["name"] || element["identifier"];
+        suggestions.push(
+          <MenuItem
+            className={classes.dropdownItem}
+            key={element["@path"]}
+            onClick={(e) => {
+              if (e.target.localName === "li") {
+                onClick(element["@path"], name);
+                setInputValue(clearOnClick ? "" : name);
+                closeSuggestions();
+              }}
+            }
+          >
+            {name}
+            <IconButton
+              size="small"
+              buttonRef={node => {
+                registerInfoButton(element["identifier"], node);
+              }}
+              color="primary"
+              aria-owns={"menu-list-grow"}
+              aria-haspopup={true}
+              onClick={(e) => setTermPath(element["@path"])}
+              className={classes.infoButton}
+            >
+              <Info color="primary" />
+            </IconButton>
+          </MenuItem>
+          );
+      });
+    } else {
+      suggestions.push(
+        <MenuItem
+          className={classes.dropdownItem}
+          key={NO_RESULTS_TEXT}
+          onClick={onClick}
+          disabled={true}
+        >
+          {NO_RESULTS_TEXT}
+        </MenuItem>
+      )
+    }
+
+    setSuggestions(suggestions);
+    setSuggestionsVisible(true);
   }
 
   // Event handler for clicking away from the autocomplete while it is open
@@ -313,6 +314,8 @@ function VocabularyQuery(props) {
       setTermPath("");
       maxAnswers != 1 && setInputValue("");
       setError("");
+    } else {
+      anchorEl.current.focus();
     }
   }
 

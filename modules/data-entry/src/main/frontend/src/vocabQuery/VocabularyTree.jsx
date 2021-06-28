@@ -32,6 +32,7 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 //
 // Required arguments:
 //  open: Boolean representing whether or not the tree dialog is open
+//  infoAboveBackground: Boolean representing whether or not the term info box is placed above the vocabulary tree dialog
 //  path: Term @path to get the term info
 //  registerInfo: Callback to add a possible hook point for the info box
 //  getInfo: Callback to change the currently displayed info box term
@@ -50,7 +51,7 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 //
 function VocabularyTree(props) {
   const { open, path, onTermClick, registerInfo, getInfo, onClose, onCloseInfoBox, onError, browserRef, classes, vocabulary,
-    browseRoots, allowTermSelection, initialSelection, questionDefinition, ...rest } = props;
+    browseRoots, allowTermSelection, initialSelection, questionDefinition, infoAboveBackground, ...rest } = props;
 
   const [ lastKnownTerm, setLastKnownTerm ] = useState("");
   const [ parentNode, setParentNode ] = useState();
@@ -182,7 +183,11 @@ function VocabularyTree(props) {
     setRemovedTerms([]);
   }
 
-  let onCancel = () => {
+  let onCancel = (event) => {
+    if (event.key == "Escape" && infoAboveBackground) {
+      onCloseInfoBox && onCloseInfoBox();
+      return;
+    }
     onClose();
     setRemovedTerms([]);
   }
@@ -220,7 +225,7 @@ function VocabularyTree(props) {
       withCloseButton={!allowTermSelection}
       open={open}
       ref={browserRef}
-      onClose={onCancel}
+      onClose={(evt) => onCancel(evt)}
       className={classes.dialog}
       classes={{
         paper: classes.dialogPaper,
@@ -286,6 +291,7 @@ function VocabularyTree(props) {
 
 VocabularyTree.propTypes = {
   open: PropTypes.bool.isRequired,
+  infoAboveBackground: PropTypes.bool.isRequired,
   path: PropTypes.string.isRequired,
   onTermClick: PropTypes.func,
   registerInfo: PropTypes.func.isRequired,

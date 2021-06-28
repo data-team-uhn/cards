@@ -156,6 +156,7 @@ function VocabularyBrowser(props) {
 
     setCloseupTimer(setTimeout(() => {setTermInfoVisible(false);
     setTerm({});
+    setInfoAboveBackground(false);
     onCloseInfo && onCloseInfo();}, 300));
   }
 
@@ -205,11 +206,12 @@ function VocabularyBrowser(props) {
         {browserOpened && <VocabularyTree
           browserRef={browserRef}
           open={browserOpened || false}
+          infoAboveBackground={infoAboveBackground}
           vocabulary={vocab}
           path={browsePath}
           onTermClick={!browseRoots ? focusTerm : null}
           onClose={closeBrowser}
-          onCloseInfoBox={() => {setTermInfoVisible(false);}}
+          onCloseInfoBox={closeInfo}
           onError={logError}
           registerInfo={registerInfoButton}
           getInfo={getInfo}
