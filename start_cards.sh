@@ -112,8 +112,12 @@ then
   python3 Utilities/HostConfig/check_tcp_available.py --tcp_port $BIND_PORT || handle_tcp_bind_fail
 fi
 
+#Check if debug mode was requested
+EXPR='{"operation": "includes", "key": "debug", "val": "true"}' python3 \
+  Utilities/HostConfig/java_property_parser.py $@ && DEBUG=true || DEBUG=
+
 #Start CARDS in the background
-java -jar distribution/target/lfs-*jar $@ &
+java ${DEBUG:+-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005} -jar distribution/target/lfs-*jar $@ &
 CARDS_PID=$!
 
 #Check to see if CARDS was able to bind to the TCP port
