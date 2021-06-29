@@ -161,7 +161,7 @@ function VocabularyBranch(props) {
         selectorComponent={selectorComponent}
         onTermSelected={onTermSelected}
         onTermUnselected={onTermUnselected}
-        currentSelection={currentSelection}
+        currentSelection={selectedPaths}
         maxAnswers={maxAnswers}
         parentId={data["identifier"]}
       />)
