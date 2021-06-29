@@ -31,7 +31,8 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 import QueryStyle from "./queryStyle.jsx";
 import { LABEL_POS, VALUE_POS } from "../questionnaire/Answer";
 
-const NO_RESULTS_TEXT = "No results";
+const NO_RESULTS_TEXT = "No results, use:";
+const NONE_OF_ABOVE_TEXT = "None of the above, use:";
 const MAX_RESULTS = 10;
 
 // Component that renders a search bar for vocabulary terms.
@@ -108,7 +109,8 @@ function VocabularyQuery(props) {
       inputRef={anchorEl}
       onKeyDown={(event) => {
         if (event.key == 'Enter') {
-          queryInput(anchorEl.current.value);
+          onChange && onChange(event);
+          closeAutocomplete(event);
           event.preventDefault();
         } else if (event.key == 'ArrowDown' || event.key == 'ArrowUp') {
           // Move the focus to the 1st or last item of suggestions list
@@ -241,18 +243,56 @@ function VocabularyQuery(props) {
           </MenuItem>
           );
       });
+      suggestions.push(
+        <MenuItem
+          className={classes.dropdownItem + " " + classes.noneOfAboveResults}
+          key={NONE_OF_ABOVE_TEXT}
+          disabled={true}
+        >
+          <Typography
+              component="p"
+              color="textSecondary"
+              className={classes.noneOfAboveResultsText}
+              variant="caption"
+            >
+            {NONE_OF_ABOVE_TEXT}
+          </Typography>
+        </MenuItem>
+      );
     } else {
       suggestions.push(
         <MenuItem
           className={classes.dropdownItem}
           key={NO_RESULTS_TEXT}
-          onClick={onClick}
           disabled={true}
         >
-          {NO_RESULTS_TEXT}
+          <Typography
+              component="p"
+              color="textSecondary"
+              className={classes.noResults}
+              variant="caption"
+            >
+            {NO_RESULTS_TEXT}
+          </Typography>
         </MenuItem>
-      )
+      );
     }
+
+    suggestions.push(
+        <MenuItem
+          className={classes.dropdownItem}
+          key={anchorEl.current.value}
+          onClick={(e) => {
+              if (e.target.localName === "li") {
+                onClick(anchorEl.current.value, anchorEl.current.value);
+                clearOnClick && setInputValue("");
+                closeSuggestions();
+              }}
+            }
+        >
+          {anchorEl.current.value}
+        </MenuItem>
+    );
 
     setSuggestions(suggestions);
     setSuggestionsVisible(true);
