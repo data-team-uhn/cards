@@ -18,7 +18,7 @@
 //
 import React, { useCallback, useRef, useState, useContext } from "react";
 import { Chip, Typography, Button, Dialog, CircularProgress, IconButton } from "@material-ui/core";
-import { DialogActions, DialogContent, DialogTitle, Grid, Select, MenuItem, TextField, withStyles } from "@material-ui/core";
+import { DialogActions, DialogContent, DialogTitle, Grid, ListSubheader, Select, MenuItem, TextField, withStyles } from "@material-ui/core";
 import Add from "@material-ui/icons/Add";
 import CloseIcon from '@material-ui/icons/Close';
 
@@ -376,11 +376,12 @@ function Filters(props) {
     return fields.map((name) => {
       if (typeof name == "string") {
         // Straight strings are MenuItems
-        return <option value={name} key={name}>{filterableTitles[name]}</option>
+        return <MenuItem value={name} key={name} className={classes.categoryOption}>{filterableTitles[name]}</MenuItem>
       } else if (Array.isArray(name)) {
         // Arrays represent Questionnaires of Sections
         // which we'll need to turn into opt groups
-        return <optgroup label={name[0]} key={name}>{GetReactComponentFromFields(name.slice(1))}</optgroup>
+        return [<ListSubheader className={classes.categoryHeader}>{name[0]}</ListSubheader>,
+          GetReactComponentFromFields(name.slice(1))];
       }
     })
   }
@@ -473,11 +474,10 @@ function Filters(props) {
                       className={classes.answerField}
                       autoFocus={(index === editingFilters.length-1 && toFocus === index)}
                       displayEmpty
-                      native
                       >
-                        <option value="" disabled>
-                          Add new filter...
-                        </option>
+                        <MenuItem value="" disabled>
+                          <span className={classes.selectPlaceholder}>Add new filter...</span>
+                        </MenuItem>
                         {GetReactComponentFromFields(filterableFields)}
                     </Select>
                   </Grid>
