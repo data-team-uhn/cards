@@ -58,7 +58,7 @@ const liveTableStyle = theme => ({
         padding: theme.spacing(0, 2),
     },
     categoryHeader: {
-        backgroundColor: "#FFFFFF"
+        backgroundColor: theme.palette.background.paper
     },
     hidden: {
         visibility: "hidden"
