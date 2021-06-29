@@ -103,7 +103,7 @@ function VocabularyQuery(props) {
       onChange={(event) => {
         delayLookup(event.target.value);
         setInputValue(event.target.value);
-        maxAnswers != 1 && onChange && onChange(event);
+        (maxAnswers != 1 || event.target.value == "") && onChange && onChange(event);
       }}
       inputRef={anchorEl}
       onKeyDown={(event) => {
