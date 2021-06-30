@@ -33,7 +33,7 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
  *
  * @param {string} defaultValue The default value to place in the boolean filter
  * @param {func} onChangeInput Callback for when the value select has changed
- * @param {object} questionDefinition Object containing the definition of the question. Should include nodes whose jcr:primaryType is lfs:AnswerOption
+ * @param {object} questionDefinition Object containing the definition of the question. Should include nodes whose jcr:primaryType is cards:AnswerOption
  * Other props are forwarded to the Select component
  *
  */

@@ -1,8 +1,8 @@
 {
-    "name": "lfs-variants",
+    "name": "cards-variants",
     "version": "0.1.0",
-    "description": "Variants resources for the LFS Project",
-    "author": "SickKids",
+    "description": "Variants resources for the CARDS Project",
+    "author": "UHN DATA",
     "license": "Apache-2.0",
     "repository": {
       "type": "git",

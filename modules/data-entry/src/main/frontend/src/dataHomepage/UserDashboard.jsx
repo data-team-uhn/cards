@@ -42,14 +42,14 @@ import AddIcon from "@material-ui/icons/Add";
 async function getDashboardExtensions() {
   return loadExtensions("DashboardViews")
     .then(extensions => extensions.slice()
-      .sort((a, b) => a["lfs:defaultOrder"] - b["lfs:defaultOrder"])
+      .sort((a, b) => a["cards:defaultOrder"] - b["cards:defaultOrder"])
     )
 }
 
 async function getMenuItems() {
   return loadExtensions("DashboardMenuItems")
     .then(extensions => extensions.slice()
-      .sort((a, b) => a["lfs:defaultOrder"] - b["lfs:defaultOrder"])
+      .sort((a, b) => a["cards:defaultOrder"] - b["cards:defaultOrder"])
     )
 }
 
@@ -97,7 +97,7 @@ function UserDashboard(props) {
       <Grid container spacing={3}>
         {
           dashboardExtensions.map((extension, index) => {
-            let Extension = extension["lfs:extensionRender"];
+            let Extension = extension["cards:extensionRender"];
             return <Grid item lg={12} xl={6} key={"extension-" + index} className={classes.dashboardEntry}>
               <Extension />
             </Grid>
@@ -108,7 +108,7 @@ function UserDashboard(props) {
         <DialogContent dividers className={classes.dialogContentWithTable}>
           <MaterialTable
             columns={[
-              { field: 'lfs:extensionName' },
+              { field: 'cards:extensionName' },
             ]}
             data={creationExtensions}
             options={{
@@ -155,7 +155,7 @@ function UserDashboard(props) {
       />
       {
         creationExtensions.map((extension, index) => {
-          let Extension = extension["lfs:extensionRender"];
+          let Extension = extension["cards:extensionRender"];
           return <Extension
             open={index === selectedCreation}
             onClose={onClose}

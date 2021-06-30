@@ -1,7 +1,7 @@
 {
-  "jcr:primaryType": "lfs:Extension",
-  "lfs:extensionPointId": "lfs/coreUI/view",
-  "lfs:extensionName": "Variants",
-  "lfs:targetURL": "/content.html/Variants",
-  "lfs:extensionRenderURL": "asset:lfs-variants.variantFilesContainer.js"
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/view",
+  "cards:extensionName": "Variants",
+  "cards:targetURL": "/content.html/Variants",
+  "cards:extensionRenderURL": "asset:cards-variants.variantFilesContainer.js"
 }

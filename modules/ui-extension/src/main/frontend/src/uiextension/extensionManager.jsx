@@ -22,10 +22,10 @@ import { loadAsset } from '../assetManager';
 // Retrieves the JSON that lists all the extensions available for the given extension point.
 // This is an asynchronous function, it will return a Promise that resolves to the actual JSON.
 //
-// @param {string} extensionPoint an extension point, either a repository path like `/apps/lfs/ExtensionPoints/SidebarEntry`, or just a name that will be automatically prefixed with `/apps/lfs/ExtensionPoints/`.
+// @param {string} extensionPoint an extension point, either a repository path like `/apps/cards/ExtensionPoints/SidebarEntry`, or just a name that will be automatically prefixed with `/apps/cards/ExtensionPoints/`.
 // @return a Promise that will resolve to the extension point JSON
 var getExtensions = async function(extensionPoint) {
-  return fetch(/^\//.test(extensionPoint) ? extensionPoint : `/apps/lfs/ExtensionPoints/${extensionPoint}`)
+  return fetch(/^\//.test(extensionPoint) ? extensionPoint : `/apps/cards/ExtensionPoints/${extensionPoint}`)
     .then(response => response.ok ? response.json() : Promise.reject(response));
 }
 
@@ -33,7 +33,7 @@ var getExtensions = async function(extensionPoint) {
 // Other than retrieving and parsing the extension point JSON, it will also fetch remote assets such as code to execute or icons to display.
 // This is an asynchronous function, it will return a Promise that resolves to the actual list of extensions.
 //
-// @param {string} extensionPoint an extension point, either a repository path like `/apps/lfs/ExtensionPoints/SidebarEntry`, or just a name that will be automatically prefixed with `/apps/lfs/ExtensionPoints/`.
+// @param {string} extensionPoint an extension point, either a repository path like `/apps/cards/ExtensionPoints/SidebarEntry`, or just a name that will be automatically prefixed with `/apps/cards/ExtensionPoints/`.
 // @return a Promise that will resolve to an array of extensions, where each extension is the parsed JSON returned by the repository, with asset properties fetched and parsed
 var loadExtensions = async function(extensionPoint) {
   let extensions = await getExtensions(extensionPoint);

@@ -19,7 +19,7 @@
 
 <node>
 	<name>Tumors</name>
-	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
+	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
 		<value>Tumors</value>
@@ -39,10 +39,10 @@
 	</property>
 	<node>
 		<name>diagnosis_section</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
 			<name>date_of_diagnosis</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Date of diagnosis</value>
@@ -71,7 +71,7 @@
 		</node>
 		<node>
 			<name>age_at_diagnosis</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Age at diagnosis</value>
@@ -100,7 +100,7 @@
 		</node>
 		<node>
 			<name>short_diagnosis</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Short diagnosis</value>
@@ -124,7 +124,7 @@
 		</node>
 		<node>
 			<name>diagnosis_code</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Diagnosis code</value>
@@ -160,7 +160,7 @@
 			</property>
 			<node>
 				<name>vocabularyFilters</name>
-				<primaryNodeType>lfs:VocabularyFilterGroup</primaryNodeType>
+				<primaryNodeType>cards:VocabularyFilterGroup</primaryNodeType>
 				<property>
 					<name>ORDO</name>
 					<values>
@@ -179,7 +179,7 @@
 		</node>
 		<node>
 			<name>diagnosis_from_pathology_report</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Diagnosis (Morphology) as on pathology report</value>
@@ -208,7 +208,7 @@
 		</node>
 		<node>
 			<name>ICD_morphology_code</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>ICD Morphology Code</value>
@@ -232,7 +232,7 @@
 		</node>
 		<node>
 			<name>source_of_diagnosis</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Source of Tumor Diagnosis</value>
@@ -260,7 +260,7 @@
 			</property>
 			<node>
 				<name>Pathology report</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>Pathology report</value>
@@ -269,7 +269,7 @@
 			</node>
 			<node>
 				<name>Clinic note</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>Clinic note</value>
@@ -278,7 +278,7 @@
 			</node>
 			<node>
 				<name>Biopsy report</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>Biopsy report</value>
@@ -287,7 +287,7 @@
 			</node>
 			<node>
 				<name>Autopsy report</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>Autopsy report</value>
@@ -296,7 +296,7 @@
 			</node>
 			<node>
 				<name>Tissue metrix</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>Tissue metrix</value>
@@ -306,7 +306,7 @@
 		</node>
 		<node>
 			<name>symptoms</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Symptoms</value>
@@ -342,7 +342,7 @@
 		</node>
 		<node>
 			<name>smoking_history</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Smoking history (lung tumors)</value>
@@ -372,10 +372,10 @@
 	</node>
 	<node>
 		<name>detection_section</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
 			<name>modality_of_detection</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Modality of detection</value>
@@ -399,7 +399,7 @@
 		</node>
 		<node>
 			<name>detected_by_imaging</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Detected by surveillance imaging</value>
@@ -429,10 +429,10 @@
 	</node>
 	<node>
 		<name>location_section</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
 			<name>location</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Location (code)</value>
@@ -456,7 +456,7 @@
 		</node>
 		<node>
 			<name>Topography of primary lesion</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Topography of primary lesion</value>
@@ -480,7 +480,7 @@
 		</node>
 		<node>
 			<name>ICD_topography_code</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>ICD Topography Code</value>
@@ -504,7 +504,7 @@
 		</node>
 		<node>
 			<name>laterality</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Laterality</value>
@@ -532,7 +532,7 @@
 			</property>
 			<node>
 				<name>0</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>0</value>
@@ -551,7 +551,7 @@
 			</node>
 			<node>
 				<name>1</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>1</value>
@@ -565,7 +565,7 @@
 			</node>
 			<node>
 				<name>2</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>2</value>
@@ -579,7 +579,7 @@
 			</node>
 			<node>
 				<name>3</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>3</value>
@@ -595,10 +595,10 @@
 	</node>
 	<node>
 		<name>status_section</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
 			<name>recurrence</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Recurrence</value>
@@ -626,7 +626,7 @@
 			</property>
 			<node>
 				<name>NA</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>NA</value>
@@ -645,7 +645,7 @@
 			</node>
 			<node>
 				<name>P</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>P</value>
@@ -659,7 +659,7 @@
 			</node>
 			<node>
 				<name>R</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>R</value>
@@ -673,7 +673,7 @@
 			</node>
 			<node>
 				<name>RC</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>RC</value>
@@ -688,7 +688,7 @@
 		</node>
 		<node>
 			<name>malignancy</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Malignancy</value>
@@ -716,7 +716,7 @@
 			</property>
 			<node>
 				<name>NA</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>NA</value>
@@ -735,7 +735,7 @@
 			</node>
 			<node>
 				<name>B</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>B</value>
@@ -749,7 +749,7 @@
 			</node>
 			<node>
 				<name>BP</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>BP</value>
@@ -763,7 +763,7 @@
 			</node>
 			<node>
 				<name>P</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>P</value>
@@ -777,7 +777,7 @@
 			</node>
 			<node>
 				<name>PM</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>PM</value>
@@ -791,7 +791,7 @@
 			</node>
 			<node>
 				<name>M</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>M</value>
@@ -805,7 +805,7 @@
 			</node>
 			<node>
 				<name>U</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>U</value>
@@ -825,7 +825,7 @@
 		</node>
 		<node>
 			<name>localized</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Localized</value>
@@ -854,7 +854,7 @@
 		</node>
 		<node>
 			<name>spread</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Spread</value>
@@ -882,7 +882,7 @@
 			</property>
 			<node>
 				<name>P</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>P</value>
@@ -896,7 +896,7 @@
 			</node>
 			<node>
 				<name>Met</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>Met</value>
@@ -910,7 +910,7 @@
 			</node>
 			<node>
 				<name>NA</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>NA</value>
@@ -925,7 +925,7 @@
 		</node>
 		<node>
 			<name>grade</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Grade</value>
@@ -958,7 +958,7 @@
 			</property>
 			<node>
 				<name>NA</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>NA</value>
@@ -977,7 +977,7 @@
 			</node>
 			<node>
 				<name>Low</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>Low</value>
@@ -986,7 +986,7 @@
 			</node>
 			<node>
 				<name>High</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>High</value>
@@ -995,7 +995,7 @@
 			</node>
 			<node>
 				<name>1_3</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>1/3</value>
@@ -1004,7 +1004,7 @@
 			</node>
 			<node>
 				<name>2_3</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>2/3</value>
@@ -1013,7 +1013,7 @@
 			</node>
 			<node>
 				<name>3_3</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>3/3</value>
@@ -1022,7 +1022,7 @@
 			</node>
 			<node>
 				<name>1_4</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>1/4</value>
@@ -1031,7 +1031,7 @@
 			</node>
 			<node>
 				<name>2_4</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>2/4</value>
@@ -1040,7 +1040,7 @@
 			</node>
 			<node>
 				<name>3_4</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>3/4</value>
@@ -1049,7 +1049,7 @@
 			</node>
 			<node>
 				<name>4_4</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>4/4</value>
@@ -1059,7 +1059,7 @@
 		</node>
 		<node>
 			<name>group</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Group</value>
@@ -1088,7 +1088,7 @@
 		</node>
 		<node>
 			<name>stage</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Stage</value>
@@ -1116,7 +1116,7 @@
 			</property>
 			<node>
 				<name>I</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>I</value>
@@ -1125,7 +1125,7 @@
 			</node>
 			<node>
 				<name>II</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>II</value>
@@ -1134,7 +1134,7 @@
 			</node>
 			<node>
 				<name>III</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>III</value>
@@ -1143,7 +1143,7 @@
 			</node>
 			<node>
 				<name>IV</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>IV</value>
@@ -1153,7 +1153,7 @@
 		</node>
 		<node>
 			<name>sites_of_metastases</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Topography/sites of metastases if present</value>
@@ -1182,7 +1182,7 @@
 		</node>
 		<node>
 			<name>specific_features</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Specific molecular/cytogenetic/Immunohistochemistry features (ex. HER2+)</value>
@@ -1211,7 +1211,7 @@
 		</node>
 		<node>
 			<name>risk_group_assignment</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Risk Group Assignment</value>
@@ -1234,7 +1234,7 @@
 			</property>
 			<node>
 				<name>Low risk</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>Low risk</value>
@@ -1243,7 +1243,7 @@
 			</node>
 			<node>
 				<name>Intermediate</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>Intermediate</value>
@@ -1252,7 +1252,7 @@
 			</node>
 			<node>
 				<name>High risk</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>High risk</value>
@@ -1261,7 +1261,7 @@
 			</node>
 			<node>
 				<name>Very high risk</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>Very high risk</value>
@@ -1271,7 +1271,7 @@
 		</node>
 		<node>
 			<name>classification_schema</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Group/Stage/Risk Classification Schema</value>
@@ -1296,10 +1296,10 @@
 	</node>
 	<node>
 		<name>treatment_section</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
 			<name>resected</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Resected</value>
@@ -1328,7 +1328,7 @@
 		</node>
 		<node>
 			<name>surgery_extent</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Surgery - extent</value>
@@ -1357,7 +1357,7 @@
 		</node>
 		<node>
 			<name>Chemotherapy</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Chemotherapy</value>
@@ -1386,7 +1386,7 @@
 		</node>
 		<node>
 			<name>Radiotherapy</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Radiotherapy</value>
@@ -1415,7 +1415,7 @@
 		</node>
 		<node>
 			<name>Immunotherapy</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Immunotherapy</value>
@@ -1444,7 +1444,7 @@
 		</node>
 		<node>
 			<name>targeted_therapy</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Targeted therapy</value>
@@ -1473,7 +1473,7 @@
 		</node>
 		<node>
 			<name>Bone_Marrow_Transplant</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Bone Marrow Transplant</value>
@@ -1502,10 +1502,10 @@
 		</node>
 		<node>
 			<name>Bone_Marrow_Transplant_Type_Section</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -1513,7 +1513,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -1529,7 +1529,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -1541,7 +1541,7 @@
 			</node>
 			<node>
 				<name>Bone_Marrow_Transplant_Type</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Bone Marrow Transplant Type</value>
@@ -1569,7 +1569,7 @@
 				</property>
 				<node>
 					<name>Autologus</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Autologus (AUTO)</value>
@@ -1583,7 +1583,7 @@
 				</node>
 				<node>
 					<name>Allogenic</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Allogenic (ALLO)</value>
@@ -1597,7 +1597,7 @@
 				</node>
 				<node>
 					<name>Other</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Other</value>
@@ -1611,7 +1611,7 @@
 				</node>
 				<node>
 					<name>Unknown</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Unknown</value>
@@ -1627,7 +1627,7 @@
 		</node>
 		<node>
 			<name>treatment_at_PMH</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Describe treatments done at PMH, if any</value>
@@ -1656,7 +1656,7 @@
 		</node>
 		<node>
 			<name>special_AE</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Special AE</value>
@@ -1680,7 +1680,7 @@
 		</node>
 		<node>
 			<name>preventions</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Preventions</value>
@@ -1705,10 +1705,10 @@
 	</node>
 	<node>
 		<name>comments_section</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
 			<name>comments</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Comments</value>

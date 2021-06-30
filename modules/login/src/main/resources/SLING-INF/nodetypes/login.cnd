@@ -18,7 +18,7 @@
 //
 
 <sling = 'http://sling.apache.org/jcr/sling/1.0'>
-<lfs = 'https://lfs.ccm.sickkids.ca/'>
+<cards = 'https://uhndata.io/cards/'>
 
 //-----------------------------------------------------------------------------
 //
@@ -28,13 +28,13 @@
 
 //-----------------------------------------------------------------------------
 // Simple nodetype for identifying the login page.
-[lfs:login] > sling:Folder
+[cards:login] > sling:Folder
   // No attributes
 
   // Properties:
   // Hardcode the resource type
-  - sling:resourceType (STRING) = "lfs/login" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/login" mandatory autocreated protected
   // Hardcode the resource supertype: the login page is a resource
-  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
   // Set a default title
   - title (String) = "${platform.name} - Sign in" mandatory autocreated

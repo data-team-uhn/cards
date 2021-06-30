@@ -1,5 +1,5 @@
-<sly data-sly-use.contentType="ca.sickkids.ccm.lfs.scripting.ContentTypeSetter">${contentType.html}</sly>
-<sly data-sly-use.statusCode="ca.sickkids.ccm.lfs.scripting.StatusCodeSetter">${statusCode.notFound}</sly>
+<sly data-sly-use.contentType="io.uhndata.cards.scripting.ContentTypeSetter">${contentType.html}</sly>
+<sly data-sly-use.statusCode="io.uhndata.cards.scripting.StatusCodeSetter">${statusCode.notFound}</sly>
 <!--/*
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
@@ -24,31 +24,31 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <sly data-sly-use.config="/libs/lfs/conf/Version">
+    <sly data-sly-use.config="/libs/cards/conf/Version">
       <meta name="version" content="${config['Version']}">
     </sly>
-    <sly data-sly-use.config="/libs/lfs/conf/PlatformName">
+    <sly data-sly-use.config="/libs/cards/conf/PlatformName">
       <meta name="platformName" content="${config['PlatformName']}">
     </sly>
-    <sly data-sly-use.config="/libs/lfs/conf/AppName">
+    <sly data-sly-use.config="/libs/cards/conf/AppName">
       <meta name="title" content="${config['AppName']}">
       <title>${config.AppName}</title>
     </sly>
-    <sly data-sly-use.config="/libs/lfs/conf/ThemeColor">
+    <sly data-sly-use.config="/libs/cards/conf/ThemeColor">
       <meta name="themeColor" content="${config['ThemeColor']}">
     </sly>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&amp;display=swap" class="next-head"/>
     <script src="/system/sling.js"></script>
-    <sly data-sly-use.assets="/libs/lfs/resources/assets">
-      <script src="/libs/lfs/resources/${assets['vendor.js']}"></script>
-      <script src="/libs/lfs/resources/${assets['runtime.js']}"></script>
+    <sly data-sly-use.assets="/libs/cards/resources/assets">
+      <script src="/libs/cards/resources/${assets['vendor.js']}"></script>
+      <script src="/libs/cards/resources/${assets['runtime.js']}"></script>
     </sly>
   </head>
   <body>
     <div id="main-404-container"></div>
-    <sly data-sly-use.assets="/libs/lfs/resources/assets">
-      <script src="/libs/lfs/resources/${assets['lfs-commons.404.js']}"></script>
+    <sly data-sly-use.assets="/libs/cards/resources/assets">
+      <script src="/libs/cards/resources/${assets['cards-commons.404.js']}"></script>
     </sly>
   </body>
 </html>

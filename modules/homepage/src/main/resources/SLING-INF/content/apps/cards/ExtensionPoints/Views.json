@@ -1,0 +1,5 @@
+{
+    "jcr:primaryType": "cards:ExtensionPoint",
+    "cards:extensionPointId": "cards/coreUI/view",
+    "cards:extensionPointName": "Main views that can be displayed in the browser"
+}

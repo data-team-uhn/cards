@@ -1,9 +1,9 @@
 {
-  "jcr:primaryType": "lfs:Extension",
-  "lfs:extensionPointId": "lfs/coreUI/admindashboard/entry",
-  "lfs:extensionName": "Groups",
-  "lfs:defaultOrder": 95,
-  "lfs:targetURL": "/content.html/admin/grouplist",
-  "lfs:icon": "asset:lfs-principals.groupIcon.js",
-  "lfs:hint": "Organize users in groups"
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/admindashboard/entry",
+  "cards:extensionName": "Groups",
+  "cards:defaultOrder": 95,
+  "cards:targetURL": "/content.html/admin/grouplist",
+  "cards:icon": "asset:cards-principals.groupIcon.js",
+  "cards:hint": "Organize users in groups"
 }

@@ -1,7 +1,7 @@
 {
-  "jcr:primaryType": "lfs:Extension",
-  "lfs:extensionPointId": "lfs/coreUI/view",
-  "lfs:extensionName": "Vocabularies",
-  "lfs:extensionRenderURL": "asset:lfs-vocabularies.admin-page.js",
-  "lfs:targetURL": "/content.html/admin/Vocabularies"
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/view",
+  "cards:extensionName": "Vocabularies",
+  "cards:extensionRenderURL": "asset:cards-vocabularies.admin-page.js",
+  "cards:targetURL": "/content.html/admin/Vocabularies"
 }

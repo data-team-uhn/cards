@@ -40,7 +40,7 @@ import {
 async function getAdminRoutes() {
   return loadExtensions("AdminDashboard")
     .then(extensions => extensions.slice()
-      .sort((a, b) => a["lfs:defaultOrder"] - b["lfs:defaultOrder"])
+      .sort((a, b) => a["cards:defaultOrder"] - b["cards:defaultOrder"])
     )
 }
 
@@ -75,11 +75,11 @@ function AdminDashboard(props) {
         <List>
           {
             adminRoutes.map((route) => {
-              const EntryIcon = route["lfs:icon"];
+              const EntryIcon = route["cards:icon"];
               return (
                 <NavLink
-                  to={route["lfs:targetURL"]}
-                  key={route["lfs:targetURL"]}
+                  to={route["cards:targetURL"]}
+                  key={route["cards:targetURL"]}
                   className={classes.listItem}
                 >
                   <ListItem button className={classes.listButton}>
@@ -88,8 +88,8 @@ function AdminDashboard(props) {
                     </ListItemIcon>
                     <ListItemText
                       className={classes.listText}
-                      primary={<Typography variant="body1">{route["lfs:extensionName"]}</Typography>}
-                      secondary={<Typography variant="body2">{route["lfs:hint"]}</Typography>}
+                      primary={<Typography variant="body1">{route["cards:extensionName"]}</Typography>}
+                      secondary={<Typography variant="body2">{route["cards:hint"]}</Typography>}
                       disableTypography={true}
                     />
                   </ListItem>

@@ -1,8 +1,8 @@
 {
-  "jcr:primaryType": "lfs:Extension",
-  "lfs:extensionPointId": "lfs/coreUI/view",
-  "lfs:extensionName": "Administration",
-  "lfs:extensionRenderURL": "asset:lfs-homepage.adminDashboard.js",
-  "lfs:targetURL": "/content.html/admin",
-  "lfs:exactURLMatch": true
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/view",
+  "cards:extensionName": "Administration",
+  "cards:extensionRenderURL": "asset:cards-homepage.adminDashboard.js",
+  "cards:targetURL": "/content.html/admin",
+  "cards:exactURLMatch": true
 }

@@ -19,7 +19,7 @@
 
 <node>
 	<name>VocabularyMultipleChoiceTest</name>
-	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
+	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
 		<value>Multiple Choice Test</value>
@@ -27,7 +27,7 @@
 	</property>
 	<property>
 		<name>description</name>
-		<value>LFS-1073</value>
+		<value>cards-1073</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -44,7 +44,7 @@
 	</property>
 	<node>
 		<name>race_ethnicity1</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Race/Ethnicity reported</value>
@@ -79,7 +79,7 @@
 		</property>
 		<node>
 			<name>vocabularyFilters</name>
-			<primaryNodeType>lfs:VocabularyFilterGroup</primaryNodeType>
+			<primaryNodeType>cards:VocabularyFilterGroup</primaryNodeType>
 			<property>
 				<name>HANCESTRO</name>
 				<values>
@@ -90,7 +90,7 @@
 		</node>
 		<node>
 			<name>African race</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
 				<value>/Vocabularies/HANCESTRO/HANCESTRO_0010</value>
@@ -99,7 +99,7 @@
 		</node>
 		<node>
 			<name>American Indian</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
 				<value>/Vocabularies/HANCESTRO/HANCESTRO_0013</value>
@@ -108,7 +108,7 @@
 		</node>
 		<node>
 			<name>Alaska native</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
 				<value>/Vocabularies/HANCESTRO/HANCESTRO_0595</value>
@@ -117,7 +117,7 @@
 		</node>
 		<node>
 			<name>Asian</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
 				<value>/Vocabularies/HANCESTRO/HANCESTRO_0008</value>
@@ -126,7 +126,7 @@
 		</node>
 		<node>
 			<name>Pacific islander</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
 				<value>/Vocabularies/HANCESTRO/HANCESTRO_0574</value>
@@ -135,7 +135,7 @@
 		</node>
 		<node>
 			<name>Australian aborigine</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
 				<value>/Vocabularies/HANCESTRO/HANCESTRO_0552</value>
@@ -144,7 +144,7 @@
 		</node>
 		<node>
 			<name>Caucasian</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
 				<value>/Vocabularies/HANCESTRO/HANCESTRO_0005</value>
@@ -153,7 +153,7 @@
 		</node>
 		<node>
 			<name>Hispanic</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
 				<value>/Vocabularies/HANCESTRO/HANCESTRO_0014</value>
@@ -162,7 +162,7 @@
 		</node>
 		<node>
 			<name>Indian</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
 				<value>/Vocabularies/HANCESTRO/HANCESTRO_0487</value>
@@ -172,7 +172,7 @@
 	</node>
 	<node>
 		<name>race_ethnicity2</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Race/Ethnicity reported</value>
@@ -207,7 +207,7 @@
 		</property>
 		<node>
 			<name>vocabularyFilters</name>
-			<primaryNodeType>lfs:VocabularyFilterGroup</primaryNodeType>
+			<primaryNodeType>cards:VocabularyFilterGroup</primaryNodeType>
 			<property>
 				<name>HANCESTRO</name>
 				<values>
@@ -218,7 +218,7 @@
 		</node>
 		<node>
 			<name>African race</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
 				<value>/Vocabularies/HANCESTRO/HANCESTRO_0010</value>
@@ -227,7 +227,7 @@
 		</node>
 		<node>
 			<name>American Indian</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
 				<value>/Vocabularies/HANCESTRO/HANCESTRO_0013</value>
@@ -236,7 +236,7 @@
 		</node>
 		<node>
 			<name>Alaska native</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
 				<value>/Vocabularies/HANCESTRO/HANCESTRO_0595</value>
@@ -245,7 +245,7 @@
 		</node>
 		<node>
 			<name>Asian</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
 				<value>/Vocabularies/HANCESTRO/HANCESTRO_0008</value>
@@ -254,7 +254,7 @@
 		</node>
 		<node>
 			<name>Pacific islander</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
 				<value>/Vocabularies/HANCESTRO/HANCESTRO_0574</value>
@@ -263,7 +263,7 @@
 		</node>
 		<node>
 			<name>Australian aborigine</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
 				<value>/Vocabularies/HANCESTRO/HANCESTRO_0552</value>
@@ -272,7 +272,7 @@
 		</node>
 		<node>
 			<name>Caucasian</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
 				<value>/Vocabularies/HANCESTRO/HANCESTRO_0005</value>
@@ -281,7 +281,7 @@
 		</node>
 		<node>
 			<name>Hispanic</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
 				<value>/Vocabularies/HANCESTRO/HANCESTRO_0014</value>
@@ -290,7 +290,7 @@
 		</node>
 		<node>
 			<name>Indian</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
 				<value>/Vocabularies/HANCESTRO/HANCESTRO_0487</value>
@@ -300,7 +300,7 @@
 	</node>
 	<node>
 		<name>race_ethnicity3</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Race/Ethnicity reported</value>
@@ -340,7 +340,7 @@
 		</property>
 		<node>
 			<name>vocabularyFilters</name>
-			<primaryNodeType>lfs:VocabularyFilterGroup</primaryNodeType>
+			<primaryNodeType>cards:VocabularyFilterGroup</primaryNodeType>
 			<property>
 				<name>HANCESTRO</name>
 				<values>
@@ -352,7 +352,7 @@
 	</node>
 	<node>
 		<name>race_ethnicity4</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Race/Ethnicity reported</value>
@@ -392,7 +392,7 @@
 		</property>
 		<node>
 			<name>vocabularyFilters</name>
-			<primaryNodeType>lfs:VocabularyFilterGroup</primaryNodeType>
+			<primaryNodeType>cards:VocabularyFilterGroup</primaryNodeType>
 			<property>
 				<name>HANCESTRO</name>
 				<values>
@@ -404,7 +404,7 @@
 	</node>
 	<node>
 		<name>gender</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Gender</value>
@@ -432,7 +432,7 @@
 		</property>
 		<node>
 			<name>M</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Male</value>
@@ -446,7 +446,7 @@
 		</node>
 		<node>
 			<name>F</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Female</value>
@@ -460,7 +460,7 @@
 		</node>
 		<node>
 			<name>O</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Other</value>
@@ -474,7 +474,7 @@
 		</node>
 		<node>
 			<name>U</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -489,7 +489,7 @@
 	</node>
 	<node>
 		<name>gender2</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Test multiple choice</value>
@@ -517,7 +517,7 @@
 		</property>
 		<node>
 			<name>M</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Male</value>
@@ -531,7 +531,7 @@
 		</node>
 		<node>
 			<name>F</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Female</value>
@@ -545,7 +545,7 @@
 		</node>
 		<node>
 			<name>O</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Other</value>
@@ -559,7 +559,7 @@
 		</node>
 		<node>
 			<name>U</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -574,7 +574,7 @@
 	</node>
 	<node>
 		<name>gender3</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Gender</value>
@@ -602,7 +602,7 @@
 		</property>
 		<node>
 			<name>M</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Male</value>
@@ -616,7 +616,7 @@
 		</node>
 		<node>
 			<name>F</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Female</value>
@@ -630,7 +630,7 @@
 		</node>
 		<node>
 			<name>O</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Other</value>
@@ -644,7 +644,7 @@
 		</node>
 		<node>
 			<name>U</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -659,7 +659,7 @@
 	</node>
 	<node>
 		<name>gender4</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Gender</value>
@@ -687,7 +687,7 @@
 		</property>
 		<node>
 			<name>M</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Male</value>
@@ -701,7 +701,7 @@
 		</node>
 		<node>
 			<name>F</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Female</value>
@@ -715,7 +715,7 @@
 		</node>
 		<node>
 			<name>O</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Other</value>
@@ -729,7 +729,7 @@
 		</node>
 		<node>
 			<name>U</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -744,7 +744,7 @@
 	</node>
 	<node>
 		<name>boolean</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Boolean question</value>

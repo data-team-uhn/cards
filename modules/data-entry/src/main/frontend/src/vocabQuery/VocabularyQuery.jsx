@@ -69,7 +69,7 @@ function VocabularyQuery(props) {
   // Checks whether path is listed in the default answer options in the question definition
   let isDefaultOption = (path) => {
     return Object.values(props.questionDefinition)
-          .find(value => value['jcr:primaryType'] == 'lfs:AnswerOption' && value.value === path)
+          .find(value => value['jcr:primaryType'] == 'cards:AnswerOption' && value.value === path)
   }
 
   // Set input value in accordance with selection type (single select/multiple select) and initial selection

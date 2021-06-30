@@ -24,11 +24,11 @@ let routesRequest = null;
 
 // Retrieves the registered "routes", React components that can display a "data view" in the main content area when the corresponding URL is opened.
 // A route must have:
-// - a path (`lfs:targetURL`) that the view is responsible for displaying
-// - a React component (`lfs:extensionRender`) that does the actual display
+// - a path (`cards:targetURL`) that the view is responsible for displaying
+// - a React component (`cards:extensionRender`) that does the actual display
 // Additionally, a route may have:
-// - a name (`lfs:extensionName`)
-// - a description (`lfs:hint`)
+// - a name (`cards:extensionName`)
+// - a description (`cards:hint`)
 // This is an asynchronous function, it will return a Promise that resolves to the actual list of routes.
 //
 // @return a Promise that will resolve to the actual list of routes

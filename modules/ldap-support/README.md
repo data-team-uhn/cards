@@ -4,7 +4,7 @@ This module adds support for using an external LDAP/ActiveDirectory server for a
 
 There are two source files in this module. `25-external-authentication.txt` adds support for external authentication, but does not include any specific external identity provider. `60-ldap-connection.txt` enables and configures an LDAP connection.
 
-The default sources don't connect to any specific server, but instead enable generic support for external authentication servers, and LDAP in particular. The actual configuration can be defined either at build time, through the filesystem on a specific server where LFS is installed, or through the UI of a running instance.
+The default sources don't connect to any specific server, but instead enable generic support for external authentication servers, and LDAP in particular. The actual configuration can be defined either at build time, through the filesystem on a specific server where CARDS is installed, or through the UI of a running instance.
 
 ## Configuring at build time
 
@@ -20,12 +20,12 @@ Here's an example configuration:
     <profile>
       <id>sickkids-ldap</id>
       <properties>
-        <lfs.ldap.dn>CN\=Service\ User,OU\=Service\ Accounts,DC\=sickkids,DC\=ca</lfs.ldap.dn>
-        <lfs.ldap.password>the password</lfs.ldap.password>
-        <lfs.ldap.host>sickkids.ca</lfs.ldap.host>
-        <lfs.ldap.baseDn>DC\=sickkids,DC\=ca</lfs.ldap.baseDn>
-        <lfs.ldap.idAttribute>sAMAccountName</lfs.ldap.idAttribute>
-        <lfs.ldap.userClass>user</lfs.ldap.userClass>
+        <cards.ldap.dn>CN\=Service\ User,OU\=Service\ Accounts,DC\=sickkids,DC\=ca</cards.ldap.dn>
+        <cards.ldap.password>the password</cards.ldap.password>
+        <cards.ldap.host>sickkids.ca</cards.ldap.host>
+        <cards.ldap.baseDn>DC\=sickkids,DC\=ca</cards.ldap.baseDn>
+        <cards.ldap.idAttribute>sAMAccountName</cards.ldap.idAttribute>
+        <cards.ldap.userClass>user</cards.ldap.userClass>
       </properties>
     </profile>
   </profiles>

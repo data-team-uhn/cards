@@ -19,14 +19,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>ca.sickkids.ccm.lfs</groupId>
-    <artifactId>lfs-modules</artifactId>
+    <groupId>io.uhndata.cards</groupId>
+    <artifactId>cards-modules</artifactId>
     <version>0.9-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs-permissions</artifactId>
+  <artifactId>cards-permissions</artifactId>
   <packaging>bundle</packaging>
-  <name>LFS - Permissions</name>
+  <name>CARDS - Permissions</name>
 
   <build>
     <plugins>

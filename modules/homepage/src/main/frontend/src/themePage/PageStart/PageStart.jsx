@@ -82,7 +82,7 @@ export default function PageStart(props) {
 
   let visualComponents = [];
   for (let i = 0; i < extensionData.length; i++) {
-    visualComponents.push(extensionData[i]["lfs:extensionRender"]);
+    visualComponents.push(extensionData[i]["cards:extensionRender"]);
   }
 
   let newComponentPositions = [];

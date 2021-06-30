@@ -1,8 +1,8 @@
 {
-  "name": "lfs-homepage",
+  "name": "cards-homepage",
   "version": "0.1.0",
-  "description": "The homepage of the LFS project",
-  "author": "SickKids",
+  "description": "The homepage of the CARDS project",
+  "author": "UHN DATA",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",

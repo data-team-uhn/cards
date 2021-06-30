@@ -18,7 +18,7 @@
 //
 
 <sling = 'http://sling.apache.org/jcr/sling/1.0'>
-<lfs = 'https://lfs.ccm.sickkids.ca/'>
+<cards = 'https://uhndata.io/cards/'>
 
 //-----------------------------------------------------------------------------
 //
@@ -28,17 +28,17 @@
 
 //-----------------------------------------------------------------------------
 // Nodetype for data query handling
-[lfs:dataQuery] > sling:Folder
+[cards:dataQuery] > sling:Folder
   // Attributes:
   query
 
   // Properties:
   // Hardcode the resource type
-  - sling:resourceType (STRING) = "lfs/dataQuery" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/dataQuery" mandatory autocreated protected
   // Hardcode the resource supertype: the dataQuery is a resource
-  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
   // Set a default title
-  - title (String) = "LFS query" mandatory autocreated
+  - title (String) = "CARDS query" mandatory autocreated
 
 //-----------------------------------------------------------------------------
 //
@@ -51,8 +51,8 @@
 
 //-----------------------------------------------------------------------------
 // This defines predefined choices for answering a question.
-// Used only as children of a lfs:Question node.
-[lfs:AnswerOption] > sling:Folder, mix:referenceable
+// Used only as children of a cards:Question node.
+[cards:AnswerOption] > sling:Folder, mix:referenceable
   // Attributes
 
   // The list of suboptions is orderable.
@@ -64,10 +64,10 @@
   // Properties
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/AnswerOption" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/AnswerOption" mandatory autocreated protected
 
   // Hardcode the resource supertype: each question is a resource.
-  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // The text of this option displayed to the user.
   // This is not the value that gets stored when it is selected for an aswer, the "value" property is.
@@ -94,21 +94,21 @@
   // Children
 
   // Answer options can be hierarchical, so an option may have suboptions.
-  + * (lfs:AnswerOption) = lfs:AnswerOption
+  + * (cards:AnswerOption) = cards:AnswerOption
 
 //-----------------------------------------------------------------------------
-[lfs:VocabularyFilterGroup] > sling:Folder, mix:referenceable
+[cards:VocabularyFilterGroup] > sling:Folder, mix:referenceable
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/VocabularyFilterGroup" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/VocabularyFilterGroup" mandatory autocreated protected
 
   // Hardcode the resource supertype: each question is a resource.
-  - sling:resourceSuperType (STRING) = "lfs/VocabularyFilterGroup" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/VocabularyFilterGroup" mandatory autocreated protected
 
   - value (string)
 
 //-----------------------------------------------------------------------------
 // This is the definition of a question.
-[lfs:Question] > sling:Folder, mix:referenceable
+[cards:Question] > sling:Folder, mix:referenceable
   // Attributes
 
   // The list of answer options is orderable.
@@ -121,10 +121,10 @@
   // Properties
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/Question" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/Question" mandatory autocreated protected
 
   // Hardcode the resource supertype: each question is a resource.
-  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // The text of the question.
   // Mandatory, every question needs a text
@@ -254,12 +254,12 @@
 
   // The list of predefined options displayed to the user.
   // This applies mostly to text answers, but can also be used for the other answer types as well, for example as a list of dates to choose from, or a list of numbers, or a list of vocabulary terms.
-  + * (lfs:AnswerOption) = lfs:AnswerOption
-  + * (lfs:VocabularyFilterGroup) = lfs:VocabularyFilterGroup
+  + * (cards:AnswerOption) = cards:AnswerOption
+  + * (cards:VocabularyFilterGroup) = cards:VocabularyFilterGroup
 
 //-----------------------------------------------------------------------------
 // A section is a collection of questions.
-[lfs:Section] > sling:Folder, mix:referenceable
+[cards:Section] > sling:Folder, mix:referenceable
   // Attributes
 
   // The list of subsections and questions is orderable.
@@ -272,10 +272,10 @@
   // Properties
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/Section" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/Section" mandatory autocreated protected
 
   // Hardcode the resource supertype: each section is a resource.
-  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // A label for this section. Optional, it is possible not to have a label.
   // If present, it will be displayed to the user above the questions.
@@ -292,13 +292,13 @@
 
   // The questions and sub-sections that make up this section.
   // The conditions to display this section may also be listed as children
-  + * (lfs:Question, lfs:Section, lfs:Conditional, lfs:ConditionalGroup) = lfs:Question
+  + * (cards:Question, cards:Section, cards:Conditional, cards:ConditionalGroup) = cards:Question
 
 //-----------------------------------------------------------------------------
 // A conditional group is a set of conditions that can be imposed on e.g. the display of a section.
 // The conditions are listed as children of this, and may be turned from an OR to an AND via the
 // `requireAll` property.
-[lfs:ConditionalGroup] > sling:Folder
+[cards:ConditionalGroup] > sling:Folder
   // Attributes
 
   // Conditionals are queryable
@@ -307,19 +307,19 @@
   // Properties
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/Conditional" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/Conditional" mandatory autocreated protected
 
   // Hardcode the resource supertype: each section link is a resource.
-  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   - requireAll (BOOLEAN) = false mandatory autocreated
 
   // This conditional may contain any number of conditionals or conditional groups
-  + * (lfs:Conditional, lfs:ConditionalGroup) = lfs:Conditional
+  + * (cards:Conditional, cards:ConditionalGroup) = cards:Conditional
 
 //-----------------------------------------------------------------------------
 // A conditional is a condition that can be imposed on e.g. the display of a section.
-[lfs:Conditional] > sling:Folder
+[cards:Conditional] > sling:Folder
   // Attributes
 
   // Conditionals are queryable
@@ -330,26 +330,26 @@
   // Properties
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/Conditional" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/Conditional" mandatory autocreated protected
 
   // Hardcode the resource supertype: each section link is a resource.
-  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // A conditional will always have a child node called operandA of type ConditionalValue
-  + operandA (lfs:ConditionalValue) mandatory
+  + operandA (cards:ConditionalValue) mandatory
 
   // A conditional always has exactly one comparator
   - comparator (STRING) mandatory
 
   // A second child operandB may be specified, but leaving it as the default is OK if the comparator is singular
-  + operandB (lfs:ConditionalValue) = lfs:ConditionalValue autocreated
+  + operandB (cards:ConditionalValue) = cards:ConditionalValue autocreated
 
   // Specifies how the operands should be treated when performing the comparison (default: string)
   - dataType (STRING) = "text" autocreated
 
 //-----------------------------------------------------------------------------
 // A conditional value is either a value or a method of getting a value.
-[lfs:ConditionalValue] > sling:Resource
+[cards:ConditionalValue] > sling:Resource
   // Attributes
 
   // We don't have children, but let's assume children might need to be ordered in the future.
@@ -362,10 +362,10 @@
   // Properties
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/ConditionalValue" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/ConditionalValue" mandatory autocreated protected
 
   // Hardcode the resource supertype: each value is a resource.
-  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // The value which may be a reference to a field or a value (or multiple values)
   - value (undefined) multiple
@@ -381,7 +381,7 @@
 
 //-----------------------------------------------------------------------------
 // A questionnaire is a collection of sections and questions.
-[lfs:Questionnaire] > sling:Folder, mix:referenceable, mix:versionable, mix:lastModified
+[cards:Questionnaire] > sling:Folder, mix:referenceable, mix:versionable, mix:lastModified
   // Attributes
 
   // The list of sections and questions is orderable.
@@ -394,10 +394,10 @@
   // Properties
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/Questionnaire" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/Questionnaire" mandatory autocreated protected
 
   // Hardcode the resource supertype: each questionnaire is a resource.
-  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // A title for this questionnaire.
   // Mandatory, each questionnaire must have a title.
@@ -407,7 +407,7 @@
   // If present, it will be displayed to the user between the label and the sections.
   - description (string)
 
-  // An optional list of lfs:SubjectTypes.
+  // An optional list of cards:SubjectTypes.
   // Any Forms for this questionnaire must have a subject with a type on the list.
   // If the list is empty, then any subject type is accepted.
   - requiredSubjectTypes (REFERENCE) multiple
@@ -422,11 +422,11 @@
   // Children
 
   // The sections and standalone questions that make up this questionnaire.
-  + * (lfs:Section, lfs:Question) = lfs:Section
+  + * (cards:Section, cards:Question) = cards:Section
 
 //-----------------------------------------------------------------------------
 // The homepage for the questionnaires space.
-[lfs:QuestionnairesHomepage] > sling:Folder
+[cards:QuestionnairesHomepage] > sling:Folder
   // Attributes:
 
   // We can use this homepage in a query.
@@ -435,15 +435,15 @@
   // Properties:
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/QuestionnairesHomepage" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/QuestionnairesHomepage" mandatory autocreated protected
 
   // Hardcode the resource supertype: the QuestionnairesHomepage is a resource.
-  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // Set a default title.
   - title (String) = "Questionnaires" mandatory autocreated
 
-  - childNodeType (String) = "lfs:Questionnaire" mandatory autocreated
+  - childNodeType (String) = "cards:Questionnaire" mandatory autocreated
 
 //-----------------------------------------------------------------------------
 //
@@ -466,7 +466,7 @@
 // The name of each answer node is not relevant and will be automatically generated, only the reference to the question matters.
 // The meaning of an answer is defined by the question, so most of the display properties are defined in the question, not in the answer.
 // In other words, an Answer node is just simple storage.
-[lfs:Answer] > sling:Folder
+[cards:Answer] > sling:Folder
   // Attributes
 
   // This is an abstract node type, specific answer types must be defined.
@@ -481,10 +481,10 @@
   // Properties
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/Answer" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/Answer" mandatory autocreated protected
 
   // Hardcode the resource supertype: each answer is a resource.
-  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // A reference to the question being answered.
   // Mandatory, every answer needs a question.
@@ -505,86 +505,86 @@
 
 //-----------------------------------------------------------------------------
 // Yes/No
-[lfs:BooleanAnswer] > lfs:Answer
+[cards:BooleanAnswer] > cards:Answer
   // Though we could use a boolean here, we want to handle three states (true/false/undefined), which is best defined by long.
   - value (long)
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/BooleanAnswer" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/BooleanAnswer" mandatory autocreated protected
 
   // Hardcode the resource supertype.
-  - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
 
 //-----------------------------------------------------------------------------
 // Plain text
-[lfs:TextAnswer] > lfs:Answer
+[cards:TextAnswer] > cards:Answer
   - value (string)
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/TextAnswer" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/TextAnswer" mandatory autocreated protected
 
   // Hardcode the resource supertype.
-  - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
 
 //-----------------------------------------------------------------------------
 // Whole numbers
-[lfs:LongAnswer] > lfs:Answer
+[cards:LongAnswer] > cards:Answer
   - value (long)
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/LongAnswer" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/LongAnswer" mandatory autocreated protected
 
   // Hardcode the resource supertype.
-  - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
 
 //-----------------------------------------------------------------------------
 // Real numbers, stored as lossy "double" values.
 // Should not be used to store values where precision is paramount, see DecimalAnswer instead.
-[lfs:DoubleAnswer] > lfs:Answer
+[cards:DoubleAnswer] > cards:Answer
   - value (double)
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/DoubleAnswer" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/DoubleAnswer" mandatory autocreated protected
 
   // Hardcode the resource supertype.
-  - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
 
 //-----------------------------------------------------------------------------
 // Decimal numbers, guaranteed to store the exact value entered.
-[lfs:DecimalAnswer] > lfs:Answer
+[cards:DecimalAnswer] > cards:Answer
   - value (decimal)
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/DecimalAnswer" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/DecimalAnswer" mandatory autocreated protected
 
   // Hardcode the resource supertype.
-  - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
 
 //-----------------------------------------------------------------------------
 // Date and DateTime
-[lfs:DateAnswer] > lfs:Answer
+[cards:DateAnswer] > cards:Answer
   - value (date)
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/DateAnswer" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/DateAnswer" mandatory autocreated protected
 
   // Hardcode the resource supertype.
-  - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
 
 //-----------------------------------------------------------------------------
 // Time
-[lfs:TimeAnswer] > lfs:Answer
+[cards:TimeAnswer] > cards:Answer
   - value (string)
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/TimeAnswer" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/TimeAnswer" mandatory autocreated protected
 
   // Hardcode the resource supertype.
-  - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
 
 //-----------------------------------------------------------------------------
 // Pedigree, stored mainly as a JSON representation, but also as a cached SVG image
-[lfs:PedigreeAnswer] > lfs:Answer
+[cards:PedigreeAnswer] > cards:Answer
   // The pedigree data is stored here, as a JSON
   - value (string)
 
@@ -592,47 +592,47 @@
   - image (string)
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/PedigreeAnswer" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/PedigreeAnswer" mandatory autocreated protected
 
   // Hardcode the resource supertype.
-  - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
 
 //-----------------------------------------------------------------------------
 // Vocabulary identifiers, stored as strings.
-[lfs:VocabularyAnswer] > lfs:Answer
+[cards:VocabularyAnswer] > cards:Answer
   - value (string)
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/VocabularyAnswer" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/VocabularyAnswer" mandatory autocreated protected
 
   // Hardcode the resource supertype.
-  - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
 
 //-----------------------------------------------------------------------------
 // Chromosome answers, stored as strings
-[lfs:ChromosomeAnswer] > lfs:Answer
+[cards:ChromosomeAnswer] > cards:Answer
   - value (string)
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/ChromosomeAnswer" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/ChromosomeAnswer" mandatory autocreated protected
 
   // Hardcode the resource supertype.
-  - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
 
 //-----------------------------------------------------------------------------
 // Computed answers, stored as strings
-[lfs:ComputedAnswer] > lfs:Answer
+[cards:ComputedAnswer] > cards:Answer
   - value (string)
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/ComputedAnswer" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/ComputedAnswer" mandatory autocreated protected
 
   // Hardcode the resource supertype.
-  - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
 
 //-----------------------------------------------------------------------------
 // File resource answers, whose children are nt:files with the answer
-[lfs:FileResourceAnswer] > lfs:Answer
+[cards:FileResourceAnswer] > cards:Answer
   // The value does nothing
   - value (string)
 
@@ -640,16 +640,16 @@
   + * (nt:file) = nt:file
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/FileResourceAnswer" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/FileResourceAnswer" mandatory autocreated protected
 
   // Hardcode the resource supertype.
-  - sling:resourceSuperType (STRING) = "lfs/Answer" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
 
 //-----------------------------------------------------------------------------
 
 // Section object, which can contain multiple other answers. The "question" element here
 // should be the section we're answering
-[lfs:AnswerSection] > sling:Folder
+[cards:AnswerSection] > sling:Folder
   // Attributes
   // The child answers will need to be orderable.
   orderable
@@ -661,10 +661,10 @@
   primaryitem section
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/AnswerSection" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/AnswerSection" mandatory autocreated protected
 
   // Hardcode the resource supertype.
-  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // A reference to the section being answered.
   // Mandatory, every answer section is answering a section.
@@ -674,11 +674,11 @@
   // Children
 
   // The answers and other answersections recorded in this section.
-  + * (lfs:Answer, lfs:AnswerSection) = lfs:Answer
+  + * (cards:Answer, cards:AnswerSection) = cards:Answer
 
 //-----------------------------------------------------------------------------
 // Forms: a filled in questionnaire.
-[lfs:Form] > sling:Folder, mix:referenceable, mix:versionable, mix:lastModified
+[cards:Form] > sling:Folder, mix:referenceable, mix:versionable, mix:lastModified
   // Attributes
 
   // The answers in a form must be orderable.
@@ -689,10 +689,10 @@
   // Properties
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/Form" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/Form" mandatory autocreated protected
 
   // Hardcode the resource supertype: each form is a resource.
-  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   - statusFlags (STRING) = "INCOMPLETE" mandatory autocreated
 
@@ -708,11 +708,11 @@
   // Children
 
   // The answers and answer sections recorded in this form.
-  + * (lfs:Answer, lfs:AnswerSection) = lfs:Answer
+  + * (cards:Answer, cards:AnswerSection) = cards:Answer
 
 //-----------------------------------------------------------------------------
 // The homepage for the Forms space.
-[lfs:FormsHomepage] > sling:Folder
+[cards:FormsHomepage] > sling:Folder
   // Attributes:
 
   // We can use this homepage in a query.
@@ -721,20 +721,20 @@
   // Properties:
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/FormsHomepage" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/FormsHomepage" mandatory autocreated protected
 
   // Hardcode the resource supertype: the FormsHomepage is a resource.
-  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // Set a default title.
   - title (String) = "Data" mandatory autocreated
 
-  - childNodeType (String) = "lfs:Form" mandatory autocreated
+  - childNodeType (String) = "cards:Form" mandatory autocreated
 
   // Children
 
   // The list of forms.
-  + * (lfs:Form) = lfs:Form
+  + * (cards:Form) = cards:Form
 
 //-----------------------------------------------------------------------------
 //
@@ -747,7 +747,7 @@
 
 //-----------------------------------------------------------------------------
 // Subjects: the description of a subject.
-[lfs:Subject] > sling:Folder, mix:referenceable, mix:versionable, mix:lastModified
+[cards:Subject] > sling:Folder, mix:referenceable, mix:versionable, mix:lastModified
   // Attributes
 
   // We can use subjects in a query.
@@ -756,10 +756,10 @@
   // Properties
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/Subject" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/Subject" mandatory autocreated protected
 
   // Hardcode the resource supertype: each subject is a resource.
-  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // A main identifier for the subject.
   // Each subject has an internal unique identifier, but most subjects should also have
@@ -767,7 +767,7 @@
   // Additional identifiers may be defined in forms.
   - identifier (STRING)
 
-  // A reference to an lfs:SubjectType defining this subject
+  // A reference to an cards:SubjectType defining this subject
   - type (reference) mandatory
 
   // Full hierarchy of Subject identifiers
@@ -775,7 +775,7 @@
 
 //-----------------------------------------------------------------------------
 // The homepage for the Subjects space.
-[lfs:SubjectsHomepage] > sling:Folder
+[cards:SubjectsHomepage] > sling:Folder
   // Attributes:
 
   // We can use this homepage in a query.
@@ -784,19 +784,19 @@
   // Properties:
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/SubjectsHomepage" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/SubjectsHomepage" mandatory autocreated protected
 
   // Hardcode the resource supertype: the SubjectsHomepage is a resource.
-  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // Set a default title.
   - title (String) = "Subjects" mandatory autocreated
 
-  - childNodeType (String) = "lfs:Subject" mandatory autocreated
+  - childNodeType (String) = "cards:Subject" mandatory autocreated
 
 //-----------------------------------------------------------------------------
 // A type of subject
-[lfs:SubjectType] > sling:Folder, mix:referenceable
+[cards:SubjectType] > sling:Folder, mix:referenceable
   // Attributes:
 
   // We can query subject types.
@@ -805,10 +805,10 @@
   // Properties:
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/SubjectType" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/SubjectType" mandatory autocreated protected
 
   // Hardcode the resource supertype: the SubjectType is a resource.
-  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // The name of this subject type displayed to the user.
   - label (String) mandatory
@@ -821,7 +821,7 @@
 
 //-----------------------------------------------------------------------------
 // The homepage for any SubjectTypes.
-[lfs:SubjectTypesHomepage] > sling:Folder
+[cards:SubjectTypesHomepage] > sling:Folder
   // Attributes:
 
   // We can use this homepage in a query.
@@ -830,17 +830,17 @@
   // Properties:
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/SubjectTypesHomepage" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/SubjectTypesHomepage" mandatory autocreated protected
 
   // Hardcode the resource supertype: the SubjectTypesHomepage is a resource.
-  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // Set a default title.
   - title (String) = "Subject Types" mandatory autocreated
 
 //-----------------------------------------------------------------------------
 // The configuration for the quick search widget.
-[lfs:QuickSearchConfiguration] > sling:Folder
+[cards:QuickSearchConfiguration] > sling:Folder
   // Attributes:
 
   // We can use this in a query.
@@ -849,10 +849,10 @@
   // Properties:
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/QuickSearchConfiguration" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/QuickSearchConfiguration" mandatory autocreated protected
 
   // Hardcode the resource supertype: this is a resource.
-  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // What types of resources will be queried.
   // Default: all.

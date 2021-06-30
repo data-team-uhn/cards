@@ -171,7 +171,7 @@ let ComputedQuestion = (props) => {
         answers={answer}
         questionDefinition={props.questionDefinition}
         existingAnswer={existingAnswer}
-        answerNodeType="lfs:ComputedAnswer"
+        answerNodeType="cards:ComputedAnswer"
         valueType="computed"
         {...rest}
         />

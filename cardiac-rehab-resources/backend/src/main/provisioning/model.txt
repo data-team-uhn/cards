@@ -17,11 +17,11 @@
 #  under the License.
 #
 
-# The LFS homepage
+# Backend code specific to the Cardiac Rehab project
 [feature name=cardiac-rehab-backend]
 
 [artifacts runModes=cardiac_rehab startLevel=10]
-    ca.sickkids.ccm.lfs/cardiac-rehab-backend
+    io.uhndata.cards/cardiac-rehab-backend
     com.amazonaws/aws-java-sdk-osgi
     com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/2.6.7
     io.netty/netty-codec-http/4.1.17.Final
@@ -35,7 +35,7 @@
     joda-time/joda-time/2.8.1
 
 [configurations]
-  org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended-lfs-export
+  org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended-cards-export
     user.mapping=[
-      "ca.sickkids.ccm.lfs.cardiac-rehab-backend\=sling-readall"
+      "io.uhndata.cards.cardiac-rehab-backend\=sling-readall"
     ]

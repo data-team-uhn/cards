@@ -21,14 +21,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>ca.sickkids.ccm.lfs</groupId>
-    <artifactId>lfs-modules</artifactId>
+    <groupId>io.uhndata.cards</groupId>
+    <artifactId>cards-modules</artifactId>
     <version>0.9-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs-login</artifactId>
+  <artifactId>cards-login</artifactId>
   <packaging>bundle</packaging>
-  <name>LFS - Signup and Login</name>
+  <name>CARDS - Signup and Login</name>
 
   <build>
     <resources>
@@ -48,7 +48,7 @@
             <Include-Resource>{maven-resources}</Include-Resource>
             <Sling-Nodetypes>SLING-INF/nodetypes/login.cnd</Sling-Nodetypes>
             <!-- Initial content to be loaded on bundle installation -->
-            <Sling-Initial-Content>SLING-INF/content/libs/lfs/login/;overwrite:=true;path:=/libs/lfs/login/</Sling-Initial-Content>
+            <Sling-Initial-Content>SLING-INF/content/libs/cards/login/;overwrite:=true;path:=/libs/cards/login/</Sling-Initial-Content>
           </instructions>
         </configuration>
       </plugin>

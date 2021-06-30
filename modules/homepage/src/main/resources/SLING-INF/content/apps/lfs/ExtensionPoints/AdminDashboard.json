@@ -1,5 +1,0 @@
-{
-  "jcr:primaryType": "lfs:ExtensionPoint",
-  "lfs:extensionPointId": "lfs/coreUI/admindashboard/entry",
-  "lfs:extensionPointName": "Entries for the admin dashboard"
-}

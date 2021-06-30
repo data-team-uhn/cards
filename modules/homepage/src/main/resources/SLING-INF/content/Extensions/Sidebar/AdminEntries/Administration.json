@@ -1,8 +1,8 @@
 {
-  "jcr:primaryType": "lfs:Extension",
-  "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
-  "lfs:extensionName": "Administration",
-  "lfs:icon": "asset:lfs-homepage.adminIcon.js",
-  "lfs:targetURL": "/content.html/admin",
-  "lfs:defaultOrder": 90
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/sidebar/entry",
+  "cards:extensionName": "Administration",
+  "cards:icon": "asset:cards-homepage.adminIcon.js",
+  "cards:targetURL": "/content.html/admin",
+  "cards:defaultOrder": 90
 }

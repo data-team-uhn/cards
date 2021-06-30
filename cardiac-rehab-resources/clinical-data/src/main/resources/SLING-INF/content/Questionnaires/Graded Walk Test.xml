@@ -19,7 +19,7 @@
 
 <node>
 	<name>Graded Walk Test</name>
-	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
+	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>maxPerSubject</name>
 		<value>4</value>
@@ -44,7 +44,7 @@
 	</property>
 	<node>
 		<name>Graded Walk Test Details</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
 			<value>Graded Walk Test Details</value>
@@ -52,7 +52,7 @@
 		</property>
 		<node>
 			<name>gw_number</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Graded walk test visit number</value>
@@ -85,7 +85,7 @@
 			</property>
 			<node>
 				<name>3</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>3</value>
@@ -99,7 +99,7 @@
 			</node>
 			<node>
 				<name>5</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>5</value>
@@ -113,7 +113,7 @@
 			</node>
 			<node>
 				<name>6</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>6</value>
@@ -127,7 +127,7 @@
 			</node>
 			<node>
 				<name>8</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>8</value>
@@ -142,7 +142,7 @@
 		</node>
 		<node>
 			<name>gw_date</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Date of graded walk test</value>
@@ -171,7 +171,7 @@
 		</node>
 		<node>
 			<name>gw_test</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Graded walk test performed</value>
@@ -199,7 +199,7 @@
 			</property>
 			<node>
 				<name>Indoor</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Indoor</value>
@@ -213,7 +213,7 @@
 			</node>
 			<node>
 				<name>Outdoor</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Outdoor</value>
@@ -228,7 +228,7 @@
 		</node>
 		<node>
 			<name>gw_time</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Time performed</value>
@@ -257,7 +257,7 @@
 		</node>
 		<node>
 			<name>gw_lap_count</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Number of laps completed</value>
@@ -281,7 +281,7 @@
 		</node>
 		<node>
 			<name>gw_polar</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Was Polar data captured?</value>
@@ -305,7 +305,7 @@
 		</node>
 		<node>
 			<name>gw_comments</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Comments</value>

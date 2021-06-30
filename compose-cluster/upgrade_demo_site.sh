@@ -56,7 +56,7 @@ docker volume prune -f
 python3 upgrade_cards_image.py --cards_docker_tag $CARDS_NEW_VERSION
 
 #Start the new CARDS Docker image
-docker-compose up -d lfsinitial
+docker-compose up -d cardsinitial
 
 #Wait for CARDS to start
 while true

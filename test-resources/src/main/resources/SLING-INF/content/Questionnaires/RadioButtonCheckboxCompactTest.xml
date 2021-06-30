@@ -19,7 +19,7 @@
 
 <node>
 	<name>RadioButtonCheckboxCompactTest</name>
-	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
+	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
 		<value>Radio Button / Checkbox Compact Test</value>
@@ -27,7 +27,7 @@
 	</property>
 	<property>
 		<name>description</name>
-		<value>LFS-1077</value>
+		<value>cards-1077</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -39,7 +39,7 @@
 	</property>
 	<node>
 		<name>radio</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Radio</value>
@@ -57,7 +57,7 @@
 		</property>
 		<node>
 			<name>A</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
 				<value>A</value>
@@ -66,7 +66,7 @@
 		</node>
 		<node>
 			<name>B</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
 				<value>B</value>
@@ -76,7 +76,7 @@
 	</node>
 	<node>
 		<name>radio-compact</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Radio COMPACT</value>
@@ -99,7 +99,7 @@
 		</property>
 		<node>
 			<name>A</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
 				<value>A</value>
@@ -108,7 +108,7 @@
 		</node>
 		<node>
 			<name>B</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
 				<value>B</value>
@@ -118,7 +118,7 @@
 	</node>
 	<node>
 		<name>radio-compact-long</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Radio COMPACT LONG</value>
@@ -141,7 +141,7 @@
 		</property>
 		<node>
 			<name>A</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
 				<value>A</value>
@@ -150,7 +150,7 @@
 		</node>
 		<node>
 			<name>B</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
 				<value>B</value>
@@ -159,7 +159,7 @@
 		</node>
 		<node>
 			<name>C</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
 				<value>C</value>
@@ -168,7 +168,7 @@
 		</node>
 		<node>
 			<name>D</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
 				<value>D</value>
@@ -177,7 +177,7 @@
 		</node>
 		<node>
 			<name>E</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
 				<value>E</value>
@@ -186,7 +186,7 @@
 		</node>
 		<node>
 			<name>F</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
 				<value>F</value>
@@ -195,7 +195,7 @@
 		</node>
 		<node>
 			<name>G</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
 				<value>G</value>
@@ -204,7 +204,7 @@
 		</node>
 		<node>
 			<name>H</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
 				<value>H</value>
@@ -214,7 +214,7 @@
 	</node>
 	<node>
 		<name>checkbox</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Checkbox</value>
@@ -227,7 +227,7 @@
 		</property>
 		<node>
 			<name>A</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
 				<value>A</value>
@@ -236,7 +236,7 @@
 		</node>
 		<node>
 			<name>B</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
 				<value>B</value>
@@ -246,7 +246,7 @@
 	</node>
 	<node>
 		<name>checkbox-compact</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Checkbox COMPACT</value>
@@ -269,7 +269,7 @@
 		</property>
 		<node>
 			<name>A</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
 				<value>A</value>
@@ -278,7 +278,7 @@
 		</node>
 		<node>
 			<name>B</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>value</name>
 				<value>B</value>

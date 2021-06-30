@@ -40,7 +40,7 @@ import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 let extractSortedOptions = (data) => {
-  return Object.values(data).filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption'
+  return Object.values(data).filter(value => value['jcr:primaryType'] == 'cards:AnswerOption'
                                              && !value.notApplicable
                                              && !value.noneOfTheAbove)
                             .slice()
@@ -56,8 +56,8 @@ let AnswerOptions = (props) => {
   let [ isNADuplicate, setIsNADuplicate ] = useState(false);
   let [ isNoneDuplicate, setIsNoneDuplicate ] = useState(false);
 
-  const notApplicable  = Object.values(data).find(option => option['jcr:primaryType'] == 'lfs:AnswerOption' && option.notApplicable);
-  const noneOfTheAbove = Object.values(data).find(option => option['jcr:primaryType'] == 'lfs:AnswerOption' && option.noneOfTheAbove);
+  const notApplicable  = Object.values(data).find(option => option['jcr:primaryType'] == 'cards:AnswerOption' && option.notApplicable);
+  const noneOfTheAbove = Object.values(data).find(option => option['jcr:primaryType'] == 'cards:AnswerOption' && option.noneOfTheAbove);
 
   let [ notApplicableOption, setNotApplicableOption ] = useState(notApplicable || {"value" : "notApplicable",
                                                                                    "label" : "None",
@@ -221,7 +221,7 @@ let AnswerOptions = (props) => {
       { option.data[option.label]
         ?
         <>
-          <input type='hidden' name={`${option.data['@path']}/jcr:primaryType`} value={'lfs:AnswerOption'} />
+          <input type='hidden' name={`${option.data['@path']}/jcr:primaryType`} value={'cards:AnswerOption'} />
           <input type='hidden' name={`${option.data['@path']}/value`} value={option.data.value} />
           <input type='hidden' name={`${option.data['@path']}/label`} value={option.data.label} />
           <input type='hidden' name={`${option.data['@path']}/${option.label}`} value={option.data[option.label]} />
@@ -272,7 +272,7 @@ let AnswerOptions = (props) => {
                         </Tooltip>
                       </Grid>
                       <Grid item xs={9}>
-                        <input type='hidden' name={`${value['@path']}/jcr:primaryType`} value={'lfs:AnswerOption'} />
+                        <input type='hidden' name={`${value['@path']}/jcr:primaryType`} value={'cards:AnswerOption'} />
                         <input type='hidden' name={`${value['@path']}/label`} value={value.label} />
                         <input type='hidden' name={`${value['@path']}/value`} value={value.value} />
                         <input type='hidden' name={`${value['@path']}/defaultOrder`} value={index+1} />

@@ -1,9 +1,9 @@
 {
-  "jcr:primaryType": "lfs:Extension",
-  "lfs:extensionPointId": "lfs/coreUI/admindashboard/entry",
-  "lfs:extensionName": "Quick Search Widget",
-  "lfs:targetURL": "/content.html/admin/QuickSearchConfiguration",
-  "lfs:icon": "asset:lfs-homepage.QuickSearchConfigurationIcon.js",
-  "lfs:hint": "Configure the quick search widget",
-  "lfs:defaultOrder": 201
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/admindashboard/entry",
+  "cards:extensionName": "Quick Search Widget",
+  "cards:targetURL": "/content.html/admin/QuickSearchConfiguration",
+  "cards:icon": "asset:cards-homepage.QuickSearchConfigurationIcon.js",
+  "cards:hint": "Configure the quick search widget",
+  "cards:defaultOrder": 201
 }

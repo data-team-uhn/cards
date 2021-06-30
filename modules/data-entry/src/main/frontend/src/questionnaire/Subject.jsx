@@ -202,7 +202,7 @@ function SubjectContainer(props) {
     return null;
   }
 
-  let check_url = createQueryURL(` WHERE n.'parents'='${subject?.['jcr:uuid']}' order by n.'jcr:created'`, "lfs:Subject");
+  let check_url = createQueryURL(` WHERE n.'parents'='${subject?.['jcr:uuid']}' order by n.'jcr:created'`, "cards:Subject");
   let fetchRelated = () => {
     fetchWithReLogin(globalLoginDisplay, check_url)
     .then((response) => response.ok ? response.json() : Promise.reject(response))
@@ -608,7 +608,7 @@ function FormData(props) {
 // Display the questions/question found within sections
 export function displayQuestion(entryDefinition, data, key, classes) {
   const existingQuestionAnswer = data && Object.entries(data)
-    .find(([key, value]) => value["sling:resourceSuperType"] == "lfs/Answer"
+    .find(([key, value]) => value["sling:resourceSuperType"] == "cards/Answer"
       && value["question"]["jcr:uuid"] === entryDefinition["jcr:uuid"]);
 
   // question title, to be used when 'previewing' the form
@@ -677,7 +677,7 @@ export function handleDisplay(entryDefinition, data, key, handleDisplayQuestion)
       }
 
       let currentAnswers = Object.entries(data)
-        .filter(([key, value]) => value["sling:resourceType"] == "lfs/AnswerSection"
+        .filter(([key, value]) => value["sling:resourceType"] == "cards/AnswerSection"
                                && value["section"]["@name"] == entryDefinition["@name"])[0];
       currentAnswers = currentAnswers ? currentAnswers[1] : "";
       return Object.entries(currentSection)

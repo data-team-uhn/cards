@@ -1,0 +1,6 @@
+{
+    "jcr:primaryType": "cards:QuickSearchConfiguration",
+    "allowedResourceTypes": ["cards:Form", "cards:Subject", "cards:Questionnaire"],
+    "limit": "5",
+    "showTotalRows": "true"
+}

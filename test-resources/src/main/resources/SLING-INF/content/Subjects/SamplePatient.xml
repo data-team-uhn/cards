@@ -19,7 +19,7 @@
 
 <node>
 	<name>SamplePatient</name>
-	<primaryNodeType>lfs:Subject</primaryNodeType>
+	<primaryNodeType>cards:Subject</primaryNodeType>
 	<property>
 		<name>fullIdentifier</name>
 		<value>Sample</value>

@@ -19,7 +19,7 @@
 
 <node>
 	<name>DateFormatsTest</name>
-	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
+	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
 		<value>Date Formats Test</value>
@@ -27,7 +27,7 @@
 	</property>
 	<property>
 		<name>description</name>
-		<value>LFS-975, LFS-366</value>
+		<value>cards-975, cards-366</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -39,7 +39,7 @@
 	</property>
 	<node>
 		<name>year</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Year</value>
@@ -63,7 +63,7 @@
 	</node>
 	<node>
 		<name>monthyear</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Month Year</value>
@@ -87,7 +87,7 @@
 	</node>
 	<node>
 		<name>yearmonth</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Year Month</value>
@@ -111,7 +111,7 @@
 	</node>
 	<node>
 		<name>yearmonthday</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Year Month Day</value>
@@ -135,7 +135,7 @@
 	</node>
 	<node>
 		<name>monthdayyear</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Month Day Year</value>
@@ -159,7 +159,7 @@
 	</node>
 	<node>
 		<name>yearmonthdayhourminute</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Year Month Day Hour Minute</value>
@@ -183,7 +183,7 @@
 	</node>
 	<node>
 		<name>yearmonthdayhourminutesecond</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Year Month Day Hour Minute Second</value>
@@ -207,7 +207,7 @@
 	</node>
 	<!-- <node>
 		<name>yearint</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Year Interval</value>
@@ -236,7 +236,7 @@
 	</node> -->
 	<node>
 		<name>monthyearint</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Month Year Interval</value>
@@ -265,7 +265,7 @@
 	</node>
 	<node>
 		<name>yearmonthint</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Year Month Interval</value>
@@ -294,7 +294,7 @@
 	</node>
 	<node>
 		<name>yearmonthdayint</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Year Month Day Interval</value>
@@ -323,7 +323,7 @@
 	</node>
 	<node>
 		<name>monthdayyearint</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Month Day Year Interval</value>
@@ -352,7 +352,7 @@
 	</node>
 	<node>
 		<name>yearmonthdayhourminuteint</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Year Month Day Hour Minute Interval</value>
@@ -381,7 +381,7 @@
 	</node>
 	<node>
 		<name>yearmonthdayhourminutesecondint</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Year Month Day Hour Minute Second Interval</value>

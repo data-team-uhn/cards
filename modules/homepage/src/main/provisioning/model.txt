@@ -17,11 +17,11 @@
 #  under the License.
 #
 
-# The LFS homepage
-[feature name=lfs-homepage]
+# The CARDS homepage
+[feature name=cards-homepage]
 
 [:repoinit]
-    create path (lfs:Homepage) /content
+    create path (cards:Homepage) /content
     create path (sling:Folder) /Extensions
     create path (sling:Folder) /Extensions/AdminDashboard
     create path (sling:Folder) /Extensions/Sidebar/AdminEntries

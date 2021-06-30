@@ -88,7 +88,7 @@ let EditDialog = (props) => {
     } else {
       // If the question/section doesn't exist, create it
       let newData = data;
-      const primaryType = type.includes('Question') ? 'lfs:Question' : 'lfs:Section';
+      const primaryType = type.includes('Question') ? 'cards:Question' : 'cards:Section';
       var request_data = new FormData(event.currentTarget);
       request_data.append('jcr:primaryType', primaryType);
       fetchWithReLogin(globalLoginDisplay,

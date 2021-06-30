@@ -1,9 +1,9 @@
 {
-  "jcr:primaryType": "lfs:Extension",
-  "lfs:extensionPointId": "lfs/coreUI/admindashboard/entry",
-  "lfs:extensionName": "Users",
-  "lfs:defaultOrder": 94,
-  "lfs:targetURL": "/content.html/admin/userlist",
-  "lfs:icon": "asset:lfs-principals.userIcon.js",
-  "lfs:hint": "Manage user accounts"
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/admindashboard/entry",
+  "cards:extensionName": "Users",
+  "cards:defaultOrder": 94,
+  "cards:targetURL": "/content.html/admin/userlist",
+  "cards:icon": "asset:cards-principals.userIcon.js",
+  "cards:hint": "Manage user accounts"
 }

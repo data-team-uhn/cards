@@ -19,7 +19,7 @@
 
 <node>
 	<name>External file</name>
-	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
+	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
 		<value>External file</value>
@@ -34,7 +34,7 @@
 	</property>
 	<node>
 		<name>file-visit</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Visit number</value>
@@ -67,7 +67,7 @@
 		</property>
 		<node>
 			<name>1</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>1</value>
@@ -81,7 +81,7 @@
 		</node>
 		<node>
 			<name>2</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>2</value>
@@ -95,7 +95,7 @@
 		</node>
 		<node>
 			<name>3</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>3</value>
@@ -109,7 +109,7 @@
 		</node>
 		<node>
 			<name>4</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>4</value>
@@ -123,7 +123,7 @@
 		</node>
 		<node>
 			<name>5</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>5</value>
@@ -137,7 +137,7 @@
 		</node>
 		<node>
 			<name>6</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>6</value>
@@ -151,7 +151,7 @@
 		</node>
 		<node>
 			<name>7</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>7</value>
@@ -165,7 +165,7 @@
 		</node>
 		<node>
 			<name>8</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>8</value>
@@ -180,7 +180,7 @@
 	</node>
 	<node>
 		<name>source</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>File source</value>
@@ -213,7 +213,7 @@
 		</property>
 		<node>
 			<name>Vmax</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Vmax</value>
@@ -227,7 +227,7 @@
 		</node>
 		<node>
 			<name>Norav</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Norav</value>
@@ -241,7 +241,7 @@
 		</node>
 		<node>
 			<name>Polar</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Polar</value>
@@ -256,7 +256,7 @@
 	</node>
 	<node>
 		<name>file</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>File (de-identified)</value>

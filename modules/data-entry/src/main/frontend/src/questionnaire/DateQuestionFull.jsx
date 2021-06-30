@@ -173,7 +173,7 @@ function DateQuestionFull(props) {
         answers={outputAnswers}
         questionDefinition={props.questionDefinition}
         existingAnswer={existingAnswer}
-        answerNodeType="lfs:DateAnswer"
+        answerNodeType="cards:DateAnswer"
         valueType="Date"
         {...rest}
         />

@@ -17,17 +17,17 @@
 #  under the License.
 #
 
-# LFS Commons, resources needed by all other parts of the platform
-[feature name=lfs-commons]
+# CARDS Commons, resources needed by all other parts of the platform
+[feature name=cards-commons]
 
 [:repoinit]
-    create path (sling:Folder) /libs/lfs
-    create path (sling:Folder) /libs/lfs/resources
-    create path (sling:Folder) /apps/lfs
+    create path (sling:Folder) /libs/cards
+    create path (sling:Folder) /libs/cards/resources
+    create path (sling:Folder) /apps/cards
     create path (sling:Folder) /Extensions
 
     set ACL for everyone
-        allow   jcr:read    on /libs/lfs
-        allow   jcr:read    on /apps/lfs
+        allow   jcr:read    on /libs/cards
+        allow   jcr:read    on /apps/cards
         allow   jcr:read    on /Extensions
     end

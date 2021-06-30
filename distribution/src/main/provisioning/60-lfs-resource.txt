@@ -21,9 +21,9 @@
 [feature name=lfs-resources]
 
 [variables]
-    lfs.version=0.1-SNAPSHOT
+    cards.version=0.1-SNAPSHOT
 
 [artifacts runModes=lfs]
-    ca.sickkids.ccm.lfs/lfs-resources-clinical-data/${lfs.version}
-    ca.sickkids.ccm.lfs/lfs-resources-tissue-metrix/${lfs.version}
-    ca.sickkids.ccm.lfs/lfs-variants/${lfs.version}
+    io.uhndata.cards/lfs-resources-clinical-data/${cards.version}
+    io.uhndata.cards/lfs-resources-tissue-metrix/${cards.version}
+    io.uhndata.cards/cards-variants/${cards.version}

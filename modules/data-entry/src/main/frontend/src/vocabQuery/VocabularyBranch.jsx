@@ -132,8 +132,8 @@ function VocabularyBranch(props) {
   let updateChildrenData = (status, data) => {
     setCurrentlyLoading(false);
     if (status === null) {
-      setHasChildren(data["lfs:children"].length > 0);
-      setChildrenData(data["lfs:children"]);
+      setHasChildren(data["cards:children"].length > 0);
+      setChildrenData(data["cards:children"]);
       buildChildren(data);
     } else {
       onError("Error: children lookup failed with code " + status);
@@ -142,7 +142,7 @@ function VocabularyBranch(props) {
 
   // Given information about our children, create elements to display their data
   let buildChildren = (data) => {
-    var children = data["lfs:children"].map((row, index) =>
+    var children = data["cards:children"].map((row, index) =>
       (<VocabularyBranch
         classes={classes}
         id={row["identifier"]}
@@ -157,7 +157,7 @@ function VocabularyBranch(props) {
         key={index}
         headNode={false}
         onError={onError}
-        knownHasChildren={row["lfs:hasChildren"]}
+        knownHasChildren={row["cards:hasChildren"]}
         selectorComponent={selectorComponent}
         onTermSelected={onTermSelected}
         onTermUnselected={onTermUnselected}

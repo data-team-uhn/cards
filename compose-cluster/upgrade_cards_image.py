@@ -32,9 +32,9 @@ with open('docker-compose.yml', 'r') as f_yaml:
   yaml_obj = yaml.load(f_yaml.read(), Loader=yaml.SafeLoader)
 
 # Do the replacement
-new_cards_image = yaml_obj['services']['lfsinitial']['image']
+new_cards_image = yaml_obj['services']['cardsinitial']['image']
 new_cards_image = new_cards_image.split(":")[0] + ":" + args.cards_docker_tag
-yaml_obj['services']['lfsinitial']['image'] = new_cards_image
+yaml_obj['services']['cardsinitial']['image'] = new_cards_image
 
 # YAML save
 with open('docker-compose.yml', 'w') as f_yaml:

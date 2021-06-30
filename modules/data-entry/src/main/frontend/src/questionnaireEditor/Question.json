@@ -77,10 +77,10 @@
       "vocabulary": {
         "sourceVocabularies": {
           "type": "list",
-          "primaryType": "lfs:Vocabulary",
+          "primaryType": "cards:Vocabulary",
           "saveType": "String",
           "displayProperty": "identifier",
-          "orderProperty": "lfs:Vocabulary",
+          "orderProperty": "cards:Vocabulary",
           "identifierProperty": "identifier"
         },
         "minAnswers": "long",

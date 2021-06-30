@@ -33,9 +33,9 @@ import AnswerComponentManager from "./AnswerComponentManager";
 
 /** Conversion between the `dataType` setting in the question definition and the corresponding primary node type of the `Answer` node for that question. */
 const DATA_TO_NODE_TYPE = {
-  "long": "lfs:LongAnswer",
-  "double": "lfs:DoubleAnswer",
-  "decimal": "lfs:DecimalAnswer",
+  "long": "cards:LongAnswer",
+  "double": "cards:DoubleAnswer",
+  "decimal": "cards:DecimalAnswer",
 };
 /** Conversion between the `dataType` setting in the question definition and the corresponding value type for storing the value in the `Answer` node. */
 const DATA_TO_VALUE_TYPE = {
@@ -157,7 +157,7 @@ function NumberQuestion(props) {
     muiInputProps.endAdornment = <InputAdornment position="end">{props.questionDefinition.unitOfMeasurement}</InputAdornment>;
   }
 
-  let hasAnswerOptions = !!(props.defaults || Object.values(props.questionDefinition).some(value => value['jcr:primaryType'] == 'lfs:AnswerOption'));
+  let hasAnswerOptions = !!(props.defaults || Object.values(props.questionDefinition).some(value => value['jcr:primaryType'] == 'cards:AnswerOption'));
 
   return (
     <Question

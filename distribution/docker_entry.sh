@@ -18,18 +18,18 @@
 # under the License.
 
 #If we are simply restarting...
-[ -z $LFS_RELOAD ] || WAIT_FOR_LFSINIT=''
-[ -z $LFS_RELOAD ] || INITIAL_SLING_NODE=''
+[ -z $CARDS_RELOAD ] || WAIT_FOR_CARDSINIT=''
+[ -z $CARDS_RELOAD ] || INITIAL_SLING_NODE=''
 
 # If we have not explicitly specified the file system as the Oak Repo
 # back-end for data storage, use MongoDB
 [ -z $OAK_FILESYSTEM ] && OAK_MONGO=true
 
 #If inside a docker-compose environment, wait for a signal...
-[ -z $INSIDE_DOCKER_COMPOSE ] || (while true; do (echo "LFS" | nc router 9999) && break; sleep 5; done)
+[ -z $INSIDE_DOCKER_COMPOSE ] || (while true; do (echo "CARDS" | nc router 9999) && break; sleep 5; done)
 
-#If (inside a docker-compose environment), we are supposed to wait for http://lfsinitial:8080/ to start
-[ -z $WAIT_FOR_LFSINIT ] || (while true; do (wget -S --spider http://lfsinitial:8080/ 2>&1 | grep 'HTTP/1.1 200 OK') && break; sleep 10; done)
+#If (inside a docker-compose environment), we are supposed to wait for http://cardsinitial:8080/ to start
+[ -z $WAIT_FOR_CARDSINIT ] || (while true; do (wget -S --spider http://cardsinitial:8080/ 2>&1 | grep 'HTTP/1.1 200 OK') && break; sleep 10; done)
 
 PROJECT_ARTIFACTID=$1
 PROJECT_VERSION=$2

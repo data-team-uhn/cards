@@ -1,8 +1,8 @@
 {
-  "name": "lfs-dataentry",
+  "name": "cards-dataentry",
   "version": "0.1.0",
-  "description": "Data storage for the LFS project",
-  "author": "SickKids",
+  "description": "Data storage for the CARDS project",
+  "author": "UHN DATA",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",

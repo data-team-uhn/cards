@@ -19,7 +19,7 @@
 
 <node>
 	<name>SomaticVariants</name>
-	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
+	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
 		<value>Somatic Variants</value>
@@ -35,7 +35,7 @@
 	</property>
 	<node>
 		<name>file</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Somatic Variants File</value>

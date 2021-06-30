@@ -21,15 +21,15 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>ca.sickkids.ccm.lfs</groupId>
-    <artifactId>lfs-parent</artifactId>
+    <groupId>io.uhndata.cards</groupId>
+    <artifactId>cards-parent</artifactId>
     <version>0.9-SNAPSHOT</version>
   </parent>
 
   <artifactId>lfs-resources</artifactId>
   <packaging>pom</packaging>
   <name>LFS Resources</name>
-  <description>A collection of questionnaires, subject types and other LFS data types.</description>
+  <description>A collection of questionnaires, subject types and other LFS specific code.</description>
 
   <modules>
     <module>clinical-data</module>

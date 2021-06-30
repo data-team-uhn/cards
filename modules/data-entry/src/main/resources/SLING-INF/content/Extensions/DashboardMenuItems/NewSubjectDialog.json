@@ -1,7 +1,7 @@
 {
-  "jcr:primaryType": "lfs:Extension",
-  "lfs:extensionPointId": "lfs/coreUI/dashboardmenuitems/entry",
-  "lfs:extensionName": "Subject",
-  "lfs:extensionRenderURL": "asset:lfs-dataentry.SubjectSelector.js?component=NewSubjectDialog",
-  "lfs:defaultOrder": 1
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/dashboardmenuitems/entry",
+  "cards:extensionName": "Subject",
+  "cards:extensionRenderURL": "asset:cards-dataentry.SubjectSelector.js?component=NewSubjectDialog",
+  "cards:defaultOrder": 1
 }

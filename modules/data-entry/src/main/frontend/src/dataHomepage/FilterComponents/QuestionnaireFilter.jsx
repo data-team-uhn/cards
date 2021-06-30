@@ -53,7 +53,7 @@ const QuestionnaireFilter = forwardRef((props, ref) => {
     setInitialized(true);
 
     // Fetch the questionnaires
-    fetch("/query?limit=100&query=select * from [lfs:Questionnaire]")
+    fetch("/query?limit=100&query=select * from [cards:Questionnaire]")
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((response) => {
         if (response.totalrows == 0) {
