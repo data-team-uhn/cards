@@ -243,39 +243,23 @@ function VocabularyQuery(props) {
           </MenuItem>
           );
       });
-      suggestions.push(<Divider />);
-      suggestions.push(
-        <MenuItem
-          className={classes.dropdownItem}
-          key={NONE_OF_ABOVE_TEXT}
-          disabled={true}
-        >
-          <Typography
-              component="p"
-              className={classes.noResults}
-              variant="caption"
-            >
-            {NONE_OF_ABOVE_TEXT}
-          </Typography>
-        </MenuItem>
-      );
-    } else {
-      suggestions.push(
-        <MenuItem
-          className={classes.dropdownItem}
-          key={NO_RESULTS_TEXT}
-          disabled={true}
-        >
-          <Typography
-              component="p"
-              className={classes.noResults}
-              variant="caption"
-            >
-            {NO_RESULTS_TEXT}
-          </Typography>
-        </MenuItem>
-      );
+      suggestions.push(<Divider key="divider"/>);
     }
+    suggestions.push(
+      <MenuItem
+        className={classes.dropdownItem}
+        key={NO_RESULTS_TEXT}
+        disabled={true}
+      >
+        <Typography
+          component="p"
+          className={classes.noResults}
+          variant="caption"
+        >
+          {data["rows"].length > 0 ? NONE_OF_ABOVE_TEXT : NO_RESULTS_TEXT}
+        </Typography>
+      </MenuItem>
+    );
 
     suggestions.push(
         <MenuItem
