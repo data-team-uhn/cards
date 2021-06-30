@@ -47,7 +47,10 @@ public class AnswerOptionsLabelProcessor extends SimpleAnswerLabelProcessor impl
     public void leave(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
     {
         try {
-            if (node.isNodeType("lfs:TextAnswer")) {
+            if (node.isNodeType("lfs:TextAnswer")
+                || node.isNodeType("lfs:LongAnswer")
+                || node.isNodeType("lfs:DoubleAnswer")
+                || node.isNodeType("lfs:DecimalAnswer")) {
                 addProperty(node, json, serializeNode);
             }
         } catch (RepositoryException e) {
