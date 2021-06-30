@@ -110,14 +110,8 @@ const thesaurusStyle = theme => ({
     zIndex: "1350 !important",
   },
   noResults: {
-    margin: theme.spacing(-1,0)
-  },
-  noneOfAboveResultsText: {
     marginBottom: theme.spacing(-1),
   },
-  noneOfAboveResults: {
-    borderTop: "2px solid " + grayColor[5]
-  }
 });
 
 export default thesaurusStyle;

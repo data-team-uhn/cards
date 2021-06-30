@@ -21,7 +21,7 @@ import React, { useRef, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 import { withStyles, ClickAwayListener, Grow, IconButton, Input, InputAdornment, InputLabel, FormControl, Typography } from "@material-ui/core"
-import { LinearProgress, MenuItem, MenuList, Paper, Popper } from "@material-ui/core";
+import { Divider, LinearProgress, MenuItem, MenuList, Paper, Popper } from "@material-ui/core";
 
 import Search from "@material-ui/icons/Search";
 import Info from "@material-ui/icons/Info";
@@ -243,16 +243,16 @@ function VocabularyQuery(props) {
           </MenuItem>
           );
       });
+      suggestions.push(<Divider />);
       suggestions.push(
         <MenuItem
-          className={classes.dropdownItem + " " + classes.noneOfAboveResults}
+          className={classes.dropdownItem}
           key={NONE_OF_ABOVE_TEXT}
           disabled={true}
         >
           <Typography
               component="p"
-              color="textSecondary"
-              className={classes.noneOfAboveResultsText}
+              className={classes.noResults}
               variant="caption"
             >
             {NONE_OF_ABOVE_TEXT}
@@ -268,7 +268,6 @@ function VocabularyQuery(props) {
         >
           <Typography
               component="p"
-              color="textSecondary"
               className={classes.noResults}
               variant="caption"
             >
