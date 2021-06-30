@@ -315,30 +315,37 @@ function MultipleChoice(props) {
     onUpdate && onUpdate(event.target.value);
   }
 
+  // Certain classes that implement MultipleChoice might add options of their own
+  // e.g. The vocab selector and the NCRNote component.
+  // In those cases, we want to ensure the same behaviour as if they had entered
+  // in a ghosts input normally
+  let acceptOptionFromWidget = (value, label) => {
+    // If we are bare or a radio, the selected option should become the value
+    // unless it is one of the defaults
+    let isDefault = defaults.filter((option) => {
+      return (option[VALUE_POS] === value || option[LABEL_POS] === label)
+    })[0];
+    if ((isBare || isRadio) && !isDefault) {
+      setGhostName(label);
+      setGhostValue(value);
+    } else {
+      // In all other cases, we want to clear the ghost value
+      setGhostValue(GHOST_SENTINEL);
+    }
+    updateGhost(value, label);
+    acceptEnteredOption(value, label);
+    onUpdate && onUpdate(value);
+  }
+
   // Hold the input box for either multiple choice type
   let CustomInput = customInput;
   let ghostInput = (input || textbox || customInput) && (<div className={isBare ? classes.bareAnswer : classes.searchWrapper}>
       {
         customInput ?
           <CustomInput
-            onClick={(value, label) => {
-              // If we are bare or a radio, the selected option should become the value
-              // unless it is one of the defaults
-              let isDefault = defaults.filter((option) => {
-                return (option[VALUE_POS] === value)
-              })[0];
-              if ((isBare || isRadio) && !isDefault) {
-                setGhostName(label);
-                setGhostValue(value);
-              } else {
-                // In all other cases, we want to clear the ghost value
-                setGhostValue(GHOST_SENTINEL);
-              }
-              acceptEnteredOption(value, label);
-              onUpdate && onUpdate(value);
-            }}
             initialSelection={selection.filter(option => option[VALUE_POS])}
             onRemoveOption={removeOption}
+            onClick={acceptOptionFromWidget}
             onChange = {ghostUpdateEvent}
             value={ghostSelected ? ghostName : undefined}
             disabled={disabled}
@@ -425,7 +432,7 @@ function MultipleChoice(props) {
           answers={answers}
           existingAnswer={existingAnswer}
           questionName={questionName}
-          onAddSuggestion={acceptEnteredOption}
+          onAddSuggestion={acceptOptionFromWidget}
           {...rest}
           />
       </React.Fragment>
@@ -439,7 +446,7 @@ function MultipleChoice(props) {
           answers={answers}
           existingAnswer={existingAnswer}
           questionName={questionName}
-          onAddSuggestion={acceptEnteredOption}
+          onAddSuggestion={acceptOptionFromWidget}
           {...rest}
           />
       </React.Fragment>
@@ -489,7 +496,7 @@ function MultipleChoice(props) {
           answers={answers}
           existingAnswer={existingAnswer}
           questionName={questionName}
-          onAddSuggestion={acceptEnteredOption}
+          onAddSuggestion={acceptOptionFromWidget}
           {...rest}
           />
       </React.Fragment>
@@ -507,7 +514,7 @@ function MultipleChoice(props) {
           existingAnswer={existingAnswer}
           questionName={questionName}
           isMultivalued={true}
-          onAddSuggestion={acceptEnteredOption}
+          onAddSuggestion={acceptOptionFromWidget}
           {...rest}
           />
       </React.Fragment>
