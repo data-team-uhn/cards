@@ -251,7 +251,7 @@ function StatisticDialog(props) {
     }
 
     // If this statistic does not exist, we need to create a new path for it
-    let URL = isNewStatistic ? "/Statistics/" + uuidv4() : currentId;
+    let URL = isNewStatistic ? "/Statistics/" + uuidv4() : "/Statistics/" + currentId;
     setSaveInProgress(true);
     fetchWithReLogin(globalLoginDisplay,
       URL,
