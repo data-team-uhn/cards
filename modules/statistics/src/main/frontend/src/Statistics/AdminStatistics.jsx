@@ -36,6 +36,7 @@ import {
 } from "@material-ui/core";
 import statisticsStyle from "./statisticsStyle.jsx";
 import NewItemComponent from "../components/NewItemButton.jsx";
+import ResponsiveDialog from "../components/ResponsiveDialog.jsx";
 import LiveTable from "../dataHomepage/LiveTable.jsx";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 import Fields from "../questionnaireEditor/Fields.jsx";
@@ -272,7 +273,7 @@ function StatisticDialog(props) {
 
   return (
     <form action='/Statistics' method='POST' onSubmit={saveData}>
-      <Dialog disablePortal open={open} onClose={onClose}>
+      <ResponsiveDialog disablePortal open={open} onClose={onClose}>
       <DialogTitle>{isNewStatistic ? "Create New Statistic" : "Edit Statistic"}</DialogTitle>
       <DialogContent>
         { error && <Typography color="error">{error}</Typography>}
@@ -301,7 +302,7 @@ function StatisticDialog(props) {
             {isNewStatistic ? "Create" : "Save"}
           </Button>
       </DialogActions>
-    </Dialog>
+    </ResponsiveDialog>
   </form>
   )
 }
