@@ -269,6 +269,7 @@ function VocabularyQuery(props) {
     !anchorEl?.current?.contains(event.target)
       && !searchButtonRef?.current?.contains(event.target)
       && maxAnswers !== 1
+      && clearOnClick
       && setInputValue("");
     setSuggestionsVisible(false);
     setTermPath("");
