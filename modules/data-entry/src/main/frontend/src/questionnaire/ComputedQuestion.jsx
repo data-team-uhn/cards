@@ -160,6 +160,7 @@ let ComputedQuestion = (props) => {
       >
       {error && <Typography color='error'>{errorMessage}</Typography>}
       <TextField
+        multiline
         disabled={true}
         className={classes.textField + " " + classes.answerField}
         value={value}
