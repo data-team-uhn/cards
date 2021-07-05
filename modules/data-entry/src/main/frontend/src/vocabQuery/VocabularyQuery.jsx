@@ -17,7 +17,7 @@
 //  under the License.
 //
 import classNames from "classnames";
-import React, { useRef, useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 import { withStyles, ClickAwayListener, Grow, IconButton, Input, InputAdornment, InputLabel, FormControl, Typography } from "@material-ui/core"
@@ -29,6 +29,7 @@ import Info from "@material-ui/icons/Info";
 import VocabularyBrowser from "./VocabularyBrowser.jsx";
 import { REST_URL, MakeRequest } from "./util.jsx";
 import QueryStyle from "./queryStyle.jsx";
+import { LABEL_POS, VALUE_POS } from "../questionnaire/Answer";
 
 const NO_RESULTS_TEXT = "No results";
 const MAX_RESULTS = 10;
@@ -48,20 +49,29 @@ const MAX_RESULTS = 10;
 //  placeholder: String to display as the input element's placeholder
 //  value: String to use as the input element value
 //  onChange: Callback in term input change event
+//  allowTermSelection: Boolean enabler for term selection from vocabulary tree browser
+//  initialSelection: Existing answers
+//  onRemoveOption: Function to remove added answer
 //
 function VocabularyQuery(props) {
   const { clearOnClick, onClick, focusAfterSelecting, disabled, variant, isNested, placeholder,
-    value, questionDefinition, onChange, classes } = props;
-
+    value, questionDefinition, onChange, allowTermSelection, initialSelection, onRemoveOption, classes } = props;
   const [suggestions, setSuggestions] = useState([]);
   const [suggestionsLoading, setSuggestionsLoading] = useState(false);
   const [suggestionsVisible, setSuggestionsVisible] = useState(false);
   const [lookupTimer, setLookupTimer] = useState(null);
+  const maxAnswers = questionDefinition?.maxAnswers;
 
   // Holds term path on dropdown info button click
   const [termPath, setTermPath] = useState("");
 
-  const [inputValue, setInputValue] = useState(value);
+  // Checks whether path is listed in the default answer options in the question definition
+  let isDefaultOption = (path) => {
+    return Object.values(props.questionDefinition)
+          .find(value => value['jcr:primaryType'] == 'lfs:AnswerOption' && value.value === path)
+  }
+
+  const [inputValue, setInputValue] = useState(maxAnswers === 1 && initialSelection?.length > 0 && !isDefaultOption(initialSelection[0][VALUE_POS]) ? initialSelection[0][LABEL_POS] : value);
   const [error, setError] = useState("");
 
   // Holds dropdown info buttons refs to be used as anchor elements by term infoBoxes
@@ -75,6 +85,13 @@ function VocabularyQuery(props) {
   let infoboxRef = useRef();
   let browserRef = useRef();
 
+  // Update input field if maxAnswers=1
+  useEffect(() => {
+    if (maxAnswers === 1) {
+      initialSelection.length == 0 || isDefaultOption(initialSelection[0][VALUE_POS]) ? setInputValue("") : setInputValue(initialSelection[0][LABEL_POS]);
+    }
+  }, [initialSelection])
+
   const inputEl = (
     <Input
       disabled={disabled}
@@ -85,8 +102,8 @@ function VocabularyQuery(props) {
       }}
       onChange={(event) => {
         delayLookup(event.target.value);
-        setInputValue(event.target.value)
-        onChange && onChange(event);
+        setInputValue(event.target.value);
+        (maxAnswers != 1 || event.target.value == "") && onChange && onChange(event);
       }}
       inputRef={anchorEl}
       onKeyDown={(event) => {
@@ -100,6 +117,9 @@ function VocabularyQuery(props) {
             menuRef.current.children[index].focus();
           }
           event.preventDefault();
+        } else if (event.key == 'Tab' || event.key == "Escape") {
+          maxAnswers != 1 && setInputValue("");
+          closeAutocomplete(event);
         }
       }}
       onFocus={(status) => {
@@ -147,7 +167,7 @@ function VocabularyQuery(props) {
     url.searchParams.set("suggest", input.replace(/[^\w\s]/g, ' '));
 
     //Are there any filters that should be associated with this request?
-    if (props?.questionDefinition?.vocabularyFilters?.[selectedVocab]) {
+    if (questionDefinition?.vocabularyFilters?.[selectedVocab]) {
       var filter = questionDefinition.vocabularyFilters[selectedVocab].map((category) => {
         return (`term_category:${category}`);
       }).join(" OR ");
@@ -179,62 +199,63 @@ function VocabularyQuery(props) {
 
   // Callback for queryInput to populate the suggestions bar
   let showSuggestions = (status, data) => {
-    if (!status) {
-        // Populate suggestions
-        var suggestions = [];
+    setSuggestionsLoading(false);
 
-        if (data["rows"].length > 0) {
-          data["rows"].forEach((element) => {
-            var name = element["label"] || element["name"] || element["identifier"];
-            suggestions.push(
-              <MenuItem
-                className={classes.dropdownItem}
-                key={element["@path"]}
-                onClick={(e) => {
-                  if (e.target.localName === "li") {
-                    onClick(element["@path"], name);
-                    setInputValue(clearOnClick ? "" : name);
-                    closeSuggestions();
-                  }}
-                }
-              >
-                {name}
-                <IconButton
-                  size="small"
-                  buttonRef={node => {
-                    registerInfoButton(element["identifier"], node);
-                  }}
-                  color="primary"
-                  aria-owns={"menu-list-grow"}
-                  aria-haspopup={true}
-                  onClick={(e) => setTermPath(element["@path"])}
-                  className={classes.infoButton}
-                >
-                  <Info color="primary" />
-                </IconButton>
-              </MenuItem>
-              );
-          });
-        } else {
-          suggestions.push(
-            <MenuItem
-              className={classes.dropdownItem}
-              key={NO_RESULTS_TEXT}
-              onClick={onClick}
-              disabled={true}
-            >
-              {NO_RESULTS_TEXT}
-            </MenuItem>
-          )
-        }
-
-        setSuggestions(suggestions);
-        setSuggestionsVisible(true);
-        setSuggestionsLoading(false);
-    } else {
+    if (status && data["rows"]?.length == 0) {
       setError("Cannot load answer suggestions for this question. Please inform your administrator.");
-      setSuggestionsLoading(false);
+      return;
     }
+
+    // Populate suggestions
+    var suggestions = [];
+
+    if (data["rows"].length > 0) {
+      data["rows"].forEach((element) => {
+        var name = element["label"] || element["name"] || element["identifier"];
+        suggestions.push(
+          <MenuItem
+            className={classes.dropdownItem}
+            key={element["@path"]}
+            onClick={(e) => {
+              if (e.target.localName === "li") {
+                onClick(element["@path"], name);
+                setInputValue(clearOnClick ? "" : name);
+                closeSuggestions();
+              }}
+            }
+          >
+            {name}
+            <IconButton
+              size="small"
+              buttonRef={node => {
+                registerInfoButton(element["identifier"], node);
+              }}
+              color="primary"
+              aria-owns={"menu-list-grow"}
+              aria-haspopup={true}
+              onClick={(e) => setTermPath(element["@path"])}
+              className={classes.infoButton}
+            >
+              <Info color="primary" />
+            </IconButton>
+          </MenuItem>
+          );
+      });
+    } else {
+      suggestions.push(
+        <MenuItem
+          className={classes.dropdownItem}
+          key={NO_RESULTS_TEXT}
+          onClick={onClick}
+          disabled={true}
+        >
+          {NO_RESULTS_TEXT}
+        </MenuItem>
+      )
+    }
+
+    setSuggestions(suggestions);
+    setSuggestionsVisible(true);
   }
 
   // Event handler for clicking away from the autocomplete while it is open
@@ -247,7 +268,7 @@ function VocabularyQuery(props) {
 
     !anchorEl?.current?.contains(event.target)
       && !searchButtonRef?.current?.contains(event.target)
-      && questionDefinition?.maxAnswers !== 1
+      && maxAnswers !== 1
       && setInputValue("");
     setSuggestionsVisible(false);
     setTermPath("");
@@ -276,6 +297,27 @@ function VocabularyQuery(props) {
       anchorEl?.current?.select();
     }
     setSuggestionsVisible(false);
+  }
+
+  let onCloseBrowser = (selectedTerms, removedTerms) => {
+    selectedTerms && selectedTerms.map(item => onClick(item[VALUE_POS], item[LABEL_POS]));
+    removedTerms && removedTerms.map(item => onRemoveOption(item[VALUE_POS], item[LABEL_POS]));
+
+    // Set input value to selected term label or initial selection label if single answer question
+    if (maxAnswers === 1) {
+      if (selectedTerms?.length > 0) {
+        // Search in default answer options
+        !isDefaultOption(selectedTerms[0][VALUE_POS]) && setInputValue(selectedTerms[0][LABEL_POS]);
+      }
+    }
+    if (selectedTerms || removedTerms) {
+      setSuggestionsVisible(false);
+      setTermPath("");
+      maxAnswers != 1 && setInputValue("");
+      setError("");
+    } else {
+      anchorEl.current.focus();
+    }
   }
 
   if (disabled && anchorEl?.current) {
@@ -360,6 +402,10 @@ function VocabularyQuery(props) {
           infoButtonRefs={buttonRefs}
           browserRef={browserRef}
           infoboxRef={infoboxRef}
+          questionDefinition={questionDefinition}
+          allowTermSelection={allowTermSelection}
+          initialSelection={initialSelection}
+          onCloseBrowser={onCloseBrowser}
         />
       </div>
     );
@@ -377,6 +423,9 @@ VocabularyQuery.propTypes = {
     value: PropTypes.string,
     questionDefinition: PropTypes.object.isRequired,
     onChange: PropTypes.func,
+    allowTermSelection: PropTypes.bool,
+    initialSelection: PropTypes.array,
+    onRemoveOption: PropTypes.func
 };
 
 VocabularyQuery.defaultProps = {

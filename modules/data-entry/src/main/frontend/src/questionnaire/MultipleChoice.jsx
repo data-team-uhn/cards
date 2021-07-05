@@ -97,8 +97,8 @@ function MultipleChoice(props) {
   let inputPrefill = (isBare || (isRadio && default_values.indexOf(initialSelection[0]?.[VALUE_POS]) < 0)) && existingAnswer?.[1] || '';
   const [ghostName, setGhostName] = useState(inputPrefill?.displayedValue);
   const [ghostValue, setGhostValue] = useState(inputPrefill?.value || GHOST_SENTINEL);
-  const ghostSelected = selection.some(element => {return element.includes(ghostValue);});
-  const disabled = maxAnswers > 0 && selection.length >= maxAnswers && !isRadio && !ghostSelected;
+  const ghostSelected = selection.some(element => {return element[VALUE_POS] === ghostValue || element[LABEL_POS] === ghostName});
+  const disabled = maxAnswers > 1 && selection.length >= maxAnswers;
   let inputEl = null;
   const [separatorDetectionEnabled, setSeparatorDetectionEnabled] = useState(enableSeparatorDetection);
   const [separatorDetected, setSeparatorDetected] = useState(false);
@@ -107,7 +107,7 @@ function MultipleChoice(props) {
 
   let selectOption = (id, name, checked = false) => {
     // Selecting a radio button option will select only that option
-    if (isRadio) {
+    if (isRadio || isBare) {
       let defaultOption = defaults.filter((option) => {return option[VALUE_POS] === name || option[LABEL_POS] === name})[0];
       if (defaultOption) {
         setSelection([[defaultOption[LABEL_POS], defaultOption[VALUE_POS]]]);
@@ -137,7 +137,7 @@ function MultipleChoice(props) {
       setSelection((old) => {
         // Only keep options that are user-input
         let defaultOptions = defaults.filter(option => option[IS_DEFAULT_POS]).map((option) => option[VALUE_POS]);
-        let newSelection = old.slice().filter((option) => !defaultOptions.includes(option[VALUE_POS]));
+        let newSelection = old.filter((option) => !defaultOptions.includes(option[VALUE_POS]));
         newSelection.push([name, id]);
         return newSelection;
       });
@@ -157,35 +157,35 @@ function MultipleChoice(props) {
       return;
     }
 
-    let newSelection = selection.slice();
+    setSelection( old => {
+      let newSelection = old.filter((option) => {
+        return (option[VALUE_POS] !== "" && option[LABEL_POS] !== "")
+          // And if we've gotten here and there's an "na" option, we remove it from the selection
+          && (!naOption || option[VALUE_POS] != naOption)
+          // The same goes for a "none of the above" option
+          && (!noneOfTheAboveOption || option[VALUE_POS] != noneOfTheAboveOption)
+      });
 
-    // If we're inserting a new entry, we should never add the empty tracker
-    newSelection = newSelection.filter((option) => {
-      return (option[VALUE_POS] !== "" && option[LABEL_POS] !== "")
-        // And if we've gotten here and there's an "na" option, we remove it from the selection
-        && (!naOption || option[VALUE_POS] != naOption)
-        // The same goes for a "none of the above" option
-        && (!noneOfTheAboveOption || option[VALUE_POS] != noneOfTheAboveOption)
-    });
-
-    // Check if any of the predefined options matches the user input. If yes, select it instead of adding a new entry
-    let defaultOption = defaults.filter((option) => {
-      return (option[VALUE_POS] === id || option[LABEL_POS] === name)
-    })[0];
-    if (defaultOption) {
-      newSelection.push([defaultOption[LABEL_POS], defaultOption[VALUE_POS]]);
-    } else {
-      // Otherwise, add a new entry
-      newSelection.push([name, id]);
+      // Check if any of the predefined options matches the user input. If yes, select it instead of adding a new entry
+      let defaultOption = defaults.filter((option) => {
+        return (option[VALUE_POS] === id || option[LABEL_POS] === name)
+      })[0];
+      if (defaultOption) {
+        newSelection.push([defaultOption[LABEL_POS], defaultOption[VALUE_POS]]);
+      } else {
+        // Otherwise, add a new entry
+        newSelection.push([name, id]);
+      }
+      return newSelection;
     }
-    setSelection(newSelection);
+    );
   }
 
   let unselect = (id, name) => {
-    return setSelection( (old) => {
-      let newSelection = old.slice().filter(
+    setSelection( (old) => {
+      let newSelection = old.filter(
         (element) => {
-          return !(element[VALUE_POS] === id && element[LABEL_POS] === name)
+          return !(element[VALUE_POS] === id)
         });
       // Insert the empty string if nothing currently exists
       if (newSelection.length == 0) {
@@ -209,7 +209,7 @@ function MultipleChoice(props) {
       setOptions((oldOptions) => {
         let newOptions = oldOptions.slice();
         newOptions.push([name, id, false]);
-        return newOptions
+        return newOptions;
       });
     }
   }
@@ -217,11 +217,13 @@ function MultipleChoice(props) {
   // Remove a non-default option
   let removeOption = (id, name) => {
     onChange && onChange(id); // will trigger callback in Form.jsx
-    setOptions(options.filter(
-      (option) => {
-        return !(option[VALUE_POS] === id && option[LABEL_POS] === name)
-      }
-    ));
+    setOptions( (old) => {
+      let newOptions = old.filter(
+        (option) => {
+          return !(option[VALUE_POS] === id && option[LABEL_POS] === name) || option[IS_DEFAULT_POS]
+        });
+      return newOptions;
+    });
     unselect(id, name);
     return;
   }
@@ -332,10 +334,11 @@ function MultipleChoice(props) {
                 // In all other cases, we want to clear the ghost value
                 setGhostValue(GHOST_SENTINEL);
               }
-              updateGhost(value, label);
               acceptEnteredOption(value, label);
               onUpdate && onUpdate(value);
             }}
+            initialSelection={selection.filter(option => option[VALUE_POS])}
+            onRemoveOption={removeOption}
             onChange = {ghostUpdateEvent}
             value={ghostSelected ? ghostName : undefined}
             disabled={disabled}
@@ -347,7 +350,7 @@ function MultipleChoice(props) {
             className={classes.textField + (isRadio ? (' ' + classes.nestedInput) : '')}
             onChange={ghostUpdateEvent}
             disabled={disabled}
-            onFocus={() => {maxAnswers === 1 && selectOption(ghostValue, ghostName)}}
+            onFocus={() => {maxAnswers === 1 && ghostName && selectOption(ghostValue, ghostName)}}
             onBlur={separatorDetected ? ()=>{} : () => acceptEnteredOption()}
             inputProps={Object.assign({
               onKeyDown: (event) => {
@@ -457,6 +460,7 @@ function MultipleChoice(props) {
             <FormControlLabel
               control={
               <Radio
+                checked={ghostSelected}
                 onChange={() => {
                   selectOption(ghostValue, ghostName);
                   onUpdate && onUpdate(ghostSelected ? undefined : ghostName);

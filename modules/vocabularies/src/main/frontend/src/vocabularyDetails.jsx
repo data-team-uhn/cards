@@ -36,7 +36,6 @@ import CloseIcon from "@material-ui/icons/Close";
 
 import VocabularyAction from "./vocabularyAction";
 import VocabularyBrowser from "./vocabQuery/VocabularyBrowser.jsx";
-import { REST_URL, MakeRequest } from "./vocabQuery/util.jsx";
 
 const Phase = require("./phaseCodes.json");
 

@@ -16,12 +16,12 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-// @material-ui/core
+
 import { withStyles } from "@material-ui/core";
 import { Button, CircularProgress, IconButton, Tooltip, Typography } from '@material-ui/core';
-// @material-ui/icons
+
 import Info from "@material-ui/icons/Info";
 import ArrowDown from "@material-ui/icons/KeyboardArrowDown";
 import ArrowRight from "@material-ui/icons/KeyboardArrowRight";
@@ -29,6 +29,7 @@ import More from "@material-ui/icons/MoreHoriz";
 
 import BrowseTheme from "./browseStyle.jsx";
 import { REST_URL, MakeRequest } from "./util.jsx";
+import { LABEL_POS, VALUE_POS } from "../questionnaire/Answer";
 
 // Component that renders an element of the VocabularyTree, with expandable children.
 //
@@ -49,9 +50,16 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 //  onCloseInfoBox: Callback to close term info box
 //  focused: boolean determining whether this entry is focused and should be visually emphasized
 //           (a focused term entry is displayed as a root of a subtree, with only its parents above and its descendants below)
+//  selectorComponent: term selector component: Checkbox or Radio control
+//  onTermSelected: Function to process term selected in browser
+//  currentSelection: The ids of the terms that have been marked as selected do far in the vocabulary browser
+//  onTermUnselected: Function to remove added answer
+//  maxAnswers: maximum answers allowed for the vocabulary question
+//  parentId: id of a parent brunch term
 //
 function VocabularyBranch(props) {
-  const { defaultOpen, id, path, name, onTermClick, onCloseInfoBox, registerInfo, getInfo, expands, headNode, focused, onError, knownHasChildren, classes } = props;
+  const { defaultOpen, id, path, name, onTermClick, onCloseInfoBox, registerInfo, getInfo, expands, headNode, focused, onError,
+    knownHasChildren, selectorComponent, onTermSelected, onTermUnselected, currentSelection, maxAnswers, parentId, classes } = props;
 
   const [ lastKnownID, setLastKnownID ] = useState();
   const [ currentlyLoading, setCurrentlyLoading ] = useState(typeof knownHasChildren === "undefined" && expands);
@@ -60,6 +68,45 @@ function VocabularyBranch(props) {
   const [ childrenData, setChildrenData ] = useState();
   const [ children, setChildren ] = useState([]);
   const [ expanded, setExpanded ] = useState(defaultOpen);
+  const [ selectedPaths, setSelectedPaths] = useState(currentSelection || []);
+  const SelectorComponent = selectorComponent;
+
+  useEffect(() => {
+    // Add path to selectedPaths upon term selection from other branches
+    window.addEventListener('term-selected', addPath);
+    // Remove path from selectedPaths upon term removal from chips list
+    window.addEventListener('term-unselected', removePath);
+    // Update selected path and radio buttons state upon term selection change if single answer question
+    maxAnswers == 1 && window.addEventListener('term-changed', updatePath);
+
+    return () => {
+      window.removeEventListener('term-selected', addPath);
+      window.removeEventListener('term-unselected', removePath);
+      maxAnswers == 1 && window.removeEventListener('term-changed', updatePath);
+    };
+  });
+
+  let updatePath = (evt) => {
+    let path = evt.detail[VALUE_POS];
+    setSelectedPaths([path]);
+  }
+
+  let addPath = (evt) => {
+    let path = evt.detail[VALUE_POS];
+    setSelectedPaths(old => {
+        let newPaths = old.slice();
+        newPaths.push(path);
+        return newPaths;
+    });
+  }
+
+  let removePath = (evt) => {
+    let path = evt.detail[VALUE_POS];
+    setSelectedPaths(old => {
+        let newPaths = old.filter(item => item != path);
+        return newPaths;
+    });
+  }
 
   let loadTerm = (id, path) => {
     if (focused) return;
@@ -87,7 +134,7 @@ function VocabularyBranch(props) {
     if (status === null) {
       setHasChildren(data["lfs:children"].length > 0);
       setChildrenData(data["lfs:children"]);
-      buildChildren(data["lfs:children"]);
+      buildChildren(data);
     } else {
       onError("Error: children lookup failed with code " + status);
     }
@@ -95,7 +142,7 @@ function VocabularyBranch(props) {
 
   // Given information about our children, create elements to display their data
   let buildChildren = (data) => {
-    var children = data.map((row, index) =>
+    var children = data["lfs:children"].map((row, index) =>
       (<VocabularyBranch
         classes={classes}
         id={row["identifier"]}
@@ -111,6 +158,12 @@ function VocabularyBranch(props) {
         headNode={false}
         onError={onError}
         knownHasChildren={row["lfs:hasChildren"]}
+        selectorComponent={selectorComponent}
+        onTermSelected={onTermSelected}
+        onTermUnselected={onTermUnselected}
+        currentSelection={selectedPaths}
+        maxAnswers={maxAnswers}
+        parentId={data["identifier"]}
       />)
       );
     setLoadedChildren(true);
@@ -169,6 +222,33 @@ function VocabularyBranch(props) {
     }
   }
 
+  let onSelectionChanged = (evt) => {
+    evt.stopPropagation();
+    if (evt.target.checked) {
+      if (maxAnswers == 1) {
+        setSelectedPaths([path]);
+        onTermSelected(name, path);
+        // This event is needed to pass on to all branches so they update radio buttons states
+        var changedEvent = new CustomEvent('term-changed', {
+          bubbles: true,
+          cancelable: true,
+          detail: [name, path]
+        });
+        document.dispatchEvent(changedEvent);
+        return;
+      } else {
+        let newPaths = selectedPaths.slice();
+        newPaths.push(path);
+        setSelectedPaths(newPaths);
+        onTermSelected(name, path);
+      }
+    } else {
+      let newPaths = selectedPaths.filter(item => item != path);
+      setSelectedPaths(newPaths);
+      onTermUnselected(name, path);
+    }
+  }
+
   // Ensure we know whether or not we have children, if this is expandable
   if (expands) {
     // Ensure our child list entries are built, if this is currently expanded
@@ -198,10 +278,18 @@ function VocabularyBranch(props) {
           expandAction(<More/>, "Show parent categories", () => loadTerm(id, path))
         )
       }
-
+      {/* Browser term select tools */}
+	    { SelectorComponent && <SelectorComponent
+	      checked={selectedPaths.includes(path)}
+	      color="secondary"
+	      onChange={onSelectionChanged}
+	      onClick={event => event.stopPropagation()}
+	      className={classes.termSelector}
+	    /> }
       {/* Term name */}
       <Typography onClick={() => loadTerm(id, path)}
-                  className={classes.infoName + (focused ? (" " + classes.focusedTermName) : " ")}>
+                  className={classes.infoName + (focused ? (" " + classes.focusedTermName) : " ")}
+                  component="div">
         {name.split(" ").length > 1 ? name.split(" ").slice(0,-1).join(" ") + " " : ''}
         <span className={classes.infoIcon}>
           {name.split(" ").pop()}&nbsp;
@@ -209,8 +297,8 @@ function VocabularyBranch(props) {
           <IconButton
             size="small"
             color="primary"
-            buttonRef={(node) => {registerInfo(id, node)}}
-            onClick={(event) => {event.stopPropagation(); getInfo(path)}}
+            buttonRef={(node) => {registerInfo(id + parentId, node)}}
+            onClick={(event) => {event.stopPropagation(); getInfo(path, parentId)}}
             className={classes.infoButton}
           >
             <Info color="primary" fontSize="small" className={classes.infoButton}/>
@@ -238,7 +326,17 @@ VocabularyBranch.propTypes = {
   focused: PropTypes.bool,
   onError: PropTypes.func.isRequired,
   knownHasChildren: PropTypes.bool.isRequired,
+  selectorComponent: PropTypes.object,
+  onTermSelected: PropTypes.func,
+  onTermUnselected: PropTypes.func,
+  currentSelection: PropTypes.array,
+  maxAnswers: PropTypes.number,
+  parentId: PropTypes.string,
   classes: PropTypes.object.isRequired
+};
+
+VocabularyBranch.defaultProps = {
+  parentId: ""
 };
 
 export default withStyles(BrowseTheme)(VocabularyBranch);

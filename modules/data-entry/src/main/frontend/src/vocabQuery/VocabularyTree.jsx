@@ -19,9 +19,11 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
-import { withStyles, DialogContent } from '@material-ui/core';
+import { withStyles, Button, Checkbox, DialogContent, DialogActions, Chip, Radio, Typography } from '@material-ui/core';
 import ResponsiveDialog from "../components/ResponsiveDialog";
 import VocabularyBranch from "./VocabularyBranch.jsx";
+import AnswerInstructions from "../questionnaire/AnswerInstructions.jsx";
+import { LABEL_POS, VALUE_POS } from "../questionnaire/Answer";
 import BrowseTheme from "./browseStyle.jsx";
 
 import { REST_URL, MakeRequest } from "./util.jsx";
@@ -30,6 +32,7 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 //
 // Required arguments:
 //  open: Boolean representing whether or not the tree dialog is open
+//  infoAboveBackground: Boolean representing whether or not the term info box is placed above the vocabulary tree dialog
 //  path: Term @path to get the term info
 //  registerInfo: Callback to add a possible hook point for the info box
 //  getInfo: Callback to change the currently displayed info box term
@@ -42,14 +45,24 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 //  vocabulary: Vocabulary info
 //  browseRoots: Boolean representing whether or not the vocabulary tree shows roots
 //  onCloseInfoBox: Callback to close term info box
+//  allowTermSelection: Boolean enabler for term selection from vocabulary tree browser
+//  initialSelection: Existing answers
+//  questionDefinition: Object describing the Vocabulary Question for which this suggested input is displayed
 //
 function VocabularyTree(props) {
-  const { open, path, onTermClick, registerInfo, getInfo, onClose, onCloseInfoBox, onError, browserRef, classes, vocabulary, browseRoots, ...rest } = props;
+  const { open, path, onTermClick, registerInfo, getInfo, onClose, onCloseInfoBox, onError, browserRef, classes, vocabulary,
+    browseRoots, allowTermSelection, initialSelection, questionDefinition, infoAboveBackground, ...rest } = props;
 
   const [ lastKnownTerm, setLastKnownTerm ] = useState("");
   const [ parentNode, setParentNode ] = useState();
   const [ currentNode, setCurrentNode ] = useState();
   const [ roots, setRoots ] = useState(vocabulary.roots);
+  const maxAnswers = questionDefinition?.maxAnswers;
+  const selectorComponent = allowTermSelection ? (maxAnswers == 1 ? Radio : Checkbox) : undefined;
+
+  const [selectedTerms, setSelectedTerms] = useState(initialSelection);
+  const [removedTerms, setRemovedTerms] = useState([]);
+  const [selectionChanged, setSelectionChanged] = useState(false);
 
   useEffect(() => {
     if (browseRoots && !vocabulary.roots) {
@@ -64,6 +77,10 @@ function VocabularyTree(props) {
   useEffect(() => {
     rebuildBrowser();
   }, [roots])
+
+  useEffect(() => {
+    setSelectionChanged(true);
+  }, [selectedTerms, removedTerms])
 
   let getRoots = (status, data) => {
     setRoots(data?.roots);
@@ -117,6 +134,64 @@ function VocabularyTree(props) {
     }
   }
 
+  let addOption = (name, path) => {
+    if (maxAnswers == 1) {
+      setSelectedTerms([[name, path]]);
+      return;
+    }
+    setSelectedTerms(old => {
+      let newTerms = old.slice();
+      newTerms.push([name, path]);
+      return newTerms;
+    });
+    // remove from removed
+    setRemovedTerms(old => {
+      return old.filter(item => item[VALUE_POS] != path);
+    });
+    // This event is needed to pass on to all branches so they check selected term
+    var addedEvent = new CustomEvent('term-selected', {
+          bubbles: true,
+          cancelable: true,
+          detail: [name, path]
+        });
+    document.dispatchEvent(addedEvent);
+  }
+
+  let removeOption = (name, path) => {
+    setSelectedTerms(old => {
+      return old.filter(item => item[VALUE_POS] != path);
+    });
+    if (initialSelection.some(item => item[VALUE_POS] == path)) {
+      // they were selected before, add to removed
+      setRemovedTerms(old => {
+        let newRTerms = old.slice();
+        newRTerms.push([name, path]);
+        return newRTerms;
+      });
+    }
+    // This event is needed to pass on to all branches so they un-check selected term
+    var removedEvent = new CustomEvent('term-unselected', {
+          bubbles: true,
+          cancelable: true,
+          detail: [name, path]
+        });
+    document.dispatchEvent(removedEvent);
+  }
+
+  let onDone = () => {
+    onClose(selectedTerms, removedTerms);
+    setRemovedTerms([]);
+  }
+
+  let onCancel = (event) => {
+    if (event.key == "Escape" && infoAboveBackground) {
+      onCloseInfoBox && onCloseInfoBox();
+      return;
+    }
+    onClose();
+    setRemovedTerms([]);
+  }
+
   // Construct a branch element for rendering
   let constructBranch = (id, path, name, ischildnode, defaultexpanded, focused, hasChildren) => {
     return(
@@ -135,6 +210,11 @@ function VocabularyTree(props) {
         focused={focused}
         onError={onError}
         knownHasChildren={!!hasChildren}
+        selectorComponent={selectorComponent}
+        onTermSelected={addOption}
+        onTermUnselected={removeOption}
+        currentSelection={selectedTerms?.map(item => item[VALUE_POS])}
+        maxAnswers={maxAnswers}
       />
     );
   }
@@ -142,10 +222,10 @@ function VocabularyTree(props) {
   return (
     <ResponsiveDialog
       title={`${vocabulary.name} (${vocabulary.acronym})` || "Related terms"}
-      withCloseButton
+      withCloseButton={!allowTermSelection}
       open={open}
       ref={browserRef}
-      onClose={onClose}
+      onClose={(evt) => onCancel(evt)}
       className={classes.dialog}
       classes={{
         paper: classes.dialogPaper,
@@ -153,6 +233,31 @@ function VocabularyTree(props) {
       }}
       {...rest}
     >
+      { allowTermSelection && <>
+        <div className={classes.selectionContainer}>
+          <Typography variant="body2" component="span">{questionDefinition?.text}:</Typography>
+          { selectedTerms?.filter(i => i[LABEL_POS]).map(s =>
+             <Chip
+               key={s[VALUE_POS]}
+               variant="outlined"
+               size="small"
+               color="primary"
+               label={s[LABEL_POS]}
+               onClick={() => onTermClick(s[VALUE_POS])}
+               onDelete={() => removeOption(...s)}
+               className={classes.selectionChips}
+             />
+           )}
+        </div>
+        <div className={classes.browserAnswerInstrustions}>
+          <AnswerInstructions
+            className={classes.answerInstrustions}
+            currentAnswers={selectedTerms.length}
+            {...questionDefinition}
+          />
+        </div>
+      </>
+      }
       <DialogContent className={classes.treeContainer} dividers>
         {parentNode?.length ?
         <div className={classes.treeRoot}>
@@ -163,12 +268,30 @@ function VocabularyTree(props) {
           {currentNode}
         </div>
       </DialogContent>
+      { allowTermSelection &&
+        <DialogActions>
+          <Button color="primary"
+                  onClick={onDone}
+                  variant="contained"
+                  disabled={!selectionChanged || maxAnswers > 0 && selectedTerms.length > maxAnswers}
+                  className={classes.browseAction} >
+              Done
+          </Button>
+          <Button color="default"
+                  onClick={onCancel}
+                  variant="contained"
+                  className={classes.browseAction} >
+            Cancel
+          </Button>
+        </DialogActions>
+      }
     </ResponsiveDialog>
   );
 }
 
 VocabularyTree.propTypes = {
   open: PropTypes.bool.isRequired,
+  infoAboveBackground: PropTypes.bool.isRequired,
   path: PropTypes.string.isRequired,
   onTermClick: PropTypes.func,
   registerInfo: PropTypes.func.isRequired,
@@ -179,6 +302,9 @@ VocabularyTree.propTypes = {
   browserRef: PropTypes.object.isRequired,
   browseRoots: PropTypes.bool,
   vocabulary: PropTypes.object,
+  allowTermSelection: PropTypes.bool,
+  initialSelection: PropTypes.array,
+  questionDefinition: PropTypes.object,
   classes: PropTypes.object.isRequired
 };
 
