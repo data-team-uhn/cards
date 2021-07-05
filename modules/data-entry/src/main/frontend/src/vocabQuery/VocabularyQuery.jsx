@@ -294,7 +294,7 @@ function VocabularyQuery(props) {
       && maxAnswers !== 1
       && clearOnClick
       && setInputValue("");
-    maxAnswers == 1 && initialSelection?.length > 0 && setInputValue(initialSelection[0][0]);
+    maxAnswers == 1 && initialSelection?.length > 0 && setInputValue(initialSelection[0][LABEL_POS]);
     setSuggestionsVisible(false);
     setTermPath("");
     setError("");
