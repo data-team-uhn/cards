@@ -158,6 +158,8 @@ function MultipleChoice(props) {
     }
 
     let newSelection = selection.slice();
+    console.log("newSelection before filtering is...");
+    console.log(newSelection);
 
     // If we're inserting a new entry, we should never add the empty tracker
     newSelection = newSelection.filter((option) => {
@@ -167,6 +169,9 @@ function MultipleChoice(props) {
         // The same goes for a "none of the above" option
         && (!noneOfTheAboveOption || option[VALUE_POS] != noneOfTheAboveOption)
     });
+
+    console.log("newSelection after filtering is...");
+    console.log(newSelection);
 
     // Check if any of the predefined options matches the user input. If yes, select it instead of adding a new entry
     let defaultOption = defaults.filter((option) => {
