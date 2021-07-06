@@ -150,10 +150,10 @@ function Filters(props) {
       newFilterableFields.push([title, ...parseSectionOrQuestionnaire(thisQuestionnaire)]);
     }
 
-    filterJson["Subject"] = {
+    questionnaireJson["Subject"] = {
       dataType: "subject"
     };
-    filterJson["CreatedDate"] = {
+    questionnaireJson["CreatedDate"] = {
       dataType: "createddate"
     };
 
