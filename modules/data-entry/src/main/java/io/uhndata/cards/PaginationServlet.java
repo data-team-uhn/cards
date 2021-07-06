@@ -441,7 +441,8 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                         String.format(
                             ") and child%d.'value'%s" + (("date".equals(types[i]))
                                 ? ("cast('%sT00:00:00.000"
-                                + new SimpleDateFormat("XXX").format(new Date()) + "' as date)") : "'%s'"),
+                                + new SimpleDateFormat("XXX").format(new Date()) + "' as date)")
+                                : ("boolean".equals(types[i])) ? "%s" : "'%s'"),
                             i,
                             this.sanitizeComparator(comparators[i]),
                             this.sanitizeField(values[i])
