@@ -205,15 +205,18 @@ function VocabularyQuery(props) {
 
     if (status && data["rows"]?.length == 0) {
       setError("Cannot load answer suggestions for this question. Please inform your administrator.");
-      return;
     }
 
     // Populate suggestions
     var suggestions = [];
+    var showUserEntry = true;
 
-    if (data["rows"].length > 0) {
+    if (data["rows"]?.length > 0) {
       data["rows"].forEach((element) => {
         var name = element["label"] || element["name"] || element["identifier"];
+        if (name == anchorEl.current.value) {
+          showUserEntry = false;
+        }
         suggestions.push(
           <MenuItem
             className={classes.dropdownItem}
@@ -243,25 +246,26 @@ function VocabularyQuery(props) {
           </MenuItem>
           );
       });
-      suggestions.push(<Divider key="divider"/>);
+      showUserEntry && suggestions.push(<Divider key="divider"/>);
     }
-    suggestions.push(
-      <MenuItem
-        className={classes.dropdownItem}
-        key={NO_RESULTS_TEXT}
-        disabled={true}
-      >
-        <Typography
-          component="p"
-          className={classes.noResults}
-          variant="caption"
+    if (showUserEntry) {
+      suggestions.push(
+        <MenuItem
+          className={classes.dropdownItem}
+          key={NO_RESULTS_TEXT}
+          disabled={true}
         >
-          {data["rows"].length > 0 ? NONE_OF_ABOVE_TEXT : NO_RESULTS_TEXT}
-        </Typography>
-      </MenuItem>
-    );
+          <Typography
+            component="p"
+            className={classes.noResults}
+            variant="caption"
+          >
+            {data["rows"].length > 0 ? NONE_OF_ABOVE_TEXT : NO_RESULTS_TEXT}
+          </Typography>
+        </MenuItem>
+      );
 
-    suggestions.push(
+      suggestions.push(
         <MenuItem
           className={classes.dropdownItem}
           key={anchorEl.current.value}
@@ -275,7 +279,8 @@ function VocabularyQuery(props) {
         >
           {anchorEl.current.value}
         </MenuItem>
-    );
+      );
+    }
 
     setSuggestions(suggestions);
     setSuggestionsVisible(true);
