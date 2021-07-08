@@ -72,7 +72,14 @@ function VocabularyQuery(props) {
           .find(value => value['jcr:primaryType'] == 'lfs:AnswerOption' && value.value === path)
   }
 
-  const [inputValue, setInputValue] = useState(maxAnswers === 1 && initialSelection?.length > 0 && !isDefaultOption(initialSelection[0][VALUE_POS]) ? initialSelection[0][LABEL_POS] : value);
+  // Set input value in accordance with selection type (single select/multiple select) and initial selection
+  let updateSingleSelectInputValue = (val) => {
+    if (maxAnswers === 1) {
+      initialSelection.length == 0 || isDefaultOption(initialSelection[0][VALUE_POS]) ? setInputValue(val || "") : setInputValue(initialSelection[0][LABEL_POS]);
+    }
+  }
+
+  const [inputValue, setInputValue] = useState(value);
   const [error, setError] = useState("");
 
   // Holds dropdown info buttons refs to be used as anchor elements by term infoBoxes
@@ -88,9 +95,7 @@ function VocabularyQuery(props) {
 
   // Update input field if maxAnswers=1
   useEffect(() => {
-    if (maxAnswers === 1) {
-      initialSelection.length == 0 || isDefaultOption(initialSelection[0][VALUE_POS]) ? setInputValue("") : setInputValue(initialSelection[0][LABEL_POS]);
-    }
+    updateSingleSelectInputValue();
   }, [initialSelection])
 
   const inputEl = (
@@ -299,9 +304,7 @@ function VocabularyQuery(props) {
       && maxAnswers !== 1
       && clearOnClick
       && setInputValue("");
-    if (maxAnswers == 1) {
-      initialSelection.length == 0 || isDefaultOption(initialSelection[0][VALUE_POS]) ? setInputValue("") : setInputValue(initialSelection[0][LABEL_POS]);
-    }
+    updateSingleSelectInputValue();
     setSuggestionsVisible(false);
     setTermPath("");
     setError("");
