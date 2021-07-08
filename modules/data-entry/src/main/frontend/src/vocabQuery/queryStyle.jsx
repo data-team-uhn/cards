@@ -112,6 +112,9 @@ const thesaurusStyle = theme => ({
   noResults: {
     marginBottom: theme.spacing(-1),
   },
+  dropdownMessage: {
+    opacity: "1 !important",
+  },
 });
 
 export default thesaurusStyle;

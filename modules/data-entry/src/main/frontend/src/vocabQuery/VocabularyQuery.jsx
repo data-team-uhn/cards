@@ -208,13 +208,28 @@ function VocabularyQuery(props) {
   let showSuggestions = (status, data) => {
     setSuggestionsLoading(false);
 
-    if (status && data["rows"]?.length == 0) {
-      setError("Cannot load answer suggestions for this question. Please inform your administrator.");
-    }
-
     // Populate suggestions
     var suggestions = [];
     var showUserEntry = true;
+
+    if (status && data["rows"]?.length == 0) {
+      suggestions.push(
+        <MenuItem
+          className={classes.dropdownMessage}
+          key="error-message"
+          disabled={true}
+        >
+          <Typography
+            component="p"
+            variant="caption"
+            color="error"
+          >
+            Answer suggestions cannot be loaded for this question. Please inform your administrator.
+          </Typography>
+        </MenuItem>
+      );
+      suggestions.push(<Divider key="divider"/>);
+    }
 
     if (data["rows"]?.length > 0) {
       data["rows"].forEach((element) => {
