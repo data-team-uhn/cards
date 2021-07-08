@@ -191,7 +191,7 @@ export default function VocabularyAction(props) {
     )}
     {exit && (
       <Tooltip title="Close">
-        <Button onClick={exit} variant="contained" color="default" className={classes.vocabularyAction}>Close</Button>
+        <Button onClick={exit} variant="contained" className={classes.vocabularyAction}>Close</Button>
       </Tooltip>
     )}
     <Dialog onClose={handleClose} open={displayPopup}>
@@ -225,7 +225,7 @@ export default function VocabularyAction(props) {
 
       <DialogActions>
         <Button onClick={handleUninstall} variant="contained" color="primary" className={classes.vocabularyAction + " " + classes.uninstall}>Uninstall</Button>
-        <Button onClick={handleClose} variant="contained" color="default" className={classes.vocabularyAction}>Cancel</Button>
+        <Button onClick={handleClose} variant="contained" className={classes.vocabularyAction}>Cancel</Button>
       </DialogActions>
 
     </Dialog>
