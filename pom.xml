@@ -27,7 +27,7 @@
 
   <name>CARDS - Parent POM</name>
   <description>CARDS is a software tool providing an easy-to-use Web interface and standardized database back-end for collecting medical data.</description>
-  <url>https://uhndata.io/cards/</url>
+  <url>https://cards.uhndata.io/</url>
   <inceptionYear>2019</inceptionYear>
 
   <licenses>
