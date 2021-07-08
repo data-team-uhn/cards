@@ -59,8 +59,8 @@ let TextInput = (props) => {
           :
           <MarkdownElement text={value} />
         }
-        <Button size="small" color="default" target="_blank" href="https://www.markdownguide.org/basic-syntax/" className={classes.paginationButton}> Markdown help </Button>
-        <Button size="small" color="default" onClick={onPreview} disabled={!value} className={classes.paginationButton} > Preview </Button>
+        <Button size="small" target="_blank" href="https://www.markdownguide.org/basic-syntax/" className={classes.paginationButton}> Markdown help </Button>
+        <Button size="small" onClick={onPreview} disabled={!value} className={classes.paginationButton} > Preview </Button>
       </EditorInput>
     )
   }
