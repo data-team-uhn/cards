@@ -17,17 +17,53 @@
 //  under the License.
 //
 
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { TextField, withStyles } from "@material-ui/core";
+import { TextField, Button, withStyles } from "@material-ui/core";
 
 import EditorInput from "./EditorInput";
+import MarkdownElement from "./MarkdownElement";
 import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
 import QuestionComponentManager from "../questionnaireEditor/QuestionComponentManager";
 
 // Text Input field used by Edit dialog component
 let TextInput = (props) => {
-  let { objectKey, data } = props;
+  let { objectKey, data, classes } = props;
+
+  const [value, setValue] = useState(data[objectKey] || '');
+  const [preview, setPreview] = useState(false);
+
+  const handleChange = (event) => {
+    setValue(event.target.value);
+  };
+
+  let onPreview = () => {
+    setPreview(!preview);
+  }
+
+  if (objectKey === "description") {
+    return (
+      <EditorInput name={objectKey}>
+        { !preview
+          ?
+          <TextField name={objectKey}
+                   id={objectKey}
+                   required={objectKey.includes('text')}
+                   value={value}
+                   onChange={handleChange}
+                   variant="outlined"
+                   rows={4}
+                   multiline
+                   fullWidth
+          />
+          :
+          <MarkdownElement text={value} />
+        }
+        <Button size="small" color="default" target="_blank" href="https://www.markdownguide.org/basic-syntax/" className={classes.paginationButton}> Markdown help </Button>
+        <Button size="small" color="default" onClick={onPreview} disabled={!value} className={classes.paginationButton} > Preview </Button>
+      </EditorInput>
+    )
+  }
 
   return (
     <EditorInput name={objectKey}>

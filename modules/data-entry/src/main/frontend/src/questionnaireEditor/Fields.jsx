@@ -30,6 +30,7 @@ import ListInput from "./ListInput";
 import NumberInput from "./NumberInput";
 import ObjectInput from "./ObjectInput";
 import TextInput from "./TextInput";
+import MarkdownElement from "./MarkdownElement";
 
 let Fields = (props) => {
   let { data, JSON, edit, ...rest } = props;
@@ -66,7 +67,11 @@ let Fields = (props) => {
           <Typography variant="subtitle2">{formatString(key)}:</Typography>
         </Grid>
         <Grid item xs={8}>
-          { Array.isArray(data[key]) ? data[key].map((item) => <Typography key={item}>{`${item}`}</Typography>)
+          { key === "description"
+            ?
+              <MarkdownElement text={data[key]} />
+            :
+            Array.isArray(data[key]) ? data[key].map((item) => <Typography key={item}>{`${item}`}</Typography>)
                                      : <Typography>{`${data[key]}`}</Typography>
           }
         </Grid>

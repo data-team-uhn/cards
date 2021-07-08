@@ -38,6 +38,7 @@ import Fields from "../questionnaireEditor/Fields";
 import CreationMenu from "../questionnaireEditor/CreationMenu";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import QuestionnaireItemCard from "../questionnaireEditor/QuestionnaireItemCard";
+import MarkdownElement from "../questionnaireEditor/MarkdownElement";
 
 // GUI for displaying details about a questionnaire.
 let Questionnaire = (props) => {
@@ -327,7 +328,14 @@ let FieldsGrid = (props) => {
         {props.fields?.map((row) => (
           <TableRow key={row.name}>
             <TableCell component="th" scope="row">{row.label}:</TableCell>
-            <TableCell align="left">{row.value}</TableCell>
+            <TableCell align="left">
+              { row.name === "description"
+                ?
+                <MarkdownElement text={row.value} />
+                :
+                row.value
+              }
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>

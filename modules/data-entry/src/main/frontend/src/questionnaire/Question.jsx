@@ -24,6 +24,7 @@ import { Card, CardHeader, CardContent, List, ListItem, Typography, withStyles }
 
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import AnswerInstructions from "./AnswerInstructions";
+import MarkdownElement from "../questionnaireEditor/MarkdownElement";
 
 // GUI for displaying answers
 function Question (props) {
@@ -37,7 +38,7 @@ function Question (props) {
       <CardHeader
         title={text}
         titleTypographyProps={{ variant: 'h6' }}
-        subheader={isEdit ? description : null}
+        subheader={isEdit ? <MarkdownElement text={description} /> : null}
         subheaderTypographyProps={{ variant: 'caption' }}
         />
       <CardContent className={isEdit ? classes.editModeAnswers : classes.viewModeAnswers}>
