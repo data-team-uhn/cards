@@ -63,7 +63,7 @@ function FormPagination (props) {
       variant="contained"
       color="primary"
       disabled={saveInProgress}
-      className={classes.paginationButton}
+      className={classes.rightAlignedButton}
       onClick={handleNext}
     >
       {((lastPage() === 0 || activePage === lastPage()) && saveInProgress) ? 'Saving' :
@@ -96,7 +96,7 @@ function FormPagination (props) {
                 || saveInProgress
                 || lastSaveStatus === false}
               onClick={handleBack}
-              className={classes.paginationButton}
+              className={classes.rightAlignedButton}
               color="primary"
             >
               Back

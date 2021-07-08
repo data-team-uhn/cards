@@ -1,7 +1,7 @@
 [
   {
     "label": "string",
-    "description": "string",
+    "description": "markdown",
     "recurrent": "boolean",
     "initialNumberOfInstances" : "long"
   }

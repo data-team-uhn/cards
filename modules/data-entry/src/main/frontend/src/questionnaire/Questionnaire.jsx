@@ -146,7 +146,7 @@ let Questionnaire = (props) => {
               <FieldsGrid
                 classes={classes}
                 fields= {Array(
-                          {name: "description", label: "Description", value : data.description},
+                          {name: "description", label: "Description", value : data.description, type: "markdown"},
                           {name: "maxPerType", label: "Maximum forms of this type per subject", value : (data.maxPerSubject > 0 ? data.maxPerSubject : 'Unlimited')},
                           {name: "subjectTypes", label: "Subject types", value: data.requiredSubjectTypes?.label || data.requiredSubjectTypes?.map(t => t.label).join(', ') || 'Any'},
                         )}
@@ -263,7 +263,7 @@ let Section = (props) => {
     let p = Array();
     let spec = require('../questionnaireEditor/Section.json');
     Object.keys(spec[0]).filter(key => {return (key != 'label') && !!sectionData[key]}).map(key => {
-      p.push({name: key, label: key.charAt(0).toUpperCase() + key.slice(1).replace( /([A-Z])/g, " $1" ).toLowerCase(), value: sectionData[key] + ""});
+      p.push({name: key, label: key.charAt(0).toUpperCase() + key.slice(1).replace( /([A-Z])/g, " $1" ).toLowerCase(), value: sectionData[key] + "", type: spec[0][key]});
     });
     // Find conditionals
     Object.entries(sectionData).filter(([key, value]) => (value['jcr:primaryType'] == 'lfs:Conditional')).map(([key, value]) => {
@@ -329,7 +329,7 @@ let FieldsGrid = (props) => {
           <TableRow key={row.name}>
             <TableCell component="th" scope="row">{row.label}:</TableCell>
             <TableCell align="left">
-              { row.name === "description"
+              { row.type === "markdown"
                 ?
                 <MarkdownElement text={row.value} />
                 :

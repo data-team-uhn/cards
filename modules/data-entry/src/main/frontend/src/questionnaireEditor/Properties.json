@@ -1,6 +1,6 @@
 [
   {
-    "description" : "string",
+    "description" : "markdown",
     "maxPerSubject": "long",
     "requiredSubjectTypes": {
       "type": "list",

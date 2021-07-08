@@ -30,6 +30,7 @@ import ListInput from "./ListInput";
 import NumberInput from "./NumberInput";
 import ObjectInput from "./ObjectInput";
 import TextInput from "./TextInput";
+import MarkdownTextField from "./MarkdownTextField";
 import MarkdownElement from "./MarkdownElement";
 
 let Fields = (props) => {
@@ -60,14 +61,14 @@ let Fields = (props) => {
     return str.charAt(0).toUpperCase() + str.slice(1).replace( /([A-Z])/g, " $1" ).toLowerCase();
   }
 
-  let displayStaticField = (key) => {
+  let displayStaticField = (key, value) => {
     return (
       <Grid container key={key} alignItems='flex-start' spacing={2} direction="row">
         <Grid item xs={4}>
           <Typography variant="subtitle2">{formatString(key)}:</Typography>
         </Grid>
         <Grid item xs={8}>
-          { key === "description"
+          { value === "markdown"
             ?
               <MarkdownElement text={data[key]} />
             :
@@ -93,7 +94,7 @@ let Fields = (props) => {
   return edit ?
     Object.entries(JSON).map(([key, value]) => displayEditField(key, value))
     :
-    Object.keys(getAllKeys(JSON)).map(key => (data[key] ? displayStaticField(key) : ''));
+    Object.entries(JSON).map(([key, value]) => (data[key] ? displayStaticField(key, value) : ''));
 }
 
 Fields.propTypes = {

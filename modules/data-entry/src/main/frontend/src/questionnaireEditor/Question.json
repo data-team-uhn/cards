@@ -1,7 +1,7 @@
 [
   {
     "text": "string",
-    "description": "string",
+    "description": "markdown",
     "dataType": {
       "text" : {
         "validationRegexp": "string",
