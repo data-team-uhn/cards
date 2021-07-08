@@ -27,7 +27,7 @@
 	</property>
 	<property>
 		<name>description</name>
-		<value>cards-975, cards-366</value>
+		<value>LFS-975, LFS-366</value>
 		<type>String</type>
 	</property>
 	<property>
