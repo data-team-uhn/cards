@@ -117,7 +117,6 @@ function NCRNote (props) {
     url.searchParams.set("model", vocabulary);
 
     fetch(url)
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then(parseNCRData)
       .then(setParsedText)
       .catch(handleError)
@@ -134,11 +133,12 @@ function NCRNote (props) {
   }
 
   // Parse the return value from NCR
-  let parseNCRData = (json) => {
+  let parseNCRData = () => {
     // Return nothing if we have no matches
-    if (!("matches" in json)) {
-      return <div></div>;
-    }
+    //if (!("matches" in json)) {
+    //  return <div></div>;
+    //}
+    const json = JSON.parse('{"matches":[{"end":27,"hp_id":"/Vocabularies/HP/HP0100526","names":["Neoplasm of the lung","Lung cancer","Lung tumor"],"score":"0.9941615","start":16},{"end":42,"hp_id":"/Vocabularies/HP/HP0001627","names":["Abnormal heart morphology","Abnormality of cardiac morphology","Abnormality of the heart","Abnormally shaped heart","Cardiac abnormality","Cardiac anomalies","Congenital heart defect","Congenital heart defects"],"score":"0.6947884","start":29},{"end":56,"hp_id":"/Vocabularies/HP/HP0000819","names":["Diabetes mellitus"],"score":"0.91309816","start":48}]}');
 
     return (<div>
       <ParsedNoteSection
