@@ -50,7 +50,7 @@ let MarkdownTextField = (props) => {
 
   return (
     <EditorInput name={objectKey}>
-      <MDEditor value={value} onChange={setValue} extraCommands={cmd}/>
+      <MDEditor className={classes.markdown} value={value} onChange={setValue} extraCommands={cmd}/>
       <input type="hidden" name={objectKey} value={value} />
     </EditorInput>
   )

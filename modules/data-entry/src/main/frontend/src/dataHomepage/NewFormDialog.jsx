@@ -285,7 +285,7 @@ function NewFormDialog(props) {
                                 <Typography component="div">{q.title}</Typography>
                                 { q.description &&
                                   <Typography component="div" variant="caption" color="textSecondary">
-                                    <MDEditor.Markdown source={q.description} />
+                                    <MDEditor.Markdown className={classes.markdown} source={q.description} />
                                   </Typography>
                                 }
                                 </>)

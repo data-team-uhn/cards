@@ -34,7 +34,7 @@ import MarkdownTextField from "./MarkdownTextField";
 import MDEditor from '@uiw/react-md-editor';
 
 let Fields = (props) => {
-  let { data, JSON, edit, ...rest } = props;
+  let { data, JSON, edit, classes, ...rest } = props;
 
   /**
    * Method responsible for displaying a question from the questionnaire
@@ -70,7 +70,7 @@ let Fields = (props) => {
         <Grid item xs={8}>
           { value === "markdown"
             ?
-            <MDEditor.Markdown source={data[key]} />
+            <MDEditor.Markdown className={classes.markdown} source={data[key]} />
             :
             Array.isArray(data[key]) ? data[key].map((item) => <Typography key={item}>{`${item}`}</Typography>)
                                      : <Typography>{`${data[key]}`}</Typography>

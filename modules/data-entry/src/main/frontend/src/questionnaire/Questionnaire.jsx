@@ -331,7 +331,7 @@ let FieldsGrid = (props) => {
             <TableCell align="left">
               { row.type === "markdown"
                 ?
-                <MDEditor.Markdown source={row.value} />
+                <MDEditor.Markdown className={classes.markdown} source={row.value} />
                 :
                 row.value
               }

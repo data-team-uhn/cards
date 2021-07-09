@@ -45,7 +45,7 @@ function Questionnaires(props) {
     {
       "key": "description",
       "label": "Description",
-      "format": (row) => (<MDEditor.Markdown source={row["description"]} />),
+      "format": (row) => (<MDEditor.Markdown className={classes.markdown} source={row["description"]} />),
     },
     {
       "key": "jcr:created",

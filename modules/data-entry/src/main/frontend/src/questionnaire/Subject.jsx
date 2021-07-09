@@ -458,7 +458,7 @@ function SubjectMemberInternal (props) {
             return(<Grid item key={questionnaireTitle}>
               <Typography variant="h6">{questionnaireTitle}</Typography>
               <Typography variant="subtitle1" color="textSecondary">
-                <MDEditor.Markdown source={subjectGroups[questionnaireTitle]?.[0]?.questionnaire?.description} />
+                <MDEditor.Markdown className={classes.markdown} source={subjectGroups[questionnaireTitle]?.[0]?.questionnaire?.description} />
               </Typography>
               <MaterialTable
                 data={subjectGroups[questionnaireTitle]}
