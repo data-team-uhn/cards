@@ -381,7 +381,7 @@ function Filters(props) {
       } else if (Array.isArray(name)) {
         // Arrays represent Questionnaires of Sections
         // which we'll need to turn into opt groups
-        return [<MenuItem className={classes.categoryHeader} disabled>{name[0]}</MenuItem>,
+        return [<ListSubheader className={classes.categoryHeader} color="primary">{name[0]}</ListSubheader>,
           GetReactComponentFromFields(name.slice(1), true)];
       }
     })
