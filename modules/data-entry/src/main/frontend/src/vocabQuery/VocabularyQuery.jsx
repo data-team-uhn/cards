@@ -163,11 +163,11 @@ function VocabularyQuery(props) {
     setSuggestions([]);
   }
 
-  let makeMultiRequest = (queue, input, status, prevData) => {
+  let makeMultiRequest = (queue, input, statuses, prevData) => {
     // Get vocabulary to search through
     var selectedVocab = queue.pop();
     if (selectedVocab === undefined) {
-      showSuggestions(status, {rows: prevData.slice(0, MAX_RESULTS)});
+      showSuggestions(statuses, {rows: prevData.slice(0, MAX_RESULTS)});
       return;
     }
     var url = new URL(`./${selectedVocab}.search.json`, REST_URL);
@@ -182,7 +182,8 @@ function VocabularyQuery(props) {
     }
 
     MakeRequest(url, (status, data) => {
-      makeMultiRequest(queue, input, status, prevData.concat(!status && data && data['rows'] ? data['rows'] : []));
+      statuses[selectedVocab] = status;
+      makeMultiRequest(queue, input, statuses, prevData.concat(!status && data && data['rows'] ? data['rows'] : []));
     });
   }
 
@@ -201,35 +202,16 @@ function VocabularyQuery(props) {
     //...Make a queue of vocabularies to search through
     setSuggestionsLoading(true);
     var vocabQueue = questionDefinition.sourceVocabularies.slice();
-    makeMultiRequest(vocabQueue, input, null, []);
+    makeMultiRequest(vocabQueue, input, {}, []);
   }
 
   // Callback for queryInput to populate the suggestions bar
-  let showSuggestions = (status, data) => {
+  let showSuggestions = (statuses, data) => {
     setSuggestionsLoading(false);
 
     // Populate suggestions
     var suggestions = [];
     var showUserEntry = true;
-
-    if (status && data["rows"]?.length == 0) {
-      suggestions.push(
-        <MenuItem
-          className={classes.dropdownMessage}
-          key="error-message"
-          disabled={true}
-        >
-          <Typography
-            component="p"
-            variant="caption"
-            color="error"
-          >
-            Answer suggestions cannot be loaded for this question. Please inform your administrator.
-          </Typography>
-        </MenuItem>
-      );
-      suggestions.push(<Divider key="divider"/>);
-    }
 
     if (data["rows"]?.length > 0) {
       data["rows"].forEach((element) => {
@@ -266,9 +248,37 @@ function VocabularyQuery(props) {
           </MenuItem>
           );
       });
-      showUserEntry && suggestions.push(<Divider key="divider"/>);
     }
+
+    var allRequestsFailed = Object.keys(statuses).filter(vocab => !statuses[vocab]).length == 0;
+    var allRequestsSucceded = Object.keys(statuses).filter(vocab => statuses[vocab]).length == 0;
+
+    if (!allRequestsSucceded) {
+     suggestions.length > 0 && suggestions.push(<Divider key="error-divider"/>);
+      suggestions.push(
+        <MenuItem
+          className={classes.dropdownMessage}
+          key="error-message"
+          disabled={true}
+        >
+          <Typography
+            component="p"
+            variant="caption"
+            color="error"
+          >
+            { allRequestsFailed && "Answer suggestions cannot be loaded for this question. Please inform your administrator." }
+            { !allRequestsFailed && !allRequestsSucceded && "Some answer suggestions for this question could not be loaded. Please inform your administrator." }
+          </Typography>
+        </MenuItem>
+      );
+      Object.keys(statuses).filter(vocab => statuses[vocab]).map( vocab => {
+          console.error("Cannot load answer suggestions from " + vocab);
+        }
+      );
+    }
+
     if (showUserEntry) {
+      suggestions.length > 0 && suggestions.push(<Divider key="divider"/>);
       suggestions.push(
         <MenuItem
           className={classes.dropdownItem}
