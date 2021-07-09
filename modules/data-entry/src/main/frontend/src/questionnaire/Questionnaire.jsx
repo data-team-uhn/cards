@@ -38,7 +38,7 @@ import Fields from "../questionnaireEditor/Fields";
 import CreationMenu from "../questionnaireEditor/CreationMenu";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import QuestionnaireItemCard from "../questionnaireEditor/QuestionnaireItemCard";
-import MarkdownElement from "../questionnaireEditor/MarkdownElement";
+import MDEditor from '@uiw/react-md-editor';
 
 // GUI for displaying details about a questionnaire.
 let Questionnaire = (props) => {
@@ -331,7 +331,7 @@ let FieldsGrid = (props) => {
             <TableCell align="left">
               { row.type === "markdown"
                 ?
-                <MarkdownElement text={row.value} />
+                <MDEditor.Markdown source={row.value} />
                 :
                 row.value
               }

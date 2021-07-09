@@ -22,7 +22,6 @@ import PropTypes from 'prop-types';
 import { TextField, Button, withStyles } from "@material-ui/core";
 
 import EditorInput from "./EditorInput";
-import MarkdownElement from "./MarkdownElement";
 import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
 import QuestionComponentManager from "../questionnaireEditor/QuestionComponentManager";
 import MDEditor from '@uiw/react-md-editor';
@@ -30,29 +29,14 @@ import MDEditor from '@uiw/react-md-editor';
 // Markdown Text Input field used by Edit dialog component
 let MarkdownTextField = (props) => {
   let { objectKey, data, classes } = props;
-
   const [value, setValue] = useState(data[objectKey] || '');
-  const [preview, setPreview] = useState(false);
-
-  let onPreview = () => {
-    setPreview(!preview);
-  }
 
   return (
-      <EditorInput name={objectKey}>
-        { !preview
-          ?
-          <MDEditor name={objectKey} id={objectKey}
-	        value={value}
-	        onChange={setValue}
-	      />
-          :
-          <MDEditor.Markdown source={value} />
-        }
-        <input type="hidden" name={objectKey} value={value} />
-        <Button size="small" target="_blank" href="https://www.markdownguide.org/basic-syntax/" className={classes.rightAlignedButton}> Markdown help </Button>
-        <Button size="small" onClick={onPreview} disabled={!value} className={classes.rightAlignedButton} > { !preview ? "Preview" : "Write" } </Button>
-      </EditorInput>
+    <EditorInput name={objectKey}>
+      <MDEditor value={value} onChange={setValue} />
+      <input type="hidden" name={objectKey} value={value} />
+      <Button size="small" target="_blank" href="https://www.markdownguide.org/basic-syntax/" className={classes.rightAlignedButton}> Markdown help </Button>
+    </EditorInput>
   )
 }
 

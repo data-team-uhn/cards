@@ -18,6 +18,7 @@
 //
 import React, { useState, useEffect, useContext } from "react";
 import { withRouter } from "react-router-dom";
+import MDEditor from '@uiw/react-md-editor';
 import { v4 as uuidv4 } from 'uuid';
 
 import {
@@ -282,7 +283,11 @@ function NewFormDialog(props) {
                   field: 'title',
                   render: q => (<>
                                 <Typography component="div">{q.title}</Typography>
-                                { q.description && <Typography component="div" variant="caption" color="textSecondary">{q.description}</Typography> }
+                                { q.description &&
+                                  <Typography component="div" variant="caption" color="textSecondary">
+                                    <MDEditor.Markdown source={q.description} />
+                                  </Typography>
+                                }
                                 </>)
                 }, {
                   field: 'description',
