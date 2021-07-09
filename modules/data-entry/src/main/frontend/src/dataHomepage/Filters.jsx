@@ -253,6 +253,14 @@ function Filters(props) {
 
   // Handle the user changing one of the active filter categories
   let handleChangeFilter = (index, event) => {
+    
+    // Selecting a ListSubheader returns an event.target.value of undefined
+    if (event.target.value === undefined) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+
     // Load up the comparators for this index, if not already loaded
     let [loadedComparators, component] = getOutputChoices(event.target.value);
 
@@ -372,16 +380,16 @@ function Filters(props) {
   }
 
   // From an array of fields, turn it into a react component
-  let GetReactComponentFromFields = (fields) => {
+  let GetReactComponentFromFields = (fields, nested=false) => {
     return fields.map((name) => {
       if (typeof name == "string") {
         // Straight strings are MenuItems
-        return <MenuItem value={name} key={name} className={classes.categoryOption}>{filterableTitles[name]}</MenuItem>
+        return <MenuItem value={name} key={name} className={classes.categoryOption + (nested ? " " + classes.nestedSelectOption : "")}>{filterableTitles[name]}</MenuItem>
       } else if (Array.isArray(name)) {
         // Arrays represent Questionnaires of Sections
         // which we'll need to turn into opt groups
         return [<ListSubheader className={classes.categoryHeader}>{name[0]}</ListSubheader>,
-          GetReactComponentFromFields(name.slice(1))];
+          GetReactComponentFromFields(name.slice(1), true)];
       }
     })
   }
