@@ -59,9 +59,9 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, o
   // create a ref to store the question container DOM element
   useEffect(() => {
     const timer = setTimeout(() => {
-	  questionRef?.current?.scrollIntoView({block: "center"});
-	}, 500);
-	return () => clearTimeout(timer);
+      questionRef?.current?.scrollIntoView({block: "center"});
+    }, 500);
+    return () => clearTimeout(timer);
   }, [questionRef]);
 
   // if autofocus is needed and specified in the url

@@ -105,11 +105,11 @@ export default function VocabularyAction(props) {
           fetchData(json["rows"]);
         })
         .catch(function(err) {
-	      console.log("Something went wrong: " + err);
-	      // We were unable to fetch any questionnaire data possibly due to timeout in user authentication
-	      // thus, we have to abort uninstalling process
-	      return;
-	    });
+          console.log("Something went wrong: " + err);
+          // We were unable to fetch any questionnaire data possibly due to timeout in user authentication
+          // thus, we have to abort uninstalling process
+          return;
+        });
     } else {
       fetchData(questionnaires);
     }
