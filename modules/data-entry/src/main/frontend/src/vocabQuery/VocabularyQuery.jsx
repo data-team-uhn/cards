@@ -254,6 +254,9 @@ function VocabularyQuery(props) {
     var allRequestsSucceded = Object.keys(statuses).filter(vocab => statuses[vocab]).length == 0;
 
     if (!allRequestsSucceded) {
+      if (suggestions.length > 0 && !allRequestsFailed) {
+        suggestions.push(<Divider key="error-divider"/>);
+      }
       suggestions.push(
         <MenuItem
           className={classes.dropdownMessage}
@@ -277,7 +280,7 @@ function VocabularyQuery(props) {
     }
 
     if (showUserEntry) {
-      suggestions.push(<Divider key="divider"/>);
+      suggestions.length > 0 && suggestions.push(<Divider key="divider"/>);
       suggestions.push(
         <MenuItem
           className={classes.dropdownItem}
