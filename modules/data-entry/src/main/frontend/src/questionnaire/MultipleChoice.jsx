@@ -153,7 +153,7 @@ function MultipleChoice(props) {
     }
 
     // Do not add duplicates
-    if (selection.some(element => {return element[VALUE_POS] === id || element[LABEL_POS] === name})) {
+    if (selection.some(element => {return element[VALUE_POS] === id})) {
       return;
     }
 
@@ -204,8 +204,8 @@ function MultipleChoice(props) {
   // Add a non-default option
   // Returns whether an option was added (true) or a matching option already existed (false)
   let addOption = (id, name) => {
-    if ( !options.some((option) => {return option[VALUE_POS] === id || option[LABEL_POS] === name}) &&
-        !defaults.some((option) => {return option[VALUE_POS] === id || option[LABEL_POS] === name})) {
+    if ( !options.some((option) => {return option[VALUE_POS] === id}) &&
+        !defaults.some((option) => {return option[VALUE_POS] === id})) {
       setOptions((oldOptions) => {
         let newOptions = oldOptions.slice();
         newOptions.push([name, id, false]);
@@ -220,7 +220,7 @@ function MultipleChoice(props) {
     setOptions( (old) => {
       let newOptions = old.filter(
         (option) => {
-          return !(option[VALUE_POS] === id && option[LABEL_POS] === name) || option[IS_DEFAULT_POS]
+          return !(option[VALUE_POS] === id) || option[IS_DEFAULT_POS]
         });
       return newOptions;
     });
@@ -325,7 +325,7 @@ function MultipleChoice(props) {
               // If we are bare or a radio, the selected option should become the value
               // unless it is one of the defaults
               let isDefault = defaults.filter((option) => {
-                return (option[VALUE_POS] === value || option[LABEL_POS] === label)
+                return (option[VALUE_POS] === value)
               })[0];
               if ((isBare || isRadio) && !isDefault) {
                 setGhostName(label);

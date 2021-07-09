@@ -109,6 +109,12 @@ const thesaurusStyle = theme => ({
   infoDialog: {
     zIndex: "1350 !important",
   },
+  noResults: {
+    marginBottom: theme.spacing(-1),
+  },
+  dropdownMessage: {
+    opacity: "1 !important",
+  },
 });
 
 export default thesaurusStyle;
