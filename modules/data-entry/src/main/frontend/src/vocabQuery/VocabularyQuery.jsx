@@ -374,6 +374,7 @@ function VocabularyQuery(props) {
     // Alter our text to either the override ("Please select at most X options")
     // or empty it
     anchorEl.current.value = "";
+    anchorEl.current.blur();
   }
 
   return (
