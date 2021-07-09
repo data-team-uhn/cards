@@ -202,7 +202,7 @@ function VocabularyQuery(props) {
     //...Make a queue of vocabularies to search through
     setSuggestionsLoading(true);
     var vocabQueue = questionDefinition.sourceVocabularies.slice();
-    makeMultiRequest(vocabQueue, input, [], []);
+    makeMultiRequest(vocabQueue, input, {}, []);
   }
 
   // Callback for queryInput to populate the suggestions bar
