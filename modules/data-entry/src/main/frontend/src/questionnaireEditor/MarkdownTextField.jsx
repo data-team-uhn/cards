@@ -26,7 +26,7 @@ import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
 import QuestionComponentManager from "../questionnaireEditor/QuestionComponentManager";
 import MDEditor, { commands, ICommand } from '@uiw/react-md-editor';
 
-const infoButton: ICommand = {
+const infoButton = {
   name: "Markdown help button",
   keyCommand: "helpButton",
   buttonProps: { "aria-label": "Markdown help" },
