@@ -63,6 +63,11 @@ const liveTableStyle = theme => ({
         fontSize: "1em",
         paddingTop: theme.spacing(2),
         paddingBottom: theme.spacing(1),
+        color: theme.palette.primary.main,
+        top: 0,
+        zIndex: 1,
+        position: "sticky",
+        opacity: "1 !important",
     },
     hidden: {
         visibility: "hidden"

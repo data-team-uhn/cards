@@ -18,7 +18,7 @@
 //
 import React, { useCallback, useRef, useState, useContext } from "react";
 import { Chip, Typography, Button, Dialog, CircularProgress, IconButton } from "@material-ui/core";
-import { DialogActions, DialogContent, DialogTitle, Grid, ListSubheader, Select, MenuItem, TextField, withStyles } from "@material-ui/core";
+import { DialogActions, DialogContent, DialogTitle, Grid, Select, MenuItem, TextField, withStyles } from "@material-ui/core";
 import Add from "@material-ui/icons/Add";
 import CloseIcon from '@material-ui/icons/Close';
 
@@ -254,13 +254,6 @@ function Filters(props) {
   // Handle the user changing one of the active filter categories
   let handleChangeFilter = (index, event) => {
     
-    // Selecting a ListSubheader returns an event.target.value of undefined
-    if (event.target.value === undefined) {
-      event.preventDefault();
-      event.stopPropagation();
-      return;
-    }
-
     // Load up the comparators for this index, if not already loaded
     let [loadedComparators, component] = getOutputChoices(event.target.value);
 
@@ -388,7 +381,7 @@ function Filters(props) {
       } else if (Array.isArray(name)) {
         // Arrays represent Questionnaires of Sections
         // which we'll need to turn into opt groups
-        return [<ListSubheader className={classes.categoryHeader} color="primary">{name[0]}</ListSubheader>,
+        return [<MenuItem className={classes.categoryHeader} disabled>{name[0]}</MenuItem>,
           GetReactComponentFromFields(name.slice(1), true)];
       }
     })
