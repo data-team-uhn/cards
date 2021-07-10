@@ -64,6 +64,7 @@ const liveTableStyle = theme => ({
         paddingTop: theme.spacing(2),
         paddingBottom: theme.spacing(1),
         color: theme.palette.primary.main,
+        fontWeight: "bold",
         top: 0,
         zIndex: 1,
         position: "sticky",
