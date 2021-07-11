@@ -24,7 +24,7 @@
     <version>0.9-SNAPSHOT</version>
   </parent>
 
-  <artifactId>cards-variants</artifactId>
+  <artifactId>lfs-variants</artifactId>
   <packaging>bundle</packaging>
   <name>CARDS - Variants management</name>
 

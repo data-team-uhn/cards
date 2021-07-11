@@ -26,4 +26,4 @@
 [artifacts runModes=lfs]
     io.uhndata.cards/lfs-resources-clinical-data/${cards.version}
     io.uhndata.cards/lfs-resources-tissue-metrix/${cards.version}
-    io.uhndata.cards/cards-variants/${cards.version}
+    io.uhndata.cards/lfs-variants/${cards.version}
