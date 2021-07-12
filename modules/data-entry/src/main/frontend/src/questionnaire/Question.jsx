@@ -39,7 +39,7 @@ function Question (props) {
         title={text}
         titleTypographyProps={{ variant: 'h6' }}
         subheader={isEdit ? <MDEditor.Markdown className={classes.markdown} source={description} /> : null}
-        subheaderTypographyProps={{ variant: 'caption' }}
+        subheaderTypographyProps={{ variant: 'caption', component: "div"}}
         />
       <CardContent className={isEdit ? classes.editModeAnswers : classes.viewModeAnswers}>
         <div className={compact ? classes.compactLayout : null}>
