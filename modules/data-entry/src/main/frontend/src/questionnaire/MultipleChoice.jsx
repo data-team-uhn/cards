@@ -204,25 +204,25 @@ function MultipleChoice(props) {
   // Add a non-default option
   // Returns whether an option was added (true) or a matching option already existed (false)
   let addOption = (id, name) => {
-    if ( !options.some((option) => {return option[VALUE_POS] === id}) &&
+    setOptions((oldOptions) => {
+      if ( !oldOptions.some((option) => {return option[VALUE_POS] === id}) &&
         !defaults.some((option) => {return option[VALUE_POS] === id})) {
-      setOptions((oldOptions) => {
         let newOptions = oldOptions.slice();
         newOptions.push([name, id, false]);
         return newOptions;
-      });
-    }
+      }
+      return oldOptions;
+    });
   }
 
   // Remove a non-default option
   let removeOption = (id, name) => {
     onChange && onChange(id); // will trigger callback in Form.jsx
     setOptions( (old) => {
-      let newOptions = old.filter(
+      return old.filter(
         (option) => {
           return !(option[VALUE_POS] === id) || option[IS_DEFAULT_POS]
         });
-      return newOptions;
     });
     unselect(id, name);
     return;
