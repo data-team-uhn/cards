@@ -34,6 +34,15 @@ function ctrl_c() {
   exit
 }
 
+function handle_cards_java_fail() {
+  echo -e "${TERMINAL_RED}*****************************************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*                                       *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*   The CARDS Java process has failed   *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*                                       *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*****************************************${TERMINAL_NOCOLOR}"
+  exit -1
+}
+
 function handle_tcp_bind_fail() {
   echo -e "${TERMINAL_RED}**********************************${TERMINAL_NOCOLOR}"
   echo -e "${TERMINAL_RED}*                                *${TERMINAL_NOCOLOR}"
@@ -132,6 +141,8 @@ then
     sleep $BIND_TEST_SPACING
     #Check if CARDS was able to bind
     python3 Utilities/HostConfig/check_tcp_listen.py --tcp_port $BIND_PORT --pid $CARDS_PID && break
+    #If the CARDS Java process has terminated, stop this script altogether
+    kill -0 $CARDS_PID > /dev/null 2> /dev/null || handle_cards_java_fail
   done
 fi
 
@@ -146,6 +157,8 @@ fi
 while true
 do
   echo "Waiting for CARDS to start"
+  #If the CARDS Java process has terminated, stop this script altogether
+  kill -0 $CARDS_PID > /dev/null 2> /dev/null || handle_cards_java_fail
   curl --fail $CARDS_URL/system/sling/info.sessionInfo.json > /dev/null 2> /dev/null && break
   sleep 5
 done
@@ -177,5 +190,6 @@ fi
 
 message_started_cards
 
-#Wait for CTRL+C to stop everything
-read -r -d '' _ < /dev/tty
+#Stop this script if the CARDS process terminates in failure
+wait $CARDS_PID
+handle_cards_java_fail
