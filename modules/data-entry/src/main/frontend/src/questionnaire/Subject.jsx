@@ -198,10 +198,6 @@ function SubjectContainer(props) {
     setError(response);
   };
 
-  if (deleted) {
-    return null;
-  }
-
   let check_url = createQueryURL(` WHERE n.'parents'='${subject?.['jcr:uuid']}' order by n.'jcr:created'`, "cards:Subject");
   let fetchRelated = () => {
     fetchWithReLogin(globalLoginDisplay, check_url)
@@ -218,6 +214,10 @@ function SubjectContainer(props) {
       setRelatedSubjects(null);
     }
   }, [subject]);
+
+  if (deleted) {
+    return null;
+  }
 
   // If the data has not yet been fetched, return an in-progress symbol
   if (!subject) {
