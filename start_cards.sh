@@ -34,6 +34,10 @@ function ctrl_c() {
   exit
 }
 
+function check_cards_running() {
+  jobs -pr | grep '^'$CARDS_PID'$' > /dev/null
+}
+
 function handle_cards_java_fail() {
   echo -e "${TERMINAL_RED}*****************************************${TERMINAL_NOCOLOR}"
   echo -e "${TERMINAL_RED}*                                       *${TERMINAL_NOCOLOR}"
@@ -142,7 +146,7 @@ then
     #Check if CARDS was able to bind
     python3 Utilities/HostConfig/check_tcp_listen.py --tcp_port $BIND_PORT --pid $CARDS_PID && break
     #If the CARDS Java process has terminated, stop this script altogether
-    kill -0 $CARDS_PID > /dev/null 2> /dev/null || handle_cards_java_fail
+    check_cards_running || handle_cards_java_fail
   done
 fi
 
@@ -158,7 +162,7 @@ while true
 do
   echo "Waiting for CARDS to start"
   #If the CARDS Java process has terminated, stop this script altogether
-  kill -0 $CARDS_PID > /dev/null 2> /dev/null || handle_cards_java_fail
+  check_cards_running || handle_cards_java_fail
   curl --fail $CARDS_URL/system/sling/info.sessionInfo.json > /dev/null 2> /dev/null && break
   sleep 5
 done
