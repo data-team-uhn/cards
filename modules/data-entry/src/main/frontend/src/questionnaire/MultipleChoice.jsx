@@ -147,17 +147,17 @@ function MultipleChoice(props) {
       return false;
     }
 
-    // Do not add anything if we are at our maximum number of selections
-    if (maxAnswers > 0 && selection.length >= maxAnswers) {
-      return;
-    }
-
-    // Do not add duplicates
-    if (selection.some(element => {return element[VALUE_POS] === id})) {
-      return;
-    }
-
     setSelection( old => {
+      // Do not add anything if we are at our maximum number of selections
+      if (maxAnswers > 0 && old.length >= maxAnswers) {
+        return old;
+      }
+
+      // Do not add duplicates
+      if (old.some(element => {return element[VALUE_POS] === id})) {
+        return old;
+      }
+
       let newSelection = old.filter((option) => {
         return (option[VALUE_POS] !== "" && option[LABEL_POS] !== "")
           // And if we've gotten here and there's an "na" option, we remove it from the selection
