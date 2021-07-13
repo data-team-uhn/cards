@@ -85,13 +85,6 @@ function VocabularyQuery(props) {
   let infoboxRef = useRef();
   let browserRef = useRef();
 
-  // Update input field if maxAnswers=1
-  useEffect(() => {
-    if (maxAnswers === 1) {
-      initialSelection.length == 0 || isDefaultOption(initialSelection[0][VALUE_POS]) ? setInputValue("") : setInputValue(initialSelection[0][LABEL_POS]);
-    }
-  }, [initialSelection])
-
   const inputEl = (
     <Input
       disabled={disabled}
