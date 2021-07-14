@@ -608,6 +608,18 @@ const questionnaireStyle = theme => ({
       padding: theme.spacing(1.5, 0.5),
       borderRadius: theme.spacing(0.5),
     },
+    descriptionPopover: {
+      "& .MuiPopover-paper" : {
+        padding: theme.spacing(3),
+        width: theme.spacing(87),
+        height: theme.spacing(31),
+      }
+    },
+    descriptionPopoverButton: {
+      float: "right",
+      marginTop: theme.spacing(3),
+      marginLeft: theme.spacing(2),
+    },
 });
 
 export default questionnaireStyle;

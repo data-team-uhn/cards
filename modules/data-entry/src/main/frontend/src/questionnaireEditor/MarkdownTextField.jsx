@@ -42,7 +42,7 @@ const infoButton = {
 
 // Markdown Text Input field used by Edit dialog component
 let MarkdownTextField = (props) => {
-  let { objectKey, data, classes } = props;
+  let { objectKey, data, onChange, classes } = props;
   const [value, setValue] = useState(data[objectKey] || '');
   let cmd = commands.getExtraCommands();
   cmd.push(commands.divider);
@@ -50,7 +50,7 @@ let MarkdownTextField = (props) => {
 
   return (
     <EditorInput name={objectKey}>
-      <MDEditor className={classes.markdown} value={value} onChange={setValue} extraCommands={cmd}/>
+      <MDEditor className={classes.markdown} value={value} onChange={value => {setValue(value); onChange && onChange(value);}} extraCommands={cmd}/>
       <input type="hidden" name={objectKey} value={value} />
     </EditorInput>
   )
@@ -58,7 +58,8 @@ let MarkdownTextField = (props) => {
 
 MarkdownTextField.propTypes = {
   objectKey: PropTypes.string.isRequired,
-  data: PropTypes.object.isRequired
+  data: PropTypes.object.isRequired,
+  onChange: PropTypes.func
 };
 
 const StyledMarkdownTextField = withStyles(QuestionnaireStyle)(MarkdownTextField);

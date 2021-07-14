@@ -50,6 +50,6 @@
     "moment": "2.29.1",
     "prop-types": "15.7.2",
     "uuid": "8.3.1",
-    "@uiw/react-md-editor": "3.4.7"
+    "@uiw/react-md-editor": "3.4.7",
   }
 }
