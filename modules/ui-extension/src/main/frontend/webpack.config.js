@@ -26,7 +26,7 @@ module.exports = {
     extensions: ['*', '.js', '.jsx']
   },
   output: {
-    path: __dirname + '/dist/SLING-INF/content/libs/lfs/resources/',
+    path: __dirname + '/dist/SLING-INF/content/libs/cards/resources/',
     publicPath: '/',
     filename: '[name].[contenthash].js',
   }

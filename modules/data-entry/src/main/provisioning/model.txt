@@ -17,24 +17,24 @@
 #  under the License.
 #
 
-# The LFS homepage
-[feature name=lfs-dataentry]
+# The CARDS homepage
+[feature name=cards-dataentry]
 
 [artifacts runModes=forms startLevel=10]
     org.apache.sling/org.apache.sling.scripting.sightly/1.1.2-1.4.0
     org.apache.sling/org.apache.sling.scripting.sightly.runtime/1.1.0-1.4.0
     org.apache.sling/org.apache.sling.api/2.18.4
-    ca.sickkids.ccm.lfs/lfs-permissions
+    io.uhndata.cards/cards-permissions
     javax.json/javax.json-api/1.1.4
     javax.jcr/jcr/2.0
     javax.servlet/javax.servlet-api/3.1.0
     org.apache.commons/commons-csv/1.6
-    ca.sickkids.ccm.lfs/lfs-dataentry
+    io.uhndata.cards/cards-dataentry
 
 [configurations runModes=forms]
     org.apache.sling.jcr.repoinit.RepositoryInitializer-forms
         scripts=["\
-            create path (lfs:dataQuery) /query \
+            create path (cards:dataQuery) /query \
 \
             # Allow all users to query; the actual results will obey their access rights \
             set ACL for everyone \
@@ -45,10 +45,10 @@
 [configurations runModes=forms,permissions_open]
     org.apache.sling.jcr.repoinit.RepositoryInitializer-forms_open
         scripts=["\
-            create path (lfs:QuestionnairesHomepage) /Questionnaires \
-            create path (lfs:FormsHomepage) /Forms \
-            create path (lfs:SubjectsHomepage) /Subjects \
-            create path (lfs:SubjectTypesHomepage) /SubjectTypes \
+            create path (cards:QuestionnairesHomepage) /Questionnaires \
+            create path (cards:FormsHomepage) /Forms \
+            create path (cards:SubjectsHomepage) /Subjects \
+            create path (cards:SubjectTypesHomepage) /SubjectTypes \
 \
             set ACL on /Forms,/Subjects \
                 allow jcr:all for everyone \
@@ -63,8 +63,8 @@
     org.apache.sling.jcr.repoinit.RepositoryInitializer-forms_demo
         scripts=["\
             create user github with password github \
-            create path (lfs:FormsHomepage) /Forms \
-            create path (lfs:SubjectsHomepage) /Subjects \
+            create path (cards:FormsHomepage) /Forms \
+            create path (cards:SubjectsHomepage) /Subjects \
 \
             set ACL on /Forms,/Subjects \
                 deny jcr:all for github \
@@ -74,10 +74,10 @@
 [configurations runModes=forms,permissions_trusted]
     org.apache.sling.jcr.repoinit.RepositoryInitializer-forms_trusted
         scripts=["\
-            create path (lfs:QuestionnairesHomepage) /Questionnaires \
-            create path (lfs:FormsHomepage) /Forms \
-            create path (lfs:SubjectsHomepage) /Subjects \
-            create path (lfs:SubjectTypesHomepage) /SubjectTypes \
+            create path (cards:QuestionnairesHomepage) /Questionnaires \
+            create path (cards:FormsHomepage) /Forms \
+            create path (cards:SubjectsHomepage) /Subjects \
+            create path (cards:SubjectTypesHomepage) /SubjectTypes \
 \
             create group TrustedUsers \
 \
@@ -93,13 +93,13 @@
 [configurations runModes=forms,permissions_ownership]
     org.apache.sling.jcr.repoinit.RepositoryInitializer-forms_open
         scripts=["\
-            create path (lfs:QuestionnairesHomepage) /Questionnaires \
-            create path (lfs:FormsHomepage) /Forms \
-            create path (lfs:SubjectsHomepage) /Subjects \
-            create path (lfs:SubjectTypesHomepage) /SubjectTypes \
+            create path (cards:QuestionnairesHomepage) /Questionnaires \
+            create path (cards:FormsHomepage) /Forms \
+            create path (cards:SubjectsHomepage) /Subjects \
+            create path (cards:SubjectTypesHomepage) /SubjectTypes \
 \
             set ACL on /Forms,/Subjects \
-                allow jcr:all for everyone restriction(lfs:owner) \
+                allow jcr:all for everyone restriction(cards:owner) \
             end \
 \
             set ACL on /Questionnaires,/SubjectTypes \

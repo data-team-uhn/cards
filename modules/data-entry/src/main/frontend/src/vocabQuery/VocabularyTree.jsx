@@ -123,12 +123,12 @@ function VocabularyTree(props) {
       var parentBranches = null;
       if ("parents" in data) {
         parentBranches = data["parents"].map((row, index) => {
-          return row["identifier"] ? constructBranch(row["identifier"], row["@path"], row["label"], false, false, false, row["lfs:hasChildren"]) : false;
+          return row["identifier"] ? constructBranch(row["identifier"], row["@path"], row["label"], false, false, false, row["cards:hasChildren"]) : false;
         }).filter(i => i);
       }
 
       setParentNode(parentBranches);
-      setCurrentNode(constructBranch(data["identifier"], data["@path"], data["label"], true, true, true, data["lfs:hasChildren"]));
+      setCurrentNode(constructBranch(data["identifier"], data["@path"], data["label"], true, true, true, data["cards:hasChildren"]));
     } else {
       onError("Error: initial term lookup failed with code " + status);
     }

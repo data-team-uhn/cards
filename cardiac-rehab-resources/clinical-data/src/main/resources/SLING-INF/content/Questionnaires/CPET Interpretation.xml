@@ -19,7 +19,7 @@
 
 <node>
 	<name>CPET Interpretation</name>
-	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
+	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>maxPerSubject</name>
 		<value>3</value>
@@ -44,7 +44,7 @@
 	</property>
 	<node>
 		<name>Cardiac Stress Test</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
 			<value>Cardiac Stress Test</value>
@@ -52,7 +52,7 @@
 		</property>
 		<node>
 			<name>visit_number</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Visit Number</value>
@@ -85,7 +85,7 @@
 			</property>
 			<node>
 				<name>1</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>1</value>
@@ -99,7 +99,7 @@
 			</node>
 			<node>
 				<name>5</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>5</value>
@@ -113,7 +113,7 @@
 			</node>
 			<node>
 				<name>6</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>6</value>
@@ -128,7 +128,7 @@
 		</node>
 		<node>
 			<name>visitdate</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Date of CPET:</value>
@@ -157,7 +157,7 @@
 		</node>
 		<node>
 			<name>age</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Age</value>
@@ -176,7 +176,7 @@
 		</node>
 		<node>
 			<name>sys_bp</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Systolic BP (resting)</value>
@@ -200,7 +200,7 @@
 		</node>
 		<node>
 			<name>dias_bp</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Diastolic BP (resting)</value>
@@ -224,7 +224,7 @@
 		</node>
 		<node>
 			<name>hr</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Heart rate</value>
@@ -248,7 +248,7 @@
 		</node>
 		<node>
 			<name>bp_hr_position</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Position of the participant while measuring resting HR and BP</value>
@@ -271,7 +271,7 @@
 			</property>
 			<node>
 				<name>Laying down</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Laying down</value>
@@ -285,7 +285,7 @@
 			</node>
 			<node>
 				<name>Seated</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Seated</value>
@@ -299,7 +299,7 @@
 			</node>
 			<node>
 				<name>Standing</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Standing</value>
@@ -314,7 +314,7 @@
 		</node>
 		<node>
 			<name>cpet</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Was a CPET performed?</value>
@@ -333,10 +333,10 @@
 		</node>
 		<node>
 			<name>no_cpetSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>no_cpet</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Explain why a CPET was not performed:</value>
@@ -355,7 +355,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -363,7 +363,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -379,7 +379,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -397,10 +397,10 @@
 		</node>
 		<node>
 			<name>cpet_clinic_watchSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>cpet_clinic_watch</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Watch side</value>
@@ -428,7 +428,7 @@
 				</property>
 				<node>
 					<name>Left</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Left</value>
@@ -442,7 +442,7 @@
 				</node>
 				<node>
 					<name>Right</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Right</value>
@@ -456,7 +456,7 @@
 				</node>
 				<node>
 					<name>N-A</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>N/A</value>
@@ -476,7 +476,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -484,7 +484,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -500,7 +500,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -518,10 +518,10 @@
 		</node>
 		<node>
 			<name>cpet_clinic_iphoneSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>cpet_clinic_iphone</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>iPhone location</value>
@@ -549,7 +549,7 @@
 				</property>
 				<node>
 					<name>Left waist hip clip</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Left waist hip clip</value>
@@ -563,7 +563,7 @@
 				</node>
 				<node>
 					<name>Right waist hip clip</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Right waist hip clip</value>
@@ -577,7 +577,7 @@
 				</node>
 				<node>
 					<name>Left back pocket</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Left back pocket</value>
@@ -591,7 +591,7 @@
 				</node>
 				<node>
 					<name>Right back pocket</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Right back pocket</value>
@@ -605,7 +605,7 @@
 				</node>
 				<node>
 					<name>Left front pocket</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Left front pocket</value>
@@ -619,7 +619,7 @@
 				</node>
 				<node>
 					<name>Right front pocket</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Right front pocket</value>
@@ -633,7 +633,7 @@
 				</node>
 				<node>
 					<name>N-A</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>N/A</value>
@@ -653,7 +653,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -661,7 +661,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -677,7 +677,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -695,7 +695,7 @@
 		</node>
 		<node>
 			<name>cpet_bb2</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Did the patient take a beta-blocker today?</value>
@@ -723,7 +723,7 @@
 			</property>
 			<node>
 				<name>True</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>True</value>
@@ -737,7 +737,7 @@
 			</node>
 			<node>
 				<name>False</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>False</value>
@@ -751,7 +751,7 @@
 			</node>
 			<node>
 				<name>Not Applicable</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Not Applicable</value>
@@ -771,7 +771,7 @@
 		</node>
 		<node>
 			<name>cpet_ccb2</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Did the patient take a calcium channel blocker today?</value>
@@ -799,7 +799,7 @@
 			</property>
 			<node>
 				<name>True</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>True</value>
@@ -813,7 +813,7 @@
 			</node>
 			<node>
 				<name>False</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>False</value>
@@ -827,7 +827,7 @@
 			</node>
 			<node>
 				<name>Not Applicable</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Not Applicable</value>
@@ -848,7 +848,7 @@
 	</node>
 	<node>
 		<name>CPET Details</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
 			<value>CPET Details</value>
@@ -856,10 +856,10 @@
 		</property>
 		<node>
 			<name>cpet_startSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>cpet_start</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>CPET start time</value>
@@ -888,7 +888,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -896,7 +896,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -912,7 +912,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -930,10 +930,10 @@
 		</node>
 		<node>
 			<name>cpet_protSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>cpet_prot</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Protocol</value>
@@ -961,7 +961,7 @@
 				</property>
 				<node>
 					<name>Standard Bruce</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Standard Bruce</value>
@@ -975,7 +975,7 @@
 				</node>
 				<node>
 					<name>Modified Bruce</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Modified Bruce</value>
@@ -990,7 +990,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -998,7 +998,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -1014,7 +1014,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -1032,10 +1032,10 @@
 		</node>
 		<node>
 			<name>cpet_end_criteriaSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>cpet_end_criteria</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>What criteria was formally used to end the protocol?</value>
@@ -1058,7 +1058,7 @@
 				</property>
 				<node>
 					<name>Chest pain-tightness</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Chest pain/tightness</value>
@@ -1072,7 +1072,7 @@
 				</node>
 				<node>
 					<name>Difficulty tolerating mouthpiece-nose clip</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Difficulty tolerating mouthpiece/nose clip</value>
@@ -1086,7 +1086,7 @@
 				</node>
 				<node>
 					<name>Shortness of breath</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Shortness of breath</value>
@@ -1100,7 +1100,7 @@
 				</node>
 				<node>
 					<name>Leg fatigue-discomfort</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Leg fatigue/discomfort</value>
@@ -1114,7 +1114,7 @@
 				</node>
 				<node>
 					<name>General fatigue</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>General fatigue</value>
@@ -1128,7 +1128,7 @@
 				</node>
 				<node>
 					<name>Hemodynamic instability</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Hemodynamic instability</value>
@@ -1142,7 +1142,7 @@
 				</node>
 				<node>
 					<name>Arrhythmia</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Arrhythmia</value>
@@ -1156,7 +1156,7 @@
 				</node>
 				<node>
 					<name>Lightheadedness, dizzy or feeling unsteady</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Lightheadedness, dizzy or feeling unsteady</value>
@@ -1170,7 +1170,7 @@
 				</node>
 				<node>
 					<name>Joint-muscle pain</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Joint/muscle pain</value>
@@ -1184,7 +1184,7 @@
 				</node>
 				<node>
 					<name>External interruption</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>External interruption</value>
@@ -1198,7 +1198,7 @@
 				</node>
 				<node>
 					<name>Maximum heart rate</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Maximum heart rate</value>
@@ -1212,7 +1212,7 @@
 				</node>
 				<node>
 					<name>Patient request to stop</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Patient request to stop</value>
@@ -1226,7 +1226,7 @@
 				</node>
 				<node>
 					<name>ST changes</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>ST changes</value>
@@ -1240,7 +1240,7 @@
 				</node>
 				<node>
 					<name>Physiological max</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Physiological max</value>
@@ -1255,7 +1255,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -1263,7 +1263,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -1279,7 +1279,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -1297,10 +1297,10 @@
 		</node>
 		<node>
 			<name>cpet_peak_hrSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>cpet_peak_hr</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>HR at peak</value>
@@ -1324,7 +1324,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -1332,7 +1332,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -1348,7 +1348,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -1366,7 +1366,7 @@
 		</node>
 		<node>
 			<name>cpet_ci</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Chronotropic index</value>
@@ -1380,7 +1380,7 @@
 		</node>
 		<node>
 			<name>cpet_ci_hf</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Which chronotropic index formula was used for calculation?</value>
@@ -1410,7 +1410,7 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 			</property>
 			<node>
 				<name>Non beta blocker</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Non beta blocker</value>
@@ -1424,7 +1424,7 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 			</node>
 			<node>
 				<name>Beta blocker</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Beta blocker</value>
@@ -1438,7 +1438,7 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 			</node>
 			<node>
 				<name>Heart failure</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Heart failure</value>
@@ -1453,10 +1453,10 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 		</node>
 		<node>
 			<name>cpet_sbp_peakSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>cpet_sbp_peak</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Systolic BP at peak</value>
@@ -1480,7 +1480,7 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -1488,7 +1488,7 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -1504,7 +1504,7 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -1522,10 +1522,10 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 		</node>
 		<node>
 			<name>cpet_dbp_peakSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>cpet_dbp_peak</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Diastolic BP at peak</value>
@@ -1549,7 +1549,7 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -1557,7 +1557,7 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -1573,7 +1573,7 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -1592,7 +1592,7 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 	</node>
 	<node>
 		<name>CPET interpretation</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
 			<value>CPET interpretation</value>
@@ -1600,7 +1600,7 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 		</property>
 		<node>
 			<name>cpet_effort</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Effort of Study: Was maximum effort achieved?</value>
@@ -1623,7 +1623,7 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 			</property>
 			<node>
 				<name>Yes</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Yes</value>
@@ -1637,7 +1637,7 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 			</node>
 			<node>
 				<name>No</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>No</value>
@@ -1651,7 +1651,7 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 			</node>
 			<node>
 				<name>Undetermined</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Undetermined</value>
@@ -1666,7 +1666,7 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 		</node>
 		<node>
 			<name>cpet_ec</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Exercise Capacity</value>
@@ -1694,7 +1694,7 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 			</property>
 			<node>
 				<name>Above average</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Above average</value>
@@ -1708,7 +1708,7 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 			</node>
 			<node>
 				<name>Average</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Average</value>
@@ -1722,7 +1722,7 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 			</node>
 			<node>
 				<name>Reduced</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Reduced</value>
@@ -1736,7 +1736,7 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 			</node>
 			<node>
 				<name>Severely Reduced</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Severely Reduced</value>
@@ -1751,7 +1751,7 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 		</node>
 		<node>
 			<name>cpet_hr</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Heart rate response to exercise</value>
@@ -1779,7 +1779,7 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 			</property>
 			<node>
 				<name>Normal</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Normal</value>
@@ -1793,7 +1793,7 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 			</node>
 			<node>
 				<name>Abnormal</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Abnormal</value>
@@ -1807,7 +1807,7 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 			</node>
 			<node>
 				<name>Undetermined</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Undetermined</value>
@@ -1822,7 +1822,7 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 		</node>
 		<node>
 			<name>cpet_o2pulse</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Peak oxygen pulse (peak VO2 mL/min divided by peak HR)</value>
@@ -1851,7 +1851,7 @@ Abnormal if below the range</value>
 			</property>
 			<node>
 				<name>Normal</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Normal</value>
@@ -1865,7 +1865,7 @@ Abnormal if below the range</value>
 			</node>
 			<node>
 				<name>Abnormal</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Abnormal</value>
@@ -1879,7 +1879,7 @@ Abnormal if below the range</value>
 			</node>
 			<node>
 				<name>Undetermined</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Undetermined</value>
@@ -1894,7 +1894,7 @@ Abnormal if below the range</value>
 		</node>
 		<node>
 			<name>cpet_sbp_aug</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>SBP Augmentation</value>
@@ -1923,7 +1923,7 @@ Abnormal is fall in systolic BP >20 mmHg from the highest peak sBP during the te
 			</property>
 			<node>
 				<name>Normal</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Normal</value>
@@ -1937,7 +1937,7 @@ Abnormal is fall in systolic BP >20 mmHg from the highest peak sBP during the te
 			</node>
 			<node>
 				<name>Abnormal</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Abnormal</value>
@@ -1951,7 +1951,7 @@ Abnormal is fall in systolic BP >20 mmHg from the highest peak sBP during the te
 			</node>
 			<node>
 				<name>Undetermined</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Undetermined</value>
@@ -1966,7 +1966,7 @@ Abnormal is fall in systolic BP >20 mmHg from the highest peak sBP during the te
 		</node>
 		<node>
 			<name>cpet_vevco2</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>VE/VCO2 Slope</value>
@@ -1996,7 +1996,7 @@ Normal = less than 34 at anaerobic threshold
 			</property>
 			<node>
 				<name>Normal</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Normal</value>
@@ -2010,7 +2010,7 @@ Normal = less than 34 at anaerobic threshold
 			</node>
 			<node>
 				<name>Abnormal</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Abnormal</value>
@@ -2024,7 +2024,7 @@ Normal = less than 34 at anaerobic threshold
 			</node>
 			<node>
 				<name>Undetermined</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Undetermined</value>
@@ -2039,7 +2039,7 @@ Normal = less than 34 at anaerobic threshold
 		</node>
 		<node>
 			<name>cpet_oxsat</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Oxygen saturation</value>
@@ -2067,7 +2067,7 @@ Normal = less than 34 at anaerobic threshold
 			</property>
 			<node>
 				<name>Normal</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Normal</value>
@@ -2081,7 +2081,7 @@ Normal = less than 34 at anaerobic threshold
 			</node>
 			<node>
 				<name>Abnormal</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Abnormal</value>
@@ -2095,7 +2095,7 @@ Normal = less than 34 at anaerobic threshold
 			</node>
 			<node>
 				<name>Undetermined</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Undetermined</value>
@@ -2111,7 +2111,7 @@ Normal = less than 34 at anaerobic threshold
 	</node>
 	<node>
 		<name>ECG interpretation</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
 			<value>ECG interpretation</value>
@@ -2119,7 +2119,7 @@ Normal = less than 34 at anaerobic threshold
 		</property>
 		<node>
 			<name>cpet_bl_ecg</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Baseline ECG rhythm interpretation:</value>
@@ -2147,7 +2147,7 @@ Normal = less than 34 at anaerobic threshold
 			</property>
 			<node>
 				<name>Normal Sinus Rhythm</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Normal Sinus Rhythm</value>
@@ -2161,7 +2161,7 @@ Normal = less than 34 at anaerobic threshold
 			</node>
 			<node>
 				<name>Atrial Fibrillation</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Atrial Fibrillation</value>
@@ -2176,7 +2176,7 @@ Normal = less than 34 at anaerobic threshold
 		</node>
 		<node>
 			<name>cpet_bl_lbbb</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Baseline: Left bundle branch block?</value>
@@ -2190,7 +2190,7 @@ Normal = less than 34 at anaerobic threshold
 		</node>
 		<node>
 			<name>cpet_bl_lvf</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Baseline: left ventricular hypertrophy?</value>
@@ -2204,7 +2204,7 @@ Normal = less than 34 at anaerobic threshold
 		</node>
 		<node>
 			<name>cpet_bl_st_depress</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Baseline: ST depression?</value>
@@ -2227,7 +2227,7 @@ Normal = less than 34 at anaerobic threshold
 			</property>
 			<node>
 				<name>I</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>I</value>
@@ -2241,7 +2241,7 @@ Normal = less than 34 at anaerobic threshold
 			</node>
 			<node>
 				<name>II</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>II</value>
@@ -2255,7 +2255,7 @@ Normal = less than 34 at anaerobic threshold
 			</node>
 			<node>
 				<name>III</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>III</value>
@@ -2269,7 +2269,7 @@ Normal = less than 34 at anaerobic threshold
 			</node>
 			<node>
 				<name>AVR</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>AVR</value>
@@ -2283,7 +2283,7 @@ Normal = less than 34 at anaerobic threshold
 			</node>
 			<node>
 				<name>AVL</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>AVL</value>
@@ -2297,7 +2297,7 @@ Normal = less than 34 at anaerobic threshold
 			</node>
 			<node>
 				<name>AVF</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>AVF</value>
@@ -2311,7 +2311,7 @@ Normal = less than 34 at anaerobic threshold
 			</node>
 			<node>
 				<name>V1</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>V1</value>
@@ -2325,7 +2325,7 @@ Normal = less than 34 at anaerobic threshold
 			</node>
 			<node>
 				<name>V2</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>V2</value>
@@ -2339,7 +2339,7 @@ Normal = less than 34 at anaerobic threshold
 			</node>
 			<node>
 				<name>V3</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>V3</value>
@@ -2353,7 +2353,7 @@ Normal = less than 34 at anaerobic threshold
 			</node>
 			<node>
 				<name>V4</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>V4</value>
@@ -2367,7 +2367,7 @@ Normal = less than 34 at anaerobic threshold
 			</node>
 			<node>
 				<name>V5</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>V5</value>
@@ -2381,7 +2381,7 @@ Normal = less than 34 at anaerobic threshold
 			</node>
 			<node>
 				<name>V6</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>V6</value>
@@ -2395,7 +2395,7 @@ Normal = less than 34 at anaerobic threshold
 			</node>
 			<node>
 				<name>None of the above</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>None of the above</value>
@@ -2415,7 +2415,7 @@ Normal = less than 34 at anaerobic threshold
 		</node>
 		<node>
 			<name>cpet_bl_st_elev</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Baseline: ST elevation?</value>
@@ -2438,7 +2438,7 @@ Normal = less than 34 at anaerobic threshold
 			</property>
 			<node>
 				<name>I</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>I</value>
@@ -2452,7 +2452,7 @@ Normal = less than 34 at anaerobic threshold
 			</node>
 			<node>
 				<name>II</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>II</value>
@@ -2466,7 +2466,7 @@ Normal = less than 34 at anaerobic threshold
 			</node>
 			<node>
 				<name>III</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>III</value>
@@ -2480,7 +2480,7 @@ Normal = less than 34 at anaerobic threshold
 			</node>
 			<node>
 				<name>AVR</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>AVR</value>
@@ -2494,7 +2494,7 @@ Normal = less than 34 at anaerobic threshold
 			</node>
 			<node>
 				<name>AVL</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>AVL</value>
@@ -2508,7 +2508,7 @@ Normal = less than 34 at anaerobic threshold
 			</node>
 			<node>
 				<name>AVF</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>AVF</value>
@@ -2522,7 +2522,7 @@ Normal = less than 34 at anaerobic threshold
 			</node>
 			<node>
 				<name>V1</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>V1</value>
@@ -2536,7 +2536,7 @@ Normal = less than 34 at anaerobic threshold
 			</node>
 			<node>
 				<name>V2</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>V2</value>
@@ -2550,7 +2550,7 @@ Normal = less than 34 at anaerobic threshold
 			</node>
 			<node>
 				<name>V3</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>V3</value>
@@ -2564,7 +2564,7 @@ Normal = less than 34 at anaerobic threshold
 			</node>
 			<node>
 				<name>V4</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>V4</value>
@@ -2578,7 +2578,7 @@ Normal = less than 34 at anaerobic threshold
 			</node>
 			<node>
 				<name>V5</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>V5</value>
@@ -2592,7 +2592,7 @@ Normal = less than 34 at anaerobic threshold
 			</node>
 			<node>
 				<name>V6</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>V6</value>
@@ -2606,7 +2606,7 @@ Normal = less than 34 at anaerobic threshold
 			</node>
 			<node>
 				<name>None of the above</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>None of the above</value>
@@ -2626,7 +2626,7 @@ Normal = less than 34 at anaerobic threshold
 		</node>
 		<node>
 			<name>cpet_max_ecg</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Maximal exercise ECG rhythm interpretation</value>
@@ -2644,7 +2644,7 @@ Normal = less than 34 at anaerobic threshold
 			</property>
 			<node>
 				<name>Normal sinus rhythm</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Normal sinus rhythm</value>
@@ -2658,7 +2658,7 @@ Normal = less than 34 at anaerobic threshold
 			</node>
 			<node>
 				<name>Atrial fibrillation</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Atrial fibrillation</value>
@@ -2673,7 +2673,7 @@ Normal = less than 34 at anaerobic threshold
 		</node>
 		<node>
 			<name>cpet_ischemia</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Maximal exercise: Ischemia?</value>
@@ -2703,7 +2703,7 @@ See Fletcher, Circulation 2013:
 			</property>
 			<node>
 				<name>Yes</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Yes</value>
@@ -2717,7 +2717,7 @@ See Fletcher, Circulation 2013:
 			</node>
 			<node>
 				<name>No</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>No</value>
@@ -2731,7 +2731,7 @@ See Fletcher, Circulation 2013:
 			</node>
 			<node>
 				<name>Undetermined</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Undetermined</value>
@@ -2746,7 +2746,7 @@ See Fletcher, Circulation 2013:
 		</node>
 		<node>
 			<name>cpet_max_st_depress</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Maximal exercise: ST depression?</value>
@@ -2769,7 +2769,7 @@ See Fletcher, Circulation 2013:
 			</property>
 			<node>
 				<name>I</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>I</value>
@@ -2783,7 +2783,7 @@ See Fletcher, Circulation 2013:
 			</node>
 			<node>
 				<name>II</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>II</value>
@@ -2797,7 +2797,7 @@ See Fletcher, Circulation 2013:
 			</node>
 			<node>
 				<name>III</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>III</value>
@@ -2811,7 +2811,7 @@ See Fletcher, Circulation 2013:
 			</node>
 			<node>
 				<name>AVR</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>AVR</value>
@@ -2825,7 +2825,7 @@ See Fletcher, Circulation 2013:
 			</node>
 			<node>
 				<name>AVL</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>AVL</value>
@@ -2839,7 +2839,7 @@ See Fletcher, Circulation 2013:
 			</node>
 			<node>
 				<name>AVF</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>AVF</value>
@@ -2853,7 +2853,7 @@ See Fletcher, Circulation 2013:
 			</node>
 			<node>
 				<name>V1</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>V1</value>
@@ -2867,7 +2867,7 @@ See Fletcher, Circulation 2013:
 			</node>
 			<node>
 				<name>V2</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>V2</value>
@@ -2881,7 +2881,7 @@ See Fletcher, Circulation 2013:
 			</node>
 			<node>
 				<name>V3</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>V3</value>
@@ -2895,7 +2895,7 @@ See Fletcher, Circulation 2013:
 			</node>
 			<node>
 				<name>V4</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>V4</value>
@@ -2909,7 +2909,7 @@ See Fletcher, Circulation 2013:
 			</node>
 			<node>
 				<name>V5</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>V5</value>
@@ -2923,7 +2923,7 @@ See Fletcher, Circulation 2013:
 			</node>
 			<node>
 				<name>V6</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>V6</value>
@@ -2937,7 +2937,7 @@ See Fletcher, Circulation 2013:
 			</node>
 			<node>
 				<name>None of the above</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>None of the above</value>
@@ -2957,7 +2957,7 @@ See Fletcher, Circulation 2013:
 		</node>
 		<node>
 			<name>cpet_max_st_elev</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Maximal exercise: ST elevation</value>
@@ -2980,7 +2980,7 @@ See Fletcher, Circulation 2013:
 			</property>
 			<node>
 				<name>I</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>I</value>
@@ -2994,7 +2994,7 @@ See Fletcher, Circulation 2013:
 			</node>
 			<node>
 				<name>II</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>II</value>
@@ -3008,7 +3008,7 @@ See Fletcher, Circulation 2013:
 			</node>
 			<node>
 				<name>III</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>III</value>
@@ -3022,7 +3022,7 @@ See Fletcher, Circulation 2013:
 			</node>
 			<node>
 				<name>AVR</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>AVR</value>
@@ -3036,7 +3036,7 @@ See Fletcher, Circulation 2013:
 			</node>
 			<node>
 				<name>AVL</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>AVL</value>
@@ -3050,7 +3050,7 @@ See Fletcher, Circulation 2013:
 			</node>
 			<node>
 				<name>AVF</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>AVF</value>
@@ -3064,7 +3064,7 @@ See Fletcher, Circulation 2013:
 			</node>
 			<node>
 				<name>V1</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>V1</value>
@@ -3078,7 +3078,7 @@ See Fletcher, Circulation 2013:
 			</node>
 			<node>
 				<name>V2</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>V2</value>
@@ -3092,7 +3092,7 @@ See Fletcher, Circulation 2013:
 			</node>
 			<node>
 				<name>V3</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>V3</value>
@@ -3106,7 +3106,7 @@ See Fletcher, Circulation 2013:
 			</node>
 			<node>
 				<name>V4</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>V4</value>
@@ -3120,7 +3120,7 @@ See Fletcher, Circulation 2013:
 			</node>
 			<node>
 				<name>V5</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>V5</value>
@@ -3134,7 +3134,7 @@ See Fletcher, Circulation 2013:
 			</node>
 			<node>
 				<name>V6</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>V6</value>
@@ -3148,7 +3148,7 @@ See Fletcher, Circulation 2013:
 			</node>
 			<node>
 				<name>None of the above</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>None of the above</value>
@@ -3168,7 +3168,7 @@ See Fletcher, Circulation 2013:
 		</node>
 		<node>
 			<name>cpet_symp</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Stress test symptoms</value>
@@ -3186,7 +3186,7 @@ See Fletcher, Circulation 2013:
 			</property>
 			<node>
 				<name>Chest pain</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Chest pain</value>
@@ -3200,7 +3200,7 @@ See Fletcher, Circulation 2013:
 			</node>
 			<node>
 				<name>Shortness of breath</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Shortness of breath</value>
@@ -3214,7 +3214,7 @@ See Fletcher, Circulation 2013:
 			</node>
 			<node>
 				<name>Leg fatigue</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Leg fatigue</value>
@@ -3228,7 +3228,7 @@ See Fletcher, Circulation 2013:
 			</node>
 			<node>
 				<name>General fatigue</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>General fatigue</value>
@@ -3242,7 +3242,7 @@ See Fletcher, Circulation 2013:
 			</node>
 			<node>
 				<name>None of the above</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>None of the above</value>

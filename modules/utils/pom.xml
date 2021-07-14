@@ -21,14 +21,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>ca.sickkids.ccm.lfs</groupId>
-    <artifactId>lfs-modules</artifactId>
+    <groupId>io.uhndata.cards</groupId>
+    <artifactId>cards-modules</artifactId>
     <version>0.9-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs-utils</artifactId>
+  <artifactId>cards-utils</artifactId>
   <packaging>bundle</packaging>
-  <name>LFS - Utilities</name>
+  <name>CARDS - Utilities</name>
 
   <build>
     <resources>
@@ -45,7 +45,7 @@
         <configuration>
           <instructions>
             <Include-Resource>{maven-resources}</Include-Resource>
-            <Sling-Initial-Content>SLING-INF/content/libs/lfs/conf/;path:=/libs/lfs/conf/;overwrite:=false</Sling-Initial-Content>
+            <Sling-Initial-Content>SLING-INF/content/libs/cards/conf/;path:=/libs/cards/conf/;overwrite:=false</Sling-Initial-Content>
           </instructions>
         </configuration>
       </plugin>

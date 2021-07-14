@@ -47,7 +47,7 @@ ADMIN_PASSWORD = "admin"
 if "ADMIN_PASSWORD" in os.environ:
   ADMIN_PASSWORD = os.environ["ADMIN_PASSWORD"]
 
-query_req = requests.get(CARDS_URL + "/query?query=select * from [lfs:Question] as q WHERE q.'dataType'='vocabulary'&limit=1000000000", auth=HTTPBasicAuth('admin', ADMIN_PASSWORD))
+query_req = requests.get(CARDS_URL + "/query?query=select * from [cards:Question] as q WHERE q.'dataType'='vocabulary'&limit=1000000000", auth=HTTPBasicAuth('admin', ADMIN_PASSWORD))
 if query_req.status_code != 200:
   print("Vocabularies query failed", file=sys.stderr)
   sys.exit(-1)

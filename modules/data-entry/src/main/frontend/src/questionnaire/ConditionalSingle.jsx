@@ -67,8 +67,8 @@ export function isConditionalSatisfied(compareDataType, comparator, ...operands)
 }
 
 /**
- * Determines if the given lfs:Conditional is true or not.
- * @param {Object} conditional The lfs:Conditional to assert the truth of
+ * Determines if the given cards:Conditional is true or not.
+ * @param {Object} conditional The cards:Conditional to assert the truth of
  * @param {Object} context The React Context from which to pull values
  */
 export function isConditionalObjSatisfied(conditional, context) {
@@ -123,7 +123,7 @@ function getValue(context, valueObj) {
 }
 
 ConditionalComponentManager.registerConditionComponent((conditionDefinition) => {
-  if (conditionDefinition["jcr:primaryType"] === "lfs:Conditional") {
+  if (conditionDefinition["jcr:primaryType"] === "cards:Conditional") {
     return [isConditionalObjSatisfied, 50];
   }
-}, ["lfs:Conditional"]);
+}, ["cards:Conditional"]);

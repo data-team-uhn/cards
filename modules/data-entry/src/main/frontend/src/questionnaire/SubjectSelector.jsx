@@ -48,7 +48,7 @@ let createQueryURL = (query, type, order) => {
 /**
  * Component that displays a dialog to create a new subject
  *
- * @param {array} allowedTypes A collection of lfs:SubjectTypes that are allowed to be chosen.
+ * @param {array} allowedTypes A collection of cards:SubjectTypes that are allowed to be chosen.
  * @param {bool} continueDisabled If true, the continue button is disabled.
  * @param {bool} disabled If true, all controls are disabled
  * @param {string} error Error message to display
@@ -104,7 +104,7 @@ function UnstyledNewSubjectDialog (props) {
             columns={COLUMNS}
             data={allowedTypes?.length ? allowedTypes :
               query => {
-                let url = createQueryURL(query.search ? ` WHERE CONTAINS(n.label, '*${escapeJQL(query.search)}*')` : "", "lfs:SubjectType", "lfs:defaultOrder");
+                let url = createQueryURL(query.search ? ` WHERE CONTAINS(n.label, '*${escapeJQL(query.search)}*')` : "", "cards:SubjectType", "cards:defaultOrder");
                 url.searchParams.set("limit", query.pageSize);
                 url.searchParams.set("offset", query.page*query.pageSize);
                 return fetchWithReLogin(globalLoginDisplay, url)
@@ -167,7 +167,7 @@ const NewSubjectDialogChild = withStyles(QuestionnaireStyle, {withTheme: true})(
  * Component that displays a dialog to select parents for a new subject
  *
  * @param {string} childName The name of the new child, used to determine ineligible parents
- * @param {object} childType The object representing the lfs:SubjectType of the child that is being created
+ * @param {object} childType The object representing the cards:SubjectType of the child that is being created
  * @param {bool} continueDisabled If true, the continue button is disabled
  * @param {object} currentSubject The object representing the subject we must be a child of
  * @param {bool} disabled If true, all controls are disabled
@@ -179,7 +179,7 @@ const NewSubjectDialogChild = withStyles(QuestionnaireStyle, {withTheme: true})(
  * @param {func} onCreateParent Callback fired when the user wants to create a new parent. If present, adds a "Create new subject" button.
  * @param {func} onClose Callback fired when the user tries to close this dialog
  * @param {func} onSubmit Callback fired when the user clicks the "Create" or "Continue" button
- * @param {object} parentType The object representing the lfs:SubjectType of the parent that is being selected
+ * @param {object} parentType The object representing the cards:SubjectType of the parent that is being selected
  * @param {ref} tableRef Pass a reference to the MaterialTable object
  * @param {object} value The currently selected parent
  */
@@ -218,7 +218,7 @@ function UnstyledSelectParentDialog (props) {
                   if (currentSubject) {
                     sql += ` AND ISDESCENDANTNODE(n, '${currentSubject["@path"]}')`;
                   }
-                  let url = createQueryURL(sql, "lfs:Subject", "fullIdentifier");
+                  let url = createQueryURL(sql, "cards:Subject", "fullIdentifier");
                   url.searchParams.set("limit", query.pageSize);
                   url.searchParams.set("offset", query.page*query.pageSize);
                   url.searchParams.set("serializeChildren", "1");
@@ -314,7 +314,7 @@ export const parseToArray = (object) => {
 /**
  * Component that displays a dialog to create a new subject
  *
- * @param {array} allowedTypes A collection of lfs:SubjectTypes that are allowed to be chosen.
+ * @param {array} allowedTypes A collection of cards:SubjectTypes that are allowed to be chosen.
  * @param {currentSubject} object The preselected subject (e.g. on the Subject page, the subject who's page it is is the 'currentSubject')
  * @param {bool} disabled If true, all controls are disabled
  * @param {func} onClose Callback fired when the user tries to close this dialog
@@ -341,7 +341,7 @@ export function NewSubjectDialog (props) {
   const tableRef = useRef();
   const history = useHistory();
 
-  let curSubjectRequiresParents = newSubjectTypeParent?.["jcr:primaryType"] == "lfs:SubjectType";
+  let curSubjectRequiresParents = newSubjectTypeParent?.["jcr:primaryType"] == "cards:SubjectType";
   let disabledControls = disabled || isPosting;
 
   // Called only by createNewSubject, a callback to create the next child on our list
@@ -445,7 +445,7 @@ export function NewSubjectDialog (props) {
     if (newAllowedTypeParent) {
       promise = fetchWithReLogin(globalLoginDisplay, `${newAllowedTypeParent}.full.json`)
         .then((result) => result.ok ? result.json() : Promise.reject(result))
-        .then((result) => result?.["jcr:primaryType"] == "lfs:SubjectType" ? result : false);
+        .then((result) => result?.["jcr:primaryType"] == "cards:SubjectType" ? result : false);
     } else {
       promise = new Promise((resolve) => {resolve(false);});
     }
@@ -583,7 +583,7 @@ export function NewSubjectDialog (props) {
 /**
  * Component that displays the list of subjects in a dialog. Double clicking a subject selects it.
  *
- * @param {array} allowedTypes A collection of lfs:SubjectTypes that are allowed to be chosen.
+ * @param {array} allowedTypes A collection of cards:SubjectTypes that are allowed to be chosen.
  * @param {currentSubject} object The preselected subject (e.g. on the Subject page, the subject who's page it is is the 'currentSubject')
  * @param {bool} open Whether or not this dialog is open
  * @param {func} onChange Callback for when the user changes their selection
@@ -738,7 +738,7 @@ export function createSubjects(globalLoginDisplay, newSubjects, subjectType, sub
 
     // Make a POST request to create a new subject
     let requestData = new FormData();
-    requestData.append('jcr:primaryType', 'lfs:Subject');
+    requestData.append('jcr:primaryType', 'cards:Subject');
     requestData.append('identifier', subjectName);
     requestData.append('type', subjectTypeToUse);
     requestData.append('type@TypeHint', 'Reference');
@@ -750,7 +750,7 @@ export function createSubjects(globalLoginDisplay, newSubjects, subjectType, sub
       parentCheckQueryString = "ISCHILDNODE(n , '/Subjects/')";
     }
 
-    let checkAlreadyExistsURL = createQueryURL(` WHERE n.'identifier'='${escapeJQL(subjectName)}' AND ${parentCheckQueryString}`, "lfs:Subject");
+    let checkAlreadyExistsURL = createQueryURL(` WHERE n.'identifier'='${escapeJQL(subjectName)}' AND ${parentCheckQueryString}`, "cards:Subject");
     let newPromise = fetchWithReLogin(globalLoginDisplay, checkAlreadyExistsURL)
       .then( (response) => response.ok ? response.json() : Promise.reject(response))
       .then( (json) => {
@@ -841,7 +841,7 @@ function SubjectSelectorList(props) {
 
   // fetch the Subjects of each form of this questionnaire type
   let filterArray = () => {
-    fetchWithReLogin(globalLoginDisplay, `/query?query=SELECT distinct s.* FROM [lfs:Subject] AS s inner join [lfs:Form] as f on f.'subject'=s.'jcr:uuid' where f.'questionnaire'='${selectedQuestionnaire?.['jcr:uuid']}'`)
+    fetchWithReLogin(globalLoginDisplay, `/query?query=SELECT distinct s.* FROM [cards:Subject] AS s inner join [cards:Form] as f on f.'subject'=s.'jcr:uuid' where f.'questionnaire'='${selectedQuestionnaire?.['jcr:uuid']}'`)
     .then(response => response.json())
     .then(result => {
       setRelatedSubjects(result.rows);
@@ -892,7 +892,7 @@ function SubjectSelectorList(props) {
             let condition = (conditions.length === 0) ? "" : ` WHERE ${conditions.join(" AND ")}`
 
             // fetch all subjects
-            let url = createQueryURL( condition, "lfs:Subject", "fullIdentifier");
+            let url = createQueryURL( condition, "cards:Subject", "fullIdentifier");
             url.searchParams.set("limit", query.pageSize);
             url.searchParams.set("offset", query.page*query.pageSize);
             return fetchWithReLogin(globalLoginDisplay, url)
@@ -930,10 +930,10 @@ function SubjectSelectorList(props) {
 
             // Make a POST request to create a new subject
             let request_data = new FormData();
-            request_data.append('jcr:primaryType', 'lfs:Subject');
+            request_data.append('jcr:primaryType', 'cards:Subject');
             request_data.append('identifier', newData["identifier"]);
 
-            let check_url = createQueryURL(` WHERE n.'identifier'='${escapeJQL(newData["identifier"])}'`, "lfs:Subject");
+            let check_url = createQueryURL(` WHERE n.'identifier'='${escapeJQL(newData["identifier"])}'`, "cards:Subject");
             return fetchWithReLogin(globalLoginDisplay, check_url)
               .then( (response) => response.ok ? response.json() : Promise.reject(response))
               .then( (json) => {

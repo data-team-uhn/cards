@@ -189,7 +189,7 @@ function SubjectTimeline(props) {
 
     // Recursively get the data for the current subject's children
     for (const child of Object.values(parent)) {
-      if (child["jcr:primaryType"] == "lfs:Subject") {
+      if (child["jcr:primaryType"] == "cards:Subject") {
         promises = promises.concat(getSubjectForms(child, level, subjectNames));
       }
     }
@@ -221,7 +221,7 @@ function SubjectTimeline(props) {
 
     // Get all the form data into a single array
     results = results.map(formData =>
-      Object.values(formData.response).filter(entry => Array.isArray(entry)).flat().filter(entry => entry["jcr:primaryType"] == "lfs:Form").map(entry => {
+      Object.values(formData.response).filter(entry => Array.isArray(entry)).flat().filter(entry => entry["jcr:primaryType"] == "cards:Form").map(entry => {
         return {form: entry, level: formData.level, names: formData.names}
       })
     ).flat();
@@ -234,11 +234,11 @@ function SubjectTimeline(props) {
     entries.forEach(([key, entryDefinition]) => {
       if (QUESTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
         const existingQuestionAnswer = Object.entries(data)
-          .find(([key, value]) => value["sling:resourceSuperType"] == "lfs/Answer"
+          .find(([key, value]) => value["sling:resourceSuperType"] == "cards/Answer"
             && value["question"]["jcr:uuid"] === entryDefinition["jcr:uuid"]);
 
       if (typeof(existingQuestionAnswer?.[1]?.value) != "undefined") {
-        if (existingQuestionAnswer[1]["jcr:primaryType"] === "lfs:DateAnswer") {
+        if (existingQuestionAnswer[1]["jcr:primaryType"] === "cards:DateAnswer") {
           // Push a new date answer
           currentSectionData.push({
             "date": existingQuestionAnswer[1],
@@ -267,7 +267,7 @@ function SubjectTimeline(props) {
         }
 
         let currentAnswers = Object.entries(data.form ? data.form : data)
-          .filter(([key, value]) => value["sling:resourceType"] == "lfs/AnswerSection"
+          .filter(([key, value]) => value["sling:resourceType"] == "cards/AnswerSection"
                                   && value["section"]["@name"] == entryDefinition["@name"])[0];
         currentAnswers = currentAnswers ? currentAnswers[1] : "";
         childSectionData = childSectionData.concat(handleDisplayNodes(Object.entries(currentSection), currentAnswers, formData));

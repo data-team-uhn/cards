@@ -57,7 +57,7 @@ function DateQuestionYear(props) {
       dataType="long"
       errorText="Please insert a valid year."
       isRange={(type === DateQuestionUtilities.INTERVAL_TYPE)}
-      answerNodeType="lfs:DateAnswer"
+      answerNodeType="cards:DateAnswer"
       valueType="Long"
       existingAnswer={existingAnswer}
       maxValue={upperLimit || 9999}

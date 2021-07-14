@@ -1,7 +1,7 @@
 {
-  "jcr:primaryType": "lfs:Extension",
-  "lfs:extensionPointId": "lfs/coreUI/dashboardmenuitems/entry",
-  "lfs:extensionName": "Form",
-  "lfs:extensionRenderURL": "asset:lfs-dataentry.NewFormDialog.js",
-  "lfs:defaultOrder": 2
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/dashboardmenuitems/entry",
+  "cards:extensionName": "Form",
+  "cards:extensionRenderURL": "asset:cards-dataentry.NewFormDialog.js",
+  "cards:defaultOrder": 2
 }

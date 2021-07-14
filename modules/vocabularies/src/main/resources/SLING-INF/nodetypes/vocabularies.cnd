@@ -18,7 +18,7 @@
 //
 
 <sling = 'http://sling.apache.org/jcr/sling/1.0'>
-<lfs = 'https://lfs.ccm.sickkids.ca/'>
+<cards = 'https://cards.uhndata.io/'>
 
 //-----------------------------------------------------------------------------
 //
@@ -30,7 +30,7 @@
 
 //-----------------------------------------------------------------------------
 // VocabularyTerm: a term in a vocabulary.
-[lfs:VocabularyTerm] > nt:base, mix:referenceable, mix:versionable
+[cards:VocabularyTerm] > nt:base, mix:referenceable, mix:versionable
   // Attributes:
 
   // We can use vocabulary terms in a query.
@@ -39,10 +39,10 @@
   // Properties:
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/VocabularyTerm" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/VocabularyTerm" mandatory autocreated protected
 
   // Hardcode the resource supertype: the VocabularyTerm is a resource.
-  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected 
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected 
 
   // Identifier for the term.
   - identifier (STRING) mandatory
@@ -68,7 +68,7 @@
 
 //-----------------------------------------------------------------------------
 // Vocabulary: a vocabulary of terms with VocabularyTerm nodes as children.
-[lfs:Vocabulary] > sling:Folder, mix:referenceable, mix:versionable, mix:lastModified
+[cards:Vocabulary] > sling:Folder, mix:referenceable, mix:versionable, mix:lastModified
   // Attributes:
 
   // We can use vocabularies a query.
@@ -77,10 +77,10 @@
   // Properties:
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/Vocabulary" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/Vocabulary" mandatory autocreated protected
 
   // Hardcode the resource supertype: the Vocabulary is a resource.
-  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // Identifier for the vocabulary.
   - identifier (STRING) mandatory
@@ -109,11 +109,11 @@
   // Children
 
   // The terms that make up the vocabulary.
-  + * (lfs:VocabularyTerm) = lfs:VocabularyTerm
+  + * (cards:VocabularyTerm) = cards:VocabularyTerm
 
 //-----------------------------------------------------------------------------
 // The homepage for the Vocabularies space.
-[lfs:VocabulariesHomepage] > sling:Folder
+[cards:VocabulariesHomepage] > sling:Folder
   // Attributes:
 
   // We can use this homepage in a query.
@@ -122,10 +122,10 @@
   // Properties:
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/VocabulariesHomepage" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/VocabulariesHomepage" mandatory autocreated protected
 
   // Hardcode the resource supertype: the VocabulariesHomepage is a resource.
-  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // Set a default title.
   - title (string) = "Vocabularies" mandatory autocreated
@@ -133,4 +133,4 @@
   // Children
 
   // The vocabulary nodes indexed by the homepage are its children.
-  + * (lfs:Vocabulary) = lfs:Vocabulary
+  + * (cards:Vocabulary) = cards:Vocabulary

@@ -17,8 +17,8 @@
 #  under the License.
 #
 
-# Vocabularies used by LFS
-[feature name=lfs-vocabularies]
+# Vocabularies used by CARDS
+[feature name=cards-vocabularies]
 
 [artifacts]
     commons-io/commons-io/2.4
@@ -40,7 +40,7 @@
 
 [:repoinit]
     # Vocabularies Homepage
-    create path (lfs:VocabulariesHomepage) /Vocabularies
+    create path (cards:VocabulariesHomepage) /Vocabularies
 
     set ACL for everyone
         allow   jcr:read    on /Vocabularies

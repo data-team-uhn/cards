@@ -33,9 +33,9 @@ export const DEFAULT_QUERY_URL = "/query";
 export const DEFAULT_MAX_RESULTS = 5;
 
 // Location of the quick search result metadata in a node, outlining what needs to be highlighted after redirect and where
-const LFS_QUERY_MATCH_KEY = "lfs:queryMatch";
-const LFS_QUERY_MATCH_PATH_KEY = "@path";
-const LFS_QUERY_TEXT_KEY = "text";
+const CARDS_QUERY_MATCH_KEY = "cards:queryMatch";
+const CARDS_QUERY_MATCH_PATH_KEY = "@path";
+const CARDS_QUERY_TEXT_KEY = "text";
 
 /**
  * A component that renders a search bar, similar to autocomplete. It will fire off a query to /query, and parse the results as a selectable list.
@@ -76,7 +76,7 @@ function SearchBar(props) {
 
   // Fetch saved admin config settings
   let getQuickSearchSettings = () => {
-    fetchWithReLogin(globalLoginDisplay, '/apps/lfs/config/QuickSearch.json')
+    fetchWithReLogin(globalLoginDisplay, '/apps/cards/config/QuickSearch.json')
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         setFetched(true);
@@ -314,8 +314,8 @@ let defaultResultConstructor = (props) => (
 let defaultRedirect = (event, row, props) => {
 
   // Redirect using React-router
-  const anchor = row[LFS_QUERY_MATCH_KEY][LFS_QUERY_MATCH_PATH_KEY];
-  const path = (row["jcr:primaryType"] == "lfs:Questionnaire") ? "/content.html/admin" : "/content.html";
+  const anchor = row[CARDS_QUERY_MATCH_KEY][CARDS_QUERY_MATCH_PATH_KEY];
+  const path = (row["jcr:primaryType"] == "cards:Questionnaire") ? "/content.html/admin" : "/content.html";
   if (row["@path"]) {
     props.history.push({
       pathname: path + row["@path"],

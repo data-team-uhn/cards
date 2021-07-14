@@ -1,8 +1,8 @@
 {
-    "name": "lfs-demo-banner",
+    "name": "cards-demo-banner",
     "version": "0.1.0",
-    "description": "Demo warning banner resources for the LFS Project",
-    "author": "SickKids",
+    "description": "Demo warning banner resources for the CARDS Project",
+    "author": "UHN DATA",
     "license": "Apache-2.0",
     "repository": {
       "type": "git",

@@ -57,7 +57,7 @@ function MultipleChoice(props) {
   let defaults = props.defaults || Object.values(props.questionDefinition)
     // Keep only answer options
     // FIXME Must deal with nested options, do this recursively
-    .filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption')
+    .filter(value => value['jcr:primaryType'] == 'cards:AnswerOption')
     // Sort by default order
     .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder))
     // Only extract the labels and internal values from the node

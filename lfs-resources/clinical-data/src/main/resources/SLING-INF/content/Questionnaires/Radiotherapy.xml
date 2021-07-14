@@ -19,7 +19,7 @@
 
 <node>
 	<name>Radiotherapy</name>
-	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
+	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
 		<value>Radiotherapy</value>
@@ -35,10 +35,10 @@
 	</property>
 	<node>
 		<name>radiation_section</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
 			<name>radiation</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Radiation therapy</value>
@@ -73,10 +73,10 @@
 	</node>
 	<node>
 		<name>treatment_section</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
 			<name>condition</name>
-			<primaryNodeType>lfs:Conditional</primaryNodeType>
+			<primaryNodeType>cards:Conditional</primaryNodeType>
 			<property>
 				<name>comparator</name>
 				<value>=</value>
@@ -84,7 +84,7 @@
 			</property>
 			<node>
 				<name>operandA</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -100,7 +100,7 @@
 			</node>
 			<node>
 				<name>operandB</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -112,7 +112,7 @@
 		</node>
 		<node>
 			<name>start_date</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Radiation start date</value>
@@ -141,7 +141,7 @@
 		</node>
 		<node>
 			<name>weight_at_start</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Weight at start of radiation therapy</value>
@@ -180,7 +180,7 @@
 		</node>
 		<node>
 			<name>height_at_start</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Height at start of radiation therapy</value>
@@ -219,7 +219,7 @@
 		</node>
 		<node>
 			<name>end_date</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Radiation end date</value>
@@ -249,10 +249,10 @@
 	</node>
 	<node>
 		<name>details_section</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
 			<name>condition</name>
-			<primaryNodeType>lfs:Conditional</primaryNodeType>
+			<primaryNodeType>cards:Conditional</primaryNodeType>
 			<property>
 				<name>comparator</name>
 				<value>=</value>
@@ -260,7 +260,7 @@
 			</property>
 			<node>
 				<name>operandA</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -276,7 +276,7 @@
 			</node>
 			<node>
 				<name>operandB</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -288,7 +288,7 @@
 		</node>
 		<node>
 			<name>radiation_field</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Radiation field</value>
@@ -312,7 +312,7 @@
 		</node>
 		<node>
 			<name>technique</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Radiation technique</value>
@@ -331,7 +331,7 @@
 		</node>
 		<node>
 			<name>source</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Radiation source</value>
@@ -354,7 +354,7 @@
 			</property>
 			<node>
 				<name>Xray</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>Xray</value>
@@ -363,7 +363,7 @@
 			</node>
 			<node>
 				<name>Proton</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>Proton</value>
@@ -373,7 +373,7 @@
 		</node>
 		<node>
 			<name>beam_energy</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Beam energy</value>
@@ -402,7 +402,7 @@
 		</node>
 		<node>
 			<name>total_dose</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Total radiation dose to tumor bed</value>
@@ -431,7 +431,7 @@
 		</node>
 		<node>
 			<name>fraction_number</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Fraction number</value>
@@ -461,10 +461,10 @@
 	</node>
 	<node>
 		<name>boost_section</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
 			<name>condition</name>
-			<primaryNodeType>lfs:Conditional</primaryNodeType>
+			<primaryNodeType>cards:Conditional</primaryNodeType>
 			<property>
 				<name>comparator</name>
 				<value>=</value>
@@ -472,7 +472,7 @@
 			</property>
 			<node>
 				<name>operandA</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -488,7 +488,7 @@
 			</node>
 			<node>
 				<name>operandB</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -500,7 +500,7 @@
 		</node>
 		<node>
 			<name>boost</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Boost</value>
@@ -529,10 +529,10 @@
 		</node>
 		<node>
 			<name>boost_details</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -540,7 +540,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -556,7 +556,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -568,7 +568,7 @@
 			</node>
 			<node>
 				<name>boost_technique</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Boost radiation technique</value>
@@ -587,7 +587,7 @@
 			</node>
 			<node>
 				<name>boost_beam_energy</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Boost beam energy</value>
@@ -616,7 +616,7 @@
 			</node>
 			<node>
 				<name>boost_dose</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Boost dose</value>
@@ -647,10 +647,10 @@
 	</node>
 	<node>
 		<name>tbi_section</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
 			<name>condition</name>
-			<primaryNodeType>lfs:Conditional</primaryNodeType>
+			<primaryNodeType>cards:Conditional</primaryNodeType>
 			<property>
 				<name>comparator</name>
 				<value>=</value>
@@ -658,7 +658,7 @@
 			</property>
 			<node>
 				<name>operandA</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -674,7 +674,7 @@
 			</node>
 			<node>
 				<name>operandB</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -686,7 +686,7 @@
 		</node>
 		<node>
 			<name>tbi</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Total Body Irradiation (TBI) - transplant conditioning</value>
@@ -715,10 +715,10 @@
 		</node>
 		<node>
 			<name>tbi_details</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -726,7 +726,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -742,7 +742,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -754,7 +754,7 @@
 			</node>
 			<node>
 				<name>tbi_start_date</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>TBI start date</value>
@@ -778,7 +778,7 @@
 			</node>
 			<node>
 				<name>tbi_end_date</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>TBI end date</value>
@@ -802,7 +802,7 @@
 			</node>
 			<node>
 				<name>tbi_dose</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>TBI dose</value>
@@ -833,10 +833,10 @@
 	</node>
 	<node>
 		<name>comments_section</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
 			<name>comments</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Comments</value>

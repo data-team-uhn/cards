@@ -80,7 +80,7 @@ export function BioPortalApiKey(props) {
 
   // function to create / edit node
   function addNewKey() {
-    const URL = `/libs/lfs/conf/BioportalApiKey`;
+    const URL = `/libs/cards/conf/BioportalApiKey`;
     var request_data = new FormData();
     request_data.append('key', customApiKey);
     fetchWithReLogin(globalLoginDisplay, URL, { method: 'POST', body: request_data })

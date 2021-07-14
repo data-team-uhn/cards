@@ -40,11 +40,11 @@ def prepare_conditional(question, row):
             insert_conditional(parent_logic[0], question, '1')
         insert_conditional(parent_logic[2], question, '2')
     else:
-        # No title is needed because only a single lfs:Conditional will be created
+        # No title is needed because only a single cards:Conditional will be created
         insert_conditional(parent_logic, question, '')
 
 
-# Updates the question with lfs:Conditionals from the output of prepare_conditional
+# Updates the question with cards:Conditionals from the output of prepare_conditional
 def insert_conditional(parent_logic, question, title):
     # Split the conditional into two operands and an operator
     parent_logic = partition_parent_logic(parent_logic)
@@ -52,9 +52,9 @@ def insert_conditional(parent_logic, question, title):
     operator = parent_logic[1]
     operand_b = parent_logic[2].strip()
     # If the first operand is a comma-separated list, create a separate conditional for each
-    # Enclose the conditionals in a lfs:ConditionalGroup
+    # Enclose the conditionals in a cards:ConditionalGroup
     if ',' in operand_a:
-        question.update({'conditionalGroup': {'jcr:primaryType': 'lfs:ConditionalGroup'}})
+        question.update({'conditionalGroup': {'jcr:primaryType': 'cards:ConditionalGroup'}})
         # The keyword 'all' in the ParentLogic should correspond to 'requireAll' == true
         # If it is present, remove it from the operand and add 'requireAll' to the conditional group
         if 'all' in operand_a:
@@ -64,9 +64,9 @@ def insert_conditional(parent_logic, question, title):
         for index, item in enumerate(operand_a_list):
             question['conditionalGroup'].update(create_conditional(item, operator, operand_b, 'condition' + str(index)))
     # If the second operand is a comma-separated list, create a separate conditional for each
-    # Enclose the conditionals in a lfs:ConditionalGroup
+    # Enclose the conditionals in a cards:ConditionalGroup
     elif ',' in operand_b:
-        question.update({'conditionalGroup': {'jcr:primaryType': 'lfs:ConditionalGroup'}})
+        question.update({'conditionalGroup': {'jcr:primaryType': 'cards:ConditionalGroup'}})
         # The keyword 'all' in the ParentLogic should correspond to 'requireAll' == true
         # If it is present, remove it from the operand and add 'requireAll' to the conditional group
         if 'all' in operand_b:
@@ -89,7 +89,7 @@ def partition_parent_logic(parent_logic):
     parts = regex.split(seperator, parent_logic, 1)
     return parts[0], seperator, parts[1]
 
-# Returns a dict object that is formatted as an lfs:Conditional
+# Returns a dict object that is formatted as an cards:Conditional
 def create_conditional(operand_a, operator, operand_b, title):
     is_reference = False
     # NOTE: IN THE CASE OF A REFRENCE TO A QUESTION WHOSE POSSIBLE VALUES ARE YES/NO/OTHER
@@ -101,15 +101,15 @@ def create_conditional(operand_a, operator, operand_b, title):
     else:
         operand_b_updated = operand_b
     result = {
-        'jcr:primaryType': 'lfs:Conditional',
+        'jcr:primaryType': 'cards:Conditional',
         'operandA': {
-            'jcr:primaryType': 'lfs:ConditionalValue',
+            'jcr:primaryType': 'cards:ConditionalValue',
             'value': [operand_a.lower()],
             'isReference': True
         },
         'comparator': operator,
         'operandB': {
-            'jcr:primaryType': 'lfs:ConditionalValue',
+            'jcr:primaryType': 'cards:ConditionalValue',
             'value': [operand_b_updated],
             'isReference': is_reference
         }
@@ -139,7 +139,7 @@ def options_list(categorical_list):
     return option_list
 
 
-# Creates lfs:AnswerOptions from the CSV in 'Categorical List'
+# Creates cards:AnswerOptions from the CSV in 'Categorical List'
 def insert_options(question, row):
     option_list = options_list(row['Categorical list'])
     for option in option_list:
@@ -158,7 +158,7 @@ def insert_options(question, row):
             question.update({'displayMode': 'list+input'})
             print(question)
         else:
-            answer_option = {option: {'jcr:primaryType': 'lfs:AnswerOption',
+            answer_option = {option: {'jcr:primaryType': 'cards:AnswerOption',
                                       'label': value,
                                       'value': value
             }}
@@ -173,24 +173,24 @@ def insert_range(question, row):
       })
 
 
-# Converts the data type in 'UserFormatType' to one supported in LFS
-DATA_TO_LFS_TYPE = {
+# Converts the data type in 'UserFormatType' to one supported in CARDS
+DATA_TO_CARDS_TYPE = {
     'date': 'date',
     'integer': 'long',
     'yes,no': "boolean",
     'age (months:days)': 'text' # TODO: Switch this to an interval question when it is supported
 }
-def convert_to_LFS_data_type(userFormat, categorical_list):
-    result = DATA_TO_LFS_TYPE.get(userFormat.strip().lower(), 'text')
+def convert_to_CARDS_data_type(userFormat, categorical_list):
+    result = DATA_TO_CARDS_TYPE.get(userFormat.strip().lower(), 'text')
     if categorical_list:
-        result = DATA_TO_LFS_TYPE.get(categorical_list.strip().lower(), result)
+        result = DATA_TO_CARDS_TYPE.get(categorical_list.strip().lower(), result)
     return result
 
 
-# Creates a JSON file that contains the tsv file as an lfs:Questionnaire
+# Creates a JSON file that contains the tsv file as an cards:Questionnaire
 def tsv_to_json(title):
     questionnaire = {}
-    questionnaire['jcr:primaryType'] = 'lfs:Questionnaire'
+    questionnaire['jcr:primaryType'] = 'cards:Questionnaire'
     questionnaire['title'] = title + ' Data'
 
     with open(title + '.tsv') as tsvfile:
@@ -199,9 +199,9 @@ def tsv_to_json(title):
             question = row['nameShort'].strip().lower()
             if question and (row['UserFormatType'] or row['Categorical list']):
                 questionnaire[question] = {
-                    'jcr:primaryType': 'lfs:Question',
+                    'jcr:primaryType': 'cards:Question',
                     'text': row['nameFull'].strip() or question,
-                    'dataType': convert_to_LFS_data_type(row['UserFormatType'], row['Categorical list'])
+                    'dataType': convert_to_CARDS_data_type(row['UserFormatType'], row['Categorical list'])
                 }
                 if row['RangeMinValid'] != '' and row['RangeMinValid'] != None:
                     insert_range(questionnaire[question], row)
@@ -211,12 +211,12 @@ def tsv_to_json(title):
                     questionnaire[question].update({ 'description': row['Description'].strip() })
                 if row['UserFormatType'] == 'Text (categorical list)' or row['UserFormatType'] == 'cat list':
                     questionnaire[question].update({'displayMode': 'list'})
-                if row['Categorical list'] and not DATA_TO_LFS_TYPE.get(row['Categorical list'].strip().lower()):
+                if row['Categorical list'] and not DATA_TO_CARDS_TYPE.get(row['Categorical list'].strip().lower()):
                         insert_options(questionnaire[question], row)
                 if row['ParentLogic'] != '':
                     previous_data = questionnaire[question]
                     questionnaire.update({question + 'Section': {
-                        'jcr:primaryType': 'lfs:Section'
+                        'jcr:primaryType': 'cards:Section'
                     }})
                     questionnaire[question + 'Section'][question] = previous_data
                     prepare_conditional(questionnaire[question + 'Section'], row)

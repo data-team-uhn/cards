@@ -1,8 +1,8 @@
 {
-  "jcr:primaryType": "lfs:Extension",
-  "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
-  "lfs:extensionName": "Forms",
-  "lfs:targetURL": "/content.html/Forms",
-  "lfs:icon": "asset:lfs-dataentry.formsIcon.js",
-  "lfs:defaultOrder": 3
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/sidebar/entry",
+  "cards:extensionName": "Forms",
+  "cards:targetURL": "/content.html/Forms",
+  "cards:icon": "asset:cards-dataentry.formsIcon.js",
+  "cards:defaultOrder": 3
 }

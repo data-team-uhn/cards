@@ -80,7 +80,7 @@ export default function VocabulariesAdminPage() {
   */
   const [bioPortalApiKey, setBioPortalApiKey] = React.useState(null);
 
-  const localLink = '/query?query=' + encodeURIComponent(`select * from [lfs:Vocabulary]`);
+  const localLink = '/query?query=' + encodeURIComponent(`select * from [cards:Vocabulary]`);
 
   function processLocalVocabList(vocabList) {
     setLocalVocabList(vocabList);

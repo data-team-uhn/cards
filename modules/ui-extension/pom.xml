@@ -21,14 +21,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>ca.sickkids.ccm.lfs</groupId>
-    <artifactId>lfs-modules</artifactId>
+    <groupId>io.uhndata.cards</groupId>
+    <artifactId>cards-modules</artifactId>
     <version>0.9-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs-uiextension</artifactId>
+  <artifactId>cards-uiextension</artifactId>
   <packaging>bundle</packaging>
-  <name>LFS - UI extension base</name>
+  <name>CARDS - UI extension base</name>
 
   <build>
     <plugins>
@@ -42,9 +42,9 @@
             <Include-Resource>{maven-resources}</Include-Resource>
             <!-- Initial content to be loaded on bundle installation -->
             <Sling-Initial-Content>
-              SLING-INF/content/libs/lfs/Extension/;path:=/libs/lfs/Extension/;overwrite:=true,
-              SLING-INF/content/libs/lfs/ExtensionPoint/;path:=/libs/lfs/ExtensionPoint/;overwrite:=true,
-              SLING-INF/content/libs/lfs/ExtensionPointFinder/;path:=/libs/lfs/ExtensionPointFinder/;overwrite:=true
+              SLING-INF/content/libs/cards/Extension/;path:=/libs/cards/Extension/;overwrite:=true,
+              SLING-INF/content/libs/cards/ExtensionPoint/;path:=/libs/cards/ExtensionPoint/;overwrite:=true,
+              SLING-INF/content/libs/cards/ExtensionPointFinder/;path:=/libs/cards/ExtensionPointFinder/;overwrite:=true
             </Sling-Initial-Content>
             <Sling-Nodetypes>SLING-INF/nodetypes/extension.cnd</Sling-Nodetypes>
           </instructions>

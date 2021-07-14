@@ -33,10 +33,10 @@
 # See the README file in this module for details about editing the configuration.
 [configurations]
   org.apache.jackrabbit.oak.security.authentication.ldap.impl.LdapIdentityProvider
-    bind.dn="${lfs.ldap.dn}"
-    bind.password="${lfs.ldap.password}"
-    host.name="${lfs.ldap.host}"
+    bind.dn="${cards.ldap.dn}"
+    bind.password="${cards.ldap.password}"
+    host.name="${cards.ldap.host}"
     provider.name="ldap"
-    user.baseDN="${lfs.ldap.baseDn}"
-    user.idAttribute="${lfs.ldap.idAttribute}"
-    user.objectclass=["${lfs.ldap.userClass}"]
+    user.baseDN="${cards.ldap.baseDn}"
+    user.idAttribute="${cards.ldap.idAttribute}"
+    user.objectclass=["${cards.ldap.userClass}"]

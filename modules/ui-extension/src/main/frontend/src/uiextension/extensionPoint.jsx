@@ -24,7 +24,7 @@ const UIXP_FINDER_URL = "/uixp";
 // Component that allows the user to insert an extension from the given URL.
 //
 // Required props:
-//  path: Extension Point ID (e.g. lfs/coreUI/sidebar/entry).
+//  path: Extension Point ID (e.g. cards/coreUI/sidebar/entry).
 // Optional props:
 //  callback: function to callback with the json data if the extension is a json object
 //

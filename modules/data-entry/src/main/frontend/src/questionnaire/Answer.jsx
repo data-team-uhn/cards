@@ -119,7 +119,7 @@ Answer.propTypes = {
 };
 
 Answer.defaultProps = {
-  answerNodeType: "lfs:TextAnswer",
+  answerNodeType: "cards:TextAnswer",
   valueType: 'String',
   isMultivalued: false,
   noteComponent: Note

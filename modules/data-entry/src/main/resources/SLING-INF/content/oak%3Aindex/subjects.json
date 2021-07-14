@@ -7,7 +7,7 @@
     "includedPaths": ["/Subjects"],
     "indexRules" : {
         "jcr:primaryType": "nt:unstructured",
-        "lfs:Subject" : {
+        "cards:Subject" : {
             "jcr:primaryType": "nt:unstructured",
             "properties": {
                 "jcr:primaryType": "nt:unstructured",

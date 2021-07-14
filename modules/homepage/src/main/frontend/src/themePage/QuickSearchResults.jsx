@@ -24,7 +24,7 @@ import { QuickSearchMatch, QuickSearchIdentifier } from "./Navbars/QuickSearchId
 import { Button, Card, CardContent, CardHeader, withStyles } from "@material-ui/core";
 
 // Location of the quick search result metadata in a node, outlining what needs to be highlighted
-const LFS_QUERY_MATCH_KEY = "lfs:queryMatch";
+const CARDS_QUERY_MATCH_KEY = "cards:queryMatch";
 
 function QuickSearchResults(props) {
   const { classes } = props;
@@ -42,12 +42,12 @@ function QuickSearchResults(props) {
     {
       "key": "",
       "label": "Resource type",
-      "format": (row) => (row.type?.label || row["jcr:primaryType"]?.replace(/lfs:/,"") || ''),
+      "format": (row) => (row.type?.label || row["jcr:primaryType"]?.replace(/cards:/,"") || ''),
     },
     {
       "key": "",
       "label": "Match",
-      "format": (row) => (<QuickSearchMatch matchData={row[LFS_QUERY_MATCH_KEY]} classes={classes}></QuickSearchMatch>),
+      "format": (row) => (<QuickSearchMatch matchData={row[CARDS_QUERY_MATCH_KEY]} classes={classes}></QuickSearchMatch>),
     },
   ]
 

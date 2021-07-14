@@ -19,7 +19,7 @@
 
 <node>
 	<name>StringConditionalTest</name>
-	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
+	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
 		<value>String Conditional Test</value>
@@ -39,7 +39,7 @@
 	</property>
 	<node>
 		<name>stringref_eq_stringconst</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Must be equal to hello</value>
@@ -53,10 +53,10 @@
 	</node>
 	<node>
 		<name>stringref_eq_stringconst_details</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
 			<name>condition</name>
-			<primaryNodeType>lfs:Conditional</primaryNodeType>
+			<primaryNodeType>cards:Conditional</primaryNodeType>
 			<property>
 				<name>comparator</name>
 				<value>=</value>
@@ -64,7 +64,7 @@
 			</property>
 			<node>
 				<name>operandA</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -80,7 +80,7 @@
 			</node>
 			<node>
 				<name>operandB</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -92,7 +92,7 @@
 		</node>
 		<node>
 			<name>test</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Confirm okay</value>
@@ -117,7 +117,7 @@
 	</node>
 	<node>
 		<name>stringref_neq_stringconst</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Must NOT be equal to hello</value>
@@ -131,10 +131,10 @@
 	</node>
 	<node>
 		<name>stringref_neq_stringconst_details</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
 			<name>condition</name>
-			<primaryNodeType>lfs:Conditional</primaryNodeType>
+			<primaryNodeType>cards:Conditional</primaryNodeType>
 			<property>
 				<name>comparator</name>
 				<value><![CDATA[<>]]></value>
@@ -142,7 +142,7 @@
 			</property>
 			<node>
 				<name>operandA</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -163,7 +163,7 @@
 			</node>
 			<node>
 				<name>operandB</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -180,7 +180,7 @@
 		</node>
 		<node>
 			<name>test</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Confirm okay</value>
@@ -205,7 +205,7 @@
 	</node>
 	<node>
 		<name>string_ref_one</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>String Value A</value>
@@ -219,7 +219,7 @@
 	</node>
 	<node>
 		<name>string_ref_two</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>String Value B, make it equal to String Value A</value>
@@ -233,10 +233,10 @@
 	</node>
 	<node>
 		<name>stringref_eq_stringref_details</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
 			<name>condition</name>
-			<primaryNodeType>lfs:Conditional</primaryNodeType>
+			<primaryNodeType>cards:Conditional</primaryNodeType>
 			<property>
 				<name>comparator</name>
 				<value>=</value>
@@ -244,7 +244,7 @@
 			</property>
 			<node>
 				<name>operandA</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -260,7 +260,7 @@
 			</node>
 			<node>
 				<name>operandB</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -277,7 +277,7 @@
 		</node>
 		<node>
 			<name>test</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Confirm okay</value>
@@ -302,7 +302,7 @@
 	</node>
 	<node>
 		<name>string_ref_three</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>String Value C</value>
@@ -316,7 +316,7 @@
 	</node>
 	<node>
 		<name>string_ref_four</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>String Value D, make it not equal to String Value C</value>
@@ -330,10 +330,10 @@
 	</node>
 	<node>
 		<name>stringref_neq_stringref_details</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
 			<name>condition</name>
-			<primaryNodeType>lfs:Conditional</primaryNodeType>
+			<primaryNodeType>cards:Conditional</primaryNodeType>
 			<property>
 				<name>comparator</name>
 				<value><![CDATA[<>]]></value>
@@ -341,7 +341,7 @@
 			</property>
 			<node>
 				<name>operandA</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -362,7 +362,7 @@
 			</node>
 			<node>
 				<name>operandB</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -384,7 +384,7 @@
 		</node>
 		<node>
 			<name>test</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Confirm okay</value>
@@ -409,7 +409,7 @@
 	</node>
 	<node>
 		<name>must_be_null</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Must be empty</value>
@@ -425,7 +425,7 @@
 		<name>must_be_null_details</name>
 		<node>
 			<name>condition</name>
-			<primaryNodeType>lfs:Conditional</primaryNodeType>
+			<primaryNodeType>cards:Conditional</primaryNodeType>
 			<property>
 				<name>comparator</name>
 				<value>is empty</value>
@@ -433,7 +433,7 @@
 			</property>
 			<node>
 				<name>operandA</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -454,7 +454,7 @@
 			</node>
 			<node>
 				<name>operandB</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -476,7 +476,7 @@
 		</node>
 		<node>
 			<name>test</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Confirm okay</value>
@@ -501,7 +501,7 @@
 	</node>
 	<node>
 		<name>must_not_be_null</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Must not be empty</value>
@@ -517,7 +517,7 @@
 		<name>must_not_be_null_details</name>
 		<node>
 			<name>condition</name>
-			<primaryNodeType>lfs:Conditional</primaryNodeType>
+			<primaryNodeType>cards:Conditional</primaryNodeType>
 			<property>
 				<name>comparator</name>
 				<value>is not empty</value>
@@ -525,7 +525,7 @@
 			</property>
 			<node>
 				<name>operandA</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -541,7 +541,7 @@
 			</node>
 			<node>
 				<name>operandB</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -558,7 +558,7 @@
 		</node>
 		<node>
 			<name>test</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Confirm okay</value>

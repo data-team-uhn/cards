@@ -100,16 +100,16 @@ function Filters(props) {
   let parseFilterData = (filterJson) => {
     // Parse through, but keep a custom field for the subject
     let fields = ["Subject"];
-    let uuids = {Subject: "lfs:Subject"};
+    let uuids = {Subject: "cards:Subject"};
     let titles = {Subject: "Subject"};
     if (!questionnaire) {
       // keep a custom field for the questionnaire
       fields.push("Questionnaire");
-      uuids["Questionnaire"] = "lfs:Questionnaire";
+      uuids["Questionnaire"] = "cards:Questionnaire";
       titles["Questionnaire"] = "Questionnaire";
     }
     fields.push("CreatedDate");
-    uuids["CreatedDate"] = "lfs:CreatedDate"
+    uuids["CreatedDate"] = "cards:CreatedDate"
     titles["CreatedDate"] = "Created Date"
     for (let [questionName, question] of Object.entries(filterJson)) {
       // For each question, save the name, data type, and answers (if necessary)

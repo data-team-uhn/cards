@@ -204,7 +204,7 @@ function FileResourceQuestion(props) {
     // Also NB: Since we save before this, we're guaranteed to have the parent created
     let data = new FormData();
     data.append(file['name'], file);
-    data.append('jcr:primaryType', 'lfs:FileResourceAnswer');
+    data.append('jcr:primaryType', 'cards:FileResourceAnswer');
     data.append('question', props.questionDefinition['jcr:uuid']);
     data.append('question@TypeHint', "Reference");
     return fetchWithReLogin(globalLoginDisplay, outURL, {
@@ -329,7 +329,7 @@ function FileResourceQuestion(props) {
         answers={answers}
         questionDefinition={props.questionDefinition}
         existingAnswer={existingAnswer}
-        answerNodeType="lfs:FileResourceAnswer"
+        answerNodeType="cards:FileResourceAnswer"
         onDecidedOutputPath={setAnswerPath}
         valueType="path"
         isMultivalued={maxAnswers != 1}

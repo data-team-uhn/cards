@@ -197,7 +197,7 @@ export default function VariantFilesContainer() {
     if (processedFile.tumor.existed && processedFile.tumor.id) {
       // query data about all of the already uploaded files
       let url = new URL("/query", window.location.origin);
-      let sqlquery = `select f.* from [lfs:Form] as n inner join [nt:file] as f on isdescendantnode(f, n) where n.questionnaire = '${somaticVariantsUUID}' and n.subject = '${processedFile.region?.uuid || processedFile.tumor.uuid}'`;
+      let sqlquery = `select f.* from [cards:Form] as n inner join [nt:file] as f on isdescendantnode(f, n) where n.questionnaire = '${somaticVariantsUUID}' and n.subject = '${processedFile.region?.uuid || processedFile.tumor.uuid}'`;
       url.searchParams.set("query", sqlquery);
 
       return fetchWithReLogin(globalLoginDisplay, url)
@@ -304,7 +304,7 @@ export default function VariantFilesContainer() {
     // 1. Check whether we already have any subjects info not to duplicate
     file = setExistedFileSubjectData(file, files);
 
-    let checkSubjectExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${escapeJQL(file.subject.id)}'`);
+    let checkSubjectExistsURL = constructQuery("cards:Subject", ` WHERE s.'identifier'='${escapeJQL(file.subject.id)}'`);
     let checkTumorExistsURL = "";
     let checkRegionExistsURL = "";
 
@@ -323,7 +323,7 @@ export default function VariantFilesContainer() {
                 // get the path
                 file.subject = generateSubject(file.subject, subject["@path"], true, subject["jcr:uuid"], subject.type);
                 file.subject.type = subject["type"];
-                checkTumorExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${escapeJQL(file.tumor.id)}' AND s.'parents'='${subject['jcr:uuid']}'`);
+                checkTumorExistsURL = constructQuery("cards:Subject", ` WHERE s.'identifier'='${escapeJQL(file.tumor.id)}' AND s.'parents'='${subject['jcr:uuid']}'`);
 
                 // Fire a fetch request for a tumor subject with the patient subject as its parent
                 fetchWithReLogin(globalLoginDisplay, checkTumorExistsURL)
@@ -337,7 +337,7 @@ export default function VariantFilesContainer() {
 
                         // If a region subject is defined
                         if (file.region?.id) {
-                          checkRegionExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${escapeJQL(file.region.id)}' AND s.'parents'='${subject['jcr:uuid']}'`);
+                          checkRegionExistsURL = constructQuery("cards:Subject", ` WHERE s.'identifier'='${escapeJQL(file.region.id)}' AND s.'parents'='${subject['jcr:uuid']}'`);
 
                           // Fire a fetch request for a region subject with the tumor subject as its parent
                           fetchWithReLogin(globalLoginDisplay, checkRegionExistsURL)
@@ -384,7 +384,7 @@ export default function VariantFilesContainer() {
 
         } else {
           if (!file.tumor.path) {
-            checkTumorExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${escapeJQL(file.tumor.id)}' AND s.'parents'='${file.subject.uuid}'`);
+            checkTumorExistsURL = constructQuery("cards:Subject", ` WHERE s.'identifier'='${escapeJQL(file.tumor.id)}' AND s.'parents'='${file.subject.uuid}'`);
 
             // Fire a fetch request for a tumor subject with the patient subject as its parent
             fetchWithReLogin(globalLoginDisplay, checkTumorExistsURL)
@@ -398,7 +398,7 @@ export default function VariantFilesContainer() {
 
                     // If a region subject is defined
                     if (file.region?.id) {
-                      checkRegionExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${escapeJQL(file.region.id)}' AND s.'parents'='${subject['jcr:uuid']}'`);
+                      checkRegionExistsURL = constructQuery("cards:Subject", ` WHERE s.'identifier'='${escapeJQL(file.region.id)}' AND s.'parents'='${subject['jcr:uuid']}'`);
 
                       // Fire a fetch request for a region subject with the tumor subject as its parent
                       fetchWithReLogin(globalLoginDisplay, checkRegionExistsURL)
@@ -433,7 +433,7 @@ export default function VariantFilesContainer() {
 
           } else {
             if (file.region?.id && !file.region.path) {
-              checkRegionExistsURL = constructQuery("lfs:Subject", ` WHERE s.'identifier'='${escapeJQL(file.region.id)}' AND s.'parents'='${file.tumor.uuid}'`);
+              checkRegionExistsURL = constructQuery("cards:Subject", ` WHERE s.'identifier'='${escapeJQL(file.region.id)}' AND s.'parents'='${file.tumor.uuid}'`);
 
               // Fire a fetch request for a region subject with the tumor subject as its parent
               fetchWithReLogin(globalLoginDisplay, checkRegionExistsURL)
@@ -648,7 +648,7 @@ export default function VariantFilesContainer() {
 
       // Assemble the questionnaire into our payload FormData
       let formPath = "Forms/" + uuidv4();
-      data.append(formPath + "/jcr:primaryType", "lfs:Form");
+      data.append(formPath + "/jcr:primaryType", "cards:Form");
       data.append(formPath + "/questionnaire", "/Questionnaires/SomaticVariants");
       data.append(formPath + "/questionnaire@TypeHint", "Reference");
       data.append(formPath + "/subject", `/${subjectPath}/${tumorPath}` + (file?.region?.path ? `/${regionPath}` : ""));
@@ -656,7 +656,7 @@ export default function VariantFilesContainer() {
 
       // Assemble the FileResourceAnswer
       let answerPath = formPath + "/" + uuidv4();
-      data.append(answerPath + "/jcr:primaryType", "lfs:FileResourceAnswer");
+      data.append(answerPath + "/jcr:primaryType", "cards:FileResourceAnswer");
       data.append(answerPath + "/question", "/Questionnaires/SomaticVariants/file");
       data.append(answerPath + "/question@TypeHint", "Reference");
       data.append(answerPath + "/value", "/" + answerPath + "/" + file.name);
@@ -728,7 +728,7 @@ export default function VariantFilesContainer() {
    */
   let generateSubjectJson = (refType, id, parent) => {
     let info = {};
-    info["jcr:primaryType"] = "lfs:Subject";
+    info["jcr:primaryType"] = "cards:Subject";
     info["jcr:reference:type"] = "/SubjectTypes/" + refType;
     info["identifier"] = id;
     if (parent) { info["jcr:reference:parents"] = parent; }

@@ -19,7 +19,7 @@
 
 <node>
 	<name>Daily Actigraph Diary</name>
-	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
+	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
 		<value>Daily Actigraph Diary</value>
@@ -34,7 +34,7 @@
 	</property>
 	<node>
 		<name>Diary Entry</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
 			<value>Diary Entry</value>
@@ -42,7 +42,7 @@
 		</property>
 		<node>
 			<name>actg_diary_num</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Actigraph Diary Entry</value>
@@ -75,7 +75,7 @@
 			</property>
 			<node>
 				<name>1</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>1</value>
@@ -89,7 +89,7 @@
 			</node>
 			<node>
 				<name>2</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>2</value>
@@ -103,7 +103,7 @@
 			</node>
 			<node>
 				<name>3</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>3</value>
@@ -117,7 +117,7 @@
 			</node>
 			<node>
 				<name>4</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>4</value>
@@ -131,7 +131,7 @@
 			</node>
 			<node>
 				<name>5</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>5</value>
@@ -145,7 +145,7 @@
 			</node>
 			<node>
 				<name>6</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>6</value>
@@ -159,7 +159,7 @@
 			</node>
 			<node>
 				<name>7</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>7</value>
@@ -173,7 +173,7 @@
 			</node>
 			<node>
 				<name>8</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>8</value>
@@ -187,7 +187,7 @@
 			</node>
 			<node>
 				<name>9</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>9</value>
@@ -202,7 +202,7 @@
 		</node>
 		<node>
 			<name>actg_diary_date</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Actigraph Diary Date</value>
@@ -231,7 +231,7 @@
 		</node>
 		<node>
 			<name>actg_put_on</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Time Actigraph put on</value>
@@ -260,7 +260,7 @@
 		</node>
 		<node>
 			<name>actg_removed</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Time Actigraph removed at end of day</value>
@@ -289,7 +289,7 @@
 		</node>
 		<node>
 			<name>actg_break</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Was the Actigraph removed any time throughout the day?</value>
@@ -317,7 +317,7 @@
 			</property>
 			<node>
 				<name>Yes</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Yes</value>
@@ -331,7 +331,7 @@
 			</node>
 			<node>
 				<name>No</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>No</value>
@@ -346,7 +346,7 @@
 		</node>
 		<node>
 			<name>actg_break_reccurentSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>recurrent</name>
 				<value>True</value>
@@ -359,7 +359,7 @@
 			</property>
 			<node>
 				<name>actg_break_removed</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Time removed</value>
@@ -388,7 +388,7 @@
 			</node>
 			<node>
 				<name>actg_break_replaced</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Time put back on</value>
@@ -417,7 +417,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -425,7 +425,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -441,7 +441,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -459,7 +459,7 @@
 		</node>
 		<node>
 			<name>actg_activity</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Was physical activity performed?</value>
@@ -478,7 +478,7 @@
 		</node>
 		<node>
 			<name>actg_activity_reccurentSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>recurrent</name>
 				<value>True</value>
@@ -491,7 +491,7 @@
 			</property>
 			<node>
 				<name>actg_activity_type</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Activity type</value>
@@ -519,7 +519,7 @@
 				</property>
 				<node>
 					<name>Indoor walk</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Indoor walk</value>
@@ -533,7 +533,7 @@
 				</node>
 				<node>
 					<name>Treadmill walk</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Treadmill walk</value>
@@ -547,7 +547,7 @@
 				</node>
 				<node>
 					<name>Outdoor walk</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Outdoor walk</value>
@@ -561,7 +561,7 @@
 				</node>
 				<node>
 					<name>Indoor run</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Indoor run</value>
@@ -575,7 +575,7 @@
 				</node>
 				<node>
 					<name>Treadmill run</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Treadmill run</value>
@@ -589,7 +589,7 @@
 				</node>
 				<node>
 					<name>Outdoor run</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Outdoor run</value>
@@ -603,7 +603,7 @@
 				</node>
 				<node>
 					<name>Indoor cycling</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Indoor cycling</value>
@@ -617,7 +617,7 @@
 				</node>
 				<node>
 					<name>Outdoor cycling</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Outdoor cycling</value>
@@ -632,7 +632,7 @@
 			</node>
 			<node>
 				<name>actg_activity_duration</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Duration</value>
@@ -656,7 +656,7 @@
 			</node>
 			<node>
 				<name>actg_activity_time</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Time of day</value>
@@ -675,7 +675,7 @@
 			</node>
 			<node>
 				<name>actg_activity_intensity</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Intensity</value>
@@ -709,7 +709,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -717,7 +717,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -733,7 +733,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>

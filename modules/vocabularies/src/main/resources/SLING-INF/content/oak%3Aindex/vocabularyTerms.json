@@ -7,7 +7,7 @@
     "includedPaths": ["/Vocabularies"],
     "indexRules" : {
         "jcr:primaryType": "nt:unstructured",
-        "lfs:VocabularyTerm" : {
+        "cards:VocabularyTerm" : {
             "jcr:primaryType": "nt:unstructured",
             "properties": {
                 "jcr:primaryType": "nt:unstructured",

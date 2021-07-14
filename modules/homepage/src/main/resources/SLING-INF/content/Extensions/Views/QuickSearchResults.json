@@ -1,7 +1,7 @@
 {
-  "jcr:primaryType": "lfs:Extension",
-  "lfs:extensionPointId": "lfs/coreUI/view",
-  "lfs:extensionName": "Quick Search Results",
-  "lfs:targetURL": "/content.html/QuickSearchResults",
-  "lfs:extensionRenderURL": "asset:lfs-homepage.QuickSearchResults.js"
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/view",
+  "cards:extensionName": "Quick Search Results",
+  "cards:targetURL": "/content.html/QuickSearchResults",
+  "cards:extensionRenderURL": "asset:cards-homepage.QuickSearchResults.js"
 }

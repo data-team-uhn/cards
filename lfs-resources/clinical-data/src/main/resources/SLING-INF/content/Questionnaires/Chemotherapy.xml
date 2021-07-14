@@ -19,7 +19,7 @@
 
 <node>
 	<name>Chemotherapy</name>
-	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
+	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
 		<value>Chemotherapy</value>
@@ -35,10 +35,10 @@
 	</property>
 	<node>
 		<name>chemotherapy_section</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
 			<name>chemotherapy</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Chemotherapy</value>
@@ -68,10 +68,10 @@
 	</node>
 	<node>
 		<name>treatment_section</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
 			<name>condition</name>
-			<primaryNodeType>lfs:Conditional</primaryNodeType>
+			<primaryNodeType>cards:Conditional</primaryNodeType>
 			<property>
 				<name>comparator</name>
 				<value>=</value>
@@ -79,7 +79,7 @@
 			</property>
 			<node>
 				<name>operandA</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -95,7 +95,7 @@
 			</node>
 			<node>
 				<name>operandB</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -107,7 +107,7 @@
 		</node>
 		<node>
 			<name>start_date</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Chemotherapy start date</value>
@@ -141,7 +141,7 @@
 		</node>
 		<node>
 			<name>protocol</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Treatment Protocol</value>
@@ -170,7 +170,7 @@
 		</node>
 		<node>
 			<name>agent</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Chemotherapy Agent</value>
@@ -206,7 +206,7 @@
 		</node>
 		<node>
 			<name>weight_at_start</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Weight at start of protocol</value>
@@ -240,7 +240,7 @@
 		</node>
 		<node>
 			<name>height_at_start</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Height at start of protocol</value>
@@ -274,7 +274,7 @@
 		</node>
 		<node>
 			<name>end_date</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Chemotherapy end date</value>
@@ -309,10 +309,10 @@
 	</node>
 	<node>
 		<name>mode_section</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
 			<name>condition</name>
-			<primaryNodeType>lfs:Conditional</primaryNodeType>
+			<primaryNodeType>cards:Conditional</primaryNodeType>
 			<property>
 				<name>comparator</name>
 				<value>=</value>
@@ -320,7 +320,7 @@
 			</property>
 			<node>
 				<name>operandA</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -336,7 +336,7 @@
 			</node>
 			<node>
 				<name>operandB</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -348,7 +348,7 @@
 		</node>
 		<node>
 			<name>mode</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Mode</value>
@@ -376,7 +376,7 @@
 			</property>
 			<node>
 				<name>Cyclic</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>Cyclic</value>
@@ -385,7 +385,7 @@
 			</node>
 			<node>
 				<name>Continuous</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>Continuous</value>
@@ -394,7 +394,7 @@
 			</node>
 			<node>
 				<name>Unknown</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>value</name>
 					<value>Unknown</value>
@@ -409,10 +409,10 @@
 		</node>
 		<node>
 			<name>mode_cyclic_details</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -420,7 +420,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -436,7 +436,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -448,7 +448,7 @@
 			</node>
 			<node>
 				<name>number_of_cycles</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Number of cycles</value>
@@ -483,10 +483,10 @@
 		</node>
 		<node>
 			<name>mode_continuous_details</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -494,7 +494,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -510,7 +510,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -522,7 +522,7 @@
 			</node>
 			<node>
 				<name>total_duration</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Total duration</value>
@@ -558,10 +558,10 @@
 	</node>
 	<node>
 		<name>dose_section</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
 			<name>condition</name>
-			<primaryNodeType>lfs:Conditional</primaryNodeType>
+			<primaryNodeType>cards:Conditional</primaryNodeType>
 			<property>
 				<name>comparator</name>
 				<value>=</value>
@@ -569,7 +569,7 @@
 			</property>
 			<node>
 				<name>operandA</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -585,7 +585,7 @@
 			</node>
 			<node>
 				<name>operandB</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -597,7 +597,7 @@
 		</node>
 		<node>
 			<name>cumulative_dose</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Cumulative dose</value>
@@ -636,7 +636,7 @@
 		</node>
 		<node>
 			<name>dose_reduction</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Dose reduction</value>
@@ -671,10 +671,10 @@
 	</node>
 	<node>
 		<name>comments_section</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
 			<name>comments</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Comments</value>

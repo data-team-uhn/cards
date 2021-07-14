@@ -21,14 +21,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>ca.sickkids.ccm.lfs</groupId>
-    <artifactId>lfs-modules</artifactId>
+    <groupId>io.uhndata.cards</groupId>
+    <artifactId>cards-modules</artifactId>
     <version>0.9-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs-homepage</artifactId>
+  <artifactId>cards-homepage</artifactId>
   <packaging>bundle</packaging>
-  <name>LFS - The homepage</name>
+  <name>CARDS - The homepage</name>
 
   <build>
     <resources>
@@ -49,9 +49,9 @@
             <Sling-Nodetypes>SLING-INF/nodetypes/homepage.cnd</Sling-Nodetypes>
             <!-- Initial content to be loaded on bundle installation -->
             <Sling-Initial-Content>
-              SLING-INF/content/apps/lfs/ExtensionPoints/;path:=/apps/lfs/ExtensionPoints/;overwrite:=true,
-              SLING-INF/content/libs/lfs/Homepage/;path:=/libs/lfs/Homepage/;overwrite:=true,
-              SLING-INF/content/libs/lfs/resources/;path:=/libs/lfs/resources/;overwrite:=true,
+              SLING-INF/content/apps/cards/ExtensionPoints/;path:=/apps/cards/ExtensionPoints/;overwrite:=true,
+              SLING-INF/content/libs/cards/Homepage/;path:=/libs/cards/Homepage/;overwrite:=true,
+              SLING-INF/content/libs/cards/resources/;path:=/libs/cards/resources/;overwrite:=true,
               SLING-INF/content/Extensions/Views/;path:=/Extensions/Views/;overwrite:=true,
               SLING-INF/content/Extensions/Sidebar/AdminEntries/;path:=/Extensions/Sidebar/AdminEntries/;overwrite:=true,
               SLING-INF/content/Extensions/AdminDashboard/;path:=/Extensions/AdminDashboard/;overwrite:=true

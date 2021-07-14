@@ -4,10 +4,10 @@
     "maxPerSubject": "long",
     "requiredSubjectTypes": {
       "type": "list",
-      "primaryType": "lfs:SubjectType",
+      "primaryType": "cards:SubjectType",
       "saveType": "Reference",
       "displayProperty": "label",
-      "orderProperty": "lfs:defaultOrder",
+      "orderProperty": "cards:defaultOrder",
       "identifierProperty": "jcr:uuid"
     }
   }

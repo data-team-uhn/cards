@@ -1,6 +1,6 @@
 {
-  "jcr:primaryType": "lfs:Extension",
-  "lfs:extensionPointId": "lfs/coreUI/pageStart",
-  "lfs:extensionName": "Demo Warning Banner",
-  "lfs:extensionRenderURL": "asset:lfs-demo-banner.demoBanner.js"
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/pageStart",
+  "cards:extensionName": "Demo Warning Banner",
+  "cards:extensionRenderURL": "asset:cards-demo-banner.demoBanner.js"
 }

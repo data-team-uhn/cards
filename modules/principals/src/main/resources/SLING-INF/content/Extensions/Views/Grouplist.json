@@ -1,7 +1,7 @@
 {
-  "jcr:primaryType": "lfs:Extension",
-  "lfs:extensionPointId": "lfs/coreUI/view",
-  "lfs:extensionName": "Groups",
-  "lfs:targetURL": "/content.html/admin/grouplist",
-  "lfs:extensionRenderURL": "asset:lfs-principals.groupscontainer.js"
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/view",
+  "cards:extensionName": "Groups",
+  "cards:targetURL": "/content.html/admin/grouplist",
+  "cards:extensionRenderURL": "asset:cards-principals.groupscontainer.js"
 }

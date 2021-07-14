@@ -37,7 +37,7 @@ let assetRequests = {};
 var getAssetsJson = async function() {
   if (!assetsJson) {
     if (!assetsJsonRequest) {
-      assetsJsonRequest = fetch("/libs/lfs/resources/assets.json")
+      assetsJsonRequest = fetch("/libs/cards/resources/assets.json")
         .then(response => response.ok ? response.json() : Promise.reject(response))
         .then(json => assetsJson = json)
         .catch (e => console.error('Failed to resolve assets', e))
@@ -65,7 +65,7 @@ var getAssetURL = async function(assetUrl) {
     assetName = assetName.slice(0, assetName.indexOf("?"));
   }
   return getAssetsJson()
-    .then(json => "/libs/lfs/resources/" + json[assetName]);
+    .then(json => "/libs/cards/resources/" + json[assetName]);
 }
 
 // Get the URL parameters from the provided URL or asset URL string.

@@ -39,8 +39,8 @@ import ComputedQuestion from "./ComputedQuestion";
 import VocabularyQuestion from "./VocabularyQuestion";
 import FileResourceQuestion from "./FileResourceQuestion";
 
-export const QUESTION_TYPES = ["lfs:Question"];
-export const SECTION_TYPES = ["lfs:Section"];
+export const QUESTION_TYPES = ["cards:Question"];
+export const SECTION_TYPES = ["cards:Section"];
 export const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES);
 
 /**
@@ -69,7 +69,7 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, o
   const doHighlight = (anchor == questionPath);
 
   const existingQuestionAnswer = existingAnswer && Object.entries(existingAnswer)
-    .find(([key, value]) => value["sling:resourceSuperType"] == "lfs/Answer"
+    .find(([key, value]) => value["sling:resourceSuperType"] == "cards/Answer"
       && value["question"]["jcr:uuid"] === questionDefinition["jcr:uuid"]);
 
   // Do not show anything if in view mode and no value is recorded yet
@@ -120,7 +120,7 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, o
 let displaySection = (sectionDefinition, path, depth, existingAnswer, key, onChange, visibleCallback, pageActive, isEdit, instanceId) => {
   // Find the existing AnswerSection for this section, if available
   const existingQuestionAnswer = existingAnswer && Object.entries(existingAnswer)
-    .filter(([key, value]) => value["sling:resourceType"] == "lfs/AnswerSection"
+    .filter(([key, value]) => value["sling:resourceType"] == "cards/AnswerSection"
       && value["section"]["jcr:uuid"] === sectionDefinition["jcr:uuid"]);
 
   return (

@@ -126,7 +126,7 @@ then
 fi
 
 #Start CARDS in the background
-java -jar distribution/target/lfs-*jar $@ &
+java -jar distribution/target/cards-*jar $@ &
 CARDS_PID=$!
 
 #Check to see if CARDS was able to bind to the TCP port

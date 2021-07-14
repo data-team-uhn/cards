@@ -47,7 +47,7 @@ In order to use "Vocabularies" section and load vocabularies from BioPortal (bio
 
 ## Running with Docker
 
-If Docker is installed, then the build will also create a new image named `lfs/lfs:latest`
+If Docker is installed, then the build will also create a new image named `cards/cards:latest`
 
 ### Test/Development Environments
 
@@ -55,7 +55,7 @@ CARDS can be ran as a *single* Docker container using the file system (instead o
 as a data storage back-end for Apache Sling.
 
 ```bash
-docker run --rm -e INITIAL_SLING_NODE=true -e OAK_FILESYSTEM=true -p 127.0.0.1:8080:8080 -it lfs/lfs
+docker run --rm -e INITIAL_SLING_NODE=true -e OAK_FILESYSTEM=true -p 127.0.0.1:8080:8080 -it cards/cards
 ```
 
 ### Production Environments
@@ -63,44 +63,44 @@ docker run --rm -e INITIAL_SLING_NODE=true -e OAK_FILESYSTEM=true -p 127.0.0.1:8
 Before the Docker container can be started, an isolated network providing MongoDB must be established. To do so:
 
 ```bash
-docker network create lfsbridge
-docker run --rm --network lfsbridge --name mongo -d mongo
+docker network create cardsbridge
+docker run --rm --network cardsbridge --name mongo -d mongo
 ```
 
 For basic testing of the CARDS Docker image, run:
 
 ```bash
-docker run --rm --network lfsbridge -e INITIAL_SLING_NODE=true -d -p 8080:8080 lfs/lfs
+docker run --rm --network cardsbridge -e INITIAL_SLING_NODE=true -d -p 8080:8080 cards/cards
 ```
 
 However, since runtime data isn't persisted after the container stops, no changes will be permanently persisted this way.
 It is recommended to first create a permanent volume that can be reused between different image instantiations, and different image versions.
 
-`docker volume create --label server=production lfs-production-volume`
+`docker volume create --label server=production cards-production-volume`
 
 Then the container can be started with:
 
-`docker container run --rm --network lfsbridge -e INITIAL_SLING_NODE=true --detach --volume lfs-test-volume:/opt/lfs/sling/ -p 8080:8080 --name lfs-production lfs/lfs`
+`docker container run --rm --network cardsbridge -e INITIAL_SLING_NODE=true --detach --volume cards-test-volume:/opt/cards/sling/ -p 8080:8080 --name cards-production cards/cards`
 
 Explanation:
 
 - `docker container run` creates and starts a new container
 - `--rm` will automatically remove the container after it is stopped
-- `--network lfsbridge` causes the container to connect to the network providing MongoDB
+- `--network cardsbridge` causes the container to connect to the network providing MongoDB
 - `--detach` starts the container in the background
 - `-e INITIAL_SLING_NODE=true` marks this container as the first to start up, and thus responsible for setting up the database
-- `--volume lfs-test-volume:/opt/lfs/sling/` mounts the volume named `lfs-test-volume` at `/opt/lfs/sling/`, where the application data is stored
+- `--volume cards-test-volume:/opt/cards/sling/` mounts the volume named `cards-test-volume` at `/opt/cards/sling/`, where the application data is stored
 - `-p 8080:8080` makes the local port 8080 forward to the 8080 port inside the container
     - you can also specify a specific local network, and a different local port, for example `-p 127.0.0.1:9999:8080`
     - the second port must be `8080`
-- `--name lfs-production` gives a name to the container, for easy identification
-- `lfs/lfs` is the name of the image
+- `--name cards-production` gives a name to the container, for easy identification
+- `cards/cards` is the name of the image
 
 To enable developer mode, also add `--env DEV=true -p 5005:5005` to the `docker run` command.
 
 To enable debug mode, also add `--env DEBUG=true` to the `docker run` command. Note that the application will not start until a debugger is actually attached to the process on port 5005.
 
-`docker run --network lfsbridge -d -p 8080:8080 -p 5005:5005 -e INITIAL_SLING_NODE=true --env DEV=true --env DEBUG=true --name lfs-debug lfs/lfs`
+`docker run --network cardsbridge -d -p 8080:8080 -p 5005:5005 -e INITIAL_SLING_NODE=true --env DEV=true --env DEBUG=true --name cards-debug cards/cards`
 
 ## Running with Docker-Compose
 
@@ -108,7 +108,7 @@ Docker-Compose can be employed to create a cluster of *N* MongoDB Shards, *M* Mo
 
 ### Installing/Starting
 
-1. Before proceeding, ensure that the `lfs/lfs` Docker image has been built.
+1. Before proceeding, ensure that the `cards/cards` Docker image has been built.
 
 ```bash
 mvn clean install
@@ -165,7 +165,7 @@ docker-compose down
 from the previous execution:
 
 ```bash
-LFS_RELOAD=true docker-compose up -d
+CARDS_RELOAD=true docker-compose up -d
 ```
 
 ### Cleaning up

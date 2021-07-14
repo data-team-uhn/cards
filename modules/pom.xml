@@ -21,14 +21,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>ca.sickkids.ccm.lfs</groupId>
-    <artifactId>lfs-parent</artifactId>
+    <groupId>io.uhndata.cards</groupId>
+    <artifactId>cards-parent</artifactId>
     <version>0.9-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs-modules</artifactId>
+  <artifactId>cards-modules</artifactId>
   <packaging>pom</packaging>
-  <name>LFS Modules</name>
+  <name>CARDS Modules</name>
 
   <modules>
     <module>startup-customization</module>

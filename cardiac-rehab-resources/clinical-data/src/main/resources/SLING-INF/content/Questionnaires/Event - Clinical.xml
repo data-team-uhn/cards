@@ -19,7 +19,7 @@
 
 <node>
 	<name>Event - Clinical</name>
-	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
+	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
 		<value>Event: Clinical</value>
@@ -34,7 +34,7 @@
 	</property>
 	<node>
 		<name>event_sd</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Start date</value>
@@ -63,7 +63,7 @@
 	</node>
 	<node>
 		<name>ce_class</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Class of clinical event</value>
@@ -96,7 +96,7 @@
 		</property>
 		<node>
 			<name>Hospitalization</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Hospitalization</value>
@@ -110,7 +110,7 @@
 		</node>
 		<node>
 			<name>Emergency department-urgent care visit</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Emergency department/urgent care visit</value>
@@ -124,7 +124,7 @@
 		</node>
 		<node>
 			<name>Outpatient test, cardiovascular</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Outpatient test, cardiovascular</value>
@@ -138,7 +138,7 @@
 		</node>
 		<node>
 			<name>Outpatient procedure, cardiovascular</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Outpatient procedure, cardiovascular</value>
@@ -153,7 +153,7 @@
 	</node>
 	<node>
 		<name>ce_cc</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Chief complaint</value>
@@ -172,7 +172,7 @@
 	</node>
 	<node>
 		<name>ce_diagnosis</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Diagnosis</value>
@@ -200,7 +200,7 @@
 		</property>
 		<node>
 			<name>CAD</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>CAD</value>
@@ -214,7 +214,7 @@
 		</node>
 		<node>
 			<name>CHF</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>CHF</value>
@@ -228,7 +228,7 @@
 		</node>
 		<node>
 			<name>Arrhythmia</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Arrhythmia</value>
@@ -243,7 +243,7 @@
 	</node>
 	<node>
 		<name>ce_test</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Were any clinical tests performed?</value>
@@ -262,10 +262,10 @@
 	</node>
 	<node>
 		<name>ce_test_2Section</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
 			<name>ce_test_2</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Type of clinical test:</value>
@@ -293,7 +293,7 @@
 			</property>
 			<node>
 				<name>Exercise stress test</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Exercise stress test</value>
@@ -307,7 +307,7 @@
 			</node>
 			<node>
 				<name>Nuclear stress test</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Nuclear stress test</value>
@@ -321,7 +321,7 @@
 			</node>
 			<node>
 				<name>Nuclear pharmacologic stress test</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Nuclear pharmacologic stress test</value>
@@ -335,7 +335,7 @@
 			</node>
 			<node>
 				<name>Transthoracic echocardiogram</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Transthoracic echocardiogram</value>
@@ -349,7 +349,7 @@
 			</node>
 			<node>
 				<name>Transesophageal echocardiogram</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Transesophageal echocardiogram</value>
@@ -363,7 +363,7 @@
 			</node>
 			<node>
 				<name>Cardiac CT</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Cardiac CT</value>
@@ -377,7 +377,7 @@
 			</node>
 			<node>
 				<name>Cardiac MRI</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Cardiac MRI</value>
@@ -391,7 +391,7 @@
 			</node>
 			<node>
 				<name>None</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>None</value>
@@ -411,7 +411,7 @@
 		</node>
 		<node>
 			<name>condition</name>
-			<primaryNodeType>lfs:Conditional</primaryNodeType>
+			<primaryNodeType>cards:Conditional</primaryNodeType>
 			<property>
 				<name>comparator</name>
 				<value>=</value>
@@ -419,7 +419,7 @@
 			</property>
 			<node>
 				<name>operandA</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -435,7 +435,7 @@
 			</node>
 			<node>
 				<name>operandB</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -453,10 +453,10 @@
 	</node>
 	<node>
 		<name>ce_stress_testSection</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
 			<name>ce_stress_test</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Stress test results</value>
@@ -479,7 +479,7 @@
 			</property>
 			<node>
 				<name>Positive</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Positive</value>
@@ -493,7 +493,7 @@
 			</node>
 			<node>
 				<name>Negative</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Negative</value>
@@ -507,7 +507,7 @@
 			</node>
 			<node>
 				<name>Equivocal</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Equivocal</value>
@@ -522,7 +522,7 @@
 		</node>
 		<node>
 			<name>condition</name>
-			<primaryNodeType>lfs:Conditional</primaryNodeType>
+			<primaryNodeType>cards:Conditional</primaryNodeType>
 			<property>
 				<name>comparator</name>
 				<value>=</value>
@@ -530,7 +530,7 @@
 			</property>
 			<node>
 				<name>operandA</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -546,7 +546,7 @@
 			</node>
 			<node>
 				<name>operandB</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -564,7 +564,7 @@
 	</node>
 	<node>
 		<name>ce_procedure</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Were any procedures performed?</value>
@@ -583,10 +583,10 @@
 	</node>
 	<node>
 		<name>ce_procedure2Section</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
 			<name>ce_procedure2</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Type of procedure:</value>
@@ -614,7 +614,7 @@
 			</property>
 			<node>
 				<name>Cardiac catheterization (with no intervention)</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Cardiac catheterization (with no intervention)</value>
@@ -628,7 +628,7 @@
 			</node>
 			<node>
 				<name>Electrophysiology (EP) procedure</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Electrophysiology (EP) procedure</value>
@@ -642,7 +642,7 @@
 			</node>
 			<node>
 				<name>None</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>None</value>
@@ -662,7 +662,7 @@
 		</node>
 		<node>
 			<name>condition</name>
-			<primaryNodeType>lfs:Conditional</primaryNodeType>
+			<primaryNodeType>cards:Conditional</primaryNodeType>
 			<property>
 				<name>comparator</name>
 				<value>=</value>
@@ -670,7 +670,7 @@
 			</property>
 			<node>
 				<name>operandA</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -686,7 +686,7 @@
 			</node>
 			<node>
 				<name>operandB</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -704,7 +704,7 @@
 	</node>
 	<node>
 		<name>ce_intervention</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Was an intervention performed?</value>
@@ -723,10 +723,10 @@
 	</node>
 	<node>
 		<name>ce_intervention2Section</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
 			<name>ce_intervention2</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Type of intervention:</value>
@@ -749,7 +749,7 @@
 			</property>
 			<node>
 				<name>Atrial fibrillation - flutter ablation</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Atrial fibrillation / flutter ablation</value>
@@ -763,7 +763,7 @@
 			</node>
 			<node>
 				<name>CABG</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>CABG</value>
@@ -777,7 +777,7 @@
 			</node>
 			<node>
 				<name>Cardiac transplant</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Cardiac transplant</value>
@@ -791,7 +791,7 @@
 			</node>
 			<node>
 				<name>Implantable device (e.g. pacemaker or defibrillator)</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Implantable device (e.g. pacemaker or defibrillator)</value>
@@ -805,7 +805,7 @@
 			</node>
 			<node>
 				<name>PCI</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>PCI</value>
@@ -819,7 +819,7 @@
 			</node>
 			<node>
 				<name>TAVR</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>TAVR</value>
@@ -833,7 +833,7 @@
 			</node>
 			<node>
 				<name>Valve surgery</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Valve surgery</value>
@@ -847,7 +847,7 @@
 			</node>
 			<node>
 				<name>Ventricular assist device</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Ventricular assist device</value>
@@ -861,7 +861,7 @@
 			</node>
 			<node>
 				<name>Other cardiac surgery</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Other cardiac surgery</value>
@@ -875,7 +875,7 @@
 			</node>
 			<node>
 				<name>Other cardiac cath therapy</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Other cardiac cath therapy</value>
@@ -889,7 +889,7 @@
 			</node>
 			<node>
 				<name>Other EP intervention (not AF-AFL ablation)</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Other EP intervention (not AF/AFL ablation)</value>
@@ -903,7 +903,7 @@
 			</node>
 			<node>
 				<name>None</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>None</value>
@@ -923,7 +923,7 @@
 		</node>
 		<node>
 			<name>condition</name>
-			<primaryNodeType>lfs:Conditional</primaryNodeType>
+			<primaryNodeType>cards:Conditional</primaryNodeType>
 			<property>
 				<name>comparator</name>
 				<value>=</value>
@@ -931,7 +931,7 @@
 			</property>
 			<node>
 				<name>operandA</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -947,7 +947,7 @@
 			</node>
 			<node>
 				<name>operandB</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -965,10 +965,10 @@
 	</node>
 	<node>
 		<name>other_csSection</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
 			<name>other_cs</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Specify other cardiac surgery</value>
@@ -987,7 +987,7 @@
 		</node>
 		<node>
 			<name>condition</name>
-			<primaryNodeType>lfs:Conditional</primaryNodeType>
+			<primaryNodeType>cards:Conditional</primaryNodeType>
 			<property>
 				<name>comparator</name>
 				<value>=</value>
@@ -995,7 +995,7 @@
 			</property>
 			<node>
 				<name>operandA</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -1011,7 +1011,7 @@
 			</node>
 			<node>
 				<name>operandB</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -1029,10 +1029,10 @@
 	</node>
 	<node>
 		<name>other_cctSection</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
 			<name>other_cct</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Specify other cardiac cath therapy</value>
@@ -1051,7 +1051,7 @@
 		</node>
 		<node>
 			<name>condition</name>
-			<primaryNodeType>lfs:Conditional</primaryNodeType>
+			<primaryNodeType>cards:Conditional</primaryNodeType>
 			<property>
 				<name>comparator</name>
 				<value>=</value>
@@ -1059,7 +1059,7 @@
 			</property>
 			<node>
 				<name>operandA</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -1075,7 +1075,7 @@
 			</node>
 			<node>
 				<name>operandB</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -1093,10 +1093,10 @@
 	</node>
 	<node>
 		<name>other_epSection</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
 			<name>other_ep</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Specify other EP intervention</value>
@@ -1115,7 +1115,7 @@
 		</node>
 		<node>
 			<name>condition</name>
-			<primaryNodeType>lfs:Conditional</primaryNodeType>
+			<primaryNodeType>cards:Conditional</primaryNodeType>
 			<property>
 				<name>comparator</name>
 				<value>=</value>
@@ -1123,7 +1123,7 @@
 			</property>
 			<node>
 				<name>operandA</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -1139,7 +1139,7 @@
 			</node>
 			<node>
 				<name>operandB</name>
-				<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
 					<name>value</name>
 					<values>
@@ -1157,7 +1157,7 @@
 	</node>
 	<node>
 		<name>comments</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Comments</value>

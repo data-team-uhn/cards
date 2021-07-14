@@ -1,8 +1,8 @@
 {
-  "name": "lfs-uiextension",
+  "name": "cards-uiextension",
   "version": "0.1.0",
-  "description": "LFS UI extensions library",
-  "author": "SickKids",
+  "description": "CARDS UI extensions library",
+  "author": "UHN DATA",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",

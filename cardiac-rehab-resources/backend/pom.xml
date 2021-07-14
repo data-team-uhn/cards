@@ -21,7 +21,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>ca.sickkids.ccm.lfs</groupId>
+    <groupId>io.uhndata.cards</groupId>
     <artifactId>cardiac-rehab-resources</artifactId>
     <version>0.9-SNAPSHOT</version>
   </parent>
@@ -81,7 +81,7 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>lfs-utils</artifactId>
+      <artifactId>cards-utils</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

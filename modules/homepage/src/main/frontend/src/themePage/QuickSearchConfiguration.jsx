@@ -41,11 +41,11 @@ function QuickSearchConfiguration(props) {
   const [ onSuccess, setOnSuccess ] = useState(false);
   const [ fetched, setFetched ] = useState(false);
 
-  const resourceTypes = ["lfs:Form", "lfs:Subject", "lfs:Questionnaire"];
+  const resourceTypes = ["cards:Form", "cards:Subject", "cards:Questionnaire"];
 
   // Fetch saved admin config settings
   let getQuickSearchSettings = () => {
-    fetch('/apps/lfs/config/QuickSearch.deep.json')
+    fetch('/apps/cards/config/QuickSearch.deep.json')
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         setFetched(true);
@@ -167,7 +167,7 @@ function QuickSearchConfiguration(props) {
                           color="primary"
                         />
                       }
-                      label={resourceName.replace('lfs:', '') + 's'}
+                      label={resourceName.replace('cards:', '') + 's'}
                     />
                   </ListItem>
                 )

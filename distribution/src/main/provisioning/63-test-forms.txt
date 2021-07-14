@@ -21,10 +21,10 @@
 [feature name=cards-test-forms]
 
 [variables]
-    lfs.version=0.9-SNAPSHOT
+    cards.version=0.9-SNAPSHOT
 
 [artifacts runModes=test]
-    ca.sickkids.ccm.lfs/lfs-modules-test-forms/${lfs.version}
+    io.uhndata.cards/cards-modules-test-forms/${cards.version}
 
 [configurations runModes=test]
     org.apache.sling.jcr.repoinit.RepositoryInitializer-test_user

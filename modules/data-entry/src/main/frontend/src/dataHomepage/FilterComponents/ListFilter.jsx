@@ -33,7 +33,7 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
  *
  * @param {string} defaultValue The default value to place in the list
  * @param {func} onChangeInput Callback for when the value select has changed
- * @param {object} questionDefinition Object containing the definition of the question. Should include nodes whose jcr:primaryType is lfs:AnswerOption
+ * @param {object} questionDefinition Object containing the definition of the question. Should include nodes whose jcr:primaryType is cards:AnswerOption
  * Other props are forwarded to the Select component
  *
  */
@@ -45,9 +45,9 @@ const ListFilter = forwardRef((props, ref) => {
   // Populate our our map of options and labels if questionDefinition changes
   let valueToLabel = {};
   let options = Object.entries(questionDefinition)
-    // answers are nodes with "jcr:primaryType" = "lfs:AnswerOption"
+    // answers are nodes with "jcr:primaryType" = "cards:AnswerOption"
     .filter( (answer) => {
-      return answer[1]['jcr:primaryType'] && answer[1]['jcr:primaryType'] === 'lfs:AnswerOption'
+      return answer[1]['jcr:primaryType'] && answer[1]['jcr:primaryType'] === 'cards:AnswerOption'
     })
     // turn these answers into options and populate our valueToLabel
     .map( (answer) => {

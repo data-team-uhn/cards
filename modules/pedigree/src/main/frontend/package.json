@@ -1,8 +1,8 @@
 {
-  "name": "lfs-pedigree",
+  "name": "cards-pedigree",
   "version": "0.1.0",
-  "description": "Pedigree editor for the LFS project",
-  "author": "SickKids",
+  "description": "Pedigree editor for the CARDS project",
+  "author": "UHN DATA",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",

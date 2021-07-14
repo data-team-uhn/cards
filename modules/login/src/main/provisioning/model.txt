@@ -17,11 +17,11 @@
 #  under the License.
 #
 
-# Login page for LFS
-[feature name=lfs-login]
+# Login page for CARDS
+[feature name=cards-login]
 
 [:repoinit]
-    create path (lfs:login) /login
+    create path (cards:login) /login
 
     set ACL for everyone
         allow   jcr:read    on /login

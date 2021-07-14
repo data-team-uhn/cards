@@ -20,13 +20,13 @@
 import ConditionalComponentManager from "./ConditionalComponentManager";
 
 /**
- * Determines if an lfs:ConditionalGroup object is truthy or not.
- * @param {Object} conditional The lfs:ConditionalGroup object to evaluate the truthiness of
+ * Determines if an cards:ConditionalGroup object is truthy or not.
+ * @param {Object} conditional The cards:ConditionalGroup object to evaluate the truthiness of
  * @param {Object} context The React Context from which to pull values
  */
 export function isConditionalGroupSatisfied(conditional, context) {
   let conditionalChildren = Object.values(conditional)
-    .filter((child) => ConditionalComponentManager.isValidConditional(child) && child?.["jcr:primaryType"] != "lfs:Section");
+    .filter((child) => ConditionalComponentManager.isValidConditional(child) && child?.["jcr:primaryType"] != "cards:Section");
 
   if (conditionalChildren.length == 0) {
     return true;
@@ -39,7 +39,7 @@ export function isConditionalGroupSatisfied(conditional, context) {
   }
 }
 
-const HANDLED_TYPES = ["lfs:ConditionalGroup", "lfs:Section"];
+const HANDLED_TYPES = ["cards:ConditionalGroup", "cards:Section"];
 
 ConditionalComponentManager.registerConditionComponent((conditionDefinition) => {
   if (HANDLED_TYPES.includes(conditionDefinition["jcr:primaryType"])) {

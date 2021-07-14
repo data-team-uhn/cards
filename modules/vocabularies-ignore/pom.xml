@@ -19,12 +19,12 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>ca.sickkids.ccm.lfs</groupId>
-    <artifactId>lfs-modules</artifactId>
+    <groupId>io.uhndata.cards</groupId>
+    <artifactId>cards-modules</artifactId>
     <version>0.9-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs-modules-vocabularies-ignore</artifactId>
+  <artifactId>cards-modules-vocabularies-ignore</artifactId>
   <packaging>bundle</packaging>
   <name>CARDS - Vocabularies Ignore</name>
 
@@ -37,7 +37,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Sling-Initial-Content>SLING-INF/content/;path:=/apps/lfs/VocabulariesIgnore/</Sling-Initial-Content>
+            <Sling-Initial-Content>SLING-INF/content/;path:=/apps/cards/VocabulariesIgnore/</Sling-Initial-Content>
           </instructions>
         </configuration>
       </plugin>

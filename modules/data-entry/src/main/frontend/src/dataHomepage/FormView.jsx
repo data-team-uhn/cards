@@ -87,7 +87,7 @@ function FormView(props) {
     // Also fetch the title and other info if we haven't yet
     if (!qFetchSent) {
       setQFetchStatus(true);
-      fetch('/query?query=' + encodeURIComponent(`select * from [lfs:Questionnaire] as n WHERE n.'jcr:uuid'='${questionnaire}'`))
+      fetch('/query?query=' + encodeURIComponent(`select * from [cards:Questionnaire] as n WHERE n.'jcr:uuid'='${questionnaire}'`))
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         let qData = json["rows"][0];
@@ -134,7 +134,7 @@ function FormView(props) {
           columns={props.columns || columns}
           customUrl={`/Forms.paginate?descending=true${qFilter}${activeTab == tabs.indexOf("Draft") ? '&fieldname=statusFlags&fieldvalue=INCOMPLETE' : ''}`}
           defaultLimit={10}
-          joinChildren="lfs:Answer"
+          joinChildren="cards:Answer"
           filters
           entryType={"Form"}
           actions={actions}

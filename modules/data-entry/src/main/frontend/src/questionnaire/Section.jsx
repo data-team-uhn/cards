@@ -170,7 +170,7 @@ function Section(props) {
             key={uuid}
             className={"recurrentSectionInstance " + classes.recurrentSectionInstance}
             >
-            <input type="hidden" name={`${sectionPath}/jcr:primaryType`} value={"lfs:AnswerSection"}></input>
+            <input type="hidden" name={`${sectionPath}/jcr:primaryType`} value={"cards:AnswerSection"}></input>
             <input type="hidden" name={`${sectionPath}/section`} value={sectionDefinition['jcr:uuid']}></input>
             <input type="hidden" name={`${sectionPath}/section@TypeHint`} value="Reference"></input>
 
@@ -276,7 +276,7 @@ function Section(props) {
             <Add fontSize="small" /> {sectionDefinition["label"]}
           </Button>
         </Grid>}
-        {/* Remove any lfs:AnswerSections that we have created by using an @Delete suffix */
+        {/* Remove any cards:AnswerSections that we have created by using an @Delete suffix */
           UUIDsToRemove.map((uuid) =>
             <input type="hidden" name={`${path + "/" + uuid}@Delete`} value="0" key={uuid}></input>
         )}

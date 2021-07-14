@@ -1,6 +1,0 @@
-{
-    "jcr:primaryType": "lfs:QuickSearchConfiguration",
-    "allowedResourceTypes": ["lfs:Form", "lfs:Subject", "lfs:Questionnaire"],
-    "limit": "5",
-    "showTotalRows": "true"
-}

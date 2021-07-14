@@ -1,7 +1,7 @@
 {
-  "jcr:primaryType": "lfs:Extension",
-  "lfs:extensionPointId": "lfs/coreUI/dashboardviews/entry",
-  "lfs:extensionName": "Subject View",
-  "lfs:extensionRenderURL": "asset:lfs-dataentry.SubjectView.js",
-  "lfs:defaultOrder": 1
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/dashboardviews/entry",
+  "cards:extensionName": "Subject View",
+  "cards:extensionRenderURL": "asset:cards-dataentry.SubjectView.js",
+  "cards:defaultOrder": 1
 }
