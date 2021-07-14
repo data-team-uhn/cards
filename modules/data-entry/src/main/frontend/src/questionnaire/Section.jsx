@@ -77,7 +77,7 @@ function Section(props) {
     );
   const descEl = sectionDefinition["description"] &&
     (idx =>
-      <Typography variant="caption" color="textSecondary" display="block">
+      <Typography variant="caption" color="textSecondary" display="block" component="div">
         {<MDEditor.Markdown className={classes.markdown} source={sectionDefinition["description"]} />}
       </Typography>
     );
