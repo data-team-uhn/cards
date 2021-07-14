@@ -6,7 +6,7 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ccmbioinfo/lfs.git",
+    "url": "https://github.com/data-team-uhn/cards.git",
     "directory": "modules/vocabularies/src/main/frontend"
   },
   "babel": {
