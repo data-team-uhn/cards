@@ -106,48 +106,42 @@ function MultipleChoice(props) {
   const [tmpGhostSelection, setTmpGhostSelection] = useState(null);
 
   let selectOption = (id, name, checked = false) => {
-    // Selecting a radio button option will select only that option
-    if (isRadio || isBare) {
-      let defaultOption = defaults.filter((option) => {return option[VALUE_POS] === name || option[LABEL_POS] === name})[0];
-      if (defaultOption) {
-        setSelection([[defaultOption[LABEL_POS], defaultOption[VALUE_POS]]]);
-        // Selected the matching value, we no longer need the input
-        return true;
-      } else {
-        setSelection([[name, id]]);
-        // Don't clear the input, we're still using it:
-        return false;
-      }
-    }
-
-    // If the element was already checked, remove it instead
-    if (checked) {
-      return unselect(id, name);
-    }
-
-    // If the naOption is selected, all other elements are deselected and user-input options are cleared
-    if (naOption == id) {
-      setSelection([[name, id]]);
-      // Clear any user-input options
+    if (!(isRadio || isBare) && !checked && naOption == id) {
       setOptions(all_options);
-      // OK to clear input, since they're removing everything else
-      return false;
-    } else if (noneOfTheAboveOption == id) {
-      // If the noneOfTheAboveOption is selected, other elements are deselected but user-input options remain
-      setSelection((old) => {
+    }
+
+    setSelection( old => {
+      // Selecting a radio button option will select only that option
+      if (isRadio || isBare) {
+        let defaultOption = defaults.filter((option) => {return option[VALUE_POS] === name || option[LABEL_POS] === name})[0];
+        if (defaultOption) {
+          // Selected the matching value, we no longer need the input
+          return [[defaultOption[LABEL_POS], defaultOption[VALUE_POS]]];
+        } else {
+          // Don't clear the input, we're still using it:
+          return [[name, id]];
+        }
+      }
+
+      // If the element was already checked, remove it instead
+      if (checked) {
+        return unselect(old, id);
+      }
+
+      // If the naOption is selected, all other elements are deselected and user-input options are cleared
+      if (naOption == id) {
+        // Clear any user-input options
+        // OK to clear input, since they're removing everything else
+        return [[name, id]];
+      } else if (noneOfTheAboveOption == id) {
+        // If the noneOfTheAboveOption is selected, other elements are deselected but user-input options remain
         // Only keep options that are user-input
         let defaultOptions = defaults.filter(option => option[IS_DEFAULT_POS]).map((option) => option[VALUE_POS]);
         let newSelection = old.filter((option) => !defaultOptions.includes(option[VALUE_POS]));
         newSelection.push([name, id]);
         return newSelection;
-      });
-      // OK to clear input (we more-or-less should never get here via a user-entered input)
-      // The only instance where the user input something but we trigger a "none of the above" is when they type
-      // the value corresponding to the "none of the above", which should clear the input anyway
-      return false;
-    }
+      }
 
-    setSelection( old => {
       // Do not add anything if we are at our maximum number of selections
       if (maxAnswers > 0 && old.length >= maxAnswers) {
         return old;
@@ -181,19 +175,18 @@ function MultipleChoice(props) {
     );
   }
 
-  let unselect = (id, name) => {
-    setSelection( (old) => {
-      let newSelection = old.filter(
-        (element) => {
-          return !(element[VALUE_POS] === id)
-        });
-      // Insert the empty string if nothing currently exists
-      if (newSelection.length == 0) {
-        return [["", ""]];
-      }
-      return newSelection;
+  let unselect = (old, id) => {
+    let newSelection = old.filter(
+      (element) => {
+        return !(element[VALUE_POS] === id)
+      });
+
+    // Insert the empty string if nothing currently exists
+    if (newSelection.length == 0) {
+      return [["", ""]];
     }
-    );
+
+    return newSelection;
   }
 
   let updateGhost = (id, name) => {
@@ -224,8 +217,7 @@ function MultipleChoice(props) {
           return !(option[VALUE_POS] === id) || option[IS_DEFAULT_POS]
         });
     });
-    unselect(id, name);
-    return;
+    setSelection((old) => unselect(old, id));
   }
 
   let acceptEnteredOption = (overrideValue, overrideName) => {
