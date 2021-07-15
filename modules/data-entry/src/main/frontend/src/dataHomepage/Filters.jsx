@@ -374,15 +374,15 @@ function Filters(props) {
 
   // From an array of fields, turn it into a react component
   let GetReactComponentFromFields = (fields, nested=false) => {
-    return fields.map((name) => {
-      if (typeof name == "string") {
+    return fields.map((path) => {
+      if (typeof path == "string") {
         // Straight strings are MenuItems
-        return <MenuItem value={name} key={name} className={classes.categoryOption + (nested ? " " + classes.nestedSelectOption : "")}>{filterableTitles[name]}</MenuItem>
-      } else if (Array.isArray(name)) {
+        return <MenuItem value={path} key={path} className={classes.categoryOption + (nested ? " " + classes.nestedSelectOption : "")}>{filterableTitles[path]}</MenuItem>
+      } else if (Array.isArray(path)) {
         // Arrays represent Questionnaires of Sections
         // which we'll need to turn into opt groups
-        return [<MenuItem className={classes.categoryHeader} disabled>{name[0]}</MenuItem>,
-          GetReactComponentFromFields(name.slice(1), true)];
+        return [<MenuItem className={classes.categoryHeader} disabled>{path[0]}</MenuItem>,
+          GetReactComponentFromFields(path.slice(1), true)];
       }
     })
   }
