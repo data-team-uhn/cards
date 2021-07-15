@@ -38,7 +38,7 @@ function Question (props) {
       <CardHeader
         title={text}
         titleTypographyProps={{ variant: 'h6' }}
-        subheader={isEdit ? <MDEditor.Markdown className={classes.markdown} source={description} /> : null}
+        subheader={<MDEditor.Markdown className={classes.markdown} source={description} />}
         subheaderTypographyProps={{ variant: 'caption', component: "div"}}
         />
       <CardContent className={isEdit ? classes.editModeAnswers : classes.viewModeAnswers}>
