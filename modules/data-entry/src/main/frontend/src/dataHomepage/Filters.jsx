@@ -112,7 +112,7 @@ function Filters(props) {
     // is taken to be its title
     let newFilterableFields = ["Questionnaire", "Subject", "CreatedDate"];
     // newFilterableUUIDs is a mapping from a string in newFilterableFields to a jcr:uuid
-    let newFilterableUUIDs = {Questionnaire: "lfs:Questionnaire", Subject: "lfs:Subject", CreatedDate: "lfs:CreatedDate"};
+    let newFilterableUUIDs = {Questionnaire: "cards:Questionnaire", Subject: "cards:Subject", CreatedDate: "cards:CreatedDate"};
     // newFilterableTitles is a mapping from a string in newFilterableFields to a human-readable title
     let newFilterableTitles = {Questionnaire: "Questionnaire", Subject: "Subject", CreatedDate: "Created Date"};
     // newQuestionDefinitions is normally the straight input from FilterServlet.java
@@ -120,20 +120,20 @@ function Filters(props) {
     let newQuestionDefinitions = {Questionnaire: {dataType: "questionnaire"}, Subject: {dataType: "subject"}}
 
     // We'll need a helper recursive function to copy over data from sections/questions
-    let parseSectionOrQuestionnaire = (sectionJson) => {
+    let parseSectionOrQuestionnaire = (sectionJson, path="") => {
       let retFields = [];
       for (let [title, object] of Object.entries(sectionJson)) {
-        // We only care about children that are lfs:Questions or lfs:Sections
-        if (object["jcr:primaryType"] == "lfs:Question") {
-          // If this is an lfs:Question, copy the entire thing over to our Json value
-          retFields.push(title);
+        // We only care about children that are cards:Questions or cards:Sections
+        if (object["jcr:primaryType"] == "cards:Question") {
+          // If this is an cards:Question, copy the entire thing over to our Json value
+          retFields.push(path+title);
           // Also save the human-readable name, UUID, and data type
-          newQuestionDefinitions[title] = object;
-          newFilterableUUIDs[title] = object["jcr:uuid"];
-          newFilterableTitles[title] = object["text"];
-        } else if (object["jcr:primaryType"] == "lfs:Section") {
-          // If this is an lfs:Section, recurse deeper
-          retFields.push(...parseSectionOrQuestionnaire(object));
+          newQuestionDefinitions[path+title] = object;
+          newFilterableUUIDs[path+title] = object["jcr:uuid"];
+          newFilterableTitles[path+title] = object["text"];
+        } else if (object["jcr:primaryType"] == "cards:Section") {
+          // If this is an cards:Section, recurse deeper
+          retFields.push(...parseSectionOrQuestionnaire(object, path+title+"/"));
         }
         // Otherwise, we don't care about this value
       }
@@ -141,19 +141,19 @@ function Filters(props) {
       return retFields;
     }
 
-    // From the questionnaire homepage, we're looking for children that are objects of type lfs:Questionnaire
+    // From the questionnaire homepage, we're looking for children that are objects of type cards:Questionnaire
     for (let [title, thisQuestionnaire] of Object.entries(questionnaireJson)) {
-      if (thisQuestionnaire["jcr:primaryType"] != "lfs:Questionnaire") {
+      if (thisQuestionnaire["jcr:primaryType"] != "cards:Questionnaire") {
         continue;
       }
 
       newFilterableFields.push([title, ...parseSectionOrQuestionnaire(thisQuestionnaire)]);
     }
 
-    questionnaireJson["Subject"] = {
+    newQuestionDefinitions["Subject"] = {
       dataType: "subject"
     };
-    questionnaireJson["CreatedDate"] = {
+    newQuestionDefinitions["CreatedDate"] = {
       dataType: "createddate"
     };
 
