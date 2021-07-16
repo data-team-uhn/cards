@@ -23,11 +23,12 @@ import { Checkbox, FormControlLabel, IconButton, List, ListItem, MenuItem, Radio
 import Close from "@material-ui/icons/Close";
 import PropTypes from 'prop-types';
 
-import Answer, {LABEL_POS, VALUE_POS} from "./Answer";
+import Answer, {LABEL_POS, VALUE_POS, DESC_POS} from "./Answer";
 import { useFormUpdateReaderContext, useFormUpdateWriterContext } from "./FormUpdateContext";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import AnswerInstructions from "./AnswerInstructions.jsx";
 import UserInputAssistant from "../components/UserInputAssistant.jsx";
+import MDEditor from '@uiw/react-md-editor';
 
 // Position used to read whether or not an option is a "default" suggestion (i.e. one provided by the questionnaire)
 const IS_DEFAULT_POS = 2;
@@ -60,8 +61,8 @@ function MultipleChoice(props) {
     .filter(value => value['jcr:primaryType'] == 'cards:AnswerOption')
     // Sort by default order
     .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder))
-    // Only extract the labels and internal values from the node
-    .map(value => [value.label || value.value, value.value, true]);
+    // Only extract the labels, internal values and description from the node
+    .map(value => [value.label || value.value, value.value, true, value.description]);
   // Locate an option referring to the "none of the above", if it exists
   let naOption = naValue || Object.values(props.questionDefinition)
     .find((value) => value['notApplicable'])?.["value"];
@@ -528,6 +529,7 @@ function generateDefaultOptions(defaults, selection, disabled, isRadio, onClick,
         onDelete={onDelete}
         isDefault={childData[IS_DEFAULT_POS]}
         isRadio={isRadio}
+        description={childData[DESC_POS]}
       ></StyledResponseChild>
     );
   });
@@ -537,14 +539,14 @@ var StyledResponseChild = withStyles(QuestionnaireStyle)(ResponseChild);
 
 // One option (either a checkbox or radiobox as appropriate)
 function ResponseChild(props) {
-  const {classes, checked, name, id, isDefault, onClick, disabled, isRadio, onDelete} = props;
+  const {classes, checked, name, id, isDefault, onClick, disabled, isRadio, onDelete, description} = props;
 
   return (
     <React.Fragment>
       <ListItem key={name} className={classes.selectionChild}>
           { /* This is either a Checkbox if this is a default suggestion, or a delete button otherwise */
           isDefault ?
-            (
+            (<>
               <FormControlLabel
                 control={
                   isRadio ?
@@ -571,6 +573,9 @@ function ResponseChild(props) {
                   label: classes.inputLabel
                 }}
               />
+              <br/>
+              <MDEditor.Markdown className={classes.selectionDescription} source={description} />
+             </>
             ) : ((name !== "") && (
             <React.Fragment>
               <IconButton

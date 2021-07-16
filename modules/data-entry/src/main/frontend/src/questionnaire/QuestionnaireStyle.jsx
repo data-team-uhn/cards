@@ -620,6 +620,13 @@ const questionnaireStyle = theme => ({
       marginTop: theme.spacing(3),
       marginLeft: theme.spacing(2),
     },
+    selectionChild: {
+      display: "block"
+    },
+    selectionDescription: {
+      fontSize: "inherit",
+      paddingLeft: theme.spacing(4)
+    },
 });
 
 export default questionnaireStyle;
