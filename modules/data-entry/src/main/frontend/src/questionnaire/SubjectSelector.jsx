@@ -839,22 +839,6 @@ function SubjectSelectorList(props) {
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
-  // fetch the Subjects of each form of this questionnaire type
-  let filterArray = () => {
-    fetchWithReLogin(globalLoginDisplay, `/query?query=SELECT distinct s.* FROM [cards:Subject] AS s inner join [cards:Form] as f on f.'subject'=s.'jcr:uuid' where f.'questionnaire'='${selectedQuestionnaire?.['jcr:uuid']}'`)
-    .then(response => response.json())
-    .then(result => {
-      setRelatedSubjects(result.rows);
-      }
-    )
-  }
-
-  useEffect(() => {
-    if (!relatedSubjects) {
-      filterArray();
-    }
-  }, [relatedSubjects]);
-
   // if the number of related forms of a certain questionnaire/subject is at the maxPerSubject, an error is set
   let handleSelection = (rowData) => {
     let atMax = (relatedSubjects?.length && selectedQuestionnaire && (relatedSubjects.filter((i) => (i["jcr:uuid"] == rowData["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)))
@@ -866,10 +850,6 @@ function SubjectSelectorList(props) {
       onError("");
       disableProgress(false);
     }
-  }
-
-  if (!relatedSubjects) {
-    return null;
   }
 
   return(
@@ -899,19 +879,37 @@ function SubjectSelectorList(props) {
               .then(response => response.json())
               .then(result => {
                 let filteredData = result["rows"];
-                // Auto-select if there is only one subject available
-                if (filteredData.length === 1) {
-                  onSelect(filteredData[0]);
-                  handleSelection(filteredData[0]);
+                let querySubjectSubset = "";
+                for (let i = 0; i < filteredData.length; i++) {
+                  querySubjectSubset += "s.'jcr:uuid'='" + filteredData[i]['jcr:uuid'] + "'";
+                  if ((i+1) != filteredData.length) {
+                    querySubjectSubset += " or ";
+                  }
                 }
-                return {
-                  data: filteredData.map((row) => ({
-                          hierarchy: getHierarchy(row, React.Fragment, () => ({})),
-                          ...row })),
-                  page: Math.trunc(result["offset"]/result["limit"]),
-                  totalCount: result["totalrows"],
-                }}
-              )
+                let querySubjectSubsetClause = (querySubjectSubset.length > 0) ? (" and (" + querySubjectSubset + ") ") : " ";
+                // fetch the Subjects of each form of this questionnaire type for all listed subjects
+                return fetchWithReLogin(globalLoginDisplay, `/query?query=SELECT distinct s.* FROM [cards:Subject] AS s inner join [cards:Form] as f on f.'subject'=s.'jcr:uuid' where f.'questionnaire'='${selectedQuestionnaire?.['jcr:uuid']}'${querySubjectSubsetClause}order by s.'fullIdentifier'&limit=${query.pageSize}`)
+                .then((relatedSubjectsResp) => relatedSubjectsResp.json())
+                .then((relatedSubjectsResp) => {
+                  setRelatedSubjects(relatedSubjectsResp.rows);
+                  return relatedSubjectsResp.rows;
+                })
+                .then((latestRelatedSubjects) => {
+                  // Auto-select if there is only one subject available which has not execeeded maximum Forms per Subject
+                  let atMax = (latestRelatedSubjects?.length && selectedQuestionnaire && (latestRelatedSubjects.filter((i) => (i["jcr:uuid"] == filteredData[0]["jcr:uuid"])).length >= (+(selectedQuestionnaire?.["maxPerSubject"]) || undefined)))
+                  if (filteredData.length === 1 && !atMax) {
+                    onSelect(filteredData[0]);
+                    handleSelection(filteredData[0]);
+                  }
+                  return {
+                    data: filteredData.map((row) => ({
+                            hierarchy: getHierarchy(row, React.Fragment, () => ({})),
+                              ...row })),
+                    page: Math.trunc(result["offset"]/result["limit"]),
+                    totalCount: result["totalrows"],
+                  }
+                })
+              })
           }
         }
         editable={{
