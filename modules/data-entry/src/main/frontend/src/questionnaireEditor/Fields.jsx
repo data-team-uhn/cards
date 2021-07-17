@@ -30,9 +30,11 @@ import ListInput from "./ListInput";
 import NumberInput from "./NumberInput";
 import ObjectInput from "./ObjectInput";
 import TextInput from "./TextInput";
+import MarkdownTextField from "./MarkdownTextField";
+import MDEditor from '@uiw/react-md-editor';
 
 let Fields = (props) => {
-  let { data, JSON, edit, ...rest } = props;
+  let { data, JSON, edit, classes, ...rest } = props;
 
   /**
    * Method responsible for displaying a question from the questionnaire
@@ -59,14 +61,18 @@ let Fields = (props) => {
     return str.charAt(0).toUpperCase() + str.slice(1).replace( /([A-Z])/g, " $1" ).toLowerCase();
   }
 
-  let displayStaticField = (key) => {
+  let displayStaticField = (key, value) => {
     return (
       <Grid container key={key} alignItems='flex-start' spacing={2} direction="row">
         <Grid item xs={4}>
           <Typography variant="subtitle2">{formatString(key)}:</Typography>
         </Grid>
         <Grid item xs={8}>
-          { Array.isArray(data[key]) ? data[key].map((item) => <Typography key={item}>{`${item}`}</Typography>)
+          { value === "markdown"
+            ?
+            <MDEditor.Markdown className={classes.markdown} source={data[key]} />
+            :
+            Array.isArray(data[key]) ? data[key].map((item) => <Typography key={item}>{`${item}`}</Typography>)
                                      : <Typography>{`${data[key]}`}</Typography>
           }
         </Grid>
@@ -88,7 +94,7 @@ let Fields = (props) => {
   return edit ?
     Object.entries(JSON).map(([key, value]) => displayEditField(key, value))
     :
-    Object.keys(getAllKeys(JSON)).map(key => (data[key] ? displayStaticField(key) : ''));
+    Object.entries(JSON).map(([key, value]) => (data[key] ? displayStaticField(key, value) : ''));
 }
 
 Fields.propTypes = {

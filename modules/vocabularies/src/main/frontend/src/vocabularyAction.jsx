@@ -105,11 +105,11 @@ export default function VocabularyAction(props) {
           fetchData(json["rows"]);
         })
         .catch(function(err) {
-	      console.log("Something went wrong: " + err);
-	      // We were unable to fetch any questionnaire data possibly due to timeout in user authentication
-	      // thus, we have to abort uninstalling process
-	      return;
-	    });
+          console.log("Something went wrong: " + err);
+          // We were unable to fetch any questionnaire data possibly due to timeout in user authentication
+          // thus, we have to abort uninstalling process
+          return;
+        });
     } else {
       fetchData(questionnaires);
     }
@@ -191,7 +191,7 @@ export default function VocabularyAction(props) {
     )}
     {exit && (
       <Tooltip title="Close">
-        <Button onClick={exit} variant="contained" color="default" className={classes.vocabularyAction}>Close</Button>
+        <Button onClick={exit} variant="contained" className={classes.vocabularyAction}>Close</Button>
       </Tooltip>
     )}
     <Dialog onClose={handleClose} open={displayPopup}>
@@ -225,7 +225,7 @@ export default function VocabularyAction(props) {
 
       <DialogActions>
         <Button onClick={handleUninstall} variant="contained" color="primary" className={classes.vocabularyAction + " " + classes.uninstall}>Uninstall</Button>
-        <Button onClick={handleClose} variant="contained" color="default" className={classes.vocabularyAction}>Cancel</Button>
+        <Button onClick={handleClose} variant="contained" className={classes.vocabularyAction}>Cancel</Button>
       </DialogActions>
 
     </Dialog>

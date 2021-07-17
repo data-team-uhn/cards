@@ -43,6 +43,9 @@ const questionnaireStyle = theme => ({
         marginLeft: theme.spacing(-2),
       },
     },
+    markdown: {
+      fontSize: "inherit",
+    },
     editModeAnswers: {
       "& .MuiListItem-root:hover" : {
         background: theme.palette.action.hover,

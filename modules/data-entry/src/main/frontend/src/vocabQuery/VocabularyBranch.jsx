@@ -279,13 +279,13 @@ function VocabularyBranch(props) {
         )
       }
       {/* Browser term select tools */}
-	    { SelectorComponent && <SelectorComponent
-	      checked={selectedPaths.includes(path)}
-	      color="secondary"
-	      onChange={onSelectionChanged}
-	      onClick={event => event.stopPropagation()}
-	      className={classes.termSelector}
-	    /> }
+        { SelectorComponent && <SelectorComponent
+          checked={selectedPaths.includes(path)}
+          color="secondary"
+          onChange={onSelectionChanged}
+          onClick={event => event.stopPropagation()}
+          className={classes.termSelector}
+        /> }
       {/* Term name */}
       <Typography onClick={() => loadTerm(id, path)}
                   className={classes.infoName + (focused ? (" " + classes.focusedTermName) : " ")}

@@ -28,6 +28,7 @@ import { QUESTION_TYPES, SECTION_TYPES, ENTRY_TYPES } from "./FormEntry.jsx";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import MaterialTable, { MTablePagination } from 'material-table';
+import MDEditor from '@uiw/react-md-editor';
 
 import {
   Avatar,
@@ -456,7 +457,9 @@ function SubjectMemberInternal (props) {
           Object.keys(subjectGroups).map( (questionnaireTitle, j) => {
             return(<Grid item key={questionnaireTitle}>
               <Typography variant="h6">{questionnaireTitle}</Typography>
-              <Typography variant="subtitle1" color="textSecondary">{subjectGroups[questionnaireTitle]?.[0]?.questionnaire?.description}</Typography>
+              <Typography variant="subtitle1" color="textSecondary">
+                <MDEditor.Markdown className={classes.markdown} source={subjectGroups[questionnaireTitle]?.[0]?.questionnaire?.description} />
+              </Typography>
               <MaterialTable
                 data={subjectGroups[questionnaireTitle]}
                 style={{ boxShadow : 'none' }}

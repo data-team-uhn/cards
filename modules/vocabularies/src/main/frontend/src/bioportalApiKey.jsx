@@ -168,7 +168,7 @@ export function BioPortalApiKey(props) {
           </DialogContent>
           <DialogActions>
             <Button color="primary" variant="contained" className={classes.vocabularyAction} onClick={() => {addNewKey()}}>Update</Button>
-            <Button color="default" variant="contained" className={classes.vocabularyAction} onClick={() => {setDisplayPopup(false)}}>Cancel</Button>
+            <Button variant="contained" className={classes.vocabularyAction} onClick={() => {setDisplayPopup(false)}}>Cancel</Button>
           </DialogActions>
       </Dialog>
     </React.Fragment>

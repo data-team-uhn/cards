@@ -94,7 +94,7 @@ class FormFields extends React.Component {
           className={classes.form}
           required
         />
-        <Button variant="contained" color="default" size="small" className={classes.formAction} onClick={handleReset}>Close</Button>
+        <Button variant="contained" size="small" className={classes.formAction} onClick={handleReset}>Close</Button>
         { !isValid ?
           // Render hover over and button
           <React.Fragment>
