@@ -39,9 +39,9 @@
   </licenses>
 
   <scm>
-    <connection>scm:git:git://github.com/ccmbioinfo/lfs.git</connection>
-    <developerConnection>scm:git:git@github.com:phenotips/ccmbioinfo/lfs.git</developerConnection>
-    <url>https://github.com/ccmbioinfo/lfs/tree/master/</url>
+    <connection>scm:git:git://github.com/data-team-uhn/cards.git</connection>
+    <developerConnection>scm:git:git@github.com:data-team-uhn/cards.git</developerConnection>
+    <url>https://github.com/data-team-uhn/cards/tree/master/</url>
     <tag>HEAD</tag>
   </scm>
 

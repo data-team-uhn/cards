@@ -2,7 +2,7 @@
   "license": "Apache-2.0", 
   "name": "cards-commons", 
   "repository": {
-    "url": "https://github.com/ccmbioinfo/lfs.git", 
+    "url": "https://github.com/data-team-uhn/cards.git",
     "directory": "modules/commons/src/main/frontend",
     "type": "git"
   }, 
