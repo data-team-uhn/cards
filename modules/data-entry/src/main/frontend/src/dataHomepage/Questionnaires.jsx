@@ -24,7 +24,6 @@ import NewQuestionnaireDialog from "../questionnaireEditor/NewQuestionnaireDialo
 import { Button, Card, CardHeader, CardContent, withStyles } from "@material-ui/core";
 import DeleteButton from "./DeleteButton.jsx";
 import EditButton from "./EditButton.jsx";
-import MDEditor from '@uiw/react-md-editor';
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 function Questionnaires(props) {
@@ -41,11 +40,6 @@ function Questionnaires(props) {
       "label": "Title",
       "format": getEntityIdentifier,
       "link": "dashboard+path",
-    },
-    {
-      "key": "description",
-      "label": "Description",
-      "format": (row) => (<MDEditor.Markdown className={classes.markdown} source={row["description"]} />),
     },
     {
       "key": "jcr:created",
