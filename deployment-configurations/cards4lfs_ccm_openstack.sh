@@ -100,12 +100,7 @@ printenv CARDS_DEPLOYMENT_ADMIN_PASSWORD | python3 set_sling_password.py || exit
 echo "Installing vocabularies..."
 cd $PROJECT_ROOT/Utilities/Administration
 export ADMIN_PASSWORD=$CARDS_DEPLOYMENT_ADMIN_PASSWORD
-
-echo "Installing HP vocabulary..."
-python3 install_vocabulary.py --bioportal_id HP || exit -1
-
-echo "Installing HANCESTRO vocabulary..."
-python3 install_vocabulary.py --bioportal_id HANCESTRO || exit -1
+./install_required_vocabularies.sh || exit -1
 
 #Download the required NCR models
 echo "Downloading NCR models..."
