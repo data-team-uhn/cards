@@ -242,7 +242,7 @@ function StatisticDialog(props) {
     requestData.append('jcr:primaryType', 'lfs:Statistic');
 
     // Verify that the name, xVar, and yVar variables have been filled out
-    let mandatoryFields = ["name", "xVar", "yVar"];
+    let mandatoryFields = statisticsSpecs["//REQUIRED"];
     for (const fieldName of mandatoryFields) {
       if ((!requestData.has(fieldName)) || requestData.get(fieldName) == "") {
         setError(`The ${fieldName} field is mandatory`);
