@@ -67,7 +67,7 @@ cp $PROJECT_ROOT/deployment-configurations/resources/cards4lfs_ccm_openstack/doc
 cp $PROJECT_ROOT/deployment-configurations/resources/cards4lfs_ccm_openstack/registered_models.py ncr_registered_models.py
 
 docker-compose build || exit -1
-docker-compose up -d lfsinitial || exit -1
+docker-compose up -d cardsinitial || exit -1
 
 #All configurations on CARDS will be done through this URL
 export CARDS_URL=http://localhost:8081
