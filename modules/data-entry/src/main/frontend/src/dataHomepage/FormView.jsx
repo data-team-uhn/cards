@@ -136,6 +136,7 @@ function FormView(props) {
           defaultLimit={10}
           joinChildren="cards:Answer"
           filters
+          questionnaire={questionnaire}
           entryType={"Form"}
           actions={actions}
           disableTopPagination={!topPagination}

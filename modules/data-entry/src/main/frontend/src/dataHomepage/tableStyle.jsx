@@ -55,6 +55,20 @@ const liveTableStyle = theme => ({
     },
     categoryOption: {
         whiteSpace: "normal",
+        padding: theme.spacing(0, 2),
+    },
+    categoryHeader: {
+        backgroundColor: theme.palette.background.paper,
+        lineHeight: 2,
+        fontSize: "1em",
+        paddingTop: theme.spacing(2),
+        paddingBottom: theme.spacing(1),
+        color: theme.palette.primary.main,
+        fontWeight: "bold",
+        top: 0,
+        zIndex: 1,
+        position: "sticky",
+        opacity: "1 !important",
     },
     hidden: {
         visibility: "hidden"
@@ -69,7 +83,10 @@ const liveTableStyle = theme => ({
         "& .MuiIconButton-root": {
             float : "right"
         }
-    }
+    },
+    nestedSelectOption: {
+        paddingLeft: theme.spacing(4)
+    },
 });
 
 export default liveTableStyle;
