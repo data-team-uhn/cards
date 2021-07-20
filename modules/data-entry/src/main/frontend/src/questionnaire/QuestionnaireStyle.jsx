@@ -624,7 +624,8 @@ const questionnaireStyle = theme => ({
       display: "block"
     },
     selectionDescription: {
-      fontSize: "inherit",
+      fontSize: "0.75rem",
+      color: theme.palette.secondary.main,
       paddingLeft: theme.spacing(4)
     },
 });
