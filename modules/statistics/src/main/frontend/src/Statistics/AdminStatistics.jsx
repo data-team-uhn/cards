@@ -239,7 +239,7 @@ function StatisticDialog(props) {
     event.preventDefault();
 
     let requestData = new FormData(event.currentTarget);
-    requestData.append('jcr:primaryType', 'lfs:Statistic');
+    requestData.append('jcr:primaryType', 'cards:Statistic');
 
     // Verify that the name, xVar, and yVar variables have been filled out
     let mandatoryFields = statisticsSpecs["//REQUIRED"];
