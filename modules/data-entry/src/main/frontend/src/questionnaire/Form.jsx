@@ -170,7 +170,7 @@ function Form (props) {
   };
 
   // Event handler for the form submission event, replacing the normal browser form submission with a background fetch request.
-  let saveData = (event, performCheckin) => {
+  let saveData = (event, performCheckin, onSuccess) => {
     // This stops the normal browser form submission
     event && event.preventDefault();
     if (!formNode.current) {
@@ -197,6 +197,7 @@ function Form (props) {
       if (response.ok) {
         setLastSaveStatus(true);
         setLastSaveTimestamp(new Date());
+        onSuccess && onSuccess();
       } else if (response.status === 500) {
         response.json().then((json) => {
             setErrorCode(json["status.code"]);
@@ -214,8 +215,8 @@ function Form (props) {
     .finally(() => {formNode?.current && setSaveInProgress(false)});
   }
 
-  let saveDataWithCheckin = (event) => {
-      return saveData(event, true);
+  let saveDataWithCheckin = (event, onSuccess) => {
+      return saveData(event, true, onSuccess);
   }
 
   // Handle when the subject of the form changes
@@ -258,7 +259,11 @@ function Form (props) {
 
   let onClose = (event) => {
     // Redirect the user to the view form mode
-    props.history.push(urlBase + formURL + window.location.hash);
+    // ...but only after the Form has been saved and checked-in
+    saveDataWithCheckin(undefined, () => {
+        removeWindowHandlers && removeWindowHandlers();
+        props.history.push(urlBase + formURL + window.location.hash);
+    });
   }
 
   let onDelete = () => {
