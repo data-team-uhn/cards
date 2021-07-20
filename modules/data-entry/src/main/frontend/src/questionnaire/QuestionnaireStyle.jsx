@@ -625,7 +625,7 @@ const questionnaireStyle = theme => ({
     },
     selectionDescription: {
       fontSize: "0.75rem",
-      color: theme.palette.secondary.main,
+      color: theme.palette.grey["500"],
       paddingLeft: theme.spacing(4)
     },
 });
