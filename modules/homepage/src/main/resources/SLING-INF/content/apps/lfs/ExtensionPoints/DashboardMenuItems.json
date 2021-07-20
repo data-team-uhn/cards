@@ -1,5 +1,0 @@
-{
-  "jcr:primaryType": "lfs:ExtensionPoint",
-  "lfs:extensionPointId": "lfs/coreUI/dashboardmenuitems/entry",
-  "lfs:extensionPointName": "Entries for the create item menu on the user dashboard"
-}

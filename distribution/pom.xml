@@ -20,15 +20,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>ca.sickkids.ccm.lfs</groupId>
-    <artifactId>lfs-parent</artifactId>
+    <groupId>io.uhndata.cards</groupId>
+    <artifactId>cards-parent</artifactId>
     <version>0.9-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs</artifactId>
+  <artifactId>cards</artifactId>
   <packaging>slingstart</packaging>
-  <name>LFS standalone distribution</name>
-  <description>The ready to use LFS distribution.</description>
+  <name>CARDS standalone distribution</name>
+  <description>The ready to use CARDS distribution.</description>
 
   <properties>
     <sling.java.version>8</sling.java.version>

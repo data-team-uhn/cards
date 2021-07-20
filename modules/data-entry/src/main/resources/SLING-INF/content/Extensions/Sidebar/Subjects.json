@@ -1,8 +1,8 @@
 {
-  "jcr:primaryType": "lfs:Extension",
-  "lfs:extensionPointId": "lfs/coreUI/sidebar/entry",
-  "lfs:extensionName": "Subjects",
-  "lfs:targetURL": "/content.html/Subjects",
-  "lfs:icon": "asset:lfs-dataentry.subjectsIcon.js",
-  "lfs:defaultOrder": 1
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/sidebar/entry",
+  "cards:extensionName": "Subjects",
+  "cards:targetURL": "/content.html/Subjects",
+  "cards:icon": "asset:cards-dataentry.subjectsIcon.js",
+  "cards:defaultOrder": 1
 }

@@ -19,7 +19,7 @@
 
 <node>
 	<name>Participant Status</name>
-	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
+	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>maxPerSubject</name>
 		<value>1</value>
@@ -39,7 +39,7 @@
 	</property>
 	<node>
 		<name>Status</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
 			<value>Status</value>
@@ -47,7 +47,7 @@
 		</property>
 		<node>
 			<name>enrollment_status</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Participant status</value>
@@ -75,7 +75,7 @@
 			</property>
 			<node>
 				<name>enrolled</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Enrolled</value>
@@ -89,7 +89,7 @@
 			</node>
 			<node>
 				<name>withdrawn_study</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Withdrawn by study staff</value>
@@ -103,7 +103,7 @@
 			</node>
 			<node>
 				<name>withdrawn_subject</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Withdrawn by subject</value>
@@ -117,7 +117,7 @@
 			</node>
 			<node>
 				<name>paused</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Paused</value>
@@ -131,7 +131,7 @@
 			</node>
 			<node>
 				<name>resumed</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Resumed</value>
@@ -145,7 +145,7 @@
 			</node>
 			<node>
 				<name>exited</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Completed study</value>
@@ -160,7 +160,7 @@
 		</node>
 		<node>
 			<name>enrollment_date</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Date enrolled</value>
@@ -189,10 +189,10 @@
 		</node>
 		<node>
 			<name>withdrawn_dateSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>withdrawn_date</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Date withdrawn</value>
@@ -226,10 +226,10 @@
 			</node>
 			<node>
 				<name>conditionalGroup</name>
-				<primaryNodeType>lfs:ConditionalGroup</primaryNodeType>
+				<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
 				<node>
 					<name>condition0</name>
-					<primaryNodeType>lfs:Conditional</primaryNodeType>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
 						<name>comparator</name>
 						<value>=</value>
@@ -237,7 +237,7 @@
 					</property>
 					<node>
 						<name>operandA</name>
-						<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 						<property>
 							<name>value</name>
 							<values>
@@ -253,7 +253,7 @@
 					</node>
 					<node>
 						<name>operandB</name>
-						<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 						<property>
 							<name>value</name>
 							<values>
@@ -270,7 +270,7 @@
 				</node>
 				<node>
 					<name>condition1</name>
-					<primaryNodeType>lfs:Conditional</primaryNodeType>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
 						<name>comparator</name>
 						<value>=</value>
@@ -278,7 +278,7 @@
 					</property>
 					<node>
 						<name>operandA</name>
-						<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 						<property>
 							<name>value</name>
 							<values>
@@ -294,7 +294,7 @@
 					</node>
 					<node>
 						<name>operandB</name>
-						<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 						<property>
 							<name>value</name>
 							<values>
@@ -313,10 +313,10 @@
 		</node>
 		<node>
 			<name>pause_dateSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>pause_date</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Effective Date</value>
@@ -350,7 +350,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -358,7 +358,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -374,7 +374,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -392,10 +392,10 @@
 		</node>
 		<node>
 			<name>pause_reasonSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>pause_reason</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Reason</value>
@@ -428,7 +428,7 @@
 				</property>
 				<node>
 					<name>Covid-19 Concerns</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Covid-19 Concerns</value>
@@ -442,7 +442,7 @@
 				</node>
 				<node>
 					<name>Personal Illness</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Personal Illness</value>
@@ -456,7 +456,7 @@
 				</node>
 				<node>
 					<name>Personal Injury</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Personal Injury</value>
@@ -470,7 +470,7 @@
 				</node>
 				<node>
 					<name>Family Illness-Injury</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Family Illness/Injury</value>
@@ -485,7 +485,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -493,7 +493,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -509,7 +509,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -527,10 +527,10 @@
 		</node>
 		<node>
 			<name>pause_commentSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>pause_comment</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Comment</value>
@@ -549,7 +549,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -557,7 +557,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -573,7 +573,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -591,10 +591,10 @@
 		</node>
 		<node>
 			<name>resume_dateSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>resume_date</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Effective Date</value>
@@ -628,7 +628,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -636,7 +636,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -652,7 +652,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -670,10 +670,10 @@
 		</node>
 		<node>
 			<name>resume_commentSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>resume_comment</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Comment</value>
@@ -692,7 +692,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -700,7 +700,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -716,7 +716,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -734,10 +734,10 @@
 		</node>
 		<node>
 			<name>exit_dateSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>exit_date</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Date exited</value>
@@ -766,7 +766,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -774,7 +774,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -790,7 +790,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -808,7 +808,7 @@
 		</node>
 		<node>
 			<name>device_id</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Device ID</value>
@@ -833,7 +833,7 @@
 	</node>
 	<node>
 		<name>Demographics</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
 			<value>Demographics</value>
@@ -841,7 +841,7 @@
 		</property>
 		<node>
 			<name>year_of_birth</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Year of birth</value>
@@ -875,7 +875,7 @@
 		</node>
 		<node>
 			<name>sex</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Sex</value>
@@ -903,7 +903,7 @@
 			</property>
 			<node>
 				<name>Male</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Male</value>
@@ -917,7 +917,7 @@
 			</node>
 			<node>
 				<name>Female</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Female</value>
@@ -932,7 +932,7 @@
 		</node>
 		<node>
 			<name>race</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Race</value>
@@ -960,7 +960,7 @@
 			</property>
 			<node>
 				<name>American Indian - Alaskan Native - Native Canadian</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>American Indian / Alaskan Native / Native Canadian</value>
@@ -974,7 +974,7 @@
 			</node>
 			<node>
 				<name>Asian</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Asian</value>
@@ -988,7 +988,7 @@
 			</node>
 			<node>
 				<name>Black - African American - African</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Black / African American / African</value>
@@ -1002,7 +1002,7 @@
 			</node>
 			<node>
 				<name>Hispanic - Latino - Spanish</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Hispanic / Latino / Spanish</value>
@@ -1016,7 +1016,7 @@
 			</node>
 			<node>
 				<name>Middle Eastern - North African</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Middle Eastern / North African</value>
@@ -1030,7 +1030,7 @@
 			</node>
 			<node>
 				<name>Pacific Islander</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Pacific Islander</value>
@@ -1044,7 +1044,7 @@
 			</node>
 			<node>
 				<name>White</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>White</value>
@@ -1058,7 +1058,7 @@
 			</node>
 			<node>
 				<name>None of these fully describe me</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>None of these fully describe me</value>
@@ -1074,7 +1074,7 @@
 	</node>
 	<node>
 		<name>Physical assessments</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
 			<value>Physical assessments</value>
@@ -1082,7 +1082,7 @@
 		</property>
 		<node>
 			<name>height</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Height</value>
@@ -1111,7 +1111,7 @@
 		</node>
 		<node>
 			<name>weight</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Weight</value>
@@ -1140,7 +1140,7 @@
 		</node>
 		<node>
 			<name>waist_circumference</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Waist circumference</value>

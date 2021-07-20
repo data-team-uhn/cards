@@ -30,6 +30,8 @@ import AnswerComponentManager from "./AnswerComponentManager";
 import MultipleChoice from "./MultipleChoice";
 import VocabularyQuery from "../vocabQuery/VocabularyQuery.jsx";
 
+import NCRNote from "./NCRNote.jsx";
+
 // Component that renders a vocabulary question.
 //
 // Sample usage:
@@ -46,9 +48,9 @@ function VocabularyQuestion(props) {
   let { maxAnswers } = { ...questionDefinition, ...props };
 
   // In order to determine indentation levels, we need to see if there are any default suggestions
-  // (i.e. children of the definition that are of type lfs:AnswerOption)
+  // (i.e. children of the definition that are of type cards:AnswerOption)
   let defaults = props.defaults || Object.values(props.questionDefinition)
-    .filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption');
+    .filter(value => value['jcr:primaryType'] == 'cards:AnswerOption');
   let singleInput = maxAnswers === 1;
   let isBare = singleInput && defaults.length > 0;
 
@@ -67,7 +69,11 @@ function VocabularyQuestion(props) {
           clearOnClick: !singleInput,
           allowTermSelection: true
         }}
-        answerNodeType = "lfs:VocabularyAnswer"
+        answerNodeType = "cards:VocabularyAnswer"
+        noteComponent={NCRNote}
+        noteProps={{
+          vocabulary: questionDefinition.sourceVocabularies
+        }}
         {...props}
         />
     </Question>);

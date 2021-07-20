@@ -19,7 +19,7 @@
 
 <node>
 	<name>TissueMetrix</name>
-	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
+	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
 		<value>Tissue Metrix</value>
@@ -34,10 +34,10 @@
 	</property>
 	<node>
 		<name>subject_information_section</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
 			<name>donor_number</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Donor number</value>
@@ -56,7 +56,7 @@
 		</node>
 		<node>
 			<name>species</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Species</value>
@@ -74,7 +74,7 @@
 			</property>
 			<node>
 				<name>human</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Human</value>
@@ -88,7 +88,7 @@
 			</node>
 			<node>
 				<name>canide</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Canide</value>
@@ -102,7 +102,7 @@
 			</node>
 			<node>
 				<name>murine</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Murine</value>
@@ -117,7 +117,7 @@
 		</node>
 		<node>
 			<name>sex</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Sex</value>
@@ -140,7 +140,7 @@
 			</property>
 			<node>
 				<name>M</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Male</value>
@@ -154,7 +154,7 @@
 			</node>
 			<node>
 				<name>F</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Female</value>
@@ -168,7 +168,7 @@
 			</node>
 			<node>
 				<name>O</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Other</value>
@@ -182,7 +182,7 @@
 			</node>
 			<node>
 				<name>U</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Unknown</value>
@@ -197,7 +197,7 @@
 		</node>
 		<node>
 			<name>vital_status</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Life status</value>
@@ -215,7 +215,7 @@
 			</property>
 			<node>
 				<name>alive</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Alive</value>
@@ -229,7 +229,7 @@
 			</node>
 			<node>
 				<name>deceased</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Deceased</value>
@@ -244,7 +244,7 @@
 		</node>
 		<node>
 			<name>date_of_birth</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Date of birth</value>
@@ -268,10 +268,10 @@
 		</node>
 		<node>
 			<name>dod_section</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -279,7 +279,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -295,7 +295,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -307,7 +307,7 @@
 			</node>
 			<node>
 				<name>date_of_death</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Date of death</value>
@@ -332,7 +332,7 @@
 		</node>
 		<node>
 			<name>maternal_ethnicity</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Maternal ethnicity</value>
@@ -367,7 +367,7 @@
 			</property>
 			<node>
 				<name>vocabularyFilters</name>
-				<primaryNodeType>lfs:VocabularyFilterGroup</primaryNodeType>
+				<primaryNodeType>cards:VocabularyFilterGroup</primaryNodeType>
 				<property>
 					<name>HANCESTRO</name>
 					<values>
@@ -379,7 +379,7 @@
 		</node>
 		<node>
 			<name>paternal_ethnicity</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Paternal ethnicity</value>
@@ -414,7 +414,7 @@
 			</property>
 			<node>
 				<name>vocabularyFilters</name>
-				<primaryNodeType>lfs:VocabularyFilterGroup</primaryNodeType>
+				<primaryNodeType>cards:VocabularyFilterGroup</primaryNodeType>
 				<property>
 					<name>HANCESTRO</name>
 					<values>
@@ -426,7 +426,7 @@
 		</node>
 		<node>
 			<name>date_registered</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Date registered</value>
@@ -450,7 +450,7 @@
 		</node>
 		<node>
 			<name>last_fup</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Last follow-up</value>
@@ -474,7 +474,7 @@
 		</node>
 		<node>
 			<name>perinatal_history</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Perinatal history</value>
@@ -493,7 +493,7 @@
 		</node>
 		<node>
 			<name>reason_for_referral</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Reason for referral</value>
@@ -513,10 +513,10 @@
 	</node>
 	<node>
 		<name>diagnostics_section</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
 			<name>disease</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Disease</value>
@@ -551,7 +551,7 @@
 			</property>
 			<node>
 				<name>vocabularyFilters</name>
-				<primaryNodeType>lfs:VocabularyFilterGroup</primaryNodeType>
+				<primaryNodeType>cards:VocabularyFilterGroup</primaryNodeType>
 				<property>
 					<name>MONDO</name>
 					<values>
@@ -563,7 +563,7 @@
 		</node>
 		<node>
 			<name>disease_site</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Disease site</value>
@@ -598,7 +598,7 @@
 			</property>
 			<node>
 				<name>vocabularyFilters</name>
-				<primaryNodeType>lfs:VocabularyFilterGroup</primaryNodeType>
+				<primaryNodeType>cards:VocabularyFilterGroup</primaryNodeType>
 				<property>
 					<name>UBERON</name>
 					<values>
@@ -610,7 +610,7 @@
 		</node>
 		<node>
 			<name>tumor</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Tumor type</value>
@@ -619,7 +619,7 @@
 		</node>
 		<node>
 			<name>mutation_status</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Mutation status</value>
@@ -629,10 +629,10 @@
 	</node>
 	<node>
 		<name>data_section</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
 			<name>file1</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>File1</value>
@@ -646,7 +646,7 @@
 		</node>
 		<node>
 			<name>file2</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>File2</value>
@@ -660,7 +660,7 @@
 		</node>
 		<node>
 			<name>file3</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>File3</value>
@@ -674,7 +674,7 @@
 		</node>
 		<node>
 			<name>source1</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Source1</value>
@@ -688,7 +688,7 @@
 		</node>
 		<node>
 			<name>source2</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Source2</value>
@@ -702,7 +702,7 @@
 		</node>
 		<node>
 			<name>source3</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Source3</value>
@@ -717,10 +717,10 @@
 	</node>
 	<node>
 		<name>comments_section</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
 			<name>comments</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Comments</value>

@@ -19,7 +19,7 @@
 
 <node>
 	<name>QIVariables</name>
-	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
+	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
 		<value>QIVariables Data</value>
@@ -27,7 +27,7 @@
 	</property>
 	<node>
 		<name>patientid</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Patient ID</value>
@@ -51,7 +51,7 @@
 	</node>
 	<node>
 		<name>dob</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>DOB</value>
@@ -75,7 +75,7 @@
 	</node>
 	<node>
 		<name>gender</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Gender</value>
@@ -89,7 +89,7 @@
 	</node>
 	<node>
 		<name>ethnicity</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Ethnicity</value>
@@ -103,7 +103,7 @@
 	</node>
 	<node>
 		<name>race</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Race</value>
@@ -117,7 +117,7 @@
 	</node>
 	<node>
 		<name>fundcard</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Fundamental Cardiac Diagnosis</value>
@@ -131,7 +131,7 @@
 	</node>
 	<node>
 		<name>preterm</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Premature Birth</value>
@@ -145,7 +145,7 @@
 	</node>
 	<node>
 		<name>genetic diagnosis</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Genetic Diagnosis</value>
@@ -159,7 +159,7 @@
 	</node>
 	<node>
 		<name>docv</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Date of Cardiac visit</value>
@@ -183,7 +183,7 @@
 	</node>
 	<node>
 		<name>cardtype</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Type of  Cardiologist</value>
@@ -211,7 +211,7 @@
 		</property>
 		<node>
 			<name>general-outreach</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>general-outreach</value>
@@ -225,7 +225,7 @@
 		</node>
 		<node>
 			<name>noninvasiveimaging</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>noninvasive imaging</value>
@@ -239,7 +239,7 @@
 		</node>
 		<node>
 			<name>interventional-cath</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>interventional-cath</value>
@@ -253,7 +253,7 @@
 		</node>
 		<node>
 			<name>electrophysiology</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>electrophysiology</value>
@@ -267,7 +267,7 @@
 		</node>
 		<node>
 			<name>heartfailure-cardiomyopathy-hearttransplant</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>heart failure-cardiomyopathy-heart transplant</value>
@@ -281,7 +281,7 @@
 		</node>
 		<node>
 			<name>cardiacintensivecare</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>cardiac intensive care</value>
@@ -295,7 +295,7 @@
 		</node>
 		<node>
 			<name>preventative</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>preventative</value>
@@ -310,7 +310,7 @@
 	</node>
 	<node>
 		<name>insurance</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Insurance</value>
@@ -338,7 +338,7 @@
 		</property>
 		<node>
 			<name>self-pay</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>self-pay</value>
@@ -352,7 +352,7 @@
 		</node>
 		<node>
 			<name>commercial</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>commercial</value>
@@ -366,7 +366,7 @@
 		</node>
 		<node>
 			<name>Medicaid</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Medicaid</value>
@@ -381,7 +381,7 @@
 	</node>
 	<node>
 		<name>hrdoc</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>High risk documentation</value>
@@ -410,7 +410,7 @@
 	</node>
 	<node>
 		<name>referralnd</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Referal for ND assessment</value>
@@ -438,7 +438,7 @@
 		</property>
 		<node>
 			<name>yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>yes</value>
@@ -452,7 +452,7 @@
 		</node>
 		<node>
 			<name>no</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>no</value>
@@ -466,7 +466,7 @@
 		</node>
 		<node>
 			<name>unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>unknown</value>
@@ -481,7 +481,7 @@
 	</node>
 	<node>
 		<name>referalfrom</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Referal placed by which provider</value>
@@ -509,7 +509,7 @@
 		</property>
 		<node>
 			<name>cardiologyoutpatientclinic</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>cardiology outpatient clinic</value>
@@ -523,7 +523,7 @@
 		</node>
 		<node>
 			<name>unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>unknown</value>
@@ -537,7 +537,7 @@
 		</node>
 		<node>
 			<name>noreferralplaced</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>no referral placed</value>
@@ -552,7 +552,7 @@
 	</node>
 	<node>
 		<name>seennd</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Seen in ND clinic</value>
@@ -580,7 +580,7 @@
 		</property>
 		<node>
 			<name>yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>yes</value>
@@ -594,7 +594,7 @@
 		</node>
 		<node>
 			<name>no</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>no</value>
@@ -608,7 +608,7 @@
 		</node>
 		<node>
 			<name>unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>unknown</value>

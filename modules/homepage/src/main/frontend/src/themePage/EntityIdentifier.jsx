@@ -23,17 +23,17 @@ import { getTextHierarchy } from "../questionnaire/Subject.jsx";
 export function getEntityIdentifier(row) {
     switch (row["jcr:primaryType"]) {
       // form identifier should be displayed as "123 / 1 : quesionaire title" as one solid link to the form
-      case "lfs:Form":
+      case "cards:Form":
         let questionnaire = row.questionnaire?.title || row["@name"];
         let subjectHierarchy = row.subject ? getTextHierarchy(row.subject).concat(' : ') : '';
         return `${subjectHierarchy}${questionnaire}`;
         // subject id should include all parents if any (e.g. "1003 / 1 / a")
         // with one link on the whole id, leading to the last subject (e.g. a)
-      case "lfs:Subject":
+      case "cards:Subject":
         return getTextHierarchy(row);
-      case "lfs:Questionnaire":
+      case "cards:Questionnaire":
         return row.title;
-      case "lfs:SubjectType":
+      case "cards:SubjectType":
         return row.label;
       // default covers other cases
       default:

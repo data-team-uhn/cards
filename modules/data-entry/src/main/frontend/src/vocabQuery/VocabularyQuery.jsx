@@ -21,7 +21,7 @@ import React, { useRef, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 import { withStyles, ClickAwayListener, Grow, IconButton, Input, InputAdornment, InputLabel, FormControl, Typography } from "@material-ui/core"
-import { LinearProgress, MenuItem, MenuList, Paper, Popper } from "@material-ui/core";
+import { Divider, LinearProgress, MenuItem, MenuList, Paper, Popper } from "@material-ui/core";
 
 import Search from "@material-ui/icons/Search";
 import Info from "@material-ui/icons/Info";
@@ -31,7 +31,8 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 import QueryStyle from "./queryStyle.jsx";
 import { LABEL_POS, VALUE_POS } from "../questionnaire/Answer";
 
-const NO_RESULTS_TEXT = "No results";
+const NO_RESULTS_TEXT = "No results, use:";
+const NONE_OF_ABOVE_TEXT = "None of the above, use:";
 const MAX_RESULTS = 10;
 
 // Component that renders a search bar for vocabulary terms.
@@ -68,10 +69,10 @@ function VocabularyQuery(props) {
   // Checks whether path is listed in the default answer options in the question definition
   let isDefaultOption = (path) => {
     return Object.values(props.questionDefinition)
-          .find(value => value['jcr:primaryType'] == 'lfs:AnswerOption' && value.value === path)
+          .find(value => value['jcr:primaryType'] == 'cards:AnswerOption' && value.value === path)
   }
 
-  const [inputValue, setInputValue] = useState(maxAnswers === 1 && initialSelection?.length > 0 && !isDefaultOption(initialSelection[0][VALUE_POS]) ? initialSelection[0][LABEL_POS] : value);
+  const [inputValue, setInputValue] = useState(value);
   const [error, setError] = useState("");
 
   // Holds dropdown info buttons refs to be used as anchor elements by term infoBoxes
@@ -101,7 +102,8 @@ function VocabularyQuery(props) {
       inputRef={anchorEl}
       onKeyDown={(event) => {
         if (event.key == 'Enter') {
-          queryInput(anchorEl.current.value);
+          onChange && onChange(event);
+          closeAutocomplete(event);
           event.preventDefault();
         } else if (event.key == 'ArrowDown' || event.key == 'ArrowUp') {
           // Move the focus to the 1st or last item of suggestions list
@@ -149,11 +151,11 @@ function VocabularyQuery(props) {
     setSuggestions([]);
   }
 
-  let makeMultiRequest = (queue, input, status, prevData) => {
+  let makeMultiRequest = (queue, input, statuses, prevData) => {
     // Get vocabulary to search through
     var selectedVocab = queue.pop();
     if (selectedVocab === undefined) {
-      showSuggestions(status, {rows: prevData.slice(0, MAX_RESULTS)});
+      showSuggestions(statuses, {rows: prevData.slice(0, MAX_RESULTS)});
       return;
     }
     var url = new URL(`./${selectedVocab}.search.json`, REST_URL);
@@ -168,7 +170,8 @@ function VocabularyQuery(props) {
     }
 
     MakeRequest(url, (status, data) => {
-      makeMultiRequest(queue, input, status, prevData.concat(!status && data && data['rows'] ? data['rows'] : []));
+      statuses[selectedVocab] = status;
+      makeMultiRequest(queue, input, statuses, prevData.concat(!status && data && data['rows'] ? data['rows'] : []));
     });
   }
 
@@ -187,24 +190,23 @@ function VocabularyQuery(props) {
     //...Make a queue of vocabularies to search through
     setSuggestionsLoading(true);
     var vocabQueue = questionDefinition.sourceVocabularies.slice();
-    makeMultiRequest(vocabQueue, input, null, []);
+    makeMultiRequest(vocabQueue, input, {}, []);
   }
 
   // Callback for queryInput to populate the suggestions bar
-  let showSuggestions = (status, data) => {
+  let showSuggestions = (statuses, data) => {
     setSuggestionsLoading(false);
-
-    if (status && data["rows"]?.length == 0) {
-      setError("Cannot load answer suggestions for this question. Please inform your administrator.");
-      return;
-    }
 
     // Populate suggestions
     var suggestions = [];
+    var showUserEntry = true;
 
-    if (data["rows"].length > 0) {
+    if (data["rows"]?.length > 0) {
       data["rows"].forEach((element) => {
         var name = element["label"] || element["name"] || element["identifier"];
+        if (name == anchorEl.current.value) {
+          showUserEntry = false;
+        }
         suggestions.push(
           <MenuItem
             className={classes.dropdownItem}
@@ -234,17 +236,68 @@ function VocabularyQuery(props) {
           </MenuItem>
           );
       });
-    } else {
+    }
+
+    var allRequestsFailed = Object.keys(statuses).filter(vocab => !statuses[vocab]).length == 0;
+    var allRequestsSucceded = Object.keys(statuses).filter(vocab => statuses[vocab]).length == 0;
+
+    if (!allRequestsSucceded) {
+     suggestions.length > 0 && suggestions.push(<Divider key="error-divider"/>);
+      suggestions.push(
+        <MenuItem
+          className={classes.dropdownMessage}
+          key="error-message"
+          disabled={true}
+        >
+          <Typography
+            component="p"
+            variant="caption"
+            color="error"
+          >
+            { allRequestsFailed && "Answer suggestions cannot be loaded for this question. Please inform your administrator." }
+            { !allRequestsFailed && !allRequestsSucceded && "Some answer suggestions for this question could not be loaded. Please inform your administrator." }
+          </Typography>
+        </MenuItem>
+      );
+      Object.keys(statuses).filter(vocab => statuses[vocab]).map( vocab => {
+          console.error("Cannot load answer suggestions from " + vocab);
+        }
+      );
+    }
+
+    if (showUserEntry) {
+      suggestions.length > 0 && suggestions.push(<Divider key="divider"/>);
       suggestions.push(
         <MenuItem
           className={classes.dropdownItem}
           key={NO_RESULTS_TEXT}
-          onClick={onClick}
           disabled={true}
         >
-          {NO_RESULTS_TEXT}
+          <Typography
+            component="p"
+            className={classes.noResults}
+            variant="caption"
+          >
+            {data["rows"].length > 0 ? NONE_OF_ABOVE_TEXT : NO_RESULTS_TEXT}
+          </Typography>
         </MenuItem>
-      )
+      );
+
+      suggestions.push(
+        <MenuItem
+          className={classes.dropdownItem}
+          key={anchorEl.current.value}
+          onClick={(e) => {
+              if (e.target.localName === "li") {
+                onClick(anchorEl.current.value, anchorEl.current.value);
+                clearOnClick && setInputValue("");
+                closeSuggestions();
+              }}
+            }
+        >
+          {anchorEl.current.value}
+        </MenuItem>
+      );
     }
 
     setSuggestions(suggestions);
@@ -318,6 +371,7 @@ function VocabularyQuery(props) {
     // Alter our text to either the override ("Please select at most X options")
     // or empty it
     anchorEl.current.value = "";
+    anchorEl.current.blur();
   }
 
   return (

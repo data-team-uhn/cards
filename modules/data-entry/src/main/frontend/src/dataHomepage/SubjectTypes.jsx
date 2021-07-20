@@ -68,7 +68,7 @@ function SubjectTypes(props) {
       "format": (row) => (row.instanceCount ? <Link to={"/content.html/Subjects#" + row['@name']} title={"Show subjects of type " + row.label}>{row.instanceCount}</Link> : "0"),
     },
     {
-      "key": "lfs:defaultOrder",
+      "key": "cards:defaultOrder",
       "label": "Default Order",
       "format": "string",
     },

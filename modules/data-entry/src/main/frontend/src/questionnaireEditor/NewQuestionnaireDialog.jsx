@@ -41,7 +41,7 @@ function NewQuestionnaireDialog(props) {
     // Determine what questionnaires are available
     if (questionnaires.length === 0) {
       // Send a fetch request to determine the questionnaires available
-      fetch('/query?query=' + encodeURIComponent('select * from [lfs:Questionnaire]'))
+      fetch('/query?query=' + encodeURIComponent('select * from [cards:Questionnaire]'))
         .then((response) => response.ok ? response.json() : Promise.reject(response))
         .then((json) => {setQuestionnaires(json["rows"])})
         .finally(() => {setFetching(false)});
@@ -55,7 +55,7 @@ function NewQuestionnaireDialog(props) {
     // Make a POST request to create a new form, with a randomly generated UUID
     const URL = "/Questionnaires/" + uuidv4();
     var request_data = new FormData();
-    request_data.append('jcr:primaryType', 'lfs:Questionnaire');
+    request_data.append('jcr:primaryType', 'cards:Questionnaire');
     request_data.append('title', title);
     fetch( URL, { method: 'POST', body: request_data })
       .then( (response) => {

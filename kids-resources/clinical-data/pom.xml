@@ -21,7 +21,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>ca.sickkids.ccm.lfs</groupId>
+    <groupId>io.uhndata.cards</groupId>
     <artifactId>kids-resources</artifactId>
     <version>0.9-SNAPSHOT</version>
   </parent>
@@ -42,8 +42,8 @@
             <Include-Resource>{maven-resources},src/main/media</Include-Resource>
             <Sling-Initial-Content>
               SLING-INF/content/Questionnaires/;path:=/Questionnaires/;overwrite:=true;checkin:=true,
-              SLING-INF/content/libs/lfs/resources/;path:=/libs/lfs/resources/;overwrite:=true,
-              SLING-INF/content/libs/lfs/conf/;path:=/libs/lfs/conf/;overwrite:=false
+              SLING-INF/content/libs/cards/resources/;path:=/libs/cards/resources/;overwrite:=true,
+              SLING-INF/content/libs/cards/conf/;path:=/libs/cards/conf/;overwrite:=false
             </Sling-Initial-Content>
           </instructions>
         </configuration>

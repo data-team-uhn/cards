@@ -25,7 +25,7 @@ import os.path
 from os import path
 from distutils.dir_util import copy_tree
 
-package_name = 'lfs-aggregated-frontend'
+package_name = 'cards-aggregated-frontend'
 
 def merge_packache_json_files(modules_dir, project_to_name_map, package_json_file, base_dir):
     package_merged = {}

@@ -21,14 +21,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>ca.sickkids.ccm.lfs</groupId>
-    <artifactId>lfs-modules</artifactId>
+    <groupId>io.uhndata.cards</groupId>
+    <artifactId>cards-modules</artifactId>
     <version>0.9-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs-commons</artifactId>
+  <artifactId>cards-commons</artifactId>
   <packaging>bundle</packaging>
-  <name>LFS - Common frontend resources</name>
+  <name>CARDS - Common frontend resources</name>
 
   <build>
     <plugins>
@@ -41,7 +41,7 @@
           <instructions>
             <!-- Initial content to be loaded on bundle installation -->
             <Sling-Initial-Content>
-              SLING-INF/content/libs/lfs/Resource/;path:=/libs/lfs/Resource/;overwrite:=true,
+              SLING-INF/content/libs/cards/Resource/;path:=/libs/cards/Resource/;overwrite:=true,
               SLING-INF/content/libs/sling/servlet/errorhandler/;path:=/libs/sling/servlet/errorhandler/;overwrite:=true,
               SLING-INF/content/ROOT/;path:=/;overwrite:=true
             </Sling-Initial-Content>

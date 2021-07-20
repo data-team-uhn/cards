@@ -1,12 +1,12 @@
 {
   "license": "Apache-2.0", 
-  "name": "lfs-commons", 
+  "name": "cards-commons", 
   "repository": {
-    "url": "https://github.com/ccmbioinfo/lfs.git", 
+    "url": "https://github.com/data-team-uhn/cards.git",
     "directory": "modules/commons/src/main/frontend",
     "type": "git"
   }, 
-  "author": "SickKids", 
+  "author": "UHN DATA", 
   "babel": {
     "presets": [
       "@babel/preset-env", 
@@ -47,5 +47,5 @@
   "resolutions": {
     "@babel/runtime": "^7.12.5"
   }, 
-  "description": "Common LFS modules"
+  "description": "Common CARDS modules"
 }

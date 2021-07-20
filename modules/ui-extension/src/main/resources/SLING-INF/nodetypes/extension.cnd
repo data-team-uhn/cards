@@ -18,14 +18,14 @@
 //
 
 <sling = 'http://sling.apache.org/jcr/sling/1.0'>
-<lfs = 'https://lfs.ccm.sickkids.ca/'>
+<cards = 'https://cards.uhndata.io/'>
 
 //-----------------------------------------------------------------------------
 //
 // A User Interface Extension Point (UIXP) defines a place in the UI that accepts extensions
 //
 //-----------------------------------------------------------------------------
-[lfs:ExtensionPoint] > nt:base, sling:Resource, mix:referenceable
+[cards:ExtensionPoint] > nt:base, sling:Resource, mix:referenceable
 
   // Attributes
 
@@ -35,16 +35,16 @@
   // Properties
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/ExtensionPoint" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/ExtensionPoint" mandatory autocreated protected
 
   // Hardcode the resource supertype: each UIXP is a resource.
-  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // The identifier of this UIXP, which will be referenced by UIX
-  - lfs:extensionPointId (STRING) mandatory
+  - cards:extensionPointId (STRING) mandatory
 
   // A more user-friendly name for this UIXP
-  - lfs:extensionPointName (STRING) mandatory
+  - cards:extensionPointName (STRING) mandatory
 
   // And any other properties
   - * (undefined) multiple
@@ -55,7 +55,7 @@
 // A User Interface Extension (UIX) defines content that can be automatically placed in a UIXP
 //
 //-----------------------------------------------------------------------------
-[lfs:Extension] > nt:base, sling:Resource, mix:referenceable
+[cards:Extension] > nt:base, sling:Resource, mix:referenceable
 
   // Attributes
 
@@ -65,37 +65,37 @@
   // Properties:
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/Extension" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/Extension" mandatory autocreated protected
 
   // Hardcode the resource supertype: each extension is a resource.
-  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // The ID of the extension point targeted by this extension
-  - lfs:extensionPointId (STRING) mandatory
+  - cards:extensionPointId (STRING) mandatory
 
   // The URL to the script that can render this extension
-  - lfs:extensionRenderURL (STRING)
+  - cards:extensionRenderURL (STRING)
 
   // The (optional) URL that this extension is targeting, for links and views
-  - lfs:targetURL (STRING)
+  - cards:targetURL (STRING)
 
   // Whether the target URL should be matched exactly for Views
-  - lfs:exactURLMatch (BOOLEAN)
+  - cards:exactURLMatch (BOOLEAN)
 
   // The name of the extension
-  - lfs:extensionName (STRING) mandatory
+  - cards:extensionName (STRING) mandatory
 
   // Optional icon associated with this extension
-  - lfs:icon (STRING)
+  - cards:icon (STRING)
 
   // The order that this should appear in the list of extensions in the extension point
-  - lfs:defaultOrder (LONG) = "0" mandatory autocreated
+  - cards:defaultOrder (LONG) = "0" mandatory autocreated
 
   // Whether this extension is disabled or not by default
-  - lfs:defaultDisabled (BOOLEAN) = "false" mandatory autocreated
+  - cards:defaultDisabled (BOOLEAN) = "false" mandatory autocreated
 
   // Optional short description of the extension's content
-  - lfs:hint (STRING)
+  - cards:hint (STRING)
 
   // And any other properties
   - * (undefined) multiple
@@ -106,7 +106,7 @@
 // A UIXP Finder locates extension points based on their ID
 //
 //-----------------------------------------------------------------------------
-[lfs:ExtensionPointFinder] > sling:Resource
+[cards:ExtensionPointFinder] > sling:Resource
 
   // Attributes
 
@@ -116,7 +116,7 @@
   // Properties
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "lfs/ExtensionPointFinder" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/ExtensionPointFinder" mandatory autocreated protected
 
   // Hardcode the resource supertype: each UIXP is a resource.
-  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected

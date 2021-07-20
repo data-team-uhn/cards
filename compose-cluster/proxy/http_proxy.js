@@ -18,7 +18,7 @@
 const SERVER_PORT = 8600;
 const CLIENT_PORT = 5000;
 const CLIENT_HOSTNAME = 'neuralcr';
-const AUTH_URL = 'http://lfsinitial:8080/system/sling/info.sessionInfo.json';
+const AUTH_URL = 'http://cardsinitial:8080/system/sling/info.sessionInfo.json';
 
 const http = require('http');
 const fetch = require('node-fetch');

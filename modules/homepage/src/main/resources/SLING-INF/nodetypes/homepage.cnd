@@ -18,7 +18,7 @@
 //
 
 <sling = 'http://sling.apache.org/jcr/sling/1.0'>
-<lfs = 'https://lfs.ccm.sickkids.ca/'>
+<cards = 'https://cards.uhndata.io/'>
 
 //-----------------------------------------------------------------------------
 //
@@ -28,15 +28,15 @@
 
 //-----------------------------------------------------------------------------
 // Simple nodetype for identifying the homepage.
-[lfs:Homepage] > sling:Folder
+[cards:Homepage] > sling:Folder
   // Attributes:
   // We can use the homepage in a query
   query
 
   // Properties:
   // Hardcode the resource type
-  - sling:resourceType (STRING) = "lfs/Homepage" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/Homepage" mandatory autocreated protected
   // Hardcode the resource supertype: the Homepage is a resource
-  - sling:resourceSuperType (STRING) = "lfs/Resource" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
   // Set a default title
   - title (String) = "${platform.name}" mandatory autocreated

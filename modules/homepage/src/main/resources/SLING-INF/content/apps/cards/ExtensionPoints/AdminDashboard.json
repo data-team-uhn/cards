@@ -1,0 +1,5 @@
+{
+  "jcr:primaryType": "cards:ExtensionPoint",
+  "cards:extensionPointId": "cards/coreUI/admindashboard/entry",
+  "cards:extensionPointName": "Entries for the admin dashboard"
+}

@@ -46,7 +46,7 @@ const Sidebar = ({ ...props }) => {
 
   var buildSidebar = (extensions) => {
     let result = extensions.slice()
-      .sort((a, b) => a["lfs:defaultOrder"] - b["lfs:defaultOrder"]);
+      .sort((a, b) => a["cards:defaultOrder"] - b["cards:defaultOrder"]);
     setEntries(result);
   };
 
@@ -59,11 +59,11 @@ const Sidebar = ({ ...props }) => {
     const listItemFont = classNames({
       [" " + classes.whiteFont]: activeStyle
     });
-    const EntryIcon = entry["lfs:icon"];
+    const EntryIcon = entry["cards:icon"];
 
     return (
       <NavLink
-        to={entry["lfs:targetURL"]}
+        to={entry["cards:targetURL"]}
         className={classes.item}
         activeClassName="active"
         key={key}
@@ -73,7 +73,7 @@ const Sidebar = ({ ...props }) => {
               className={classNames(classes.itemIcon, listItemFont)}
             />
           <ListItemText
-            primary={entry["lfs:extensionName"]}
+            primary={entry["cards:extensionName"]}
             className={classNames(classes.itemText, listItemFont)}
             disableTypography={true}
           />
@@ -93,9 +93,9 @@ const Sidebar = ({ ...props }) => {
           <ListItemText primary="&nbsp;" className={classNames(classes.itemText, classes.skeletonText)}/>
         </ListItem>
         ))
-      : entries.filter(entry => !_isAdministrativeButton(entry["lfs:defaultOrder"]))
+      : entries.filter(entry => !_isAdministrativeButton(entry["cards:defaultOrder"]))
           .map((entry, key) => {
-            return(generateListItem(entry, key, isRouteActive(entry["lfs:targetURL"])));
+            return(generateListItem(entry, key, isRouteActive(entry["cards:targetURL"])));
           })}
     </List>
   );
@@ -103,9 +103,9 @@ const Sidebar = ({ ...props }) => {
   var adminLinks = (
     <List className={classes.adminSidebar}>
       {loading ? <></>
-      : entries.filter(entry => _isAdministrativeButton(entry["lfs:defaultOrder"]))
+      : entries.filter(entry => _isAdministrativeButton(entry["cards:defaultOrder"]))
           .map((entry, key) => {
-            const isActive = isRouteActive(entry["lfs:targetURL"]);
+            const isActive = isRouteActive(entry["cards:targetURL"]);
             return(generateListItem(entry, key, isActive));
           })}
       <div className={classes.appInfo}>

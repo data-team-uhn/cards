@@ -37,6 +37,7 @@ import SubjectFilter from "./FilterComponents/SubjectFilter.jsx";
 import QuestionnaireFilter from "./FilterComponents/QuestionnaireFilter.jsx";
 import { UNARY_COMPARATORS } from "./FilterComponents/FilterComparators.jsx";
 
+const ALL_QUESTIONNAIRES_URL = "/Questionnaires.deep.json";
 const FILTER_URL = "/Questionnaires.filters";
 
 function Filters(props) {
@@ -81,36 +82,94 @@ function Filters(props) {
   }
 
   // Obtain information about the filters that can be applied
-  let grabFilters = (urlBase) => {
+  let grabFilters = () => {
     setFilterRequestSent(true);
-    let url = new URL(urlBase, window.location.origin);
+    let url;
 
-    // Add information about the questionnaire, if we have any
     if (questionnaire) {
+      // Setting the questionnaire prop will go through the fitler servlet (FilterServlet.java)
+      url = new URL(FILTER_URL, window.location.origin);
       url.searchParams.set("questionnaire", questionnaire);
+      fetchWithReLogin(globalLoginDisplay, url)
+        .then((response) => response.ok ? response.json() : Promise.reject(response))
+        .then(parseFilterData)
+        .catch(setError);
+    } else {
+      // Otherwise, we need a structured output -- go through all Questionnaires.deep.json instead
+      url = new URL(ALL_QUESTIONNAIRES_URL, window.location.origin);
+      fetchWithReLogin(globalLoginDisplay, url)
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then(parseQuestionnaireData)
+      .catch(setError);
+    }
+  }
+
+  // Parse the response from examining every questionnaire
+  let parseQuestionnaireData = (questionnaireJson) => {
+    // newFilterableFields is a list of fields that can be filtered on
+    // It is a list of either strings (for options) or recursive lists
+    // Each recursive list must have a string for its 0th option, which
+    // is taken to be its title
+    let newFilterableFields = ["Questionnaire", "Subject", "CreatedDate"];
+    // newFilterableUUIDs is a mapping from a string in newFilterableFields to a jcr:uuid
+    let newFilterableUUIDs = {Questionnaire: "cards:Questionnaire", Subject: "cards:Subject", CreatedDate: "cards:CreatedDate"};
+    // newFilterableTitles is a mapping from a string in newFilterableFields to a human-readable title
+    let newFilterableTitles = {Questionnaire: "Questionnaire", Subject: "Subject", CreatedDate: "Created Date"};
+    // newQuestionDefinitions is normally the straight input from FilterServlet.java
+    // Instead, we need to reconstruct this client-side
+    let newQuestionDefinitions = {Questionnaire: {dataType: "questionnaire"}, Subject: {dataType: "subject"}}
+
+    // We'll need a helper recursive function to copy over data from sections/questions
+    let parseSectionOrQuestionnaire = (sectionJson, path="") => {
+      let retFields = [];
+      for (let [title, object] of Object.entries(sectionJson)) {
+        // We only care about children that are cards:Questions or cards:Sections
+        if (object["jcr:primaryType"] == "cards:Question") {
+          // If this is an cards:Question, copy the entire thing over to our Json value
+          retFields.push(path+title);
+          // Also save the human-readable name, UUID, and data type
+          newQuestionDefinitions[path+title] = object;
+          newFilterableUUIDs[path+title] = object["jcr:uuid"];
+          newFilterableTitles[path+title] = object["text"];
+        } else if (object["jcr:primaryType"] == "cards:Section") {
+          // If this is an cards:Section, recurse deeper
+          retFields.push(...parseSectionOrQuestionnaire(object, path+title+"/"));
+        }
+        // Otherwise, we don't care about this value
+      }
+
+      return retFields;
     }
 
-    fetchWithReLogin(globalLoginDisplay, url)
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then(parseFilterData)
-      .catch(setError);
+    // From the questionnaire homepage, we're looking for children that are objects of type cards:Questionnaire
+    for (let [title, thisQuestionnaire] of Object.entries(questionnaireJson)) {
+      if (thisQuestionnaire["jcr:primaryType"] != "cards:Questionnaire") {
+        continue;
+      }
+
+      newFilterableFields.push([title, ...parseSectionOrQuestionnaire(thisQuestionnaire)]);
+    }
+
+    newQuestionDefinitions["Subject"] = {
+      dataType: "subject"
+    };
+    newQuestionDefinitions["CreatedDate"] = {
+      dataType: "createddate"
+    };
+
+    // We also need a filter over the subject
+    setFilterableFields(newFilterableFields);
+    setQuestionDefinitions(newQuestionDefinitions);
+    setFilterableTitles(newFilterableTitles);
+    setFilterableUUIDs(newFilterableUUIDs);
   }
 
   // Parse the response from our FilterServlet
   let parseFilterData = (filterJson) => {
     // Parse through, but keep a custom field for the subject
-    let fields = ["Subject"];
-    let uuids = {Subject: "lfs:Subject"};
-    let titles = {Subject: "Subject"};
-    if (!questionnaire) {
-      // keep a custom field for the questionnaire
-      fields.push("Questionnaire");
-      uuids["Questionnaire"] = "lfs:Questionnaire";
-      titles["Questionnaire"] = "Questionnaire";
-    }
-    fields.push("CreatedDate");
-    uuids["CreatedDate"] = "lfs:CreatedDate"
-    titles["CreatedDate"] = "Created Date"
+    let fields = ["Subject", "CreatedDate"];
+    let uuids = {Subject: "cards:Subject", CreatedDate: "cards:CreatedDate"};
+    let titles = {Subject: "Subject", CreatedDate: "Created Date"};
     for (let [questionName, question] of Object.entries(filterJson)) {
       // For each question, save the name, data type, and answers (if necessary)
       fields.push(questionName);
@@ -120,11 +179,6 @@ function Filters(props) {
     filterJson["Subject"] = {
       dataType: "subject"
     };
-    if (!questionnaire) {
-      filterJson["Questionnaire"] = {
-        dataType: "questionnaire"
-      };
-    }
     filterJson["CreatedDate"] = {
       dataType: "createddate"
     };
@@ -188,7 +242,7 @@ function Filters(props) {
 
     // What filters are we looking at here?
     if (!filterRequestSent) {
-      grabFilters(FILTER_URL);
+      grabFilters();
     }
   }
 
@@ -199,6 +253,7 @@ function Filters(props) {
 
   // Handle the user changing one of the active filter categories
   let handleChangeFilter = (index, event) => {
+    
     // Load up the comparators for this index, if not already loaded
     let [loadedComparators, component] = getOutputChoices(event.target.value);
 
@@ -317,6 +372,21 @@ function Filters(props) {
         />);
   }
 
+  // From an array of fields, turn it into a react component
+  let GetReactComponentFromFields = (fields, nested=false) => {
+    return fields.map((path) => {
+      if (typeof path == "string") {
+        // Straight strings are MenuItems
+        return <MenuItem value={path} key={path} className={classes.categoryOption + (nested ? " " + classes.nestedSelectOption : "")}>{filterableTitles[path]}</MenuItem>
+      } else if (Array.isArray(path)) {
+        // Arrays represent Questionnaires of Sections
+        // which we'll need to turn into opt groups
+        return [<MenuItem className={classes.categoryHeader} disabled>{path[0]}</MenuItem>,
+          GetReactComponentFromFields(path.slice(1), true)];
+      }
+    })
+  }
+
   return(
     <div className={classes.filterContainer}>
       {/* Place the stuff in one row on the top */}
@@ -409,9 +479,7 @@ function Filters(props) {
                         <MenuItem value="" disabled>
                           <span className={classes.selectPlaceholder}>Add new filter...</span>
                         </MenuItem>
-                        {(filterableFields.map( (name) =>
-                            <MenuItem value={name} key={name} className={classes.categoryOption}>{filterableTitles[name]}</MenuItem>
-                        ))}
+                        {GetReactComponentFromFields(filterableFields)}
                     </Select>
                   </Grid>
                   {/* Depending on whether or not the comparator chosen is unary, the size can change */}

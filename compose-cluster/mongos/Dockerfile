@@ -17,7 +17,7 @@
 
 FROM mongo:4.2-bionic
 
-#Need netcat to signal LFS to start
+#Need netcat to signal CARDS to start
 RUN apt-get update
 RUN apt-get install -y netcat-traditional
 

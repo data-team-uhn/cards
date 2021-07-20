@@ -59,7 +59,7 @@ done
   db.settings.save( {_id : "chunksize", value: 1 } );
 EOF
 
-#LFS (Apache Sling) is now allowed to start
+#CARDS (Apache Sling) is now allowed to start
 nc -l -p 9999 -q 0
 
 #Prevent script from exiting

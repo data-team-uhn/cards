@@ -20,15 +20,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>ca.sickkids.ccm.lfs</groupId>
-    <artifactId>lfs-parent</artifactId>
+    <groupId>io.uhndata.cards</groupId>
+    <artifactId>cards-parent</artifactId>
     <version>0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs-integration-tests</artifactId>
+  <artifactId>cards-integration-tests</artifactId>
   <packaging>slingstart</packaging>
-  <name>LFS integration tests</name>
-  <description>Tests on the full LFS distribution.</description>
+  <name>CARDS integration tests</name>
+  <description>Tests on the full CARDS distribution.</description>
 
   <properties>
     <test.host>localhost</test.host>
@@ -77,8 +77,8 @@
         <!-- As a slingstart module, the server will be built by default, so no specific execution needs to be declared for that. Here we just customize the package. -->
         <configuration>
           <!--
-              We're adding the LFS distribution here as a model fragment instead of in a provisioning file because of the way the version is handled.
-              If we just specify ca.sickkids.ccm.lfs/lfs//slingstart in a provisioning file, which means "use the version defined in the pom",
+              We're adding the CARDS distribution here as a model fragment instead of in a provisioning file because of the way the version is handled.
+              If we just specify io.uhndata.cards/cards//slingstart in a provisioning file, which means "use the version defined in the pom",
               due to a bug in the slingstart-maven-plugin the dependency itself will be included as well in the final jar, which will be invalid.
               If, instead, we specify a specific version, then that is duplication and will cause issues during the release.
               The ideal solution is to specify ${project.version}, which is the recommended Maven way of referencing modules sharing the same version,
@@ -86,9 +86,9 @@
               The inline model fragment in the pom file will be interpolated with Maven variables, so we can use ${project.version} as the dependency version.
           -->
           <model>
-            [feature name="lfs-distribution"]
+            [feature name="cards-distribution"]
             [artifacts]
-            ca.sickkids.ccm.lfs/lfs/${project.version}/slingstart
+            io.uhndata.cards/cards/${project.version}/slingstart
           </model>
           <setFeatureVersions>false</setFeatureVersions>
           <usePomDependencies>true</usePomDependencies>

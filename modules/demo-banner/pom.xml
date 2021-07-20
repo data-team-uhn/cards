@@ -19,14 +19,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>ca.sickkids.ccm.lfs</groupId>
-    <artifactId>lfs-modules</artifactId>
+    <groupId>io.uhndata.cards</groupId>
+    <artifactId>cards-modules</artifactId>
     <version>0.9-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs-modules-demo-banner</artifactId>
+  <artifactId>cards-modules-demo-banner</artifactId>
   <packaging>bundle</packaging>
-  <name>LFS - Demo Banner</name>
+  <name>CARDS - Demo Banner</name>
 
   <build>
     <plugins>

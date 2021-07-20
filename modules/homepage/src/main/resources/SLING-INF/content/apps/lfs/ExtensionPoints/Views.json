@@ -1,5 +1,0 @@
-{
-    "jcr:primaryType": "lfs:ExtensionPoint",
-    "lfs:extensionPointId": "lfs/coreUI/view",
-    "lfs:extensionPointName": "Main views that can be displayed in the browser"
-}

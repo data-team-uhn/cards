@@ -56,6 +56,7 @@ import DeleteButton from "../dataHomepage/DeleteButton";
 import MainActionButton from "../components/MainActionButton.jsx";
 import FormPagination from "./FormPagination";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
+import MDEditor from '@uiw/react-md-editor';
 
 class Page {
   constructor(visible) {
@@ -418,6 +419,9 @@ function Form (props) {
                   </List>
                 </Popover>
             </div>
+          </Typography>
+          <Typography variant="subtitle1" color="textSecondary">
+            <MDEditor.Markdown className={classes.markdown} source={data?.questionnaire?.description} />
           </Typography>
           <Breadcrumbs separator="·">
           {

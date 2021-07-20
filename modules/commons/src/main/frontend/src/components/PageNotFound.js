@@ -58,7 +58,7 @@ export default function PageNotFound() {
           className={classes.notFoundContainer}
         >
           <Grid item>
-            <img src="/libs/lfs/resources/logo_light_bg.png" alt="this.state.title" className={classes.logo}/>
+            <img src="/libs/cards/resources/logo_light_bg.png" alt="this.state.title" className={classes.logo}/>
           </Grid>
           <Grid item>
             <Typography variant="h1" color="primary">

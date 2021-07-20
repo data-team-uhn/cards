@@ -36,7 +36,7 @@ function AppInfo (props) {
           by
           <Tooltip title="DATA Team @ UHN">
             <a href="https://uhndata.io/" target="_blank">
-              <img src="/libs/lfs/resources/data-logo.png" width="80" alt="DATA" />
+              <img src="/libs/cards/resources/data-logo.png" width="80" alt="DATA" />
             </a>
           </Tooltip>
         </Typography>

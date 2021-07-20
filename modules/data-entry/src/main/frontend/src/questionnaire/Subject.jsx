@@ -28,7 +28,6 @@ import { QUESTION_TYPES, SECTION_TYPES, ENTRY_TYPES } from "./FormEntry.jsx";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import MaterialTable, { MTablePagination } from 'material-table';
-import MDEditor from '@uiw/react-md-editor';
 
 import {
   Avatar,
@@ -145,7 +144,7 @@ function Subject(props) {
         New form for this Subject
       </NewFormDialog>
       <Grid container spacing={4} direction="column" className={classes.subjectContainer}>
-        <SubjectHeader id={currentSubjectId} key={"SubjectHeader"}  classes={classes} getSubject={handleSubject}/>
+        <SubjectHeader id={currentSubjectId} key={"SubjectHeader"}  classes={classes} getSubject={handleSubject} history={history}/>
         {
           <Tabs value={activeTab} onChange={(event, value) => {
             setTab(value);
@@ -199,11 +198,7 @@ function SubjectContainer(props) {
     setError(response);
   };
 
-  if (deleted) {
-    return null;
-  }
-
-  let check_url = createQueryURL(` WHERE n.'parents'='${subject?.['jcr:uuid']}' order by n.'jcr:created'`, "lfs:Subject");
+  let check_url = createQueryURL(` WHERE n.'parents'='${subject?.['jcr:uuid']}' order by n.'jcr:created'`, "cards:Subject");
   let fetchRelated = () => {
     fetchWithReLogin(globalLoginDisplay, check_url)
     .then((response) => response.ok ? response.json() : Promise.reject(response))
@@ -219,6 +214,10 @@ function SubjectContainer(props) {
       setRelatedSubjects(null);
     }
   }, [subject]);
+
+  if (deleted) {
+    return null;
+  }
 
   // If the data has not yet been fetched, return an in-progress symbol
   if (!subject) {
@@ -261,13 +260,11 @@ function SubjectContainer(props) {
  * Component that displays the header for the selected subject and its SubjectType
  */
 function SubjectHeader(props) {
-  let { id, classes, getSubject } = props;
+  let { id, classes, getSubject, history } = props;
   // This holds the full form JSON, once it is received from the server
   let [ subject, setSubject ] = useState(null);
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
-  // whether the subject has been deleted
-  let [ deleted, setDeleted ] = useState();
 
   let globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -294,16 +291,18 @@ function SubjectHeader(props) {
     setSubject({});  // Prevent an infinite loop if data was not set
   };
 
+  // When the top-level subject is deleted, redirect to its parent if it has one, otherwise to the Subjects page
+  let handleDeletion = () => {
+    let nodeName = id.substring(id.lastIndexOf("/") + 1);
+    let parentNodePath = location.pathname.substring(0, location.pathname.lastIndexOf("/" + nodeName));
+    let hasParentSubject = (id.indexOf("/") > 0);
+    history.push(parentNodePath + (hasParentSubject ? (location.search + location.hash) : ""));
+  }
+
   // Fetch this Subject's data
   useEffect(() => {
-    if (!deleted) {
-      fetchSubjectData();
-    }
+    fetchSubjectData();
   }, [id]);
-
-  if (deleted) {
-    return null;
-  }
 
   if (!subject?.data) {
     return (
@@ -329,8 +328,7 @@ function SubjectHeader(props) {
                  entryPath={path}
                  entryName={title}
                  entryType={label}
-                 shouldGoBack={true}
-                 onComplete={() => setDeleted(true)}
+                 onComplete={handleDeletion}
                  buttonClass={classes.subjectHeaderButton}
                  size={"large"}
                />
@@ -393,13 +391,6 @@ function SubjectMemberInternal (props) {
     return word[0].toUpperCase() + word.slice(1).toLowerCase();
   }
 
-  // When the main subject is deleted, if they're our top-level patient we'll redirect to Dashboard
-  let handleDeletion = () => {
-    if (level === 0) {
-      history.push("/");
-    }
-    onDelete();
-  }
 
   // Fetch table data for all forms related to a Subject
   useEffect(() => {
@@ -431,9 +422,8 @@ function SubjectMemberInternal (props) {
                  entryPath={path}
                  entryName={title}
                  entryType={label}
-                 onComplete={handleDeletion}
-                 buttonClass={level === 0 ? classes.subjectHeaderButton : classes.childSubjectHeaderButton}
-                 size={level === 0 ? "large" : null}
+                 onComplete={onDelete}
+                 buttonClass={classes.childSubjectHeaderButton}
                />
 
   return ( data &&
@@ -457,9 +447,6 @@ function SubjectMemberInternal (props) {
           Object.keys(subjectGroups).map( (questionnaireTitle, j) => {
             return(<Grid item key={questionnaireTitle}>
               <Typography variant="h6">{questionnaireTitle}</Typography>
-              <Typography variant="subtitle1" color="textSecondary">
-                <MDEditor.Markdown className={classes.markdown} source={subjectGroups[questionnaireTitle]?.[0]?.questionnaire?.description} />
-              </Typography>
               <MaterialTable
                 data={subjectGroups[questionnaireTitle]}
                 style={{ boxShadow : 'none' }}
@@ -611,7 +598,7 @@ function FormData(props) {
 // Display the questions/question found within sections
 export function displayQuestion(entryDefinition, data, key, classes) {
   const existingQuestionAnswer = data && Object.entries(data)
-    .find(([key, value]) => value["sling:resourceSuperType"] == "lfs/Answer"
+    .find(([key, value]) => value["sling:resourceSuperType"] == "cards/Answer"
       && value["question"]["jcr:uuid"] === entryDefinition["jcr:uuid"]);
 
   // question title, to be used when 'previewing' the form
@@ -680,7 +667,7 @@ export function handleDisplay(entryDefinition, data, key, handleDisplayQuestion)
       }
 
       let currentAnswers = Object.entries(data)
-        .filter(([key, value]) => value["sling:resourceType"] == "lfs/AnswerSection"
+        .filter(([key, value]) => value["sling:resourceType"] == "cards/AnswerSection"
                                && value["section"]["@name"] == entryDefinition["@name"])[0];
       currentAnswers = currentAnswers ? currentAnswers[1] : "";
       return Object.entries(currentSection)

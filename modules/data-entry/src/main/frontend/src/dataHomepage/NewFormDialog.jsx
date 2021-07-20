@@ -88,7 +88,7 @@ function NewFormDialog(props) {
     // Make a POST request to create a new form, with a randomly generated UUID
     const URL = "/Forms/" + uuidv4();
     var request_data = new FormData();
-    request_data.append('jcr:primaryType', 'lfs:Form');
+    request_data.append('jcr:primaryType', 'cards:Form');
     request_data.append('questionnaire', selectedQuestionnaire["@path"]);
     request_data.append('questionnaire@TypeHint', 'Reference');
     request_data.append('subject', subject);
@@ -123,7 +123,7 @@ function NewFormDialog(props) {
 
   let fetchQuestionnaire = (questionnaireName) => {
     // Send a fetch request to determine the subjects available for the specified questionnaire
-    let query = `select * from [lfs:Questionnaire] as n where name()='${questionnaireName}'`;
+    let query = `select * from [cards:Questionnaire] as n where name()='${questionnaireName}'`;
     fetchWithReLogin(globalLoginDisplay, '/query?query=' + encodeURIComponent(query))
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
@@ -214,7 +214,7 @@ function NewFormDialog(props) {
 
   // get all the forms related to the selectedSubject, saved in the `relatedForms` state
   let filterQuestionnaire = () => {
-    fetchWithReLogin(globalLoginDisplay, `/query?query=SELECT distinct q.* FROM [lfs:Questionnaire] AS q inner join [lfs:Form] as f on f.'questionnaire'=q.'jcr:uuid' where f.'subject'='${(currentSubject || selectedSubject)?.['jcr:uuid']}'`)
+    fetchWithReLogin(globalLoginDisplay, `/query?query=SELECT distinct q.* FROM [cards:Questionnaire] AS q inner join [cards:Form] as f on f.'questionnaire'=q.'jcr:uuid' where f.'subject'='${(currentSubject || selectedSubject)?.['jcr:uuid']}'`)
     .then((response) => response.ok ? response.json() : Promise.reject(response))
     .then((response) => {
       setRelatedForms(response.rows);
@@ -297,7 +297,7 @@ function NewFormDialog(props) {
                 isLoading={isFetching}
                 data={query => {
                   let url = new URL("/query", window.location.origin);
-                  let sql = `select * from [lfs:Questionnaire] as n `;
+                  let sql = `select * from [cards:Questionnaire] as n `;
                   let conditions = [];
                   if (query.search) {
                     conditions.push(`CONTAINS(n.'title', '*${query.search}*')`);
@@ -311,7 +311,7 @@ function NewFormDialog(props) {
                     let acceptableSubjectTypes = [" IS NULL", `='${currentSubject["type"]["jcr:uuid"]}'`];
 
                     let findProgeny = (subjectType) => {
-                      let progeny = Object.values(subjectType)?.filter((property) => property["jcr:primaryType"] === "lfs:SubjectType");
+                      let progeny = Object.values(subjectType)?.filter((property) => property["jcr:primaryType"] === "cards:SubjectType");
                       let retVal = [].concat.apply([], progeny.map(subject => findProgeny(subject)));
                       retVal.push(subjectType);
                       return retVal;

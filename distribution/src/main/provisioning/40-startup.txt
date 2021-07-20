@@ -63,6 +63,6 @@
     service.ranking=I"2147483647"
     osgi.http.whiteboard.context.select="(osgi.http.whiteboard.context.name\=*)"
     osgi.http.whiteboard.filter.regex="(?!/system/).*"
-    responseTextFor503="classpath:ca.sickkids.ccm.lfs.startup-customization:custom_index.html"
+    responseTextFor503="classpath:io.uhndata.cards.startup-customization:custom_index.html"
     autoDisableFilter=B"true"
     avoid404DuringStartup=B"true"

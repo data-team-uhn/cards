@@ -1,7 +1,7 @@
 {
-  "jcr:primaryType": "lfs:Extension",
-  "lfs:extensionPointId": "lfs/coreUI/view",
-  "lfs:extensionName": "Subject Types",
-  "lfs:targetURL": "/content.html/admin/SubjectTypes",
-  "lfs:extensionRenderURL": "asset:lfs-dataentry.SubjectTypes.js"
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/view",
+  "cards:extensionName": "Subject Types",
+  "cards:targetURL": "/content.html/admin/SubjectTypes",
+  "cards:extensionRenderURL": "asset:cards-dataentry.SubjectTypes.js"
 }

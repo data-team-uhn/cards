@@ -97,7 +97,7 @@ export default function VocabularyAction(props) {
   let fetchQuestionnaires = () => {
     if (questionnaires.length === 0) {
       // Send a fetch request to determine the questionnaires available
-      const query = `select n.* from [lfs:Questionnaire] as n inner join [lfs:Question] as q on isdescendantnode(q, n) where contains(q.sourceVocabularies, '${vocabulary.acronym}')`;
+      const query = `select n.* from [cards:Questionnaire] as n inner join [cards:Question] as q on isdescendantnode(q, n) where contains(q.sourceVocabularies, '${vocabulary.acronym}')`;
       fetchWithReLogin(globalLoginDisplay, `/query?query=${encodeURIComponent(query)}&limit=100`)
         .then((response) => response.ok ? response.json() : Promise.reject(response))
         .then((json) => {
@@ -143,11 +143,11 @@ export default function VocabularyAction(props) {
 
     data && Object.entries(data)
       .forEach( ([key, value]) => {
-        if (value["jcr:primaryType"] == "lfs:Question" && value['dataType'] == 'vocabulary' && value['sourceVocabularies'].includes(vocabulary.acronym)) {
+        if (value["jcr:primaryType"] == "cards:Question" && value['dataType'] == 'vocabulary' && value['sourceVocabularies'].includes(vocabulary.acronym)) {
           value.questionnaireName = title;
           vocQuestions.push(value);
         }
-        if (value["jcr:primaryType"] == "lfs:Section") {
+        if (value["jcr:primaryType"] == "cards:Section") {
             vocQuestions = vocQuestions.concat(getVocabularyQuestions(value, title));
         }
       });

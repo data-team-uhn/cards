@@ -144,7 +144,7 @@ function TimeQuestion(props) {
         answers={outputAnswers}
         questionDefinition={props.questionDefinition}
         existingAnswer={existingAnswer}
-        answerNodeType="lfs:TimeAnswer"
+        answerNodeType="cards:TimeAnswer"
         valueType="Time"
         {...rest}
         />

@@ -19,7 +19,7 @@
 
 <node>
 	<name>Historical tests</name>
-	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
+	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>maxPerSubject</name>
 		<value>1</value>
@@ -39,7 +39,7 @@
 	</property>
 	<node>
 		<name>Stress Test</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
 			<value>Stress Test</value>
@@ -47,7 +47,7 @@
 		</property>
 		<node>
 			<name>st</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Has the patient had a stress test prior to joining the study?</value>
@@ -67,7 +67,7 @@
 	</node>
 	<node>
 		<name>CPET</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
 			<value>CPET</value>
@@ -75,7 +75,7 @@
 		</property>
 		<node>
 			<name>bl_cpet</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Has the patient had a previous (non-study) CPET?</value>
@@ -94,10 +94,10 @@
 		</node>
 		<node>
 			<name>cpet_dateSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>cpet_date</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Date of most recent CPET</value>
@@ -126,7 +126,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -134,7 +134,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -150,7 +150,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -168,10 +168,10 @@
 		</node>
 		<node>
 			<name>cpet_peak_vo2_historicSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>cpet_peak_vo2_historic</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Peak VO2</value>
@@ -190,7 +190,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -198,7 +198,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -214,7 +214,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -232,10 +232,10 @@
 		</node>
 		<node>
 			<name>cpet_peak_vo22_historicSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>cpet_peak_vo22_historic</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Peak VO2</value>
@@ -254,7 +254,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -262,7 +262,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -278,7 +278,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>

@@ -1,7 +1,7 @@
 {
-  "jcr:primaryType": "lfs:Extension",
-  "lfs:extensionPointId": "lfs/coreUI/view",
-  "lfs:extensionName": "Dashboard",
-  "lfs:targetURL": "/content.html/Questionnaires/User",
-  "lfs:extensionRenderURL": "asset:lfs-dataentry.userDashboard.js"
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/view",
+  "cards:extensionName": "Dashboard",
+  "cards:targetURL": "/content.html/Questionnaires/User",
+  "cards:extensionRenderURL": "asset:cards-dataentry.userDashboard.js"
 }

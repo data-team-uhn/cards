@@ -1,12 +1,12 @@
 {
-    "name": "lfs-principals",
+    "name": "cards-principals",
     "version": "0.1.0",
-    "description": "Principals resources for the LFS Project",
-    "author": "SickKids",
+    "description": "Principals resources for the CARDS Project",
+    "author": "UHN DATA",
     "license": "Apache-2.0",
     "repository": {
       "type": "git",
-      "url": "https://github.com/ccmbioinfo/lfs.git",
+      "url": "https://github.com/data-team-uhn/cards.git",
       "directory": "modules/homepage/src/main/frontend"
     },
     "babel": {

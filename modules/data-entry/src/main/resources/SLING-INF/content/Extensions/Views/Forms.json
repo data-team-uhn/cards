@@ -1,7 +1,7 @@
 {
-  "jcr:primaryType": "lfs:Extension",
-  "lfs:extensionPointId": "lfs/coreUI/view",
-  "lfs:extensionName": "Forms",
-  "lfs:targetURL": "/content.html/Forms",
-  "lfs:extensionRenderURL": "asset:lfs-dataentry.Forms.js"
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/view",
+  "cards:extensionName": "Forms",
+  "cards:targetURL": "/content.html/Forms",
+  "cards:extensionRenderURL": "asset:cards-dataentry.Forms.js"
 }

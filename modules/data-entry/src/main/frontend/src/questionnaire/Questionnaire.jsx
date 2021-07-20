@@ -131,7 +131,7 @@ let Questionnaire = (props) => {
             </Typography>
         }
       </Grid>
-      { data?.["jcr:primaryType"] == "lfs:Questionnaire" &&
+      { data?.["jcr:primaryType"] == "cards:Questionnaire" &&
         <Grid item>
           <QuestionnaireItemCard
             plain
@@ -182,11 +182,11 @@ let QuestionnaireItemSet = (props) => {
       <Grid item>{children}</Grid>
       {
         data ?
-        Object.entries(data).filter(([key, value]) => (value['jcr:primaryType'] == 'lfs:Section' || value['jcr:primaryType'] == 'lfs:Question'))
+        Object.entries(data).filter(([key, value]) => (value['jcr:primaryType'] == 'cards:Section' || value['jcr:primaryType'] == 'cards:Question'))
             .map(([key, value]) =>
-                value['jcr:primaryType'] == 'lfs:Question' ?
+                value['jcr:primaryType'] == 'cards:Question' ?
                 <Grid item key={key}><Question data={value} onActionDone={onActionDone} classes={classes}/></Grid> :
-                value['jcr:primaryType'] == 'lfs:Section' ?
+                value['jcr:primaryType'] == 'cards:Section' ?
                 <Grid item key={key}><Section data={value} onActionDone={onActionDone} classes={classes}/></Grid>
                 : null
             )
@@ -208,7 +208,7 @@ let Question = (props) => {
   let { onActionDone, data, classes } = props;
   let [ questionData, setQuestionData ] = useState(data);
   let [ doHighlight, setDoHighlight ] = useState(data.doHighlight);
-  let answers = Object.values(questionData).filter(value => value['jcr:primaryType'] == 'lfs:AnswerOption')
+  let answers = Object.values(questionData).filter(value => value['jcr:primaryType'] == 'cards:AnswerOption')
                       .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder));
 
   let reloadData = (newData) => {
@@ -266,7 +266,7 @@ let Section = (props) => {
       p.push({name: key, label: key.charAt(0).toUpperCase() + key.slice(1).replace( /([A-Z])/g, " $1" ).toLowerCase(), value: sectionData[key] + "", type: spec[0][key]});
     });
     // Find conditionals
-    Object.entries(sectionData).filter(([key, value]) => (value['jcr:primaryType'] == 'lfs:Conditional')).map(([key, value]) => {
+    Object.entries(sectionData).filter(([key, value]) => (value['jcr:primaryType'] == 'cards:Conditional')).map(([key, value]) => {
       p.push({
         name: key + sectionData["@name"],
         label: "Condition",

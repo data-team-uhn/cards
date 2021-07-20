@@ -28,29 +28,29 @@ import { Link } from "react-router-dom";
 import { getEntityIdentifier } from "../EntityIdentifier.jsx";
 
 // Location of the quick search result metadata in a node, outlining what needs to be highlighted
-const LFS_QUERY_MATCH_KEY = "lfs:queryMatch";
-const LFS_QUERY_MATCH_PATH_KEY = "@path";
+const CARDS_QUERY_MATCH_KEY = "cards:queryMatch";
+const CARDS_QUERY_MATCH_PATH_KEY = "@path";
 
 // Properties of the quick search result metadata
-const LFS_QUERY_QUESTION_KEY = "question";
-const LFS_QUERY_MATCH_BEFORE_KEY = "before";
-const LFS_QUERY_MATCH_TEXT_KEY = "text";
-const LFS_QUERY_MATCH_AFTER_KEY = "after";
-const LFS_QUERY_MATCH_NOTES_KEY = "inNotes";
+const CARDS_QUERY_QUESTION_KEY = "question";
+const CARDS_QUERY_MATCH_BEFORE_KEY = "before";
+const CARDS_QUERY_MATCH_TEXT_KEY = "text";
+const CARDS_QUERY_MATCH_AFTER_KEY = "after";
+const CARDS_QUERY_MATCH_NOTES_KEY = "inNotes";
 
 // Display how the query matched the result
 export function QuickSearchMatch(props) {
     const { matchData, classes } = props;
     if (!matchData) { return null; }
     // Adjust the question text to reflect the notes, if the match was on the notes
-    let questionText = matchData[LFS_QUERY_QUESTION_KEY] + (matchData[LFS_QUERY_MATCH_NOTES_KEY] ? " / Notes" : "");
+    let questionText = matchData[CARDS_QUERY_QUESTION_KEY] + (matchData[CARDS_QUERY_MATCH_NOTES_KEY] ? " / Notes" : "");
     return (
       <React.Fragment>
         <span className={classes.queryMatchKey}>{questionText}</span>
         <span className={classes.queryMatchSeparator}>: </span>
-        <span className={classes.queryMatchBefore}>{matchData[LFS_QUERY_MATCH_BEFORE_KEY]}</span>
-        <span className={classes.highlightedText}>{matchData[LFS_QUERY_MATCH_TEXT_KEY]}</span>
-        <span className={classes.queryMatchAfter}>{matchData[LFS_QUERY_MATCH_AFTER_KEY]}</span>
+        <span className={classes.queryMatchBefore}>{matchData[CARDS_QUERY_MATCH_BEFORE_KEY]}</span>
+        <span className={classes.highlightedText}>{matchData[CARDS_QUERY_MATCH_TEXT_KEY]}</span>
+        <span className={classes.queryMatchAfter}>{matchData[CARDS_QUERY_MATCH_AFTER_KEY]}</span>
       </React.Fragment>
     )
 }
@@ -60,11 +60,11 @@ function MatchAvatar(props) {
     let icon = <DescriptionIcon />;
     let style = '';
     switch (matchData["jcr:primaryType"]) {
-      case "lfs:Subject":
+      case "cards:Subject":
         icon = <AssignmentIndIcon />;
         style = { backgroundColor: green[500] };
         break;
-      case "lfs:Questionnaire":
+      case "cards:Questionnaire":
         icon = <AssignmentIcon  />;
         style = { backgroundColor: orange[500] };
         break;
@@ -84,19 +84,19 @@ function ListItemLink(props) {
   // Display a quick search result identifier with link to result section
 export function QuickSearchIdentifier(props) {
     let { resultData, hideMatchInfo, disableLink, classes } = props;
-    let anchorPath = resultData[LFS_QUERY_MATCH_KEY] ? resultData[LFS_QUERY_MATCH_KEY][LFS_QUERY_MATCH_PATH_KEY] : '';
+    let anchorPath = resultData[CARDS_QUERY_MATCH_KEY] ? resultData[CARDS_QUERY_MATCH_KEY][CARDS_QUERY_MATCH_PATH_KEY] : '';
     let fullPath = `/content.html${resultData["@path"]}#${anchorPath}`;
-    if (resultData["jcr:primaryType"] == "lfs:Questionnaire") {
+    if (resultData["jcr:primaryType"] == "cards:Questionnaire") {
       fullPath = `/content.html/admin${resultData["@path"]}#${anchorPath}`;
     }
-    let showMatchInfo = !hideMatchInfo && resultData[LFS_QUERY_MATCH_KEY];
+    let showMatchInfo = !hideMatchInfo && resultData[CARDS_QUERY_MATCH_KEY];
     return (<ListItemLink href={disableLink ? '#' : fullPath}>
               <ListItemAvatar>
                 <MatchAvatar matchData={resultData} classes={classes}></MatchAvatar>
               </ListItemAvatar>
               <ListItemText
                 primary={resultData.entityIdentifier || getEntityIdentifier(resultData)}
-                secondary={showMatchInfo && (<QuickSearchMatch matchData={resultData[LFS_QUERY_MATCH_KEY]} classes={classes}></QuickSearchMatch>)}
+                secondary={showMatchInfo && (<QuickSearchMatch matchData={resultData[CARDS_QUERY_MATCH_KEY]} classes={classes}></QuickSearchMatch>)}
                 className={classes.dropdownItem}
               />
            </ListItemLink>)

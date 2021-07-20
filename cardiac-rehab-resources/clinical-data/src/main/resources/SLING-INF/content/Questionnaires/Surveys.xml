@@ -19,7 +19,7 @@
 
 <node>
 	<name>Surveys</name>
-	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
+	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>maxPerSubject</name>
 		<value>2</value>
@@ -44,7 +44,7 @@
 	</property>
 	<node>
 		<name>Physical Activity Level</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
 			<value>Physical Activity Level</value>
@@ -52,7 +52,7 @@
 		</property>
 		<node>
 			<name>survey-visit</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Visit Number</value>
@@ -95,7 +95,7 @@
 			</property>
 			<node>
 				<name>1</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>1</value>
@@ -109,7 +109,7 @@
 			</node>
 			<node>
 				<name>8</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>8</value>
@@ -124,7 +124,7 @@
 		</node>
 		<node>
 			<name>pal_date</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>PAL date</value>
@@ -153,7 +153,7 @@
 		</node>
 		<node>
 			<name>pal</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>How would you describe your current physical activity?</value>
@@ -181,7 +181,7 @@
 			</property>
 			<node>
 				<name>0</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Avoid walking or exercise (e.g. always use elevators, drive whenever possible instead of walking)</value>
@@ -195,7 +195,7 @@
 			</node>
 			<node>
 				<name>1</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Walking for pleasure, routinely use stairs, occasionally exercise sufficiently to use heavy breathing or perspiration</value>
@@ -209,7 +209,7 @@
 			</node>
 			<node>
 				<name>2</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>10-60 min per week of recreational activity (e.g. golf, bowling, yard work)</value>
@@ -223,7 +223,7 @@
 			</node>
 			<node>
 				<name>3</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Over 1 hour per week of recreational activity (e.g. golf, bowling, yard work)</value>
@@ -237,7 +237,7 @@
 			</node>
 			<node>
 				<name>4</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Run less than 1 mile per week, or spend less than 30 minutes in comparable physical activity per week</value>
@@ -251,7 +251,7 @@
 			</node>
 			<node>
 				<name>5</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Run 1 to 5 miles, walk 3 to 6 miles or spend 30 to 60 minutes in comparable physical activity per week</value>
@@ -265,7 +265,7 @@
 			</node>
 			<node>
 				<name>6</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Run 5 to 10 miles, walk 7 to 13 miles, or spend 1 to 3 hours in comparable physical activity per week</value>
@@ -279,7 +279,7 @@
 			</node>
 			<node>
 				<name>7</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>11 to 15 miles, walk 14 to 20 miles or spend 3 to 5 hours in comparable physical activity per week</value>
@@ -293,7 +293,7 @@
 			</node>
 			<node>
 				<name>8</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Run 16 to 20 miles, walk 21 to 26 miles or spend 6 to 8 hours in comparable physical activity per week</value>
@@ -307,7 +307,7 @@
 			</node>
 			<node>
 				<name>9</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Run 21 to 25 miles, walk 27 to 33 miles, or spend 9 to 11 hours in comparable physical activity per week</value>
@@ -321,7 +321,7 @@
 			</node>
 			<node>
 				<name>10</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value><![CDATA[Run >25 miles, walk >34 miles or spend > 12 hours in comparable physical activity per week]]></value>
@@ -336,7 +336,7 @@
 		</node>
 		<node>
 			<name>pal_score</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>PAL Score</value>
@@ -366,7 +366,7 @@
 	</node>
 	<node>
 		<name>DASI</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
 			<value>DASI</value>
@@ -374,7 +374,7 @@
 		</property>
 		<node>
 			<name>dasi_date</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>DASI date</value>
@@ -398,7 +398,7 @@
 		</node>
 		<node>
 			<name>dasi1</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Can you take care of yourself, that is, eat, dress, bathe or use the toilet?</value>
@@ -426,7 +426,7 @@
 			</property>
 			<node>
 				<name>2.75</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Yes</value>
@@ -440,7 +440,7 @@
 			</node>
 			<node>
 				<name>0</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>No</value>
@@ -455,7 +455,7 @@
 		</node>
 		<node>
 			<name>dasi2</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Can you walk indoors, such as around your house?</value>
@@ -483,7 +483,7 @@
 			</property>
 			<node>
 				<name>1.75</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Yes</value>
@@ -497,7 +497,7 @@
 			</node>
 			<node>
 				<name>0</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>No</value>
@@ -512,7 +512,7 @@
 		</node>
 		<node>
 			<name>dasi3</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Can you walk a block or two on level ground?</value>
@@ -540,7 +540,7 @@
 			</property>
 			<node>
 				<name>2.75</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Yes</value>
@@ -554,7 +554,7 @@
 			</node>
 			<node>
 				<name>0</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>No</value>
@@ -569,7 +569,7 @@
 		</node>
 		<node>
 			<name>dasi4</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Can you climb a flight of stairs or walk up a hill?</value>
@@ -597,7 +597,7 @@
 			</property>
 			<node>
 				<name>5.5</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Yes</value>
@@ -611,7 +611,7 @@
 			</node>
 			<node>
 				<name>0</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>No</value>
@@ -626,7 +626,7 @@
 		</node>
 		<node>
 			<name>dasi5</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Can you run a short distance?</value>
@@ -654,7 +654,7 @@
 			</property>
 			<node>
 				<name>8</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Yes</value>
@@ -668,7 +668,7 @@
 			</node>
 			<node>
 				<name>0</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>No</value>
@@ -683,7 +683,7 @@
 		</node>
 		<node>
 			<name>dasi6</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Can you do light work around the house like dusting or washing dishes?</value>
@@ -711,7 +711,7 @@
 			</property>
 			<node>
 				<name>2.7</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Yes</value>
@@ -725,7 +725,7 @@
 			</node>
 			<node>
 				<name>0</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>No</value>
@@ -740,7 +740,7 @@
 		</node>
 		<node>
 			<name>dasi7</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Can you do moderate work around the house like vacuuming, sweeping floors or carrying groceries?</value>
@@ -768,7 +768,7 @@
 			</property>
 			<node>
 				<name>3.5</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Yes</value>
@@ -782,7 +782,7 @@
 			</node>
 			<node>
 				<name>0</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>No</value>
@@ -797,7 +797,7 @@
 		</node>
 		<node>
 			<name>dasi8</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Can you do heavy work around the house like scrubbing floors or lifting or moving heavy furniture?</value>
@@ -825,7 +825,7 @@
 			</property>
 			<node>
 				<name>8</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Yes</value>
@@ -839,7 +839,7 @@
 			</node>
 			<node>
 				<name>0</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>No</value>
@@ -854,7 +854,7 @@
 		</node>
 		<node>
 			<name>dasi9</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Can you do yard work like raking leaves, weeding or pushing a power mower?</value>
@@ -882,7 +882,7 @@
 			</property>
 			<node>
 				<name>4.5</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Yes</value>
@@ -896,7 +896,7 @@
 			</node>
 			<node>
 				<name>0</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>No</value>
@@ -911,7 +911,7 @@
 		</node>
 		<node>
 			<name>dasi10</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Can you have sexual relations?</value>
@@ -939,7 +939,7 @@
 			</property>
 			<node>
 				<name>5.25</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Yes</value>
@@ -953,7 +953,7 @@
 			</node>
 			<node>
 				<name>0</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>No</value>
@@ -968,7 +968,7 @@
 		</node>
 		<node>
 			<name>dasi11</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Can you participate in moderate recreational activities like golf, bowling, dancing, doubles tennis or throwing a baseball or football?</value>
@@ -996,7 +996,7 @@
 			</property>
 			<node>
 				<name>6</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Yes</value>
@@ -1010,7 +1010,7 @@
 			</node>
 			<node>
 				<name>0</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>No</value>
@@ -1025,7 +1025,7 @@
 		</node>
 		<node>
 			<name>dasi12</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Can you participate in strenuous sports like swimming, singles tennis, football, basketball or skiing?</value>
@@ -1053,7 +1053,7 @@
 			</property>
 			<node>
 				<name>7.5</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Yes</value>
@@ -1067,7 +1067,7 @@
 			</node>
 			<node>
 				<name>0</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>No</value>
@@ -1082,7 +1082,7 @@
 		</node>
 		<node>
 			<name>dasi_computed</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>DASI Computed</value>
@@ -1111,7 +1111,7 @@
 		</node>
 		<node>
 			<name>vo2_peak</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>VO2 Peak</value>
@@ -1140,7 +1140,7 @@
 		</node>
 		<node>
 			<name>mets</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>METS</value>
@@ -1170,7 +1170,7 @@
 	</node>
 	<node>
 		<name>Modified Rosow-Breslau</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
 			<value>Modified Rosow-Breslau</value>
@@ -1178,7 +1178,7 @@
 		</property>
 		<node>
 			<name>mrb_date</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>MRB date</value>
@@ -1202,7 +1202,7 @@
 		</node>
 		<node>
 			<name>mrb1</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>What is your level of difficulty doing heavy work around the house, like washing windows, walls or floors without help</value>
@@ -1230,7 +1230,7 @@
 			</property>
 			<node>
 				<name>0</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>None</value>
@@ -1249,7 +1249,7 @@
 			</node>
 			<node>
 				<name>1</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Mild</value>
@@ -1263,7 +1263,7 @@
 			</node>
 			<node>
 				<name>2</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Moderate</value>
@@ -1277,7 +1277,7 @@
 			</node>
 			<node>
 				<name>3</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Severe</value>
@@ -1291,7 +1291,7 @@
 			</node>
 			<node>
 				<name>4</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Unable to do</value>
@@ -1306,7 +1306,7 @@
 		</node>
 		<node>
 			<name>mrb2</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>What is your level of difficulty walking half a mile without help?</value>
@@ -1334,7 +1334,7 @@
 			</property>
 			<node>
 				<name>0</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>None</value>
@@ -1353,7 +1353,7 @@
 			</node>
 			<node>
 				<name>1</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Mild</value>
@@ -1367,7 +1367,7 @@
 			</node>
 			<node>
 				<name>2</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Moderate</value>
@@ -1381,7 +1381,7 @@
 			</node>
 			<node>
 				<name>3</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Severe</value>
@@ -1395,7 +1395,7 @@
 			</node>
 			<node>
 				<name>4</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Unable to do</value>
@@ -1410,7 +1410,7 @@
 		</node>
 		<node>
 			<name>mrb3</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>What is your level of difficulty in running a short distance?</value>
@@ -1438,7 +1438,7 @@
 			</property>
 			<node>
 				<name>0</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>None</value>
@@ -1457,7 +1457,7 @@
 			</node>
 			<node>
 				<name>1</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Mild</value>
@@ -1471,7 +1471,7 @@
 			</node>
 			<node>
 				<name>2</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Moderate</value>
@@ -1485,7 +1485,7 @@
 			</node>
 			<node>
 				<name>3</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Severe</value>
@@ -1499,7 +1499,7 @@
 			</node>
 			<node>
 				<name>4</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Unable to do</value>
@@ -1514,7 +1514,7 @@
 		</node>
 		<node>
 			<name>mrb4</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>What is your level of difficulty in walking DOWN one flight of stairs?</value>
@@ -1542,7 +1542,7 @@
 			</property>
 			<node>
 				<name>0</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>None</value>
@@ -1561,7 +1561,7 @@
 			</node>
 			<node>
 				<name>1</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Mild</value>
@@ -1575,7 +1575,7 @@
 			</node>
 			<node>
 				<name>2</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Moderate</value>
@@ -1589,7 +1589,7 @@
 			</node>
 			<node>
 				<name>3</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Severe</value>
@@ -1603,7 +1603,7 @@
 			</node>
 			<node>
 				<name>4</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Unable to do</value>
@@ -1618,7 +1618,7 @@
 		</node>
 		<node>
 			<name>mrb5</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>What is your level of difficulty in walking UP one flight of stairs?</value>
@@ -1646,7 +1646,7 @@
 			</property>
 			<node>
 				<name>0</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>None</value>
@@ -1665,7 +1665,7 @@
 			</node>
 			<node>
 				<name>1</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Mild</value>
@@ -1679,7 +1679,7 @@
 			</node>
 			<node>
 				<name>2</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Moderate</value>
@@ -1693,7 +1693,7 @@
 			</node>
 			<node>
 				<name>3</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Severe</value>
@@ -1707,7 +1707,7 @@
 			</node>
 			<node>
 				<name>4</name>
-				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
 					<value>Unable to do</value>
@@ -1722,10 +1722,10 @@
 		</node>
 		<node>
 			<name>mrb6Section</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>mrb6</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>When going up one flight of stairs, do you feel out of breath?</value>
@@ -1753,7 +1753,7 @@
 				</property>
 				<node>
 					<name>0</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>No or Don’t Know</value>
@@ -1767,7 +1767,7 @@
 				</node>
 				<node>
 					<name>1</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Yes</value>
@@ -1782,7 +1782,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value><![CDATA[>]]></value>
@@ -1790,7 +1790,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -1806,7 +1806,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -1824,7 +1824,7 @@
 		</node>
 		<node>
 			<name>mrb_score</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>MRB Score</value>

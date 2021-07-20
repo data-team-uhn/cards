@@ -51,7 +51,7 @@ import PedigreeEditor from "../pedigree/pedigree";
 function PedigreeQuestion(props) {
   const { existingAnswer, classes, ...rest } = props;
   const [ expanded, setExpanded ] = useState(false);
-  // default pedigreeData state variable to the pedigree saved in LFS:
+  // default pedigreeData state variable to the pedigree saved in CARDS:
   const [ pedigreeData, setPedigree ] = useState(existingAnswer && existingAnswer.length > 1 && existingAnswer[1].value
                                         ? {"image": existingAnswer[1].image, "pedigreeJSON": existingAnswer[1].value}
                                         : {});
@@ -76,8 +76,8 @@ function PedigreeQuestion(props) {
 
   if (pedigreeData && pedigreeData.image && pedigreeData.pedigreeJSON) {
     // use pedigree stored in React component state:
-    // default value for that state is the pedigree loaded from LFS, but it gets overwritten each time pedigree is saved
-    // from the pedigree editor, even if that data is not yet saved to LFS
+    // default value for that state is the pedigree loaded from CARDS, but it gets overwritten each time pedigree is saved
+    // from the pedigree editor, even if that data is not yet saved to CARDS
     pedigreeSVG  = pedigreeData.image;
     pedigreeJSON = pedigreeData.pedigreeJSON;
     displayedImage = resizeSVG(pedigreeSVG, PEDIGREE_THUMBNAIL_WIDTH);
@@ -174,7 +174,7 @@ function PedigreeQuestion(props) {
         answerMetadata={answerMetadata}
         questionDefinition={props.questionDefinition}
         existingAnswer={existingAnswer}
-        answerNodeType="lfs:PedigreeAnswer"
+        answerNodeType="cards:PedigreeAnswer"
         valueType="String"
         onDecidedOutputPath={onSetAnswerPath}
         {...rest}

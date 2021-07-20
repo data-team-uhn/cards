@@ -20,14 +20,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>ca.sickkids.ccm.lfs</groupId>
-  <artifactId>lfs-parent</artifactId>
+  <groupId>io.uhndata.cards</groupId>
+  <artifactId>cards-parent</artifactId>
   <version>0.9-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>LFS - Parent POM</name>
-  <description>LFS is a software tool providing an easy-to-use Web interface and standardized database back-end for collecting medical data.</description>
-  <url>https://ccm.sickkids.ca/</url>
+  <name>CARDS - Parent POM</name>
+  <description>CARDS is a software tool providing an easy-to-use Web interface and standardized database back-end for collecting medical data.</description>
+  <url>https://cards.uhndata.io/</url>
   <inceptionYear>2019</inceptionYear>
 
   <licenses>
@@ -39,15 +39,15 @@
   </licenses>
 
   <scm>
-    <connection>scm:git:git://github.com/ccmbioinfo/lfs.git</connection>
-    <developerConnection>scm:git:git@github.com:phenotips/ccmbioinfo/lfs.git</developerConnection>
-    <url>https://github.com/ccmbioinfo/lfs/tree/master/</url>
+    <connection>scm:git:git://github.com/data-team-uhn/cards.git</connection>
+    <developerConnection>scm:git:git@github.com:data-team-uhn/cards.git</developerConnection>
+    <url>https://github.com/data-team-uhn/cards/tree/master/</url>
     <tag>HEAD</tag>
   </scm>
 
   <organization>
-    <name>The Centre for Computational Medicine at the Hospital for Sick Children Toronto</name>
-    <url>https://ccm.sickkids.ca/</url>
+    <name>DATA Team at UHN</name>
+    <url>https://uhndata.io/</url>
   </organization>
 
   <distributionManagement>
@@ -144,7 +144,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <lfs.version>${project.version}</lfs.version>
+    <cards.version>${project.version}</cards.version>
     <app.name>Clinical ARchive for Data Science</app.name>
     <platform.name>CARDS</platform.name>
     <slf4j.version>1.7.26</slf4j.version>
@@ -872,7 +872,7 @@
         Requires a running instance.
         By default it connects to http://localhost:8080 with admin:admin.
         To specify a different password, use `-Dsling.password=newPassword`
-        To specify a different URL, use `-Dsling.url=https://lfs.server:8443/system/console` (the URL must end with `/system/console` to work properly)
+        To specify a different URL, use `-Dsling.url=https://cards.server:8443/system/console` (the URL must end with `/system/console` to work properly)
 
         TL;DR:
         mvn install -PautoInstallBundle

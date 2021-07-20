@@ -21,22 +21,22 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>ca.sickkids.ccm.lfs</groupId>
-    <artifactId>lfs-modules</artifactId>
+    <groupId>io.uhndata.cards</groupId>
+    <artifactId>cards-modules</artifactId>
     <version>0.9-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs-ldap-support</artifactId>
+  <artifactId>cards-ldap-support</artifactId>
   <packaging>slingfeature</packaging>
-  <name>LFS - Support for LDAP authentication</name>
+  <name>CARDS - Support for LDAP authentication</name>
 
   <properties>
-    <lfs.ldap.dn />
-    <lfs.ldap.password />
-    <lfs.ldap.host />
-    <lfs.ldap.baseDn />
-    <lfs.ldap.idAttribute />
-    <lfs.ldap.userClass />
+    <cards.ldap.dn />
+    <cards.ldap.password />
+    <cards.ldap.host />
+    <cards.ldap.baseDn />
+    <cards.ldap.idAttribute />
+    <cards.ldap.userClass />
   </properties>
 
   <build>

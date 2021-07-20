@@ -1,12 +1,12 @@
 {
-  "name": "lfs-pedigree",
+  "name": "cards-pedigree",
   "version": "0.1.0",
-  "description": "Pedigree editor for the LFS project",
-  "author": "SickKids",
+  "description": "Pedigree editor for the CARDS project",
+  "author": "UHN DATA",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ccmbioinfo/lfs.git",
+    "url": "https://github.com/data-team-uhn/cards.git",
     "directory": "modules/pedigree/src/main/frontend"
   },
   "babel": {

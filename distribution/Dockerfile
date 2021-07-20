@@ -30,15 +30,15 @@ ENV DEBUG=
 # Optional: enable developer mode
 ENV DEV=
 
-# Put everything in /opt/lfs
-RUN mkdir -p /opt/lfs/sling/
-WORKDIR /opt/lfs/
+# Put everything in /opt/cards
+RUN mkdir -p /opt/cards/sling/
+WORKDIR /opt/cards/
 COPY target/${project.artifactId}-${project.version}.jar .
 COPY logback.xml ./sling/
 
 # This is where Sling stores its data
 # Make this a volume which can be persisted between different container versions
-VOLUME ["/opt/lfs/sling"]
+VOLUME ["/opt/cards/sling"]
 
 # Expose the 8080 port where normal HTTP connections are expected
 EXPOSE 8080

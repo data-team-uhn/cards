@@ -1,8 +1,8 @@
 {
-  "jcr:primaryType": "lfs:Extension",
-  "lfs:extensionPointId": "lfs/coreUI/admindashboard/entry",
-  "lfs:extensionName": "Questionnaires",
-  "lfs:targetURL": "/content.html/admin/Questionnaires",
-  "lfs:icon": "asset:lfs-dataentry.questionnairesIcon.js",
-  "lfs:hint": "Design and update questionnaires used for data collection"
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/admindashboard/entry",
+  "cards:extensionName": "Questionnaires",
+  "cards:targetURL": "/content.html/admin/Questionnaires",
+  "cards:icon": "asset:cards-dataentry.questionnairesIcon.js",
+  "cards:hint": "Design and update questionnaires used for data collection"
 }

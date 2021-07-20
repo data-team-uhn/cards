@@ -17,11 +17,11 @@
 #  under the License.
 #
 
-# This is the LFS project
-[feature name=lfs-kids-resources]
+# This is the CARDS4KIDS project
+[feature name=cards-kids-resources]
 
 [variables]
-    lfs.version=0.1-SNAPSHOT
+    cards.version=0.1-SNAPSHOT
 
 [artifacts runModes=kids]
-    ca.sickkids.ccm.lfs/kids-resources-clinical-data/${lfs.version}
+    io.uhndata.cards/kids-resources-clinical-data/${cards.version}

@@ -1,12 +1,12 @@
 {
-  "name": "lfs-login",
+  "name": "cards-login",
   "version": "0.1.0",
-  "description": "Common login resources for the LFS project",
-  "author": "SickKids",
+  "description": "Common login resources for the CARDS project",
+  "author": "UHN DATA",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ccmbioinfo/lfs.git",
+    "url": "https://github.com/data-team-uhn/cards.git",
     "directory": "modules/login/src/main/frontend"
   },
   "babel": {

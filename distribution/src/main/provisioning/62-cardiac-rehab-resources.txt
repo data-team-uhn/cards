@@ -17,12 +17,12 @@
 #  under the License.
 #
 
-# This is the LFS project
-[feature name=lfs-cardiac-rehab-resources]
+# This is the CardiacRehab project
+[feature name=cards-cardiac-rehab-resources]
 
 [variables]
-    lfs.version=0.1-SNAPSHOT
+    cards.version=0.1-SNAPSHOT
 
 [artifacts runModes=cardiac_rehab]
-    ca.sickkids.ccm.lfs/cardiac-rehab-resources-clinical-data/${lfs.version}
-    ca.sickkids.ccm.lfs/cardiac-rehab-backend/${lfs.version}/slingfeature/slingfeature
+    io.uhndata.cards/cardiac-rehab-resources-clinical-data/${cards.version}
+    io.uhndata.cards/cardiac-rehab-backend/${cards.version}/slingfeature/slingfeature

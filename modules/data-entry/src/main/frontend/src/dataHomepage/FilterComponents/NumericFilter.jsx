@@ -34,7 +34,7 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS).concat
  *
  * @param {string} defaultValue The default value to place in the text field
  * @param {func} onChangeInput Callback for when the value select has changed
- * @param {object} questionDefinition Object containing the definition of the question. Should include nodes whose jcr:primaryType is lfs:AnswerOption
+ * @param {object} questionDefinition Object containing the definition of the question. Should include nodes whose jcr:primaryType is cards:AnswerOption
  * Other props are forwarded to the TextField component
  *
  */

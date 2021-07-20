@@ -85,7 +85,7 @@ function ChromosomeQuestion(props) {
       {...props}
       >
       <MultipleChoice
-        answerNodeType="lfs:ChromosomeAnswer"
+        answerNodeType="cards:ChromosomeAnswer"
         defaults={defaults}
         {...props}
         />

@@ -19,7 +19,7 @@
 
 <node>
 	<name>ActiGraph data</name>
-	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
+	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
 		<value>ActiGraph data</value>
@@ -34,7 +34,7 @@
 	</property>
 	<node>
 		<name>Wrist</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
 			<value>Wrist</value>
@@ -42,7 +42,7 @@
 		</property>
 		<node>
 			<name>actg_start_date</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Start Date</value>
@@ -71,7 +71,7 @@
 		</node>
 		<node>
 			<name>actg_end_date</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>End Date</value>
@@ -100,7 +100,7 @@
 		</node>
 		<node>
 			<name>actg_light_mvpa_day</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Total PA / day</value>
@@ -124,7 +124,7 @@
 		</node>
 		<node>
 			<name>actg_light_mvpa</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Total PA / week</value>
@@ -148,7 +148,7 @@
 		</node>
 		<node>
 			<name>actg_mvpa_day</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>MVPA / day</value>
@@ -172,7 +172,7 @@
 		</node>
 		<node>
 			<name>actg_mvpa</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>MVPA / week</value>
@@ -196,7 +196,7 @@
 		</node>
 		<node>
 			<name>actg_steps_day</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Steps / day</value>
@@ -221,7 +221,7 @@
 	</node>
 	<node>
 		<name>Waist</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
 			<value>Waist</value>
@@ -229,7 +229,7 @@
 		</property>
 		<node>
 			<name>actg_start_date</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Start Date</value>
@@ -258,7 +258,7 @@
 		</node>
 		<node>
 			<name>actg_end_date</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>End Date</value>
@@ -287,7 +287,7 @@
 		</node>
 		<node>
 			<name>actg_light_mvpa_day</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Total PA / day</value>
@@ -311,7 +311,7 @@
 		</node>
 		<node>
 			<name>actg_light_mvpa</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Total PA / week</value>
@@ -335,7 +335,7 @@
 		</node>
 		<node>
 			<name>actg_mvpa_day</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>MVPA / day</value>
@@ -359,7 +359,7 @@
 		</node>
 		<node>
 			<name>actg_mvpa</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>MVPA / week</value>
@@ -383,7 +383,7 @@
 		</node>
 		<node>
 			<name>actg_steps_day</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Steps / day</value>

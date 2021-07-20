@@ -28,7 +28,7 @@ function SubjectTypeDialog(props) {
 
   const [ label, setLabel ] = useState(isEdit ? currentSubjectType.label : "");
   const [ parentSubject, setParentSubject ] = useState(initialParent);
-  const [ order, setOrder ] = useState(currentSubjectType && currentSubjectType["lfs:defaultOrder"] ? currentSubjectType["lfs:defaultOrder"] : 0);
+  const [ order, setOrder ] = useState(currentSubjectType && currentSubjectType["cards:defaultOrder"] ? currentSubjectType["cards:defaultOrder"] : 0);
   const [ error, setError ] = useState(null);
   const [ isDuplicateLabel, setIsDuplicateLabel ] = useState(false);
 
@@ -49,9 +49,9 @@ function SubjectTypeDialog(props) {
 
     if (!isEdit) {
       let formInfo = {};
-      formInfo["jcr:primaryType"] = "lfs:SubjectType";
+      formInfo["jcr:primaryType"] = "cards:SubjectType";
       formInfo["label"] = label;
-      formInfo["lfs:defaultOrder"] = order;
+      formInfo["cards:defaultOrder"] = order;
 
       formData.append(':contentType', 'json');
       formData.append(':operation', 'import');
@@ -59,12 +59,12 @@ function SubjectTypeDialog(props) {
       formData.append(':content', JSON.stringify(formInfo));
     } else {
       // if nothing changed - just move the node
-      if (currentSubjectType["lfs:defaultOrder"] == order && currentSubjectType["label"] === label) {
+      if (currentSubjectType["cards:defaultOrder"] == order && currentSubjectType["label"] === label) {
         moveSubjectType();
         return;
       } else {
         // Update all the changes first
-        formData.append("lfs:defaultOrder", order);
+        formData.append("cards:defaultOrder", order);
         formData.append("label", label);
       }
     }
@@ -187,7 +187,7 @@ function SubjectTypeDialog(props) {
       <DialogActions className={classes.dialogActions}>
         <Button
           disabled={!isEdit && (!label || isDuplicateLabel)
-                  || isEdit && (currentSubjectType["lfs:defaultOrder"] == order && initialParent == parentSubject && currentSubjectType["label"] == label)}
+                  || isEdit && (currentSubjectType["cards:defaultOrder"] == order && initialParent == parentSubject && currentSubjectType["label"] == label)}
           color="primary"
           variant="contained"
           size="small"

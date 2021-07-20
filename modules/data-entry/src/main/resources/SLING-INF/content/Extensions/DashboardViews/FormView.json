@@ -1,7 +1,7 @@
 {
-  "jcr:primaryType": "lfs:Extension",
-  "lfs:extensionPointId": "lfs/coreUI/dashboardviews/entry",
-  "lfs:extensionName": "Form View",
-  "lfs:extensionRenderURL": "asset:lfs-dataentry.FormView.js",
-  "lfs:defaultOrder": 2
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/dashboardviews/entry",
+  "cards:extensionName": "Form View",
+  "cards:extensionRenderURL": "asset:cards-dataentry.FormView.js",
+  "cards:defaultOrder": 2
 }

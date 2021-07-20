@@ -19,14 +19,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>ca.sickkids.ccm.lfs</groupId>
-    <artifactId>lfs-modules</artifactId>
+    <groupId>io.uhndata.cards</groupId>
+    <artifactId>cards-modules</artifactId>
     <version>0.9-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs-permissions-ownership</artifactId>
+  <artifactId>cards-permissions-ownership</artifactId>
   <packaging>bundle</packaging>
-  <name>LFS - Permissions - Data ownership</name>
+  <name>CARDS - Permissions - Data ownership</name>
 
   <build>
     <plugins>
@@ -42,7 +42,7 @@
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>lfs-permissions</artifactId>
+      <artifactId>cards-permissions</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>

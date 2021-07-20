@@ -37,7 +37,7 @@ class Main extends React.Component {
     super(props);
 
     this.state = {
-      image: "/libs/lfs/resources/background.jpg",
+      image: "/libs/cards/resources/background.jpg",
       color: "blue",
       hasImage: true,
       fixedClasses: "dropdown show",
@@ -79,14 +79,14 @@ class Main extends React.Component {
       {routes.map((route, key) => {
         return (
           <Route
-            path={route["lfs:targetURL"]}
-            exact={Boolean(route["lfs:exactURLMatch"])}
+            path={route["cards:targetURL"]}
+            exact={Boolean(route["cards:exactURLMatch"])}
             render={(props) => {
-                let ThisComponent = route["lfs:extensionRender"];
+                let ThisComponent = route["cards:extensionRender"];
                 let newProps = {...props, contentOffset: this.state.contentOffset };
                 let title = " | " + this.state.title;
                 return (
-                  <Page title={title} pageDefaultName={route["lfs:extensionName"]}>
+                  <Page title={title} pageDefaultName={route["cards:extensionName"]}>
                     <ThisComponent {...newProps} />
                   </Page>
                   );
@@ -150,7 +150,7 @@ class Main extends React.Component {
           <Suspense fallback={<div>Loading...</div>}>
             <Sidebar
               contentOffset={this.state.contentOffset}
-              logoImage={"/libs/lfs/resources/logo.png"}
+              logoImage={"/libs/cards/resources/logo.png"}
               image={this.state.image}
               handleDrawerToggle={this.handleDrawerToggle}
               open={this.state.mobileOpen}

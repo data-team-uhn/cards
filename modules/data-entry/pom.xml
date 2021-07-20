@@ -21,14 +21,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>ca.sickkids.ccm.lfs</groupId>
-    <artifactId>lfs-modules</artifactId>
+    <groupId>io.uhndata.cards</groupId>
+    <artifactId>cards-modules</artifactId>
     <version>0.9-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs-dataentry</artifactId>
+  <artifactId>cards-dataentry</artifactId>
   <packaging>bundle</packaging>
-  <name>LFS - Data entry module</name>
+  <name>CARDS - Data entry module</name>
 
   <build>
     <plugins>
@@ -43,9 +43,9 @@
             <Include-Resource>{maven-resources}</Include-Resource>
             <Sling-Nodetypes>SLING-INF/nodetypes/dataentry.cnd</Sling-Nodetypes>
             <Sling-Initial-Content>
-              SLING-INF/content/apps/lfs/config/;path:=/apps/lfs/config/;overwrite:=false,
-              SLING-INF/content/libs/lfs/dataQuery/;path:=/libs/lfs/dataQuery/;overwrite:=true,
-              SLING-INF/content/libs/lfs/Questionnaire/;path:=/libs/lfs/Questionnaire/;overwrite:=true,
+              SLING-INF/content/apps/cards/config/;path:=/apps/cards/config/;overwrite:=false,
+              SLING-INF/content/libs/cards/dataQuery/;path:=/libs/cards/dataQuery/;overwrite:=true,
+              SLING-INF/content/libs/cards/Questionnaire/;path:=/libs/cards/Questionnaire/;overwrite:=true,
               SLING-INF/content/oak%3Aindex/;path:=/oak:index/;overwrite:=true,
               SLING-INF/content/Extensions/AdminDashboard/;path:=/Extensions/AdminDashboard/;overwrite:=true,
               SLING-INF/content/Extensions/DashboardMenuItems/;path:=/Extensions/DashboardMenuItems/;overwrite:=true,
@@ -136,12 +136,12 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>lfs-utils</artifactId>
+      <artifactId>cards-utils</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>lfs-permissions</artifactId>
+      <artifactId>cards-permissions</artifactId>
       <version>${project.version}</version>
       <scope>runtime</scope>
     </dependency>

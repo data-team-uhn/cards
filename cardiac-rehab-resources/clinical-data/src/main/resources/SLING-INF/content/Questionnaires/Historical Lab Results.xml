@@ -19,7 +19,7 @@
 
 <node>
 	<name>Historical Lab Results</name>
-	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
+	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>maxPerSubject</name>
 		<value>1</value>
@@ -39,7 +39,7 @@
 	</property>
 	<node>
 		<name>Lab Results</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
 			<value>Lab Results</value>
@@ -47,7 +47,7 @@
 		</property>
 		<node>
 			<name>labs_date</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Date of test</value>
@@ -71,7 +71,7 @@
 		</node>
 		<node>
 			<name>chol</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Cholesterol</value>
@@ -90,7 +90,7 @@
 		</node>
 		<node>
 			<name>hdl</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>HDL cholesterol</value>
@@ -109,7 +109,7 @@
 		</node>
 		<node>
 			<name>trigly</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Triglycerides</value>
@@ -128,7 +128,7 @@
 		</node>
 		<node>
 			<name>ldl</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>LDL cholesterol</value>
@@ -147,7 +147,7 @@
 		</node>
 		<node>
 			<name>glucose</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Glucose</value>
@@ -166,7 +166,7 @@
 		</node>
 		<node>
 			<name>hga1c</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Hemoglobin A1c</value>

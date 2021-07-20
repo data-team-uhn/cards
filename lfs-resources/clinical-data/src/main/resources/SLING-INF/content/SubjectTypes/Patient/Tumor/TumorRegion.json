@@ -1,5 +1,5 @@
 {
-  "jcr:primaryType": "lfs:SubjectType",
+  "jcr:primaryType": "cards:SubjectType",
   "label": "Tumor region",
-  "lfs:defaultOrder": 2
+  "cards:defaultOrder": 2
 }

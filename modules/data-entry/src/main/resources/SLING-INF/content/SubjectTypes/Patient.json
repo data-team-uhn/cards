@@ -1,5 +1,5 @@
 {
-  "jcr:primaryType": "lfs:SubjectType",
+  "jcr:primaryType": "cards:SubjectType",
   "label": "Patient",
-  "lfs:defaultOrder": 0
+  "cards:defaultOrder": 0
 }

@@ -32,6 +32,7 @@ export const VALUE_POS = 1;
 function Answer (props) {
   let { answers, answerMetadata, answerNodeType, existingAnswer, path, questionName, questionDefinition, valueType, isMultivalued, onChangeNote, noteComponent, noteProps, onAddedAnswerPath, onDecidedOutputPath, sectionAnswersState } = props;
   let { enableNotes } = { ...props, ...questionDefinition };
+  let { onAddSuggestion } = { ...props, ...noteProps };
   let [ answerID ] = useState((existingAnswer && existingAnswer[0]) || uuidv4());
   let answerPath = path + "/" + answerID;
 
@@ -103,6 +104,7 @@ function Answer (props) {
           existingAnswer={existingAnswer}
           answerPath={answerPath}
           onChangeNote={onChangeNote}
+          onAddSuggestion={onAddSuggestion}
           {...noteProps}
           />
       }
@@ -119,7 +121,7 @@ Answer.propTypes = {
 };
 
 Answer.defaultProps = {
-  answerNodeType: "lfs:TextAnswer",
+  answerNodeType: "cards:TextAnswer",
   valueType: 'String',
   isMultivalued: false,
   noteComponent: Note

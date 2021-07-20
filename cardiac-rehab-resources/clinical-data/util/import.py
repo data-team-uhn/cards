@@ -43,11 +43,11 @@ def prepare_conditional_string(conditional_string, question):
             insert_conditional(conditional_string[0], question, '1')
         insert_conditional(conditional_string[2], question, '2')
     else:
-        # No title is needed because only a single lfs:Conditional will be created
+        # No title is needed because only a single cards:Conditional will be created
         insert_conditional(conditional_string, question, '')
 
 
-# Updates the question with lfs:Conditionals from the output of prepare_conditional
+# Updates the question with cards:Conditionals from the output of prepare_conditional
 def insert_conditional(conditional_string, question, title):
     # Split the conditional into two operands and an operator
     conditional_string = partition_conditional_string(conditional_string)
@@ -55,9 +55,9 @@ def insert_conditional(conditional_string, question, title):
     operator = conditional_string[1]
     operand_b = conditional_string[2].strip()
     # If the first operand is a comma-separated list, create a separate conditional for each
-    # Enclose the conditionals in a lfs:ConditionalGroup
+    # Enclose the conditionals in a cards:ConditionalGroup
     if ',' in operand_a:
-        question.update({'conditionalGroup': {'jcr:primaryType': 'lfs:ConditionalGroup'}})
+        question.update({'conditionalGroup': {'jcr:primaryType': 'cards:ConditionalGroup'}})
         # The keyword 'all' in the conditional string should correspond to 'requireAll' == true
         # If it is present, remove it from the operand and add 'requireAll' to the conditional group
         if 'all' in operand_a:
@@ -67,9 +67,9 @@ def insert_conditional(conditional_string, question, title):
         for index, item in enumerate(operand_a_list):
             question['conditionalGroup'].update(create_conditional(item, operator, operand_b, 'condition' + str(index)))
     # If the second operand is a comma-separated list, create a separate conditional for each
-    # Enclose the conditionals in a lfs:ConditionalGroup
+    # Enclose the conditionals in a cards:ConditionalGroup
     elif ',' in operand_b:
-        question.update({'conditionalGroup': {'jcr:primaryType': 'lfs:ConditionalGroup'}})
+        question.update({'conditionalGroup': {'jcr:primaryType': 'cards:ConditionalGroup'}})
         # The keyword 'all' in the conditional string should correspond to 'requireAll' == true
         # If it is present, remove it from the operand and add 'requireAll' to the conditional group
         if 'all' in operand_b:
@@ -94,7 +94,7 @@ def partition_conditional_string(conditional_string):
     parts = regex.split(seperator, conditional_string, 1)
     return parts[0], seperator, parts[1]
 
-# Returns a dict object that is formatted as an lfs:Conditional
+# Returns a dict object that is formatted as an cards:Conditional
 def create_conditional(operand_a, operator, operand_b, title):
     is_reference = False
     # NOTE: IN THE CASE OF A REFRENCE TO A QUESTION WHOSE POSSIBLE VALUES ARE YES/NO/OTHER
@@ -106,15 +106,15 @@ def create_conditional(operand_a, operator, operand_b, title):
     else:
         operand_b_updated = operand_b
     result = {
-        'jcr:primaryType': 'lfs:Conditional',
+        'jcr:primaryType': 'cards:Conditional',
         'operandA': {
-            'jcr:primaryType': 'lfs:ConditionalValue',
+            'jcr:primaryType': 'cards:ConditionalValue',
             'value': [operand_a.lower()],
             'isReference': True
         },
         'comparator': operator,
         'operandB': {
-            'jcr:primaryType': 'lfs:ConditionalValue',
+            'jcr:primaryType': 'cards:ConditionalValue',
             'value': [operand_b_updated],
             'isReference': is_reference
         }
@@ -179,7 +179,7 @@ def insert_expression(question, expression):
         expression += end_chars
     question['expression'] = "return " + expression
 
-# Creates lfs:AnswerOptions from the CSV in 'Categorical List'
+# Creates cards:AnswerOptions from the CSV in 'Categorical List'
 def insert_options(question, row):
     option_list = options_list(row['Options (if applicable)'])
     question.update({'displayMode': 'list'})
@@ -194,7 +194,7 @@ def insert_options(question, row):
             options = option.split('=')
             label = options[1].strip()
             option_details = {
-                'jcr:primaryType': 'lfs:AnswerOption',
+                'jcr:primaryType': 'cards:AnswerOption',
                 'label': label,
                 'value': options[0].strip()
             }
@@ -204,7 +204,7 @@ def insert_options(question, row):
             question.update(answer_option)
         else:
             option_details = {
-                'jcr:primaryType': 'lfs:AnswerOption',
+                'jcr:primaryType': 'cards:AnswerOption',
                 'label': value.strip(),
                 'value': value.strip()
             }
@@ -221,8 +221,8 @@ def add_option_properties(option, label):
         option['notApplicable'] = True
     return option
 
-# Converts the data type in 'UserFormatType' to one supported in LFS
-DATA_TO_LFS_TYPE = {
+# Converts the data type in 'UserFormatType' to one supported in CARDS
+DATA_TO_CARDS_TYPE = {
     'datetime': 'date',
     'date': 'date',
     'string': 'text',
@@ -238,8 +238,8 @@ DATA_TO_LFS_TYPE = {
     'computed (integer)': 'computed',
     'time': 'time',
 }
-def convert_to_LFS_data_type(userFormat):
-    result = DATA_TO_LFS_TYPE.get(userFormat.strip().lower(), 'text')
+def convert_to_CARDS_data_type(userFormat):
+    result = DATA_TO_CARDS_TYPE.get(userFormat.strip().lower(), 'text')
     return result
 
 def clean_title(title):
@@ -274,7 +274,7 @@ def parse_description(title):
         result = "Visits " + visit_string
     return result
 
-# Creates a JSON file that contains the tsv file as an lfs:Questionnaire
+# Creates a JSON file that contains the tsv file as an cards:Questionnaire
 def csv_to_json(title):
     questionnaires = []
     questionnaire = {}
@@ -294,7 +294,7 @@ def csv_to_json(title):
                         section = {}
                     questionnaires.append(dict.copy(questionnaire))
                 questionnaire = {}
-                questionnaire['jcr:primaryType'] = 'lfs:Questionnaire'
+                questionnaire['jcr:primaryType'] = 'cards:Questionnaire'
                 num_submisssions = parse_count(row['Report Type'])
                 if num_submisssions != -1:
                     questionnaire['maxPerSubject'] = num_submisssions
@@ -310,7 +310,7 @@ def csv_to_json(title):
                     description = parse_description(title)
                     if (len(description) > 0):
                         questionnaire['description'] = description
-                questionnaire['jcr:primaryType'] = 'lfs:Questionnaire'
+                questionnaire['jcr:primaryType'] = 'cards:Questionnaire'
                 questionnaire['title'] = clean_title(title)
                 questionnaire['maxPerSubject'] = parse_count(title)
                 questionnaire['jcr:reference:requiredSubjectTypes'] = ["/SubjectTypes/Patient"]
@@ -328,7 +328,7 @@ def csv_to_json(title):
                 if num_submisssions != 1 and num_submisssions != parent_submission_limit:
                     main_questionnaire = dict.copy(questionnaire)
                     questionnaire = {}
-                    questionnaire['jcr:primaryType'] = 'lfs:Questionnaire'
+                    questionnaire['jcr:primaryType'] = 'cards:Questionnaire'
                     if num_submisssions != -1:
                         questionnaire['maxPerSubject'] = num_submisssions
                         description = parse_description(row['Sub-report'])
@@ -336,7 +336,7 @@ def csv_to_json(title):
                             questionnaire['description'] = description
                     questionnaire['title'] = clean_title(row['Sub-report'])
                     questionnaire['jcr:reference:requiredSubjectTypes'] = ["/SubjectTypes/Patient"]
-                section['jcr:primaryType'] = 'lfs:Section'
+                section['jcr:primaryType'] = 'cards:Section'
                 section['label'] = clean_title(row['Sub-report'])
 
             parent = section if len(section) > 0 else questionnaire
@@ -358,16 +358,16 @@ def csv_to_json(title):
                     description = text[text.rindex(dividers[0]) + 2 : len(text) - 1]
                     text = text[:text.rindex(dividers[0])].strip()
                     parent[question] = {
-                        'jcr:primaryType': 'lfs:Question',
+                        'jcr:primaryType': 'cards:Question',
                         'text': text,
                         'description': description,
-                        'dataType': convert_to_LFS_data_type(row['Field Type'])
+                        'dataType': convert_to_CARDS_data_type(row['Field Type'])
                     }
                 else:
                     parent[question] = {
-                        'jcr:primaryType': 'lfs:Question',
+                        'jcr:primaryType': 'cards:Question',
                         'text': text,
-                        'dataType': convert_to_LFS_data_type(row['Field Type'])
+                        'dataType': convert_to_CARDS_data_type(row['Field Type'])
                     }
                 if row['Options (if applicable)']:
                     process_options(parent[question], row)
@@ -396,7 +396,7 @@ def csv_to_json(title):
                     if len(value) > 4 and value[2:4].lower() == "if":
                         previous_data = parent[question]
                         parent.update({question + 'Section': {
-                            'jcr:primaryType': 'lfs:Section'
+                            'jcr:primaryType': 'cards:Section'
                         }})
                         parent[question + 'Section'][question] = previous_data
                         prepare_conditional_string(value [5:], parent[question + 'Section'])
@@ -412,7 +412,7 @@ def csv_to_json(title):
         title = q['title'].replace(": ", " - ")
         with open(title + '.json', 'w') as jsonFile:
             json.dump(q, jsonFile, indent='\t')
-        print('python3 lfs/Utilities/JSON-to-XML/json_to_xml.py "' + title +'.json" > "' + title + '.xml";\\')
+        print('python3 cards/Utilities/JSON-to-XML/json_to_xml.py "' + title +'.json" > "' + title + '.xml";\\')
 
 
 titles = ['6MWD', 'ActiGraph Data', 'Adverse events', 'Baseline Health Information', 'Enrollment Status',

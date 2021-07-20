@@ -40,7 +40,8 @@ const COMPARATORS_CREATED_DATE = DEFAULT_COMPARATORS.slice().concat(VALUE_COMPAR
  *
  */
 const DateFilter = forwardRef((props, ref) => {
-  const { classes, defaultValue, onChangeInput, questionDefinition, ...rest } = props;
+  // DefaultLabel intentionally unused, since it needs to not be passed to TextField
+  const { classes, defaultLabel, defaultValue, onChangeInput, questionDefinition, ...rest } = props;
 
   // Dates should have a dateFormat, or default to "yyyy-MM-dd"
   let dateFormat = questionDefinition["dateFormat"] || "yyyy-MM-dd";

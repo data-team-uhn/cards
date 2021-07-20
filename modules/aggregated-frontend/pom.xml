@@ -21,14 +21,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>ca.sickkids.ccm.lfs</groupId>
-    <artifactId>lfs-modules</artifactId>
+    <groupId>io.uhndata.cards</groupId>
+    <artifactId>cards-modules</artifactId>
     <version>0.9-SNAPSHOT</version>
   </parent>
 
-  <artifactId>lfs-aggregated-frontend</artifactId>
+  <artifactId>cards-aggregated-frontend</artifactId>
   <packaging>bundle</packaging>
-  <name>LFS - The aggregated frontend files</name>
+  <name>CARDS - The aggregated frontend files</name>
 
   <build>
     <plugins>
@@ -69,7 +69,7 @@
         <configuration>
           <instructions>
             <Include-Resource>src/main/frontend/dist/,{maven-resources}</Include-Resource>
-            <Sling-Initial-Content>SLING-INF/content/libs/lfs/resources/;path:=/libs/lfs/resources/;overwrite:=true</Sling-Initial-Content>
+            <Sling-Initial-Content>SLING-INF/content/libs/cards/resources/;path:=/libs/cards/resources/;overwrite:=true</Sling-Initial-Content>
           </instructions>
         </configuration>
       </plugin>

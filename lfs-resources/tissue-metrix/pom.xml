@@ -21,7 +21,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>ca.sickkids.ccm.lfs</groupId>
+    <groupId>io.uhndata.cards</groupId>
     <artifactId>lfs-resources</artifactId>
     <version>0.9-SNAPSHOT</version>
   </parent>

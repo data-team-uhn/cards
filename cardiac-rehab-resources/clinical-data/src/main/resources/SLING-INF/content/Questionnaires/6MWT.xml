@@ -19,7 +19,7 @@
 
 <node>
 	<name>6MWT</name>
-	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
+	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>maxPerSubject</name>
 		<value>4</value>
@@ -44,7 +44,7 @@
 	</property>
 	<node>
 		<name>6mwd-visit</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Visit Number</value>
@@ -77,7 +77,7 @@
 		</property>
 		<node>
 			<name>2</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>2</value>
@@ -91,7 +91,7 @@
 		</node>
 		<node>
 			<name>4</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>4</value>
@@ -105,7 +105,7 @@
 		</node>
 		<node>
 			<name>7</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>7</value>
@@ -119,7 +119,7 @@
 		</node>
 		<node>
 			<name>8</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>8</value>
@@ -134,7 +134,7 @@
 	</node>
 	<node>
 		<name>Date</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
 			<value>Date</value>
@@ -142,7 +142,7 @@
 		</property>
 		<node>
 			<name>visitdate</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Date of visit</value>
@@ -172,7 +172,7 @@
 	</node>
 	<node>
 		<name>Age</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
 			<value>Age</value>
@@ -180,7 +180,7 @@
 		</property>
 		<node>
 			<name>age</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>What is the participant's age?</value>
@@ -205,7 +205,7 @@
 	</node>
 	<node>
 		<name>Vitals</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
 			<value>Vitals</value>
@@ -213,7 +213,7 @@
 		</property>
 		<node>
 			<name>sys_bp</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Systolic BP</value>
@@ -242,7 +242,7 @@
 		</node>
 		<node>
 			<name>dias_bp</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Diastolic BP</value>
@@ -271,7 +271,7 @@
 		</node>
 		<node>
 			<name>hr</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Heart rate</value>
@@ -295,7 +295,7 @@
 		</node>
 		<node>
 			<name>height</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Height</value>
@@ -319,7 +319,7 @@
 		</node>
 		<node>
 			<name>weight</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Weight</value>
@@ -344,7 +344,7 @@
 	</node>
 	<node>
 		<name>Polar</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
 			<value>Polar</value>
@@ -352,7 +352,7 @@
 		</property>
 		<node>
 			<name>polar</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Was Polar data captured?</value>
@@ -372,7 +372,7 @@
 	</node>
 	<node>
 		<name>6MWD</name>
-		<primaryNodeType>lfs:Section</primaryNodeType>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
 			<value>6MWD</value>
@@ -380,7 +380,7 @@
 		</property>
 		<node>
 			<name>wd</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Was a 6MWD test performed?</value>
@@ -399,10 +399,10 @@
 		</node>
 		<node>
 			<name>wd_stSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>wd_st</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Start time</value>
@@ -431,7 +431,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -439,7 +439,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -455,7 +455,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -473,10 +473,10 @@
 		</node>
 		<node>
 			<name>wd_patient_watchSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>wd_patient_watch</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Patient watch side</value>
@@ -504,7 +504,7 @@
 				</property>
 				<node>
 					<name>Left</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Left</value>
@@ -518,7 +518,7 @@
 				</node>
 				<node>
 					<name>Right</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Right</value>
@@ -533,7 +533,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -541,7 +541,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -557,7 +557,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -575,10 +575,10 @@
 		</node>
 		<node>
 			<name>wd_patient_iphoneSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>wd_patient_iphone</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Patient iPhone location</value>
@@ -606,7 +606,7 @@
 				</property>
 				<node>
 					<name>Left waist (hip clip)</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Left waist (hip clip)</value>
@@ -620,7 +620,7 @@
 				</node>
 				<node>
 					<name>Right waist (hip clip)</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Right waist (hip clip)</value>
@@ -634,7 +634,7 @@
 				</node>
 				<node>
 					<name>Left back pocket</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Left back pocket</value>
@@ -648,7 +648,7 @@
 				</node>
 				<node>
 					<name>Right back pocket</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Right back pocket</value>
@@ -662,7 +662,7 @@
 				</node>
 				<node>
 					<name>Left front pocket</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Left front pocket</value>
@@ -676,7 +676,7 @@
 				</node>
 				<node>
 					<name>Right front pocket</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Right front pocket</value>
@@ -691,7 +691,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -699,7 +699,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -715,7 +715,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -733,10 +733,10 @@
 		</node>
 		<node>
 			<name>wd_borg_preSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>wd_borg_pre</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>BORG RPE, pre-test</value>
@@ -770,7 +770,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -778,7 +778,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -794,7 +794,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -812,10 +812,10 @@
 		</node>
 		<node>
 			<name>wd_lapsSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>wd_laps</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Whole laps completed</value>
@@ -839,7 +839,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -847,7 +847,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -863,7 +863,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -881,10 +881,10 @@
 		</node>
 		<node>
 			<name>wd_lap_distSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>wd_lap_dist</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Whole lap distance</value>
@@ -913,7 +913,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -921,7 +921,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -937,7 +937,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -955,10 +955,10 @@
 		</node>
 		<node>
 			<name>wd_part_lapSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>wd_part_lap</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Partial lap distance</value>
@@ -987,7 +987,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -995,7 +995,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -1011,7 +1011,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -1029,10 +1029,10 @@
 		</node>
 		<node>
 			<name>wd_tol_disSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>wd_tol_dis</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Total distance</value>
@@ -1066,7 +1066,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -1074,7 +1074,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -1090,7 +1090,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -1108,10 +1108,10 @@
 		</node>
 		<node>
 			<name>wd_borg_postSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>wd_borg_post</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>BORG RPE, post-test</value>
@@ -1145,7 +1145,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -1153,7 +1153,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -1169,7 +1169,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -1187,10 +1187,10 @@
 		</node>
 		<node>
 			<name>wd_proctor_opinionSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>wd_proctor_opinion</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Proctor opinion: post-test BORG RPE</value>
@@ -1218,7 +1218,7 @@
 				</property>
 				<node>
 					<name>Greater than self report</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Greater than self report</value>
@@ -1232,7 +1232,7 @@
 				</node>
 				<node>
 					<name>Same as self report</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Same as self report</value>
@@ -1246,7 +1246,7 @@
 				</node>
 				<node>
 					<name>Less than self report</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Less than self report</value>
@@ -1260,7 +1260,7 @@
 				</node>
 				<node>
 					<name>Not sure</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Not sure</value>
@@ -1275,7 +1275,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -1283,7 +1283,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -1299,7 +1299,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -1317,10 +1317,10 @@
 		</node>
 		<node>
 			<name>wd_aidSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>wd_aid</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Was a walking aid used during the test?</value>
@@ -1339,7 +1339,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -1347,7 +1347,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -1363,7 +1363,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -1381,10 +1381,10 @@
 		</node>
 		<node>
 			<name>wd_aid2Section</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>wd_aid2</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>What type of walking aid?</value>
@@ -1412,7 +1412,7 @@
 				</property>
 				<node>
 					<name>Cane (right)</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Cane (right)</value>
@@ -1426,7 +1426,7 @@
 				</node>
 				<node>
 					<name>Cane (left)</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Cane (left)</value>
@@ -1440,7 +1440,7 @@
 				</node>
 				<node>
 					<name>Walker with wheels</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Walker with wheels</value>
@@ -1454,7 +1454,7 @@
 				</node>
 				<node>
 					<name>Walker without wheels</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Walker without wheels</value>
@@ -1468,7 +1468,7 @@
 				</node>
 				<node>
 					<name>Crutches (right)</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Crutches (right)</value>
@@ -1482,7 +1482,7 @@
 				</node>
 				<node>
 					<name>Crutches (left)</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Crutches (left)</value>
@@ -1496,7 +1496,7 @@
 				</node>
 				<node>
 					<name>Leg brace (right)</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Leg brace (right)</value>
@@ -1510,7 +1510,7 @@
 				</node>
 				<node>
 					<name>Leg brace (left)</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Leg brace (left)</value>
@@ -1524,7 +1524,7 @@
 				</node>
 				<node>
 					<name>Prosthetic (right)</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Prosthetic (right)</value>
@@ -1538,7 +1538,7 @@
 				</node>
 				<node>
 					<name>Prosthetic (left)</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Prosthetic (left)</value>
@@ -1553,7 +1553,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -1561,7 +1561,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -1577,7 +1577,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -1595,10 +1595,10 @@
 		</node>
 		<node>
 			<name>wd_sympSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>wd_symp</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Were any symptoms experienced during the test?</value>
@@ -1617,7 +1617,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -1625,7 +1625,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -1641,7 +1641,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -1659,10 +1659,10 @@
 		</node>
 		<node>
 			<name>wd_symp2Section</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>wd_symp2</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>What symptoms?</value>
@@ -1685,7 +1685,7 @@
 				</property>
 				<node>
 					<name>Chest pain</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Chest pain</value>
@@ -1699,7 +1699,7 @@
 				</node>
 				<node>
 					<name>Shortness of breath</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Shortness of breath</value>
@@ -1713,7 +1713,7 @@
 				</node>
 				<node>
 					<name>Lightheadedness</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Lightheadedness</value>
@@ -1727,7 +1727,7 @@
 				</node>
 				<node>
 					<name>Palpitations</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Palpitations</value>
@@ -1741,7 +1741,7 @@
 				</node>
 				<node>
 					<name>Leg fatigue</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Leg fatigue</value>
@@ -1755,7 +1755,7 @@
 				</node>
 				<node>
 					<name>General fatigue</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>General fatigue</value>
@@ -1770,7 +1770,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -1778,7 +1778,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -1794,7 +1794,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -1812,10 +1812,10 @@
 		</node>
 		<node>
 			<name>wd_interruptSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>wd_interrupt</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Was the participant interrupted during the test?</value>
@@ -1839,7 +1839,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -1847,7 +1847,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -1863,7 +1863,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -1881,10 +1881,10 @@
 		</node>
 		<node>
 			<name>wd_stopSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>wd_stop</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Did the participant stop the test early?</value>
@@ -1903,7 +1903,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -1911,7 +1911,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -1927,7 +1927,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -1945,10 +1945,10 @@
 		</node>
 		<node>
 			<name>wd_stop2Section</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>wd_stop2</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Reason for stopping the test early</value>
@@ -1971,7 +1971,7 @@
 				</property>
 				<node>
 					<name>Muscular Fatigue</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Muscular Fatigue</value>
@@ -1985,7 +1985,7 @@
 				</node>
 				<node>
 					<name>Joint pain</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Joint pain</value>
@@ -1999,7 +1999,7 @@
 				</node>
 				<node>
 					<name>Back pain</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Back pain</value>
@@ -2013,7 +2013,7 @@
 				</node>
 				<node>
 					<name>Feeling out of breath</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Feeling out of breath</value>
@@ -2027,7 +2027,7 @@
 				</node>
 				<node>
 					<name>Chest pain-tightness</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Chest pain/tightness</value>
@@ -2041,7 +2041,7 @@
 				</node>
 				<node>
 					<name>Lightheadedness or dizzy-feeling unsteady</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Lightheadedness or dizzy/feeling unsteady</value>
@@ -2055,7 +2055,7 @@
 				</node>
 				<node>
 					<name>External interruption</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>External interruption</value>
@@ -2070,7 +2070,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -2078,7 +2078,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -2094,7 +2094,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -2112,10 +2112,10 @@
 		</node>
 		<node>
 			<name>wd_pause1Section</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>wd_pause1</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Did the participant stop in the middle of the test, but then continue walking after?</value>
@@ -2134,7 +2134,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -2142,7 +2142,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -2158,7 +2158,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -2176,10 +2176,10 @@
 		</node>
 		<node>
 			<name>wd_pause2Section</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
 				<name>wd_pause2</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
 					<value>Reason for pausing during the test</value>
@@ -2202,7 +2202,7 @@
 				</property>
 				<node>
 					<name>Muscular Fatigue</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Muscular Fatigue</value>
@@ -2216,7 +2216,7 @@
 				</node>
 				<node>
 					<name>Joint pain</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Joint pain</value>
@@ -2230,7 +2230,7 @@
 				</node>
 				<node>
 					<name>Back pain</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Back pain</value>
@@ -2244,7 +2244,7 @@
 				</node>
 				<node>
 					<name>Feeling out of breath</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Feeling out of breath</value>
@@ -2258,7 +2258,7 @@
 				</node>
 				<node>
 					<name>Chest pain-tightness</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Chest pain/tightness</value>
@@ -2272,7 +2272,7 @@
 				</node>
 				<node>
 					<name>Lightheadedness or dizzy-feeling unsteady</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>Lightheadedness or dizzy/feeling unsteady</value>
@@ -2286,7 +2286,7 @@
 				</node>
 				<node>
 					<name>External interruption</name>
-					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
 						<value>External interruption</value>
@@ -2301,7 +2301,7 @@
 			</node>
 			<node>
 				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
 					<name>comparator</name>
 					<value>=</value>
@@ -2309,7 +2309,7 @@
 				</property>
 				<node>
 					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -2325,7 +2325,7 @@
 				</node>
 				<node>
 					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
 						<name>value</name>
 						<values>
@@ -2343,7 +2343,7 @@
 		</node>
 		<node>
 			<name>wd_comments</name>
-			<primaryNodeType>lfs:Question</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
 				<value>Additional comments from the 6MWD?</value>

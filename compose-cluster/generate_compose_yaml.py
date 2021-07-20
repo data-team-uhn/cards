@@ -25,7 +25,7 @@ import json
 import shutil
 import argparse
 
-LFS_DOCKER_TAG = "latest"
+CARDS_DOCKER_TAG = "latest"
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument('--shards', help='Number of MongoDB shards', default=1, type=int)
@@ -38,7 +38,7 @@ argparser.add_argument('--external_mongo', help='Use an external MongoDB instanc
 argparser.add_argument('--external_mongo_address', help='Address/Hostname of the external MongoDB instance. Only valid if --external_mongo is specified.')
 argparser.add_argument('--external_mongo_dbname', help='Database name of the external MongoDB instance. Only valid if --external_mongo is specified.')
 argparser.add_argument('--ssl_proxy', help='Protect this service with SSL/TLS (use https:// instead of http://)', action='store_true')
-argparser.add_argument('--sling_admin_port', help='The localhost TCP port which should be forwarded to lfsinitial:8080', type=int)
+argparser.add_argument('--sling_admin_port', help='The localhost TCP port which should be forwarded to cardsinitial:8080', type=int)
 argparser.add_argument('--subnet', help='Manually specify the subnet of IP addresses to be used by the containers in this docker-compose environment (eg. --subnet 172.99.0.0/16)')
 args = argparser.parse_args()
 
@@ -217,31 +217,31 @@ if not (args.oak_filesystem or args.external_mongo):
 
     yaml_obj['services']['initializer']['depends_on'] = ['router']
 
-#Configure the initial LFS container
-print("Configuring service: lfsinitial")
-yaml_obj['services']['lfsinitial'] = {}
-yaml_obj['services']['lfsinitial']['image'] = "lfs/lfs:{}".format(LFS_DOCKER_TAG)
+#Configure the initial CARDS container
+print("Configuring service: cardsinitial")
+yaml_obj['services']['cardsinitial'] = {}
+yaml_obj['services']['cardsinitial']['image'] = "cards/cards:{}".format(CARDS_DOCKER_TAG)
 
-yaml_obj['services']['lfsinitial']['networks'] = {}
-yaml_obj['services']['lfsinitial']['networks']['internalnetwork'] = {}
-yaml_obj['services']['lfsinitial']['networks']['internalnetwork']['aliases'] = ['lfsinitial']
+yaml_obj['services']['cardsinitial']['networks'] = {}
+yaml_obj['services']['cardsinitial']['networks']['internalnetwork'] = {}
+yaml_obj['services']['cardsinitial']['networks']['internalnetwork']['aliases'] = ['cardsinitial']
 
 if args.custom_env_file:
-    yaml_obj['services']['lfsinitial']['env_file'] = args.custom_env_file
+    yaml_obj['services']['cardsinitial']['env_file'] = args.custom_env_file
 
-yaml_obj['services']['lfsinitial']['environment'] = []
-yaml_obj['services']['lfsinitial']['environment'].append("INITIAL_SLING_NODE=true")
+yaml_obj['services']['cardsinitial']['environment'] = []
+yaml_obj['services']['cardsinitial']['environment'].append("INITIAL_SLING_NODE=true")
 if not (args.oak_filesystem or args.external_mongo):
-    yaml_obj['services']['lfsinitial']['environment'].append("INSIDE_DOCKER_COMPOSE=true")
-yaml_obj['services']['lfsinitial']['environment'].append("LFS_RELOAD=${LFS_RELOAD:-}")
+    yaml_obj['services']['cardsinitial']['environment'].append("INSIDE_DOCKER_COMPOSE=true")
+yaml_obj['services']['cardsinitial']['environment'].append("CARDS_RELOAD=${CARDS_RELOAD:-}")
 if args.oak_filesystem:
-    yaml_obj['services']['lfsinitial']['environment'].append("OAK_FILESYSTEM=true")
+    yaml_obj['services']['cardsinitial']['environment'].append("OAK_FILESYSTEM=true")
 
 if not (args.oak_filesystem or args.external_mongo):
-    yaml_obj['services']['lfsinitial']['depends_on'] = ['router']
+    yaml_obj['services']['cardsinitial']['depends_on'] = ['router']
 
 if args.sling_admin_port:
-    yaml_obj['services']['lfsinitial']['ports'] = ["127.0.0.1:{}:8080".format(args.sling_admin_port)]
+    yaml_obj['services']['cardsinitial']['ports'] = ["127.0.0.1:{}:8080".format(args.sling_admin_port)]
 
 #Configure the NCR container (if enabled) - only one for now
 if ENABLE_NCR:
@@ -271,12 +271,12 @@ if args.external_mongo:
 	else:
 		ext_mongo_db_name = input("Enter the Sling storage database name on the MongoDB server (default: sling): ")
 
-	yaml_obj['services']['lfsinitial']['environment'].append("EXTERNAL_MONGO_ADDRESS={}".format(ext_mongo_address))
+	yaml_obj['services']['cardsinitial']['environment'].append("EXTERNAL_MONGO_ADDRESS={}".format(ext_mongo_address))
 	if len(ext_mongo_credentials) != 0:
-		yaml_obj['services']['lfsinitial']['environment'].append("MONGO_AUTH={}".format(ext_mongo_credentials))
+		yaml_obj['services']['cardsinitial']['environment'].append("MONGO_AUTH={}".format(ext_mongo_credentials))
 
 	if len(ext_mongo_db_name) != 0:
-		yaml_obj['services']['lfsinitial']['environment'].append("CUSTOM_MONGO_DB_NAME={}".format(ext_mongo_db_name))
+		yaml_obj['services']['cardsinitial']['environment'].append("CUSTOM_MONGO_DB_NAME={}".format(ext_mongo_db_name))
 
 
 #Configure the proxy container
@@ -294,7 +294,7 @@ yaml_obj['services']['proxy']['networks'] = {}
 yaml_obj['services']['proxy']['networks']['internalnetwork'] = {}
 yaml_obj['services']['proxy']['networks']['internalnetwork']['aliases'] = ['proxy']
 
-yaml_obj['services']['proxy']['depends_on'] = ['lfsinitial']
+yaml_obj['services']['proxy']['depends_on'] = ['cardsinitial']
 if ENABLE_NCR:
 	yaml_obj['services']['proxy']['depends_on'].append('neuralcr')
 
