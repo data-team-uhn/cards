@@ -214,7 +214,7 @@ function VocabularyQuery(props) {
             onClick={(e) => {
               if (e.target.localName === "li") {
                 onClick(element["@path"], name);
-                setInputValue(clearOnClick ? "" : name);
+                setInputValue(clearOnClick || isDefaultOption(element["@path"]) ? "" : name);
                 closeSuggestions();
               }}
             }
