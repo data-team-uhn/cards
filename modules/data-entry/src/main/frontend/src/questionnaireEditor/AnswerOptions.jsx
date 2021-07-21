@@ -66,6 +66,7 @@ let AnswerOptions = (props) => {
   let [ description, setDescription ] = useState('');
   let [ descriptionAnchorEl, setDescriptionAnchorEl ] = useState(null);
   let [ descriptionLabel, setDescriptionLabel ] = useState('');
+  let [ isSpecialOption, setIsSpecialOption ] = useState(false);
 
   const notApplicable  = Object.values(data).find(option => option['jcr:primaryType'] == 'cards:AnswerOption' && option.notApplicable);
   const noneOfTheAbove = Object.values(data).find(option => option['jcr:primaryType'] == 'cards:AnswerOption' && option.noneOfTheAbove);
@@ -204,7 +205,7 @@ let AnswerOptions = (props) => {
        alignItems="stretch"
        onClick={(event) => option.setter({ ...option.data, [option.label]: true})}
        >
-      <Grid item xs={10}>
+      <Grid item xs={9}>
       <Tooltip title={option.tooltip}>
         <TextField
           disabled={!option.data[option.label]}
@@ -217,7 +218,22 @@ let AnswerOptions = (props) => {
         />
       </Tooltip>
       </Grid>
-      <Grid item xs={2}>
+      <Grid item xs={3}>
+      <Tooltip title="Description">
+        <IconButton onClick={(event) => {
+                                            setDescriptionAnchorEl(event.currentTarget);
+                                            setDescriptionIndex(index);
+                                            setDescriptionLabel(option.data.label || option.data.value);
+                                            setIsSpecialOption(true);
+                                          }
+                              }
+        >
+          <ComposedIcon
+              size="large"
+              MainIcon={NotesIcon}
+              ExtraIcon={!option.data.description ? AddCircleIcon : EditIcon}/>
+        </IconButton>
+      </Tooltip>
       <Tooltip title={option.switchTooltip} className={classes.specialOptionSwitch}>
         <FormControlLabel
           control={
@@ -237,6 +253,7 @@ let AnswerOptions = (props) => {
           <input type='hidden' name={`${option.data['@path']}/label`} value={option.data.label} />
           <input type='hidden' name={`${option.data['@path']}/${option.label}`} value={option.data[option.label]} />
           <input type='hidden' name={`${option.data['@path']}/defaultOrder`} value={option.defaultOrder} />
+          <input type="hidden" name={`${option.data['@path']}/description`} value={option.data.description || ''} />
         </>
         :
         <input type='hidden' name={`${option.data['@path']}@Delete`} value="0" />
@@ -249,15 +266,21 @@ let AnswerOptions = (props) => {
   let handleClose = () => {
     setDescriptionAnchorEl(null);
     setDescriptionIndex(null);
+    setDescriptionLabel('');
+    setIsSpecialOption(false);
   }
 
   let onDescriptionPopoverClose = () => {
     // update corresponding option description
-    setOptions(oldValue => {
+    if (isSpecialOption) {
+      specialOptionsInfo[descriptionIndex].setter({ ...specialOptionsInfo[descriptionIndex].data, "description": description});
+    } else {
+      setOptions(oldValue => {
         var value = oldValue.slice();
         value[descriptionIndex].description = description;
         return value;
       });
+    }
     handleClose();
   }
 
@@ -322,7 +345,7 @@ let AnswerOptions = (props) => {
                           <IconButton onClick={(event) => {
                                                             setDescriptionAnchorEl(event.currentTarget);
                                                             setDescriptionIndex(index);
-                                                            setDescriptionLabel(value.label);
+                                                            setDescriptionLabel(value.label || value.value);
                                                           }
                                               }
                                       className={classes.answerOptionButton}>
@@ -385,7 +408,7 @@ let AnswerOptions = (props) => {
         </Typography>
         { descriptionIndex != null &&
           <MarkdownText
-            text={options[descriptionIndex]["description"]}
+            text={isSpecialOption ? specialOptionsInfo[descriptionIndex].data.description : options[descriptionIndex].description}
             onChange={setDescription}
           />
         }

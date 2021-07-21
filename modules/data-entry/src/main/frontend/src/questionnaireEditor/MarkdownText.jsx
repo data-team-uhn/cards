@@ -52,7 +52,7 @@ let MarkdownText = (props) => {
 }
 
 MarkdownText.propTypes = {
-  text: PropTypes.string.isRequired,
+  text: PropTypes.string,
   onChange: PropTypes.func
 };
 
