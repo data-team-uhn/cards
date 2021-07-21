@@ -28,7 +28,7 @@ import { useFormUpdateReaderContext, useFormUpdateWriterContext } from "./FormUp
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import AnswerInstructions from "./AnswerInstructions.jsx";
 import UserInputAssistant from "../components/UserInputAssistant.jsx";
-import MDEditor from '@uiw/react-md-editor';
+import FormattedText from "../components/FormattedText.jsx";
 
 // Position used to read whether or not an option is a "default" suggestion (i.e. one provided by the questionnaire)
 const IS_DEFAULT_POS = 2;
@@ -574,7 +574,9 @@ function ResponseChild(props) {
                 }}
               />
               <br/>
-              <MDEditor.Markdown className={classes.selectionDescription} source={description} />
+              <FormattedText className={classes.selectionDescription} variant="caption" color="textSecondary">
+                {description}
+              </FormattedText>
              </>
             ) : ((name !== "") && (
             <React.Fragment>

@@ -24,7 +24,7 @@ import { Card, CardHeader, CardContent, List, ListItem, Typography, withStyles }
 
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import AnswerInstructions from "./AnswerInstructions";
-import MDEditor from '@uiw/react-md-editor';
+import FormattedText from "../components/FormattedText.jsx";
 
 // GUI for displaying answers
 function Question (props) {
@@ -38,7 +38,7 @@ function Question (props) {
       <CardHeader
         title={text}
         titleTypographyProps={{ variant: 'h6' }}
-        subheader={<MDEditor.Markdown className={classes.markdown} source={description} />}
+        subheader={<FormattedText>{description}</FormattedText>}
         subheaderTypographyProps={{ variant: 'caption', component: "div"}}
         />
       <CardContent className={isEdit ? classes.editModeAnswers : classes.viewModeAnswers}>

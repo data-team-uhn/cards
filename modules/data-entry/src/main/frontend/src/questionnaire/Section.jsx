@@ -33,7 +33,7 @@ import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireS
 // FIXME In order for the conditionals to be registered, they need to be loaded, and the only way to do that at the moment is to explicitly invoke them here. Find a way to automatically load all conditional types, possibly using self-declaration in a node, like the assets, or even by filtering through assets.
 import ConditionalGroup from "./ConditionalGroup";
 import ConditionalSingle from "./ConditionalSingle";
-import MDEditor from '@uiw/react-md-editor';
+import FormattedText from "../components/FormattedText.jsx";
 import { v4 as uuidv4 } from 'uuid';
 
 const ID_STATE_KEY = ":AccessCount";
@@ -77,9 +77,9 @@ function Section(props) {
     );
   const descEl = sectionDefinition["description"] &&
     (idx =>
-      <Typography variant="caption" color="textSecondary" display="block" component="div">
-        {<MDEditor.Markdown className={classes.markdown} source={sectionDefinition["description"]} />}
-      </Typography>
+      <FormattedText variant="caption" display="block" color="textSecondary">
+        {sectionDefinition["description"]}
+      </FormattedText>
     );
   const hasHeader = titleEl || descEl;
 

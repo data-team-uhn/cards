@@ -36,7 +36,7 @@ import {
 import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
 import EditorInput from "./EditorInput";
 import QuestionComponentManager from "./QuestionComponentManager";
-import StyledMarkdownTextField from "./MarkdownTextField";
+import MarkdownText from "./MarkdownText";
 import CloseIcon from '@material-ui/icons/Close';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import EditIcon from '@material-ui/icons/Edit';
@@ -65,6 +65,7 @@ let AnswerOptions = (props) => {
   let [ descriptionIndex, setDescriptionIndex ] = useState(null);
   let [ description, setDescription ] = useState('');
   let [ descriptionAnchorEl, setDescriptionAnchorEl ] = useState(null);
+  let [ descriptionLabel, setDescriptionLabel ] = useState('');
 
   const notApplicable  = Object.values(data).find(option => option['jcr:primaryType'] == 'cards:AnswerOption' && option.notApplicable);
   const noneOfTheAbove = Object.values(data).find(option => option['jcr:primaryType'] == 'cards:AnswerOption' && option.noneOfTheAbove);
@@ -318,7 +319,13 @@ let AnswerOptions = (props) => {
                           </IconButton>
                         </Tooltip>
                         <Tooltip title="Description">
-                          <IconButton onClick={(event) => { setDescriptionAnchorEl(event.currentTarget); setDescriptionIndex(index); }} className={classes.answerOptionButton}>
+                          <IconButton onClick={(event) => {
+                                                            setDescriptionAnchorEl(event.currentTarget);
+                                                            setDescriptionIndex(index);
+                                                            setDescriptionLabel(value.label);
+                                                          }
+                                              }
+                                      className={classes.answerOptionButton}>
                             <ComposedIcon
                               size="large"
                               MainIcon={NotesIcon}
@@ -373,10 +380,12 @@ let AnswerOptions = (props) => {
         }}
         className={classes.descriptionPopover}
       >
+        <Typography variant="h6" className={classes.descriptionPopoverTitle} >
+          {"Description for " + descriptionLabel}
+        </Typography>
         { descriptionIndex != null &&
-          <StyledMarkdownTextField
-            objectKey="description"
-            data={options[descriptionIndex]}
+          <MarkdownText
+            text={options[descriptionIndex]["description"]}
             onChange={setDescription}
           />
         }
