@@ -72,13 +72,6 @@ function VocabularyQuery(props) {
           .find(value => value['jcr:primaryType'] == 'cards:AnswerOption' && value.value === path)
   }
 
-  // Set input value in accordance with selection type (single select/multiple select) and initial selection
-  let updateSingleSelectInputValue = (val) => {
-    if (maxAnswers === 1) {
-      initialSelection.length == 0 || isDefaultOption(initialSelection[0][VALUE_POS]) ? setInputValue(val || "") : setInputValue(initialSelection[0][LABEL_POS]);
-    }
-  }
-
   const [inputValue, setInputValue] = useState(value);
   const [error, setError] = useState("");
 
@@ -92,11 +85,6 @@ function VocabularyQuery(props) {
 
   let infoboxRef = useRef();
   let browserRef = useRef();
-
-  // Update input field if maxAnswers=1
-  useEffect(() => {
-    updateSingleSelectInputValue();
-  }, [initialSelection])
 
   const inputEl = (
     <Input
@@ -226,7 +214,7 @@ function VocabularyQuery(props) {
             onClick={(e) => {
               if (e.target.localName === "li") {
                 onClick(element["@path"], name);
-                setInputValue(clearOnClick ? "" : name);
+                setInputValue(clearOnClick || isDefaultOption(element["@path"]) ? "" : name);
                 closeSuggestions();
               }}
             }
@@ -329,7 +317,6 @@ function VocabularyQuery(props) {
       && maxAnswers !== 1
       && clearOnClick
       && setInputValue("");
-    updateSingleSelectInputValue();
     setSuggestionsVisible(false);
     setTermPath("");
     setError("");
