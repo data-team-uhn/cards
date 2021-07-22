@@ -421,7 +421,6 @@ let AnswerOptions = (props) => {
           variant='contained'
           color='primary'
           onClick={onDescriptionPopoverClose}
-          disabled={!Boolean(description)}
           className={classes.descriptionPopoverButton}
         >
           Done

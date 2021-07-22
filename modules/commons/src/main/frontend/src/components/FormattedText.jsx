@@ -40,16 +40,7 @@ let FormattedText = (props) => {
 }
 
 FormattedText.propTypes = {
-  children: PropTypes.string,
-  variant: PropTypes.string,
-  color: PropTypes.string,
-  display: PropTypes.string
-};
-
-FormattedText.defaultProps = {
-  variant: 'body1',
-  color: 'initial',
-  display: 'initial'
+  children: PropTypes.string
 };
 
 export default FormattedText;

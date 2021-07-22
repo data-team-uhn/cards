@@ -39,7 +39,7 @@ function Question (props) {
         title={text}
         titleTypographyProps={{ variant: 'h6' }}
         subheader={<FormattedText variant="caption">{description}</FormattedText>}
-        subheaderTypographyProps={{ component: "div"}}
+        subheaderTypographyProps={{ component: "div" }}
         />
       <CardContent className={isEdit ? classes.editModeAnswers : classes.viewModeAnswers}>
         <div className={compact ? classes.compactLayout : null}>
