@@ -594,11 +594,17 @@ const questionnaireStyle = theme => ({
     answerOptionButton: {
       float: "right",
     },
+    specialOptionButton: {
+      float: "right",
+      paddingTop: theme.spacing(0.5),
+      paddingRight: theme.spacing(0.5)
+    },
     newOptionInput: {
       marginBottom: theme.spacing(2),
     },
     specialOptionSwitch: {
       margin: "0",
+      float: "right",
     },
     optionsDragIndicator: {
       float: "left",

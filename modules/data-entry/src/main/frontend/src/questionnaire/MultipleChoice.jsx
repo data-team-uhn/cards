@@ -458,7 +458,7 @@ function MultipleChoice(props) {
           {generateDefaultOptions(options, selection, disabled, isRadio, selectNonGhostOption, removeOption)}
           {/* Ghost radio for the text input */}
           {
-          ghostInput && <ListItem className={classes.selectionChild + " " + classes.ghostListItem}>
+          ghostInput && <ListItem className={classes.ghostListItem}>
             <FormControlLabel
               control={
               <Radio
@@ -573,7 +573,6 @@ function ResponseChild(props) {
                   label: classes.inputLabel
                 }}
               />
-              <br/>
               <FormattedText className={classes.selectionDescription} variant="caption" color="textSecondary">
                 {description}
               </FormattedText>

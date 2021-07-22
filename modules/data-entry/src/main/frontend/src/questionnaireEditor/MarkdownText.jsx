@@ -40,8 +40,8 @@ const infoButton = {
 
 // Markdown Text Input field used by Edit dialog component
 let MarkdownText = (props) => {
-  let { text, onChange, classes } = props;
-  const [value, setValue] = useState(text || '');
+  let { onChange, classes } = props;
+  const [value, setValue] = useState(props.value || '');
   let cmd = commands.getExtraCommands();
   cmd.push(commands.divider);
   cmd.push(infoButton);
@@ -52,7 +52,7 @@ let MarkdownText = (props) => {
 }
 
 MarkdownText.propTypes = {
-  text: PropTypes.string,
+  value: PropTypes.string,
   onChange: PropTypes.func
 };
 

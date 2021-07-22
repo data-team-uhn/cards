@@ -195,6 +195,29 @@ let AnswerOptions = (props) => {
       }, 500);
     }
   }
+
+  let generateDescriptionIcon = (item, index, isSpecialOptn) => {
+    return (
+      <Tooltip title="Description">
+        <IconButton
+          onClick={(event) => {
+                                setDescriptionAnchorEl(event.currentTarget);
+                                setDescriptionIndex(index);
+                                setDescriptionLabel(item.label || item.value);
+                                setIsSpecialOption(isSpecialOptn);
+                                setDescription(item.description);
+                              }
+                   }
+          className={isSpecialOptn ? classes.specialOptionButton : classes.answerOptionButton}
+        >
+          <ComposedIcon
+              size="large"
+              MainIcon={NotesIcon}
+              ExtraIcon={!item.description ? AddCircleIcon : EditIcon}/>
+        </IconButton>
+      </Tooltip>
+    )
+  }
   
   let generateSpecialOptions = (index) => {
     let option = specialOptionsInfo[index];
@@ -219,21 +242,6 @@ let AnswerOptions = (props) => {
       </Tooltip>
       </Grid>
       <Grid item xs={3}>
-      <Tooltip title="Description">
-        <IconButton onClick={(event) => {
-                                            setDescriptionAnchorEl(event.currentTarget);
-                                            setDescriptionIndex(index);
-                                            setDescriptionLabel(option.data.label || option.data.value);
-                                            setIsSpecialOption(true);
-                                          }
-                              }
-        >
-          <ComposedIcon
-              size="large"
-              MainIcon={NotesIcon}
-              ExtraIcon={!option.data.description ? AddCircleIcon : EditIcon}/>
-        </IconButton>
-      </Tooltip>
       <Tooltip title={option.switchTooltip} className={classes.specialOptionSwitch}>
         <FormControlLabel
           control={
@@ -245,6 +253,7 @@ let AnswerOptions = (props) => {
           }
         />
       </Tooltip>
+      {generateDescriptionIcon(option.data, index, true)}
       { option.data[option.label]
         ?
         <>
@@ -268,6 +277,7 @@ let AnswerOptions = (props) => {
     setDescriptionIndex(null);
     setDescriptionLabel('');
     setIsSpecialOption(false);
+    setDescription('');
   }
 
   let onDescriptionPopoverClose = () => {
@@ -341,20 +351,7 @@ let AnswerOptions = (props) => {
                             <CloseIcon/>
                           </IconButton>
                         </Tooltip>
-                        <Tooltip title="Description">
-                          <IconButton onClick={(event) => {
-                                                            setDescriptionAnchorEl(event.currentTarget);
-                                                            setDescriptionIndex(index);
-                                                            setDescriptionLabel(value.label || value.value);
-                                                          }
-                                              }
-                                      className={classes.answerOptionButton}>
-                            <ComposedIcon
-                              size="large"
-                              MainIcon={NotesIcon}
-                              ExtraIcon={!value.description ? AddCircleIcon : EditIcon}/>
-                          </IconButton>
-                        </Tooltip>
+                        {generateDescriptionIcon(value, index, false)}
                       </Grid>
                     </Grid>
                   ) }
@@ -404,11 +401,11 @@ let AnswerOptions = (props) => {
         className={classes.descriptionPopover}
       >
         <Typography variant="h6" className={classes.descriptionPopoverTitle} >
-          {"Description for " + descriptionLabel}
+          {`Description for "${descriptionLabel}"`}
         </Typography>
         { descriptionIndex != null &&
           <MarkdownText
-            text={isSpecialOption ? specialOptionsInfo[descriptionIndex].data.description : options[descriptionIndex].description}
+            value={description}
             onChange={setDescription}
           />
         }

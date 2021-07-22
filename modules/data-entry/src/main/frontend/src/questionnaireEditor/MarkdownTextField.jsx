@@ -33,7 +33,7 @@ let MarkdownTextField = (props) => {
 
   return (
     <EditorInput name={objectKey}>
-      <MarkdownText text={value} onChange={value => {setValue(value); onChange && onChange(value);}} />
+      <MarkdownText value={value} onChange={value => {setValue(value); onChange && onChange(value);}} />
       <input type="hidden" name={objectKey} value={value} />
     </EditorInput>
   )

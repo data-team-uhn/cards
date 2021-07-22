@@ -25,6 +25,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useTheme } from '@material-ui/core/styles';
 
 const sizesMap = {
   'small': { size: 17, extraSize: 10 },
@@ -38,6 +39,7 @@ const ComposedIcon = ({
   size = 'small',
   color = 'inherit',
   position = 'bottom-end',
+  theme = useTheme(),
   disabled,
 }) => (
   <div style={{
@@ -55,7 +57,7 @@ const ComposedIcon = ({
         lineHeight: '0px',
         cursor: 'pointer',
         position: 'absolute',
-        textShadow: '0.75px 0px 0.5px #FFF, 0px 0.75px 0.5px #FFF, -0.75px 0px 0.5px #FFF, 0px -0.75px 0.5px #FFF',
+        textShadow: `0.75px 0px 0.5px ${theme.palette.background.default}, 0px 0.75px 0.5px ${theme.palette.background.default}, -0.75px 0px 0.5px ${theme.palette.background.default}, 0px -0.75px 0.5px ${theme.palette.background.default}`,
         bottom: position.includes('bottom') ? '-4px' : null,
         top: position.includes('top') ? '-4px' : null,
         left: position.includes('start') ? '-4px' : null,
@@ -65,7 +67,7 @@ const ComposedIcon = ({
         color={color}
         style={{
           fontSize: sizesMap[size].extraSize,
-          color: disabled ? 'rgba(0, 0, 0, 0.35)' : null,
+          color: disabled ? theme.palette.text.disabled : null,
         }}
       />
     </div>

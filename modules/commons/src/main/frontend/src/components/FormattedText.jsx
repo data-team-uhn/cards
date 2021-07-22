@@ -29,12 +29,12 @@ const useStyles = makeStyles(theme => ({
 }));
 
 let FormattedText = (props) => {
-  let { children, variant, display, color } = props;
-  const classes = useStyles();
+  let { children, ...typographyProps } = props;
+  const mdClasses = useStyles();
 
   return (
-    <Typography variant={variant} display={display} component="div" color={color} >
-      <MDEditor.Markdown className={classes.markdown} source={children} />
+    <Typography component="div" {...typographyProps} >
+      <MDEditor.Markdown classes={mdClasses} className={mdClasses.markdown} source={children} />
     </Typography>
   );
 }
