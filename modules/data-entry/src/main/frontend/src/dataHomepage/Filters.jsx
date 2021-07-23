@@ -147,7 +147,7 @@ function Filters(props) {
         continue;
       }
 
-      newFilterableFields.push([title, ...parseSectionOrQuestionnaire(thisQuestionnaire)]);
+      newFilterableFields.push([title, ...parseSectionOrQuestionnaire(thisQuestionnaire, title+"/")]);
     }
 
     newQuestionDefinitions["Subject"] = {
