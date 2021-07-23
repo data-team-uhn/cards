@@ -33,7 +33,25 @@
                     "nodeScopeIndex": true,
                     "useInExcerpt": true
                 },
+                "has_exact_synonym": {
+                    "analyzed": true,
+                    "boost": 30,
+                    "nodeScopeIndex": true,
+                    "useInExcerpt": true
+                },
                 "description": {
+                    "analyzed": true,
+                    "boost": 10,
+                    "nodeScopeIndex": true,
+                    "useInExcerpt": true
+                },
+                "def": {
+                    "analyzed": true,
+                    "boost": 10,
+                    "nodeScopeIndex": true,
+                    "useInExcerpt": true
+                },
+                "definition": {
                     "analyzed": true,
                     "boost": 10,
                     "nodeScopeIndex": true,
