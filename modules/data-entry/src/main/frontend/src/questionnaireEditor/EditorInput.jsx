@@ -25,11 +25,13 @@ import {
   Typography
 } from "@material-ui/core";
 
+export function formatIdentifier(key) {
+  return key.charAt(0).toUpperCase() + key.slice(1).replace( /([A-Z])/g, " $1" ).toLowerCase();
+}
+
 let EditorInput = (props) => {
   let { children, name } = props;
-  let formatString = (key) => {
-    return key.charAt(0).toUpperCase() + key.slice(1).replace( /([A-Z])/g, " $1" ).toLowerCase();
-  }
+  
   const classes = makeStyles((theme) => ({
     labelContainer: {
       /* Match the input padding so the text of the label would appear aligned with the text of the input */
@@ -43,7 +45,7 @@ let EditorInput = (props) => {
     <Grid container alignItems="flex-start" spacing={2}>
       <Grid item xs={4} className={classes.labelContainer}>
         <Typography variant="subtitle2">
-          {formatString(name?.concat(':')) || ''}
+          {formatIdentifier(name?.concat(':')) || ''}
         </Typography>
       </Grid>
       <Grid item xs={8}>

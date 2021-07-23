@@ -41,6 +41,7 @@ import LiveTable from "../dataHomepage/LiveTable.jsx";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 import Fields from "../questionnaireEditor/Fields.jsx";
 import EditIcon from "@material-ui/icons/Edit";
+import { formatIdentifier } from "../questionnaireEditor/EditorInput.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
 /**
@@ -245,7 +246,7 @@ function StatisticDialog(props) {
     let mandatoryFields = statisticsSpecs["//REQUIRED"];
     for (const fieldName of mandatoryFields) {
       if ((!requestData.has(fieldName)) || requestData.get(fieldName) == "") {
-        setError(`The ${fieldName} field is mandatory`);
+        setError(`The ${formatIdentifier(fieldName)} field is mandatory`);
         return;
       }
     }
