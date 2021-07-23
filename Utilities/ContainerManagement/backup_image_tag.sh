@@ -20,4 +20,11 @@
 TAG_TO_BACKUP=$1
 BACKUP_FILE=$2
 
-docker image inspect $TAG_TO_BACKUP --format='{{index .RepoDigests 0}}' > $BACKUP_FILE
+REPO_DIGEST=$(docker image inspect $TAG_TO_BACKUP --format='{{index .RepoDigests 0}}' 2>/dev/null)
+if [ -z $REPO_DIGEST ]
+then
+  echo "Error: There is no RepoDigest associated with this image. Are you sure this image was pulled from Docker Hub?" 2>&1
+  exit -1
+fi
+
+echo $REPO_DIGEST > $BACKUP_FILE
