@@ -48,7 +48,6 @@
     <module>vocabularies</module>
     <module>variants</module>
     <module>demo-banner</module>
-    <module>aggregated-frontend</module>
     <module>versioning</module>
     <module>favicon</module>
     <module>upgrade-marker</module>

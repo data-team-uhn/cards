@@ -920,5 +920,6 @@
     <module>kids-resources</module>
     <module>cardiac-rehab-resources</module>
     <module>test-resources</module>
+    <module>aggregated-frontend</module>
   </modules>
 </project>
