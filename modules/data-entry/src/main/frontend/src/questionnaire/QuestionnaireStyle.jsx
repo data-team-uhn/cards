@@ -43,9 +43,6 @@ const questionnaireStyle = theme => ({
         marginLeft: theme.spacing(-2),
       },
     },
-    markdown: {
-      fontSize: "inherit",
-    },
     editModeAnswers: {
       "& .MuiListItem-root:hover" : {
         background: theme.palette.action.hover,
@@ -597,16 +594,43 @@ const questionnaireStyle = theme => ({
     answerOptionButton: {
       float: "right",
     },
+    specialOptionButton: {
+      float: "right",
+      paddingTop: theme.spacing(0.5),
+      paddingRight: theme.spacing(0.5)
+    },
     newOptionInput: {
       marginBottom: theme.spacing(2),
     },
     specialOptionSwitch: {
       margin: "0",
+      float: "right",
     },
     optionsDragIndicator: {
       float: "left",
       padding: theme.spacing(1.5, 0.5),
       borderRadius: theme.spacing(0.5),
+    },
+    descriptionPopover: {
+      "& .MuiPopover-paper" : {
+        padding: theme.spacing(3),
+        width: theme.spacing(87),
+        height: theme.spacing(40),
+      }
+    },
+    descriptionPopoverButton: {
+      float: "right",
+      marginTop: theme.spacing(3),
+      marginLeft: theme.spacing(1),
+    },
+    descriptionPopoverTitle: {
+      marginBottom: theme.spacing(3),
+    },
+    selectionChild: {
+      display: "block"
+    },
+    selectionDescription: {
+      paddingLeft: theme.spacing(4)
     },
 });
 

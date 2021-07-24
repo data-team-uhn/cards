@@ -21,10 +21,12 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import {
   Grid,
+  Button,
   IconButton,
   TextField,
   InputAdornment,
   FormControlLabel,
+  Popover,
   Tooltip,
   Switch,
   Typography,
@@ -34,10 +36,15 @@ import {
 import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
 import EditorInput from "./EditorInput";
 import QuestionComponentManager from "./QuestionComponentManager";
+import MarkdownText from "./MarkdownText";
 import CloseIcon from '@material-ui/icons/Close';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import EditIcon from '@material-ui/icons/Edit';
+import NotesIcon from '@material-ui/icons/Notes';
 import { stringToHash } from "../escape.jsx";
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import ComposedIcon from "../components/ComposedIcon.jsx";
 
 let extractSortedOptions = (data) => {
   return Object.values(data).filter(value => value['jcr:primaryType'] == 'cards:AnswerOption'
@@ -55,6 +62,11 @@ let AnswerOptions = (props) => {
   let [ isDuplicate, setIsDuplicate ] = useState(false);
   let [ isNADuplicate, setIsNADuplicate ] = useState(false);
   let [ isNoneDuplicate, setIsNoneDuplicate ] = useState(false);
+  let [ descriptionIndex, setDescriptionIndex ] = useState(null);
+  let [ description, setDescription ] = useState('');
+  let [ descriptionAnchorEl, setDescriptionAnchorEl ] = useState(null);
+  let [ descriptionLabel, setDescriptionLabel ] = useState('');
+  let [ isSpecialOption, setIsSpecialOption ] = useState(false);
 
   const notApplicable  = Object.values(data).find(option => option['jcr:primaryType'] == 'cards:AnswerOption' && option.notApplicable);
   const noneOfTheAbove = Object.values(data).find(option => option['jcr:primaryType'] == 'cards:AnswerOption' && option.noneOfTheAbove);
@@ -183,6 +195,29 @@ let AnswerOptions = (props) => {
       }, 500);
     }
   }
+
+  let generateDescriptionIcon = (item, index, isSpecialOptn) => {
+    return (
+      <Tooltip title="Description">
+        <IconButton
+          onClick={(event) => {
+                                setDescriptionAnchorEl(event.currentTarget);
+                                setDescriptionIndex(index);
+                                setDescriptionLabel(item.label || item.value);
+                                setIsSpecialOption(isSpecialOptn);
+                                setDescription(item.description);
+                              }
+                   }
+          className={isSpecialOptn ? classes.specialOptionButton : classes.answerOptionButton}
+        >
+          <ComposedIcon
+              size="large"
+              MainIcon={NotesIcon}
+              ExtraIcon={!item.description ? AddCircleIcon : EditIcon}/>
+        </IconButton>
+      </Tooltip>
+    )
+  }
   
   let generateSpecialOptions = (index) => {
     let option = specialOptionsInfo[index];
@@ -193,7 +228,7 @@ let AnswerOptions = (props) => {
        alignItems="stretch"
        onClick={(event) => option.setter({ ...option.data, [option.label]: true})}
        >
-      <Grid item xs={10}>
+      <Grid item xs={9}>
       <Tooltip title={option.tooltip}>
         <TextField
           disabled={!option.data[option.label]}
@@ -206,7 +241,7 @@ let AnswerOptions = (props) => {
         />
       </Tooltip>
       </Grid>
-      <Grid item xs={2}>
+      <Grid item xs={3}>
       <Tooltip title={option.switchTooltip} className={classes.specialOptionSwitch}>
         <FormControlLabel
           control={
@@ -218,6 +253,7 @@ let AnswerOptions = (props) => {
           }
         />
       </Tooltip>
+      {generateDescriptionIcon(option.data, index, true)}
       { option.data[option.label]
         ?
         <>
@@ -226,6 +262,7 @@ let AnswerOptions = (props) => {
           <input type='hidden' name={`${option.data['@path']}/label`} value={option.data.label} />
           <input type='hidden' name={`${option.data['@path']}/${option.label}`} value={option.data[option.label]} />
           <input type='hidden' name={`${option.data['@path']}/defaultOrder`} value={option.defaultOrder} />
+          <input type="hidden" name={`${option.data['@path']}/description`} value={option.data.description || ''} />
         </>
         :
         <input type='hidden' name={`${option.data['@path']}@Delete`} value="0" />
@@ -233,6 +270,28 @@ let AnswerOptions = (props) => {
       </Grid>
     </Grid>
     )
+  }
+  
+  let handleClose = () => {
+    setDescriptionAnchorEl(null);
+    setDescriptionIndex(null);
+    setDescriptionLabel('');
+    setIsSpecialOption(false);
+    setDescription('');
+  }
+
+  let onDescriptionPopoverClose = () => {
+    // update corresponding option description
+    if (isSpecialOption) {
+      specialOptionsInfo[descriptionIndex].setter({ ...specialOptionsInfo[descriptionIndex].data, "description": description});
+    } else {
+      setOptions(oldValue => {
+        var value = oldValue.slice();
+        value[descriptionIndex].description = description;
+        return value;
+      });
+    }
+    handleClose();
   }
 
   return (
@@ -271,11 +330,12 @@ let AnswerOptions = (props) => {
                           </IconButton>
                         </Tooltip>
                       </Grid>
-                      <Grid item xs={9}>
+                      <Grid item xs={8}>
                         <input type='hidden' name={`${value['@path']}/jcr:primaryType`} value={'cards:AnswerOption'} />
                         <input type='hidden' name={`${value['@path']}/label`} value={value.label} />
                         <input type='hidden' name={`${value['@path']}/value`} value={value.value} />
                         <input type='hidden' name={`${value['@path']}/defaultOrder`} value={index+1} />
+                        <input type="hidden" name={`${value['@path']}/description`} value={value.description || ''} />
                         <TextField
                           InputProps={{
                             readOnly: true,
@@ -285,12 +345,13 @@ let AnswerOptions = (props) => {
                           multiline
                         />
                       </Grid>
-                      <Grid item xs={2}>
+                      <Grid item xs={3}>
                         <Tooltip title="Delete option">
                           <IconButton onClick={() => { deleteOption(index); }} className={classes.answerOptionButton}>
                             <CloseIcon/>
                           </IconButton>
                         </Tooltip>
+                        {generateDescriptionIcon(value, index, false)}
                       </Grid>
                     </Grid>
                   ) }
@@ -323,6 +384,48 @@ let AnswerOptions = (props) => {
         multiline
         />
       { generateSpecialOptions(1) }
+      <Popover
+        disableBackdropClick
+        disableEscapeKeyDown
+        open={Boolean(descriptionAnchorEl)}
+        anchorEl={descriptionAnchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+        className={classes.descriptionPopover}
+      >
+        <Typography variant="h6" className={classes.descriptionPopoverTitle} >
+          {`Description for "${descriptionLabel}"`}
+        </Typography>
+        { descriptionIndex != null &&
+          <MarkdownText
+            value={description}
+            onChange={setDescription}
+          />
+        }
+        <Button
+          variant='contained'
+          color='default'
+          onClick={handleClose}
+          className={classes.descriptionPopoverButton}
+        >
+          Cancel
+        </Button>
+        <Button
+          variant='contained'
+          color='primary'
+          onClick={onDescriptionPopoverClose}
+          className={classes.descriptionPopoverButton}
+        >
+          Done
+        </Button>
+    </Popover>
     </EditorInput>
   )
 }

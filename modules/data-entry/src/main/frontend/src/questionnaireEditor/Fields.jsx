@@ -31,7 +31,7 @@ import NumberInput from "./NumberInput";
 import ObjectInput from "./ObjectInput";
 import TextInput from "./TextInput";
 import MarkdownTextField from "./MarkdownTextField";
-import MDEditor from '@uiw/react-md-editor';
+import FormattedText from "../components/FormattedText.jsx";
 
 let Fields = (props) => {
   let { data, JSON, edit, classes, ...rest } = props;
@@ -70,7 +70,7 @@ let Fields = (props) => {
         <Grid item xs={8}>
           { value === "markdown"
             ?
-            <MDEditor.Markdown className={classes.markdown} source={data[key]} />
+            <FormattedText>{data[key]}</FormattedText>
             :
             Array.isArray(data[key]) ? data[key].map((item) => <Typography key={item}>{`${item}`}</Typography>)
                                      : <Typography>{`${data[key]}`}</Typography>

@@ -18,7 +18,6 @@
 //
 import React, { useState, useEffect, useContext } from "react";
 import { withRouter } from "react-router-dom";
-import MDEditor from '@uiw/react-md-editor';
 import { v4 as uuidv4 } from 'uuid';
 
 import {
@@ -37,6 +36,7 @@ import NewItemButton from "../components/NewItemButton.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog"; // commons
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+import FormattedText from "../components/FormattedText.jsx";
 
 const PROGRESS_SELECT_QUESTIONNAIRE = 0;
 const PROGRESS_SELECT_SUBJECT = 1;
@@ -282,12 +282,10 @@ function NewFormDialog(props) {
                 columns={[{
                   field: 'title',
                   render: q => (<>
-                                <Typography component="div">{q.title}</Typography>
-                                { q.description &&
-                                  <Typography component="div" variant="caption" color="textSecondary">
-                                    <MDEditor.Markdown className={classes.markdown} source={q.description} />
-                                  </Typography>
-                                }
+                                  <Typography component="div">{q.title}</Typography>
+                                  <FormattedText variant="caption" color="textSecondary">
+                                    {q.description}
+                                  </FormattedText>
                                 </>)
                 }, {
                   field: 'description',

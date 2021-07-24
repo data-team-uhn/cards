@@ -26,6 +26,7 @@ import { useFormWriterContext } from "./FormContext";
 
 export const LABEL_POS = 0;
 export const VALUE_POS = 1;
+export const DESC_POS = 3;
 
 // Holds answers and automatically generates hidden inputs
 // for form submission
