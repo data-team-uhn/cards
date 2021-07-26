@@ -271,6 +271,15 @@ function Filters(props) {
         comparator: loadedComparators[0],
         title: filterableTitles[event.target.value]
       }
+
+      // Keep any old data, if possible
+      let newDataType = questionDefinitions[event.target.value]?.dataType || "text";
+      if (index in oldfilters && newDataType == oldfilters[index].type) {
+        newfilter.value = oldfilters[index].value;
+        newfilter.comparator = oldfilters[index].comparator;
+        newfilter.type = newDataType;
+      }
+
       newfilters[index] = newfilter;
       return(newfilters);
     });
