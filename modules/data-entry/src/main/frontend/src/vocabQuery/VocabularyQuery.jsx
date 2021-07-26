@@ -209,7 +209,7 @@ function VocabularyQuery(props) {
         }
         suggestions.push(
           <MenuItem
-            className={classes.dropdownItem}
+            className={classes.dropdownItem + " " + (element["has_exact_synonym"] ? classes.dropdownHasSynonymItem : '')}
             key={element["@path"]}
             onClick={(e) => {
               if (e.target.localName === "li") {
@@ -235,6 +235,22 @@ function VocabularyQuery(props) {
             </IconButton>
           </MenuItem>
           );
+          if (element["has_exact_synonym"] && element["has_exact_synonym"].length > 0) {
+            suggestions.push(
+              <MenuItem
+                className={classes.dropdownSynonymItem}
+                key={element["has_exact_synonym"][0]}
+              >
+                <Typography
+                  component="p"
+                  variant="caption"
+                  color="textSecondary"
+                >
+                  {"Also known as: " + element["has_exact_synonym"].join(", ")}
+                </Typography>
+              </MenuItem>
+            );
+          }
       });
     }
 
