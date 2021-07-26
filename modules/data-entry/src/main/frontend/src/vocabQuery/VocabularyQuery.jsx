@@ -235,15 +235,15 @@ function VocabularyQuery(props) {
             >
               <Info color="primary" />
             </IconButton>
-            {synonyms?.length &&
+            {synonyms?.map(s =>
               <Typography
                 component="div"
                 variant="caption"
                 color="textSecondary"
               >
-                {"Also known as: " + synonyms?.join(", ")}
+                {s}
               </Typography>
-            }
+            )}
           </div>
           </MenuItem>
           );
