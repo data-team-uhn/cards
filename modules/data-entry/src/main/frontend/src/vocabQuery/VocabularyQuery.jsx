@@ -235,7 +235,8 @@ function VocabularyQuery(props) {
             </IconButton>
           </MenuItem>
           );
-          if (element["has_exact_synonym"] && element["has_exact_synonym"].length > 0) {
+          let synonyms = element["has_exact_synonym"] || element["synonym"] || null;
+          if (synonyms && synonyms.length > 0) {
             suggestions.push(
               <MenuItem
                 className={classes.dropdownSynonymItem}
@@ -246,7 +247,7 @@ function VocabularyQuery(props) {
                   variant="caption"
                   color="textSecondary"
                 >
-                  {"Also known as: " + element["has_exact_synonym"].join(", ")}
+                  {"Also known as: " + synonyms.join(", ")}
                 </Typography>
               </MenuItem>
             );
