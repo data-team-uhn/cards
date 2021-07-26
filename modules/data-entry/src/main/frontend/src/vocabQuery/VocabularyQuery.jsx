@@ -204,12 +204,13 @@ function VocabularyQuery(props) {
     if (data["rows"]?.length > 0) {
       data["rows"].forEach((element) => {
         var name = element["label"] || element["name"] || element["identifier"];
+        var synonyms = element["synonym"] || element["has_exact_synonym"];
         if (name == anchorEl.current.value) {
           showUserEntry = false;
         }
         suggestions.push(
           <MenuItem
-            className={classes.dropdownItem + " " + (element["has_exact_synonym"] ? classes.dropdownHasSynonymItem : '')}
+            className={classes.dropdownItem}
             key={element["@path"]}
             onClick={(e) => {
               if (e.target.localName === "li") {
@@ -219,6 +220,7 @@ function VocabularyQuery(props) {
               }}
             }
           >
+          <div>
             {name}
             <IconButton
               size="small"
@@ -233,25 +235,18 @@ function VocabularyQuery(props) {
             >
               <Info color="primary" />
             </IconButton>
+            {synonyms?.length &&
+              <Typography
+                component="div"
+                variant="caption"
+                color="textSecondary"
+              >
+                {"Also known as: " + synonyms?.join(", ")}
+              </Typography>
+            }
+          </div>
           </MenuItem>
           );
-          let synonyms = element["has_exact_synonym"] || element["synonym"] || null;
-          if (synonyms && synonyms.length > 0) {
-            suggestions.push(
-              <MenuItem
-                className={classes.dropdownSynonymItem}
-                key={element["has_exact_synonym"][0]}
-              >
-                <Typography
-                  component="p"
-                  variant="caption"
-                  color="textSecondary"
-                >
-                  {"Also known as: " + synonyms.join(", ")}
-                </Typography>
-              </MenuItem>
-            );
-          }
       });
     }
 

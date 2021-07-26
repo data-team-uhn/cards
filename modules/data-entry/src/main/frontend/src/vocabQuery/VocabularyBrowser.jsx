@@ -136,7 +136,7 @@ function VocabularyBrowser(props) {
       setTerm({name: data["label"],
                id: data["identifier"],
                definition: data["def"] || data["description"] || data["definition"],
-               alsoKnownAs: data["synonyms"] || data["has_exact_synonym"] || [],
+               alsoKnownAs: data["synonym"] || data["has_exact_synonym"] || [],
                typeOf: data["parents"]?.filter(p => typeof p === 'object').map(p => p["label"] || p["name"] || p["identifier"] || p["id"]) || [],
                path: data["@path"],
                infoAnchor: browserOpened ? buttonRefs[data["identifier"] + params.parentInfoId] : infoButtonRefs[data["identifier"]]

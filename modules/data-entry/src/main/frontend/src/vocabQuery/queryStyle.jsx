@@ -115,12 +115,6 @@ const thesaurusStyle = theme => ({
   dropdownMessage: {
     opacity: "1 !important",
   },
-  dropdownSynonymItem: {
-    paddingTop: "0",
-  },
-  dropdownHasSynonymItem: {
-    paddingBottom: "0",
-  },
 });
 
 export default thesaurusStyle;
