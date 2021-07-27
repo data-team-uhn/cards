@@ -30,6 +30,7 @@ import VocabularyBrowser from "./VocabularyBrowser.jsx";
 import { REST_URL, MakeRequest } from "./util.jsx";
 import QueryStyle from "./queryStyle.jsx";
 import { LABEL_POS, VALUE_POS } from "../questionnaire/Answer";
+import QueryMatchingUtils from "./QueryMatchingUtils";
 
 const NO_RESULTS_TEXT = "No results, use:";
 const NONE_OF_ABOVE_TEXT = "None of the above, use:";
@@ -204,10 +205,25 @@ function VocabularyQuery(props) {
     if (data["rows"]?.length > 0) {
       data["rows"].forEach((element) => {
         var name = element["label"] || element["name"] || element["identifier"];
-        var synonyms = element["synonym"] || element["has_exact_synonym"];
+        var synonyms = element["synonym"] || element["has_exact_synonym"] || [];
+        var definition = Array.from(element["def"] || element["description"] || element["definition"] || [])[0] || "";
         if (name == anchorEl.current.value) {
           showUserEntry = false;
         }
+
+        // Display an existing synonym or definition if the user's search query doesn't
+        // match the term's label but matches that synonym/definition
+        // TODO: this logic will have to be revisited once vocabulary indexing is improved to
+        // acount for typos
+        var query = anchorEl.current.value;
+        var matchedFields = [];
+        if (!QueryMatchingUtils.matches(query, name)) {
+          matchedFields = QueryMatchingUtils.getMatchingSubset(query, synonyms);
+          if (!matchedFields.length && QueryMatchingUtils.matches(query, definition)) {
+             matchedFields.push(QueryMatchingUtils.getMatchingExcerpt(query, definition));
+          }
+        }
+
         suggestions.push(
           <MenuItem
             className={classes.dropdownItem}
@@ -235,13 +251,14 @@ function VocabularyQuery(props) {
             >
               <Info color="primary" />
             </IconButton>
-            {synonyms?.map(s =>
+            { matchedFields?.map(f =>
               <Typography
+                key={f}
                 component="div"
                 variant="caption"
                 color="textSecondary"
               >
-                {s}
+                {f}
               </Typography>
             )}
           </div>
