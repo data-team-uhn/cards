@@ -543,7 +543,7 @@ function ResponseChild(props) {
 
   return (
     <React.Fragment>
-      <ListItem key={name} className={classes.selectionChild}>
+      <ListItem key={name} className={sDefault ? classes.selectionChild : ''}>
           { /* This is either a Checkbox if this is a default suggestion, or a delete button otherwise */
           isDefault ?
             (<>
