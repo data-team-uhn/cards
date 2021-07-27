@@ -1024,7 +1024,12 @@
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Co-morbidities (non cancerous), including abnormal incidental imaging/labs</value>
+				<value>Co-morbidities</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Non cancerous, including abnormal incidental imaging/labs</value>
 				<type>String</type>
 			</property>
 			<property>
