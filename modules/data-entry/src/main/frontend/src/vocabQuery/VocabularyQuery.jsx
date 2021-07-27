@@ -226,17 +226,15 @@ function VocabularyQuery(props) {
 
         suggestions.push(
           <MenuItem
-            className={classes.dropdownItem + " CardsVocabSuggestion"}
+            className={classes.dropdownItem}
             key={element["@path"]}
             onClick={(e) => {
-              if (e.target.className?.includes?.("CardsVocabSuggestion")) {
-                onClick(element["@path"], name);
-                setInputValue(clearOnClick || isDefaultOption(element["@path"]) ? "" : name);
-                closeSuggestions();
-              }}
-            }
+              onClick(element["@path"], name);
+              setInputValue(clearOnClick || isDefaultOption(element["@path"]) ? "" : name);
+              closeSuggestions();
+            }}
           >
-          <div className="CardsVocabSuggestion">
+          <div>
             {name}
             <IconButton
               size="small"
@@ -246,7 +244,7 @@ function VocabularyQuery(props) {
               color="primary"
               aria-owns={"menu-list-grow"}
               aria-haspopup={true}
-              onClick={(e) => setTermPath(element["@path"])}
+              onClick={(e) => {setTermPath(element["@path"]); e.preventDefault(); e.stopPropagation();}}
               className={classes.infoButton}
             >
               <Info color="primary" />
