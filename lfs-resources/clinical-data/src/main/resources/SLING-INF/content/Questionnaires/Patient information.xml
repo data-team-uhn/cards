@@ -382,6 +382,11 @@
 					<value>Caucasian</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>description</name>
+					<value>Also known as European or White</value>
+					<type>String</type>
+				</property>
 			</node>
 			<node>
 				<name>Hispanic or Latin American</name>
