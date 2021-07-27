@@ -269,8 +269,16 @@ function Filters(props) {
         name: event.target.value,
         uuid: filterableUUIDs[event.target.value],
         comparator: loadedComparators[0],
-        title: filterableTitles[event.target.value]
+        title: filterableTitles[event.target.value],
+        type: questionDefinitions[event.target.value]?.dataType || "text"
       }
+
+      // Keep any old data, if possible
+      if (index in oldfilters && newfilter.type == oldfilters[index].type) {
+        newfilter.value = oldfilters[index].value;
+        newfilter.comparator = oldfilters[index].comparator;
+      }
+
       newfilters[index] = newfilter;
       return(newfilters);
     });
