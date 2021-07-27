@@ -226,17 +226,17 @@ function VocabularyQuery(props) {
 
         suggestions.push(
           <MenuItem
-            className={classes.dropdownItem}
+            className={classes.dropdownItem + " CardsVocabSuggestion"}
             key={element["@path"]}
             onClick={(e) => {
-              if (e.target.localName === "li") {
+              if (e.target.className?.includes?.("CardsVocabSuggestion")) {
                 onClick(element["@path"], name);
                 setInputValue(clearOnClick || isDefaultOption(element["@path"]) ? "" : name);
                 closeSuggestions();
               }}
             }
           >
-          <div>
+          <div className="CardsVocabSuggestion">
             {name}
             <IconButton
               size="small"
