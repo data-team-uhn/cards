@@ -2,6 +2,7 @@
   {
     "description" : "markdown",
     "maxPerSubject": "long",
+    "paginate": "boolean",
     "requiredSubjectTypes": {
       "type": "list",
       "primaryType": "cards:SubjectType",
