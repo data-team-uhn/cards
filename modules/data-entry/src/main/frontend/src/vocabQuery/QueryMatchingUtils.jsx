@@ -46,6 +46,9 @@ export default class QueryMatchingUtils {
     // Out of a set of text items, return a subset that matches
     // all the words in the query
     static getMatchingSubset = (query, items) => {
+      // If any item matches the query verbatim (except for casing), return that item
+      let identicalItem = items.filter(i => i.toLowerCase() == query.toLowerCase()).slice(0,1);
+      if (identicalItem.length == 1) return identicalItem;
       let words = QueryMatchingUtils.parseQuery(query);
       // Identify and build subsets of words contained by each item
       let matchList = {};

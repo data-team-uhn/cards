@@ -200,6 +200,7 @@ function VocabularyQuery(props) {
 
     // Populate suggestions
     var suggestions = [];
+    var query = anchorEl.current.value;
     var showUserEntry = true;
 
     if (data["rows"]?.length > 0) {
@@ -207,7 +208,8 @@ function VocabularyQuery(props) {
         var name = element["label"] || element["name"] || element["identifier"];
         var synonyms = element["synonym"] || element["has_exact_synonym"] || [];
         var definition = Array.from(element["def"] || element["description"] || element["definition"] || [])[0] || "";
-        if (name == anchorEl.current.value) {
+        if (name.toLowerCase() == query.toLowerCase()
+            || synonyms.find(s => s.toLowerCase() == query.toLowerCase())) {
           showUserEntry = false;
         }
 
@@ -215,7 +217,6 @@ function VocabularyQuery(props) {
         // match the term's label but matches that synonym/definition
         // TODO: this logic will have to be revisited once vocabulary indexing is improved to
         // acount for typos
-        var query = anchorEl.current.value;
         var matchedFields = [];
         if (!QueryMatchingUtils.matches(query, name)) {
           matchedFields = QueryMatchingUtils.getMatchingSubset(query, synonyms);
