@@ -39,8 +39,7 @@
           <instructions>
             <Sling-Initial-Content>
               SLING-INF/content/Questionnaires/;path:=/Questionnaires/;overwrite:=true;checkin:=true,
-              SLING-INF/content/Subjects/;path:=/Subjects/;overwrite:=true;checkin:=true,
-              SLING-INF/content/MockNCR/;path:=/ncr/;overwrite:=true;checkin:=true
+              SLING-INF/content/Subjects/;path:=/Subjects/;overwrite:=true;checkin:=true
             </Sling-Initial-Content>
           </instructions>
         </configuration>
