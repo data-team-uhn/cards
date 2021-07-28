@@ -46,7 +46,6 @@
     <module>permissions</module>
     <module>permissions-ownership</module>
     <module>vocabularies</module>
-    <module>variants</module>
     <module>demo-banner</module>
     <module>versioning</module>
     <module>favicon</module>
