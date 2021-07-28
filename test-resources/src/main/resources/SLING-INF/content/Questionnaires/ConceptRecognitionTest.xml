@@ -18,11 +18,11 @@
 -->
 
 <node>
-	<name>Test Patient Information</name>
+	<name>ConceptRecognitionTest</name>
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
-		<value>Test Patient Information</value>
+		<value>Concept Recognition Test</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -43,59 +43,64 @@
 		<type>Long</type>
 	</property>
 	<node>
-		<name>pathology_section</name>
-		<primaryNodeType>cards:Section</primaryNodeType>
+		<name>comorbidities</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Co-morbidities</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Paste one of the following predefined strings in the Notes:
+
+- The patient has **heart disease** and **diabetes**
+- The patient has **renal cancer** and **myopia**
+- The patient has experienced **chest pain** and **shortness of breath**</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>0</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>input</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>vocabulary</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>sourceVocabularies</name>
+			<values>
+				<value>HP</value>
+			</values>
+			<type>String</type>
+		</property>
+		<property>
+			<name>enableNotes</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
 		<node>
-			<name>comorbidities</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
+			<name>vocabularyFilters</name>
+			<primaryNodeType>cards:VocabularyFilterGroup</primaryNodeType>
 			<property>
-				<name>text</name>
-				<value>Co-morbidities (non cancerous), including abnormal incidental imaging/labs</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>0</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>0</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>input</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>vocabulary</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>sourceVocabularies</name>
+				<name>HP</name>
 				<values>
-					<value>HP</value>
+					<value>HP:0000118</value>
 				</values>
 				<type>String</type>
 			</property>
-			<property>
-				<name>enableNotes</name>
-				<value>True</value>
-				<type>Boolean</type>
-			</property>
-			<node>
-				<name>vocabularyFilters</name>
-				<primaryNodeType>cards:VocabularyFilterGroup</primaryNodeType>
-				<property>
-					<name>HP</name>
-					<values>
-						<value>HP:0000118</value>
-					</values>
-					<type>String</type>
-				</property>
-			</node>
 		</node>
 	</node>
 </node>
