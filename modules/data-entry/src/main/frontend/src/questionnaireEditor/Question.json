@@ -101,6 +101,7 @@
       "computed": {
         "expression": "string",
         "isFormatted": "boolean",
+        "isHidden": "boolean",
         "unitOfMeasurement" : "string"
       },
       "time": {
