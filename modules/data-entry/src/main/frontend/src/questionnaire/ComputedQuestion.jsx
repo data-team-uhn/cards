@@ -24,6 +24,7 @@ import { InputAdornment, TextField, Typography, withStyles } from "@material-ui/
 import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
 import Question from "./Question";
+import FormattedText from "../components/FormattedText";
 import QuestionnaireStyle from './QuestionnaireStyle';
 import { useFormReaderContext } from "./FormContext";
 
@@ -47,7 +48,7 @@ import { useFormReaderContext } from "./FormContext";
 //  />
 let ComputedQuestion = (props) => {
   const { existingAnswer, classes, ...rest} = props;
-  const { text, expression, unitOfMeasurement } = {...props.questionDefinition, ...props};
+  const { text, expression, unitOfMeasurement, isFormatted } = {...props.questionDefinition, ...props};
   const [error, changeError] = useState(false);
   const [errorMessage, changeErrorMessage] = useState(false);
 
@@ -153,12 +154,17 @@ let ComputedQuestion = (props) => {
     muiInputProps.endAdornment = <InputAdornment position="end">{unitOfMeasurement}</InputAdornment>;
   }
 
+  evaluateExpression();
+
   return (
     <Question
       currentAnswers={typeof(value) !== "undefined" && value !== "" ? 1 : 0}
       {...props}
       >
       {error && <Typography color='error'>{errorMessage}</Typography>}
+      {isFormatted ?
+      <FormattedText>{value + (unitOfMeasurement ? (" " + unitOfMeasurement) : '')}</FormattedText>
+      :
       <TextField
         multiline
         disabled={true}
@@ -167,6 +173,7 @@ let ComputedQuestion = (props) => {
         InputProps={muiInputProps}
         onChange={evaluateExpression()}
       />
+      }
       <Answer
         answers={answer}
         questionDefinition={props.questionDefinition}
