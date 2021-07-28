@@ -34,5 +34,6 @@
   <modules>
     <module>clinical-data</module>
     <module>tissue-metrix</module>
+    <module>variants</module>
   </modules>
 </project>
