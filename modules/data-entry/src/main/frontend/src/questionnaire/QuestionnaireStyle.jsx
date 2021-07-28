@@ -627,9 +627,10 @@ const questionnaireStyle = theme => ({
       marginBottom: theme.spacing(3),
     },
     selectionChild: {
-      display: "block"
+      flexWrap: "wrap",
     },
     selectionDescription: {
+      flexBasis: "100%",
       paddingLeft: theme.spacing(4)
     },
 });
