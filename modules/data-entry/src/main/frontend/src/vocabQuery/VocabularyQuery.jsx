@@ -30,6 +30,7 @@ import VocabularyBrowser from "./VocabularyBrowser.jsx";
 import { REST_URL, MakeRequest } from "./util.jsx";
 import QueryStyle from "./queryStyle.jsx";
 import { LABEL_POS, VALUE_POS } from "../questionnaire/Answer";
+import QueryMatchingUtils from "./QueryMatchingUtils";
 
 const NO_RESULTS_TEXT = "No results, use:";
 const NONE_OF_ABOVE_TEXT = "None of the above, use:";
@@ -199,26 +200,42 @@ function VocabularyQuery(props) {
 
     // Populate suggestions
     var suggestions = [];
+    var query = anchorEl.current.value;
     var showUserEntry = true;
 
     if (data["rows"]?.length > 0) {
       data["rows"].forEach((element) => {
         var name = element["label"] || element["name"] || element["identifier"];
-        if (name == anchorEl.current.value) {
+        var synonyms = element["synonym"] || element["has_exact_synonym"] || [];
+        var definition = Array.from(element["def"] || element["description"] || element["definition"] || [])[0] || "";
+        if (name.toLowerCase() == query.toLowerCase()
+            || synonyms.find(s => s.toLowerCase() == query.toLowerCase())) {
           showUserEntry = false;
         }
+
+        // Display an existing synonym or definition if the user's search query doesn't
+        // match the term's label but matches that synonym/definition
+        // TODO: this logic will have to be revisited once vocabulary indexing is improved to
+        // acount for typos
+        var matchedFields = [];
+        if (!QueryMatchingUtils.matches(query, name)) {
+          matchedFields = QueryMatchingUtils.getMatchingSubset(query, synonyms);
+          if (!matchedFields.length && QueryMatchingUtils.matches(query, definition)) {
+             matchedFields.push(QueryMatchingUtils.getMatchingExcerpt(query, definition));
+          }
+        }
+
         suggestions.push(
           <MenuItem
             className={classes.dropdownItem}
             key={element["@path"]}
             onClick={(e) => {
-              if (e.target.localName === "li") {
-                onClick(element["@path"], name);
-                setInputValue(clearOnClick || isDefaultOption(element["@path"]) ? "" : name);
-                closeSuggestions();
-              }}
-            }
+              onClick(element["@path"], name);
+              setInputValue(clearOnClick || isDefaultOption(element["@path"]) ? "" : name);
+              closeSuggestions();
+            }}
           >
+          <div>
             {name}
             <IconButton
               size="small"
@@ -228,11 +245,22 @@ function VocabularyQuery(props) {
               color="primary"
               aria-owns={"menu-list-grow"}
               aria-haspopup={true}
-              onClick={(e) => setTermPath(element["@path"])}
+              onClick={(e) => {setTermPath(element["@path"]); e.preventDefault(); e.stopPropagation();}}
               className={classes.infoButton}
             >
               <Info color="primary" />
             </IconButton>
+            { matchedFields?.map(f =>
+              <Typography
+                key={f}
+                component="div"
+                variant="caption"
+                color="textSecondary"
+              >
+                {f}
+              </Typography>
+            )}
+          </div>
           </MenuItem>
           );
       });
