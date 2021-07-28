@@ -150,7 +150,7 @@ function Form (props) {
   // Callback method for the `fetchData` method, invoked when the data successfully arrived from the server.
   let handleResponse = (json) => {
     setData(json);
-    setPaginationEnabled(!!json?.['questionnaire']?.['paginate']);
+    setPaginationEnabled(!!json?.['questionnaire']?.['paginate'] && isEdit);
     setPages([]);
     if (isEdit) {
       //Perform a JCR check-out of the Form
