@@ -21,7 +21,7 @@ const style = theme => ({
   mainActionButton: {
     margin: theme.spacing(1),
     position: "fixed",
-    bottom: theme.spacing(2),
+    bottom: theme.spacing(0),
     right: theme.spacing(4),
     zIndex: 100,
     "& .MuiCircularProgress-root" : {

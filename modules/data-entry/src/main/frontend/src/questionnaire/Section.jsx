@@ -65,7 +65,7 @@ function createTitle(label, idx, isRecurrent) {
  */
 function Section(props) {
   const { classes, depth, existingAnswer, path, sectionDefinition, onChange, visibleCallback, pageActive, isEdit, instanceId } = props;
-  const isRecurrent = sectionDefinition['recurrent'];
+  const { isRecurrent, isFooterSection } = sectionDefinition;
   const [ focus, setFocus ] = useState(false);
 
   const headerVariant = (depth > MAX_HEADING_LEVEL - MIN_HEADING_LEVEL ? "body1" : ("h" + (depth+MIN_HEADING_LEVEL)));
@@ -146,6 +146,9 @@ function Section(props) {
   // Don't hide for undefined or null values
   if (pageActive === false) {
     collapseClasses.push(classes.hiddenSection);
+  }
+  if (isFooterSection) {
+    collapseClasses.push(classes.footerSection)
   }
 
   // mountOnEnter and unmountOnExit force the inputs and children to be outside of the DOM during form submission

@@ -3,6 +3,7 @@
     "label": "string",
     "description": "markdown",
     "recurrent": "boolean",
+    "isFooterSection" : "boolean",
     "initialNumberOfInstances" : "long"
   }
 ]

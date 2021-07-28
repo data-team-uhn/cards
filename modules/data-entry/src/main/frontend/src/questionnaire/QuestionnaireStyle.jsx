@@ -633,6 +633,15 @@ const questionnaireStyle = theme => ({
       flexBasis: "100%",
       paddingLeft: theme.spacing(4)
     },
+    footerSection : {
+      position: "sticky",
+      bottom: theme.spacing(1.5),
+      "& .MuiCard-root" : {
+        background: theme.palette.info.light,
+        marginTop: theme.spacing(-1),
+        marginBottom: theme.spacing(-4),
+      },
+    }
 });
 
 export default questionnaireStyle;
