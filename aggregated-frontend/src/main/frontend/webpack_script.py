@@ -30,7 +30,6 @@ package_name = 'cards-aggregated-frontend'
 def merge_packache_json_files(root, dir_name, project_to_name_map, package_merged):
     fl = os.path.join(root, dir_name, 'src', 'main', 'frontend', 'package.json')
     if path.exists(fl):
-        print (fl)
         with open(fl, "r") as f:
             json_text = f.read()
         package = json.loads(json_text)
@@ -42,8 +41,6 @@ def merge_packache_json_files(root, dir_name, project_to_name_map, package_merge
             package_merged["name"] = package_name
             package_merged["description"] = 'Merged package.json'
             package_merged["resolutions"] = {}
-            print ("WAS EMPTY")
-            print (package_merged)
         else:
             # Merge contents
             for i in package["babel"]["plugins"]:
@@ -53,8 +50,6 @@ def merge_packache_json_files(root, dir_name, project_to_name_map, package_merge
             package_merged["dependencies"].update(package["dependencies"])
             if "resolutions" in package:
                 package_merged["resolutions"].update(package["resolutions"])
-            print (">>> UPDATED")
-            print (package_merged)
 
 
 def merge_webpack_files(root, dir_name, aggregated_frontend_dir, project_to_name_map, webpack_config_entries):
