@@ -27,16 +27,32 @@
 	</property>
 	<property>
 		<name>description</name>
-		<value>
-* The Patient Health Questionnaire (PHQ)-9 is the major depressive disorder (MDD) module of the full PHQ.
-* Used to provisionally diagnose depression and grade severity of symptoms in general medical and mental health settings.
-* Scores each of the 9 DSM criteria of MDD as “0” (not at all) to “3” (nearly every day), providing a 0-27 severity score.
-* The last item (“How difficult have these problems made it for you to do your work, take care of things at home, or get along with other people?”) is not included in score, but is a good indicator of the patient’s global impairment and can be used to track treatment response.
-* Higher PHQ-9 scores are associated with decreased functional status and increased symptom-related difficulties, sick days, and healthcare utilization.
-* May have high false-positive rates in primary care settings specifically (one meta-analysis found that only 50% of patients screening positive actually had major depression) ([Levis 2019](https://www.bmj.com/content/365/bmj.l1476)).
-		</value>
+		<value>Objectifies degree of depression severity</value>
 		<type>String</type>
 	</property>
+	<node>
+		<name>phq9_intro</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>description</name>
+			<value>
+### When to use
+Use as a screening tool:
+* To assist the clinician in making the diagnosis of depression.
+* To quantify depression symptoms and monitor severity.
+### Pearls/Pitfalls
+* The Patient Health Questionnaire (PHQ)-9 is the major depressive disorder (MDD) module of the full PHQ.
+* Used to provisionally diagnose depression and grade severity of symptoms in general medical and mental health settings.
+* Scores each of the 9 DSM criteria of MDD as *0* (not at all) to *3* (nearly every day), providing a 0-27 severity score.
+* The last item (*How difficult have these problems made it for you to do your work, take care of things at home, or get along with other people?*) is not included in score, but is a good indicator of the patient's global impairment and can be used to track treatment response.
+* Higher PHQ-9 scores are associated with decreased functional status and increased symptom-related difficulties, sick days, and healthcare utilization.
+* May have high false-positive rates in primary care settings specifically (one meta-analysis found that only 50% of patients screening positive actually had major depression) ([Levis 2019](https://www.bmj.com/content/365/bmj.l1476)).
+### Why use
+Objectively determines severity of initial symptoms, and also monitors symptom changes and treatment effects over time.
+			</value>
+			<type>String</type>
+		</property>
+	</node>
 	<node>
 		<name>phq9_survey</name>
 		<primaryNodeType>cards:Section</primaryNodeType>

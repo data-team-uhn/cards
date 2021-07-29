@@ -25,6 +25,32 @@
 		<value>General Anxiety Disorder</value>
 		<type>String</type>
 	</property>
+	<property>
+		<name>description</name>
+		<value>Measures severity of anxiety</value>
+		<type>String</type>
+	</property>
+	<node>
+		<name>gad7_intro</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>description</name>
+			<value>
+### When to use
+Rapid screening for the presence of a clinically significant anxiety disorder (GAD, PD, SP and PTSD), especially in outpatient settings.
+
+### Pearls/Pitfalls
+* The GAD-7 is useful in primary care and mental health settings as a screening tool and symptom severity measure for the four most common anxiety disorders (Generalized Anxiety Disorder, Panic Disorder, Social Phobia and PostTraumatic Stress Disorder)
+* It is 70-90% sensitive and 80-90% specific across disorders / cutoffs (see Evidence section for more).
+* Higher GAD-7 scores correlate with disability and functional impairment (in measures such as work productivity and health care utilization). ([Spitzer RL 2006](http://www.ncbi.nlm.nih.gov/pubmed/16717171)) ([Ruiz MA 2011](http://www.ncbi.nlm.nih.gov/pubmed/20692043))
+* The last item *How difficult have these problems made it for you to do your work, take care of things at home, or get along with other people?* - although not used in the calculation - is a good indicator of the patient’s global impairment and can be used to track treatment response.
+
+### Why use
+Objectively determine initial symptoms severity and monitor symptom changes/effect of treatment over time.
+			</value>
+			<type>String</type>
+		</property>
+	</node>
 	<node>
 		<name>gad7_survey</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
