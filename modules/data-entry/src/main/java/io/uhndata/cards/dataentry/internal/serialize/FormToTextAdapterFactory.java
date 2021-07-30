@@ -140,6 +140,8 @@ public class FormToTextAdapterFactory
         final String nodeType = nodeJson.getString("jcr:primaryType");
         if ("cards:AnswerSection".equals(nodeType)) {
             processSection(nodeJson, result, sectionCounts);
+        } else if ("cards:PedigreeAnswer".equals(nodeType)) {
+            processPedigreeAnswer(nodeJson, result);
         } else if (nodeType.startsWith("cards:") && nodeType.endsWith("Answer")) {
             processAnswer(nodeJson, result);
         }
@@ -190,6 +192,35 @@ public class FormToTextAdapterFactory
             value.asJsonArray().forEach(v -> result.append("  ").append(((JsonString) v).getString()).append('\n'));
         } else {
             result.append("  ").append(((JsonString) value).getString()).append('\n');
+        }
+        if (StringUtils.isNotBlank(note)) {
+            result.append("\n  NOTES:\n  ").append(note.replaceAll("\n", "\n  ")).append('\n');
+        }
+        result.append("\n\n");
+    }
+
+    /**
+     * Converts a JSON serialization of a pedigree answer to plain text. Normal answer processing through
+     * {@link #processAnswer} would include the whole pedigree image SVG source, but that is not a proper user-friendly
+     * answer, so instead a simple "Pedigree provided" answer is included in the plain text serialization if indeed a
+     * pedigree is included. Otherwise, the whole question is skipped.
+     *
+     * @param answerJson a JSON serialization of a pedigree answer
+     * @param result the string builder where the serialization must be appended
+     */
+    private void processPedigreeAnswer(final JsonObject answerJson, final StringBuilder result)
+    {
+        final JsonValue value = answerJson.get("displayedValue");
+        final String note = answerJson.containsKey("note") ? answerJson.getString("note") : null;
+        if (value == null && StringUtils.isBlank(note)) {
+            return;
+        }
+
+        result.append(answerJson.getJsonObject("question").getString("text")).append('\n');
+        if (value == null) {
+            // Ignore null values, we probably only have notes
+        } else {
+            result.append("  Pedigree provided\n");
         }
         if (StringUtils.isNotBlank(note)) {
             result.append("\n  NOTES:\n  ").append(note.replaceAll("\n", "\n  ")).append('\n');
