@@ -158,6 +158,7 @@ let ComputedQuestion = (props) => {
 
   return (
     <Question
+      defaultDisplayFormatter={isFormatted ? (label, idx) => <FormattedText>{label}</FormattedText> : undefined}
       currentAnswers={typeof(value) !== "undefined" && value !== "" ? 1 : 0}
       {...props}
       >
