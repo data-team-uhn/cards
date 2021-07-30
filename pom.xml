@@ -915,11 +915,11 @@
 
   <modules>
     <module>modules</module>
-    <module>distribution</module>
+    <module>aggregated-frontend</module>
     <module>lfs-resources</module>
     <module>kids-resources</module>
     <module>cardiac-rehab-resources</module>
     <module>test-resources</module>
-    <module>aggregated-frontend</module>
+    <module>distribution</module>
   </modules>
 </project>
