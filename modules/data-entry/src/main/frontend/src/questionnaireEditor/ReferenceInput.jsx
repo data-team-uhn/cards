@@ -22,18 +22,18 @@ import PropTypes, { object } from 'prop-types';
 import { Input, MenuItem, Select, Typography, withStyles } from "@material-ui/core";
 
 import EditorInput from "./EditorInput";
-import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle";
+import LiveTableStyle from "../dataHomepage/tableStyle.jsx";
 import QuestionComponentManager from "./QuestionComponentManager";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
 // Use the filter code to get what sorts of variables can be used as references
-let FILTER_URL = "/Questionnaires.filters";
+let FILTER_URL = "/Questionnaires.deep.json";
 // TODO: Figure out what we should do with the limit in the URL below
 let SUBJECT_TYPE_URL = "/SubjectTypes.paginate?offset=0&limit=100&req=0";
 
 // Reference Input field used by Edit dialog component
 let ReferenceInput = (props) => {
-  const { objectKey, data, value } = props;
+  const { classes, objectKey, data, value } = props;
 
   let [ curValue, setCurValue ] = useState(data[objectKey] || []);
   let [ titleMap, setTitleMap ] = useState({});
@@ -54,6 +54,49 @@ let ReferenceInput = (props) => {
       .catch(console.log)
       .finally(() => {setInitialized(true);});
   };
+
+  // Parse the response from examining every questionnaire
+  let parseQuestionnaireData = (questionnaireJson) => {
+    // newFilterableFields is a list of fields that can be filtered on
+    // It is a list of either strings (for options) or recursive lists
+    // Each recursive list must have a string for its 0th option, which
+    // is taken to be its title
+    let newFilterableFields = [""];
+    // newFilterableTitles is a mapping from a string in newFilterableFields to a human-readable title
+    let newFilterableTitles = {"": ""};
+
+    // We'll need a helper recursive function to copy over data from sections/questions
+    let parseSectionOrQuestionnaire = (sectionJson, path="") => {
+      let retFields = [];
+      for (let [title, object] of Object.entries(sectionJson)) {
+        // We only care about children that are cards:Questions or cards:Sections
+        if (object["jcr:primaryType"] == "cards:Question") {
+          // If this is an cards:Question, copy the entire thing over to our Json value
+          retFields.push(object["jcr:uuid"]);
+          newFilterableTitles[object["jcr:uuid"]] = object["text"];
+        } else if (object["jcr:primaryType"] == "cards:Section") {
+          // If this is an cards:Section, recurse deeper
+          retFields.push(...parseSectionOrQuestionnaire(object, path+title+"/"));
+        }
+        // Otherwise, we don't care about this value
+      }
+
+      return retFields;
+    }
+
+    // From the questionnaire homepage, we're looking for children that are objects of type cards:Questionnaire
+    for (let [title, thisQuestionnaire] of Object.entries(questionnaireJson)) {
+      if (thisQuestionnaire["jcr:primaryType"] != "cards:Questionnaire") {
+        continue;
+      }
+
+      newFilterableFields.push([title, ...parseSectionOrQuestionnaire(thisQuestionnaire)]);
+    }
+
+    // We also need a filter over the subject
+    setOptions(newFilterableFields);
+    setTitleMap(newFilterableTitles);
+  }
 
   let parseFilterData = (filterJson) => {
     // Parse through, but keep a custom field for the subject
@@ -85,21 +128,30 @@ let ReferenceInput = (props) => {
       fields.push(subjectType["jcr:uuid"]);
       titles[subjectType["jcr:uuid"]] = subjectType["label"];
     }
-    subjectTypeJson["Subject"] = {
-      dataType: "subject"
-    };
-    subjectTypeJson["Questionnaire"] = {
-      dataType: "questionnaire"
-    };
     setOptions(fields);
     setTitleMap(titles);
+  }
+
+  // From an array of fields, turn it into a react component
+  let GetReactComponentFromFields = (fields, nested=false) => {
+    return fields.map((path) => {
+      if (typeof path == "string") {
+        // Straight strings are MenuItems
+        return <MenuItem value={path} key={path} className={classes.categoryOption + (nested ? " " + classes.nestedSelectOption : "")}>{titleMap[path]}</MenuItem>
+      } else if (Array.isArray(path)) {
+        // Arrays represent Questionnaires of Sections
+        // which we'll need to turn into opt groups
+        return [<MenuItem className={classes.categoryHeader} disabled>{path[0]}</MenuItem>,
+          GetReactComponentFromFields(path.slice(1), true)];
+      }
+    })
   }
 
   if (!initialized) {
     if (value["primaryType"] == "cards:SubjectType") {
       grabData(SUBJECT_TYPE_URL, parseSubjectTypeData);
     } else if (value["primaryType"] == "cards:Question") {
-      grabData(FILTER_URL, parseFilterData);
+      grabData(FILTER_URL, parseQuestionnaireData);
     }
   }
 
@@ -128,11 +180,7 @@ let ReferenceInput = (props) => {
         input={<Input id={objectKey} />}
         renderValue={(value) => titleMap[value]}
       >
-        {options.map((uuid, index) => (
-          <MenuItem key={uuid + index} value={uuid}>
-            <Typography>{titleMap[uuid]}</Typography>
-          </MenuItem>
-        ))}
+        {GetReactComponentFromFields(options)}
       </Select>
     </EditorInput>
   )
@@ -143,7 +191,7 @@ ReferenceInput.propTypes = {
   data: PropTypes.object.isRequired
 };
 
-const StyledReferenceInput = withStyles(QuestionnaireStyle)(ReferenceInput);
+const StyledReferenceInput = withStyles(LiveTableStyle)(ReferenceInput);
 export default StyledReferenceInput;
 
 QuestionComponentManager.registerQuestionComponent((definition) => {
