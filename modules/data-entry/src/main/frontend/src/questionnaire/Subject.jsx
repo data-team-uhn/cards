@@ -22,6 +22,7 @@ import { Link, useLocation, withRouter } from 'react-router-dom';
 import PropTypes from "prop-types";
 import moment from "moment";
 
+import FormattedText from "../components/FormattedText";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import NewFormDialog from "../dataHomepage/NewFormDialog";
 import { QUESTION_TYPES, SECTION_TYPES, ENTRY_TYPES } from "./FormEntry.jsx";
@@ -641,6 +642,12 @@ export function displayQuestion(entryDefinition, data, key, classes) {
           content = "Yes";
         }
         break;
+      case "computed":
+        content = <>{ prettyPrintedAnswers.join(", ") }</>;
+        // check the display mode; if formatted, display accordingly
+        if (entryDefinition.displayMode == "formatted") {
+          content = <FormattedText>{content}</FormattedText>;
+        }
       default:
         content = <>{ prettyPrintedAnswers.join(", ") }</>
         break;
