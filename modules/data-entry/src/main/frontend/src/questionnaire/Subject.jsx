@@ -604,6 +604,8 @@ export function displayQuestion(entryDefinition, data, key, classes) {
 
   // question title, to be used when 'previewing' the form
   const questionTitle = entryDefinition["text"];
+  // check the display mode and don't display if "hidden"
+  const isHidden = (entryDefinition.displayMode == "hidden");
 
   if (typeof(existingQuestionAnswer?.[1]?.value) != "undefined") {
     let prettyPrintedAnswers = existingQuestionAnswer[1]["displayedValue"];
@@ -653,6 +655,7 @@ export function displayQuestion(entryDefinition, data, key, classes) {
         break;
     }
     return (
+      isHidden ? null :
       <Typography variant="body2" component="div" key={key} className={classes.formPreviewQuestion}>{questionTitle}: {content}</Typography>
     );
   }

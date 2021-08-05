@@ -195,7 +195,7 @@ ComputedQuestion.propTypes = {
     text: PropTypes.string.isRequired,
     expression: PropTypes.string.isRequired,
     description: PropTypes.string,
-    displayMode: PropTypes.oneOf(['input', 'formatted']),
+    displayMode: PropTypes.oneOf(['input', 'formatted', 'hidden']),
     unitOfMeasurement: PropTypes.string
   }).isRequired
 };
