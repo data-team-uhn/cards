@@ -1,0 +1,159 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+
+<node>
+	<name>ComputedTest</name>
+	<primaryNodeType>cards:Questionnaire</primaryNodeType>
+	<property>
+		<name>title</name>
+		<value>Computed Field Test</value>
+		<type>String</type>
+	</property>
+	<property>
+		<name>description</name>
+		<value>CARDS-317, CARDS-699, CARDS-1302</value>
+		<type>String</type>
+	</property>
+	<property>
+		<name>requiredSubjectTypes</name>
+		<values>
+			<value>/SubjectTypes/Patient</value>
+		</values>
+		<type>Reference</type>
+	</property>
+	<node>
+		<name>q1</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Write something:</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>text</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>q2</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Computed, plain</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>
+Expected output:
+
+> You wrote [text from previous question]
+
+or
+
+> You wrote nothing
+			</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>computed</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>expression</name>
+			<value>return "You wrote " + @{q1:-"nothing"}</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>q3</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Computed, hidden</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>This should not appear in the form</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>computed</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>hidden</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>expression</name>
+			<value>return "You wrote " + @{q1:-nothing}</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>q4</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Computed, formatted</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>
+Expected output:
+
+> You **wrote** *[text from question 1]*
+
+or
+
+> You **wrote** *nothing*
+
+**Note**: How the text from question 1 is displayed may be affected by formatting characters if it contains markdown formatting characters.
+			</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>computed</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>formatted</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>expression</name>
+			<value>return "You **wrote** *" + @{q1:-nothing} + "*"</value>
+			<type>String</type>
+		</property>
+	</node>
+</node>
