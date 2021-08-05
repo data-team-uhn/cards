@@ -258,6 +258,26 @@
   + * (cards:VocabularyFilterGroup) = cards:VocabularyFilterGroup
 
 //-----------------------------------------------------------------------------
+// An informative formatted text (markdown) displayed in edit mode to guide
+// the user through filling out a form.
+[cards:Information] > sling:Folder, mix:referenceable
+  // Attributes
+
+  // The main sub-item of a section is its text.
+  primaryitem text
+
+  // Properties
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/Information" mandatory autocreated protected
+
+  // Hardcode the resource supertype: each info is a resource.
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
+
+  // The text provided as information. Optional, it is possible not to have any text.
+  - text (string)
+
+//-----------------------------------------------------------------------------
 // A section is a collection of questions.
 [cards:Section] > sling:Folder, mix:referenceable
   // Attributes

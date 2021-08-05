@@ -67,6 +67,7 @@ let CreationMenu = (props) => {
       >
           <MenuItem onClick={() => { openDialog('Question'); handleCloseMenu(); }}>Question</MenuItem>
           <MenuItem onClick={() => { openDialog('Section'); handleCloseMenu(); }}>Section</MenuItem>
+          <MenuItem onClick={() => { openDialog('Information'); handleCloseMenu(); }}>Information</MenuItem>
       </Menu>
       { dialogOpen && <EditDialog
                         targetExists={false}
