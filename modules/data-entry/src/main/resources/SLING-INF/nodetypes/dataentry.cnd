@@ -101,8 +101,8 @@
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/VocabularyFilterGroup" mandatory autocreated protected
 
-  // Hardcode the resource supertype: each question is a resource.
-  - sling:resourceSuperType (STRING) = "cards/VocabularyFilterGroup" mandatory autocreated protected
+  // Hardcode the resource supertype: each filter group is a resource.
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   - value (string)
 
