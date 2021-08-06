@@ -84,7 +84,7 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, o
   if (doHighlight) {
     gridClasses.push(classes.focusedQuestionnaireItem);
   }
-  if (pageActive === false) {
+  if (pageActive === false || questionDefinition.displayMode == 'hidden') {
     gridClasses.push(classes.hiddenQuestion);
   }
 

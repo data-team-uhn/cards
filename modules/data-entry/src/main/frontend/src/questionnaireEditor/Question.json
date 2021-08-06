@@ -100,6 +100,11 @@
       },
       "computed": {
         "expression": "string",
+        "displayMode" : {
+          "input" : {},
+          "formatted" : {},
+          "hidden": {}
+        },
         "unitOfMeasurement" : "string"
       },
       "time": {
