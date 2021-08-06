@@ -245,6 +245,7 @@ function Section(props) {
                         classes={classes}
                         onChange={onChange}
                         isEdit={isEdit}
+                        pageActive={pageActive}
                         sectionAnswersState={removableAnswers}
                         onAddedAnswerPath={(newAnswers) => {
                           newAnswers[ID_STATE_KEY] = newAnswers[ID_STATE_KEY] + 1;
