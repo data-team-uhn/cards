@@ -42,6 +42,10 @@ import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import QuestionnaireItemCard from "../questionnaireEditor/QuestionnaireItemCard";
 import FormattedText from "../components/FormattedText.jsx";
 
+let _stripCardsNamespace = str => str.replaceAll(/^cards:/g, "");
+
+export const QUESTIONNAIRE_ITEM_NAMES = ENTRY_TYPES.map(type => _stripCardsNamespace(type));
+
 // GUI for displaying details about a questionnaire.
 let Questionnaire = (props) => {
   let { id, classes } = props;
@@ -186,15 +190,10 @@ let QuestionnaireItemSet = (props) => {
       {
         data ?
         Object.entries(data).filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-            .map(([key, value]) =>
-                value['jcr:primaryType'] == 'cards:Question' ?
-                <Grid item key={key}><Question data={value} onActionDone={onActionDone} classes={classes}/></Grid> :
-                value['jcr:primaryType'] == 'cards:Section' ?
-                <Grid item key={key}><Section data={value} onActionDone={onActionDone} classes={classes}/></Grid> :
-                value['jcr:primaryType'] == 'cards:Information' ?
-                <Grid item key={key}><Information data={value} onActionDone={onActionDone} classes={classes}/></Grid>
-                : null
-            )
+            .map(([key, value]) => (
+                    EntryType => <Grid item key={key}>{React.createElement(eval(EntryType),  {data: value, onActionDone: onActionDone, classes: classes})}</Grid>
+                  )(_stripCardsNamespace(value['jcr:primaryType']))
+                )
         : <Grid item><Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid></Grid>
       }
     </Grid>

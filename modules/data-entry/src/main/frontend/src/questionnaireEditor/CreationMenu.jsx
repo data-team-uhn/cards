@@ -27,6 +27,7 @@ import {
 
 import EditDialog from "./EditDialog";
 import NewItemButton from "../components/NewItemButton";
+import { QUESTIONNAIRE_ITEM_NAMES } from "../questionnaire/Questionnaire";
 
 // Menu for creating questions or sections
 
@@ -65,9 +66,9 @@ let CreationMenu = (props) => {
           open={Boolean(anchorEl)}
           onClose={handleCloseMenu}
       >
-          <MenuItem onClick={() => { openDialog('Question'); handleCloseMenu(); }}>Question</MenuItem>
-          <MenuItem onClick={() => { openDialog('Section'); handleCloseMenu(); }}>Section</MenuItem>
-          <MenuItem onClick={() => { openDialog('Information'); handleCloseMenu(); }}>Information</MenuItem>
+        { QUESTIONNAIRE_ITEM_NAMES.map(type =>
+            <MenuItem key={type} onClick={() => { openDialog(type); handleCloseMenu(); }}>{type}</MenuItem>
+        )}
       </Menu>
       { dialogOpen && <EditDialog
                         targetExists={false}
