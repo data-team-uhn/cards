@@ -40,7 +40,7 @@
     # permissions_trusted requires that after self-registration, users must be manually added to the TrustedUsers group by an administrator before they can access data.
     # permissions_ownership enforces data ownership and explicit data sharing
 
-    sling.run.mode.install.options=oak_tar,oak_mongo|forms,noforms|nolfs,lfs|nokids,kids|nocardiac_rehab,cardiac_rehab|permissions_open,permissions_trusted,permissions_ownership
+    sling.run.mode.options=oak_tar,oak_mongo|forms,noforms|nolfs,lfs|nokids,kids|nocardiac_rehab,cardiac_rehab|permissions_open,permissions_trusted,permissions_ownership
 
     repository.home=${sling.home}/repository
     localIndexDir=${sling.home}/repository/index
