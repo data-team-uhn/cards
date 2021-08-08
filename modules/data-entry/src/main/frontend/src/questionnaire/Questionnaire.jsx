@@ -191,8 +191,8 @@ let QuestionnaireItemSet = (props) => {
         data ?
         Object.entries(data).filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
             .map(([key, value]) => (
-                    EntryType => <Grid item key={key}>{React.createElement(eval(EntryType),  {data: value, onActionDone: onActionDone, classes: classes})}</Grid>
-                  )(_stripCardsNamespace(value['jcr:primaryType']))
+                    EntryType => <Grid item key={key}><EntryType data={value} onActionDone={onActionDone} classes={classes} /></Grid>
+                  )(eval(_stripCardsNamespace(value['jcr:primaryType'])))
                 )
         : <Grid item><Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid></Grid>
       }
