@@ -59,19 +59,6 @@ import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import FormattedText from "../components/FormattedText.jsx";
 import ResourceHeader from "./ResourceHeader.jsx";
 
-class Page {
-  constructor(visible) {
-    this.visible = visible;
-    this.canBeVisible = true;
-  }
-  conditionalVisible = [];
-
-  addConditionalVisible(visible, index) {
-    this.conditionalVisible[index] = visible;
-    this.canBeVisible = this.conditionalVisible.length === 0 || this.conditionalVisible.includes(true);
-  }
-}
-
 // TODO Once components from the login module can be imported, open the login Dialog in-page instead of opening a popup window
 
 // TODO Try to move the save-failed code somewhere more generic instead of the Form component
@@ -106,8 +93,7 @@ function Form (props) {
   let [ errorCode, setErrorCode ] = useState();
   let [ errorMessage, setErrorMessage ] = useState("");
   let [ errorDialogDisplayed, setErrorDialogDisplayed ] = useState(false);
-  let [ activePage, setActivePage ] = useState(0);
-  let [ pages, setPages ] = useState([]);
+  let [ pages, setPages ] = useState(null);
   let [ paginationEnabled, setPaginationEnabled ] = useState(false);
   let [ removeWindowHandlers, setRemoveWindowHandlers ] = useState();
   let [ actionsMenu, setActionsMenu ] = useState(null);
@@ -152,7 +138,6 @@ function Form (props) {
   let handleResponse = (json) => {
     setData(json);
     setPaginationEnabled(!!json?.['questionnaire']?.['paginate'] && isEdit);
-    setPages([]);
     if (isEdit) {
       //Perform a JCR check-out of the Form
       let checkoutForm = new FormData();
@@ -297,60 +282,6 @@ function Form (props) {
     );
   }
 
-  // Pagination logic
-
-  let lastValidPage = () => {
-    let result = pages.length - 1;
-    while (result > 0 && !pages[result].canBeVisible) {
-      result--;
-    }
-    return result;
-  }
-
-  let handlePageChange = (direction) => {
-    if (paginationEnabled) {
-      let change = (direction === "next" ? 1 : -1);
-      let lastPage = lastValidPage();
-      let nextPage = activePage;
-      while ((change === 1 || nextPage > 0) && (change === -1 || nextPage < lastPage)) {
-        nextPage += change;
-        if (pages[nextPage].canBeVisible) break;
-      }
-      if (nextPage !== activePage) {
-        window.scrollTo(0, 0);
-      }
-      setActivePage(nextPage);
-    }
-  }
-
-  let previousEntryType;
-  let questionIndex = 0;
-
-  let addPage = (entryDefinition) => {
-    if (paginationEnabled) {
-      let page;
-      if (QUESTION_TYPES.includes(entryDefinition["jcr:primaryType"]) && previousEntryType && QUESTION_TYPES.includes(previousEntryType)) {
-        page = pages[pages.length - 1];
-        questionIndex++;
-      } else {
-        page = new Page(!paginationEnabled || activePage == pages.length);
-        pages.push(page);
-        questionIndex = 0;
-      }
-      previousEntryType = entryDefinition["jcr:primaryType"];
-
-      return {
-        page: page,
-        callback: (visible) => {page.addConditionalVisible(visible, questionIndex);}
-      }
-    } else {
-      if (pages.length === 0) {
-        pages.push(new Page(true));
-      }
-      return {page: pages[0], callback: ()=>{}}
-    }
-  }
-
   // If an error was returned, do not display a form at all, but report the error
   if (error) {
     return (
@@ -363,8 +294,6 @@ function Form (props) {
       </Grid>
     );
   }
-
-  pages.length = 0;
 
   let formMenu = (
             <div className={classes.actionsMenu}>
@@ -486,11 +415,11 @@ function Form (props) {
                 <input type="hidden" name={`${data["@path"]}/subject@TypeHint`} value="Reference"></input>
               </React.Fragment>
             }
-            {
+            {pages &&
               Object.entries(data.questionnaire)
                 .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
                 .map(([key, entryDefinition]) => {
-                  let pageResult = addPage(entryDefinition);
+                  let pageResult = pages[key];
                   return <FormEntry
                     key={key}
                     entryDefinition={entryDefinition}
@@ -508,17 +437,16 @@ function Form (props) {
             }
           </FormUpdateProvider>
         </FormProvider>
-        {paginationEnabled ?
         <Grid item xs={12} className={classes.formFooter}>
           <FormPagination
-            lastPage={lastValidPage}
-            activePage={activePage}
-            saveInProgress={saveInProgress}
-            lastSaveStatus={lastSaveStatus}
-            handlePageChange={handlePageChange}
-            />
+              saveInProgress={saveInProgress}
+              lastSaveStatus={lastSaveStatus}
+              paginationEnabled={paginationEnabled}
+              questionnaireData={data.questionnaire}
+              setPagesCallback={setPages}
+          />
         </Grid>
-        :
+        { !paginationEnabled &&
         <Grid item xs={false} className={classes.formBottom}>
           <div className={classes.mainPageAction}>
             { isEdit &&
