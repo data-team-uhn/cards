@@ -508,13 +508,14 @@
           <version>2.5.3</version>
           <configuration>
             <arguments>-Pquick</arguments>
+            <preparationGoals>clean verify antrun:run@docker-compose-version scm:checkin@docker-compose-version</preparationGoals>
             <!-- Avoid site generation during the release:perform to speed up release process -->
             <goals>deploy</goals>
             <mavenExecutorId>forked-path</mavenExecutorId>
             <autoVersionSubmodules>true</autoVersionSubmodules>
             <localCheckout>true</localCheckout>
             <pushChanges>false</pushChanges>
-            <tagNameFormat>phenotips-@{project.version}</tagNameFormat>
+            <tagNameFormat>cards-@{project.version}</tagNameFormat>
           </configuration>
         </plugin>
         <plugin>
@@ -706,6 +707,49 @@
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-bundle-plugin</artifactId>
           <version>4.2.0</version>
+        </plugin>
+        <!-- Update the version that generate_compose_yaml.py uses for the generated compose file. -->
+        <!-- This is explicitly invoked during release:prepare -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-antrun-plugin</artifactId>
+          <version>3.0.0</version>
+          <inherited>false</inherited>
+          <executions>
+            <execution>
+              <id>docker-compose-version</id>
+              <configuration>
+                <target>
+                  <replace file="compose-cluster/generate_compose_yaml.py" token="latest" value="${project.version}" />
+                </target>
+              </configuration>
+              <goals>
+                <goal>run</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <!-- Commit the updated generate_compose_yaml.py file. -->
+        <!-- This is explicitly invoked during release:prepare -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-scm-plugin</artifactId>
+          <version>1.11.2</version>
+          <inherited>false</inherited>
+          <executions>
+            <execution>
+              <id>docker-compose-version</id>
+              <configuration>
+                <pushChanges>false</pushChanges>
+                <includes>compose-cluster/generate_compose_yaml.py</includes>
+                <excludes>pom.xml</excludes>
+                <message>[release] Set the current release version for docker compose</message>
+              </configuration>
+              <goals>
+                <goal>checkin</goal>
+              </goals>
+            </execution>
+          </executions>
         </plugin>
       </plugins>
     </pluginManagement>
