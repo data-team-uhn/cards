@@ -66,12 +66,36 @@ const useStyles = makeStyles(theme => ({
  * @example
  * <ResourceHEader
  *  title="..."
- *  breadcrumb={}
+ *  breadcrumbs={}
  *  titleAction={<DeleteButton .../>}
  *  >
  *    Subtitle or description
  * </ResourceHeader>
  *
+ * Output when fully displayed:
+ * --------------------------------------------------------------------
+ * | Breadcrumbs / Breadcrumbs /                                      |
+ * | Title                                              titleAction   |
+ * | Other (children)                                                 |
+ * --------------------------------------------------------------------
+ * Output when scrolling up:
+ * --------------------------------------------------------------------
+ * | Breadcrumbs / Breadcrumbs / Title  breadcrumbAction              |
+ * --------------------------------------------------------------------
+ *
+ *
+ * @param {string} title  - the title of the resource, to be displayed in the header; required
+ * @param {Array.<node>} breadcrumbs - the breadcrumb items displayed above the title; this line
+ *  will be sticky when scrolling up, and will include the title once the title line is scrolled
+ *  out of view
+ * @param {string} separator - the breadcrumbs separator, defaults to /
+ * @param {node} titleAction - a React node specifying a button or menu associated with the
+ *   resource and displayed at the right side of the title
+ * @param {node} breadcrumbAction - a React node specifying a button or menu associated with the
+ *   resource and displayed at the right side of the breadcrumbs + title when the page is scrolled to
+ *   hide the main title and titleAction line; it is usually a more compact version of titleAction
+ * @param {Array.<node>} children - any other content that will be displayed in the header, under
+ *   the title and titleAction line
  */
 function ResourceHeader (props) {
   let { title, breadcrumbs, separator, titleAction, breadcrumbAction, children } = props;
