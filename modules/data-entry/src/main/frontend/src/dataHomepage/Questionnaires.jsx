@@ -31,7 +31,7 @@ function Questionnaires(props) {
   const entry = /Questionnaires\/([^.]+)/.exec(location.pathname);
 
   if (entry) {
-    return <Questionnaire id={entry[1]} key={location.pathname}/>;
+    return <Questionnaire id={entry[1]} key={location.pathname} contentOffset={props.contentOffset}/>;
   }
 
   let columns = [
