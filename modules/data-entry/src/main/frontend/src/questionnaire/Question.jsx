@@ -33,6 +33,7 @@ function Question (props) {
 
   return (
     <Card
+      variant="outlined"
       className={classes.questionCard}
       >
       <CardHeader

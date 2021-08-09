@@ -49,6 +49,9 @@ const questionnaireStyle = theme => ({
         borderRadius: theme.spacing(0.5),
       }
     },
+    informationCard: {
+      borderColor: theme.palette.info.dark,
+    },
     viewModeAnswers :{
       paddingTop: theme.spacing(0),
       "& .MuiList-root": {
@@ -177,6 +180,13 @@ const questionnaireStyle = theme => ({
     },
     sectionHeader: {
         paddingBottom: "0 !important",
+        "& > h5" : {
+          padding: theme.spacing(.5, GRID_SPACE_UNIT),
+          background: theme.palette.action.hover,
+        },
+        "& > .MuiTypography-caption" : {
+          padding: theme.spacing(0, GRID_SPACE_UNIT),
+        }
     },
     subjectAvatar : {
         backgroundColor: "orange",

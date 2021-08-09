@@ -142,11 +142,14 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key, onCha
   );
 }
 
-let displayInformation = (infoDefinition, key, pageActive, isEdit) => {
+let displayInformation = (infoDefinition, key, classes, pageActive, isEdit) => {
   return (
     isEdit && pageActive && infoDefinition.text &&
     <Grid item key={key}>
-      <Card>
+      <Card
+        className={classes.informationCard}
+        variant="outlined"
+        >
         <CardContent>
           <FormattedText>{infoDefinition.text}</FormattedText>
         </CardContent>
@@ -177,6 +180,6 @@ let displayInformation = (infoDefinition, key, pageActive, isEdit) => {
   } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
     return displaySection(entryDefinition, path, depth, existingAnswers, keyProp, onChange, visibleCallback, pageActive, isEdit, instanceId);
   } else if (INFO_TYPES.includes(entryDefinition["jcr:primaryType"])) {
-    return displayInformation(entryDefinition, keyProp, pageActive, isEdit);
+    return displayInformation(entryDefinition, keyProp, classes, pageActive, isEdit);
   }
 }
