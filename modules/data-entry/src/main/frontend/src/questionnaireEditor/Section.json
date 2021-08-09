@@ -2,7 +2,13 @@
   {
     "label": "string",
     "description": "markdown",
-    "recurrent": "boolean",
-    "initialNumberOfInstances" : "long"
+    "displayMode" : {
+      "default" : {
+        "recurrent": "boolean",
+        "initialNumberOfInstances" : "long"
+      },
+      "header" : {},
+      "footer" : {}
+    }
   }
 ]

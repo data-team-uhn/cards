@@ -317,6 +317,36 @@ const questionnaireStyle = theme => ({
     hiddenSection: {
         display: "none"
     },
+    headerSection : {
+      position: "sticky",
+      top: theme.spacing(6),
+      zIndex: 2,
+      "& .MuiGrid-item:not(:first-child)": {
+        paddingTop: 0,
+        marginTop: "-2px",
+      },
+      "& .MuiGrid-item:not(:last-child)": {
+        paddingBottom: 0,
+      },
+      "& .MuiCard-root" : {
+        background: grey[100],
+      },
+    },
+    footerSection : {
+      position: "sticky",
+      bottom: theme.spacing(-1.5),
+      background: theme.palette.background.paper,
+      "& .MuiGrid-item:not(:first-child)": {
+        paddingTop: 0,
+        marginTop: "-2px",
+      },
+      "& .MuiGrid-item:not(:last-child)": {
+        paddingBottom: 0,
+      },
+      "& .MuiCard-root" : {
+        background: grey[100],
+      },
+    },
     addSectionButton: {
         marginTop: theme.spacing(GRID_SPACE_UNIT * 2)
     },
