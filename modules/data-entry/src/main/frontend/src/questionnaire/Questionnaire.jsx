@@ -24,16 +24,21 @@ import PropTypes from "prop-types";
 import {
   CircularProgress,
   Grid,
+  IconButton,
   Table,
   TableBody,
   TableCell,
   TableRow,
+  Tooltip,
   Typography,
   withStyles
 } from "@material-ui/core";
 
 import moment from "moment";
 
+import EditIcon from '@material-ui/icons/Edit';
+import PreviewIcon from '@material-ui/icons/FindInPage';
+import DeleteButton from "../dataHomepage/DeleteButton";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import { blue } from '@material-ui/core/colors';
 import { ENTRY_TYPES } from "./FormEntry";
@@ -43,6 +48,7 @@ import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import QuestionnaireItemCard from "../questionnaireEditor/QuestionnaireItemCard";
 import FormattedText from "../components/FormattedText.jsx";
 import ResourceHeader from "./ResourceHeader";
+import QuestionnairePreview from "./QuestionnairePreview";
 
 let _stripCardsNamespace = str => str.replaceAll(/^cards:/g, "");
 
@@ -54,6 +60,7 @@ let Questionnaire = (props) => {
   let [ data, setData ] = useState();
   let [ error, setError ] = useState();
   let [ doHighlight, setDoHighlight ] = useState(false);
+  let [ isEdit, setIsEdit ] =  useState(window.location.pathname.endsWith(".edit"));
 
   let pageNameWriter = usePageNameWriterContext();
 
@@ -117,6 +124,45 @@ let Questionnaire = (props) => {
     });
   }, []);
 
+  let questionnaireMenu = (
+      <div className={classes.actionsMenu}>
+        { isEdit ?
+          <Tooltip title="Preview" onClick={() => setIsEdit(false)}>
+            <IconButton>
+              <PreviewIcon />
+            </IconButton>
+          </Tooltip>
+          :
+          <Tooltip title="Edit" onClick={() => setIsEdit(true)}>
+            <IconButton color="primary">
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
+        }
+        <DeleteButton
+          entryPath={data ? data["@path"] : `/Questionnaires/${id}`}
+          entryName={questionnaireTitle}
+          entryType="Questionnaire"
+          variant="icon"
+        />
+      </div>
+  )
+
+  let questionnaireHeader = (
+        <ResourceHeader
+          title={questionnaireTitle}
+          breadcrumbs={[<Link to={/((.*)\/Questionnaires)\/([^.]+)/.exec(location.pathname)[1]}>Questionnaires</Link>]}
+          action={questionnaireMenu}
+          contentOffset={props.contentOffset}
+          >
+          { data?.['jcr:createdBy'] && data?.['jcr:created'] &&
+            <Typography variant="overline">
+              Created by {data['jcr:createdBy']} on {moment(data['jcr:created']).format("dddd, MMMM Do YYYY")}
+            </Typography>
+          }
+        </ResourceHeader>
+  );
+
   return (
     <>
       { error &&
@@ -124,25 +170,24 @@ let Questionnaire = (props) => {
           Error obtaining questionnaire info: {error.status} {error.statusText}
         </Typography>
       }
+      { !isEdit
+        ? <Grid container direction="column" spacing={4} wrap="nowrap">
+            {questionnaireHeader}
+            <Grid item>
+              <QuestionnairePreview
+                data={data}
+                title={questionnaireTitle}
+              />
+            </Grid>
+          </Grid>
+      :
       <QuestionnaireItemSet
         data={data}
         classes={classes}
         onActionDone={() => reloadData()}
       >
-      <ResourceHeader
-        title={questionnaireTitle}
-        breadcrumbs={[<Link to={/((.*)\/Questionnaires)\/([^.]+)/.exec(location.pathname)[1]}>Questionnaires</Link>]}
-        contentOffset={props.contentOffset}
-        >
-        {
-          data?.['jcr:createdBy'] && data?.['jcr:created'] &&
-            <Typography variant="overline">
-              Created by {data['jcr:createdBy']} on {moment(data['jcr:created']).format("dddd, MMMM Do YYYY")}
-            </Typography>
-        }
-      </ResourceHeader>
-      { data?.["jcr:primaryType"] == "cards:Questionnaire" &&
-        <Grid item>
+        {questionnaireHeader}
+        { data?.["jcr:primaryType"] == "cards:Questionnaire" && <Grid item>
           <QuestionnaireItemCard
             plain
             type="Questionnaire"
@@ -163,16 +208,16 @@ let Questionnaire = (props) => {
                         )}
               />
           </QuestionnaireItemCard>
-        </Grid>
-      }
-      { data &&
+        </Grid>}
+        { data &&
           <CreationMenu
             isMainAction={true}
             data={data}
             onClose={onCreate}
           />
-      }
+        }
       </QuestionnaireItemSet>
+      }
     </>
   );
 };
