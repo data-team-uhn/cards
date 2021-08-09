@@ -34,11 +34,17 @@ import {
 import moment from "moment";
 
 import QuestionnaireStyle from "./QuestionnaireStyle";
+import { blue } from '@material-ui/core/colors';
+import { ENTRY_TYPES } from "./FormEntry";
 import Fields from "../questionnaireEditor/Fields";
 import CreationMenu from "../questionnaireEditor/CreationMenu";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import QuestionnaireItemCard from "../questionnaireEditor/QuestionnaireItemCard";
 import FormattedText from "../components/FormattedText.jsx";
+
+let _stripCardsNamespace = str => str.replaceAll(/^cards:/g, "");
+
+export const QUESTIONNAIRE_ITEM_NAMES = ENTRY_TYPES.map(type => _stripCardsNamespace(type));
 
 // GUI for displaying details about a questionnaire.
 let Questionnaire = (props) => {
@@ -183,14 +189,11 @@ let QuestionnaireItemSet = (props) => {
       <Grid item>{children}</Grid>
       {
         data ?
-        Object.entries(data).filter(([key, value]) => (value['jcr:primaryType'] == 'cards:Section' || value['jcr:primaryType'] == 'cards:Question'))
-            .map(([key, value]) =>
-                value['jcr:primaryType'] == 'cards:Question' ?
-                <Grid item key={key}><Question data={value} onActionDone={onActionDone} classes={classes}/></Grid> :
-                value['jcr:primaryType'] == 'cards:Section' ?
-                <Grid item key={key}><Section data={value} onActionDone={onActionDone} classes={classes}/></Grid>
-                : null
-            )
+        Object.entries(data).filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
+            .map(([key, value]) => (
+                    EntryType => <Grid item key={key}><EntryType data={value} onActionDone={onActionDone} classes={classes} /></Grid>
+                  )(eval(_stripCardsNamespace(value['jcr:primaryType'])))
+                )
         : <Grid item><Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid></Grid>
       }
     </Grid>
@@ -200,6 +203,42 @@ let QuestionnaireItemSet = (props) => {
 QuestionnaireItemSet.propTypes = {
   onActionDone: PropTypes.func,
   data: PropTypes.object
+};
+
+
+// Details about an information block displayed in a questionnaire
+let Information = (props) => {
+  let { onActionDone, data, classes } = props;
+  let [ infoData, setInfoData ] = useState(data);
+  let [ doHighlight, setDoHighlight ] = useState(data.doHighlight);
+
+  let reloadData = (newData) => {
+    if (newData) {
+      setInfoData(newData);
+      setDoHighlight(true);
+    } else {
+      onActionDone();
+    }
+  }
+  return (
+    <QuestionnaireItemCard
+        avatar="info"
+        title=" "
+        avatarColor={blue[600]}
+        type="Information"
+        data={infoData}
+        classes={classes}
+        onActionDone={reloadData}
+        doHighlight={doHighlight}
+    >
+      <Fields data={infoData} JSON={require('../questionnaireEditor/Information.json')[0]} edit={false} />
+    </QuestionnaireItemCard>
+  );
+};
+
+Information.propTypes = {
+  onActionDone: PropTypes.func,
+  data: PropTypes.object.isRequired
 };
 
 

@@ -19,7 +19,7 @@
 
 import React,  { useRef, useEffect } from "react";
 
-import { Grid } from "@material-ui/core";
+import { Card, CardContent, Grid } from "@material-ui/core";
 
 import AnswerComponentManager from "./AnswerComponentManager";
 import Section from "./Section";
@@ -39,9 +39,12 @@ import ComputedQuestion from "./ComputedQuestion";
 import VocabularyQuestion from "./VocabularyQuestion";
 import FileResourceQuestion from "./FileResourceQuestion";
 
+import FormattedText from "../components/FormattedText";
+
 export const QUESTION_TYPES = ["cards:Question"];
 export const SECTION_TYPES = ["cards:Section"];
-export const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES);
+export const INFO_TYPES = ["cards:Information"];
+export const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES).concat(INFO_TYPES);
 
 /**
  * Method responsible for displaying a question from the questionnaire, along with its answer(s).
@@ -139,6 +142,20 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key, onCha
   );
 }
 
+let displayInformation = (infoDefinition, key, pageActive, isEdit) => {
+  return (
+    isEdit && pageActive && infoDefinition.text &&
+    <Grid item key={key}>
+      <Card>
+        <CardContent>
+          <FormattedText>{infoDefinition.text}</FormattedText>
+        </CardContent>
+      </Card>
+    </Grid>
+    || null
+  );
+}
+
 /**
  * Display a question or section from the questionnaire, along with its answer(s).
  *
@@ -159,5 +176,7 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key, onCha
     return displayQuestion(entryDefinition, path, existingAnswers, keyProp, classes, onAddedAnswerPath, sectionAnswersState, onChange, pageActive, isEdit, instanceId);
   } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
     return displaySection(entryDefinition, path, depth, existingAnswers, keyProp, onChange, visibleCallback, pageActive, isEdit, instanceId);
+  } else if (INFO_TYPES.includes(entryDefinition["jcr:primaryType"])) {
+    return displayInformation(entryDefinition, keyProp, pageActive, isEdit);
   }
 }

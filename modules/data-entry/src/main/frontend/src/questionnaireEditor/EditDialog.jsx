@@ -38,9 +38,6 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js"
 
 let EditDialog = (props) => {
   const { data, type, targetExists, isOpen, onClose, onCancel, id } = props;
-  let questionJSON = require('./Question.json');
-  let sectionJSON = require('./Section.json');
-  let propertiesJSON = require('./Properties.json');
   let [ targetId, setTargetId ] = useState('');
   // Marks that a save operation is in progress
   let [ saveInProgress, setSaveInProgress ] = useState();
@@ -52,9 +49,7 @@ let EditDialog = (props) => {
   let [ open, setOpen ] = useState(isOpen);
   let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
   let [ error, setError ] = useState('');
-  let json = type === 'Question' ? questionJSON
-              : type === 'Section' ? sectionJSON
-              : propertiesJSON;
+  let json = require(`./${type}.json`);
 
   let saveButtonRef = React.useRef();
   const globalLoginDisplay = useContext(GlobalLoginContext);
@@ -86,9 +81,9 @@ let EditDialog = (props) => {
         .catch(handleError);
 
     } else {
-      // If the question/section doesn't exist, create it
+      // If the entry doesn't exist, create it
       let newData = data;
-      const primaryType = type.includes('Question') ? 'cards:Question' : 'cards:Section';
+      const primaryType = `cards:${type}`;
       var request_data = new FormData(event.currentTarget);
       request_data.append('jcr:primaryType', primaryType);
       fetchWithReLogin(globalLoginDisplay,
@@ -155,7 +150,7 @@ let EditDialog = (props) => {
   let targetIdField = () => {
     return (
       <Grid container alignItems='baseline' spacing={2} direction="row">
-        <Grid item xs={4}><Typography variant="subtitle2">{type === 'Question' ? 'Variable name:' : 'Section identifier:' }</Typography></Grid>
+        <Grid item xs={4}><Typography variant="subtitle2">{type === 'Question' ? 'Variable name:' : `${type} identifier` }</Typography></Grid>
         <Grid item xs={8}>{
           targetExists ?
           <Typography>{data["@name"]}</Typography> :
