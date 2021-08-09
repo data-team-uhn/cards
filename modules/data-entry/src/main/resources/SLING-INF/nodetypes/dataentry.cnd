@@ -442,7 +442,7 @@
   // Children
 
   // The sections and standalone questions that make up this questionnaire.
-  + * (cards:Section, cards:Question) = cards:Section
+  + * (cards:Section, cards:Question, cards:Information) = cards:Section
 
 //-----------------------------------------------------------------------------
 // The homepage for the questionnaires space.
