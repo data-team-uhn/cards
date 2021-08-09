@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { green, grey } from '@material-ui/core/colors';
+import { orange, grey } from '@material-ui/core/colors';
 
 // Props used in grid containers for displaying Form entries
 export const FORM_ENTRY_CONTAINER_PROPS = {
@@ -178,17 +178,8 @@ const questionnaireStyle = theme => ({
     sectionHeader: {
         paddingBottom: "0 !important",
     },
-    subjectCard: {
-        minHeight: "200px",
-    },
-    subjectFormHeader: {
-        paddingBottom: "0 !important",
-    },
-    subjectFormHeaderButton: {
-        padding: "0 !important"
-    },
     subjectAvatar : {
-        backgroundColor: green[500],
+        backgroundColor: "orange",
     },
     subjectTitleWithAvatar: {
         marginLeft: theme.spacing(-7),
@@ -484,18 +475,16 @@ const questionnaireStyle = theme => ({
         fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
     },
     subjectChip: {
-        color:'white',
         marginBottom: theme.spacing(1),
         marginRight: theme.spacing(1),
     },
     INCOMPLETEChip: {
-        backgroundColor: theme.palette.warning.main
     },
     INVALIDChip: {
-        backgroundColor: theme.palette.error.main
+        borderColor: theme.palette.error.main,
+        color: theme.palette.error.main,
     },
     DefaultChip: {
-        backgroundColor: theme.palette.warning.main
     },
     formPreviewQuestion: {
         "& .MuiChip-root" : {

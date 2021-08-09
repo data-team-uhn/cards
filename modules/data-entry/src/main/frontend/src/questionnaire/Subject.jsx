@@ -506,6 +506,7 @@ function SubjectMemberInternal (props) {
                                            return <Chip
                                              key={status}
                                              label={wordToTitleCase(status)}
+                                             variant="outlined"
                                              className={`${classes.subjectChip} ${classes[status + "Chip"] || classes.DefaultChip}`}
                                              size="small"
                                            />
