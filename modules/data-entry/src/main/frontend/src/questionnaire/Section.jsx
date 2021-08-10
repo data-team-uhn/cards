@@ -166,7 +166,7 @@ function Section(props) {
       mountOnEnter
       unmountOnExit
       className={collapseClasses.join(" ")}
-      style={{top : props.contentOffset}}
+      style={displayMode == 'header' ? {top : props.contentOffset}: {}}
       >
       {instanceLabels.map( (uuid, idx) => {
           const sectionPath = path + "/" + uuid;

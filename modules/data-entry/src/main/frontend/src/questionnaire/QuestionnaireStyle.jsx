@@ -317,7 +317,6 @@ const questionnaireStyle = theme => ({
     headerSection : {
       position: "sticky",
       top: 0,
-      paddingTop: "0 !important",
       zIndex: 2,
       "& .MuiGrid-item:not(:first-child)": {
         paddingTop: 0,
