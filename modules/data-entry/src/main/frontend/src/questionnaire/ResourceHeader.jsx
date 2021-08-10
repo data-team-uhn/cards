@@ -41,16 +41,12 @@ const useStyles = makeStyles(theme => ({
       margin: theme.spacing(2*GRID_SPACE_UNIT, GRID_SPACE_UNIT, 0),
       backgroundColor: grey[100],
       zIndex: "1010",
+      "& .MuiBreadcrumbs-root" : {
+        width: "fit-content",
+      },
       "& .MuiBreadcrumbs-li" : {
         color: theme.palette.text.primary,
       },
-    },
-    currentItem : {
-      display: "flex",
-      alignItems: "center",
-    },
-    breadcrumbAction : {
-      marginLeft: theme.spacing(2),
     },
     headerSeparator: {
       visibility: "hidden",
@@ -80,12 +76,12 @@ const useStyles = makeStyles(theme => ({
  * Output when fully displayed:
  * --------------------------------------------------------------------
  * | Breadcrumbs / Breadcrumbs /                                      |
- * | Title                                              titleAction   |
+ * | Title                                                titleAction |
  * | Other (children)                                                 |
  * --------------------------------------------------------------------
  * Output when scrolling up:
  * --------------------------------------------------------------------
- * | Breadcrumbs / Breadcrumbs / Title  breadcrumbAction              |
+ * | Breadcrumbs / Breadcrumbs / Title               breadcrumbAction |
  * --------------------------------------------------------------------
  *
  *
@@ -116,15 +112,19 @@ function ResourceHeader (props) {
   return (
     <>
     <Grid item xs={12} className={classes.resourceHeader} style={{top: props.contentOffset}}>
-      <Breadcrumbs separator={separator}>
-        {Array.from(breadcrumbs || []).map(item => <Typography variant="overline" key={item}>{item}</Typography>)}
-        <Collapse in={fullBreadcrumbTrigger}>
-          <div className={classes.currentItem}>
-            <Typography variant="subtitle2">{title}</Typography>
-            {breadcrumbAction && <div className={classes.breadcrumbAction}>{breadcrumbAction}</div>}
-          </div>
+      <Grid container direction="row" justify="space-between" alignItems="center">
+        <Grid item>
+          <Breadcrumbs separator={separator}>
+            {Array.from(breadcrumbs || []).map(item => <Typography variant="overline" key={item}>{item}</Typography>)}
+            <Collapse in={fullBreadcrumbTrigger}>
+              <Typography variant="subtitle2">{title}</Typography>
+            </Collapse>
+          </Breadcrumbs>
+        </Grid>
+        <Collapse in={!!breadcrumbAction &&  fullBreadcrumbTrigger} component={Grid}>
+          <div className={classes.breadcrumbAction}>{breadcrumbAction}</div>
         </Collapse>
-      </Breadcrumbs>
+      </Grid>
       <Collapse in={fullBreadcrumbTrigger}>
         <hr className={classes.headerSeparator} />
       </Collapse>
