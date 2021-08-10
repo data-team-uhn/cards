@@ -39,20 +39,20 @@ function check_cards_running() {
 }
 
 function handle_cards_java_fail() {
-  echo -e "${TERMINAL_RED}*****************************************${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_RED}*                                       *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_RED}*   The CARDS Java process has failed   *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_RED}*                                       *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_RED}*****************************************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}**************************************************************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*                                                            *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*   The CARDS Java process has failed at port ${BIND_PORT}   *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*                                                            *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}**************************************************************${TERMINAL_NOCOLOR}"
   exit -1
 }
 
 function handle_tcp_bind_fail() {
-  echo -e "${TERMINAL_RED}**********************************${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_RED}*                                *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_RED}*   Unable to bind to TCP port   *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_RED}*                                *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_RED}**********************************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}***********************************************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*                                             *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*   Unable to bind to TCP port ${BIND_PORT}   *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*                                             *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}***********************************************${TERMINAL_NOCOLOR}"
   exit -1
 }
 
@@ -97,11 +97,11 @@ function message_hancestro_install_fail() {
 }
 
 function message_started_cards() {
-  echo -e "${TERMINAL_GREEN}*********************${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_GREEN}*                   *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_GREEN}*   Started CARDS   *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_GREEN}*                   *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_GREEN}*********************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}******************************************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}*                                        *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}*   Started CARDS at port ${BIND_PORT}   *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}*                                        *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}******************************************${TERMINAL_NOCOLOR}"
 }
 
 #Determine the port that CARDS is to bind to
