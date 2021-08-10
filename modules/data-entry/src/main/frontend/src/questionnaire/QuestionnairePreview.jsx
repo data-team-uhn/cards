@@ -21,6 +21,7 @@ import React, { useEffect, useState, useContext } from "react";
 import PropTypes from "prop-types";
 
 import {
+  CircularProgress,
   Grid,
   Typography,
   withStyles
@@ -54,19 +55,18 @@ function QuestionnairePreview (props) {
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
     return (
-      <Grid container justify="center">
-        <Grid item>
-          <Typography variant="h2" color="error">
-            Error obtaining questionnaire data
-          </Typography>
-        </Grid>
-      </Grid>
+      <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
     );
   }
 
   return (
     <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
-      <FormProvider >
+      { /* Added dummy save fucntionality for mocking file and pedigree questions functionality. */ }
+      <FormProvider additionalFormData={{
+          ['/Save']: () => { return new Promise((resolve, reject) => {return;})},
+          ['/URL']: data ? data["@path"] : '',
+          ['/AllowResave']: () => {}
+          }}>
         <FormUpdateProvider>
         { pages &&
           Object.entries(data)
