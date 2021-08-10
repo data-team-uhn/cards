@@ -138,7 +138,9 @@ function Section(props) {
   }
 
   const collapseClasses = [];
-  collapseClasses.push(classes[displayMode + 'Section'])
+  if (isEdit) {
+    collapseClasses.push(classes[displayMode + 'Section']);
+  }
   if (isEdit && !displayed || !isEdit && !hasAnswers) {
     collapseClasses.push(classes.collapsedSection);
   }
@@ -164,6 +166,7 @@ function Section(props) {
       mountOnEnter
       unmountOnExit
       className={collapseClasses.join(" ")}
+      style={{top : props.contentOffset}}
       >
       {instanceLabels.map( (uuid, idx) => {
           const sectionPath = path + "/" + uuid;
@@ -181,7 +184,6 @@ function Section(props) {
               container
               className={
                 (isRecurrent ? classes.recurrentSection : undefined)
-                + " " + (hasHeader ? classes.labeledSection : undefined)
               }
               {...FORM_ENTRY_CONTAINER_PROPS}
               >

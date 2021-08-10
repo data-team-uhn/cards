@@ -113,7 +113,7 @@ function ResourceHeader (props) {
 
   return (
     <>
-    <Grid item xs={12} className={classes.resourceHeader} style={{top: props.contentOffset}}>
+    <Grid item xs={12} className={classes.resourceHeader} style={{top: props.contentOffset}} id="cards-resource-header">
       <Grid container direction="row" justify="space-between" alignItems="center">
         <Grid item>
           <Breadcrumbs separator={separator}>

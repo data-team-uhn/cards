@@ -174,9 +174,6 @@ const questionnaireStyle = theme => ({
         position: 'relative',
         textAlign: 'center'
     },
-    labeledSection: {
-        marginTop: theme.spacing(GRID_SPACE_UNIT)
-    },
     sectionHeader: {
         paddingBottom: "0 !important",
         "& > h5" : {
@@ -319,7 +316,8 @@ const questionnaireStyle = theme => ({
     },
     headerSection : {
       position: "sticky",
-      top: theme.spacing(6),
+      top: 0,
+      paddingTop: "0 !important",
       zIndex: 2,
       "& .MuiGrid-item:not(:first-child)": {
         paddingTop: 0,
@@ -328,14 +326,17 @@ const questionnaireStyle = theme => ({
       "& .MuiGrid-item:not(:last-child)": {
         paddingBottom: 0,
       },
-      "& .MuiCard-root" : {
+      "& .MuiGrid-item:not(.MuiCollapse-container) > *": {
         background: grey[100],
+      },
+      "& .MuiCard-root" : {
+        borderColor: "transparent",
       },
     },
     footerSection : {
       position: "sticky",
-      bottom: theme.spacing(-1.5),
-      background: theme.palette.background.paper,
+      bottom: 0,
+      paddingBottom: "0 !important",
       "& .MuiGrid-item:not(:first-child)": {
         paddingTop: 0,
         marginTop: "-2px",
@@ -343,8 +344,11 @@ const questionnaireStyle = theme => ({
       "& .MuiGrid-item:not(:last-child)": {
         paddingBottom: 0,
       },
-      "& .MuiCard-root" : {
+      "& .MuiGrid-item:not(.MuiCollapse-container) > *": {
         background: grey[100],
+      },
+      "& .MuiCard-root" : {
+        borderColor: "transparent",
       },
     },
     addSectionButton: {

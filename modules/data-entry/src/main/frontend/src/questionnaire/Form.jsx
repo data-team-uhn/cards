@@ -85,7 +85,7 @@ class Page {
  * @param {string} id the identifier of a form; this is the JCR node name
  */
 function Form (props) {
-  let { classes, id } = props;
+  let { classes, id, contentOffset } = props;
   // This holds the full form JSON, once it is received from the server
   let [ data, setData ] = useState();
   // Error message set when fetching the data from the server fails
@@ -111,6 +111,7 @@ function Form (props) {
   let [ paginationEnabled, setPaginationEnabled ] = useState(false);
   let [ removeWindowHandlers, setRemoveWindowHandlers ] = useState();
   let [ actionsMenu, setActionsMenu ] = useState(null);
+  let [ formContentOffset, setFormContentOffset ] = useState(props.contentOffset);
 
   let formNode = React.useRef();
   let pageNameWriter = usePageNameWriterContext();
@@ -119,6 +120,11 @@ function Form (props) {
   const urlBase = "/content.html";
   const isEdit = window.location.pathname.endsWith(".edit");
   let globalLoginDisplay = useContext(GlobalLoginContext);
+
+  useEffect(() => {
+    const height = document?.getElementById('cards-resource-header')?.clientHeight || 0;
+    setFormContentOffset(contentOffset + height);
+  }, [data, contentOffset])
 
   useEffect(() => {
     if (isEdit) {
@@ -436,7 +442,8 @@ function Form (props) {
           breadcrumbs={[<Breadcrumbs separator="/">{getHierarchyAsList(data?.subject).map(a => <Typography variant="overline" key={a}>{a}</Typography>)}</Breadcrumbs>]}
           separator=":"
           action={formMenu}
-          contentOffset={props.contentOffset}
+          contentOffset={contentOffset}
+
         >
           <FormattedText variant="subtitle1" color="textSecondary">
             {data?.questionnaire?.description}
@@ -503,6 +510,7 @@ function Form (props) {
                     visibleCallback={pageResult.callback}
                     pageActive={pageResult.page.visible}
                     isEdit={isEdit}
+                    contentOffset={formContentOffset}
                   />
                 })
             }
