@@ -406,6 +406,15 @@ function Form (props) {
                       </Button>
                     </ListItem>
                     <ListItem className={classes.actionsMenuItem}>
+                      <Button onClick={(e) => {
+                         // Save before exporting to ensure all the data is included
+                         saveData(e, false, () => {window.open(formURL + ".txt")});
+                         setActionsMenu(null);
+                        }}>
+                        Export as text
+                      </Button>
+                    </ListItem>
+                    <ListItem className={classes.actionsMenuItem}>
                       <DeleteButton
                           entryPath={data ? data["@path"] : formURL}
                           entryName={(data?.subject?.fullIdentifier ? (data.subject.fullIdentifier + ": ") : '') + (title)}
