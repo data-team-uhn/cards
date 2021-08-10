@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { green, grey } from '@material-ui/core/colors';
+import { orange, grey } from '@material-ui/core/colors';
 
 // Props used in grid containers for displaying Form entries
 export const FORM_ENTRY_CONTAINER_PROPS = {
@@ -28,7 +28,7 @@ export const FORM_ENTRY_CONTAINER_PROPS = {
     wrap: "nowrap"
   };
 
-const GRID_SPACE_UNIT = FORM_ENTRY_CONTAINER_PROPS.spacing/2;
+export const GRID_SPACE_UNIT = FORM_ENTRY_CONTAINER_PROPS.spacing/2;
 
 const questionnaireStyle = theme => ({
     questionCard : {
@@ -48,6 +48,8 @@ const questionnaireStyle = theme => ({
         background: theme.palette.action.hover,
         borderRadius: theme.spacing(0.5),
       }
+    },
+    informationCard: {
     },
     viewModeAnswers :{
       paddingTop: theme.spacing(0),
@@ -177,25 +179,16 @@ const questionnaireStyle = theme => ({
     },
     sectionHeader: {
         paddingBottom: "0 !important",
-    },
-    subjectCard: {
-        minHeight: "200px",
-    },
-    subjectHeader: {
-        position: "sticky",
-        top: 0,
-        paddingTop: theme.spacing(4) + 'px !important',
-        backgroundColor: theme.palette.background.paper,
-        zIndex: "1010",
-    },
-    subjectFormHeader: {
-        paddingBottom: "0 !important",
-    },
-    subjectFormHeaderButton: {
-        padding: "0 !important"
+        "& > h5" : {
+          padding: theme.spacing(1, GRID_SPACE_UNIT),
+          background: theme.palette.action.hover,
+        },
+        "& > .MuiTypography-caption" : {
+          padding: theme.spacing(0, GRID_SPACE_UNIT),
+        }
     },
     subjectAvatar : {
-        backgroundColor: green[500],
+        backgroundColor: "orange",
     },
     subjectTitleWithAvatar: {
         marginLeft: theme.spacing(-7),
@@ -232,6 +225,16 @@ const questionnaireStyle = theme => ({
           minWidth: "100px",
           marginTop: theme.spacing(-1.5),
         },
+      },
+    },
+    subjectTabs: {
+      marginLeft: theme.spacing(GRID_SPACE_UNIT),
+      "& .MuiTab-root" : {
+        minWidth: "auto",
+        textTransform: "initial",
+      },
+      "& .MuiTabs-indicator": {
+        background: "orange",
       },
     },
     timelineContainer: {
@@ -379,16 +382,6 @@ const questionnaireStyle = theme => ({
         display: "block",
         marginLeft: theme.spacing(0)
     },
-    formHeader: {
-        position: "sticky",
-        width: "100%",
-        top: 0,
-        paddingTop: theme.spacing(4) + 'px !important',
-        backgroundColor: theme.palette.background.paper,
-        opacity: 1,
-        zIndex: "1010",
-        margin: theme.spacing(2),
-    },
     formFooter: {
         position: "sticky",
         bottom: theme.spacing(0),
@@ -419,9 +412,6 @@ const questionnaireStyle = theme => ({
         border: "1px solid " + theme.palette.divider,
         borderRadius: theme.spacing(3),
         display: "flex",
-        float: "right",
-        marginRight : theme.spacing(2),
-        marginTop: theme.spacing(1)
     },
     actionsMenuItem: {
         padding: theme.spacing(0,1),
@@ -435,11 +425,6 @@ const questionnaireStyle = theme => ({
     },
     subjectSubHeader: {
         display: "block"
-    },
-    subjectHeaderButton: {
-        float: "right",
-        marginTop: theme.spacing(1),
-        marginRight: theme.spacing(-0.5)
     },
     childSubjectHeaderButton: {
         left: theme.spacing(1)
@@ -499,18 +484,16 @@ const questionnaireStyle = theme => ({
         fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
     },
     subjectChip: {
-        color:'white',
         marginBottom: theme.spacing(1),
         marginRight: theme.spacing(1),
     },
     INCOMPLETEChip: {
-        backgroundColor: theme.palette.warning.main
     },
     INVALIDChip: {
-        backgroundColor: theme.palette.error.main
+        borderColor: theme.palette.error.main,
+        color: theme.palette.error.main,
     },
     DefaultChip: {
-        backgroundColor: theme.palette.warning.main
     },
     formPreviewQuestion: {
         "& .MuiChip-root" : {

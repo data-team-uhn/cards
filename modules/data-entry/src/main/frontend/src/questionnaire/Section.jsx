@@ -68,7 +68,7 @@ function Section(props) {
   const isRecurrent = sectionDefinition['recurrent'];
   const [ focus, setFocus ] = useState(false);
 
-  const headerVariant = (depth > MAX_HEADING_LEVEL - MIN_HEADING_LEVEL ? "body1" : ("h" + (depth+MIN_HEADING_LEVEL)));
+  const headerVariant = "h5";
   const titleEl = sectionDefinition["label"] &&
     ((idx, uuid) =>
       <Typography variant={headerVariant} className={uuid == selectedUUID ? classes.highlightedTitle: undefined}>

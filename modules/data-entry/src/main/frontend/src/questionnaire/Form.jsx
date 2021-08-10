@@ -47,7 +47,7 @@ import MoreIcon from '@material-ui/icons/MoreVert';
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
 import FormEntry, { QUESTION_TYPES, ENTRY_TYPES } from "./FormEntry";
 import moment from "moment";
-import { getHierarchy, getTextHierarchy } from "./Subject";
+import { getHierarchy, getTextHierarchy, getHierarchyAsList } from "./Subject";
 import { SelectorDialog, parseToArray } from "./SubjectSelector";
 import { FormProvider } from "./FormContext";
 import { FormUpdateProvider } from "./FormUpdateContext";
@@ -57,6 +57,7 @@ import MainActionButton from "../components/MainActionButton.jsx";
 import FormPagination from "./FormPagination";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import FormattedText from "../components/FormattedText.jsx";
+import ResourceHeader from "./ResourceHeader.jsx";
 
 class Page {
   constructor(visible) {
@@ -365,31 +366,23 @@ function Form (props) {
 
   pages.length = 0;
 
-  return (
-    <form action={data?.["@path"]} method="POST" onSubmit={handleSubmit} onChange={()=>setLastSaveStatus(undefined)} key={id} ref={formNode}>
-      <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
-        <Grid item className={classes.formHeader} xs={12}>
-          { parentDetails && <Typography variant="overline">
-            {parentDetails}
-          </Typography> }
-          <Typography variant="h2">
-            {title}
+  let getFormMenu = (size, className) => (
             <div className={classes.actionsMenu}>
                 {isEdit ?
                   <Tooltip title="Save and close" onClick={onClose}>
-                    <IconButton color="primary">
+                    <IconButton color="primary" size={size}>
                       <DoneIcon />
                     </IconButton>
                   </Tooltip>
                   :
                   <Tooltip title="Edit">
-                    <IconButton color="primary" onClick={onEdit}>
+                    <IconButton color="primary" onClick={onEdit} size={size}>
                       <EditIcon />
                     </IconButton>
                   </Tooltip>
                 }
                 <Tooltip title="More actions" onClick={(event) => {setActionsMenu(event.currentTarget)}}>
-                  <IconButton>
+                  <IconButton size={size}>
                     <MoreIcon fontSize="small" />
                   </IconButton>
                 </Tooltip>
@@ -424,7 +417,19 @@ function Form (props) {
                   </List>
                 </Popover>
             </div>
-          </Typography>
+  )
+
+  return (
+    <form action={data?.["@path"]} method="POST" onSubmit={handleSubmit} onChange={()=>setLastSaveStatus(undefined)} key={id} ref={formNode}>
+      <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
+        <ResourceHeader
+          title={title}
+          breadcrumbs={[<Breadcrumbs separator="/">{getHierarchyAsList(data?.subject).map(a => <Typography variant="overline" key={a}>{a}</Typography>)}</Breadcrumbs>]}
+          separator=":"
+          titleAction={getFormMenu()}
+          breadcrumbAction={getFormMenu("small")}
+          contentOffset={props.contentOffset}
+        >
           <FormattedText variant="subtitle1" color="textSecondary">
             {data?.questionnaire?.description}
           </FormattedText>
@@ -448,7 +453,7 @@ function Form (props) {
             : ""
           }
           </Breadcrumbs>
-        </Grid>
+        </ResourceHeader>
         { /* We also expose the URL of the output form and the save function to any children. This shouldn't interfere
           with any other values placed inside the context since no variable name should be able to have a '/' in it */}
         <FormProvider additionalFormData={{

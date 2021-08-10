@@ -173,8 +173,8 @@ function DeleteButton(props) {
       </Dialog>
       {variant == "icon" ?
         <Tooltip title={buttonText}>
-          <IconButton component="span" onClick={handleClick} className={buttonClass}>
-            <Delete fontSize={size ? size : "default"}/>
+          <IconButton component="span" onClick={handleClick} className={buttonClass} size={size}>
+            <Delete fontSize={size == "small" ? size : undefined}/>
           </IconButton>
         </Tooltip>
         :
@@ -193,10 +193,12 @@ function DeleteButton(props) {
 DeleteButton.propTypes = {
   variant: PropTypes.oneOf(["icon", "text", "extended"]), // "extended" means both icon and text
   label: PropTypes.string,
+  size: PropTypes.oneOf(["small", "medium"]),
 }
 
 DeleteButton.defaultProps = {
   variant: "icon",
+  size: "medium",
 }
 
 export default withStyles(QuestionnaireStyle)(withRouter(DeleteButton));

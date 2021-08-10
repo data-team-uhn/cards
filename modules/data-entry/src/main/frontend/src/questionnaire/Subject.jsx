@@ -44,6 +44,7 @@ import {
 import FileIcon from "@material-ui/icons/InsertDriveFile";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 import EditButton from "../dataHomepage/EditButton.jsx";
+import ResourceHeader from "./ResourceHeader.jsx"
 import SubjectTimeline from "./SubjectTimeline.jsx";
 
 /***
@@ -88,6 +89,19 @@ export function getTextHierarchy (node, withType = false) {
     return `${ancestors} / ${type}${output}`;
   } else {
     return type + output;
+  }
+}
+
+// Recursive function to get the list of ancestors as an array
+export function getHierarchyAsList (node) {
+  let props = defaultCreator(node);
+  let parent = <>{node.type.label} <Link {...props}>{node.identifier}</Link></>;
+  if (node["parents"]) {
+    let ancestors = getHierarchyAsList(node["parents"]);
+    ancestors.push(parent);
+    return ancestors;
+  } else {
+    return [parent];
   }
 }
 
@@ -145,9 +159,9 @@ function Subject(props) {
         New form for this Subject
       </NewFormDialog>
       <Grid container spacing={4} direction="column" className={classes.subjectContainer}>
-        <SubjectHeader id={currentSubjectId} key={"SubjectHeader"}  classes={classes} getSubject={handleSubject} history={history}/>
+        <SubjectHeader id={currentSubjectId} key={"SubjectHeader"}  classes={classes} getSubject={handleSubject} history={history} contentOffset={props.contentOffset}/>
         {
-          <Tabs value={activeTab} onChange={(event, value) => {
+          <Tabs className={classes.subjectTabs} value={activeTab} onChange={(event, value) => {
             setTab(value);
           }}>
             {tabs.map((tab) => {
@@ -325,20 +339,29 @@ function SubjectHeader(props) {
   let label = subject?.data?.type?.label || "Subject";
   let title = `${label} ${identifier}`;
   let path = subject?.data?.["@path"] || "/Subjects/" + id;
-  let action = <DeleteButton
+  let getActionButton = size => (
+            <div>
+               <DeleteButton
                  entryPath={path}
                  entryName={title}
                  entryType={label}
                  onComplete={handleDeletion}
-                 buttonClass={classes.subjectHeaderButton}
-                 size={"large"}
+                 size={size}
                />
-  let parentDetails = subject?.data?.['parents'] && getHierarchy(subject.data['parents']);
+            </div>
+  );
+  let parentDetails = (subject?.data?.['parents'] && getHierarchyAsList(subject.data['parents']) || []);
+  parentDetails.unshift(<Link to={/((.*)\/Subjects)\/([^.]+)/.exec(location.pathname)[1]}>Subjects</Link>);
 
   return (
-    subject?.data && <Grid item className={classes.subjectHeader}>
-      {parentDetails && <Typography variant="overline">{parentDetails}</Typography>}
-      <Typography variant="h2">{title}{action}</Typography>
+    subject?.data &&
+      <ResourceHeader
+        title={title}
+        breadcrumbs={parentDetails}
+        titleAction={getActionButton("medium")}
+        breadcrumbAction={getActionButton("small")}
+        contentOffset={props.contentOffset}
+        >
       {
         subject?.data?.['jcr:created'] ?
         <Typography
@@ -348,7 +371,7 @@ function SubjectHeader(props) {
         </Typography>
         : ""
       }
-    </Grid>
+      </ResourceHeader>
   );
 }
 
@@ -483,6 +506,7 @@ function SubjectMemberInternal (props) {
                                            return <Chip
                                              key={status}
                                              label={wordToTitleCase(status)}
+                                             variant="outlined"
                                              className={`${classes.subjectChip} ${classes[status + "Chip"] || classes.DefaultChip}`}
                                              size="small"
                                            />

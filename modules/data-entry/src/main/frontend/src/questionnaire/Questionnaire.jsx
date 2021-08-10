@@ -18,6 +18,7 @@
 //
 
 import React, { useEffect, useState } from "react";
+import { Link } from 'react-router-dom';
 import PropTypes from "prop-types";
 
 import {
@@ -41,6 +42,7 @@ import CreationMenu from "../questionnaireEditor/CreationMenu";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import QuestionnaireItemCard from "../questionnaireEditor/QuestionnaireItemCard";
 import FormattedText from "../components/FormattedText.jsx";
+import ResourceHeader from "./ResourceHeader";
 
 let _stripCardsNamespace = str => str.replaceAll(/^cards:/g, "");
 
@@ -127,16 +129,18 @@ let Questionnaire = (props) => {
         classes={classes}
         onActionDone={() => reloadData()}
       >
-      <Grid container direction="column" spacing={4} wrap="nowrap">
-      <Grid item>
-        <Typography variant="h2">{questionnaireTitle} </Typography>
+      <ResourceHeader
+        title={questionnaireTitle}
+        breadcrumbs={[<Link to={/((.*)\/Questionnaires)\/([^.]+)/.exec(location.pathname)[1]}>Questionnaires</Link>]}
+        contentOffset={props.contentOffset}
+        >
         {
           data?.['jcr:createdBy'] && data?.['jcr:created'] &&
             <Typography variant="overline">
               Created by {data['jcr:createdBy']} on {moment(data['jcr:created']).format("dddd, MMMM Do YYYY")}
             </Typography>
         }
-      </Grid>
+      </ResourceHeader>
       { data?.["jcr:primaryType"] == "cards:Questionnaire" &&
         <Grid item>
           <QuestionnaireItemCard
@@ -168,7 +172,6 @@ let Questionnaire = (props) => {
             onClose={onCreate}
           />
       }
-      </Grid>
       </QuestionnaireItemSet>
     </>
   );
@@ -186,7 +189,7 @@ let QuestionnaireItemSet = (props) => {
 
   return (
     <Grid container direction="column" spacing={4} wrap="nowrap">
-      <Grid item>{children}</Grid>
+      {children}
       {
         data ?
         Object.entries(data).filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
