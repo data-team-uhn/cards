@@ -49,7 +49,7 @@ const useStyles = makeStyles(theme => ({
       display: "flex",
       alignItems: "center",
     },
-    breadcrumbAction : {
+    headerAction : {
       marginLeft: theme.spacing(2),
     },
     headerSeparator: {
@@ -80,7 +80,7 @@ const useStyles = makeStyles(theme => ({
  * Output when fully displayed:
  * --------------------------------------------------------------------
  * | Breadcrumbs / Breadcrumbs /                                      |
- * | Title                                              titleAction   |
+ * | Title  titleAction                                               |
  * | Other (children)                                                 |
  * --------------------------------------------------------------------
  * Output when scrolling up:
@@ -121,7 +121,7 @@ function ResourceHeader (props) {
         <Collapse in={fullBreadcrumbTrigger}>
           <div className={classes.currentItem}>
             <Typography variant="subtitle2">{title}</Typography>
-            {breadcrumbAction && <div className={classes.breadcrumbAction}>{breadcrumbAction}</div>}
+            {breadcrumbAction && <div className={classes.headerAction}>{breadcrumbAction}</div>}
           </div>
         </Collapse>
       </Breadcrumbs>
@@ -131,12 +131,10 @@ function ResourceHeader (props) {
     </Grid>
     <Collapse in={!(fullBreadcrumbTrigger)}
       component={Grid} item xs={12} className={classes.resourceTitle}>
-        <Grid container direction="row" justify="space-between" alignItems="center">
-          <Grid item>
-            <Typography component="h2" variant="h4">{title}</Typography>
-          </Grid>
-          <Grid item>{titleAction}</Grid>
-        </Grid>
+        <div className={classes.currentItem}>
+          <Typography component="h2" variant="h4">{title}</Typography>
+          {titleAction && <div className={classes.headerAction}>{titleAction}</div>}
+        </div>
         {children}
     </Collapse>
     </>
