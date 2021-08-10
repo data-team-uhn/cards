@@ -22,9 +22,9 @@ import PropTypes from "prop-types";
 
 import {
   Breadcrumbs,
+  Collapse,
   Grid,
   Typography,
-  Zoom,
   useScrollTrigger,
   makeStyles,
 } from "@material-ui/core";
@@ -37,6 +37,7 @@ const useStyles = makeStyles(theme => ({
     resourceHeader: {
       position: "sticky",
       top: 0,
+      paddingBottom: "0 !important",
       margin: theme.spacing(2*GRID_SPACE_UNIT, GRID_SPACE_UNIT, 0),
       backgroundColor: grey[100],
       zIndex: "1010",
@@ -50,6 +51,10 @@ const useStyles = makeStyles(theme => ({
     },
     breadcrumbAction : {
       marginLeft: theme.spacing(2),
+    },
+    headerSeparator: {
+      visibility: "hidden",
+      border: "0 none",
     },
     resourceTitle: {
       backgroundColor: grey[100],
@@ -105,7 +110,7 @@ function ResourceHeader (props) {
   const fullBreadcrumbTrigger = useScrollTrigger({
     target: window,
     disableHysteresis: true,
-    threshold: 120,
+    threshold: 60,
   });
 
   return (
@@ -113,23 +118,27 @@ function ResourceHeader (props) {
     <Grid item xs={12} className={classes.resourceHeader} style={{top: props.contentOffset}}>
       <Breadcrumbs separator={separator}>
         {Array.from(breadcrumbs || []).map(item => <Typography variant="overline" key={item}>{item}</Typography>)}
-        <Zoom in={fullBreadcrumbTrigger}>
+        <Collapse in={fullBreadcrumbTrigger}>
           <div className={classes.currentItem}>
             <Typography variant="subtitle2">{title}</Typography>
             {breadcrumbAction && <div className={classes.breadcrumbAction}>{breadcrumbAction}</div>}
           </div>
-        </Zoom>
+        </Collapse>
       </Breadcrumbs>
+      <Collapse in={fullBreadcrumbTrigger}>
+        <hr className={classes.headerSeparator} />
+      </Collapse>
     </Grid>
-    <Grid item xs={12} className={classes.resourceTitle}>
-      <Grid container direction="row" justify="space-between" alignItems="center">
-        <Grid item>
-          <Typography component="h2" variant="h4">{title}</Typography>
+    <Collapse in={!(fullBreadcrumbTrigger)}
+      component={Grid} item xs={12} className={classes.resourceTitle}>
+        <Grid container direction="row" justify="space-between" alignItems="center">
+          <Grid item>
+            <Typography component="h2" variant="h4">{title}</Typography>
+          </Grid>
+          <Grid item>{titleAction}</Grid>
         </Grid>
-        <Grid item>{titleAction}</Grid>
-      </Grid>
-      {children}
-    </Grid>
+        {children}
+    </Collapse>
     </>
   )
 };

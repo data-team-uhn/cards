@@ -50,7 +50,6 @@ const questionnaireStyle = theme => ({
       }
     },
     informationCard: {
-      borderColor: theme.palette.info.dark,
     },
     viewModeAnswers :{
       paddingTop: theme.spacing(0),
@@ -181,7 +180,7 @@ const questionnaireStyle = theme => ({
     sectionHeader: {
         paddingBottom: "0 !important",
         "& > h5" : {
-          padding: theme.spacing(.5, GRID_SPACE_UNIT),
+          padding: theme.spacing(1, GRID_SPACE_UNIT),
           background: theme.palette.action.hover,
         },
         "& > .MuiTypography-caption" : {
