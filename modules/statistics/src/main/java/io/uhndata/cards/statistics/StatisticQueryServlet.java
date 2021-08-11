@@ -132,7 +132,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
                 // filter if split does not exist
                 final StringBuilder query =
                     // We select all answers that answer our question
-                    new StringBuilder("select n from [lfs:Answer] as n where n.'question'='"
+                    new StringBuilder("select n from [cards:Answer] as n where n.'question'='"
                         + question.getIdentifier() + "'");
                 answers = request.getResourceResolver().findResources(query.toString(), Query.JCR_SQL2);
                 answers = filterAnswersToSubjectType(answers, correctSubjectType);
@@ -297,8 +297,8 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
             }
             counts = aggregateSplitCounts(xVar, splitVar, counts);
         }
-        JsonObjectBuilder outerBuilder = Json.createObjectBuilder();
 
+        JsonObjectBuilder outerBuilder = Json.createObjectBuilder();
         for (Map.Entry<String, Map<String, Integer>> t:counts.entrySet()) {
             String key = t.getKey();
 
