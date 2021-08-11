@@ -290,6 +290,7 @@ function FileResourceQuestion(props) {
         handleDrop={addFiles}
         multifile={maxAnswers != 1}
         error={error}
+        isDemo={window.location.pathname.startsWith("/content.html/admin/Questionnaires/")}
         />
 
       { uploadedFiles && Object.values(uploadedFiles).length > 0 && <ul className={classes.answerField + " " + classes.fileResourceAnswerList}>

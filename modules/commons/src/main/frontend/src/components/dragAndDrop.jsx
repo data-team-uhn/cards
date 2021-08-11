@@ -56,7 +56,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function DragAndDrop(props) {
-  const { accept, multifile, handleDrop, error } = props;
+  const { accept, multifile, handleDrop, error, isDemo } = props;
   const [drag, setDrag] = useState(false);
   const [dragCounter, setDragCounter] = useState(0);
 
@@ -138,6 +138,7 @@ export default function DragAndDrop(props) {
         style={{display: 'none'}}
         onChange={onChangeFile.bind(this)}
         value=""
+        disabled={isDemo}
       />
       <div className={drag ? classes.active : classes.dropzone} >
           <IconButton color="primary" component="span">

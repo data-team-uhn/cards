@@ -61,7 +61,7 @@ function QuestionnairePreview (props) {
 
   return (
     <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
-      { /* Added dummy save fucntionality for mocking file and pedigree questions functionality. */ }
+      { /* Added dummy save functionality for mocking file and pedigree questions functionality. */ }
       <FormProvider additionalFormData={{
           ['/Save']: () => { return new Promise((resolve, reject) => {return;})},
           ['/URL']: data ? data["@path"] : '',

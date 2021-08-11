@@ -68,7 +68,7 @@ function FormPagination (props) {
             });
     setPages(pagesArray);
     setPagesCallback(pagesResults);
-  }, [questionnaireData, activePage]);
+  }, [questionnaireData, activePage, paginationEnabled]);
 
   let addPage = (entryDefinition) => {
     if (paginationEnabled) {
