@@ -24,8 +24,7 @@ import yaml
 import json
 import shutil
 import argparse
-
-CARDS_DOCKER_TAG = "latest"
+from CardsDockerTagProperty import CARDS_DOCKER_TAG
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument('--shards', help='Number of MongoDB shards', default=1, type=int)
