@@ -24,11 +24,10 @@ import {
   withStyles,
   Typography
 } from "@material-ui/core";
-import {
-   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Label, Legend,
-} from "recharts";
 import statisticsStyle from "./statisticsStyle.jsx";
+import Statistic from "./Statistic.jsx";
 
+// Dashboard of all of the statistics viewable by the user
 function UserStatistics(props) {
   const { classes } = props;
   let [ currentStatistic, setCurrentStatistic ] = useState([]);
@@ -105,47 +104,11 @@ function UserStatistics(props) {
     data.map((stat) => fetchStat(stat))
   }
 
-  let expandData = (data) => {
-    let result = [];
-    for (const [key, value] of Object.entries(data)) {
-      result = result.concat(new Array(value).fill(key));
-    }
-    return result;
-  }
-
   return (
     <React.Fragment>
       <Grid container spacing={3}>
         {currentStatistic && currentStatistic.map((stat) => {
-          console.log(stat);
-          // Transform the data into something recharts can understand
-          let rechartsData = [];
-          let parsedStat = JSON.parse(stat);
-          for (const [key, value] of Object.entries(parsedStat["data"])) {
-            rechartsData.push({"x": key, [parsedStat["y-label"]]: expandData(value)});
-          }
-          return(
-            <Grid item lg={12} xl={6} key={stat["name"]}>
-              <Card>
-                <CardContent>
-                    <Grid container alignItems='flex-end' spacing={2}>
-                      <Grid item xs={12}>
-                        <BarChart width={730} height={250} data={rechartsData}>
-                          <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis dataKey="x">
-                            <Label value={parsedStat["x-label"]} offset={0} position="insideBottom" />
-                          </XAxis>
-                          <YAxis allowDecimals={false}/>
-                          <Tooltip />
-                          <Legend />
-                          <Bar dataKey={parsedStat["y-label"]} fill="#8884d8" />
-                        </BarChart>
-                      </Grid>
-                    </Grid>
-                </CardContent>
-              </Card>
-            </Grid>
-          )
+          <Statistic definition={JSON.parse(stat)} key={stat} />
         })}
       </Grid>
     </React.Fragment>
