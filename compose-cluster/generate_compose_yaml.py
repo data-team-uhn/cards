@@ -225,6 +225,8 @@ yaml_obj['services']['cardsinitial']['networks'] = {}
 yaml_obj['services']['cardsinitial']['networks']['internalnetwork'] = {}
 yaml_obj['services']['cardsinitial']['networks']['internalnetwork']['aliases'] = ['cardsinitial']
 
+yaml_obj['services']['cardsinitial']['volumes'] = ["./SLING:/opt/cards/sling"]
+
 if args.custom_env_file:
     yaml_obj['services']['cardsinitial']['env_file'] = args.custom_env_file
 
