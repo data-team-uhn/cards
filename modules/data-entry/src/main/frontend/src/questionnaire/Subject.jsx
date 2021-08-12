@@ -261,7 +261,7 @@ function SubjectContainer(props) {
 
   return (
     subject && <React.Fragment>
-      <SubjectMember classes={classes} id={id} level={currentLevel} data={subject} maxDisplayed={maxDisplayed} pageSize={pageSize} onDelete={() => {setDeleted(true)}}/>
+      <SubjectMember classes={classes} id={id} level={currentLevel} data={subject} maxDisplayed={maxDisplayed} pageSize={pageSize} onDelete={() => {setDeleted(true)}} hasChildren={!!(relatedSubjects?.length)}/>
       {relatedSubjects && relatedSubjects.length > 0 ?
         (<Grid item xs={12} className={classes.subjectNestedContainer}>
           {relatedSubjects.map( (subject, i) => {
@@ -384,7 +384,7 @@ function SubjectHeader(props) {
  * Component that displays all forms related to a Subject. Do not use directly, use SubjectMember instead.
  */
 function SubjectMemberInternal (props) {
-  let { classes, data, history, id, level, maxDisplayed, onDelete, pageSize } = props;
+  let { classes, data, history, id, level, maxDisplayed, onDelete, pageSize, hasChildren } = props;
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
   let [ subjectGroups, setSubjectGroups ] = useState();
@@ -451,6 +451,15 @@ function SubjectMemberInternal (props) {
                  onComplete={onDelete}
                  buttonClass={classes.childSubjectHeaderButton}
                />
+
+  // If this is the top-level subject and we have no data to display for it, inform the user:
+  if (data && level == 0 && !(Object.keys(subjectGroups || {}).length) && !hasChildren) {
+    return (
+      <Grid item>
+        <Typography color="textSecondary" variant="caption">{`No data associated with this ${label.toLowerCase()} was found.`}</Typography>
+      </Grid>
+    )
+  }
 
   return ( data &&
     <>
