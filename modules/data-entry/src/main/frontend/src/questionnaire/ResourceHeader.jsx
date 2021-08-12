@@ -48,6 +48,9 @@ const useStyles = makeStyles(theme => ({
         color: theme.palette.text.primary,
       },
     },
+    breadcrumbAction: {
+      margin: theme.spacing(-1.25, 0),
+    },
     headerSeparator: {
       visibility: "hidden",
       border: "0 none",
@@ -68,7 +71,7 @@ const useStyles = makeStyles(theme => ({
  * <ResourceHEader
  *  title="..."
  *  breadcrumbs={}
- *  titleAction={<DeleteButton .../>}
+ *  action={<DeleteButton .../>}
  *  >
  *    Subtitle or description
  * </ResourceHeader>
@@ -76,12 +79,12 @@ const useStyles = makeStyles(theme => ({
  * Output when fully displayed:
  * --------------------------------------------------------------------
  * | Breadcrumbs / Breadcrumbs /                                      |
- * | Title                                                titleAction |
+ * | Title                                                     action |
  * | Other (children)                                                 |
  * --------------------------------------------------------------------
  * Output when scrolling up:
  * --------------------------------------------------------------------
- * | Breadcrumbs / Breadcrumbs / Title               breadcrumbAction |
+ * | Breadcrumbs / Breadcrumbs / Title                         action |
  * --------------------------------------------------------------------
  *
  *
@@ -90,16 +93,13 @@ const useStyles = makeStyles(theme => ({
  *  will be sticky when scrolling up, and will include the title once the title line is scrolled
  *  out of view
  * @param {string} separator - the breadcrumbs separator, defaults to /
- * @param {node} titleAction - a React node specifying a button or menu associated with the
+ * @param {node} action - a React node specifying a button or menu associated with the
  *   resource and displayed at the right side of the title
- * @param {node} breadcrumbAction - a React node specifying a button or menu associated with the
- *   resource and displayed at the right side of the breadcrumbs + title when the page is scrolled to
- *   hide the main title and titleAction line; it is usually a more compact version of titleAction
  * @param {Array.<node>} children - any other content that will be displayed in the header, under
  *   the title and titleAction line
  */
 function ResourceHeader (props) {
-  let { title, breadcrumbs, separator, titleAction, breadcrumbAction, children } = props;
+  let { title, breadcrumbs, separator, action, children } = props;
 
   const classes = useStyles();
 
@@ -121,8 +121,8 @@ function ResourceHeader (props) {
             </Collapse>
           </Breadcrumbs>
         </Grid>
-        <Collapse in={!!breadcrumbAction &&  fullBreadcrumbTrigger} component={Grid}>
-          <div className={classes.breadcrumbAction}>{breadcrumbAction}</div>
+        <Collapse in={!!action &&  fullBreadcrumbTrigger} component={Grid}>
+          <div className={classes.breadcrumbAction}>{action}</div>
         </Collapse>
       </Grid>
       <Collapse in={fullBreadcrumbTrigger}>
@@ -135,7 +135,7 @@ function ResourceHeader (props) {
           <Grid item>
             <Typography component="h2" variant="h4">{title}</Typography>
           </Grid>
-          <Grid item>{titleAction}</Grid>
+          {action && <Grid item>{action}</Grid>}
         </Grid>
         {children}
     </Collapse>
@@ -150,8 +150,7 @@ ResourceHeader.propTypes = {
     PropTypes.node
   ]),
   separator: PropTypes.string,
-  titleAction: PropTypes.node,
-  breadcrumbAction: PropTypes.node,
+  action: PropTypes.node,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node

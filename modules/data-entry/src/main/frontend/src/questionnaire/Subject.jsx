@@ -339,14 +339,14 @@ function SubjectHeader(props) {
   let label = subject?.data?.type?.label || "Subject";
   let title = `${label} ${identifier}`;
   let path = subject?.data?.["@path"] || "/Subjects/" + id;
-  let getActionButton = size => (
-            <div>
+  let subjectMenu = (
+            <div className={classes.actionsMenu}>
                <DeleteButton
                  entryPath={path}
                  entryName={title}
                  entryType={label}
                  onComplete={handleDeletion}
-                 size={size}
+                 size="medium"
                />
             </div>
   );
@@ -358,8 +358,7 @@ function SubjectHeader(props) {
       <ResourceHeader
         title={title}
         breadcrumbs={parentDetails}
-        titleAction={getActionButton("medium")}
-        breadcrumbAction={getActionButton("small")}
+        action={subjectMenu}
         contentOffset={props.contentOffset}
         >
       {
