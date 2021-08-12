@@ -33,6 +33,8 @@ import MaterialTable, { MTablePagination } from 'material-table';
 import {
   Avatar,
   CircularProgress,
+  Card,
+  CardContent,
   Chip,
   Grid,
   Tooltip,
@@ -160,7 +162,7 @@ function Subject(props) {
       </NewFormDialog>
       <Grid container spacing={4} direction="column" className={classes.subjectContainer}>
         <SubjectHeader id={currentSubjectId} key={"SubjectHeader"}  classes={classes} getSubject={handleSubject} history={history} contentOffset={props.contentOffset}/>
-        {
+        <Grid item>
           <Tabs className={classes.subjectTabs} value={activeTab} onChange={(event, value) => {
             setTab(value);
           }}>
@@ -168,9 +170,9 @@ function Subject(props) {
               return <Tab label={tab} key={tab}/>;
             })}
           </Tabs>
-        }
-        {
-          activeTab === tabs.indexOf("Chart")
+          <Card variant="outlined"><CardContent>
+          <Grid container spacing={4} direction="column" wrap="nowrap">
+          { activeTab === tabs.indexOf("Chart")
           ? <SubjectContainer
               id={currentSubjectId}
               key={currentSubjectId}
@@ -179,13 +181,17 @@ function Subject(props) {
               pageSize={pageSize}
               subject={currentSubject}
             />
-          : <SubjectTimeline
+          : <Grid item>
+            <SubjectTimeline
               id={currentSubjectId}
               classes={classes}
               pageSize={pageSize}
               subject={currentSubject}
             />
-        }
+            </Grid> }
+          </Grid>
+          </CardContent></Card>
+        </Grid>
       </Grid>
     </React.Fragment>
   );
@@ -365,7 +371,7 @@ function SubjectHeader(props) {
         subject?.data?.['jcr:created'] ?
         <Typography
           variant="overline"
-          className={classes.subjectSubHeader}>
+          color="textSecondary" >
             Entered by {subject.data['jcr:createdBy']} on {moment(subject.data['jcr:created']).format("dddd, MMMM Do YYYY")}
         </Typography>
         : ""
@@ -433,9 +439,6 @@ function SubjectMemberInternal (props) {
     );
   }
 
-  // change styling based on 'level'
-  let headerStyle = (level == 1 ? "h4" : "h5");
-
   let identifier = data && data.identifier ? data.identifier : id;
   let label = data?.type?.label || "Subject";
   let title = `${label} ${identifier}`;
@@ -457,7 +460,7 @@ function SubjectMemberInternal (props) {
           <Grid container direction="row" spacing={1} justify="flex-start">
             <Grid item xs={false}>{avatar}</Grid>
             <Grid item>
-              <Typography variant={headerStyle}>
+              <Typography variant="h5">
                  <Link to={"/content.html" + path}>{title}</Link>
                  {action}
               </Typography>
