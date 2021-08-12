@@ -91,7 +91,7 @@ export default function DragAndDrop(props) {
     e.preventDefault();
     e.stopPropagation();
     setDrag(false);
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0 && !isDemo) {
       handleDrop(e.dataTransfer.files);
       e.dataTransfer.clearData();
       setDragCounter(0);
