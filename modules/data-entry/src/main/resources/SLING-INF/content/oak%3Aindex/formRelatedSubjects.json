@@ -1,0 +1,7 @@
+{
+  "jcr:primaryType": "oak:QueryIndexDefinition",
+  "jcr:name:propertyNames": [
+    "relatedSubjects"
+  ],
+  "type": "property"
+}

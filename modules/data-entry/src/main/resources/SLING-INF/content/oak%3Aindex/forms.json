@@ -43,6 +43,14 @@
                     "ordered": true,
                     "propertyIndex": true
                 },
+                "relatedSubjects": {
+                    "analyzed": false,
+                    "boost": 1,
+                    "nodeScopeIndex": false,
+                    "useInExcerpt": true,
+                    "ordered": true,
+                    "propertyIndex": true
+                },
                 "created": {
                     "name": "jcr:created",
                     "ordered": true,

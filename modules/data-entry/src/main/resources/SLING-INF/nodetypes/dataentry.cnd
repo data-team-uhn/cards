@@ -725,6 +725,9 @@
   // Although recommended to have a subject, this is optional for now.
   - subject (reference) nofulltext
 
+  // A list of references to the subject that this form is about, and all its ancestor subjects, if any.
+  - relatedSubjects (weakreference) nofulltext
+
   // Children
 
   // The answers and answer sections recorded in this form.
