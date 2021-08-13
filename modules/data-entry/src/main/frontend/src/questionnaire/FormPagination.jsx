@@ -142,7 +142,7 @@ function FormPagination (props) {
       type="submit"
       variant="contained"
       color="primary"
-      disabled={saveInProgress || activePage === lastValidPage()}
+      disabled={saveInProgress || !enableSave && activePage === lastValidPage()}
       className={classes.paginationButton}
       onClick={handleNext}
     >
