@@ -86,6 +86,7 @@ function FileResourceQuestion(props) {
   let writer = useFormUpdateWriterContext();
   let reader = useFormReaderContext();
   let saveForm = reader['/Save'];
+  let disableUploads = !!reader['/DisableUploads'];
   // Since adding new entries doesn't trigger the form's onChange, we need to force
   // the form to allow saving after we finish updating
   let allowResave = reader['/AllowResave'];
@@ -99,6 +100,10 @@ function FileResourceQuestion(props) {
 
   // Event handler for selecting files
   let upload = (files) => {
+    // Don't do anything if the context provider says uploads are disabled
+    if (disableUploads) {
+      return;
+    }
     // TODO - handle possible logged out situation here - open a login popup
     setUploadInProgress(true);
     setError("");
@@ -290,9 +295,8 @@ function FileResourceQuestion(props) {
         handleDrop={addFiles}
         multifile={maxAnswers != 1}
         error={error}
-        isDemo={window.location.pathname.startsWith("/content.html/admin/Questionnaires/")}
+        disabled={disableUploads}
         />
-
       { uploadedFiles && Object.values(uploadedFiles).length > 0 && <ul className={classes.answerField + " " + classes.fileResourceAnswerList}>
         {Object.keys(uploadedFiles).map((filepath, idx) =>
           <li key={idx}>
