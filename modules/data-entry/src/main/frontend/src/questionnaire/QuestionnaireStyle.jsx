@@ -422,9 +422,6 @@ const questionnaireStyle = theme => ({
        }
 
     },
-    childSubjectHeaderButton: {
-        left: theme.spacing(1)
-    },
     addNewSubjectButton: {
         width: "250px"
     },
