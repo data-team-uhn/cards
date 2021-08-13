@@ -225,6 +225,13 @@ yaml_obj['services']['cardsinitial']['networks'] = {}
 yaml_obj['services']['cardsinitial']['networks']['internalnetwork'] = {}
 yaml_obj['services']['cardsinitial']['networks']['internalnetwork']['aliases'] = ['cardsinitial']
 
+#Create the ./SLING directory and copy the logback.xml file into it
+try:
+    os.mkdir("SLING")
+    shutil.copyfile("../distribution/logback.xml", "SLING/logback.xml")
+except FileExistsError:
+    print("Warning: SLING directory exists - will leave unmodified.")
+
 yaml_obj['services']['cardsinitial']['volumes'] = ["./SLING:/opt/cards/sling"]
 
 if args.custom_env_file:
