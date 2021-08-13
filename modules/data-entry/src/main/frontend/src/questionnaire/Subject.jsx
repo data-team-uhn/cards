@@ -683,7 +683,7 @@ export function displayQuestion(entryDefinition, data, key, classes) {
         content = prettyPrintedAnswers.join(", ");
         // check the display mode; if formatted, display accordingly
         if (entryDefinition.displayMode == "formatted") {
-          content = <FormattedText variant="body2" className={classes.formPreviewFormattedAnswer}>{content}</FormattedText>;
+          content = <FormattedText variant="body2">{content}</FormattedText>;
         } else {
           content = <>{content}</>;
         }
@@ -694,7 +694,11 @@ export function displayQuestion(entryDefinition, data, key, classes) {
     }
     return (
       isHidden ? null :
-      <Typography variant="body2" component="div" key={key} className={classes.formPreviewQuestion}>{questionTitle}: {content}</Typography>
+      <Typography variant="body2" className={classes.formPreviewQuestion} key={key}>
+        {questionTitle}
+        <span className={classes.formPreviewSeparator}>–</span>
+        <div className={classes.formPreviewAnswer}>{content}</div>
+      </Typography>
     );
   }
   else return null;
