@@ -33,6 +33,8 @@ import MaterialTable, { MTablePagination } from 'material-table';
 import {
   Avatar,
   CircularProgress,
+  Card,
+  CardContent,
   Chip,
   Grid,
   Tooltip,
@@ -160,7 +162,7 @@ function Subject(props) {
       </NewFormDialog>
       <Grid container spacing={4} direction="column" className={classes.subjectContainer}>
         <SubjectHeader id={currentSubjectId} key={"SubjectHeader"}  classes={classes} getSubject={handleSubject} history={history} contentOffset={props.contentOffset}/>
-        {
+        <Grid item>
           <Tabs className={classes.subjectTabs} value={activeTab} onChange={(event, value) => {
             setTab(value);
           }}>
@@ -168,9 +170,9 @@ function Subject(props) {
               return <Tab label={tab} key={tab}/>;
             })}
           </Tabs>
-        }
-        {
-          activeTab === tabs.indexOf("Chart")
+          <Card variant="outlined"><CardContent>
+          <Grid container spacing={4} direction="column" wrap="nowrap">
+          { activeTab === tabs.indexOf("Chart")
           ? <SubjectContainer
               id={currentSubjectId}
               key={currentSubjectId}
@@ -179,13 +181,17 @@ function Subject(props) {
               pageSize={pageSize}
               subject={currentSubject}
             />
-          : <SubjectTimeline
+          : <Grid item>
+            <SubjectTimeline
               id={currentSubjectId}
               classes={classes}
               pageSize={pageSize}
               subject={currentSubject}
             />
-        }
+            </Grid> }
+          </Grid>
+          </CardContent></Card>
+        </Grid>
       </Grid>
     </React.Fragment>
   );
@@ -255,7 +261,7 @@ function SubjectContainer(props) {
 
   return (
     subject && <React.Fragment>
-      <SubjectMember classes={classes} id={id} level={currentLevel} data={subject} maxDisplayed={maxDisplayed} pageSize={pageSize} onDelete={() => {setDeleted(true)}}/>
+      <SubjectMember classes={classes} id={id} level={currentLevel} data={subject} maxDisplayed={maxDisplayed} pageSize={pageSize} onDelete={() => {setDeleted(true)}} hasChildren={!!(relatedSubjects?.length)}/>
       {relatedSubjects && relatedSubjects.length > 0 ?
         (<Grid item xs={12} className={classes.subjectNestedContainer}>
           {relatedSubjects.map( (subject, i) => {
@@ -339,14 +345,14 @@ function SubjectHeader(props) {
   let label = subject?.data?.type?.label || "Subject";
   let title = `${label} ${identifier}`;
   let path = subject?.data?.["@path"] || "/Subjects/" + id;
-  let getActionButton = size => (
-            <div>
+  let subjectMenu = (
+            <div className={classes.actionsMenu}>
                <DeleteButton
                  entryPath={path}
                  entryName={title}
                  entryType={label}
                  onComplete={handleDeletion}
-                 size={size}
+                 size="medium"
                />
             </div>
   );
@@ -358,15 +364,14 @@ function SubjectHeader(props) {
       <ResourceHeader
         title={title}
         breadcrumbs={parentDetails}
-        titleAction={getActionButton("medium")}
-        breadcrumbAction={getActionButton("small")}
+        action={subjectMenu}
         contentOffset={props.contentOffset}
         >
       {
         subject?.data?.['jcr:created'] ?
         <Typography
           variant="overline"
-          className={classes.subjectSubHeader}>
+          color="textSecondary" >
             Entered by {subject.data['jcr:createdBy']} on {moment(subject.data['jcr:created']).format("dddd, MMMM Do YYYY")}
         </Typography>
         : ""
@@ -379,7 +384,7 @@ function SubjectHeader(props) {
  * Component that displays all forms related to a Subject. Do not use directly, use SubjectMember instead.
  */
 function SubjectMemberInternal (props) {
-  let { classes, data, history, id, level, maxDisplayed, onDelete, pageSize } = props;
+  let { classes, data, history, id, level, maxDisplayed, onDelete, pageSize, hasChildren } = props;
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
   let [ subjectGroups, setSubjectGroups ] = useState();
@@ -434,9 +439,6 @@ function SubjectMemberInternal (props) {
     );
   }
 
-  // change styling based on 'level'
-  let headerStyle = (level == 1 ? "h4" : "h5");
-
   let identifier = data && data.identifier ? data.identifier : id;
   let label = data?.type?.label || "Subject";
   let title = `${label} ${identifier}`;
@@ -450,6 +452,15 @@ function SubjectMemberInternal (props) {
                  buttonClass={classes.childSubjectHeaderButton}
                />
 
+  // If this is the top-level subject and we have no data to display for it, inform the user:
+  if (data && level == 0 && !(Object.keys(subjectGroups || {}).length) && !hasChildren) {
+    return (
+      <Grid item>
+        <Typography color="textSecondary" variant="caption">{`No data associated with this ${label.toLowerCase()} was found.`}</Typography>
+      </Grid>
+    )
+  }
+
   return ( data &&
     <>
     {
@@ -458,7 +469,7 @@ function SubjectMemberInternal (props) {
           <Grid container direction="row" spacing={1} justify="flex-start">
             <Grid item xs={false}>{avatar}</Grid>
             <Grid item>
-              <Typography variant={headerStyle}>
+              <Typography variant="h5">
                  <Link to={"/content.html" + path}>{title}</Link>
                  {action}
               </Typography>

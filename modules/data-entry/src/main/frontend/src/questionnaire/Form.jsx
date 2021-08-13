@@ -366,23 +366,23 @@ function Form (props) {
 
   pages.length = 0;
 
-  let getFormMenu = (size, className) => (
+  let formMenu = (
             <div className={classes.actionsMenu}>
                 {isEdit ?
                   <Tooltip title="Save and close" onClick={onClose}>
-                    <IconButton color="primary" size={size}>
+                    <IconButton color="primary">
                       <DoneIcon />
                     </IconButton>
                   </Tooltip>
                   :
                   <Tooltip title="Edit">
-                    <IconButton color="primary" onClick={onEdit} size={size}>
+                    <IconButton color="primary" onClick={onEdit}>
                       <EditIcon />
                     </IconButton>
                   </Tooltip>
                 }
                 <Tooltip title="More actions" onClick={(event) => {setActionsMenu(event.currentTarget)}}>
-                  <IconButton size={size}>
+                  <IconButton>
                     <MoreIcon fontSize="small" />
                   </IconButton>
                 </Tooltip>
@@ -435,8 +435,7 @@ function Form (props) {
           title={title}
           breadcrumbs={[<Breadcrumbs separator="/">{getHierarchyAsList(data?.subject).map(a => <Typography variant="overline" key={a}>{a}</Typography>)}</Breadcrumbs>]}
           separator=":"
-          titleAction={getFormMenu()}
-          breadcrumbAction={getFormMenu("small")}
+          action={formMenu}
           contentOffset={props.contentOffset}
         >
           <FormattedText variant="subtitle1" color="textSecondary">

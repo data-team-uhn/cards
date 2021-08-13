@@ -228,7 +228,6 @@ const questionnaireStyle = theme => ({
       },
     },
     subjectTabs: {
-      marginLeft: theme.spacing(GRID_SPACE_UNIT),
       "& .MuiTab-root" : {
         minWidth: "auto",
         textTransform: "initial",
@@ -422,9 +421,6 @@ const questionnaireStyle = theme => ({
           width: "100%",
        }
 
-    },
-    subjectSubHeader: {
-        display: "block"
     },
     childSubjectHeaderButton: {
         left: theme.spacing(1)
