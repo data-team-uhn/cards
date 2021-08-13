@@ -369,7 +369,7 @@ function Form (props) {
   let formMenu = (
             <div className={classes.actionsMenu}>
                 {isEdit ?
-                  <Tooltip title="Save and close" onClick={onClose}>
+                  <Tooltip title="Save and view" onClick={onClose}>
                     <IconButton color="primary">
                       <DoneIcon />
                     </IconButton>
