@@ -54,6 +54,8 @@ const useStyles = makeStyles(theme => ({
     headerSeparator: {
       visibility: "hidden",
       border: "0 none",
+      height: theme.spacing(2),
+      margin: 0,
     },
     resourceTitle: {
       backgroundColor: grey[100],
