@@ -680,11 +680,14 @@ export function displayQuestion(entryDefinition, data, key, classes) {
         }
         break;
       case "computed":
-        content = <>{ prettyPrintedAnswers.join(", ") }</>;
+        content = prettyPrintedAnswers.join(", ");
         // check the display mode; if formatted, display accordingly
         if (entryDefinition.displayMode == "formatted") {
-          content = <FormattedText>{content}</FormattedText>;
+          content = <FormattedText variant="body2" className={classes.formPreviewFormattedAnswer}>{content}</FormattedText>;
+        } else {
+          content = <>{content}</>;
         }
+        break;
       default:
         content = <>{ prettyPrintedAnswers.join(", ") }</>
         break;

@@ -503,6 +503,9 @@ const questionnaireStyle = theme => ({
             },
         },
     },
+    formPreviewFormattedAnswer: {
+      display: "inline-flex",
+    },
     questionnaireDisabledListItem: {
         color: theme.palette.grey["500"]
     },
