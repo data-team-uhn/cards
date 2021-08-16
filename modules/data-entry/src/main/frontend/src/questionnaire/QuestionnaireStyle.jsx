@@ -492,6 +492,13 @@ const questionnaireStyle = theme => ({
     DefaultChip: {
     },
     formPreviewQuestion: {
+        display: "flex",
+    },
+    formPreviewSeparator: {
+        margin: theme.spacing(0, 1.5),
+    },
+    formPreviewAnswer: {
+        fontWeight: 200,
         "& .MuiChip-root" : {
             margin: "0 0.5em 0.5em 0",
             "& .MuiChip-iconSmall": {
