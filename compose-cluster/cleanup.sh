@@ -35,4 +35,9 @@ rm proxy/000-default.conf
 echo "Removing secrets"
 rm -r secrets
 
+# Due permissions issues, we have to first remove all contents of SLING with Docker
+echo "Removing SLING"
+docker run --rm -v $(realpath ./SLING):/sling -it openjdk:8-jre-alpine sh -c 'cd /sling; find . -delete'
+rm -rf SLING
+
 echo "Done"
