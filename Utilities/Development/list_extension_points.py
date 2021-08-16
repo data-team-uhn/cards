@@ -34,7 +34,7 @@ for d in os.walk('.'):
     continue
   if len(d[2]) == 0:
     continue
-  if d[0].endswith('/src/main/resources/SLING-INF/content/apps/lfs/ExtensionPoints'):
+  if d[0].endswith('/src/main/resources/SLING-INF/content/apps/cards/ExtensionPoints'):
     osgi_module_path = d[0]
     for node_file in d[2]:
       print("--> {}".format(os.path.join(d[0], node_file)))

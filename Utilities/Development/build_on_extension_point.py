@@ -38,7 +38,7 @@ THIS_OSGI_MODULE_NAME = THIS_OSGI_MODULE_DIRECTORY.split('/')[-1]
 # Configuration for the extension's JCR Node under the /Extensions/ path
 THIS_EXTENSION_JCRNODE_NAME = input("Enter the name for this JCR extension node: ")
 THIS_EXTENSION_HUMAN_NAME = input("Enter the human-readable name for this extension: ")
-ATTACHING_EXTENSION_POINT_ID = ATTACHING_EXTENSION_POINT['lfs:extensionPointId']
+ATTACHING_EXTENSION_POINT_ID = ATTACHING_EXTENSION_POINT['cards:extensionPointId']
 
 # Configuration for the extension's package.json file
 THIS_EXTENSION_VERSION = input("Enter the version of this extension: ")
@@ -90,10 +90,10 @@ extension_properties = {}
 extension_properties[ATTACHING_EXTENSION_POINT_NAME] = {}
 extension_properties[ATTACHING_EXTENSION_POINT_NAME]['jcr:primaryType'] = 'sling:Folder'
 extension_properties[ATTACHING_EXTENSION_POINT_NAME][THIS_EXTENSION_JCRNODE_NAME] = {}
-extension_properties[ATTACHING_EXTENSION_POINT_NAME][THIS_EXTENSION_JCRNODE_NAME]['jcr:primaryType'] = 'lfs:Extension'
-extension_properties[ATTACHING_EXTENSION_POINT_NAME][THIS_EXTENSION_JCRNODE_NAME]['lfs:extensionPointId'] = ATTACHING_EXTENSION_POINT_ID
-extension_properties[ATTACHING_EXTENSION_POINT_NAME][THIS_EXTENSION_JCRNODE_NAME]['lfs:extensionName'] = THIS_EXTENSION_HUMAN_NAME
-extension_properties[ATTACHING_EXTENSION_POINT_NAME][THIS_EXTENSION_JCRNODE_NAME]['lfs:extensionRenderURL'] = "asset:{}-{}.{}.js".format(PROJECT_NAME_PREFIX, THIS_OSGI_MODULE_NAME, THIS_EXTENSION_JSX_SRC)
+extension_properties[ATTACHING_EXTENSION_POINT_NAME][THIS_EXTENSION_JCRNODE_NAME]['jcr:primaryType'] = 'cards:Extension'
+extension_properties[ATTACHING_EXTENSION_POINT_NAME][THIS_EXTENSION_JCRNODE_NAME]['cards:extensionPointId'] = ATTACHING_EXTENSION_POINT_ID
+extension_properties[ATTACHING_EXTENSION_POINT_NAME][THIS_EXTENSION_JCRNODE_NAME]['cards:extensionName'] = THIS_EXTENSION_HUMAN_NAME
+extension_properties[ATTACHING_EXTENSION_POINT_NAME][THIS_EXTENSION_JCRNODE_NAME]['cards:extensionRenderURL'] = "asset:{}-{}.{}.js".format(PROJECT_NAME_PREFIX, THIS_OSGI_MODULE_NAME, THIS_EXTENSION_JSX_SRC)
 
 # Save extension_properties to a JSON file
 with open(os.path.join(THIS_OSGI_MODULE_DIRECTORY, "src/main/resources/SLING-INF/content/Extensions.json"), 'w') as f_extension_properties:
@@ -122,7 +122,7 @@ with open(os.path.join(THIS_OSGI_MODULE_DIRECTORY, "pom.xml"), 'w') as f_pomxml:
     f_pomxml.write(f_head.read().rstrip())
 
   f_pomxml.write("\n")
-  f_pomxml.write("  <artifactId>lfs-modules-{}</artifactId>\n".format(THIS_OSGI_MODULE_NAME))
+  f_pomxml.write("  <artifactId>cards-modules-{}</artifactId>\n".format(THIS_OSGI_MODULE_NAME))
   f_pomxml.write("  <packaging>bundle</packaging>\n")
   f_pomxml.write("  <name>{} - {}</name>\n".format(PROJECT_NAME_PREFIX.upper(), THIS_EXTENSION_HUMAN_NAME))
 
@@ -132,4 +132,4 @@ with open(os.path.join(THIS_OSGI_MODULE_DIRECTORY, "pom.xml"), 'w') as f_pomxml:
 # Show the developer how to build and use this OSGi module
 print("OSGi module directory created. To use it:")
 print("  - Add <module>{}</module> to the modules/pom.xml file".format(THIS_OSGI_MODULE_NAME))
-print("  - Add ca.sickkids.ccm.lfs/lfs-modules-{}/".format(THIS_OSGI_MODULE_NAME) + "${lfs.version} to a distribution/src/main/provisioning file")
+print("  - Add io.uhndata.cards/cards-modules-{}/".format(THIS_OSGI_MODULE_NAME) + "${cards.version} to a distribution/src/main/provisioning file")
