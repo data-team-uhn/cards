@@ -26,7 +26,7 @@ import {
 } from "@material-ui/core";
 
 import PropTypes from "prop-types";
-import { QUESTION_TYPES, ENTRY_TYPES } from "./FormEntry";
+import { SECTION_TYPES, ENTRY_TYPES } from "./FormEntry";
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
 
 class Page {
@@ -73,7 +73,7 @@ function FormPagination (props) {
   let addPage = (entryDefinition) => {
     if (paginationEnabled) {
       let page;
-      if (QUESTION_TYPES.includes(entryDefinition["jcr:primaryType"]) && previousEntryType && QUESTION_TYPES.includes(previousEntryType)) {
+      if (!SECTION_TYPES.includes(entryDefinition["jcr:primaryType"]) && previousEntryType && !SECTION_TYPES.includes(previousEntryType)) {
         page = pagesArray[pagesArray.length - 1];
         questionIndex++;
       } else {
