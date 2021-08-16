@@ -18,7 +18,7 @@
 //
 
 import React, { useEffect, useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import PropTypes from "prop-types";
 
 import {
@@ -60,7 +60,10 @@ let Questionnaire = (props) => {
   let [ data, setData ] = useState();
   let [ error, setError ] = useState();
   let [ doHighlight, setDoHighlight ] = useState(false);
-  let [ isEdit, setIsEdit ] =  useState(window.location.pathname.endsWith(".edit"));
+  let baseUrl = /((.*)\/Questionnaires)\/([^.]+)/.exec(location.pathname)[1];
+  let questionnaireUrl = `${baseUrl}/${id}`;
+  let isEdit = window.location.pathname.endsWith(".edit");
+  let history = useHistory();
 
   let pageNameWriter = usePageNameWriterContext();
 
@@ -101,6 +104,7 @@ let Questionnaire = (props) => {
   }, [questionnaireTitle]);
 
   useEffect(() => {
+    if (!isEdit) return;
     //Perform a JCR check-out of the Questionnaire
     let checkoutForm = new FormData();
     checkoutForm.set(":operation", "checkout");
@@ -127,13 +131,13 @@ let Questionnaire = (props) => {
   let questionnaireMenu = (
       <div className={classes.actionsMenu}>
         { isEdit ?
-          <Tooltip title="Preview" onClick={() => setIsEdit(false)}>
+          <Tooltip title="Preview" onClick={() => history.push(questionnaireUrl)}>
             <IconButton>
               <PreviewIcon />
             </IconButton>
           </Tooltip>
           :
-          <Tooltip title="Edit" onClick={() => setIsEdit(true)}>
+          <Tooltip title="Edit" onClick={() => history.push(questionnaireUrl + ".edit")}>
             <IconButton color="primary">
               <EditIcon />
             </IconButton>
@@ -144,6 +148,7 @@ let Questionnaire = (props) => {
           entryName={questionnaireTitle}
           entryType="Questionnaire"
           variant="icon"
+          onComplete={() => history.replace(baseUrl)}
         />
       </div>
   )
@@ -151,7 +156,7 @@ let Questionnaire = (props) => {
   let questionnaireHeader = (
         <ResourceHeader
           title={questionnaireTitle}
-          breadcrumbs={[<Link to={/((.*)\/Questionnaires)\/([^.]+)/.exec(location.pathname)[1]}>Questionnaires</Link>]}
+          breadcrumbs={[<Link to={baseUrl}>Questionnaires</Link>]}
           action={questionnaireMenu}
           contentOffset={props.contentOffset}
           >
