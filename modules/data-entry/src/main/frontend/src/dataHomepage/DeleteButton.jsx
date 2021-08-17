@@ -108,6 +108,14 @@ function DeleteButton(props) {
   }
 
   let handleDelete = () => {
+    // If no path is provided, display the button but don't do any delete calls
+    // and consider deletion successful since there's nothing to do
+    if (!entryPath) {
+      closeDialog();
+      if (onComplete) {onComplete();}
+      if (shouldGoBack) {goBack();}
+      return;
+    }
     let url = new URL(entryPath, window.location.origin);
     if (deleteRecursive) {
       url.searchParams.set("recursive", true);

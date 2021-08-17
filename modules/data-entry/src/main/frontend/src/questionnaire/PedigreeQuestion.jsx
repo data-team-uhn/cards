@@ -138,7 +138,7 @@ function PedigreeQuestion(props) {
       {...props}
       >
       <div className={classes.answerField}>
-      { pedigreeData.image && answerPath ?
+      { pedigreeData.image ?
         <Grid container direction="row" justify="flex-start" alignItems="flex-start" spacing={0}>
           <Grid item>
             <Tooltip title="Edit Pedigree">
