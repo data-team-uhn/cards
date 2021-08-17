@@ -127,7 +127,7 @@ function PedigreeQuestion(props) {
   var onSetAnswerPath = function (answerPath) {
     const entry = /\/Forms\/([^.]+)/.exec(location.pathname);
     if (entry) {
-      return setAnswerPath(entry[0] + answerPath.replace(props.path, ''));
+      return setAnswerPath(entry[0] + answerPath.replace(/^\./, ''));
     }
   };
 
