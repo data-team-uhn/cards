@@ -56,7 +56,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function DragAndDrop(props) {
-  const { accept, multifile, handleDrop, error } = props;
+  const { accept, multifile, handleDrop, error, disabled } = props;
   const [drag, setDrag] = useState(false);
   const [dragCounter, setDragCounter] = useState(0);
 
@@ -124,7 +124,7 @@ export default function DragAndDrop(props) {
   });
 
   return (
-    <div style={{display: 'inline-block', position: 'relative'}}
+    <div style={{display: 'inline-block', position: 'relative', opacity: disabled ? 0.5 : 1}}
        onClick={handleClick.bind(this)}
        ref={dropRef}
     >
@@ -138,6 +138,7 @@ export default function DragAndDrop(props) {
         style={{display: 'none'}}
         onChange={onChangeFile.bind(this)}
         value=""
+        disabled={disabled}
       />
       <div className={drag ? classes.active : classes.dropzone} >
           <IconButton color="primary" component="span">
