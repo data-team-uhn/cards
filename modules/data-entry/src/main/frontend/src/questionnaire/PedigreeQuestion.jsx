@@ -23,8 +23,6 @@ import { Button, Dialog, DialogContent, Grid, Link, Tooltip, withStyles } from "
 
 import PropTypes from "prop-types";
 
-import { useFormReaderContext } from "./FormContext";
-
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import DeleteButton from "../dataHomepage/DeleteButton";
@@ -55,10 +53,6 @@ function PedigreeQuestion(props) {
   const [ pedigreeData, setPedigree ] = useState(existingAnswer && existingAnswer.length > 1 && existingAnswer[1].value
                                         ? {"image": existingAnswer[1].image, "pedigreeJSON": existingAnswer[1].value}
                                         : {});
-  let [ answerPath, setAnswerPath ] = useState(existingAnswer ? existingAnswer[1]["@path"] : '');
-
-  let reader = useFormReaderContext();
-  let saveForm = reader['/Save'];
 
   // FIXME: hardcoded value
   const PEDIGREE_THUMBNAIL_WIDTH = 300;
@@ -114,22 +108,11 @@ function PedigreeQuestion(props) {
   var onUpdatedPedigree = function (pedigreeJSON, pedigreeSVG) {
     // state change will trigger re-render
     setPedigree({"image": pedigreeSVG, "pedigreeJSON": pedigreeJSON});
-    let savePromise = saveForm();
-    if (savePromise) {
-      savePromise.then(console.log("Pedigree saved"));
-    }
   };
 
   let defaultDisplayFormatter = function(label, idx) {
     return image_div || "";
   }
-
-  var onSetAnswerPath = function (answerPath) {
-    const entry = /\/Forms\/([^.]+)/.exec(location.pathname);
-    if (entry) {
-      return setAnswerPath(entry[0] + answerPath.replace(/^\./, ''));
-    }
-  };
 
   return (
     <Question
@@ -149,7 +132,6 @@ function PedigreeQuestion(props) {
           </Grid>
           <Grid item>
             <DeleteButton
-              entryPath={answerPath}
               entryName={"pedigree"}
               entryType={"Pedigree"}
               shouldGoBack={false}
@@ -176,7 +158,6 @@ function PedigreeQuestion(props) {
         existingAnswer={existingAnswer}
         answerNodeType="cards:PedigreeAnswer"
         valueType="String"
-        onDecidedOutputPath={onSetAnswerPath}
         {...rest}
       />
     </Question>);
