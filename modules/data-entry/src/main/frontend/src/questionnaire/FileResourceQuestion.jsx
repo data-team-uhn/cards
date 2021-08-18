@@ -110,7 +110,12 @@ function FileResourceQuestion(props) {
 
     let savePromise = saveForm();
     if (savePromise) {
-      savePromise.then(uploadAllFiles(files))
+      // When this function returns, the "files selected" event is cleared, along with the files list. Make a copy to preserve the data.
+      let filesCopy = [];
+      for (let i = 0 ; i < files.length; ++i) {
+        filesCopy.push(files.item(i));
+      }
+      savePromise.then(() => uploadAllFiles(filesCopy))
         .catch( (err) => {
           console.log(err);
           setError(err.ToString());
