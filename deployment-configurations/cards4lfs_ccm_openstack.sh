@@ -28,6 +28,10 @@
 #   - ccmsk/neuralcr (version with HP preloaded model)
 #
 
+#Check if the default Docker bridge network is configured correctly, otherwise quit
+DOCKER_BRIDGE_SUBNET=$(docker network inspect bridge -f '{{(index .IPAM.Config 0).Subnet}}')
+[ $DOCKER_BRIDGE_SUBNET != "192.168.17.0/24" ] && { echo "Interface docker0 is incorrectly configured. Exiting."; exit -1; }
+
 DOCKER_COMPOSE_SUBNET='192.168.19.0/24'
 DOCKER_COMPOSE_HOST_IP='192.168.19.1'
 
