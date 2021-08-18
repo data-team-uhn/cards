@@ -97,7 +97,8 @@ function Form (props) {
   let [ paginationEnabled, setPaginationEnabled ] = useState(false);
   let [ removeWindowHandlers, setRemoveWindowHandlers ] = useState();
   let [ actionsMenu, setActionsMenu ] = useState(null);
-  let [ formContentOffset, setFormContentOffset ] = useState(contentOffset);
+  let [ formContentOffsetTop, setFormContentOffsetTop ] = useState(contentOffset);
+  let [ formContentOffsetBottom, setFormContentOffsetBottom ] = useState(0);
 
   let formNode = React.useRef();
   let pageNameWriter = usePageNameWriterContext();
@@ -108,8 +109,9 @@ function Form (props) {
   let globalLoginDisplay = useContext(GlobalLoginContext);
 
   useEffect(() => {
-    setFormContentOffset(contentOffset + (document?.getElementById('cards-resource-header')?.clientHeight || 0));
-  }, [data])
+    setFormContentOffsetTop(contentOffset + (document?.getElementById('cards-resource-header')?.clientHeight || 0));
+    setFormContentOffsetBottom(document?.getElementById('cards-resource-footer')?.clientHeight || 0);
+  }, [pages])
 
   useEffect(() => {
     if (isEdit) {
@@ -438,13 +440,13 @@ function Form (props) {
                     visibleCallback={pageResult.callback}
                     pageActive={pageResult.page.visible}
                     isEdit={isEdit}
-                    contentOffset={formContentOffset}
+                    contentOffset={{top: formContentOffsetTop, bottom: formContentOffsetBottom}}
                   />
                 })
             }
           </FormUpdateProvider>
         </FormProvider>
-        <Grid item xs={12} className={classes.formFooter}>
+        <Grid item xs={12} className={classes.formFooter} id="cards-resource-footer">
           <FormPagination
               saveInProgress={saveInProgress}
               lastSaveStatus={lastSaveStatus}

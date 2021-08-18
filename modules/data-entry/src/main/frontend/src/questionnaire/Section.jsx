@@ -152,6 +152,13 @@ function Section(props) {
     collapseClasses.push(classes.hiddenSection);
   }
 
+  let sectionPosition = {};
+  if (displayMode == 'header') {
+    sectionPosition.top = contentOffset.top;
+  } else if (displayMode == 'footer') {
+    sectionPosition.bottom = contentOffset.bottom;
+  }
+
   // mountOnEnter and unmountOnExit force the inputs and children to be outside of the DOM during form submission
   // if it is not currently visible
   return useCallback(
@@ -166,7 +173,7 @@ function Section(props) {
       mountOnEnter
       unmountOnExit
       className={collapseClasses.join(" ")}
-      style={displayMode == 'header' ? {top : contentOffset}: {}}
+      style={sectionPosition}
       >
       {instanceLabels.map( (uuid, idx) => {
           const sectionPath = path + "/" + uuid;
