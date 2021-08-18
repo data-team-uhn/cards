@@ -28,8 +28,8 @@
 #   - ccmsk/neuralcr (version with HP preloaded model)
 #
 
-DOCKER_COMPOSE_SUBNET='172.19.0.0/16'
-DOCKER_COMPOSE_HOST_IP='172.19.0.1'
+DOCKER_COMPOSE_SUBNET='192.168.19.0/24'
+DOCKER_COMPOSE_HOST_IP='192.168.19.1'
 
 MONGO_DB_VOLUME_MOUNT=$(realpath ~/cards4lfs_mongodb)
 mkdir $MONGO_DB_VOLUME_MOUNT
