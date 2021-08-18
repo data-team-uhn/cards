@@ -22,13 +22,18 @@ import java.io.IOException;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.Property;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Workspace;
 import javax.jcr.query.Query;
@@ -97,15 +102,14 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         final long limit = getLongValueOrDefault(request.getParameter("limit"), 10);
         final long offset = getLongValueOrDefault(request.getParameter("offset"), 0);
 
-        String finalquery = createQuery(request);
+        ResourceResolver resolver = request.getResourceResolver();
+        Session session = resolver.adaptTo(Session.class);
+        String finalquery = createQuery(request, session);
 
         Iterator<Resource> results;
         //Using a QueryManager doesn't always work, but it is faster
-        Session session = null;
         try {
             //Get a QueryManager object
-            ResourceResolver resolver = request.getResourceResolver();
-            session = resolver.adaptTo(Session.class);
             Workspace workspace = session.getWorkspace();
             QueryManager queryManager = workspace.getQueryManager();
 
@@ -133,8 +137,9 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         }
     }
 
-    @SuppressWarnings({"checkstyle:ExecutableStatementCount"})
-    private String createQuery(final SlingHttpServletRequest request)
+    @SuppressWarnings({"checkstyle:ExecutableStatementCount", "checkstyle:NPathComplexity",
+        "checkstyle:CyclomaticComplexity"})
+    private String createQuery(final SlingHttpServletRequest request, Session session)
     {
         // If we want this query to be fast, we need to use the exact nodetype requested.
         final Node node = request.getResource().adaptTo(Node.class);
@@ -145,18 +150,41 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         } catch (Exception e) {
             nodeType = request.getResource().getResourceType().replace('/', ':').replaceFirst("sHomepage$", "");
         }
-        final StringBuilder query =
-            // We select all child nodes of the homepage having the right type
-            new StringBuilder("select n.* from [").append(nodeType).append("] as n");
+        // We select all child nodes of the homepage having the right type
+        final StringBuilder query = new StringBuilder("select n.* from [").append(nodeType).append("] as n");
 
         // If child nodes are required for this query, also grab them
         final String[] filternames = request.getParameterValues("filternames");
-        query.append(createJoins(
-            request.getParameter("joinchildren"),
-            request.getParameterValues("filternames"),
-            request.getParameterValues("filterempty"),
-            request.getParameterValues("filternotempty")
-            ));
+        final String[] filterempty = request.getParameterValues("filterempty");
+        final String[] filternotempty = request.getParameterValues("filternotempty");
+        final String joinNodetype = request.getParameter("joinchildren");
+
+        // The map that stores questionnaires uuids with prefixes in array and maps it to the
+        // corresponding group of questions uuids with their prefixes (stored in a map)
+        // To be used later on the filter query construction
+        Map<String, String> questionnairesToPrefix = new HashMap<>();
+        Map<String, List<String>> questionnairesToFilters = new HashMap<>();
+        Map<String, String> filtersToPrefix = new HashMap<>();
+
+        // Add joints
+        if (StringUtils.isNotBlank(joinNodetype)) {
+            String sanitizednodetype = joinNodetype.replaceAll("[\\\\\\]]", "\\\\$0");
+            if (nodeType.equals(SUBJECT_IDENTIFIER)) {
+                // resolve all questions to questionnaires and group them by questionnaires
+                getQuestionnairesMaps(questionnairesToPrefix, questionnairesToFilters, filtersToPrefix, filternames,
+                    "child", session);
+                getQuestionnairesMaps(questionnairesToPrefix, questionnairesToFilters, null, filterempty,
+                    "empty", session);
+                getQuestionnairesMaps(questionnairesToPrefix, questionnairesToFilters, null, filternotempty,
+                    "notempty", session);
+
+                // make joints per questionnaire
+                query.append(createSubjectJoins(sanitizednodetype, questionnairesToPrefix, questionnairesToFilters,
+                    filtersToPrefix));
+            } else {
+                query.append(createJoins(sanitizednodetype, filternames, filterempty, filternotempty));
+            }
+        }
 
         // Check only for the descendants of the requested homepage
         query.append(" where isdescendantnode(n, '" + request.getResource().getPath() + "')");
@@ -170,27 +198,24 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         // Exact condition on parent node; \ and ' must be escaped. The value must be wrapped in 's
         final String fieldname = request.getParameter("fieldname");
         final String fieldvalue = request.getParameter("fieldvalue");
-        // TODO, if more request options are required: convert includeAllStatus into a request mode
-        // backed by an an enum, map or other such collection.
-        final boolean includeAllStatus = Boolean.parseBoolean(request.getParameter("includeallstatus"));
-        String fieldcomparator = request.getParameter("fieldcomparator");
+        String fieldcomparator = this.sanitizeComparator(request.getParameter("fieldcomparator"));
         if (StringUtils.isNotBlank(fieldname)) {
-            if (StringUtils.isBlank(fieldcomparator)) {
-                // Default comparator is =
-                fieldcomparator = "=";
-            }
             query.append(
                 String.format(
                     " and n.'%s'%s'%s'",
                     this.sanitizeField(fieldname),
-                    this.sanitizeComparator(fieldcomparator),
+                    fieldcomparator,
                     this.sanitizeField(fieldvalue)
                 )
             );
         }
+
+        // TODO, if more request options are required: convert includeAllStatus into a request mode
+        // backed by an an enum, map or other such collection.
+        final boolean includeAllStatus = Boolean.parseBoolean(request.getParameter("includeallstatus"));
         // Only display `INCOMPLETE` forms if we are explicitly checking the status of forms,
         // or if the user requested forms with all statuses
-        if (!("statusFlags".equals(fieldname) || includeAllStatus)) {
+        if (!("statusFlags".equals(fieldname) || includeAllStatus || nodeType.equals(SUBJECT_IDENTIFIER))) {
             query.append(" and not n.'statusFlags'='INCOMPLETE'");
         }
 
@@ -198,11 +223,23 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         final String[] filtervalues = request.getParameterValues("filtervalues");
         final String[] filtertypes = request.getParameterValues("filtertypes");
         final String[] filtercomparators = request.getParameterValues("filtercomparators");
-        final String[] filterempty = request.getParameterValues("filterempty");
-        final String[] filternotempty = request.getParameterValues("filternotempty");
         final boolean sortDescending = Boolean.valueOf(request.getParameter("descending"));
-        query.append(parseFilter(filternames, filtervalues, filtertypes, filtercomparators));
-        query.append(parseExistence(filterempty, filternotempty));
+        query.append(
+            parseFilter(
+                filternames,
+                filtervalues,
+                filtertypes,
+                filtercomparators,
+                nodeType,
+                questionnairesToPrefix,
+                questionnairesToFilters,
+                filtersToPrefix
+            )
+        );
+        // For subject query case we parse existence together with other filters in previous step
+        if (!nodeType.equals(SUBJECT_IDENTIFIER)) {
+            query.append(parseExistence(filterempty, filternotempty));
+        }
         query.append(" order by n.'jcr:created'").append(sortDescending ? " DESC" : " ASC");
         String finalquery = query.toString();
         LOGGER.debug("Computed final query: {}", finalquery);
@@ -210,35 +247,104 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         return finalquery;
     }
 
+    private void getQuestionnairesMaps(Map<String, String> questionnairesToPrefix,
+            Map<String, List<String>> questionnairesToFilters, Map<String, String> filtersToPrefix,
+            final String[] uuids, final String prefix, Session session)
+    {
+        if (uuids == null) {
+            return;
+        }
+
+        for (int i = 0; i < uuids.length; i++) {
+            // Skip this join if it is on nodes that do not require a child inner join
+            if (SUBJECT_IDENTIFIER.equals(uuids[i]) || CREATED_DATE_IDENTIFIER.equals(uuids[i])) {
+                continue;
+            }
+
+            String nodeUUID = "";
+            // if we need to filter subjects by the any questionnaire filter - we need to store it for a joint
+            if (QUESTIONNAIRE_IDENTIFIER.equals(uuids[i])) {
+                nodeUUID = uuids[i];
+            } else {
+                nodeUUID = getQuestionnaire(uuids[i], session);
+            }
+
+            if (StringUtils.isNotBlank(nodeUUID)) {
+
+                if (!questionnairesToPrefix.containsKey(nodeUUID)) {
+                    String qcount = Integer.toString(questionnairesToPrefix.size() + 1);
+                    // <uuid> -> "f1" for joints and "and (f1.questionnaire = '5564b6da-35d3-4049..')
+                    questionnairesToPrefix.put(nodeUUID, "f" + qcount);
+                }
+
+                if (!(QUESTIONNAIRE_IDENTIFIER.equals(uuids[i]))) {
+                    List<String> questions = questionnairesToFilters.getOrDefault(nodeUUID, new ArrayList<String>());
+                    questions.add(uuids[i]);
+                    // for joints to add answers and for filters
+                    questionnairesToFilters.put(nodeUUID, questions);
+
+                    // filters count for this questionnaire
+                    String fcount = Integer.toString(questions.size());
+                    // <uuid> -> "childf1_1"
+                    filtersToPrefix.put(uuids[i], prefix + questionnairesToPrefix.get(nodeUUID) + "_" + fcount);
+                }
+            }
+        }
+    }
+
     /**
      * Parse out filter data into a series of JCR_SQL2 joins. This should be used in conjunction with parseFilter later
      * on.
      *
-     * @param nodetype node types to join
+     * @param nodeType node types to join
      * @param filternames user input field names
      * @param empties user input fields to assert emptiness of
      * @param notempties user input fields to assert non-emptiness of
      * @return the input fields and assertions as a series of sql joins
      */
-    private String createJoins(final String nodetype, final String[] filternames, final String[] empties,
+    private String createJoins(final String nodeType, final String[] filternames, final String[] empties,
         final String[] notempties)
     {
-        if (StringUtils.isBlank(nodetype)) {
-            // Unknown join type: do not parse
-            return "";
-        }
-
-        String sanitizednodetype = nodetype.replaceAll("[\\\\\\]]", "\\\\$0");
         StringBuilder joindata = new StringBuilder();
 
         // Parse out the fields to later impose conditions on
-        joindata.append(createSingleJoin(filternames, "child", sanitizednodetype));
+        joindata.append(createSingleJoin(filternames, "child", nodeType, "n"));
 
         // Parse out the fields to assert the nonexistence of
-        joindata.append(createSingleJoin(empties, "empty", sanitizednodetype));
+        joindata.append(createSingleJoin(empties, "empty", nodeType, "n"));
 
         // Parse out the fields to assert the existence of
-        joindata.append(createSingleJoin(notempties, "notempty", sanitizednodetype));
+        joindata.append(createSingleJoin(notempties, "notempty", nodeType, "n"));
+
+        return joindata.toString();
+    }
+
+    private String createSubjectJoins(final String nodetype, Map<String, String> questionnairesToPrefix,
+            Map<String, List<String>> questionnairesToFilters, Map<String, String> filtersToPrefix)
+    {
+        StringBuilder joindata = new StringBuilder();
+
+        for (String uuid : questionnairesToPrefix.keySet()) {
+            String prefix = questionnairesToPrefix.get(uuid);
+            joindata.append(
+                String.format(
+                    " inner join [cards:Form] as %s on n.[jcr:uuid] = %s.relatedSubjects",
+                    prefix,
+                    prefix
+                ));
+
+            List<String> questions = questionnairesToFilters.get(uuid);
+            for (String quuid : questions) {
+                joindata.append(
+                    String.format(
+                        " inner join [%s] as %s on isdescendantnode(%s, %s)",
+                        nodetype,
+                        filtersToPrefix.get(quuid),
+                        filtersToPrefix.get(quuid),
+                        prefix
+                    ));
+            }
+        }
 
         return joindata.toString();
     }
@@ -249,9 +355,11 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      * @param joins node types to join
      * @param childprefix prefix to give the child, to which a number will be appended to
      * @param nodetype Node type to join on
-     * @return the input field as a series of sql joins
+     * @param parentPrefix parent node
+     * @return the input field as a series of SQL joins
      */
-    private String createSingleJoin(final String[] joins, final String childprefix, final String nodetype)
+    private String createSingleJoin(final String[] joins, final String childprefix, final String nodetype,
+        final String parentPrefix)
     {
         // Don't attempt to append joins if we're not given anything
         if (joins == null) {
@@ -261,7 +369,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         // Append an inner join for each pipe-delimited identifier in joins
         StringBuilder joindata = new StringBuilder();
         for (int i = 0; i < joins.length; i++) {
-            // Skip this join if it is on cards:Subject, which does not require a child inner join
+            // Skip this join if it is on nodes that do not require a child inner join
             if (SUBJECT_IDENTIFIER.equals(joins[i])
                 || QUESTIONNAIRE_IDENTIFIER.equals(joins[i])
                 || CREATED_DATE_IDENTIFIER.equals(joins[i])) {
@@ -270,12 +378,13 @@ public class PaginationServlet extends SlingSafeMethodsServlet
 
             joindata.append(
                 String.format(
-                    " inner join [%s] as %s%d on isdescendantnode(%s%d, n)",
+                    " inner join [%s] as %s%d on isdescendantnode(%s%d, %s)",
                     nodetype,
                     childprefix,
                     i,
                     childprefix,
-                    i
+                    i,
+                    parentPrefix
                 )
             );
         }
@@ -353,103 +462,203 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      * @param comparator user input comparators
      * @throws IllegalArgumentException when the number of input fields are not equal
      */
-    @SuppressWarnings({"checkstyle:CyclomaticComplexity", "checkstyle:NPathComplexity"})
-    private String parseFilter(final String[] fields, final String[] values,
-        final String[] types, final String[] comparator) throws IllegalArgumentException
+    @SuppressWarnings({"checkstyle:CyclomaticComplexity", "checkstyle:NPathComplexity", "checkstyle:ParameterNumber"})
+    private String parseFilter(final String[] fields, final String[] values, final String[] types,
+        final String[] comparator, final String nodeType, Map<String, String> questionnairesToPrefix,
+        final Map<String, List<String>> questionnairesToFilters,
+        final Map<String, String> filtersToPrefix) throws IllegalArgumentException
     {
         // If we don't have either names or values, we should fail to filter
         if (fields == null || values == null) {
             return "";
         }
 
-        // Parse out multiple fields, split by pipes (|)
         if (fields.length != values.length) {
             throw new IllegalArgumentException("fieldname and fieldvalue must have the same number of values");
         }
 
-        // Also parse out multiple comparators
-        String[] comparators;
+        if (comparator != null && comparator.length != values.length) {
+            throw new IllegalArgumentException("comparators and fieldvalue must have the same number of values");
+        }
+
+        String[] comparators = comparator;
         if (comparator == null) {
             // Use = as the default
             comparators = new String[fields.length];
-            for (int i = 0; i < fields.length; i++) {
-                comparators[i] = "=";
-            }
-        } else {
-            comparators = comparator;
-            if (comparators.length != values.length) {
-                throw new IllegalArgumentException("must have the same number of comparators as fields,");
-            }
+            Arrays.fill(comparators, "=");
         }
 
         // Build the filter conditionals by imposing conditions on the inner joined cards:Answer children
         StringBuilder filterdata = new StringBuilder();
-        // TODO: Double check the sanitization on the comparator
-        for (int i = 0; i < fields.length; i++) {
-            // If the question is cards:Subject, we match on the parent rather than the child
-            if (SUBJECT_IDENTIFIER.equals(fields[i])) {
+        // TODO: Double check the sanitation on the comparator
+
+        if (nodeType.equals(SUBJECT_IDENTIFIER)) {
+            // Add filters on subject uuid, questionnaire or date separately before other filters
+            for (int i = 0; i < fields.length; i++) {
                 filterdata.append(
-                    String.format(" and n.'subject'%s'%s'",
-                        this.sanitizeComparator(comparators[i]),
-                        this.sanitizeField(values[i])
+                    addSpeacialFilter(
+                        fields[i],
+                        values[i],
+                        comparators[i],
+                        questionnairesToPrefix.get(fields[i]),
+                        "jcr:uuid"
                     )
                 );
-            } else if (QUESTIONNAIRE_IDENTIFIER.equals(fields[i])) {
+            }
+            // Add other question filters
+            for (String questionnaire : questionnairesToFilters.keySet()) {
+
+                // add questionnaire filter, e.g. "f1.questionnaire = '5564b6da-...-f01f20493fcc'"
                 filterdata.append(
-                    String.format(" and n.'questionnaire'%s'%s'",
-                        this.sanitizeComparator(comparators[i]),
-                        this.sanitizeField(values[i])
+                    String.format(" and %s.'questionnaire'='%s'",
+                        questionnairesToPrefix.get(questionnaire),
+                        this.sanitizeField(questionnaire)
                     )
                 );
-            } else if (CREATED_DATE_IDENTIFIER.equals(fields[i])) {
-                filterdata.append(" and ");
-                filterdata.append(
-                    generateDateCompareQuery(
-                        "n.'jcr:created'",
-                        this.sanitizeField(values[i]),
-                        this.sanitizeComparator(comparators[i])
-                    )
-                );
-            } else {
-                // Condition 1: the question uuid must match one of the given (comma delimited)
-                String[] possibleQuestions = fields[i].split(",");
-                filterdata.append(" and (");
-                for (int j = 0; j < possibleQuestions.length; j++) {
-                    filterdata.append(
-                        String.format(
-                            " child%d.'question'='%s'",
-                            i,
-                            this.sanitizeField(possibleQuestions[j])
-                        )
-                    );
-                    // Add an 'or' if there are more possible conditions
-                    if (j + 1 != possibleQuestions.length) {
-                        filterdata.append(" or");
+
+                // add corresponding question filters, e.g. " and (a1_1.question='e18f7f4...e871f' and a1_1.value = 1)"
+                for (String question : questionnairesToFilters.get(questionnaire)) {
+
+                    String value = "";
+                    String fcomparator = "";
+                    String type = "";
+
+                    String prefix = filtersToPrefix.get(question);
+                    if (prefix.startsWith("child")) {
+                        int i = Arrays.asList(fields).indexOf(question);
+                        value = values[i];
+                        fcomparator = comparators[i];
+                        type = types[i];
+                    } else if (prefix.startsWith("empty")) {
+                        fcomparator = " IS NULL";
+                    } else {
+                        fcomparator = " IS NOT NULL";
                     }
-                }
-                // Condition 2: the value must exactly match
-                if (comparators[i].equals("notes contain")) {
+
                     filterdata.append(
-                        String.format(
-                            ") and contains(child%d.'note', '*%s*')",
-                            i,
-                            this.sanitizeField(values[i])
-                        )
-                    );
-                } else {
-                    filterdata.append(
-                        String.format(
-                            ") and child%d.'value'%s" + (("date".equals(types[i]))
-                                ? ("cast('%sT00:00:00.000"
-                                + new SimpleDateFormat("XXX").format(new Date()) + "' as date)")
-                                : ("boolean".equals(types[i])) ? "%s" : "'%s'"),
-                            i,
-                            this.sanitizeComparator(comparators[i]),
-                            this.sanitizeField(values[i])
+                        addSingleFilter(
+                            question,
+                            value,
+                            fcomparator,
+                            type,
+                            filtersToPrefix.get(question)
                         )
                     );
                 }
             }
+        } else {
+            for (int i = 0; i < fields.length; i++) {
+                filterdata.append(
+                    addSpeacialFilter(
+                        fields[i],
+                        values[i],
+                        comparators[i],
+                        "n",
+                        "subject"
+                    )
+                );
+                filterdata.append(
+                    addSingleFilter(
+                        fields[i],
+                        values[i],
+                        comparators[i],
+                        types[i],
+                        "child" + i
+                    )
+                );
+            }
+        }
+        return filterdata.toString();
+    }
+
+    private String addSpeacialFilter(final String filter, final String value, final String comparator,
+        final String prefix, final String subjectSelector)
+    {
+        StringBuilder filterdata = new StringBuilder();
+        switch (filter) {
+            case SUBJECT_IDENTIFIER:
+                filterdata.append(
+                    String.format(" and n.'%s'%s'%s'",
+                        subjectSelector,
+                        this.sanitizeComparator(comparator),
+                        this.sanitizeField(value)
+                    )
+                );
+                break;
+            case QUESTIONNAIRE_IDENTIFIER:
+                filterdata.append(
+                    String.format(" and %s.'questionnaire'%s'%s'",
+                        prefix,
+                        this.sanitizeComparator(comparator),
+                        this.sanitizeField(value)
+                    )
+                );
+                break;
+            case CREATED_DATE_IDENTIFIER:
+                filterdata.append(" and ");
+                filterdata.append(
+                    generateDateCompareQuery(
+                        "n.'jcr:created'",
+                        this.sanitizeField(value),
+                        this.sanitizeComparator(comparator)
+                    )
+                );
+                break;
+            default:
+                filterdata.append("");
+                break;
+        }
+        return filterdata.toString();
+    }
+
+    private String addSingleFilter(final String filter, final String value, final String comparator, final String type,
+            final String prefix)
+    {
+        StringBuilder filterdata = new StringBuilder();
+
+        if (SUBJECT_IDENTIFIER.equals(filter)
+            || QUESTIONNAIRE_IDENTIFIER.equals(filter)
+            || CREATED_DATE_IDENTIFIER.equals(filter)) {
+            return "";
+        }
+
+        // Condition 1: the question uuid must match one of the given (comma delimited)
+        String[] possibleQuestions = filter.split(",");
+        filterdata.append(" and (");
+        for (int j = 0; j < possibleQuestions.length; j++) {
+            filterdata.append(
+                String.format(
+                    " %s.'question'='%s'",
+                    prefix,
+                    this.sanitizeField(possibleQuestions[j])
+                )
+            );
+            // Add an 'or' if there are more possible conditions
+            if (j + 1 != possibleQuestions.length) {
+                filterdata.append(" or");
+            }
+        }
+        // Condition 2: the value must exactly match
+        if ("notes contain".equals(comparator)) {
+            filterdata.append(
+                String.format(
+                    ") and contains(%s.'note', '*%s*')",
+                    prefix,
+                    this.sanitizeField(value)
+                )
+            );
+        } else {
+            filterdata.append(
+                String.format(
+                    ") and %s.'value'%s" + (("date".equals(type))
+                        ? ("cast('%sT00:00:00.000"
+                        + new SimpleDateFormat("XXX").format(new Date()) + "' as date)")
+                        : ("boolean".equals(type)) ? "%s" : "'%s'"),
+                    prefix,
+                    this.sanitizeComparator(comparator),
+                    this.sanitizeField(value)
+                )
+            );
         }
         return filterdata.toString();
     }
@@ -457,8 +666,8 @@ public class PaginationServlet extends SlingSafeMethodsServlet
     /**
      * Parse out empty & not empty fields into a series of JCR_SQL2 conditionals.
      *
-     * @param empties user input field names to assert the nonexistance of content for
-     * @param notempties user input field names to assert the existance of content for
+     * @param empties user input field names to assert the nonexistence of content for
+     * @param notempties user input field names to assert the existence of content for
      * @return JCR_SQL conditionals for the input
      */
     private String parseExistence(final String[] empties, final String[] notempties)
@@ -475,7 +684,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      *
      * @param fieldnames user input field names
      * @param childprefix prefix for the child nodes
-     * @param comparison unary comparitor to assert
+     * @param comparison unary comparator to assert
      * @return JCR_SQL conditionals for the input
      */
     private String parseComparison(final String[] fieldnames, final String childprefix, final String comparison)
@@ -488,44 +697,24 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         // Build the conditionals (e.g. and child0.'question'='uuid' and child0.'value' IS NOT NULL...)
         StringBuilder joindata = new StringBuilder();
         for (int i = 0; i < fieldnames.length; i++) {
-            String sanitizedFieldName = sanitizeField(fieldnames[i]);
-            // cards:Subject is handled differently, since it is on the Form itself
-            if (fieldnames[i].equals(SUBJECT_IDENTIFIER)) {
-                joindata.append(
-                    String.format(
-                        " and n.'subject'%s",
-                        comparison
-                    )
-                );
-            } else if (fieldnames[i].equals(QUESTIONNAIRE_IDENTIFIER)) {
-                joindata.append(
-                    String.format(
-                        " and n.'questionnaire'%s",
-                        comparison
-                    )
-                );
-            } else {
-                final String[] possibleQuestions = fieldnames[i].split(",");
-                joindata.append(" and (");
-                for (int j = 0; j < possibleQuestions.length; j++) {
-                    joindata.append(
-                        String.format(
-                            " %s%d.'question'='%s' and %s%d.'value'%s",
-                            childprefix,
-                            i,
-                            this.sanitizeField(possibleQuestions[j]),
-                            childprefix,
-                            i,
-                            comparison
-                        )
-                    );
-                    // Add an 'or' if there are more possible conditions
-                    if (j + 1 != possibleQuestions.length) {
-                        joindata.append(" or");
-                    }
-                }
-                joindata.append(")");
-            }
+            joindata.append(
+                addSpeacialFilter(
+                    fieldnames[i],
+                    "",
+                    comparison,
+                    "n",
+                    "subject"
+                )
+            );
+            joindata.append(
+                addSingleFilter(
+                    fieldnames[i],
+                    "",
+                    comparison,
+                    "",
+                    childprefix + i
+                )
+            );
         }
         return joindata.toString();
     }
@@ -549,7 +738,6 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      */
     private String sanitizeComparator(String comparator)
     {
-
         if (!COMPARATORS.contains(comparator)) {
             // Invalid comparator: return '='
             return "=";
@@ -619,5 +807,28 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             value = defaultValue;
         }
         return value;
+    }
+
+    private String getQuestionnaire(String questionUuid, Session session)
+    {
+        if (session == null) {
+            LOGGER.warn("Could not match questionnaire UUID {}: session not found.", questionUuid);
+            return "";
+        }
+
+        try {
+            Node parent = session.getNodeByIdentifier(questionUuid);
+            while (parent.getParent() != null) {
+                parent = parent.getParent();
+                if (parent.isNodeType("cards:Questionnaire")) {
+                    return parent.getProperty("jcr:uuid").getString();
+                }
+            }
+        } catch (ItemNotFoundException e) {
+            LOGGER.debug("Questionnaire UUID {} is inaccessible", questionUuid, e);
+        } catch (RepositoryException e) {
+            LOGGER.error("Failed to find questionnaire UUID {}", questionUuid, e);
+        }
+        return "";
     }
 }
