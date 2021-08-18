@@ -64,7 +64,7 @@ function createTitle(label, idx, isRecurrent) {
  * @param {Object} sectionDefinition the section definition JSON
  */
 function Section(props) {
-  const { classes, depth, existingAnswer, path, sectionDefinition, onChange, visibleCallback, pageActive, isEdit, instanceId } = props;
+  const { classes, depth, existingAnswer, path, sectionDefinition, onChange, visibleCallback, pageActive, isEdit, instanceId, contentOffset } = props;
   const isRecurrent = sectionDefinition['recurrent'];
   const { displayMode } = sectionDefinition;
   const [ focus, setFocus ] = useState(false);
@@ -166,6 +166,7 @@ function Section(props) {
       mountOnEnter
       unmountOnExit
       className={collapseClasses.join(" ")}
+      style={displayMode == 'header' ? {top : contentOffset}: {}}
       >
       {instanceLabels.map( (uuid, idx) => {
           const sectionPath = path + "/" + uuid;
@@ -248,6 +249,7 @@ function Section(props) {
                         classes={classes}
                         onChange={onChange}
                         isEdit={isEdit}
+                        contentOffset={contentOffset}
                         pageActive={pageActive}
                         sectionAnswersState={removableAnswers}
                         onAddedAnswerPath={(newAnswers) => {

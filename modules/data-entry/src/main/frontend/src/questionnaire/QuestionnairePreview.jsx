@@ -45,12 +45,17 @@ function QuestionnairePreview (props) {
   let [ pages, setPages ] = useState(null);
   let [ removeWindowHandlers, setRemoveWindowHandlers ] = useState();
   let [ actionsMenu, setActionsMenu ] = useState(null);
+  let [ contentOffset, setContentOffset ] = useState(props.contentOffset);
   let paginationEnabled = !!data?.paginate;
 
   let pageNameWriter = usePageNameWriterContext();
   useEffect(() => {
     pageNameWriter(title);
   }, [title])
+
+  useEffect(() => {
+    setContentOffset(props.contentOffset + (document?.getElementById('cards-resource-header')?.clientHeight || 0));
+  }, [])
 
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
@@ -86,6 +91,7 @@ function QuestionnairePreview (props) {
                 visibleCallback={pageResult.callback}
                 pageActive={pageResult.page.visible}
                 isEdit={true}
+                contentOffset={contentOffset}
               />
             })
         }

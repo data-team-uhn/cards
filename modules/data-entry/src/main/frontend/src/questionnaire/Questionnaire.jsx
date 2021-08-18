@@ -182,6 +182,7 @@ let Questionnaire = (props) => {
               <QuestionnairePreview
                 data={data}
                 title={questionnaireTitle}
+                contentOffset={props.contentOffset}
               />
             </Grid>
           </Grid>
