@@ -154,6 +154,8 @@ function SubjectView(props) {
               entryType={"Subject"}
               actions={actions}
               disableTopPagination={!topPagination}
+              filters
+              joinChildren="cards:Answer"
             />
           : <Typography>No results</Typography>
       }
