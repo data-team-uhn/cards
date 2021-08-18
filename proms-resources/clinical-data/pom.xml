@@ -40,6 +40,7 @@
         <configuration>
           <instructions>
             <Sling-Initial-Content>
+              SLING-INF/content/Questionnaires/;path:=/Questionnaires/;overwrite:=true;checkin:=true,
               SLING-INF/content/libs/cards/conf/;path:=/libs/cards/conf/;overwrite:=false
             </Sling-Initial-Content>
           </instructions>
