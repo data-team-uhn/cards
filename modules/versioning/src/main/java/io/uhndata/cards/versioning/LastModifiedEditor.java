@@ -77,7 +77,7 @@ public class LastModifiedEditor extends DefaultEditor
     public void propertyAdded(final PropertyState after)
         throws CommitFailedException
     {
-        if ("value".equals(after.getName()) || "notes".equals(after.getName())) {
+        if (!after.getName().startsWith("jcr:") && !after.getName().startsWith("sling:")) {
             handleAnswerChange();
         }
     }
