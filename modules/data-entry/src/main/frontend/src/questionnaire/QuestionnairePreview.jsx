@@ -56,7 +56,7 @@ function QuestionnairePreview (props) {
 
   useEffect(() => {
     setContentOffsetTop(props.contentOffset + (document?.getElementById('cards-resource-header')?.clientHeight || 0));
-    setContentOffsetBottom(document?.getElementById('cards-resource-footer')?.clientHeight || 0);
+    paginationEnabled && setContentOffsetBottom(document?.getElementById('cards-resource-footer')?.clientHeight || 0);
   }, [pages])
 
   // If the data has not yet been fetched, return an in-progress symbol

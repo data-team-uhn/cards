@@ -110,7 +110,9 @@ function Form (props) {
 
   useEffect(() => {
     setFormContentOffsetTop(contentOffset + (document?.getElementById('cards-resource-header')?.clientHeight || 0));
-    setFormContentOffsetBottom(document?.getElementById('cards-resource-footer')?.clientHeight || 0);
+  }, [data]);
+  useEffect(() => {
+    paginationEnabled && setFormContentOffsetBottom(document?.getElementById('cards-resource-footer')?.clientHeight || 0);
   }, [pages])
 
   useEffect(() => {
