@@ -66,6 +66,7 @@ function createTitle(label, idx, isRecurrent) {
 function Section(props) {
   const { classes, depth, existingAnswer, path, sectionDefinition, onChange, visibleCallback, pageActive, isEdit, instanceId } = props;
   const isRecurrent = sectionDefinition['recurrent'];
+  const { displayMode } = sectionDefinition;
   const [ focus, setFocus ] = useState(false);
 
   const headerVariant = "h5";
@@ -137,6 +138,9 @@ function Section(props) {
   }
 
   const collapseClasses = [];
+  if (isEdit) {
+    collapseClasses.push(classes[displayMode + 'Section']);
+  }
   if (isEdit && !displayed || !isEdit && !hasAnswers) {
     collapseClasses.push(classes.collapsedSection);
   }
@@ -179,7 +183,6 @@ function Section(props) {
               container
               className={
                 (isRecurrent ? classes.recurrentSection : undefined)
-                + " " + (hasHeader ? classes.labeledSection : undefined)
               }
               {...FORM_ENTRY_CONTAINER_PROPS}
               >

@@ -61,6 +61,7 @@ const useStyles = makeStyles(theme => ({
       backgroundColor: grey[100],
       margin: theme.spacing(0, GRID_SPACE_UNIT, GRID_SPACE_UNIT),
       paddingTop: "0 !important",
+      zIndex: 2,
     }
 }))
 

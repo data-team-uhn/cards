@@ -174,9 +174,6 @@ const questionnaireStyle = theme => ({
         position: 'relative',
         textAlign: 'center'
     },
-    labeledSection: {
-        marginTop: theme.spacing(GRID_SPACE_UNIT)
-    },
     sectionHeader: {
         paddingBottom: "0 !important",
         "& > h5" : {
@@ -316,6 +313,26 @@ const questionnaireStyle = theme => ({
     },
     hiddenSection: {
         display: "none"
+    },
+    footerSection : {
+      position: "sticky",
+      bottom: 0,
+      paddingBottom: "0 !important",
+      "& > .MuiCollapse-wrapper" : {
+        border: "1px solid " + theme.palette.primary.light,
+      },
+      "& .MuiGrid-item:not(:first-child)": {
+        paddingTop: 0,
+      },
+      "& .MuiGrid-item:not(:last-child)": {
+        paddingBottom: 0,
+      },
+      "& .MuiGrid-item:not(.MuiCollapse-container) > *": {
+        background: grey[100],
+      },
+      "& .MuiCard-root" : {
+        borderColor: "transparent",
+      },
     },
     addSectionButton: {
         marginTop: theme.spacing(GRID_SPACE_UNIT * 2)
