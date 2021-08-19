@@ -72,7 +72,7 @@ import ResourceHeader from "./ResourceHeader.jsx";
  * @param {string} id the identifier of a form; this is the JCR node name
  */
 function Form (props) {
-  let { classes, id } = props;
+  let { classes, id, contentOffset } = props;
   // This holds the full form JSON, once it is received from the server
   let [ data, setData ] = useState();
   // Error message set when fetching the data from the server fails
@@ -97,6 +97,8 @@ function Form (props) {
   let [ paginationEnabled, setPaginationEnabled ] = useState(false);
   let [ removeWindowHandlers, setRemoveWindowHandlers ] = useState();
   let [ actionsMenu, setActionsMenu ] = useState(null);
+  let [ formContentOffsetTop, setFormContentOffsetTop ] = useState(contentOffset);
+  let [ formContentOffsetBottom, setFormContentOffsetBottom ] = useState(0);
 
   let formNode = React.useRef();
   let pageNameWriter = usePageNameWriterContext();
@@ -105,6 +107,13 @@ function Form (props) {
   const urlBase = "/content.html";
   const isEdit = window.location.pathname.endsWith(".edit");
   let globalLoginDisplay = useContext(GlobalLoginContext);
+
+  useEffect(() => {
+    setFormContentOffsetTop(contentOffset + (document?.getElementById('cards-resource-header')?.clientHeight || 0));
+  }, [data]);
+  useEffect(() => {
+    paginationEnabled && setFormContentOffsetBottom(document?.getElementById('cards-resource-footer')?.clientHeight || 0);
+  }, [pages])
 
   useEffect(() => {
     if (isEdit) {
@@ -365,7 +374,8 @@ function Form (props) {
           breadcrumbs={[<Breadcrumbs separator="/">{getHierarchyAsList(data?.subject).map(a => <Typography variant="overline" key={a}>{a}</Typography>)}</Breadcrumbs>]}
           separator=":"
           action={formMenu}
-          contentOffset={props.contentOffset}
+          contentOffset={contentOffset}
+
         >
           <FormattedText variant="subtitle1" color="textSecondary">
             {data?.questionnaire?.description}
@@ -432,12 +442,13 @@ function Form (props) {
                     visibleCallback={pageResult.callback}
                     pageActive={pageResult.page.visible}
                     isEdit={isEdit}
+                    contentOffset={{top: formContentOffsetTop, bottom: formContentOffsetBottom}}
                   />
                 })
             }
           </FormUpdateProvider>
         </FormProvider>
-        <Grid item xs={12} className={classes.formFooter}>
+        <Grid item xs={12} className={classes.formFooter} id="cards-resource-footer">
           <FormPagination
               saveInProgress={saveInProgress}
               lastSaveStatus={lastSaveStatus}

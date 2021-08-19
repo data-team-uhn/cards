@@ -64,7 +64,7 @@ function createTitle(label, idx, isRecurrent) {
  * @param {Object} sectionDefinition the section definition JSON
  */
 function Section(props) {
-  const { classes, depth, existingAnswer, path, sectionDefinition, onChange, visibleCallback, pageActive, isEdit, instanceId } = props;
+  const { classes, depth, existingAnswer, path, sectionDefinition, onChange, visibleCallback, pageActive, isEdit, instanceId, contentOffset } = props;
   const isRecurrent = sectionDefinition['recurrent'];
   const { displayMode } = sectionDefinition;
   const [ focus, setFocus ] = useState(false);
@@ -152,6 +152,13 @@ function Section(props) {
     collapseClasses.push(classes.hiddenSection);
   }
 
+  let sectionPosition = {};
+  if (displayMode == 'header') {
+    sectionPosition.top = contentOffset.top;
+  } else if (displayMode == 'footer') {
+    sectionPosition.bottom = contentOffset.bottom;
+  }
+
   // mountOnEnter and unmountOnExit force the inputs and children to be outside of the DOM during form submission
   // if it is not currently visible
   return useCallback(
@@ -166,6 +173,7 @@ function Section(props) {
       mountOnEnter
       unmountOnExit
       className={collapseClasses.join(" ")}
+      style={sectionPosition}
       >
       {instanceLabels.map( (uuid, idx) => {
           const sectionPath = path + "/" + uuid;
@@ -248,6 +256,7 @@ function Section(props) {
                         classes={classes}
                         onChange={onChange}
                         isEdit={isEdit}
+                        contentOffset={contentOffset}
                         pageActive={pageActive}
                         sectionAnswersState={removableAnswers}
                         onAddedAnswerPath={(newAnswers) => {

@@ -22,7 +22,7 @@
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
-		<value>Footer Sections Test</value>
+		<value>Header / Footer Sections Test</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -47,6 +47,56 @@
 		<type>String</type>
 	</property>
 
+	<node>
+		<name>header_section_with_info</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>displayMode</name>
+			<value>header</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>info</name>
+			<primaryNodeType>cards:Information</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>
+#### This is information that should stick to the top until "Group 2" appears.
+* This list makes the ...
+* ... the content longer.
+				</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>header_section_with_question</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>displayMode</name>
+			<value>header</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>header_question_1</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>This is a question that should stick to the top</value>
+				<type>String</type>
+			</property>
+                        <property>
+                                <name>description</name>
+                                <value>until "Group 2" appears</value>
+                                <type>String</type>
+                        </property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+		</node>
+	</node>
 	<node>
 		<name>q1_1</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
@@ -208,6 +258,56 @@
 		<type>String</type>
 	</property>
 
+	<node>
+		<name>header_section_with_info</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>displayMode</name>
+			<value>header</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>info</name>
+			<primaryNodeType>cards:Information</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>
+#### This is information that should stick to the top until "Group 2" appears.
+* This list makes the ...
+* ... the content longer.
+				</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>header_section_with_question</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>displayMode</name>
+			<value>header</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>header_question_2</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>This is another question that should stick to the top</value>
+				<type>String</type>
+			</property>
+                        <property>
+                                <name>description</name>
+                                <value>all the way to the end of the form</value>
+                                <type>String</type>
+                        </property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+		</node>
+	</node>
 	<node>
 		<name>q1_2</name>
 		<primaryNodeType>cards:Question</primaryNodeType>

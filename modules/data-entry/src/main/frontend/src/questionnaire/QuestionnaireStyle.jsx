@@ -314,6 +314,26 @@ const questionnaireStyle = theme => ({
     hiddenSection: {
         display: "none"
     },
+    headerSection : {
+      position: "sticky",
+      top: 0,
+      zIndex: 2,
+      "& > .MuiCollapse-wrapper" : {
+        border: "1px solid " + theme.palette.primary.light,
+      },
+      "& .MuiGrid-item:not(:first-child)": {
+        paddingTop: 0,
+      },
+      "& .MuiGrid-item:not(:last-child)": {
+        paddingBottom: 0,
+      },
+      "& .MuiGrid-item:not(.MuiCollapse-container) > *": {
+        background: grey[100],
+      },
+      "& .MuiCard-root" : {
+        borderColor: "transparent",
+      },
+    },
     footerSection : {
       position: "sticky",
       bottom: 0,

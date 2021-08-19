@@ -45,12 +45,19 @@ function QuestionnairePreview (props) {
   let [ pages, setPages ] = useState(null);
   let [ removeWindowHandlers, setRemoveWindowHandlers ] = useState();
   let [ actionsMenu, setActionsMenu ] = useState(null);
+  let [ contentOffsetTop, setContentOffsetTop ] = useState(props.contentOffset);
+  let [ contentOffsetBottom, setContentOffsetBottom ] = useState(0);
   let paginationEnabled = !!data?.paginate;
 
   let pageNameWriter = usePageNameWriterContext();
   useEffect(() => {
     pageNameWriter(title);
   }, [title])
+
+  useEffect(() => {
+    setContentOffsetTop(props.contentOffset + (document?.getElementById('cards-resource-header')?.clientHeight || 0));
+    paginationEnabled && setContentOffsetBottom(document?.getElementById('cards-resource-footer')?.clientHeight || 0);
+  }, [pages])
 
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
@@ -86,12 +93,13 @@ function QuestionnairePreview (props) {
                 visibleCallback={pageResult.callback}
                 pageActive={pageResult.page.visible}
                 isEdit={true}
+                contentOffset={{top: contentOffsetTop, bottom: contentOffsetBottom}}
               />
             })
         }
         </FormUpdateProvider>
       </FormProvider>
-      <Grid item xs={12} className={classes.formFooter}>
+      <Grid item xs={12} className={classes.formFooter} id="cards-resource-footer">
         <FormPagination
             paginationEnabled={paginationEnabled}
             questionnaireData={data}
