@@ -27,7 +27,7 @@ PROJECT_ROOT=$(realpath ../../)
 docker top $MONGO_CONTAINER_INSTANCE 2>/dev/null >/dev/null || { echo "Invalid specified container...exiting."; exit -1; }
 
 # Check that the container has bind-mounted a local directory to /data/db
-DATA_DIRECTORY_MOUNT=$(docker inspect -f '{{json .HostConfig.Binds }}' $MONGO_CONTAINER_INSTANCE | jq -r '.[] | select(test("^.+:/data/db$"))' | cut -d  ':' -f1)
+DATA_DIRECTORY_MOUNT=$(docker inspect -f '{{json .HostConfig.Binds }}' $MONGO_CONTAINER_INSTANCE | jq -r '.[] | select(test("^.+:/data/db(:rw){0,1}$"))' | cut -d  ':' -f1)
 [ -z $DATA_DIRECTORY_MOUNT ] && { echo "/data/db is not bind-mounted...exiting."; exit -1; }
 
 # Backup the current MONGO_IMAGE
