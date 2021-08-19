@@ -23,7 +23,8 @@ import PropTypes from 'prop-types';
 import {
   Card,
   CardContent,
-  IconButton
+  IconButton,
+  Tooltip,
 } from "@material-ui/core";
 
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -88,14 +89,18 @@ let QuestionnaireItemCard = (props) => {
           <div>
             {action}
             {!disableEdit &&
-            <IconButton onClick={() => { setEditDialogOpen(true); }}>
-              <EditIcon />
-            </IconButton>
+            <Tooltip title="Edit">
+              <IconButton onClick={() => { setEditDialogOpen(true); }}>
+                <EditIcon />
+              </IconButton>
+            </Tooltip>
             }
             {!disableDelete &&
-            <IconButton onClick={() => { setDeleteDialogOpen(true); }}>
-              <DeleteIcon />
-            </IconButton>
+            <Tooltip title="Delete">
+              <IconButton onClick={() => { setDeleteDialogOpen(true); }} disabled={data['@referenced'] == true}>
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
             }
           </div>
         }
