@@ -18,6 +18,7 @@
 //
 
 import React, { useEffect, useState, useContext } from "react";
+import { useHistory } from 'react-router-dom';
 import PropTypes from "prop-types";
 
 import {
@@ -27,11 +28,14 @@ import {
   withStyles
 } from "@material-ui/core";
 
+import CloseIcon from "@material-ui/icons/Close";
+
 import { FormProvider } from "./FormContext";
 import { FormUpdateProvider } from "./FormUpdateContext";
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
 import FormEntry, { QUESTION_TYPES, ENTRY_TYPES } from "./FormEntry";
 import FormPagination from "./FormPagination";
+import MainActionButton from "../components/MainActionButton.jsx";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 
 /**
@@ -59,6 +63,11 @@ function QuestionnairePreview (props) {
     paginationEnabled && setContentOffsetBottom(document?.getElementById('cards-resource-footer')?.clientHeight || 0);
   }, [pages])
 
+  let history = useHistory();
+  let close = () => {
+    history.push(/((.*)\/Questionnaires)\/([^.]+)/.exec(location.pathname)[1]);
+  }
+
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
     return (
@@ -66,7 +75,7 @@ function QuestionnairePreview (props) {
     );
   }
 
-  return (
+  return (<>
     <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
       { /* Added dummy save functionality for mocking file and pedigree questions functionality. */ }
       <FormProvider additionalFormData={{
@@ -105,10 +114,18 @@ function QuestionnairePreview (props) {
             questionnaireData={data}
             setPagesCallback={setPages}
             enableSave={false}
+            onDone={close}
         />
       </Grid>
     </Grid>
-  );
+    {!paginationEnabled &&
+      <MainActionButton
+        icon={<CloseIcon />}
+        onClick={close}
+        label="Close"
+      />
+    }
+  </>);
 };
 
 export default withStyles(QuestionnaireStyle)(QuestionnairePreview);
