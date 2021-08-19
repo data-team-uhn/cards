@@ -21,6 +21,9 @@ MONGO_CONTAINER_INSTANCE=$1
 MONGO_IMAGE="mongo:4.2-bionic"
 TAG_BACKUP_PATH=~/.docker_tags_backup/singular_mongo_slingstore.txt
 
+# Check if jq is installed. Exit if it is not.
+echo '' | jq . >/dev/null 2>/dev/null || { echo "jq is not installed...exiting."; exit -1; }
+
 PROJECT_ROOT=$(realpath ../../)
 
 # Check that MONGO_CONTAINER_INSTANCE is a real, running container
