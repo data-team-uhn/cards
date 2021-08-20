@@ -470,6 +470,7 @@ function Filters(props) {
               // We grab focus on the field if we were asked to
               let isUnary = filterDatum.comparator && UNARY_COMPARATORS.includes(filterDatum.comparator);
               let isNotesContain = filterDatum.comparator && (filterDatum.comparator === notesComparator);
+              let isContain = filterDatum.comparator && (filterDatum.comparator.includes("contain"));
               return(
                 <React.Fragment key={index}>
                   {/* Select the field to filter */}
@@ -491,7 +492,7 @@ function Filters(props) {
                     </Select>
                   </Grid>
                   {/* Depending on whether or not the comparator chosen is unary, the size can change */}
-                  <Grid item xs={isUnary ? 6 : (isNotesContain ? 3 : 1)} className={index == editingFilters.length-1 ? classes.hidden : ""}>
+                  <Grid item xs={isUnary ? 6 : (isNotesContain ? 3 : (isContain ? 2 : 1))} className={index == editingFilters.length-1 ? classes.hidden : ""}>
                     <Select
                       value={filterDatum.comparator || ""}
                       onChange={(event) => {handleChangeComparator(index, event.target.value);}}
@@ -505,7 +506,7 @@ function Filters(props) {
                   </Grid>
                   {/* Look up whether or not the component can be loaded */}
                   {!isUnary &&
-                    <Grid item xs={isNotesContain ? 3 : 5} className={index == editingFilters.length-1 ? classes.hidden : ""}>
+                    <Grid item xs={isNotesContain ? 3 : (isContain ? 4 : 5)} className={index == editingFilters.length-1 ? classes.hidden : ""}>
                       {filterDatum.comparator ?
                           getCachedInput(filterDatum, index, (index !== editingFilters.length-1 && toFocus === index ? focusCallback : undefined))
                         : <TextField disabled className={classes.answerField}></TextField>

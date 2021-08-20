@@ -638,8 +638,16 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                 filterdata.append(" or");
             }
         }
-        // Condition 2: the value must exactly match
-        if ("notes contain".equals(comparator)) {
+        // Condition 2: the value must match
+        if ("contain".equals(comparator)) {
+            filterdata.append(
+                String.format(
+                    ") and contains(%s.'value', '*%s*')",
+                    prefix,
+                    this.sanitizeField(value)
+                )
+            );
+        } else if ("notes contain".equals(comparator)) {
             filterdata.append(
                 String.format(
                     ") and contains(%s.'note', '*%s*')",

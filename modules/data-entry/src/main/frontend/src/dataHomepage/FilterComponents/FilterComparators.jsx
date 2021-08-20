@@ -20,3 +20,4 @@
 export const DEFAULT_COMPARATORS = ["=", "<>"];
 export const UNARY_COMPARATORS = ["is empty", "is not empty"];
 export const VALUE_COMPARATORS = ["<", "<=", ">", ">="];
+export const TEXT_COMPARATORS = ["contain"];
