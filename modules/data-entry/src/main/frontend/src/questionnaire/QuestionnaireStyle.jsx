@@ -98,6 +98,9 @@ const questionnaireStyle = theme => ({
     noteTextField: {
         width: "100%",
     },
+    textFilterField: {
+        minWidth: "100% !important",
+    },
     optionsList: {
         padding: theme.spacing(0),
     },

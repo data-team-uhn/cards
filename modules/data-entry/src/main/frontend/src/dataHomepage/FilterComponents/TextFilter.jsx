@@ -22,10 +22,10 @@ import { TextField,  withStyles } from "@material-ui/core";
 import PropTypes from "prop-types";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
-import { DEFAULT_COMPARATORS, UNARY_COMPARATORS } from "./FilterComparators.jsx";
+import { DEFAULT_COMPARATORS, UNARY_COMPARATORS, TEXT_COMPARATORS } from "./FilterComparators.jsx";
 import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
 
-const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
+const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS).concat(TEXT_COMPARATORS);
 
 const QuestionnaireStyleNotesContain = theme => ({ 
   ...QuestionnaireStyle,
@@ -56,7 +56,7 @@ const TextFilter = forwardRef((props, ref) => {
       shrink: true,
       }}
       InputProps={{
-      className: classes.textField
+      className: classes.textFilterField
       }}
       defaultValue={defaultValue}
       onChange={(event) => {
