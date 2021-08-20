@@ -10,7 +10,8 @@
   },
   "yVar": {
     "type": "reference",
-    "primaryType": "cards:SubjectType"
+    "primaryType": "cards:SubjectType",
+    "restriction": "xVar"
   },
   "splitVar": {
     "type": "reference",

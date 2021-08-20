@@ -24,11 +24,18 @@ import { Chip, Input, MenuItem, Select, Typography, withStyles } from "@material
 import EditorInput from "./EditorInput";
 import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
 import QuestionComponentManager from "./QuestionComponentManager";
+import { useFieldsWriterContext } from "./FieldsContext";
 
 let ListInput = (props) => {
   let { objectKey, data, value: type } = props;
   let [ value, setValue ] = React.useState(Array.isArray(data[objectKey]) ? data[objectKey] : data[objectKey] ? [data[objectKey]] : []);
   const [ options, setOptions ] = React.useState([]);
+  const changeFieldsContext = useFieldsWriterContext();
+
+  let changeValue = (val) => {
+    changeFieldsContext((oldContext) => ({...oldContext, [objectKey]: val}));
+    setValue(val);
+  }
 
   if (options.length === 0) {
     fetch('/query?query=' + encodeURIComponent(`select * from [${type.primaryType}] as n order by n.'${type.orderProperty}'`))
@@ -59,7 +66,7 @@ let ListInput = (props) => {
           }
         }
         setOptions(optionTypes);
-        setValue(updatedValues);
+        changeValue(updatedValues);
       })
       .catch(handleError);
   }
@@ -69,7 +76,7 @@ let ListInput = (props) => {
   }
 
   const handleChange = (event) => {
-    setValue(event.target.value);
+    changeValue(event.target.value);
   };
 
   return (
