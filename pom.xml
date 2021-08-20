@@ -963,6 +963,7 @@
     <module>lfs-resources</module>
     <module>kids-resources</module>
     <module>cardiac-rehab-resources</module>
+    <module>proms-resources</module>
     <module>test-resources</module>
     <module>distribution</module>
   </modules>

@@ -20,9 +20,6 @@
 # This is the LFS project
 [feature name=lfs-resources]
 
-[variables]
-    cards.version=0.1-SNAPSHOT
-
 [artifacts runModes=lfs]
     io.uhndata.cards/lfs-resources-clinical-data/${cards.version}
     io.uhndata.cards/lfs-resources-tissue-metrix/${cards.version}

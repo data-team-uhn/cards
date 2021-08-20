@@ -20,9 +20,6 @@
 # A simple "this is a demo instance" warning banner, displayed when running with "-Dsling.run.modes=demo"
 [feature name=cards-demo-banner]
 
-[variables]
-    cards.version=0.1-SNAPSHOT
-
 [artifacts runModes=demo]
     io.uhndata.cards/cards-modules-demo-banner/${cards.version}
     io.uhndata.cards/cards-modules-upgrade-marker/${cards.version}

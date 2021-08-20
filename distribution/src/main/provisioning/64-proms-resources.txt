@@ -17,8 +17,8 @@
 #  under the License.
 #
 
-# This is the CARDS4KIDS project
-[feature name=cards-kids-resources]
+# This is the Cards for PROMs project
+[feature name=cards-proms-resources]
 
-[artifacts runModes=kids]
-    io.uhndata.cards/kids-resources-clinical-data/${cards.version}
+[artifacts runModes=proms]
+    io.uhndata.cards/proms-resources-clinical-data/${cards.version}

@@ -20,9 +20,6 @@
 # All Questionnaires used for testing various CARDS features, available when running with "-Dsling.run.modes=test"
 [feature name=cards-test-forms]
 
-[variables]
-    cards.version=0.9-SNAPSHOT
-
 [artifacts runModes=test]
     io.uhndata.cards/cards-modules-test-forms/${cards.version}
 

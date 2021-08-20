@@ -21,9 +21,6 @@
 # Read the comments in 60-ldap-connection.txt for information about configuring an LDAP identity provider.
 [feature name=external-authentication]
 
-[variables]
-    oak.version=1.8.8
-
 # Add the modules needed for external authentication
 [artifacts startLevel=15]
     # This enables generic support for external authentication
