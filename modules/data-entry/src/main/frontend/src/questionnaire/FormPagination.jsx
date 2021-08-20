@@ -46,7 +46,7 @@ class Page {
  * Component that displays a page of a Form.
  */
 function FormPagination (props) {
-  let { classes, saveInProgress, lastSaveStatus, setPagesCallback, paginationEnabled, enableSave, questionnaireData } = props;
+  let { classes, saveInProgress, lastSaveStatus, setPagesCallback, paginationEnabled, enableSave, onDone, questionnaireData } = props;
 
   let [ savedLastPage, setSavedLastPage ] = useState(false);
   let [ pendingSubmission, setPendingSubmission ] = useState(false);
@@ -107,6 +107,7 @@ function FormPagination (props) {
     setPendingSubmission(true);
     if (activePage === lastValidPage()) {
       setSavedLastPage(true);
+      onDone && onDone();
     } else {
       setSavedLastPage(false);
       handlePageChange("next");
@@ -142,14 +143,15 @@ function FormPagination (props) {
       type="submit"
       variant="contained"
       color="primary"
-      disabled={saveInProgress || !enableSave && activePage === lastValidPage()}
+      disabled={saveInProgress}
       className={classes.paginationButton}
       onClick={handleNext}
     >
-      {!enableSave ? "Next" :
+      {
       ((lastValidPage() === 0 || activePage === lastValidPage()) && saveInProgress) ? 'Saving' :
       lastSaveStatus === false ? 'Save failed, log in and try again?' :
       activePage < lastValidPage() ? "Next" :
+      !enableSave ? "Close" :
       lastSaveStatus && savedLastPage ? 'Saved' :
       'Save'}
     </Button>
