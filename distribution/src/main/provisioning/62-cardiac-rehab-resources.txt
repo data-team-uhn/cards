@@ -20,9 +20,6 @@
 # This is the CardiacRehab project
 [feature name=cards-cardiac-rehab-resources]
 
-[variables]
-    cards.version=0.1-SNAPSHOT
-
 [artifacts runModes=cardiac_rehab]
     io.uhndata.cards/cardiac-rehab-resources-clinical-data/${cards.version}
     io.uhndata.cards/cardiac-rehab-backend/${cards.version}/slingfeature/slingfeature

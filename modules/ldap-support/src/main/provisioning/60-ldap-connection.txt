@@ -21,9 +21,6 @@
 # The generic external authentication support is defined in 25-external-auth.txt
 [feature name=ldap-connection]
 
-[variables]
-    oak.version=1.8.8
-
 # Add the modules needed for LDAP authentication
 [artifacts startLevel=15]
     # This adds support for LDAP as a specific external authenticator

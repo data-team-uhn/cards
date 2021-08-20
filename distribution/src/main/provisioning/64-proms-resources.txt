@@ -20,8 +20,5 @@
 # This is the Cards for PROMs project
 [feature name=cards-proms-resources]
 
-[variables]
-    cards.version=0.1-SNAPSHOT
-
 [artifacts runModes=proms]
     io.uhndata.cards/proms-resources-clinical-data/${cards.version}

@@ -20,9 +20,6 @@
 # This is the CARDS project
 [feature name=cards]
 
-[variables]
-    cards.version=0.1-SNAPSHOT
-
 [artifacts]
     # Customizes the page displayed during startup, before all the bundles are activated
     io.uhndata.cards/cards-startup-customization/${cards.version}

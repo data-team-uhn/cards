@@ -20,8 +20,5 @@
 # This is the CARDS4KIDS project
 [feature name=cards-kids-resources]
 
-[variables]
-    cards.version=0.1-SNAPSHOT
-
 [artifacts runModes=kids]
     io.uhndata.cards/kids-resources-clinical-data/${cards.version}
