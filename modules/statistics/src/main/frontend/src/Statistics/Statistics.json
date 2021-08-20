@@ -12,7 +12,8 @@
   "yVar": {
     "type": "reference",
     "primaryType": "cards:SubjectType",
-    "filter": "numeric"
+    "filter": "numeric",
+    "restriction": "xVar"
   },
   "splitVar": {
     "type": "reference",

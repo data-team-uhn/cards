@@ -25,6 +25,7 @@ import EditorInput from "./EditorInput";
 import LiveTableStyle from "../dataHomepage/tableStyle.jsx";
 import QuestionComponentManager from "./QuestionComponentManager";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+import { useFieldsReaderContext } from "./FieldsContext";
 
 // Use the filter code to get what sorts of variables can be used as references
 let FILTER_URL = "/Questionnaires.deep.json";
@@ -34,13 +35,16 @@ let SUBJECT_TYPE_URL = "/SubjectTypes.paginate?offset=0&limit=100&req=0";
 // Reference Input field used by Edit dialog component
 let ReferenceInput = (props) => {
   const { classes, objectKey, data, value } = props;
+  const fieldsReader = useFieldsReaderContext();
 
   let [ curValue, setCurValue ] = useState(data[objectKey] || []);
   let [ titleMap, setTitleMap ] = useState({});
-  const [ options, setOptions ] = React.useState([]);
-  const [ initialized, setInitialized ] = React.useState(false);
+  const [ options, setOptions ] = useState([]);
+  const [ initialized, setInitialized ] = useState(false);
+  const [ restrictions, setRestrictions ] = useState([]);
 
   const isNumeric = value.filter == "numeric";
+  const allowOnlyApplicableFor = value.restriction;
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
   // Obtain information about the questions that can be used as a reference
@@ -147,9 +151,17 @@ let ReferenceInput = (props) => {
     })
   }
 
+  let getRestrictions = (restrictions) => {
+    //fieldsReader[allowOnlyApplicableFor]
+    // Need to go from question uuid => questionnaire => allowed subject types
+  }
+
   if (!initialized) {
     if (value["primaryType"] == "cards:SubjectType") {
       grabData(SUBJECT_TYPE_URL, parseSubjectTypeData);
+      if (allowOnlyApplicableFor) {
+        getRestrictions(allowOnlyApplicableFor);
+      }
     } else if (value["primaryType"] == "cards:Question") {
       grabData(FILTER_URL, parseQuestionnaireData);
     }
