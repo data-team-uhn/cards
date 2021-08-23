@@ -19,7 +19,7 @@
 
 <node>
 	<name>cnoc_history</name>
-	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
+	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
 		<value>cnoc_history</value>
@@ -34,7 +34,7 @@
 	</property>
 	<node>
 		<name>patientid</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Patientid</value>
@@ -58,7 +58,7 @@
 	</node>
 	<node>
 		<name>calc_age_in_months_no</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Patient age in months</value>
@@ -82,7 +82,7 @@
 	</node>
 	<node>
 		<name>care_members_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Number of parents/guardians</value>
@@ -110,7 +110,7 @@
 		</property>
 		<node>
 			<name>1</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>1</value>
@@ -124,7 +124,7 @@
 		</node>
 		<node>
 			<name>2</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>2</value>
@@ -138,7 +138,7 @@
 		</node>
 		<node>
 			<name>3</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>3</value>
@@ -152,7 +152,7 @@
 		</node>
 		<node>
 			<name>4</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>4</value>
@@ -166,7 +166,7 @@
 		</node>
 		<node>
 			<name><![CDATA[>4]]></name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value><![CDATA[>4]]></value>
@@ -181,7 +181,7 @@
 	</node>
 	<node>
 		<name>country_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Country of Residence</value>
@@ -209,7 +209,7 @@
 		</property>
 		<node>
 			<name>USA</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>USA</value>
@@ -223,7 +223,7 @@
 		</node>
 		<node>
 			<name>Canada</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Canada</value>
@@ -237,7 +237,7 @@
 		</node>
 		<node>
 			<name>Netherlands</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Netherlands</value>
@@ -251,7 +251,7 @@
 		</node>
 		<node>
 			<name>Switzerland</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Switzerland</value>
@@ -266,7 +266,7 @@
 	</node>
 	<node>
 		<name>cpr_current_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Has the patient since last ND visit had cardiopulmonary resuscitation (CPR) at any point?</value>
@@ -294,7 +294,7 @@
 		</property>
 		<node>
 			<name>No</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>No</value>
@@ -308,7 +308,7 @@
 		</node>
 		<node>
 			<name>Yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Yes</value>
@@ -322,7 +322,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -336,7 +336,7 @@
 		</node>
 		<node>
 			<name>NotApplicable-FirstNDVisit</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Not Applicable/First ND Visit</value>
@@ -351,7 +351,7 @@
 	</node>
 	<node>
 		<name>cpr_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Has the patient ever had cardiopulmonary resuscitation (CPR) at any point?</value>
@@ -379,7 +379,7 @@
 		</property>
 		<node>
 			<name>No</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>No</value>
@@ -393,7 +393,7 @@
 		</node>
 		<node>
 			<name>Yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Yes</value>
@@ -407,7 +407,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -422,7 +422,7 @@
 	</node>
 	<node>
 		<name>education_status_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Educational environment</value>
@@ -450,7 +450,7 @@
 		</property>
 		<node>
 			<name>Daycare-Preschool</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Daycare/Preschool</value>
@@ -464,7 +464,7 @@
 		</node>
 		<node>
 			<name>Publicschool-Charter</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Public school/Charter</value>
@@ -478,7 +478,7 @@
 		</node>
 		<node>
 			<name>Privateschool</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Private school</value>
@@ -492,7 +492,7 @@
 		</node>
 		<node>
 			<name>Homeschool</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Homeschool</value>
@@ -506,7 +506,7 @@
 		</node>
 		<node>
 			<name>OnlineSchool</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Online School</value>
@@ -520,7 +520,7 @@
 		</node>
 		<node>
 			<name>Notenrolled</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Not enrolled</value>
@@ -534,7 +534,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -549,7 +549,7 @@
 	</node>
 	<node>
 		<name>genetic_abn_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Has the patient ever had a suspected genetic abnormality or known syndropme associated with developmental delay?</value>
@@ -577,7 +577,7 @@
 		</property>
 		<node>
 			<name>No</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>No</value>
@@ -591,7 +591,7 @@
 		</node>
 		<node>
 			<name>Yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Yes</value>
@@ -605,7 +605,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -620,7 +620,7 @@
 	</node>
 	<node>
 		<name>grade_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Educational grade</value>
@@ -648,7 +648,7 @@
 		</property>
 		<node>
 			<name>Preschool-Pre-K</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Preschool/Pre-K</value>
@@ -662,7 +662,7 @@
 		</node>
 		<node>
 			<name>K</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>K</value>
@@ -676,7 +676,7 @@
 		</node>
 		<node>
 			<name>1</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>1</value>
@@ -690,7 +690,7 @@
 		</node>
 		<node>
 			<name>2</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>2</value>
@@ -704,7 +704,7 @@
 		</node>
 		<node>
 			<name>3</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>3</value>
@@ -718,7 +718,7 @@
 		</node>
 		<node>
 			<name>4</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>4</value>
@@ -732,7 +732,7 @@
 		</node>
 		<node>
 			<name>5</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>5</value>
@@ -746,7 +746,7 @@
 		</node>
 		<node>
 			<name>6</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>6</value>
@@ -760,7 +760,7 @@
 		</node>
 		<node>
 			<name>7</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>7</value>
@@ -774,7 +774,7 @@
 		</node>
 		<node>
 			<name>8</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>8</value>
@@ -788,7 +788,7 @@
 		</node>
 		<node>
 			<name>9</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>9</value>
@@ -802,7 +802,7 @@
 		</node>
 		<node>
 			<name>10</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>10</value>
@@ -816,7 +816,7 @@
 		</node>
 		<node>
 			<name>11</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>11</value>
@@ -830,7 +830,7 @@
 		</node>
 		<node>
 			<name>12</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>12</value>
@@ -844,7 +844,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -859,7 +859,7 @@
 	</node>
 	<node>
 		<name>grade_non_us_txt</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>non-USA grade</value>
@@ -883,7 +883,7 @@
 	</node>
 	<node>
 		<name>head_imaging_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Past head imaging</value>
@@ -911,7 +911,7 @@
 		</property>
 		<node>
 			<name>No</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>No</value>
@@ -925,7 +925,7 @@
 		</node>
 		<node>
 			<name>Yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Yes</value>
@@ -939,7 +939,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -954,7 +954,7 @@
 	</node>
 	<node>
 		<name>heart_transplant_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Has the patient ever had a heart transplant?</value>
@@ -982,7 +982,7 @@
 		</property>
 		<node>
 			<name>No</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>No</value>
@@ -996,7 +996,7 @@
 		</node>
 		<node>
 			<name>Yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Yes</value>
@@ -1010,7 +1010,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -1025,7 +1025,7 @@
 	</node>
 	<node>
 		<name>isdraft</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>CNOC History Draft</value>
@@ -1053,7 +1053,7 @@
 		</property>
 		<node>
 			<name>No</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>No</value>
@@ -1067,7 +1067,7 @@
 		</node>
 		<node>
 			<name>Yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Yes</value>
@@ -1082,7 +1082,7 @@
 	</node>
 	<node>
 		<name>language_primary_type_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Primary language spoken at home</value>
@@ -1110,7 +1110,7 @@
 		</property>
 		<node>
 			<name>English</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>English</value>
@@ -1124,7 +1124,7 @@
 		</node>
 		<node>
 			<name>Spanish</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Spanish</value>
@@ -1138,7 +1138,7 @@
 		</node>
 		<node>
 			<name>French</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>French</value>
@@ -1152,7 +1152,7 @@
 		</node>
 		<node>
 			<name>German</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>German</value>
@@ -1166,7 +1166,7 @@
 		</node>
 		<node>
 			<name>Arabic</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Arabic</value>
@@ -1180,7 +1180,7 @@
 		</node>
 		<node>
 			<name>Dutch</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Dutch</value>
@@ -1194,7 +1194,7 @@
 		</node>
 		<node>
 			<name>Italian</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Italian</value>
@@ -1208,7 +1208,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -1223,7 +1223,7 @@
 	</node>
 	<node>
 		<name>language_secondary_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Is secondary language spoken at home?</value>
@@ -1251,7 +1251,7 @@
 		</property>
 		<node>
 			<name>No</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>No</value>
@@ -1265,7 +1265,7 @@
 		</node>
 		<node>
 			<name>Yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Yes</value>
@@ -1279,7 +1279,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -1294,7 +1294,7 @@
 	</node>
 	<node>
 		<name>language_secondary_type_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Secondary language spoken at home</value>
@@ -1322,7 +1322,7 @@
 		</property>
 		<node>
 			<name>English</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>English</value>
@@ -1336,7 +1336,7 @@
 		</node>
 		<node>
 			<name>Spanish</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Spanish</value>
@@ -1350,7 +1350,7 @@
 		</node>
 		<node>
 			<name>French</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>French</value>
@@ -1364,7 +1364,7 @@
 		</node>
 		<node>
 			<name>German</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>German</value>
@@ -1378,7 +1378,7 @@
 		</node>
 		<node>
 			<name>Arabic</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Arabic</value>
@@ -1392,7 +1392,7 @@
 		</node>
 		<node>
 			<name>Dutch</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Dutch</value>
@@ -1406,7 +1406,7 @@
 		</node>
 		<node>
 			<name>Italian</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Italian</value>
@@ -1420,7 +1420,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -1435,7 +1435,7 @@
 	</node>
 	<node>
 		<name>language_third_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Is third language spoken at home?</value>
@@ -1463,7 +1463,7 @@
 		</property>
 		<node>
 			<name>No</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>No</value>
@@ -1477,7 +1477,7 @@
 		</node>
 		<node>
 			<name>Yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Yes</value>
@@ -1491,7 +1491,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -1506,7 +1506,7 @@
 	</node>
 	<node>
 		<name>language_third_type_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Third language spoken at home</value>
@@ -1534,7 +1534,7 @@
 		</property>
 		<node>
 			<name>English</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>English</value>
@@ -1548,7 +1548,7 @@
 		</node>
 		<node>
 			<name>Spanish</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Spanish</value>
@@ -1562,7 +1562,7 @@
 		</node>
 		<node>
 			<name>French</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>French</value>
@@ -1576,7 +1576,7 @@
 		</node>
 		<node>
 			<name>German</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>German</value>
@@ -1590,7 +1590,7 @@
 		</node>
 		<node>
 			<name>Arabic</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Arabic</value>
@@ -1604,7 +1604,7 @@
 		</node>
 		<node>
 			<name>Dutch</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Dutch</value>
@@ -1618,7 +1618,7 @@
 		</node>
 		<node>
 			<name>Italian</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Italian</value>
@@ -1632,7 +1632,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -1647,7 +1647,7 @@
 	</node>
 	<node>
 		<name>languages_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Number of languages spoken at home</value>
@@ -1675,7 +1675,7 @@
 		</property>
 		<node>
 			<name>1</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>1</value>
@@ -1689,7 +1689,7 @@
 		</node>
 		<node>
 			<name>2</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>2</value>
@@ -1703,7 +1703,7 @@
 		</node>
 		<node>
 			<name>3</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>3</value>
@@ -1717,7 +1717,7 @@
 		</node>
 		<node>
 			<name><![CDATA[>3]]></name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value><![CDATA[>3]]></value>
@@ -1731,7 +1731,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -1746,7 +1746,7 @@
 	</node>
 	<node>
 		<name>mechanical_support_current_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Has the patient since last ND visit had a history of mechanical support (ECMO or VAD use)?</value>
@@ -1774,7 +1774,7 @@
 		</property>
 		<node>
 			<name>No</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>No</value>
@@ -1788,7 +1788,7 @@
 		</node>
 		<node>
 			<name>Yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Yes</value>
@@ -1802,7 +1802,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -1816,7 +1816,7 @@
 		</node>
 		<node>
 			<name>NotApplicable-FirstNDVisit</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Not Applicable/First ND Visit</value>
@@ -1831,7 +1831,7 @@
 	</node>
 	<node>
 		<name>mechanical_support_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Has the patient ever had a history of mechanical support (ECMO or VAD use)?</value>
@@ -1859,7 +1859,7 @@
 		</property>
 		<node>
 			<name>No</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>No</value>
@@ -1873,7 +1873,7 @@
 		</node>
 		<node>
 			<name>Yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Yes</value>
@@ -1887,7 +1887,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -1902,7 +1902,7 @@
 	</node>
 	<node>
 		<name>other_bio_parent_education_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Highest formal education level attained by other bio parent</value>
@@ -1930,7 +1930,7 @@
 		</property>
 		<node>
 			<name>Graduate-ProfessionalTrainingaftercollegeoruniversity</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Graduate/Professional Training (after college or university)</value>
@@ -1944,7 +1944,7 @@
 		</node>
 		<node>
 			<name>College-UniversityDegree</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>College/University Degree</value>
@@ -1958,7 +1958,7 @@
 		</node>
 		<node>
 			<name>TradeSchoolCertificate-Degree</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Trade School Certificate/Degree</value>
@@ -1972,7 +1972,7 @@
 		</node>
 		<node>
 			<name>PartialCollege-UniversityorTradeSchool</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Partial College/University or Trade School</value>
@@ -1986,7 +1986,7 @@
 		</node>
 		<node>
 			<name>HighSchoolGraduate-GED</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>High School Graduate/GED</value>
@@ -2000,7 +2000,7 @@
 		</node>
 		<node>
 			<name>SomeHighSchool</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Some High School</value>
@@ -2014,7 +2014,7 @@
 		</node>
 		<node>
 			<name>JuniorHigh-MiddleSchool</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Junior High/Middle School</value>
@@ -2028,7 +2028,7 @@
 		</node>
 		<node>
 			<name>LessthanJuniorHigh-MiddleSchool</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Less than Junior High/Middle School</value>
@@ -2042,7 +2042,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -2057,7 +2057,7 @@
 	</node>
 	<node>
 		<name>parent1_cohabitant_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Parent/guardian1 lived with child in past</value>
@@ -2085,7 +2085,7 @@
 		</property>
 		<node>
 			<name>No</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>No</value>
@@ -2099,7 +2099,7 @@
 		</node>
 		<node>
 			<name>Yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Yes</value>
@@ -2113,7 +2113,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -2128,7 +2128,7 @@
 	</node>
 	<node>
 		<name>parent1_education_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Parent/guardian1 education</value>
@@ -2156,7 +2156,7 @@
 		</property>
 		<node>
 			<name>Graduate-ProfessionalTrainingaftercollegeoruniversity</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Graduate/Professional Training (after college or university)</value>
@@ -2170,7 +2170,7 @@
 		</node>
 		<node>
 			<name>College-UniversityDegree</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>College/University Degree</value>
@@ -2184,7 +2184,7 @@
 		</node>
 		<node>
 			<name>TradeSchoolCertificate-Degree</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Trade School Certificate/Degree</value>
@@ -2198,7 +2198,7 @@
 		</node>
 		<node>
 			<name>PartialCollege-UniversityorTradeSchool</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Partial College/University or Trade School</value>
@@ -2212,7 +2212,7 @@
 		</node>
 		<node>
 			<name>HighSchoolGraduate-GED</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>High School Graduate/GED</value>
@@ -2226,7 +2226,7 @@
 		</node>
 		<node>
 			<name>SomeHighSchool</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Some High School</value>
@@ -2240,7 +2240,7 @@
 		</node>
 		<node>
 			<name>JuniorHigh-MiddleSchool</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Junior High/Middle School</value>
@@ -2254,7 +2254,7 @@
 		</node>
 		<node>
 			<name>LessthanJuniorHigh-MiddleSchool</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Less than Junior High/Middle School</value>
@@ -2268,7 +2268,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -2283,7 +2283,7 @@
 	</node>
 	<node>
 		<name>parent1_relation_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Parent/guardian1 relationship</value>
@@ -2311,7 +2311,7 @@
 		</property>
 		<node>
 			<name>BioParent</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Bio Parent</value>
@@ -2325,7 +2325,7 @@
 		</node>
 		<node>
 			<name>Grandparent</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Grandparent</value>
@@ -2339,7 +2339,7 @@
 		</node>
 		<node>
 			<name>GuardianRelated</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Guardian Related</value>
@@ -2353,7 +2353,7 @@
 		</node>
 		<node>
 			<name>GuardianNoRelation</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Guardian No Relation</value>
@@ -2367,7 +2367,7 @@
 		</node>
 		<node>
 			<name>AdoptiveParent</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Adoptive Parent</value>
@@ -2381,7 +2381,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -2396,7 +2396,7 @@
 	</node>
 	<node>
 		<name>parent1_sex_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Parent/guardian1 sex</value>
@@ -2424,7 +2424,7 @@
 		</property>
 		<node>
 			<name>Male</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Male</value>
@@ -2438,7 +2438,7 @@
 		</node>
 		<node>
 			<name>Female</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Female</value>
@@ -2453,7 +2453,7 @@
 	</node>
 	<node>
 		<name>parent2_cohabitant_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Parent/guardian2 lived with child in past</value>
@@ -2481,7 +2481,7 @@
 		</property>
 		<node>
 			<name>No</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>No</value>
@@ -2495,7 +2495,7 @@
 		</node>
 		<node>
 			<name>Yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Yes</value>
@@ -2509,7 +2509,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -2524,7 +2524,7 @@
 	</node>
 	<node>
 		<name>parent2_education_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Parent/guardian2 education</value>
@@ -2552,7 +2552,7 @@
 		</property>
 		<node>
 			<name>Graduate-ProfessionalTrainingaftercollegeoruniversity</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Graduate/Professional Training (after college or university)</value>
@@ -2566,7 +2566,7 @@
 		</node>
 		<node>
 			<name>College-UniversityDegree</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>College/University Degree</value>
@@ -2580,7 +2580,7 @@
 		</node>
 		<node>
 			<name>TradeSchoolCertificate-Degree</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Trade School Certificate/Degree</value>
@@ -2594,7 +2594,7 @@
 		</node>
 		<node>
 			<name>PartialCollege-UniversityorTradeSchool</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Partial College/University or Trade School</value>
@@ -2608,7 +2608,7 @@
 		</node>
 		<node>
 			<name>HighSchoolGraduate-GED</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>High School Graduate/GED</value>
@@ -2622,7 +2622,7 @@
 		</node>
 		<node>
 			<name>SomeHighSchool</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Some High School</value>
@@ -2636,7 +2636,7 @@
 		</node>
 		<node>
 			<name>JuniorHigh-MiddleSchool</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Junior High/Middle School</value>
@@ -2650,7 +2650,7 @@
 		</node>
 		<node>
 			<name>LessthanJuniorHigh-MiddleSchool</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Less than Junior High/Middle School</value>
@@ -2664,7 +2664,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -2679,7 +2679,7 @@
 	</node>
 	<node>
 		<name>parent2_relation_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Parent/guardian2 relationship</value>
@@ -2707,7 +2707,7 @@
 		</property>
 		<node>
 			<name>BioParent</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Bio Parent</value>
@@ -2721,7 +2721,7 @@
 		</node>
 		<node>
 			<name>Grandparent</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Grandparent</value>
@@ -2735,7 +2735,7 @@
 		</node>
 		<node>
 			<name>GuardianRelated</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Guardian Related</value>
@@ -2749,7 +2749,7 @@
 		</node>
 		<node>
 			<name>GuardianNoRelation</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Guardian No Relation</value>
@@ -2763,7 +2763,7 @@
 		</node>
 		<node>
 			<name>AdoptiveParent</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Adoptive Parent</value>
@@ -2777,7 +2777,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -2792,7 +2792,7 @@
 	</node>
 	<node>
 		<name>parent2_sex_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Parent/guardian2 sex</value>
@@ -2820,7 +2820,7 @@
 		</property>
 		<node>
 			<name>Male</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Male</value>
@@ -2834,7 +2834,7 @@
 		</node>
 		<node>
 			<name>Female</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Female</value>
@@ -2849,7 +2849,7 @@
 	</node>
 	<node>
 		<name>parent3_cohabitant_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Parent/guardian3 lived with child in past</value>
@@ -2877,7 +2877,7 @@
 		</property>
 		<node>
 			<name>No</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>No</value>
@@ -2891,7 +2891,7 @@
 		</node>
 		<node>
 			<name>Yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Yes</value>
@@ -2905,7 +2905,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -2920,7 +2920,7 @@
 	</node>
 	<node>
 		<name>parent3_education_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Parent/guardian3 education</value>
@@ -2948,7 +2948,7 @@
 		</property>
 		<node>
 			<name>Graduate-ProfessionalTrainingaftercollegeoruniversity</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Graduate/Professional Training (after college or university)</value>
@@ -2962,7 +2962,7 @@
 		</node>
 		<node>
 			<name>College-UniversityDegree</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>College/University Degree</value>
@@ -2976,7 +2976,7 @@
 		</node>
 		<node>
 			<name>TradeSchoolCertificate-Degree</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Trade School Certificate/Degree</value>
@@ -2990,7 +2990,7 @@
 		</node>
 		<node>
 			<name>PartialCollege-UniversityorTradeSchool</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Partial College/University or Trade School</value>
@@ -3004,7 +3004,7 @@
 		</node>
 		<node>
 			<name>HighSchoolGraduate-GED</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>High School Graduate/GED</value>
@@ -3018,7 +3018,7 @@
 		</node>
 		<node>
 			<name>SomeHighSchool</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Some High School</value>
@@ -3032,7 +3032,7 @@
 		</node>
 		<node>
 			<name>JuniorHigh-MiddleSchool</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Junior High/Middle School</value>
@@ -3046,7 +3046,7 @@
 		</node>
 		<node>
 			<name>LessthanJuniorHigh-MiddleSchool</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Less than Junior High/Middle School</value>
@@ -3060,7 +3060,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -3075,7 +3075,7 @@
 	</node>
 	<node>
 		<name>parent3_relation_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Parent/guardian3 relationship</value>
@@ -3103,7 +3103,7 @@
 		</property>
 		<node>
 			<name>BioParent</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Bio Parent</value>
@@ -3117,7 +3117,7 @@
 		</node>
 		<node>
 			<name>Grandparent</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Grandparent</value>
@@ -3131,7 +3131,7 @@
 		</node>
 		<node>
 			<name>GuardianRelated</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Guardian Related</value>
@@ -3145,7 +3145,7 @@
 		</node>
 		<node>
 			<name>GuardianNoRelation</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Guardian No Relation</value>
@@ -3159,7 +3159,7 @@
 		</node>
 		<node>
 			<name>AdoptiveParent</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Adoptive Parent</value>
@@ -3173,7 +3173,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -3188,7 +3188,7 @@
 	</node>
 	<node>
 		<name>parent3_sex_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Parent/guardian3 sex</value>
@@ -3216,7 +3216,7 @@
 		</property>
 		<node>
 			<name>Male</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Male</value>
@@ -3230,7 +3230,7 @@
 		</node>
 		<node>
 			<name>Female</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Female</value>
@@ -3245,7 +3245,7 @@
 	</node>
 	<node>
 		<name>parent4_cohabitant_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Parent/guardian4 lived with child in past</value>
@@ -3273,7 +3273,7 @@
 		</property>
 		<node>
 			<name>No</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>No</value>
@@ -3287,7 +3287,7 @@
 		</node>
 		<node>
 			<name>Yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Yes</value>
@@ -3301,7 +3301,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -3316,7 +3316,7 @@
 	</node>
 	<node>
 		<name>parent4_education_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Parent/guardian4 education</value>
@@ -3344,7 +3344,7 @@
 		</property>
 		<node>
 			<name>Graduate-ProfessionalTrainingaftercollegeoruniversity</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Graduate/Professional Training (after college or university)</value>
@@ -3358,7 +3358,7 @@
 		</node>
 		<node>
 			<name>College-UniversityDegree</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>College/University Degree</value>
@@ -3372,7 +3372,7 @@
 		</node>
 		<node>
 			<name>TradeSchoolCertificate-Degree</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Trade School Certificate/Degree</value>
@@ -3386,7 +3386,7 @@
 		</node>
 		<node>
 			<name>PartialCollege-UniversityorTradeSchool</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Partial College/University or Trade School</value>
@@ -3400,7 +3400,7 @@
 		</node>
 		<node>
 			<name>HighSchoolGraduate-GED</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>High School Graduate/GED</value>
@@ -3414,7 +3414,7 @@
 		</node>
 		<node>
 			<name>SomeHighSchool</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Some High School</value>
@@ -3428,7 +3428,7 @@
 		</node>
 		<node>
 			<name>JuniorHigh-MiddleSchool</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Junior High/Middle School</value>
@@ -3442,7 +3442,7 @@
 		</node>
 		<node>
 			<name>LessthanJuniorHigh-MiddleSchool</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Less than Junior High/Middle School</value>
@@ -3456,7 +3456,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -3471,7 +3471,7 @@
 	</node>
 	<node>
 		<name>parent4_relation_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Parent/guardian4 relationship</value>
@@ -3499,7 +3499,7 @@
 		</property>
 		<node>
 			<name>BioParent</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Bio Parent</value>
@@ -3513,7 +3513,7 @@
 		</node>
 		<node>
 			<name>Grandparent</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Grandparent</value>
@@ -3527,7 +3527,7 @@
 		</node>
 		<node>
 			<name>GuardianRelated</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Guardian Related</value>
@@ -3541,7 +3541,7 @@
 		</node>
 		<node>
 			<name>GuardianNoRelation</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Guardian No Relation</value>
@@ -3555,7 +3555,7 @@
 		</node>
 		<node>
 			<name>AdoptiveParent</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Adoptive Parent</value>
@@ -3569,7 +3569,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -3584,7 +3584,7 @@
 	</node>
 	<node>
 		<name>parent4_sex_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Parent/guardian4 sex</value>
@@ -3612,7 +3612,7 @@
 		</property>
 		<node>
 			<name>Male</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Male</value>
@@ -3626,7 +3626,7 @@
 		</node>
 		<node>
 			<name>Female</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Female</value>
@@ -3641,7 +3641,7 @@
 	</node>
 	<node>
 		<name>prior_conditions_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Does patient have prior conditions diagnosed by qualified professional</value>
@@ -3669,7 +3669,7 @@
 		</property>
 		<node>
 			<name>DevelopmentalDelay-Disorder</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Developmental Delay/Disorder</value>
@@ -3683,7 +3683,7 @@
 		</node>
 		<node>
 			<name>LearningDisorder-Disability</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Learning Disorder/Disability</value>
@@ -3697,7 +3697,7 @@
 		</node>
 		<node>
 			<name>AutismSpectrumDisorderincludingAsperger'sSyndromeandPDD-NOS</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Autism Spectrum Disorder (including Asperger's Syndrome and PDD-NOS)</value>
@@ -3711,7 +3711,7 @@
 		</node>
 		<node>
 			<name>IntellectualDisability</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Intellectual Disability</value>
@@ -3725,7 +3725,7 @@
 		</node>
 		<node>
 			<name>ADHD</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>ADHD</value>
@@ -3739,7 +3739,7 @@
 		</node>
 		<node>
 			<name>BehavioralDisorderincludingdisruptive,oppositional,andconductdisorders</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Behavioral Disorder (including disruptive, oppositional, and conduct disorders)</value>
@@ -3753,7 +3753,7 @@
 		</node>
 		<node>
 			<name>EmotionalDisorder</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Emotional Disorder</value>
@@ -3767,7 +3767,7 @@
 		</node>
 		<node>
 			<name>NONEoftheabove</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>NONE of the above</value>
@@ -3786,7 +3786,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -3801,7 +3801,7 @@
 	</node>
 	<node>
 		<name>prior_devlp_delay_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Developmental delay</value>
@@ -3829,7 +3829,7 @@
 		</property>
 		<node>
 			<name>GlobalDelay</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Global Delay</value>
@@ -3843,7 +3843,7 @@
 		</node>
 		<node>
 			<name>MotorDelay-Disorder</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Motor Delay/Disorder</value>
@@ -3857,7 +3857,7 @@
 		</node>
 		<node>
 			<name>Speech-LanguageDelay-Disorder</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Speech/Language Delay/Disorder</value>
@@ -3871,7 +3871,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -3886,7 +3886,7 @@
 	</node>
 	<node>
 		<name>prior_disorder_emotion_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Emotional disorder</value>
@@ -3914,7 +3914,7 @@
 		</property>
 		<node>
 			<name>Anxiety</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Anxiety</value>
@@ -3928,7 +3928,7 @@
 		</node>
 		<node>
 			<name>Depression</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Depression</value>
@@ -3942,7 +3942,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -3957,7 +3957,7 @@
 	</node>
 	<node>
 		<name>prior_disorder_learning_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Learning disorder</value>
@@ -3985,7 +3985,7 @@
 		</property>
 		<node>
 			<name>Reading</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Reading</value>
@@ -3999,7 +3999,7 @@
 		</node>
 		<node>
 			<name>Writing</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Writing</value>
@@ -4013,7 +4013,7 @@
 		</node>
 		<node>
 			<name>Math</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Math</value>
@@ -4027,7 +4027,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -4042,7 +4042,7 @@
 	</node>
 	<node>
 		<name>repeated_grade_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Has patient repeated grade</value>
@@ -4070,7 +4070,7 @@
 		</property>
 		<node>
 			<name>No</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>No</value>
@@ -4084,7 +4084,7 @@
 		</node>
 		<node>
 			<name>Yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Yes</value>
@@ -4098,7 +4098,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -4113,7 +4113,7 @@
 	</node>
 	<node>
 		<name>seizure_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Seizure in past</value>
@@ -4141,7 +4141,7 @@
 		</property>
 		<node>
 			<name>No</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>No</value>
@@ -4155,7 +4155,7 @@
 		</node>
 		<node>
 			<name>Yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Yes</value>
@@ -4169,7 +4169,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -4184,7 +4184,7 @@
 	</node>
 	<node>
 		<name>seizure_med_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Medication to treat past seizure</value>
@@ -4212,7 +4212,7 @@
 		</property>
 		<node>
 			<name>No</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>No</value>
@@ -4226,7 +4226,7 @@
 		</node>
 		<node>
 			<name>Yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Yes</value>
@@ -4240,7 +4240,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -4255,7 +4255,7 @@
 	</node>
 	<node>
 		<name>special_ed_504_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Current 504 plan</value>
@@ -4283,7 +4283,7 @@
 		</property>
 		<node>
 			<name>No</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>No</value>
@@ -4297,7 +4297,7 @@
 		</node>
 		<node>
 			<name>Yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Yes</value>
@@ -4311,7 +4311,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -4326,7 +4326,7 @@
 	</node>
 	<node>
 		<name>special_ed_iep_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Current IEP</value>
@@ -4354,7 +4354,7 @@
 		</property>
 		<node>
 			<name>No</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>No</value>
@@ -4368,7 +4368,7 @@
 		</node>
 		<node>
 			<name>Yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Yes</value>
@@ -4382,7 +4382,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -4397,7 +4397,7 @@
 	</node>
 	<node>
 		<name>special_ed_non_us_txt</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Specify non-USA special education accomodation plan</value>
@@ -4421,7 +4421,7 @@
 	</node>
 	<node>
 		<name>tx_current_behavioral_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Current behavioral therapy</value>
@@ -4449,7 +4449,7 @@
 		</property>
 		<node>
 			<name>No</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>No</value>
@@ -4463,7 +4463,7 @@
 		</node>
 		<node>
 			<name>Yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Yes</value>
@@ -4477,7 +4477,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -4492,7 +4492,7 @@
 	</node>
 	<node>
 		<name>tx_current_feeding_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Current feeding therapy</value>
@@ -4520,7 +4520,7 @@
 		</property>
 		<node>
 			<name>No</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>No</value>
@@ -4534,7 +4534,7 @@
 		</node>
 		<node>
 			<name>Yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Yes</value>
@@ -4548,7 +4548,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -4563,7 +4563,7 @@
 	</node>
 	<node>
 		<name>tx_current_ot_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Current OT</value>
@@ -4591,7 +4591,7 @@
 		</property>
 		<node>
 			<name>No</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>No</value>
@@ -4605,7 +4605,7 @@
 		</node>
 		<node>
 			<name>Yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Yes</value>
@@ -4619,7 +4619,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -4634,7 +4634,7 @@
 	</node>
 	<node>
 		<name>tx_current_other_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Other current therapy</value>
@@ -4662,7 +4662,7 @@
 		</property>
 		<node>
 			<name>No</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>No</value>
@@ -4676,7 +4676,7 @@
 		</node>
 		<node>
 			<name>Yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Yes</value>
@@ -4690,7 +4690,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -4705,7 +4705,7 @@
 	</node>
 	<node>
 		<name>tx_current_pt_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Current PT</value>
@@ -4733,7 +4733,7 @@
 		</property>
 		<node>
 			<name>No</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>No</value>
@@ -4747,7 +4747,7 @@
 		</node>
 		<node>
 			<name>Yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Yes</value>
@@ -4761,7 +4761,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -4776,7 +4776,7 @@
 	</node>
 	<node>
 		<name>tx_current_speech_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Current speech therapy</value>
@@ -4804,7 +4804,7 @@
 		</property>
 		<node>
 			<name>No</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>No</value>
@@ -4818,7 +4818,7 @@
 		</node>
 		<node>
 			<name>Yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Yes</value>
@@ -4832,7 +4832,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -4847,7 +4847,7 @@
 	</node>
 	<node>
 		<name>tx_past_behavioral_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Past behavioral therapy</value>
@@ -4875,7 +4875,7 @@
 		</property>
 		<node>
 			<name>No</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>No</value>
@@ -4889,7 +4889,7 @@
 		</node>
 		<node>
 			<name>Yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Yes</value>
@@ -4903,7 +4903,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -4918,7 +4918,7 @@
 	</node>
 	<node>
 		<name>tx_past_feeding_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Past feeding therapy</value>
@@ -4946,7 +4946,7 @@
 		</property>
 		<node>
 			<name>No</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>No</value>
@@ -4960,7 +4960,7 @@
 		</node>
 		<node>
 			<name>Yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Yes</value>
@@ -4974,7 +4974,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -4989,7 +4989,7 @@
 	</node>
 	<node>
 		<name>tx_past_ot_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Past OT</value>
@@ -5017,7 +5017,7 @@
 		</property>
 		<node>
 			<name>No</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>No</value>
@@ -5031,7 +5031,7 @@
 		</node>
 		<node>
 			<name>Yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Yes</value>
@@ -5045,7 +5045,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -5060,7 +5060,7 @@
 	</node>
 	<node>
 		<name>tx_past_other_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Past other therapy</value>
@@ -5088,7 +5088,7 @@
 		</property>
 		<node>
 			<name>No</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>No</value>
@@ -5102,7 +5102,7 @@
 		</node>
 		<node>
 			<name>Yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Yes</value>
@@ -5116,7 +5116,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -5131,7 +5131,7 @@
 	</node>
 	<node>
 		<name>tx_past_other_txt</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Specify other past therapy</value>
@@ -5155,7 +5155,7 @@
 	</node>
 	<node>
 		<name>tx_past_pt_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Past PT</value>
@@ -5183,7 +5183,7 @@
 		</property>
 		<node>
 			<name>No</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>No</value>
@@ -5197,7 +5197,7 @@
 		</node>
 		<node>
 			<name>Yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Yes</value>
@@ -5211,7 +5211,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -5226,7 +5226,7 @@
 	</node>
 	<node>
 		<name>tx_past_speech_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Past speech therapy</value>
@@ -5254,7 +5254,7 @@
 		</property>
 		<node>
 			<name>No</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>No</value>
@@ -5268,7 +5268,7 @@
 		</node>
 		<node>
 			<name>Yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Yes</value>
@@ -5282,7 +5282,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -5297,7 +5297,7 @@
 	</node>
 	<node>
 		<name>user_entered_age_in_days_no</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Patient age in days</value>
@@ -5321,7 +5321,7 @@
 	</node>
 	<node>
 		<name>user_entered_age_in_months_no</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Patient age in months</value>
@@ -5345,7 +5345,7 @@
 	</node>
 	<node>
 		<name>calc_age_in_years_no</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Years:</value>
@@ -5374,7 +5374,7 @@
 	</node>
 	<node>
 		<name>visit_dt</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Date of ND Visit</value>
@@ -5403,7 +5403,7 @@
 	</node>
 	<node>
 		<name>zip_cd</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Zip code</value>
@@ -5427,7 +5427,7 @@
 	</node>
 	<node>
 		<name>pt_over_six_b</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Is the patient over 6 years of age?</value>
@@ -5455,7 +5455,7 @@
 		</property>
 		<node>
 			<name>No</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>No</value>
@@ -5469,7 +5469,7 @@
 		</node>
 		<node>
 			<name>Yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Yes</value>
@@ -5484,7 +5484,7 @@
 	</node>
 	<node>
 		<name>calc_age_in_years_no2</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Years:</value>
@@ -5508,7 +5508,7 @@
 	</node>
 	<node>
 		<name>ethnicty_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Patient Ethnicity</value>
@@ -5532,7 +5532,7 @@
 	</node>
 	<node>
 		<name>dvlpmntl_specialist_ever_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value><![CDATA[Has the patient <u>ever</u> received services from a developmental specialist/special instructor or any therapy addressing overall development?]]></value>
@@ -5560,7 +5560,7 @@
 		</property>
 		<node>
 			<name>No</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>No</value>
@@ -5574,7 +5574,7 @@
 		</node>
 		<node>
 			<name>Yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Yes</value>
@@ -5588,7 +5588,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -5603,7 +5603,7 @@
 	</node>
 	<node>
 		<name>dvlpmntl_specialist_current_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value><![CDATA[Is the patient <u>currently</u> receiving services from a developmental specialist/special instructor or any therapy addressing overall development ?]]></value>
@@ -5631,7 +5631,7 @@
 		</property>
 		<node>
 			<name>No</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>No</value>
@@ -5645,7 +5645,7 @@
 		</node>
 		<node>
 			<name>Yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Yes</value>
@@ -5659,7 +5659,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -5674,7 +5674,7 @@
 	</node>
 	<node>
 		<name>seizure_past_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value><![CDATA[Has the patient had a seizure  <u>since the last ND visit </u>?]]></value>
@@ -5702,7 +5702,7 @@
 		</property>
 		<node>
 			<name>No</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>No</value>
@@ -5716,7 +5716,7 @@
 		</node>
 		<node>
 			<name>Yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Yes</value>
@@ -5730,7 +5730,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -5744,7 +5744,7 @@
 		</node>
 		<node>
 			<name>NotApplicable-FirstNDVisit</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Not Applicable/First ND Visit</value>
@@ -5759,7 +5759,7 @@
 	</node>
 	<node>
 		<name>seizure_medication_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value><![CDATA[Is the patient <u>currently</u> on medication for seizures?]]></value>
@@ -5787,7 +5787,7 @@
 		</property>
 		<node>
 			<name>No</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>No</value>
@@ -5801,7 +5801,7 @@
 		</node>
 		<node>
 			<name>Yes</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Yes</value>
@@ -5815,7 +5815,7 @@
 		</node>
 		<node>
 			<name>Unknown</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown</value>
@@ -5830,7 +5830,7 @@
 	</node>
 	<node>
 		<name>genetic_abn_syndrome_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Suspected genetic anomaly or known syndrome</value>
@@ -5854,7 +5854,7 @@
 	</node>
 	<node>
 		<name>genetic_abn_other_txt</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Other genetic anomaly/known syndrome:</value>
@@ -5878,7 +5878,7 @@
 	</node>
 	<node>
 		<name>race_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Race</value>
@@ -5906,7 +5906,7 @@
 		</property>
 		<node>
 			<name>White</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>White</value>
@@ -5920,7 +5920,7 @@
 		</node>
 		<node>
 			<name>Black-AfricanAmerican</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Black/African American</value>
@@ -5934,7 +5934,7 @@
 		</node>
 		<node>
 			<name>Asian</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Asian</value>
@@ -5948,7 +5948,7 @@
 		</node>
 		<node>
 			<name>NativeHawaiian-PacificIslander</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Native Hawaiian/Pacific Islander</value>
@@ -5962,7 +5962,7 @@
 		</node>
 		<node>
 			<name>AmericanIndian-AlaskanNative</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>American Indian/Alaskan Native</value>
@@ -5976,7 +5976,7 @@
 		</node>
 		<node>
 			<name>Unknown-Unavailable</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Unknown/Unavailable</value>
@@ -5990,7 +5990,7 @@
 		</node>
 		<node>
 			<name>DeclinedtoAnswer</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>Declined to Answer</value>
@@ -6005,7 +6005,7 @@
 	</node>
 	<node>
 		<name>lastupdateddate</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Last Updated Date</value>
@@ -6034,7 +6034,7 @@
 	</node>
 	<node>
 		<name>creationdate</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Creation Date</value>
