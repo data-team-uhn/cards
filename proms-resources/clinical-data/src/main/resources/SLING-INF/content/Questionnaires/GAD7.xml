@@ -874,6 +874,30 @@ Objectively determine initial symptoms severity and monitor symptom changes/effe
 			<type>String</type>
 		</property>
 		<node>
+			<name>gad7_result</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>expression</name>
+				<value>return "### " + @{gad7_score:-0} + " point" + (@{gad7_score:-0} == 1 ? "" : "s")</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>formatted</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value> </value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
 			<name>gad7_score</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
@@ -894,30 +918,6 @@ Objectively determine initial symptoms severity and monitor symptom changes/effe
 			<property>
 				<name>text</name>
 				<value>Score</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>computed</value>
-				<type>String</type>
-			</property>
-		</node>
-		<node>
-			<name>gad7_result</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>expression</name>
-				<value>return "### " + @{gad7_score:-0} + " point" + (@{gad7_score:-0} == 1 ? "" : "s")</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>formatted</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>text</name>
-				<value> </value>
 				<type>String</type>
 			</property>
 			<property>
