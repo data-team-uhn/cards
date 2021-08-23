@@ -35,7 +35,7 @@ import VocabularyFilter from "./FilterComponents/VocabularyFilter.jsx";
 import TextFilter from "./FilterComponents/TextFilter.jsx";
 import SubjectFilter from "./FilterComponents/SubjectFilter.jsx";
 import QuestionnaireFilter from "./FilterComponents/QuestionnaireFilter.jsx";
-import { UNARY_COMPARATORS } from "./FilterComponents/FilterComparators.jsx";
+import { UNARY_COMPARATORS, TEXT_COMPARATORS } from "./FilterComponents/FilterComparators.jsx";
 
 const ALL_QUESTIONNAIRES_URL = "/Questionnaires.deep.json";
 const FILTER_URL = "/Questionnaires.filters";
@@ -470,7 +470,7 @@ function Filters(props) {
               // We grab focus on the field if we were asked to
               let isUnary = filterDatum.comparator && UNARY_COMPARATORS.includes(filterDatum.comparator);
               let isNotesContain = filterDatum.comparator && (filterDatum.comparator === notesComparator);
-              let isContain = filterDatum.comparator && (filterDatum.comparator.includes("contain"));
+              let isContain = filterDatum.comparator && (filterDatum.comparator.includes(TEXT_COMPARATORS));
               return(
                 <React.Fragment key={index}>
                   {/* Select the field to filter */}
