@@ -39,6 +39,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
+            <Sling-Nodetypes>SLING-INF/nodetypes/proms.cnd</Sling-Nodetypes>
             <Sling-Initial-Content>
               SLING-INF/content/Questionnaires/;path:=/Questionnaires/;overwrite:=true;checkin:=true,
               SLING-INF/content/SubjectTypes/Patient/;path:=/SubjectTypes/Patient/;overwrite:=true,
