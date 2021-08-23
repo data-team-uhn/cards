@@ -161,10 +161,10 @@ def prepare_conditional_string(conditional_string, question):
             insert_conditional(conditional_string[0], question, '1')
         insert_conditional(conditional_string[2], question, '2')
     else:
-        # No title is needed because only a single lfs:Conditional will be created
+        # No title is needed because only a single cards:Conditional will be created
         insert_conditional(conditional_string, question, '')
 
-# Updates the question with lfs:Conditionals from the output of prepare_conditional
+# Updates the question with cards:Conditionals from the output of prepare_conditional
 def insert_conditional(conditional_string, question, title):
     # Split the conditional into two operands and an operator
     conditional_string = partition_conditional_string(conditional_string)
@@ -172,9 +172,9 @@ def insert_conditional(conditional_string, question, title):
     operator = conditional_string[1]
     operand_b = conditional_string[2]
     # If the first operand is a comma-separated list, create a separate conditional for each
-    # Enclose the conditionals in a lfs:ConditionalGroup
+    # Enclose the conditionals in a cards:ConditionalGroup
     if ',' in operand_a:
-        question.update({'conditionalGroup': {'jcr:primaryType': 'lfs:ConditionalGroup'}})
+        question.update({'conditionalGroup': {'jcr:primaryType': 'cards:ConditionalGroup'}})
         # The keyword 'all' in the conditional string should correspond to 'requireAll' == true
         # If it is present, remove it from the operand and add 'requireAll' to the conditional group
         if 'all' in operand_a:
@@ -184,9 +184,9 @@ def insert_conditional(conditional_string, question, title):
         for index, item in enumerate(operand_a_list):
             question['conditionalGroup'].update(create_conditional(item, operator, operand_b, 'condition' + str(index), question))
     # If the second operand is a comma-separated list, create a separate conditional for each
-    # Enclose the conditionals in a lfs:ConditionalGroup
+    # Enclose the conditionals in a cards:ConditionalGroup
     elif ',' in operand_b or ' or ' in operand_b:
-        question.update({'conditionalGroup': {'jcr:primaryType': 'lfs:ConditionalGroup'}})
+        question.update({'conditionalGroup': {'jcr:primaryType': 'cards:ConditionalGroup'}})
         # The keyword 'all' in the conditional string should correspond to 'requireAll' == true
         # If it is present, remove it from the operand and add 'requireAll' to the conditional group
         if 'all' in operand_b:
@@ -235,11 +235,11 @@ def partition_conditional_string(conditional_string):
         parts[1] = parts[1][4:]
     return parts[0], seperator, parts[1]
 
-# Returns a dict object that is formatted as an lfs:Conditional
+# Returns a dict object that is formatted as an cards:Conditional
 def create_conditional(operand_a, operator, operand_b, title, question):
     operand_a_updated = operand_a.strip()
     result = {
-        'jcr:primaryType': 'lfs:Conditional'
+        'jcr:primaryType': 'cards:Conditional'
     }
     if operand_a_updated == CONDITIONAL_USE_PREVIOUS:
         operand_a_updated = previous_list_title
@@ -264,13 +264,13 @@ def create_conditional(operand_a, operator, operand_b, title, question):
         operand_b_updated = operand_b_updated[1:len(operand_b_updated) - 1]
 
     result.update({'operandA': {
-        'jcr:primaryType': 'lfs:ConditionalValue',
+        'jcr:primaryType': 'cards:ConditionalValue',
         'value': [operand_a_updated.lower()],
         'isReference': True
     }})
     result.update({'comparator': operator})
     result.update({'operandB': {
-        'jcr:primaryType': 'lfs:ConditionalValue',
+        'jcr:primaryType': 'cards:ConditionalValue',
         'value': [operand_b_updated],
         'isReference': is_reference
     }})
@@ -358,14 +358,14 @@ def get_section_title(row):
 
 def start_questionnaire(title):
     questionnaire = {}
-    questionnaire['jcr:primaryType'] = 'lfs:Questionnaire'
+    questionnaire['jcr:primaryType'] = 'cards:Questionnaire'
     questionnaire['title'] = clean_title(title)
     questionnaire['jcr:reference:requiredSubjectTypes'] = ["/SubjectTypes/Patient"]
     return questionnaire
 
 def start_section(questionnaire, section, row):
     section = end_section(questionnaire, section)
-    section['jcr:primaryType'] = 'lfs:Section'
+    section['jcr:primaryType'] = 'cards:Section'
     section['label'] = clean_title(get_section_title(row))
     return section
 
@@ -422,7 +422,7 @@ def process_split_conditions(parent, condition, question_title):
             if any (separator in stripped_condition for separator in ["=", "<", ">", "<=", ">=", "<>"]) :
                 if not new_question:
                     new_question = {
-                        'jcr:primaryType': 'lfs:Section',
+                        'jcr:primaryType': 'cards:Section',
                         question_title: parent[question_title]
                     }
                 prepare_conditional_string(stripped_condition, new_question)
@@ -477,7 +477,7 @@ def insert_question(parent, row, question, row_type):
     text = row[Headers.QUESTION].strip() or question
     divided = split_text(text)
     parent[question] = {
-        'jcr:primaryType': 'lfs:Question',
+        'jcr:primaryType': 'cards:Question',
         'text': divided[0],
         'maxAnswers': 1
     }
@@ -562,7 +562,7 @@ def insert_list(row, question):
             options = option.split('=')
             label = options[1].strip()
             option_details = {
-                'jcr:primaryType': 'lfs:AnswerOption',
+                'jcr:primaryType': 'cards:AnswerOption',
                 'label': label,
                 'value': options[0].strip() if len(option_list) != len(option_codes) else option_codes[idx]
             }
@@ -572,7 +572,7 @@ def insert_list(row, question):
             question.update(answer_option)
         else:
             option_details = {
-                'jcr:primaryType': 'lfs:AnswerOption',
+                'jcr:primaryType': 'cards:AnswerOption',
                 'label': value.strip(),
                 'value': value.strip() if len(option_list) != len(option_codes) else option_codes[idx]
             }
@@ -589,7 +589,7 @@ def add_option_properties(option, label):
         option['notApplicable'] = True
     return option
 
-# Creates a JSON file that contains the tsv file as an lfs:Questionnaire
+# Creates a JSON file that contains the tsv file as an cards:Questionnaire
 def csv_to_json(title):
     # Reset questionairre specific globals
     global incomplete_conditionals
@@ -689,7 +689,7 @@ def csv_to_json(title):
     # for q in questionnaires:
     with open(title + '.json', 'w') as jsonFile:
         json.dump(questionnaire, jsonFile, indent='\t')
-    print('python3 lfs/Utilities/JSON-to-XML/json_to_xml.py "' + title +'.json" > "' + title + '.xml";\\')
+    print('python3 cards/Utilities/JSON-to-XML/json_to_xml.py "' + title +'.json" > "' + title + '.xml";\\')
 
 # Specify the titles of each csv file and which set of column titles and options should be used
 titles = [

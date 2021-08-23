@@ -19,7 +19,7 @@
 
 <node>
 	<name>cnoc_imaging</name>
-	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
+	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
 		<value>cnoc_imaging</value>
@@ -34,7 +34,7 @@
 	</property>
 	<node>
 		<name>patientid</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Patientid</value>
@@ -58,7 +58,7 @@
 	</node>
 	<node>
 		<name>head_imaging_dt</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Date of head imaging</value>
@@ -87,7 +87,7 @@
 	</node>
 	<node>
 		<name>head_imaging_type_e</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
 			<value>Head imaging type</value>
@@ -115,7 +115,7 @@
 		</property>
 		<node>
 			<name>1-MRI</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>1 - MRI</value>
@@ -129,7 +129,7 @@
 		</node>
 		<node>
 			<name>2-Ultrasound</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>2 - Ultrasound</value>
@@ -143,7 +143,7 @@
 		</node>
 		<node>
 			<name>3-CT</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
 				<value>3 - CT</value>
