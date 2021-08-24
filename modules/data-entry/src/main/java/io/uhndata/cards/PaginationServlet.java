@@ -166,7 +166,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         Map<String, List<String>> questionnairesToFilters = new HashMap<>();
         Map<String, String> filtersToPrefix = new HashMap<>();
 
-        // Add joints
+        // Add joins
         if (StringUtils.isNotBlank(joinNodetype)) {
             String sanitizednodetype = joinNodetype.replaceAll("[\\\\\\]]", "\\\\$0");
             if (nodeType.equals(SUBJECT_IDENTIFIER)) {
@@ -178,7 +178,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                 getQuestionnairesMaps(questionnairesToPrefix, questionnairesToFilters, filtersToPrefix, filternotempty,
                     "notempty", session);
 
-                // make joints per questionnaire
+                // make joins per questionnaire
                 query.append(createSubjectJoins(sanitizednodetype, questionnairesToPrefix, questionnairesToFilters,
                     filtersToPrefix));
             } else {
@@ -236,7 +236,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                 filtersToPrefix
             )
         );
-        // For subject query case we parse existence together with other filters in previous step
+        // For subject query case we parse existence together with other filters
         if (!nodeType.equals(SUBJECT_IDENTIFIER)) {
             query.append(parseExistence(filterempty, filternotempty));
         }
@@ -262,7 +262,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             }
 
             String nodeUUID = "";
-            // if we need to filter subjects by the any questionnaire filter - we need to store it for a joint
+            // if we need to filter subjects by the any questionnaire filter - we need to store it for a join
             if (QUESTIONNAIRE_IDENTIFIER.equals(uuids[i])) {
                 nodeUUID = uuids[i];
             } else {
@@ -273,14 +273,14 @@ public class PaginationServlet extends SlingSafeMethodsServlet
 
                 if (!questionnairesToPrefix.containsKey(nodeUUID)) {
                     String qcount = Integer.toString(questionnairesToPrefix.size() + 1);
-                    // <uuid> -> "f1" for joints and "and (f1.questionnaire = '5564b6da-35d3-4049..')
+                    // <uuid> -> "f1" for joins and "and (f1.questionnaire = '5564b6da-35d3-4049..')
                     questionnairesToPrefix.put(nodeUUID, "f" + qcount);
                 }
 
                 if (!(QUESTIONNAIRE_IDENTIFIER.equals(uuids[i]))) {
                     List<String> questions = questionnairesToFilters.getOrDefault(nodeUUID, new ArrayList<String>());
                     questions.add(uuids[i]);
-                    // for joints to add answers and for filters
+                    // for joins to add answers and for filters
                     questionnairesToFilters.put(nodeUUID, questions);
 
                     // filters count for this questionnaire
