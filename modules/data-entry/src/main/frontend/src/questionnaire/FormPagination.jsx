@@ -46,7 +46,7 @@ class Page {
  * Component that displays a page of a Form.
  */
 function FormPagination (props) {
-  let { classes, saveInProgress, lastSaveStatus, setPagesCallback, paginationEnabled, enableSave, onDone, questionnaireData } = props;
+  let { classes, saveInProgress, lastSaveStatus, setPagesCallback, paginationEnabled, enableSave, onDone, doneLabel, questionnaireData } = props;
 
   let [ savedLastPage, setSavedLastPage ] = useState(false);
   let [ pendingSubmission, setPendingSubmission ] = useState(false);
@@ -151,9 +151,9 @@ function FormPagination (props) {
       ((lastValidPage() === 0 || activePage === lastValidPage()) && saveInProgress) ? 'Saving' :
       lastSaveStatus === false ? 'Save failed, log in and try again?' :
       activePage < lastValidPage() ? "Next" :
-      !enableSave ? "Close" :
+      !enableSave ? (doneLabel || "Close") :
       lastSaveStatus && savedLastPage ? 'Saved' :
-      'Save'}
+      (doneLabel || 'Save')}
     </Button>
 
   let stepper = (isBack) =>

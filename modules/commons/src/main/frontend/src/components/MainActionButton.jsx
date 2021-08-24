@@ -50,12 +50,12 @@ import style from './style.jsx';
 //
 
 function MainActionButton(props) {
-  const { icon, label, title, ariaLabel, onClick, inProgress, classes } = props;
+  const { icon, label, title, ariaLabel, onClick, inProgress, style, classes } = props;
 
   let extended = !!label;
 
   let button = (
-    <div className={classes.mainActionButton}>
+    <div className={classes.mainActionButton} style={style}>
       <Fab
         variant={extended ? "extended" : "round"}
         color="primary"
@@ -90,10 +90,12 @@ MainActionButton.propTypes = {
   onClick: PropTypes.func.isRequired,
   inProgress: PropTypes.bool,
   classes: PropTypes.object.isRequired,
+  style: PropTypes.object,
 }
 
 MainActionButton.defaultProps = {
   inProgress: false,
+  style: {},
 };
 
 export default withStyles(style)(MainActionButton);
