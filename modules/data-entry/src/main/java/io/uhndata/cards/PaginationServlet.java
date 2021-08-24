@@ -639,7 +639,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             }
         }
         // Condition 2: the value must match
-        if ("contain".equals(comparator)) {
+        if ("contains".equals(comparator)) {
             filterdata.append(
                 String.format(
                     ") and contains(%s.'value', '*%s*')",
