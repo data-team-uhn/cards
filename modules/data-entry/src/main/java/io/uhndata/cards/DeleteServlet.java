@@ -32,6 +32,7 @@ import javax.jcr.NodeIterator;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.version.VersionManager;
 import javax.json.Json;
 import javax.json.stream.JsonGenerator;
 import javax.servlet.Servlet;
@@ -169,7 +170,9 @@ public class DeleteServlet extends SlingAllMethodsServlet
             this.nodesTraversed.set(new HashSet<Node>());
             this.nodesToDelete.set(new HashSet<Node>());
             this.childNodesDeleted.set(new HashSet<Node>());
-            Set<Node> parentNodes = new HashSet<Node>();
+            final Session session = resourceResolver.adaptTo(Session.class);
+            final VersionManager versionManager = session.getWorkspace().getVersionManager();
+            final Set<Node> nodesToCheckin = new HashSet<>();
 
             final Boolean recursive = Boolean.parseBoolean(request.getParameter("recursive"));
 
@@ -180,22 +183,20 @@ public class DeleteServlet extends SlingAllMethodsServlet
             }
 
             // Delete all of our pending nodes, checking out the parent to avoid version conflict issues
-            for (Node n : this.nodesToDelete.get()) {
-                Node parent = n.getParent();
-                if (parent.isNodeType("mix:versionable")) {
-                    parent.checkout();
-                    n.remove();
-                    parentNodes.add(parent);
-                } else {
-                    n.remove();
+            for (final Node n : this.nodesToDelete.get()) {
+                final Node versionableAncestor = findVersionableAncestor(n);
+                if (versionableAncestor != null && !versionableAncestor.isCheckedOut()) {
+                    nodesToCheckin.add(versionableAncestor);
+                    versionManager.checkout(versionableAncestor.getPath());
                 }
+                n.remove();
             }
 
-            this.resolver.get().adaptTo(Session.class).save();
+            session.save();
 
             // Check each parent back in
-            for (Node parent : parentNodes) {
-                parent.checkin();
+            for (final Node versionableNode : nodesToCheckin) {
+                versionManager.checkin(versionableNode.getPath());
             }
         } catch (AccessDeniedException e) {
             LOGGER.error("AccessDeniedException trying to delete node: {}", e.getMessage(), e);
@@ -516,5 +517,30 @@ public class DeleteServlet extends SlingAllMethodsServlet
         }
         jsonGen.writeEnd().close();
         response.setStatus(sc);
+    }
+
+    /**
+     * Finds and returns an ancestor of the given node that is versionable, if any.
+     *
+     * @param n a node
+     * @return an ancestor node of the input node that is versionable, or {@code null} if no such ancestor exists
+     * @throws RepositoryException if accessing the repository fails
+     */
+    private Node findVersionableAncestor(final Node n) throws RepositoryException
+    {
+        // Abort early if no ancestor is accessible
+        if (n == null || n.getDepth() == 0) {
+            return null;
+        }
+
+        Node ancestor = n.getParent();
+        while (ancestor.getDepth() > 0 && !ancestor.isNodeType("mix:versionable")) {
+            ancestor = ancestor.getParent();
+        }
+
+        if (ancestor.isNodeType("mix:versionable")) {
+            return ancestor;
+        }
+        return null;
     }
 }
