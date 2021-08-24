@@ -87,7 +87,8 @@ public class PaginationServlet extends SlingSafeMethodsServlet
 
     // Allowed JCR-SQL2 operators (from https://docs.adobe.com/docs/en/spec/jcr/2.0/6_Query.html#6.7.17%20Operator)
     private static final List<String> COMPARATORS =
-        Arrays.asList("=", "<>", "<", "<=", ">", ">=", "LIKE", "notes contain");
+        Arrays.asList("=", "<>", "<", "<=", ">", ">=", "LIKE", "notes contain", "contains", " IS NULL",
+            " IS NOT NULL");
 
     private static final String SUBJECT_IDENTIFIER = "cards:Subject";
     private static final String QUESTIONNAIRE_IDENTIFIER = "cards:Questionnaire";
@@ -610,6 +611,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         return filterdata.toString();
     }
 
+    @SuppressWarnings({"checkstyle:CyclomaticComplexity"})
     private String addSingleFilter(final String filter, final String value, final String comparator, final String type,
             final String prefix)
     {
@@ -660,7 +662,8 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                     ") and %s.'value'%s" + (("date".equals(type))
                         ? ("cast('%sT00:00:00.000"
                         + new SimpleDateFormat("XXX").format(new Date()) + "' as date)")
-                        : ("boolean".equals(type)) ? "%s" : "'%s'"),
+                        : ("boolean".equals(type)) ? "%s"
+                        : StringUtils.isNotBlank(value) ? "'%s'" : ""),
                     prefix,
                     this.sanitizeComparator(comparator),
                     this.sanitizeField(value)
