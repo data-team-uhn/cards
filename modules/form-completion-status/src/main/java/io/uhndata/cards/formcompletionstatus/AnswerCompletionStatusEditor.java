@@ -265,6 +265,21 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     }
 
     /**
+     * Checks if a NodeBuilder represents an empty Form and returns true
+     * if that is the case. Otherwise, this method returns false.
+     *
+     */
+    private boolean isEmptyForm(NodeBuilder n)
+    {
+        if (isForm(n)) {
+            if (!(n.getChildNodeNames().iterator().hasNext())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Gather all status flags from all the (satisfied) descendants of the current node and store them as the status
      * flags of the current node.
      *
@@ -275,8 +290,8 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         // Iterate through all children of this node
         final Iterator<String> childrenNames = this.currentNodeBuilder.getChildNodeNames().iterator();
         boolean isInvalid = false;
-        // If there are no children yet, the form is brand new, thus incomplete
-        boolean isIncomplete = !childrenNames.hasNext();
+        // If this Form has no children yet, the form is brand new, thus incomplete
+        boolean isIncomplete = isEmptyForm(this.currentNodeBuilder);
         while (childrenNames.hasNext()) {
             final String selectedChildName = childrenNames.next();
             final NodeBuilder selectedChild = this.currentNodeBuilder.getChildNode(selectedChildName);
