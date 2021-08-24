@@ -169,7 +169,15 @@ let ReferenceInput = (props) => {
     fetchWithReLogin(globalLoginDisplay, url)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
-        setRestrictions(json["requiredSubjectTypes"].map((subjectType) => subjectType["jcr:uuid"]));
+        let newRestrictions = json["requiredSubjectTypes"].map((subjectType) => subjectType["jcr:uuid"]);
+        setRestrictions(newRestrictions);
+        // If any currently selected value is outside of the allowable fields, we'll clear the selection
+        if (Array.isArray(curValue)) {
+          setCurValue((old) => old.filter((oldValue) => newRestrictions.includes(oldValue)));
+        } else if (!newRestrictions.includes(curValue)) {
+          // Reset to default
+          setCurValue([]);
+        }
       })
       .catch(console.log);
   }
