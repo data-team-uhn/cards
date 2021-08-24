@@ -605,7 +605,6 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                 );
                 break;
             default:
-                filterdata.append("");
                 break;
         }
         return filterdata.toString();
