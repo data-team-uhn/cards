@@ -138,8 +138,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         }
     }
 
-    @SuppressWarnings({"checkstyle:ExecutableStatementCount", "checkstyle:NPathComplexity",
-        "checkstyle:CyclomaticComplexity"})
+    @SuppressWarnings({"checkstyle:ExecutableStatementCount", "checkstyle:CyclomaticComplexity"})
     private String createQuery(final SlingHttpServletRequest request, Session session)
     {
         // If we want this query to be fast, we need to use the exact nodetype requested.
@@ -168,24 +167,19 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         Map<String, String> filtersToPrefix = new HashMap<>();
 
         // Add joins
-        if (StringUtils.isNotBlank(joinNodetype)) {
-            String sanitizednodetype = joinNodetype.replaceAll("[\\\\\\]]", "\\\\$0");
-            if (nodeType.equals(SUBJECT_IDENTIFIER)) {
-                // resolve all questions to questionnaires and group them by questionnaires
-                getQuestionnairesMaps(questionnairesToPrefix, questionnairesToFilters, filtersToPrefix, filternames,
-                    "child", session);
-                getQuestionnairesMaps(questionnairesToPrefix, questionnairesToFilters, filtersToPrefix, filterempty,
-                    "empty", session);
-                getQuestionnairesMaps(questionnairesToPrefix, questionnairesToFilters, filtersToPrefix, filternotempty,
-                    "notempty", session);
-
-                // make joins per questionnaire
-                query.append(createSubjectJoins(sanitizednodetype, questionnairesToPrefix, questionnairesToFilters,
-                    filtersToPrefix));
-            } else {
-                query.append(createJoins(sanitizednodetype, filternames, filterempty, filternotempty));
-            }
-        }
+        query.append(
+            processJoints(
+                joinNodetype,
+                questionnairesToPrefix,
+                questionnairesToFilters,
+                filtersToPrefix,
+                filternames,
+                filterempty,
+                filternotempty,
+                session,
+                nodeType
+            )
+        );
 
         // Check only for the descendants of the requested homepage
         query.append(" where isdescendantnode(n, '" + request.getResource().getPath() + "')");
@@ -246,6 +240,38 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         LOGGER.debug("Computed final query: {}", finalquery);
 
         return finalquery;
+    }
+
+    @SuppressWarnings({"checkstyle:ParameterNumber"})
+    private String processJoints(final String joinNodetype, Map<String, String> questionnairesToPrefix,
+        Map<String, List<String>> questionnairesToFilters, Map<String, String> filtersToPrefix,
+        final String[] filternames, final String[] filterempty, final String[] filternotempty,
+        Session session, final String nodeType)
+    {
+        if (StringUtils.isBlank(joinNodetype)) {
+            return "";
+        }
+
+        StringBuilder joindata = new StringBuilder();
+
+        String sanitizednodetype = joinNodetype.replaceAll("[\\\\\\]]", "\\\\$0");
+        if (nodeType.equals(SUBJECT_IDENTIFIER)) {
+            // resolve all questions to questionnaires and group them by questionnaires
+            getQuestionnairesMaps(questionnairesToPrefix, questionnairesToFilters, filtersToPrefix, filternames,
+                "child", session);
+            getQuestionnairesMaps(questionnairesToPrefix, questionnairesToFilters, filtersToPrefix, filterempty,
+                "empty", session);
+            getQuestionnairesMaps(questionnairesToPrefix, questionnairesToFilters, filtersToPrefix, filternotempty,
+                "notempty", session);
+
+            // make joins per questionnaire
+            joindata.append(createSubjectJoins(sanitizednodetype, questionnairesToPrefix, questionnairesToFilters,
+                filtersToPrefix));
+        } else {
+            joindata.append(createJoins(sanitizednodetype, filternames, filterempty, filternotempty));
+        }
+
+        return joindata.toString();
     }
 
     private void getQuestionnairesMaps(Map<String, String> questionnairesToPrefix,
