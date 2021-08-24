@@ -95,15 +95,14 @@ let Fields = (props) => {
   };
 
   // Note that we remove the //REQUIRED field, which just indicates which fields are mandatory
-  return
-    <FieldsProvider>
+  return <FieldsProvider>
       {
         edit ?
           Object.entries(JSON).filter(([key, _]) => key != "//REQUIRED").map(([key, value]) => displayEditField(key, value))
         :
-          Object.keys(getAllKeys(JSON)).filter(([key, _]) => key != "//REQUIRED").map(key => (data[key] ? displayStaticField(key) : ''));
+          Object.keys(getAllKeys(JSON)).filter(([key, _]) => key != "//REQUIRED").map(key => (data[key] ? displayStaticField(key) : ''))
       }
-    </FieldsProvider>
+    </FieldsProvider>;
 }
 
 Fields.propTypes = {

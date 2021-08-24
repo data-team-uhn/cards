@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import PropTypes, { object } from 'prop-types';
 import { Input, MenuItem, Select, Typography, withStyles } from "@material-ui/core";
 
@@ -25,7 +25,7 @@ import EditorInput from "./EditorInput";
 import LiveTableStyle from "../dataHomepage/tableStyle.jsx";
 import QuestionComponentManager from "./QuestionComponentManager";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
-import { useFieldsReaderContext } from "./FieldsContext";
+import { useFieldsReaderContext, useFieldsWriterContext } from "./FieldsContext";
 
 // Use the filter code to get what sorts of variables can be used as references
 let FILTER_URL = "/Questionnaires.deep.json";
@@ -36,27 +36,36 @@ let SUBJECT_TYPE_URL = "/SubjectTypes.paginate?offset=0&limit=100&req=0";
 let ReferenceInput = (props) => {
   const { classes, objectKey, data, value } = props;
   const fieldsReader = useFieldsReaderContext();
+  const fieldsWriter = useFieldsWriterContext();
 
   let [ curValue, setCurValue ] = useState(data[objectKey] || []);
   let [ titleMap, setTitleMap ] = useState({});
+  let [ pathMap, setPathMap ] = useState({});
   const [ options, setOptions ] = useState([]);
-  const [ initialized, setInitialized ] = useState(false);
   const [ restrictions, setRestrictions ] = useState([]);
 
   const isNumeric = value.filter == "numeric";
   const allowOnlyApplicableFor = value.restriction;
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
+  let changeCurValue = (newVal) => {
+    fieldsWriter((oldContext) => ({...oldContext, [objectKey]: pathMap[newVal]}));
+    setCurValue(newVal);
+  }
+
+  useEffect(() => {
+    getRestrictions(allowOnlyApplicableFor);
+  },
+  [fieldsReader[allowOnlyApplicableFor]]);
+
   // Obtain information about the questions that can be used as a reference
   let grabData = (urlBase, parser) => {
-    setInitialized(true);
     let url = new URL(urlBase, window.location.origin);
 
     fetchWithReLogin(globalLoginDisplay, url)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then(parser)
-      .catch(console.log)
-      .finally(() => {setInitialized(true);});
+      .catch(console.log);
   };
 
   // Parse the response from examining every questionnaire
@@ -68,6 +77,8 @@ let ReferenceInput = (props) => {
     let newFilterableFields = [""];
     // newFilterableTitles is a mapping from a string in newFilterableFields to a human-readable title
     let newFilterableTitles = {"": ""};
+    // newFilterableTitles is a mapping from a string in newFilterableFields to a path in the JCR
+    let newFilterablePaths = {"": ""};
 
     // We'll need a helper recursive function to copy over data from sections/questions
     let parseSectionOrQuestionnaire = (sectionJson, path="") => {
@@ -78,6 +89,7 @@ let ReferenceInput = (props) => {
           // If this is an cards:Question, copy the entire thing over to our Json value
           retFields.push(object["jcr:uuid"]);
           newFilterableTitles[object["jcr:uuid"]] = object["text"];
+          newFilterablePaths[object["jcr:uuid"]] = object["@path"];
         } else if (object["jcr:primaryType"] == "cards:Section") {
           // If this is an cards:Section, recurse deeper
           retFields.push(...parseSectionOrQuestionnaire(object, path+title+"/"));
@@ -100,40 +112,24 @@ let ReferenceInput = (props) => {
     // We also need a filter over the subject
     setOptions(newFilterableFields);
     setTitleMap(newFilterableTitles);
-  }
-
-  let parseFilterData = (filterJson) => {
-    // Parse through, but keep a custom field for the subject
-    let fields = [""];
-    let titles = {"": ""};
-
-    for (let [_, question] of Object.entries(filterJson)) {
-      // If we only accept numeric references, exclude entries that are not numeric
-      if (isNumeric && !["long", "double", "decimal"].includes(question["dataType"])) {
-        continue;
-      }
-
-      // For each reference, store its UUID and title
-      fields.push(question["jcr:uuid"]);
-      titles[question["jcr:uuid"]] = question["text"];
-    }
-
-    setOptions(fields);
-    setTitleMap(titles);
+    setPathMap(newFilterablePaths);
   }
 
   let parseSubjectTypeData = (subjectTypeJson) => {
     // Parse through, but keep a custom field for the subject
     let fields = [""];
     let titles = {"": ""};
+    let paths = {"": ""};
 
     for (let subjectType of subjectTypeJson["rows"]) {
       // For each reference, store its UUID and title
       fields.push(subjectType["jcr:uuid"]);
       titles[subjectType["jcr:uuid"]] = subjectType["label"];
+      paths[subjectType["jcr:uuid"]] = subjectType["@path"];
     }
     setOptions(fields);
     setTitleMap(titles);
+    setPathMap(paths);
   }
 
   // From an array of fields, turn it into a react component
@@ -141,6 +137,10 @@ let ReferenceInput = (props) => {
     return fields.map((path) => {
       if (typeof path == "string") {
         // Straight strings are MenuItems
+        // If we have a restriction, we might return nothing
+        if (restrictions && restrictions.length > 0 && !restrictions.includes(path)) {
+          return null;
+        }
         return <MenuItem value={path} key={path} className={classes.categoryOption + (nested ? " " + classes.nestedSelectOption : "")}>{titleMap[path]}</MenuItem>
       } else if (Array.isArray(path)) {
         // Arrays represent Questionnaires of Sections
@@ -151,12 +151,31 @@ let ReferenceInput = (props) => {
     })
   }
 
-  let getRestrictions = (restrictions) => {
-    //fieldsReader[allowOnlyApplicableFor]
-    // Need to go from question uuid => questionnaire => allowed subject types
+  let getRestrictions = (restrictingField) => {
+    let field = fieldsReader[restrictingField];
+    if (Array.isArray(field)) {
+      field = field[0];
+    }
+
+    if (field == undefined) {
+      setRestrictions(undefined);
+      return;
+    }
+
+    // Parse out the questionnaire name from the question path
+    let questionnairePath = field.match(/(\/Questionnaires\/.+?)\//)[1];
+    let url = new URL(questionnairePath + ".json", window.location.origin);
+
+    fetchWithReLogin(globalLoginDisplay, url)
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((json) => {
+        setRestrictions(json["requiredSubjectTypes"].map((subjectType) => subjectType["jcr:uuid"]));
+      })
+      .catch(console.log);
   }
 
-  if (!initialized) {
+  useEffect(() => {
+    fieldsWriter((oldContext) => ({...oldContext, [objectKey]: curValue}))
     if (value["primaryType"] == "cards:SubjectType") {
       grabData(SUBJECT_TYPE_URL, parseSubjectTypeData);
       if (allowOnlyApplicableFor) {
@@ -165,7 +184,7 @@ let ReferenceInput = (props) => {
     } else if (value["primaryType"] == "cards:Question") {
       grabData(FILTER_URL, parseQuestionnaireData);
     }
-  }
+  }, []);
 
   // The form of the hidden input depends on the value of curValue
   // The fallback is to just use its value as-is in a hidden input
@@ -188,7 +207,7 @@ let ReferenceInput = (props) => {
       <Select
         id={objectKey}
         value={curValue || []}
-        onChange={(event) => {setCurValue(event.target.value);}}
+        onChange={(event) => {changeCurValue(event.target.value);}}
         input={<Input id={objectKey} />}
         renderValue={(value) => titleMap[value]}
       >
