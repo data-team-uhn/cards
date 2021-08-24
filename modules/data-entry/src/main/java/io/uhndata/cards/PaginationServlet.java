@@ -496,7 +496,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             // Add filters on subject uuid, questionnaire or date separately before other filters
             for (int i = 0; i < fields.length; i++) {
                 filterdata.append(
-                    addSpeacialFilter(
+                    addSpecialFilter(
                         fields[i],
                         values[i],
                         comparators[i],
@@ -549,7 +549,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         } else {
             for (int i = 0; i < fields.length; i++) {
                 filterdata.append(
-                    addSpeacialFilter(
+                    addSpecialFilter(
                         fields[i],
                         values[i],
                         comparators[i],
@@ -571,7 +571,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         return filterdata.toString();
     }
 
-    private String addSpeacialFilter(final String filter, final String value, final String comparator,
+    private String addSpecialFilter(final String filter, final String value, final String comparator,
         final String prefix, final String subjectSelector)
     {
         StringBuilder filterdata = new StringBuilder();
@@ -705,7 +705,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         StringBuilder joindata = new StringBuilder();
         for (int i = 0; i < fieldnames.length; i++) {
             joindata.append(
-                addSpeacialFilter(
+                addSpecialFilter(
                     fieldnames[i],
                     "",
                     comparison,
