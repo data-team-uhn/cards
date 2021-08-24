@@ -173,9 +173,9 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                 // resolve all questions to questionnaires and group them by questionnaires
                 getQuestionnairesMaps(questionnairesToPrefix, questionnairesToFilters, filtersToPrefix, filternames,
                     "child", session);
-                getQuestionnairesMaps(questionnairesToPrefix, questionnairesToFilters, null, filterempty,
+                getQuestionnairesMaps(questionnairesToPrefix, questionnairesToFilters, filtersToPrefix, filterempty,
                     "empty", session);
-                getQuestionnairesMaps(questionnairesToPrefix, questionnairesToFilters, null, filternotempty,
+                getQuestionnairesMaps(questionnairesToPrefix, questionnairesToFilters, filtersToPrefix, filternotempty,
                     "notempty", session);
 
                 // make joints per questionnaire
