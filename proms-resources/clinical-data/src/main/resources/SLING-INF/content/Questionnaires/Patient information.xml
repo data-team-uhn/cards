@@ -74,11 +74,6 @@
 			<type>String</type>
 		</property>
 		<property>
-			<name>minAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<property>
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
