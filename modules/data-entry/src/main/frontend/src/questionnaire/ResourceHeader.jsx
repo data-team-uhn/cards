@@ -115,7 +115,7 @@ function ResourceHeader (props) {
   return (
     <>
     <Grid item xs={12} className={classes.resourceHeader} style={{top: props.contentOffset}} id="cards-resource-header">
-      <Grid container direction="row" justify="space-between" alignItems="center">
+      <Grid container direction="row" justify="space-between" alignItems="center" wrap="nowrap">
         <Grid item>
           <Breadcrumbs separator={separator}>
             {Array.from(breadcrumbs || []).map(item => <Typography variant="overline" key={item}>{item}</Typography>)}
@@ -124,7 +124,7 @@ function ResourceHeader (props) {
             </Collapse>
           </Breadcrumbs>
         </Grid>
-        <Collapse in={!!action &&  fullBreadcrumbTrigger} component={Grid}>
+        <Collapse in={!!action &&  fullBreadcrumbTrigger} component={Grid} item>
           <div className={classes.breadcrumbAction}>{action}</div>
         </Collapse>
       </Grid>
