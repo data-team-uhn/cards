@@ -85,9 +85,9 @@ function ListItemLink(props) {
 export function QuickSearchIdentifier(props) {
     let { resultData, hideMatchInfo, disableLink, classes } = props;
     let anchorPath = resultData[CARDS_QUERY_MATCH_KEY] ? resultData[CARDS_QUERY_MATCH_KEY][CARDS_QUERY_MATCH_PATH_KEY] : '';
-    let fullPath = `/content.html${resultData["@path"]}#${anchorPath}`;
+    let fullPath = `/content.html${resultData["@path"]}#${encodeURIComponent(anchorPath)}`;
     if (resultData["jcr:primaryType"] == "cards:Questionnaire") {
-      fullPath = `/content.html/admin${resultData["@path"]}#${anchorPath}`;
+      fullPath = `/content.html/admin${resultData["@path"]}#${encodeURIComponent(anchorPath)}`;
     }
     let showMatchInfo = !hideMatchInfo && resultData[CARDS_QUERY_MATCH_KEY];
     return (<ListItemLink href={disableLink ? '#' : fullPath}>
