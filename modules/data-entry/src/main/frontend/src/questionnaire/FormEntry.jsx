@@ -58,7 +58,7 @@ export const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES).concat(INFO_TYPE
  */
 let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, onAddedAnswerPath, sectionAnswersState, onChange, pageActive, isEdit, instanceId) => {
   const questionRef = useRef();
-  const anchor = location.hash.substr(1);
+  const anchor = decodeURIComponent(location.hash.substr(1));
   // create a ref to store the question container DOM element
   useEffect(() => {
     const timer = setTimeout(() => {
