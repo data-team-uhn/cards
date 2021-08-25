@@ -73,6 +73,7 @@ import ResourceHeader from "./ResourceHeader.jsx";
  */
 function Form (props) {
   let { classes, id, contentOffset } = props;
+  let { mode, disableHeader, disableButton, doneButtonStyle, doneIcon, doneLabel, onDone } = props;
   // This holds the full form JSON, once it is received from the server
   let [ data, setData ] = useState();
   // Error message set when fetching the data from the server fails
@@ -105,7 +106,7 @@ function Form (props) {
   const history = useHistory();
   const formURL = `/Forms/${id}`;
   const urlBase = "/content.html";
-  const isEdit = window.location.pathname.endsWith(".edit");
+  const isEdit = window.location.pathname.endsWith(".edit") || mode == "edit";
   let globalLoginDisplay = useContext(GlobalLoginContext);
 
   useEffect(() => {
@@ -244,7 +245,7 @@ function Form (props) {
     if (saveDataPending === true) {
       return;
     }
-    saveData(event);
+    saveData(event, false, paginationEnabled ? undefined : onDone);
   }
 
   let onEdit = (event) => {
@@ -270,7 +271,7 @@ function Form (props) {
   let title = data?.questionnaire?.title || id || "";
   let subjectName = data?.subject && getTextHierarchy(data?.subject);
   useEffect(() => {
-    pageNameWriter((subjectName ? subjectName + ": " : "") + title);
+    typeof(pageNameWriter) == "function" && pageNameWriter((subjectName ? subjectName + ": " : "") + title);
   }, [subjectName, title])
 
   useEffect(() => {
@@ -369,6 +370,7 @@ function Form (props) {
   return (
     <form action={data?.["@path"]} method="POST" onSubmit={handleSubmit} onChange={()=>setLastSaveStatus(undefined)} key={id} ref={formNode}>
       <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
+        { !disableHeader &&
         <ResourceHeader
           title={title}
           breadcrumbs={[<Breadcrumbs separator="/">{getHierarchyAsList(data?.subject).map(a => <Typography variant="overline" key={a}>{a}</Typography>)}</Breadcrumbs>]}
@@ -401,6 +403,7 @@ function Form (props) {
           }
           </Breadcrumbs>
         </ResourceHeader>
+        }
         { /* We also expose the URL of the output form and the save function to any children. This shouldn't interfere
           with any other values placed inside the context since no variable name should be able to have a '/' in it */}
         <FormProvider additionalFormData={{
@@ -455,17 +458,20 @@ function Form (props) {
               paginationEnabled={paginationEnabled}
               questionnaireData={data.questionnaire}
               setPagesCallback={setPages}
+              onDone={onDone}
+              doneLabel={doneLabel}
           />
         </Grid>
-        { !paginationEnabled &&
+        { !paginationEnabled && !disableButton &&
         <Grid item xs={false} className={classes.formBottom}>
           <div className={classes.mainPageAction}>
             { isEdit &&
               <MainActionButton
+                style={doneButtonStyle}
                 inProgress={saveInProgress}
                 onClick={handleSubmit}
-                icon={saveInProgress ? <CloudUploadIcon /> : <DoneIcon />}
-                label={saveInProgress ? "Saving..." : lastSaveStatus ? "Saved" : "Save"}
+                icon={saveInProgress ? <CloudUploadIcon /> : doneIcon || <DoneIcon />}
+                label={saveInProgress ? "Saving..." : lastSaveStatus ? "Saved" : doneLabel || "Save"}
               />
             }
           </div>
