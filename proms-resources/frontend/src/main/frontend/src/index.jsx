@@ -19,17 +19,42 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import { Router, Route, Redirect, Switch } from "react-router-dom";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  makeStyles,
+} from "@material-ui/core";
 import { createBrowserHistory } from "history";
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { appTheme } from "./themePalette.jsx";
 import QuestionnaireSet from "./QuestionnaireSet.jsx"
 import PatientIdentification from "./MockPatientIdentification.jsx"
 
+const useStyles = makeStyles(theme => ({
+  appbar : {
+    margin: theme.spacing(-1, -1, 4),
+    padding: theme.spacing(0, 1),
+    boxSizing: "content-box",
+  },
+  toolbar : {
+    display: "flex",
+    justifyContent: "space-between",
+  },
+  logo : {
+    maxHeight: theme.spacing(4),
+  }
+}));
+
 function PromsHomepage (props) {
-  // Current subject
+  // Current user and associated subject
+  const [ username, setUsername ] = useState("");
   const [ subject, setSubject ] = useState();
 
+  const classes = useStyles();
+
   let onPatientIdentified = (p) => {
+    setUsername(`${p.first_name} ${p.last_name}`);
     setSubject(p.subject);
   }
 
@@ -40,9 +65,17 @@ function PromsHomepage (props) {
   // Obtain the id of the questionnaire set to display
   const promId = /Proms.html\/([^.\/]+)/.exec(location.pathname)?.[1];
 
-  return (
+  return (<>
+    <AppBar position="static" className={classes.appbar}>
+      <Toolbar variant="dense" className={classes.toolbar}>
+        <img src="/libs/cards/resources/logo.png" alt="logo" className={classes.logo} />
+        <Typography variant="h6" color="inherit">
+          Hello, {username}
+        </Typography>
+      </Toolbar>
+    </AppBar>
     <QuestionnaireSet id={promId} subject={subject} />
-  );
+  </>);
 }
 
 const hist = createBrowserHistory();
