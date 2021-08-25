@@ -46,6 +46,10 @@
   // Mandatory, each QuestionnaireRef must point to a questionnaire.
   - questionnaire (reference) mandatory
 
+  // An order number indicating the order of this questionnaire in the sequence
+  // Mandatory, the order must be specified
+  - order (long) mandatory
+
   // An optional estimate for the time it would take to fill out the questionnaire, in minutes
   - estimate (long)
 
