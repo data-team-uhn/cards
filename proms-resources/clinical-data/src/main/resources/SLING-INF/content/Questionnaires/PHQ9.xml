@@ -1076,6 +1076,30 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 			<type>String</type>
 		</property>
 		<node>
+			<name>phq9_result</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>expression</name>
+				<value>return "### " + @{phq9_score:-0} + " point" + (@{phq9_score:-0} == 1 ? "" : "s")</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>formatted</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value> </value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
 			<name>phq9_score</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
@@ -1096,30 +1120,6 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 			<property>
 				<name>text</name>
 				<value>Score</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>computed</value>
-				<type>String</type>
-			</property>
-		</node>
-		<node>
-			<name>phq9_result</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>expression</name>
-				<value>return "### " + @{phq9_score:-0} + " point" + (@{phq9_score:-0} == 1 ? "" : "s")</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>formatted</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>text</name>
-				<value> </value>
 				<type>String</type>
 			</property>
 			<property>
