@@ -31,6 +31,13 @@
 		<type>Boolean</type>
 	</property>
 	<property>
+		<name>requiredSubjectTypes</name>
+		<values>
+			<value>/SubjectTypes/Patient/Visit</value>
+		</values>
+		<type>Reference</type>
+	</property>
+	<property>
 		<name>maxPerSubject</name>
 		<value>0</value>
 		<type>Long</type>
