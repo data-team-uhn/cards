@@ -16,21 +16,29 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import { Router, Route, Redirect, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { appTheme } from "./themePalette.jsx";
 import QuestionnaireSet from "./QuestionnaireSet.jsx"
+import PatientIdentification from "./MockPatientIdentification.jsx"
 
 function PromsHomepage (props) {
+  // Current subject
+  const [ subject, setSubject ] = useState();
+
+  let onPatientIdentified = (p) => {
+    setSubject(p.subject);
+  }
+
+  if (!subject) {
+    return <PatientIdentification onSuccess={onPatientIdentified} />;
+  }
 
   // Obtain the id of the questionnaire set to display
   const promId = /Proms.html\/([^.\/]+)/.exec(location.pathname)?.[1];
-
-  // Temporary: get the target subject from the URL query string
-  const subject = new URLSearchParams(location.search).get("subject");
 
   return (
     <QuestionnaireSet id={promId} subject={subject} />
