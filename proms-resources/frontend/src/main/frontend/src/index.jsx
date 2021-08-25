@@ -20,20 +20,34 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Router, Route, Redirect, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
+import { MuiThemeProvider } from '@material-ui/core/styles';
+import { appTheme } from "./themePalette.jsx";
+import QuestionnaireSet from "./QuestionnaireSet.jsx"
 
 function PromsHomepage (props) {
-  return <div>Hello World!</div>;
+
+  // Obtain the id of the questionnaire set to display
+  const promId = /Proms.html\/([^.\/]+)/.exec(location.pathname)?.[1];
+
+  // Temporary: get the target subject from the URL query string
+  const subject = new URLSearchParams(location.search).get("subject");
+
+  return (
+    <QuestionnaireSet id={promId} subject={subject} />
+  );
 }
 
 const hist = createBrowserHistory();
 hist.listen(({action, location}) => window.dispatchEvent(new Event("beforeunload")));
 ReactDOM.render(
+  <MuiThemeProvider theme={appTheme}>
   <Router history={hist}>
     <Switch>
       <Route path="/Proms.html/" component={PromsHomepage} />
       <Redirect from="/Proms" to="/Proms.html/"/>
     </Switch>
-  </Router>,
+  </Router>
+  </MuiThemeProvider>,
   document.querySelector('#proms-container')
 );
 
