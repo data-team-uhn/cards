@@ -232,9 +232,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             )
         );
         // For subject query case we parse existence together with other filters
-        if (!nodeType.equals(SUBJECT_IDENTIFIER)) {
-            query.append(parseExistence(filterempty, filternotempty));
-        }
+        query.append(parseExistence(filterempty, filternotempty, filtersToPrefix));
         query.append(" order by n.'jcr:created'").append(sortDescending ? " DESC" : " ASC");
         String finalquery = query.toString();
         LOGGER.debug("Computed final query: {}", finalquery);
@@ -706,12 +704,12 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      * @param notempties user input field names to assert the existence of content for
      * @return JCR_SQL conditionals for the input
      */
-    private String parseExistence(final String[] empties, final String[] notempties)
-        throws IllegalArgumentException
+    private String parseExistence(final String[] empties, final String[] notempties,
+        final Map<String, String> filtersToPrefix) throws IllegalArgumentException
     {
         StringBuilder joindata = new StringBuilder();
-        joindata.append(parseComparison(empties, "empty", " IS NULL"));
-        joindata.append(parseComparison(notempties, "notempty", " IS NOT NULL"));
+        joindata.append(parseComparison(empties, filtersToPrefix, "empty", " IS NULL"));
+        joindata.append(parseComparison(notempties, filtersToPrefix, "notempty", " IS NOT NULL"));
         return joindata.toString();
     }
 
@@ -723,7 +721,8 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      * @param comparison unary comparator to assert
      * @return JCR_SQL conditionals for the input
      */
-    private String parseComparison(final String[] fieldnames, final String childprefix, final String comparison)
+    private String parseComparison(final String[] fieldnames, final Map<String, String> filtersToPrefix,
+        final String childprefix, final String comparison)
     {
         // If no comparison is entered, do nothing
         if (fieldnames == null) {
@@ -748,9 +747,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                     "",
                     comparison,
                     "",
-                    childprefix + i
-                )
-            );
+                    filtersToPrefix.getOrDefault(fieldnames[i], childprefix + i)));
         }
         return joindata.toString();
     }
