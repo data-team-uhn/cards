@@ -40,7 +40,7 @@ import MarkdownText from "./MarkdownText";
 import CloseIcon from '@material-ui/icons/Close';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import EditIcon from '@material-ui/icons/Edit';
-import NotesIcon from '@material-ui/icons/Notes';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { stringToHash } from "../escape.jsx";
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
@@ -64,6 +64,7 @@ let AnswerOptions = (props) => {
   let [ isNoneDuplicate, setIsNoneDuplicate ] = useState(false);
   let [ descriptionIndex, setDescriptionIndex ] = useState(null);
   let [ description, setDescription ] = useState('');
+  let [ isDefault, setIsDefault ] = useState(false);
   let [ descriptionAnchorEl, setDescriptionAnchorEl ] = useState(null);
   let [ descriptionLabel, setDescriptionLabel ] = useState('');
   let [ isSpecialOption, setIsSpecialOption ] = useState(false);
@@ -198,7 +199,7 @@ let AnswerOptions = (props) => {
 
   let generateDescriptionIcon = (item, index, isSpecialOptn) => {
     return (
-      <Tooltip title="Description">
+      <Tooltip title="More options">
         <IconButton
           onClick={(event) => {
                                 setDescriptionAnchorEl(event.currentTarget);
@@ -206,13 +207,14 @@ let AnswerOptions = (props) => {
                                 setDescriptionLabel(item.label || item.value);
                                 setIsSpecialOption(isSpecialOptn);
                                 setDescription(item.description);
+                                setIsDefault(item.isDefault);
                               }
                    }
           className={isSpecialOptn ? classes.specialOptionButton : classes.answerOptionButton}
         >
           <ComposedIcon
               size="large"
-              MainIcon={NotesIcon}
+              MainIcon={MoreVertIcon}
               ExtraIcon={!item.description ? AddCircleIcon : EditIcon}/>
         </IconButton>
       </Tooltip>
@@ -263,6 +265,7 @@ let AnswerOptions = (props) => {
           <input type='hidden' name={`${option.data['@path']}/${option.label}`} value={option.data[option.label]} />
           <input type='hidden' name={`${option.data['@path']}/defaultOrder`} value={option.defaultOrder} />
           <input type="hidden" name={`${option.data['@path']}/description`} value={option.data.description || ''} />
+          <input type="hidden" name={`${option.data['@path']}/isDefault`} value={option.data.isDefault || ''} />
         </>
         :
         <input type='hidden' name={`${option.data['@path']}@Delete`} value="0" />
@@ -278,19 +281,48 @@ let AnswerOptions = (props) => {
     setDescriptionLabel('');
     setIsSpecialOption(false);
     setDescription('');
+    setIsDefault(false);
   }
 
   let onDescriptionPopoverClose = () => {
     // update corresponding option description
     if (isSpecialOption) {
-      specialOptionsInfo[descriptionIndex].setter({ ...specialOptionsInfo[descriptionIndex].data, "description": description});
+      specialOptionsInfo[descriptionIndex].setter({ ...specialOptionsInfo[descriptionIndex].data,
+                                                       "description": description,
+                                                       "isDefault": isDefault});
+
+      // Reset others "isDefault" to false if the selected one is yes
+      if (isDefault) {
+        specialOptionsInfo.filter( (option, index) => index != descriptionIndex && option.data.isDefault )
+                          .map(option => option.setter({ ...option.data,
+                                                           "isDefault": false}));
+        setOptions(oldValue => {
+          var value = oldValue.slice();
+          value.forEach( option => {option.isDefault = false;});
+          return value;
+        });
+      }
     } else {
       setOptions(oldValue => {
         var value = oldValue.slice();
         value[descriptionIndex].description = description;
+        value[descriptionIndex].isDefault = isDefault;
+
+        // Reset others "isDefault" to false if the selected one is yes
+        if (isDefault) {
+          value.forEach( (option, index) => {
+                           if (index != descriptionIndex) {
+                             option.isDefault = false;
+                           }
+          });
+          specialOptionsInfo.filter( option => option.data.isDefault )
+                            .map(option => option.setter({ ...option.data,
+                                                              "isDefault": false}));
+        }
         return value;
       });
     }
+
     handleClose();
   }
 
@@ -336,6 +368,7 @@ let AnswerOptions = (props) => {
                         <input type='hidden' name={`${value['@path']}/value`} value={value.value} />
                         <input type='hidden' name={`${value['@path']}/defaultOrder`} value={index+1} />
                         <input type="hidden" name={`${value['@path']}/description`} value={value.description || ''} />
+                        <input type="hidden" name={`${value['@path']}/isDefault`} value={value.isDefault || false} />
                         <TextField
                           InputProps={{
                             readOnly: true,
@@ -409,6 +442,18 @@ let AnswerOptions = (props) => {
             onChange={setDescription}
           />
         }
+        <Tooltip title="" className={classes.isDefaultSwitch}>
+        <FormControlLabel
+          label="Is default:"
+          labelPlacement="start"
+          control={
+            <Switch
+              checked={!!isDefault}
+              onChange={(event) => setIsDefault(event.target.checked)}
+              color="primary"
+              />
+          }
+        /></Tooltip>
         <Button
           variant='contained'
           color='default'
@@ -425,7 +470,7 @@ let AnswerOptions = (props) => {
         >
           Done
         </Button>
-    </Popover>
+      </Popover>
     </EditorInput>
   )
 }

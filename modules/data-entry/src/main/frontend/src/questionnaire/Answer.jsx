@@ -26,7 +26,11 @@ import { useFormWriterContext } from "./FormContext";
 
 export const LABEL_POS = 0;
 export const VALUE_POS = 1;
+// Position used to read whether or not an option is a "default" suggestion (i.e. one provided by the questionnaire)
+export const IS_DEFAULT_OPTION_POS = 2;
 export const DESC_POS = 3;
+// Position used to read whether or not an answer is a "default" for questions that don’t yet have an existing answer, option is displayed as selected
+export const IS_DEFAULT_ANSWER_POS = 4;
 
 // Holds answers and automatically generates hidden inputs
 // for form submission

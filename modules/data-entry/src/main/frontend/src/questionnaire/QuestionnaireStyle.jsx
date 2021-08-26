@@ -632,6 +632,10 @@ const questionnaireStyle = theme => ({
       margin: "0",
       float: "right",
     },
+    isDefaultSwitch: {
+      marginLeft: "0",
+      marginTop: theme.spacing(2),
+    },
     optionsDragIndicator: {
       float: "left",
       padding: theme.spacing(1.5, 0.5),
@@ -646,11 +650,11 @@ const questionnaireStyle = theme => ({
     },
     descriptionPopoverButton: {
       float: "right",
-      marginTop: theme.spacing(3),
+      marginTop: theme.spacing(5),
       marginLeft: theme.spacing(1),
     },
     descriptionPopoverTitle: {
-      marginBottom: theme.spacing(3),
+      marginBottom: theme.spacing(2),
     },
     selectionChild: {
       flexWrap: "wrap",
