@@ -168,7 +168,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
 
         // Add joins
         query.append(
-            processJoints(
+            processJoins(
                 joinNodetype,
                 questionnairesToPrefix,
                 questionnairesToFilters,
@@ -243,7 +243,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
     }
 
     @SuppressWarnings({"checkstyle:ParameterNumber"})
-    private String processJoints(final String joinNodetype, Map<String, String> questionnairesToPrefix,
+    private String processJoins(final String joinNodetype, Map<String, String> questionnairesToPrefix,
         Map<String, List<String>> questionnairesToFilters, Map<String, String> filtersToPrefix,
         final String[] filternames, final String[] filterempty, final String[] filternotempty,
         Session session, final String nodeType)
