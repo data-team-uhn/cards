@@ -124,15 +124,15 @@ function QuestionnaireSet(props) {
 
   // Determine the next questionnaire that needs to be filled out
   useEffect(() => {
-    if (!questionnaires) return;
+    if (!questionnaires || !subjectData) return;
     // Find the next unfilled questionnaire, if any:
     let nextStep = findNextStep(crtStep);
     setNextQuestionnaire(nextStep < questionnaireIds?.length ? questionnaires[questionnaireIds?.[nextStep]] : null);
-  }, [crtStep, questionnaires]);
+  }, [crtStep, questionnaires, subjectData]);
 
-  // When the uuid of the next form is set, launch the form
+  // When the uuid of the next form is set, move to the next step to launch the form
   useEffect(() => {
-    launchCrtForm()
+    crtFormId && nextStep();
   }, [crtFormId]);
 
   const loadQuestionnaireSet = () => {
@@ -166,6 +166,7 @@ function QuestionnaireSet(props) {
       .forEach(value => { data[value.questionnaire['@name']] = {
         'title': value.questionnaire?.title || value.questionnaire?.['@name'],
         '@path': value.questionnaire?.['@path'],
+        '@name': value.questionnaire?.['@name'],
         'estimate': value.estimate
        }});
     setQuestionnaires(data);
@@ -175,22 +176,32 @@ function QuestionnaireSet(props) {
   let findNextStep = (step) => {
     let next = step + 1
     // Skip if the corresponding questionnaire has already been filled out:
-    while (next < questionnaireIds.length && subjectData?.[questionnaireIds[next]]) ++next;
+    while (next < questionnaireIds.length && isFormComplete(questionnaireIds[next])) ++next;
     return next;
   }
 
   // Advance to the next step
   let nextStep = () => { setCrtStep(findNextStep) }
 
-  let launchNextForm = () => {
-    setCrtFormId(uuidv4())
-    // ^This will trigger the effect that calls launchCrtForm
+  let isFormComplete = (questionnaireId) => {
+    return subjectData?.[questionnaireId] && !subjectData[questionnaireId].statusFlags?.includes("INCOMPLETE");
   }
 
-  let launchCrtForm = () => {
-    if (!crtFormId) return;
+  let launchNextForm = () => {;
+    if (subjectData[nextQuestionnaire['@name']]) {
+      // Form already exists and is incomplete: prepare  to edit it
+      setCrtFormId(subjectData[nextQuestionnaire['@name']]['@name']);
+    } else {
+      // Form doesn't exist: create it
+      let formId = uuidv4();
+      createNextForm(formId, () => setCrtFormId(formId));
+    }
+  }
+
+  let createNextForm = (formId, successCallback) => {
+    if (!formId) return;
     // Make a POST request to create a new form, with a randomly generated UUID
-    const URL = "/Forms/" + crtFormId;
+    const URL = "/Forms/" + formId;
     var request_data = new FormData();
     request_data.append('jcr:primaryType', 'cards:Form');
     request_data.append('questionnaire', nextQuestionnaire["@path"]);
@@ -201,7 +212,7 @@ function QuestionnaireSet(props) {
       .then( (response) => {
         if (response.ok) {
           // Advance to the next step
-          nextStep();
+          successCallback();
         } else {
           return(Promise.reject(response));
         }
@@ -250,6 +261,11 @@ function QuestionnaireSet(props) {
       : <></>);
   }
 
+  let displayEstimate = (questionnaireId) => {
+    let e = questionnaires[questionnaireId]?.estimate;
+    return e ? (e + " minute" + (e != 1 ? "s" : "")) : "";
+  }
+
   let doneIndicator = <Avatar className={classes.doneIndicator}><DoneIcon /></Avatar>;
 
   let welcomeScreen = [
@@ -257,12 +273,15 @@ function QuestionnaireSet(props) {
     <List>
     { (questionnaireIds || []).map((q, i) => (
       <ListItem key={q}>
-        <ListItemAvatar>{subjectData[q] ? doneIndicator : stepIndicator(i)}</ListItemAvatar>
-        <ListItemText primary={questionnaires[q]?.title} secondary={questionnaires[q]?.estimate && `${questionnaires[q].estimate} minutes`} />
+        <ListItemAvatar>{isFormComplete(q) ? doneIndicator : stepIndicator(i)}</ListItemAvatar>
+        <ListItemText
+          primary={questionnaires[q]?.title}
+          secondary={!isFormComplete(q) && (displayEstimate(q) + (subjectData[q] ? " (in progress)" : ""))}
+        />
       </ListItem>
     ))}
     </List>,
-    (Object.keys(subjectData || {}).length == questionnaireIds.length) ? <Typography color="textSecondary" variant="h4">You already completed the survey</Typography> :
+    (Object.keys(subjectData || {}).filter(q => isFormComplete(q)).length == questionnaireIds.length) ? <Typography color="textSecondary" variant="h4">You already completed the survey</Typography> :
     nextQuestionnaire && <Fab variant="extended" color="primary" onClick={launchNextForm}>Start</Fab>
   ];
 
