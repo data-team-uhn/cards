@@ -56,6 +56,11 @@ const useStyles = makeStyles(theme => ({
   stepIndicator : {
     background: theme.palette.primary.main,
   },
+  doneIndicator : {
+    border: "1px solid " + theme.palette.primary.main,
+    background: "transparent",
+    color: theme.palette.primary.main,
+  },
   survey : {
     alignItems: "stretch",
     justify: "space-between",
@@ -72,6 +77,9 @@ function QuestionnaireSet(props) {
   const [ questionnaireIds, setQuestionnaireIds ] = useState();
   // Map questionnaire id -> title, path and optional time estimate (in minutes) for filling it out
   const [ questionnaires, setQuestionnaires ] = useState();
+
+  // Data already associated with the subject
+  const [ subjectData, setSubjectData ] = useState();
 
   // Step -1: haven't started yet, welcome screen
   // Step i = 0 ... # of questionnaires-1 : filling out questionnaire #i
@@ -90,6 +98,25 @@ function QuestionnaireSet(props) {
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
+  // Find the data already associated with the subject
+  useEffect(() => {
+    if (!questionnaires) return;
+    fetchWithReLogin(globalLoginDisplay, `${subject}.data.deep.json`)
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((json) => {
+        let data = {};
+        questionnaireIds.forEach(q => {
+          if (json[questionnaires[q]?.title]?.[0]?.['jcr:primaryType'] == "cards:Form") {
+            data[q] = json[questionnaires[q]?.title][0];
+          }
+        });
+        setSubjectData(data);
+      })
+      .catch((response) => {
+        setError(`Loading the visit failed with error code ${response.status}: ${response.statusText}`);
+      });
+  }, [questionnaires]);
+
   // Determine the screen type (and style) based on the step number
   useEffect(() => {
     setScreenType(crtStep >= 0 && crtStep < questionnaireIds.length ? "survey" : "screen");
@@ -98,7 +125,9 @@ function QuestionnaireSet(props) {
   // Determine the next questionnaire that needs to be filled out
   useEffect(() => {
     if (!questionnaires) return;
-    setNextQuestionnaire(crtStep < questionnaireIds?.length-1 ? questionnaires[questionnaireIds?.[crtStep + 1]] : null);
+    // Find the next unfilled questionnaire, if any:
+    let nextStep = findNextStep(crtStep);
+    setNextQuestionnaire(nextStep < questionnaireIds?.length ? questionnaires[questionnaireIds?.[nextStep]] : null);
   }, [crtStep, questionnaires]);
 
   // When the uuid of the next form is set, launch the form
@@ -142,6 +171,17 @@ function QuestionnaireSet(props) {
     setQuestionnaires(data);
   };
 
+  // Find the next step : Skip questionnaires that have already been filled out
+  let findNextStep = (step) => {
+    let next = step + 1
+    // Skip if the corresponding questionnaire has already been filled out:
+    while (next < questionnaireIds.length && subjectData?.[questionnaireIds[next]]) ++next;
+    return next;
+  }
+
+  // Advance to the next step
+  let nextStep = () => { setCrtStep(findNextStep) }
+
   let launchNextForm = () => {
     setCrtFormId(uuidv4())
     // ^This will trigger the effect that calls launchCrtForm
@@ -161,7 +201,7 @@ function QuestionnaireSet(props) {
       .then( (response) => {
         if (response.ok) {
           // Advance to the next step
-          setCrtStep((s) => (s+1));
+          nextStep();
         } else {
           return(Promise.reject(response));
         }
@@ -194,7 +234,7 @@ function QuestionnaireSet(props) {
     );
   }
 
-  if (!questionnaires) {
+  if (!questionnaires || !subjectData) {
     return (
       <QuestionnaireSetScreen className={classes.screen} items={[
         <CircularProgress />
@@ -210,16 +250,19 @@ function QuestionnaireSet(props) {
       : <></>);
   }
 
+  let doneIndicator = <Avatar className={classes.doneIndicator}><DoneIcon /></Avatar>;
+
   let welcomeScreen = [
     <Typography variant="h4">{title}</Typography>,
     <List>
     { (questionnaireIds || []).map((q, i) => (
       <ListItem key={q}>
-        <ListItemAvatar>{stepIndicator(i)}</ListItemAvatar>
+        <ListItemAvatar>{subjectData[q] ? doneIndicator : stepIndicator(i)}</ListItemAvatar>
         <ListItemText primary={questionnaires[q]?.title} secondary={questionnaires[q]?.estimate && `${questionnaires[q].estimate} minutes`} />
       </ListItem>
     ))}
     </List>,
+    (Object.keys(subjectData || {}).length == questionnaireIds.length) ? <Typography color="textSecondary" variant="h4">You already completed the survey</Typography> :
     nextQuestionnaire && <Fab variant="extended" color="primary" onClick={launchNextForm}>Start</Fab>
   ];
 
@@ -240,7 +283,7 @@ function QuestionnaireSet(props) {
           disableHeader
           doneIcon={nextQuestionnaire ? <NextStepIcon /> : <DoneIcon />}
           doneLabel={nextQuestionnaire ? `Continue to ${nextQuestionnaire?.title}` : "Finish"}
-          onDone={nextQuestionnaire ? launchNextForm : (() => setCrtStep(s => s+1))}
+          onDone={nextQuestionnaire ? launchNextForm : nextStep}
           doneButtonStyle={{position: "relative", right: 0, bottom: "unset", textAlign: "center"}}
           contentOffset={contentOffset}
         />
@@ -253,7 +296,7 @@ function QuestionnaireSet(props) {
     <List>
     { (questionnaireIds || []).map((q, i) => (
       <ListItem key={q}>
-        <ListItemAvatar><DoneIcon /></ListItemAvatar>
+        <ListItemAvatar>{doneIndicator}</ListItemAvatar>
         <ListItemText primary={questionnaires[q]?.title} />
       </ListItem>
     ))}
