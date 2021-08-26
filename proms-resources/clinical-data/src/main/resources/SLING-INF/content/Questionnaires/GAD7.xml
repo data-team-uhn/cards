@@ -75,6 +75,11 @@ Objectively determine initial symptoms severity and monitor symptom changes/effe
 				<type>String</type>
 			</property>
 			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -173,6 +178,11 @@ Objectively determine initial symptoms severity and monitor symptom changes/effe
 				<name>text</name>
 				<value>Not being able to stop or control worrying</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>maxAnswers</name>
@@ -275,6 +285,11 @@ Objectively determine initial symptoms severity and monitor symptom changes/effe
 				<type>String</type>
 			</property>
 			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -373,6 +388,11 @@ Objectively determine initial symptoms severity and monitor symptom changes/effe
 				<name>text</name>
 				<value>Trouble relaxing</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>maxAnswers</name>
@@ -475,6 +495,11 @@ Objectively determine initial symptoms severity and monitor symptom changes/effe
 				<type>String</type>
 			</property>
 			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -573,6 +598,11 @@ Objectively determine initial symptoms severity and monitor symptom changes/effe
 				<name>text</name>
 				<value>Becoming easily annoyed or irritable</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>maxAnswers</name>
@@ -675,6 +705,11 @@ Objectively determine initial symptoms severity and monitor symptom changes/effe
 				<type>String</type>
 			</property>
 			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -772,11 +807,6 @@ Objectively determine initial symptoms severity and monitor symptom changes/effe
 			<property>
 				<name>text</name>
 				<value>How difficult have these problems made it to do work, take care of things at home, or get along with other people?</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>Optional, not included in final score but may help assess global impairment</value>
 				<type>String</type>
 			</property>
 			<property>
