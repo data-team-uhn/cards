@@ -321,21 +321,21 @@ function MockPatientIdentification(props) {
          </Grid>
          <Grid item xs={12}>
             <FormControl margin="normal" required fullWidth>
-              <InputLabel htmlFor="j_dob">Date of birth</InputLabel>
+              <InputLabel htmlFor="j_dob" shrink={true}>Date of birth</InputLabel>
               <Input id="j_dob" name="j_dob" autoComplete="off" type="date" autoFocus onChange={event => setDob(event.target.value)}/>
             </FormControl>
             <Grid container direction="row" alignItems="flex-end" spacing={3} wrap="nowrap">
               <Grid item>
                 <FormControl margin="normal" fullWidth>
-                  <InputLabel htmlFor="j_mrn">MRN</InputLabel>
-                  <Input id="j_mrn" name="j_mrn" autoComplete="off" type="number" onChange={event => setMrn(event.target.value)}/>
+                  <InputLabel htmlFor="j_mrn" shrink={true}>MRN</InputLabel>
+                  <Input id="j_mrn" name="j_mrn" autoComplete="off" type="number" placeholder="E.g.: 1234567" onChange={event => setMrn(event.target.value)}/>
                  </FormControl>
               </Grid>
               <Grid item>or</Grid>
               <Grid item>
                 <FormControl margin="normal" fullWidth>
-                  <InputLabel htmlFor="j_hc">Health card number</InputLabel>
-                  <Input id="j_hc" name="j_hc" autoComplete="off" onChange={event => setHc(sanitizeHC(event.target.value))}/>
+                  <InputLabel htmlFor="j_hc" shrink={true}>Health card number</InputLabel>
+                  <Input id="j_hc" name="j_hc" autoComplete="off" placeholder="E.g.: 2345 678 901 XY" onChange={event => setHc(sanitizeHC(event.target.value))}/>
                  </FormControl>
               </Grid>
             </Grid>
