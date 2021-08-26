@@ -215,6 +215,90 @@ function MockPatientIdentification(props) {
       });
   }
 
+  // ---------------------------------------------------------------------------------------------------
+  // Keep the patient information up to date
+
+  // The definition of the Patient information questionnaire
+  // Info about each patient is stored in a Patient information form
+  const [ piDefinition, setPiDefinition ] = useState();
+
+  // Load the Patient Information questionnaire
+  useEffect(() => {
+    fetchWithReLogin(globalLoginDisplay, "/Questionnaires/Patient information.deep.json")
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((json) => setPiDefinition(json))
+      .catch((response) => {
+         setError(`Initializing information sync failed with error code ${response.status}: ${response.statusText}`);
+       });
+  }, []);
+
+  // When the patient is successfully identified, sync their information
+  useEffect(() => {
+    patient && piDefinition && syncPatientInfo();
+  }, [patient, piDefinition]);
+
+  const syncPatientInfo = () => {
+    // Fetch the patient subject and forms associated with it
+    fetchWithReLogin(globalLoginDisplay, `${patient}.data.deep.json`)
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((json) => {
+
+        // Check if the data includes a patient information form
+        let piForm = json?.[piDefinition['title']]?.[0];
+        if (piForm?.["jcr:primaryType"] == "cards:Form") {
+          // The form already exists, get its path for the update request
+          updatePatientInfo(piForm['@path']);
+
+        } else {
+          // The form doesn't exist, generate the path and populate the request data for form creation
+          let request_data = new FormData();
+          let formPath = "/Forms/" + uuidv4();
+          request_data.append('jcr:primaryType', 'cards:Form');
+          request_data.append('questionnaire', piDefinition["@path"]);
+          request_data.append('questionnaire@TypeHint', 'Reference');
+          request_data.append('subject', patient);
+          request_data.append('subject@TypeHint', 'Reference');
+
+          // Create or update the Patient information form
+          fetchWithReLogin(globalLoginDisplay, formPath, { method: 'POST', body: request_data })
+            .then( (response) => response.ok ? updatePatientInfo(formPath) : Promise.reject(response))
+            .catch((response) => {
+              setError(`Information sync failed with error code ${response.status}: ${response.statusText}`);
+            });
+        }
+      })
+      .catch((response) => {
+        setError(`Local record retrieval failed with error code ${response.status}: ${response.statusText}`);
+        console.log(response);
+      });
+  }
+
+  let updatePatientInfo = (formPath) => {
+    let request_data = new FormData();
+     // Populate the request data with the values obtained when identifying the patient
+     let fields = Object.keys(piDefinition).filter(k => piDefinition[k]?.["jcr:primaryType"] == "cards:Question");
+     fields.forEach(f => {
+       let qDef = piDefinition[f];
+       let type = (qDef.dataType || 'text');
+       // Capitalize the type:
+       type = type[0].toUpperCase() + type.substring(1);
+
+       // Add each field to the request
+       request_data.append(`./${f}/jcr:primaryType`, `cards:${type}Answer`);
+       request_data.append(`./${f}/question`, qDef['jcr:uuid']);
+       request_data.append(`./${f}/question@TypeHint`, "Reference");
+       request_data.append(`./${f}/value`, idData[f]);
+       request_data.append(`./${f}/value@TypeHint`, type == 'Text' ? 'String' : type);
+     })
+
+     // Update the Patient information form
+     fetchWithReLogin(globalLoginDisplay, formPath, { method: 'POST', body: request_data })
+       .then( (response) => response.ok ? null : Promise.reject(response))
+       .catch((response) => {
+         setError(`Information sync failed with error code ${response.status}: ${response.statusText}`);
+       });
+  }
+
   // -----------------------------------------------------------------------------------------------------
   // Rendering
 
