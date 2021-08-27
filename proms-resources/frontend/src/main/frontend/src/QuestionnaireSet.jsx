@@ -86,6 +86,8 @@ function QuestionnaireSet(props) {
 
   // Data already associated with the subject
   const [ subjectData, setSubjectData ] = useState();
+  // Did the user make it to the last screen?
+  const [ endReached, setEndReached ] = useState();
   // Has everything been filled out?
   const [ isComplete, setComplete ] = useState();
 
@@ -130,6 +132,14 @@ function QuestionnaireSet(props) {
     setNextQuestionnaire(nextStep < questionnaireIds?.length ? questionnaires[questionnaireIds?.[nextStep]] : null);
   }, [crtStep, questionnaires, subjectData]);
 
+  // If we're back to the start because the user was directed to add missing answers,
+  // dont't show the welcome screen and skip to the next step without them pressing start
+  useEffect(() => {
+    if (crtStep == -1 && endReached) {
+      nextQuestionnaire && launchNextForm();
+    }
+  }, [crtStep, endReached, nextQuestionnaire]);
+
   // When the uuid of the next form is set, move to the next step to launch the form
   useEffect(() => {
     crtFormId && nextStep();
@@ -138,6 +148,7 @@ function QuestionnaireSet(props) {
   // At the last step, determine if the questionnaires have been ceompleted
   useEffect(() => {
     if (!questionnaireIds || crtStep < questionnaireIds.length) return;
+    setEndReached(true);
     loadExistingData();
   }, [crtStep, questionnaireIds]);
 
@@ -361,7 +372,7 @@ function QuestionnaireSet(props) {
     isComplete?
       <Typography variant="h4">Thank you</Typography>
       :
-      <Fab variant="extended" color="primary" onClick={() => {setCrtStep(-1)}}>Back</Fab>
+      <Fab variant="extended" color="primary" onClick={() => {setCrtStep(-1)}}>Update answers</Fab>
   ];
 
   return (
