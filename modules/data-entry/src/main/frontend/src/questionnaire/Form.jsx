@@ -104,7 +104,7 @@ function Form (props) {
   // Whether we reached the of the form (as opposed to a page that is not the last on a paginated form)
   let [ endReached, setEndReached ] = useState();
 
-  // End is always eached on non-paginated forms
+  // End is always reached on non-paginated forms
   // On paginated forms, the `endReached` starts out as `false`, and the `FormPagination` component
   // will notify the `Form` component when the final page was displayed by setting `endReached` to `true`
   useEffect(() => {
