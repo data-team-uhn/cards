@@ -101,6 +101,21 @@ function Form (props) {
   let [ formContentOffsetTop, setFormContentOffsetTop ] = useState(contentOffset);
   let [ formContentOffsetBottom, setFormContentOffsetBottom ] = useState(0);
 
+  // Whether we reached the of the form (as opposed to a page that is not the last on a paginated form)
+  let [ endReached, setEndReached ] = useState();
+
+  // End is always eached on non-paginated forms
+  // On paginated forms, the `endReached` starts out as `false`, and the `FormPagination` component
+  // will notify the `Form` component when the final page was displayed by setting `endReached` to `true`
+  useEffect(() => {
+    setEndReached(!paginationEnabled);
+  }, [paginationEnabled]);
+
+  // When end was reached and save was successful, call `onDone` if applicable
+  useEffect(() => {
+    lastSaveStatus && endReached && onDone && onDone();
+  }, [lastSaveStatus, endReached]);
+
   let formNode = React.useRef();
   let pageNameWriter = usePageNameWriterContext();
   const history = useHistory();
@@ -245,7 +260,7 @@ function Form (props) {
     if (saveDataPending === true) {
       return;
     }
-    saveData(event, false, paginationEnabled ? undefined : onDone);
+    saveData(event);
   }
 
   let onEdit = (event) => {
@@ -458,7 +473,7 @@ function Form (props) {
               paginationEnabled={paginationEnabled}
               questionnaireData={data.questionnaire}
               setPagesCallback={setPages}
-              onDone={onDone}
+              onDone={() => { setEndReached(true) }}
               doneLabel={doneLabel}
           />
         </Grid>
