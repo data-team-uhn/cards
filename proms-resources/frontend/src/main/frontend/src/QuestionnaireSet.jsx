@@ -34,6 +34,7 @@ import {
 } from '@material-ui/core';
 import NextStepIcon from '@material-ui/icons/ChevronRight';
 import DoneIcon from '@material-ui/icons/Done';
+import WarningIcon from '@material-ui/icons/Warning';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { appTheme } from "./themePalette.jsx";
 
@@ -55,6 +56,11 @@ const useStyles = makeStyles(theme => ({
   },
   stepIndicator : {
     background: theme.palette.primary.main,
+  },
+  incompleteIndicator : {
+    border: "1px solid " + theme.palette.secondary.main,
+    background: "transparent",
+    color: theme.palette.secondary.main,
   },
   doneIndicator : {
     border: "1px solid " + theme.palette.primary.main,
@@ -80,6 +86,8 @@ function QuestionnaireSet(props) {
 
   // Data already associated with the subject
   const [ subjectData, setSubjectData ] = useState();
+  // Has everything been filled out?
+  const [ isComplete, setComplete ] = useState();
 
   // Step -1: haven't started yet, welcome screen
   // Step i = 0 ... # of questionnaires-1 : filling out questionnaire #i
@@ -101,25 +109,17 @@ function QuestionnaireSet(props) {
   // Find the data already associated with the subject
   useEffect(() => {
     if (!questionnaires) return;
-    fetchWithReLogin(globalLoginDisplay, `${subject}.data.deep.json`)
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => {
-        let data = {};
-        questionnaireIds.forEach(q => {
-          if (json[questionnaires[q]?.title]?.[0]?.['jcr:primaryType'] == "cards:Form") {
-            data[q] = json[questionnaires[q]?.title][0];
-          }
-        });
-        setSubjectData(data);
-      })
-      .catch((response) => {
-        setError(`Loading the visit failed with error code ${response.status}: ${response.statusText}`);
-      });
+    loadExistingData();
   }, [questionnaires]);
 
   // Determine the screen type (and style) based on the step number
   useEffect(() => {
     setScreenType(crtStep >= 0 && crtStep < questionnaireIds.length ? "survey" : "screen");
+  }, [crtStep]);
+
+  // Reset the crtFormId when returning to the welcome screen
+  useEffect(() => {
+    crtStep == -1 && setCrtFormId(null);
   }, [crtStep]);
 
   // Determine the next questionnaire that needs to be filled out
@@ -134,6 +134,35 @@ function QuestionnaireSet(props) {
   useEffect(() => {
     crtFormId && nextStep();
   }, [crtFormId]);
+
+  // At the last step, determine if the questionnaires have been ceompleted
+  useEffect(() => {
+    if (!questionnaireIds || crtStep < questionnaireIds.length) return;
+    loadExistingData();
+  }, [crtStep, questionnaireIds]);
+
+  // Determine if all surveys have been filled out
+  useEffect(() => {
+    if (!subjectData || !questionnaires) return;
+    setComplete(Object.keys(subjectData || {}).filter(q => isFormComplete(q)).length == questionnaireIds.length);
+  }, [subjectData, questionnaires]);
+
+  const loadExistingData = () => {
+    fetchWithReLogin(globalLoginDisplay, `${subject}.data.deep.json`)
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((json) => {
+        let data = {};
+        questionnaireIds.forEach(q => {
+          if (json[questionnaires[q]?.title]?.[0]?.['jcr:primaryType'] == "cards:Form") {
+            data[q] = json[questionnaires[q]?.title][0];
+          }
+        });
+        setSubjectData(data);
+      })
+      .catch((response) => {
+        setError(`Loading the visit failed with error code ${response.status}: ${response.statusText}`);
+      });
+  }
 
   const loadQuestionnaireSet = () => {
     fetchWithReLogin(globalLoginDisplay, `/Proms/${id}.deep.json`)
@@ -268,6 +297,8 @@ function QuestionnaireSet(props) {
 
   let doneIndicator = <Avatar className={classes.doneIndicator}><DoneIcon /></Avatar>;
 
+  let incompleteIndicator = <Avatar className={classes.incompleteIndicator}><WarningIcon /></Avatar>;
+
   let welcomeScreen = [
     <Typography variant="h4">{title}</Typography>,
     <List>
@@ -281,7 +312,7 @@ function QuestionnaireSet(props) {
       </ListItem>
     ))}
     </List>,
-    (Object.keys(subjectData || {}).filter(q => isFormComplete(q)).length == questionnaireIds.length) ? <Typography color="textSecondary" variant="h4">You already completed the survey</Typography> :
+    isComplete ? <Typography color="textSecondary" variant="h4">You already completed the survey</Typography> :
     nextQuestionnaire && <Fab variant="extended" color="primary" onClick={launchNextForm}>Start</Fab>
   ];
 
@@ -315,13 +346,22 @@ function QuestionnaireSet(props) {
     <List>
     { (questionnaireIds || []).map((q, i) => (
       <ListItem key={q}>
-        <ListItemAvatar>{doneIndicator}</ListItemAvatar>
-        <ListItemText primary={questionnaires[q]?.title} />
+        <ListItemAvatar>{isFormComplete(q) ? doneIndicator : incompleteIndicator}</ListItemAvatar>
+        <ListItemText
+          primary={questionnaires[q]?.title}
+          secondary={!isFormComplete(q) && "Incomplete"}
+        />
       </ListItem>
     ))}
     </List>,
-    <Typography color="textSecondary">Your data has been submitted.</Typography>,
-    <Typography variant="h4">Thank you</Typography>
+    isComplete ?
+      <Typography color="textSecondary">Your data has been submitted.</Typography>
+      :
+      <Typography color="error">Your answers are incomplete. Please return to the main screen and check for any mandatory questions you may have missed.</Typography>,
+    isComplete?
+      <Typography variant="h4">Thank you</Typography>
+      :
+      <Fab variant="extended" color="primary" onClick={() => {setCrtStep(-1)}}>Back</Fab>
   ];
 
   return (
