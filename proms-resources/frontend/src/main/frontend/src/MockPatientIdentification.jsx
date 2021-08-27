@@ -20,43 +20,18 @@ import React, { useState, useEffect, useContext }  from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import {
+  Button,
+  FormControl,
   Grid,
+  Input,
+  InputLabel,
   Typography,
   makeStyles
-} from '@material-ui/core';
-import {
-    Button,
-    FormControl,
-    IconButton,
-    Input,
-    InputLabel,
-    Tooltip,
 } from '@material-ui/core';
 
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
-const TEST_PATIENTS = [{
-    last_name: "Addison",
-    first_name: "John",
-    date_of_birth: "1970-01-01",
-    mrn: "1234567",
-    health_card: "1234567890AB",
-    visit_number: "11"
-  }, {
-    last_name: "Bennet",
-    first_name: "Mary",
-    date_of_birth: "1971-02-27",
-    mrn: "2345678",
-    health_card: "2345678901CD",
-    visit_number: "22"
-  }, {
-    last_name: "Coleman",
-    first_name: "Paul",
-    date_of_birth: "1972-03-31",
-    mrn: "3456789",
-    health_card: "3456789012EF",
-    visit_number: "33"
-  }];
+import { identifyPatient } from "./patientLookup.jsx";
 
 const useStyles = makeStyles(theme => ({
   form : {
@@ -105,9 +80,8 @@ function MockPatientIdentification(props) {
     return str?.toUpperCase().replaceAll(/[^A-Z0-9]*/g, "") || "";
   }
 
-  // TO DO: replace mock with authentication call
   const identify = () => {
-    return TEST_PATIENTS.filter(p => (p.date_of_birth == dob && (!mrn || p.mrn == mrn) && (!hc || p.health_card == hc)))[0];
+    return identifyPatient(dob, mrn, hc);
   }
 
   // On submitting the patient login form, make a request to identify the patient
