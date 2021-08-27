@@ -188,7 +188,7 @@ function Form (props) {
       return;
     }
 
-    setSaveInProgress(true);
+    event.type != "beforeunload" && setSaveInProgress(true);
     let data = new FormData(formNode.current);
     if (performCheckin) {
         data.append(":checkin", "true");
