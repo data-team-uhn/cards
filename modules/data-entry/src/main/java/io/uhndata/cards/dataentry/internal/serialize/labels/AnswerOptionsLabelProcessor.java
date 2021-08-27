@@ -47,12 +47,38 @@ public class AnswerOptionsLabelProcessor extends SimpleAnswerLabelProcessor impl
     public void leave(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
     {
         try {
-            if (node.isNodeType("cards:TextAnswer") || node.isNodeType("cards:LongAnswer")) {
+            if (node.isNodeType("cards:Answer") && hasAnswerOption(getQuestionNode(node))) {
                 addProperty(node, json, serializeNode);
             }
         } catch (RepositoryException e) {
             // Really shouldn't happen
         }
+    }
+
+    /**
+     * Returns true if the input node has an answer option.
+     * @param question a question Node object to check
+     * @return True if there is at least one answer option
+     */
+    private boolean hasAnswerOption(final Node question)
+    {
+        try {
+            NodeIterator childNodes = question.getNodes();
+            if (childNodes.getSize() <= 0) {
+                return false;
+            }
+
+            while (childNodes.hasNext()) {
+                Node optionNode = childNodes.nextNode();
+                if ("cards:AnswerOption".equals(optionNode.getPrimaryNodeType().getName())
+                    && optionNode.hasProperty(PROP_VALUE)) {
+                    return true;
+                }
+            }
+        } catch (RepositoryException e) {
+            // Shouldn't happen
+        }
+        return false;
     }
 
     @Override
