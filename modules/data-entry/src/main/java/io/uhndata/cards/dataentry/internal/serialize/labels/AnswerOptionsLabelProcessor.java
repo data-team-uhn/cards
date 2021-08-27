@@ -36,7 +36,7 @@ import org.osgi.service.component.annotations.Component;
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 
 /**
- * Gets the human-readable question answer for text questions with options.
+ * Gets the human-readable question answer for text and number questions with options.
  *
  * @version $Id$
  */
@@ -47,7 +47,7 @@ public class AnswerOptionsLabelProcessor extends SimpleAnswerLabelProcessor impl
     public void leave(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
     {
         try {
-            if (node.isNodeType("cards:TextAnswer")) {
+            if (node.isNodeType("cards:TextAnswer") || node.isNodeType("cards:LongAnswer")) {
                 addProperty(node, json, serializeNode);
             }
         } catch (RepositoryException e) {
