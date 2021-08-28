@@ -32,11 +32,10 @@ import {
   Typography,
   makeStyles
 } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 import NextStepIcon from '@material-ui/icons/ChevronRight';
 import DoneIcon from '@material-ui/icons/Done';
 import WarningIcon from '@material-ui/icons/Warning';
-import { MuiThemeProvider } from '@material-ui/core/styles';
-import { appTheme } from "./themePalette.jsx";
 
 import Form from "./questionnaire/Form.jsx";
 import ResourceHeader from "./questionnaire/ResourceHeader.jsx";
@@ -182,7 +181,11 @@ function QuestionnaireSet(props) {
         parseQuestionnaireSet(json);
       })
       .catch((response) => {
-        setError(`Loading the survey failed with error code ${response.status}: ${response.statusText}`);
+        if (response.status == 404) {
+          setError(<>The survey you are trying to access does not exist. <Link to="/Proms.html">Browse available surveys</Link></>);
+        } else {
+          setError(`Loading the survey failed with error code ${response.status}: ${response.statusText}`);
+        }
         setQuestionnaireIds(null);
       });
   }
@@ -279,7 +282,7 @@ function QuestionnaireSet(props) {
   if (error) {
     return (
       <QuestionnaireSetScreen className={classes.screen} items={[
-        <Typography variant="h4" color="error">{error}</Typography>
+        <Typography variant="subtitle1" color="error">{error}</Typography>
       ]}>
       </QuestionnaireSetScreen>
     );
