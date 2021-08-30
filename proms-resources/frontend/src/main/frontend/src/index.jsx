@@ -29,7 +29,6 @@ import { createBrowserHistory } from "history";
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { appTheme } from "./themePalette.jsx";
 import QuestionnaireSet from "./QuestionnaireSet.jsx"
-import QuestionnaireSets from "./QuestionnaireSets.jsx"
 import PatientIdentification from "./MockPatientIdentification.jsx"
 
 const useStyles = makeStyles(theme => ({
@@ -77,11 +76,7 @@ function PromsHomepage (props) {
         }
       </Toolbar>
     </AppBar>
-    { promId ?
-      <QuestionnaireSet id={promId} subject={subject} />
-      :
-      <QuestionnaireSets />
-    }
+    <QuestionnaireSet id={promId} subject={subject} />
   </>);
 }
 

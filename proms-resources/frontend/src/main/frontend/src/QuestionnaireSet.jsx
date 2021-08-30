@@ -32,7 +32,6 @@ import {
   Typography,
   makeStyles
 } from '@material-ui/core';
-import { Link } from 'react-router-dom';
 import NextStepIcon from '@material-ui/icons/ChevronRight';
 import DoneIcon from '@material-ui/icons/Done';
 import WarningIcon from '@material-ui/icons/Warning';
@@ -182,7 +181,7 @@ function QuestionnaireSet(props) {
       })
       .catch((response) => {
         if (response.status == 404) {
-          setError(<>The survey you are trying to access does not exist. <Link to="/Proms.html">Browse available surveys</Link></>);
+          setError("The survey you are trying to access does not exist. Please contact your care team for further assistance.");
         } else {
           setError(`Loading the survey failed with error code ${response.status}: ${response.statusText}`);
         }
