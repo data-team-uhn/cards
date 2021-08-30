@@ -207,7 +207,7 @@ let AnswerOptions = (props) => {
                                 setDescriptionLabel(item.label || item.value);
                                 setIsSpecialOption(isSpecialOptn);
                                 setDescription(item.description);
-                                setIsDefault(item.isDefault);
+                                setIsDefault(item.isDefault === true || item.isDefault === "true");
                               }
                    }
           className={isSpecialOptn ? classes.specialOptionButton : classes.answerOptionButton}
@@ -290,35 +290,11 @@ let AnswerOptions = (props) => {
       specialOptionsInfo[descriptionIndex].setter({ ...specialOptionsInfo[descriptionIndex].data,
                                                        "description": description,
                                                        "isDefault": isDefault});
-
-      // Reset others "isDefault" to false if the selected one is yes
-      if (isDefault) {
-        specialOptionsInfo.filter( (option, index) => index != descriptionIndex && option.data.isDefault )
-                          .map(option => option.setter({ ...option.data,
-                                                           "isDefault": false}));
-        setOptions(oldValue => {
-          var value = oldValue.slice();
-          value.forEach( option => {option.isDefault = false;});
-          return value;
-        });
-      }
     } else {
       setOptions(oldValue => {
         var value = oldValue.slice();
         value[descriptionIndex].description = description;
         value[descriptionIndex].isDefault = isDefault;
-
-        // Reset others "isDefault" to false if the selected one is yes
-        if (isDefault) {
-          value.forEach( (option, index) => {
-                           if (index != descriptionIndex) {
-                             option.isDefault = false;
-                           }
-          });
-          specialOptionsInfo.filter( option => option.data.isDefault )
-                            .map(option => option.setter({ ...option.data,
-                                                              "isDefault": false}));
-        }
         return value;
       });
     }

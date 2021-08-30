@@ -61,6 +61,7 @@ function MultipleChoice(props) {
     .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder))
     // Only extract the labels, internal values and description from the node
     .map(value => [value.label || value.value, value.value, true, value.description, value.isDefault == "true"]);
+  let defaultAnswers = defaults.filter(item => item[IS_DEFAULT_ANSWER_POS]);
   // Locate an option referring to the "none of the above", if it exists
   let naOption = naValue || Object.values(props.questionDefinition)
     .find((value) => value['notApplicable'])?.["value"];
@@ -76,6 +77,15 @@ function MultipleChoice(props) {
     Array.of(existingAnswer[1].value).flat()
     // Only the internal values are stored, turn them into pairs of [label, value] by using their displayedValue
     .map((item, index) => [Array.of(existingAnswer[1].displayedValue).flat()[index], item]);
+  // When opening a form, if there is no existingAnswer but there are AnswerOptions specified as default values,
+  // display those options as selected and ensure they get saved unless modified by the user, by adding them to initialSelection
+  if (initialSelection.length == 0 && defaultAnswers.length > 0) {
+    initialSelection = defaultAnswers.map(item => [item[LABEL_POS], item[VALUE_POS]]);
+    // If there are more default values than the specified maxAnswers, only take into account the first maxAnswers default values.
+    if (maxAnswers > 0 && initialSelection.length > maxAnswers) {
+      initialSelection = initialSelection.slice(0, maxAnswers);
+    }
+  }
   let default_values = defaults.map((thisDefault) => thisDefault[VALUE_POS]);
   let all_options =
     // If the question is a radio, just display the defaults as duplicates
