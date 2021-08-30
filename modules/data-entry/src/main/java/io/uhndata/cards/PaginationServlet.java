@@ -159,11 +159,11 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         final String[] filternotempty = request.getParameterValues("filternotempty");
         final String joinNodetype = request.getParameter("joinchildren");
 
-        // The map that stores questionnaires uuids with prefixes in array and maps it to the
-        // corresponding group of questions uuids with their prefixes (stored in a map)
-        // To be used later on the filter query construction
+        // The map that maps questionnaires uuid to the corresponding questionnaire prefix in sql query like "f1"
         Map<String, String> questionnairesToPrefix = new HashMap<>();
+        // The map that maps questionnaires uuid to the list of corresponding filters uuids
         Map<String, List<String>> questionnairesToFilters = new HashMap<>();
+        // The map that maps filters uuid to the corresponding filter prefix in sql query like "child1"
         Map<String, String> filtersToPrefix = new HashMap<>();
 
         // Add joins
@@ -240,6 +240,19 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         return finalquery;
     }
 
+    /**
+     * Creates joins sql query string. In case of subject search resolve all questions to questionnaires
+     *    and group them by questionnaires and make joins per questionnaire.
+     *
+     * @param joinNodetype the type of node that we make joins for
+     * @param questionnairesToPrefix map that maps questionnaires uuid
+     *        to the corresponding questionnaire prefix in sql query like "f1"
+     * @param questionnairesToFilters map that maps questionnaires uuid to the list of corresponding filters uuids
+     * @param filtersToPrefix map that maps filters uuid to the corresponding filter prefix in sql query like "child1"
+     * @param session the current login session
+     * @param nodeType the type of node that we select all child nodes for
+     * @return filters and assertions as an sql query string
+     */
     @SuppressWarnings({"checkstyle:ParameterNumber"})
     private String processJoins(final String joinNodetype, Map<String, String> questionnairesToPrefix,
         Map<String, List<String>> questionnairesToFilters, Map<String, String> filtersToPrefix,
@@ -272,6 +285,17 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         return joindata.toString();
     }
 
+    /**
+     * Resolve all questions to questionnaires and group filters by questionnaires with prefixes.
+     *
+     * @param questionnairesToPrefix map that maps questionnaires uuid
+     *        to the corresponding questionnaire prefix in sql query like "f1"
+     * @param questionnairesToFilters map that maps questionnaires uuid to the list of corresponding filters uuids
+     * @param filtersToPrefix map that maps filters uuid to the corresponding filter prefix in sql query like "child1"
+     * @param uuids filters uuids
+     * @param prefix the prefix for the sql filter
+     * @param session the current login session
+     */
     private void getQuestionnairesMaps(Map<String, String> questionnairesToPrefix,
             Map<String, List<String>> questionnairesToFilters, Map<String, String> filtersToPrefix,
             final String[] uuids, final String prefix, Session session)
@@ -344,6 +368,16 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         return joindata.toString();
     }
 
+    /**
+     * Creates joins sql query string for the case of subject search.
+     *
+     * @param nodeType node types to join
+     * @param questionnairesToPrefix map that maps questionnaires uuid
+     *        to the corresponding questionnaire prefix in sql query like "f1"
+     * @param questionnairesToFilters map that maps questionnaires uuid to the list of corresponding filters uuids
+     * @param filtersToPrefix map that maps filters uuid to the corresponding filter prefix in sql query like "child1"
+     * @return an sql join query string
+     */
     private String createSubjectJoins(final String nodetype, Map<String, String> questionnairesToPrefix,
             Map<String, List<String>> questionnairesToFilters, Map<String, String> filtersToPrefix)
     {
@@ -484,12 +518,19 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      *
      * @param fields user input field names
      * @param values user input field values
-     * @param comparator user input comparators
+     * @param types user input field types
+     * @param optionalComparators user input optional comparators: if null is passed the = comparator will be assumed
+     * @param nodeType the type of node that we select all child nodes for
+     * @param questionnairesToPrefix map that maps questionnaires uuid
+     *        to the corresponding questionnaire prefix in sql query like "f1"
+     * @param questionnairesToFilters map that maps questionnaires uuid to the list of corresponding filters uuids
+     * @param filtersToPrefix map that maps filters uuid to the corresponding filter prefix in sql query like "child1"
+     * @return filters and assertions as an sql query string
      * @throws IllegalArgumentException when the number of input fields are not equal
      */
     @SuppressWarnings({"checkstyle:CyclomaticComplexity", "checkstyle:NPathComplexity", "checkstyle:ParameterNumber"})
     private String parseFilter(final String[] fields, final String[] values, final String[] types,
-        final String[] comparator, final String nodeType, Map<String, String> questionnairesToPrefix,
+        final String[] optionalComparators, final String nodeType, Map<String, String> questionnairesToPrefix,
         final Map<String, List<String>> questionnairesToFilters,
         final Map<String, String> filtersToPrefix) throws IllegalArgumentException
     {
@@ -502,12 +543,12 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             throw new IllegalArgumentException("fieldname and fieldvalue must have the same number of values");
         }
 
-        if (comparator != null && comparator.length != values.length) {
+        if (optionalComparators != null && optionalComparators.length != values.length) {
             throw new IllegalArgumentException("comparators and fieldvalue must have the same number of values");
         }
 
-        String[] comparators = comparator;
-        if (comparator == null) {
+        String[] comparators = optionalComparators;
+        if (optionalComparators == null) {
             // Use = as the default
             comparators = new String[fields.length];
             Arrays.fill(comparators, "=");
@@ -596,6 +637,16 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         return filterdata.toString();
     }
 
+    /**
+     * Add filters on subject uuid, questionnaire or date separately before other filters.
+     *
+     * @param filter user input filter uuid
+     * @param value user input filter value
+     * @param comparator unary comparator to assert
+     * @param prefix prefix for the child nodes
+     * @param subjectSelector the selector field for subject filter
+     * @return JCR_SQL conditionals for the input
+     */
     private String addSpecialFilter(final String filter, final String value, final String comparator,
         final String prefix, final String subjectSelector)
     {
@@ -635,6 +686,16 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         return filterdata.toString();
     }
 
+    /**
+     * Add all other filters to the sql query.
+     *
+     * @param filter user input filter uuid
+     * @param value user input filter value
+     * @param comparator unary comparator to assert
+     * @param type the field data type
+     * @param prefix prefix for the child nodes
+     * @return JCR_SQL conditionals for the input
+     */
     @SuppressWarnings({"checkstyle:CyclomaticComplexity"})
     private String addSingleFilter(final String filter, final String value, final String comparator, final String type,
             final String prefix)
@@ -701,6 +762,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      * Parse out empty & not empty fields into a series of JCR_SQL2 conditionals.
      *
      * @param empties user input field names to assert the nonexistence of content for
+     * @param filtersToPrefix map that maps filters uuid to the corresponding filter prefix in sql query like "child1"
      * @param notempties user input field names to assert the existence of content for
      * @return JCR_SQL conditionals for the input
      */
@@ -717,6 +779,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      * Parse out a field and its unary comparison into a series of JCR_SQL2 conditionals.
      *
      * @param fieldnames user input field names
+     * @param filtersToPrefix map that maps filters uuid to the corresponding filter prefix in sql query like "child1"
      * @param childprefix prefix for the child nodes
      * @param comparison unary comparator to assert
      * @return JCR_SQL conditionals for the input
