@@ -42,7 +42,9 @@ class SignIn extends React.Component {
       failedLogin: false,
 
       username: "",
-      password: ""
+      password: "",
+
+      phase: "USERNAME_ENTRY"
     };
   }
 
@@ -102,37 +104,54 @@ class SignIn extends React.Component {
 
             <form className={classes.form} onSubmit={(event)=>{event.preventDefault(); this.submitLogin();}} >
 
-              <FormControl margin="normal" required fullWidth>
-                <InputLabel htmlFor="j_username">Username</InputLabel>
-                <Input id="j_username" name="j_username" autoComplete="email" autoFocus onChange={(event) => {this.setState({username: event.target.value});}}/>
-              </FormControl>
+              { (this.state.phase == "USERNAME_ENTRY") &&
+                <React.Fragment>
+                  <FormControl margin="normal" required fullWidth>
+                    <InputLabel htmlFor="j_username">Username</InputLabel>
+                    <Input id="j_username" name="j_username" autoComplete="email" autoFocus onChange={(event) => {this.setState({username: event.target.value});}}/>
+                  </FormControl>
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    className={classes.submit}
+                    onClick={() => this.setState({phase: "PASSWORD_ENTRY"})}
+                  >
+                    Next
+                  </Button>
+                </React.Fragment>
+              }
 
-              <FormControl margin="normal" required fullWidth>
-                <InputLabel htmlFor="j_password">Password</InputLabel>
-                <Input name="j_password" type={this.state.passwordIsMasked ? 'text' : 'password'} id="j_password" autoComplete="current-password" onChange={(event) => {this.setState({password: event.target.value});}}
-                  endAdornment={
-                  <InputAdornment position="end">
-                    <Tooltip title={this.state.passwordIsMasked ? "Mask Password" : "Show Password"}>
-                      <IconButton
-                        aria-label="Toggle password visibility"
-                        onClick={this.togglePasswordMask}
-                      >
-                        {this.state.passwordIsMasked ? <VisibilityIcon/> : <VisibilityOffIcon/>}
-                      </IconButton>
-                    </Tooltip>
-                  </InputAdornment>
-                }
-              />
-              </FormControl>
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-              >
-                Sign in
-              </Button>
+              { (this.state.phase == "PASSWORD_ENTRY") &&
+                <React.Fragment>
+                  <FormControl margin="normal" required fullWidth>
+                    <InputLabel htmlFor="j_password">Password</InputLabel>
+                    <Input name="j_password" type={this.state.passwordIsMasked ? 'text' : 'password'} id="j_password" autoComplete="current-password" onChange={(event) => {this.setState({password: event.target.value});}}
+                      endAdornment={
+                      <InputAdornment position="end">
+                        <Tooltip title={this.state.passwordIsMasked ? "Mask Password" : "Show Password"}>
+                          <IconButton
+                            aria-label="Toggle password visibility"
+                            onClick={this.togglePasswordMask}
+                          >
+                            {this.state.passwordIsMasked ? <VisibilityIcon/> : <VisibilityOffIcon/>}
+                          </IconButton>
+                        </Tooltip>
+                      </InputAdornment>
+                    }
+                  />
+                  </FormControl>
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    className={classes.submit}
+                  >
+                    Sign in
+                  </Button>
+                </React.Fragment>
+              }
             </form>
         </div>
     );
