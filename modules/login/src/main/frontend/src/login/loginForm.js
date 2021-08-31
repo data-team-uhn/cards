@@ -126,9 +126,13 @@ class SignIn extends React.Component {
                         .then((resp) => {
                           if (resp.ok) {
                             this.setState({failedLogin: false});
+                            return resp.json();
                           } else {
                             this.setState({failedLogin: true});
                           }
+                        })
+                        .then((data) => {
+                          data && window.open(data.value + "&username=" + this.state.username, "FederatedLoginPopupWindow", "width=600,height=600");
                         })
                         .catch((err) => this.setState({failedLogin: true}))
                       } else {
