@@ -53,9 +53,10 @@ function SubjectView(props) {
   const [ subjectTypes, setSubjectTypes] = useState([])
   const [ tabsLoading, setTabsLoading ] = useState(null);
   const [ columns, setColumns ] = React.useState(props.columns || null);
+  const [ filtersJsonString, setFiltersJsonString ] = useState(expanded ? location.hash.split(/&filters=(.+)/)[1] || "" : "");
   const hasSubjects = tabsLoading === false && subjectTypes.length > 0;
 
-  const activeTabParam = location.hash.substr(1);
+  const activeTabParam = location.hash.substr(1).split('&')[0];
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -123,7 +124,7 @@ function SubjectView(props) {
         action={
           !expanded &&
           <Tooltip title="Expand">
-            <Link to={"/content.html/Subjects#" + ( subjectTypes.length > 0 ? subjectTypes[activeTab]['@name'] : '' )}>
+            <Link to={"/content.html/Subjects#" + ( subjectTypes.length > 0 ? subjectTypes[activeTab]['@name'] : '' ) + (filtersJsonString ? "&filters=" + filtersJsonString : "")}>
               <IconButton>
                 <LaunchIcon/>
               </IconButton>
@@ -156,6 +157,8 @@ function SubjectView(props) {
               disableTopPagination={!topPagination}
               filters
               joinChildren="cards:Answer"
+              onFiltersChange={(str) => !expanded && setFiltersJsonString(str)}
+              filtersJsonString={expanded ? filtersJsonString : ""}
             />
           : <Typography>No results</Typography>
       }
