@@ -7,9 +7,7 @@
   to you under the Apache License, Version 2.0 (the
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
-
   http://www.apache.org/licenses/LICENSE-2.0
-
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -22,35 +20,27 @@
 
   <parent>
     <groupId>io.uhndata.cards</groupId>
-    <artifactId>cards-parent</artifactId>
+    <artifactId>cards-modules</artifactId>
     <version>0.9-SNAPSHOT</version>
   </parent>
 
-  <artifactId>cards-modules</artifactId>
-  <packaging>pom</packaging>
-  <name>CARDS Modules</name>
+  <artifactId>cards-modules-uhn-saml</artifactId>
+  <packaging>bundle</packaging>
+  <name>CARDS - UHN SAML</name>
 
-  <modules>
-    <module>startup-customization</module>
-    <module>form-completion-status</module>
-    <module>commons</module>
-    <module>ui-extension</module>
-    <module>login</module>
-    <module>homepage</module>
-    <module>pedigree</module>
-    <module>subjects</module>
-    <module>data-entry</module>
-    <module>ldap-support</module>
-    <module>utils</module>
-    <module>principals</module>
-    <module>permissions</module>
-    <module>permissions-ownership</module>
-    <module>vocabularies</module>
-    <module>demo-banner</module>
-    <module>versioning</module>
-    <module>favicon</module>
-    <module>upgrade-marker</module>
-    <module>vocabularies-ignore</module>
-    <module>uhn-saml</module>
-  </modules>
+  <build>
+    <plugins>
+      <!-- This is an OSGi bundle -->
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Sling-Initial-Content>SLING-INF/content/;path:=/apps/cards/SAMLDomains/</Sling-Initial-Content>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

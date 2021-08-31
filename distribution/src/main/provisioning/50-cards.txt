@@ -55,6 +55,9 @@
     # Ignore unwanted terms when installing vocabularies from BioPortal
     io.uhndata.cards/cards-modules-vocabularies-ignore/${cards.version}
 
+    # Allow for users to SAML login with their UHN account
+    io.uhndata.cards/cards-modules-uhn-saml/${cards.version}
+
 [artifacts runModes=permissions_ownership]
     io.uhndata.cards/cards-permissions-ownership/${cards.version}
 

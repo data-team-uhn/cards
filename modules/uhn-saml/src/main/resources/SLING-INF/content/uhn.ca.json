@@ -1,0 +1,4 @@
+{
+  "jcr:primaryType": "nt:unstructured",
+  "value": "https://fs.uhn.ca/adfs/ls/?wa=wsignin1.0&wtrealm=urn:federation:MicrosoftOnline"
+}
