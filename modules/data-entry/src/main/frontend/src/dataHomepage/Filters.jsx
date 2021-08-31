@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useCallback, useRef, useState, useContext } from "react";
+import React, { useCallback, useRef, useState, useContext, useEffect } from "react";
 import { Chip, Typography, Button, Dialog, CircularProgress, IconButton } from "@material-ui/core";
 import { DialogActions, DialogContent, DialogTitle, Grid, Select, MenuItem, TextField, withStyles } from "@material-ui/core";
 import Add from "@material-ui/icons/Add";
@@ -41,7 +41,7 @@ const ALL_QUESTIONNAIRES_URL = "/Questionnaires.deep.json";
 const FILTER_URL = "/Questionnaires.filters";
 
 function Filters(props) {
-  const { classes, disabled, onChangeFilters, questionnaire } = props;
+  const { classes, disabled, onChangeFilters, questionnaire, filtersJsonString } = props;
   // Filters, as displayed in the dialog, and filters as actually saved
   const [editingFilters, setEditingFilters] = useState([]);
   const [activeFilters, setActiveFilters] = useState([]);
@@ -80,6 +80,17 @@ function Filters(props) {
       focusRef.current.focus();
     }
   }
+
+  // Parse filters that were passed from one of dashboard table expansions
+  // When new data is added, trigger a new fetch
+  useEffect(() => {
+    if (filtersJsonString){
+      // Parse out the filters
+      let newFilters = JSON.parse(window.atob(filtersJsonString));
+      setEditingFilters(newFilters);
+      setActiveFilters(newFilters);
+    }
+  }, [filtersJsonString]);
 
   // Obtain information about the filters that can be applied
   let grabFilters = () => {
