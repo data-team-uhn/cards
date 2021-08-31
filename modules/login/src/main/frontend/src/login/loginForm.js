@@ -115,7 +115,26 @@ class SignIn extends React.Component {
                     variant="contained"
                     color="primary"
                     className={classes.submit}
-                    onClick={() => this.setState({phase: "PASSWORD_ENTRY"})}
+                    onClick={() => {
+                      if (this.state.username.split("@").length - 1 == 0) {
+                        this.setState({phase: "PASSWORD_ENTRY"});
+                      } else if (this.state.username.split("@").length - 1 == 1) {
+                        let remoteUser = this.state.username.split("@")[0];
+                        let remoteDomain = this.state.username.split("@")[1];
+                        // Do a fetch() to see if we have a SAML configuration for this domain
+                        fetch(window.location.origin + "/apps/cards/SAMLDomains/" + remoteDomain + ".json")
+                        .then((resp) => {
+                          if (resp.ok) {
+                            this.setState({failedLogin: false});
+                          } else {
+                            this.setState({failedLogin: true});
+                          }
+                        })
+                        .catch((err) => this.setState({failedLogin: true}))
+                      } else {
+                        this.setState({failedLogin: true});
+                      }
+                    }}
                   >
                     Next
                   </Button>
