@@ -92,7 +92,10 @@ function UserStatistics(props) {
         fetch( url, { method: 'POST', body: JSON.stringify(requestData) })
           .then((response) => response.ok ? response.json() : Promise.reject(response))
           .then((statJson) => {
-            setCurrentStatistic(currentStatistic => [...currentStatistic, JSON.stringify(statJson)]);
+            // Also include the definition of the chart type
+            statJson["type"] = fullJson["type"];
+            console.log(statJson);
+            setCurrentStatistic(currentStatistic => [...currentStatistic, statJson]);
           })
           .catch(handleError);
 
@@ -108,7 +111,7 @@ function UserStatistics(props) {
     <React.Fragment>
       <Grid container spacing={3}>
         {currentStatistic && currentStatistic.map((stat) => {
-          return <Statistic definition={JSON.parse(stat)} key={stat} />
+          return <Statistic definition={stat} key={stat} />
         })}
       </Grid>
     </React.Fragment>
