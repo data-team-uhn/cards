@@ -64,15 +64,6 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StatisticQueryServlet.class);
 
-    private ThreadLocal<Boolean> splitExists = new ThreadLocal<Boolean>()
-    {
-        @Override
-        protected Boolean initialValue()
-        {
-            return Boolean.FALSE;
-        }
-    };
-
     @SuppressWarnings({"checkstyle:ExecutableStatementCount", "checkstyle:CyclomaticComplexity", "checkstyle:JavaNCSS"})
     @Override
     protected void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response)
@@ -105,10 +96,6 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         }
 
         try {
-            // Check if split variable exists
-            if (splitVariable != null) {
-                this.splitExists.set(Boolean.TRUE);
-            }
             // Steps to returning the calculated statistic:
             // Grab the question that has data for the given x-axis (xVar)
             Node question = request.getResourceResolver().adaptTo(Session.class).getNode(xVariable);
@@ -122,7 +109,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
                 .getNode(yVariable);
 
             // Grab all answers that have this question filled out, and the split var (if it exists)
-            if (this.splitExists.get()) {
+            if (splitVariable != null) {
                 Node split = request.getResourceResolver().adaptTo(Session.class).getNode(splitVariable);
                 data = getAnswersWithType(data, "x", question, request.getResourceResolver());
                 data = getAnswersWithType(data, "split", split, request.getResourceResolver());
@@ -149,7 +136,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
             builder.add("name", statisticName);
             builder.add("x-label", xLabel);
             builder.add("y-label", yLabel);
-            if (this.splitExists.get()) {
+            if (splitVariable != null) {
                 Node split = request.getResourceResolver().adaptTo(Session.class).getNode(splitVariable);
                 String splitLabel = split.getProperty("text").getString();
                 builder.add("split-label", splitLabel);
