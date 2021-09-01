@@ -347,6 +347,7 @@ public class DeleteServlet extends SlingAllMethodsServlet
         try {
             int formCount = 0;
             int otherCount = 0;
+            int answerCount = 0;
             List<String> subjects = new ArrayList<String>();
             List<String> subjectTypes = new ArrayList<String>();
             List<String> questionnaires = new ArrayList<String>();
@@ -366,7 +367,11 @@ public class DeleteServlet extends SlingAllMethodsServlet
                         questionnaires.add(n.getProperty("title").getString());
                         break;
                     default:
-                        otherCount++;
+                        if ("cards/Answer".equals(n.getProperty("sling:resourceSuperType").getString())) {
+                            answerCount++;
+                        } else {
+                            otherCount++;
+                        }
                 }
             }
 
@@ -375,6 +380,7 @@ public class DeleteServlet extends SlingAllMethodsServlet
             addNodesToResult(results, "subject", subjects);
             addNodesToResult(results, "subject type", subjectTypes);
             addNodesToResult(results, "questionnaire", questionnaires);
+            addNodesToResult(results, "answer", answerCount);
             addNodesToResult(results, "other", otherCount);
 
             return stringArrayToList(results);
