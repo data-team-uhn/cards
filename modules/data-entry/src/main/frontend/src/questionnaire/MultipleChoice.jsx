@@ -95,7 +95,7 @@ function MultipleChoice(props) {
   const [options, setOptions] = useState(all_options);
 
   // If this is a bare input or radio input, we need to pre-populate the blank input with the custom answer (if available)
-  let inputPrefill = (isBare || (isRadio && default_values.indexOf(initialSelection[0]?.[VALUE_POS]) < 0)) && existingAnswer?.[1] || '';
+  let inputPrefill = (isBare || (isRadio && default_values.indexOf(String(initialSelection[0]?.[VALUE_POS])) < 0)) && existingAnswer?.[1] || '';
   const [ghostName, setGhostName] = useState(inputPrefill?.displayedValue);
   const [ghostValue, setGhostValue] = useState(inputPrefill?.value || GHOST_SENTINEL);
   const ghostSelected = selection.some(element => {return String(element[VALUE_POS]) === ghostValue || element[LABEL_POS] === ghostName});
