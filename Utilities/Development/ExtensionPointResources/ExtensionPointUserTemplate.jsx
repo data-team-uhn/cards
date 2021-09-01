@@ -21,13 +21,13 @@ import React, { useEffect, useState } from "react";
 import { Grid } from '@material-ui/core';
 import { loadExtensions } from "../uiextension/extensionManager";
 
-export default function NewExtensionPoint(props) {
+export default function _____DEFAULT_FUNCTION_NAME_____(props) {
   const [ extensionPointComponents, setExtensionPointComponents ] = useState([]);
   const [ isInitialized, setIsInitialized ] = useState(false);
 
   useEffect(() => {
     if (!isInitialized) {
-      loadExtensions("MyExtensionPoint")
+      loadExtensions("_____EXTENSION_POINT_NAME_____")
       .then((resp) => {
         let loadedComponents = [];
         for (let i = 0; i < resp.length; i++) {
