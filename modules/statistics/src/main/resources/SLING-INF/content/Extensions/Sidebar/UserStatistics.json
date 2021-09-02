@@ -3,6 +3,6 @@
     "cards:extensionPointId": "cards/coreUI/sidebar/entry",
     "cards:extensionName": "Statistics",
     "cards:targetURL": "/content.html/Statistics/User",
-    "cards:icon": "asset:cards-statistics.subjectsIcon.js",
+    "cards:icon": "asset:cards-statistics.statsIcon.js",
     "cards:defaultOrder": 7
 }
