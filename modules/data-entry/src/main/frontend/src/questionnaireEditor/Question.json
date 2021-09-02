@@ -69,6 +69,24 @@
           }
         }
       },
+      "double": {
+        "minValue": "double",
+        "maxValue": "double",
+        "minAnswers": "long",
+        "maxAnswers": "long",
+        "unitOfMeasurement" : "string",
+        "displayMode": {
+          "input": {},
+          "list": {
+            "compact" : "boolean",
+            "answerOptions" : "options"
+          },
+          "list+input" : {
+            "compact" : "boolean",
+            "answerOptions" : "options"
+          }
+        }
+      },
       "file": {
         "minAnswers": "long",
         "maxAnswers": "long",
