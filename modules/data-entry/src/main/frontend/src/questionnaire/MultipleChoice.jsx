@@ -83,7 +83,7 @@ function MultipleChoice(props) {
     // If the question is a radio, just display the defaults as duplicates
     isRadio ? defaults.slice() :
     // Otherwise, display as options the union of all defaults + existing answers, without duplicates
-    defaults.slice().concat(initialSelection.filter( (selectedAnswer) => default_values.indexOf(selectedAnswer[VALUE_POS]) < 0));
+    defaults.slice().concat(initialSelection.filter( (selectedAnswer) => default_values.indexOf(String(selectedAnswer[VALUE_POS])) < 0));
 
   // If the field allows for multiple inputs (eg. maxAnswers !== 1),
   // No user input (aka. an empty input) takes the place of an empty string
@@ -95,10 +95,10 @@ function MultipleChoice(props) {
   const [options, setOptions] = useState(all_options);
 
   // If this is a bare input or radio input, we need to pre-populate the blank input with the custom answer (if available)
-  let inputPrefill = (isBare || (isRadio && default_values.indexOf(initialSelection[0]?.[VALUE_POS]) < 0)) && existingAnswer?.[1] || '';
+  let inputPrefill = (isBare || (isRadio && default_values.indexOf(String(initialSelection[0]?.[VALUE_POS])) < 0)) && existingAnswer?.[1] || '';
   const [ghostName, setGhostName] = useState(inputPrefill?.displayedValue);
   const [ghostValue, setGhostValue] = useState(inputPrefill?.value || GHOST_SENTINEL);
-  const ghostSelected = selection.some(element => {return element[VALUE_POS] === ghostValue || element[LABEL_POS] === ghostName});
+  const ghostSelected = selection.some(element => {return String(element[VALUE_POS]) === ghostValue || element[LABEL_POS] === ghostName});
   const disabled = maxAnswers > 1 && selection.length >= maxAnswers;
   let inputEl = null;
   const [separatorDetectionEnabled, setSeparatorDetectionEnabled] = useState(enableSeparatorDetection);
@@ -114,7 +114,7 @@ function MultipleChoice(props) {
     setSelection( old => {
       // Selecting a radio button option will select only that option
       if (isRadio || isBare) {
-        let defaultOption = defaults.filter((option) => {return option[VALUE_POS] === name || option[LABEL_POS] === name})[0];
+        let defaultOption = defaults.filter((option) => {return String(option[VALUE_POS]) === name || option[LABEL_POS] === name})[0];
         if (defaultOption) {
           // Selected the matching value, we no longer need the input
           return [[defaultOption[LABEL_POS], defaultOption[VALUE_POS]]];
@@ -149,7 +149,7 @@ function MultipleChoice(props) {
       }
 
       // Do not add duplicates
-      if (old.some(element => {return element[VALUE_POS] === id})) {
+      if (old.some(element => {return String(element[VALUE_POS]) === id})) {
         return old;
       }
 
@@ -163,7 +163,7 @@ function MultipleChoice(props) {
 
       // Check if any of the predefined options matches the user input. If yes, select it instead of adding a new entry
       let defaultOption = defaults.filter((option) => {
-        return (option[VALUE_POS] === id || option[LABEL_POS] === name)
+        return (String(option[VALUE_POS]) === id || option[LABEL_POS] === name)
       })[0];
       if (defaultOption) {
         newSelection.push([defaultOption[LABEL_POS], defaultOption[VALUE_POS]]);
@@ -179,7 +179,7 @@ function MultipleChoice(props) {
   let unselect = (old, id) => {
     let newSelection = old.filter(
       (element) => {
-        return !(element[VALUE_POS] === id)
+        return !(String(element[VALUE_POS]) === id)
       });
 
     // Insert the empty string if nothing currently exists
@@ -452,7 +452,7 @@ function MultipleChoice(props) {
           aria-label="selection"
           name={props.questionDefinition['jcr:uuid'] + (instanceId || '')}
           className={classes.selectionList}
-          value={selection.length > 0 && selection[0][VALUE_POS]}
+          value={selection.length > 0 && String(selection[0][VALUE_POS])}
         >
           <List className={classes.optionsList}>
           {generateDefaultOptions(options, selection, disabled, isRadio, selectNonGhostOption, removeOption)}
@@ -523,7 +523,7 @@ function generateDefaultOptions(defaults, selection, disabled, isRadio, onClick,
         id={childData[VALUE_POS]}
         key={"value-"+childData[VALUE_POS]}
         name={childData[LABEL_POS]}
-        checked={selection.some((sel) => {return (sel[LABEL_POS] === childData[LABEL_POS] || sel[VALUE_POS] === childData[VALUE_POS])})}
+        checked={selection.some((sel) => {return (sel[LABEL_POS] === childData[LABEL_POS] || String(sel[VALUE_POS]) === childData[VALUE_POS])})}
         disabled={disabled}
         onClick={onClick}
         onDelete={onDelete}
