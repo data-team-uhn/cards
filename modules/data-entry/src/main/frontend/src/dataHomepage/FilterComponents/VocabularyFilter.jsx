@@ -22,11 +22,11 @@ import { withStyles } from "@material-ui/core";
 import PropTypes from "prop-types";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
-import { DEFAULT_COMPARATORS, UNARY_COMPARATORS, VALUE_COMPARATORS } from "./FilterComparators.jsx";
+import { DEFAULT_COMPARATORS, UNARY_COMPARATORS } from "./FilterComparators.jsx";
 import VocabularyQuery from "../../vocabQuery/VocabularyQuery.jsx";
 import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
 
-const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS).concat(VALUE_COMPARATORS);
+const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
 
 /**
  * Display a filter on a vocabulary answer of a form. This is not meant to be instantiated directly, but is returned from FilterComponentManager's
