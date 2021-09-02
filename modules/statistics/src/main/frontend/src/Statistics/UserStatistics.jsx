@@ -110,8 +110,8 @@ function UserStatistics(props) {
   return (
     <React.Fragment>
       <Grid container spacing={3}>
-        {currentStatistic && currentStatistic.map((stat) => {
-          return <Statistic definition={stat} key={stat} />
+        {currentStatistic && currentStatistic.map((stat, i) => {
+          return <Statistic definition={stat} key={i} />
         })}
       </Grid>
     </React.Fragment>
