@@ -51,6 +51,7 @@ function Statistic(props) {
       return result;
     } else {
       // Integers represent a single point
+      keys[label] = 1;
       return {[label]: data};
     }
   }
