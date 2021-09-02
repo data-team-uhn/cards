@@ -151,18 +151,18 @@ class SignIn extends React.Component {
                     <InputLabel htmlFor="j_password">Password for {this.state.username}</InputLabel>
                     <Input name="j_password" type={this.state.passwordIsMasked ? 'text' : 'password'} id="j_password" autoComplete="current-password" autoFocus onChange={(event) => {this.setState({password: event.target.value});}}
                       endAdornment={
-                      <InputAdornment position="end">
-                        <Tooltip title={this.state.passwordIsMasked ? "Mask Password" : "Show Password"}>
-                          <IconButton
-                            aria-label="Toggle password visibility"
-                            onClick={this.togglePasswordMask}
-                          >
-                            {this.state.passwordIsMasked ? <VisibilityIcon/> : <VisibilityOffIcon/>}
-                          </IconButton>
-                        </Tooltip>
-                      </InputAdornment>
-                    }
-                  />
+                        <InputAdornment position="end">
+                          <Tooltip title={this.state.passwordIsMasked ? "Mask Password" : "Show Password"}>
+                            <IconButton
+                              aria-label="Toggle password visibility"
+                              onClick={this.togglePasswordMask}
+                            >
+                              {this.state.passwordIsMasked ? <VisibilityIcon/> : <VisibilityOffIcon/>}
+                            </IconButton>
+                          </Tooltip>
+                        </InputAdornment>
+                      }
+                    />
                   </FormControl>
                   <Button
                     type="submit"
