@@ -21,6 +21,7 @@ import PropTypes from 'prop-types';
 import {
     Button,
     FormControl,
+    Grid,
     IconButton,
     Input,
     InputAdornment,
@@ -164,15 +165,40 @@ class SignIn extends React.Component {
                       }
                     />
                   </FormControl>
-                  <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                    className={classes.submit}
-                  >
-                    Sign in
-                  </Button>
+                  <Grid container direction="row" justifyContent="center" alignItems="center">
+                    <Grid item xs={3}>
+                    </Grid>
+                    <Grid item xs={3}>
+                      <Button
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        className={classes.submit}
+                        onClick={() => {
+                          this.setState({
+                            username: "",
+                            password: "",
+                            phase: "USERNAME_ENTRY"
+                          });
+                        }}
+                      >
+                        Back
+                      </Button>
+                    </Grid>
+                    <Grid item xs={3}>
+                      <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        className={classes.submit}
+                      >
+                        Sign in
+                      </Button>
+                    </Grid>
+                    <Grid item xs={3}>
+                    </Grid>
+                  </Grid>
                 </React.Fragment>
               }
             </form>
