@@ -20,6 +20,7 @@ import React, { useState } from "react";
 import {
   Card,
   CardContent,
+  CardHeader,
   Grid,
   withStyles
 } from "@material-ui/core";
@@ -72,29 +73,30 @@ function Statistic(props) {
     chartColours = chartColours.concat(palette("rainbow", numKeys-DEFAULT_PALETTE.length).map((col) => "#" + col));
   }
 
-  return <Card>
-    <CardContent>
-        <Grid container alignItems='flex-end' spacing={2}>
-          <Grid item xs={12}>
-            <ChartType width={730} height={250} data={rechartsData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="x">
-                <Label value={definition["x-label"]} offset={0} position="insideBottom" />
-              </XAxis>
-              <YAxis allowDecimals={false}  label={{ value: definition["y-label"], angle: -90, position: 'insideLeft' }} />
-              <Tooltip />
-              <Legend />
-              {Object.keys(allFields).map((field, idx) =>
-                isBar ?
-                  <Bar dataKey={field} fill={chartColours[idx]} key={idx}/>
-                :
-                  <Line dataKey={field} type="monotone" stroke={chartColours[idx]} key={idx} />
-              )}
-            </ChartType>
-          </Grid>
-        </Grid>
-    </CardContent>
-  </Card>
+  return <Grid item md={12} lg={6}>
+    <Card>
+      <CardHeader
+        title={definition["name"]}
+        />
+      <CardContent>
+        <ChartType width={730} height={250} data={rechartsData}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="x">
+            <Label value={definition["x-label"]} offset={0} position="insideBottom" />
+          </XAxis>
+          <YAxis allowDecimals={false}  label={{ value: definition["y-label"], angle: -90, position: 'insideLeft' }} />
+          <Tooltip />
+          <Legend />
+          {Object.keys(allFields).map((field, idx) =>
+            isBar ?
+              <Bar dataKey={field} fill={chartColours[idx]} key={idx}/>
+            :
+              <Line dataKey={field} type="monotone" stroke={chartColours[idx]} key={idx} />
+          )}
+          </ChartType>
+      </CardContent>
+    </Card>
+  </Grid>
 }
 
 export default withStyles(statisticsStyle, {withTheme: true})(Statistic);
