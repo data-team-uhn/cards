@@ -96,7 +96,6 @@ let QuestionnaireItemCard = (props) => {
                entryPath={data["@path"]}
                entryName={title || data.label || data.text || data["@name"]}
                entryType={type}
-               warning={data["@referenced"] || false}
                onComplete={onActionDone}
             />
             }
