@@ -148,8 +148,8 @@ class SignIn extends React.Component {
               { (this.state.phase == "PASSWORD_ENTRY") &&
                 <React.Fragment>
                   <FormControl margin="normal" required fullWidth>
-                    <InputLabel htmlFor="j_password">Password</InputLabel>
-                    <Input name="j_password" type={this.state.passwordIsMasked ? 'text' : 'password'} id="j_password" autoComplete="current-password" onChange={(event) => {this.setState({password: event.target.value});}}
+                    <InputLabel htmlFor="j_password">Password for {this.state.username}</InputLabel>
+                    <Input name="j_password" type={this.state.passwordIsMasked ? 'text' : 'password'} id="j_password" autoComplete="current-password" autoFocus onChange={(event) => {this.setState({password: event.target.value});}}
                       endAdornment={
                       <InputAdornment position="end">
                         <Tooltip title={this.state.passwordIsMasked ? "Mask Password" : "Show Password"}>
