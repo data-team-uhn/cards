@@ -133,7 +133,16 @@ class SignIn extends React.Component {
                           }
                         })
                         .then((data) => {
-                          data && window.open(data.value + "&username=" + this.state.username, "FederatedLoginPopupWindow", "width=600,height=600");
+                          let popupWidth = 600;
+                          let popupHeight = 600;
+                          let screenLeft = window.screenLeft !== undefined ? window.screenLeft : window.screenX;
+                          let screenTop = window.screenTop !== undefined ? window.screenTop : window.screenY;
+                          let screenWidth = window.innerWidth;
+                          let screenHeight = window.innerHeight;
+                          let systemZoom = screenWidth / window.screen.availWidth;
+                          let left = (screenWidth - popupWidth) / 2 / systemZoom + screenLeft;
+                          let top = (screenHeight - popupHeight) / 2 / systemZoom + screenTop;
+                          data && window.open(data.value + "&username=" + this.state.username, "FederatedLoginPopupWindow", "width=" + (popupWidth / systemZoom) + ",height=" + (popupHeight / systemZoom) + ",top=" + top + ",left=" + left);
                         })
                         .catch((err) => this.setState({failedLogin: true}))
                       } else {
