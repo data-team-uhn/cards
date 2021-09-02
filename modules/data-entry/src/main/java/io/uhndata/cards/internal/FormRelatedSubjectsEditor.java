@@ -75,12 +75,20 @@ public class FormRelatedSubjectsEditor extends DefaultEditor
     public Editor childNodeAdded(final String name, final NodeState after)
         throws CommitFailedException
     {
+        if (isForm(this.currentNodeBuilder)) {
+            // If this is already a form, there's no need to descend further down, there aren't any sub-forms
+            return null;
+        }
         return new FormRelatedSubjectsEditor(this.currentNodeBuilder.getChildNode(name), this.session);
     }
 
     @Override
     public Editor childNodeChanged(String name, NodeState before, NodeState after) throws CommitFailedException
     {
+        if (isForm(this.currentNodeBuilder)) {
+            // If this is already a form, there's no need to descend further down, there aren't any sub-forms
+            return null;
+        }
         return new FormRelatedSubjectsEditor(this.currentNodeBuilder.getChildNode(name), this.session);
     }
 
