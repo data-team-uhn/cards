@@ -84,13 +84,21 @@ function Filters(props) {
   // Parse filters that were passed from one of dashboard table expansions
   // When new data is added, trigger a new fetch
   useEffect(() => {
-    if (filtersJsonString){
+    if (!filterRequestSent) {
+      grabFilters();
+    }
+
+    if (filtersJsonString && Object.keys(questionDefinitions).length > 0) {
       // Parse out the filters
       let newFilters = JSON.parse(window.atob(filtersJsonString));
+      newFilters.forEach( (newFilter) => {
+        getOutputChoices(newFilter.name);
+      });
       setEditingFilters(newFilters);
       setActiveFilters(newFilters);
+      onChangeFilters && onChangeFilters(newFilters);
     }
-  }, [filtersJsonString]);
+  }, [filtersJsonString, questionDefinitions]);
 
   // Obtain information about the filters that can be applied
   let grabFilters = () => {
