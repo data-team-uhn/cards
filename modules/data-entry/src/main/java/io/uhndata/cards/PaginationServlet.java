@@ -117,7 +117,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         /** The default comparator to use, when no comparator is specified in the request. */
         private final String comparator;
 
-        /** Whether this is a valueless filter, like "is null" */
+        /** Whether this is a valueless filter, like "is null". */
         private final boolean valueless;
 
         FilterType(final String prefix, final String parameterName, final String comparator, final boolean valueless)
