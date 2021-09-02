@@ -23,6 +23,7 @@ import {
   Grid,
   withStyles
 } from "@material-ui/core";
+import palette from "google-palette";
 import {
    BarChart, Bar, CartesianGrid, Line, LineChart, XAxis, YAxis, Tooltip, Label, Legend,
 } from "recharts";
@@ -30,31 +31,45 @@ import statisticsStyle from "./statisticsStyle.jsx";
 
 // A single statistic, displayed as a chart
 function Statistic(props) {
-  const { classes, definition } = props;
+  const { classes, theme, definition } = props;
+  // Colours to be used before relying on the google palette
+  const DEFAULT_PALETTE = [
+    theme.palette.primary.main,
+    theme.palette.secondary.main
+  ];
 
   // Transform our input data from the statistics servlet into something recharts can understand
-  let expandData = (data) => {
+  // Note that keys is transformed in this process
+  let expandData = (label, data, keys) => {
     if (typeof(data) === 'object') {
       // Objects represent data with split
-      let result = [];
+      let result = {};
       for (const [key, value] of Object.entries(data)) {
-        result = result.concat(new Array(value).fill(key));
+        result[key] = value;
+        keys[key] = 1;
       }
       return result;
     } else {
       // Integers represent a single point
-      return data;
+      return {[label]: data};
     }
   }
 
   // Transform the data into recharts' format
   let rechartsData = [];
+  let allFields = {};
   for (const [key, value] of Object.entries(definition["data"])) {
-    rechartsData.push({"x": key, [definition["y-label"]]: expandData(value)});
+    rechartsData.push({"x": key, ...expandData(definition["y-label"], value, allFields)});
   }
 
-  let ChartType = definition["type"] == "bar" ? BarChart : LineChart;
-  let bar = definition["type"] == "bar" ? <Bar dataKey={definition["y-label"]} fill="#8884d8" /> : <Line dataKey={definition["y-label"]} type="monotone" stroke="#8884d8" />
+  let isBar = definition["type"] == "bar";
+  let ChartType = isBar ? BarChart : LineChart;
+  // Generate a palette via google-palette, and append the necessary # for a hex value
+  let chartColours = DEFAULT_PALETTE.slice();
+  let numKeys = Object.keys(allFields).length;
+  if (numKeys > DEFAULT_PALETTE.length) {
+    chartColours = chartColours.concat(palette("rainbow", numKeys-DEFAULT_PALETTE.length).map((col) => "#" + col));
+  }
 
   return <Card>
     <CardContent>
@@ -65,10 +80,15 @@ function Statistic(props) {
               <XAxis dataKey="x">
                 <Label value={definition["x-label"]} offset={0} position="insideBottom" />
               </XAxis>
-              <YAxis allowDecimals={false} />
+              <YAxis allowDecimals={false}  label={{ value: definition["y-label"], angle: -90, position: 'insideLeft' }} />
               <Tooltip />
               <Legend />
-              {bar}
+              {Object.keys(allFields).map((field, idx) =>
+                isBar ?
+                  <Bar dataKey={field} fill={chartColours[idx]} key={idx}/>
+                :
+                  <Line dataKey={field} type="monotone" stroke={chartColours[idx]} key={idx} />
+              )}
             </ChartType>
           </Grid>
         </Grid>
@@ -76,4 +96,4 @@ function Statistic(props) {
   </Card>
 }
 
-export default withStyles(statisticsStyle)(Statistic);
+export default withStyles(statisticsStyle, {withTheme: true})(Statistic);

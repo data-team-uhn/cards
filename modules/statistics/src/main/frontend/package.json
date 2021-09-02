@@ -39,6 +39,7 @@
       "@material-ui/icons": "^4.4.3",
       "formik": "^1.5.7",
       "formik-material-fields": "0.0.4",
+      "google-palette": "1.1.0",
       "history": "^4.9.0",
       "material-table": "^1.50.0",
       "moment": "^2.24.0",

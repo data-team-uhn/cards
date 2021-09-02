@@ -234,19 +234,24 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
     {
         Map<String, Integer> innerCount = new HashMap<>();
 
-        Node xAnswer = xVar.adaptTo(Node.class);
-        Node splitAnswer = splitVar.adaptTo(Node.class);
-
         try {
+            // We can't count anything without an x variable
+            if (xVar == null) {
+                return counts;
+            }
+            Node xAnswer = xVar.adaptTo(Node.class);
             String xValue = xAnswer.getProperty("value").getString();
-            String splitValue = splitAnswer.getProperty("value").getString();
+            String splitValue = "undefined";
+            if (splitVar != null) {
+                Node splitAnswer = splitVar.adaptTo(Node.class);
+                splitValue = splitAnswer.getProperty("value").getString();
+            }
 
             // if x value and split value already exist
             if (counts.containsKey(xValue) && counts.get(xValue).containsKey(splitValue)) {
                 counts.get(xValue).put(splitValue, counts.get(xValue).get(splitValue) + 1);
-            }
-            // if x value already exists, but not split value - create and set to 1
-            if (counts.containsKey(xValue) && !counts.get(xValue).containsKey(splitValue)) {
+            } else if (counts.containsKey(xValue) && !counts.get(xValue).containsKey(splitValue)) {
+                // if x value already exists, but not split value - create and set to 1
                 counts.get(xValue).put(splitValue, 1);
             } else {
                 // else, create both and set to 1 count
