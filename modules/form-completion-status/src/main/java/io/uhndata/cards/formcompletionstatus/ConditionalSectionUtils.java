@@ -565,7 +565,7 @@ public final class ConditionalSectionUtils
         final NodeBuilder answerSection, final NodeBuilder form) throws RepositoryException
     {
         final Node sectionNode = getSectionNode(resourceSession, answerSection);
-        if (sectionNode.hasNode("condition")) {
+        if (sectionNode != null && sectionNode.hasNode("condition")) {
             final Node conditionNode = sectionNode.getNode("condition");
             /*
              * Recursively go through all children of the condition node and determine if this condition node evaluates
