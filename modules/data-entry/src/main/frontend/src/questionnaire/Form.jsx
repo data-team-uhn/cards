@@ -137,7 +137,7 @@ function Form (props) {
         window.removeEventListener("beforeunload", saveDataWithCheckin);
       }
       setRemoveWindowHandlers(() => removeBeforeUnloadHandlers);
-      window.addEventListener("beforeunload", saveDataWithCheckin);
+      window.addEventListener("beforeunload", saveDataWithCheckin, true);
       // When component unmounts:
       return (() => {
         // cleanup event handler
@@ -188,8 +188,8 @@ function Form (props) {
       return;
     }
 
-    setSaveInProgress(true);
     let data = new FormData(formNode.current);
+    setSaveInProgress(true);
     if (performCheckin) {
         data.append(":checkin", "true");
     }
