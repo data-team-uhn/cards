@@ -346,16 +346,20 @@ public class DeleteServlet extends SlingAllMethodsServlet
     {
         try {
             int formCount = 0;
-            int otherCount = 0;
+            int answerSectionCount = 0;
             int answerCount = 0;
-            List<String> subjects = new ArrayList<String>();
-            List<String> subjectTypes = new ArrayList<String>();
-            List<String> questionnaires = new ArrayList<String>();
+            int otherCount = 0;
+            List<String> subjects = new ArrayList<>();
+            List<String> subjectTypes = new ArrayList<>();
+            List<String> questionnaires = new ArrayList<>();
 
             for (Node n : this.nodesTraversed.get()) {
                 switch (n.getPrimaryNodeType().getName()) {
                     case "cards:Form":
                         formCount++;
+                        break;
+                    case "cards:AnswerSection":
+                        answerSectionCount++;
                         break;
                     case "cards:Subject":
                         subjects.add(n.getProperty("identifier").getString());
@@ -375,11 +379,12 @@ public class DeleteServlet extends SlingAllMethodsServlet
                 }
             }
 
-            List<String> results = new ArrayList<String>();
+            List<String> results = new ArrayList<>();
             addNodesToResult(results, "form", formCount);
             addNodesToResult(results, "subject", subjects);
             addNodesToResult(results, "subject type", subjectTypes);
             addNodesToResult(results, "questionnaire", questionnaires);
+            addNodesToResult(results, "answer section", answerSectionCount);
             addNodesToResult(results, "answer", answerCount);
             addNodesToResult(results, "other", otherCount);
 
