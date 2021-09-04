@@ -61,9 +61,9 @@ function BooleanQuestion(props) {
 
   // Define the defaults for yesLabel, etc. here because we want questionDefinition to be able to
   // override them, and the props to be able to override the questionDefinition
-  let options = [[yesLabel || "Yes", 1, true], [noLabel || "No", 0, true]];
+  let options = [[yesLabel || "Yes", "1", true], [noLabel || "No", "0", true]];
   if (enableUnknown) {
-    options.push([unknownLabel || "Unknown", -1, true]);
+    options.push([unknownLabel || "Unknown", "-1", true]);
   }
 
   return (
