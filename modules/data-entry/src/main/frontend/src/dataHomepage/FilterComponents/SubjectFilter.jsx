@@ -24,11 +24,11 @@ import PropTypes from "prop-types";
 
 import SearchBar from "../../SearchBar.jsx";
 import FilterComponentManager from "./FilterComponentManager.jsx";
-import { DEFAULT_COMPARATORS, UNARY_COMPARATORS } from "./FilterComparators.jsx";
+import { DEFAULT_COMPARATORS } from "./FilterComparators.jsx";
 import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
 import { QuickSearchIdentifier } from "../../themePage/Navbars/QuickSearchIdentifier.jsx";
 
-const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
+const COMPARATORS = DEFAULT_COMPARATORS.slice();
 
 /**
  * Display a filter on the associated subject of a form. This is not meant to be instantiated directly, but is returned from FilterComponentManager's
