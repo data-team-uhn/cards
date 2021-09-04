@@ -42,7 +42,7 @@ function DeleteButton(props) {
   const [ entryNotFound, setEntryNotFound ] = useState(false);
 
   const buttonText = label || ("Delete " + (entryType?.toLowerCase() || '')).trim();
-  const defaultDialogAction = `Are you sure you want to delete ${entryName}?`;
+  const defaultDialogAction = `Are you sure you want to delete ${entryType} ${entryName}?`;
   const defaultErrorMessage = entryName + " could not be removed.";
   const history = useHistory();
 
@@ -95,7 +95,7 @@ function DeleteButton(props) {
         setErrorMessage(`${defaultErrorMessage} ${json["status.message"]}`);
         openError();
       } else {
-        let label = entryLabel ? entryLabel.concat(' ') : '';
+        let label = entryLabel ? entryLabel.concat(' ') : entryType ? entryType.concat(' ') : '';
         setDialogMessage(`${json["status.message"].replace("This item", label + entryName)}`);
         setDialogAction(`Would you like to delete ${entryName} and all items that reference it?`);
         setDeleteRecursive(true);

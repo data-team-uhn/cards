@@ -30,7 +30,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from '@material-ui/icons/Edit';
 
 import EditDialog from "./EditDialog";
-import DeleteDialog from "./DeleteDialog";
+import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 import QuestionnaireCardHeader from "./QuestionnaireCardHeader";
 
 // General class or Sections and Questions
@@ -52,7 +52,6 @@ let QuestionnaireItemCard = (props) => {
     classes
   } = props;
   let [ editDialogOpen, setEditDialogOpen ] = useState(false);
-  let [ deleteDialogOpen, setDeleteDialogOpen ] = useState(false);
   const highlight = doHighlight || window.location?.hash?.substr(1) == data["@path"];
 
   const itemRef = useRef();
@@ -93,9 +92,12 @@ let QuestionnaireItemCard = (props) => {
             </IconButton>
             }
             {!disableDelete &&
-            <IconButton onClick={() => { setDeleteDialogOpen(true); }}>
-              <DeleteIcon />
-            </IconButton>
+            <DeleteButton
+               entryPath={data["@path"]}
+               entryName={title || data.label || data.text || data["@name"]}
+               entryType={type}
+               onComplete={onActionDone}
+            />
             }
           </div>
         }
@@ -109,14 +111,6 @@ let QuestionnaireItemCard = (props) => {
                               isOpen={editDialogOpen}
                               onClose={() => { setEditDialogOpen(false); fetchData(); }}
                               onCancel={() => { setEditDialogOpen(false); }}
-                            />
-        }
-        { deleteDialogOpen && <DeleteDialog
-                              isOpen={deleteDialogOpen}
-                              data={data}
-                              type={type}
-                              onClose={() => { setDeleteDialogOpen(false); onActionDone(); }}
-                              onCancel={() => { setDeleteDialogOpen(false); }}
                             />
         }
       </CardContent>

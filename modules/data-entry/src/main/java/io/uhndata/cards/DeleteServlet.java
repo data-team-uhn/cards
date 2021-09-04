@@ -22,9 +22,10 @@ package io.uhndata.cards;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.Node;
@@ -32,6 +33,7 @@ import javax.jcr.NodeIterator;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.version.VersionManager;
 import javax.json.Json;
 import javax.json.stream.JsonGenerator;
 import javax.servlet.Servlet;
@@ -76,13 +78,16 @@ public class DeleteServlet extends SlingAllMethodsServlet
     private final ThreadLocal<ResourceResolver> resolver = new ThreadLocal<>();
 
     /** A list of all nodes traversed by {@code traverseNode}. */
-    private final ThreadLocal<Set<Node>> nodesTraversed = ThreadLocal.withInitial(() -> new HashSet<>());
+    private final ThreadLocal<Set<Node>> nodesTraversed =
+        ThreadLocal.withInitial(() -> new TreeSet<>(new NodeComparator()));
 
     /** A set of all nodes that should be deleted. */
-    private final ThreadLocal<Set<Node>> nodesToDelete = ThreadLocal.withInitial(() -> new HashSet<>());
+    private final ThreadLocal<Set<Node>> nodesToDelete =
+        ThreadLocal.withInitial(() -> new TreeSet<>(new NodeComparator()));
 
     /** A set of all nodes that are children of nodes in {@code nodesToDelete}. */
-    private final ThreadLocal<Set<Node>> childNodesDeleted = ThreadLocal.withInitial(() -> new HashSet<>());
+    private final ThreadLocal<Set<Node>> childNodesDeleted =
+        ThreadLocal.withInitial(() -> new TreeSet<>(new NodeComparator()));
 
     /**
      * A function that operates on a {@link Node}. As opposed to a simple {@code Consumer}, it can forward a
@@ -166,10 +171,9 @@ public class DeleteServlet extends SlingAllMethodsServlet
             final Node node = request.getResource().adaptTo(Node.class);
             this.nodeToDelete.set(node);
             this.resolver.set(resourceResolver);
-            this.nodesTraversed.set(new HashSet<Node>());
-            this.nodesToDelete.set(new HashSet<Node>());
-            this.childNodesDeleted.set(new HashSet<Node>());
-            Set<Node> parentNodes = new HashSet<Node>();
+            final Session session = resourceResolver.adaptTo(Session.class);
+            final VersionManager versionManager = session.getWorkspace().getVersionManager();
+            final Set<Node> nodesToCheckin = new TreeSet<>(new NodeComparator());
 
             final Boolean recursive = Boolean.parseBoolean(request.getParameter("recursive"));
 
@@ -180,22 +184,20 @@ public class DeleteServlet extends SlingAllMethodsServlet
             }
 
             // Delete all of our pending nodes, checking out the parent to avoid version conflict issues
-            for (Node n : this.nodesToDelete.get()) {
-                Node parent = n.getParent();
-                if (parent.isNodeType("mix:versionable")) {
-                    parent.checkout();
-                    n.remove();
-                    parentNodes.add(parent);
-                } else {
-                    n.remove();
+            for (final Node n : this.nodesToDelete.get()) {
+                final Node versionableAncestor = findVersionableAncestor(n);
+                if (versionableAncestor != null && !versionableAncestor.isCheckedOut()) {
+                    nodesToCheckin.add(versionableAncestor);
+                    versionManager.checkout(versionableAncestor.getPath());
                 }
+                n.remove();
             }
 
-            this.resolver.get().adaptTo(Session.class).save();
+            session.save();
 
             // Check each parent back in
-            for (Node parent : parentNodes) {
-                parent.checkin();
+            for (final Node versionableNode : nodesToCheckin) {
+                versionManager.checkin(versionableNode.getPath());
             }
         } catch (AccessDeniedException e) {
             LOGGER.error("AccessDeniedException trying to delete node: {}", e.getMessage(), e);
@@ -204,8 +206,12 @@ public class DeleteServlet extends SlingAllMethodsServlet
             LOGGER.error("Unknown RepositoryException trying to delete node: {}", e.getMessage(), e);
             sendJsonError(response, SlingHttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage(), e);
         } finally {
+            // Cleanup state to free memory
             this.resolver.remove();
+            this.nodeToDelete.remove();
             this.nodesTraversed.remove();
+            this.nodesToDelete.remove();
+            this.childNodesDeleted.remove();
         }
     }
 
@@ -341,19 +347,25 @@ public class DeleteServlet extends SlingAllMethodsServlet
      *
      * @return a string in the format "2 forms, 1 subject(subjectName)" for all traversed nodes
      */
+    @SuppressWarnings("checkstyle:CyclomaticComplexity")
     private String listReferrersFromTraversal()
     {
         try {
             int formCount = 0;
+            int answerSectionCount = 0;
+            int answerCount = 0;
             int otherCount = 0;
-            List<String> subjects = new ArrayList<String>();
-            List<String> subjectTypes = new ArrayList<String>();
-            List<String> questionnaires = new ArrayList<String>();
+            List<String> subjects = new ArrayList<>();
+            List<String> subjectTypes = new ArrayList<>();
+            List<String> questionnaires = new ArrayList<>();
 
             for (Node n : this.nodesTraversed.get()) {
                 switch (n.getPrimaryNodeType().getName()) {
                     case "cards:Form":
                         formCount++;
+                        break;
+                    case "cards:AnswerSection":
+                        answerSectionCount++;
                         break;
                     case "cards:Subject":
                         subjects.add(n.getProperty("identifier").getString());
@@ -365,12 +377,22 @@ public class DeleteServlet extends SlingAllMethodsServlet
                         questionnaires.add(n.getProperty("title").getString());
                         break;
                     default:
-                        otherCount++;
+                        if ("cards/Answer".equals(n.getProperty("sling:resourceSuperType").getString())) {
+                            answerCount++;
+                        } else {
+                            otherCount++;
+                        }
                 }
             }
 
-            List<String> results = new ArrayList<String>();
-            addNodesToResult(results, "form", formCount);
+            List<String> results = new ArrayList<>();
+            if (formCount > 0) {
+                addNodesToResult(results, "form", formCount);
+            } else if (answerSectionCount > 0) {
+                addNodesToResult(results, "answer section", answerSectionCount);
+            } else if (answerCount > 0) {
+                addNodesToResult(results, "answer", answerCount);
+            }
             addNodesToResult(results, "subject", subjects);
             addNodesToResult(results, "subject type", subjectTypes);
             addNodesToResult(results, "questionnaire", questionnaires);
@@ -516,5 +538,48 @@ public class DeleteServlet extends SlingAllMethodsServlet
         }
         jsonGen.writeEnd().close();
         response.setStatus(sc);
+    }
+
+    /**
+     * Finds and returns an ancestor of the given node that is versionable, if any.
+     *
+     * @param n a node
+     * @return an ancestor node of the input node that is versionable, or {@code null} if no such ancestor exists
+     * @throws RepositoryException if accessing the repository fails
+     */
+    private Node findVersionableAncestor(final Node n) throws RepositoryException
+    {
+        // Abort early if no ancestor is accessible
+        if (n == null || n.getDepth() == 0) {
+            return null;
+        }
+
+        Node ancestor = n.getParent();
+        while (ancestor.getDepth() > 0 && !ancestor.isNodeType("mix:versionable")) {
+            ancestor = ancestor.getParent();
+        }
+
+        if (ancestor.isNodeType("mix:versionable")) {
+            return ancestor;
+        }
+        return null;
+    }
+
+    /**
+     * Node does not implement {@code equals} and {@code hashCode}, so in order to properly detect if two Node instances
+     * reference the same node, we need an explicit comparator that compares the two node paths. This comparator may
+     * throw {@code NullPointerException} if any of the nodes to compare are null.
+     */
+    private static class NodeComparator implements Comparator<Node>
+    {
+        @Override
+        public int compare(Node o1, Node o2)
+        {
+            try {
+                return o1.getPath().compareTo(o2.getPath());
+            } catch (RepositoryException e) {
+                return 0;
+            }
+        }
     }
 }
