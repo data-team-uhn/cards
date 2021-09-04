@@ -342,6 +342,7 @@ public class DeleteServlet extends SlingAllMethodsServlet
      *
      * @return a string in the format "2 forms, 1 subject(subjectName)" for all traversed nodes
      */
+    @SuppressWarnings("checkstyle:CyclomaticComplexity")
     private String listReferrersFromTraversal()
     {
         try {
@@ -380,12 +381,16 @@ public class DeleteServlet extends SlingAllMethodsServlet
             }
 
             List<String> results = new ArrayList<>();
-            addNodesToResult(results, "form", formCount);
+            if (formCount > 0) {
+                addNodesToResult(results, "form", formCount);
+            } else if (answerSectionCount > 0) {
+                addNodesToResult(results, "answer section", answerSectionCount);
+            } else if (answerCount > 0) {
+                addNodesToResult(results, "answer", answerCount);
+            }
             addNodesToResult(results, "subject", subjects);
             addNodesToResult(results, "subject type", subjectTypes);
             addNodesToResult(results, "questionnaire", questionnaires);
-            addNodesToResult(results, "answer section", answerSectionCount);
-            addNodesToResult(results, "answer", answerCount);
             addNodesToResult(results, "other", otherCount);
 
             return stringArrayToList(results);
