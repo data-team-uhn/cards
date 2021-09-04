@@ -22,9 +22,10 @@ package io.uhndata.cards;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.Node;
@@ -77,13 +78,16 @@ public class DeleteServlet extends SlingAllMethodsServlet
     private final ThreadLocal<ResourceResolver> resolver = new ThreadLocal<>();
 
     /** A list of all nodes traversed by {@code traverseNode}. */
-    private final ThreadLocal<Set<Node>> nodesTraversed = ThreadLocal.withInitial(() -> new HashSet<>());
+    private final ThreadLocal<Set<Node>> nodesTraversed =
+        ThreadLocal.withInitial(() -> new TreeSet<>(new NodeComparator()));
 
     /** A set of all nodes that should be deleted. */
-    private final ThreadLocal<Set<Node>> nodesToDelete = ThreadLocal.withInitial(() -> new HashSet<>());
+    private final ThreadLocal<Set<Node>> nodesToDelete =
+        ThreadLocal.withInitial(() -> new TreeSet<>(new NodeComparator()));
 
     /** A set of all nodes that are children of nodes in {@code nodesToDelete}. */
-    private final ThreadLocal<Set<Node>> childNodesDeleted = ThreadLocal.withInitial(() -> new HashSet<>());
+    private final ThreadLocal<Set<Node>> childNodesDeleted =
+        ThreadLocal.withInitial(() -> new TreeSet<>(new NodeComparator()));
 
     /**
      * A function that operates on a {@link Node}. As opposed to a simple {@code Consumer}, it can forward a
@@ -167,12 +171,9 @@ public class DeleteServlet extends SlingAllMethodsServlet
             final Node node = request.getResource().adaptTo(Node.class);
             this.nodeToDelete.set(node);
             this.resolver.set(resourceResolver);
-            this.nodesTraversed.set(new HashSet<Node>());
-            this.nodesToDelete.set(new HashSet<Node>());
-            this.childNodesDeleted.set(new HashSet<Node>());
             final Session session = resourceResolver.adaptTo(Session.class);
             final VersionManager versionManager = session.getWorkspace().getVersionManager();
-            final Set<Node> nodesToCheckin = new HashSet<>();
+            final Set<Node> nodesToCheckin = new TreeSet<>(new NodeComparator());
 
             final Boolean recursive = Boolean.parseBoolean(request.getParameter("recursive"));
 
@@ -205,8 +206,12 @@ public class DeleteServlet extends SlingAllMethodsServlet
             LOGGER.error("Unknown RepositoryException trying to delete node: {}", e.getMessage(), e);
             sendJsonError(response, SlingHttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage(), e);
         } finally {
+            // Cleanup state to free memory
             this.resolver.remove();
+            this.nodeToDelete.remove();
             this.nodesTraversed.remove();
+            this.nodesToDelete.remove();
+            this.childNodesDeleted.remove();
         }
     }
 
@@ -558,5 +563,23 @@ public class DeleteServlet extends SlingAllMethodsServlet
             return ancestor;
         }
         return null;
+    }
+
+    /**
+     * Node does not implement {@code equals} and {@code hashCode}, so in order to properly detect if two Node instances
+     * reference the same node, we need an explicit comparator that compares the two node paths. This comparator may
+     * throw {@code NullPointerException} if any of the nodes to compare are null.
+     */
+    private static class NodeComparator implements Comparator<Node>
+    {
+        @Override
+        public int compare(Node o1, Node o2)
+        {
+            try {
+                return o1.getPath().compareTo(o2.getPath());
+            } catch (RepositoryException e) {
+                return 0;
+            }
+        }
     }
 }
