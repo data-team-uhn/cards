@@ -18,6 +18,10 @@
 // Taken from https://www.creative-tim.com/product/material-dashboard-react
 
 const statisticsStyle = theme => ({
+  statsContainer: {
+    minHeight: "50vh",
+    marginTop: theme.spacing(4),
+  },
   subjectFilterInput: {
       width: "100%"
   },

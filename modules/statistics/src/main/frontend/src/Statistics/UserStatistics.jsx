@@ -44,7 +44,7 @@ function UserStatistics(props) {
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((response) => {
         if (response.totalrows == 0) {
-          setError("No statistics have been added yet.");
+          setError("No statistics are available at this time");
         }
         fetchAll(response["rows"]);
       })
@@ -64,11 +64,11 @@ function UserStatistics(props) {
   // If an error was returned, report the error
   if (error) {
     return (
-      <Card>
-        <CardContent>
-          <Typography>{error}</Typography>
-        </CardContent>
-      </Card>
+      <Grid container justify="center" alignItems="center" className={classes.statsContainer}>
+        <Grid item>
+          <Typography color="textSecondary">{error}</Typography>
+        </Grid>
+      </Grid>
     );
   }
 
@@ -109,7 +109,7 @@ function UserStatistics(props) {
 
   return (
     <React.Fragment>
-      <Grid container spacing={3}>
+      <Grid container spacing={3} className={classes.statsContainer}>
         {currentStatistic && currentStatistic.map((stat, i) => {
           return <Statistic definition={stat} key={i} />
         })}
