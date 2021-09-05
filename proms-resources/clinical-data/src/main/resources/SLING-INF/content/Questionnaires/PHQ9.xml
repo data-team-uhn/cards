@@ -93,7 +93,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -198,7 +198,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -303,7 +303,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -408,7 +408,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -513,7 +513,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -618,7 +618,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -723,7 +723,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -828,7 +828,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -933,7 +933,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -1033,7 +1033,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<node>

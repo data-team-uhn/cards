@@ -91,7 +91,7 @@ Objectively determine initial symptoms severity and monitor symptom changes/effe
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -196,7 +196,7 @@ Objectively determine initial symptoms severity and monitor symptom changes/effe
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -301,7 +301,7 @@ Objectively determine initial symptoms severity and monitor symptom changes/effe
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -406,7 +406,7 @@ Objectively determine initial symptoms severity and monitor symptom changes/effe
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -511,7 +511,7 @@ Objectively determine initial symptoms severity and monitor symptom changes/effe
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -616,7 +616,7 @@ Objectively determine initial symptoms severity and monitor symptom changes/effe
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -721,7 +721,7 @@ Objectively determine initial symptoms severity and monitor symptom changes/effe
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -821,7 +821,7 @@ Objectively determine initial symptoms severity and monitor symptom changes/effe
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<node>
