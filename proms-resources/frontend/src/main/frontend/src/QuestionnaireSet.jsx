@@ -100,7 +100,7 @@ function QuestionnaireSet(props) {
   // When something goes wrong:
   const [ error, setError ] = useState("");
   // Screen layout props
-  const [ screenType, setScreenType ] = useState ();
+  const [ screenType, setScreenType ] = useState();
 
   const classes = useStyles();
 
@@ -143,7 +143,7 @@ function QuestionnaireSet(props) {
     crtFormId && nextStep();
   }, [crtFormId]);
 
-  // At the last step, determine if the questionnaires have been ceompleted
+  // At the last step, reload the form data to determine if all the questionnaires have been completed
   useEffect(() => {
     if (!questionnaireIds || crtStep < questionnaireIds.length) return;
     setEndReached(true);
@@ -152,9 +152,9 @@ function QuestionnaireSet(props) {
 
   // Determine if all surveys have been filled out
   useEffect(() => {
-    if (!subjectData || !questionnaires) return;
+    if (!subjectData || !questionnaireIds) return;
     setComplete(Object.keys(subjectData || {}).filter(q => isFormComplete(q)).length == questionnaireIds.length);
-  }, [subjectData, questionnaires]);
+  }, [subjectData, questionnaireIds]);
 
   const loadExistingData = () => {
     fetchWithReLogin(globalLoginDisplay, `${subject}.data.deep.json`)
@@ -231,7 +231,7 @@ function QuestionnaireSet(props) {
 
   let launchNextForm = () => {;
     if (subjectData[nextQuestionnaire['@name']]) {
-      // Form already exists and is incomplete: prepare  to edit it
+      // Form already exists and is incomplete: prepare to edit it
       setCrtFormId(subjectData[nextQuestionnaire['@name']]['@name']);
     } else {
       // Form doesn't exist: create it
