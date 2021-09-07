@@ -40,7 +40,7 @@ class SignIn extends React.Component {
 
     this.state = {
       passwordIsMasked: false,
-      failedLogin: false,
+      failedLogin: undefined,
 
       username: "",
       password: "",
@@ -83,14 +83,14 @@ class SignIn extends React.Component {
         throw Error(response.statusText);
         this.props.handleLogin && this.props.handleLogin(false);
       }
-      this.setState({failedLogin: false});
+      this.setState({failedLogin: undefined});
       this.props.handleLogin && this.props.handleLogin(true);
       if (this.props.redirectOnLogin) {
         window.location = this.loginRedirectPath();
       }
     })
     .catch((error) => {
-      this.setState({failedLogin: true});
+      this.setState({failedLogin: "Invalid username or password"});
       this.props.handleLogin && this.props.handleLogin(false);
     });
   }
@@ -101,7 +101,7 @@ class SignIn extends React.Component {
 
     return (
         <div className={classes.main}>
-            {this.state.failedLogin && <Typography component="h2" className={classes.errorMessage}>Invalid username or password</Typography>}
+            {this.state.failedLogin && <Typography component="h2" className={classes.errorMessage}>{this.state.failedLogin}</Typography>}
 
             <form className={classes.form} onSubmit={(event)=>{event.preventDefault(); this.submitLogin();}} >
 
@@ -126,10 +126,10 @@ class SignIn extends React.Component {
                         fetch(window.location.origin + "/apps/cards/SAMLDomains/" + remoteDomain + ".json")
                         .then((resp) => {
                           if (resp.ok) {
-                            this.setState({failedLogin: false});
+                            this.setState({failedLogin: undefined});
                             return resp.json();
                           } else {
-                            this.setState({failedLogin: true});
+                            this.setState({failedLogin: "Unrecognized email domain"});
                           }
                         })
                         .then((data) => {
@@ -144,9 +144,9 @@ class SignIn extends React.Component {
                           let top = (screenHeight - popupHeight) / 2 / systemZoom + screenTop;
                           data && window.open(data.value + "&username=" + this.state.username, "FederatedLoginPopupWindow", "width=" + (popupWidth / systemZoom) + ",height=" + (popupHeight / systemZoom) + ",top=" + top + ",left=" + left);
                         })
-                        .catch((err) => this.setState({failedLogin: true}))
+                        .catch((err) => this.setState({failedLogin: "Error occurred while handling third-party identity provider"}))
                       } else {
-                        this.setState({failedLogin: true});
+                        this.setState({failedLogin: "Invalid email address"});
                       }
                     }}
                   >
@@ -185,6 +185,7 @@ class SignIn extends React.Component {
                         className={classes.submit}
                         onClick={() => {
                           this.setState({
+                            failedLogin: undefined,
                             username: "",
                             password: "",
                             phase: "USERNAME_ENTRY"
