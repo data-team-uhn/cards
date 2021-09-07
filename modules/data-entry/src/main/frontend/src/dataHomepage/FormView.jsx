@@ -49,7 +49,7 @@ function FormView(props) {
   const [ subtitle, setSubtitle ] = useState();
   const [ questionnairePath, setQuestionnairePath ] = useState();
   const [ qFetchSent, setQFetchStatus ] = useState(false);
-  const [ filtersJsonString, setFiltersJsonString ] = useState(expanded ? location.hash.split(/&filters=(.+)/)[1] || "" : "");
+  const [ filtersJsonString, setFiltersJsonString ] = useState(new URLSearchParams(window.location.hash.substring(1)).get("forms:filters"));
 
   // Column configuration for the LiveTables
   const columns = [
@@ -76,7 +76,7 @@ function FormView(props) {
   ]
 
   const tabs = ["Completed", "Draft"];
-  const activeTabParam = location.hash.substr(1).split('&')[0];
+  const activeTabParam = new URLSearchParams(window.location.hash.substring(1)).get("forms:activeTab");
   let activeTabIndex = Math.max(tabs.indexOf(activeTabParam), 0);
   const [ activeTab, setActiveTab ] = useState(activeTabIndex);
 
@@ -115,7 +115,7 @@ function FormView(props) {
         action={
           !expanded &&
           <Tooltip title="Expand">
-            <Link to={"/content.html/Forms#" + tabs[activeTab] + (filtersJsonString ? "&filters=" + filtersJsonString : "")}>
+            <Link to={"/content.html/Forms#" + new URLSearchParams({"forms:activeTab" : tabs?.[activeTab] || "", "forms:filters" : filtersJsonString || ""}).toString()}>
               <IconButton>
                 <LaunchIcon/>
               </IconButton>
@@ -141,8 +141,8 @@ function FormView(props) {
           entryType={"Form"}
           actions={actions}
           disableTopPagination={!topPagination}
-          onFiltersChange={(str) => { !expanded && setFiltersJsonString(str); }}
-          filtersJsonString={expanded ? filtersJsonString : ""}
+          onFiltersChange={(str) => { setFiltersJsonString(str); }}
+          filtersJsonString={filtersJsonString}
         />
       {expanded &&
         <NewFormDialog presetPath={questionnairePath}>
