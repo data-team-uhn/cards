@@ -98,26 +98,6 @@ let ReferenceInput = (props) => {
     setTitleMap(newFilterableTitles);
   }
 
-  let parseFilterData = (filterJson) => {
-    // Parse through, but keep a custom field for the subject
-    let fields = [""];
-    let titles = {"": ""};
-
-    for (let [_, question] of Object.entries(filterJson)) {
-      // If we only accept numeric references, exclude entries that are not numeric
-      if (isNumeric && !["long", "double", "decimal"].includes(question["dataType"])) {
-        continue;
-      }
-
-      // For each reference, store its UUID and title
-      fields.push(question["jcr:uuid"]);
-      titles[question["jcr:uuid"]] = question["text"];
-    }
-
-    setOptions(fields);
-    setTitleMap(titles);
-  }
-
   let parseSubjectTypeData = (subjectTypeJson) => {
     // Parse through, but keep a custom field for the subject
     let fields = [""];
