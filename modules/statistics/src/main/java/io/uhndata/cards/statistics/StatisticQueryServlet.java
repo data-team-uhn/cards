@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -64,6 +65,8 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StatisticQueryServlet.class);
 
+    private static final String VALUE_PROP = "value";
+
     @SuppressWarnings({"checkstyle:ExecutableStatementCount", "checkstyle:CyclomaticComplexity", "checkstyle:JavaNCSS"})
     @Override
     protected void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response)
@@ -98,19 +101,19 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         try {
             // Steps to returning the calculated statistic:
             // Grab the question that has data for the given x-axis (xVar)
-            Node question = request.getResourceResolver().adaptTo(Session.class).getNode(xVariable);
+            Session session = request.getResourceResolver().adaptTo(Session.class);
+            Node question = session.getNode(xVariable);
 
             Iterator<Resource> answers = null;
             Map<Resource, String> data = new HashMap<>();
             Map<String, Map<Resource, String>> dataById = null;
 
             // Filter those answers based on whether or not their form's subject is of the correct SubjectType (yVar)
-            Node correctSubjectType = request.getResourceResolver().adaptTo(Session.class)
-                .getNode(yVariable);
+            Node correctSubjectType = session.getNode(yVariable);
 
             // Grab all answers that have this question filled out, and the split var (if it exists)
             if (splitVariable != null) {
-                Node split = request.getResourceResolver().adaptTo(Session.class).getNode(splitVariable);
+                Node split = session.getNode(splitVariable);
                 data = getAnswersWithType(data, "x", question, request.getResourceResolver());
                 data = getAnswersWithType(data, "split", split, request.getResourceResolver());
                 // filter if splitVar exists
@@ -137,7 +140,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
             builder.add("x-label", xLabel);
             builder.add("y-label", yLabel);
             if (splitVariable != null) {
-                Node split = request.getResourceResolver().adaptTo(Session.class).getNode(splitVariable);
+                Node split = session.getNode(splitVariable);
                 String splitLabel = split.getProperty("text").getString();
                 builder.add("split-label", splitLabel);
                 addDataSplit(dataById, builder);
@@ -233,6 +236,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         Map<String, Map<String, Integer>> counts) throws RepositoryException
     {
         Map<String, Integer> innerCount = new HashMap<>();
+        Map<String, String> splitLabels = null;
 
         try {
             // We can't count anything without an x variable
@@ -240,22 +244,27 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
                 return counts;
             }
             Node xAnswer = xVar.adaptTo(Node.class);
-            String xValue = xAnswer.getProperty("value").getString();
-            String splitValue = "undefined";
+            String xValue = xAnswer.getProperty(VALUE_PROP).getString();
+            String splitLabel = "undefined";
             if (splitVar != null) {
                 Node splitAnswer = splitVar.adaptTo(Node.class);
-                splitValue = splitAnswer.getProperty("value").getString();
+                String splitValue = splitAnswer.getProperty(VALUE_PROP).getString();
+
+                if (splitLabels == null) {
+                    splitLabels = getAnswerOptionLabels(splitAnswer.getProperty("question").getNode());
+                }
+                splitLabel = splitLabels.containsKey(splitValue) ? splitLabels.get(splitValue) : splitValue;
             }
 
             // if x value and split value already exist
-            if (counts.containsKey(xValue) && counts.get(xValue).containsKey(splitValue)) {
-                counts.get(xValue).put(splitValue, counts.get(xValue).get(splitValue) + 1);
-            } else if (counts.containsKey(xValue) && !counts.get(xValue).containsKey(splitValue)) {
+            if (counts.containsKey(xValue) && counts.get(xValue).containsKey(splitLabel)) {
+                counts.get(xValue).put(splitLabel, counts.get(xValue).get(splitLabel) + 1);
+            } else if (counts.containsKey(xValue) && !counts.get(xValue).containsKey(splitLabel)) {
                 // if x value already exists, but not split value - create and set to 1
-                counts.get(xValue).put(splitValue, 1);
+                counts.get(xValue).put(splitLabel, 1);
             } else {
                 // else, create both and set to 1 count
-                innerCount.put(splitValue, 1);
+                innerCount.put(splitLabel, 1);
                 counts.put(xValue, innerCount);
             }
         } catch (PathNotFoundException e) {
@@ -263,6 +272,34 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         }
 
         return counts;
+    }
+
+    /**
+     * For a question node, get a map from answer option values to their labels.
+     * @param questionNode the question whose answer options we want the label map for
+     * @return map of {value, label} for the given question
+     */
+    private Map<String, String> getAnswerOptionLabels(Node questionNode) throws RepositoryException
+    {
+        Map<String, String> splitLabels = new HashMap<>();
+        NodeIterator childNodes = questionNode.getNodes();
+        while (childNodes.hasNext()) {
+            Node childNode = childNodes.nextNode();
+
+            // Ensure this is an AnswerType node
+            if (!"cards:AnswerOption".equals(childNode.getProperty("jcr:primaryType").getString())) {
+                continue;
+            }
+
+            // Ensure that the child has both a value and a label
+            if (childNode.getProperty(VALUE_PROP) == null || childNode.getProperty("label") == null) {
+                continue;
+            }
+
+            splitLabels.put(childNode.getProperty(VALUE_PROP).getString(), childNode.getProperty("label").getString());
+        }
+
+        return splitLabels;
     }
 
     /**
@@ -360,7 +397,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
             Node answer = answers.next().adaptTo(Node.class);
 
             try {
-                String value = answer.getProperty("value").getString();
+                String value = answer.getProperty(VALUE_PROP).getString();
                 // If this already exists in our counts dict, we add 1 to its value
                 // Otherwise, set it to 1 count
                 if (counts.containsKey(value)) {
