@@ -94,7 +94,6 @@ function UserStatistics(props) {
           .then((statJson) => {
             // Also include the definition of the chart type
             statJson["type"] = fullJson["type"];
-            console.log(statJson);
             setCurrentStatistic(currentStatistic => [...currentStatistic, statJson]);
           })
           .catch(handleError);
@@ -107,10 +106,16 @@ function UserStatistics(props) {
     data.map((stat) => fetchStat(stat))
   }
 
+  let sortedStats = [];
+  if (currentStatistic) {
+    sortedStats = currentStatistic.slice();
+    sortedStats.sort((a, b) => a.order - b.order);
+  }
+
   return (
     <React.Fragment>
       <Grid container spacing={3} className={classes.statsContainer}>
-        {currentStatistic && currentStatistic.map((stat, i) => {
+        {sortedStats.map((stat, i) => {
           return <Statistic definition={stat} key={i} />
         })}
       </Grid>

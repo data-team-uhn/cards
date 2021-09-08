@@ -60,7 +60,7 @@ let ReferenceInput = (props) => {
     // is taken to be its title
     let newFilterableFields = [""];
     // newFilterableTitles is a mapping from a string in newFilterableFields to a human-readable title
-    let newFilterableTitles = {"": ""};
+    let newFilterableTitles = {"": "None"};
 
     // We'll need a helper recursive function to copy over data from sections/questions
     let parseSectionOrQuestionnaire = (sectionJson, path="") => {
@@ -103,7 +103,7 @@ let ReferenceInput = (props) => {
   let parseSubjectTypeData = (subjectTypeJson) => {
     // Parse through, but keep a custom field for the subject
     let fields = [""];
-    let titles = {"": ""};
+    let titles = {"": "None"};
 
     for (let subjectType of subjectTypeJson["rows"]) {
       // For each reference, store its UUID and title

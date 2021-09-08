@@ -6,13 +6,11 @@
   },
   "xVar": {
     "type": "reference",
-    "primaryType": "cards:Question",
-    "filter": "numeric"
+    "primaryType": "cards:Question"
   },
   "yVar": {
     "type": "reference",
-    "primaryType": "cards:SubjectType",
-    "filter": "numeric"
+    "primaryType": "cards:SubjectType"
   },
   "splitVar": {
     "type": "reference",
