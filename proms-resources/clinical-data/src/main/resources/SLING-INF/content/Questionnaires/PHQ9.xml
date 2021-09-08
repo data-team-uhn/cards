@@ -93,7 +93,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -102,7 +102,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>1</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -121,7 +121,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>2</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -140,7 +140,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>3</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -159,7 +159,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>4</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -198,7 +198,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -207,7 +207,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>1</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -226,7 +226,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>2</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -245,7 +245,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>3</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -264,7 +264,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>4</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -303,7 +303,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -312,7 +312,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>1</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -331,7 +331,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>2</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -350,7 +350,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>3</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -369,7 +369,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>4</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -408,7 +408,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -417,7 +417,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>1</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -436,7 +436,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>2</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -455,7 +455,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>3</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -474,7 +474,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>4</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -513,7 +513,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -522,7 +522,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>1</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -541,7 +541,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>2</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -560,7 +560,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>3</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -579,7 +579,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>4</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -618,7 +618,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -627,7 +627,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>1</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -646,7 +646,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>2</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -665,7 +665,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>3</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -684,7 +684,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>4</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -723,7 +723,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -732,7 +732,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>1</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -751,7 +751,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>2</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -770,7 +770,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>3</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -789,7 +789,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>4</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -828,7 +828,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -837,7 +837,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>1</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -856,7 +856,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>2</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -875,7 +875,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>3</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -894,7 +894,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>4</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -933,7 +933,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -942,7 +942,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>1</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -961,7 +961,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>2</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -980,7 +980,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>3</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -999,7 +999,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>4</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -1033,7 +1033,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -1042,7 +1042,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>1</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -1061,7 +1061,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>2</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -1080,7 +1080,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>3</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
@@ -1099,7 +1099,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<property>
 					<name>defaultOrder</name>
 					<value>4</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>label</name>
