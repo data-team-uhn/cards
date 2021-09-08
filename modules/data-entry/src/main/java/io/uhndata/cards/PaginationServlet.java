@@ -175,11 +175,17 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             final ResourceResolver resolver = request.getResourceResolver();
             final Session session = resolver.adaptTo(Session.class);
 
+            // Parse the request to build a list of filters
+            final Map<FilterType, List<Filter>> filters = parseFiltersFromRequest(request);
+
+            // Check for special cases in request and return zero results if any
+            checkForSpecialEmptyFilter(request, filters, response);
+
             // Get a QueryManager object
             final QueryManager queryManager = session.getWorkspace().getQueryManager();
 
             // Create the Query object
-            Query filterQuery = queryManager.createQuery(createQuery(request, session), "JCR-SQL2");
+            Query filterQuery = queryManager.createQuery(createQuery(request, session, filters), "JCR-SQL2");
 
             // Set the limit and offset here to improve query performance
             final long limit = getLongValueOrDefault(request.getParameter("limit"), 10);
@@ -193,17 +199,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                 new ResourceIterator(request.getResourceResolver(), filterResult.getNodes());
 
             // Write the response
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            // The writer doesn't need to be explicitly closed since the auto-closed jsonGen will also close the writer
-            final Writer out = response.getWriter();
-            try (JsonGenerator jsonGen = Json.createGenerator(out)) {
-                jsonGen.writeStartObject();
-                jsonGen.write("query", filterQuery.getStatement());
-                long[] limits = writeResources(jsonGen, results, offset, limit);
-                writeSummary(jsonGen, request, limits);
-                jsonGen.writeEnd().flush();
-            }
+            writeResponse(request, response, offset, limit, results);
         } catch (Exception e) {
             LOGGER.warn("Failed to execute query: {}", e.getMessage(), e);
             return;
@@ -211,25 +207,100 @@ public class PaginationServlet extends SlingSafeMethodsServlet
     }
 
     /**
+     * Returns a json with zero results if the filter is empty for the mandatory data
+     * ({@code cards:Subject}, {@code cards:Questionnaire}, {@code cards:CreatedDate}).
+     *
+     * @param request the current request
+     * @param filters a list of filters
+     * @param response the HTTP response
+     * @return a json response with zero results or nothing
+     * @throws IOException if failed or interrupted I/O operation
+     * @throws RepositoryException if accessing the repository fails
+     */
+    private void checkForSpecialEmptyFilter(final SlingHttpServletRequest request,
+        final Map<FilterType, List<Filter>> filters, final SlingHttpServletResponse response)
+            throws IOException, RepositoryException
+    {
+        final String nodeType = getNodeType(request);
+        if (!nodeType.equals(SUBJECT_IDENTIFIER)) {
+            return;
+        }
+
+        // Collect isEmpty and not isEmpty filters together for a check
+        List<Filter> specialFilters = new ArrayList<Filter>();
+        specialFilters.addAll(filters.getOrDefault(FilterType.NOT_EMPTY, new ArrayList<Filter>()));
+        specialFilters.addAll(filters.getOrDefault(FilterType.EMPTY, new ArrayList<Filter>()));
+
+        for (Filter filter : specialFilters) {
+            if (SUBJECT_IDENTIFIER.equals(filter.name)
+                    || QUESTIONNAIRE_IDENTIFIER.equals(filter.name)
+                    || CREATED_DATE_IDENTIFIER.equals(filter.name)) {
+                // Write the empty response
+                final Iterator<Resource> results = Collections.emptyIterator();
+                writeResponse(request, response, 0, 10, results);
+            }
+        }
+    }
+
+    /**
+     *  Write the response.
+     *
+     * @param request the current request
+     * @param response the HTTP response
+     * @param offset how many resources from the query results were skipped
+     * @param limit how many resources from the query results to serialize, may be 0 if we only want a count of the
+     *            resources
+     * @param results request results
+     * @throws IOException if failed or interrupted I/O operation
+     * @throws RepositoryException if accessing the repository fails
+     */
+    private void writeResponse(final SlingHttpServletRequest request, final SlingHttpServletResponse response,
+        final long offset, final long limit, final Iterator<Resource> results)
+            throws IOException, RepositoryException
+    {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        // The writer doesn't need to be explicitly closed since the auto-closed jsonGen will also close the writer
+        final Writer out = response.getWriter();
+        try (JsonGenerator jsonGen = Json.createGenerator(out)) {
+            jsonGen.writeStartObject();
+            long[] limits = writeResources(jsonGen, results, offset, limit);
+            writeSummary(jsonGen, request, limits);
+            jsonGen.writeEnd().flush();
+        }
+    }
+
+    /**
+     * Returns a type of results to return, a node type like {@code cards:Form} or {@code cards:Subject}.
+     *
+     * @param request the current request
+     * @return a node type string
+     * @throws RepositoryException if accessing the repository fails
+     */
+    private String getNodeType(final SlingHttpServletRequest request) throws RepositoryException
+    {
+        final Node node = request.getResource().adaptTo(Node.class);
+        return node.hasProperty("childNodeType") ? node.getProperty("childNodeType").getString()
+            : request.getResource().getResourceType().replace('/', ':').replaceFirst("sHomepage$", "");
+    }
+
+    /**
      * Generates a JCR SQL Query from the request.
      *
      * @param request the current request
      * @param session a valid JCR session
+     * @param filters a list of filters
      * @return a query that takes into account the requested filters
      * @throws RepositoryException if accessing the repository fails
      */
-    private String createQuery(final SlingHttpServletRequest request, Session session) throws RepositoryException
+    private String createQuery(final SlingHttpServletRequest request, Session session,
+        final Map<FilterType, List<Filter>> filters) throws RepositoryException
     {
         // If we want this query to be fast, we need to use the exact nodetype requested.
-        final Node node = request.getResource().adaptTo(Node.class);
-        final String nodeType = node.hasProperty("childNodeType") ? node.getProperty("childNodeType").getString()
-            : request.getResource().getResourceType().replace('/', ':').replaceFirst("sHomepage$", "");
+        final String nodeType = getNodeType(request);
 
         // We select all nodes having the right type
         final StringBuilder query = new StringBuilder("select distinct n.* from [").append(nodeType).append("] as n");
-
-        // Parse the request to build a list of filters
-        final Map<FilterType, List<Filter>> filters = parseFiltersFromRequest(request);
 
         // Optional child node type that the filters may apply to
         final String joinNodeType = request.getParameter("joinchildren");
