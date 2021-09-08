@@ -32,7 +32,7 @@ import { deepPurple, indigo } from '@material-ui/core/colors';
 
 import palette from "google-palette";
 import {
-   BarChart, Bar, CartesianGrid, Line, LineChart, XAxis, YAxis, Tooltip, Label, Legend,
+   BarChart, Bar, CartesianGrid, Line, LineChart, Label, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis
 } from "recharts";
 import statisticsStyle from "./statisticsStyle.jsx";
 
@@ -100,21 +100,23 @@ function Statistic(props) {
           </Grid>
         </Grid>
         :
-        <ChartType width={730} height={widgetHeight} data={rechartsData}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="x">
-            <Label value={definition["x-label"]} offset={0} position="insideBottom" />
-          </XAxis>
-          <YAxis allowDecimals={false} label={{ value: yAxisLabel, angle: -90, position: 'insideLeft' }} />
-          <Tooltip />
-          <Legend align="right" verticalAlign="top" />
-          {Object.keys(allFields).map((field, idx) =>
-            isBar ?
-              <Bar dataKey={field} fill={chartColours[idx]} key={idx}/>
-            :
-              <Line dataKey={field} type="monotone" stroke={chartColours[idx]} key={idx} />
-          )}
-          </ChartType>
+        <ResponsiveContainer width="100%" height={widgetHeight}>
+          <ChartType data={rechartsData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="x">
+              <Label value={definition["x-label"]} offset={0} position="insideBottom" />
+            </XAxis>
+            <YAxis allowDecimals={false} label={{ value: yAxisLabel, angle: -90, position: 'insideLeft' }} />
+            <Tooltip />
+            <Legend align="right" verticalAlign="top" />
+            {Object.keys(allFields).map((field, idx) =>
+              isBar ?
+                <Bar dataKey={field} fill={chartColours[idx]} key={idx}/>
+              :
+                <Line dataKey={field} type="monotone" stroke={chartColours[idx]} key={idx} />
+            )}
+            </ChartType>
+          </ResponsiveContainer>
       }
       </CardContent>
     </Card>
