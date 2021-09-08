@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import PropTypes, { object } from 'prop-types';
 import { Input, MenuItem, Select, Typography, withStyles } from "@material-ui/core";
 
@@ -38,21 +38,18 @@ let ReferenceInput = (props) => {
   let [ curValue, setCurValue ] = useState(data[objectKey] || []);
   let [ titleMap, setTitleMap ] = useState({});
   const [ options, setOptions ] = React.useState([]);
-  const [ initialized, setInitialized ] = React.useState(false);
 
   const isNumeric = value.filter == "numeric";
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
   // Obtain information about the questions that can be used as a reference
   let grabData = (urlBase, parser) => {
-    setInitialized(true);
     let url = new URL(urlBase, window.location.origin);
 
     fetchWithReLogin(globalLoginDisplay, url)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then(parser)
-      .catch(console.log)
-      .finally(() => {setInitialized(true);});
+      .catch(console.log);
   };
 
   // Parse the response from examining every questionnaire
@@ -71,6 +68,11 @@ let ReferenceInput = (props) => {
       for (let [title, object] of Object.entries(sectionJson)) {
         // We only care about children that are cards:Questions or cards:Sections
         if (object["jcr:primaryType"] == "cards:Question") {
+          // If we are only interested in numeric values, ignore this one unless it is numeric
+          if (isNumeric && !(object["dataType"] == 'decimal' || object["dataType"] == 'long')) {
+            continue;
+          }
+
           // If this is an cards:Question, copy the entire thing over to our Json value
           retFields.push(object["jcr:uuid"]);
           newFilterableTitles[object["jcr:uuid"]] = object["text"];
@@ -127,13 +129,13 @@ let ReferenceInput = (props) => {
     })
   }
 
-  if (!initialized) {
+  useEffect(() => {
     if (value["primaryType"] == "cards:SubjectType") {
       grabData(SUBJECT_TYPE_URL, parseSubjectTypeData);
     } else if (value["primaryType"] == "cards:Question") {
       grabData(FILTER_URL, parseQuestionnaireData);
     }
-  }
+  }, [value["primaryType"]]);
 
   // The form of the hidden input depends on the value of curValue
   // The fallback is to just use its value as-is in a hidden input
