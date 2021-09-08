@@ -178,8 +178,16 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             // Parse the request to build a list of filters
             final Map<FilterType, List<Filter>> filters = parseFiltersFromRequest(request);
 
+            final long limit = getLongValueOrDefault(request.getParameter("limit"), 10);
+            final long offset = getLongValueOrDefault(request.getParameter("offset"), 0);
+
             // Check for special cases in request and return zero results if any
-            checkForSpecialEmptyFilter(request, filters, response);
+            if (checkForSpecialEmptyFilter(request, filters, response)) {
+                // Write the empty response
+                final Iterator<Resource> results = Collections.emptyIterator();
+                writeResponse(request, response, offset, limit, results);
+                return;
+            }
 
             // Get a QueryManager object
             final QueryManager queryManager = session.getWorkspace().getQueryManager();
@@ -188,8 +196,6 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             Query filterQuery = queryManager.createQuery(createQuery(request, session, filters), "JCR-SQL2");
 
             // Set the limit and offset here to improve query performance
-            final long limit = getLongValueOrDefault(request.getParameter("limit"), 10);
-            final long offset = getLongValueOrDefault(request.getParameter("offset"), 0);
             filterQuery.setLimit((QUERY_SIZE_MULTIPLIER * limit) + 1);
             filterQuery.setOffset(offset);
 
@@ -207,43 +213,31 @@ public class PaginationServlet extends SlingSafeMethodsServlet
     }
 
     /**
-     * Returns a json with zero results if the filter is empty for the mandatory data
-     * ({@code cards:Subject}, {@code cards:Questionnaire}, {@code cards:CreatedDate}).
+     * Checks if any "is empty" filters for the mandatory data are specified, since such a query will never have any
+     * results.
      *
      * @param request the current request
      * @param filters a list of filters
      * @param response the HTTP response
-     * @return a json response with zero results or nothing
-     * @throws IOException if failed or interrupted I/O operation
+     * @return {@code true} if any mandatory special property has an "is empty" filter, {@code false} otherwise
      * @throws RepositoryException if accessing the repository fails
      */
-    private void checkForSpecialEmptyFilter(final SlingHttpServletRequest request,
+    private boolean checkForSpecialEmptyFilter(final SlingHttpServletRequest request,
         final Map<FilterType, List<Filter>> filters, final SlingHttpServletResponse response)
-            throws IOException, RepositoryException
+        throws RepositoryException
     {
-        final String nodeType = getNodeType(request);
-        if (!nodeType.equals(SUBJECT_IDENTIFIER)) {
-            return;
-        }
-
-        // Collect isEmpty and not isEmpty filters together for a check
-        List<Filter> specialFilters = new ArrayList<Filter>();
-        specialFilters.addAll(filters.getOrDefault(FilterType.NOT_EMPTY, new ArrayList<Filter>()));
-        specialFilters.addAll(filters.getOrDefault(FilterType.EMPTY, new ArrayList<Filter>()));
-
-        for (Filter filter : specialFilters) {
+        for (Filter filter : filters.getOrDefault(FilterType.EMPTY, new ArrayList<Filter>())) {
             if (SUBJECT_IDENTIFIER.equals(filter.name)
-                    || QUESTIONNAIRE_IDENTIFIER.equals(filter.name)
-                    || CREATED_DATE_IDENTIFIER.equals(filter.name)) {
-                // Write the empty response
-                final Iterator<Resource> results = Collections.emptyIterator();
-                writeResponse(request, response, 0, 10, results);
+                || QUESTIONNAIRE_IDENTIFIER.equals(filter.name)
+                || CREATED_DATE_IDENTIFIER.equals(filter.name)) {
+                return true;
             }
         }
+        return false;
     }
 
     /**
-     *  Write the response.
+     * Write the response.
      *
      * @param request the current request
      * @param response the HTTP response
