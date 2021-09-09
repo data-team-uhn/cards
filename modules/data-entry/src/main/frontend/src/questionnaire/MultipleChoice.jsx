@@ -61,7 +61,6 @@ function MultipleChoice(props) {
     .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder))
     // Only extract the labels, internal values and description from the node
     .map(value => [value.label || value.value, value.value, true, value.description, value.isDefault == "true"]);
-  let defaultAnswers = defaults.filter(item => item[IS_DEFAULT_ANSWER_POS]);
   // Locate an option referring to the "none of the above", if it exists
   let naOption = naValue || Object.values(props.questionDefinition)
     .find((value) => value['notApplicable'])?.["value"];
@@ -79,12 +78,11 @@ function MultipleChoice(props) {
     .map((item, index) => [Array.of(existingAnswer[1].displayedValue).flat()[index], item]);
   // When opening a form, if there is no existingAnswer but there are AnswerOptions specified as default values,
   // display those options as selected and ensure they get saved unless modified by the user, by adding them to initialSelection
-  if (initialSelection.length == 0 && defaultAnswers.length > 0) {
-    initialSelection = defaultAnswers.map(item => [item[LABEL_POS], item[VALUE_POS]]);
-    // If there are more default values than the specified maxAnswers, only take into account the first maxAnswers default values.
-    if (maxAnswers > 0 && initialSelection.length > maxAnswers) {
-      initialSelection = initialSelection.slice(0, maxAnswers);
-    }
+  if (initialSelection.length == 0) {
+    initialSelection = defaults.filter(item => item[IS_DEFAULT_ANSWER_POS])
+       // If there are more default values than the specified maxAnswers, only take into account the first maxAnswers default values.
+      .slice(0, maxAnswers || defaults.length)
+      .map(item => [item[LABEL_POS], item[VALUE_POS]]);
   }
   let default_values = defaults.map((thisDefault) => thisDefault[VALUE_POS]);
   let all_options =
@@ -536,7 +534,6 @@ function generateDefaultOptions(defaults, selection, disabled, isRadio, onClick,
         onClick={onClick}
         onDelete={onDelete}
         isDefaultOption={childData[IS_DEFAULT_OPTION_POS]}
-        isDefaultAnswer={selection.length == 0 && childData[IS_DEFAULT_ANSWER_POS]}
         isRadio={isRadio}
         description={childData[DESC_POS]}
       ></StyledResponseChild>
@@ -548,7 +545,7 @@ var StyledResponseChild = withStyles(QuestionnaireStyle)(ResponseChild);
 
 // One option (either a checkbox or radiobox as appropriate)
 function ResponseChild(props) {
-  const {classes, checked, name, id, isDefaultOption, isDefaultAnswer, onClick, disabled, isRadio, onDelete, description} = props;
+  const {classes, checked, name, id, isDefaultOption, onClick, disabled, isRadio, onDelete, description} = props;
 
   return (
     <React.Fragment>
@@ -561,7 +558,7 @@ function ResponseChild(props) {
                   isRadio ?
                   (
                     <Radio
-                      checked={checked || isDefaultAnswer}
+                      checked={checked}
                       onChange={() => {onClick(id, name, checked);}}
                       disabled={!checked && disabled}
                       className={classes.checkbox}
@@ -569,7 +566,7 @@ function ResponseChild(props) {
                   ) :
                   (
                     <Checkbox
-                      checked={checked || isDefaultAnswer}
+                      checked={checked}
                       onChange={() => {onClick(id, name, checked)}}
                       disabled={!checked && disabled}
                       className={classes.checkbox}

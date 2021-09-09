@@ -645,7 +645,7 @@ const questionnaireStyle = theme => ({
       "& .MuiPopover-paper" : {
         padding: theme.spacing(3),
         width: theme.spacing(87),
-        height: theme.spacing(40),
+        height: theme.spacing(43),
       }
     },
     descriptionPopoverButton: {
@@ -655,6 +655,9 @@ const questionnaireStyle = theme => ({
     },
     descriptionPopoverTitle: {
       marginBottom: theme.spacing(2),
+    },
+    descriptionPopoverLabel: {
+      marginBottom: theme.spacing(1),
     },
     selectionChild: {
       flexWrap: "wrap",

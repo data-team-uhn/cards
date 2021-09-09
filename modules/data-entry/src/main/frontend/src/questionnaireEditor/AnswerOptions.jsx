@@ -39,7 +39,7 @@ import QuestionComponentManager from "./QuestionComponentManager";
 import MarkdownText from "./MarkdownText";
 import CloseIcon from '@material-ui/icons/Close';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
-import EditIcon from '@material-ui/icons/Edit';
+import ShortTextIcon from '@material-ui/icons/ShortText';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { stringToHash } from "../escape.jsx";
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
@@ -215,7 +215,7 @@ let AnswerOptions = (props) => {
           <ComposedIcon
               size="large"
               MainIcon={MoreVertIcon}
-              ExtraIcon={!item.description ? AddCircleIcon : EditIcon}/>
+              ExtraIcon={item.description || item.isDefault === "true" ? ShortTextIcon : '' }/>
         </IconButton>
       </Tooltip>
     )
@@ -410,8 +410,9 @@ let AnswerOptions = (props) => {
         className={classes.descriptionPopover}
       >
         <Typography variant="h6" className={classes.descriptionPopoverTitle} >
-          {`Description for "${descriptionLabel}"`}
+          {`More options for "${descriptionLabel}"`}
         </Typography>
+        <Typography className={classes.descriptionPopoverLabel}>Description:</Typography>
         { descriptionIndex != null &&
           <MarkdownText
             value={description}
