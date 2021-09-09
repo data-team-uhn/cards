@@ -45,7 +45,7 @@ function LiveTable(props) {
 
   const { customUrl, columns, defaultLimit, joinChildren, updateData, classes,
     filters, entryType, actions, admin, disableTopPagination, disableBottomPagination,
-    onDataReceived, ...rest } = props;
+    onDataReceived, onFiltersChange, filtersJsonString, ...rest } = props;
   const [tableData, setTableData] = useState();
   const [cachedFilters, setCachedFilters] = useState(null);
   const [paginationData, setPaginationData] = useState(
@@ -309,6 +309,9 @@ function LiveTable(props) {
         notempties: notempties
       };
       setCachedFilters(filter_obj);
+      // Store entire new filters JSON object as a Base64-encoded ASCII string to pass on in case we need to expand a table
+      // via a callback "onFiltersChange()" from upper component that contains a table and expand element
+      onFiltersChange && onFiltersChange(window.btoa(JSON.stringify(newFilters)));
       fetchData({
         "filters": filter_obj
       });
@@ -351,7 +354,7 @@ function LiveTable(props) {
   return (
     // We wrap everything in a Paper for a nice separation, as a Table has no background or border of its own.
     <Paper elevation={0}>
-      {filters && <Filters onChangeFilters={handleChangeFilters} disabled={!Boolean(tableData)} {...rest} />}
+      {filters && <Filters onChangeFilters={handleChangeFilters} disabled={!Boolean(tableData)} filtersJsonString={filtersJsonString} {...rest} />}
       {!disableTopPagination &&
       <div>
         {paginationControls}

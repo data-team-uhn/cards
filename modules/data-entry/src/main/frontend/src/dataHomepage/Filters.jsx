@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useCallback, useRef, useState, useContext } from "react";
+import React, { useCallback, useRef, useState, useContext, useEffect } from "react";
 import { Chip, Typography, Button, Dialog, CircularProgress, IconButton } from "@material-ui/core";
 import { DialogActions, DialogContent, DialogTitle, Grid, Select, MenuItem, TextField, withStyles } from "@material-ui/core";
 import Add from "@material-ui/icons/Add";
@@ -35,13 +35,13 @@ import VocabularyFilter from "./FilterComponents/VocabularyFilter.jsx";
 import TextFilter from "./FilterComponents/TextFilter.jsx";
 import SubjectFilter from "./FilterComponents/SubjectFilter.jsx";
 import QuestionnaireFilter from "./FilterComponents/QuestionnaireFilter.jsx";
-import { UNARY_COMPARATORS } from "./FilterComponents/FilterComparators.jsx";
+import { UNARY_COMPARATORS, TEXT_COMPARATORS } from "./FilterComponents/FilterComparators.jsx";
 
 const ALL_QUESTIONNAIRES_URL = "/Questionnaires.deep.json";
 const FILTER_URL = "/Questionnaires.filters";
 
 function Filters(props) {
-  const { classes, disabled, onChangeFilters, questionnaire } = props;
+  const { classes, disabled, onChangeFilters, questionnaire, filtersJsonString } = props;
   // Filters, as displayed in the dialog, and filters as actually saved
   const [editingFilters, setEditingFilters] = useState([]);
   const [activeFilters, setActiveFilters] = useState([]);
@@ -80,6 +80,25 @@ function Filters(props) {
       focusRef.current.focus();
     }
   }
+
+  // Parse filters that were passed from one of dashboard table expansions
+  // When new data is added, trigger a new fetch
+  useEffect(() => {
+    if (!filterRequestSent) {
+      grabFilters();
+    }
+
+    if (filtersJsonString && Object.keys(questionDefinitions).length > 0) {
+      // Parse out the filters
+      let newFilters = JSON.parse(window.atob(filtersJsonString));
+      newFilters.forEach( (newFilter) => {
+        getOutputChoices(newFilter.name);
+      });
+      setEditingFilters(newFilters);
+      setActiveFilters(newFilters);
+      onChangeFilters && onChangeFilters(newFilters);
+    }
+  }, [filtersJsonString, questionDefinitions]);
 
   // Obtain information about the filters that can be applied
   let grabFilters = () => {
@@ -335,6 +354,8 @@ function Filters(props) {
     let newFilters = deepCopyFilters(editingFilters)
     // Remove filters that are not complete
       .filter( (toCheck) => (toCheck.uuid && toCheck.comparator))
+    // Remove special mandatory filters with no value
+      .filter( (toCheck) => (!toCheck.uuid.startsWith('cards:') || toCheck.value))
     // Replace filters with empty output to use either the "is empty" or "is not empty" comparator
       .map( (toCheck) => ((toCheck.value || UNARY_COMPARATORS.includes(toCheck.comparator)) ?
         toCheck
@@ -470,6 +491,7 @@ function Filters(props) {
               // We grab focus on the field if we were asked to
               let isUnary = filterDatum.comparator && UNARY_COMPARATORS.includes(filterDatum.comparator);
               let isNotesContain = filterDatum.comparator && (filterDatum.comparator === notesComparator);
+              let isContain = filterDatum.comparator && (filterDatum.comparator.includes(TEXT_COMPARATORS));
               return(
                 <React.Fragment key={index}>
                   {/* Select the field to filter */}
@@ -491,7 +513,7 @@ function Filters(props) {
                     </Select>
                   </Grid>
                   {/* Depending on whether or not the comparator chosen is unary, the size can change */}
-                  <Grid item xs={isUnary ? 6 : (isNotesContain ? 3 : 1)} className={index == editingFilters.length-1 ? classes.hidden : ""}>
+                  <Grid item xs={isUnary ? 6 : (isNotesContain ? 3 : (isContain ? 2 : 1))} className={index == editingFilters.length-1 ? classes.hidden : ""}>
                     <Select
                       value={filterDatum.comparator || ""}
                       onChange={(event) => {handleChangeComparator(index, event.target.value);}}
@@ -505,7 +527,7 @@ function Filters(props) {
                   </Grid>
                   {/* Look up whether or not the component can be loaded */}
                   {!isUnary &&
-                    <Grid item xs={isNotesContain ? 3 : 5} className={index == editingFilters.length-1 ? classes.hidden : ""}>
+                    <Grid item xs={isNotesContain ? 3 : (isContain ? 4 : 5)} className={index == editingFilters.length-1 ? classes.hidden : ""}>
                       {filterDatum.comparator ?
                           getCachedInput(filterDatum, index, (index !== editingFilters.length-1 && toFocus === index ? focusCallback : undefined))
                         : <TextField disabled className={classes.answerField}></TextField>

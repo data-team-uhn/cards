@@ -53,9 +53,10 @@ function SubjectView(props) {
   const [ subjectTypes, setSubjectTypes] = useState([])
   const [ tabsLoading, setTabsLoading ] = useState(null);
   const [ columns, setColumns ] = React.useState(props.columns || null);
+  const [ filtersJsonString, setFiltersJsonString ] = useState(new URLSearchParams(window.location.hash.substring(1)).get("subjects:filters"));
   const hasSubjects = tabsLoading === false && subjectTypes.length > 0;
 
-  const activeTabParam = location.hash.substr(1);
+  const activeTabParam = new URLSearchParams(window.location.hash.substring(1)).get("subjects:activeTab");
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -123,7 +124,7 @@ function SubjectView(props) {
         action={
           !expanded &&
           <Tooltip title="Expand">
-            <Link to={"/content.html/Subjects#" + ( subjectTypes.length > 0 ? subjectTypes[activeTab]['@name'] : '' )}>
+            <Link to={"/content.html/Subjects#" + new URLSearchParams({"subjects:activeTab" : subjectTypes?.[activeTab]?.['@name'] || "", "subjects:filters" : filtersJsonString || ""}).toString()}>
               <IconButton>
                 <LaunchIcon/>
               </IconButton>
@@ -154,6 +155,10 @@ function SubjectView(props) {
               entryType={"Subject"}
               actions={actions}
               disableTopPagination={!topPagination}
+              filters
+              joinChildren="cards:Answer"
+              onFiltersChange={(str) => setFiltersJsonString(str)}
+              filtersJsonString={filtersJsonString}
             />
           : <Typography>No results</Typography>
       }

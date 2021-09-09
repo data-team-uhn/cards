@@ -22,15 +22,21 @@ import java.io.IOException;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
-import javax.jcr.Property;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.Workspace;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
@@ -66,7 +72,6 @@ import org.slf4j.LoggerFactory;
  *
  * @version $Id$
  */
-@SuppressWarnings({"checkstyle:MultipleStringLiterals"})
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(
     resourceTypes = { "cards/QuestionnairesHomepage", "cards/FormsHomepage", "cards/SubjectsHomepage",
@@ -82,47 +87,173 @@ public class PaginationServlet extends SlingSafeMethodsServlet
 
     // Allowed JCR-SQL2 operators (from https://docs.adobe.com/docs/en/spec/jcr/2.0/6_Query.html#6.7.17%20Operator)
     private static final List<String> COMPARATORS =
-        Arrays.asList("=", "<>", "<", "<=", ">", ">=", "LIKE", "notes contain");
+        Arrays.asList("=", "<>", "<", "<=", ">", ">=", "LIKE", "notes contain", "contains", " IS NULL",
+            " IS NOT NULL");
 
     private static final String SUBJECT_IDENTIFIER = "cards:Subject";
+
     private static final String QUESTIONNAIRE_IDENTIFIER = "cards:Questionnaire";
+
     private static final String CREATED_DATE_IDENTIFIER = "cards:CreatedDate";
+
+    /**
+     * Various supported filter types.
+     */
+    private enum FilterType
+    {
+        /** Regular filters on child node values. */
+        CHILD("child", "filternames", null, false),
+        /** IS NULL filters that check that a child node value is null. */
+        EMPTY("empty", "filterempty", " IS NULL", true),
+        /** IS NOT NULL filters that check that a child node value is not null. */
+        NOT_EMPTY("notempty", "filternotempty", " IS NOT NULL", true);
+
+        /** Prefix to use in query source names. */
+        private final String sourcePrefix;
+
+        /** The name of the request parameter holding the filters. */
+        private final String parameterName;
+
+        /** The default comparator to use, when no comparator is specified in the request. */
+        private final String comparator;
+
+        /** Whether this is a valueless filter, like "is null". */
+        private final boolean valueless;
+
+        FilterType(final String prefix, final String parameterName, final String comparator, final boolean valueless)
+        {
+            this.sourcePrefix = prefix;
+            this.parameterName = parameterName;
+            this.comparator = comparator;
+            this.valueless = valueless;
+        }
+    }
+
+    /**
+     * A parsed filter, gathering together the field, comparator, value to compare against, type of the value, and
+     * source name that the field belongs to.
+     */
+    private static final class Filter
+    {
+        /**
+         * The field name, may be the jcr:uuid of a question being answered, or a special value like the subject,
+         * creator, creation date, or questionnaire.
+         */
+        private final String name;
+
+        /**
+         * The value to compare against, may be an empty string if no value is needed, e.g. for a "is null" filter.
+         */
+        private final String value;
+
+        /** The type of the field/value, useful for special treatment of dates and booleans. */
+        private final String type;
+
+        /** The comparator, one of the COMPARATORS. */
+        private final String comparator;
+
+        /**
+         * The JCR query source name that the filter applies to. While all other fields are parsed from the request,
+         * this will be filled in later when the query sources are generated.
+         */
+        private String source;
+
+        Filter(final String name, final String value, final String type, final String comparator)
+        {
+            this.name = name;
+            this.value = value;
+            this.type = type;
+            this.comparator = comparator;
+        }
+    }
 
     @Override
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
-            throws IOException, IllegalArgumentException
+        throws IOException, IllegalArgumentException
     {
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        final long limit = getLongValueOrDefault(request.getParameter("limit"), 10);
-        final long offset = getLongValueOrDefault(request.getParameter("offset"), 0);
-
-        String finalquery = createQuery(request);
-
-        Iterator<Resource> results;
-        //Using a QueryManager doesn't always work, but it is faster
-        Session session = null;
         try {
-            //Get a QueryManager object
-            ResourceResolver resolver = request.getResourceResolver();
-            session = resolver.adaptTo(Session.class);
-            Workspace workspace = session.getWorkspace();
-            QueryManager queryManager = workspace.getQueryManager();
+            final ResourceResolver resolver = request.getResourceResolver();
+            final Session session = resolver.adaptTo(Session.class);
 
-            //Create the Query object
-            Query filterQuery = queryManager.createQuery(finalquery, "JCR-SQL2");
+            // Parse the request to build a list of filters
+            final Map<FilterType, List<Filter>> filters = parseFiltersFromRequest(request);
 
-            //Set the limit and offset here to improve query performance
+            final long limit = getLongValueOrDefault(request.getParameter("limit"), 10);
+            final long offset = getLongValueOrDefault(request.getParameter("offset"), 0);
+
+            // Check for special cases in request and return zero results if any
+            if (checkForSpecialEmptyFilter(request, filters, response)) {
+                // Write the empty response
+                final Iterator<Resource> results = Collections.emptyIterator();
+                writeResponse(request, response, offset, limit, results);
+                return;
+            }
+
+            // Get a QueryManager object
+            final QueryManager queryManager = session.getWorkspace().getQueryManager();
+
+            // Create the Query object
+            Query filterQuery = queryManager.createQuery(createQuery(request, session, filters), "JCR-SQL2");
+
+            // Set the limit and offset here to improve query performance
             filterQuery.setLimit((QUERY_SIZE_MULTIPLIER * limit) + 1);
             filterQuery.setOffset(offset);
 
-            //Execute the query
-            QueryResult filterResult = filterQuery.execute();
-            results = new ResourceIterator(request.getResourceResolver(), filterResult.getNodes());
+            // Execute the query
+            final QueryResult filterResult = filterQuery.execute();
+            final Iterator<Resource> results =
+                new ResourceIterator(request.getResourceResolver(), filterResult.getNodes());
+
+            // Write the response
+            writeResponse(request, response, offset, limit, results);
         } catch (Exception e) {
+            LOGGER.warn("Failed to execute query: {}", e.getMessage(), e);
             return;
         }
+    }
 
+    /**
+     * Checks if any "is empty" filters for the mandatory data are specified, since such a query will never have any
+     * results.
+     *
+     * @param request the current request
+     * @param filters a list of filters
+     * @param response the HTTP response
+     * @return {@code true} if any mandatory special property has an "is empty" filter, {@code false} otherwise
+     * @throws RepositoryException if accessing the repository fails
+     */
+    private boolean checkForSpecialEmptyFilter(final SlingHttpServletRequest request,
+        final Map<FilterType, List<Filter>> filters, final SlingHttpServletResponse response)
+        throws RepositoryException
+    {
+        for (Filter filter : filters.getOrDefault(FilterType.EMPTY, new ArrayList<Filter>())) {
+            if (SUBJECT_IDENTIFIER.equals(filter.name)
+                || QUESTIONNAIRE_IDENTIFIER.equals(filter.name)
+                || CREATED_DATE_IDENTIFIER.equals(filter.name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Write the response.
+     *
+     * @param request the current request
+     * @param response the HTTP response
+     * @param offset how many resources from the query results were skipped
+     * @param limit how many resources from the query results to serialize, may be 0 if we only want a count of the
+     *            resources
+     * @param results request results
+     * @throws IOException if failed or interrupted I/O operation
+     * @throws RepositoryException if accessing the repository fails
+     */
+    private void writeResponse(final SlingHttpServletRequest request, final SlingHttpServletResponse response,
+        final long offset, final long limit, final Iterator<Resource> results)
+            throws IOException, RepositoryException
+    {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
         // The writer doesn't need to be explicitly closed since the auto-closed jsonGen will also close the writer
         final Writer out = response.getWriter();
         try (JsonGenerator jsonGen = Json.createGenerator(out)) {
@@ -133,210 +264,392 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         }
     }
 
-    @SuppressWarnings({"checkstyle:ExecutableStatementCount"})
-    private String createQuery(final SlingHttpServletRequest request)
+    /**
+     * Returns a type of results to return, a node type like {@code cards:Form} or {@code cards:Subject}.
+     *
+     * @param request the current request
+     * @return a node type string
+     * @throws RepositoryException if accessing the repository fails
+     */
+    private String getNodeType(final SlingHttpServletRequest request) throws RepositoryException
+    {
+        final Node node = request.getResource().adaptTo(Node.class);
+        return node.hasProperty("childNodeType") ? node.getProperty("childNodeType").getString()
+            : request.getResource().getResourceType().replace('/', ':').replaceFirst("sHomepage$", "");
+    }
+
+    /**
+     * Generates a JCR SQL Query from the request.
+     *
+     * @param request the current request
+     * @param session a valid JCR session
+     * @param filters a list of filters
+     * @return a query that takes into account the requested filters
+     * @throws RepositoryException if accessing the repository fails
+     */
+    private String createQuery(final SlingHttpServletRequest request, Session session,
+        final Map<FilterType, List<Filter>> filters) throws RepositoryException
     {
         // If we want this query to be fast, we need to use the exact nodetype requested.
-        final Node node = request.getResource().adaptTo(Node.class);
-        String nodeType = "";
-        try {
-            Property type = node.getProperty("childNodeType");
-            nodeType = type.getString();
-        } catch (Exception e) {
-            nodeType = request.getResource().getResourceType().replace('/', ':').replaceFirst("sHomepage$", "");
-        }
-        final StringBuilder query =
-            // We select all child nodes of the homepage having the right type
-            new StringBuilder("select n.* from [").append(nodeType).append("] as n");
+        final String nodeType = getNodeType(request);
 
-        // If child nodes are required for this query, also grab them
-        final String[] filternames = request.getParameterValues("filternames");
-        query.append(createJoins(
-            request.getParameter("joinchildren"),
-            request.getParameterValues("filternames"),
-            request.getParameterValues("filterempty"),
-            request.getParameterValues("filternotempty")
-            ));
+        // We select all nodes having the right type
+        final StringBuilder query = new StringBuilder("select distinct n.* from [").append(nodeType).append("] as n");
+
+        // Optional child node type that the filters may apply to
+        final String joinNodeType = request.getParameter("joinchildren");
+
+        // The map that stores questionnaires uuids with prefixes in array and maps it to the
+        // corresponding group of questions uuids with their prefixes (stored in a map)
+        // To be used later on the filter query construction
+
+        // Add sources
+        query.append(
+            getQuerySources(
+                nodeType,
+                joinNodeType,
+                filters,
+                session));
 
         // Check only for the descendants of the requested homepage
         query.append(" where isdescendantnode(n, '" + request.getResource().getPath() + "')");
 
         // Full text search; \ and ' must be escaped
-        final String filter = request.getParameter("filter");
-        if (StringUtils.isNotBlank(filter)) {
-            query.append(" and contains(n.*, '" + this.sanitizeField(filter) + "')");
+        final String fullTextFilter = request.getParameter("filter");
+        if (StringUtils.isNotBlank(fullTextFilter)) {
+            query.append(" and contains(n.*, '" + this.sanitizeValue(fullTextFilter) + "')");
         }
 
         // Exact condition on parent node; \ and ' must be escaped. The value must be wrapped in 's
-        final String fieldname = request.getParameter("fieldname");
-        final String fieldvalue = request.getParameter("fieldvalue");
-        // TODO, if more request options are required: convert includeAllStatus into a request mode
-        // backed by an an enum, map or other such collection.
-        final boolean includeAllStatus = Boolean.parseBoolean(request.getParameter("includeallstatus"));
-        String fieldcomparator = request.getParameter("fieldcomparator");
+        final String fieldname = this.sanitizeValue(request.getParameter("fieldname"));
+        final String fieldvalue = this.sanitizeValue(request.getParameter("fieldvalue"));
+        final String fieldcomparator = this.sanitizeComparator(request.getParameter("fieldcomparator"));
         if (StringUtils.isNotBlank(fieldname)) {
-            if (StringUtils.isBlank(fieldcomparator)) {
-                // Default comparator is =
-                fieldcomparator = "=";
-            }
-            query.append(
-                String.format(
-                    " and n.'%s'%s'%s'",
-                    this.sanitizeField(fieldname),
-                    this.sanitizeComparator(fieldcomparator),
-                    this.sanitizeField(fieldvalue)
-                )
-            );
+            query.append(String.format(
+                " and n.'%s'%s'%s'",
+                fieldname,
+                fieldcomparator,
+                fieldvalue));
         }
+
+        // TODO, if more request options are required: convert includeAllStatus into a request mode
+        // backed by an enum
+        final boolean includeAllStatus = Boolean.parseBoolean(request.getParameter("includeallstatus"));
         // Only display `INCOMPLETE` forms if we are explicitly checking the status of forms,
         // or if the user requested forms with all statuses
-        if (!("statusFlags".equals(fieldname) || includeAllStatus)) {
+        if (!("statusFlags".equals(fieldname) || includeAllStatus || nodeType.equals(SUBJECT_IDENTIFIER))) {
             query.append(" and not n.'statusFlags'='INCOMPLETE'");
         }
 
-        // Condition on child nodes. See parseFilter for details.
-        final String[] filtervalues = request.getParameterValues("filtervalues");
-        final String[] filtertypes = request.getParameterValues("filtertypes");
-        final String[] filtercomparators = request.getParameterValues("filtercomparators");
-        final String[] filterempty = request.getParameterValues("filterempty");
-        final String[] filternotempty = request.getParameterValues("filternotempty");
+        // Conditions on child nodes
+        query.append(getQueryConditions(nodeType, filters));
+
+        // Results ordering
         final boolean sortDescending = Boolean.valueOf(request.getParameter("descending"));
-        query.append(parseFilter(filternames, filtervalues, filtertypes, filtercomparators));
-        query.append(parseExistence(filterempty, filternotempty));
         query.append(" order by n.'jcr:created'").append(sortDescending ? " DESC" : " ASC");
+
+        // All done!
         String finalquery = query.toString();
         LOGGER.debug("Computed final query: {}", finalquery);
-
         return finalquery;
     }
 
     /**
-     * Parse out filter data into a series of JCR_SQL2 joins. This should be used in conjunction with parseFilter later
-     * on.
+     * Parse the request parameters into a collection of proper filters.
      *
-     * @param nodetype node types to join
-     * @param filternames user input field names
-     * @param empties user input fields to assert emptiness of
-     * @param notempties user input fields to assert non-emptiness of
-     * @return the input fields and assertions as a series of sql joins
+     * @param request the current request
+     * @return a map from filter types to a list of filters of that type; the resulting map may be empty, or it may have
+     *         only some types of filters, depending on which filters are specified in the request
+     * @throws IllegalArgumentException when the number of request parameters are not equal
      */
-    private String createJoins(final String nodetype, final String[] filternames, final String[] empties,
-        final String[] notempties)
+    private Map<FilterType, List<Filter>> parseFiltersFromRequest(final SlingHttpServletRequest request)
+        throws IllegalArgumentException
     {
-        if (StringUtils.isBlank(nodetype)) {
-            // Unknown join type: do not parse
-            return "";
+        final Map<FilterType, List<Filter>> result = new HashMap<>();
+        for (FilterType filterType : FilterType.values()) {
+            final String[] filters = request.getParameterValues(filterType.parameterName);
+            if (filters == null || filters.length == 0) {
+                continue;
+            }
+            if (filterType.valueless) {
+                result.put(filterType,
+                    Arrays.asList(filters).stream().map(f -> new Filter(f, "", "", filterType.comparator))
+                        .collect(Collectors.toList()));
+            } else {
+                // FIXME This only works with one filter, it should be refactored to use a common prefix + suffixes
+                final String[] values = request.getParameterValues("filtervalues");
+                final String[] types = request.getParameterValues("filtertypes");
+                final String[] comparators = request.getParameterValues("filtercomparators");
+                if (filters.length != values.length || types.length != comparators.length
+                    || filters.length != comparators.length) {
+                    throw new IllegalArgumentException(
+                        "Invalid request, the same number of filter names, values, types and comparators"
+                            + " must be provided");
+                }
+                final List<Filter> gatheredFilters = new LinkedList<>();
+                for (int i = 0; i < filters.length; ++i) {
+                    gatheredFilters.add(new Filter(filters[i], values[i], types[i], comparators[i]));
+                }
+                result.put(filterType, gatheredFilters);
+            }
         }
-
-        String sanitizednodetype = nodetype.replaceAll("[\\\\\\]]", "\\\\$0");
-        StringBuilder joindata = new StringBuilder();
-
-        // Parse out the fields to later impose conditions on
-        joindata.append(createSingleJoin(filternames, "child", sanitizednodetype));
-
-        // Parse out the fields to assert the nonexistence of
-        joindata.append(createSingleJoin(empties, "empty", sanitizednodetype));
-
-        // Parse out the fields to assert the existence of
-        joindata.append(createSingleJoin(notempties, "notempty", sanitizednodetype));
-
-        return joindata.toString();
+        return result;
     }
 
     /**
-     * Parse out filter data into a series of JCR_SQL2 joins.
+     * Processes all the filters and creates the query's source.
      *
-     * @param joins node types to join
-     * @param childprefix prefix to give the child, to which a number will be appended to
-     * @param nodetype Node type to join on
-     * @return the input field as a series of sql joins
+     * @param nodeType the type of results to return, a node type like {@code cards:Form} or {@code cards:Subject}
+     * @param joinNodeType an optional, additional node type to use for the filter values, like {@code cards:Answer}
+     * @param filters a list of filters
+     * @param session the current JCR session
+     * @return the query fragment listing all sub-sources except the main node type itself (the "join ..." part); empty
+     *         if there are no filters for descendant nodes
      */
-    private String createSingleJoin(final String[] joins, final String childprefix, final String nodetype)
+    private String getQuerySources(final String nodeType, final String joinNodeType,
+        final Map<FilterType, List<Filter>> filters, final Session session)
     {
-        // Don't attempt to append joins if we're not given anything
-        if (joins == null) {
+        if (StringUtils.isBlank(joinNodeType)) {
             return "";
         }
 
-        // Append an inner join for each pipe-delimited identifier in joins
-        StringBuilder joindata = new StringBuilder();
-        for (int i = 0; i < joins.length; i++) {
-            // Skip this join if it is on cards:Subject, which does not require a child inner join
-            if (SUBJECT_IDENTIFIER.equals(joins[i])
-                || QUESTIONNAIRE_IDENTIFIER.equals(joins[i])
-                || CREATED_DATE_IDENTIFIER.equals(joins[i])) {
+        final Map<String, String> questionnairesToFormSource = new HashMap<>();
+        final Map<String, List<String>> questionnairesToQuestions = new HashMap<>();
+        final Map<String, String> questionsToAnswerSource = new HashMap<>();
+
+        String sanitizednodetype = joinNodeType.replaceAll("[\\\\\\]]", "\\\\$0");
+        // Resolve all questions to questionnaires and group them by questionnaires
+        filters.forEach((type, values) -> mapFiltersToSources(nodeType, type, values, questionnairesToFormSource,
+            questionnairesToQuestions, questionsToAnswerSource, session));
+
+        if (nodeType.equals(SUBJECT_IDENTIFIER)) {
+            // Make joins per questionnaire/form, and per each question/answer in a form
+            return createSubjectJoins(sanitizednodetype, questionnairesToFormSource, questionnairesToQuestions,
+                questionsToAnswerSource);
+        } else {
+            // There should be only one questionnaire in the end, but there's no way to enforce this in the UI.
+            // If there's more than one questionnaire involved, then no form will ever match.
+            // Just assume that all the questions belong to the same questionnaire, and append joins for answers for
+            // each question, regardless of the questionnaire
+            return createFormJoins(sanitizednodetype, questionnairesToFormSource, questionnairesToQuestions,
+                questionsToAnswerSource);
+        }
+    }
+
+    /**
+     * Maps filter names to source names in the JCR query. This also fills in the source member of each filter.
+     *
+     * @param nodeType the type of results to return, a node type like {@code cards:Form} or {@code cards:Subject}
+     * @param filterType the type of filter to process
+     * @param filters a list of filters
+     * @param questionnairesToFormSource out parameter, maps from a questionnaire's UUID to a form source identifier, in
+     *            the format {@code f1}
+     * @param questionnairesToQuestions out parameter, maps from a questionnaire's UUID to a list of questions that
+     *            belong to it
+     * @param filtersToAnswerSource out parameter, maps from a question UUID to an answer source identifier, in the
+     *            format {@code child1_1}, where {@code child} is the specified prefix, the first number is the form
+     *            source number, and the second number is a counter of the sub-sources belonging to the same form
+     * @param session the current JCR session
+     */
+    private void mapFiltersToSources(
+        final String nodeType, final FilterType filterType, final List<Filter> filters,
+        final Map<String, String> questionnairesToFormSource,
+        final Map<String, List<String>> questionnairesToQuestions,
+        final Map<String, String> questionsToAnswerSource,
+        final Session session)
+    {
+        if (filters == null) {
+            return;
+        }
+
+        for (Filter filter : filters) {
+            if (SUBJECT_IDENTIFIER.equals(filter.name) || CREATED_DATE_IDENTIFIER.equals(filter.name)) {
+                // For special node filters, all we need to do is record the source name in the filter
+                filter.source = "n";
                 continue;
             }
 
-            joindata.append(
-                String.format(
-                    " inner join [%s] as %s%d on isdescendantnode(%s%d, n)",
-                    nodetype,
-                    childprefix,
-                    i,
-                    childprefix,
-                    i
-                )
-            );
-        }
+            String questionnaire = "";
+            if (QUESTIONNAIRE_IDENTIFIER.equals(filter.name)) {
+                // When filtering explicitly by questionnaire, we already know the questionnaire for the filter
+                questionnaire = filter.value;
+            } else {
+                // Otherwise, we look it up from the question
+                questionnaire = getQuestionnaire(filter.name, session);
+            }
 
-        return joindata.toString();
+            if (StringUtils.isNotBlank(questionnaire)) {
+                // If this is the first time we encounter a questionnaire, add a new source for it
+                questionnairesToFormSource.computeIfAbsent(questionnaire,
+                    k -> "f" + (questionnairesToFormSource.size() + 1));
+
+                if (QUESTIONNAIRE_IDENTIFIER.equals(filter.name)) {
+                    if (SUBJECT_IDENTIFIER.equals(nodeType)) {
+                        // The source for a questionnaire filter is one of the forms relating to the subject
+                        filter.source = questionnairesToFormSource.get(questionnaire);
+                    } else {
+                        // The source for a questionnaire filter is the form node itself
+                        filter.source = "n";
+                    }
+                    // Not a question, no need to update the list of questions
+                    continue;
+                }
+
+                List<String> questions =
+                    questionnairesToQuestions.computeIfAbsent(questionnaire, k -> new ArrayList<>());
+                questions.add(filter.name);
+
+                // Filters count for this questionnaire
+                String fcount = Integer.toString(questions.size());
+                // <uuid> -> "childf1_1"
+                questionsToAnswerSource.put(filter.name,
+                    filterType.sourcePrefix + questionnairesToFormSource.get(questionnaire) + "_" + fcount);
+                // Update the source name in the filter
+                filter.source = questionsToAnswerSource.get(filter.name);
+            }
+        }
     }
 
-    private String generateDateCompareQuery(String jcrVariable, String thisDayStr, String operator)
+    /**
+     * Computes the joins needed for the filters, when the targeted node type is {@code cards:Form}. This means that for
+     * each question a new {@code cards:Answer} source to the sources on the condition that it belongs to the targeted
+     * node.
+     *
+     * @param joinNodeType an optional, additional node type to use for the filter values, like {@code cards:Answer}
+     * @param questionnairesToFormSource maps from a questionnaire's UUID to a form source identifier
+     * @param questionnairesToQuestions maps from a questionnaire's UUID to a list of questions that belong to it
+     * @param questionsToAnswerSource maps from a question UUID to an answer source identifier
+     * @return the query fragment listing all sub-sources except the main node type itself (the "join ..." part); empty
+     *         if there are no filters for descendant nodes
+     */
+    private String createFormJoins(final String joinNodeType, Map<String, String> questionnairesToFormSource,
+        Map<String, List<String>> questionnairesToQuestions, Map<String, String> questionsToAnswerSource)
     {
-        /*
-         * IF (=) THEN CHECK (>= day AND < nextDay)
-         * IF (<>) THEN CHECK (< day OR >= nextDay)
-         * IF (<) THEN CHECK (< day)
-         * IF (>) THEN CHECK (>= nextDay)
-         * IF (<=) THEN CHECK (< nextDay)
-         * IF (>=) THEN CHECK (>= day)
-         */
-        final ZonedDateTime thisDay = ZonedDateTime.parse(thisDayStr);
+        StringBuilder joins = new StringBuilder();
+        for (String questionnaire : questionnairesToFormSource.keySet()) {
+            final List<String> filtersInQuestionnaire =
+                questionnairesToQuestions.getOrDefault(questionnaire, Collections.emptyList());
+            for (String filter : filtersInQuestionnaire) {
+                final String answerSource = questionsToAnswerSource.get(filter);
+                joins.append(
+                    String.format(
+                        " inner join [%s] as %s on isdescendantnode(%s, n)",
+                        joinNodeType,
+                        answerSource,
+                        answerSource));
+            }
+        }
+
+        return joins.toString();
+    }
+
+    /**
+     * Computes the joins needed for the filters, when the targeted node type is {@code cards:Subject}. This means that
+     * for each questionnaire involved in the filters a new {@code cards:Form} is added to the sources on the condition
+     * that the targeted subject is one of its {@code relatedSubjects}, and for each question a new {@code cards:Answer}
+     * source to the sources on the condition that it belongs to the correct form source.
+     *
+     * @param joinNodeType an optional, additional node type to use for the filter values, like {@code cards:Answer}
+     * @param questionnairesToFormSource maps from a questionnaire's UUID to a form source identifier
+     * @param questionnairesToQuestions maps from a questionnaire's UUID to a list of questions that belong to it
+     * @param questionsToAnswerSource maps from a question UUID to an answer source identifier
+     * @return the query fragment listing all sub-sources except the main node type itself (the "join ..." part); empty
+     *         if there are no filters for descendant nodes
+     */
+    private String createSubjectJoins(final String joinNodeType, Map<String, String> questionnairesToFormSource,
+        Map<String, List<String>> questionnairesToQuestions, Map<String, String> questionsToAnswerSource)
+    {
+        StringBuilder joins = new StringBuilder();
+
+        for (String questionnaire : questionnairesToFormSource.keySet()) {
+            final String formSource = questionnairesToFormSource.get(questionnaire);
+            joins.append(
+                String.format(
+                    " inner join [cards:Form] as %s on n.[jcr:uuid] = %s.relatedSubjects",
+                    formSource,
+                    formSource));
+
+            final List<String> questions =
+                questionnairesToQuestions.getOrDefault(questionnaire, Collections.emptyList());
+            for (String question : questions) {
+                final String answerSource = questionsToAnswerSource.get(question);
+                joins.append(
+                    String.format(
+                        " inner join [%s] as %s on isdescendantnode(%s, %s)",
+                        joinNodeType,
+                        answerSource,
+                        answerSource,
+                        formSource));
+            }
+        }
+
+        return joins.toString();
+    }
+
+    /**
+     * Generates a date comparison query that takes into account correct day boundaries. In the content repository dates
+     * are stored as date-time values, using a fixed timezone, so ignoring the time part and only selecting dates that
+     * would match the timezone from the client must be done by explicitly comparing against custom day start and day
+     * end times.
+     *
+     * @param queryProperty a query property to compare in the format {@code n.'jcr:created'} or {@code child1_2.value}
+     * @param operator the operator to use, one of {@code = <> < > <= or >=}
+     * @param valueToCompare a date string to compare against, including a timezone offset, in the format
+     *            {@code 2020-12-31T00:00-04:00}
+     * @return a query fragment that imposes the correct conditions on the property, for example
+     *         {@code (n.'jcr:created'>='2020-12-31T00:00:00-04:00' and n.'jcr:created'<'2021-01-01T00:00-04:00')}
+     */
+    private String generateDateCompareQuery(final String queryProperty, final String operator,
+        final String valueToCompare)
+    {
+        //
+        // thisDay = start of day in a custom timezone
+        // nextDay = thisDay + 24h
+        // IF (=) THEN CHECK (>= thisDay AND < nextDay)
+        // IF (<>) THEN CHECK (< thisDay OR >= nextDay)
+        // IF (<) THEN CHECK (< thisDay)
+        // IF (>) THEN CHECK (>= nextDay)
+        // IF (<=) THEN CHECK (< nextDay)
+        // IF (>=) THEN CHECK (>= thisDay)
+        //
+        final ZonedDateTime thisDay = ZonedDateTime.parse(valueToCompare);
         final ZonedDateTime nextDay = thisDay.plusDays(1);
         final String nextDayStr = nextDay.toString();
         String compareQuery;
         switch (operator) {
             case "=":
                 compareQuery = String.format("(%s>='%s' and %s<'%s')",
-                    jcrVariable,
-                    thisDayStr,
-                    jcrVariable,
-                    nextDayStr
-                );
+                    queryProperty,
+                    valueToCompare,
+                    queryProperty,
+                    nextDayStr);
                 break;
             case "<>":
                 compareQuery = String.format("(%s<'%s' or %s>='%s')",
-                    jcrVariable,
-                    thisDayStr,
-                    jcrVariable,
-                    nextDayStr
-                );
+                    queryProperty,
+                    valueToCompare,
+                    queryProperty,
+                    nextDayStr);
                 break;
             case "<":
                 compareQuery = String.format("(%s<'%s')",
-                    jcrVariable,
-                    thisDayStr
-                );
+                    queryProperty,
+                    valueToCompare);
                 break;
             case ">":
                 compareQuery = String.format("(%s>='%s')",
-                    jcrVariable,
-                    nextDayStr
-                );
+                    queryProperty,
+                    nextDayStr);
                 break;
             case "<=":
                 compareQuery = String.format("(%s<'%s')",
-                    jcrVariable,
-                    nextDayStr
-                );
+                    queryProperty,
+                    nextDayStr);
                 break;
             case ">=":
                 compareQuery = String.format("(%s>='%s')",
-                    jcrVariable,
-                    thisDayStr
-                );
+                    queryProperty,
+                    valueToCompare);
                 break;
             default:
                 compareQuery = null;
@@ -348,208 +661,144 @@ public class PaginationServlet extends SlingSafeMethodsServlet
     /**
      * Parse out filter data into a series of JCR_SQL2 conditionals.
      *
-     * @param fields user input field names
-     * @param values user input field values
-     * @param comparator user input comparators
-     * @throws IllegalArgumentException when the number of input fields are not equal
+     * @param nodeType the targeted node type, e.g. {@code cards:Form} or {@code cards:Subject}
+     * @param filters the list of filters
      */
-    @SuppressWarnings({"checkstyle:CyclomaticComplexity", "checkstyle:NPathComplexity"})
-    private String parseFilter(final String[] fields, final String[] values,
-        final String[] types, final String[] comparator) throws IllegalArgumentException
+    private String getQueryConditions(final String nodeType, final Map<FilterType, List<Filter>> filters)
     {
-        // If we don't have either names or values, we should fail to filter
-        if (fields == null || values == null) {
-            return "";
-        }
+        StringBuilder conditions = new StringBuilder();
 
-        // Parse out multiple fields, split by pipes (|)
-        if (fields.length != values.length) {
-            throw new IllegalArgumentException("fieldname and fieldvalue must have the same number of values");
-        }
+        for (Map.Entry<FilterType, List<Filter>> filtersOfType : filters.entrySet()) {
+            for (Filter filter : filtersOfType.getValue()) {
+                // Add special conditions for the target subject and the created date
+                // When the targeted node type is subjects, the subject filter applies to the target node itself
+                // When the targeted node type is forms, the subject filter applies to the form's relatedSubjects
+                // property
+                conditions.append(
+                    addSpecialCondition(filter, nodeType.equals(SUBJECT_IDENTIFIER) ? "jcr:uuid" : "relatedSubjects"));
 
-        // Also parse out multiple comparators
-        String[] comparators;
-        if (comparator == null) {
-            // Use = as the default
-            comparators = new String[fields.length];
-            for (int i = 0; i < fields.length; i++) {
-                comparators[i] = "=";
-            }
-        } else {
-            comparators = comparator;
-            if (comparators.length != values.length) {
-                throw new IllegalArgumentException("must have the same number of comparators as fields,");
+                // Add answer conditions
+                conditions.append(addSingleCondition(filter));
             }
         }
+        return conditions.toString();
+    }
 
-        // Build the filter conditionals by imposing conditions on the inner joined cards:Answer children
+    /**
+     * Converts a single special filter into a query condition, including the starting " and ". A special filter is one
+     * that applies to a unique node property, not to an answer value, for example the related subject, the answered
+     * questionnaire, or the node's creation date.
+     *
+     * @param filter a filter object
+     * @param subjectProperty the property that references the subject, either {@code jcr:uuid} if the targeted node is
+     *            actually a subject, or {@code reltedSubjects} if the targeted node is forms
+     * @return a query condition, for example {@code and n.'questionnaire'='e6b97318-f464-4bb2-82e8-b13df62d33f3'}
+     */
+    private String addSpecialCondition(final Filter filter, final String subjectProperty)
+    {
         StringBuilder filterdata = new StringBuilder();
-        // TODO: Double check the sanitization on the comparator
-        for (int i = 0; i < fields.length; i++) {
-            // If the question is cards:Subject, we match on the parent rather than the child
-            if (SUBJECT_IDENTIFIER.equals(fields[i])) {
+        switch (filter.name) {
+            case SUBJECT_IDENTIFIER:
                 filterdata.append(
-                    String.format(" and n.'subject'%s'%s'",
-                        this.sanitizeComparator(comparators[i]),
-                        this.sanitizeField(values[i])
-                    )
-                );
-            } else if (QUESTIONNAIRE_IDENTIFIER.equals(fields[i])) {
+                    String.format(" and %s.'%s'%s'%s'",
+                        filter.source,
+                        subjectProperty,
+                        this.sanitizeComparator(filter.comparator),
+                        this.sanitizeValue(filter.value)));
+                break;
+            case QUESTIONNAIRE_IDENTIFIER:
                 filterdata.append(
-                    String.format(" and n.'questionnaire'%s'%s'",
-                        this.sanitizeComparator(comparators[i]),
-                        this.sanitizeField(values[i])
-                    )
-                );
-            } else if (CREATED_DATE_IDENTIFIER.equals(fields[i])) {
+                    String.format(" and %s.'questionnaire'%s'%s'",
+                        filter.source,
+                        this.sanitizeComparator(filter.comparator),
+                        this.sanitizeValue(filter.value)));
+                break;
+            case CREATED_DATE_IDENTIFIER:
                 filterdata.append(" and ");
                 filterdata.append(
                     generateDateCompareQuery(
                         "n.'jcr:created'",
-                        this.sanitizeField(values[i]),
-                        this.sanitizeComparator(comparators[i])
-                    )
-                );
-            } else {
-                // Condition 1: the question uuid must match one of the given (comma delimited)
-                String[] possibleQuestions = fields[i].split(",");
-                filterdata.append(" and (");
-                for (int j = 0; j < possibleQuestions.length; j++) {
-                    filterdata.append(
-                        String.format(
-                            " child%d.'question'='%s'",
-                            i,
-                            this.sanitizeField(possibleQuestions[j])
-                        )
-                    );
-                    // Add an 'or' if there are more possible conditions
-                    if (j + 1 != possibleQuestions.length) {
-                        filterdata.append(" or");
-                    }
-                }
-                // Condition 2: the value must exactly match
-                if (comparators[i].equals("notes contain")) {
-                    filterdata.append(
-                        String.format(
-                            ") and contains(child%d.'note', '*%s*')",
-                            i,
-                            this.sanitizeField(values[i])
-                        )
-                    );
-                } else {
-                    filterdata.append(
-                        String.format(
-                            ") and child%d.'value'%s" + (("date".equals(types[i]))
-                                ? ("cast('%sT00:00:00.000"
-                                + new SimpleDateFormat("XXX").format(new Date()) + "' as date)")
-                                : ("boolean".equals(types[i])) ? "%s" : "'%s'"),
-                            i,
-                            this.sanitizeComparator(comparators[i]),
-                            this.sanitizeField(values[i])
-                        )
-                    );
-                }
-            }
+                        this.sanitizeComparator(filter.comparator),
+                        this.sanitizeValue(filter.value)));
+                break;
+            default:
+                break;
         }
         return filterdata.toString();
     }
 
     /**
-     * Parse out empty & not empty fields into a series of JCR_SQL2 conditionals.
+     * Converts a single value filter into a query condition, including the starting " and ", referencing the correct
+     * question, and comparing against the filter value.
      *
-     * @param empties user input field names to assert the nonexistance of content for
-     * @param notempties user input field names to assert the existance of content for
-     * @return JCR_SQL conditionals for the input
+     * @param filter a filter object
+     * @return a query condition, for example {@code  and notemptyf1_4.'question'='b5a6163e-db5a-4deb-822e-5dbe57031627'
+     *          and notemptyf1_4.'value' IS NOT NULL}
      */
-    private String parseExistence(final String[] empties, final String[] notempties)
-        throws IllegalArgumentException
+    private String addSingleCondition(final Filter filter)
     {
-        StringBuilder joindata = new StringBuilder();
-        joindata.append(parseComparison(empties, "empty", " IS NULL"));
-        joindata.append(parseComparison(notempties, "notempty", " IS NOT NULL"));
-        return joindata.toString();
-    }
+        StringBuilder condition = new StringBuilder();
 
-    /**
-     * Parse out a field and its unary comparison into a series of JCR_SQL2 conditionals.
-     *
-     * @param fieldnames user input field names
-     * @param childprefix prefix for the child nodes
-     * @param comparison unary comparitor to assert
-     * @return JCR_SQL conditionals for the input
-     */
-    private String parseComparison(final String[] fieldnames, final String childprefix, final String comparison)
-    {
-        // If no comparison is entered, do nothing
-        if (fieldnames == null) {
+        if (SUBJECT_IDENTIFIER.equals(filter.name)
+            || QUESTIONNAIRE_IDENTIFIER.equals(filter.name)
+            || CREATED_DATE_IDENTIFIER.equals(filter.name)) {
             return "";
         }
 
-        // Build the conditionals (e.g. and child0.'question'='uuid' and child0.'value' IS NOT NULL...)
-        StringBuilder joindata = new StringBuilder();
-        for (int i = 0; i < fieldnames.length; i++) {
-            String sanitizedFieldName = sanitizeField(fieldnames[i]);
-            // cards:Subject is handled differently, since it is on the Form itself
-            if (fieldnames[i].equals(SUBJECT_IDENTIFIER)) {
-                joindata.append(
-                    String.format(
-                        " and n.'subject'%s",
-                        comparison
-                    )
-                );
-            } else if (fieldnames[i].equals(QUESTIONNAIRE_IDENTIFIER)) {
-                joindata.append(
-                    String.format(
-                        " and n.'questionnaire'%s",
-                        comparison
-                    )
-                );
-            } else {
-                final String[] possibleQuestions = fieldnames[i].split(",");
-                joindata.append(" and (");
-                for (int j = 0; j < possibleQuestions.length; j++) {
-                    joindata.append(
-                        String.format(
-                            " %s%d.'question'='%s' and %s%d.'value'%s",
-                            childprefix,
-                            i,
-                            this.sanitizeField(possibleQuestions[j]),
-                            childprefix,
-                            i,
-                            comparison
-                        )
-                    );
-                    // Add an 'or' if there are more possible conditions
-                    if (j + 1 != possibleQuestions.length) {
-                        joindata.append(" or");
-                    }
-                }
-                joindata.append(")");
-            }
+        // Condition 1: the question uuid must match
+        condition.append(
+            String.format(
+                " and %s.'question'='%s'",
+                filter.source,
+                this.sanitizeValue(filter.name)));
+
+        // Condition 2: the value must match
+        if ("contains".equals(filter.comparator)) {
+            condition.append(
+                String.format(
+                    " and contains(%s.'value', '*%s*')",
+                    filter.source,
+                    this.sanitizeValue(filter.value)));
+        } else if ("notes contain".equals(filter.comparator)) {
+            condition.append(
+                String.format(
+                    " and contains(%s.'note', '*%s*')",
+                    filter.source,
+                    this.sanitizeValue(filter.value)));
+        } else {
+            condition.append(
+                String.format(
+                    " and %s.'value'%s" + (("date".equals(filter.type))
+                        ? ("cast('%sT00:00:00.000" + new SimpleDateFormat("XXX").format(new Date()) + "' as date)")
+                        : ("boolean".equals(filter.type)) ? "%s"
+                            : StringUtils.isNotBlank(filter.value) ? "'%s'" : ""),
+                    filter.source,
+                    this.sanitizeComparator(filter.comparator),
+                    this.sanitizeValue(filter.value)));
         }
-        return joindata.toString();
+        return condition.toString();
     }
 
     /**
-     * Sanitize a field name for an input query.
+     * Sanitize a field name or value for an input query by escaping special query characters.
      *
-     * @param fieldname the field name to sanitize
+     * @param input the value to sanitize
      * @return a sanitized version of the input
      */
-    private String sanitizeField(String fieldname)
+    private String sanitizeValue(String input)
     {
-        return fieldname.replaceAll("['\\\\]", "\\\\$0");
+        return StringUtils.isEmpty(input) ? "" : input.replaceAll("['\\\\]", "\\\\$0");
     }
 
     /**
-     * Sanitize a comparator for an input query.
+     * Sanitize a comparator for an input query by only accepting a predefined set of comparators, using {@code =}
+     * instead of unknown comparators.
      *
      * @param comparator the comparator to sanitize
-     * @return a sanitized version of the input
+     * @return an accepted comparator, may be {@code =} if the specified comparator is not supported
      */
     private String sanitizeComparator(String comparator)
     {
-
         if (!COMPARATORS.contains(comparator)) {
             // Invalid comparator: return '='
             return "=";
@@ -563,12 +812,10 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      *
      * @param jsonGen the JSON generator where the results should be serialized
      * @param request the current request
-     * @param offset the requested offset, may be the default value of {0}
-     * @param limit the requested limit, may be the default value of {10}
-     * @param returnedNodes the number of matching nodes included in the response, may be {@code 0} if no nodes were
-     *            returned
-     * @param totalMatchingNodes the total number of accessible nodes matching the request, may be {@code 0} if no nodes
-     *            match the filters, or the current user cannot access the nodes
+     * @param limits an array of values defining the range of the result: limits[0] is the 0-based offset, i.e. how many
+     *            results were skipped; limits[1] is the requested limit, the maximum number of results to return;
+     *            limits[2] is the number of results actually returned, equal to or less than limits[1]; limits[3] is an
+     *            approximate number of total items that match the query
      */
     private void writeSummary(final JsonGenerator jsonGen, final SlingHttpServletRequest request, final long[] limits)
     {
@@ -582,7 +829,22 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         jsonGen.write("totalIsApproximate", totalIsApproximate);
     }
 
-    private long[] writeResources(final JsonGenerator jsonGen, final Iterator<Resource> nodes,
+    /**
+     * Serialize the query results into the response JSON. Since JCR queries don't support an easy way to compute the
+     * total number of matches, the query result may contain more resources than actually requested. This method also
+     * accepts a limit, and only at most that many resources will actually be included in the response.
+     *
+     * @param jsonGen the JSON generator where the results should be serialized
+     * @param resources the resources returned from the query
+     * @param offset how many resources from the query results were skipped
+     * @param limit how many resources from the query results to serialize, may be 0 if we only want a count of the
+     *            resources
+     * @return an array of values defining the range of the result: limits[0] is the 0-based offset, i.e. how many
+     *         results were skipped; limits[1] is the requested limit, the maximum number of results to return;
+     *         limits[2] is the number of results actually returned, equal to or less than limits[1]; limits[3] is an
+     *         approximate number of total items that match the query
+     */
+    private long[] writeResources(final JsonGenerator jsonGen, final Iterator<Resource> resources,
         final long offset, final long limit)
     {
         final long[] counts = new long[4];
@@ -595,8 +857,8 @@ public class PaginationServlet extends SlingSafeMethodsServlet
 
         jsonGen.writeStartArray("rows");
 
-        while (nodes.hasNext()) {
-            Resource n = nodes.next();
+        while (resources.hasNext()) {
+            Resource n = resources.next();
             if (limitCounter > 0) {
                 jsonGen.write(n.adaptTo(JsonObject.class));
                 --limitCounter;
@@ -610,6 +872,15 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         return counts;
     }
 
+    /**
+     * Convert a request parameter, which may be missing or invalid, into a proper long, with fallback to a default
+     * value.
+     *
+     * @param stringValue the string to convert, expected to be a proper number, but may be {@code null} or not a proper
+     *            number
+     * @param defaultValue the default value to use if the input string cannot be converted to a number
+     * @return a number, either the parsed input, if valid, or the default value
+     */
     private long getLongValueOrDefault(final String stringValue, final long defaultValue)
     {
         long value = defaultValue;
@@ -619,5 +890,36 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             value = defaultValue;
         }
         return value;
+    }
+
+    /**
+     * Retrieves the UUID of the questionnaire that the given question belongs to.
+     *
+     * @param questionUuid the UUID of a question
+     * @param session the current JCR session
+     * @return an UUID, if the input UUID does correspond to a valid, accessible question that belongs to a
+     *         questionnaire, or the empty string otherwise
+     */
+    private String getQuestionnaire(String questionUuid, Session session)
+    {
+        if (session == null) {
+            LOGGER.warn("Could not match questionnaire UUID {}: session not found.", questionUuid);
+            return "";
+        }
+
+        try {
+            Node parent = session.getNodeByIdentifier(questionUuid);
+            while (parent.getParent() != null) {
+                parent = parent.getParent();
+                if (parent.isNodeType("cards:Questionnaire")) {
+                    return parent.getProperty("jcr:uuid").getString();
+                }
+            }
+        } catch (ItemNotFoundException e) {
+            LOGGER.debug("Questionnaire UUID {} is inaccessible", questionUuid, e);
+        } catch (RepositoryException e) {
+            LOGGER.error("Failed to find questionnaire UUID {}", questionUuid, e);
+        }
+        return "";
     }
 }
