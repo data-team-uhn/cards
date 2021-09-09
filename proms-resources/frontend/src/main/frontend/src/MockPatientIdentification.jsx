@@ -142,7 +142,7 @@ function MockPatientIdentification(props) {
   // if the subject doesn't exist, create it
   const getSubject = (subjectType, pathPrefix, subjectId, subjectIdLabel, successCallback) => {
     // If the patient doesn't yet have an MRN, or the visit doesn't yet have a number, abort mission
-    // Todo: after we find out if the MRN is not always assigned in the DHP,
+    // TODO: after we find out if the MRN is not always assigned in the DHP,
     // in which case implement a different logic for finding the patient
     if (!subjectId) {
       setError(`The record was found but no ${subjectIdLabel} has been assigned yet. Please try again later or contact your care team for next steps.`);

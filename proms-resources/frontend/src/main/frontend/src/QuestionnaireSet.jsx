@@ -271,27 +271,24 @@ function QuestionnaireSet(props) {
 
   if (!id) {
     return (
-      <QuestionnaireSetScreen className={classes.screen} items={[
+      <QuestionnaireSetScreen className={classes.screen}>
         <Typography variant="h4" color="textSecondary">You do not have any pending surverys</Typography>
-      ]}>
       </QuestionnaireSetScreen>
     );
   }
 
   if (error) {
     return (
-      <QuestionnaireSetScreen className={classes.screen} items={[
+      <QuestionnaireSetScreen className={classes.screen}>
         <Typography variant="subtitle1" color="error">{error}</Typography>
-      ]}>
       </QuestionnaireSetScreen>
     );
   }
 
   if (!questionnaires || !subjectData) {
     return (
-      <QuestionnaireSetScreen className={classes.screen} items={[
+      <QuestionnaireSetScreen className={classes.screen}>
         <CircularProgress />
-      ]}>
       </QuestionnaireSetScreen>
     );
   }
@@ -378,27 +375,25 @@ function QuestionnaireSet(props) {
   ];
 
   return (
-      <QuestionnaireSetScreen
-        className={classes[screenType]}
-        items={
+      <QuestionnaireSetScreen className={classes[screenType]}>
+        {
           crtStep == -1 ? welcomeScreen :
           crtStep < questionnaireIds.length ? formScreen :
           exitScreen
         }
-      >
       </QuestionnaireSetScreen>
   )
 }
 
 function QuestionnaireSetScreen (props) {
-  let { items, ...rest } = props;
+  let { children, ...rest } = props;
 
   const classes = useStyles();
 
   return (
   <Paper elevation={0} className={classes.mainContainer}>
     <Grid container direction="column" spacing={4} {...rest}>
-      {Array.from(items || []).filter(c => c).map((c, i) => <Grid item key={i} xs={12}>{c}</Grid>)}
+      {Array.from(children || []).filter(c => c).map((c, i) => <Grid item key={i} xs={12}>{c}</Grid>)}
     </Grid>
   </Paper>
   );
