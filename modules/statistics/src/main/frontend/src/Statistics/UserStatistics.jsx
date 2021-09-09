@@ -94,6 +94,7 @@ function UserStatistics(props) {
           .then((statJson) => {
             // Also include the definition of the chart type
             statJson["type"] = fullJson["type"];
+            statJson["order"] = fullJson["order"];
             setCurrentStatistic(currentStatistic => [...currentStatistic, statJson]);
           })
           .catch(handleError);
