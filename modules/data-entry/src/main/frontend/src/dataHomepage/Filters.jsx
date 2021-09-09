@@ -354,6 +354,8 @@ function Filters(props) {
     let newFilters = deepCopyFilters(editingFilters)
     // Remove filters that are not complete
       .filter( (toCheck) => (toCheck.uuid && toCheck.comparator))
+    // Remove special mandatory filters with no value
+      .filter( (toCheck) => (!toCheck.uuid.startsWith('cards:') || toCheck.value))
     // Replace filters with empty output to use either the "is empty" or "is not empty" comparator
       .map( (toCheck) => ((toCheck.value || UNARY_COMPARATORS.includes(toCheck.comparator)) ?
         toCheck
