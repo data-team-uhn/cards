@@ -201,17 +201,18 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         while (entries.hasNext()) {
             Map.Entry<Resource, String> answer = entries.next();
             Map<Resource, String> newInnerData = new HashMap<>();
-            // get parent node
-            Node answerParent = getParentNode(answer.getKey().adaptTo(Node.class));
+            // get form node
+            Node formNode = getParentNode(answer.getKey().adaptTo(Node.class));
             // get parent subject
-            Node answerSubjectType = answerParent.getProperty("subject").getNode().getProperty("type").getNode();
+            Node formSubject = formNode.getProperty("subject").getNode();
 
-            while (answerSubjectType.getDepth() > 0) {
-                if (answerSubjectType.getIdentifier().equals(correctType)) {
+            boolean foundAnswer = false;
+            while (formSubject.getDepth() > 0) {
+                if (formSubject.getProperty("type").getNode().getIdentifier().equals(correctType)) {
                     // if it is the correct type, add to new map
-                    String uuid = answerParent.getProperty("jcr:uuid").getString();
+                    String uuid = formSubject.getIdentifier();
 
-                    //this should create a nested hashmap <formID, <node, string>, <node, string>>
+                    //this should create a nested hashmap <subjectID, <answer node, string of either "x" or "split">>
                     if (newData.containsKey(uuid)) {
                         // if it does include uuid already
                         newData.get(uuid).put(answer.getKey(), answer.getValue());
@@ -220,9 +221,14 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
                         newInnerData.put(answer.getKey(), answer.getValue());
                         newData.put(uuid, newInnerData);
                     }
+                    foundAnswer = true;
                     break;
                 }
-                answerSubjectType = answerSubjectType.getParent();
+                formSubject = formSubject.getParent();
+            }
+
+            if (!foundAnswer) {
+                LOGGER.warn("Could not find answer for node: " + formNode.getIdentifier());
             }
         }
 
