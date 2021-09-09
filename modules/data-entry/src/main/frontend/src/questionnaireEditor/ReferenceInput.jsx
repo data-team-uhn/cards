@@ -168,10 +168,23 @@ let ReferenceInput = (props) => {
     }
 
     // Parse out the questionnaire name from the question path
-    let questionnairePath = field.match(/(\/Questionnaires\/.+?)\//)[1];
-    let url = new URL(questionnairePath + ".json", window.location.origin);
-
-    fetchWithReLogin(globalLoginDisplay, url)
+    // If this was selected from elsewhere in the form, we'll be given a path
+    let questionnaireMatch = field.match(/(\/Questionnaires\/.+?)\//);
+    let fetchRequest = null;
+    if (questionnaireMatch) {
+      let url = new URL(questionnaireMatch[1] + ".json", window.location.origin);
+      fetchRequest = fetchWithReLogin(globalLoginDisplay, url);
+    } else {
+      // If this is an existing value, we will be given a jcr:uuid instead
+      let url = new URL(`query?query=SELECT * FROM [nt:base] AS n WHERE n.'jcr:uuid'='${field}'`, window.location.origin);
+      fetchRequest = fetchWithReLogin(globalLoginDisplay, url)
+        .then((response) => response.ok ? response.json() : Promise.reject(response))
+        .then((json) => {
+          let nodePath = json["rows"][0]["@path"];
+          return fetch(new URL(nodePath.match(/(\/Questionnaires\/.+?)\//)[0] + ".json", window.location.origin))
+        })
+    }
+    fetchRequest
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         let newRestrictions = json["requiredSubjectTypes"].map((subjectType) => subjectType["jcr:uuid"]);
