@@ -204,21 +204,25 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
             // get parent node
             Node answerParent = getParentNode(answer.getKey().adaptTo(Node.class));
             // get parent subject
-            Node answerSubject = answerParent.getProperty("subject").getNode().getProperty("type").getNode();
+            Node answerSubjectType = answerParent.getProperty("subject").getNode().getProperty("type").getNode();
 
-            if (answerSubject.getIdentifier().equals(correctType)) {
-                // if it is the correct type, add to new map
-                String uuid = answerParent.getProperty("jcr:uuid").getString();
+            while (answerSubjectType.getDepth() > 0) {
+                if (answerSubjectType.getIdentifier().equals(correctType)) {
+                    // if it is the correct type, add to new map
+                    String uuid = answerParent.getProperty("jcr:uuid").getString();
 
-                //this should create a nested hashmap <formID, <node, string>, <node, string>>
-                if (newData.containsKey(uuid)) {
-                    // if it does include uuid already
-                    newData.get(uuid).put(answer.getKey(), answer.getValue());
-                } else {
-                    // if does not already include uuid
-                    newInnerData.put(answer.getKey(), answer.getValue());
-                    newData.put(uuid, newInnerData);
+                    //this should create a nested hashmap <formID, <node, string>, <node, string>>
+                    if (newData.containsKey(uuid)) {
+                        // if it does include uuid already
+                        newData.get(uuid).put(answer.getKey(), answer.getValue());
+                    } else {
+                        // if does not already include uuid
+                        newInnerData.put(answer.getKey(), answer.getValue());
+                        newData.put(uuid, newInnerData);
+                    }
+                    break;
                 }
+                answerSubjectType = answerSubjectType.getParent();
             }
         }
 
@@ -360,8 +364,8 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
     }
 
     /**
-     * No Split: Filter the given iterator of resources to only include resources whose parent is a Form, whose
-     * Subject's type is equal to the given subjectType.
+     * No Split: Filter the given iterator of resources to only include resources whose parent is a Form, and
+     * whose Subject (or an ancestor)'s type is equal to the given subjectType.
      *
      * @param answers The iterator of answers to filter
      * @param subjectType A subjectType to filter for
@@ -375,10 +379,16 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         while (answers.hasNext()) {
             Resource answer = answers.next();
             Node answerParent = getParentNode(answer.adaptTo(Node.class));
-            final Node answerSubjectType = answerParent.getProperty("subject").getNode().getProperty("type").getNode();
+            Node answerSubjectType = answerParent.getProperty("subject").getNode().getProperty("type").getNode();
 
-            if (answerSubjectType.getIdentifier().equals(correctType)) {
-                newAnswers.push(answer);
+            while (answerSubjectType.getDepth() > 0) {
+                if (answerSubjectType.getIdentifier().equals(correctType)) {
+                    newAnswers.push(answer);
+                    break;
+                }
+
+                // Check the parent instead
+                answerSubjectType = answerSubjectType.getParent();
             }
         }
         return newAnswers.iterator();
