@@ -22,3 +22,4 @@
 
 [artifacts runModes=proms]
     io.uhndata.cards/proms-resources-clinical-data/${cards.version}
+    io.uhndata.cards/proms-frontend/${cards.version}
