@@ -108,7 +108,7 @@ function MultipleChoice(props) {
 
   let selectOption = (id, name, checked = false) => {
     if (!(isRadio || isBare) && !checked && naOption == id) {
-      setOptions(all_options);
+      setOptions(defaults);
     }
 
     setSelection( old => {
