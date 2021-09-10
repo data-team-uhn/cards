@@ -181,21 +181,54 @@ let ReferenceInput = (props) => {
         .then((response) => response.ok ? response.json() : Promise.reject(response))
         .then((json) => {
           let nodePath = json["rows"][0]["@path"];
-          return fetch(new URL(nodePath.match(/(\/Questionnaires\/.+?)\//)[0] + ".json", window.location.origin))
+          return fetch(new URL(nodePath.match(/(\/Questionnaires\/.+?)\//)[1] + ".json", window.location.origin))
         })
     }
     fetchRequest
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
-        let newRestrictions = json["requiredSubjectTypes"].map((subjectType) => subjectType["jcr:uuid"]);
-        setRestrictions(newRestrictions);
-        // If any currently selected value is outside of the allowable fields, we'll clear the selection
-        if (Array.isArray(curValue)) {
-          setCurValue((old) => old.filter((oldValue) => newRestrictions.includes(oldValue)));
-        } else if (!newRestrictions.includes(curValue)) {
-          // Reset to default
-          setCurValue([]);
-        }
+        // We can use both the required subject type, and any of its parents
+        let allRootSubjectTypes = [];
+        json["requiredSubjectTypes"].forEach((subjectType) => {
+          let allParents = subjectType["@path"].match(/\/SubjectTypes\/(.+)/)[1].split('/');
+
+          // Reconstruct the path for every parent of the current node
+          let parentPath = "/SubjectTypes";
+          for (let parentNodeName of allParents) {
+            parentPath += "/" + parentNodeName;
+            allRootSubjectTypes.push(parentPath);
+          }
+        });
+
+        // Next, we need to switch from parent node paths -> jcr:uuid, which we can get from querying all subject types
+        // and paring it down to the few that we need
+        return fetch(new URL("/SubjectTypes.deep.json", window.location.origin))
+          .then((response) => response.ok ? response.json() : Promise.reject(response))
+          .then((subjectTypeJson) => {
+            let newRestrictions = [];
+            // Subject Type will return a series of nested objects
+            // We only want those whose paths show up in our allRootSubjectTypes
+            let findRestrictingTypes = (subjectTypeObject) => {
+              for (let subjectType of Object.values(subjectTypeObject)) {
+                if (allRootSubjectTypes.includes(subjectType["@path"])) {
+                  newRestrictions.push(subjectType["jcr:uuid"]);
+                  findRestrictingTypes(subjectType);
+                }
+              }
+            }
+            findRestrictingTypes(subjectTypeJson);
+
+            // Now that we have a list of jcr:uuids corresponding to each SubjectType
+            // that is allowed to be selected, we set up our restrictions
+            setRestrictions(newRestrictions);
+            // If any currently selected value is outside of the allowable fields, we'll clear the selection
+            if (Array.isArray(curValue)) {
+              setCurValue((old) => old.filter((oldValue) => newRestrictions.includes(oldValue)));
+            } else if (!newRestrictions.includes(curValue)) {
+              // Reset to default
+              setCurValue([]);
+            }
+          })
       })
       .catch(console.log);
   }
