@@ -78,7 +78,7 @@ function MultipleChoice(props) {
     .map((item, index) => [Array.of(existingAnswer[1].displayedValue).flat()[index], item]);
   // When opening a form, if there is no existingAnswer but there are AnswerOptions specified as default values,
   // display those options as selected and ensure they get saved unless modified by the user, by adding them to initialSelection
-  if (initialSelection.length == 0) {
+  if (!existingAnswer) {
     initialSelection = defaults.filter(item => item[IS_DEFAULT_ANSWER_POS])
        // If there are more default values than the specified maxAnswers, only take into account the first maxAnswers default values.
       .slice(0, maxAnswers || defaults.length)
