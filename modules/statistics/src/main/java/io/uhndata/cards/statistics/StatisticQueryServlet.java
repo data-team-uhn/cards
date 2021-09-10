@@ -200,7 +200,6 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         // filter out answers without correct subject type
         while (entries.hasNext()) {
             Map.Entry<Resource, String> answer = entries.next();
-            Map<Resource, String> newInnerData = new HashMap<>();
             // get form node
             Node formNode = getParentNode(answer.getKey().adaptTo(Node.class));
             // get parent subject
@@ -218,8 +217,9 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
                         newData.get(uuid).put(answer.getKey(), answer.getValue());
                     } else {
                         // if does not already include uuid
-                        newInnerData.put(answer.getKey(), answer.getValue());
-                        newData.put(uuid, newInnerData);
+                        Map<Resource, String> subjectData = new HashMap<>();
+                        subjectData.put(answer.getKey(), answer.getValue());
+                        newData.put(uuid, subjectData);
                     }
                     foundAnswer = true;
                     break;
@@ -239,7 +239,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
      * Split: Aggregate the counts.
      * @param xVar X variable to use
      * @param splitVar Variable to split on
-     * @param counts Map of counts
+     * @param counts Map of {SubjectID, {Split variable label, count}}
      * @return map of {x var, {split var, count}}
      */
     private Map<String, Map<String, Integer>> aggregateSplitCounts(Resource xVar, Resource splitVar,
@@ -323,18 +323,22 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         Map<String, Map<String, Integer>> counts = new HashMap<>();
 
         for (Map.Entry<String, Map<Resource, String>> entries : data.entrySet()) {
-            Resource xVar = null;
             Resource splitVar = null;
 
+            // First, find the split variable
             for (Map.Entry<Resource, String> entry : entries.getValue().entrySet()) {
-                if ("x".equals(entry.getValue())) {
-                    xVar = entry.getKey();
-                }
                 if ("split".equals(entry.getValue())) {
                     splitVar = entry.getKey();
+                    break;
                 }
             }
-            counts = aggregateSplitCounts(xVar, splitVar, counts);
+
+            // Then, call aggregate split counts once for each x variable
+            for (Map.Entry<Resource, String> entry : entries.getValue().entrySet()) {
+                if ("x".equals(entry.getValue())) {
+                    counts = aggregateSplitCounts(entry.getKey(), splitVar, counts);
+                }
+            }
         }
 
         JsonObjectBuilder outerBuilder = Json.createObjectBuilder();
