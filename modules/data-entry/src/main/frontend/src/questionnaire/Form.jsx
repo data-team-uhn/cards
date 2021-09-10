@@ -141,7 +141,7 @@ function Form (props) {
       // When component unmounts:
       return (() => {
         // cleanup event handler
-        window.removeEventListener("beforeunload", saveDataWithCheckin);
+        window.removeEventListener("beforeunload", saveDataWithCheckin, true);
       });
     }
   }, [isEdit]);
