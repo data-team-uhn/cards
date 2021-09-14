@@ -166,22 +166,8 @@ function NumberQuestion(props) {
       {...props}
       >
       {error && <Typography color='error'>{errorText}</Typography>}
-      { hasAnswerOptions ?
-      /* Use MultipleChoice if we have default options */
-      <MultipleChoice
-        answerNodeType={answerNodeType}
-        valueType={valueType}
-        input={displayMode === "input" || displayMode === "list+input"}
-        textbox={displayMode === "textbox"}
-        onUpdate={findError}
-        additionalInputProps={textFieldProps}
-        muiInputProps={muiInputProps}
-        error={error}
-        existingAnswer={existingAnswer}
-        {...rest}
-        /> :
-      /* Otherwise just use a single text field */
-      <React.Fragment>
+      { isRange ?
+        <>
         <TextField
           className={classes.textField + " " + classes.answerField}
           onChange={(event) => {
@@ -199,22 +185,31 @@ function NumberQuestion(props) {
             valueType={valueType}
             {...rest}
             />
-      </React.Fragment>
-        }
-      {isRange &&
-      <React.Fragment>
-        <span className={classes.mdash}>&mdash;</span>
-        <TextField
-          className={classes.textField}
-          onChange={(event) => {
-            findRangeError(input, event.target.value);
-            setEndInput(event.target.value);
-          }}
-          inputProps={textFieldProps}
-          value={endInput}
-          InputProps={muiInputProps}
+          <span className={classes.mdash}>&mdash;</span>
+          <TextField
+            className={classes.textField}
+            onChange={(event) => {
+              findRangeError(input, event.target.value);
+              setEndInput(event.target.value);
+            }}
+            inputProps={textFieldProps}
+            value={endInput}
+            InputProps={muiInputProps}
+            />
+        </>
+        :
+        <MultipleChoice
+          answerNodeType={answerNodeType}
+          valueType={valueType}
+          input={displayMode === "input" || displayMode === "list+input"}
+          textbox={displayMode === "textbox"}
+          onUpdate={findError}
+          additionalInputProps={textFieldProps}
+          muiInputProps={muiInputProps}
+          error={error}
+          existingAnswer={existingAnswer}
+          {...rest}
           />
-      </React.Fragment>
       }
     </Question>);
 }
