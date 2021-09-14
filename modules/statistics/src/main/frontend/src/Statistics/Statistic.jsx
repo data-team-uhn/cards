@@ -109,12 +109,11 @@ function Statistic(props) {
             <YAxis allowDecimals={false} label={{ value: yAxisLabel, angle: -90, position: 'insideLeft' }} />
             <Tooltip />
             <Legend align="right" verticalAlign="top" />
-            {Object.keys(allFields).sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder)).map((field, idx) => {
-              console.log(field);
-              return isBar ?
+            {Object.keys(allFields).sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder)).map((field, idx) =>
+              isBar ?
                 <Bar dataKey={field} fill={chartColours[idx]} key={idx}/>
               :
-                <Line dataKey={field} type="monotone" stroke={chartColours[idx]} key={idx} />}
+                <Line dataKey={field} type="monotone" stroke={chartColours[idx]} key={idx} />
             )}
             </ChartType>
           </ResponsiveContainer>
