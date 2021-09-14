@@ -181,6 +181,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
 
         return data;
     }
+
     /**
      * Split: Filter the given iterator of resources to only include resources whose parent is a Form, whose
      * Subject's type is equal to the given subjectType.
@@ -242,28 +243,32 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
      * @param counts Map of {SubjectID, {Split variable label, count}}
      * @return map of {x var, {split var, count}}
      */
+    @SuppressWarnings({"checkstyle:CyclomaticComplexity"})
     private Map<String, Map<String, Integer>> aggregateSplitCounts(Resource xVar, Resource splitVar,
         Map<String, Map<String, Integer>> counts) throws RepositoryException
     {
         Map<String, Integer> innerCount = new HashMap<>();
         Map<String, String> splitLabels = null;
 
+        // We can't count anything without an x variable
+        if (xVar == null) {
+            return counts;
+        }
+
         try {
-            // We can't count anything without an x variable
-            if (xVar == null) {
-                return counts;
-            }
             Node xAnswer = xVar.adaptTo(Node.class);
             String xValue = xAnswer.getProperty(VALUE_PROP).getString();
+
             String splitLabel = "undefined";
             if (splitVar != null) {
                 Node splitAnswer = splitVar.adaptTo(Node.class);
-                String splitValue = splitAnswer.getProperty(VALUE_PROP).getString();
-
-                if (splitLabels == null) {
-                    splitLabels = getAnswerOptionLabels(splitAnswer.getProperty("question").getNode());
+                if (splitAnswer.hasProperty(VALUE_PROP)) {
+                    String splitValue = splitAnswer.getProperty(VALUE_PROP).getString();
+                    if (splitLabels == null) {
+                        splitLabels = getAnswerOptionLabels(splitAnswer.getProperty("question").getNode());
+                    }
+                    splitLabel = splitLabels.containsKey(splitValue) ? splitLabels.get(splitValue) : splitValue;
                 }
-                splitLabel = splitLabels.containsKey(splitValue) ? splitLabels.get(splitValue) : splitValue;
             }
 
             // if x value and split value already exist
@@ -273,7 +278,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
                 // if x value already exists, but not split value - create and set to 1
                 counts.get(xValue).put(splitLabel, 1);
             } else {
-                // else, create both and set to 1 count
+                // else, create both and set to 1
                 innerCount.put(splitLabel, 1);
                 counts.put(xValue, innerCount);
             }
@@ -282,6 +287,26 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         }
 
         return counts;
+    }
+
+    /**
+     * Get the label that should be used for a given split answer node.
+     * @param splitVar Split variable to use.
+     * @param splitLabels Map of split variables to their desired labels. This will be filled out if null.
+     * @return Split variable's user-readable label.
+     */
+    private String getSplitValue(Resource splitVar) throws RepositoryException
+    {
+        if (splitVar == null) {
+            return null;
+        }
+
+        Node splitAnswer = splitVar.adaptTo(Node.class);
+        if (!splitAnswer.hasProperty(VALUE_PROP)) {
+            return null;
+        }
+
+        return splitAnswer.getProperty(VALUE_PROP).getString();
     }
 
     /**

@@ -74,8 +74,8 @@ function UserStatistics(props) {
 
   let fetchStat = (stat) => {
     // for each existing statistic, get full.json
-    // pathnames will be sent in request body, that's why full.json is used
-    fetch(`/Statistics/${stat['@name']}.full.json`)
+    // pathnames will be sent in request body, that's why deep.json is used
+    fetch(`/Statistics/${stat['@name']}.deep.json`)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((fullJson) => {
         const urlBase = "/Statistics.query";
@@ -95,6 +95,7 @@ function UserStatistics(props) {
             // Also include the definition of the chart type
             statJson["type"] = fullJson["type"];
             statJson["order"] = fullJson["order"];
+            statJson["splitVar"] = fullJson["splitVar"];
             setCurrentStatistic(currentStatistic => [...currentStatistic, statJson]);
           })
           .catch(handleError);
