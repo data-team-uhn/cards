@@ -76,15 +76,7 @@
         "maxAnswers": "long",
         "unitOfMeasurement" : "string",
         "displayMode": {
-          "input": {},
-          "list": {
-            "compact" : "boolean",
-            "answerOptions" : "numberOptions"
-          },
-          "list+input" : {
-            "compact" : "boolean",
-            "answerOptions" : "numberOptions"
-          }
+          "input": {}
         }
       },
       "file": {
