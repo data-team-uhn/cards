@@ -55,7 +55,7 @@ let extractSortedOptions = (data) => {
 }
 
 let AnswerOptions = (props) => {
-  const { objectKey, data, path, saveButtonRef, classes } = props;
+  const { objectKey, value, data, path, saveButtonRef, classes } = props;
   let [ options, setOptions ] = useState(extractSortedOptions(data));
   let [ deletedOptions, setDeletedOptions ] = useState([]);
   let [ tempValue, setTempValue ] = useState(''); // Holds new, non-committed answer options
@@ -71,11 +71,11 @@ let AnswerOptions = (props) => {
   const notApplicable  = Object.values(data).find(option => option['jcr:primaryType'] == 'cards:AnswerOption' && option.notApplicable);
   const noneOfTheAbove = Object.values(data).find(option => option['jcr:primaryType'] == 'cards:AnswerOption' && option.noneOfTheAbove);
 
-  let [ notApplicableOption, setNotApplicableOption ] = useState(notApplicable || {"value" : "notApplicable",
+  let [ notApplicableOption, setNotApplicableOption ] = useState(notApplicable || {"value" : (value == "numberOptions" ? "-1" : "notApplicable"),
                                                                                    "label" : "None",
                                                                                    "notApplicable" : false,
                                                                                    "@path" : path + "/None"});
-  let [ noneOfTheAboveOption, setNoneOfTheAboveOption ] = useState(noneOfTheAbove || {"value": "noneOfTheAbove",
+  let [ noneOfTheAboveOption, setNoneOfTheAboveOption ] = useState(noneOfTheAbove || {"value": (value == "numberOptions" ? "0" : "noneOfTheAbove"),
                                                                                       "label" : "None of the above",
                                                                                       "noneOfTheAbove" : false,
                                                                                       "@path" : path + "/NoneOfTheAbove"});
@@ -438,7 +438,7 @@ var StyledAnswerOptions = withStyles(QuestionnaireStyle)(AnswerOptions);
 export default StyledAnswerOptions;
 
 QuestionComponentManager.registerQuestionComponent((definition) => {
-  if (definition === "options") {
+  if (["numberOptions", "textOptions"].includes(definition)) {
     return [StyledAnswerOptions, 50];
   }
 });
