@@ -215,7 +215,7 @@ let AnswerOptions = (props) => {
           <ComposedIcon
               size="large"
               MainIcon={MoreVertIcon}
-              ExtraIcon={item.description || JSON.parse(item.isDefault) ? ShortTextIcon : ''}/>
+              ExtraIcon={item.description || item.isDefault && JSON.parse(item.isDefault) ? ShortTextIcon : ''}/>
         </IconButton>
       </Tooltip>
     )
