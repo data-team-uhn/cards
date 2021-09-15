@@ -76,6 +76,7 @@ const ComposedIcon = ({
 
 ComposedIcon.propTypes = {
   MainIcon: PropTypes.elementType.isRequired,
+  ExtraIcon: PropTypes.elementType,
   size: PropTypes.oneOf(['small', 'medium', 'large']),
   color: PropTypes.string,
   position: PropTypes.oneOf(['top-start', 'top-end', 'bottom-start', 'bottom-end']),

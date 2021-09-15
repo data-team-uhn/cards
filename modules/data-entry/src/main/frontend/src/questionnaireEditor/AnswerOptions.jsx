@@ -38,13 +38,10 @@ import EditorInput from "./EditorInput";
 import QuestionComponentManager from "./QuestionComponentManager";
 import MarkdownText from "./MarkdownText";
 import CloseIcon from '@material-ui/icons/Close';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
-import ShortTextIcon from '@material-ui/icons/ShortText';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { stringToHash } from "../escape.jsx";
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import ComposedIcon from "../components/ComposedIcon.jsx";
 
 let extractSortedOptions = (data) => {
   return Object.values(data).filter(value => value['jcr:primaryType'] == 'cards:AnswerOption'
@@ -197,7 +194,7 @@ let AnswerOptions = (props) => {
     }
   }
 
-  let generateDescriptionIcon = (item, index, isSpecialOptn) => {
+  let generateOptionsIcon = (item, index, isSpecialOptn) => {
     return (
       <Tooltip title="More options">
         <IconButton
@@ -212,10 +209,7 @@ let AnswerOptions = (props) => {
                    }
           className={isSpecialOptn ? classes.specialOptionButton : classes.answerOptionButton}
         >
-          <ComposedIcon
-              size="large"
-              MainIcon={MoreVertIcon}
-              ExtraIcon={item.description || item.isDefault && JSON.parse(item.isDefault) ? ShortTextIcon : ''}/>
+          <MoreVertIcon className={item.description || item.isDefault && JSON.parse(item.isDefault) ? classes.specialOptionIcon : ''}/>
         </IconButton>
       </Tooltip>
     )
@@ -244,6 +238,7 @@ let AnswerOptions = (props) => {
       </Tooltip>
       </Grid>
       <Grid item xs={3}>
+      {generateOptionsIcon(option.data, index, true)}
       <Tooltip title={option.switchTooltip} className={classes.specialOptionSwitch}>
         <FormControlLabel
           control={
@@ -255,7 +250,6 @@ let AnswerOptions = (props) => {
           }
         />
       </Tooltip>
-      {generateDescriptionIcon(option.data, index, true)}
       { option.data[option.label]
         ?
         <>
@@ -355,12 +349,12 @@ let AnswerOptions = (props) => {
                         />
                       </Grid>
                       <Grid item xs={3}>
+                        {generateOptionsIcon(value, index, false)}
                         <Tooltip title="Delete option">
                           <IconButton onClick={() => { deleteOption(index); }} className={classes.answerOptionButton}>
                             <CloseIcon/>
                           </IconButton>
                         </Tooltip>
-                        {generateDescriptionIcon(value, index, false)}
                       </Grid>
                     </Grid>
                   ) }

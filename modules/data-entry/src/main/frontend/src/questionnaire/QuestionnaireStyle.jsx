@@ -623,7 +623,9 @@ const questionnaireStyle = theme => ({
     specialOptionButton: {
       float: "right",
       paddingTop: theme.spacing(0.5),
-      paddingRight: theme.spacing(0.5)
+    },
+    specialOptionIcon: {
+      color: theme.palette.text.primary,
     },
     newOptionInput: {
       marginBottom: theme.spacing(2),
