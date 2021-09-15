@@ -46,6 +46,7 @@ function Statistic(props) {
 
   // Transform our input data from the statistics servlet into something recharts can understand
   // Note that keys is transformed in this process
+  let isSplit = false;
   let expandData = (label, data, keys) => {
     if (typeof(data) === 'object') {
       // Objects represent data with split
@@ -54,6 +55,7 @@ function Statistic(props) {
         result[key] = value;
         keys[key] = 1;
       }
+      isSplit = true;
       return result;
     } else {
       // Integers represent a single point
@@ -108,7 +110,7 @@ function Statistic(props) {
             </XAxis>
             <YAxis allowDecimals={false} label={{ value: yAxisLabel, angle: -90, position: 'insideLeft' }} />
             <Tooltip />
-            <Legend align="right" verticalAlign="top" />
+            {isSplit && <Legend align="right" verticalAlign="top" />}
             {Object.keys(allFields).sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder)).map((field, idx) =>
               isBar ?
                 <Bar dataKey={field} fill={chartColours[idx]} key={idx}/>
