@@ -558,7 +558,6 @@ function ResponseChild(props) {
                   isRadio ?
                   (
                     <Radio
-                      checked={checked}
                       onChange={() => {onClick(id, name, checked);}}
                       disabled={!checked && disabled}
                       className={classes.checkbox}
