@@ -30,10 +30,9 @@ import {
   Tooltip,
   Switch,
   Typography,
-  withStyles
+  makeStyles
 } from "@material-ui/core";
 
-import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
 import EditorInput from "./EditorInput";
 import QuestionComponentManager from "./QuestionComponentManager";
 import MarkdownText from "./MarkdownText";
@@ -51,8 +50,77 @@ let extractSortedOptions = (data) => {
                             .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder));
 }
 
+const useStyles = makeStyles(theme => ({
+    answerOption: {
+      backgroundColor: theme.palette.divider,
+      borderRadius: theme.spacing(.5, 3, 3, .5),
+      margin: theme.spacing(1, 0),
+      "& .MuiFormControl-root" : {
+        paddingTop: theme.spacing(1),
+      },
+      "& .MuiInput-underline:before" : {
+        borderBottom: "0 none !important",
+      },
+      "& .MuiInput-underline:after" : {
+        borderBottom: "0 none !important",
+      }
+    },
+    answerOptionInput: {
+      width: "100%",
+      "& .MuiInputBase-input" : {
+        paddingRight: theme.spacing(1),
+        paddingLeft: theme.spacing(1),
+      },
+    },
+    answerOptionButton: {
+      float: "right",
+    },
+    specialOptionButton: {
+      float: "right",
+      paddingTop: theme.spacing(0.5),
+    },
+    specialOptionIcon: {
+      color: theme.palette.text.primary,
+    },
+    newOptionInput: {
+      marginBottom: theme.spacing(2),
+    },
+    specialOptionSwitch: {
+      margin: "0",
+      float: "right",
+    },
+    isDefaultSwitch: {
+      marginLeft: "0",
+      marginTop: theme.spacing(2),
+    },
+    optionsDragIndicator: {
+      float: "left",
+      padding: theme.spacing(1.5, 0.5),
+      borderRadius: theme.spacing(0.5),
+    },
+    descriptionPopover: {
+      "& .MuiPopover-paper" : {
+        padding: theme.spacing(3),
+        width: theme.spacing(87),
+        height: theme.spacing(43),
+      }
+    },
+    descriptionPopoverButton: {
+      float: "right",
+      marginTop: theme.spacing(5),
+      marginLeft: theme.spacing(1),
+    },
+    descriptionPopoverTitle: {
+      marginBottom: theme.spacing(2),
+    },
+    descriptionPopoverLabel: {
+      marginBottom: theme.spacing(1),
+    },
+}));
+
 let AnswerOptions = (props) => {
-  const { objectKey, value, data, path, saveButtonRef, classes } = props;
+  const { objectKey, value, data, path, saveButtonRef } = props;
+  const classes = useStyles();
   let [ options, setOptions ] = useState(extractSortedOptions(data));
   let [ deletedOptions, setDeletedOptions ] = useState([]);
   let [ tempValue, setTempValue ] = useState(''); // Holds new, non-committed answer options
@@ -450,11 +518,10 @@ AnswerOptions.propTypes = {
   data: PropTypes.object.isRequired
 };
 
-var StyledAnswerOptions = withStyles(QuestionnaireStyle)(AnswerOptions);
-export default StyledAnswerOptions;
+export default AnswerOptions;
 
 QuestionComponentManager.registerQuestionComponent((definition) => {
   if (["numberOptions", "textOptions"].includes(definition)) {
-    return [StyledAnswerOptions, 50];
+    return [AnswerOptions, 50];
   }
 });
