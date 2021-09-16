@@ -20,17 +20,19 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import {
-  Grid,
   Button,
-  IconButton,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
   Checkbox,
-  TextField,
-  InputAdornment,
   FormControlLabel,
+  Grid,
+  IconButton,
   Popover,
-  Tooltip,
   Switch,
-  Typography,
+  TextField,
+  Tooltip,
   makeStyles
 } from "@material-ui/core";
 
@@ -95,22 +97,10 @@ const useStyles = makeStyles(theme => ({
       borderRadius: theme.spacing(0.5),
     },
     descriptionPopover: {
-      "& .MuiPopover-paper" : {
-        padding: theme.spacing(3),
-        width: theme.spacing(87),
-        height: theme.spacing(43),
-      }
-    },
-    descriptionPopoverButton: {
-      float: "right",
-      marginTop: theme.spacing(5),
-      marginLeft: theme.spacing(1),
-    },
-    descriptionPopoverTitle: {
-      marginBottom: theme.spacing(2),
-    },
-    descriptionPopoverLabel: {
-      marginBottom: theme.spacing(1),
+      "& .MuiCardActions-root" : {
+        justifyContent: "flex-end",
+        padding: theme.spacing(1,2),
+      },
     },
 }));
 
@@ -259,7 +249,7 @@ let AnswerOptions = (props) => {
 
   let generateDescriptionIcon = (item, index, isSpecialOptn) => {
     return (
-      <Tooltip title="Description">
+      <Tooltip title={!item.description ? "Add a description" : "Edit description"}>
         <IconButton
           onClick={(event) => {
                                 setDescriptionAnchorEl(event.currentTarget);
@@ -347,7 +337,7 @@ let AnswerOptions = (props) => {
     )
   }
   
-  let handleClose = () => {
+  let handlePopoverClose = () => {
     setDescriptionAnchorEl(null);
     setDescriptionIndex(null);
     setDescriptionLabel('');
@@ -355,7 +345,7 @@ let AnswerOptions = (props) => {
     setDescription('');
   }
 
-  let onDescriptionPopoverClose = () => {
+  let updateOptionDescription = () => {
     // update corresponding option description
     if (isSpecialOption) {
       specialOptionsInfo[descriptionIndex].setter({ ...specialOptionsInfo[descriptionIndex].data, "description": description});
@@ -366,8 +356,7 @@ let AnswerOptions = (props) => {
         return value;
       });
     }
-
-    handleClose();
+    handlePopoverClose();
   }
 
   return (
@@ -478,7 +467,7 @@ let AnswerOptions = (props) => {
         disableEscapeKeyDown
         open={Boolean(descriptionAnchorEl)}
         anchorEl={descriptionAnchorEl}
-        onClose={handleClose}
+        onClose={handlePopoverClose}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'center',
@@ -489,31 +478,18 @@ let AnswerOptions = (props) => {
         }}
         className={classes.descriptionPopover}
       >
-        <Typography variant="h6" className={classes.descriptionPopoverTitle} >
-          {`Description for "${descriptionLabel}"`}
-        </Typography>
-        { descriptionIndex != null &&
-          <MarkdownText
-            value={description}
-            onChange={setDescription}
-          />
-        }
-        <Button
-          variant='contained'
-          color='default'
-          onClick={handleClose}
-          className={classes.descriptionPopoverButton}
-        >
-          Cancel
-        </Button>
-        <Button
-          variant='contained'
-          color='primary'
-          onClick={onDescriptionPopoverClose}
-          className={classes.descriptionPopoverButton}
-        >
-          Done
-        </Button>
+        <Card>
+          <CardHeader title={`Description for "${descriptionLabel}"`} titleTypographyProps={{variant: "h6"}}/>
+          <CardContent>
+          { descriptionIndex != null &&
+            <MarkdownText value={description} onChange={setDescription} />
+          }
+          </CardContent>
+          <CardActions>
+            <Button size='small' variant='contained' onClick={handlePopoverClose}>Cancel</Button>
+            <Button size='small' variant='contained' color='primary' onClick={updateOptionDescription}>Done</Button>
+          </CardActions>
+        </Card>
       </Popover>
     </EditorInput>
   )
