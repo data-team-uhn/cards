@@ -60,7 +60,7 @@ function MultipleChoice(props) {
     // Sort by default order
     .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder))
     // Only extract the labels, internal values and description from the node
-    .map(value => [value.label || value.value, value.value, true, value.description, value.isDefault == "true"]);
+    .map(value => [value.label || value.value, value.value, true, value.description, value.isDefault]);
   // Locate an option referring to the "none of the above", if it exists
   let naOption = naValue || Object.values(props.questionDefinition)
     .find((value) => value['notApplicable'])?.["value"];
