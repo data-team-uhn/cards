@@ -13,11 +13,11 @@
           "textbox": {},
           "list": {
             "compact" : "boolean",
-            "answerOptions" : "options"
+            "answerOptions" : "textOptions"
           },
           "list+input" : {
             "compact" : "boolean",
-            "answerOptions" : "options"
+            "answerOptions" : "textOptions"
           }
         }
       },
@@ -43,11 +43,11 @@
           "input": {},
           "list": {
             "compact" : "boolean",
-            "answerOptions" : "options"
+            "answerOptions" : "numberOptions"
           },
           "list+input" : {
             "compact" : "boolean",
-            "answerOptions" : "options"
+            "answerOptions" : "numberOptions"
           }
         }
       },
@@ -61,11 +61,11 @@
           "input": {},
           "list": {
             "compact" : "boolean",
-            "answerOptions" : "options"
+            "answerOptions" : "numberOptions"
           },
           "list+input" : {
             "compact" : "boolean",
-            "answerOptions" : "options"
+            "answerOptions" : "numberOptions"
           }
         }
       },
@@ -76,15 +76,7 @@
         "maxAnswers": "long",
         "unitOfMeasurement" : "string",
         "displayMode": {
-          "input": {},
-          "list": {
-            "compact" : "boolean",
-            "answerOptions" : "options"
-          },
-          "list+input" : {
-            "compact" : "boolean",
-            "answerOptions" : "options"
-          }
+          "input": {}
         }
       },
       "file": {
@@ -107,11 +99,11 @@
           "input": {},
           "list": {
             "compact" : "boolean",
-            "answerOptions" : "options"
+            "answerOptions" : "textOptions"
           },
           "list+input" : {
             "compact" : "boolean",
-            "answerOptions" : "options"
+            "answerOptions" : "textOptions"
           }
         },
         "enableNotes": "boolean"

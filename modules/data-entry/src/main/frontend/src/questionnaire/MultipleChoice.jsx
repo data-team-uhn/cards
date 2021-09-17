@@ -137,8 +137,8 @@ function MultipleChoice(props) {
       } else if (noneOfTheAboveOption == id) {
         // If the noneOfTheAboveOption is selected, other elements are deselected but user-input options remain
         // Only keep options that are user-input
-        let defaultOptions = defaults.filter(option => option[IS_DEFAULT_POS]).map((option) => option[VALUE_POS]);
-        let newSelection = old.filter((option) => !defaultOptions.includes(option[VALUE_POS]));
+        let defaultOptionValues = defaults.filter(option => option[IS_DEFAULT_POS]).map((option) => String(option[VALUE_POS]));
+        let newSelection = old.filter((option) => !defaultOptionValues.includes(String(option[VALUE_POS])));
         newSelection.push([name, id]);
         return newSelection;
       }
