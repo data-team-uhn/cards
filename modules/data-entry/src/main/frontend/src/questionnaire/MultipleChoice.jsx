@@ -179,7 +179,7 @@ function MultipleChoice(props) {
   let unselect = (old, id) => {
     let newSelection = old.filter(
       (element) => {
-        return !(String(element[VALUE_POS]) === id)
+        return !(String(element[VALUE_POS]) === String(id))
       });
 
     // Insert the empty string if nothing currently exists
