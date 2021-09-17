@@ -602,9 +602,6 @@ const questionnaireStyle = theme => ({
       flexBasis: "100%",
       paddingLeft: theme.spacing(4)
     },
-    filterPlaceholder: {
-        opacity: 0.3
-    },
 });
 
 export default questionnaireStyle;
