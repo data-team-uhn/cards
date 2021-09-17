@@ -96,6 +96,18 @@ function UserStatistics(props) {
             // Also include the definition of the chart type
             statJson["type"] = fullJson["type"];
             statJson["order"] = fullJson["order"];
+            // Note that due to reordering of object keys/values in Java, we have to pass the @path and let the statistic
+            // grab its splitVar answer options in a separate fetch
+            if (fullJson.splitVar) {
+              return (fetchWithReLogin(globalContext, fullJson.splitVar["@path"] + ".deep.json")
+                .then((response) => response.ok ? response.json() : Promise.reject(response))
+                .then((splitVarJson) => {
+                  statJson["splitVar"] = splitVarJson;
+                  setCurrentStatistic(currentStatistic => [...currentStatistic, statJson]);
+                }))
+            }
+
+            // Otherwise we just set the statistic to what we have
             return setCurrentStatistic(currentStatistic => [...currentStatistic, statJson]);
           })
           .catch(handleError);

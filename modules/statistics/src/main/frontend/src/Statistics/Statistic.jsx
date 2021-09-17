@@ -73,9 +73,21 @@ function Statistic(props) {
 
   let allFields = Object.keys(allFieldsDict);
   if (definition["splitVar"]) {
-    allFields = Object.entries(definition["splitVar"])
-      .filter((field) => field["jcr:primaryType"] == "cards:AnswerOption")
-      .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder));
+    // Reorder according to splitVar's order
+    allFields = Object.values(definition["splitVar"])
+      // Only grab answer options
+      .filter((field) => field["jcr:primaryType"] == "cards:AnswerOption"
+      // Furthermore, filter it to only fields that exist in the data
+        && field["label"] in allFieldsDict)
+      // Sort according to defaultOrder (if they exist)
+      .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder))
+      .map((field) => field["label"]);
+    // If there are any fields in our data that aren't in the splitVar's answerOptions, include
+    // them at the end
+    allFields = allFields.concat(
+      Object.keys(allFieldsDict)
+        .filter((field) => !allFields.includes(field))
+      );
   }
 
   let isBar = definition["type"] == "bar";
