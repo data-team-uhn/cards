@@ -595,63 +595,6 @@ const questionnaireStyle = theme => ({
     warningStatus: {
       color: theme.palette.warning.main
     },
-    answerOption: {
-      backgroundColor: grey[200],
-      borderRadius: theme.spacing(.5, 3, 3, .5),
-      margin: theme.spacing(1, 0),
-      "& .MuiFormControl-root" : {
-        paddingTop: theme.spacing(1),
-      },
-      "& .MuiInput-underline:before" : {
-        borderBottom: "0 none !important",
-      },
-      "& .MuiInput-underline:after" : {
-        borderBottom: "0 none !important",
-      }
-    },
-    answerOptionInput: {
-      width: "100%",
-      backgroundColor: grey[200],
-      "& .MuiInputBase-input" : {
-        paddingRight: theme.spacing(1),
-        paddingLeft: theme.spacing(1),
-      },
-    },
-    answerOptionButton: {
-      float: "right",
-    },
-    specialOptionButton: {
-      float: "right",
-      paddingTop: theme.spacing(0.5),
-      paddingRight: theme.spacing(0.5)
-    },
-    newOptionInput: {
-      marginBottom: theme.spacing(2),
-    },
-    specialOptionSwitch: {
-      margin: "0",
-      float: "right",
-    },
-    optionsDragIndicator: {
-      float: "left",
-      padding: theme.spacing(1.5, 0.5),
-      borderRadius: theme.spacing(0.5),
-    },
-    descriptionPopover: {
-      "& .MuiPopover-paper" : {
-        padding: theme.spacing(3),
-        width: theme.spacing(87),
-        height: theme.spacing(40),
-      }
-    },
-    descriptionPopoverButton: {
-      float: "right",
-      marginTop: theme.spacing(3),
-      marginLeft: theme.spacing(1),
-    },
-    descriptionPopoverTitle: {
-      marginBottom: theme.spacing(3),
-    },
     selectionChild: {
       flexWrap: "wrap",
     },

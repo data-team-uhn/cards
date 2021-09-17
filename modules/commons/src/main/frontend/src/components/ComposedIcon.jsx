@@ -63,20 +63,20 @@ const ComposedIcon = ({
         left: position.includes('start') ? '-4px' : null,
         right: position.includes('end') ? '-4px' : null,
       }}>
-      <ExtraIcon
+      { ExtraIcon && <ExtraIcon
         color={color}
         style={{
           fontSize: sizesMap[size].extraSize,
           color: disabled ? theme.palette.text.disabled : null,
         }}
-      />
+      /> }
     </div>
   </div>
 )
 
 ComposedIcon.propTypes = {
   MainIcon: PropTypes.elementType.isRequired,
-  ExtraIcon: PropTypes.elementType.isRequired,
+  ExtraIcon: PropTypes.elementType,
   size: PropTypes.oneOf(['small', 'medium', 'large']),
   color: PropTypes.string,
   position: PropTypes.oneOf(['top-start', 'top-end', 'bottom-start', 'bottom-end']),

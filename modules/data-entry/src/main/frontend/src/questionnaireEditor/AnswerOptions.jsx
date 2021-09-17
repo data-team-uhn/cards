@@ -20,30 +20,33 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import {
-  Grid,
   Button,
-  IconButton,
-  TextField,
-  InputAdornment,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  Checkbox,
   FormControlLabel,
+  Grid,
+  IconButton,
   Popover,
-  Tooltip,
   Switch,
-  Typography,
-  withStyles
+  TextField,
+  Tooltip,
+  makeStyles
 } from "@material-ui/core";
 
-import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
 import EditorInput from "./EditorInput";
 import QuestionComponentManager from "./QuestionComponentManager";
 import MarkdownText from "./MarkdownText";
 import CloseIcon from '@material-ui/icons/Close';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
+import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import NotesIcon from '@material-ui/icons/Notes';
 import { stringToHash } from "../escape.jsx";
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+
 import ComposedIcon from "../components/ComposedIcon.jsx";
 
 let extractSortedOptions = (data) => {
@@ -54,8 +57,56 @@ let extractSortedOptions = (data) => {
                             .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder));
 }
 
+const useStyles = makeStyles(theme => ({
+    answerOption: {
+      border: "1px solid " + theme.palette.divider,
+      background: theme.palette.background.paper,
+      borderRadius: theme.spacing(.5, 3, 3, .5),
+      margin: theme.spacing(1, 0),
+      "& > .MuiGrid-item" : {
+        display: "flex",
+      },
+      "& .MuiFormControl-root" : {
+        paddingTop: theme.spacing(1),
+        width: "100%",
+      },
+      "& .MuiInputBase-input" : {
+        paddingRight: theme.spacing(1),
+        paddingLeft: theme.spacing(1),
+      },
+    },
+    answerOptionReadonly: {
+      "& .MuiInput-underline:before" : {
+        borderBottom: "0 none !important",
+      },
+      "& .MuiInput-underline:after" : {
+        borderBottom: "0 none !important",
+      }
+    },
+    answerOptionActions : {
+      justifyContent: "flex-end",
+    },
+    newOptionInput: {
+      marginBottom: theme.spacing(2),
+    },
+    answerOptionSwitch: {
+      margin: theme.spacing(0.5),
+    },
+    optionsDragIndicator: {
+      padding: theme.spacing(1.5, 0.5),
+      borderRadius: theme.spacing(0.5),
+    },
+    descriptionPopover: {
+      "& .MuiCardActions-root" : {
+        justifyContent: "flex-end",
+        padding: theme.spacing(1,2),
+      },
+    },
+}));
+
 let AnswerOptions = (props) => {
-  const { objectKey, value, data, path, saveButtonRef, classes } = props;
+  const { objectKey, value, data, path, saveButtonRef } = props;
+  const classes = useStyles();
   let [ options, setOptions ] = useState(extractSortedOptions(data));
   let [ deletedOptions, setDeletedOptions ] = useState([]);
   let [ tempValue, setTempValue ] = useState(''); // Holds new, non-committed answer options
@@ -105,8 +156,8 @@ let AnswerOptions = (props) => {
 
   let getItemStyle = (isDragging, draggableStyle) => ({
     // change background colour if dragging
-    border: isDragging ? "2px dashed" : "none",
-    borderColor: isDragging ? "lightblue" : "",
+    borderStyle: isDragging ? "dashed" : undefined,
+    borderWidth: isDragging ? "2px" : undefined,
     ...draggableStyle
   });
 
@@ -198,7 +249,7 @@ let AnswerOptions = (props) => {
 
   let generateDescriptionIcon = (item, index, isSpecialOptn) => {
     return (
-      <Tooltip title="Description">
+      <Tooltip title={!item.description ? "Add a description" : "Edit description"}>
         <IconButton
           onClick={(event) => {
                                 setDescriptionAnchorEl(event.currentTarget);
@@ -208,17 +259,16 @@ let AnswerOptions = (props) => {
                                 setDescription(item.description);
                               }
                    }
-          className={isSpecialOptn ? classes.specialOptionButton : classes.answerOptionButton}
         >
           <ComposedIcon
               size="large"
               MainIcon={NotesIcon}
-              ExtraIcon={!item.description ? AddCircleIcon : EditIcon}/>
+              ExtraIcon={!item.description ? AddIcon : EditIcon}/>
         </IconButton>
       </Tooltip>
     )
   }
-  
+
   let generateSpecialOptions = (index) => {
     let option = specialOptionsInfo[index];
     return (
@@ -226,9 +276,22 @@ let AnswerOptions = (props) => {
        direction="row"
        justify="space-between"
        alignItems="stretch"
+       className={classes.answerOption}
        onClick={(event) => option.setter({ ...option.data, [option.label]: true})}
        >
-      <Grid item xs={9}>
+      <Grid item xs={1}></Grid>
+      <Grid item xs={8}>
+      <Tooltip title="Selected by default">
+        <Checkbox
+          checked={option.data.isDefault}
+          disabled={!option.data[option.label]} onChange={(event) => {
+              option.setter({
+                ...option.data,
+                "isDefault": !!(event?.target?.checked)
+              });
+            }}
+          />
+      </Tooltip>
       <Tooltip title={option.tooltip}>
         <TextField
           disabled={!option.data[option.label]}
@@ -241,19 +304,19 @@ let AnswerOptions = (props) => {
         />
       </Tooltip>
       </Grid>
-      <Grid item xs={3}>
-      <Tooltip title={option.switchTooltip} className={classes.specialOptionSwitch}>
+      <Grid item xs={3} className={classes.answerOptionActions}>
+      {generateDescriptionIcon(option.data, index, true)}
+      <Tooltip title={option.switchTooltip} className={classes.answerOptionSwitch}>
         <FormControlLabel
           control={
             <Switch
+              size="small"
               checked={!!option.data[option.label]}
               onChange={(event) => option.setter({ ...option.data, [option.label]: event.target.checked})}
-              color="primary"
               />
           }
         />
       </Tooltip>
-      {generateDescriptionIcon(option.data, index, true)}
       { option.data[option.label]
         ?
         <>
@@ -263,6 +326,8 @@ let AnswerOptions = (props) => {
           <input type='hidden' name={`${option.data['@path']}/${option.label}`} value={option.data[option.label]} />
           <input type='hidden' name={`${option.data['@path']}/defaultOrder`} value={option.defaultOrder} />
           <input type="hidden" name={`${option.data['@path']}/description`} value={option.data.description || ''} />
+          <input type="hidden" name={`${option.data['@path']}/isDefault`} value={option.data.isDefault || ''} />
+          <input type="hidden" name={`${option.data['@path']}/isDefault@TypeHint`} value="Boolean" />
         </>
         :
         <input type='hidden' name={`${option.data['@path']}@Delete`} value="0" />
@@ -272,7 +337,7 @@ let AnswerOptions = (props) => {
     )
   }
   
-  let handleClose = () => {
+  let handlePopoverClose = () => {
     setDescriptionAnchorEl(null);
     setDescriptionIndex(null);
     setDescriptionLabel('');
@@ -280,7 +345,7 @@ let AnswerOptions = (props) => {
     setDescription('');
   }
 
-  let onDescriptionPopoverClose = () => {
+  let updateOptionDescription = () => {
     // update corresponding option description
     if (isSpecialOption) {
       specialOptionsInfo[descriptionIndex].setter({ ...specialOptionsInfo[descriptionIndex].data, "description": description});
@@ -291,7 +356,7 @@ let AnswerOptions = (props) => {
         return value;
       });
     }
-    handleClose();
+    handlePopoverClose();
   }
 
   return (
@@ -336,22 +401,35 @@ let AnswerOptions = (props) => {
                         <input type='hidden' name={`${value['@path']}/value`} value={value.value} />
                         <input type='hidden' name={`${value['@path']}/defaultOrder`} value={index+1} />
                         <input type="hidden" name={`${value['@path']}/description`} value={value.description || ''} />
+                        <input type="hidden" name={`${value['@path']}/isDefault`} value={value.isDefault || false} />
+                        <input type="hidden" name={`${value['@path']}/isDefault@TypeHint`} value="Boolean" />
+                        <Tooltip title="Selected by default">
+                          <Checkbox
+                            checked={value.isDefault}
+                            onChange={(event) => {
+                              setOptions(old => {
+                                var _new = old.slice();
+                                _new[index].isDefault = !!(event?.target?.checked);
+                                return _new;
+                              });
+                            }}/>
+                        </Tooltip>
                         <TextField
                           InputProps={{
                             readOnly: true,
                           }}
-                          className={classes.answerOptionInput}
+                          className={classes.answerOptionReadonly}
                           defaultValue={value.label? value.value + " = " + value.label : value.value}
                           multiline
                         />
                       </Grid>
-                      <Grid item xs={3}>
+                      <Grid item xs={3} className={classes.answerOptionActions}>
+                        {generateDescriptionIcon(value, index, false)}
                         <Tooltip title="Delete option">
                           <IconButton onClick={() => { deleteOption(index); }} className={classes.answerOptionButton}>
                             <CloseIcon/>
                           </IconButton>
                         </Tooltip>
-                        {generateDescriptionIcon(value, index, false)}
                       </Grid>
                     </Grid>
                   ) }
@@ -389,7 +467,7 @@ let AnswerOptions = (props) => {
         disableEscapeKeyDown
         open={Boolean(descriptionAnchorEl)}
         anchorEl={descriptionAnchorEl}
-        onClose={handleClose}
+        onClose={handlePopoverClose}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'center',
@@ -400,32 +478,19 @@ let AnswerOptions = (props) => {
         }}
         className={classes.descriptionPopover}
       >
-        <Typography variant="h6" className={classes.descriptionPopoverTitle} >
-          {`Description for "${descriptionLabel}"`}
-        </Typography>
-        { descriptionIndex != null &&
-          <MarkdownText
-            value={description}
-            onChange={setDescription}
-          />
-        }
-        <Button
-          variant='contained'
-          color='default'
-          onClick={handleClose}
-          className={classes.descriptionPopoverButton}
-        >
-          Cancel
-        </Button>
-        <Button
-          variant='contained'
-          color='primary'
-          onClick={onDescriptionPopoverClose}
-          className={classes.descriptionPopoverButton}
-        >
-          Done
-        </Button>
-    </Popover>
+        <Card>
+          <CardHeader title={`Description for "${descriptionLabel}"`} titleTypographyProps={{variant: "h6"}}/>
+          <CardContent>
+          { descriptionIndex != null &&
+            <MarkdownText value={description} onChange={setDescription} />
+          }
+          </CardContent>
+          <CardActions>
+            <Button size='small' variant='contained' onClick={handlePopoverClose}>Cancel</Button>
+            <Button size='small' variant='contained' color='primary' onClick={updateOptionDescription}>Done</Button>
+          </CardActions>
+        </Card>
+      </Popover>
     </EditorInput>
   )
 }
@@ -434,11 +499,10 @@ AnswerOptions.propTypes = {
   data: PropTypes.object.isRequired
 };
 
-var StyledAnswerOptions = withStyles(QuestionnaireStyle)(AnswerOptions);
-export default StyledAnswerOptions;
+export default AnswerOptions;
 
 QuestionComponentManager.registerQuestionComponent((definition) => {
   if (["numberOptions", "textOptions"].includes(definition)) {
-    return [StyledAnswerOptions, 50];
+    return [AnswerOptions, 50];
   }
 });

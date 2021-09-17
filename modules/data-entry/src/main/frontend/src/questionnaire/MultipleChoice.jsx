@@ -23,15 +23,13 @@ import { Checkbox, FormControlLabel, IconButton, List, ListItem, MenuItem, Radio
 import Close from "@material-ui/icons/Close";
 import PropTypes from 'prop-types';
 
-import Answer, {LABEL_POS, VALUE_POS, DESC_POS} from "./Answer";
+import Answer, {LABEL_POS, VALUE_POS, DESC_POS, IS_DEFAULT_OPTION_POS, IS_DEFAULT_ANSWER_POS} from "./Answer";
 import { useFormUpdateReaderContext, useFormUpdateWriterContext } from "./FormUpdateContext";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import AnswerInstructions from "./AnswerInstructions.jsx";
 import UserInputAssistant from "../components/UserInputAssistant.jsx";
 import FormattedText from "../components/FormattedText.jsx";
 
-// Position used to read whether or not an option is a "default" suggestion (i.e. one provided by the questionnaire)
-const IS_DEFAULT_POS = 2;
 // Sentinel value used for the user-controlled input
 const GHOST_SENTINEL = "custom-input";
 
@@ -62,7 +60,7 @@ function MultipleChoice(props) {
     // Sort by default order
     .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder))
     // Only extract the labels, internal values and description from the node
-    .map(value => [value.label || value.value, value.value, true, value.description]);
+    .map(value => [value.label || value.value, value.value, true, value.description, value.isDefault]);
   // Locate an option referring to the "none of the above", if it exists
   let naOption = naValue || Object.values(props.questionDefinition)
     .find((value) => value['notApplicable'])?.["value"];
@@ -78,6 +76,14 @@ function MultipleChoice(props) {
     Array.of(existingAnswer[1].value).flat()
     // Only the internal values are stored, turn them into pairs of [label, value] by using their displayedValue
     .map((item, index) => [Array.of(existingAnswer[1].displayedValue).flat()[index], item]);
+  // When opening a form, if there is no existingAnswer but there are AnswerOptions specified as default values,
+  // display those options as selected and ensure they get saved unless modified by the user, by adding them to initialSelection
+  if (!existingAnswer) {
+    initialSelection = defaults.filter(item => item[IS_DEFAULT_ANSWER_POS])
+       // If there are more default values than the specified maxAnswers, only take into account the first maxAnswers default values.
+      .slice(0, maxAnswers || defaults.length)
+      .map(item => [item[LABEL_POS], item[VALUE_POS]]);
+  }
   let default_values = defaults.map((thisDefault) => thisDefault[VALUE_POS]);
   let all_options =
     // If the question is a radio, just display the defaults as duplicates
@@ -137,7 +143,7 @@ function MultipleChoice(props) {
       } else if (noneOfTheAboveOption == id) {
         // If the noneOfTheAboveOption is selected, other elements are deselected but user-input options remain
         // Only keep options that are user-input
-        let defaultOptionValues = defaults.filter(option => option[IS_DEFAULT_POS]).map((option) => String(option[VALUE_POS]));
+        let defaultOptionValues = defaults.filter(option => option[IS_DEFAULT_OPTION_POS]).map((option) => String(option[VALUE_POS]));
         let newSelection = old.filter((option) => !defaultOptionValues.includes(String(option[VALUE_POS])));
         newSelection.push([name, id]);
         return newSelection;
@@ -215,7 +221,7 @@ function MultipleChoice(props) {
     setOptions( (old) => {
       return old.filter(
         (option) => {
-          return !(option[VALUE_POS] === id) || option[IS_DEFAULT_POS]
+          return !(option[VALUE_POS] === id) || option[IS_DEFAULT_OPTION_POS]
         });
     });
     setSelection((old) => unselect(old, id));
@@ -527,7 +533,7 @@ function generateDefaultOptions(defaults, selection, disabled, isRadio, onClick,
         disabled={disabled}
         onClick={onClick}
         onDelete={onDelete}
-        isDefault={childData[IS_DEFAULT_POS]}
+        isDefaultOption={childData[IS_DEFAULT_OPTION_POS]}
         isRadio={isRadio}
         description={childData[DESC_POS]}
       ></StyledResponseChild>
@@ -539,13 +545,13 @@ var StyledResponseChild = withStyles(QuestionnaireStyle)(ResponseChild);
 
 // One option (either a checkbox or radiobox as appropriate)
 function ResponseChild(props) {
-  const {classes, checked, name, id, isDefault, onClick, disabled, isRadio, onDelete, description} = props;
+  const {classes, checked, name, id, isDefaultOption, onClick, disabled, isRadio, onDelete, description} = props;
 
   return (
     <React.Fragment>
       <ListItem key={name} className={classes.selectionChild}>
-          { /* This is either a Checkbox if this is a default suggestion, or a delete button otherwise */
-          isDefault ?
+          { /* This is either a Checkbox/Radiobox if this is a default suggestion, or a delete button otherwise */
+          isDefaultOption ?
             (<>
               <FormControlLabel
                 control={
