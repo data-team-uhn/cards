@@ -16,14 +16,13 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
-  Card,
-  CardContent,
   Grid,
   withStyles,
   Typography
 } from "@material-ui/core";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import statisticsStyle from "./statisticsStyle.jsx";
 import Statistic from "./Statistic.jsx";
 
@@ -35,12 +34,14 @@ function UserStatistics(props) {
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
 
+  let globalContext = useContext(GlobalLoginContext);
+
   // Obtain information about the Statistics available to the user
   let initialize = () => {
     setInitialized(true);
 
     // Fetch the statistics
-    fetch("/query?query=select * from [cards:Statistic]")
+    fetchWithReLogin(globalContext, "/query?query=select * from [cards:Statistic]")
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((response) => {
         if (response.totalrows == 0) {
@@ -75,7 +76,7 @@ function UserStatistics(props) {
   let fetchStat = (stat) => {
     // for each existing statistic, get full.json
     // pathnames will be sent in request body, that's why deep.json is used
-    fetch(`/Statistics/${stat['@name']}.deep.json`)
+    fetchWithReLogin(globalContext, `/Statistics/${stat['@name']}.deep.json`)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((fullJson) => {
         const urlBase = "/Statistics.query";
@@ -89,17 +90,15 @@ function UserStatistics(props) {
           requestData['splitVar'] = fullJson.splitVar['@path']
         }
 
-        fetch( url, { method: 'POST', body: JSON.stringify(requestData) })
+        fetchWithReLogin(globalContext, url, { method: 'POST', body: JSON.stringify(requestData) })
           .then((response) => response.ok ? response.json() : Promise.reject(response))
           .then((statJson) => {
             // Also include the definition of the chart type
             statJson["type"] = fullJson["type"];
             statJson["order"] = fullJson["order"];
-            statJson["splitVar"] = fullJson["splitVar"];
-            setCurrentStatistic(currentStatistic => [...currentStatistic, statJson]);
+            return setCurrentStatistic(currentStatistic => [...currentStatistic, statJson]);
           })
           .catch(handleError);
-
       })
       .catch(handleError);
   }

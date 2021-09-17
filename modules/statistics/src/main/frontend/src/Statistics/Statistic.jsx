@@ -66,9 +66,16 @@ function Statistic(props) {
 
   // Transform the data into recharts' format
   let rechartsData = [];
-  let allFields = {};
+  let allFieldsDict = {};
   for (const [key, value] of Object.entries(definition["data"])) {
-    rechartsData.push({"x": key, ...expandData(definition["y-label"], value, allFields)});
+    rechartsData.push({"x": key, ...expandData(definition["y-label"], value, allFieldsDict)});
+  }
+
+  let allFields = Object.keys(allFieldsDict);
+  if (definition["splitVar"]) {
+    allFields = Object.entries(definition["splitVar"])
+      .filter((field) => field["jcr:primaryType"] == "cards:AnswerOption")
+      .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder));
   }
 
   let isBar = definition["type"] == "bar";
@@ -95,7 +102,7 @@ function Statistic(props) {
         title={<Typography variant="h6">{definition["name"]}</Typography>}
         />
       <CardContent>
-      { Object.keys(allFields).length == 0 ?
+      { allFields.length == 0 ?
         <Grid container direction="row" justify="center" alignItems="center" style={{height: widgetHeight}}>
           <Grid item>
             <Typography color="textSecondary" variant="caption">No data available for this statistic</Typography>
@@ -111,7 +118,7 @@ function Statistic(props) {
             <YAxis allowDecimals={false} label={{ value: yAxisLabel, angle: -90, position: 'insideLeft' }} />
             <Tooltip />
             {isSplit && <Legend align="right" verticalAlign="top" />}
-            {Object.keys(allFields).sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder)).map((field, idx) =>
+            {allFields.map((field, idx) =>
               isBar ?
                 <Bar dataKey={field} fill={chartColours[idx]} key={idx}/>
               :
