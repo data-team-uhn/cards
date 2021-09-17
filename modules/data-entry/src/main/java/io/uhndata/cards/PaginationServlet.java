@@ -20,6 +20,7 @@ package io.uhndata.cards;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -72,6 +73,7 @@ import org.slf4j.LoggerFactory;
  *
  * @version $Id$
  */
+@SuppressWarnings("checkstyle:ClassFanOutComplexity")
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(
     resourceTypes = { "cards/QuestionnairesHomepage", "cards/FormsHomepage", "cards/SubjectsHomepage",
@@ -728,6 +730,25 @@ public class PaginationServlet extends SlingSafeMethodsServlet
     }
 
     /**
+     * Returns the timezone as a GMT offset string for the given date string
+     * provided in the format yyyy-MM-dd. If date string parsing fails, the
+     * GMT offset string for the current date/time is returned instead.
+     *
+     * @param dateString a date string in the form of yyyy-MM-dd
+     * @return the GMT offset string for the given date string at 00:00:00
+     *     in the server's local timezone
+     */
+    private String getTimezoneForDateString(String dateString)
+    {
+        SimpleDateFormat inputDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            return new SimpleDateFormat("XXX").format(inputDateFormat.parse(dateString));
+        } catch (ParseException e) {
+            return new SimpleDateFormat("XXX").format(new Date());
+        }
+    }
+
+    /**
      * Converts a single value filter into a query condition, including the starting " and ", referencing the correct
      * question, and comparing against the filter value.
      *
@@ -769,7 +790,8 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             condition.append(
                 String.format(
                     " and %s.'value'%s" + (("date".equals(filter.type))
-                        ? ("cast('%sT00:00:00.000" + new SimpleDateFormat("XXX").format(new Date()) + "' as date)")
+                        ? ("cast('%sT00:00:00.000" + getTimezoneForDateString(this.sanitizeValue(filter.value))
+                            + "' as date)")
                         : ("boolean".equals(filter.type)) ? "%s"
                             : StringUtils.isNotBlank(filter.value) ? "'%s'" : ""),
                     filter.source,
