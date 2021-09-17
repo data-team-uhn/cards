@@ -30,11 +30,14 @@ import BarChartIcon from '@material-ui/icons/BarChart';
 import LineChartIcon from '@material-ui/icons/ShowChart';
 import { deepPurple, indigo } from '@material-ui/core/colors';
 
+import moment from "moment";
 import palette from "google-palette";
 import {
    BarChart, Bar, CartesianGrid, Line, LineChart, Label, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis
 } from "recharts";
+
 import statisticsStyle from "./statisticsStyle.jsx";
+import DateQuestionUtilities from "../questionnaire/DateQuestionUtilities";
 
 // A single statistic, displayed as a chart
 function Statistic(props) {
@@ -43,6 +46,16 @@ function Statistic(props) {
   const DEFAULT_PALETTE = [
     theme.palette.primary.main,
   ];
+
+  // Format dates into a human readable format
+  let formatIfDate = (label, dateQuestionDef) => {
+    if (dateQuestionDef["dataType"] != "date") {
+      return label;
+    }
+
+    let dateFormat = dateQuestionDef["dateFormat"] || "yyyy-MM-dd";
+    return DateQuestionUtilities.amendMoment(label, dateFormat).format(moment.HTML5_FMT.DATE);
+  }
 
   // Transform our input data from the statistics servlet into something recharts can understand
   // Note that keys is transformed in this process
@@ -68,7 +81,7 @@ function Statistic(props) {
   let rechartsData = [];
   let allFieldsDict = {};
   for (const [key, value] of Object.entries(definition["data"])) {
-    rechartsData.push({"x": key, ...expandData(definition["y-label"], value, allFieldsDict)});
+    rechartsData.push({"x": formatIfDate(key, definition["xVar"]), ...expandData(definition["y-label"], value, allFieldsDict)});
   }
 
   let allFields = Object.keys(allFieldsDict);

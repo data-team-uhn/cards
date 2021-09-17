@@ -25,9 +25,6 @@ const statisticsStyle = theme => ({
   subjectFilterInput: {
       width: "100%"
   },
-  filterPlaceholder: {
-    opacity: 0.3
-  },
   categoryOption: {
     whiteSpace: "normal",
   },
