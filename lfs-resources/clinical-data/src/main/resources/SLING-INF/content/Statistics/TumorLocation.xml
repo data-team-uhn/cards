@@ -22,7 +22,7 @@
 	<primaryNodeType>cards:Statistic</primaryNodeType>
 	<property>
 		<name>name</name>
-		<value>Tumor Location</value>
+		<value>Tumor location</value>
 		<type>String</type>
 	</property>
 	<property>

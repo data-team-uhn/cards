@@ -259,7 +259,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
             Node xAnswer = xVar.adaptTo(Node.class);
             String xValue = xAnswer.getProperty(VALUE_PROP).getString();
 
-            String splitLabel = "undefined";
+            String splitLabel = "Undefined";
             if (splitVar != null) {
                 Node splitAnswer = splitVar.adaptTo(Node.class);
                 if (splitAnswer.hasProperty(VALUE_PROP)) {

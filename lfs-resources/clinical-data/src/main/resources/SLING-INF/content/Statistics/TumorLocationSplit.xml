@@ -22,7 +22,7 @@
 	<primaryNodeType>cards:Statistic</primaryNodeType>
 	<property>
 		<name>name</name>
-		<value>Tumor Location Split By Sex</value>
+		<value>Tumor location by gender</value>
 		<type>String</type>
 	</property>
 	<property>

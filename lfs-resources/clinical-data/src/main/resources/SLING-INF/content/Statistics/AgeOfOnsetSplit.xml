@@ -22,7 +22,7 @@
 	<primaryNodeType>cards:Statistic</primaryNodeType>
 	<property>
 		<name>name</name>
-		<value>Age of Onset Split By Sex</value>
+		<value>Age of onset by gender</value>
 		<type>String</type>
 	</property>
 	<property>

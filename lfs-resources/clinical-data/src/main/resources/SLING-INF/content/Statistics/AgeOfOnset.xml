@@ -22,7 +22,7 @@
 	<primaryNodeType>cards:Statistic</primaryNodeType>
 	<property>
 		<name>name</name>
-		<value>Age of Onset</value>
+		<value>Age of onset</value>
 		<type>String</type>
 	</property>
 	<property>
