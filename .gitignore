@@ -56,5 +56,7 @@ yarn.lock
 
 # Running instance
 /sling/
+/launcher/
 /distribution/sling/
+/distribution/launcher/
 /.metadata/
