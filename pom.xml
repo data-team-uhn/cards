@@ -147,9 +147,15 @@
     <cards.version>${project.version}</cards.version>
     <app.name>Clinical ARchive for Data Science</app.name>
     <platform.name>CARDS</platform.name>
-    <slf4j.version>1.7.26</slf4j.version>
-    <jackrabbit.version>2.16.3</jackrabbit.version>
-    <oak.version>1.8.8</oak.version>
+    <slf4j.version>1.7.32</slf4j.version>
+    <jackrabbit.version>2.20.3</jackrabbit.version>
+    <oak.version>1.40.0</oak.version>
+
+    <!-- Versions to be replaced in the feature files -->
+    <asm.version>9.2</asm.version>
+    <composum.nodes.version>2.6.6</composum.nodes.version>
+    <jackson.version>2.12.1</jackson.version>
+    <groovy.version>3.0.7</groovy.version>
 
     <enforcer.skip>false</enforcer.skip>
     <checkstyle.skip>false</checkstyle.skip>
@@ -170,7 +176,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.9</version>
+        <version>3.11</version>
       </dependency>
       <dependency>
         <groupId>commons-io</groupId>
@@ -185,7 +191,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-collections4</artifactId>
-        <version>4.3</version>
+        <version>4.4</version>
       </dependency>
       <dependency>
         <groupId>commons-collections</groupId>
@@ -601,9 +607,7 @@
           <groupId>org.apache.sling</groupId>
           <artifactId>slingstart-maven-plugin</artifactId>
           <!-- Lock down plugin version for build reproducibility -->
-          <version>1.8.2</version>
-          <!-- This allows us to use the "slingstart" and "slingfeature" packaging type -->
-          <extensions>true</extensions>
+          <version>1.9.12</version>
           <configuration>
             <!-- Add the current project version into the provisioning files -->
             <setFeatureVersions>true</setFeatureVersions>
@@ -614,6 +618,20 @@
           </configuration>
         </plugin>
 
+        <plugin>
+          <groupId>org.apache.sling</groupId>
+          <artifactId>slingfeature-maven-plugin</artifactId>
+          <version>1.5.16</version>
+          <extensions>true</extensions>
+          <configuration>
+            <replacePropertyVariables>asm.version,jackrabbit.version,groovy.version,oak.version,slf4j.version,composum.nodes.version,jackson.version,cards.version</replacePropertyVariables>
+            <framework>
+              <groupId>org.apache.felix</groupId>
+              <artifactId>org.apache.felix.framework</artifactId>
+              <version>6.0.3</version>
+            </framework>
+          </configuration>
+        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
