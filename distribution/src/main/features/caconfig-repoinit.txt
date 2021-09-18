@@ -17,10 +17,4 @@
 #  under the License.
 #
 
-# This is the LFS project
-[feature name=lfs-resources]
-
-[artifacts runModes=lfs]
-    io.uhndata.cards/lfs-resources-clinical-data/${cards.version}
-    io.uhndata.cards/lfs-resources-tissue-metrix/${cards.version}
-    io.uhndata.cards/lfs-variants/${cards.version}
+create path (sling:Folder) /conf
