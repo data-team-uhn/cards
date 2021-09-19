@@ -15,7 +15,7 @@
     "configurations":{
         "org.apache.jackrabbit.oak.plugins.document.DocumentNodeStoreService":{
             "db":"sling",
-            "mongouri":"mongodb://localhost:${mongo.port}"
+            "mongouri":"mongodb://mongo:${mongo.port}"
          }
     }
 }
