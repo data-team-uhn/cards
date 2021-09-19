@@ -407,6 +407,11 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.sling</groupId>
+        <artifactId>slingfeature-maven-plugin</artifactId>
+        <extensions>true</extensions>
+      </plugin>
     </plugins>
     <pluginManagement>
       <plugins>
@@ -511,7 +516,17 @@
               <version>6.0.3</version>
             </framework>
           </configuration>
+          <executions>
+            <execution>
+              <id>attach-features</id>
+              <phase>prepare-package</phase>
+              <goals>
+                <goal>attach-features</goal>
+              </goals>
+            </execution>
+          </executions>
         </plugin>
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>

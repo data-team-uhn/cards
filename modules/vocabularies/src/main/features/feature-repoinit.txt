@@ -17,17 +17,9 @@
 #  under the License.
 #
 
-# CARDS Commons, resources needed by all other parts of the platform
-[feature name=cards-commons]
+# Vocabularies Homepage
+create path (cards:VocabulariesHomepage) /Vocabularies
 
-[:repoinit]
-    create path (sling:Folder) /libs/cards
-    create path (sling:Folder) /libs/cards/resources
-    create path (sling:Folder) /apps/cards
-    create path (sling:Folder) /Extensions
-
-    set ACL for everyone
-        allow   jcr:read    on /libs/cards
-        allow   jcr:read    on /apps/cards
-        allow   jcr:read    on /Extensions
-    end
+set ACL for everyone
+    allow   jcr:read    on /Vocabularies
+end

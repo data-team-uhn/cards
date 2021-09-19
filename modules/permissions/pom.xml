@@ -53,13 +53,13 @@
     </dependency>
     <dependency>
       <groupId>org.apache.jackrabbit</groupId>
-      <artifactId>jackrabbit-api</artifactId>
-      <version>2.16.3</version>
+      <artifactId>oak-jackrabbit-api</artifactId>
+      <version>${oak.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.jackrabbit</groupId>
       <artifactId>jackrabbit-jcr-commons</artifactId>
-      <version>2.16.3</version>
+      <version>${jackrabbit.version}</version>
     </dependency>
     <dependency>
       <groupId>org.osgi</groupId>

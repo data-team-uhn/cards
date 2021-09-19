@@ -93,8 +93,8 @@
     </dependency>
     <dependency>
       <groupId>org.apache.jackrabbit</groupId>
-      <artifactId>jackrabbit-api</artifactId>
-      <version>${jackrabbit.version}</version>
+      <artifactId>oak-jackrabbit-api</artifactId>
+      <version>${oak.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.jackrabbit</groupId>
