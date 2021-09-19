@@ -32,7 +32,11 @@
 
   <build>
     <plugins>
-      <!-- This is an OSGi bundle -->
+      <plugin>
+        <groupId>org.apache.sling</groupId>
+        <artifactId>slingfeature-maven-plugin</artifactId>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
@@ -44,26 +48,6 @@
             <!-- Initial content to be loaded on bundle installation -->
             <Sling-Initial-Content>SLING-INF/content</Sling-Initial-Content>
           </instructions>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.sling</groupId>
-        <artifactId>slingstart-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>attach-prov-model</id>
-            <goals>
-              <goal>attach-slingfeature</goal>
-              <goal>attach-modelarchive</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <!-- This will automatically add an [artifacts] entry with the jar produced by this module in the provisioning file -->
-          <attach>
-            <type>jar</type>
-            <startLevel>12</startLevel>
-          </attach>
         </configuration>
       </plugin>
     </plugins>

@@ -27,24 +27,6 @@
   </parent>
 
   <artifactId>cards-ldap-support</artifactId>
-  <packaging>slingfeature</packaging>
+  <packaging>slingosgifeature</packaging>
   <name>CARDS - Support for LDAP authentication</name>
-
-  <properties>
-    <cards.ldap.dn />
-    <cards.ldap.password />
-    <cards.ldap.host />
-    <cards.ldap.baseDn />
-    <cards.ldap.idAttribute />
-    <cards.ldap.userClass />
-  </properties>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.sling</groupId>
-        <artifactId>slingstart-maven-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
 </project>
