@@ -17,5 +17,8 @@
 #  under the License.
 #
 
-# The CARDS Principals management
-[feature name=cards-principals]
+create path (cards:login) /login
+
+set ACL for everyone
+    allow   jcr:read    on /login
+end

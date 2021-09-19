@@ -17,23 +17,13 @@
 #  under the License.
 #
 
-# CARDS UI Extension management
-[feature name=cards-uiextension]
+create path (sling:Folder) /libs/cards
+create path (sling:Folder) /libs/cards/resources
+create path (sling:Folder) /apps/cards
+create path (sling:Folder) /Extensions
 
-[artifacts]
-    org.apache.commons/commons-lang3/3.8.1
-    org.slf4j/slf4j-api/1.7.26
-    org.apache.sling/org.apache.sling.scripting.sightly/1.1.2-1.4.0
-    org.apache.sling/org.apache.sling.scripting.sightly.runtime/1.1.0-1.4.0
-    org.apache.sling/org.apache.sling.api/2.18.4
-    javax.json/javax.json-api/1.1.4
-    javax.jcr/jcr/2.0
-
-[:repoinit]
-    # Extension point finder
-    create path (cards:ExtensionPointFinder) /uixp
-
-    # Allow all users to read from the extension point finder and one of the nodes
-    set ACL for everyone
-        allow   jcr:read    on /uixp
-    end
+set ACL for everyone
+    allow   jcr:read    on /libs/cards
+    allow   jcr:read    on /apps/cards
+    allow   jcr:read    on /Extensions
+end
