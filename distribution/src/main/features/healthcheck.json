@@ -87,7 +87,7 @@
                 "systemalive"
             ],
             "autoDisableFilter":true,
-            "responseTextFor503":"classpath:org.apache.sling.starter.content:content/content/startup/index.html"
+            "responseTextFor503":"classpath:io.uhndata.cards.startup-customization:custom_index.html"
         },
         "org.apache.felix.hc.core.impl.servlet.HealthCheckExecutorServlet~default":{
             "servletPath":"/system/health"
