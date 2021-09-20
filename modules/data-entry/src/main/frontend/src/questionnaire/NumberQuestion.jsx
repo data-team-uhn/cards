@@ -161,7 +161,7 @@ function NumberQuestion(props) {
 
   return (
     <Question
-      disableInstructions={hasAnswerOptions}
+      disableInstructions={!isRange}
       currentAnswers={ typeof(input) != "undefined" && input != "" ? 1 : 0 }
       {...props}
       >
