@@ -47,16 +47,6 @@ function Statistic(props) {
     theme.palette.primary.main,
   ];
 
-  // Format dates into a human readable format
-  let formatIfDate = (label, dateQuestionDef) => {
-    if (dateQuestionDef["dataType"] != "date") {
-      return label;
-    }
-
-    let dateFormat = dateQuestionDef["dateFormat"] || "yyyy-MM-dd";
-    return DateQuestionUtilities.amendMoment(label, dateFormat).format(moment.HTML5_FMT.DATE);
-  }
-
   // Transform our input data from the statistics servlet into something recharts can understand
   // Note that keys is transformed in this process
   let isSplit = false;
@@ -81,7 +71,28 @@ function Statistic(props) {
   let rechartsData = [];
   let allFieldsDict = {};
   for (const [key, value] of Object.entries(definition["data"])) {
-    rechartsData.push({"x": formatIfDate(key, definition["xVar"]), ...expandData(definition["y-label"], value, allFieldsDict)});
+    rechartsData.push({"x": key, ...expandData(definition["y-label"], value, allFieldsDict)});
+  }
+
+  // Sort the data we provide to recharts according to its x value
+  let xVar = definition["xVar"];
+  if (xVar["dataType"] == "date") {
+    // Date sort -- first convert string->moment to compare
+    let dateFormat = xVar["dateFormat"] || "yyyy-MM-dd";
+    rechartsData.sort((a, b) => {
+        return DateQuestionUtilities.amendMoment(a["x"], dateFormat).diff(DateQuestionUtilities.amendMoment(b["x"], dateFormat))
+    });
+    // Reformat to a human readable format
+    rechartsData = rechartsData.map((field) => {
+      field["x"] = DateQuestionUtilities.amendMoment(field["x"], dateFormat).format(moment.HTML5_FMT.DATE);
+      return field;
+    })
+  } else if (["long", "double", "decimal"].includes(definition["xVar"]["dataType"])) {
+    // Numeric sort
+    rechartsData.sort((a, b) => a["x"] - b["x"]);
+  } else {
+    // Rely on the default (string-coerced) sort
+    rechartsData.sort((a, b) => a["x"].localeCompare(b["x"]));
   }
 
   let allFields = Object.keys(allFieldsDict);
