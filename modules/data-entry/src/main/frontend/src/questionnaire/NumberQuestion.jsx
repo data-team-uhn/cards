@@ -168,6 +168,8 @@ function NumberQuestion(props) {
     }
   }
 
+  // Range error message
+  let rangeErrorMessage = "The range is invalid: the first number must be lower than the second number";
 
   return (
     <Question
@@ -175,6 +177,16 @@ function NumberQuestion(props) {
       currentAnswers={ typeof(input) != "undefined" && input != "" ? 1 : 0 }
       {...props}
       >
+      { (minMaxError || rangeError) && errorText &&
+        <Typography
+          component="p"
+          color="error"
+          className={classes.answerInstructions}
+          variant="caption"
+        >
+          { errorText }
+        </Typography>
+      }
       { minMaxMessage &&
         <Typography
           component="p"
@@ -190,11 +202,11 @@ function NumberQuestion(props) {
         { rangeError &&
           <Typography
             component="p"
-            color="secondary"
+            color="error"
             className={classes.answerInstructions}
             variant="caption"
           >
-          { errorText }
+          { rangeErrorMessage }
           </Typography>
         }
         <TextField
@@ -290,7 +302,7 @@ NumberQuestion.propTypes = {
 };
 
 NumberQuestion.defaultProps = {
-  errorText: "Invalid input",
+  errorText: "",
   isRange: false
 };
 
