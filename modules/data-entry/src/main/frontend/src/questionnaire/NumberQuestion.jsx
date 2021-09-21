@@ -102,7 +102,7 @@ function NumberQuestion(props) {
       }
 
       value = parseInt(text);
-    } else if (dataType === "double") {
+    } else {
       value = Number(text);
 
       // Reject whitespace and non-numbers
@@ -122,7 +122,7 @@ function NumberQuestion(props) {
 
   // Callback for a change of MultipleChoice input to check for errors on the input
   let findError = (text) => {
-    setError(hasError(text));
+    text ? setError(hasError(text)) : setError(false);
   }
 
   // Callback for a range input to check for errors on our self-stated input
