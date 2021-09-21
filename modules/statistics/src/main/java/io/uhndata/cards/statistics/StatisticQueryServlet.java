@@ -272,8 +272,6 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
             }
         } catch (PathNotFoundException e) {
             LOGGER.error("Value does not exist for question: {}", e.getMessage(), e);
-        } finally {
-            this.splitLabels.remove();
         }
 
         return counts;
@@ -343,23 +341,27 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
     {
         Map<String, Map<String, Integer>> counts = new HashMap<>();
 
-        for (Map.Entry<String, Map<Resource, String>> entries : data.entrySet()) {
-            Resource splitVar = null;
+        try {
+            for (Map.Entry<String, Map<Resource, String>> entries : data.entrySet()) {
+                Resource splitVar = null;
 
-            // First, find the split variable
-            for (Map.Entry<Resource, String> entry : entries.getValue().entrySet()) {
-                if ("split".equals(entry.getValue())) {
-                    splitVar = entry.getKey();
-                    break;
+                // First, find the split variable
+                for (Map.Entry<Resource, String> entry : entries.getValue().entrySet()) {
+                    if ("split".equals(entry.getValue())) {
+                        splitVar = entry.getKey();
+                        break;
+                    }
+                }
+
+                // Then, call aggregate split counts once for each x variable
+                for (Map.Entry<Resource, String> entry : entries.getValue().entrySet()) {
+                    if ("x".equals(entry.getValue())) {
+                        counts = aggregateSplitCounts(entry.getKey(), splitVar, counts);
+                    }
                 }
             }
-
-            // Then, call aggregate split counts once for each x variable
-            for (Map.Entry<Resource, String> entry : entries.getValue().entrySet()) {
-                if ("x".equals(entry.getValue())) {
-                    counts = aggregateSplitCounts(entry.getKey(), splitVar, counts);
-                }
-            }
+        } finally {
+            this.splitLabels.remove();
         }
 
         JsonObjectBuilder outerBuilder = Json.createObjectBuilder();
