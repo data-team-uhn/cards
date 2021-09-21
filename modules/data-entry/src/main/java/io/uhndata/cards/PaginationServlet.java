@@ -20,12 +20,10 @@ package io.uhndata.cards;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -769,7 +767,9 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             condition.append(
                 String.format(
                     " and %s.'value'%s" + (("date".equals(filter.type))
-                        ? ("cast('%sT00:00:00.000" + new SimpleDateFormat("XXX").format(new Date()) + "' as date)")
+                        ? ("cast('%sT00:00:00.000"
+                            + DateUtils.getTimezoneForDateString(this.sanitizeValue(filter.value))
+                            + "' as date)")
                         : ("boolean".equals(filter.type)) ? "%s"
                             : StringUtils.isNotBlank(filter.value) ? "'%s'" : ""),
                     filter.source,
