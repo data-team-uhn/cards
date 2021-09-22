@@ -40,7 +40,9 @@
         "maxAnswers": "long",
         "unitOfMeasurement" : "string",
         "displayMode": {
-          "input": {},
+          "input": {
+            "isRange" : "boolean"
+          },
           "list": {
             "compact" : "boolean",
             "answerOptions" : "numberOptions"
@@ -58,7 +60,9 @@
         "maxAnswers": "long",
         "unitOfMeasurement" : "string",
         "displayMode": {
-          "input": {},
+          "input": {
+            "isRange" : "boolean"
+          },
           "list": {
             "compact" : "boolean",
             "answerOptions" : "numberOptions"
@@ -75,9 +79,7 @@
         "minAnswers": "long",
         "maxAnswers": "long",
         "unitOfMeasurement" : "string",
-        "displayMode": {
-          "input": {}
-        }
+        "isRange" : "boolean"
       },
       "file": {
         "minAnswers": "long",
