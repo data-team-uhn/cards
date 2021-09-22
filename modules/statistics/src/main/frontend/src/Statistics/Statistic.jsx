@@ -129,9 +129,10 @@ function Statistic(props) {
 
   let yAxisLabel = `${definition["y-label"]}s`;
   let widgetHeight = 250; // TODO: make mobile friendly
+  let legendHeight = 40;
 
   return <Grid item md={12} lg={6}>
-    <Card>
+    <Card className={classes.statsCard}>
       <CardHeader
         disableTypography
         avatar={<Avatar style={{background: iconColor }}>{icon}</Avatar>}
@@ -149,7 +150,7 @@ function Statistic(props) {
           <ChartType
             data={rechartsData}
             margin={{
-              top: 20,
+              top: 20 + (isSplit ? 0 : legendHeight),
               right: 80,
               bottom: 20,
               left: 20
@@ -160,7 +161,7 @@ function Statistic(props) {
             </XAxis>
             <YAxis allowDecimals={false} label={{ value: yAxisLabel, angle: -90, position: 'insideLeft', offset: 10 }} />
             <Tooltip />
-            {isSplit && <Legend align="right" verticalAlign="top" />}
+            {isSplit && <Legend align="right" verticalAlign="top" height={legendHeight} />}
             {allFields.map((field, idx) =>
               isBar ?
                 <Bar dataKey={field} fill={chartColours[idx]} key={idx}/>

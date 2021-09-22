@@ -22,6 +22,17 @@ const statisticsStyle = theme => ({
     minHeight: "50vh",
     marginTop: theme.spacing(4),
   },
+  statsCard: {
+    "& .MuiCardHeader-root" : {
+      paddingBottom: 0,
+    },
+    "& .MuiCardContent-root" : {
+      paddingTop: 0,
+    },
+    "& .recharts-legend-wrapper" : {
+      marginRight: "-10px",
+    },
+  },
   subjectFilterInput: {
       width: "100%"
   },
