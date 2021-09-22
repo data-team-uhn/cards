@@ -146,12 +146,19 @@ function Statistic(props) {
         </Grid>
         :
         <ResponsiveContainer width="100%" height={widgetHeight}>
-          <ChartType data={rechartsData}>
+          <ChartType
+            data={rechartsData}
+            margin={{
+              top: 20,
+              right: 80,
+              bottom: 20,
+              left: 20
+          }}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="x">
-              <Label value={definition["x-label"]} offset={0} position="insideBottom" />
+              <Label value={definition["x-label"]} offset={-10} position="insideBottom" />
             </XAxis>
-            <YAxis allowDecimals={false} label={{ value: yAxisLabel, angle: -90, position: 'insideLeft' }} />
+            <YAxis allowDecimals={false} label={{ value: yAxisLabel, angle: -90, position: 'insideLeft', offset: 10 }} />
             <Tooltip />
             {isSplit && <Legend align="right" verticalAlign="top" />}
             {allFields.map((field, idx) =>
