@@ -22,18 +22,11 @@
 
   <parent>
     <groupId>io.uhndata.cards</groupId>
-    <artifactId>cards-parent</artifactId>
+    <artifactId>lfs-resources</artifactId>
     <version>0.9-SNAPSHOT</version>
   </parent>
 
-  <artifactId>proms-resources</artifactId>
-  <packaging>pom</packaging>
-  <name>Cards for PROMs Resources</name>
-  <description>A collection of questionnaires for Cards for PROMs.</description>
-
-  <modules>
-    <module>clinical-data</module>
-    <module>frontend</module>
-    <module>feature</module>
-  </modules>
+  <artifactId>cards4lfs</artifactId>
+  <packaging>slingosgifeature</packaging>
+  <name>Cards4LFS</name>
 </project>
