@@ -616,21 +616,6 @@
 
         <plugin>
           <groupId>org.apache.sling</groupId>
-          <artifactId>slingstart-maven-plugin</artifactId>
-          <!-- Lock down plugin version for build reproducibility -->
-          <version>1.9.12</version>
-          <configuration>
-            <!-- Add the current project version into the provisioning files -->
-            <setFeatureVersions>true</setFeatureVersions>
-            <!-- Allows using the maven properties defined above as variables in the provisioning files -->
-            <usePomVariables>true</usePomVariables>
-            <!-- Allow defining versions in the POM file -->
-            <usePomDependencies>true</usePomDependencies>
-          </configuration>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.sling</groupId>
           <artifactId>slingfeature-maven-plugin</artifactId>
           <version>1.5.16</version>
           <extensions>true</extensions>
