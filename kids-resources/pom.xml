@@ -33,5 +33,6 @@
 
   <modules>
     <module>clinical-data</module>
+    <module>feature</module>
   </modules>
 </project>
