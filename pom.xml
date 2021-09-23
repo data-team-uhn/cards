@@ -840,6 +840,7 @@
                   <filesets>
                     <fileset>
                       <directory>sling/</directory>
+                      <directory>launcher/</directory>
                     </fileset>
                   </filesets>
                 </configuration>
