@@ -115,14 +115,13 @@ const questionnaireStyle = theme => ({
     },
     range: {
         display: "flex",
-        alignItems: "center",
+        alignItems: "flex-start",
         "& .MuiFormControl-root" : {
-            marginTop: theme.spacing(-2),
             maxWidth: "110px",
             overflowX: "hidden",
         },
         "& .separator" : {
-            padding: theme.spacing(0, 1),
+            padding: theme.spacing(0.5, 1),
         }
     },
     cardHeaderButton: {

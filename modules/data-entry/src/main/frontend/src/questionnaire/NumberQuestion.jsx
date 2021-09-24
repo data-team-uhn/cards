@@ -238,7 +238,7 @@ function NumberQuestion(props) {
         }
         <div className={classes.range}>
           <TextField
-            label="Lower limit"
+            helperText="Lower limit"
             value={lowerLimit}
             placeholder={typeof minValue != "undefined" ? `${minValue}` : ""}
             onChange={event => setLowerLimit(event.target.value)}
@@ -247,7 +247,7 @@ function NumberQuestion(props) {
             />
           <span className="separator">&mdash;</span>
           <TextField
-            label="Upper limit"
+            helperText="Upper limit"
             value={upperLimit}
             placeholder={typeof maxValue != "undefined" ? `${maxValue}` : ""}
             onChange={event => setUpperLimit(event.target.value)}
