@@ -1,56 +1,55 @@
 {
-    "name": "cards-statistics",
-    "version": "0.1.0",
-    "description": "Statistics storage and display for the CARDS Project",
-    "author": "SickKids",
-    "license": "Apache-2.0",
-    "repository": {
-      "type": "git",
-      "url": "https://github.com/data-team-uhn/cards.git",
-      "directory": "modules/statistics/src/main/frontend"
-    },
-    "babel": {
-      "presets": [
-        "@babel/preset-env",
-        "@babel/preset-react"
-      ],
-      "plugins": [
-        [
-          "@babel/plugin-proposal-class-properties"
-        ]
+  "name": "cards-statistics",
+  "version": "0.1.0",
+  "description": "Statistics storage and display for the CARDS project",
+  "author": "SickKids",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/data-team-uhn/cards.git",
+    "directory": "modules/statistics/src/main/frontend"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env",
+      "@babel/preset-react"
+    ],
+    "plugins": [
+      [
+        "@babel/plugin-proposal-class-properties"
       ]
-    },
-    "devDependencies": {
-      "@babel/core": "^7.4.5",
-      "@babel/plugin-proposal-class-properties": "^7.4.4",
-      "@babel/preset-env": "^7.4.5",
-      "@babel/preset-react": "^7.0.0",
-      "babel-loader": "^8.0.6",
-      "clean-webpack-plugin": "3.0.0",
-      "eslint": "^5.16.0",
-      "eslint-plugin-auto-import": "^0.1.0",
-      "eslint-plugin-react": "^7.13.0",
-      "webpack": "^4.33.0",
-      "webpack-assets-manifest": "3.1.1",
-      "webpack-cli": "^3.3.2"
-    },
-    "dependencies": {
-      "@material-ui/core": "^4.4.3",
-      "@material-ui/icons": "^4.4.3",
-      "formik": "^1.5.7",
-      "formik-material-fields": "0.0.4",
-      "google-palette": "1.1.0",
-      "history": "^4.9.0",
-      "material-table": "^1.50.0",
-      "moment": "^2.24.0",
-      "react": "^16.9.0",
-      "react-dom": "^16.9.0",
-      "react-router-dom": "^5.0.1",
-      "recharts": "1.8.5",
-      "semantic-ui-css": "^2.4.1",
-      "semantic-ui-react": "^0.83.0",
-      "set-blocking": "^2.0.0",
-      "yup": "^0.27.0"
-    }
+    ]
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.5",
+    "@babel/plugin-proposal-class-properties": "^7.4.4",
+    "@babel/preset-env": "^7.4.5",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.6",
+    "clean-webpack-plugin": "3.0.0",
+    "eslint": "^5.16.0",
+    "eslint-plugin-auto-import": "^0.1.0",
+    "eslint-plugin-react": "^7.13.0",
+    "webpack": "^4.33.0",
+    "webpack-assets-manifest": "3.1.1",
+    "webpack-cli": "^3.3.2"
+  },
+  "dependencies": {
+    "@material-ui/core": "^4.4.3",
+    "@material-ui/icons": "^4.4.3",
+    "formik": "^1.5.7",
+    "formik-material-fields": "0.0.4",
+    "google-palette": "1.1.0",
+    "history": "^4.9.0",
+    "material-table": "^1.50.0",
+    "moment": "^2.24.0",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "react-router-dom": "^5.0.1",
+    "recharts": "1.8.5",
+    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-react": "^0.83.0",
+    "set-blocking": "^2.0.0",
+    "yup": "^0.27.0"
   }
-  
+}
