@@ -48,7 +48,7 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js"
  * Createa the LIveTable cell contents for a given node. This generates a link to the
  * given node (via its admin page), or returns the node's label if no valid link can be made.
  *
- * @param {Object} node The lfs:SubjectType or lfs:Question node to generate a link for
+ * @param {Object} node The cards:SubjectType or cards:Question node to generate a link for
  */
 function CreateTableCell(node) {
   // Subjects use label, questions use text
@@ -56,7 +56,7 @@ function CreateTableCell(node) {
     return <></>;
   }
 
-  if (node["jcr:primaryType"] == "lfs:Question") {
+  if (node["jcr:primaryType"] == "cards:Question") {
     // For a question node, we can generate a link directly to the question
     let label = node.text;
     let path = node["@path"];
