@@ -58,7 +58,6 @@ import org.slf4j.LoggerFactory;
     resourceTypes = { "cards/Statistic", "cards/StatisticsHomepage" },
     selectors = { "query" },
     methods = { "POST" })
-
 public class StatisticQueryServlet extends SlingAllMethodsServlet
 {
     private static final long serialVersionUID = 2558430802619674046L;
@@ -139,6 +138,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
 
     /**
      * Parse out the arguments given in the POST request into a string map.
+     *
      * @param request the POST request made to this servlet
      * @return map of arguments to their values
      */
@@ -160,6 +160,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
 
     /**
      * Split: Get all answers that have a given question filled out.
+     *
      * @param data the map that the return values will be added to
      * @param type given type (x or split)
      * @param question The question node that the answers is to
@@ -184,8 +185,9 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
     }
 
     /**
-     * Split: Filter the given iterator of resources to only include resources whose parent is a Form, whose
-     * Subject's type is equal to the given subjectType.
+     * Split: Filter the given iterator of resources to only include resources whose parent is a Form, whose Subject's
+     * type is equal to the given subjectType.
+     *
      * @param data Iterator of resources
      * @param subjectType Subject type of the subject for the answer's form
      * @return The filtered iterator
@@ -213,7 +215,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
                     // if it is the correct type, add to new map
                     String uuid = formSubject.getIdentifier();
 
-                    //this should create a nested hashmap <subjectID, <answer node, string of either "x" or "split">>
+                    // this should create a nested hashmap <subjectID, <answer node, string of either "x" or "split">>
                     if (newData.containsKey(uuid)) {
                         // if it does include uuid already
                         newData.get(uuid).put(answer.getKey(), answer.getValue());
@@ -239,6 +241,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
 
     /**
      * Split: Aggregate the counts.
+     *
      * @param xVar X variable to use
      * @param splitVar Variable to split on
      * @param counts Map of {SubjectID, {Split variable label, count}}
@@ -279,6 +282,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
 
     /**
      * Get the label used for the given split value.
+     *
      * @param splitVar Split variable jcr Node
      * @return The split value's user-readable label, or its value, or Undefined according to what exists.
      */
@@ -305,6 +309,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
 
     /**
      * For a question node, get a map from answer option values to their labels.
+     *
      * @param questionNode the question whose answer options we want the label map for
      * @return map of {value, label} for the given question
      */
@@ -333,6 +338,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
 
     /**
      * Split: add aggregated data to object builder, to be displayed.
+     *
      * @param data Aggregated data
      * @param builder The object builder for output
      */
@@ -365,7 +371,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         }
 
         JsonObjectBuilder outerBuilder = Json.createObjectBuilder();
-        for (Map.Entry<String, Map<String, Integer>> t:counts.entrySet()) {
+        for (Map.Entry<String, Map<String, Integer>> t : counts.entrySet()) {
             String key = t.getKey();
 
             JsonObjectBuilder keyBuilder = Json.createObjectBuilder();
@@ -397,8 +403,8 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
     }
 
     /**
-     * No Split: Filter the given iterator of resources to only include resources whose parent is a Form, and
-     * whose Subject (or an ancestor)'s type is equal to the given subjectType.
+     * No Split: Filter the given iterator of resources to only include resources whose parent is a Form, and whose
+     * Subject (or an ancestor)'s type is equal to the given subjectType.
      *
      * @param answers The iterator of answers to filter
      * @param subjectType A subjectType to filter for
@@ -458,6 +464,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
 
     /**
      * No Split: Add the counts to the data object.
+     *
      * @param answers Counts object to add
      * @param builder Data object to add to
      */
