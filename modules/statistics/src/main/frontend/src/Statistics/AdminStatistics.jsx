@@ -35,7 +35,7 @@ import {
   withStyles,
 } from "@material-ui/core";
 import statisticsStyle from "./statisticsStyle.jsx";
-import NewItemComponent from "../components/NewItemButton.jsx";
+import NewItemButton from "../components/NewItemButton.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog.jsx";
 import LiveTable from "../dataHomepage/LiveTable.jsx";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
@@ -45,7 +45,7 @@ import { formatIdentifier } from "../questionnaireEditor/EditorInput.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
 /**
- * Createa the LIveTable cell contents for a given node. This generates a link to the
+ * Create the LiveTable cell contents for a given node. This generates a link to the
  * given node (via its admin page), or returns the node's label if no valid link can be made.
  *
  * @param {Object} node The cards:SubjectType or cards:Question node to generate a link for
@@ -131,10 +131,9 @@ function AdminStatistics(props) {
       "format": (row) => (<>
                             <DeleteButton
                               entryPath={row["@path"]}
-                              entryName={row.label}
+                              entryName={row.name}
                               onComplete={dialogSuccess}
-                              entryType={"Subject Type"}
-                              admin={true}
+                              entryType={"Statistic"}
                             />
                             <EditStatisticButton
                               onClick={() => {setDialogOpen(true); setNewStat(false); setCurrentId(row["@name"]);}}
@@ -162,15 +161,12 @@ function AdminStatistics(props) {
           </Button>
         }
         action={
-          <NewItemComponent
+          <NewItemButton
             title="Create new statistic"
             onClick={() => {setDialogOpen(true); setNewStat(true); setCurrentId();}}
-            inProgress={false}
+            inProgress={dialogOpen}
             />
         }
-        classes={{
-          action: classes.newFormButtonHeader
-        }}
         />
         <CardContent>
           <LiveTable
