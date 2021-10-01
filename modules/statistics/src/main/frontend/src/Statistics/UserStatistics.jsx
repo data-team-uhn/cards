@@ -16,6 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
+
 import React, { useContext, useState } from "react";
 import {
   Grid,
@@ -76,7 +77,7 @@ function UserStatistics(props) {
   let fetchStat = (stat) => {
     // for each existing statistic, get full.json
     // pathnames will be sent in request body, that's why deep.json is used
-    fetchWithReLogin(globalContext, `/Statistics/${stat['@name']}.deep.json`)
+    fetchWithReLogin(globalContext, `${stat['@path']}.deep.json`)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((fullJson) => {
         const urlBase = "/Statistics.query";
