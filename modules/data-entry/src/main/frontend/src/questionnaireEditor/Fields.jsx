@@ -32,8 +32,6 @@ import ObjectInput from "./ObjectInput";
 import TextInput from "./TextInput";
 import MarkdownTextField from "./MarkdownTextField";
 import FormattedText from "../components/FormattedText.jsx";
-import MDEditor from '@uiw/react-md-editor';
-import ReferenceInput from "./ReferenceInput";
 import { FieldsProvider } from "./FieldsContext.jsx";
 
 let Fields = (props) => {
@@ -98,9 +96,9 @@ let Fields = (props) => {
   return <FieldsProvider>
       {
         edit ?
-          Object.entries(JSON).filter(([key, _]) => key != "//REQUIRED").map(([key, value]) => displayEditField(key, value))
+          Object.entries(JSON).filter(([key, _]) => !key.startsWith("//")).map(([key, value]) => displayEditField(key, value))
         :
-          Object.keys(getAllKeys(JSON)).filter(([key, _]) => key != "//REQUIRED").map(key => (data[key] ? displayStaticField(key) : ''))
+          Object.entries(JSON).filter(([key, _]) => !key.startsWith("//")).map(([key, value]) => (data[key] ? displayStaticField(key) : ''))
       }
     </FieldsProvider>;
 }
