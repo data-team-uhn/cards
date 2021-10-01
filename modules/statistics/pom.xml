@@ -66,18 +66,6 @@
           </attach>
         </configuration>
       </plugin>
-
-      <plugin>
-        <groupId>org.apache.rat</groupId>
-        <artifactId>apache-rat-plugin</artifactId>
-        <version>0.13</version>
-        <configuration>
-          <excludes combine.children="append">
-            <!-- Ignore files from material-dashboard-react, as they're under their own license -->
-            <exclude>**/Statistics/statisticsStyle.jsx</exclude>
-          </excludes>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 
