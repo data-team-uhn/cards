@@ -138,7 +138,7 @@ let ReferenceInput = (props) => {
   }
 
   // From an array of fields, turn it into a react component
-  let GetReactComponentFromFields = (fields, nested=false) => {
+  let getReactComponentFromFields = (fields, nested=false) => {
     return fields.map((path) => {
       if (typeof path == "string") {
         // Straight strings are MenuItems
@@ -151,7 +151,7 @@ let ReferenceInput = (props) => {
         // Arrays represent Questionnaires of Sections
         // which we'll need to turn into opt groups
         return [<MenuItem className={classes.categoryHeader} disabled>{path[0]}</MenuItem>,
-          GetReactComponentFromFields(path.slice(1), true)];
+          getReactComponentFromFields(path.slice(1), true)];
       }
     })
   }
@@ -270,7 +270,7 @@ let ReferenceInput = (props) => {
         input={<Input id={objectKey} />}
         renderValue={(value) => titleMap[value]}
       >
-        {GetReactComponentFromFields(options)}
+        {getReactComponentFromFields(options)}
       </Select>
     </EditorInput>
   )

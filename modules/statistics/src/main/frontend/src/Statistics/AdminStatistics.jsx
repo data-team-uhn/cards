@@ -50,7 +50,7 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js"
  *
  * @param {Object} node The cards:SubjectType or cards:Question node to generate a link for
  */
-function CreateTableCell(node) {
+function createTableCell(node) {
   // Subjects use label, questions use text
   if (!node) {
     return <></>;
@@ -107,17 +107,17 @@ function AdminStatistics(props) {
     {
       "key": "xVar",
       "label": "X-axis",
-      "format": (stat) => CreateTableCell(stat?.xVar),
+      "format": (stat) => createTableCell(stat?.xVar),
     },
     {
       "key": "yVar",
       "label": "Y-axis",
-      "format": (stat) => CreateTableCell(stat?.yVar),
+      "format": (stat) => createTableCell(stat?.yVar),
     },
     {
       "key": "splitVar",
       "label": "Split",
-      "format": (stat) => CreateTableCell(stat?.splitVar),
+      "format": (stat) => createTableCell(stat?.splitVar),
     },
     {
       "key": "order",
