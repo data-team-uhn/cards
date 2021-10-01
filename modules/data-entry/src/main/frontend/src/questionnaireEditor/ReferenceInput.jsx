@@ -180,7 +180,8 @@ let ReferenceInput = (props) => {
       fetchRequest = fetchWithReLogin(globalLoginDisplay, url)
         .then((response) => response.ok ? response.json() : Promise.reject(response))
         .then((json) => {
-          let nodePath = json["rows"][0]["@path"];
+          let nodePath = json["rows"]?.[0]?.["@path"];
+          nodePath || Promise.reject("Invalid reference: " + field);
           return fetch(new URL(nodePath.match(/(\/Questionnaires\/.+?)\//)[1] + ".json", window.location.origin))
         })
     }
