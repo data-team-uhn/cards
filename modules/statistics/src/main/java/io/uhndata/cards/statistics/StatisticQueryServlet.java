@@ -205,13 +205,14 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         while (entries.hasNext()) {
             Map.Entry<Resource, String> answer = entries.next();
             // get form node
-            Node formNode = getParentNode(answer.getKey().adaptTo(Node.class));
+            Node formNode = getFormNode(answer.getKey().adaptTo(Node.class));
             // get parent subject
             Node formSubject = formNode.getProperty("subject").getNode();
 
             boolean foundAnswer = false;
             while (formSubject.getDepth() > 0) {
-                if (formSubject.getProperty("type").getNode().getIdentifier().equals(correctType)) {
+                if (formSubject.hasProperty("type")
+                    && formSubject.getProperty("type").getNode().getIdentifier().equals(correctType)) {
                     // if it is the correct type, add to new map
                     String uuid = formSubject.getIdentifier();
 
@@ -417,7 +418,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
         String correctType = subjectType.getIdentifier();
         while (answers.hasNext()) {
             Resource answer = answers.next();
-            Node answerParent = getParentNode(answer.adaptTo(Node.class));
+            Node answerParent = getFormNode(answer.adaptTo(Node.class));
             Node answerSubjectType = answerParent.getProperty("subject").getNode().getProperty("type").getNode();
 
             while (answerSubjectType.getDepth() > 0) {
@@ -486,25 +487,30 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
     /**
      * Get the parent node type of a given cards:Answer node.
      *
-     * @param node A node corresponding to an cards:Answer
+     * @param answer A node corresponding to an cards:Answer
      * @return A node corresponding to the parent subject type
      */
-    public Node getParentNode(Node node) throws RepositoryException
+    public Node getFormNode(Node answer)
     {
-        // Recursively go through our parents until we find a cards:Form node
-        // If we somehow reach the top level, return an error
-        Node answerParent = node.getParent();
-        while (!"cards:Form".equals(answerParent.getPrimaryNodeType().getName()) && answerParent.getDepth() != 0) {
-            answerParent = answerParent.getParent();
-        }
+        try {
+            // Recursively go through our parents until we find a cards:Form node
+            // If we somehow reach the top level, return an error
+            Node answerParent = answer.getParent();
+            while (answerParent != null && answerParent.getDepth() != 0
+                && !"cards:Form".equals(answerParent.getPrimaryNodeType().getName())) {
+                answerParent = answerParent.getParent();
+            }
 
-        // If we never find a form by going upwards, this cards:Answer is malformed
-        if (answerParent.getDepth() == 0) {
-            String error = String.format("Tried to obtain the parent cards:Form for node {} but failed to find one",
-                node.getPath());
-            throw new RepositoryException(error);
-        }
+            // If we never find a form by going upwards, this cards:Answer is malformed
+            if (answerParent.getDepth() == 0) {
+                LOGGER.warn("Tried to obtain the parent Form for node {} but failed to find one", answer.getPath());
+                return null;
+            }
 
-        return answerParent;
+            return answerParent;
+        } catch (RepositoryException e) {
+            LOGGER.warn("Failed to access Form: {}", e.getMessage());
+            return null;
+        }
     }
 }
