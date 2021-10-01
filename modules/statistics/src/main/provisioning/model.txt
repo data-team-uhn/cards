@@ -33,5 +33,5 @@
     create path (cards:StatisticsHomepage) /Statistics
 
     set ACL for everyone
-        allow   jcr:read    on /content
+        allow   jcr:read    on /Statistics
     end
