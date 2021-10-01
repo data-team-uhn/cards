@@ -28,7 +28,7 @@
 
 //-----------------------------------------------------------------------------
 // Statistic: a group of data to be visually displayed
-[cards:Statistic] > sling:Folder, mix:referenceable, mix:versionable
+[cards:Statistic] > sling:Folder, mix:referenceable
   // Attributes
 
   // We can use statistics in a query.
@@ -50,11 +50,11 @@
 
   // A reference to the x-axis variable (question or section)
   // No full text search, since it's just a non-textual reference.
-  - xVar (reference) mandatory multiple
+  - xVar (reference) mandatory nofulltext
 
   // A reference to the y-axis variable (subjectType)
   // No full text search, since it's just a non-textual reference.
-  - yVar (reference) mandatory multiple
+  - yVar (reference) mandatory nofulltext
 
   // A reference to the split variable (subjectType)
   // Not mandatory
