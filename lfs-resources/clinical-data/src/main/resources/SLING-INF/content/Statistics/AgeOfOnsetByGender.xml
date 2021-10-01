@@ -18,16 +18,16 @@
 -->
 
 <node>
-	<name>TumorLocationSplit</name>
+	<name>AgeOfOnsetByGender</name>
 	<primaryNodeType>cards:Statistic</primaryNodeType>
 	<property>
 		<name>name</name>
-		<value>Tumor location by gender</value>
+		<value>Age of onset by gender</value>
 		<type>String</type>
 	</property>
 	<property>
 		<name>order</name>
-		<value>3</value>
+		<value>1</value>
 		<type>Long</type>
 	</property>
 	<property>
@@ -37,7 +37,7 @@
 	</property>
 	<property>
 		<name>xVar</name>
-		<value>/Questionnaires/Tumors/location_section/location</value>
+		<value>/Questionnaires/Patient information/pathology_section/age_at_1st_malignant_dx</value>
 		<type>Reference</type>
 	</property>
 	<property>

@@ -37,7 +37,7 @@
 	</property>
 	<property>
 		<name>xVar</name>
-		<value>/Questionnaires/Tumors/diagnosis_section/age_at_diagnosis</value>
+		<value>/Questionnaires/Patient information/pathology_section/age_at_1st_malignant_dx</value>
 		<type>Reference</type>
 	</property>
 	<property>
