@@ -78,7 +78,8 @@ function NumberQuestion(props) {
   const { dataType, displayMode, minValue, maxValue } = {...props.questionDefinition, ...props};
   const answerNodeType = props.answerNodeType || DATA_TO_NODE_TYPE[dataType];
   const valueType = props.valueType || DATA_TO_VALUE_TYPE[dataType];
-  const [error, setError] = useState(false);
+  const [ minMaxError, setMinMaxError ] = useState(false);
+  const [ rangeError, setRangeError ] = useState(false);
 
   const initialValue = existingAnswer ? existingAnswer[1].value : undefined;
 
@@ -122,24 +123,16 @@ function NumberQuestion(props) {
 
   // Callback for a change of MultipleChoice input to check for errors on the input
   let findError = (text) => {
-    text ? setError(hasError(text)) : setError(false);
+    setMinMaxError(text && hasError(text));
   }
 
   // Callback for a range input to check for errors on our self-stated input
   let findRangeError = (inputToCheck, endInputToCheck) => {
-    if (hasError(inputToCheck)) {
-      setError(true);
-      return;
-    }
-
-    // Also consider the end of the range (if applicable)
-    if (isRange && (hasError(endInputToCheck) ||
-      Number(inputToCheck) > Number(endInputToCheck))) {
-        setError(true);
-        return;
-    }
-
-    setError(false);
+    setMinMaxError(
+      inputToCheck && hasError(inputToCheck) ||
+      isRange && endInputToCheck && hasError(endInputToCheck)
+    );
+    setRangeError(isRange && (Number(inputToCheck) > Number(endInputToCheck)));
   }
 
   const answers = isRange ? [["start", input], ["end", endInput]] : [["start", input]];
@@ -159,15 +152,63 @@ function NumberQuestion(props) {
 
   let hasAnswerOptions = !!(props.defaults || Object.values(props.questionDefinition).some(value => value['jcr:primaryType'] == 'cards:AnswerOption'));
 
+  // Generate message about accepted min/maxValues
+  let minMaxMessage = "";
+  if (typeof minValue !== "undefined" || typeof maxValue !== "undefined") {
+    minMaxMessage = "Please enter values ";
+    if (typeof minValue !== "undefined" && typeof maxValue !== "undefined") {
+      minMaxMessage = `${minMaxMessage} between ${minValue} and ${maxValue}`;
+    } else if (typeof minValue !== "undefined") {
+      minMaxMessage = `${minMaxMessage} of at least ${minValue}`;
+    } else {
+      minMaxMessage = `${minMaxMessage} of at most ${maxValue}`;
+    }
+    if (hasAnswerOptions) {
+      minMaxMessage = `${minMaxMessage} or select one of the options`;
+    }
+  }
+
+  // Range error message
+  let rangeErrorMessage = "The range is invalid: the first number must be lower than the second number";
+
   return (
     <Question
       disableInstructions={!isRange}
       currentAnswers={ typeof(input) != "undefined" && input != "" ? 1 : 0 }
       {...props}
       >
-      {error && <Typography color='error'>{errorText}</Typography>}
+      { (minMaxError || rangeError) && errorText &&
+        <Typography
+          component="p"
+          color="error"
+          className={classes.answerInstructions}
+          variant="caption"
+        >
+          { errorText }
+        </Typography>
+      }
+      { minMaxMessage &&
+        <Typography
+          component="p"
+          color={minMaxError ? 'error' : 'textSecondary'}
+          className={classes.answerInstructions}
+          variant="caption"
+        >
+          { minMaxMessage }
+        </Typography>
+      }
       { isRange ?
         <>
+        { rangeError &&
+          <Typography
+            component="p"
+            color="error"
+            className={classes.answerInstructions}
+            variant="caption"
+          >
+          { rangeErrorMessage }
+          </Typography>
+        }
         <TextField
           className={classes.textField + " " + classes.answerField}
           onChange={(event) => {
@@ -206,7 +247,7 @@ function NumberQuestion(props) {
           onUpdate={findError}
           additionalInputProps={textFieldProps}
           muiInputProps={muiInputProps}
-          error={error}
+          error={minMaxError}
           existingAnswer={existingAnswer}
           {...rest}
           />
@@ -261,7 +302,7 @@ NumberQuestion.propTypes = {
 };
 
 NumberQuestion.defaultProps = {
-  errorText: "Invalid input",
+  errorText: "",
   isRange: false
 };
 
