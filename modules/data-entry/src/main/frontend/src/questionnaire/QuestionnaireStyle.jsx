@@ -116,9 +116,9 @@ const questionnaireStyle = theme => ({
     range: {
         display: "flex",
         alignItems: "flex-start",
-        "& .MuiFormControl-root" : {
-            maxWidth: "110px",
-            overflowX: "hidden",
+        "& .MuiInputBase-root" : {
+            minWidth: "110px !important",
+            width: "110px",
         },
         "& .separator" : {
             padding: theme.spacing(0.5, 1),
