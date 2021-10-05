@@ -22,21 +22,17 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.ValueFormatException;
-import javax.script.Invocable;
+import javax.script.Bindings;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-import org.apache.jackrabbit.oak.api.CommitFailedException;
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.commit.DefaultEditor;
@@ -53,29 +49,38 @@ import org.slf4j.LoggerFactory;
  *
  * @version $Id$
  */
-@SuppressWarnings("checkstyle:ClassFanOutComplexity")
-public class ComputedEditor extends DefaultEditor
+public class ComputedAnswersEditor extends DefaultEditor
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ComputedEditor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ComputedAnswersEditor.class);
+
     private static String startTag = "@{";
+
     private static String endTag = "}";
+
     private static String defaultTag = ":-";
+
     private static String primaryTypeDefinition = "jcr:primaryType";
 
     // This holds the builder for the current node. The methods called for editing specific properties don't receive the
     // actual parent node of those properties, so we must manually keep track of the current node.
     private final NodeBuilder currentNodeBuilder;
+
     private final ResourceResolver currentResourceResolver;
+
     private final NodeBuilder versionableAncestor;
 
-    private String nodeType = "";
+    private boolean isFormNode;
+
     private boolean formEditorHasChanged;
+
     private int numberOfCreatedQuestions;
 
     private class QuestionTree
     {
         private Map<String, QuestionTree> children;
+
         private Node node;
+
         private boolean isQuestion;
 
         QuestionTree(Node node, boolean isQuestion)
@@ -89,10 +94,12 @@ public class ComputedEditor extends DefaultEditor
         {
             return this.children;
         }
+
         public Node getNode()
         {
             return this.node;
         }
+
         public boolean isQuestion()
         {
             return this.isQuestion;
@@ -109,27 +116,22 @@ public class ComputedEditor extends DefaultEditor
 
     private class ParsedExpression
     {
-        private final List<String> inputNames;
-        private final List<Object> inputValues;
+        private final Map<String, Object> inputs;
+
         private final String expression;
+
         private final boolean missingValue;
 
-        ParsedExpression(List<String> inputNames, List<Object> inputValues, String expression, boolean missingValue)
+        ParsedExpression(Map<String, Object> inputs, String expression, boolean missingValue)
         {
-            this.inputNames = inputNames;
-            this.inputValues = inputValues;
+            this.inputs = inputs;
             this.expression = expression;
             this.missingValue = missingValue;
         }
 
-        public List<String> getInputNames()
+        public Map<String, Object> getInputs()
         {
-            return this.inputNames;
-        }
-
-        public List<Object> getInputValues()
-        {
-            return this.inputValues;
+            return this.inputs;
         }
 
         public String getExpression()
@@ -150,37 +152,12 @@ public class ComputedEditor extends DefaultEditor
      * @param resourceResolver a ResourceResolver object used to ultimately determine the logged-in user
      * @param versionableAncestor a NodeBuilder for the ancestor object that is of type mix:lastModified
      */
-    public ComputedEditor(NodeBuilder nodeBuilder, ResourceResolver resourceResolver,
+    public ComputedAnswersEditor(NodeBuilder nodeBuilder, ResourceResolver resourceResolver,
         NodeBuilder versionableAncestor)
     {
         this.currentNodeBuilder = nodeBuilder;
         this.currentResourceResolver = resourceResolver;
         this.versionableAncestor = versionableAncestor;
-    }
-
-    // When something changes in a node deep in the content tree, the editor is invoked starting with the root node,
-    // descending to the actually changed node through subsequent calls to childNodeChanged. The default behavior of
-    // DefaultEditor is to stop at the root, so we must override the following two methods in order for the editor to
-    // be invoked on non-root nodes.
-    @Override
-    public Editor childNodeAdded(String name, NodeState after) throws CommitFailedException
-    {
-        if ("cards:Form".equals(this.nodeType)) {
-            // Found a modified form. Flag for the current editor to checking computed answers.
-            // No need to make any child editors.
-            this.formEditorHasChanged = true;
-            return null;
-        } else {
-            return new ComputedEditor(this.currentNodeBuilder.getChildNode(name),
-                this.currentResourceResolver,
-                this.versionableAncestor);
-        }
-    }
-
-    @Override
-    public Editor childNodeChanged(String name, NodeState before, NodeState after) throws CommitFailedException
-    {
-        return childNodeAdded(name, after);
     }
 
     @Override
@@ -189,36 +166,63 @@ public class ComputedEditor extends DefaultEditor
         // Store the current node's type
         PropertyState primaryType = this.currentNodeBuilder.getProperty(primaryTypeDefinition);
         if (primaryType != null) {
-            this.nodeType = primaryType.getValue(Type.NAME);
+            final String nodeType = primaryType.getValue(Type.NAME);
+            if ("cards:Form".equals(nodeType)) {
+                this.isFormNode = true;
+            }
         }
+    }
+
+    @Override
+    public Editor childNodeAdded(String name, NodeState after)
+    {
+        if (this.isFormNode) {
+            // Found a modified form. Flag for the current editor to checking computed answers.
+            // No need to make any child editors.
+            this.formEditorHasChanged = true;
+            // No need to descend further down, we already know that this is a form that has changes
+            return null;
+        } else {
+            return new ComputedAnswersEditor(this.currentNodeBuilder.getChildNode(name),
+                this.currentResourceResolver,
+                this.versionableAncestor);
+        }
+    }
+
+    @Override
+    public Editor childNodeChanged(String name, NodeState before, NodeState after)
+    {
+        return childNodeAdded(name, after);
     }
 
     @Override
     public void leave(NodeState before, NodeState after)
     {
+        if (!this.formEditorHasChanged) {
+            return;
+        }
+
         final Session thisSession = this.currentResourceResolver.adaptTo(Session.class);
-        if ("cards:Form".equals(this.nodeType) && this.formEditorHasChanged) {
-            // Get a list of all current answers for the form for use in computing answers
-            Map<String, NodeState> answers = getNodeAnswers(after);
+        // Get a list of all current answers for the form for use in computing answers
+        Map<String, NodeState> answers = getNodeAnswers(after);
 
-            // Get a list of all unanswered computed questions that need to be calculated
-            String questionnaireId = this.currentNodeBuilder.getProperty("questionnaire").getValue(Type.REFERENCE);
-            try {
-                Node questionnaireNode = thisSession.getNodeByIdentifier(questionnaireId);
-                QuestionTree computedQuestionTree = getUnansweredComputedQuestions(questionnaireNode, answers);
-                Map<String, NodeState> answersByQuestionName = getAnswersByQuestionName(thisSession, answers);
+        // Get a list of all unanswered computed questions that need to be calculated
+        String questionnaireId = this.currentNodeBuilder.getProperty("questionnaire").getValue(Type.REFERENCE);
+        try {
+            Node questionnaireNode = thisSession.getNodeByIdentifier(questionnaireId);
+            QuestionTree computedQuestionTree = getUnansweredComputedQuestions(questionnaireNode, answers);
+            Map<String, NodeState> answersByQuestionName = getAnswersByQuestionName(thisSession, answers);
 
-                if (computedQuestionTree != null) {
-                    computeUnansweredQuestions(answersByQuestionName, computedQuestionTree,
-                        this.currentNodeBuilder);
-                }
-
-                if (this.numberOfCreatedQuestions > 0) {
-                    LOGGER.info("ComputedEditor created " + this.numberOfCreatedQuestions + " computed answers");
-                }
-            } catch (RepositoryException e) {
-                // Could not find a questionnaire definition for this form: Can't calculate computed questions
+            if (computedQuestionTree != null) {
+                computeUnansweredQuestions(answersByQuestionName, computedQuestionTree,
+                    this.currentNodeBuilder);
             }
+
+            if (this.numberOfCreatedQuestions > 0) {
+                LOGGER.info("ComputedEditor created " + this.numberOfCreatedQuestions + " computed answers");
+            }
+        } catch (RepositoryException e) {
+            // Could not find a questionnaire definition for this form: Can't calculate computed questions
         }
     }
 
@@ -230,8 +234,7 @@ public class ComputedEditor extends DefaultEditor
             PropertyState superType = currentNode.getProperty("sling:resourceSuperType");
             if (primaryType != null
                 && ("cards:AnswerSection".equals(primaryType.getValue(Type.NAME))
-                || "cards:Form".equals(primaryType.getValue(Type.NAME)))
-            ) {
+                    || "cards:Form".equals(primaryType.getValue(Type.NAME)))) {
                 // Found a section: Recursively get all of this section's answers
                 for (ChildNodeEntry childNode : currentNode.getChildNodeEntries()) {
                     currentAnswers.putAll(getNodeAnswers(childNode.getNodeState()));
@@ -292,7 +295,7 @@ public class ComputedEditor extends DefaultEditor
     private Map<String, NodeState> getAnswersByQuestionName(Session thisSession, Map<String, NodeState> answers)
     {
         Map<String, NodeState> namedAnswers = new HashMap<>();
-        for (Entry<String, NodeState> entry : answers.entrySet()) {
+        for (Map.Entry<String, NodeState> entry : answers.entrySet()) {
             try {
                 Node questionNode = thisSession.getNodeByIdentifier(entry.getKey());
                 String questionName = questionNode.getName();
@@ -370,7 +373,7 @@ public class ComputedEditor extends DefaultEditor
 
             List<NodeBuilder> childNodes = result.containsKey(childIdentifier)
                 ? result.get(childIdentifier)
-                : new ArrayList<NodeBuilder>();
+                : new ArrayList<>();
             childNodes.add(childNode);
             result.put(childIdentifier, childNodes);
         }
@@ -382,7 +385,7 @@ public class ComputedEditor extends DefaultEditor
         Map<String, NodeState> answers,
         NodeBuilder nodeBuilder)
     {
-        for (Entry<String, QuestionTree> childQuestion : computedQuestionTree.getChildren().entrySet()) {
+        for (Map.Entry<String, QuestionTree> childQuestion : computedQuestionTree.getChildren().entrySet()) {
             QuestionTree childTree = childQuestion.getValue();
             try {
                 Node childQuestionNode = childTree.getNode();
@@ -424,24 +427,19 @@ public class ComputedEditor extends DefaultEditor
             if (parsedExpression.hasMissingValue()) {
                 return null;
             }
-            expression = "var compute = function(" + String.join(", ", parsedExpression.getInputNames())
-                + ") {" + parsedExpression.getExpression() + "}";
 
             ScriptEngineManager manager = new ScriptEngineManager();
             ScriptEngine engine = manager.getEngineByName("JavaScript");
-            engine.eval(expression);
-            Invocable invocable = (Invocable) engine;
-            Object result = invocable.invokeFunction("compute",
-                parsedExpression.getInputValues().toArray(new Object[0]));
+
+            Bindings env = engine.createBindings();
+            parsedExpression.getInputs().forEach((key, value) -> env.put(key, value));
+            Object result = engine.eval("(function(){" + parsedExpression.getExpression() + "})()", env);
             return result == null ? null : String.valueOf(result);
         } catch (ScriptException e) {
-            LOGGER.warn("JS failed " + e.getMessage());
-        } catch (PathNotFoundException | ValueFormatException e) {
-            LOGGER.warn("JS failed " + e.getMessage());
+            LOGGER.warn("Evaluating the expression for question {} failed: {}", computedQuestionTree.getNode(),
+                e.getMessage(), e);
         } catch (RepositoryException e) {
-            LOGGER.warn("JS failed " + e.getMessage());
-        } catch (NoSuchMethodException e) {
-            //Do nothing
+            LOGGER.warn("Failed to access computed question expression: {}", e.getMessage(), e);
         }
         return null;
     }
@@ -449,8 +447,7 @@ public class ComputedEditor extends DefaultEditor
     private ParsedExpression parseExpressionInputs(Map<String, NodeState> answers, String expression)
     {
         String expr = expression;
-        List<String> inputNames = new ArrayList<>();
-        List<Object> inputValues = new ArrayList<>();
+        Map<String, Object> inputs = new HashMap<>();
         int start = expr.indexOf(startTag);
         int end = expr.indexOf(endTag, start);
         boolean missingValue = false;
@@ -469,26 +466,25 @@ public class ComputedEditor extends DefaultEditor
                 inputName = expr.substring(start + startTag.length(), end);
             }
 
-            if (!inputNames.contains(inputName)) {
-                inputNames.add(inputName);
+            if (!inputs.containsKey(inputName)) {
                 Object value = answers.get(inputName) != null
                     ? getAnswerNodeStateValue(answers.get(inputName))
                     : defaultValue;
                 if (value == null) {
                     missingValue = true;
                 }
-                inputValues.add(value);
+                inputs.put(inputName, value);
             }
 
             // Remove the start and end tags as well as the default option if provided, leaving just
             // the Javascript variable name
             expr = expr.substring(0, start) + expr.substring(start + startTag.length(), hasOption
-            ? optionStart : end) + expr.substring(end + endTag.length());
+                ? optionStart : end) + expr.substring(end + endTag.length());
 
             start = expr.indexOf(startTag, (hasOption ? optionStart : end) - startTag.length());
             end = expr.indexOf(endTag, start);
         }
-        return new ParsedExpression(inputNames, inputValues, expr, missingValue);
+        return new ParsedExpression(inputs, expr, missingValue);
     }
 
     private Object getAnswerNodeStateValue(NodeState answerNodeState)

@@ -31,12 +31,12 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 /**
- * A {@link EditorProvider} returning {@link ComputedEditor}.
+ * A {@link EditorProvider} returning {@link ComputedAnswersEditor}.
  *
  * @version $Id$
  */
 @Component
-public class ComputedEditorProvider implements EditorProvider
+public class ComputedAnswersEditorProvider implements EditorProvider
 {
     @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,
         policyOption = ReferencePolicyOption.GREEDY)
@@ -50,7 +50,7 @@ public class ComputedEditorProvider implements EditorProvider
             final ResourceResolver myResolver = this.rrf.getThreadResourceResolver();
             if (myResolver != null) {
                 // Each ComputedEditor maintains a state, so a new instance must be returned each time
-                return new ComputedEditor(builder, myResolver, null);
+                return new ComputedAnswersEditor(builder, myResolver, null);
             }
         }
         return null;
