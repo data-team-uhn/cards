@@ -58,13 +58,7 @@ public class ComputedAnswersEditor extends DefaultEditor
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ComputedAnswersEditor.class);
 
-    private static String startTag = "@{";
-
-    private static String endTag = "}";
-
-    private static String defaultTag = ":-";
-
-    private static String primaryTypeDefinition = "jcr:primaryType";
+    private static final String PRIMARY_TYPE_PROPERTY = "jcr:primaryType";
 
     // This holds the builder for the current node. The methods called for editing specific properties don't receive the
     // actual parent node of those properties, so we must manually keep track of the current node.
@@ -96,14 +90,7 @@ public class ComputedAnswersEditor extends DefaultEditor
     @Override
     public void enter(NodeState before, NodeState after)
     {
-        // Store the current node's type
-        PropertyState primaryType = this.currentNodeBuilder.getProperty(primaryTypeDefinition);
-        if (primaryType != null) {
-            final String nodeType = primaryType.getValue(Type.NAME);
-            if ("cards:Form".equals(nodeType)) {
-                this.isFormNode = true;
-            }
-        }
+        this.isFormNode = NodeUtils.isForm(this.currentNodeBuilder);
     }
 
     @Override
@@ -162,7 +149,7 @@ public class ComputedAnswersEditor extends DefaultEditor
     {
         Map<String, NodeState> currentAnswers = new HashMap<>();
         if (currentNode.exists()) {
-            PropertyState primaryType = currentNode.getProperty(primaryTypeDefinition);
+            PropertyState primaryType = currentNode.getProperty(PRIMARY_TYPE_PROPERTY);
             PropertyState superType = currentNode.getProperty("sling:resourceSuperType");
             if (primaryType != null
                 && ("cards:AnswerSection".equals(primaryType.getValue(Type.NAME))
@@ -174,7 +161,7 @@ public class ComputedAnswersEditor extends DefaultEditor
             } else if (superType != null && "cards/Answer".equals(superType.getValue(Type.STRING))) {
                 // Found an answer. Store it using the question's UUID to easily compare with the questionnaire's
                 // nodes to retrieve question names and saved answer nodes to avoid duplicating existing answers
-                String currentName = currentNode.getProperty("question").getValue(Type.STRING);
+                String currentName = NodeUtils.getQuestion(currentNode);
                 currentAnswers.put(currentName, currentNode);
             } else {
                 LOGGER.warn("Computed editor encountered unexpected child node of type {}",
@@ -245,14 +232,14 @@ public class ComputedAnswersEditor extends DefaultEditor
     {
         try {
             if (computedQuestionTree.isQuestion()) {
-                String result = computeQuestion(answers, computedQuestionTree, nodeBuilder);
+                String result = computeAnswer(answers, computedQuestionTree, nodeBuilder);
                 if (result == null) {
                     nodeBuilder.remove();
                     return;
                 }
                 this.numberOfCreatedQuestions++;
 
-                if (!nodeBuilder.hasProperty(primaryTypeDefinition)) {
+                if (!nodeBuilder.hasProperty(PRIMARY_TYPE_PROPERTY)) {
                     // New node, insert all required properties
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
                     nodeBuilder.setProperty("jcr:created", dateFormat.format(new Date()), Type.DATE);
@@ -261,7 +248,7 @@ public class ComputedAnswersEditor extends DefaultEditor
 
                     String questionReference = computedQuestionTree.getNode().getIdentifier();
                     nodeBuilder.setProperty("question", questionReference, Type.REFERENCE);
-                    nodeBuilder.setProperty(primaryTypeDefinition, "cards:ComputedAnswer", Type.NAME);
+                    nodeBuilder.setProperty(PRIMARY_TYPE_PROPERTY, "cards:ComputedAnswer", Type.NAME);
                     nodeBuilder.setProperty("sling:resourceSuperType", "cards/Answer", Type.STRING);
                     nodeBuilder.setProperty("sling:resourceType", "cards/ComputedAnswer", Type.STRING);
                     nodeBuilder.setProperty("statusFlags", "", Type.STRING);
@@ -270,11 +257,11 @@ public class ComputedAnswersEditor extends DefaultEditor
                 answers.put(computedQuestionTree.getNode().getName(), nodeBuilder.getNodeState());
             } else {
                 // Section
-                if (!nodeBuilder.hasProperty(primaryTypeDefinition)) {
+                if (!nodeBuilder.hasProperty(PRIMARY_TYPE_PROPERTY)) {
                     // Section must be created before primary type
                     nodeBuilder.setProperty("section", computedQuestionTree.getNode().getIdentifier(),
                         Type.REFERENCE);
-                    nodeBuilder.setProperty(primaryTypeDefinition, "cards:AnswerSection", Type.NAME);
+                    nodeBuilder.setProperty(PRIMARY_TYPE_PROPERTY, "cards:AnswerSection", Type.NAME);
                     nodeBuilder.setProperty("sling:resourceSuperType", "cards/Resource", Type.STRING);
                     nodeBuilder.setProperty("sling:resourceType", "cards/AnswerSection", Type.STRING);
                     nodeBuilder.setProperty("statusFlags", "", Type.STRING);
@@ -296,9 +283,9 @@ public class ComputedAnswersEditor extends DefaultEditor
             NodeBuilder childNode = nodeBuilder.getChildNode(childNodeName);
             String childIdentifier;
             if (childNode.hasProperty("section")) {
-                childIdentifier = childNode.getProperty("section").getValue(Type.STRING);
+                childIdentifier = NodeUtils.getSection(childNode);
             } else if (childNode.hasProperty("question")) {
-                childIdentifier = childNode.getProperty("question").getValue(Type.STRING);
+                childIdentifier = NodeUtils.getQuestion(childNode);
             } else {
                 continue;
             }
@@ -350,135 +337,10 @@ public class ComputedAnswersEditor extends DefaultEditor
         }
     }
 
-    private String computeQuestion(Map<String, NodeState> answers, QuestionTree computedQuestionTree,
+    private String computeAnswer(Map<String, NodeState> answers, QuestionTree computedQuestionTree,
         NodeBuilder nodeBuilder)
     {
-        try {
-            String expression = computedQuestionTree.getNode().getProperty("expression").getString();
-            ParsedExpression parsedExpression = parseExpressionInputs(answers, expression);
-            if (parsedExpression.hasMissingValue()) {
-                return null;
-            }
-
-            ScriptEngineManager manager = new ScriptEngineManager();
-            ScriptEngine engine = manager.getEngineByName("JavaScript");
-
-            Bindings env = engine.createBindings();
-            parsedExpression.getInputs().forEach((key, value) -> env.put(key, value));
-            Object result = engine.eval("(function(){" + parsedExpression.getExpression() + "})()", env);
-            return ValueFormatter.formatResult(result);
-        } catch (ScriptException e) {
-            LOGGER.warn("Evaluating the expression for question {} failed: {}", computedQuestionTree.getNode(),
-                e.getMessage(), e);
-        } catch (RepositoryException e) {
-            LOGGER.warn("Failed to access computed question expression: {}", e.getMessage(), e);
-        }
-        return null;
-    }
-
-    private ParsedExpression parseExpressionInputs(Map<String, NodeState> answers, String expression)
-    {
-        String expr = expression;
-        Map<String, Object> inputs = new HashMap<>();
-        int start = expr.indexOf(startTag);
-        int end = expr.indexOf(endTag, start);
-        boolean missingValue = false;
-
-        while (start > -1 && end > -1) {
-            int optionStart = expr.indexOf(defaultTag, start);
-            boolean hasOption = optionStart > -1 && optionStart < end;
-
-            String inputName;
-            String defaultValue = null;
-
-            if (hasOption) {
-                inputName = expr.substring(start + startTag.length(), optionStart);
-                defaultValue = expr.substring(optionStart + defaultTag.length(), end);
-            } else {
-                inputName = expr.substring(start + startTag.length(), end);
-            }
-
-            if (!inputs.containsKey(inputName)) {
-                Object value = getAnswerNodeStateValue(answers.get(inputName));
-                if (value == null) {
-                    value = defaultValue;
-                }
-                if (value == null) {
-                    missingValue = true;
-                }
-                inputs.put(inputName, value);
-            }
-
-            // Remove the start and end tags as well as the default option if provided, leaving just
-            // the Javascript variable name
-            expr = expr.substring(0, start) + expr.substring(start + startTag.length(), hasOption
-                ? optionStart : end) + expr.substring(end + endTag.length());
-
-            start = expr.indexOf(startTag, (hasOption ? optionStart : end) - startTag.length());
-            end = expr.indexOf(endTag, start);
-        }
-        return new ParsedExpression(inputs, expr, missingValue);
-    }
-
-    private Object getAnswerNodeStateValue(NodeState answerNodeState)
-    {
-        if (answerNodeState == null) {
-            return null;
-        }
-        Object result = null;
-        PropertyState valuePropertyState = answerNodeState.getProperty("value");
-        if (valuePropertyState != null) {
-            Type<?> valueType = valuePropertyState.getType();
-
-            if (valuePropertyState.isArray()) {
-                result = new Object[valuePropertyState.count()];
-                for (int i = 0; i < valuePropertyState.count(); i++) {
-                    ((Object[]) result)[i] = valuePropertyState.getValue(valueType, i);
-                }
-            } else {
-                result = valuePropertyState.getValue(valueType);
-            }
-        }
-        return result;
-    }
-
-    private static final class QuestionTree
-    {
-        private Map<String, QuestionTree> children;
-
-        private Node node;
-
-        private boolean isQuestion;
-
-        QuestionTree(Node node, boolean isQuestion)
-        {
-            this.isQuestion = isQuestion;
-            this.node = node;
-            this.children = isQuestion ? null : new HashMap<>();
-        }
-
-        public Map<String, QuestionTree> getChildren()
-        {
-            return this.children;
-        }
-
-        public Node getNode()
-        {
-            return this.node;
-        }
-
-        public boolean isQuestion()
-        {
-            return this.isQuestion;
-        }
-
-        @Override
-        public String toString()
-        {
-            return "{question:" + this.isQuestion
-                + (this.children == null ? "" : " children: " + this.children.toString())
-                + (this.node == null ? "" : " node: " + this.node.toString()) + "}";
-        }
+        return ExpressionEvaluator.evaluate(computedQuestionTree.getNode(), answers);
     }
 
     private static final class ComputedAnswerChangeTracker extends DefaultEditor
@@ -549,63 +411,233 @@ public class ComputedAnswersEditor extends DefaultEditor
         }
     }
 
-    private static final class ParsedExpression
+    private static final class QuestionTree
     {
-        private final Map<String, Object> inputs;
+        private Map<String, QuestionTree> children;
 
-        private final String expression;
+        private Node node;
 
-        private final boolean missingValue;
+        private boolean isQuestion;
 
-        ParsedExpression(Map<String, Object> inputs, String expression, boolean missingValue)
+        QuestionTree(Node node, boolean isQuestion)
         {
-            this.inputs = inputs;
-            this.expression = expression;
-            this.missingValue = missingValue;
+            this.isQuestion = isQuestion;
+            this.node = node;
+            this.children = isQuestion ? null : new HashMap<>();
         }
 
-        public Map<String, Object> getInputs()
+        public Map<String, QuestionTree> getChildren()
         {
-            return this.inputs;
+            return this.children;
         }
 
-        public String getExpression()
+        public Node getNode()
         {
-            return this.expression;
+            return this.node;
         }
 
-        public boolean hasMissingValue()
+        public boolean isQuestion()
         {
-            return this.missingValue;
+            return this.isQuestion;
+        }
+
+        @Override
+        public String toString()
+        {
+            return "{question:" + this.isQuestion
+                + (this.children == null ? "" : " children: " + this.children.toString())
+                + (this.node == null ? "" : " node: " + this.node.toString()) + "}";
         }
     }
 
-    private static final class ValueFormatter
+    private static final class ExpressionEvaluator
     {
-        static String formatResult(Object rawResult)
+        private static final String START_MARKER = "@{";
+
+        private static final String END_MARKER = "}";
+
+        private static final String DEFAULT_MARKER = ":-";
+
+        static String evaluate(final Node question, final Map<String, NodeState> answers)
         {
-            if (rawResult == null) {
+            try {
+                String expression = question.getProperty("expression").getString();
+                ParsedExpression parsedExpression = parseExpressionInputs(answers, expression);
+                if (parsedExpression.hasMissingValue()) {
+                    return null;
+                }
+
+                ScriptEngineManager manager = new ScriptEngineManager();
+                ScriptEngine engine = manager.getEngineByName("JavaScript");
+
+                Bindings env = engine.createBindings();
+                parsedExpression.getInputs().forEach((key, value) -> env.put(key, value));
+                Object result = engine.eval("(function(){" + parsedExpression.getExpression() + "})()", env);
+                return ValueFormatter.formatResult(result);
+            } catch (ScriptException e) {
+                LOGGER.warn("Evaluating the expression for question {} failed: {}", question,
+                    e.getMessage(), e);
+            } catch (RepositoryException e) {
+                LOGGER.warn("Failed to access computed question expression: {}", e.getMessage(), e);
+            }
+            return null;
+        }
+
+        private static ParsedExpression parseExpressionInputs(Map<String, NodeState> answers, String expression)
+        {
+            String expr = expression;
+            Map<String, Object> inputs = new HashMap<>();
+            int start = expr.indexOf(START_MARKER);
+            int end = expr.indexOf(END_MARKER, start);
+            boolean missingValue = false;
+
+            while (start > -1 && end > -1) {
+                int optionStart = expr.indexOf(DEFAULT_MARKER, start);
+                boolean hasOption = optionStart > -1 && optionStart < end;
+
+                String inputName;
+                String defaultValue = null;
+
+                if (hasOption) {
+                    inputName = expr.substring(start + START_MARKER.length(), optionStart);
+                    defaultValue = expr.substring(optionStart + DEFAULT_MARKER.length(), end);
+                } else {
+                    inputName = expr.substring(start + START_MARKER.length(), end);
+                }
+
+                if (!inputs.containsKey(inputName)) {
+                    Object value = getAnswerNodeStateValue(answers.get(inputName));
+                    if (value == null) {
+                        value = defaultValue;
+                    }
+                    if (value == null) {
+                        missingValue = true;
+                    }
+                    inputs.put(inputName, value);
+                }
+
+                // Remove the start and end tags as well as the default option if provided, leaving just
+                // the Javascript variable name
+                expr = expr.substring(0, start) + expr.substring(start + START_MARKER.length(), hasOption
+                    ? optionStart : end) + expr.substring(end + END_MARKER.length());
+
+                start = expr.indexOf(START_MARKER, (hasOption ? optionStart : end) - START_MARKER.length());
+                end = expr.indexOf(END_MARKER, start);
+            }
+            return new ParsedExpression(inputs, expr, missingValue);
+        }
+
+        private static Object getAnswerNodeStateValue(NodeState answerNodeState)
+        {
+            if (answerNodeState == null) {
                 return null;
             }
+            Object result = null;
+            PropertyState valuePropertyState = answerNodeState.getProperty("value");
+            if (valuePropertyState != null) {
+                Type<?> valueType = valuePropertyState.getType();
 
-            String formattedResult = String.valueOf(rawResult);
-
-            if (rawResult instanceof Double || rawResult instanceof Float) {
-                Number result = (Number) rawResult;
-                if (result.doubleValue() == result.longValue()) {
-                    formattedResult = String.valueOf(result.longValue());
+                if (valuePropertyState.isArray()) {
+                    result = new Object[valuePropertyState.count()];
+                    for (int i = 0; i < valuePropertyState.count(); i++) {
+                        ((Object[]) result)[i] = valuePropertyState.getValue(valueType, i);
+                    }
                 } else {
-                    formattedResult = String.valueOf(result.doubleValue());
+                    result = valuePropertyState.getValue(valueType);
                 }
-            } else if (rawResult instanceof Date) {
-                formattedResult = DateTimeFormatter.ISO_OFFSET_DATE_TIME
-                    .format(((Date) rawResult).toInstant().atZone(ZoneId.systemDefault()));
-            } else if (rawResult instanceof Calendar) {
-                Calendar result = (Calendar) rawResult;
-                formattedResult = DateTimeFormatter.ISO_OFFSET_DATE_TIME
-                    .format(result.toInstant().atZone(result.getTimeZone().toZoneId()));
             }
-            return formattedResult;
+            return result;
+        }
+
+        private static final class ParsedExpression
+        {
+            private final Map<String, Object> inputs;
+
+            private final String expression;
+
+            private final boolean missingValue;
+
+            ParsedExpression(Map<String, Object> inputs, String expression, boolean missingValue)
+            {
+                this.inputs = inputs;
+                this.expression = expression;
+                this.missingValue = missingValue;
+            }
+
+            public Map<String, Object> getInputs()
+            {
+                return this.inputs;
+            }
+
+            public String getExpression()
+            {
+                return this.expression;
+            }
+
+            public boolean hasMissingValue()
+            {
+                return this.missingValue;
+            }
+        }
+
+        private static final class ValueFormatter
+        {
+            static String formatResult(Object rawResult)
+            {
+                if (rawResult == null) {
+                    return null;
+                }
+
+                String formattedResult = String.valueOf(rawResult);
+
+                if (rawResult instanceof Double || rawResult instanceof Float) {
+                    Number result = (Number) rawResult;
+                    if (result.doubleValue() == result.longValue()) {
+                        formattedResult = String.valueOf(result.longValue());
+                    } else {
+                        formattedResult = String.valueOf(result.doubleValue());
+                    }
+                } else if (rawResult instanceof Date) {
+                    formattedResult = DateTimeFormatter.ISO_OFFSET_DATE_TIME
+                        .format(((Date) rawResult).toInstant().atZone(ZoneId.systemDefault()));
+                } else if (rawResult instanceof Calendar) {
+                    Calendar result = (Calendar) rawResult;
+                    formattedResult = DateTimeFormatter.ISO_OFFSET_DATE_TIME
+                        .format(result.toInstant().atZone(result.getTimeZone().toZoneId()));
+                }
+                return formattedResult;
+            }
+        }
+    }
+
+    private static final class NodeUtils
+    {
+        static boolean isForm(NodeBuilder node)
+        {
+            // Store the current node's type
+            PropertyState primaryType = node.getProperty(PRIMARY_TYPE_PROPERTY);
+            if (primaryType != null) {
+                final String nodeType = primaryType.getValue(Type.NAME);
+                if ("cards:Form".equals(nodeType)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        static String getQuestion(final NodeState node)
+        {
+            return node.getProperty("question").getValue(Type.REFERENCE);
+        }
+
+        static String getQuestion(final NodeBuilder node)
+        {
+            return node.getProperty("question").getValue(Type.REFERENCE);
+        }
+
+        static String getSection(final NodeBuilder node)
+        {
+            return node.getProperty("section").getValue(Type.REFERENCE);
         }
     }
 }
