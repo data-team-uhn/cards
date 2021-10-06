@@ -400,9 +400,10 @@ public class ComputedAnswersEditor extends DefaultEditor
             }
 
             if (!inputs.containsKey(inputName)) {
-                Object value = answers.get(inputName) != null
-                    ? getAnswerNodeStateValue(answers.get(inputName))
-                    : defaultValue;
+                Object value = getAnswerNodeStateValue(answers.get(inputName));
+                if (value == null) {
+                    value = defaultValue;
+                }
                 if (value == null) {
                     missingValue = true;
                 }
@@ -422,6 +423,9 @@ public class ComputedAnswersEditor extends DefaultEditor
 
     private Object getAnswerNodeStateValue(NodeState answerNodeState)
     {
+        if (answerNodeState == null) {
+            return null;
+        }
         Object result = null;
         PropertyState valuePropertyState = answerNodeState.getProperty("value");
         if (valuePropertyState != null) {
