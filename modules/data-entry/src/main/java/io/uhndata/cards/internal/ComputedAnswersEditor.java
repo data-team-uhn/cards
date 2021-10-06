@@ -70,8 +70,6 @@ public class ComputedAnswersEditor extends DefaultEditor
 
     private boolean formEditorHasChanged;
 
-    private int numberOfCreatedQuestions;
-
     private ComputedAnswerChangeTracker computedAnswerChangeTracker;
 
     /**
@@ -133,12 +131,22 @@ public class ComputedAnswersEditor extends DefaultEditor
             Map<String, NodeState> answersByQuestionName = getAnswersByQuestionName(thisSession, answers);
 
             if (computedQuestionTree != null) {
-                computeUnansweredQuestions(answersByQuestionName, computedQuestionTree,
-                    this.currentNodeBuilder);
-            }
-
-            if (this.numberOfCreatedQuestions > 0) {
-                LOGGER.info("ComputedEditor created " + this.numberOfCreatedQuestions + " computed answers");
+                Map<QuestionTree, NodeBuilder> answersToCompute = new HashMap<>();
+                createUnansweredQuestions(computedQuestionTree,
+                    this.currentNodeBuilder, answersToCompute);
+                answersToCompute.forEach((question, answer) -> {
+                    String result = computeAnswer(answersByQuestionName, question);
+                    if (result == null) {
+                        answer.removeProperty("value");
+                    } else {
+                        answer.setProperty("value", result, Type.STRING);
+                    }
+                    try {
+                        answersByQuestionName.put(question.getNode().getName(), answer.getNodeState());
+                    } catch (RepositoryException e) {
+                        LOGGER.warn("Failed to access repository: {}", e.getMessage(), e);
+                    }
+                });
             }
         } catch (RepositoryException e) {
             // Could not find a questionnaire definition for this form: Can't calculate computed questions
@@ -227,18 +235,11 @@ public class ComputedAnswersEditor extends DefaultEditor
         return namedAnswers;
     }
 
-    private void computeUnansweredQuestions(Map<String, NodeState> answers, QuestionTree computedQuestionTree,
-        NodeBuilder nodeBuilder)
+    private void createUnansweredQuestions(QuestionTree computedQuestionTree,
+        NodeBuilder nodeBuilder, Map<QuestionTree, NodeBuilder> answersToCompute)
     {
         try {
             if (computedQuestionTree.isQuestion()) {
-                String result = computeAnswer(answers, computedQuestionTree, nodeBuilder);
-                if (result == null) {
-                    nodeBuilder.remove();
-                    return;
-                }
-                this.numberOfCreatedQuestions++;
-
                 if (!nodeBuilder.hasProperty(PRIMARY_TYPE_PROPERTY)) {
                     // New node, insert all required properties
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
@@ -253,8 +254,7 @@ public class ComputedAnswersEditor extends DefaultEditor
                     nodeBuilder.setProperty("sling:resourceType", "cards/ComputedAnswer", Type.STRING);
                     nodeBuilder.setProperty("statusFlags", "", Type.STRING);
                 }
-                nodeBuilder.setProperty("value", result, Type.STRING);
-                answers.put(computedQuestionTree.getNode().getName(), nodeBuilder.getNodeState());
+                answersToCompute.put(computedQuestionTree, nodeBuilder);
             } else {
                 // Section
                 if (!nodeBuilder.hasProperty(PRIMARY_TYPE_PROPERTY)) {
@@ -267,7 +267,8 @@ public class ComputedAnswersEditor extends DefaultEditor
                     nodeBuilder.setProperty("statusFlags", "", Type.STRING);
                 }
                 Map<String, List<NodeBuilder>> childNodesByReference = getChildNodesByReference(nodeBuilder);
-                createChildrenNodes(computedQuestionTree, childNodesByReference, answers, nodeBuilder);
+                createChildrenNodes(computedQuestionTree, childNodesByReference, nodeBuilder,
+                    answersToCompute);
             }
         } catch (RepositoryException e) {
             LOGGER.error("Error creating " + (computedQuestionTree.isQuestion() ? "question. " : "section. ")
@@ -301,8 +302,8 @@ public class ComputedAnswersEditor extends DefaultEditor
 
     private void createChildrenNodes(QuestionTree computedQuestionTree,
         Map<String, List<NodeBuilder>> childNodesByReference,
-        Map<String, NodeState> answers,
-        NodeBuilder nodeBuilder)
+        NodeBuilder nodeBuilder,
+        Map<QuestionTree, NodeBuilder> answersToCompute)
     {
         for (Map.Entry<String, QuestionTree> childQuestion : computedQuestionTree.getChildren().entrySet()) {
             QuestionTree childTree = childQuestion.getValue();
@@ -323,12 +324,12 @@ public class ComputedAnswersEditor extends DefaultEditor
                     numberOfInstances += matchingChildren.size();
 
                     for (NodeBuilder childNode : matchingChildren) {
-                        computeUnansweredQuestions(answers, childTree, childNode);
+                        createUnansweredQuestions(childTree, childNode, answersToCompute);
                     }
                 }
                 while (numberOfInstances < expectedNumberOfInstances) {
                     NodeBuilder childNodeBuilder = nodeBuilder.setChildNode(UUID.randomUUID().toString());
-                    computeUnansweredQuestions(answers, childTree, childNodeBuilder);
+                    createUnansweredQuestions(childTree, childNodeBuilder, answersToCompute);
                     numberOfInstances++;
                 }
             } catch (RepositoryException e) {
@@ -337,8 +338,7 @@ public class ComputedAnswersEditor extends DefaultEditor
         }
     }
 
-    private String computeAnswer(Map<String, NodeState> answers, QuestionTree computedQuestionTree,
-        NodeBuilder nodeBuilder)
+    private String computeAnswer(Map<String, NodeState> answers, QuestionTree computedQuestionTree)
     {
         return ExpressionEvaluator.evaluate(computedQuestionTree.getNode(), answers);
     }
