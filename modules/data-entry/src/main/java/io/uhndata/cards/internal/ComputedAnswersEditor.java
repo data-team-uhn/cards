@@ -23,8 +23,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.jcr.Node;
@@ -76,6 +78,8 @@ public class ComputedAnswersEditor extends DefaultEditor
 
     private int numberOfCreatedQuestions;
 
+    private ComputedAnswerChangeTracker computedAnswerChangeTracker;
+
     /**
      * Simple constructor.
      *
@@ -86,6 +90,7 @@ public class ComputedAnswersEditor extends DefaultEditor
     {
         this.currentNodeBuilder = nodeBuilder;
         this.currentResourceResolver = resourceResolver;
+        this.computedAnswerChangeTracker = new ComputedAnswerChangeTracker();
     }
 
     @Override
@@ -109,7 +114,7 @@ public class ComputedAnswersEditor extends DefaultEditor
             // No need to make any child editors.
             this.formEditorHasChanged = true;
             // No need to descend further down, we already know that this is a form that has changes
-            return null;
+            return this.computedAnswerChangeTracker;
         } else {
             return new ComputedAnswersEditor(this.currentNodeBuilder.getChildNode(name),
                 this.currentResourceResolver);
@@ -188,7 +193,7 @@ public class ComputedAnswersEditor extends DefaultEditor
             if ("cards/Question".equals(currentNode.getProperty("sling:resourceType").getString())) {
                 if ("computed".equals(currentNode.getProperty("dataType").getString())) {
                     // Skip already answered questions
-                    if (!answers.containsKey(currentNode.getIdentifier())) {
+                    if (!this.computedAnswerChangeTracker.getModifiedAnswers().contains(currentNode.getIdentifier())) {
                         currentTree = new QuestionTree(currentNode, true);
                     }
                 }
@@ -238,50 +243,50 @@ public class ComputedAnswersEditor extends DefaultEditor
     private void computeUnansweredQuestions(Map<String, NodeState> answers, QuestionTree computedQuestionTree,
         NodeBuilder nodeBuilder)
     {
-        if (!nodeBuilder.hasProperty(primaryTypeDefinition)) {
-            // New node, insert all required properties
-            try {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-                nodeBuilder.setProperty("jcr:created", dateFormat.format(new Date()), Type.DATE);
-                nodeBuilder.setProperty("jcr:createdBy",
-                    this.currentResourceResolver.adaptTo(Session.class).getUserID(), Type.NAME);
-                if (computedQuestionTree.isQuestion()) {
-                    String result = computeQuestion(answers, computedQuestionTree, nodeBuilder);
-                    if (result == null) {
-                        nodeBuilder.remove();
-                        return;
-                    } else {
-                        this.numberOfCreatedQuestions++;
-                    }
+        try {
+            if (computedQuestionTree.isQuestion()) {
+                String result = computeQuestion(answers, computedQuestionTree, nodeBuilder);
+                if (result == null) {
+                    nodeBuilder.remove();
+                    return;
+                }
+                this.numberOfCreatedQuestions++;
+
+                if (!nodeBuilder.hasProperty(primaryTypeDefinition)) {
+                    // New node, insert all required properties
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+                    nodeBuilder.setProperty("jcr:created", dateFormat.format(new Date()), Type.DATE);
+                    nodeBuilder.setProperty("jcr:createdBy",
+                        this.currentResourceResolver.adaptTo(Session.class).getUserID(), Type.NAME);
 
                     String questionReference = computedQuestionTree.getNode().getIdentifier();
                     nodeBuilder.setProperty("question", questionReference, Type.REFERENCE);
                     nodeBuilder.setProperty(primaryTypeDefinition, "cards:ComputedAnswer", Type.NAME);
                     nodeBuilder.setProperty("sling:resourceSuperType", "cards/Answer", Type.STRING);
                     nodeBuilder.setProperty("sling:resourceType", "cards/ComputedAnswer", Type.STRING);
-                    nodeBuilder.setProperty("value", result, Type.STRING);
-                    answers.put(computedQuestionTree.getNode().getName(), nodeBuilder.getNodeState());
-                } else {
-
+                    nodeBuilder.setProperty("statusFlags", "", Type.STRING);
+                }
+                nodeBuilder.setProperty("value", result, Type.STRING);
+                answers.put(computedQuestionTree.getNode().getName(), nodeBuilder.getNodeState());
+            } else {
+                // Section
+                if (!nodeBuilder.hasProperty(primaryTypeDefinition)) {
                     // Section must be created before primary type
                     nodeBuilder.setProperty("section", computedQuestionTree.getNode().getIdentifier(),
                         Type.REFERENCE);
                     nodeBuilder.setProperty(primaryTypeDefinition, "cards:AnswerSection", Type.NAME);
                     nodeBuilder.setProperty("sling:resourceSuperType", "cards/Resource", Type.STRING);
                     nodeBuilder.setProperty("sling:resourceType", "cards/AnswerSection", Type.STRING);
+                    nodeBuilder.setProperty("statusFlags", "", Type.STRING);
                 }
-
-                nodeBuilder.setProperty("statusFlags", "", Type.STRING);
-            } catch (RepositoryException e) {
-                LOGGER.error("Error creating " + (computedQuestionTree.isQuestion() ? "question. " : "section. ")
-                    + e.getMessage());
+                Map<String, List<NodeBuilder>> childNodesByReference = getChildNodesByReference(nodeBuilder);
+                createChildrenNodes(computedQuestionTree, childNodesByReference, answers, nodeBuilder);
             }
+        } catch (RepositoryException e) {
+            LOGGER.error("Error creating " + (computedQuestionTree.isQuestion() ? "question. " : "section. ")
+                + e.getMessage());
         }
 
-        if (!computedQuestionTree.isQuestion()) {
-            Map<String, List<NodeBuilder>> childNodesByReference = getChildNodesByReference(nodeBuilder);
-            createChildrenNodes(computedQuestionTree, childNodesByReference, answers, nodeBuilder);
-        }
     }
 
     private Map<String, List<NodeBuilder>> getChildNodesByReference(NodeBuilder nodeBuilder)
@@ -473,6 +478,74 @@ public class ComputedAnswersEditor extends DefaultEditor
             return "{question:" + this.isQuestion
                 + (this.children == null ? "" : " children: " + this.children.toString())
                 + (this.node == null ? "" : " node: " + this.node.toString()) + "}";
+        }
+    }
+
+    private static final class ComputedAnswerChangeTracker extends DefaultEditor
+    {
+        private final Set<String> modifiedAnswers = new HashSet<>();
+
+        private boolean inComputedAnswer;
+
+        private String currentAnswer;
+
+        @Override
+        public void enter(NodeState before, NodeState after)
+        {
+            if ("cards:ComputedAnswer".equals(after.getName(PRIMARY_TYPE_PROPERTY))) {
+                this.inComputedAnswer = true;
+                this.currentAnswer = NodeUtils.getQuestion(after);
+            }
+        }
+
+        @Override
+        public void leave(NodeState before, NodeState after)
+        {
+            this.inComputedAnswer = false;
+            this.currentAnswer = null;
+        }
+
+        @Override
+        public void propertyAdded(PropertyState after)
+        {
+            if (this.inComputedAnswer) {
+                this.modifiedAnswers.add(this.currentAnswer);
+            }
+        }
+
+        @Override
+        public void propertyChanged(PropertyState before, PropertyState after)
+        {
+            propertyAdded(after);
+        }
+
+        @Override
+        public void propertyDeleted(PropertyState before)
+        {
+            propertyAdded(before);
+        }
+
+        @Override
+        public Editor childNodeAdded(String name, NodeState after)
+        {
+            return this;
+        }
+
+        @Override
+        public Editor childNodeChanged(String name, NodeState before, NodeState after)
+        {
+            return this;
+        }
+
+        @Override
+        public Editor childNodeDeleted(String name, NodeState before)
+        {
+            return this;
+        }
+
+        public Set<String> getModifiedAnswers()
+        {
+            return this.modifiedAnswers;
         }
     }
 
