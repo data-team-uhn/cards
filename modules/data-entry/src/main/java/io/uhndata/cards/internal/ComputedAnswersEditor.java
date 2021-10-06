@@ -17,7 +17,10 @@
 package io.uhndata.cards.internal;
 
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -434,7 +437,7 @@ public class ComputedAnswersEditor extends DefaultEditor
             Bindings env = engine.createBindings();
             parsedExpression.getInputs().forEach((key, value) -> env.put(key, value));
             Object result = engine.eval("(function(){" + parsedExpression.getExpression() + "})()", env);
-            return result == null ? null : String.valueOf(result);
+            return ValueFormatter.formatResult(result);
         } catch (ScriptException e) {
             LOGGER.warn("Evaluating the expression for question {} failed: {}", computedQuestionTree.getNode(),
                 e.getMessage(), e);
@@ -504,5 +507,34 @@ public class ComputedAnswersEditor extends DefaultEditor
             }
         }
         return result;
+    }
+
+    private static final class ValueFormatter
+    {
+        static String formatResult(Object rawResult)
+        {
+            if (rawResult == null) {
+                return null;
+            }
+
+            String formattedResult = String.valueOf(rawResult);
+
+            if (rawResult instanceof Double || rawResult instanceof Float) {
+                Number result = (Number) rawResult;
+                if (result.doubleValue() == result.longValue()) {
+                    formattedResult = String.valueOf(result.longValue());
+                } else {
+                    formattedResult = String.valueOf(result.doubleValue());
+                }
+            } else if (rawResult instanceof Date) {
+                formattedResult = DateTimeFormatter.ISO_OFFSET_DATE_TIME
+                    .format(((Date) rawResult).toInstant().atZone(ZoneId.systemDefault()));
+            } else if (rawResult instanceof Calendar) {
+                Calendar result = (Calendar) rawResult;
+                formattedResult = DateTimeFormatter.ISO_OFFSET_DATE_TIME
+                    .format(result.toInstant().atZone(result.getTimeZone().toZoneId()));
+            }
+            return formattedResult;
+        }
     }
 }
