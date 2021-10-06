@@ -78,76 +78,6 @@ public class ComputedAnswersEditor extends DefaultEditor
 
     private int numberOfCreatedQuestions;
 
-    private class QuestionTree
-    {
-        private Map<String, QuestionTree> children;
-
-        private Node node;
-
-        private boolean isQuestion;
-
-        QuestionTree(Node node, boolean isQuestion)
-        {
-            this.isQuestion = isQuestion;
-            this.node = node;
-            this.children = isQuestion ? null : new HashMap<>();
-        }
-
-        public Map<String, QuestionTree> getChildren()
-        {
-            return this.children;
-        }
-
-        public Node getNode()
-        {
-            return this.node;
-        }
-
-        public boolean isQuestion()
-        {
-            return this.isQuestion;
-        }
-
-        @Override
-        public String toString()
-        {
-            return "{question:" + this.isQuestion
-                + (this.children == null ? "" : " children: " + this.children.toString())
-                + (this.node == null ? "" : " node: " + this.node.toString()) + "}";
-        }
-    }
-
-    private class ParsedExpression
-    {
-        private final Map<String, Object> inputs;
-
-        private final String expression;
-
-        private final boolean missingValue;
-
-        ParsedExpression(Map<String, Object> inputs, String expression, boolean missingValue)
-        {
-            this.inputs = inputs;
-            this.expression = expression;
-            this.missingValue = missingValue;
-        }
-
-        public Map<String, Object> getInputs()
-        {
-            return this.inputs;
-        }
-
-        public String getExpression()
-        {
-            return this.expression;
-        }
-
-        public boolean hasMissingValue()
-        {
-            return this.missingValue;
-        }
-    }
-
     /**
      * Simple constructor.
      *
@@ -507,6 +437,76 @@ public class ComputedAnswersEditor extends DefaultEditor
             }
         }
         return result;
+    }
+
+    private static final class QuestionTree
+    {
+        private Map<String, QuestionTree> children;
+
+        private Node node;
+
+        private boolean isQuestion;
+
+        QuestionTree(Node node, boolean isQuestion)
+        {
+            this.isQuestion = isQuestion;
+            this.node = node;
+            this.children = isQuestion ? null : new HashMap<>();
+        }
+
+        public Map<String, QuestionTree> getChildren()
+        {
+            return this.children;
+        }
+
+        public Node getNode()
+        {
+            return this.node;
+        }
+
+        public boolean isQuestion()
+        {
+            return this.isQuestion;
+        }
+
+        @Override
+        public String toString()
+        {
+            return "{question:" + this.isQuestion
+                + (this.children == null ? "" : " children: " + this.children.toString())
+                + (this.node == null ? "" : " node: " + this.node.toString()) + "}";
+        }
+    }
+
+    private static final class ParsedExpression
+    {
+        private final Map<String, Object> inputs;
+
+        private final String expression;
+
+        private final boolean missingValue;
+
+        ParsedExpression(Map<String, Object> inputs, String expression, boolean missingValue)
+        {
+            this.inputs = inputs;
+            this.expression = expression;
+            this.missingValue = missingValue;
+        }
+
+        public Map<String, Object> getInputs()
+        {
+            return this.inputs;
+        }
+
+        public String getExpression()
+        {
+            return this.expression;
+        }
+
+        public boolean hasMissingValue()
+        {
+            return this.missingValue;
+        }
     }
 
     private static final class ValueFormatter
