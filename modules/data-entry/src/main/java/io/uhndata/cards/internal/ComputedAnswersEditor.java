@@ -70,8 +70,6 @@ public class ComputedAnswersEditor extends DefaultEditor
 
     private final ResourceResolver currentResourceResolver;
 
-    private final NodeBuilder versionableAncestor;
-
     private boolean isFormNode;
 
     private boolean formEditorHasChanged;
@@ -83,14 +81,11 @@ public class ComputedAnswersEditor extends DefaultEditor
      *
      * @param nodeBuilder the builder for the current node
      * @param resourceResolver a ResourceResolver object used to ultimately determine the logged-in user
-     * @param versionableAncestor a NodeBuilder for the ancestor object that is of type mix:lastModified
      */
-    public ComputedAnswersEditor(NodeBuilder nodeBuilder, ResourceResolver resourceResolver,
-        NodeBuilder versionableAncestor)
+    public ComputedAnswersEditor(NodeBuilder nodeBuilder, ResourceResolver resourceResolver)
     {
         this.currentNodeBuilder = nodeBuilder;
         this.currentResourceResolver = resourceResolver;
-        this.versionableAncestor = versionableAncestor;
     }
 
     @Override
@@ -117,8 +112,7 @@ public class ComputedAnswersEditor extends DefaultEditor
             return null;
         } else {
             return new ComputedAnswersEditor(this.currentNodeBuilder.getChildNode(name),
-                this.currentResourceResolver,
-                this.versionableAncestor);
+                this.currentResourceResolver);
         }
     }
 

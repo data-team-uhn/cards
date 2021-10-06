@@ -50,7 +50,7 @@ public class ComputedAnswersEditorProvider implements EditorProvider
             final ResourceResolver myResolver = this.rrf.getThreadResourceResolver();
             if (myResolver != null) {
                 // Each ComputedEditor maintains a state, so a new instance must be returned each time
-                return new ComputedAnswersEditor(builder, myResolver, null);
+                return new ComputedAnswersEditor(builder, myResolver);
             }
         }
         return null;
