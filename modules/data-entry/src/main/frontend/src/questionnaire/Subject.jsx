@@ -689,7 +689,14 @@ export function displayQuestion(entryDefinition, data, key, classes) {
         }
         break;
       default:
-        content = <>{ prettyPrintedAnswers.join(", ") }</>
+        if (entryDefinition.isRange) {
+          let limits = prettyPrintedAnswers.slice(0, 2);
+          // In case of invalid data (only one limit of the range is available)
+          if (limits.length == 1) limits.push("");
+          content = <>{ limits.join(" - ") }</>
+        } else {
+          content = <>{ prettyPrintedAnswers.join(", ") }</>
+        }
         break;
     }
     return (

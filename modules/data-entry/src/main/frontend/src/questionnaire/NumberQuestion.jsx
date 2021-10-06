@@ -25,6 +25,7 @@ import NumberFormat from 'react-number-format';
 import PropTypes from "prop-types";
 
 import Answer from "./Answer";
+import AnswerInstructions from "./AnswerInstructions";
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import MultipleChoice from "./MultipleChoice";
@@ -59,7 +60,7 @@ const DATA_TO_VALUE_TYPE = {
 //  maxValue: The maximum allowed input value
 //  minValue: The minimum allowed input value
 //  type: One of "integer" or "float" (default: "float")
-//  errorText: String to display when the input is not valid (default: "invalid input")
+//  errorText: String to display when the input is not valid (default: "")
 //  isRange: Whether or not to display a range instead of a single value
 //
 // Sample usage:
@@ -74,18 +75,18 @@ const DATA_TO_VALUE_TYPE = {
 //    errorText="Please enter an age above 18, or select the <18 option"
 //    />
 function NumberQuestion(props) {
-  const { existingAnswer, errorText, isRange, classes, ...rest} = props;
-  const { dataType, displayMode, minValue, maxValue } = {...props.questionDefinition, ...props};
+  const { existingAnswer, errorText, classes, ...rest} = props;
+  const { dataType, displayMode, minAnswers, minValue, maxValue, isRange } = {...props.questionDefinition, ...props};
   const answerNodeType = props.answerNodeType || DATA_TO_NODE_TYPE[dataType];
   const valueType = props.valueType || DATA_TO_VALUE_TYPE[dataType];
   const [ minMaxError, setMinMaxError ] = useState(false);
   const [ rangeError, setRangeError ] = useState(false);
 
-  const initialValue = existingAnswer ? existingAnswer[1].value : undefined;
+  const initialValue = Array.from(existingAnswer?.[1]?.value || []);
 
-  // The following two are only used if a default is not given, as we switch to handling values here
-  const [input, setInput] = useState(initialValue);
-  const [endInput, setEndInput] = useState(undefined);
+  // The following two are only used for range answers
+  const [lowerLimit, setLowerLimit] = useState(initialValue[0]);
+  const [upperLimit, setUpperLimit] = useState(initialValue[1]);
 
   // Callback function for our min/max
   let hasError = (text) => {
@@ -126,16 +127,26 @@ function NumberQuestion(props) {
     setMinMaxError(text && hasError(text));
   }
 
-  // Callback for a range input to check for errors on our self-stated input
-  let findRangeError = (inputToCheck, endInputToCheck) => {
+  React.useEffect(() => {
+    if (!isRange) return;
+    // Check for invalid range limits
     setMinMaxError(
-      inputToCheck && hasError(inputToCheck) ||
-      isRange && endInputToCheck && hasError(endInputToCheck)
+      lowerLimit && hasError(lowerLimit) ||
+      upperLimit && hasError(upperLimit)
     );
-    setRangeError(isRange && (Number(inputToCheck) > Number(endInputToCheck)));
+    setRangeError(
+       !lowerLimit && upperLimit ||
+       (Number(lowerLimit) > Number(upperLimit))
+    );
+  }, [lowerLimit, upperLimit]);
+
+  const answers = [];
+  // Only save ranges that have both limits specified
+  if (isRange && lowerLimit && !isNaN(+lowerLimit) && upperLimit && !isNaN(+upperLimit)) {
+    answers.push(["lower", lowerLimit]);
+    answers.push(["upper", upperLimit]);
   }
 
-  const answers = isRange ? [["start", input], ["end", endInput]] : [["start", input]];
   const textFieldProps = {
     min: minValue,
     max: maxValue,
@@ -169,12 +180,23 @@ function NumberQuestion(props) {
   }
 
   // Range error message
-  let rangeErrorMessage = "The range is invalid: the first number must be lower than the second number";
+  let rangeErrorMessage = "The range is invalid: the lower limit must be less than or equal to the upper limit";
+
+  let rangeDisplayFormatter = function(label, idx) {
+    if (idx > 0 || !(initialValue?.length)) return '';
+    let limits = initialValue.slice(0, 2);
+    // In case of invalid data (only one limit of the range is available)
+    if (limits.length == 1) {
+      limits.push("");
+    }
+    return limits.join(' - ');
+  }
 
   return (
     <Question
-      disableInstructions={!isRange}
-      currentAnswers={ typeof(input) != "undefined" && input != "" ? 1 : 0 }
+      defaultDisplayFormatter={isRange? rangeDisplayFormatter : undefined}
+      compact={isRange}
+      disableInstructions
       {...props}
       >
       { (minMaxError || rangeError) && errorText &&
@@ -199,6 +221,11 @@ function NumberQuestion(props) {
       }
       { isRange ?
         <>
+        <AnswerInstructions
+          minAnswers={Math.min(1, minAnswers)}
+          maxAnswers={0}
+          currentAnswers={lowerLimit && upperLimit ? 1 : 0}
+          />
         { rangeError &&
           <Typography
             component="p"
@@ -209,34 +236,32 @@ function NumberQuestion(props) {
           { rangeErrorMessage }
           </Typography>
         }
-        <TextField
-          className={classes.textField + " " + classes.answerField}
-          onChange={(event) => {
-            findRangeError(event.target.value, endInput);
-            setInput(event.target.value);
-          }}
-          inputProps={textFieldProps}
-          value={input}
-          InputProps={muiInputProps}
-          />
-          <Answer
-            answers={answers}
-            existingAnswer={existingAnswer}
-            answerNodeType={answerNodeType}
-            valueType={valueType}
-            {...rest}
-            />
-          <span className={classes.mdash}>&mdash;</span>
+        <div className={classes.range}>
           <TextField
-            className={classes.textField}
-            onChange={(event) => {
-              findRangeError(input, event.target.value);
-              setEndInput(event.target.value);
-            }}
+            helperText="Lower limit"
+            value={lowerLimit}
+            placeholder={typeof minValue != "undefined" ? `${minValue}` : ""}
+            onChange={event => setLowerLimit(event.target.value)}
             inputProps={textFieldProps}
-            value={endInput}
-            InputProps={muiInputProps}
+            InputProps={Object.assign({shrink: "true"}, muiInputProps)}
             />
+          <span className="separator">&mdash;</span>
+          <TextField
+            helperText="Upper limit"
+            value={upperLimit}
+            placeholder={typeof maxValue != "undefined" ? `${maxValue}` : ""}
+            onChange={event => setUpperLimit(event.target.value)}
+            inputProps={textFieldProps}
+            InputProps={Object.assign({shrink: "true"}, muiInputProps)}
+            />
+        </div>
+        <Answer
+          answers={answers}
+          existingAnswer={existingAnswer}
+          answerNodeType={answerNodeType}
+          valueType={valueType}
+          {...rest}
+          />
         </>
         :
         <MultipleChoice
@@ -303,7 +328,6 @@ NumberQuestion.propTypes = {
 
 NumberQuestion.defaultProps = {
   errorText: "",
-  isRange: false
 };
 
 const StyledNumberQuestion = withStyles(QuestionnaireStyle)(NumberQuestion)
