@@ -52,7 +52,6 @@ const questionnaireStyle = theme => ({
     informationCard: {
     },
     viewModeAnswers :{
-      paddingTop: theme.spacing(0),
       "& .MuiList-root": {
         padding: theme.spacing(0),
       },
@@ -476,6 +475,7 @@ const questionnaireStyle = theme => ({
         border: "1px solid " + theme.palette.divider,
         borderRadius: theme.spacing(3),
         display: "flex",
+        marginBottom: theme.spacing(1),
     },
     actionsMenuItem: {
         padding: theme.spacing(0,1),

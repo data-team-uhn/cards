@@ -24,6 +24,7 @@ import PropTypes from "prop-types";
 import {
   Breadcrumbs,
   Button,
+  Chip,
   CircularProgress,
   Dialog,
   DialogTitle,
@@ -100,6 +101,7 @@ function Form (props) {
   let [ actionsMenu, setActionsMenu ] = useState(null);
   let [ formContentOffsetTop, setFormContentOffsetTop ] = useState(contentOffset);
   let [ formContentOffsetBottom, setFormContentOffsetBottom ] = useState(0);
+  let [ incompleteAnswers, setIncompleteAnswers ] = useState([]);
 
   // Whether we reached the of the form (as opposed to a page that is not the last on a paginated form)
   let [ endReached, setEndReached ] = useState();
@@ -271,9 +273,17 @@ function Form (props) {
   let onClose = (event) => {
     // Redirect the user to the view form mode
     // ...but only after the Form has been saved and checked-in
+    let hash = window.location.hash ? indow.location.hash.substr(1) : '';
+    // Upon opening the invalid/incomplete form in view mode, scroll to the first invalid/incomplete question
+    if (!hash && incompleteAnswers.length > 0) {
+      hash = incompleteAnswers[0].question["@path"];
+    }
     saveDataWithCheckin(undefined, () => {
         removeWindowHandlers && removeWindowHandlers();
-        props.history.push(urlBase + formURL + window.location.hash);
+        props.history.push({
+          pathname: urlBase + formURL,
+          hash: hash
+        });
     });
   }
 
@@ -299,6 +309,28 @@ function Form (props) {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (data) {
+      let incompletes = getIncompleteAnswers(data, []);
+      setIncompleteAnswers(incompletes);
+    }
+  }, [data])
+
+  let getIncompleteAnswers = (obj, data) => {
+    for (var property in obj) {
+      if (obj.hasOwnProperty(property)) {
+        if (obj[property]["jcr:primaryType"] == "cards:AnswerSection" && (obj[property].statusFlags.includes('INCOMPLETE') || obj[property].statusFlags.includes('INVALID'))) {
+          getIncompleteAnswers(obj[property], data);
+        } else {
+          if (obj[property]["sling:resourceSuperType"] == "cards/Answer" && (obj[property].statusFlags.includes('INCOMPLETE') || obj[property].statusFlags.includes('INVALID'))) {
+            data.push(obj[property]);
+          }
+        }
+      }
+    }
+    return data;
+  }
 
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
@@ -397,6 +429,15 @@ function Form (props) {
           <FormattedText variant="subtitle1" color="textSecondary">
             {data?.questionnaire?.description}
           </FormattedText>
+          {incompleteAnswers.map( item => {
+               return <Chip
+                 key={item.question.text}
+                 label={item.question.text}
+                 variant="outlined"
+                 className={`${classes.subjectChip} ${classes[item.statusFlags[0] + "Chip"] || classes.DefaultChip}`}
+                 size="small"
+               />
+          })}
           <Breadcrumbs separator="·">
           {
             data && data['jcr:createdBy'] && data['jcr:created'] ?

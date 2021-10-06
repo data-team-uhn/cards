@@ -75,8 +75,8 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, o
     .find(([key, value]) => value["sling:resourceSuperType"] == "cards/Answer"
       && value["question"]["jcr:uuid"] === questionDefinition["jcr:uuid"]);
 
-  // Do not show anything if in view mode and no value is recorded yet
-  if (!(existingQuestionAnswer?.[1]["displayedValue"] || existingQuestionAnswer?.[1]["note"]) && !isEdit) {
+  // View mode should display all mandatory questions whether or not they have an answer
+  if (!existingQuestionAnswer?.[1].statusFlags.includes('INCOMPLETE') && (!(existingQuestionAnswer?.[1]["displayedValue"] || existingQuestionAnswer?.[1]["note"]) && !isEdit)) {
     return null;
   }
 
