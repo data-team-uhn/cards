@@ -1945,7 +1945,7 @@
 			</property>
 			<property>
 				<name>description</name>
-				<value># days</value>
+				<value>\# days</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -2290,7 +2290,7 @@
 			</property>
 			<property>
 				<name>description</name>
-				<value># of days</value>
+				<value>\# of days</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -8408,7 +8408,7 @@
 			</property>
 			<property>
 				<name>description</name>
-				<value>#days</value>
+				<value>\#days</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -14986,7 +14986,7 @@
 			</property>
 			<property>
 				<name>description</name>
-				<value>#days</value>
+				<value>\#days</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -15062,7 +15062,7 @@
 			</property>
 			<property>
 				<name>description</name>
-				<value>#days</value>
+				<value>\#days</value>
 				<type>String</type>
 			</property>
 			<property>

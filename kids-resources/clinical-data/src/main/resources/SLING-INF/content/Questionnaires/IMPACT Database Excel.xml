@@ -3411,7 +3411,12 @@
 				</property>
 				<property>
 					<name>description</name>
-					<value><![CDATA[if <30 days old. in kg. UsualRange: 0.01-9.99]]></value>
+					<value><![CDATA[if <30 days old. UsualRange: 0.01-9.99]]></value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>unitOfMeasurement</name>
+					<value>kg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -3495,7 +3500,12 @@
 				</property>
 				<property>
 					<name>description</name>
-					<value><![CDATA[if <1 year old. in weeks. UsualRange: 20-42]]></value>
+					<value><![CDATA[if <1 year old. UsualRange: 20-42]]></value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>unitOfMeasurement</name>
+					<value>weeks</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -5735,7 +5745,7 @@
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Heart Failure - 
+					<value>Heart Failure -
 New York Heart Association (NYHA) Functional Classification</value>
 					<type>String</type>
 				</property>
@@ -6383,8 +6393,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>cm. UsualRange: 5.00-225.00</value>
+				<name>unitOfMeasurement</name>
+				<value>cm</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -6395,6 +6405,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 			<property>
 				<name>Units</name>
 				<value>cm</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>UsualRange: 5.00-225.00</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -6422,8 +6437,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>kg. Usual Range: 1.00-200.00</value>
+				<name>unitOfMeasurement</name>
+				<value>kg</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -6434,6 +6449,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 			<property>
 				<name>Units</name>
 				<value>kg</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Usual Range: 1.00-200.00</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -6464,8 +6484,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mg/mL. UsualRange: 5.00-20.00</value>
+					<name>unitOfMeasurement</name>
+					<value>mg/mL</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -6476,6 +6496,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>g/dl</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 5.00-20.00</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -6600,8 +6625,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mg/mL. UsualRange: 0.10-9.00</value>
+					<name>unitOfMeasurement</name>
+					<value>mg/mL</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -6612,6 +6637,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>mg/dl</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 0.10-9.00</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -6733,8 +6763,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>%. UsualRange: 70-100. ValidRange. 0-100</value>
+				<name>unitOfMeasurement</name>
+				<value>%</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -6746,6 +6776,21 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<name>Units</name>
 				<value>%</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>UsualRange: 70-100</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minValue</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxValue</name>
+				<value>100</value>
+				<type>Long</type>
 			</property>
 		</node>
 		<node>
@@ -11747,8 +11792,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>secs. UsualRange: 0-800</value>
+					<name>unitOfMeasurement</name>
+					<value>secs</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -11759,6 +11804,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>seconds</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 0-800</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -12278,8 +12328,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>mL. UsualRange: 5-300</value>
+				<name>unitOfMeasurement</name>
+				<value>mL</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -12290,6 +12340,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 			<property>
 				<name>Units</name>
 				<value>ml</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>UsualRange: 5-300</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -12317,8 +12372,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>minutes. UsualRange: 0.1-120.0</value>
+				<name>unitOfMeasurement</name>
+				<value>minutes</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -12329,6 +12384,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 			<property>
 				<name>Units</name>
 				<value>minutes</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>UsualRange: 0.1-120.0</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -12682,8 +12742,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>%. UsualRange: 70.0-100.0</value>
+					<name>unitOfMeasurement</name>
+					<value>%</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -12694,6 +12754,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>%</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 70.0-100.0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -12818,8 +12883,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>%. UsualRange: 45-75</value>
+					<name>unitOfMeasurement</name>
+					<value>%</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -12830,6 +12895,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>%</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 45-75</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -12959,8 +13029,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mmHg. UsualRange: 50.0-220.0</value>
+					<name>unitOfMeasurement</name>
+					<value>mmHg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -12971,6 +13041,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>mmhg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 50.0-220.0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -13095,8 +13170,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mmHg. UsualRange: 1-20</value>
+					<name>unitOfMeasurement</name>
+					<value>mmHg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -13107,6 +13182,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>mmhg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 1-20</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -13231,8 +13311,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mmHg. UsualRange: 50-220</value>
+					<name>unitOfMeasurement</name>
+					<value>mmHg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -13243,6 +13323,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>mmhg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 50-220</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -13367,8 +13452,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mmHg. UsualRange 30-110</value>
+					<name>unitOfMeasurement</name>
+					<value>mmHg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -13379,6 +13464,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>mmhg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange 30-110</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -13503,8 +13593,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mmHg. UsualRange: 40-165</value>
+					<name>unitOfMeasurement</name>
+					<value>mmHg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -13515,6 +13605,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>mmhg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 40-165</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -13639,8 +13734,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mmHg. UsualRange: 5.0-100.0</value>
+					<name>unitOfMeasurement</name>
+					<value>mmHg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -13651,6 +13746,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>mmhg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 5.0-100.0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -13775,8 +13875,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mmHg. UsualRange: 10.0-40.5</value>
+					<name>unitOfMeasurement</name>
+					<value>mmHg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -13787,6 +13887,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>mmhg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 10.0-40.5</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -13911,8 +14016,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mmHg. UsualRange: 15-60, ValidRange: 1-220</value>
+					<name>unitOfMeasurement</name>
+					<value>mmHg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -13923,6 +14028,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>mmhg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 15-60, ValidRange: 1-220</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -14038,7 +14148,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 				</property>
 				<property>
 					<name>description</name>
-					<value>wood units*m^2. UsualRange: 0.1-8.0</value>
+					<value>wood units\*m^2. UsualRange: 0.1-8.0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -14173,8 +14283,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>L/min/m^2.. UsualRange: 2.5-4.2</value>
+					<name>unitOfMeasurement</name>
+					<value>L/min/m^2.</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -14185,6 +14295,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>l/min/m^2</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 2.5-4.2</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -14599,8 +14714,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mm. UsualRange: 0.1-50.0</value>
+					<name>unitOfMeasurement</name>
+					<value>mm</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -14611,6 +14726,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>mm</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 0.1-50.0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -16163,8 +16283,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mm. UsualRange: 0.1-25.0</value>
+					<name>unitOfMeasurement</name>
+					<value>mm</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -16175,6 +16295,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>mm</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 0.1-25.0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -16299,8 +16424,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mmHg. UsualRange: 0.1-100.0</value>
+					<name>unitOfMeasurement</name>
+					<value>mmHg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -16311,6 +16436,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>mmhg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 0.1-100.0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -16435,8 +16565,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mm. UsualRange: 0.1-25.0</value>
+					<name>unitOfMeasurement</name>
+					<value>mm</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -16447,6 +16577,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>mm</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 0.1-25.0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -16623,8 +16758,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mmHg. Usual Range: 0.1-100.0</value>
+					<name>unitOfMeasurement</name>
+					<value>mmHg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -16635,6 +16770,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>mmhg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Usual Range: 0.1-100.0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -16856,8 +16996,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mmHg. UsualRange: 0.1-100.0</value>
+					<name>unitOfMeasurement</name>
+					<value>mmHg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -16868,6 +17008,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>mmhg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 0.1-100.0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -16940,8 +17085,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mmHg. UsualRange: 0.1-100.0</value>
+					<name>unitOfMeasurement</name>
+					<value>mmHg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -16952,6 +17097,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>mmhg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 0.1-100.0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -17287,8 +17437,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>atm. UsualRange: 0-25</value>
+					<name>unitOfMeasurement</name>
+					<value>atm</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -17299,6 +17449,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>atm</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 0-25</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -17579,8 +17734,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mm. UsualRange: 0.1-25.0</value>
+					<name>unitOfMeasurement</name>
+					<value>mm</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -17596,6 +17751,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>mm</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 0.1-25.0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -17975,8 +18135,13 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>Long</type>
 			</property>
 			<property>
+				<name>unitOfMeasurement</name>
+				<value>mm</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>description</name>
-				<value>mm. used to select balloon. UsualRange: 0.10-25.0</value>
+				<value>used to select balloon. UsualRange: 0.10-25.0</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -18014,8 +18179,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>mmHg. UsualRange: 0.1-100.0</value>
+				<name>unitOfMeasurement</name>
+				<value>mmHg</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -18026,6 +18191,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 			<property>
 				<name>Units</name>
 				<value>mmhg</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>UsualRange: 0.1-100.0</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -18533,8 +18703,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>atm. usualRange: 0-25</value>
+				<name>unitOfMeasurement</name>
+				<value>atm</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -18545,6 +18715,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 			<property>
 				<name>Units</name>
 				<value>atm</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>usualRange: 0-25</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -18624,13 +18799,18 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>mmHg. UsualRange: 0.1-100.0</value>
+				<name>unitOfMeasurement</name>
+				<value>mmHg</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>dataType</name>
 				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>UsualRange: 0.1-100.0</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -18950,8 +19130,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>mm. UsualRange: 0-25</value>
+				<name>unitOfMeasurement</name>
+				<value>mm</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -18962,6 +19142,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 			<property>
 				<name>Units</name>
 				<value>mm</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>UsualRange: 0-25</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -18992,8 +19177,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mmHg. UsualRange: 0.1-200.0</value>
+					<name>unitOfMeasurement</name>
+					<value>mmHg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -19004,6 +19189,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>mmhg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 0.1-200.0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -19592,7 +19782,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>atm</value>
 				<type>String</type>
 			</property>
@@ -19671,8 +19861,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mmHg. UsualRange: 0.1-100.0</value>
+					<name>unitOfMeasurement</name>
+					<value>mmHg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -19683,6 +19873,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>mmhg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 0.1-100.0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -19879,8 +20074,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>mm. UsualRange: 0.1-25.0</value>
+				<name>unitOfMeasurement</name>
+				<value>mm</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -19891,6 +20086,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 			<property>
 				<name>Units</name>
 				<value>mm</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>UsualRange: 0.1-25.0</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -19918,8 +20118,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>mm. UsualRange: 0.1-25.0</value>
+				<name>unitOfMeasurement</name>
+				<value>mm</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -19930,6 +20130,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 			<property>
 				<name>Units</name>
 				<value>mm</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>UsualRange: 0.1-25.0</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -21037,8 +21242,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mmHg. UsualRange: 1.0-100.0</value>
+					<name>unitOfMeasurement</name>
+					<value>mmHg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -21049,6 +21254,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>mmhg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 1.0-100.0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -21121,8 +21331,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mmHg. UsualRange: 1.0-100.0</value>
+					<name>unitOfMeasurement</name>
+					<value>mmHg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -21133,6 +21343,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>mmhg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 1.0-100.0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -21205,8 +21420,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mmHg. UsualRange: 1.0-50.0</value>
+					<name>unitOfMeasurement</name>
+					<value>mmHg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -21217,6 +21432,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>mmhg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 1.0-50.0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -21289,8 +21509,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mmHg. UsualRange: 1.0-50.0</value>
+					<name>unitOfMeasurement</name>
+					<value>mmHg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -21301,6 +21521,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>mmhg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 1.0-50.0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -21370,8 +21595,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>mm. UsualRange: 1.0-35.0</value>
+				<name>unitOfMeasurement</name>
+				<value>mm</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -21382,6 +21607,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 			<property>
 				<name>Units</name>
 				<value>mm</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>UsualRange: 1.0-35.0</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -21409,8 +21639,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>mm. UsualRange: 1.0-35.0</value>
+				<name>unitOfMeasurement</name>
+				<value>mm</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -21421,6 +21651,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 			<property>
 				<name>Units</name>
 				<value>mm</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>UsualRange: 1.0-35.0</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -21448,8 +21683,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>mm. UsualRange: 1.0-25.0</value>
+				<name>unitOfMeasurement</name>
+				<value>mm</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -21460,6 +21695,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 			<property>
 				<name>Units</name>
 				<value>mm</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>UsualRange: 1.0-25.0</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -21499,8 +21739,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mmHg. UsualRange: 1.0-100.0</value>
+					<name>unitOfMeasurement</name>
+					<value>mmHg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -21511,6 +21751,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>mmhg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 1.0-100.0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -21583,8 +21828,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mmHg. UsualRange: 1.0-100.0</value>
+					<name>unitOfMeasurement</name>
+					<value>mmHg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -21595,6 +21840,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>mmhg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 1.0-100.0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -21667,8 +21917,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mmHg. UsualRange: 1.0-50.0</value>
+					<name>unitOfMeasurement</name>
+					<value>mmHg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -21679,6 +21929,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>mmhg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 1.0-50.0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -21751,8 +22006,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mmHg. UsualRange: 1.0-50.0</value>
+					<name>unitOfMeasurement</name>
+					<value>mmHg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -21763,6 +22018,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>mmhg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 1.0-50.0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -21832,8 +22092,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>mm. UsualRange: 1.0-35.0</value>
+				<name>unitOfMeasurement</name>
+				<value>mm</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -21844,6 +22104,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 			<property>
 				<name>Units</name>
 				<value>mm</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>UsualRange: 1.0-35.0</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -21871,8 +22136,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>mm. UsualRange: 1.0-35.0</value>
+				<name>unitOfMeasurement</name>
+				<value>mm</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -21883,6 +22148,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 			<property>
 				<name>Units</name>
 				<value>mm</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>UsualRange: 1.0-35.0</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -21910,8 +22180,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>mm. UsualRange: 1.0-25.0</value>
+				<name>unitOfMeasurement</name>
+				<value>mm</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -21922,6 +22192,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 			<property>
 				<name>Units</name>
 				<value>mm</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>UsualRange: 1.0-25.0</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -26397,7 +26672,91 @@ New York Heart Association (NYHA) Functional Classification</value>
 			</property>
 			<property>
 				<name>description</name>
-				<value>"Accessory pathway  - concealed", then Outcome of Ablation selections are:. If EP - Targeted Ablation Substrate was:</value>
+				<value>If EP - Targeted Ablation Substrate was:
+
+"Accessory pathway  - concealed", then Outcome of Ablation selections are:
+- Elimination of retrograde AP conduction
+- Persistence of retrograde conduction, without SVT
+- Persistence of retrograde conduction, with SVT
+- Unknown or Ambiguous
+
+"Accessory pathway - manifest (bidirectional WPW)", then Outcome of Ablation selections are:
+- Elimination of antegrade conduction (Elimination of retrograde conduction)
+- Elimination of antegrade conduction (Persistence of retrograde conduction, with SVT)
+- Elimination of antegrade conduction (Persistence of retrograde conduction, without SVT)
+- Persistence of antegrade conduction (Elimination of retrograde conduction, with SVT)
+- Persistence of antegrade conduction (Elimination of retrograde conduction, without SVT)
+- Persistence of antegrade conduction (Persistence of retrograde conduction, with SVT)
+- Persistence of antegrade conduction (Persistence of retrograde conduction, without SVT)
+- Unknown or Ambiguous
+
+"Accesory pathway manifest (antegrade only WPW)", then Outcome of Ablation selections are:
+- Elimination of antegrade AP conduction
+- Persistence of antegrade conduction, without SVT
+- Persistence of antegrade conduction, with SVT
+- Unknown or Ambiguous
+
+"Accessory pathway - manifest (unidirectional anterograde decremental pathway - Mahaim)", then Outcome of Ablation selections are:
+- Elimination of antegrade AP conduction
+- Persistence of antegrade conduction, without SVT O Persistence of antegrade conduction, with SVT
+- Unknown or Ambiguous
+
+"AV node", then Outcome of Ablation selections are:
+- Ablation ineffective
+- Attenuation of AV conduction
+- Elimination of AV conduction
+- Unknown or Ambiguous
+
+"AV node (fast pathway)", then Outcome of Ablation selections are:
+- Elimination of fast pathway conduction (Attenuation of AV conduction)
+- Elimination of fast pathway conduction (Elimination of AV conduction)
+- Elimination of fast pathway conduction (No change in AV conduction)
+- Persistence of fast pathway conduction (Attenuation of AV conduction)
+- Persistence of fast pathway conduction (Elimination of AV conduction)
+- Persistence of fast pathway conduction (No change in AV conduction)
+- Unknown or Ambiguous
+
+"AV node (slow pathway)", then Outcome of Ablation selections are:
+- Elimination of slow pathway conduction
+- Persistence of slow pathway conduction (Persistence of spontaneous or inducible SVT)
+- Persistence of slow pathway conduction (with single echoes but no SVT)
+- Persistence of slow pathway conduction (without echoes)
+- Unknown or Ambiguous
+
+"His bundle", then Outcome of Ablation selections are:
+- Elimination of ectopic focus/tachycardia (Attenuation of AV conduction)
+- Elimination of ectopic focus/tachycardia (Elimination of AV conduction)
+- Elimination of ectopic focus/tachycardia (No change in AV conduction)
+- Persistence of ectopic focus/tachycardia (Attenuation of AV conduction)
+- Persistence of ectopic focus/tachycardia (Elimination of AV conduction)
+- Persistence of fast pathway conduction (No change in AV conduction)
+- Unknown or Ambiguous
+
+"Myocardium - atrial", then Outcome of Ablation selections are:
+- Substrate eliminated
+- Substrate attenuated
+- Ablation ineffective
+- Unknown or Ambiguous
+
+"Myocardium - coronary sinus", then Outcome of Ablation selections are:
+- Substrate eliminated
+- Substrate attenuated
+- Ablation ineffective
+- Unknown or Ambiguous
+
+"Myocardium-ventricular", then Outcome of Ablation selections are:
+- Elimination of spontaneous/inducible VT
+- Persistence of spontaneous/inducible VT (with non- sustained VT)
+- Persistence of spontaneous/inducible VT (with sustained VT)
+- Unknown or Ambiguous
+
+"Sinus node", then Outcome of Ablation selections are:
+- Normalization of sinus node function
+- Persistent inappropriate sinus tachycardia
+- Sinus bradycardia or arrest
+- Unknown or Ambiguous
+
+</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -27086,8 +27445,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>seconds. if UsualRange: 0-6000</value>
+				<name>unitOfMeasurement</name>
+				<value>seconds</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -27098,6 +27457,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 			<property>
 				<name>Units</name>
 				<value>seconds</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>if UsualRange: 0-6000</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -27486,8 +27850,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mmHg. usualRange: 0.1-100.0</value>
+					<name>unitOfMeasurement</name>
+					<value>mmHg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -27498,6 +27862,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>mmhg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>usualRange: 0.1-100.0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -27570,8 +27939,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mmHg. usualRange: 0.1-100.0</value>
+					<name>unitOfMeasurement</name>
+					<value>mmHg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -27582,6 +27951,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>mmhg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>usualRange: 0.1-100.0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -27798,8 +28172,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>%. UsualRange: 5-70</value>
+					<name>unitOfMeasurement</name>
+					<value>%</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -27810,6 +28184,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>%</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 5-70</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -28078,8 +28457,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>%. UsualRange: 0-100</value>
+					<name>unitOfMeasurement</name>
+					<value>%</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -28090,6 +28469,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>%</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 0-100</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -28162,8 +28546,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>%. UsualRange: 0-100</value>
+					<name>unitOfMeasurement</name>
+					<value>%</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -28174,6 +28558,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>%</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 0-100</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -28562,8 +28951,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>%. UsualRange: 0-100</value>
+					<name>unitOfMeasurement</name>
+					<value>%</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -28574,6 +28963,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>%</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 0-100</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -28777,13 +29171,18 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mm. UsualRange: 1-30</value>
+					<name>unitOfMeasurement</name>
+					<value>mm</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 1-30</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -29048,8 +29447,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>mmHg. UsualRange: 0.1-100.0</value>
+				<name>unitOfMeasurement</name>
+				<value>mmHg</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -29060,6 +29459,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 			<property>
 				<name>Units</name>
 				<value>mmhg</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>UsualRange: 0.1-100.0</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -29087,8 +29491,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>mm. UsualRange:0.10-100.00</value>
+				<name>unitOfMeasurement</name>
+				<value>mm</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -29099,6 +29503,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 			<property>
 				<name>Units</name>
 				<value>mm</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>UsualRange:0.10-100.00</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -29294,13 +29703,18 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mm. UsualRange: 0.1-25.0</value>
+					<name>unitOfMeasurement</name>
+					<value>mm</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 0.1-25.0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -29545,8 +29959,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mm. UsualRange: -0.1-25.0</value>
+					<name>unitOfMeasurement</name>
+					<value>mm</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -29557,6 +29971,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>mm</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: -0.1-25.0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -29629,8 +30048,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mm. UsualRange: -0.1-25.0</value>
+					<name>unitOfMeasurement</name>
+					<value>mm</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -29641,6 +30060,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>mm</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: -0.1-25.0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -29697,43 +30121,93 @@ New York Heart Association (NYHA) Functional Classification</value>
 			</node>
 		</node>
 		<node>
-			<name>tpvrhighinflaperf</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>TPVR - Highest pressure inflation performed</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>atm. TPVR - Pre-dilation performed selection was "Yes". UsualRange: 1-25</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>decimal</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>Units</name>
-				<value>atm</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minValue</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>maxValue</name>
-				<value>100</value>
-				<type>Long</type>
-			</property>
+			<name>tpvrhighinflaperfSection</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
+			<node>
+				<name>tpvrhighinflaperf</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>TPVR - Highest pressure inflation performed</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>unitOfMeasurement</name>
+					<value>atm</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>decimal</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>Units</name>
+					<value>atm</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 1-25</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>minValue</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>maxValue</name>
+					<value>100</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>condition</name>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>tpvrpredilationperf</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>Yes</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
 		</node>
 		<node>
 			<name>tpvrnewprestent</name>
@@ -29960,8 +30434,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>mm. UsualRange: 0.1-25.0</value>
+				<name>unitOfMeasurement</name>
+				<value>mm</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -29972,6 +30446,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 			<property>
 				<name>Units</name>
 				<value>mm</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>UsualRange: 0.1-25.0</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -30151,8 +30630,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mm. UsualRange: 0.1-25.0</value>
+					<name>unitOfMeasurement</name>
+					<value>mm</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -30163,6 +30642,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>mm</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 0.1-25.0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -30235,8 +30719,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mmHg. UsualRange: 1-25</value>
+					<name>unitOfMeasurement</name>
+					<value>mmHg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -30247,6 +30731,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>mmhg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 1-25</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -30319,8 +30808,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mmHg. UsualRange: 0.1-100.0</value>
+					<name>unitOfMeasurement</name>
+					<value>mmHg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -30331,6 +30820,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>mmhg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 0.1-100.0</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -30547,8 +31041,8 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mm. UsualRange: 0.10-100.00</value>
+					<name>unitOfMeasurement</name>
+					<value>mm</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -30559,6 +31053,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<property>
 					<name>Units</name>
 					<value>mm</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 0.10-100.00</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -30926,8 +31425,8 @@ Other</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mmHg. UsualRange: 0.10-100.00</value>
+					<name>unitOfMeasurement</name>
+					<value>mmHg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -30938,6 +31437,11 @@ Other</value>
 				<property>
 					<name>Units</name>
 					<value>mmhg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 0.10-100.00</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -31010,8 +31514,8 @@ Other</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mmHg. UsualRange: 0.10-100.00</value>
+					<name>unitOfMeasurement</name>
+					<value>mmHg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -31022,6 +31526,11 @@ Other</value>
 				<property>
 					<name>Units</name>
 					<value>mmhg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>UsualRange: 0.10-100.00</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -37168,7 +37677,7 @@ Other</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>Days</value>
 					<type>String</type>
 				</property>
@@ -40134,8 +40643,8 @@ Other</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>mmHg. UsualRange: 0.10-100.00</value>
+				<name>unitOfMeasurement</name>
+				<value>mmHg</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -40146,6 +40655,11 @@ Other</value>
 			<property>
 				<name>Units</name>
 				<value>mmhg</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>UsualRange: 0.10-100.00</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -40173,8 +40687,8 @@ Other</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>mmHg. UsualRange: 0.10-100.00</value>
+				<name>unitOfMeasurement</name>
+				<value>mmHg</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -40185,6 +40699,11 @@ Other</value>
 			<property>
 				<name>Units</name>
 				<value>mmhg</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>UsualRange: 0.10-100.00</value>
 				<type>String</type>
 			</property>
 			<property>

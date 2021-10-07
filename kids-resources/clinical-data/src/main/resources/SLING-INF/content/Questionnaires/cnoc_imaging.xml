@@ -50,11 +50,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Patientid</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>head_imaging_dt</name>
@@ -79,11 +74,6 @@
 			<value>date</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Date of head imaging</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>head_imaging_type_e</name>
@@ -106,11 +96,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Head imaging type</value>
 			<type>String</type>
 		</property>
 		<node>

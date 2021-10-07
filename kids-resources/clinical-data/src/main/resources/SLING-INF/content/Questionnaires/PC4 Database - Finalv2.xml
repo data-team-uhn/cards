@@ -1308,7 +1308,7 @@
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>Weeks</value>
 					<type>String</type>
 				</property>
@@ -1438,7 +1438,7 @@
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>Kg</value>
 					<type>String</type>
 				</property>
@@ -1504,7 +1504,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>cm</value>
 				<type>String</type>
 			</property>
@@ -1528,7 +1528,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>cm</value>
 				<type>String</type>
 			</property>
@@ -15097,7 +15097,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>Kg</value>
 				<type>String</type>
 			</property>
@@ -15121,7 +15121,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>cm</value>
 				<type>String</type>
 			</property>
@@ -15145,7 +15145,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>Days</value>
 				<type>String</type>
 			</property>
@@ -20739,7 +20739,7 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>minutes</value>
 					<type>String</type>
 				</property>
@@ -21011,7 +21011,7 @@ Done With CPB</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>minutes</value>
 					<type>String</type>
 				</property>
@@ -21126,7 +21126,7 @@ Done With CPB</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>minutes</value>
 					<type>String</type>
 				</property>
@@ -21384,7 +21384,7 @@ Done With CPB</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>Minutes</value>
 					<type>String</type>
 				</property>
@@ -28258,7 +28258,7 @@ Done With CPB</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>days</value>
 				<type>String</type>
 			</property>
@@ -28335,7 +28335,7 @@ Done With CPB</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>days</value>
 				<type>String</type>
 			</property>
@@ -34136,7 +34136,7 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>Kg</value>
 				<type>String</type>
 			</property>
@@ -34751,7 +34751,7 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>Kg</value>
 				<type>String</type>
 			</property>
@@ -47559,11 +47559,6 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 			<value>Criteria met at initial date time</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>recurrent</name>
-			<value>True</value>
-			<type>Boolean</type>
-		</property>
 		<node>
 			<name>complcosvisSection</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
@@ -55895,7 +55890,7 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value><![CDATA[ALT>500]]></value>
 				<type>String</type>
 			</property>
@@ -58518,7 +58513,7 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>mg/dL</value>
 					<type>String</type>
 				</property>
@@ -60321,7 +60316,7 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>mg/dL</value>
 					<type>String</type>
 				</property>
@@ -60694,11 +60689,6 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 			<name>label</name>
 			<value><![CDATA[FEEDING - IF PATIENT AGE <30 DAYS AT HOSP ADMISSION]]></value>
 			<type>String</type>
-		</property>
-		<property>
-			<name>recurrent</name>
-			<value>True</value>
-			<type>Boolean</type>
 		</property>
 		<node>
 			<name>rsfirstneonateSection</name>
@@ -63408,8 +63398,13 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 					<type>Long</type>
 				</property>
 				<property>
+					<name>unitOfMeasurement</name>
+					<value>mcg/kg/min</value>
+					<type>String</type>
+				</property>
+				<property>
 					<name>description</name>
-					<value>mcg/kg/min. indicated for each time point</value>
+					<value>indicated for each time point</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -63477,8 +63472,13 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 					<type>Long</type>
 				</property>
 				<property>
+					<name>unitOfMeasurement</name>
+					<value>mcg/kg/min</value>
+					<type>String</type>
+				</property>
+				<property>
 					<name>description</name>
-					<value>mcg/kg/min. indicated for each time point</value>
+					<value>indicated for each time point</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -63546,8 +63546,13 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 					<type>Long</type>
 				</property>
 				<property>
+					<name>unitOfMeasurement</name>
+					<value>mcg/kg/min</value>
+					<type>String</type>
+				</property>
+				<property>
 					<name>description</name>
-					<value>mcg/kg/min. indicated for each time point</value>
+					<value>indicated for each time point</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -63615,8 +63620,13 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 					<type>Long</type>
 				</property>
 				<property>
+					<name>unitOfMeasurement</name>
+					<value>mcg/kg/min</value>
+					<type>String</type>
+				</property>
+				<property>
 					<name>description</name>
-					<value>mcg/kg/min. indicated for each time point</value>
+					<value>indicated for each time point</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -63684,8 +63694,13 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 					<type>Long</type>
 				</property>
 				<property>
+					<name>unitOfMeasurement</name>
+					<value>mcg/kg/min</value>
+					<type>String</type>
+				</property>
+				<property>
 					<name>description</name>
-					<value>mcg/kg/min. indicated for each time point</value>
+					<value>indicated for each time point</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -63753,8 +63768,13 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 					<type>Long</type>
 				</property>
 				<property>
+					<name>unitOfMeasurement</name>
+					<value>mcg/kg/min</value>
+					<type>String</type>
+				</property>
+				<property>
 					<name>description</name>
-					<value>mcg/kg/min. indicated for each time point</value>
+					<value>indicated for each time point</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -66585,8 +66605,13 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 					<type>Long</type>
 				</property>
 				<property>
+					<name>unitOfMeasurement</name>
+					<value>mcg/kg/min</value>
+					<type>String</type>
+				</property>
+				<property>
 					<name>description</name>
-					<value>mcg/kg/min. indicated for each time point</value>
+					<value>indicated for each time point</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -66695,8 +66720,13 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 					<type>Long</type>
 				</property>
 				<property>
+					<name>unitOfMeasurement</name>
+					<value>mcg/kg/min</value>
+					<type>String</type>
+				</property>
+				<property>
 					<name>description</name>
-					<value>mcg/kg/min. indicated for each time point</value>
+					<value>indicated for each time point</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -66805,8 +66835,13 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 					<type>Long</type>
 				</property>
 				<property>
+					<name>unitOfMeasurement</name>
+					<value>mcg/kg/min</value>
+					<type>String</type>
+				</property>
+				<property>
 					<name>description</name>
-					<value>mcg/kg/min. indicated for each time point</value>
+					<value>indicated for each time point</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -66915,8 +66950,13 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 					<type>Long</type>
 				</property>
 				<property>
+					<name>unitOfMeasurement</name>
+					<value>mcg/kg/min</value>
+					<type>String</type>
+				</property>
+				<property>
 					<name>description</name>
-					<value>mcg/kg/min. indicated for each time point</value>
+					<value>indicated for each time point</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -67025,8 +67065,13 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 					<type>Long</type>
 				</property>
 				<property>
+					<name>unitOfMeasurement</name>
+					<value>mcg/kg/min</value>
+					<type>String</type>
+				</property>
+				<property>
 					<name>description</name>
-					<value>mcg/kg/min. indicated for each time point</value>
+					<value>indicated for each time point</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -67135,8 +67180,13 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 					<type>Long</type>
 				</property>
 				<property>
+					<name>unitOfMeasurement</name>
+					<value>mcg/kg/min</value>
+					<type>String</type>
+				</property>
+				<property>
 					<name>description</name>
-					<value>mcg/kg/min. indicated for each time point</value>
+					<value>indicated for each time point</value>
 					<type>String</type>
 				</property>
 				<property>

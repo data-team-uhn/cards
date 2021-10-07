@@ -2918,28 +2918,78 @@ Notification.</value>
 		</node>
 	</node>
 	<node>
-		<name>poiwgt</name>
-		<primaryNodeType>cards:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>Birthweight</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>kg. Number, 3 decimal places, min 1, max 15). show if poiwgtyn=1</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>text</value>
-			<type>String</type>
-		</property>
+		<name>poiwgtSection</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<node>
+			<name>poiwgt</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Birthweight</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>kg</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Number, 3 decimal places, min 1, max 15)</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>condition</name>
+			<primaryNodeType>cards:Conditional</primaryNodeType>
+			<property>
+				<name>comparator</name>
+				<value>=</value>
+				<type>String</type>
+			</property>
+			<node>
+				<name>operandA</name>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>poiwgtyn</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>operandB</name>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>1</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>False</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+		</node>
 	</node>
 	<node>
 		<name>poigayn</name>
@@ -2994,52 +3044,147 @@ Notification.</value>
 		</node>
 	</node>
 	<node>
-		<name>poigaw</name>
-		<primaryNodeType>cards:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>Gestational Age at birth:</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>weeks. Enter 40 weeks 0 days if chart only says "full term". Show if poigayn=1</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>decimal</value>
-			<type>String</type>
-		</property>
+		<name>poigawSection</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<node>
+			<name>poigaw</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Gestational Age at birth:</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>weeks</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Enter 40 weeks 0 days if chart only says "full term"</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>condition</name>
+			<primaryNodeType>cards:Conditional</primaryNodeType>
+			<property>
+				<name>comparator</name>
+				<value>=</value>
+				<type>String</type>
+			</property>
+			<node>
+				<name>operandA</name>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>poigayn</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>operandB</name>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>1</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>False</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+		</node>
 	</node>
 	<node>
-		<name>poigad</name>
-		<primaryNodeType>cards:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>Gestational Age at birth:</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>days. Show if poigayn=1</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>decimal</value>
-			<type>String</type>
-		</property>
+		<name>poigadSection</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<node>
+			<name>poigad</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Gestational Age at birth:</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>days</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>condition</name>
+			<primaryNodeType>cards:Conditional</primaryNodeType>
+			<property>
+				<name>comparator</name>
+				<value>=</value>
+				<type>String</type>
+			</property>
+			<node>
+				<name>operandA</name>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>poigayn</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>operandB</name>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>1</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>False</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+		</node>
 	</node>
 	<node>
 		<name>poifdSection</name>
@@ -8738,7 +8883,7 @@ early spontaneous labor?</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>Minutes</value>
 				<type>String</type>
 			</property>
@@ -9035,7 +9180,7 @@ early spontaneous labor?</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>Minutes</value>
 				<type>String</type>
 			</property>
@@ -9283,7 +9428,7 @@ early spontaneous labor?</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>Minutes</value>
 				<type>String</type>
 			</property>
@@ -9531,7 +9676,7 @@ early spontaneous labor?</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>Minutes</value>
 				<type>String</type>
 			</property>
@@ -22562,7 +22707,7 @@ p]=3</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>mmHg</value>
 				<type>String</type>
 			</property>
@@ -22876,7 +23021,7 @@ p]=3</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>mmHg</value>
 				<type>String</type>
 			</property>
@@ -23192,7 +23337,7 @@ p]=3</value>
 			<type>Long</type>
 		</property>
 		<property>
-			<name>description</name>
+			<name>unitOfMeasurement</name>
 			<value>kg</value>
 			<type>String</type>
 		</property>
@@ -23271,13 +23416,18 @@ p]=3</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>cm. Number 1 decimal place, min 40, max 100, max 5 characters</value>
+				<name>unitOfMeasurement</name>
+				<value>cm</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>dataType</name>
 				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Number 1 decimal place, min 40, max 100, max 5 characters</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -23868,13 +24018,18 @@ p]=3</value>
 			<type>Long</type>
 		</property>
 		<property>
-			<name>description</name>
-			<value>Kcal/oz. Min 19, max 35, max 2 characters</value>
+			<name>unitOfMeasurement</name>
+			<value>Kcal/oz</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Min 19, max 35, max 2 characters</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -23892,13 +24047,18 @@ p]=3</value>
 			<type>Long</type>
 		</property>
 		<property>
-			<name>description</name>
-			<value>kcal/kg/24h. Min 60, max 160, max 3 characters</value>
+			<name>unitOfMeasurement</name>
+			<value>kcal/kg/24h</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Min 60, max 160, max 3 characters</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -24709,7 +24869,7 @@ p]=3</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>mcg/kg</value>
 				<type>String</type>
 			</property>
@@ -26828,7 +26988,7 @@ p]=3</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>mmHg</value>
 					<type>String</type>
 				</property>
@@ -27142,7 +27302,7 @@ p]=3</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>mmHg</value>
 					<type>String</type>
 				</property>
@@ -42751,7 +42911,7 @@ p]=3</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>mmHg</value>
 					<type>String</type>
 				</property>
@@ -42983,7 +43143,7 @@ p]=3</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>mmHg</value>
 					<type>String</type>
 				</property>
@@ -44609,7 +44769,7 @@ p]=3</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>mcg/kg</value>
 					<type>String</type>
 				</property>
@@ -46253,13 +46413,18 @@ p]=3</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>kg. min 1, max 15, max 6 characters</value>
+				<name>unitOfMeasurement</name>
+				<value>kg</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>dataType</name>
 				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>min 1, max 15, max 6 characters</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -46332,7 +46497,7 @@ p]=3</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>cm</value>
 					<type>String</type>
 				</property>
@@ -48249,7 +48414,7 @@ p]=3</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>mmHg</value>
 					<type>String</type>
 				</property>
@@ -48436,7 +48601,7 @@ p]=3</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>mmHg</value>
 					<type>String</type>
 				</property>
@@ -49177,7 +49342,7 @@ p]=3</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>Minutes</value>
 					<type>String</type>
 				</property>
@@ -49560,7 +49725,7 @@ p]=3</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>Minutes</value>
 					<type>String</type>
 				</property>
@@ -49726,7 +49891,7 @@ p]=3</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>Minutes</value>
 					<type>String</type>
 				</property>
@@ -49892,7 +50057,7 @@ p]=3</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>Minutes</value>
 					<type>String</type>
 				</property>
@@ -60795,7 +60960,7 @@ p]=3</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>mmHg</value>
 					<type>String</type>
 				</property>
@@ -61696,13 +61861,18 @@ p]=3</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>kg. Min 1, max 15,  max 6 characters)</value>
+				<name>unitOfMeasurement</name>
+				<value>kg</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>dataType</name>
 				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Min 1, max 15,  max 6 characters)</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -61775,7 +61945,7 @@ p]=3</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>cm</value>
 					<type>String</type>
 				</property>
@@ -68845,7 +69015,7 @@ Other, specify: {dsstatreas2}</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>kg</value>
 					<type>String</type>
 				</property>
@@ -69122,7 +69292,7 @@ Other, specify: {dsstatreas2}</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>cm</value>
 					<type>String</type>
 				</property>
@@ -80580,7 +80750,7 @@ Echo date unknown</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>mmHg</value>
 					<type>String</type>
 				</property>
