@@ -50,11 +50,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Patientid</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>AdaptiveBehaviorAssessmentSystem</name>
@@ -85,11 +80,6 @@
 			<property>
 				<name>dataType</name>
 				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>Were all ABAS scores able to be completed</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -145,11 +135,6 @@
 				<property>
 					<name>dataType</name>
 					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Indicate why ABAS scores were not able to be calculated</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -293,11 +278,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Who filled out ABAS questionnaire</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>BioParent</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -406,11 +386,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ABAS communication score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -459,11 +434,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ABAS communication raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -533,11 +503,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ABAS communication scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -611,11 +576,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ABAS community score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -664,11 +624,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ABAS community raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -738,11 +693,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ABAS community scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -816,11 +766,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ABAS composite sum score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -869,11 +814,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ABAS composite sum raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -943,11 +883,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ABAS composite sum scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1021,11 +956,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ABAS conceptual score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -1074,11 +1004,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ABAS conceptual sum of scaled (raw) score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1148,11 +1073,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ABAS conceptual Standard (scaled) score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1226,11 +1146,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ABAS health and safety score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -1279,11 +1194,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ABAS health and safety raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1353,11 +1263,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ABAS health and safety scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1431,11 +1336,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ABAS home living score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -1484,11 +1384,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ABAS home living raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1558,11 +1453,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ABAS home living scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1636,11 +1526,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ABAS leisure score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -1689,11 +1574,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ABAS leisure raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1763,11 +1643,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ABAS leisure scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1841,11 +1716,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ABAS motor score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -1894,11 +1764,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ABAS motor raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1968,11 +1833,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ABAS motor scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2046,11 +1906,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ABAS practical sum score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -2099,11 +1954,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ABAS practical sum of scaled (raw) score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2173,11 +2023,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ABAS practical standard (sum) scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2251,11 +2096,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ABAS pre-academics score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -2304,11 +2144,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ABAS pre-academics raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2378,11 +2213,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ABAS pre-academics scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2456,11 +2286,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ABAS self-care score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -2509,11 +2334,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ABAS self-care raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2583,11 +2403,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ABAS self-care scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2661,11 +2476,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ABAS self-direction score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -2714,11 +2524,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ABAS self-direction raw score </value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2788,11 +2593,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ABAS self-direction scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2866,11 +2666,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ABAS social score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -2919,11 +2714,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ABAS social raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2996,11 +2786,6 @@
 					<type>String</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>ABAS social scaled score</value>
-					<type>String</type>
-				</property>
-				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -3067,11 +2852,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ABAS social Standard (sum) scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -3145,11 +2925,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ABAS social scaled sum score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -3198,11 +2973,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ABAS social sum of scaled (raw) score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -3285,11 +3055,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Were all BASC scores able to be calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -3343,11 +3108,6 @@
 				<property>
 					<name>dataType</name>
 					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Reason BASC scores were not able to be calculated</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -3491,11 +3251,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Who filled out the BASC questionnaire?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>BioParent</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -3604,11 +3359,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was BASC activities of daily living score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -3657,11 +3407,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BASC activities of daily living raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -3731,11 +3476,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BASC activities of daily living T(scaled) score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -3809,11 +3549,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was BASC adaptability score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -3862,11 +3597,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BASC adaptability raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -3936,11 +3666,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BASC adaptability T (scaled) score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -4014,11 +3739,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was BASC adaptive skills score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -4067,11 +3787,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BASC adaptive skills raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -4141,11 +3856,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BASC adaptive skills T (scaled)score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -4219,11 +3929,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>WAS BASC aggression score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -4272,11 +3977,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BASC aggression raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -4346,11 +4046,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BASC aggression T (scaled) score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -4424,11 +4119,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was BASC anxiety score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -4477,11 +4167,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BASC anxiety raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -4551,11 +4236,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BASC anxiety T (scaled) score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -4629,11 +4309,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was BASC attention problems score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -4682,11 +4357,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BASC attention problems raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -4756,11 +4426,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BASC attention problems T (scaled) score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -4834,11 +4499,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was BASC atypicality score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -4887,11 +4547,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BASC atypicality raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -4961,11 +4616,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BASC atypicality T (scaled) score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -5039,11 +4689,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was BASC behavioral symptoms index score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -5092,11 +4737,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BASC behavioral symptoms index raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -5166,11 +4806,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BASC behavioral symptoms index T (scaled) score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -5244,11 +4879,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was BASC functional communication score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -5297,11 +4927,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BASC functional communication raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -5371,11 +4996,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BASC functional communication T (scaled) score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -5449,11 +5069,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was BASC consistency scale score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -5507,11 +5122,6 @@
 				<property>
 					<name>dataType</name>
 					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BASC consistency scale</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -5627,11 +5237,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was BASC depression score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -5680,11 +5285,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BASC depression raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -5754,11 +5354,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BASC depression T (scaled) score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -5832,11 +5427,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was BASC externalizing problems score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -5885,11 +5475,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BASC externalizing raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -5959,11 +5544,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BASC externalizing T (scaled) score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -6037,11 +5617,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was BASC F-index score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -6095,11 +5670,6 @@
 				<property>
 					<name>dataType</name>
 					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>F-index</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -6215,11 +5785,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was BASC hyperactivity score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -6268,11 +5833,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BASC hyperactivity raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -6342,11 +5902,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BASC hyperactivity T (scaled) score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -6420,11 +5975,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was BASC internalizing problems score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -6473,11 +6023,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BASC internalizing raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -6547,11 +6092,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BASC internalizing T (scaled) score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -6625,11 +6165,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was BASC response pattern score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -6683,11 +6218,6 @@
 				<property>
 					<name>dataType</name>
 					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BASC response pattern</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -6803,11 +6333,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was BASC social skills score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -6856,11 +6381,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BASC social skills raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -6930,11 +6450,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BASC social skills T (scaled) score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -7008,11 +6523,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was BASC somatization score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -7061,11 +6571,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BASC somatization raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -7135,11 +6640,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BASC somatization T (scaled) score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -7213,11 +6713,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was BASC withdrawal score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -7266,11 +6761,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BASC withdrawal raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -7340,11 +6830,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BASC withdrawal T (scaled) score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -7427,11 +6912,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Were all other BRIEF-P scores able to be calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -7485,11 +6965,6 @@
 				<property>
 					<name>dataType</name>
 					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Please indicate why BRIEF-P scores were not able to be calculated</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -7633,11 +7108,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Who filled out the BRIEF-P questionnaire?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>BioParent</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -7746,11 +7216,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was BRIEF-P EMI score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -7799,11 +7264,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BRIEF-P EMI raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -7873,11 +7333,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BRIEF-P EMI scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -7951,11 +7406,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was BRIEF-P emotional control score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -8004,11 +7454,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BRIEF-P emotional control raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -8078,11 +7523,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BRIEF-P emotional control scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -8156,11 +7596,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was BRIEF-P FI score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -8209,11 +7644,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BRIEF-P FI raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -8283,11 +7713,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BRIEF-P FI scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -8361,11 +7786,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was BRIEF-P GEC score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -8414,11 +7834,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BRIEF-P GEC raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -8488,11 +7903,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BRIEF-P GEC scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -8566,11 +7976,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was BRIEF-P incosistency scale score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -8624,11 +8029,6 @@
 				<property>
 					<name>dataType</name>
 					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BRIEF-P inconsistency scale score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -8758,11 +8158,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was Brief-P inhibit score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -8811,11 +8206,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BRIEF-P inhibit raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -8885,11 +8275,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BRIEF-P inhibit scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -8963,11 +8348,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was BRIEF-P ISCI score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -9016,11 +8396,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BRIEF-P ISCI raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -9090,11 +8465,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BRIEF-P ISCI scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -9168,11 +8538,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was BRIEF-P working memory score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -9221,11 +8586,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BRIEF-P working memory raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -9295,11 +8655,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BRIEF-P working memory scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -9373,11 +8728,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was BRIEF-P negativity scale score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -9431,11 +8781,6 @@
 				<property>
 					<name>dataType</name>
 					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BRIEF-P negativity scale score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -9551,11 +8896,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was BRIEF-P plan/organize score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -9604,11 +8944,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BRIEF-P plan/organize raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -9678,11 +9013,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BRIEF-P plan/organize scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -9756,11 +9086,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was BRIEF-P shift score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -9809,11 +9134,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BRIEF-P shift raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -9883,11 +9203,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>BRIEF-P shift scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -9970,11 +9285,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Were all BSID-III scores able to be calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -10028,11 +9338,6 @@
 				<property>
 					<name>dataType</name>
 					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Indicate why all scores were not able to be calculated</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -10176,11 +9481,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Please specify BSID version</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>BSID3</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -10233,11 +9533,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Were BSID scores adjusted to gestational age</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -10284,8 +9579,8 @@
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>in days. Adjusted age (in days)</value>
+					<name>unitOfMeasurement</name>
+					<value>days</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -10358,8 +9653,8 @@
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>in months. Adjusted age (in months)</value>
+					<name>unitOfMeasurement</name>
+					<value>months</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -10438,11 +9733,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was cognitive score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -10491,11 +9781,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Raw cognitive score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -10565,11 +9850,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Scaled cognitive score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -10643,11 +9923,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was cognitive standard score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -10696,11 +9971,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Cognitive standard score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -10774,11 +10044,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was expressive communication score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -10827,11 +10092,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Expressive communication raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -10901,11 +10161,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Expressive communication scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -10979,11 +10234,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was fine motor score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -11032,11 +10282,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Fine motor raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -11106,11 +10351,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Fine motor scaled score </value>
 					<type>String</type>
 				</property>
 				<property>
@@ -11184,11 +10424,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was gross motor score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -11237,11 +10472,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Gross motor raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -11311,11 +10541,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Gross motor scaled score </value>
 					<type>String</type>
 				</property>
 				<property>
@@ -11389,11 +10614,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was language standard score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -11442,11 +10662,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Language standard score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -11520,11 +10735,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was motor standard score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -11573,11 +10783,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Motor standard score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -11646,11 +10851,6 @@
 				<value>decimal</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Receptive communication scaled score</value>
-				<type>String</type>
-			</property>
 		</node>
 		<node>
 			<name>bsid3_receptive_raw_b</name>
@@ -11673,11 +10873,6 @@
 			<property>
 				<name>dataType</name>
 				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>Was receptive communication score calculated</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -11728,11 +10923,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Receptive communication raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -11810,11 +11000,6 @@
 				<value>decimal</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>BSRA-3 Standard Score</value>
-				<type>String</type>
-			</property>
 		</node>
 		<node>
 			<name>bsra_readiness_raw_no</name>
@@ -11832,11 +11017,6 @@
 			<property>
 				<name>dataType</name>
 				<value>decimal</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>BSRA-3 composite raw score</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -11880,11 +11060,6 @@
 			<property>
 				<name>dataType</name>
 				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>How many caregivers filled out DASS-22</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -11931,7 +11106,7 @@
 			</property>
 			<property>
 				<name>description</name>
-				<value>taker 1. Were all DASS-21 scores calculated (taker 1)</value>
+				<value>taker 1</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -11991,7 +11166,7 @@
 				</property>
 				<property>
 					<name>description</name>
-					<value>taker 1. Reason DASS-21 score not calculated (taker 1)</value>
+					<value>taker 1</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -12137,7 +11312,7 @@
 			</property>
 			<property>
 				<name>description</name>
-				<value>taker 1. Who filled out the DASS-21 (taker 1)</value>
+				<value>taker 1</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -12264,7 +11439,7 @@
 			</property>
 			<property>
 				<name>description</name>
-				<value>taker 1. Was DASS anxiety score collected (taker 1)</value>
+				<value>taker 1</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -12324,7 +11499,7 @@
 				</property>
 				<property>
 					<name>description</name>
-					<value>taker 1. DASS anxiety raw score (taker 1)</value>
+					<value>taker 1</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -12395,7 +11570,7 @@
 			</property>
 			<property>
 				<name>description</name>
-				<value>taker 1. Was DASS depression score collected (taker 1)</value>
+				<value>taker 1</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -12455,7 +11630,7 @@
 				</property>
 				<property>
 					<name>description</name>
-					<value>taker 1. DASS depression raw score (taker 1)</value>
+					<value>taker 1</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -12526,7 +11701,7 @@
 			</property>
 			<property>
 				<name>description</name>
-				<value>taker 1. Was DASS stress score collected (taker 1)</value>
+				<value>taker 1</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -12586,7 +11761,7 @@
 				</property>
 				<property>
 					<name>description</name>
-					<value>taker 1. DASS stress raw score (taker 1)</value>
+					<value>taker 1</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -12657,7 +11832,7 @@
 			</property>
 			<property>
 				<name>description</name>
-				<value>taker 2. Were all DASS-21 scores calculated (taker 2)</value>
+				<value>taker 2</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -12717,7 +11892,7 @@
 				</property>
 				<property>
 					<name>description</name>
-					<value>taker 2. Reason DASS-21 score not calculated (taker 2)</value>
+					<value>taker 2</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -12863,7 +12038,7 @@
 			</property>
 			<property>
 				<name>description</name>
-				<value>taker 2. Who filled out the DASS-21 questionnaire (taker 2)</value>
+				<value>taker 2</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -12990,7 +12165,7 @@
 			</property>
 			<property>
 				<name>description</name>
-				<value>taker 2. Was DASS anxiety score collected (taker 2)</value>
+				<value>taker 2</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -13050,7 +12225,7 @@
 				</property>
 				<property>
 					<name>description</name>
-					<value>taker 2. DASS anxiety raw score (taker 2)</value>
+					<value>taker 2</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -13121,7 +12296,7 @@
 			</property>
 			<property>
 				<name>description</name>
-				<value>taker 2. Was DASS depression score collected (taker 2)</value>
+				<value>taker 2</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -13181,7 +12356,7 @@
 				</property>
 				<property>
 					<name>description</name>
-					<value>taker 2. DASS depression raw score (taker 2)</value>
+					<value>taker 2</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -13252,7 +12427,7 @@
 			</property>
 			<property>
 				<name>description</name>
-				<value>taker 2. Was DASS stress score collected (taker 2)</value>
+				<value>taker 2</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -13312,7 +12487,7 @@
 				</property>
 				<property>
 					<name>description</name>
-					<value>taker 2. DASS stress raw score (taker 2)</value>
+					<value>taker 2</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -13400,11 +12575,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Were all ITSEA scores calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -13458,11 +12628,6 @@
 				<property>
 					<name>dataType</name>
 					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Indicate why all ITSEA scores were not able to be calculated</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -13606,11 +12771,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Who filled out the ITSEA questionnaire?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>BioParent</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -13719,11 +12879,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ITSEA aggression/defiance score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -13772,11 +12927,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA aggression/defiance raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -13851,11 +13001,6 @@
 				<property>
 					<name>dataType</name>
 					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA aggression/defiance status of concern</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -13957,11 +13102,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ITSEA general anxiety score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -14010,11 +13150,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA general anxiety raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -14089,11 +13224,6 @@
 				<property>
 					<name>dataType</name>
 					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA general anxiety status of concern</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -14195,11 +13325,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ITSEA attention score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -14248,11 +13373,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA attention raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -14327,11 +13447,6 @@
 				<property>
 					<name>dataType</name>
 					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA attention status of concern</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -14433,11 +13548,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ITSEA atypical item cluster raw score collected</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -14486,11 +13596,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA atypical item cluster raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -14564,11 +13669,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ITSEA competence score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -14617,11 +13717,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA competence raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -14691,11 +13786,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA competence scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -14769,11 +13859,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ITSEA compliance score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -14822,11 +13907,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA compliance raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -14901,11 +13981,6 @@
 				<property>
 					<name>dataType</name>
 					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA compliance status of concern</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -15007,11 +14082,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ITSEA depression/withdrawal score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -15060,11 +14130,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA depression/withdrawal raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -15139,11 +14204,6 @@
 				<property>
 					<name>dataType</name>
 					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA depression/withdrawal status of concern</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -15245,11 +14305,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ITSEA dysregulation score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -15298,11 +14353,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA dysregulation raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -15372,11 +14422,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA dysregulation scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -15450,11 +14495,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ITSEA eating score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -15503,11 +14543,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA eating raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -15582,11 +14617,6 @@
 				<property>
 					<name>dataType</name>
 					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA eating status of concern</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -15688,11 +14718,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ITSEA empathy score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -15741,11 +14766,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA empathy raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -15820,11 +14840,6 @@
 				<property>
 					<name>dataType</name>
 					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA empathy status of concern</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -15926,11 +14941,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ITSEA externalizing score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -15979,11 +14989,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA externalizing raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -16053,11 +15058,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA externalizing scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -16131,11 +15131,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ITSEA imitation score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -16184,11 +15179,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA imitation raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -16263,11 +15253,6 @@
 				<property>
 					<name>dataType</name>
 					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA imitation status of concern</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -16369,11 +15354,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ITSEA impulsivity score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -16422,11 +15402,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA impulsivity raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -16501,11 +15476,6 @@
 				<property>
 					<name>dataType</name>
 					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA impulsivity status of concern</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -16607,11 +15577,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ITSEA internalizing score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -16660,11 +15625,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA internalizing raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -16734,11 +15694,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA internalizing scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -16812,11 +15767,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ITSEA maladaptive item cluster raw score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -16865,11 +15815,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Maladaptive item cluster raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -16943,11 +15888,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ITSEA motivation score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -16996,11 +15936,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA motivation raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -17075,11 +16010,6 @@
 				<property>
 					<name>dataType</name>
 					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA motivation status of concern</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -17181,11 +16111,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ITSEA negative emotionality score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -17234,11 +16159,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA negative emotionality raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -17308,11 +16228,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA negative emotionality status of concern</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -17386,11 +16301,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ITSEA inhibition to novelty score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -17439,11 +16349,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA inhibition to novelty raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -17518,11 +16423,6 @@
 				<property>
 					<name>dataType</name>
 					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA inhibition to novelty status of concern</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -17624,11 +16524,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ITSEA peer aggression score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -17677,11 +16572,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA peer aggression raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -17756,11 +16646,6 @@
 				<property>
 					<name>dataType</name>
 					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA peer aggression status of concern</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -17862,11 +16747,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ITSEA prosocial peer relations score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -17915,11 +16795,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA prosocial peer relations raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -17994,11 +16869,6 @@
 				<property>
 					<name>dataType</name>
 					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA prosocial peer relations status of concern</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -18100,11 +16970,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ITSEA social relatedness raw score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -18153,11 +17018,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA social relatedness raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -18231,11 +17091,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ITSEA sensory sensitivity score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -18284,11 +17139,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA sensory sensitivity raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -18363,11 +17213,6 @@
 				<property>
 					<name>dataType</name>
 					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA sensory sensitivity status of concern</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -18469,11 +17314,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ITSEA separation distress score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -18522,11 +17362,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA separation distress raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -18601,11 +17436,6 @@
 				<property>
 					<name>dataType</name>
 					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA separation distress status of concern</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -18707,11 +17537,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was ITSEA sleep score calculated?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -18760,11 +17585,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA sleep raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -18839,11 +17659,6 @@
 				<property>
 					<name>dataType</name>
 					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>ITSEA sleep status of concern</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -18954,11 +17769,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Who filled out the MCHAT-R questionnaire</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>BioParent</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -19062,11 +17872,6 @@
 				<value>decimal</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>MCHAT-R total score</value>
-				<type>String</type>
-			</property>
 		</node>
 	</node>
 	<node>
@@ -19098,11 +17903,6 @@
 			<property>
 				<name>dataType</name>
 				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>Were all SRS-II scores able to be calculated</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -19158,11 +17958,6 @@
 				<property>
 					<name>dataType</name>
 					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Indicate why SRS-II score incomplete</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -19306,11 +18101,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Who filled out SRS-II questionnaire</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>BioParent</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -19419,11 +18209,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was SRS-II social awareness score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -19472,11 +18257,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>SRS-II social awareness raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -19546,11 +18326,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>SRS-II social awareness t-score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -19624,11 +18399,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was SRS-II social cognition score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -19677,11 +18447,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>SRS-II social cognition raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -19751,11 +18516,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>SRS-II social cognition t-score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -19829,11 +18589,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was SRS-II social communication score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -19882,11 +18637,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>SRS-II social communication raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -19956,11 +18706,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>SRS-II social communication t-score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -20034,11 +18779,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was SRS-II social motivation score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -20087,11 +18827,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>SRS-II social motivation raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -20161,11 +18896,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>SRS-II social motivation t-score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -20239,11 +18969,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was SRS-II restricted interests and repetitive behavior score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -20292,11 +19017,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>SRS-II restricted interests and repetitive behavior raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -20366,11 +19086,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>SRS-II restricted interests and repetitive behavior t score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -20444,11 +19159,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was SRS-II Restricted and Repititive Behaviour (RRB) score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -20497,11 +19207,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>SRS-II Restricted and Repititive Behaviour (RRB) raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -20571,11 +19276,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>SRS-II Restricted and Repititive Behaviour (RRB) t-score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -20649,11 +19349,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was SRS-II Social Communication and Interaction (SCI) score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -20702,11 +19397,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>SRS-II Social Communication and Interaction (SCI) raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -20776,11 +19466,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>SRS-II Social Communication and Interaction (SCI) t-score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -20854,11 +19539,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was total SRS-II score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -20907,11 +19587,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>SRS-II total raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -20981,11 +19656,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>SRS-II total t-score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -21063,11 +19733,6 @@
 				<value>decimal</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>VMI raw score</value>
-				<type>String</type>
-			</property>
 		</node>
 		<node>
 			<name>vmi_standard_no</name>
@@ -21085,11 +19750,6 @@
 			<property>
 				<name>dataType</name>
 				<value>decimal</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>VMI standard score</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -21123,11 +19783,6 @@
 			<property>
 				<name>dataType</name>
 				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>Were all WPPSI-4 scores able to be calculated</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -21183,11 +19838,6 @@
 				<property>
 					<name>dataType</name>
 					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Reason all scores were not able to be calculated</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -21331,11 +19981,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was object assembly score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -21384,11 +20029,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Object assembly raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -21458,11 +20098,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Object assembly scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -21536,11 +20171,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was bug search score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -21589,11 +20219,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Bug search raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -21663,11 +20288,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Bug search scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -21741,11 +20361,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was cancellation score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -21794,11 +20409,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Cancellation raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -21868,11 +20478,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Cancellation scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -21946,11 +20551,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was picture concepts score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -21999,11 +20599,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Picture concepts raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -22073,11 +20668,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Picture concepts scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -22151,11 +20741,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was block design score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -22204,11 +20789,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Block design raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -22278,11 +20858,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Block design scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -22356,11 +20931,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was information score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -22409,11 +20979,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Information raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -22483,11 +21048,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Information scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -22561,11 +21121,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was full scale IQ score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -22614,11 +21169,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Full scale IQ sum of scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -22688,11 +21238,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Full scale IQ standard score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -22766,11 +21311,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was matrix reasoning score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -22819,11 +21359,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Matrix reasoning raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -22893,11 +21428,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Matrix reasoning scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -22971,11 +21501,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was working memory index score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -23024,11 +21549,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Working memory index sum of scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -23098,11 +21618,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Working memory index standard score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -23176,11 +21691,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was picture naming score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -23229,11 +21739,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Picture naming raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -23303,11 +21808,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Picture naming scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -23381,11 +21881,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was picture memory score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -23434,11 +21929,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Picture memory raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -23508,11 +21998,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Picture memory scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -23586,11 +22071,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was receptive vocabulary score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -23639,11 +22119,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Receptive vocabulary raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -23713,11 +22188,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Receptive vocabluary scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -23791,11 +22261,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was similarities score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -23844,11 +22309,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Similarities raw score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -23918,11 +22378,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Similarities scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -23996,11 +22451,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was verbal comprehension index calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -24049,11 +22499,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Sum of scaled verbal comprehension index score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -24123,11 +22568,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Standard verbal comprehension index score </value>
 					<type>String</type>
 				</property>
 				<property>
@@ -24201,11 +22641,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was visual spatial index score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -24254,11 +22689,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Visual spatial index sum of scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -24328,11 +22758,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Visual spatial index standard score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -24406,11 +22831,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was vocabulary acquisition index score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -24459,11 +22879,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Vocabulary acquisition index sum of scaled score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -24533,11 +22948,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Vocabulary acquisition index standard score</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -24611,11 +23021,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Was zoo locations score calculated</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -24664,11 +23069,6 @@
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Zoo locations raw score </value>
 					<type>String</type>
 				</property>
 				<property>
@@ -24741,11 +23141,6 @@
 					<type>String</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>Zoo locations scaled score</value>
-					<type>String</type>
-				</property>
-				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -24802,11 +23197,6 @@
 			<value>GENERAL</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>recurrent</name>
-			<value>True</value>
-			<type>Boolean</type>
-		</property>
 		<node>
 			<name>calc_age_in_days_no</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
@@ -24821,8 +23211,8 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>in days. Age (in days)</value>
+				<name>unitOfMeasurement</name>
+				<value>days</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -24845,8 +23235,8 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>in months. Age (in months)</value>
+				<name>unitOfMeasurement</name>
+				<value>months</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -24882,11 +23272,6 @@
 				<value>decimal</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Weight</value>
-				<type>String</type>
-			</property>
 		</node>
 		<node>
 			<name>weight_dt</name>
@@ -24911,11 +23296,6 @@
 				<value>date</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Date of weight measurement</value>
-				<type>String</type>
-			</property>
 		</node>
 		<node>
 			<name>user_entered_age_in_days_weight_no</name>
@@ -24933,11 +23313,6 @@
 			<property>
 				<name>dataType</name>
 				<value>decimal</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>User entered age in days at weight measurement</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -24959,11 +23334,6 @@
 				<value>decimal</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>User entered age in months at weight measurement</value>
-				<type>String</type>
-			</property>
 		</node>
 		<node>
 			<name>-</name>
@@ -24979,8 +23349,8 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>cm. Height (cm)</value>
+				<name>unitOfMeasurement</name>
+				<value>cm</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -25012,11 +23382,6 @@
 				<value>date</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Date of height measurement</value>
-				<type>String</type>
-			</property>
 		</node>
 		<node>
 			<name>user_entered_age_in_days_height_no</name>
@@ -25032,8 +23397,8 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>in days. Age (in days)</value>
+				<name>unitOfMeasurement</name>
+				<value>days</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -25056,8 +23421,8 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>in months. Age (in months)</value>
+				<name>unitOfMeasurement</name>
+				<value>months</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -25080,8 +23445,8 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>cm. Head circumference (cm)</value>
+				<name>unitOfMeasurement</name>
+				<value>cm</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -25113,11 +23478,6 @@
 				<value>date</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Date of head circumference measurement</value>
-				<type>String</type>
-			</property>
 		</node>
 		<node>
 			<name>user_entered_age_in_days_head_no</name>
@@ -25137,11 +23497,6 @@
 				<value>decimal</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Age (in days) Head Measurement</value>
-				<type>String</type>
-			</property>
 		</node>
 		<node>
 			<name>user_entered_age_in_months_head_no</name>
@@ -25159,11 +23514,6 @@
 			<property>
 				<name>dataType</name>
 				<value>decimal</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>Age (in months) Head Measurement</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -25197,11 +23547,6 @@
 			<property>
 				<name>dataType</name>
 				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>Tests/questionnaires completed on 2 or more dates</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -25256,11 +23601,6 @@
 				<value>date</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>First testing date</value>
-				<type>String</type>
-			</property>
 		</node>
 		<node>
 			<name>testing1_e</name>
@@ -25283,11 +23623,6 @@
 			<property>
 				<name>dataType</name>
 				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>Tests provided/administered on first date</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -25627,11 +23962,6 @@
 				<value>date</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Second testing date</value>
-				<type>String</type>
-			</property>
 		</node>
 		<node>
 			<name>testing2_e</name>
@@ -25654,11 +23984,6 @@
 			<property>
 				<name>dataType</name>
 				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>Tests provided/administered on second date</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -25998,11 +24323,6 @@
 				<value>date</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Third testing date</value>
-				<type>String</type>
-			</property>
 		</node>
 		<node>
 			<name>testing3_e</name>
@@ -26025,11 +24345,6 @@
 			<property>
 				<name>dataType</name>
 				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>Tests provided/administered on third date</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -26369,11 +24684,6 @@
 				<value>date</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Date of Neurodevelopmental visit for additional tets</value>
-				<type>String</type>
-			</property>
 		</node>
 		<node>
 			<name>additional_tests_e</name>
@@ -26396,11 +24706,6 @@
 			<property>
 				<name>dataType</name>
 				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>If you would like to enter additional tests not listed above, please select any that apply</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -26623,11 +24928,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>BASC version</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>1-BASC-2</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -26678,11 +24978,6 @@
 			<property>
 				<name>dataType</name>
 				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>WPPSI-IV administration method</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -26737,11 +25032,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>WPPSI-IV version</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>Ages26to311</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -26794,11 +25084,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>SRS version</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>1-Ages2.5to4.5</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -26849,11 +25134,6 @@
 			<property>
 				<name>dataType</name>
 				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>Reason other tests were not provided/administered</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -27015,11 +25295,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Were tests provided/administered in another language?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>No</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -27070,11 +25345,6 @@
 			<property>
 				<name>dataType</name>
 				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>Which tests were available in an alternate language?</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -27414,11 +25684,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>In which language were the tests provided/administered?</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>Spanish</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -27525,11 +25790,6 @@
 			<property>
 				<name>dataType</name>
 				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>Which tests were translated by an examiner or interpreter?</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -27864,11 +26124,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Other important information related to language</value>
-				<type>String</type>
-			</property>
 		</node>
 	</node>
 	<node>
@@ -27900,11 +26155,6 @@
 			<property>
 				<name>dataType</name>
 				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>Conditions diagnosed as a result of assessment</value>
 				<type>String</type>
 			</property>
 			<node>
@@ -28062,11 +26312,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Developmental delay </value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>1-GlobalDelay</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -28161,11 +26406,6 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>description</name>
-				<value>Specify learning disorder/disability</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>Reading</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -28244,11 +26484,6 @@
 			<property>
 				<name>dataType</name>
 				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>Specify emotional disorder</value>
 				<type>String</type>
 			</property>
 			<node>

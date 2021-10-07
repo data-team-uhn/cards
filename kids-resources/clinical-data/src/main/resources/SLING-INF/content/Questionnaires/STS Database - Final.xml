@@ -2270,8 +2270,8 @@
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>kg. Low Value: 0.1000 and High Value: 10.000. 3 decimal places</value>
+					<name>unitOfMeasurement</name>
+					<value>kg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2282,6 +2282,11 @@
 				<property>
 					<name>Units</name>
 					<value>kg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0.1000 and High Value: 10.000. 3 decimal places</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -11904,8 +11909,8 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>Cm. Low Value: 15.0 and High Value: 250.0</value>
+				<name>unitOfMeasurement</name>
+				<value>Cm</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -11916,6 +11921,11 @@
 			<property>
 				<name>Units</name>
 				<value>cm</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Low Value: 15.0 and High Value: 250.0</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -11933,8 +11943,8 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>Kg. Low Value: 0.001 and High Value: 200.000. 3 decimal places </value>
+				<name>unitOfMeasurement</name>
+				<value>Kg</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -11945,6 +11955,11 @@
 			<property>
 				<name>Units</name>
 				<value>kg</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Low Value: 0.001 and High Value: 200.000. 3 decimal places </value>
 				<type>String</type>
 			</property>
 		</node>
@@ -11962,8 +11977,8 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>in days</value>
+				<name>unitOfMeasurement</name>
+				<value>days</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -36281,8 +36296,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>minutes. Low Value: 0 and High Value: 999</value>
+					<name>unitOfMeasurement</name>
+					<value>minutes</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -36293,6 +36308,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>minutes</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 999</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -36400,8 +36420,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>minutes. Low Value: 0 and High Value: 600</value>
+					<name>unitOfMeasurement</name>
+					<value>minutes</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -36412,6 +36432,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>minutes</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 600</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -36519,8 +36544,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>minutes. Low Value: 0 and High Value: 200</value>
+					<name>unitOfMeasurement</name>
+					<value>minutes</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -36531,6 +36556,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>minutes</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 200</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -36780,8 +36810,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>Minutes. Low Value 1 and High Value 360. UsualRangeLow: 10 and UsualRangeHigh: 120</value>
+					<name>unitOfMeasurement</name>
+					<value>Minutes</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -36792,6 +36822,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>minutes</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value 1 and High Value 360. UsualRangeLow: 10 and UsualRangeHigh: 120</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -36854,8 +36889,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>Seconds. Low Value 0 and High Value 59</value>
+					<name>unitOfMeasurement</name>
+					<value>Seconds</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -36866,6 +36901,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>seconds</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value 0 and High Value 59</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -37070,8 +37110,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>Celsius. Low Value: 1.0 and High Value: 37.0</value>
+					<name>unitOfMeasurement</name>
+					<value>Celsius</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -37082,6 +37122,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>degrees celsius</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 1.0 and High Value: 37.0</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -37286,8 +37331,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>Celsius. Low Value: 1.0 and High Value: 37.0</value>
+					<name>unitOfMeasurement</name>
+					<value>Celsius</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -37298,6 +37343,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>degrees celsius</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 1.0 and High Value: 37.0</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -37502,8 +37552,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>Celsius. Low Value: 1.0 and High Value: 37.0</value>
+					<name>unitOfMeasurement</name>
+					<value>Celsius</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -37514,6 +37564,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>degrees celsius</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 1.0 and High Value: 37.0</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -37718,8 +37773,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>Celsius. Low Value: 1.0 and High Value: 37.0</value>
+					<name>unitOfMeasurement</name>
+					<value>Celsius</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -37730,6 +37785,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>degrees celsius</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 1.0 and High Value: 37.0</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -37934,8 +37994,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>Celsius. Low Value: 1.0 and High Value: 37.0</value>
+					<name>unitOfMeasurement</name>
+					<value>Celsius</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -37946,6 +38006,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>degrees celsius</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 1.0 and High Value: 37.0</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -38150,8 +38215,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>Celsius. Low Value: 1.0 and High Value: 37.0</value>
+					<name>unitOfMeasurement</name>
+					<value>Celsius</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -38162,6 +38227,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>degrees celsius</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 1.0 and High Value: 37.0</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -38225,7 +38295,12 @@ valve (RETIRED)"]]></value>
 				</property>
 				<property>
 					<name>description</name>
-					<value>prior to initiation of hypothermic circulatory arrest or selective cerebral perfusion. minutes. Low Value: 0 and High Value: 180</value>
+					<value>prior to initiation of hypothermic circulatory arrest or selective cerebral perfusion. Low Value: 0 and High Value: 180</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>unitOfMeasurement</name>
+					<value>minutes</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -38338,13 +38413,18 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>minutes. Low Value: 0 and High Value: 500</value>
+					<name>unitOfMeasurement</name>
+					<value>minutes</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 500</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -38594,8 +38674,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>minutes. Low Value: 1 and High Value: 999</value>
+					<name>unitOfMeasurement</name>
+					<value>minutes</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -38606,6 +38686,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>minutes</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 1 and High Value: 999</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -39388,8 +39473,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>Celsius. Low Value: 1 and High Value: 37</value>
+					<name>unitOfMeasurement</name>
+					<value>Celsius</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -39400,6 +39485,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>celsius</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 1 and High Value: 37</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -42337,13 +42427,18 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mL. Low Value: 0 and High Value: 10000. UsualRangeLow: 50 and UsualRangeHigh: 1500</value>
+					<name>unitOfMeasurement</name>
+					<value>mL</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 10000. UsualRangeLow: 50 and UsualRangeHigh: 1500</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -42655,8 +42750,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mL. Low Value: 0 and High Value: 10000</value>
+					<name>unitOfMeasurement</name>
+					<value>mL</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -42667,6 +42762,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>ml</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 10000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -42729,8 +42829,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mL. Low Value: 0 and High Value: 10000</value>
+					<name>unitOfMeasurement</name>
+					<value>mL</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -42741,6 +42841,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>ml</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 10000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -42803,8 +42908,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mL. Low Value: 0 and High Value: 10000</value>
+					<name>unitOfMeasurement</name>
+					<value>mL</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -42815,6 +42920,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>ml</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 10000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -42877,8 +42987,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mL. Low Value: 0 and High Value: 10000</value>
+					<name>unitOfMeasurement</name>
+					<value>mL</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -42889,6 +42999,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>ml</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 10000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -42951,8 +43066,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mL. Low Value: 0 and High Value: 10000</value>
+					<name>unitOfMeasurement</name>
+					<value>mL</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -42963,6 +43078,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>ml</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 10000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -43025,8 +43145,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mL. Low Value: 0 and High Value: 10000</value>
+					<name>unitOfMeasurement</name>
+					<value>mL</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -43037,6 +43157,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>ml</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 10000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -43099,8 +43224,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mL. Low Value: 0 and High Value: 10000</value>
+					<name>unitOfMeasurement</name>
+					<value>mL</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -43111,6 +43236,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>ml</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 10000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -43311,8 +43441,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mL. Low Value: 0 and High Value: 10000</value>
+					<name>unitOfMeasurement</name>
+					<value>mL</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -43323,6 +43453,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>ml</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 10000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -43385,8 +43520,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mL. Low Value: 0 and High Value: 10000</value>
+					<name>unitOfMeasurement</name>
+					<value>mL</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -43397,6 +43532,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>ml</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 10000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -43459,8 +43599,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mL. Low Value: 0 and High Value: 10000</value>
+					<name>unitOfMeasurement</name>
+					<value>mL</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -43471,6 +43611,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>ml</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 10000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -43533,8 +43678,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mL. Low Value: 0 and High Value: 10000</value>
+					<name>unitOfMeasurement</name>
+					<value>mL</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -43545,6 +43690,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>ml</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 10000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -43607,8 +43757,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mL. Low Value: 0 and High Value: 10000</value>
+					<name>unitOfMeasurement</name>
+					<value>mL</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -43619,6 +43769,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>ml</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 10000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -43681,8 +43836,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mL. Low Value: 0 and High Value: 10000</value>
+					<name>unitOfMeasurement</name>
+					<value>mL</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -43693,6 +43848,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>ml</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 10000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -43755,8 +43915,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mL. Low Value: 0 and High Value: 10000</value>
+					<name>unitOfMeasurement</name>
+					<value>mL</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -43767,6 +43927,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>ml</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 10000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -43967,8 +44132,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mL. Low Value: 0 and High Value: 10000</value>
+					<name>unitOfMeasurement</name>
+					<value>mL</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -43979,6 +44144,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>ml</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 10000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -44041,8 +44211,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mL. Low Value: 0 and High Value: 10000</value>
+					<name>unitOfMeasurement</name>
+					<value>mL</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -44053,6 +44223,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>ml</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 10000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -44115,8 +44290,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mL. Low Value: 0 and High Value: 10000</value>
+					<name>unitOfMeasurement</name>
+					<value>mL</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -44127,6 +44302,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>ml</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 10000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -44189,8 +44369,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mL. Low Value: 0 and High Value: 10000</value>
+					<name>unitOfMeasurement</name>
+					<value>mL</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -44201,6 +44381,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>ml</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 10000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -44263,8 +44448,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mL. Low Value: 0 and High Value: 10000</value>
+					<name>unitOfMeasurement</name>
+					<value>mL</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -44275,6 +44460,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>ml</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 10000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -44337,8 +44527,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mL. Low Value: 0 and High Value: 10000</value>
+					<name>unitOfMeasurement</name>
+					<value>mL</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -44349,6 +44539,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>ml</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 10000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -44411,8 +44606,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mL. Low Value: 0 and High Value: 10000</value>
+					<name>unitOfMeasurement</name>
+					<value>mL</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -44423,6 +44618,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>ml</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 10000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -44731,8 +44931,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mg. Low Value: 0 and High Value: 30000</value>
+					<name>unitOfMeasurement</name>
+					<value>mg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -44743,6 +44943,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>mg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 30000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -44850,8 +45055,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mg. Low Value: 0 and High Value: 30000</value>
+					<name>unitOfMeasurement</name>
+					<value>mg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -44862,6 +45067,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>mg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 30000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -45125,8 +45335,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mg/kg/hr. Low Value: 0 and High Value: 200</value>
+					<name>unitOfMeasurement</name>
+					<value>mg/kg/hr</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -45137,6 +45347,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>mg/kg/hr</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 200</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -45341,8 +45556,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mg. Low Value: 0 and High Value: 15000</value>
+					<name>unitOfMeasurement</name>
+					<value>mg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -45353,6 +45568,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>mg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 15000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -45415,8 +45635,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mg. Low Value: 0 and High Value: 15000</value>
+					<name>unitOfMeasurement</name>
+					<value>mg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -45427,6 +45647,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>mg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 15000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -45771,13 +45996,18 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>cc. Low Value: 0 and High Value: 400</value>
+					<name>unitOfMeasurement</name>
+					<value>cc</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 400</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -45840,13 +46070,18 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>cc. Low Value: 0 and High Value: 400</value>
+					<name>unitOfMeasurement</name>
+					<value>cc</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>dataType</name>
 					<value>decimal</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 400</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -46127,8 +46362,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mcg. Low Value: 1 and High Value: 20000</value>
+					<name>unitOfMeasurement</name>
+					<value>mcg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -46139,6 +46374,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>mcg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 1 and High Value: 20000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -46201,8 +46441,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mcg. Low Value: 0 and High Value: 20000</value>
+					<name>unitOfMeasurement</name>
+					<value>mcg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -46213,6 +46453,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>mcg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 20000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -46275,8 +46520,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mcg. Lowest Value: 0 and Highest Vaue: 20000</value>
+					<name>unitOfMeasurement</name>
+					<value>mcg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -46287,6 +46532,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>mcg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Lowest Value: 0 and Highest Vaue: 20000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -46446,8 +46696,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>units. Low Value: 1 and High Value: 10000</value>
+					<name>unitOfMeasurement</name>
+					<value>units</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -46458,6 +46708,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>units</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 1 and High Value: 10000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -46565,8 +46820,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>units. Low Value: 0 and High Value: 10000</value>
+					<name>unitOfMeasurement</name>
+					<value>units</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -46577,6 +46832,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>units</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 10000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -46684,8 +46944,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>units. Low Value: 0 and High Value: 10000</value>
+					<name>unitOfMeasurement</name>
+					<value>units</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -46696,6 +46956,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>units</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 10000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -46900,8 +47165,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>units. Low Value: 1 and High Value: 20000</value>
+					<name>unitOfMeasurement</name>
+					<value>units</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -46912,6 +47177,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>units</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 1 and High Value: 20000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -46974,8 +47244,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>units. Low Value: 0 and High Value: 20000</value>
+					<name>unitOfMeasurement</name>
+					<value>units</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -46986,6 +47256,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>units</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 20000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -47048,8 +47323,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>units. Low Value: 0 and High Value: 20000</value>
+					<name>unitOfMeasurement</name>
+					<value>units</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -47060,6 +47335,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>units</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 20000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -47219,8 +47499,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>units. Low Value: 1 and High Value: 2000</value>
+					<name>unitOfMeasurement</name>
+					<value>units</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -47231,6 +47511,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>units</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 1 and High Value: 2000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -47338,8 +47623,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>units. Low Value: 0 and High Value: 2000</value>
+					<name>unitOfMeasurement</name>
+					<value>units</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -47350,6 +47635,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>units</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 2000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -47454,13 +47744,18 @@ valve (RETIRED)"]]></value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value><![CDATA[units. Prothrombin Complex Concentrate-3 (PCC-3, ProfilNine-SD) Dose 2 (units) > 0. Low Value: 0 and High Value: 2000]]></value>
+				<name>unitOfMeasurement</name>
+				<value>units</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>dataType</name>
 				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value><![CDATA[Prothrombin Complex Concentrate-3 (PCC-3, ProfilNine-SD) Dose 2 (units) > 0. Low Value: 0 and High Value: 2000]]></value>
 				<type>String</type>
 			</property>
 			<property>
@@ -48540,8 +48835,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mcg. Low Value: 1 and High Value: 1000</value>
+					<name>unitOfMeasurement</name>
+					<value>mcg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -48552,6 +48847,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>mcg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 1 and High Value: 1000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -48614,8 +48914,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mcg. Low Value: 0 and High Value: 1000</value>
+					<name>unitOfMeasurement</name>
+					<value>mcg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -48626,6 +48926,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>mcg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 1000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -48688,8 +48993,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mcg. Low Value: 0 and Hig Value: 1000</value>
+					<name>unitOfMeasurement</name>
+					<value>mcg</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -48700,6 +49005,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>mcg</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and Hig Value: 1000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -48859,8 +49169,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>units. Low Value: 1 and High Value: 10000</value>
+					<name>unitOfMeasurement</name>
+					<value>units</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -48871,6 +49181,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>units</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 1 and High Value: 10000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -48933,8 +49248,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>units. Low Value: 0 and High Value: 10000</value>
+					<name>unitOfMeasurement</name>
+					<value>units</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -48945,6 +49260,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>units</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 10000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -49007,8 +49327,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>units. Low Value: 0 and High Value: 10000</value>
+					<name>unitOfMeasurement</name>
+					<value>units</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -49019,6 +49339,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>units</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 0 and High Value: 10000</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -58419,8 +58744,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>%. Low Value: 1.0 and High Value: 100.0. UsualRangeLow: 60.0 and UsualRangeHigh: 100.0</value>
+					<name>unitOfMeasurement</name>
+					<value>%</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -58431,6 +58756,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>%</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Low Value: 1.0 and High Value: 100.0. UsualRangeLow: 60.0 and UsualRangeHigh: 100.0</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -61465,7 +61795,7 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>ScVO2</value>
 					<type>String</type>
 				</property>
@@ -66105,7 +66435,7 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>mm</value>
 					<type>String</type>
 				</property>
@@ -66277,7 +66607,7 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>mm</value>
 					<type>String</type>
 				</property>
@@ -66533,7 +66863,7 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>mm</value>
 					<type>String</type>
 				</property>
@@ -68274,8 +68604,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mg/dL. LowValue: 1 and HighValue: 500. UsualRangeLow: 50 and UsualRangeHigh: 300</value>
+					<name>unitOfMeasurement</name>
+					<value>mg/dL</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -68286,6 +68616,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>mg/dl</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>LowValue: 1 and HighValue: 500. UsualRangeLow: 50 and UsualRangeHigh: 300</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -69101,8 +69436,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>mg/dL. LowValue: 1 and HighValue: 500. UsualRangeLow: 50 and UsualRangeHigh: 300</value>
+					<name>unitOfMeasurement</name>
+					<value>mg/dL</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -69113,6 +69448,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>mg/dl</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>LowValue: 1 and HighValue: 500. UsualRangeLow: 50 and UsualRangeHigh: 300</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -70725,7 +71065,7 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>ECMO/VAD</value>
 					<type>String</type>
 				</property>
@@ -71338,8 +71678,8 @@ valve (RETIRED)"]]></value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>%. LowValue: 50.0 and High Value: 100.0. UsualRangeLow: 70.0 and UsualRangeHigh: 100.0</value>
+					<name>unitOfMeasurement</name>
+					<value>%</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -71350,6 +71690,11 @@ valve (RETIRED)"]]></value>
 				<property>
 					<name>Units</name>
 					<value>%</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>LowValue: 50.0 and High Value: 100.0. UsualRangeLow: 70.0 and UsualRangeHigh: 100.0</value>
 					<type>String</type>
 				</property>
 			</node>

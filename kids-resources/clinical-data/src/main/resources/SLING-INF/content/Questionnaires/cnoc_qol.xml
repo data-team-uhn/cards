@@ -50,11 +50,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Patientid</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>ad_uk_angry_e</name>
@@ -77,11 +72,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I feel angry</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -178,11 +168,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I get unwanted attention</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -275,11 +260,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I can't do the physical activities I want to do</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -376,11 +356,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I cannot wear what I want</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -473,11 +448,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem other people treat me differently</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -574,11 +544,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I have no energy</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -671,11 +636,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I feel guilty about the stress my heart disease causes my family</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -772,11 +732,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I am afraid of dying</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -869,11 +824,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I am afraid of medical procedures</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -970,11 +920,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I feel different from everybody in a bad way</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -1067,11 +1012,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I worry about my future</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -1168,11 +1108,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>On a scale of 1-5 (poor to excellent), how would you rate your general health?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -1265,11 +1200,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I hang back when I am doing physical activities</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -1366,11 +1296,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I feel helpless</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -1463,11 +1388,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I look different from everybody in a bad way</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -1564,11 +1484,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I take too much medicine</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -1661,11 +1576,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I miss too much school/college/work</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -1762,11 +1672,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem it is difficult for me to get around from place to place</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -1859,11 +1764,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I am likely to have other health problems</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -1960,11 +1860,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem other people are uncomfortable around me</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -2057,11 +1952,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem adults around me are too protective</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -2158,11 +2048,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I am in pain</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -2255,11 +2140,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I engage in risk-taking behaviours</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -2356,11 +2236,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem school/college/work is difficult for me</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -2453,11 +2328,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I take medicine that causes bad side effects</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -2554,11 +2424,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I miss social activities</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -2651,11 +2516,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I get special treatment at home/school/work</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -2752,11 +2612,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I spend too much time dealing with my health</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -2849,11 +2704,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I get tired easily</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -2950,11 +2800,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem  my condition is likely to get worse</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -3047,11 +2892,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I feel angry</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -3148,11 +2988,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I get unwanted attention</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -3245,11 +3080,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I can't do the physical activities I want to do</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -3346,11 +3176,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I cannot wear what I want</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -3443,11 +3268,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem other people treat me differently</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -3544,11 +3364,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I feel guilty about the stress my heart disease causes my family</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -3641,11 +3456,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I am afraid of dying</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -3742,11 +3552,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I am afraid of medical procedures</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -3839,11 +3644,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I feel different from everybody in a bad way</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -3940,11 +3740,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I worry about my future</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -4037,11 +3832,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>On a scale of 1-5 (poor to excellent), how would you rate your general health?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -4138,11 +3928,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I feel helpless</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -4235,11 +4020,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I hold back when I am doing physical activities</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -4336,11 +4116,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I look different from everybody in a bad way</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -4433,11 +4208,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I take too much medicine</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -4534,11 +4304,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I miss too much school</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -4631,11 +4396,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem it is difficult for me to get around from place to place</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -4732,11 +4492,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I am likely to have other health problems</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -4829,11 +4584,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem other people are uncomfortable around me</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -4930,11 +4680,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem grown-ups around me are too protective</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -5027,11 +4772,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I am in pain</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -5128,11 +4868,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem schoolwork is hard for me</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -5225,11 +4960,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I am self-destructive</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -5326,11 +5056,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I take medicine that causes bad side effects</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -5423,11 +5148,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I feel sluggish</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -5524,11 +5244,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I miss social activities</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -5621,11 +5336,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I get special treatment</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -5722,11 +5432,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I spend too much time dealing with my health</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -5819,11 +5524,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I tire easily</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -5920,11 +5620,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem my condition is likely to get worse</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -6017,11 +5712,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Age range</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -6122,11 +5812,6 @@
 			<value>date</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Date at QOL assessment</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>ch_uk_bullying_e</name>
@@ -6149,11 +5834,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem other people pick on me</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -6250,11 +5930,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I can't do the physical activities I want to do</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -6347,11 +6022,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem other people treat me differently</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -6448,11 +6118,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I have too many doctors' appointments</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -6545,11 +6210,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I am afraid of dying</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -6646,11 +6306,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I find it hard to make friends</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -6743,11 +6398,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I worry about my future</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -6844,11 +6494,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>On a scale of 1-5 (poor to excellent), how would you rate your general health?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -6941,11 +6586,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I hang back when I am doing physical activities</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -7042,11 +6682,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I look different from everybody in a bad way</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -7139,11 +6774,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I take too much medicine</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -7240,11 +6870,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I miss too much school</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -7337,11 +6962,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem adults around me are too protective</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -7438,11 +7058,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I feel sad for my parents</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -7535,11 +7150,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem school work is difficult for me</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -7636,11 +7246,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I take medicine that makes me feel bad</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -7733,11 +7338,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I get special treatment at home or at school</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -7834,11 +7434,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I feel life is unfair</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -7931,11 +7526,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I get unwanted attention</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -8032,11 +7622,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I can't do the physical activities I want to do</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -8129,11 +7714,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem other people treat me differently</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -8230,11 +7810,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I go to too many doctor visits</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -8327,11 +7902,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I am afraid of dying</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -8428,11 +7998,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I am afraid of medical procedures</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -8525,11 +8090,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I feel different from everybody in a bad way</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -8626,11 +8186,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I can't eat and drink what I want</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -8723,11 +8278,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I have a hard time making friends</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -8824,11 +8374,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I often worry about my future</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -8921,11 +8466,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>On a scale of 1-5 (poor to excellent), how would you rate your general health?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -9022,11 +8562,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I hold back when I am doing physical activities</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -9119,11 +8654,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I look different from everybody in a bad way</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -9220,11 +8750,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I take too much medicine</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -9317,11 +8842,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I miss too much school</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -9418,11 +8938,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem grown-ups around me are too protective</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -9515,11 +9030,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I feel bad for my parents</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -9616,11 +9126,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem schoolwork is hard for me</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -9713,11 +9218,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I take medicine that causes bad side effects</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -9814,11 +9314,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I miss social activities</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -9911,11 +9406,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I get special treatment</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -10012,11 +9502,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem other people tease me</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -10109,11 +9594,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I tire easily</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -10210,11 +9690,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my heart problem I feel life is unfair</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -10307,11 +9782,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>QoL Draft</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -10408,11 +9878,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she feels angry</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -10505,11 +9970,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she gets unwanted attention</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -10606,11 +10066,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she can't do the physical activities he/she wants to do</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -10703,11 +10158,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she cannot wear what he/she wants</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -10804,11 +10254,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem other people treat him/her differently</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -10901,11 +10346,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she has no energy</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -11002,11 +10442,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she feels guilty about the stress his/her heart disease causes his/her family</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -11099,11 +10534,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she is afraid of dying</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -11200,11 +10630,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she is afraid of medical procedures</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -11297,11 +10722,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she feels different from everybody in a bad way</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -11398,11 +10818,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she worries about his/her future</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -11495,11 +10910,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>On a scale of 1-5 (poor to excellent), how would you rate your general health?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -11596,11 +11006,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she hangs back when he/she is doing physical activity</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -11693,11 +11098,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she feels helpless</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -11794,11 +11194,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she looks different from everybody in a bad way</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -11891,11 +11286,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she takes too much medicine</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -11992,11 +11382,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she misses too much school/college/work</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -12089,11 +11474,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem it is difficult for him/her to get around from place to place</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -12190,11 +11570,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she is likely to have other health problems</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -12287,11 +11662,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem other people are uncomfortable around him/her</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -12388,11 +11758,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem adults around him/her are overprotective</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -12485,11 +11850,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she is in pain</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -12586,11 +11946,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she engages in risk-taking behaviors</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -12683,11 +12038,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem school/college/work is difficult for him/her</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -12784,11 +12134,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she takes medicine that causes bad side effects</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -12881,11 +12226,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she misses social activities</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -12982,11 +12322,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she gets special treatment at home/school/work</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -13079,11 +12414,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she spends too much time dealing with his/her health</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -13180,11 +12510,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she gets tired easily</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -13277,11 +12602,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem his/her condition is likely to get worse</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -13378,11 +12698,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem, he/she feels angry</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -13475,11 +12790,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem, he/she gets unwanted attention</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -13576,11 +12886,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem, he/she can't do the physical activities he/she wants to do</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -13673,11 +12978,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem, he/she cannot wear what he/she wants</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -13774,11 +13074,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem, other people treat him/her differently</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -13871,11 +13166,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem, he/she feels guilty about the stress his/her heart disease causes our family</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -13972,11 +13262,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem, he/she is afraid of dying</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -14069,11 +13354,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem, he/she is afraid of medical procedures</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -14170,11 +13450,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem, he/she feels different from everybody in a bad way</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -14267,11 +13542,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem, he/she worries about his/her future</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -14368,11 +13638,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>On a scale of 1-5 (poor to excellent), how would you rate your child's general health?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -14465,11 +13730,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem, he/she feels helpless</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -14566,11 +13826,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem, he/she holds back when doing physical activities</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -14663,11 +13918,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem, he/she looks different from everybody in a bad way</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -14764,11 +14014,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem, he/she takes too much medicine</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -14861,11 +14106,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem, he/she misses too much school</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -14962,11 +14202,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem, it is difficult for him/her to get around from place to place</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -15059,11 +14294,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem, he/she is likely to have other health problems</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -15160,11 +14390,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem, other people are uncomfortable around him/her</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -15257,11 +14482,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem, grown-ups around him/her are overprotective</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -15358,11 +14578,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem, he/she is in pain</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -15455,11 +14670,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem, school work is difficult for him/her</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -15556,11 +14766,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem, he/she is self-destructive</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -15653,11 +14858,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem, he/she takes medicine that causes bad side effects</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -15754,11 +14954,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem, he/she feels sluggish</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -15851,11 +15046,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem, he/she misses social activities</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -15952,11 +15142,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem, he/she gets special treatment</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -16049,11 +15234,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem, he/she spends too much time dealing with his/her health</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -16150,11 +15330,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem, he/she tires easily</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -16247,11 +15422,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem, his/her condition is likely to get worse</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -16348,11 +15518,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she gets unwanted attention</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -16445,11 +15610,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem other people pick on him/her </value>
 			<type>String</type>
 		</property>
 		<node>
@@ -16546,11 +15706,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she can't do the physical activities he/she wants to do</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -16643,11 +15798,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem other people treat him/her differently</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -16744,11 +15894,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she goes to too many doctors' appointments</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -16841,11 +15986,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she is afraid of dying</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -16942,11 +16082,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she is afraid of medical procedures</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -17039,11 +16174,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she feels different form everybody in a bad way</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -17140,11 +16270,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she can't eat what he/she wants</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -17237,11 +16362,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she finds it hard to make friends</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -17338,11 +16458,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she often worries about his/her future</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -17435,11 +16550,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>On a scale of 1-5 (poor to excellent), how would you rate your general health?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -17536,11 +16646,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she hangs back when he/she is doing physical activity</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -17633,11 +16738,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she looks different from everybody in a bad way</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -17734,11 +16834,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she takes too much medicine</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -17831,11 +16926,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she misses too much school</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -17932,11 +17022,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem adults around him/her are overprotective</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -18029,11 +17114,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she feels sad for his/her parents</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -18130,11 +17210,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem school work is difficult for him/her</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -18227,11 +17302,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she takes medicine that makes him/her feel bad</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -18328,11 +17398,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she misses social activities</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -18425,11 +17490,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she gets special treatment at home or at school</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -18526,11 +17586,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she gets tired easily</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -18623,11 +17678,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she feels life is unfair</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -18724,11 +17774,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she gets unwanted attention</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -18821,11 +17866,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she can't do the physical activities he/she wants to do</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -18922,11 +17962,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem other people treat him/her differently</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -19019,11 +18054,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she goes to too many doctor visits</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -19120,11 +18150,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she is afraid of dying</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -19217,11 +18242,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she is afraid of medical procedures</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -19318,11 +18338,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she feels different from everybody in a bad way</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -19415,11 +18430,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she can't eat and drink what he/she wants</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -19516,11 +18526,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she has a hard time making friends</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -19613,11 +18618,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she often worries about his/her future</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -19714,11 +18714,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>On a scale of 1-5 (poor to excellent), how would you rate your child's general health?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -19811,11 +18806,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she holds back when he/she does physical activities</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -19912,11 +18902,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she looks different from everybody in a bad way</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -20009,11 +18994,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she takes too much medicine</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -20110,11 +19090,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she misses too much school</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -20207,11 +19182,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem grown-ups around him/her are too protective</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -20308,11 +19278,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she feels bad for his/her parents</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -20405,11 +19370,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem school work is difficult for him/her</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -20506,11 +19466,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she takes medicine that causes bad side effects</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -20603,11 +19558,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she misses social activities</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -20704,11 +19654,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she gets special treatment</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -20801,11 +19746,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem other people tease him/her</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -20902,11 +19842,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she tires easily</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -20999,11 +19934,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Because of my child's heart problem he/she feels life is unfair</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -21100,11 +20030,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>QOL assessment type</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -21197,11 +20122,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Has the patient taken the PedsQL in the past year?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -21298,11 +20218,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with feeling afraid or scared?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -21395,11 +20310,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with feeling afraid or scared?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -21496,11 +20406,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with feeling afraid or scared?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -21593,11 +20498,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with feeling afraid?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -21694,11 +20594,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with feeling angry?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -21791,11 +20686,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with feeling angry?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -21892,11 +20782,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with feeling angry?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -21989,11 +20874,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with feeling angry?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -22090,11 +20970,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with feeling sad or blue?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -22187,11 +21062,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with feeling sad or blue?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -22288,11 +21158,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with feeling sad or blue?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -22385,11 +21250,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with feeling sad or blue?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -22486,11 +21346,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with trouble speaking?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -22583,11 +21438,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with trouble sleeping?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -22684,11 +21534,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with trouble sleeping?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -22781,11 +21626,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with trouble sleeping?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -22882,11 +21722,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with worrying about what will happen to him or her?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -22979,11 +21814,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with worrying?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -23080,11 +21910,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with worrying about what will happen to him or her?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -23177,11 +22002,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with worrying about what will happen to him or her?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -23278,11 +22098,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with having hurts or aches?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -23375,11 +22190,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had having hurts or aches?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -23476,11 +22286,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with having hurts or aches?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -23573,11 +22378,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had having hurts or aches?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -23674,11 +22474,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with taking a bath or shower by him or herself?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -23771,11 +22566,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had bathing?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -23872,11 +22662,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with taking a bath or shower by him or herself?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -23969,11 +22754,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had taking a bath or shower by him or herself?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -24070,11 +22850,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with doing chores around the house?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -24167,11 +22942,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had picking up toys?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -24268,11 +23038,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with doing chores around the house?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -24365,11 +23130,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had doing chores, like picking up his or her toys?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -24466,11 +23226,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with low energy level?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -24563,11 +23318,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with low energy levels?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -24664,11 +23414,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with low energy levels?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -24761,11 +23506,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with low energy levels?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -24862,11 +23602,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with participating in sports activity or exercise?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -24959,11 +23694,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had participating in active play or exercise?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -25060,11 +23790,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with participating in sports activity or exercise?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -25157,11 +23882,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had participating in sports activity or exercise?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -25258,11 +23978,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with lifting something heavy?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -25355,11 +24070,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had lifting something heavy?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -25456,11 +24166,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with lifting something heavy?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -25553,11 +24258,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had lifting something heavy?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -25654,11 +24354,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with runningl?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -25751,11 +24446,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had running?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -25852,11 +24542,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with running?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -25949,11 +24634,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had running?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -26050,11 +24730,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with walking more than one block?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -26147,11 +24822,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had walking?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -26248,11 +24918,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with walking more than one block?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -26345,11 +25010,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had walking more than one block?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -26446,11 +25106,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with paying attention in class?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -26543,11 +25198,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with getting along with other children?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -26644,11 +25294,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with paying attention in class?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -26741,11 +25386,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with missing school to go to the doctor or hospital?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -26842,11 +25482,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had missing school/daycare to go to the doctor or hospital?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -26939,11 +25574,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with keeping up when playing with other children?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -27040,11 +25670,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with missing school to go to the doctor or hospital?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -27137,11 +25762,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with forgetting things?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -27238,11 +25858,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with other kids not wanting to be his or her friend?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -27335,11 +25950,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with forgetting things?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -27436,11 +26046,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with missing school becaues of not feeling well?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -27533,11 +26138,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had missing school/daycare because of not feeling well?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -27634,11 +26234,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with not being able to do things that other children his or her age can do?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -27731,11 +26326,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with missing school because of not feeling well?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -27832,11 +26422,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with keeping up with school activities?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -27929,11 +26514,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had doing the same school activities as peers?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -28030,11 +26610,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with getting teased by other children?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -28127,11 +26702,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with keeping up with school activities?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -28228,11 +26798,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with not being able to do things that other children his or her age can do?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -28325,11 +26890,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with not being able to do things other children his or her age can do?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -28426,11 +26986,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with not being able to do things that other children his or her age can do?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -28523,11 +27078,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with not being able to do things that other children his or her age can do?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -28624,11 +27174,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with getting along with other children?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -28721,11 +27266,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with playing with other children?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -28822,11 +27362,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with getting along with other children?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -28919,11 +27454,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with getting along with other children?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -29020,11 +27550,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with keeping up when playing with other children?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -29117,11 +27642,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had keeping up when playing with other children?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -29218,11 +27738,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with keeping up with other children?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -29315,11 +27830,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with keeping up when playing with other children?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -29416,11 +27926,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with other kids not wanting to be his or her friend?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -29513,11 +28018,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with other kids not wanting to play with him or her?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -29614,11 +28114,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with other kids not wanting to be his or her friend?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -29711,11 +28206,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with other kids not wanting to be his or her friend?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -29812,11 +28302,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with getting teased by other children?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -29909,11 +28394,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with getting teased by other children?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -30010,11 +28490,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with getting teased by other children?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -30107,11 +28582,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with getting teased by other children?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -30208,11 +28678,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with feeling afraid or scared?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -30305,11 +28770,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with feeling afraid or scared?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -30406,11 +28866,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with feeling afraid or scared?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -30503,11 +28958,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with feeling angry or scared?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -30604,11 +29054,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with feeling angry?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -30701,11 +29146,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with feeling angry?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -30802,11 +29242,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with feeling angry?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -30899,11 +29334,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with feeling angry?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -31000,11 +29430,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with feeling sad or blue?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -31097,11 +29522,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with feeling sad or blue?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -31198,11 +29618,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with feeling sad or blue?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -31295,11 +29710,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with feeling sad or blue?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -31396,11 +29806,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with having trouble sleeping?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -31493,11 +29898,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with trouble sleeping?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -31594,11 +29994,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with trouble sleeping?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -31691,11 +30086,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with trouble sleeping?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -31792,11 +30182,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with worrying what will happen to you?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -31889,11 +30274,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with worrying about what will happen to him or her?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -31990,11 +30370,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with worrying about what will happen to him or her?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -32087,11 +30462,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with worrying about what will happen to you?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -32188,11 +30558,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with hurting or aching?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -32285,11 +30650,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with having hurts or aches?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -32386,11 +30746,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with having hurts or aches?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -32483,11 +30838,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with hurting or feeling pain?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -32584,11 +30934,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with taking a bath or shower by yourself?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -32681,11 +31026,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with taking a bath or shower by him or herself?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -32782,11 +31122,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with taking a bath or shower by him or herself?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -32879,11 +31214,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with taking a bath or shower by yourself?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -32980,11 +31310,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with doing chores around the house?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -33077,11 +31402,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with doing chores around the house?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -33178,11 +31498,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with doing chores around the house?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -33275,11 +31590,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with doing chores around the house?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -33376,11 +31686,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with low energy?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -33473,11 +31778,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with low energy levels?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -33574,11 +31874,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with low energy levels?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -33671,11 +31966,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with low energy?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -33772,11 +32062,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with doing sports activity or exercise?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -33869,11 +32154,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with participating in sports activity or exercise?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -33970,11 +32250,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with participating in sports activity or exercise?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -34067,11 +32342,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with sports activity or exercise?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -34168,11 +32438,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with lifting something heavy?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -34265,11 +32530,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with lifting something heavy?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -34366,11 +32626,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with lifting something heavy?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -34463,11 +32718,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with lifting something heavy?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -34564,11 +32814,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with running?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -34661,11 +32906,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with running?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -34762,11 +33002,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with running?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -34859,11 +33094,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with running?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -34960,11 +33190,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with walking more than one block?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -35057,11 +33282,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with walking more than one block?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -35158,11 +33378,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with walking more than one block?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -35255,11 +33470,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with walking more than one block?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -35356,11 +33566,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with paying attention at work or school?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -35453,11 +33658,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with paying attention in class?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -35554,11 +33754,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with paying attention in class?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -35651,11 +33846,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with paying attention at work or school?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -35752,11 +33942,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with missing work or school to go to the doctor or hospital?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -35849,11 +34034,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with missing school to go to the doctor or hospital?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -35950,11 +34130,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with missing school to go to the doctor or hospital?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -36047,11 +34222,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with missing work or school to go to the doctor or hospital?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -36148,11 +34318,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with keeping up with forgetting things?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -36245,11 +34410,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with forgetting things?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -36346,11 +34506,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with forgetting things?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -36443,11 +34598,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with forgetting things?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -36544,11 +34694,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with missing work or school because of not feeling well?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -36641,11 +34786,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with missing school because of not feeling well?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -36742,11 +34882,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with  missing school becaues of not feeling well?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -36839,11 +34974,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with missing work or school because of not feeling well?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -36940,11 +35070,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with keeping up with keeping up with your work or studies?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -37037,11 +35162,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with keeping up with schoolwork?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -37138,11 +35258,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with keeping up with schoolwork?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -37235,11 +35350,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with keeping up with work or studies?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -37336,11 +35446,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with not being able to do things other adults your age can do?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -37433,11 +35538,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with not being able to do things that other children his or her age can do?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -37534,11 +35634,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with not being able to do things that other teens his or her age can do?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -37631,11 +35726,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with not being able to do things others your age can do?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -37732,11 +35822,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with getting along with other adults?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -37829,11 +35914,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with getting along with other children?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -37930,11 +36010,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with getting along with other children?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -38027,11 +36102,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with getting along with other young adults?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -38128,11 +36198,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with keeping up with your peers?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -38225,11 +36290,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with keeping up when playing with other children?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -38326,11 +36386,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with keeping up with other teens?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -38423,11 +36478,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with keeping up with your peers?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -38524,11 +36574,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with other adults not wanting to be your friend?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -38621,11 +36666,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with other kids not wanting to be his or her friend?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -38722,11 +36762,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with other teens not wanting to be his or her friend?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -38819,11 +36854,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with other young adults not wanting to be your friend?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -38920,11 +36950,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with other adults teasing you?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -39017,11 +37042,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with getting teased by other children?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -39118,11 +37138,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem has your child had with getting teased by other teens?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -39217,11 +37232,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In the past month, how much of a problem have you had with other young adults teasing you?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -39314,11 +37324,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Test language</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -39438,11 +37443,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>User entered age in days</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>user_entered_age_in_months_no</name>
@@ -39460,11 +37460,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>User entered age in months</value>
 			<type>String</type>
 		</property>
 	</node>

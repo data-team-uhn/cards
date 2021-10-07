@@ -1263,7 +1263,7 @@
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>Weeks</value>
 					<type>String</type>
 				</property>
@@ -1393,7 +1393,7 @@
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>Kg</value>
 					<type>String</type>
 				</property>
@@ -1459,7 +1459,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>cm</value>
 				<type>String</type>
 			</property>
@@ -1483,7 +1483,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>cm</value>
 				<type>String</type>
 			</property>
@@ -14972,7 +14972,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>Kg</value>
 				<type>String</type>
 			</property>
@@ -14996,7 +14996,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>cm</value>
 				<type>String</type>
 			</property>
@@ -15020,13 +15020,18 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>Days. Auto calculate from Date of birth and Admission date in Days</value>
+				<name>unitOfMeasurement</name>
+				<value>Days</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>dataType</name>
 				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Auto calculate from Date of birth and Admission date in Days</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -18613,7 +18618,7 @@
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>Days</value>
 					<type>String</type>
 				</property>
@@ -23356,10 +23361,8 @@ valve (RETIRED)"]]></value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>days. first = new Date(@{dob})
-second = new Date(@{pacstartdttm})
-return Math.round(Math.abs((first - second) / (24 * 60 * 60 * 1000)))</value>
+				<name>unitOfMeasurement</name>
+				<value>days</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -28797,7 +28800,7 @@ Other", "Vasc - Other", "Other non-cardiothoracic surgery</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>Kg</value>
 				<type>String</type>
 			</property>
@@ -28821,7 +28824,7 @@ Other", "Vasc - Other", "Other non-cardiothoracic surgery</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>cm</value>
 				<type>String</type>
 			</property>
@@ -29956,10 +29959,8 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>Days. first = new Date(@{dob})
-second = new Date(@{pacenddttm})
-return Math.round(Math.abs((second - first) / (24 * 60 * 60 * 1000)))</value>
+				<name>unitOfMeasurement</name>
+				<value>Days</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -29989,7 +29990,7 @@ return Math.round(Math.abs((second - first) / (24 * 60 * 60 * 1000)))</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>Kg</value>
 				<type>String</type>
 			</property>
@@ -30013,7 +30014,7 @@ return Math.round(Math.abs((second - first) / (24 * 60 * 60 * 1000)))</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>cm</value>
 				<type>String</type>
 			</property>
@@ -34037,7 +34038,7 @@ suite</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>mcg/kg/min</value>
 					<type>String</type>
 				</property>
@@ -34172,7 +34173,7 @@ suite</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>mcg/kg/min</value>
 					<type>String</type>
 				</property>
@@ -34307,7 +34308,7 @@ suite</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>mcg/kg/min</value>
 					<type>String</type>
 				</property>
@@ -38715,7 +38716,7 @@ and/or "Or</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>Kcal/oz</value>
 					<type>String</type>
 				</property>
@@ -38881,7 +38882,7 @@ and/or "Or</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>cc/day</value>
 					<type>String</type>
 				</property>
@@ -38950,7 +38951,7 @@ and/or "Or</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>cc/day</value>
 					<type>String</type>
 				</property>
@@ -39019,7 +39020,7 @@ and/or "Or</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>cc/day</value>
 					<type>String</type>
 				</property>
@@ -39088,7 +39089,7 @@ and/or "Or</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>kCal/kg/day</value>
 					<type>String</type>
 				</property>
@@ -39157,7 +39158,7 @@ and/or "Or</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>kCal/kg/day</value>
 					<type>String</type>
 				</property>
@@ -39226,7 +39227,7 @@ and/or "Or</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>kCal/kg/day</value>
 					<type>String</type>
 				</property>
@@ -41918,7 +41919,7 @@ and/or "Or</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>Kcal/oz</value>
 					<type>String</type>
 				</property>
@@ -42084,7 +42085,7 @@ and/or "Or</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>cc/day</value>
 					<type>String</type>
 				</property>
@@ -42153,7 +42154,7 @@ and/or "Or</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>cc/day</value>
 					<type>String</type>
 				</property>
@@ -42222,7 +42223,7 @@ and/or "Or</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>cc/day</value>
 					<type>String</type>
 				</property>
@@ -42291,7 +42292,7 @@ and/or "Or</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>kCal/kg/day</value>
 					<type>String</type>
 				</property>
@@ -42360,7 +42361,7 @@ and/or "Or</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>kCal/kg/day</value>
 					<type>String</type>
 				</property>
@@ -42429,7 +42430,7 @@ and/or "Or</value>
 					<type>Long</type>
 				</property>
 				<property>
-					<name>description</name>
+					<name>unitOfMeasurement</name>
 					<value>kCal/kg/day</value>
 					<type>String</type>
 				</property>

@@ -55,11 +55,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>0-No</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -107,11 +102,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>abas_communication_scaled_no</name>
@@ -129,11 +119,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Scaled Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -158,11 +143,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Community Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -212,11 +192,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>abas_community_scaled_no</name>
@@ -234,11 +209,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Scaled Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -263,11 +233,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Were all ABAS-3 scores able to be calculated?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -317,11 +282,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Standard Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>abas_composite_sum_b</name>
@@ -344,11 +304,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -398,11 +353,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Sum of Scaled Scores</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>abas_conceptual_standard_no</name>
@@ -420,11 +370,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -449,11 +394,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -503,11 +443,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Sum of Scaled Scores</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>abas_health_raw_b</name>
@@ -530,11 +465,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -584,11 +514,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>abas_health_scaled_no</name>
@@ -606,11 +531,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Scaled Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -635,11 +555,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -689,11 +604,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>abas_home_scaled_no</name>
@@ -711,11 +621,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Scaled Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -740,11 +645,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -794,11 +694,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>abas_leisure_scaled_no</name>
@@ -816,11 +711,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Scaled Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -845,11 +735,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -899,11 +784,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>abas_motor_scaled_no</name>
@@ -921,11 +801,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Scaled Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -947,11 +822,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Specify other reason</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>abas_practical_standard_no</name>
@@ -969,11 +839,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -998,11 +863,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -1052,11 +912,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Sum of Scaled Scores</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>abas_preacademics_raw_b</name>
@@ -1079,11 +934,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -1133,11 +983,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>abas_preacademics_scaled_no</name>
@@ -1155,11 +1000,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Scaled Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -1184,11 +1024,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Please indicate why all scores were not able to be calculated</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -1285,11 +1120,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>0-No</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -1337,11 +1167,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>abas_self_care_scaled_no</name>
@@ -1359,11 +1184,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Scaled Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -1388,11 +1208,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -1442,11 +1257,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>abas_self_direction_scaled_no</name>
@@ -1464,11 +1274,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Scaled Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -1493,11 +1298,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -1547,11 +1347,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>abas_social_scaled_no</name>
@@ -1571,11 +1366,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Scaled Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>abas_social_standard_no</name>
@@ -1593,11 +1383,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -1622,11 +1407,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -1676,11 +1456,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Sum of Scaled Scores</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>abas_taker_e</name>
@@ -1703,11 +1478,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Who filled out the ABAS questionnaire?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -1841,11 +1611,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Please specify other</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>additional_tests_dt</name>
@@ -1870,11 +1635,6 @@
 			<value>date</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Date of ND visit for additional tests</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>additional_tests_e</name>
@@ -1897,11 +1657,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>If you would like to enter additional tests not listed above, please select any that apply</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -1940,11 +1695,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Were the tests/questionnaires for this assessment completed on 2 or more dates?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -1999,11 +1749,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>0-No</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -2051,11 +1796,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>basc_activities_t_no</name>
@@ -2073,11 +1813,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>T-score </value>
 			<type>String</type>
 		</property>
 	</node>
@@ -2102,11 +1837,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -2156,11 +1886,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>basc_adaptability_t_no</name>
@@ -2178,11 +1903,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>T-score </value>
 			<type>String</type>
 		</property>
 	</node>
@@ -2207,11 +1927,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -2261,11 +1976,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>basc_adaptive_t_no</name>
@@ -2283,11 +1993,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>T-score </value>
 			<type>String</type>
 		</property>
 	</node>
@@ -2312,11 +2017,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -2366,11 +2066,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>basc_aggression_t_no</name>
@@ -2388,11 +2083,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>T-score </value>
 			<type>String</type>
 		</property>
 	</node>
@@ -2417,11 +2107,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -2471,11 +2156,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>basc_anxiety_t_no</name>
@@ -2493,11 +2173,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>T-score </value>
 			<type>String</type>
 		</property>
 	</node>
@@ -2522,11 +2197,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -2576,11 +2246,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>basc_attention_t_no</name>
@@ -2598,11 +2263,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>T-score </value>
 			<type>String</type>
 		</property>
 	</node>
@@ -2627,11 +2287,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -2681,11 +2336,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>basc_atypicality_t_no</name>
@@ -2703,11 +2353,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>T-score </value>
 			<type>String</type>
 		</property>
 	</node>
@@ -2732,11 +2377,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -2786,11 +2426,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>basc_behavioral_t_no</name>
@@ -2808,11 +2443,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>T-score </value>
 			<type>String</type>
 		</property>
 	</node>
@@ -2837,11 +2467,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -2891,11 +2516,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>basc_communication_t_no</name>
@@ -2913,11 +2533,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>T-score </value>
 			<type>String</type>
 		</property>
 	</node>
@@ -2942,11 +2557,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Were all BASC-3 scores able to be calculated?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -3001,11 +2611,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>0-No</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -3056,11 +2661,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Category</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -3129,11 +2729,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>0-No</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -3181,11 +2776,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>basc_depression_t_no</name>
@@ -3203,11 +2793,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>T-score </value>
 			<type>String</type>
 		</property>
 	</node>
@@ -3232,11 +2817,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -3286,11 +2866,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>basc_externalizing_t_no</name>
@@ -3308,11 +2883,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>T-score </value>
 			<type>String</type>
 		</property>
 	</node>
@@ -3337,11 +2907,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -3394,11 +2959,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Category</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -3467,11 +3027,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>0-No</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -3519,11 +3074,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>basc_hyperactivity_t_no</name>
@@ -3541,11 +3091,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>T-score </value>
 			<type>String</type>
 		</property>
 	</node>
@@ -3570,11 +3115,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -3624,11 +3164,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>basc_internalizing_t_no</name>
@@ -3648,11 +3183,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>T-score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>basc_other_incomplete_txt</name>
@@ -3670,11 +3200,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Specify other reason</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -3699,11 +3224,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Please indicate why all scores were not able to be calculated</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -3814,11 +3334,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>0-No</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -3869,11 +3384,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Category</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -3942,11 +3452,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>0-No</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -3994,11 +3499,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>basc_social_t_no</name>
@@ -4016,11 +3516,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>T-score </value>
 			<type>String</type>
 		</property>
 	</node>
@@ -4045,11 +3540,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -4099,11 +3589,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>basc_somatization_t_no</name>
@@ -4121,11 +3606,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>T-score </value>
 			<type>String</type>
 		</property>
 	</node>
@@ -4150,11 +3630,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Who filled out the BASC-3 questionnaire?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -4288,11 +3763,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Please specify other</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>basc_withdrawl_raw_b</name>
@@ -4315,11 +3785,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -4369,11 +3834,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>basc_withdrawl_t_no</name>
@@ -4391,11 +3851,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>T-score </value>
 			<type>String</type>
 		</property>
 	</node>
@@ -4420,11 +3875,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Were all BEERY VMI-6 scores able to be calculated? </value>
 			<type>String</type>
 		</property>
 		<node>
@@ -4474,11 +3924,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Specify other reason</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>beery_reason_incomplete_e</name>
@@ -4501,11 +3946,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Please indicate why all scores were not able to be calculated</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -4616,11 +4056,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>0-No</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -4668,11 +4103,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>brief2_bri_t_no</name>
@@ -4690,11 +4120,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>T-score </value>
 			<type>String</type>
 		</property>
 	</node>
@@ -4719,11 +4144,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Were all BRIEF-2 scores able to be calculated?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -4778,11 +4198,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>0-No</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -4830,11 +4245,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>brief2_cri_t_no</name>
@@ -4852,11 +4262,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>T-score </value>
 			<type>String</type>
 		</property>
 	</node>
@@ -4881,11 +4286,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -4935,11 +4335,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>brief2_emotional_t_no</name>
@@ -4957,11 +4352,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>T-score </value>
 			<type>String</type>
 		</property>
 	</node>
@@ -4986,11 +4376,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -5040,11 +4425,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>brief2_eri_t_no</name>
@@ -5062,11 +4442,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>T-score </value>
 			<type>String</type>
 		</property>
 	</node>
@@ -5091,11 +4466,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -5145,11 +4515,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>brief2_gec_t_no</name>
@@ -5167,11 +4532,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>T-score </value>
 			<type>String</type>
 		</property>
 	</node>
@@ -5196,11 +4556,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -5253,11 +4608,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Category</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -5326,11 +4676,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>0-No</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -5381,11 +4726,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Category</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -5454,11 +4794,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>0-No</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -5506,11 +4841,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>brief2_inhibit_t_no</name>
@@ -5528,11 +4858,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>T-score </value>
 			<type>String</type>
 		</property>
 	</node>
@@ -5557,11 +4882,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -5611,11 +4931,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>brief2_initiate_t_no</name>
@@ -5633,11 +4948,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>T-score </value>
 			<type>String</type>
 		</property>
 	</node>
@@ -5662,11 +4972,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -5716,11 +5021,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>brief2_memory_t_no</name>
@@ -5738,11 +5038,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>T-score </value>
 			<type>String</type>
 		</property>
 	</node>
@@ -5767,11 +5062,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -5824,11 +5114,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Category</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -5897,11 +5182,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>0-No</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -5949,11 +5229,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>brief2_organize_t_no</name>
@@ -5973,11 +5248,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>T-score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>brief2_other_incomplete_txt</name>
@@ -5995,11 +5265,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Specify other reason</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -6024,11 +5289,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -6078,11 +5338,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>brief2_plan_t_no</name>
@@ -6100,11 +5355,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>T-score </value>
 			<type>String</type>
 		</property>
 	</node>
@@ -6129,11 +5379,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Please indicate why all scores were not able to be calculated</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -6244,11 +5489,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>0-No</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -6296,11 +5536,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>brief2_self_monitor_t_no</name>
@@ -6318,11 +5553,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>T-score </value>
 			<type>String</type>
 		</property>
 	</node>
@@ -6347,11 +5577,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -6401,11 +5626,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>brief2_shift_t_no</name>
@@ -6423,11 +5643,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>T-score </value>
 			<type>String</type>
 		</property>
 	</node>
@@ -6452,11 +5667,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Who filled out the BRIEF-2 questionnaire?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -6590,11 +5800,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Please specify other</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>brief2_task_raw_b</name>
@@ -6617,11 +5822,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -6671,11 +5871,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>brief2_task_t_no</name>
@@ -6693,11 +5888,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>T-score </value>
 			<type>String</type>
 		</property>
 	</node>
@@ -6719,11 +5909,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>bsra3_readiness_scaled_no</name>
@@ -6741,11 +5926,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Scaled score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -6770,11 +5950,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>New BSRA kit used?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -6829,11 +6004,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Was any tests administered or provided by a provider outside your institution?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>0-No</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -6877,8 +6047,8 @@
 			<type>Long</type>
 		</property>
 		<property>
-			<name>description</name>
-			<value>in months. Age (in months)</value>
+			<name>unitOfMeasurement</name>
+			<value>months</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -6901,8 +6071,8 @@
 			<type>Long</type>
 		</property>
 		<property>
-			<name>description</name>
-			<value>in years. Age (in years)</value>
+			<name>unitOfMeasurement</name>
+			<value>years</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -6926,7 +6096,7 @@
 		</property>
 		<property>
 			<name>description</name>
-			<value>select all that apply. Were any of the following conditions diagnosed as a result of this assessment? (select all that apply)</value>
+			<value>select all that apply</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -7098,11 +6268,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Please specify OTHER condition</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>cvlt3_complete_b</name>
@@ -7125,11 +6290,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Were all CVLT-C scores able to be calculated? </value>
 			<type>String</type>
 		</property>
 		<node>
@@ -7184,11 +6344,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>0-No</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -7236,11 +6391,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>cvlt3_discriminability_scaled_no</name>
@@ -7258,11 +6408,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Scaled Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -7287,11 +6432,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -7341,11 +6481,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>cvlt3_listb_scaled_no</name>
@@ -7363,11 +6498,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Z Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -7392,11 +6522,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -7446,11 +6571,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>cvlt3_long_cr_scaled_no</name>
@@ -7468,11 +6588,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Z Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -7497,11 +6612,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -7551,11 +6661,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>cvlt3_long_fr_scaled_no</name>
@@ -7575,11 +6680,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Z Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>cvlt3_other_incomplete_txt</name>
@@ -7597,11 +6697,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Specify other reason</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -7626,11 +6721,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Please indicate why all scores were not able to be calculated</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -7741,11 +6831,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>0-No</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -7793,11 +6878,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>cvlt3_reptitions_scaled_no</name>
@@ -7815,11 +6895,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Scaled Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -7844,11 +6919,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -7898,11 +6968,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>cvlt3_sematic_scaled_no</name>
@@ -7920,11 +6985,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Scaled Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -7949,11 +7009,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -8003,11 +7058,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>cvlt3_serial_scaled_no</name>
@@ -8025,11 +7075,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Scaled Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -8054,11 +7099,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -8108,11 +7148,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>cvlt3_short_cr_scaled_no</name>
@@ -8130,11 +7165,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Z Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -8159,11 +7189,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -8213,11 +7238,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>cvlt3_short_fr_scaled_no</name>
@@ -8235,11 +7255,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Z Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -8264,11 +7279,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -8318,11 +7328,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>cvlt3_slope_scaled_no</name>
@@ -8340,11 +7345,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Scaled Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -8369,11 +7369,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -8423,11 +7418,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>cvlt3_total_intrusions_scaled_no</name>
@@ -8445,11 +7435,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Scaled Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -8474,11 +7459,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -8528,11 +7508,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>cvlt3_trail2_scaled_no</name>
@@ -8550,11 +7525,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Z Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -8579,11 +7549,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -8633,11 +7598,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>cvlt3_trail3_scaled_no</name>
@@ -8655,11 +7615,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Z Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -8684,11 +7639,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -8738,11 +7688,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>cvlt3_trail4_scaled_no</name>
@@ -8760,11 +7705,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Z Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -8789,11 +7729,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -8843,11 +7778,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Scaled Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>cvlt3_trial1_raw_b</name>
@@ -8870,11 +7800,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -8924,11 +7849,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>cvlt3_trial1_scaled_no</name>
@@ -8946,11 +7866,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Z Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -8975,11 +7890,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -9029,11 +7939,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>cvlt3_trial5_scaled_no</name>
@@ -9051,11 +7956,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Z Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -9080,11 +7980,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Were all CVLT-C scores able to be calculated? </value>
 			<type>String</type>
 		</property>
 		<node>
@@ -9139,11 +8034,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>0-No</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -9191,11 +8081,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>cvlt_consistency_z_no</name>
@@ -9213,11 +8098,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Z Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -9242,11 +8122,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -9296,11 +8171,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>cvlt_discriminability_z_no</name>
@@ -9318,11 +8188,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Z Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -9347,11 +8212,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -9401,11 +8261,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Z Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>cvlt_listb_raw_b</name>
@@ -9428,11 +8283,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -9482,11 +8332,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>cvlt_listb_z_no</name>
@@ -9504,11 +8349,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Z Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -9533,11 +8373,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -9587,11 +8422,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>cvlt_long_cr_z_no</name>
@@ -9609,11 +8439,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Z Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -9638,11 +8463,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -9692,11 +8512,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>cvlt_long_fr_z_no</name>
@@ -9716,11 +8531,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Z Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>cvlt_other_incomplete_txt</name>
@@ -9738,11 +8548,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Specify other reason</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -9767,11 +8572,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -9821,11 +8621,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Z Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>cvlt_reason_incomplete_e</name>
@@ -9848,11 +8643,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Please indicate why all scores were not able to be calculated</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -9963,11 +8753,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>0-No</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -10015,11 +8800,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>cvlt_sematic_z_no</name>
@@ -10037,11 +8817,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Z Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -10066,11 +8841,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -10120,11 +8890,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>cvlt_serial_z_no</name>
@@ -10142,11 +8907,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Z Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -10171,11 +8931,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -10225,11 +8980,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>cvlt_short_cr_z_no</name>
@@ -10247,11 +8997,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Z Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -10276,11 +9021,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -10330,11 +9070,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>cvlt_short_fr_z_no</name>
@@ -10352,11 +9087,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Z Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -10381,11 +9111,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -10435,11 +9160,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>cvlt_slope_z_no</name>
@@ -10459,11 +9179,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Z Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>cvlt_total_intrusions_e</name>
@@ -10481,11 +9196,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Total Intrusions</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -10510,11 +9220,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -10564,11 +9269,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>cvlt_total_repetitions_e</name>
@@ -10586,11 +9286,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Total Repitions</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -10615,11 +9310,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -10669,11 +9359,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>cvlt_trail5_raw_no</name>
@@ -10693,11 +9378,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>cvlt_trail5_z_no</name>
@@ -10715,11 +9395,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Z Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -10744,11 +9419,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -10798,11 +9468,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>cvlt_trial1_z_no</name>
@@ -10820,11 +9485,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Z Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -10849,11 +9509,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -10908,11 +9563,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Score collected?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>0-No</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -10960,11 +9610,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>DASS Anxiety Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>dass21_caregivers_e</name>
@@ -10987,11 +9632,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>How many caregivers filled out the DASS-21?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -11046,11 +9686,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Were all DASS-21 scores able to be calculated?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>0-No</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -11103,11 +9738,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Score collected?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>0-No</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -11155,11 +9785,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>DASS Depression Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>dass21_other_incomplete_txt</name>
@@ -11177,11 +9802,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Specify OTHER reason</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -11206,11 +9826,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Please indicate why all scores were not able to be calculated</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -11321,11 +9936,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Score collected?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>0-No</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -11373,11 +9983,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>DASS Stress Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>dass21_taker1_e</name>
@@ -11400,11 +10005,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Who filled out the DASS-21 questionnaire?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -11538,11 +10138,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Please specify OTHER</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>dass21_taker2_anxiety_b</name>
@@ -11565,11 +10160,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Score collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -11619,11 +10209,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>DASS Anxiety Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>dass21_taker2_complete_b</name>
@@ -11646,11 +10231,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Were all DASS-21 scores able to be calculated?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -11705,11 +10285,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Score collected?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>0-No</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -11757,11 +10332,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>DASS Depression Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>dass21_taker2_e</name>
@@ -11784,11 +10354,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Who filled out the DASS-21 questionnaire?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -11922,11 +10487,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Specify OTHER reason</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>dass21_taker2_other_txt</name>
@@ -11944,11 +10504,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Please specify OTHER</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -11973,11 +10528,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Please indicate why all scores were not able to be calculated</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -12088,11 +10638,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Score collected?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>0-No</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -12140,11 +10685,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>DASS Stress Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>dkefs_category_raw_b</name>
@@ -12167,11 +10707,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -12221,11 +10756,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>dkefs_category_scaled_no</name>
@@ -12243,11 +10773,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Scaled Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -12269,11 +10794,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>dkefs_category_switch_correct_scaled_no</name>
@@ -12291,11 +10811,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Scaled Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -12317,11 +10832,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>dkefs_category_switching_scaled_no</name>
@@ -12339,11 +10849,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Scaled Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -12368,11 +10873,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Were all DKEFS Trail Making scores able to be calculated? </value>
 			<type>String</type>
 		</property>
 		<node>
@@ -12427,11 +10927,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>0-No</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -12479,11 +10974,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>dkefs_letter_scaled_no</name>
@@ -12503,11 +10993,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Scaled Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>dkefs_other_incomplete_txt</name>
@@ -12525,11 +11010,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Specify other reason</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -12554,11 +11034,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Please indicate why all scores were not able to be calculated</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -12669,11 +11144,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Commissions Collected?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>0-No</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -12721,11 +11191,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Comissions Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>dkefs_trails1_commissions_scaled_no</name>
@@ -12743,11 +11208,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Comissions Scaled Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -12772,11 +11232,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Omissions Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -12826,11 +11281,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Omissions Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>dkefs_trails1_omissions_scaled_no</name>
@@ -12848,11 +11298,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Omissions Scaled Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -12877,11 +11322,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -12931,11 +11371,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>dkefs_trails1_scaled_no</name>
@@ -12953,11 +11388,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Scaled Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -12982,11 +11412,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -13036,11 +11461,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>dkefs_trails2_scaled_no</name>
@@ -13058,11 +11478,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Scaled Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -13087,11 +11502,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -13141,11 +11551,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>dkefs_trails3_scaled_no</name>
@@ -13163,11 +11568,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Scaled Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -13189,11 +11589,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>All Errors Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>dkefs_trails4_errors_scaled_no</name>
@@ -13211,11 +11606,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>All Errors Scaled Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -13240,11 +11630,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -13294,11 +11679,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>dkefs_trails4_scaled_no</name>
@@ -13316,11 +11696,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Scaled Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -13345,11 +11720,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -13399,11 +11769,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>dkefs_trails5_scaled_no</name>
@@ -13421,11 +11786,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Scaled Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -13450,11 +11810,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Were all DKEFS Verbal Fluency scores able to be calculated? </value>
 			<type>String</type>
 		</property>
 		<node>
@@ -13507,11 +11862,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Please indicate why all scores were not able to be calculated</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -13617,11 +11967,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Specify other reason</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>duplicate_entry_e</name>
@@ -13638,7 +11983,7 @@
 		</property>
 		<property>
 			<name>description</name>
-			<value>Selecting Yes will hide duplicate questions between the two tabs. Does this ND Visit have an entry on the 0-5 age tab? (Selecting Yes will hide duplicate questions between the two tabs)</value>
+			<value>Selecting Yes will hide duplicate questions between the two tabs</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -13695,7 +12040,7 @@
 		</property>
 		<property>
 			<name>description</name>
-			<value>select all that apply. Please specify developmental delay (select all that apply)</value>
+			<value>select all that apply</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -13797,11 +12142,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Please specify other developmental delay</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>dx_disorder_emotion_e</name>
@@ -13818,7 +12158,7 @@
 		</property>
 		<property>
 			<name>description</name>
-			<value>select all that apply. Please specify emotional disorder (select all that apply)</value>
+			<value>select all that apply</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -13906,11 +12246,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Please specify OTHER emotional disorder</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>dx_disorder_learning_e</name>
@@ -13927,7 +12262,7 @@
 		</property>
 		<property>
 			<name>description</name>
-			<value>select all that apply. Please specify learning disorder/disability (select all that apply)</value>
+			<value>select all that apply</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -14029,11 +12364,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Please specify other learning disorder/disability</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>gpeg_complete_b</name>
@@ -14056,11 +12386,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Completed?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -14115,11 +12440,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Dominant Hand</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1-Right</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -14172,11 +12492,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>#N/A</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>gpeg_dom_raw_no</name>
@@ -14194,11 +12509,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Dominant Hand Raw Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -14223,11 +12533,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Completed?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -14282,11 +12587,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Non-Dominant Hand</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1-Right</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -14334,11 +12634,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Non-Dominant Hand Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>gpeg_other_incomplete_txt</name>
@@ -14356,11 +12651,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Specify other reason</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -14385,11 +12675,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Please indicate why all scores were not able to be calculated</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -14500,11 +12785,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Please indicate why all scores were not able to be calculated</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1-Measurenotavailable</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -14608,11 +12888,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Specify other reason</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>head_dt</name>
@@ -14637,11 +12912,6 @@
 			<value>date</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Date</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>head_no</name>
@@ -14657,8 +12927,8 @@
 			<type>Long</type>
 		</property>
 		<property>
-			<name>description</name>
-			<value>cm. Head Circumference (cm)</value>
+			<name>unitOfMeasurement</name>
+			<value>cm</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -14690,11 +12960,6 @@
 			<value>date</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Date</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>height_no</name>
@@ -14710,8 +12975,8 @@
 			<type>Long</type>
 		</property>
 		<property>
-			<name>description</name>
-			<value>cm. Height (cm)</value>
+			<name>unitOfMeasurement</name>
+			<value>cm</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -14743,11 +13008,6 @@
 			<value>date</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>#N/A</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>number_of_visits_e</name>
@@ -14770,11 +13030,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Number of Visits</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -14838,11 +13093,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Is there any other information related to language that is important to note?</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>other_lang_b</name>
@@ -14865,11 +13115,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Were tests provided/administered in a language other than English?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -14916,7 +13161,7 @@
 		</property>
 		<property>
 			<name>description</name>
-			<value>Check all that apply. Which tests were provided/administered by an outside provider? (Check all that apply)</value>
+			<value>Check all that apply</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -15270,11 +13515,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>#N/A</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>reason_not_taken_e</name>
@@ -15291,7 +13531,7 @@
 		</property>
 		<property>
 			<name>description</name>
-			<value>Select all that apply. Reason other tests were not provided/administered (Select all that apply)</value>
+			<value>Select all that apply</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -15463,11 +13703,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Please specify OTHER reason test was not provided/administered</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>referral_services_e</name>
@@ -15484,7 +13719,7 @@
 		</property>
 		<property>
 			<name>description</name>
-			<value>select all that apply. As a result of this assessment were any referrals for therapies/services made? (select all that apply)</value>
+			<value>select all that apply</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -15656,11 +13891,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Please specify other</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>srs2_awareness_raw_b</name>
@@ -15683,11 +13913,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -15737,11 +13962,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>srs2_awareness_t_no</name>
@@ -15759,11 +13979,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>T-score </value>
 			<type>String</type>
 		</property>
 	</node>
@@ -15788,11 +14003,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -15842,11 +14052,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>srs2_cognition_t_no</name>
@@ -15864,11 +14069,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>T-score </value>
 			<type>String</type>
 		</property>
 	</node>
@@ -15893,11 +14093,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -15947,11 +14142,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>srs2_communication_t_no</name>
@@ -15969,11 +14159,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>T-score </value>
 			<type>String</type>
 		</property>
 	</node>
@@ -15998,11 +14183,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Were all SRS-2 scores able to be calculated?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -16057,11 +14237,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>0-No</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -16109,11 +14284,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>srs2_motivation_t_no</name>
@@ -16133,11 +14303,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>T-score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>srs2_other_incomplete_txt</name>
@@ -16155,11 +14320,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Specify other reason</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -16184,11 +14344,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Please indicate why all scores were not able to be calculated</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -16299,11 +14454,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>0-No</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -16351,11 +14501,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>srs2_restricted_t_no</name>
@@ -16373,11 +14518,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>T-score </value>
 			<type>String</type>
 		</property>
 	</node>
@@ -16402,11 +14542,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -16456,11 +14591,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>srs2_rrb_t_no</name>
@@ -16478,11 +14608,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>T-score </value>
 			<type>String</type>
 		</property>
 	</node>
@@ -16507,11 +14632,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -16561,11 +14681,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>srs2_sci_t_no</name>
@@ -16583,11 +14698,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>T-score </value>
 			<type>String</type>
 		</property>
 	</node>
@@ -16612,11 +14722,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Who filled out the SRS-2 questionnaire?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -16750,11 +14855,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Please specify other</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>srs2_total_raw_b</name>
@@ -16777,11 +14877,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -16831,11 +14926,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score </value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>srs2_total_t_no</name>
@@ -16853,11 +14943,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>T-score </value>
 			<type>String</type>
 		</property>
 	</node>
@@ -16884,11 +14969,6 @@
 			<value>date</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Date of ND Visit</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>testing1_e</name>
@@ -16911,11 +14991,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Which tests were provided/administered on this date?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -17278,11 +15353,6 @@
 			<value>date</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Second testing date</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>testing2_e</name>
@@ -17305,11 +15375,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Which tests were provided/administered on this date?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -17672,11 +15737,6 @@
 			<value>date</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Third testing date</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>testing3_e</name>
@@ -17699,11 +15759,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Which tests were provided/administered on this date?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -18066,11 +16121,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Which tests were available in an alternate language?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1-None</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -18431,11 +16481,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>In which language were the tests provided/administered?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>1-Spanish</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -18553,11 +16598,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Please specify OTHER language</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>test_translated_e</name>
@@ -18580,11 +16620,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Which tests were translated by an examiner or interpreter?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -18938,8 +16973,8 @@
 			<type>Long</type>
 		</property>
 		<property>
-			<name>description</name>
-			<value>in months. Age (in months)</value>
+			<name>unitOfMeasurement</name>
+			<value>months</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -18962,8 +16997,8 @@
 			<type>Long</type>
 		</property>
 		<property>
-			<name>description</name>
-			<value>in months. Age (in months)</value>
+			<name>unitOfMeasurement</name>
+			<value>months</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -18986,8 +17021,8 @@
 			<type>Long</type>
 		</property>
 		<property>
-			<name>description</name>
-			<value>in months. Age (in months)</value>
+			<name>unitOfMeasurement</name>
+			<value>months</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -19010,8 +17045,8 @@
 			<type>Long</type>
 		</property>
 		<property>
-			<name>description</name>
-			<value>in years. Age (in years)</value>
+			<name>unitOfMeasurement</name>
+			<value>years</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -19034,8 +17069,8 @@
 			<type>Long</type>
 		</property>
 		<property>
-			<name>description</name>
-			<value>in years. Age (in years)</value>
+			<name>unitOfMeasurement</name>
+			<value>years</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -19058,8 +17093,8 @@
 			<type>Long</type>
 		</property>
 		<property>
-			<name>description</name>
-			<value>in years. Age (in years)</value>
+			<name>unitOfMeasurement</name>
+			<value>years</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -19089,11 +17124,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -19143,11 +17173,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>vmi_standard_no</name>
@@ -19165,11 +17190,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -19194,11 +17214,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -19248,11 +17263,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wais4_arithmetic_scaled_no</name>
@@ -19270,11 +17280,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -19299,11 +17304,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -19353,11 +17353,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wais4_coding_scaled_no</name>
@@ -19375,11 +17370,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -19404,11 +17394,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Were all WAIS-4 scores able to be calculated? </value>
 			<type>String</type>
 		</property>
 		<node>
@@ -19463,11 +17448,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>0-No</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -19515,11 +17495,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wais4_design_scaled_no</name>
@@ -19537,11 +17512,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -19566,11 +17536,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -19620,11 +17585,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wais4_digit_scaled_no</name>
@@ -19642,11 +17602,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -19671,11 +17626,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -19725,11 +17675,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wais4_info_scaled_no</name>
@@ -19747,11 +17692,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -19776,11 +17716,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -19830,11 +17765,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wais4_iq_standard_no</name>
@@ -19852,11 +17782,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -19881,11 +17806,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -19935,11 +17855,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wais4_matrix_scaled_no</name>
@@ -19957,11 +17872,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -19986,11 +17896,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -20040,11 +17945,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wais4_memory_standard_no</name>
@@ -20064,11 +17964,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Standard score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wais4_other_incomplete_txt</name>
@@ -20086,11 +17981,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Specify other reason</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -20115,11 +18005,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -20169,11 +18054,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wais4_perceptual_standard_no</name>
@@ -20191,11 +18071,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -20220,11 +18095,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -20274,11 +18144,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wais4_processing_standard_no</name>
@@ -20296,11 +18161,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -20325,11 +18185,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -20379,11 +18234,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wais4_puzzles_scaled_no</name>
@@ -20401,11 +18251,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -20430,11 +18275,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Please indicate why all scores were not able to be calculated</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -20545,11 +18385,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>0-No</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -20597,11 +18432,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wais4_similarities_scaled_no</name>
@@ -20619,11 +18449,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -20648,11 +18473,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -20702,11 +18522,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wais4_symbol_scaled_no</name>
@@ -20724,11 +18539,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -20753,11 +18563,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -20807,11 +18612,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wais4_verbal_standard_no</name>
@@ -20829,11 +18629,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -20858,11 +18653,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -20912,11 +18702,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wais4_vocab_scaled_no</name>
@@ -20934,11 +18719,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -20963,11 +18743,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Were all WASI scores able to be calculated? </value>
 			<type>String</type>
 		</property>
 		<node>
@@ -21022,11 +18797,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>0-No</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -21074,11 +18844,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wasi2_design_t_no</name>
@@ -21096,11 +18861,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>T-score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -21125,11 +18885,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -21179,11 +18934,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wasi2_iq_standard_no</name>
@@ -21201,11 +18951,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -21230,11 +18975,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -21284,11 +19024,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wasi2_matrix_t_no</name>
@@ -21308,11 +19043,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>T-score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wasi2_other_incomplete_txt</name>
@@ -21330,11 +19060,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Specify other reason</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -21359,11 +19084,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Please indicate why all scores were not able to be calculated</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -21474,11 +19194,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>0-No</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -21526,11 +19241,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wasi2_reasoning_standard_no</name>
@@ -21548,11 +19258,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -21577,11 +19282,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -21631,11 +19331,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wasi2_similarities_t_no</name>
@@ -21653,11 +19348,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>T-score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -21682,11 +19372,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -21736,11 +19421,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wasi2_verbal_standard_no</name>
@@ -21758,11 +19438,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -21787,11 +19462,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -21841,11 +19511,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wasi2_vocab_t_no</name>
@@ -21863,11 +19528,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>T-score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -21894,11 +19554,6 @@
 			<value>date</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Date</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>weight_no</name>
@@ -21914,8 +19569,8 @@
 			<type>Long</type>
 		</property>
 		<property>
-			<name>description</name>
-			<value>kg. Weight (kg)</value>
+			<name>unitOfMeasurement</name>
+			<value>kg</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -21945,11 +19600,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Were all WIAT-3 scores able to be calculated? </value>
 			<type>String</type>
 		</property>
 		<node>
@@ -22004,11 +19654,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>0-No</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -22056,11 +19701,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wiat3_numerical_standard_no</name>
@@ -22080,11 +19720,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Standard Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wiat3_other_incomplete_txt</name>
@@ -22102,11 +19737,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Specify other reason</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -22131,11 +19761,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -22185,11 +19810,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wiat3_reading_standard_no</name>
@@ -22207,11 +19827,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -22236,11 +19851,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Please indicate why all scores were not able to be calculated</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -22351,11 +19961,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>0-No</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -22403,11 +20008,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wisc5_coding_standard_no</name>
@@ -22425,11 +20025,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -22454,11 +20049,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Were all WISC-5 scores able to be calculated? </value>
 			<type>String</type>
 		</property>
 		<node>
@@ -22513,11 +20103,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>0-No</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -22565,11 +20150,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wisc5_design_scaled_no</name>
@@ -22587,11 +20167,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -22616,11 +20191,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -22670,11 +20240,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wisc5_digit_scaled_no</name>
@@ -22692,11 +20257,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -22721,11 +20281,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -22775,11 +20330,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wisc5_fluid_standard_no</name>
@@ -22797,11 +20347,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -22826,11 +20371,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -22880,11 +20420,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wisc5_iq_standard_no</name>
@@ -22902,11 +20437,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -22931,11 +20461,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -22985,11 +20510,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wisc5_memory_raw_b</name>
@@ -23012,11 +20532,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -23066,11 +20581,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wisc5_memory_standard_no</name>
@@ -23090,11 +20600,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Standard score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wisc5_other_incomplete_txt</name>
@@ -23112,11 +20617,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Specify other reason</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -23141,11 +20641,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -23195,11 +20690,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wisc5_picture_scaled_no</name>
@@ -23217,11 +20707,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -23246,11 +20731,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -23300,11 +20780,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wisc5_puzzles_scaled_no</name>
@@ -23322,11 +20797,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -23351,11 +20821,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Please indicate why all scores were not able to be calculated</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -23461,11 +20926,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Standard score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wisc5_similarities_raw_b</name>
@@ -23488,11 +20948,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -23542,11 +20997,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wisc5_similarities_scaled_no</name>
@@ -23564,11 +21014,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -23593,11 +21038,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -23647,11 +21087,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wisc5_speed_standard_no</name>
@@ -23669,11 +21104,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -23698,11 +21128,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -23752,11 +21177,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wisc5_symbol_scaled_no</name>
@@ -23774,11 +21194,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -23803,11 +21218,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -23857,11 +21267,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wisc5_verbal_standard_no</name>
@@ -23879,11 +21284,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -23908,11 +21308,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -23962,11 +21357,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wisc5_visual_standard_no</name>
@@ -23984,11 +21374,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -24013,11 +21398,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -24067,11 +21447,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wisc5_vocab_scaled_no</name>
@@ -24089,11 +21464,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -24118,11 +21488,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -24172,11 +21537,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wisc5_weights_scaled_no</name>
@@ -24194,11 +21554,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -24223,11 +21578,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -24277,11 +21627,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wj4_calc_standard_no</name>
@@ -24299,11 +21644,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -24328,11 +21668,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Were all WJ-IV scores able to be calculated? </value>
 			<type>String</type>
 		</property>
 		<node>
@@ -24382,11 +21717,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Specify other reason</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wj4_reason_incomplete_e</name>
@@ -24409,11 +21739,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Please indicate why all scores were not able to be calculated</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -24524,11 +21849,6 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Collected?</value>
-			<type>String</type>
-		</property>
 		<node>
 			<name>0-No</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -24576,11 +21896,6 @@
 			<value>decimal</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>description</name>
-			<value>Raw Score</value>
-			<type>String</type>
-		</property>
 	</node>
 	<node>
 		<name>wj4_word_standard_no</name>
@@ -24598,11 +21913,6 @@
 		<property>
 			<name>dataType</name>
 			<value>decimal</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Standard Score</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -24627,11 +21937,6 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>How was the WPPSI-IV administered?</value>
 			<type>String</type>
 		</property>
 		<node>

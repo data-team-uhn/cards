@@ -37,7 +37,9 @@ class RowTypes(enum.Enum):
     DATETIME = 10
 
 SECTION_TYPES = [RowTypes.SECTION, RowTypes.SECTION_RECURRENT, RowTypes.SECTION_CONDITIONAL]
-CONDITION_DEFINTIONS = ["if", "displayed if:", "show the field only if:", "show only if:", "show only if", "show the field only if", "show field only if", "show this field only if", "show this field if", "show field if", "yes if"]
+CONDITION_DEFINTIONS = ["if", "displayed if:", "show the field only if:", "show only if:", "show only if",
+    "show the field only if", "show field only if", "show this field only if", "show this field if", "show field if",
+    "yes if", "show if", "show the field only if:", "show field only if"]
 CONDITION_SPLIT = [" = ", "selection was ", " was ", " selection is ", " response is ", " selections is ", " is "]
 MULTIPLE_DEFINITIONS = ["select all that apply", "select all", "allow for multiple", "check all"]
 UNIT_DEFINITIONS = ["in "]
@@ -69,6 +71,7 @@ class Headers1NPC_QIC(Headers1):
     CONDITION_QUESTION = False
     USE_OPTION_CODES = True
     OPTION_CODES = "Variable Code"
+    SPLIT_CONDITIONS_AT_COMMAS = True
 
 class Headers2:
     SECTION = "Section Name"
@@ -145,8 +148,18 @@ def split_ignore_strings(input, splitters, limit = -1):
     return results
 
 def append_description(question, text):
-    question['description'] = question['description'] + ". " + text if "description" in question else text
+    escaped_text = escape_description(text)
+    question['description'] = question['description'] + ". " + escaped_text if "description" in question else escaped_text
     return question
+
+def escape_description(text):
+    # Escape any Markdown formating characters that are in the description as these are unintentional
+    escaped_text = text.replace('*', '\\*').replace('`', '\\`')
+    if (len(escaped_text) > 0 and text[0] in ['#', '>']):
+        escaped_text = '\\' + escaped_text
+    if (escaped_text.find("1.") == 0):
+        escaped_text = '\\' + escaped_text
+    return escaped_text
 
 def prepare_conditional_string(conditional_string, question):
     # Split statement into two at the 'or'
@@ -399,7 +412,13 @@ def process_conditions(parent, condition_text, question_title):
         if len(separated) > 1:
             parent[question_title] = append_description(parent[question_title], separated[1])
             condition_text = separated[0]
-    conditions = re.split(';\s*', condition_text)
+    conditions = [condition_text]
+    if (";" in condition_text):
+        conditions = re.split(';\s*', condition_text)
+    # TODO: How to handle NPC descriptions
+    # elif (hasattr(Headers, "SPLIT_CONDITIONS_AT_COMMAS") and Headers.SPLIT_CONDITIONS_AT_COMMAS == True and "," in condition_text):
+        # conditions = re.split(',\s*', condition_text)
+        # print(condition_text)
     for condition in conditions:
         parent = process_split_conditions(parent, condition, question_title)
     return parent
@@ -410,7 +429,7 @@ def process_split_conditions(parent, condition, question_title):
     if question_title+"Section" in parent:
         parent[question_title+"Section"] = process_split_conditions(parent[question_title+"Section"], condition, question_title)
         return parent
-    if lower.startswith("return"):
+    if "return" in lower:
         parent[question_title]['expression'] = condition
         return parent
     for starter in CONDITION_DEFINTIONS:
@@ -475,16 +494,20 @@ def split_text(text):
 
 def insert_question(parent, row, question, row_type):
     text = row[Headers.QUESTION].strip() or question
+    # Divide the questions' title into the main title and any comments
     divided = split_text(text)
+    # Insert the main title
     parent[question] = {
         'jcr:primaryType': 'cards:Question',
         'text': divided[0],
         'maxAnswers': 1
     }
 
+    # Determine what to do with any parsed comments
     if len(divided) > 1:
         for split in divided[1:]:
             is_range = False
+            # Parse out the comment into a range if possible
             for starter in TITLE_RANGE_DEFINITIONS:
                 if split.lower().startswith(starter):
                     stripped_condition = split[len(starter):].strip()
@@ -495,7 +518,25 @@ def insert_question(parent, row, question, row_type):
                     is_range = True
                     break
             if not is_range:
-                parent[question] = append_description(parent[question], split)
+                # Detect if the comment is a unit. Unit criteria:
+                # - (Optionally) starts with "in "
+                # - No spaces in description
+                # - Not a letter only string in all caps (eg. an acronym)
+                # - Is less than 8 characters long OR contains a '/'
+                #     Excludes long words, include complex units like 'kCal/kg/day'
+                #     Common units like "Minutes", "Seconds" and "Celsius" are 7 letters long
+                # - Is not "specify"
+                conditional_split = split
+                if conditional_split.find("in ") == 0 and conditional_split[3:].find(' ') == -1:
+                    conditional_split = conditional_split[3:]
+                if (conditional_split.find(' ') == -1
+                    and not (conditional_split.isalpha() and conditional_split.isupper())
+                    and not (len(conditional_split) > 7 and conditional_split.find('/') == -1)
+                    and not conditional_split.lower() in ["specify"]):
+                    parent[question]['unitOfMeasurement'] = conditional_split
+                else:
+                    # Otherwise, add the comment as a description
+                    parent[question] = append_description(parent[question], split)
 
     if hasattr(Headers, "SECTION") and Headers.SECTION in row and row[Headers.SECTION] and row[Headers.SECTION].lower().startswith("see"):
         append_description(parent[question], row[Headers.SECTION])
@@ -657,8 +698,6 @@ def csv_to_json(title):
 
             # TODO: Add to Headers?
             # Not used for new imports, kept in for compatibility with cardiac_rehab
-            if 'Description' in row and row['Description'] != '':
-                parent[question_title] = append_description(parent[question_title], row['Description'])
             if 'Units' in row and row['Units'] != '':
                 parent[question_title]['unitOfMeasurement'] = row['Units']
             if 'Min Value' in row and row['Min Value']:
