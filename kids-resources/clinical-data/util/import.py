@@ -44,6 +44,8 @@ CONDITION_SPLIT = [" = ", "selection was ", " was ", " selection is ", " respons
 MULTIPLE_DEFINITIONS = ["select all that apply", "select all", "allow for multiple", "check all"]
 UNIT_DEFINITIONS = ["in "]
 OPTIONS_RANGE_DEFINITIONS = ["valid range:", "validrange:"]
+MIN_RANGE_DEFINITIONS = ["min:", "min"]
+MAX_RANGE_DEFINITIONS = ["max:", "max"]
 TITLE_RANGE_DEFINITIONS = ["range:", "range"]
 REQUIRED_DEFINITION = ["required field"]
 SECTION_PREFIX = ["section: ", "tab : ", "tab: "]
@@ -458,6 +460,7 @@ def process_split_conditions(parent, condition, question_title):
             stripped_condition = lower[len(starter):].strip()
             parent[question_title]["Units"] = stripped_condition
             return parent
+    # TODO: Deduplicate range code
     for starter in OPTIONS_RANGE_DEFINITIONS:
         if lower.startswith(starter):
             stripped_condition = lower[len(starter):].strip()
@@ -466,11 +469,29 @@ def process_split_conditions(parent, condition, question_title):
             parent[question_title]["maxValue"] = float(value_range[1]) if '.' in value_range[1] else int(value_range[1])
             parent[question_title]["dataType"] = "decimal"
             return parent
+    for starter in MIN_RANGE_DEFINITIONS:
+        if lower.startswith(starter) and lower.count(" ") == 1:
+            return add_range_property(parent, question_title, starter, lower, True)
+    for starter in MAX_RANGE_DEFINITIONS:
+        if lower.startswith(starter) and lower.count(" ") == 1:
+            return add_range_property(parent, question_title, starter, lower, False)
     for starter in REQUIRED_DEFINITION:
         if lower.startswith(starter):
             parent[question_title]["minAnswers"] = 1
             return parent
     parent[question_title] = append_description(parent[question_title], condition)
+    return parent
+
+def add_range_property(parent, question_title, starter, lower, is_minimum):
+    stripped_condition = lower[len(starter) + 1:].strip()
+    if (stripped_condition.count("-") == 2 and len(stripped_condition) == 10):
+        # Time in format "YYYY-mm-dd"
+        parent[question_title]["lowerLimit" if is_minimum else "upperLimit"] = stripped_condition
+    elif (stripped_condition.count(":") == 1 and len(stripped_condition) == 5 and stripped_condition.find(":") == 2):
+        # Time in format "HH:MM"
+        parent[question_title]["lowerLimit" if is_minimum else "upperLimit"] = stripped_condition
+    else:
+        parent[question_title]["minValue" if is_minimum else "maxValue"] = float(stripped_condition) if '.' in stripped_condition else int(stripped_condition)
     return parent
 
 def split_text(text):
