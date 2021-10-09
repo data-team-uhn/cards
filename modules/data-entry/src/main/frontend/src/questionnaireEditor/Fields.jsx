@@ -99,7 +99,7 @@ let Fields = (props) => {
         edit ?
           Object.entries(JSON).filter(([key, _]) => !key.startsWith("//")).map(([key, value]) => displayEditField(key, value))
         :
-          Object.entries(JSON).filter(([key, _]) => !key.startsWith("//")).map(([key, value]) => (data[key] ? displayStaticField(key) : ''))
+          Object.entries(JSON).filter(([key, _]) => !key.startsWith("//")).map(([key, value]) => (data[key] ? displayStaticField(key, value) : ''))
       }
     </FieldsProvider>;
 }
