@@ -164,7 +164,7 @@ function AdminStatistics(props) {
           <NewItemButton
             title="Create new statistic"
             onClick={() => {setDialogOpen(true); setNewStat(true); setCurrentId();}}
-            inProgress={dialogOpen}
+            inProgress={dialogOpen && newStat}
             />
         }
         />
