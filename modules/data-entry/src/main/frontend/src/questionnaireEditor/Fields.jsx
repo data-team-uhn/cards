@@ -64,8 +64,8 @@ let Fields = (props) => {
   }
 
   let displayStaticField = (key, value) => {
-    return (
-      <Grid container key={key} alignItems='flex-start' spacing={2} direction="row">
+    return (<React.Fragment key={key}>
+      <Grid container alignItems='flex-start' spacing={2} direction="row">
         <Grid item xs={4}>
           <Typography variant="subtitle2">{formatString(key)}:</Typography>
         </Grid>
@@ -79,18 +79,12 @@ let Fields = (props) => {
           }
         </Grid>
       </Grid>
-    );
-  };
-
-  let getAllKeys = (nestedObject) => {
-     let keys = Object.assign({}, nestedObject);
-     Object.entries(nestedObject).map(([k, v]) => {
-       if (typeof(v) == 'object' && !Array.isArray(v)) {
-           Object.assign(keys, getAllKeys(v));
-        }
-     });
-     Object.keys(keys).map(k => keys[k] = k);
-     return keys;
+      {
+        typeof(value) == "object" && typeof(value[data[key]]) == "object"?
+        Object.entries(value[data[key]]).filter(([k, _]) => !k.startsWith("//")).map(([k, v]) => (data[k] ? displayStaticField(k, v) : ''))
+        : ""
+      }
+    </React.Fragment>);
   };
 
   // Note that we remove the //REQUIRED field, which just indicates which fields are mandatory
