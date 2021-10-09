@@ -32,6 +32,7 @@ import ObjectInput from "./ObjectInput";
 import TextInput from "./TextInput";
 import MarkdownTextField from "./MarkdownTextField";
 import FormattedText from "../components/FormattedText.jsx";
+import ReferenceInput from "./ReferenceInput";
 import { FieldsProvider } from "./FieldsContext.jsx";
 
 let Fields = (props) => {
