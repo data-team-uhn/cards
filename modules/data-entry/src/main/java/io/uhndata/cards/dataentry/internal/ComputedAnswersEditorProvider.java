@@ -14,7 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.uhndata.cards.internal;
+package io.uhndata.cards.dataentry.internal;
+
+import javax.jcr.Session;
 
 import org.apache.jackrabbit.oak.api.CommitFailedException;
 import org.apache.jackrabbit.oak.spi.commit.CommitInfo;
@@ -30,6 +32,9 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
+import io.uhndata.cards.dataentry.api.FormUtils;
+import io.uhndata.cards.dataentry.api.QuestionnaireUtils;
+
 /**
  * A {@link EditorProvider} returning {@link ComputedAnswersEditor}.
  *
@@ -42,6 +47,12 @@ public class ComputedAnswersEditorProvider implements EditorProvider
         policyOption = ReferencePolicyOption.GREEDY)
     private ResourceResolverFactory rrf;
 
+    @Reference
+    private QuestionnaireUtils questionnaireUtils;
+
+    @Reference
+    private FormUtils formUtils;
+
     @Override
     public Editor getRootEditor(NodeState before, NodeState after, NodeBuilder builder, CommitInfo info)
         throws CommitFailedException
@@ -50,7 +61,8 @@ public class ComputedAnswersEditorProvider implements EditorProvider
             final ResourceResolver myResolver = this.rrf.getThreadResourceResolver();
             if (myResolver != null) {
                 // Each ComputedEditor maintains a state, so a new instance must be returned each time
-                return new ComputedAnswersEditor(builder, myResolver);
+                return new ComputedAnswersEditor(builder, myResolver.adaptTo(Session.class),
+                    this.questionnaireUtils, this.formUtils);
             }
         }
         return null;
