@@ -104,6 +104,19 @@ function Section(props) {
     sectionDefinition,
     formContext);
 
+  // Determine if the section has any answers
+  let hasAnswers = isEdit;
+  if (!isEdit && existingAnswer[0]) {
+    Object.entries(existingAnswer[0][1]).forEach( ([key, item]) => {
+      if (item.displayedValue || item.note) {
+        hasAnswers = true;
+      }
+    })
+  }
+
+  // Display the section in view mode if it has answers or is marked as incomplete
+  const isDisplayed = isEdit && displayed || !isEdit && (hasAnswers || existingAnswer[0]?.[1].statusFlags?.length > 0);
+
   if (visibleCallback) visibleCallback(displayed);
 
   let closeDialog = () => {
@@ -130,7 +143,9 @@ function Section(props) {
   if (isEdit) {
     collapseClasses.push("cards-edit-section");
   }
-  if (isEdit && !displayed) {
+  // Hide the section if it is conditioned to be hidden in edit mode
+  // Or if we're in view mode and do not have any answers and the section is not marked as incomplete
+  if (isEdit && !displayed || !isEdit && !hasAnswers && !existingAnswer[0]?.[1].statusFlags) {
     collapseClasses.push(classes.collapsedSection);
   }
   if (hasHeader) {
@@ -154,9 +169,9 @@ function Section(props) {
   <React.Fragment>
     {/* if conditional is true, the collapse component is rendered and displayed.
         else, the corresponding input tag to the conditional section is deleted  */}
-    { displayed
+    { isDisplayed
       ? (<Collapse
-      in={displayed}
+      in={isDisplayed}
       component={Grid}
       item
       mountOnEnter

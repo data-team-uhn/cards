@@ -267,23 +267,23 @@ function Form (props) {
 
   let onEdit = (event) => {
     // Redirect the user to the edit form mode
-    props.history.push(urlBase + formURL + '.edit' + window.location.hash);
+    let hash = window.location.hash ? window.location.hash.substr(1) : '';
+    // Upon opening the invalid/incomplete form in edit mode, scroll to the first invalid/incomplete question
+    if (!hash && incompleteAnswers.length > 0) {
+      hash = incompleteAnswers[0].question["@path"];
+    }
+    props.history.push({
+          pathname: urlBase + formURL + '.edit',
+          hash: hash
+        });
   }
 
   let onClose = (event) => {
     // Redirect the user to the view form mode
     // ...but only after the Form has been saved and checked-in
-    let hash = window.location.hash ? indow.location.hash.substr(1) : '';
-    // Upon opening the invalid/incomplete form in view mode, scroll to the first invalid/incomplete question
-    if (!hash && incompleteAnswers.length > 0) {
-      hash = incompleteAnswers[0].question["@path"];
-    }
     saveDataWithCheckin(undefined, () => {
         removeWindowHandlers && removeWindowHandlers();
-        props.history.push({
-          pathname: urlBase + formURL,
-          hash: hash
-        });
+        props.history.push(urlBase + formURL + window.location.hash);
     });
   }
 
@@ -429,12 +429,12 @@ function Form (props) {
           <FormattedText variant="subtitle1" color="textSecondary">
             {data?.questionnaire?.description}
           </FormattedText>
-          {incompleteAnswers.map( item => {
+          {data.statusFlags.map( item => {
                return <Chip
-                 key={item.question.text}
-                 label={item.question.text}
+                 key={item}
+                 label={item[0].toUpperCase() + item.slice(1).toLowerCase()}
                  variant="outlined"
-                 className={`${classes.subjectChip} ${classes[item.statusFlags[0] + "Chip"] || classes.DefaultChip}`}
+                 className={`${classes.subjectChip} ${classes[item + "Chip"] || classes.DefaultChip}`}
                  size="small"
                />
           })}
