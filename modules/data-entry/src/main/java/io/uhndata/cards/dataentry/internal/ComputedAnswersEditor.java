@@ -192,15 +192,19 @@ public class ComputedAnswersEditor extends DefaultEditor
     private List<String> sortDependencies(final Map<String, Set<String>> computedAnswerDependencies)
     {
         final List<String> result = new ArrayList<>();
-        computedAnswerDependencies.keySet().forEach(answer -> addAnswer(answer, computedAnswerDependencies, result));
+        final Set<String> processedAnswers = new HashSet<>();
+        computedAnswerDependencies.keySet()
+            .forEach(answer -> addAnswer(answer, computedAnswerDependencies, result, processedAnswers));
         return result;
     }
 
-    private void addAnswer(String answer, Map<String, Set<String>> dependencies, List<String> orderedAnswersToCompute)
+    private void addAnswer(String answer, Map<String, Set<String>> dependencies, List<String> orderedAnswersToCompute,
+        Set<String> processedAnswers)
     {
-        if (!orderedAnswersToCompute.contains(answer)) {
+        if (!processedAnswers.contains(answer)) {
+            processedAnswers.add(answer);
             dependencies.get(answer)
-                .forEach(dependency -> addAnswer(dependency, dependencies, orderedAnswersToCompute));
+                .forEach(dependency -> addAnswer(dependency, dependencies, orderedAnswersToCompute, processedAnswers));
             orderedAnswersToCompute.add(answer);
         }
     }
