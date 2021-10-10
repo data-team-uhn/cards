@@ -135,11 +135,18 @@ public class ComputedAnswersEditor extends DefaultEditor
         }
         QuestionTree computedQuestionsTree = getUnansweredComputedQuestions(questionnaireNode);
 
+        // There are missing computed questions, let's create them!
         if (computedQuestionsTree != null) {
+            // Create the missing structure, i.e. AnswerSection and Answer nodes
             Map<QuestionTree, NodeBuilder> answersToCompute =
                 createMissingNodes(computedQuestionsTree, this.currentNodeBuilder);
+
+            // Try to determine the right order in which answers should be computed, so that the answers that depend on
+            // other computed answers are evaluated after all their dependencies have been evaluated
             Set<String> questionNames = answersToCompute.keySet().stream()
-                .map(QuestionTree::getNode).map(this.questionnaireUtils::getQuestionName).collect(Collectors.toSet());
+                .map(QuestionTree::getNode)
+                .map(this.questionnaireUtils::getQuestionName)
+                .collect(Collectors.toSet());
             Map<String, Set<String>> computedAnswerDependencies =
                 answersToCompute.keySet().stream().map(question -> {
                     Set<String> dependencies = ExpressionUtils.getDependencies(question.getNode());
@@ -148,11 +155,14 @@ public class ComputedAnswersEditor extends DefaultEditor
                 }).collect(Collectors.toConcurrentMap(Pair::getKey, Pair::getValue));
             final List<String> orderedAnswersToCompute = sortDependencies(computedAnswerDependencies);
 
+            // We have the right order, compute all the missing answers
             orderedAnswersToCompute.stream()
+                // Get the right answer node
                 .map(questionName -> answersToCompute.entrySet().stream()
                     .filter(
                         entry -> questionName.equals(this.questionnaireUtils.getQuestionName(entry.getKey().getNode())))
                     .findFirst().get())
+                // Evaluate it
                 .forEachOrdered(entry -> {
                     QuestionTree question = entry.getKey();
                     NodeBuilder answer = entry.getValue();
@@ -162,11 +172,8 @@ public class ComputedAnswersEditor extends DefaultEditor
                     } else {
                         answer.setProperty(FormUtils.VALUE_PROPERTY, result, Type.STRING);
                     }
-                    try {
-                        answersByQuestionName.put(question.getNode().getName(), result);
-                    } catch (RepositoryException e) {
-                        LOGGER.warn("Failed to access repository: {}", e.getMessage(), e);
-                    }
+                    // Update the computed value in the map of existing answers
+                    answersByQuestionName.put(this.questionnaireUtils.getQuestionName(question.getNode()), result);
                 });
         }
     }
