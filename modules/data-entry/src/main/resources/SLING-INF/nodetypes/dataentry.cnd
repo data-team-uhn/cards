@@ -667,8 +667,8 @@
 
 //-----------------------------------------------------------------------------
 
-// Section object, which can contain multiple other answers. The "question" element here
-// should be the section we're answering
+// Section object, which can contain multiple other answers and nested subsections.
+// The node structure of a form should reflect the structure of a questionnaire, with AnswerSection nodes corresponding to each Section node in the questionnaire.
 [cards:AnswerSection] > sling:Folder
   // Attributes
   // The child answers will need to be orderable.
