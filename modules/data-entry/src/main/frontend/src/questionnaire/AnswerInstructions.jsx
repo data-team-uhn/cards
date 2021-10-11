@@ -31,7 +31,8 @@ function AnswerInstructions (props) {
   let { classes, minAnswers, maxAnswers, currentAnswers, answerLabel } = props;
   let [ answerIsAcceptable, setAnswerAcceptable] = useState(currentAnswers >= minAnswers && (maxAnswers == 0 || currentAnswers <= maxAnswers));
 
-  const instructionsExist = minAnswers > 0 || maxAnswers > 1;
+  const instructionsExist = (minAnswers > 0 || maxAnswers > 1) && !props.isEdit;
+  const answerComplete = !props.isEdit && (!props.existingAnswer[1].statusFlags || props.existingAnswer[1].statusFlags.length == 0);
   const isMandatory = minAnswers == 1 && !(maxAnswers > minAnswers);
   const isAtLeast = !(minAnswers < maxAnswers);
   const isExactly = minAnswers == maxAnswers;
@@ -49,7 +50,7 @@ function AnswerInstructions (props) {
     setAnswerAcceptable((currentAnswers >= minAnswers) && (!(maxAnswers >= minAnswers) || currentAnswers <= maxAnswers))
   }, [currentAnswers]);
 
-  return (instructionsExist && (
+  return (instructionsExist && !answerComplete && (
     <Typography
       component="p"
       color={ answerIsAcceptable ? 'textSecondary' : 'error'}
