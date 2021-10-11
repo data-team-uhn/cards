@@ -47,7 +47,6 @@
               <filesInclude>oak/*.json</filesInclude>
               <filesInclude>oak/persistence/oak_persistence_sns.json</filesInclude>
               <filesInclude>core/*.json</filesInclude>
-              <filesInclude>apps/*.json</filesInclude>
               <title>CARDS With Oak Segment NS Persistence</title>
             </aggregate>
             <aggregate>
@@ -56,7 +55,6 @@
               <filesInclude>oak/*.json</filesInclude>
               <filesInclude>oak/persistence/oak_persistence_mongods.json</filesInclude>
               <filesInclude>core/*.json</filesInclude>
-              <filesInclude>apps/*.json</filesInclude>
               <title>CARDS With Oak Document NS Mongo Persistence</title>
             </aggregate>
           </aggregates>
