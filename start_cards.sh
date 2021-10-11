@@ -139,7 +139,7 @@ then
 fi
 
 #Start CARDS in the background
-java -jar distribution/target/cards-*jar $@ &
+java -jar distribution/target/dependency/org.apache.sling.feature.launcher.jar -f distribution/target/cards-*-core_tar_far.far $@ &
 CARDS_PID=$!
 
 #Check to see if CARDS was able to bind to the TCP port
