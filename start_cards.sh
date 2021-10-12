@@ -166,7 +166,7 @@ do
 done
 
 #Start CARDS in the background
-java -Dorg.osgi.service.http.port=${BIND_PORT} -jar distribution/target/dependency/org.apache.sling.feature.launcher.jar -f distribution/target/cards-*-core_tar_far.far "${ARGS[@]}" &
+java -Djdk.xml.entityExpansionLimit=0 -Dorg.osgi.service.http.port=${BIND_PORT} -jar distribution/target/dependency/org.apache.sling.feature.launcher.jar -f distribution/target/cards-*-core_tar_far.far "${ARGS[@]}" &
 CARDS_PID=$!
 
 #Check to see if CARDS was able to bind to the TCP port
