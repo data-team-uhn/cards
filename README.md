@@ -35,7 +35,9 @@ To specify a different URL, use `-Dsling.url=https://cards.server:8443/system/co
 
 `./start_cards.sh -p PORT` to run at a different port
 
-`./start_cards.sh -Dsling.run.modes=dev` to include the content browser (Composum), accessible at `http://localhost:8080/bin/browser.html`
+`./start_cards.sh -P PROJECT` to run a specific project, e.g. `cards4lfs` or `cards4kids`
+
+`./start_cards.sh -f mvn:io.uhndata.cards/cards/VERSION/slingosgifeature/composum` to include the content browser (Composum), accessible at `http://localhost:8080/bin/browser.html`
 
 Installing larger vocabuleries may fail due to default limits imposed on XML documents by the JVM. In this case, the app should be started with an extra parameter:
 
