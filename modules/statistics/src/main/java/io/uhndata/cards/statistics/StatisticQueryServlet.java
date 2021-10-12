@@ -289,7 +289,7 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
      */
     private String getSplitLabels(Resource splitVar) throws RepositoryException
     {
-        String retVal = "Undefined";
+        String retVal = "Not specified";
 
         if (splitVar == null) {
             return retVal;
