@@ -32,6 +32,8 @@ import ObjectInput from "./ObjectInput";
 import TextInput from "./TextInput";
 import MarkdownTextField from "./MarkdownTextField";
 import FormattedText from "../components/FormattedText.jsx";
+import ReferenceInput from "./ReferenceInput";
+import { FieldsProvider } from "./FieldsContext.jsx";
 
 let Fields = (props) => {
   let { data, JSON, edit, classes, ...rest } = props;
@@ -62,8 +64,8 @@ let Fields = (props) => {
   }
 
   let displayStaticField = (key, value) => {
-    return (
-      <Grid container key={key} alignItems='flex-start' spacing={2} direction="row">
+    return (<React.Fragment key={key}>
+      <Grid container alignItems='flex-start' spacing={2} direction="row">
         <Grid item xs={4}>
           <Typography variant="subtitle2">{formatString(key)}:</Typography>
         </Grid>
@@ -77,24 +79,23 @@ let Fields = (props) => {
           }
         </Grid>
       </Grid>
-    );
+      {
+        typeof(value) == "object" && typeof(value[data[key]]) == "object"?
+        Object.entries(value[data[key]]).filter(([k, _]) => !k.startsWith("//")).map(([k, v]) => (data[k] ? displayStaticField(k, v) : ''))
+        : ""
+      }
+    </React.Fragment>);
   };
 
-  let getAllKeys = (nestedObject) => {
-     let keys = Object.assign({}, nestedObject);
-     Object.entries(nestedObject).map(([k, v]) => {
-       if (typeof(v) == 'object' && !Array.isArray(v)) {
-           Object.assign(keys, getAllKeys(v));
-        }
-     });
-     Object.keys(keys).map(k => keys[k] = k);
-     return keys;
-  };
-
-  return edit ?
-    Object.entries(JSON).map(([key, value]) => displayEditField(key, value))
-    :
-    Object.entries(JSON).map(([key, value]) => (data[key] ? displayStaticField(key, value) : ''));
+  // Note that we remove the //REQUIRED field, which just indicates which fields are mandatory
+  return <FieldsProvider>
+      {
+        edit ?
+          Object.entries(JSON).filter(([key, _]) => !key.startsWith("//")).map(([key, value]) => displayEditField(key, value))
+        :
+          Object.entries(JSON).filter(([key, _]) => !key.startsWith("//")).map(([key, value]) => (data[key] ? displayStaticField(key, value) : ''))
+      }
+    </FieldsProvider>;
 }
 
 Fields.propTypes = {

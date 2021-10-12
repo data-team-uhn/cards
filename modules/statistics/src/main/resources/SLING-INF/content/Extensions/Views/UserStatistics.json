@@ -1,0 +1,7 @@
+{
+    "jcr:primaryType": "cards:Extension",
+    "cards:extensionPointId": "cards/coreUI/view",
+    "cards:extensionName": "Statistics",
+    "cards:targetURL": "/content.html/Statistics/User",
+    "cards:extensionRenderURL": "asset:cards-statistics.UserStatistics.js"
+}

@@ -1,0 +1,9 @@
+{
+    "jcr:primaryType": "cards:Extension",
+    "cards:extensionPointId": "cards/coreUI/admindashboard/entry",
+    "cards:extensionName": "Statistics",
+    "cards:targetURL": "/content.html/admin/Statistics",
+    "cards:icon": "asset:cards-statistics.statsIcon.js",
+    "cards:hint": "Configure statistics to be displayed.",
+    "cards:defaultOrder": 20
+}

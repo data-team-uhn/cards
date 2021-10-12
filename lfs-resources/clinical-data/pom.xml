@@ -45,6 +45,7 @@
               SLING-INF/content/libs/cards/resources/;path:=/libs/cards/resources/;overwrite:=true,
               SLING-INF/content/Questionnaires/;path:=/Questionnaires/;overwrite:=true;checkin:=true,
               SLING-INF/content/SubjectTypes/Patient/;path:=/SubjectTypes/Patient/;overwrite:=true,
+              SLING-INF/content/Statistics/;path:=/Statistics/;overwrite:=false,
             </Sling-Initial-Content>
           </instructions>
         </configuration>

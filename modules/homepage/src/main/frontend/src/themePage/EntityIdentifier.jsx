@@ -35,6 +35,8 @@ export function getEntityIdentifier(row) {
         return row.title;
       case "cards:SubjectType":
         return row.label;
+      case "cards:Statistic":
+        return row.name;
       // default covers other cases
       default:
         return row.subject?.identifier || row["@name"] || anchor;
