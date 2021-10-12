@@ -117,6 +117,11 @@ function message_started_cards() {
   echo -e "${TERMINAL_GREEN}**************************$(print_length_of $BIND_PORT '*' 4)${TERMINAL_NOCOLOR}"
 }
 
+function get_cards_version() {
+  CARDS_VERSION=$(cat pom.xml | grep --max-count=1 '<version>' | cut '-d>' -f2 | cut '-d<' -f1)
+  echo CARDS_VERSION $CARDS_VERSION
+}
+
 #Determine the port that CARDS is to bind to
 BIND_PORT=$(ARGUMENT_KEY='-p' ARGUMENT_DEFAULT='8080' python3 Utilities/HostConfig/argparse_bash.py $@)
 export CARDS_URL="http://localhost:${BIND_PORT}"
@@ -138,8 +143,30 @@ then
   python3 Utilities/HostConfig/check_tcp_available.py --tcp_port $BIND_PORT || handle_tcp_bind_fail
 fi
 
+# Filter the parameters to allow a less verbose start command, like `-p` to specify the port, or using `VERSION` to refer to the current version.
+declare -a ARGS=("$@")
+get_cards_version
+
+for ((i=0; i<"${#ARGS[@]}"; ++i));
+do
+  if [[ ${ARGS[$i]} == '-p' ]]
+  then
+    # The port was already extracted, skip over -p and the port number
+    unset ARGS[$i]
+    i=${i}+1
+    unset ARGS[$i]
+  elif [[ ${ARGS[$i]} == '-P' ]]
+  then
+    ARGS[$i]="-f"
+    i=${i}+1
+    ARGS[$i]="mvn:io.uhndata.cards/${ARGS[$i]}/${CARDS_VERSION}/slingosgifeature"
+  else
+    ARGS[$i]=${ARGS[$i]/VERSION/${CARDS_VERSION}}
+  fi
+done
+
 #Start CARDS in the background
-java -jar distribution/target/dependency/org.apache.sling.feature.launcher.jar -f distribution/target/cards-*-core_tar_far.far $@ &
+java -Dorg.osgi.service.http.port=${BIND_PORT} -jar distribution/target/dependency/org.apache.sling.feature.launcher.jar -f distribution/target/cards-*-core_tar_far.far "${ARGS[@]}" &
 CARDS_PID=$!
 
 #Check to see if CARDS was able to bind to the TCP port
