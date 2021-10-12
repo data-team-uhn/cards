@@ -39,10 +39,6 @@ To specify a different URL, use `-Dsling.url=https://cards.server:8443/system/co
 
 `./start_cards.sh -f mvn:io.uhndata.cards/cards/VERSION/slingosgifeature/composum` to include the content browser (Composum), accessible at `http://localhost:8080/bin/browser.html`
 
-Installing larger vocabuleries may fail due to default limits imposed on XML documents by the JVM. In this case, the app should be started with an extra parameter:
-
-`./start_cards.sh -Djdk.xml.entityExpansionLimit=0`
-
 By default, the app will run with username `admin` and password `admin`.
 
 In order to use "Vocabularies" section and load vocabularies from BioPortal (bioontology.org) `BIOPORTAL_APIKEY` environment variable should be set to a valid BioPortal API key. You can [request a new account](https://bioportal.bioontology.org/accounts/new) if you don't already have one, and the API key can be found [in your profile](https://bioportal.bioontology.org/account).
