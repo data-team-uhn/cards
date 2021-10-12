@@ -29,10 +29,10 @@ import QuestionnaireStyle from "./QuestionnaireStyle";
 
 function AnswerInstructions (props) {
   let { classes, minAnswers, maxAnswers, currentAnswers, answerLabel } = props;
-  let [ answerIsAcceptable, setAnswerAcceptable] = useState(currentAnswers >= minAnswers && (maxAnswers == 0 || currentAnswers <= maxAnswers));
+  let { isEdit, existingAnswer } = props;
+  let [ answerIsAcceptable, setAnswerAcceptable] = useState();
 
-  const instructionsExist = (minAnswers > 0 || maxAnswers > 1) && !props.isEdit;
-  const answerComplete = !props.isEdit && (!props.existingAnswer[1].statusFlags || props.existingAnswer[1].statusFlags.length == 0);
+  const instructionsExist = (minAnswers > 0 || maxAnswers > 1) && (isEdit || existingAnswer?.[1]?.statusFlags?.length > 0);
   const isMandatory = minAnswers == 1 && !(maxAnswers > minAnswers);
   const isAtLeast = !(minAnswers < maxAnswers);
   const isExactly = minAnswers == maxAnswers;
@@ -47,10 +47,10 @@ function AnswerInstructions (props) {
   }
 
   useEffect(() => {
-    setAnswerAcceptable((currentAnswers >= minAnswers) && (!(maxAnswers >= minAnswers) || currentAnswers <= maxAnswers))
+    setAnswerAcceptable((currentAnswers >= minAnswers) && (!(maxAnswers >= minAnswers) || currentAnswers <= maxAnswers) || !isEdit && existingAnswer?.[1]?.statusFlags?.length == 0)
   }, [currentAnswers]);
 
-  return (instructionsExist && !answerComplete && (
+  return (instructionsExist && (
     <Typography
       component="p"
       color={ answerIsAcceptable ? 'textSecondary' : 'error'}
