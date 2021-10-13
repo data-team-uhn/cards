@@ -35,7 +35,7 @@ To specify a different URL, use `-Dsling.url=https://cards.server:8443/system/co
 
 `./start_cards.sh -p PORT` to run at a different port
 
-`./start_cards.sh -P PROJECT` to run a specific project, e.g. `cards4lfs` or `cards4kids`
+`./start_cards.sh -P PROJECT1,PROJECT2` to run a specific project, e.g. `cards4lfs` or `cards4kids`
 
 `./start_cards.sh --dev` to include the content browser (Composum), accessible at `http://localhost:8080/bin/browser.html`
 
