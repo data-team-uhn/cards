@@ -20,6 +20,7 @@
   "description":"Configuration allowing only trusted users to create and edit all records",
   "configurations":{
     "org.apache.sling.jcr.repoinit.RepositoryInitializer~forms_trusted":{
+      "service.ranking:Integer":200,
       "scripts":["create group TrustedUsers \n\n set ACL on /Forms,/Subjects \n   allow jcr:all for TrustedUsers \n end \n\n set ACL on /Questionnaires,/SubjectTypes \n   allow jcr:read for TrustedUsers \n end"]
     }
   }
