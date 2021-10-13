@@ -384,6 +384,13 @@ function Form (props) {
                         Change subject
                       </Button>
                     </ListItem>
+                    { !isEdit &&
+                      <ListItem className={classes.actionsMenuItem}>
+                        <Button onClick={() => {setActionsMenu(null); window.print()}}>
+                          Print
+                        </Button>
+                      </ListItem>
+                    }
                     <ListItem className={classes.actionsMenuItem}>
                       <Button onClick={(e) => {
                          // Save before exporting to ensure all the data is included
