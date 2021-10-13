@@ -384,7 +384,7 @@ function Form (props) {
 
   return (
     <form action={data?.["@path"]} method="POST" onSubmit={handleSubmit} onChange={()=>setLastSaveStatus(undefined)} key={id} ref={formNode}>
-      <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
+      <Grid container {...FORM_ENTRY_CONTAINER_PROPS} className={classes.formContainer}>
         { !disableHeader &&
         <ResourceHeader
           title={title}
@@ -397,7 +397,7 @@ function Form (props) {
           <FormattedText variant="subtitle1" color="textSecondary">
             {data?.questionnaire?.description}
           </FormattedText>
-          <Breadcrumbs separator="·">
+          <Breadcrumbs separator="·" className={classes.resourceMetadata}>
           {
             data && data['jcr:createdBy'] && data['jcr:created'] ?
             <Typography variant="overline">Entered by {data['jcr:createdBy']} on {moment(data['jcr:created']).format("dddd, MMMM Do YYYY")}</Typography>

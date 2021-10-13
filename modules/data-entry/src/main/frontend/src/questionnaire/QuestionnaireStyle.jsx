@@ -31,16 +31,34 @@ export const FORM_ENTRY_CONTAINER_PROPS = {
 export const GRID_SPACE_UNIT = FORM_ENTRY_CONTAINER_PROPS.spacing/2;
 
 const questionnaireStyle = theme => ({
+    formContainer: {
+      "@media print" : {
+        display: "block",
+        margin: theme.spacing(-10, -4, -2),
+      },
+    },
+    informationCard: {
+      breakInside: "avoid-page",
+      "@media print" : {
+        border: "0 none !important",
+        margin: theme.spacing(-2,0),
+      },
+    },
     questionCard : {
       "& .MuiCardHeader-root" : {
-        padding: theme.spacing(1, 3, 0, 3),
-      },
-      "& .MuiCardContent-root" : {
-        paddingLeft: theme.spacing(3),
-        paddingRight: theme.spacing(3),
+        paddingBottom: theme.spacing(0),
       },
       "& .MuiList-root": {
         marginLeft: theme.spacing(-2),
+      },
+      "@media print" : {
+        border: "0 none !important",
+        margin: theme.spacing(-2,0),
+      },
+      breakInside: "avoid-page",
+      "& *" : {
+          breakInside: "avoid-page",
+          breakAfter: "avoid-page",
       },
     },
     editModeAnswers: {
@@ -48,8 +66,6 @@ const questionnaireStyle = theme => ({
         background: theme.palette.action.hover,
         borderRadius: theme.spacing(0.5),
       }
-    },
-    informationCard: {
     },
     viewModeAnswers :{
       paddingTop: theme.spacing(0),
@@ -199,6 +215,8 @@ const questionnaireStyle = theme => ({
         textAlign: 'center'
     },
     sectionHeader: {
+        breakAfter: "avoid-page",
+        breakInside: "avoid-page",
         paddingBottom: "0 !important",
         "& > h5" : {
           padding: theme.spacing(1, GRID_SPACE_UNIT),
@@ -476,6 +494,9 @@ const questionnaireStyle = theme => ({
         border: "1px solid " + theme.palette.divider,
         borderRadius: theme.spacing(3),
         display: "flex",
+        "@media print" : {
+            display: "none",
+        },
     },
     actionsMenuItem: {
         padding: theme.spacing(0,1),
@@ -486,6 +507,11 @@ const questionnaireStyle = theme => ({
           width: "100%",
        }
 
+    },
+    resourceMetadata: {
+        "@media print" : {
+            display: "none",
+        },
     },
     childSubjectHeaderButton: {
         left: theme.spacing(1)
