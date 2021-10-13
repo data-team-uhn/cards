@@ -601,9 +601,9 @@ const questionnaireStyle = theme => ({
         }
     },
     focusedQuestionnaireItem: {
-      borderColor: theme.palette.warning.light,
-      borderWidth: '2px',
-      borderStyle: 'solid',
+      "&.MuiCard-root, > .MuiCard-root" : {
+        border: `2px solid ${theme.palette.primary.main}`,
+      },
     },
     fileResourceAnswerList: {
       listStyleType: 'none',
