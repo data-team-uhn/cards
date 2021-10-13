@@ -604,6 +604,9 @@ const questionnaireStyle = theme => ({
       "&.MuiCard-root, > .MuiCard-root" : {
         border: `2px solid ${theme.palette.primary.main}`,
       },
+      "& .cards-with-invalid-answer" : {
+        borderColor: `${theme.palette.error.main} !important`,
+      },
     },
     fileResourceAnswerList: {
       listStyleType: 'none',
