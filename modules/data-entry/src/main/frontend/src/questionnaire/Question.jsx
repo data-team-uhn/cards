@@ -44,7 +44,7 @@ function Question (props) {
         />
       <CardContent className={isEdit ? classes.editModeAnswers : classes.viewModeAnswers}>
         <div className={compact ? classes.compactLayout : null}>
-        { (!isEdit || !disableInstructions) &&
+        { !(isEdit && disableInstructions) &&
           <AnswerInstructions
              {...questionDefinition}
              {...props}
