@@ -147,21 +147,21 @@ fi
 declare -a ARGS=("$@")
 # Unset has strange effect on arrays, it leaves holes that somehow don't count towards the length of the array, so we must manually keep track of the index of the last element.
 declare -i ARGS_LENGTH=${#ARGS[@]}
-# Default is TAR storage, allow switching to Mongo
+# Storage engine: default is TAR storage, allow switching to Mongo
 declare OAK_STORAGE="tar"
-# Default is open permissions, allow switching to something else
+# Permissions scheme: default is open, allow switching to something else
 declare PERMISSIONS="open"
 get_cards_version
 
 for ((i=0; i<${ARGS_LENGTH}; ++i));
 do
-  if [[ ${ARGS[$i]} == '-p' ]]
+  if [[ ${ARGS[$i]} == '-p' || ${ARGS[$i]} == '--port' ]]
   then
     # The port was already extracted, skip over -p and the port number
     unset ARGS[$i]
     i=${i}+1
     unset ARGS[$i]
-  elif [[ ${ARGS[$i]} == '-P' ]]
+  elif [[ ${ARGS[$i]} == '-P' || ${ARGS[$i]} == '--project' ]]
   then
     ARGS[$i]='-f'
     i=${i}+1
