@@ -145,9 +145,11 @@ fi
 
 # Filter the parameters to allow a less verbose start command, like `-p` to specify the port, or using `VERSION` to refer to the current version.
 declare -a ARGS=("$@")
+# Unset has strange effect on arrays, it leaves holes that somehow don't count towards the length of the array, so we must manually keep track of the index of the last element.
+declare -i ARGS_LENGTH=${#ARGS[@]}
 get_cards_version
 
-for ((i=0; i<"${#ARGS[@]}"; ++i));
+for ((i=0; i<${ARGS_LENGTH}; ++i));
 do
   if [[ ${ARGS[$i]} == '-p' ]]
   then
@@ -160,6 +162,13 @@ do
     ARGS[$i]="-f"
     i=${i}+1
     ARGS[$i]="mvn:io.uhndata.cards/${ARGS[$i]}/${CARDS_VERSION}/slingosgifeature"
+  elif [[ ${ARGS[$i]} == '--dev' ]]
+  then
+    unset ARGS[$i]
+    ARGS[$ARGS_LENGTH]=-f
+    ARGS_LENGTH=${ARGS_LENGTH}+1
+    ARGS[$ARGS_LENGTH]=mvn:io.uhndata.cards/cards/${CARDS_VERSION}/slingosgifeature/composum
+    ARGS_LENGTH=${ARGS_LENGTH}+1
   else
     ARGS[$i]=${ARGS[$i]/VERSION/${CARDS_VERSION}}
   fi
