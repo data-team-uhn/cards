@@ -354,11 +354,13 @@ function Form (props) {
                     }}
                 >
                   <List>
-                    <ListItem className={classes.actionsMenuItem}>
-                      <Button onClick={() => {setSelectorDialogOpen(true); setActionsMenu(null)}}>
-                        Change subject
-                      </Button>
-                    </ListItem>
+                    { isEdit &&
+                      <ListItem className={classes.actionsMenuItem}>
+                        <Button onClick={() => {setSelectorDialogOpen(true); setActionsMenu(null)}}>
+                          Change subject
+                        </Button>
+                      </ListItem>
+                    }
                     { !isEdit &&
                       <ListItem className={classes.actionsMenuItem}>
                         <Button onClick={() => {setActionsMenu(null); window.print()}}>
