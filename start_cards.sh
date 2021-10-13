@@ -147,6 +147,8 @@ fi
 declare -a ARGS=("$@")
 # Unset has strange effect on arrays, it leaves holes that somehow don't count towards the length of the array, so we must manually keep track of the index of the last element.
 declare -i ARGS_LENGTH=${#ARGS[@]}
+# Default is TAR storage, allow switching to Mongo
+declare OAK_STORAGE="tar"
 get_cards_version
 
 for ((i=0; i<${ARGS_LENGTH}; ++i));
@@ -168,6 +170,10 @@ do
       ARGS[$i]=${ARGS[$i]},mvn:io.uhndata.cards/${PROJECT}/${CARDS_VERSION}/slingosgifeature
     done
     ARGS[$i]=${ARGS[$i]#,}
+  elif [[ ${ARGS[$i]} == '--mongo' ]]
+  then
+    unset ARGS[$i]
+    OAK_STORAGE="mongo"
   elif [[ ${ARGS[$i]} == '--dev' ]]
   then
     unset ARGS[$i]
@@ -181,7 +187,7 @@ do
 done
 
 #Start CARDS in the background
-java -Djdk.xml.entityExpansionLimit=0 -Dorg.osgi.service.http.port=${BIND_PORT} -jar distribution/target/dependency/org.apache.sling.feature.launcher.jar -f distribution/target/cards-*-core_tar_far.far "${ARGS[@]}" &
+java -Djdk.xml.entityExpansionLimit=0 -Dorg.osgi.service.http.port=${BIND_PORT} -jar distribution/target/dependency/org.apache.sling.feature.launcher.jar -f distribution/target/cards-*-core_${OAK_STORAGE}_far.far "${ARGS[@]}" &
 CARDS_PID=$!
 
 #Check to see if CARDS was able to bind to the TCP port
