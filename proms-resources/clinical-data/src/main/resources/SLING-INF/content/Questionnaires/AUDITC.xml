@@ -33,6 +33,11 @@
 		<type>Reference</type>
 	</property>
 	<property>
+		<name>maxPerSubject</name>
+		<value>1</value>
+		<type>Long</type>
+	</property>
+	<property>
 		<name>description</name>
 		<value>Alcohol Use Disorders Identification Test</value>
 		<type>String</type>

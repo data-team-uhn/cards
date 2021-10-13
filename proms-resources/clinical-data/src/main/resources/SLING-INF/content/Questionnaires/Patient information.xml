@@ -37,6 +37,11 @@
 		<value>1</value>
 		<type>Long</type>
 	</property>
+	<property>
+		<name>maxPerSubject</name>
+		<value>1</value>
+		<type>Long</type>
+	</property>
 	<node>
 		<name>last_name</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
