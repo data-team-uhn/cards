@@ -50,7 +50,7 @@ public interface QuestionnaireUtils
     String QUESTION_NODETYPE = "cards:Question";
 
     /** The Sling resource type for a Question. */
-    String QUESTION_RESOURCE = "cards/Questin";
+    String QUESTION_RESOURCE = "cards/Question";
 
     /** The primary node type for an Answer Option, a predefined answer for a question that the user may choose. */
     String ANSWER_OPTION_NODETYPE = "cards:AnswerOption";
