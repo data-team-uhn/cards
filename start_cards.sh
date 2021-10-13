@@ -149,6 +149,8 @@ declare -a ARGS=("$@")
 declare -i ARGS_LENGTH=${#ARGS[@]}
 # Default is TAR storage, allow switching to Mongo
 declare OAK_STORAGE="tar"
+# Default is open permissions, allow switching to something else
+declare PERMISSIONS="open"
 get_cards_version
 
 for ((i=0; i<${ARGS_LENGTH}; ++i));
@@ -170,6 +172,12 @@ do
       ARGS[$i]=${ARGS[$i]},mvn:io.uhndata.cards/${PROJECT}/${CARDS_VERSION}/slingosgifeature
     done
     ARGS[$i]=${ARGS[$i]#,}
+  elif [[ ${ARGS[$i]} == '--permissions' ]]
+  then
+    unset ARGS[$i]
+    i=${i}+1
+    PERMISSIONS=${ARGS[$i]}
+    unset ARGS[$i]
   elif [[ ${ARGS[$i]} == '--mongo' ]]
   then
     unset ARGS[$i]
@@ -187,7 +195,7 @@ do
 done
 
 #Start CARDS in the background
-java -Djdk.xml.entityExpansionLimit=0 -Dorg.osgi.service.http.port=${BIND_PORT} -jar distribution/target/dependency/org.apache.sling.feature.launcher.jar -f distribution/target/cards-*-core_${OAK_STORAGE}_far.far "${ARGS[@]}" &
+java -Djdk.xml.entityExpansionLimit=0 -Dorg.osgi.service.http.port=${BIND_PORT} -jar distribution/target/dependency/org.apache.sling.feature.launcher.jar -f distribution/target/cards-*-core_${OAK_STORAGE}_far.far -f mvn:io.uhndata.cards/cards-dataentry/${CARDS_VERSION}/slingosgifeature/permissions_${PERMISSIONS} "${ARGS[@]}" &
 CARDS_PID=$!
 
 #Check to see if CARDS was able to bind to the TCP port

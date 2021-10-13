@@ -20,6 +20,7 @@
   "description": "Configuration allowing all registered users to create and edit all records",
   "configurations":{
     "org.apache.sling.jcr.repoinit.RepositoryInitializer~forms_open":{
+      "service.ranking:Integer":200,
       "scripts":["set ACL on /Forms,/Subjects \n   allow jcr:all for everyone \n end \n\n set ACL on /Questionnaires,/SubjectTypes \n   allow jcr:read for everyone \n end"]
     }
   }

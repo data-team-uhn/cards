@@ -20,6 +20,7 @@
   "description": "Configuration creating a special github account without access to data",
   "configurations":{
     "org.apache.sling.jcr.repoinit.RepositoryInitializer~forms_demo":{
+      "service.ranking:Integer":200,
       "scripts":["create user github with password github \n create path (cards:FormsHomepage) /Forms \n create path (cards:SubjectsHomepage) /Subjects \n\n set ACL on /Forms,/Subjects \n   deny jcr:all for github \n end \n"]
     }
   }
