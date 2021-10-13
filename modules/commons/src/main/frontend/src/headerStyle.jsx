@@ -38,7 +38,10 @@ const headerStyle = theme => ({
     padding: "10px 0",
     transition: "all 150ms ease 0s",
     minHeight: "50px",
-    display: "block"
+    display: "block",
+    "@media print" : {
+      display: "none",
+    },
   },
   container: {
     ...container,
