@@ -159,9 +159,15 @@ do
     unset ARGS[$i]
   elif [[ ${ARGS[$i]} == '-P' ]]
   then
-    ARGS[$i]="-f"
+    ARGS[$i]='-f'
     i=${i}+1
-    ARGS[$i]="mvn:io.uhndata.cards/${ARGS[$i]}/${CARDS_VERSION}/slingosgifeature"
+    PROJECTS=${ARGS[$i]//,/ }
+    ARGS[$i]=''
+    for PROJECT in $PROJECTS
+    do
+      ARGS[$i]=${ARGS[$i]},mvn:io.uhndata.cards/${PROJECT}/${CARDS_VERSION}/slingosgifeature
+    done
+    ARGS[$i]=${ARGS[$i]#,}
   elif [[ ${ARGS[$i]} == '--dev' ]]
   then
     unset ARGS[$i]
