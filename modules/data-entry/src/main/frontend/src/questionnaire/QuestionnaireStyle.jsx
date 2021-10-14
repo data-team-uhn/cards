@@ -151,6 +151,12 @@ const questionnaireStyle = theme => ({
     },
     thumbnail: {
         border: "1px solid " + theme.palette.divider,
+        "@media print" : {
+          width: "100%",
+          "& > *" : {
+            width: "100%",
+          },
+        },
     },
     thumbnailLink: {
         cursor: "pointer",
