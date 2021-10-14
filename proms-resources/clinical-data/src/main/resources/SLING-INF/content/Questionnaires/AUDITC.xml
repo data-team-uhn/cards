@@ -48,7 +48,6 @@
 		<property>
 			<name>text</name>
 			<value>
-			
 The three-item Alcohol Use Disorders Identification Test (AUDIT-C) is a brief survey
 instrument designed to identify at-risk drinking behaviors that could indicate alcohol use
 disorder. AUDIT-C has been validated in mental health and primary care clinics.
@@ -99,8 +98,8 @@ disorder. AUDIT-C has been validated in mental health and primary care clinics.
 			<property>
 				<name>expression</name>
 				<value>return (
-					+@{audit_score:-0} >= 3 ? "For men: A total score of 4 or greater indicates elevated risk for hazardous drinking or active alcohol use disorder.\n" +
-					                          "For women: A total score of 3 or greater indicates elevated risk for hazardous drinking or active alcohol use disorder.\n\n" +
+					+@{audit_score:-0} >= 3 ? "For **men**, a total score of **4 or greater** indicates elevated risk for hazardous drinking or active alcohol use disorder. " +
+					                          "For **women**, a total score of **3 or greater** indicates elevated risk for hazardous drinking or active alcohol use disorder.\n\n" +
 					                          "Greater scores indicate greater risk posed to the patient’s health and safety."
 					                        : "No alcohol use disorder detected."
 				)</value>

@@ -52,7 +52,7 @@
 Use as a screening tool:
 * To assist the clinician in making the diagnosis of depression.
 * To quantify depression symptoms and monitor severity.
-### Pearls/Pitfalls
+### Pitfalls
 * The Patient Health Questionnaire (PHQ)-9 is the major depressive disorder (MDD) module of the full PHQ.
 * Used to provisionally diagnose depression and grade severity of symptoms in general medical and mental health settings.
 * Scores each of the 9 DSM criteria of MDD as *0* (not at all) to *3* (nearly every day), providing a 0-27 severity score.
@@ -107,14 +107,21 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>expression</name>
-				<value>return (4 >= @{phq9_score} ? "Scores ≤4 suggest minimal depression which may not require treatment."
+				<value>return (
+				            (  4 >= @{phq9_score} ? "Scores ≤4 suggest minimal depression which may not require treatment."
 				            :  9 >= @{phq9_score} ? "Scores 5-9 suggest mild depression which may require only watchful waiting and repeated PHQ-9 at followup."
 				            : 14 >= @{phq9_score} ? "Scores 10-14 suggest moderate depression severity; patients should have a treatment plan ranging form counseling, followup, and/or pharmacotherapy."
 				            : 19 >= @{phq9_score} ? "Scores 15-19 suggest moderately severe depression; patients typically should have immediate initiation of pharmacotherapy and/or psychotherapy."
 				            :                       "Scores 20 and greater suggest severe depression; patients typically should have immediate initiation of pharmacotherapy and expedited referral to mental health specialist."
-				            ) +
-						( @{phq9_9:-0} > 0 ? "\n\n**WARNING: This patient is having thoughts concerning for suicidal ideation or self-harm, and should be probed further, referred, or transferred for emergency psychiatric evaluation as clinically appropriate and depending on clinician overall risk assessment.**"
-						  : "")
+				            ) + "\n\n" + (
+				              @{phq9_10:--1} == 0 ? "Functionally, the patient does not report limitations due to their symptoms."
+				            : @{phq9_10:--1} == 1 ? "Functionally, the patient is *somewhat* having difficulty with life tasks due to their symptoms."
+				            : @{phq9_10:--1} == 2 ? "Functionally, the patient finds it is *very difficult* to perform life tasks due to their symptoms."
+				            : @{phq9_10:--1} == 3 ? "Functionally, the patient finds it is *extremely difficult* to perform life tasks due to their symptoms."
+				            : "" ) + (
+					      @{phq9_9:-0} > 0 ? "\n\n**WARNING: This patient is having thoughts concerning for suicidal ideation or self-harm, and should be probed further, referred, or transferred for emergency psychiatric evaluation as clinically appropriate and depending on clinician overall risk assessment.**"
+					    : "" )
+					)
 				</value>
 				<type>String</type>
 			</property>
@@ -126,36 +133,6 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 			<property>
 				<name>text</name>
 				<value>Interpretation</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>computed</value>
-				<type>String</type>
-			</property>
-		</node>
-		<node>
-			<name>phq9_impairment</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>expression</name>
-				<value>
-				  return  ( @{phq9_10} == 0 ? "Functionally, the patient does not report limitations due to their symptoms."
-				          : @{phq9_10} == 1 ? "Functionally, the patient is *somewhat* having difficulty with life tasks due to their symptoms."
-				          : @{phq9_10} == 2 ? "Functionally, the patient finds it is *very difficult* to perform life tasks due to their symptoms."
-				          : @{phq9_10} == 3 ? "Functionally, the patient finds it is *extremely difficult* to perform life tasks due to their symptoms."
-				          : "" )
-				</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>formatted</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>text</name>
-				<value> </value>
 				<type>String</type>
 			</property>
 			<property>
