@@ -52,23 +52,76 @@
 The three-item Alcohol Use Disorders Identification Test (AUDIT-C) is a brief survey
 instrument designed to identify at-risk drinking behaviors that could indicate alcohol use
 disorder. AUDIT-C has been validated in mental health and primary care clinics.
-
-### Interpretation Instructions
-
-Add up the circled numbers for each item to derive a total score. Below are guidelines for
-interpreting symptom severity based on total score. *Note*: Total scores are interpreted
-differently for men and women.
-
-**For men: A total score of 4 or greater indicates elevated risk for hazardous drinking
-or active alcohol use disorder.**
-
-**For women: A total score of 3 or greater indicates elevated risk for hazardous
-drinking or active alcohol use disorder.**
-
-Greater scores indicate greater risk posed to the patient’s health and safety.
 			</value>
 			<type>String</type>
 		</property>
+	</node>
+	<node>
+		<name>audit_results</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>displayMode</name>
+			<value>header</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>audit_score</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>expression</name>
+				<value>return (+@{audit_1:-0} + +@{audit_2:-0} + +@{audit_3:-0})</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>points</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>Score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>formatted</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>audit_interpretation</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>expression</name>
+				<value>return (
+					+@{audit_score:-0} >= 3 ? "For men: A total score of 4 or greater indicates elevated risk for hazardous drinking or active alcohol use disorder.\n" +
+					                          "For women: A total score of 3 or greater indicates elevated risk for hazardous drinking or active alcohol use disorder.\n\n" +
+					                          "Greater scores indicate greater risk posed to the patient’s health and safety."
+					                        : "No alcohol use disorder detected."
+				)</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>Interpretation</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>formatted</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+		</node>
 	</node>
 	<node>
 		<name>audit_survey</name>
@@ -444,39 +497,6 @@ Greater scores indicate greater risk posed to the patient’s health and safety.
 					<type>String</type>
 				</property>
 			</node>
-		</node>
-	</node>
-	<node>
-		<name>audit_results</name>
-		<primaryNodeType>cards:Section</primaryNodeType>
-		<property>
-			<name>displayMode</name>
-			<value>footer</value>
-			<type>String</type>
-		</property>
-		<node>
-			<name>audit_score</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>expression</name>
-				<value>return (+@{audit_1:-0} + +@{audit_2:-0} + +@{audit_3:-0})</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>unitOfMeasurement</name>
-				<value>points</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>text</name>
-				<value>Total</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>computed</value>
-				<type>String</type>
-			</property>
 		</node>
 	</node>
 </node>

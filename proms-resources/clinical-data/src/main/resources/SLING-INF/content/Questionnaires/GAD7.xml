@@ -64,6 +64,100 @@ Objectively determine initial symptoms severity and monitor symptom changes/effe
 		</property>
 	</node>
 	<node>
+		<name>gad7_results</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>displayMode</name>
+			<value>header</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>gad7_score</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>expression</name>
+				<value>return (+@{gad7_1:-0} + +@{gad7_2:-0} + +@{gad7_3:-0} + +@{gad7_4:-0} + +@{gad7_5:-0} + +@{gad7_6:-0} + +@{gad7_7:-0})</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>points</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>formatted</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>Score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>gad7_interpretation</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>expression</name>
+				<value>return   @{gad7_score} > 14 ? "Severe anxiety disorder"
+				              : @{gad7_score} >  9 ? "Moderate anxiety disorder"
+				              : @{gad7_score} >  4 ? "Mild anxiety disorder"
+				              :                      "No anxiety disorder"
+				</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>formatted</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>Interpretation</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>gad7_impairment</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>expression</name>
+				<value>return @{gad7_8} == 0 ? "Functionally, the patient does not report limitations due to their symptoms."
+				            : @{gad7_8} == 1 ? "Functionally, the patient is *somewhat* having difficulty with life tasks due to their symptoms."
+				            : @{gad7_8} == 2 ? "Functionally, the patient finds it is *very difficult* to perform life tasks due to their symptoms."
+				            : @{gad7_8} == 3 ? "Functionally, the patient finds it is *extremely difficult* to perform life tasks due to their symptoms."
+				            : ""</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>formatted</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value> </value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
 		<name>gad7_survey</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
@@ -1001,122 +1095,5 @@ Objectively determine initial symptoms severity and monitor symptom changes/effe
 
 		</node>
 	</node>
-	<node>
-		<name>gad7_results</name>
-		<primaryNodeType>cards:Section</primaryNodeType>
-		<property>
-			<name>displayMode</name>
-			<value>footer</value>
-			<type>String</type>
-		</property>
-		<node>
-			<name>gad7_result</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>expression</name>
-				<value>return "### " + @{gad7_score:-0} + " point" + (@{gad7_score:-0} == 1 ? "" : "s")</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>formatted</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>text</name>
-				<value> </value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>computed</value>
-				<type>String</type>
-			</property>
-		</node>
-		<node>
-			<name>gad7_score</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>expression</name>
-				<value>return (+@{gad7_1:-0} + +@{gad7_2:-0} + +@{gad7_3:-0} + +@{gad7_4:-0} + +@{gad7_5:-0} + +@{gad7_6:-0} + +@{gad7_7:-0})</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>unitOfMeasurement</name>
-				<value>points</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>hidden</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>text</name>
-				<value>Score</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>computed</value>
-				<type>String</type>
-			</property>
-		</node>
-		<node>
-			<name>gad7_interpretation</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>expression</name>
-				<value>return   @{gad7_score} > 14 ? "Severe anxiety disorder"
-				              : @{gad7_score} >  9 ? "Moderate anxiety disorder"
-				              : @{gad7_score} >  4 ? "Mild anxiety disorder"
-				              :                      "No anxiety disorder"
-				</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>formatted</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>text</name>
-				<value> </value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>computed</value>
-				<type>String</type>
-			</property>
-		</node>
-		<node>
-			<name>gad7_impairment</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>expression</name>
-				<value>return @{gad7_8} == 0 ? "Functionally, the patient does not report limitations due to their symptoms."
-				            : @{gad7_8} == 1 ? "Functionally, the patient is *somewhat* having difficulty with life tasks due to their symptoms."
-				            : @{gad7_8} == 2 ? "Functionally, the patient finds it is *very difficult* to perform life tasks due to their symptoms."
-				            : @{gad7_8} == 3 ? "Functionally, the patient finds it is *extremely difficult* to perform life tasks due to their symptoms."
-				            : ""</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>formatted</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>text</name>
-				<value> </value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>computed</value>
-				<type>String</type>
-			</property>
-		</node>
-	</node>
+
 </node>
