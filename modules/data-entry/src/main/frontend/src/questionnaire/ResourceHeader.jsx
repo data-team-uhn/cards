@@ -47,21 +47,39 @@ const useStyles = makeStyles(theme => ({
       "& .MuiBreadcrumbs-li" : {
         color: theme.palette.text.primary,
       },
+      "@media print" : {
+        position: "static",
+        "& .MuiBreadcrumbs-root .MuiCollapse-container" : {
+          display: "none",
+        },
+      },
     },
     breadcrumbAction: {
       margin: theme.spacing(-1.25, 0),
+      "@media print" : {
+        display: "none",
+      },
     },
     headerSeparator: {
       visibility: "hidden",
       border: "0 none",
       height: theme.spacing(2),
       margin: 0,
+      "@media print" : {
+        display: "none",
+      },
+
     },
     resourceTitle: {
       backgroundColor: grey[100],
       margin: theme.spacing(0, GRID_SPACE_UNIT, GRID_SPACE_UNIT),
       paddingTop: "0 !important",
       zIndex: 2,
+      "@media print" : {
+        height: "auto !important",
+        visibility: "unset !important",
+        transition: "none !important",
+      },
     }
 }))
 
