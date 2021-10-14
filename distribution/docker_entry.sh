@@ -19,11 +19,11 @@
 
 #If we are simply restarting...
 [ -z $CARDS_RELOAD ] || WAIT_FOR_CARDSINIT=''
-[ -z $CARDS_RELOAD ] || INITIAL_SLING_NODE=''
 
 # If we have not explicitly specified the file system as the Oak Repo
 # back-end for data storage, use MongoDB
-[ -z $OAK_FILESYSTEM ] && OAK_MONGO=true
+STORAGE=tar
+[ -z $OAK_FILESYSTEM ] && STORAGE=mongo
 
 #If inside a docker-compose environment, wait for a signal...
 [ -z $INSIDE_DOCKER_COMPOSE ] || (while true; do (echo "CARDS" | nc router 9999) && break; sleep 5; done)
@@ -34,62 +34,13 @@
 PROJECT_ARTIFACTID=$1
 PROJECT_VERSION=$2
 
-echo "OAK_MONGO = $OAK_MONGO"
-echo "INITIAL_SLING_NODE = $INITIAL_SLING_NODE"
+echo "STORAGE = $STORAGE"
 echo "DEV = $DEV"
 echo "DEBUG = $DEBUG"
-echo "ADDITIONAL_RUN_MODES = $ADDITIONAL_RUN_MODES"
 echo "PROJECT_ARTIFACTID = $PROJECT_ARTIFACTID"
 echo "PROJECT_VERSION = $PROJECT_VERSION"
-
-[ -z $INITIAL_SLING_NODE ] || SLING_RUN_MODES_CUSTOM=true
-[ -z $OAK_MONGO ] || SLING_RUN_MODES_CUSTOM=true
-[ -z $DEV ] || SLING_RUN_MODES_CUSTOM=true
-[ -z ADDITIONAL_RUN_MODES ] || SLING_RUN_MODES_CUSTOM=true
-
-SLING_RUN_MODES_LIST="${INITIAL_SLING_NODE:+initial_sling_node,}${OAK_MONGO:+oak_mongo,}${DEV:+dev,}${ADDITIONAL_RUN_MODES}"
-SLING_RUN_MODES_LIST="${SLING_RUN_MODES_LIST/%,}"
-
-if [ ! -z $EXTERNAL_MONGO_ADDRESS ]
-then
-  echo "Patching JAR with external MongoDB address"
-  workdir=$(pwd)
-  mkdir /patched_jar
-  cp ${PROJECT_ARTIFACTID}-${PROJECT_VERSION}.jar /patched_jar
-  cd /patched_jar
-  unzip ${PROJECT_ARTIFACTID}-${PROJECT_VERSION}.jar
-  rm ${PROJECT_ARTIFACTID}-${PROJECT_VERSION}.jar
-
-  #Do the patching ...
-  echo -ne 's/\mongouri="mongodb:\/\/mongo:27017\"/mongouri=\"mongodb:\/\/' > script.sed
-  if [ ! -z $MONGO_AUTH ]
-  then
-    echo -ne "$MONGO_AUTH" >> script.sed
-    echo -ne '@' >> script.sed
-  fi
-  echo -ne "$EXTERNAL_MONGO_ADDRESS" >> script.sed
-  echo '\"/g' >> script.sed
-  sed -i -f script.sed resources/provisioning/model.txt
-  sed -i -f script.sed resources/config/oak_mongo/org.apache.jackrabbit.oak.plugins.document.DocumentNodeStoreService.config
-  rm script.sed
-
-  if [ ! -z $CUSTOM_MONGO_DB_NAME ]
-  then
-    echo -ne 's/db=\"sling\"/db=\"' > script.sed
-    echo -ne "$CUSTOM_MONGO_DB_NAME" >> script.sed
-    echo '\"/g' >> script.sed
-    sed -i -f script.sed resources/provisioning/model.txt
-    sed -i -f script.sed resources/config/oak_mongo/org.apache.jackrabbit.oak.plugins.document.DocumentNodeStoreService.config
-    rm script.sed
-  fi
-
-  #Repack the JAR file
-  zip -r $workdir/${PROJECT_ARTIFACTID}-${PROJECT_VERSION}.jar .
-  cd $workdir
-  rm -rf /patched_jar
-fi
 
 #Execute the volume_mounted_init.sh script if it is present
 [ -e /volume_mounted_init.sh ] && /volume_mounted_init.sh
 
-java -Djdk.xml.entityExpansionLimit=0 ${SLING_RUN_MODES_CUSTOM:+-Dsling.run.modes=}$SLING_RUN_MODES_LIST ${DEBUG:+ -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005} -jar ${PROJECT_ARTIFACTID}-${PROJECT_VERSION}.jar
+java -Djdk.xml.entityExpansionLimit=0 ${DEBUG:+ -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005} -jar org.apache.sling.feature.launcher.jar -f ./${PROJECT_ARTIFACTID}-${PROJECT_VERSION}-core_${STORAGE}_far.far
