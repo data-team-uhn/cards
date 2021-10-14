@@ -33,6 +33,11 @@
 		<type>Reference</type>
 	</property>
 	<property>
+		<name>maxPerSubject</name>
+		<value>1</value>
+		<type>Long</type>
+	</property>
+	<property>
 		<name>description</name>
 		<value>Objectifies degree of depression severity</value>
 		<type>String</type>
@@ -278,6 +283,97 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				</property>
 			</node>
 		</node>
+
+		<node>
+		<name>phq9_more</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<node>
+			<name>conditionGroup</name>
+			<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
+			<node>
+				<name>condition1</name>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value><![CDATA[>]]></value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>phq9_1</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>1</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>condition2</name>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value><![CDATA[>]]></value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>phq9_2</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>1</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
+		</node>
+
 		<node>
 			<name>phq9_3</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
@@ -1113,6 +1209,9 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				</property>
 			</node>
 		</node>
+
+	</node>
+
 	</node>
 	<node>
 		<name>phq9_results</name>

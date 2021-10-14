@@ -30,7 +30,7 @@
         <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
         <property>
             <name>questionnaire</name>
-            <value>/Questionnaires/GAD7</value>
+            <value>/Questionnaires/EQ5D</value>
             <type>Reference</type>
         </property>
         <property>
@@ -68,6 +68,44 @@
         <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
         <property>
             <name>questionnaire</name>
+            <value>/Questionnaires/GAD7</value>
+            <type>Reference</type>
+        </property>
+        <property>
+            <name>estimate</name>
+            <value>2</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>order</name>
+            <value>3</value>
+            <type>Long</type>
+        </property>
+    </node>
+    <node>
+        <name>Step4</name>
+        <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
+        <property>
+            <name>questionnaire</name>
+            <value>/Questionnaires/AUDITC</value>
+            <type>Reference</type>
+        </property>
+        <property>
+            <name>estimate</name>
+            <value>1</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>order</name>
+            <value>4</value>
+            <type>Long</type>
+        </property>
+    </node>
+    <node>
+        <name>Step5</name>
+        <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
+        <property>
+            <name>questionnaire</name>
             <value>/Questionnaires/SC</value>
             <type>Reference</type>
         </property>
@@ -78,7 +116,7 @@
         </property>
         <property>
             <name>order</name>
-            <value>3</value>
+            <value>5</value>
             <type>Long</type>
         </property>
     </node>

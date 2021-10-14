@@ -39,7 +39,7 @@
 	</property>
 	<property>
 		<name>maxPerSubject</name>
-		<value>0</value>
+		<value>1</value>
 		<type>Long</type>
 	</property>
 	<node>
@@ -755,7 +755,7 @@ After:
 			</property>
 			<property>
 				<name>maxAnswers</name>
-				<value>0</value>
+				<value>1</value>
 				<type>Long</type>
 			</property>
 			<property>
@@ -965,7 +965,7 @@ After:
 				</property>
 				<property>
 					<name>maxAnswers</name>
-					<value>0</value>
+					<value>1</value>
 					<type>Long</type>
 				</property>
 				<property>
