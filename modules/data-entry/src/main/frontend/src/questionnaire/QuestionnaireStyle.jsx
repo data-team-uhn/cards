@@ -151,12 +151,25 @@ const questionnaireStyle = theme => ({
             height: "100%",
             marginTop: theme.spacing(4),
         },
+        "& .MuiCardHeader-root" : {
+            paddingBottom: 0,
+        },
+        "& .MuiCardHeader-avatar" : {
+            zoom: "75%",
+            marginTop: theme.spacing(-1.5),
+        },
         "& .MuiTab-root": {
             width: "auto",
             minWidth: theme.spacing(10),
+            paddingBottom: theme.spacing(1.5),
             paddingLeft: theme.spacing(2),
             paddingRight: theme.spacing(2),
             textTransform: "none",
+            fontSize: "150%",
+            letterSpacing: "unset",
+         },
+         "& .MuiTabs-indicator" : {
+             height: theme.spacing(.5),
          },
          "& .MuiCardContent-root": {
             padding: theme.spacing(3, 0),
