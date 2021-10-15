@@ -43,8 +43,8 @@ import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletPaths;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.log.LogService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A servlet that lists existing principals. It supports pagination and basic filtering. Depending on the path on which
@@ -120,8 +120,7 @@ public class PrincipalsServlet extends SlingSafeMethodsServlet
 
     private static final long serialVersionUID = -1985122718411056384L;
 
-    @Reference
-    private LogService logger;
+    private static final Logger LOGGER = LoggerFactory.getLogger(PrincipalsServlet.class);
 
     @Override
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
@@ -160,7 +159,7 @@ public class PrincipalsServlet extends SlingSafeMethodsServlet
                 jsonGen.writeEnd().flush();
             }
         } catch (RepositoryException e) {
-            this.logger.log(LogService.LOG_ERROR, "Failed to query the repository for principals: " + e.getMessage());
+            LOGGER.error("Failed to query the repository for principals: {}", e.getMessage(), e);
         }
     }
 
