@@ -38,7 +38,7 @@ let NumberInput = (props) => {
   const defaultValue = type === "Long" ? 0 : '';
   const isMax = type === "Long" && objectKey.startsWith('max');
 
-  let [ value, setValue ] = useState(data[objectKey] || defaultValue);
+  let [ value, setValue ] = useState(typeof data[objectKey] != 'undefined' ? data[objectKey] : defaultValue);
 
   return (
     <EditorInput name={objectKey}>
