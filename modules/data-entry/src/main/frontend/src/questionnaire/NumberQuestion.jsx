@@ -19,7 +19,13 @@
 
 import React, { useState } from "react";
 
-import { InputAdornment, TextField, Typography, withStyles } from "@material-ui/core";
+import {
+  InputAdornment,
+  Slider,
+  TextField,
+  Typography,
+  withStyles
+} from "@material-ui/core";
 import NumberFormat from 'react-number-format';
 
 import PropTypes from "prop-types";
@@ -62,6 +68,9 @@ const DATA_TO_VALUE_TYPE = {
 //  type: One of "integer" or "float" (default: "float")
 //  errorText: String to display when the input is not valid (default: "")
 //  isRange: Whether or not to display a range instead of a single value
+//  sliderStep: The increment between selectable slider values
+//  sliderMarkStep: The increment between marked & labeled slider values
+//  sliderOrientation: Either "horizontal" or "vertical": The orientation of the slider's bar
 //
 // Sample usage:
 // <NumberQuestion
@@ -76,7 +85,8 @@ const DATA_TO_VALUE_TYPE = {
 //    />
 function NumberQuestion(props) {
   const { existingAnswer, errorText, classes, ...rest} = props;
-  const { dataType, displayMode, minAnswers, minValue, maxValue, isRange } = {...props.questionDefinition, ...props};
+  const { dataType,displayMode, minAnswers, minValue, maxValue, isRange, sliderStep, sliderMarkStep, sliderOrientation }
+    = {...props.questionDefinition, ...props};
   const answerNodeType = props.answerNodeType || DATA_TO_NODE_TYPE[dataType];
   const valueType = props.valueType || DATA_TO_VALUE_TYPE[dataType];
   const [ minMaxError, setMinMaxError ] = useState(false);
@@ -87,6 +97,35 @@ function NumberQuestion(props) {
   // The following two are only used for range answers
   const [lowerLimit, setLowerLimit] = useState(initialValue[0]);
   const [upperLimit, setUpperLimit] = useState(initialValue[1]);
+
+  // The following is only used for non-range sliders.
+  // Default to an empty string, which results in a "no data"
+  // selection as close to 0 as possible within the valid range
+  const [sliderValue, setSliderValue] = useState(existingAnswer?.[1]?.value || "");
+
+  // The following is only used for ranged sliders.
+  // Setting a default of "" leads to an error, unlike the non-range case.
+  // Instead, default to a "no data" selection of both min and max being the lowest allowed value.
+  const sliderValues = [typeof(lowerLimit) === "undefined" ? minValue : Number(lowerLimit), typeof(upperLimit) === "undefined" ? minValue : Number(upperLimit)]
+
+  const isSlider = displayMode === "slider" && typeof minValue !== 'undefined' && typeof maxValue !== 'undefined';
+  const isRangeSelected = isRange && lowerLimit && !isNaN(+lowerLimit) && upperLimit && !isNaN(+upperLimit);
+  const isSingleSliderSelected = isSlider && sliderValue && !isNaN(+sliderValue);
+
+
+  // Marks at the minimum and maximum, as well as user specified intervals if provided
+  let sliderMarks = [{value: minValue, label: minValue}, {value: maxValue, label: maxValue}];
+  if (typeof(sliderMarkStep) !== "undefined") {
+    let i = minValue + sliderMarkStep;
+    while (i < maxValue) {
+      sliderMarks.push({value: i, label: i});
+      i += sliderMarkStep;
+    }
+  }
+
+  // Adjust the height of a vertical slider based on the slider's marks
+  const customStyle = isSlider && sliderOrientation === "vertical" ?
+    { height: Math.max(100, sliderMarks.length*30) + "px" } : undefined
 
   // Callback function for our min/max
   let hasError = (text) => {
@@ -140,11 +179,20 @@ function NumberQuestion(props) {
     );
   }, [lowerLimit, upperLimit]);
 
+  React.useEffect(() => {
+    if (!isSlider || isRange) return;
+    setMinMaxError(
+      sliderValue && hasError(sliderValue)
+    );
+  }, [sliderValue]);
+
   const answers = [];
   // Only save ranges that have both limits specified
-  if (isRange && lowerLimit && !isNaN(+lowerLimit) && upperLimit && !isNaN(+upperLimit)) {
+  if (isRangeSelected) {
     answers.push(["lower", lowerLimit]);
     answers.push(["upper", upperLimit]);
+  } else if (isSingleSliderSelected) {
+    answers.push(["value", sliderValue]);
   }
 
   const textFieldProps = {
@@ -192,6 +240,14 @@ function NumberQuestion(props) {
     return limits.join(' - ');
   }
 
+  let setValue = function(fn, value) {
+    let number = Number(value);
+    if (dataType === "long" && !isNaN(number)) {
+      value = Math.round(number);
+    }
+    fn(String(value))
+  }
+
   return (
     <Question
       defaultDisplayFormatter={isRange? rangeDisplayFormatter : undefined}
@@ -236,25 +292,40 @@ function NumberQuestion(props) {
           { rangeErrorMessage }
           </Typography>
         }
-        <div className={classes.range}>
-          <TextField
-            helperText="Lower limit"
-            value={lowerLimit}
-            placeholder={typeof minValue != "undefined" ? `${minValue}` : ""}
-            onChange={event => setLowerLimit(event.target.value)}
-            inputProps={textFieldProps}
-            InputProps={Object.assign({shrink: "true"}, muiInputProps)}
-            />
-          <span className="separator">&mdash;</span>
-          <TextField
-            helperText="Upper limit"
-            value={upperLimit}
-            placeholder={typeof maxValue != "undefined" ? `${maxValue}` : ""}
-            onChange={event => setUpperLimit(event.target.value)}
-            inputProps={textFieldProps}
-            InputProps={Object.assign({shrink: "true"}, muiInputProps)}
-            />
-        </div>
+        { isSlider ?
+          <Slider
+            style={customStyle}
+            color="secondary"
+            orientation={sliderOrientation || "horizontal"}
+            min={minValue}
+            max={maxValue}
+            step={sliderStep}
+            marks={sliderMarks}
+            valueLabelDisplay={isRangeSelected ? "on" : "off"}
+            value={sliderValues}
+            onChange={(event, value) => { setValue(setLowerLimit, value[0]); setValue(setUpperLimit, value[1]); }}
+          />
+          :
+          <div className={classes.range}>
+            <TextField
+              helperText="Lower limit"
+              value={lowerLimit}
+              placeholder={typeof minValue != "undefined" ? `${minValue}` : ""}
+              onChange={event => setValue(setLowerLimit, event.target.value)}
+              inputProps={textFieldProps}
+              InputProps={Object.assign({shrink: "true"}, muiInputProps)}
+              />
+            <span className="separator">&mdash;</span>
+            <TextField
+              helperText="Upper limit"
+              value={upperLimit}
+              placeholder={typeof maxValue != "undefined" ? `${maxValue}` : ""}
+              onChange={event => setValue(setUpperLimit, event.target.value)}
+              inputProps={textFieldProps}
+              InputProps={Object.assign({shrink: "true"}, muiInputProps)}
+              />
+          </div>
+        }
         <Answer
           answers={answers}
           existingAnswer={existingAnswer}
@@ -264,18 +335,44 @@ function NumberQuestion(props) {
           />
         </>
         :
-        <MultipleChoice
-          answerNodeType={answerNodeType}
-          valueType={valueType}
-          input={displayMode === "input" || displayMode === "list+input"}
-          textbox={displayMode === "textbox"}
-          onUpdate={findError}
-          additionalInputProps={textFieldProps}
-          muiInputProps={muiInputProps}
-          error={minMaxError}
-          existingAnswer={existingAnswer}
-          {...rest}
-          />
+        <>
+        { isSlider ?
+          <>
+          <Slider
+            style={customStyle}
+            color="secondary"
+            orientation={sliderOrientation || "horizontal"}
+            min={minValue}
+            max={maxValue}
+            step={sliderStep}
+            marks={sliderMarks}
+            valueLabelDisplay={isSingleSliderSelected ? "on" : "off"}
+            value={isNaN(Number(sliderValue)) ? minValue : Number(sliderValue)}
+            onChange={(event, value) => { setValue(setSliderValue, value); }}
+            />
+          <Answer
+            answers={answers}
+            existingAnswer={existingAnswer}
+            answerNodeType={answerNodeType}
+            valueType={valueType}
+            {...rest}
+            />
+          </>
+          :
+          <MultipleChoice
+            answerNodeType={answerNodeType}
+            valueType={valueType}
+            input={displayMode === "input" || displayMode === "list+input"}
+            textbox={displayMode === "textbox"}
+            onUpdate={findError}
+            additionalInputProps={textFieldProps}
+            muiInputProps={muiInputProps}
+            error={minMaxError}
+            existingAnswer={existingAnswer}
+            {...rest}
+            />
+        }
+        </>
       }
     </Question>);
 }
@@ -312,13 +409,13 @@ NumberQuestion.propTypes = {
     maxAnswers: PropTypes.number,
     minValue: PropTypes.number,
     maxValue: PropTypes.number,
-    displayMode: PropTypes.oneOf([undefined, "input", "textbox", "list", "list+input"]),
+    displayMode: PropTypes.oneOf([undefined, "input", "textbox", "list", "list+input", "slider"]),
   }).isRequired,
   text: PropTypes.string,
   minAnswers: PropTypes.number,
   maxAnswers: PropTypes.number,
   defaults: PropTypes.array,
-  displayMode: PropTypes.oneOf([undefined, "input", "list", "list+input", "textbox"]),
+  displayMode: PropTypes.oneOf([undefined, "input", "list", "list+input", "textbox", "slider"]),
   dataType: PropTypes.oneOf(['long', 'double', 'decimal']),
   minValue: PropTypes.number,
   maxValue: PropTypes.number,

@@ -50,6 +50,12 @@
           "list+input" : {
             "compact" : "boolean",
             "answerOptions" : "numberOptions"
+          },
+          "slider": {
+            "isRange" : "boolean",
+            "sliderStep": "double",
+            "sliderMarkStep": "double",
+            "sliderOrientation": "string"
           }
         }
       },
@@ -70,6 +76,12 @@
           "list+input" : {
             "compact" : "boolean",
             "answerOptions" : "numberOptions"
+          },
+          "slider": {
+            "isRange" : "boolean",
+            "sliderStep": "double",
+            "sliderMarkStep": "double",
+            "sliderOrientation": "string"
           }
         }
       },
@@ -79,7 +91,17 @@
         "minAnswers": "long",
         "maxAnswers": "long",
         "unitOfMeasurement" : "string",
-        "isRange" : "boolean"
+        "displayMode": {
+          "input": {
+            "isRange" : "boolean"
+          },
+          "slider": {
+            "isRange" : "boolean",
+            "sliderStep": "double",
+            "sliderMarkStep": "double",
+            "sliderOrientation": "string"
+          }
+        }
       },
       "file": {
         "minAnswers": "long",
