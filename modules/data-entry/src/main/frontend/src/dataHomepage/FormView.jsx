@@ -76,7 +76,8 @@ function FormView(props) {
   ]
 
   const tabFilter = {
-    "Completed Forms" : '',
+    "Questionnaires" : '&includeallstatus=true',
+    "Completed" : '',
     "Drafts" : '&fieldname=statusFlags&fieldvalue=INCOMPLETE',
   };
   const tabs = Object.keys(tabFilter);
