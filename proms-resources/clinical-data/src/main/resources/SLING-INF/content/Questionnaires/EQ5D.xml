@@ -43,6 +43,44 @@
 		<type>String</type>
 	</property>
 	<node>
+		<name>eq5d_results</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>displayMode</name>
+			<value>header</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>eq5d_score</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>expression</name>
+				<value>return (10 * (+@{eq5d_1:-0} + +@{eq5d_2:-0} + +@{eq5d_3:-0} + +@{eq5d_4:-0} + +@{eq5d_5:-0}) + (100 - +@{eq5d_6:-0}))</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>points</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>Score</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>formatted</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
 		<name>eq5d_survey</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
@@ -529,39 +567,6 @@ Please enter a number to indicate how your health is TODAY.
 			<property>
 				<name>dataType</name>
 				<value>long</value>
-				<type>String</type>
-			</property>
-		</node>
-	</node>
-	<node>
-		<name>eq5d_results</name>
-		<primaryNodeType>cards:Section</primaryNodeType>
-		<property>
-			<name>displayMode</name>
-			<value>footer</value>
-			<type>String</type>
-		</property>
-		<node>
-			<name>eq5d_score</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>expression</name>
-				<value>return (10 * (+@{eq5d_1:-0} + +@{eq5d_2:-0} + +@{eq5d_3:-0} + +@{eq5d_4:-0} + +@{eq5d_5:-0}) + (100 - +@{eq5d_6:-0}))</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>unitOfMeasurement</name>
-				<value>points</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>text</name>
-				<value>Score</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>computed</value>
 				<type>String</type>
 			</property>
 		</node>

@@ -326,9 +326,11 @@ const questionnaireStyle = theme => ({
         display: "none"
     },
     headerSection : {
-      position: "sticky",
-      top: 0,
-      zIndex: 2,
+      "&.cards-edit-section" : {
+        position: "sticky",
+        top: 0,
+        zIndex: 2,
+      },
       "& > .MuiCollapse-wrapper" : {
         border: "1px solid " + theme.palette.primary.light,
       },
@@ -346,9 +348,11 @@ const questionnaireStyle = theme => ({
       },
     },
     footerSection : {
-      position: "sticky",
-      bottom: 0,
-      paddingBottom: "0 !important",
+      "&.cards-edit-section" : {
+        position: "sticky",
+        bottom: 0,
+        paddingBottom: "0 !important",
+      },
       "& > .MuiCollapse-wrapper" : {
         border: "1px solid " + theme.palette.primary.light,
       },

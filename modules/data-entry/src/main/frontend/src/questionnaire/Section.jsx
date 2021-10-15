@@ -138,8 +138,9 @@ function Section(props) {
   }
 
   const collapseClasses = [];
+  collapseClasses.push(classes[displayMode + 'Section']);
   if (isEdit) {
-    collapseClasses.push(classes[displayMode + 'Section']);
+    collapseClasses.push("cards-edit-section");
   }
   if (isEdit && !displayed || !isEdit && !hasAnswers) {
     collapseClasses.push(classes.collapsedSection);
