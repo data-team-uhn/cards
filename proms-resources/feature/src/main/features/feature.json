@@ -20,6 +20,10 @@
     {
       "id":"${project.groupId}:proms-resources-clinical-data:${project.version}",
       "start-order":"26"
+    },
+    {
+      "id":"${project.groupId}:proms-frontend:${project.version}",
+      "start-order":"26"
     }
   ]
 }
