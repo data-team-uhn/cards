@@ -55,7 +55,7 @@
             "isRange" : "boolean",
             "sliderStep": "double",
             "sliderMarkStep": "double",
-            "sliderOrientation": "string"
+            "sliderOrientation": {"horizontal" : {}, "vertical": {}}
           }
         }
       },
@@ -81,7 +81,7 @@
             "isRange" : "boolean",
             "sliderStep": "double",
             "sliderMarkStep": "double",
-            "sliderOrientation": "string"
+            "sliderOrientation": {"horizontal" : {}, "vertical": {}}
           }
         }
       },
@@ -99,7 +99,7 @@
             "isRange" : "boolean",
             "sliderStep": "double",
             "sliderMarkStep": "double",
-            "sliderOrientation": "string"
+            "sliderOrientation": {"horizontal" : {}, "vertical": {}}
           }
         }
       },
