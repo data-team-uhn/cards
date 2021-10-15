@@ -37,8 +37,6 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.log.LogService;
 
 /**
  * A servlet that performs full text match and lucene queries on vocabulary terms.
@@ -58,9 +56,6 @@ public class VocabularyTermSearchServlet extends SlingSafeMethodsServlet
     private static final int DEFAULT_LIMIT = 10;
 
     private static final int MAX_LIMIT = 1000;
-
-    @Reference
-    private LogService logger;
 
     @Override
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
@@ -186,7 +181,6 @@ public class VocabularyTermSearchServlet extends SlingSafeMethodsServlet
 
         return (" AND " + decodedFilters);
     }
-
 
     private String getOrderFromSort(String sort)
     {
