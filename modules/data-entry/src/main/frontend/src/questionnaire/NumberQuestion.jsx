@@ -213,7 +213,7 @@ function NumberQuestion(props) {
 
   // Generate message about accepted min/maxValues
   let minMaxMessage = "";
-  if (typeof minValue !== "undefined" || typeof maxValue !== "undefined") {
+  if ((typeof minValue !== "undefined" || typeof maxValue !== "undefined") && !isSlider) {
     minMaxMessage = "Please enter values ";
     if (typeof minValue !== "undefined" && typeof maxValue !== "undefined") {
       minMaxMessage = `${minMaxMessage} between ${minValue} and ${maxValue}`;
