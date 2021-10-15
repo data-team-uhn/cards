@@ -75,7 +75,7 @@ function FormView(props) {
     EditButton
   ]
 
-  const tabs = ["Completed forms", "Drafts"];
+  const tabs = ["Completed Forms", "Drafts"];
   const activeTabParam = new URLSearchParams(window.location.hash.substring(1)).get("forms:activeTab");
   let activeTabIndex = Math.max(tabs.indexOf(activeTabParam), 0);
   const [ activeTab, setActiveTab ] = useState(activeTabIndex);
