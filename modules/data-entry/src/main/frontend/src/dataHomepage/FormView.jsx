@@ -75,7 +75,12 @@ function FormView(props) {
     EditButton
   ]
 
-  const tabs = ["Completed Forms", "Drafts"];
+  const tabFilter = {
+    "Completed Forms" : '',
+    "Drafts" : '&fieldname=statusFlags&fieldvalue=INCOMPLETE',
+  };
+  const tabs = Object.keys(tabFilter);
+
   const activeTabParam = new URLSearchParams(window.location.hash.substring(1)).get("forms:activeTab");
   let activeTabIndex = Math.max(tabs.indexOf(activeTabParam), 0);
   const [ activeTab, setActiveTab ] = useState(activeTabIndex);
@@ -141,7 +146,7 @@ function FormView(props) {
       <CardContent>
         <LiveTable
           columns={props.columns || columns}
-          customUrl={`/Forms.paginate?descending=true${qFilter}${activeTab == tabs.indexOf("Draft") ? '&fieldname=statusFlags&fieldvalue=INCOMPLETE' : ''}`}
+          customUrl={`/Forms.paginate?descending=true${qFilter}${tabFilter[tabs[activeTab]]}`}
           defaultLimit={10}
           joinChildren="cards:Answer"
           filters
