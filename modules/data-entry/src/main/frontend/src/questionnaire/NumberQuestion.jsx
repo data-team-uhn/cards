@@ -53,18 +53,36 @@ const DATA_TO_VALUE_TYPE = {
 };
 
 const useSliderStyles = makeStyles(theme => ({
-  verticalSlider: {
-    marginLeft: theme.spacing(4),
-    "& .MuiSlider-valueLabel" : {
-      transform: "rotate(-90deg) translate3d(-7px, -14px, 0) !important",
-      "& > span > span" : {
-        transform: "rotate(135deg)",
+  verticalSliderContainer: {
+    display: "flex",
+    flexDirection: "column-reverse",
+    alignItems: "center",
+    width: "fit-content",
+    "& > .MuiTypography-root:first-child" : {
+      marginTop: theme.spacing(1.5),
+    },
+    "& > .MuiTypography-root:last-child" : {
+      marginBottom: theme.spacing(1.5),
+    },
+    "& .MuiSlider-root" : {
+      marginLeft: theme.spacing(4),
+      marginRight: theme.spacing(4),
+      "& .MuiSlider-valueLabel" : {
+        transform: "rotate(-90deg) translate3d(-7px, -14px, 0) !important",
+        "& > span > span" : {
+          transform: "rotate(135deg)",
+        },
       },
     },
   },
-  horizontalSlider: {
-    maxWidth: "700px",
-    marginTop: theme.spacing(2),
+  horizontalSliderContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "flex-start",
+    "& .MuiSlider-root" : {
+      maxWidth: "700px",
+      marginTop: theme.spacing(2),
+    },
   },
 }));
 
@@ -103,7 +121,8 @@ const useSliderStyles = makeStyles(theme => ({
 //    />
 function NumberQuestion(props) {
   const { existingAnswer, errorText, classes, ...rest} = props;
-  const { dataType,displayMode, minAnswers, minValue, maxValue, isRange, sliderStep, sliderMarkStep, sliderOrientation }
+  const { dataType,displayMode, minAnswers, minValue, maxValue, isRange,
+    sliderStep, sliderMarkStep, sliderOrientation, minValueLabel, maxValueLabel }
     = {sliderOrientation: "horizontal", ...props.questionDefinition, ...props};
   const answerNodeType = props.answerNodeType || DATA_TO_NODE_TYPE[dataType];
   const valueType = props.valueType || DATA_TO_VALUE_TYPE[dataType];
@@ -268,6 +287,31 @@ function NumberQuestion(props) {
     fn(String(value))
   }
 
+  let makeSlider = (options) => {
+    return (
+      <div className={sliderClasses[`${sliderOrientation}SliderContainer`]}>
+      { minValueLabel &&
+        <Typography variant="caption" color="textSecondary">{minValueLabel}</Typography>
+      }
+        <Slider
+          style={customStyle}
+          color="secondary"
+          orientation={sliderOrientation}
+          min={minValue}
+          max={maxValue}
+          step={sliderStep}
+          marks={sliderMarks}
+          valueLabelDisplay={options.valueLabelDisplay}
+          value={options.value}
+          onChange={options.onChange}
+        />
+      { maxValueLabel &&
+          <Typography variant="caption" color="textSecondary">{maxValueLabel}</Typography>
+      }
+      </div>
+    );
+  }
+
   return (
     <Question
       defaultDisplayFormatter={isRange? rangeDisplayFormatter : undefined}
@@ -313,19 +357,11 @@ function NumberQuestion(props) {
           </Typography>
         }
         { isSlider ?
-          <Slider
-            className={sliderClasses[`${sliderOrientation}Slider`]}
-            style={customStyle}
-            color="secondary"
-            orientation={sliderOrientation}
-            min={minValue}
-            max={maxValue}
-            step={sliderStep}
-            marks={sliderMarks}
-            valueLabelDisplay={isRangeSelected ? "on" : "off"}
-            value={sliderValues}
-            onChange={(event, value) => { setValue(setLowerLimit, value[0]); setValue(setUpperLimit, value[1]); }}
-          />
+            makeSlider({
+              valueLabelDisplay: (isRangeSelected ? "on" : "off"),
+              value: sliderValues,
+              onChange: (event, value) => { setValue(setLowerLimit, value[0]); setValue(setUpperLimit, value[1]); }
+            })
           :
           <div className={classes.range}>
             <TextField
@@ -364,19 +400,12 @@ function NumberQuestion(props) {
             maxAnswers={0}
             currentAnswers={isSingleSliderSelected ?  1 : 0}
           />
-          <Slider
-            className={sliderClasses[`${sliderOrientation}Slider`]}
-            style={customStyle}
-            color="secondary"
-            orientation={sliderOrientation}
-            min={minValue}
-            max={maxValue}
-            step={sliderStep}
-            marks={sliderMarks}
-            valueLabelDisplay={isSingleSliderSelected ? "on" : "off"}
-            value={isNaN(Number(sliderValue)) ? minValue : Number(sliderValue)}
-            onChange={(event, value) => { setValue(setSliderValue, value); }}
-            />
+          { makeSlider({
+              valueLabelDisplay: (isSingleSliderSelected ? "on" : "off"),
+              value: isNaN(Number(sliderValue)) ? minValue : Number(sliderValue),
+              onChange: (event, value) => { setValue(setSliderValue, value); }
+            })
+          }
           <Answer
             answers={answers}
             existingAnswer={existingAnswer}
