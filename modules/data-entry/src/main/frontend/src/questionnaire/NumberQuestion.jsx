@@ -87,7 +87,7 @@ const DATA_TO_VALUE_TYPE = {
 function NumberQuestion(props) {
   const { existingAnswer, errorText, classes, ...rest} = props;
   const { dataType,displayMode, minAnswers, minValue, maxValue, isRange, sliderStep, sliderMarkStep, sliderOrientation }
-    = {...props.questionDefinition, ...props};
+    = {sliderOrientation: "horizontal", ...props.questionDefinition, ...props};
   const answerNodeType = props.answerNodeType || DATA_TO_NODE_TYPE[dataType];
   const valueType = props.valueType || DATA_TO_VALUE_TYPE[dataType];
   const [ minMaxError, setMinMaxError ] = useState(false);
@@ -297,7 +297,7 @@ function NumberQuestion(props) {
           <Slider
             style={customStyle}
             color="secondary"
-            orientation={sliderOrientation || "horizontal"}
+            orientation={sliderOrientation}
             min={minValue}
             max={maxValue}
             step={sliderStep}
@@ -342,7 +342,7 @@ function NumberQuestion(props) {
           <Slider
             style={customStyle}
             color="secondary"
-            orientation={sliderOrientation || "horizontal"}
+            orientation={sliderOrientation}
             min={minValue}
             max={maxValue}
             step={sliderStep}
