@@ -24,6 +24,7 @@ import {
   Slider,
   TextField,
   Typography,
+  makeStyles,
   withStyles
 } from "@material-ui/core";
 import NumberFormat from 'react-number-format';
@@ -50,6 +51,22 @@ const DATA_TO_VALUE_TYPE = {
   "double": "Double",
   "decimal": "Decimal",
 };
+
+const useSliderStyles = makeStyles(theme => ({
+  verticalSlider: {
+    marginLeft: theme.spacing(4),
+    "& .MuiSlider-valueLabel" : {
+      transform: "rotate(-90deg) translate3d(-7px, -14px, 0) !important",
+      "& > span > span" : {
+        transform: "rotate(135deg)",
+      },
+    },
+  },
+  horizontalSlider: {
+    maxWidth: "700px",
+    marginTop: theme.spacing(2),
+  },
+}));
 
 // Component that renders a multiple choice question, with optional number input.
 // Selected answers are placed in a series of <input type="hidden"> tags for
@@ -124,6 +141,8 @@ function NumberQuestion(props) {
     }
   }
 
+  // Load slider-specific style
+  const sliderClasses = useSliderStyles();
   // Adjust the height of a vertical slider based on the slider's marks
   const customStyle = isSlider && sliderOrientation === "vertical" ?
     { height: Math.max(100, sliderMarks.length*30) + "px" } : undefined
@@ -295,6 +314,7 @@ function NumberQuestion(props) {
         }
         { isSlider ?
           <Slider
+            className={sliderClasses[`${sliderOrientation}Slider`]}
             style={customStyle}
             color="secondary"
             orientation={sliderOrientation}
@@ -345,6 +365,7 @@ function NumberQuestion(props) {
             currentAnswers={isSingleSliderSelected ?  1 : 0}
           />
           <Slider
+            className={sliderClasses[`${sliderOrientation}Slider`]}
             style={customStyle}
             color="secondary"
             orientation={sliderOrientation}
