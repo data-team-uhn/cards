@@ -265,7 +265,7 @@
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Ususal activities</value>
+				<value>Usual activities</value>
 				<type>String</type>
 			</property>
 			<property>
