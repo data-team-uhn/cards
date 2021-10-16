@@ -339,6 +339,11 @@ function NumberQuestion(props) {
         <>
         { isSlider ?
           <>
+          <AnswerInstructions
+            minAnswers={Math.min(1, minAnswers)}
+            maxAnswers={0}
+            currentAnswers={isSingleSliderSelected ?  1 : 0}
+          />
           <Slider
             style={customStyle}
             color="secondary"
