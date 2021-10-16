@@ -535,7 +535,7 @@
 				<name>description</name>
 				<value>
 On a scale from 0 to 100, 100 means the **best** health you can imagine, and 0 means the **worst** health you can imagine.
-Please enter a number to indicate how your health is TODAY.
+Please indicate on the scale how your health is TODAY.
 				</value>
 				<type>String</type>
 			</property>
@@ -561,8 +561,18 @@ Please enter a number to indicate how your health is TODAY.
 			</property>
 			<property>
 				<name>displayMode</name>
-				<value>input</value>
+				<value>slider</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>sliderOrientation</name>
+				<value>vertical</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>sliderMarkStep</name>
+				<value>10</value>
+				<type>Double</type>
 			</property>
 			<property>
 				<name>dataType</name>
