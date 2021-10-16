@@ -105,10 +105,6 @@ function SubjectView(props) {
       })
   }
 
-  let formatTabLabel = (name) => {
-    return `${name}s`;
-  }
-
   if (tabsLoading === null) {
     fetchSubjectTypes();
     setTabsLoading(true);
@@ -136,7 +132,7 @@ function SubjectView(props) {
                 return <Tab
                          label={
                            <Typography variant="h6">
-                             {formatTabLabel(subject['label'] || subject['@name'])}
+                             {subject['subjectListLabel'] || subject['label'] || subject['@name']}
                            </Typography>
                          }
                          key={"subject-" + index}

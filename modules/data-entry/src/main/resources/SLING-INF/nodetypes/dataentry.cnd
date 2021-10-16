@@ -839,6 +839,10 @@
   // A description outlining the subject type.
   - description (String)
 
+  // The label/title to display to the user when listing subjects of this tyoe
+  // Usually the plural of label
+  - subjectListLabel (String)
+
   // Any number of parent subject types that are required by this subject type
   - requiredParentType (String) multiple
 

@@ -63,6 +63,11 @@ function SubjectTypes(props) {
       "format": (row) => (getTextHierarchy(row['@path'], subjectTypeData)),
     },
     {
+      "key": "subjectListLabel",
+      "label": "Subject list label",
+      "format": "string",
+    },
+    {
       "key": "",
       "label": "Subjects",
       "format": (row) => (row.instanceCount ? <Link to={"/content.html/Subjects#" + row['@name']} title={"Show subjects of type " + row.label}>{row.instanceCount}</Link> : "0"),

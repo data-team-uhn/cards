@@ -1,5 +1,6 @@
 {
   "jcr:primaryType": "cards:SubjectType",
   "label": "Visit",
+  "subjectListLabel" : "Visits",
   "cards:defaultOrder": 1
 }

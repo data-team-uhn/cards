@@ -29,6 +29,7 @@ function SubjectTypeDialog(props) {
   const [ label, setLabel ] = useState(isEdit ? currentSubjectType.label : "");
   const [ parentSubject, setParentSubject ] = useState(initialParent);
   const [ order, setOrder ] = useState(currentSubjectType && currentSubjectType["cards:defaultOrder"] ? currentSubjectType["cards:defaultOrder"] : 0);
+  const [ subjectListLabel, setSubjectListLabel ] = useState(currentSubjectType?.subjectListLabel || "");
   const [ error, setError ] = useState(null);
   const [ isDuplicateLabel, setIsDuplicateLabel ] = useState(false);
 
@@ -52,6 +53,7 @@ function SubjectTypeDialog(props) {
       formInfo["jcr:primaryType"] = "cards:SubjectType";
       formInfo["label"] = label;
       formInfo["cards:defaultOrder"] = order;
+      formInfo["subjectListLabel"] = subjectListLabel;
 
       formData.append(':contentType', 'json');
       formData.append(':operation', 'import');
@@ -59,13 +61,14 @@ function SubjectTypeDialog(props) {
       formData.append(':content', JSON.stringify(formInfo));
     } else {
       // if nothing changed - just move the node
-      if (currentSubjectType["cards:defaultOrder"] == order && currentSubjectType["label"] === label) {
+      if (currentSubjectType["cards:defaultOrder"] == order && currentSubjectType["label"] === label && currentSubjectType["subjectListLabel"] === subjectListLabel) {
         moveSubjectType();
         return;
       } else {
         // Update all the changes first
         formData.append("cards:defaultOrder", order);
         formData.append("label", label);
+        formData.append("subjectListLabel", subjectListLabel);
       }
     }
 
@@ -113,6 +116,7 @@ function SubjectTypeDialog(props) {
     setLabel("");
     setParentSubject("");
     setOrder(0);
+    setSubjectListLabel("")
     setIsDuplicateLabel(false);
     onClose();
   }
@@ -181,13 +185,28 @@ function SubjectTypeDialog(props) {
               onChange={(event) => { setOrder(event.target.value); setError(""); }}
             />
           </Grid>
+          <Grid item xs={4}>
+            <Typography>Subject list label</Typography>
+          </Grid>
+          <Grid item xs={8}>
+            <TextField
+              fullWidth
+              type="text"
+              value={subjectListLabel}
+              onChange={(event) => { setSubjectListLabel(event.target.value); setError(""); }}
+            />
+          </Grid>
         </Grid>
         {error && <Typography color='error'>{error}</Typography>}
       </DialogContent>
       <DialogActions className={classes.dialogActions}>
         <Button
           disabled={!isEdit && (!label || isDuplicateLabel)
-                  || isEdit && (currentSubjectType["cards:defaultOrder"] == order && initialParent == parentSubject && currentSubjectType["label"] == label)}
+                  || isEdit && (currentSubjectType["cards:defaultOrder"] == order &&
+                                initialParent == parentSubject &&
+                                currentSubjectType["label"] == label &&
+                                currentSubjectType["subjectListLabel"] == subjectListLabel)
+          }
           color="primary"
           variant="contained"
           size="small"
