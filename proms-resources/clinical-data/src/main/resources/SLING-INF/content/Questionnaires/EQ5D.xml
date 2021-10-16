@@ -555,9 +555,19 @@ Please indicate on the scale how your health is TODAY.
 				<type>Double</type>
 			</property>
 			<property>
+				<name>minValueLabel</name>
+				<value>Worst health</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>maxValue</name>
 				<value>100</value>
 				<type>Double</type>
+			</property>
+			<property>
+				<name>maxValueLabel</name>
+				<value>Best health</value>
+				<type>String</type>
 			</property>
 			<property>
 				<name>displayMode</name>
