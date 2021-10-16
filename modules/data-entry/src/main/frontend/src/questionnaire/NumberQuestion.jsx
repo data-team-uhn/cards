@@ -61,8 +61,9 @@ const DATA_TO_VALUE_TYPE = {
 //  text: String containing the question to ask
 //  defaults: Array of arrays, each with two values, a "label" which will be displayed to the user,
 //            and a "value" denoting what will actually be stored
-//  displayMode: Either "input", "textbox", or undefined denoting the type of
-//             user input. Currently, only "input" is supported
+//  displayMode: Either "input", "list", "list+input", "slider", or undefined denoting the type of
+//             user input. If nothing is specified or if displayMode is "slider" but the conditions
+//             are not met (minValue or maxValue missing), "input" is used by default.
 //  maxValue: The maximum allowed input value
 //  minValue: The minimum allowed input value
 //  type: One of "integer" or "float" (default: "float")
@@ -409,13 +410,13 @@ NumberQuestion.propTypes = {
     maxAnswers: PropTypes.number,
     minValue: PropTypes.number,
     maxValue: PropTypes.number,
-    displayMode: PropTypes.oneOf([undefined, "input", "textbox", "list", "list+input", "slider"]),
+    displayMode: PropTypes.oneOf([undefined, "input", "list", "list+input", "slider"]),
   }).isRequired,
   text: PropTypes.string,
   minAnswers: PropTypes.number,
   maxAnswers: PropTypes.number,
   defaults: PropTypes.array,
-  displayMode: PropTypes.oneOf([undefined, "input", "list", "list+input", "textbox", "slider"]),
+  displayMode: PropTypes.oneOf([undefined, "input", "list", "list+input", "slider"]),
   dataType: PropTypes.oneOf(['long', 'double', 'decimal']),
   minValue: PropTypes.number,
   maxValue: PropTypes.number,
