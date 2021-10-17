@@ -160,7 +160,7 @@ function FormView(props) {
         />
       {expanded &&
         <NewFormDialog presetPath={questionnairePath}>
-          New form
+          New questionnaire
         </NewFormDialog>
       }
       </CardContent>

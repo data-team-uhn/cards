@@ -1,7 +1,7 @@
 {
   "jcr:primaryType": "cards:Extension",
   "cards:extensionPointId": "cards/coreUI/dashboardmenuitems/entry",
-  "cards:extensionName": "Subject",
+  "cards:extensionName": "Patient or related entry",
   "cards:extensionRenderURL": "asset:cards-dataentry.SubjectSelector.js?component=NewSubjectDialog",
   "cards:defaultOrder": 1
 }

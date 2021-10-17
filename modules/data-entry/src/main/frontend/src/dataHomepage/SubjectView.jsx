@@ -174,7 +174,6 @@ function SubjectView(props) {
       {expanded &&
       <>
         <NewItemButton
-           title="New subject"
            onClick={() => {setNewSubjectPopperOpen(true)}}
         />
         <NewSubjectDialog
