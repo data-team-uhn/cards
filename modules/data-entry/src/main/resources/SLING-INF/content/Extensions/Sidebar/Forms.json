@@ -1,7 +1,7 @@
 {
   "jcr:primaryType": "cards:Extension",
   "cards:extensionPointId": "cards/coreUI/sidebar/entry",
-  "cards:extensionName": "Forms",
+  "cards:extensionName": "Questionnaires",
   "cards:targetURL": "/content.html/Forms",
   "cards:icon": "asset:cards-dataentry.formsIcon.js",
   "cards:defaultOrder": 3

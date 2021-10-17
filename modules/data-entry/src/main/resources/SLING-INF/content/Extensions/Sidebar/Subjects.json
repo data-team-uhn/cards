@@ -1,7 +1,7 @@
 {
   "jcr:primaryType": "cards:Extension",
   "cards:extensionPointId": "cards/coreUI/sidebar/entry",
-  "cards:extensionName": "Subjects",
+  "cards:extensionName": "Patients",
   "cards:targetURL": "/content.html/Subjects",
   "cards:icon": "asset:cards-dataentry.subjectsIcon.js",
   "cards:defaultOrder": 1
