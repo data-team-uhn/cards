@@ -90,7 +90,14 @@ function Filters(props) {
 
     if (filtersJsonString && Object.keys(questionDefinitions).length > 0) {
       // Parse out the filters
-      let newFilters = JSON.parse(window.atob(filtersJsonString));
+      let newFilters = [];
+      try {
+        newFilters = JSON.parse(window.atob(filtersJsonString));
+      } catch (err) {
+        // Ignore silently malformed filters sent in the URL
+        return;
+      }
+      if (!Array.isArray(newFilters)) return;
       newFilters.forEach( (newFilter) => {
         getOutputChoices(newFilter.name);
       });
