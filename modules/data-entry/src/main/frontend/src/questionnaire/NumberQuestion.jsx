@@ -78,10 +78,17 @@ const useSliderStyles = makeStyles(theme => ({
   horizontalSliderContainer: {
     display: "flex",
     flexDirection: "row",
-    alignItems: "flex-start",
+    alignItems: "center",
+    "& > .MuiTypography-root:first-child" : {
+      marginRight: theme.spacing(1.5),
+      textAlign: "right",
+    },
+    "& > .MuiTypography-root:last-child" : {
+      marginLeft: theme.spacing(1.5),
+    },
     "& .MuiSlider-root" : {
       maxWidth: "700px",
-      marginTop: theme.spacing(2),
+      marginTop: theme.spacing(2.5),
     },
   },
 }));
