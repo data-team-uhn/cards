@@ -127,7 +127,7 @@ function NumberQuestion(props) {
   const sliderValues = [typeof(lowerLimit) === "undefined" ? minValue : Number(lowerLimit), typeof(upperLimit) === "undefined" ? minValue : Number(upperLimit)]
 
   const isSlider = displayMode === "slider" && typeof minValue !== 'undefined' && typeof maxValue !== 'undefined';
-  const isRangeSelected = isRange && lowerLimit && !isNaN(+lowerLimit) && upperLimit && !isNaN(+upperLimit);
+  const isRangeSelected = isRange && typeof(lowerLimit) != 'undefined' && !isNaN(+lowerLimit) && typeof(upperLimit) != 'undefined' && !isNaN(+upperLimit);
   const isSingleSliderSelected = isSlider && typeof(sliderValue) != 'undefined' && !isNaN(+sliderValue);
 
 
@@ -194,7 +194,7 @@ function NumberQuestion(props) {
       upperLimit && hasError(upperLimit)
     );
     setRangeError(
-       !lowerLimit && upperLimit ||
+       typeof(lowerLimit) == 'undefined' && typeof(upperLimit) != 'undefined' ||
        (Number(lowerLimit) > Number(upperLimit))
     );
   }, [lowerLimit, upperLimit]);
@@ -300,7 +300,7 @@ function NumberQuestion(props) {
         <AnswerInstructions
           minAnswers={Math.min(1, minAnswers)}
           maxAnswers={0}
-          currentAnswers={lowerLimit && upperLimit ? 1 : 0}
+          currentAnswers={typeof(lowerLimit) != 'undefined' && typeof(upperLimit) != 'undefined' ? 1 : 0}
           />
         { rangeError &&
           <Typography
