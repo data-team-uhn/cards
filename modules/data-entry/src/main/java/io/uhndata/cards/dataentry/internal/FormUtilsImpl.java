@@ -266,7 +266,7 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
             if (valuePropertyState.isArray()) {
                 result = new Object[valuePropertyState.count()];
                 for (int i = 0; i < valuePropertyState.count(); i++) {
-                    ((Object[]) result)[i] = valuePropertyState.getValue(valueType, i);
+                    ((Object[]) result)[i] = valuePropertyState.getValue(valueType.getBaseType(), i);
                 }
             } else {
                 result = valuePropertyState.getValue(valueType);
