@@ -119,7 +119,7 @@ function NumberQuestion(props) {
   // The following is only used for non-range sliders.
   // Default to an empty string, which results in a "no data"
   // selection as close to 0 as possible within the valid range
-  const [sliderValue, setSliderValue] = useState(existingAnswer?.[1]?.value || "");
+  const [sliderValue, setSliderValue] = useState(existingAnswer?.[1]?.value);
 
   // The following is only used for ranged sliders.
   // Setting a default of "" leads to an error, unlike the non-range case.
@@ -128,7 +128,7 @@ function NumberQuestion(props) {
 
   const isSlider = displayMode === "slider" && typeof minValue !== 'undefined' && typeof maxValue !== 'undefined';
   const isRangeSelected = isRange && lowerLimit && !isNaN(+lowerLimit) && upperLimit && !isNaN(+upperLimit);
-  const isSingleSliderSelected = isSlider && sliderValue && !isNaN(+sliderValue);
+  const isSingleSliderSelected = isSlider && typeof(sliderValue) != 'undefined' && !isNaN(+sliderValue);
 
 
   // Marks at the minimum and maximum, as well as user specified intervals if provided
