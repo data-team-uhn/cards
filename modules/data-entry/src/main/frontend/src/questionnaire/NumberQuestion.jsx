@@ -135,7 +135,7 @@ function NumberQuestion(props) {
   let sliderMarks = [{value: minValue, label: minValue}, {value: maxValue, label: maxValue}];
   if (typeof(sliderMarkStep) !== "undefined") {
     let i = minValue + sliderMarkStep;
-    while (i < maxValue) {
+    while (i <= maxValue - sliderMarkStep) {
       sliderMarks.push({value: i, label: i});
       i += sliderMarkStep;
     }
