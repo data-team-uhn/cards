@@ -265,7 +265,7 @@
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Ususal activities</value>
+				<value>Usual activities</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -535,7 +535,7 @@
 				<name>description</name>
 				<value>
 On a scale from 0 to 100, 100 means the **best** health you can imagine, and 0 means the **worst** health you can imagine.
-Please enter a number to indicate how your health is TODAY.
+Please indicate on the scale how your health is TODAY.
 				</value>
 				<type>String</type>
 			</property>
@@ -555,14 +555,34 @@ Please enter a number to indicate how your health is TODAY.
 				<type>Double</type>
 			</property>
 			<property>
+				<name>minValueLabel</name>
+				<value>Worst health</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>maxValue</name>
 				<value>100</value>
 				<type>Double</type>
 			</property>
 			<property>
-				<name>displayMode</name>
-				<value>input</value>
+				<name>maxValueLabel</name>
+				<value>Best health</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>slider</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>sliderOrientation</name>
+				<value>vertical</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>sliderMarkStep</name>
+				<value>10</value>
+				<type>Double</type>
 			</property>
 			<property>
 				<name>dataType</name>
