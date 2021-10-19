@@ -41,12 +41,16 @@ import org.apache.jackrabbit.oak.spi.commit.Editor;
 import org.apache.jackrabbit.oak.spi.state.ChildNodeEntry;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
+import org.apache.sling.api.resource.LoginException;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.dataentry.api.ExpressionUtils;
 import io.uhndata.cards.dataentry.api.FormUtils;
 import io.uhndata.cards.dataentry.api.QuestionnaireUtils;
+import io.uhndata.cards.dataentry.internal.ComputedAnswersEditor.QuestionTree;
 
 /**
  * An {@link Editor} that calculates any computed answers that were not submitted by the client.
@@ -61,7 +65,15 @@ public class ComputedAnswersEditor extends DefaultEditor
     // actual parent node of those properties, so we must manually keep track of the current node.
     private final NodeBuilder currentNodeBuilder;
 
-    private final Session currentSession;
+    private final ResourceResolverFactory rrf;
+
+    /** The current user session. **/
+    private Session currentSession;
+
+    /**
+     * A session that has access to all the questionnaire questions and can access restricted questions.
+     */
+    private Session serviceSession;
 
     private final QuestionnaireUtils questionnaireUtils;
 
@@ -79,16 +91,16 @@ public class ComputedAnswersEditor extends DefaultEditor
      * Simple constructor.
      *
      * @param nodeBuilder the builder for the current node
-     * @param session the current session
+     * @param rrf the resource resolver factory which can provide access to JCR sessions
      * @param questionnaireUtils for working with questionnaire data
      * @param formUtils for working with form data
      * @param expressionUtils for evaluating the computed questions
      */
-    public ComputedAnswersEditor(final NodeBuilder nodeBuilder, final Session session,
+    public ComputedAnswersEditor(final NodeBuilder nodeBuilder, final ResourceResolverFactory rrf,
         final QuestionnaireUtils questionnaireUtils, FormUtils formUtils, final ExpressionUtils expressionUtils)
     {
         this.currentNodeBuilder = nodeBuilder;
-        this.currentSession = session;
+        this.rrf = rrf;
         this.questionnaireUtils = questionnaireUtils;
         this.formUtils = formUtils;
         this.expressionUtils = expressionUtils;
@@ -107,7 +119,7 @@ public class ComputedAnswersEditor extends DefaultEditor
             return this.computedAnswerChangeTracker;
         } else {
             return new ComputedAnswersEditor(this.currentNodeBuilder.getChildNode(name),
-                this.currentSession, this.questionnaireUtils, this.formUtils, this.expressionUtils);
+                this.rrf, this.questionnaireUtils, this.formUtils, this.expressionUtils);
         }
     }
 
@@ -124,14 +136,25 @@ public class ComputedAnswersEditor extends DefaultEditor
             return;
         }
 
-        computeMissingAnswers(after);
+        final Map<String, Object> parameters =
+            Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, "computedAnswers");
+        ResourceResolver sessionResolver = this.rrf.getThreadResourceResolver();
+        try (ResourceResolver serviceResolver = this.rrf.getServiceResourceResolver(parameters)) {
+            if (sessionResolver != null && serviceResolver != null) {
+                this.currentSession = sessionResolver.adaptTo(Session.class);
+                this.serviceSession = serviceResolver.adaptTo(Session.class);
+                computeMissingAnswers(after);
+            }
+        } catch (LoginException e) {
+            // Should not happen
+        }
     }
 
     private void computeMissingAnswers(NodeState form)
     {
         // Get a list of all current answers for the form for use in computing answers
         Map<Node, NodeState> existingAnswers = getNodeAnswers(form);
-        Map<String, Object> answersByQuestionName = getAnswersByQuestionName(this.currentSession, existingAnswers);
+        Map<String, Object> answersByQuestionName = getAnswersByQuestionName(existingAnswers);
 
         // Get a list of all unanswered computed questions that need to be calculated
         Node questionnaireNode = getQuestionnaire();
@@ -187,9 +210,8 @@ public class ComputedAnswersEditor extends DefaultEditor
     {
         String questionnaireId = this.currentNodeBuilder.getProperty("questionnaire").getValue(Type.REFERENCE);
         try {
-            return this.currentSession.getNodeByIdentifier(questionnaireId);
+            return this.serviceSession.getNodeByIdentifier(questionnaireId);
         } catch (RepositoryException e) {
-            // Could not find a questionnaire definition for this form: Can't calculate computed questions
             return null;
         }
     }
@@ -273,7 +295,7 @@ public class ComputedAnswersEditor extends DefaultEditor
     }
 
     // Convert a map of answered keyed by question UUID into a map keyed by question name
-    private Map<String, Object> getAnswersByQuestionName(Session thisSession, Map<Node, NodeState> answers)
+    private Map<String, Object> getAnswersByQuestionName(Map<Node, NodeState> answers)
     {
         return answers.entrySet().stream().map(entry -> {
             String questionName = this.questionnaireUtils.getQuestionName(entry.getKey());
