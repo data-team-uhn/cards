@@ -108,11 +108,11 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 			<property>
 				<name>expression</name>
 				<value>return (
-				               4 >= @{phq9_score} ? "Minimal depression"
-				            :  9 >= @{phq9_score} ? "Mild depression"
-				            : 14 >= @{phq9_score} ? "Moderate depression"
-				            : 19 >= @{phq9_score} ? "Moderately severe depression"
-				            :                       "Severe depression"
+				               4 >= @{phq9_score} ? "Minimal"
+				            :  9 >= @{phq9_score} ? "Mild"
+				            : 14 >= @{phq9_score} ? "Moderate"
+				            : 19 >= @{phq9_score} ? "Moderately severe"
+				            :                       "Severe"
 					)
 				</value>
 				<type>String</type>
@@ -132,6 +132,101 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<value>computed</value>
 				<type>String</type>
 			</property>
+			<node>
+				<name>AnswerOption48</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>defaultOrder</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>label</name>
+					<value>Minimal</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Minimal</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>AnswerOption49</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>defaultOrder</name>
+					<value>2</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>label</name>
+					<value>Mild</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Mild</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>AnswerOption50</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>defaultOrder</name>
+					<value>3</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>label</name>
+					<value>Moderate</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Moderate</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>AnswerOption51</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>defaultOrder</name>
+					<value>4</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>label</name>
+					<value>Moderately severe</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Moderately severe</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>AnswerOption52</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>defaultOrder</name>
+					<value>5</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>label</name>
+					<value>Severe</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Severe</value>
+					<type>String</type>
+				</property>
+			</node>
 		</node>
 		<node>
 			<name>phq9_interpretation</name>
