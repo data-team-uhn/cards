@@ -44,6 +44,7 @@ import org.apache.jackrabbit.oak.spi.state.NodeState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.dataentry.api.ExpressionUtils;
 import io.uhndata.cards.dataentry.api.FormUtils;
 import io.uhndata.cards.dataentry.api.QuestionnaireUtils;
 
@@ -66,6 +67,8 @@ public class ComputedAnswersEditor extends DefaultEditor
 
     private final FormUtils formUtils;
 
+    private final ExpressionUtils expressionUtils;
+
     private boolean isFormNode;
 
     private boolean formEditorHasChanged;
@@ -79,14 +82,16 @@ public class ComputedAnswersEditor extends DefaultEditor
      * @param session the current session
      * @param questionnaireUtils for working with questionnaire data
      * @param formUtils for working with form data
+     * @param expressionUtils for evaluating the computed questions
      */
     public ComputedAnswersEditor(final NodeBuilder nodeBuilder, final Session session,
-        final QuestionnaireUtils questionnaireUtils, FormUtils formUtils)
+        final QuestionnaireUtils questionnaireUtils, FormUtils formUtils, final ExpressionUtils expressionUtils)
     {
         this.currentNodeBuilder = nodeBuilder;
         this.currentSession = session;
         this.questionnaireUtils = questionnaireUtils;
         this.formUtils = formUtils;
+        this.expressionUtils = expressionUtils;
         this.computedAnswerChangeTracker = new ComputedAnswerChangeTracker();
         this.isFormNode = this.formUtils.isForm(this.currentNodeBuilder);
     }
@@ -102,7 +107,7 @@ public class ComputedAnswersEditor extends DefaultEditor
             return this.computedAnswerChangeTracker;
         } else {
             return new ComputedAnswersEditor(this.currentNodeBuilder.getChildNode(name),
-                this.currentSession, this.questionnaireUtils, this.formUtils);
+                this.currentSession, this.questionnaireUtils, this.formUtils, this.expressionUtils);
         }
     }
 
@@ -149,7 +154,7 @@ public class ComputedAnswersEditor extends DefaultEditor
                 .collect(Collectors.toSet());
             Map<String, Set<String>> computedAnswerDependencies =
                 answersToCompute.keySet().stream().map(question -> {
-                    Set<String> dependencies = ExpressionUtils.getDependencies(question.getNode());
+                    Set<String> dependencies = this.expressionUtils.getDependencies(question.getNode());
                     dependencies.retainAll(questionNames);
                     return Pair.of(this.questionnaireUtils.getQuestionName(question.getNode()), dependencies);
                 }).collect(Collectors.toConcurrentMap(Pair::getKey, Pair::getValue));
@@ -381,7 +386,7 @@ public class ComputedAnswersEditor extends DefaultEditor
 
     private String computeAnswer(Map<String, Object> answers, QuestionTree computedQuestionTree)
     {
-        return ExpressionUtils.evaluate(computedQuestionTree.getNode(), answers);
+        return this.expressionUtils.evaluate(computedQuestionTree.getNode(), answers);
     }
 
     private final class ComputedAnswerChangeTracker extends DefaultEditor

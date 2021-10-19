@@ -32,6 +32,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
+import io.uhndata.cards.dataentry.api.ExpressionUtils;
 import io.uhndata.cards.dataentry.api.FormUtils;
 import io.uhndata.cards.dataentry.api.QuestionnaireUtils;
 
@@ -53,6 +54,9 @@ public class ComputedAnswersEditorProvider implements EditorProvider
     @Reference
     private FormUtils formUtils;
 
+    @Reference
+    private ExpressionUtils expressionUtils;
+
     @Override
     public Editor getRootEditor(NodeState before, NodeState after, NodeBuilder builder, CommitInfo info)
         throws CommitFailedException
@@ -62,7 +66,7 @@ public class ComputedAnswersEditorProvider implements EditorProvider
             if (myResolver != null) {
                 // Each ComputedEditor maintains a state, so a new instance must be returned each time
                 return new ComputedAnswersEditor(builder, myResolver.adaptTo(Session.class),
-                    this.questionnaireUtils, this.formUtils);
+                    this.questionnaireUtils, this.formUtils, this.expressionUtils);
             }
         }
         return null;

@@ -32,8 +32,12 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.uhndata.cards.dataentry.api.ExpressionUtils;
 
 /**
  * Utility class for parsing and evaluating an expression. TODO Turn into a public API.
@@ -41,27 +45,22 @@ import org.slf4j.LoggerFactory;
  * @version $Id$
  * @since 0.9.1
  */
-public final class ExpressionUtils
+@Component(service = ExpressionUtils.class)
+public final class ExpressionUtilsImpl implements ExpressionUtils
 {
-    private static final String START_MARKER = "@{";
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExpressionUtilsImpl.class);
 
-    private static final String END_MARKER = "}";
+    @Reference
+    private ScriptEngineManager manager;
 
-    private static final String DEFAULT_MARKER = ":-";
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ExpressionUtils.class);
-
-    private ExpressionUtils()
-    {
-        // Private constructor to avoid instantiation of an utility class
-    }
-
-    public static Set<String> getDependencies(final Node question)
+    @Override
+    public Set<String> getDependencies(final Node question)
     {
         return parseExpressionInputs(getExpressionFromQuestion(question), Collections.emptyMap()).getInputs().keySet();
     }
 
-    static String getExpressionFromQuestion(final Node question)
+    @Override
+    public String getExpressionFromQuestion(final Node question)
     {
         try {
             return question.getProperty("expression").getString();
@@ -71,17 +70,17 @@ public final class ExpressionUtils
         }
     }
 
-    static String evaluate(final Node question, final Map<String, Object> values)
+    @Override
+    public String evaluate(final Node question, final Map<String, Object> values)
     {
         try {
             String expression = getExpressionFromQuestion(question);
-            ExpressionUtils.ParsedExpression parsedExpression = parseExpressionInputs(expression, values);
+            ExpressionUtilsImpl.ParsedExpression parsedExpression = parseExpressionInputs(expression, values);
             if (parsedExpression.hasMissingValue()) {
                 return null;
             }
 
-            ScriptEngineManager manager = new ScriptEngineManager();
-            ScriptEngine engine = manager.getEngineByName("JavaScript");
+            ScriptEngine engine = this.manager.getEngineByName("JavaScript");
 
             Bindings env = engine.createBindings();
             parsedExpression.getInputs().forEach((key, value) -> env.put(key, value));
@@ -94,7 +93,7 @@ public final class ExpressionUtils
         return null;
     }
 
-    private static ExpressionUtils.ParsedExpression parseExpressionInputs(final String expression,
+    private static ExpressionUtilsImpl.ParsedExpression parseExpressionInputs(final String expression,
         final Map<String, Object> values)
     {
         String expr = expression;
