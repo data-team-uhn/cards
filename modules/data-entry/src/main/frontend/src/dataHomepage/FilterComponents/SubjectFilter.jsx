@@ -33,7 +33,7 @@ const COMPARATORS = DEFAULT_COMPARATORS.slice();
 /**
  * Display a filter on the associated subject of a form. This is not meant to be instantiated directly, but is returned from FilterComponentManager's
  * getFilterComparatorsAndComponent method.
- * 
+ *
  * @param {func} onChangeInput Function to call when this filter has chosen a new subject
  * @param {func} questionDefinition Unused, here to stop a warning when it is passed to the SearchBar component
  * Other props will be forwarded to the SearchBar component
@@ -58,7 +58,7 @@ const SubjectFilter = forwardRef((props, ref) => {
   let constructQuery = (query, requestID) => {
     let url = new URL("/query", window.location.origin);
     let formattedQuery = query.replace(/\s*\/\s*/g, " / ");
-    let sqlquery = "SELECT s.* FROM [cards:Subject] as s" + (query.search ? ` WHERE CONTAINS(s.'fullIdentifier', '*${formattedQuery}*')` : "");
+    let sqlquery = `SELECT s.* FROM [cards:Subject] as s WHERE s.'type' = '${questionDefinition.typeUuid}'` + (query.search ? ` AND CONTAINS(s.'fullIdentifier', '*${formattedQuery}*')` : "");
     sqlquery += " order by s.'fullIdentifier'";
     url.searchParams.set("query", sqlquery);
     url.searchParams.set("limit", query.pageSize);
