@@ -103,6 +103,37 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 			</property>
 		</node>
 		<node>
+			<name>phq9_classification</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>expression</name>
+				<value>return (
+				               4 >= @{phq9_score} ? "Minimal depression"
+				            :  9 >= @{phq9_score} ? "Mild depression"
+				            : 14 >= @{phq9_score} ? "Moderate depression"
+				            : 19 >= @{phq9_score} ? "Moderately severe depression"
+				            :                       "Severe depression"
+					)
+				</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>Severity</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
 			<name>phq9_interpretation</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
