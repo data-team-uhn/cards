@@ -22,36 +22,11 @@
 
   <parent>
     <groupId>io.uhndata.cards</groupId>
-    <artifactId>cards-parent</artifactId>
+    <artifactId>cards-modules</artifactId>
     <version>0.9-SNAPSHOT</version>
   </parent>
 
-  <artifactId>cards-modules</artifactId>
-  <packaging>pom</packaging>
-  <name>CARDS Modules</name>
-
-  <modules>
-    <module>startup-customization</module>
-    <module>form-completion-status</module>
-    <module>commons</module>
-    <module>ui-extension</module>
-    <module>login</module>
-    <module>homepage</module>
-    <module>pedigree</module>
-    <module>subjects</module>
-    <module>data-entry</module>
-    <module>ldap-support</module>
-    <module>saml-support</module>
-    <module>utils</module>
-    <module>principals</module>
-    <module>permissions</module>
-    <module>permissions-ownership</module>
-    <module>vocabularies</module>
-    <module>demo-banner</module>
-    <module>versioning</module>
-    <module>favicon</module>
-    <module>upgrade-marker</module>
-    <module>vocabularies-ignore</module>
-    <module>statistics</module>
-  </modules>
+  <artifactId>cards-saml-support</artifactId>
+  <packaging>slingosgifeature</packaging>
+  <name>CARDS - Support for SAML authentication</name>
 </project>
