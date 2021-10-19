@@ -1,5 +1,6 @@
 {
   "jcr:primaryType": "cards:SubjectType",
   "label": "Tumor",
+  "subjectListLabel" : "Tumors",
   "cards:defaultOrder": 1
 }

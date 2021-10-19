@@ -95,7 +95,7 @@ export function getTextHierarchy (node, withType = false) {
 }
 
 // Recursive function to get the list of ancestors as an array
-export function getHierarchyAsList (node) {
+export function getHierarchyAsList (node, includeHomepage) {
   let props = defaultCreator(node);
   let parent = <>{node.type.label} <Link {...props}>{node.identifier}</Link></>;
   if (node["parents"]) {
@@ -103,8 +103,15 @@ export function getHierarchyAsList (node) {
     ancestors.push(parent);
     return ancestors;
   } else {
-    return [parent];
+    let result = [parent];
+    includeHomepage && result.unshift(getHomepageLink(node));
+    return result;
   }
+}
+
+export function getHomepageLink (subjectNode) {
+  let props = defaultCreator({"@path": `/Subjects#subjects:activeTab=${subjectNode?.type?.["@name"]}`});
+  return (<Link {...props}>{subjectNode?.type?.subjectListLabel || "Subjects"}</Link>);
 }
 
 /**
@@ -158,7 +165,7 @@ function Subject(props) {
   return (
     <React.Fragment>
       <NewFormDialog currentSubject={currentSubject}>
-        New form for this Subject
+        { "New questionnaire for this " + (currentSubject?.type?.label || "Subject") }
       </NewFormDialog>
       <Grid container spacing={4} direction="column" className={classes.subjectContainer}>
         <SubjectHeader id={currentSubjectId} key={"SubjectHeader"}  classes={classes} getSubject={handleSubject} history={history} contentOffset={props.contentOffset}/>
@@ -356,8 +363,7 @@ function SubjectHeader(props) {
                />
             </div>
   );
-  let parentDetails = (subject?.data?.['parents'] && getHierarchyAsList(subject.data['parents']) || []);
-  parentDetails.unshift(<Link to={/((.*)\/Subjects)\/([^.]+)/.exec(location.pathname)[1]}>Subjects</Link>);
+  let parentDetails = (subject?.data?.['parents'] && getHierarchyAsList(subject.data['parents'], true) || [getHomepageLink(subject?.data)]);
 
   return (
     subject?.data &&

@@ -105,9 +105,11 @@ function SubjectView(props) {
       })
   }
 
-  if (tabsLoading == null) {
+  if (tabsLoading === null) {
     fetchSubjectTypes();
     setTabsLoading(true);
+  } else if (tabsLoading === false && !subjectTypes?.length) {
+    return null;
   }
 
   let path;
@@ -120,7 +122,24 @@ function SubjectView(props) {
       {!disableHeader &&
       <CardHeader
         avatar={!disableAvatar && <Avatar className={classes.subjectViewAvatar}><AssignmentIndIcon/></Avatar>}
-        title={<Typography variant="h6">Subjects</Typography>}
+        title={
+          tabsLoading
+          ? <CircularProgress/>
+          : subjectTypes.length < 1 ?
+          <></>
+          : <Tabs value={activeTab} onChange={(event, value) => setActiveTab(value)}>
+              {subjectTypes.map((subject, index) => {
+                return <Tab
+                         label={
+                           <Typography variant="h6">
+                             {subject['subjectListLabel'] || subject['label'] || subject['@name']}
+                           </Typography>
+                         }
+                         key={"subject-" + index}
+                       />;
+              })}
+            </Tabs>
+        }
         action={
           !expanded &&
           <Tooltip title="Expand">
@@ -132,17 +151,6 @@ function SubjectView(props) {
           </Tooltip>
         }
       />
-      }
-      {
-        tabsLoading
-          ? <CircularProgress/>
-          : subjectTypes.length <= 1 ?
-          <></>
-          : <Tabs value={activeTab} onChange={(event, value) => setActiveTab(value)}>
-              {subjectTypes.map((subject, index) => {
-                return <Tab label={subject['label'] || subject['@name']} key={"subject-" + index}/>;
-              })}
-            </Tabs>
       }
       <Divider />
       <CardContent>
@@ -166,7 +174,6 @@ function SubjectView(props) {
       {expanded &&
       <>
         <NewItemButton
-           title="New subject"
            onClick={() => {setNewSubjectPopperOpen(true)}}
         />
         <NewSubjectDialog

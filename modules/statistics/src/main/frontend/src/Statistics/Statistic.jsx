@@ -127,7 +127,6 @@ function Statistic(props) {
     chartColours = chartColours.concat(palette("rainbow", numKeys-DEFAULT_PALETTE.length).map((col) => "#" + col));
   }
 
-  let yAxisLabel = `${definition["y-label"]}s`;
   let widgetHeight = 250; // TODO: make mobile friendly
   let legendHeight = 40;
 
@@ -159,7 +158,7 @@ function Statistic(props) {
             <XAxis dataKey="x">
               <Label value={definition["x-label"]} offset={-10} position="insideBottom" />
             </XAxis>
-            <YAxis allowDecimals={false} label={{ value: yAxisLabel, angle: -90, position: 'insideLeft', offset: 10 }} />
+            <YAxis allowDecimals={false} label={{ value: definition["y-label"], angle: -90, position: 'insideLeft', offset: 10 }} />
             <Tooltip />
             {isSplit && <Legend align="right" verticalAlign="top" height={legendHeight} />}
             {allFields.map((field, idx) =>

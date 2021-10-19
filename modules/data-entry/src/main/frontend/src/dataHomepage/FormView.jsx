@@ -45,8 +45,8 @@ import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 function FormView(props) {
   const { questionnaire, expanded, disableHeader, disableAvatar, topPagination, classes } = props;
   
-  const [ title, setTitle ] = useState(typeof(props.title) != 'undefined' ? props.title : "Forms");
-  const [ subtitle, setSubtitle ] = useState();
+  const [ title, setTitle ] = useState(props.title);
+  const [ subtitle, setSubtitle ] = useState(props.subtitle);
   const [ questionnairePath, setQuestionnairePath ] = useState();
   const [ qFetchSent, setQFetchStatus ] = useState(false);
   const [ filtersJsonString, setFiltersJsonString ] = useState(new URLSearchParams(window.location.hash.substring(1)).get("forms:filters"));
@@ -75,7 +75,13 @@ function FormView(props) {
     EditButton
   ]
 
-  const tabs = ["Completed", "Draft"];
+  const tabFilter = {
+    "Questionnaires" : '&includeallstatus=true',
+    "Completed" : '',
+    "Drafts" : '&fieldname=statusFlags&fieldvalue=INCOMPLETE',
+  };
+  const tabs = Object.keys(tabFilter);
+
   const activeTabParam = new URLSearchParams(window.location.hash.substring(1)).get("forms:activeTab");
   let activeTabIndex = Math.max(tabs.indexOf(activeTabParam), 0);
   const [ activeTab, setActiveTab ] = useState(activeTabIndex);
@@ -103,13 +109,26 @@ function FormView(props) {
 
   return (
     <Card className={classes.formView}>
-      {(!expanded || !disableHeader && !disableAvatar && (title || questionnaire)) &&
+      {title &&
+      <CardHeader
+        title={
+          <>
+            {title && <Typography variant="h4">{title}</Typography>}
+            {subtitle && <Typography variant="subtitle1">{subtitle}</Typography>}
+          </>
+        }
+      />
+      }
+      {(!expanded || !disableHeader && !disableAvatar) &&
       <CardHeader
         avatar={!disableAvatar && <Avatar className={classes.formViewAvatar}><DescriptionIcon/></Avatar>}
         title={
           <>
-            <Typography variant="h6">{title}</Typography>
-            <Typography variant="subtitle1">{subtitle}</Typography>
+            <Tabs value={activeTab} onChange={(event, value) => setActiveTab(value)}>
+            { tabs.map((value, index) => {
+              return <Tab label={<Typography variant="h6">{value}</Typography>}  key={"form-" + index} />;
+            })}
+            </Tabs>
           </>
         }
         action={
@@ -124,16 +143,11 @@ function FormView(props) {
         }
       />
       }
-      <Tabs value={activeTab} onChange={(event, value) => setActiveTab(value)}>
-        {tabs.map((value, index) => {
-          return <Tab label={value}  key={"form-" + index} />;
-        })}
-      </Tabs>
       <Divider />
       <CardContent>
         <LiveTable
           columns={props.columns || columns}
-          customUrl={`/Forms.paginate?descending=true${qFilter}${activeTab == tabs.indexOf("Draft") ? '&fieldname=statusFlags&fieldvalue=INCOMPLETE' : ''}`}
+          customUrl={`/Forms.paginate?descending=true${qFilter}${tabFilter[tabs[activeTab]]}`}
           defaultLimit={10}
           joinChildren="cards:Answer"
           filters
@@ -146,7 +160,7 @@ function FormView(props) {
         />
       {expanded &&
         <NewFormDialog presetPath={questionnairePath}>
-          New form
+          New questionnaire
         </NewFormDialog>
       }
       </CardContent>

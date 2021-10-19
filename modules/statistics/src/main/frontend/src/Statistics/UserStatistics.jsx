@@ -99,6 +99,8 @@ function UserStatistics(props) {
             statJson["order"] = fullJson["order"];
             statJson["splitVar"] = fullJson["splitVar"];
             statJson["xVar"] = fullJson["xVar"];
+            // Adjust the y label
+            statJson["y-label"] = stat.yVar.subjectListLabel || statJson["y-label"];
             return setCurrentStatistic(currentStatistic => [...currentStatistic, statJson]);
           })
           .catch(handleError);
