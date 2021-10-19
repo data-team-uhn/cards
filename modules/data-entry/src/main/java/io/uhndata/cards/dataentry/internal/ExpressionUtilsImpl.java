@@ -39,12 +39,6 @@ import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.dataentry.api.ExpressionUtils;
 
-/**
- * Utility class for parsing and evaluating an expression. TODO Turn into a public API.
- *
- * @version $Id$
- * @since 0.9.1
- */
 @Component(service = ExpressionUtils.class)
 public final class ExpressionUtilsImpl implements ExpressionUtils
 {
