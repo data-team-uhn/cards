@@ -53,6 +53,8 @@
           },
           "slider": {
             "isRange" : "boolean",
+            "minValueLabel" : "string",
+            "maxValueLabel" : "string",
             "sliderStep": "double",
             "sliderMarkStep": "double",
             "sliderOrientation": {"horizontal" : {}, "vertical": {}}
@@ -79,6 +81,8 @@
           },
           "slider": {
             "isRange" : "boolean",
+            "minValueLabel" : "string",
+            "maxValueLabel" : "string",
             "sliderStep": "double",
             "sliderMarkStep": "double",
             "sliderOrientation": {"horizontal" : {}, "vertical": {}}
@@ -97,6 +101,8 @@
           },
           "slider": {
             "isRange" : "boolean",
+            "minValueLabel" : "string",
+            "maxValueLabel" : "string",
             "sliderStep": "double",
             "sliderMarkStep": "double",
             "sliderOrientation": {"horizontal" : {}, "vertical": {}}
