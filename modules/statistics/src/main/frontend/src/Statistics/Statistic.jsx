@@ -101,6 +101,10 @@ function Statistic(props) {
       let bIdx = xLabels.findIndex(i => i.value == b.x);
       if (aIdx >= 0 && bIdx >= 0) {
         return aIdx - bIdx;
+      } else if (aIdx >= 0) {
+        return -1;
+      } else if (bIdx >= 0) {
+        return 1;
       } else if (["long", "double", "decimal"].includes(definition["xVar"]["dataType"])) {
         // Numeric sort
         return a["x"] - b["x"];
