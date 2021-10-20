@@ -80,7 +80,7 @@
 			</property>
 			<property>
 				<name>maxAnswers</name>
-				<value>0</value>
+				<value>1</value>
 				<type>Long</type>
 			</property>
 			<property>
@@ -133,7 +133,7 @@
 			</property>
 			<property>
 				<name>maxAnswers</name>
-				<value>0</value>
+				<value>1</value>
 				<type>Long</type>
 			</property>
 			<property>
@@ -436,7 +436,7 @@ We know that quitting can be difficult. Your healthcare team is here to support 
 			</property>
 			<property>
 				<name>maxAnswers</name>
-				<value>0</value>
+				<value>1</value>
 				<type>Long</type>
 			</property>
 			<property>
@@ -446,7 +446,7 @@ We know that quitting can be difficult. Your healthcare team is here to support 
 			</property>
 			<property>
 				<name>compact</name>
-				<value>Truee</value>
+				<value>True</value>
 				<type>Boolean</type>
 			</property>
 			<property>
