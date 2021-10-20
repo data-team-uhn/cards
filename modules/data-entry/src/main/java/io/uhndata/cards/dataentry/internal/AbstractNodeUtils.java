@@ -23,6 +23,8 @@ import javax.jcr.Session;
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
 
 /**
  * Some utilities for working with JCR nodes.
@@ -61,6 +63,9 @@ public abstract class AbstractNodeUtils
      */
     protected boolean isNodeType(final NodeState node, final String targetNodeType, final Session session)
     {
+        if (session == null) {
+            return false;
+        }
         PropertyState primaryType = node.getProperty("jcr:primaryType");
         if (primaryType != null) {
             final String actualNodeType = primaryType.getValue(Type.NAME);
@@ -118,5 +123,24 @@ public abstract class AbstractNodeUtils
     protected String getStringProperty(final NodeState node, final String property)
     {
         return node.getProperty(property).getValue(Type.STRING);
+    }
+
+    /**
+     * Obtain the current session from the resource resolver factory.
+     *
+     * @param rrf the resource resolver factory service, may be {@code null}
+     * @return the current session, or {@code null} if a session may not be obtained
+     */
+    protected Session getSession(final ResourceResolverFactory rrf)
+    {
+        if (rrf == null) {
+            return null;
+        }
+
+        final ResourceResolver rr = rrf.getThreadResourceResolver();
+        if (rr == null) {
+            return null;
+        }
+        return rr.adaptTo(Session.class);
     }
 }

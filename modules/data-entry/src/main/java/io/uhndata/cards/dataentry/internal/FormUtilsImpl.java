@@ -20,7 +20,6 @@ import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 import javax.jcr.Value;
 
 import org.apache.jackrabbit.oak.api.PropertyState;
@@ -69,7 +68,7 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
     @Override
     public boolean isForm(final NodeState node)
     {
-        return isNodeType(node, FORM_NODETYPE, this.rrf.getThreadResourceResolver().adaptTo(Session.class));
+        return isNodeType(node, FORM_NODETYPE, getSession(this.rrf));
     }
 
     @Override
@@ -119,7 +118,7 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
     @Override
     public boolean isAnswerSection(final NodeState node)
     {
-        return isNodeType(node, ANSWER_SECTION_NODETYPE, this.rrf.getThreadResourceResolver().adaptTo(Session.class));
+        return isNodeType(node, ANSWER_SECTION_NODETYPE, getSession(this.rrf));
     }
 
     @Override
@@ -181,7 +180,7 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
     @Override
     public boolean isAnswer(final NodeState node)
     {
-        return isNodeType(node, ANSWER_NODETYPE, this.rrf.getThreadResourceResolver().adaptTo(Session.class));
+        return isNodeType(node, ANSWER_NODETYPE, getSession(this.rrf));
     }
 
     @Override

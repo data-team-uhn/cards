@@ -101,7 +101,11 @@ public final class QuestionnaireUtilsImpl extends AbstractNodeUtils implements Q
     private Node getNodeByIdentifier(final String identifier)
     {
         try {
-            return this.rrf.getThreadResourceResolver().adaptTo(Session.class).getNodeByIdentifier(identifier);
+            final Session session = getSession(this.rrf);
+            if (session == null) {
+                return null;
+            }
+            return session.getNodeByIdentifier(identifier);
         } catch (RepositoryException e) {
             return null;
         }
