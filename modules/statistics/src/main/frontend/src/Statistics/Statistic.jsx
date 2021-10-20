@@ -30,6 +30,8 @@ import BarChartIcon from '@material-ui/icons/BarChart';
 import LineChartIcon from '@material-ui/icons/ShowChart';
 import { deepPurple, indigo } from '@material-ui/core/colors';
 
+import { useHistory } from 'react-router-dom';
+
 import moment from "moment";
 import palette from "google-palette";
 import {
@@ -41,7 +43,7 @@ import DateQuestionUtilities from "../questionnaire/DateQuestionUtilities";
 
 // A single statistic, displayed as a chart
 function Statistic(props) {
-  const { classes, theme, definition } = props;
+  const { classes, theme, definition, disableClick } = props;
   // Colours to be used before relying on the google palette
   const DEFAULT_PALETTE = [
     theme.palette.primary.main,
@@ -105,12 +107,13 @@ function Statistic(props) {
         && field["label"] in allFieldsDict)
       // Sort according to defaultOrder (if they exist)
       .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder))
-      .map((field) => field["label"]);
+      .map((field) => ({value: field["value"], label: field["label"]}))
     // If there are any fields in our data that aren't in the splitVar's answerOptions, include
     // them at the end
     allFields = allFields.concat(
       Object.keys(allFieldsDict)
-        .filter((field) => !allFields.includes(field))
+        .filter((field) => !allFields.some(f => (f.label == field)))
+        .map(field => ({value : field == "Not specified" ? undefined : field, label: field}))
       );
   }
 
@@ -129,6 +132,50 @@ function Statistic(props) {
 
   let widgetHeight = 250; // TODO: make mobile friendly
   let legendHeight = 40;
+
+
+  // When clicking on a bar or line, list the questionnaires that correspond to it
+  let handleClick = (data, field) => {
+    if (disableClick) return;
+    let xVal = data?.payload?.x;
+    let splitVal = field.value;
+    navigateToDataset(xVal, splitVal);
+  }
+
+  let history = useHistory();
+
+  let navigateToDataset = (xVal, splitVal) => {;
+    history.push(
+      "/content.html/Subjects#subjects:activeTab=" + definition?.meta?.yVar?.["@name"] +
+      "&subjects:filters=" + window.btoa(JSON.stringify(generateFilters(xVal, splitVal)))
+    );
+  }
+
+  let generateFilters = (xVal, splitVal) => {
+    let result = [];
+    let xVarDef = definition?.meta?.xVar;
+    let xVarFilter = generateFilter(xVarDef, xVal)
+    result.push(xVarFilter);
+    if (isSplit) {
+      let splitDef = definition?.meta?.splitVar;
+      let splitFilter = generateFilter(splitDef, splitVal);
+      result.push(splitFilter);
+    }
+    return result;
+  }
+
+  let generateFilter = (varDef, value) => {
+    return varDef && {
+      comparator: typeof(value) == 'undefined' ? "is empty" : "=",
+      name: varDef?.["@path"]?.replace(/^\/[^/]+\//, ""),
+      title: varDef?.["text"],
+      type: varDef?.["dataType"],
+      uuid: varDef?.["jcr:uuid"],
+      value: value
+    };
+  }
+
+  let customStyle = disableClick ? {} : {cursor: "pointer"};
 
   return <Grid item md={12} lg={6}>
     <Card className={classes.statsCard}>
@@ -163,9 +210,9 @@ function Statistic(props) {
             {isSplit && <Legend align="right" verticalAlign="top" height={legendHeight} />}
             {allFields.map((field, idx) =>
               isBar ?
-                <Bar dataKey={field} fill={chartColours[idx]} key={idx}/>
+                <Bar dataKey={field.label || field} fill={chartColours[idx]} key={idx} onClick={(data, index) => handleClick(data, field)} style={customStyle}/>
               :
-                <Line dataKey={field} type="monotone" stroke={chartColours[idx]} key={idx} />
+                <Line dataKey={field.label || field} type="monotone" stroke={chartColours[idx]} key={idx} />
             )}
             </ChartType>
           </ResponsiveContainer>

@@ -94,6 +94,8 @@ function UserStatistics(props) {
         fetchWithReLogin(globalContext, url, { method: 'POST', body: JSON.stringify(requestData) })
           .then((response) => response.ok ? response.json() : Promise.reject(response))
           .then((statJson) => {
+            // Include the full definition of the statistic
+            statJson["meta"] = stat;
             // Also include the definition of the chart type
             statJson["type"] = fullJson["type"];
             statJson["order"] = fullJson["order"];
