@@ -267,9 +267,9 @@ function Filters(props) {
     }
 
     setFilterableFields(filterableFields.concat(newFilterableFields));
-    setQuestionDefinitions(Object.assign(questionDefinitions, newQuestionDefinitions));
-    setFilterableTitles(Object.assign(filterableTitles, newFilterableTitles));
-    setFilterableUUIDs(Object.assign(filterableUUIDs, newFilterableUUIDs));
+    setQuestionDefinitions(Object.assign(newQuestionDefinitions, questionDefinitions));
+    setFilterableTitles(Object.assign(newFilterableTitles, filterableTitles));
+    setFilterableUUIDs(Object.assign(newFilterableUUIDs, filterableUUIDs));
   }
 
   let removeCreatedDateTimezone = (filters) => {
