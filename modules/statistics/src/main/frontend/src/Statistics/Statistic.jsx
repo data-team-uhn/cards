@@ -78,6 +78,7 @@ function Statistic(props) {
 
   // Sort the data we provide to recharts according to its x value
   let xVar = definition["xVar"];
+
   if (xVar["dataType"] == "date") {
     // Date sort -- first convert string->moment to compare
     let dateFormat = xVar["dateFormat"] || "yyyy-MM-dd";
@@ -89,12 +90,33 @@ function Statistic(props) {
       field["x"] = DateQuestionUtilities.amendMoment(field["x"], dateFormat).format(moment.HTML5_FMT.DATE);
       return field;
     })
-  } else if (["long", "double", "decimal"].includes(definition["xVar"]["dataType"])) {
-    // Numeric sort
-    rechartsData.sort((a, b) => a["x"] - b["x"]);
   } else {
-    // Rely on the default (string-coerced) sort
-    rechartsData.sort((a, b) => a["x"].localeCompare(b["x"]));
+    // If there are any answer options, use their defaultOrder for sorting
+    let xLabels = Object.values(xVar)
+      .filter(o => o["jcr:primaryType"] == "cards:AnswerOption")
+      .sort((o1, o2) => (o1.defaultOrder - o2.defaultOrder));
+
+    rechartsData.sort((a, b) => {
+      let aIdx = xLabels.findIndex(i => i.value == a.x);
+      let bIdx = xLabels.findIndex(i => i.value == b.x);
+      if (aIdx >= 0 && bIdx >= 0) {
+        return aIdx - bIdx;
+      } else if (aIdx >= 0) {
+        return -1;
+      } else if (bIdx >= 0) {
+        return 1;
+      } else if (["long", "double", "decimal"].includes(definition["xVar"]["dataType"])) {
+        // Numeric sort
+        return a["x"] - b["x"];
+      } else {
+        // Rely on the default (string-coerced) sort
+        return a["x"].localeCompare(b["x"]);
+      }
+    });
+    // Relabel x values according to answer option labels
+    rechartsData.forEach(e => {
+      e.x = (xLabels.find(i => i.value == e.x))?.label || e.x;
+    });
   }
 
   let allFields = Object.keys(allFieldsDict);
