@@ -79,3 +79,32 @@ locally). You should automatically be redirected to the SSO login page
 (Keycloak instance at `localhost:8484` if testing locally). Login with
 your credentials (`myuser`:`password` if using the testing Keycloak
 Docker container). You should now be able to access CARDS as your user.
+
+### Security Tests
+
+The following tests can be performed to verify that CARDS will _only_
+accept SAML logins from trusted identity providers (IdPs).
+
+- After sucessfully following the above instructions to configure a local
+Keycloak Docker container as an IdP:
+  - Visit `http://localhost:8484/auth/admin` and login as `admin`:`admin`
+  - Go to _Realm Settings_ --> _Keys_ --> _Providers_ --> _Add keystore..._ _rsa-generated_
+    - _Console Display Name_: _some-other-key_
+    - _Priority_: _10_
+    - _Enabled_: _ON_
+    - _Active_: _ON_
+    - _Algorithm_: _RS256_
+    - _Key size_: _2048_
+    - _Key use_: _sig_
+  - Click _Save_
+  - Go back to the _Providers_ tab and delete the `rsa-generated` key
+  - Visit `localhost:8080` again and you will be redirected to Keycloak (`localhost:8484`) just as before
+  - Attempt to login as `myuser`:`password`
+  - You should be shown a page with the error `Signature cryptographic validation not successful`
+  - Go back to `http://localhost:8484/auth/admin` and login as `admin`:`admin`
+  - Go to _Clients_ --> _http://localhost:8080/_
+  - Disable _Sign Documents_ and _Sign Assertions_
+  - Click _Save_
+  - Visit `localhost:8080` again and you will be redirected to Keycloak (`localhost:8484`) just as before
+  - Attempt to login as `myuser`:`password`
+  - You should be shown a page with the error `The SAML Assertion was not signed!`
