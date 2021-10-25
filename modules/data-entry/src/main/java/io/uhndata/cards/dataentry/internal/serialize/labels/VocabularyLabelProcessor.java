@@ -74,7 +74,10 @@ public class VocabularyLabelProcessor extends AnswerOptionsLabelProcessor implem
             }
 
             processVocabularyLabels(node, question, propsMap);
-            super.processOptions(question, propsMap);
+
+            if (super.hasAnswerOption(getQuestionNode(node))) {
+                super.processOptions(question, propsMap);
+            }
 
             if (propsMap.size() == 1) {
                 return Json.createValue((String) propsMap.values().toArray()[0]);

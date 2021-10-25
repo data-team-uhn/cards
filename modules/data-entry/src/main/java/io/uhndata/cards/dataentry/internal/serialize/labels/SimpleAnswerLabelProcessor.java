@@ -116,7 +116,7 @@ public abstract class SimpleAnswerLabelProcessor implements ResourceJsonProcesso
     }
 
     /**
-     * Basic method to get get the answer label associated with the question.
+     * Basic method to get the answer label associated with the question.
      *
      * @param node the node being serialized, may be other than the top resource
      * @param question the question node that is an answer's child
