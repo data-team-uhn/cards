@@ -265,6 +265,24 @@ function QuestionnaireSet(props) {
       });
   }
 
+  let onFormComplete = () => {
+    const URL = "/Forms/" + crtFormId;
+    var request_data = new FormData();
+    request_data.append(":checkin", "true");
+    fetchWithReLogin(globalLoginDisplay, URL, { method: 'POST', body: request_data })
+      .then( (response) => {
+        if (response.ok) {
+          // Advance to the next step
+          nextQuestionnaire ? launchNextForm() : nextStep()
+        } else {
+          return(Promise.reject(response));
+        }
+      })
+      .catch((response) => {
+        setError(`Saving data failed with error code ${response.status}: ${response.statusText}`);
+      });
+  }
+
   // Load all questionnaires that need to be filled out
   if (typeof questionnaireIds === "undefined") {
     loadQuestionnaireSet();
@@ -344,7 +362,7 @@ function QuestionnaireSet(props) {
           disableHeader
           doneIcon={nextQuestionnaire ? <NextStepIcon /> : <DoneIcon />}
           doneLabel={nextQuestionnaire ? `Continue to ${nextQuestionnaire?.title}` : "Finish"}
-          onDone={nextQuestionnaire ? launchNextForm : nextStep}
+          onDone={onFormComplete}
           doneButtonStyle={{position: "relative", right: 0, bottom: "unset", textAlign: "center"}}
           contentOffset={contentOffset}
         />
