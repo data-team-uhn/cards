@@ -149,7 +149,6 @@ function FormView(props) {
           columns={props.columns || columns}
           customUrl={`/Forms.paginate?descending=true${qFilter}${tabFilter[tabs[activeTab]]}`}
           defaultLimit={10}
-          joinChildren="cards:Answer"
           filters
           questionnaire={questionnaire}
           entryType={"Form"}

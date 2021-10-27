@@ -164,7 +164,6 @@ function SubjectView(props) {
               actions={actions}
               disableTopPagination={!topPagination}
               filters
-              joinChildren="cards:Answer"
               onFiltersChange={(str) => setFiltersJsonString(str)}
               filtersJsonString={filtersJsonString}
             />
