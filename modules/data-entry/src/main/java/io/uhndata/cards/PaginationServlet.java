@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -151,10 +152,17 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         private final String comparator;
 
         /**
-         * The JCR query source name that the filter applies to. While all other fields are parsed from the request,
-         * this will be filled in later when the query sources are generated.
+         * The JCR query source name that the filter applies to. While other fields are parsed from the request, this
+         * will be filled in later when the query sources are generated.
          */
         private String source;
+
+        /**
+         * The JCR node type of the source, e.g. {@code cards:BooleanAnswer}. While other fields are parsed from the
+         * request, this will be filled in later when the query sources are generated. Special filters will not have a
+         * node type at all, since they apply to a special known source.
+         */
+        private String nodeType;
 
         Filter(final String name, final String value, final String type, final String comparator)
         {
@@ -294,9 +302,6 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         // We select all nodes having the right type
         final StringBuilder query = new StringBuilder("select distinct n.* from [").append(nodeType).append("] as n");
 
-        // Optional child node type that the filters may apply to
-        final String joinNodeType = request.getParameter("joinchildren");
-
         // The map that stores questionnaires uuids with prefixes in array and maps it to the
         // corresponding group of questions uuids with their prefixes (stored in a map)
         // To be used later on the filter query construction
@@ -305,7 +310,6 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         query.append(
             getQuerySources(
                 nodeType,
-                joinNodeType,
                 filters,
                 session));
 
@@ -398,39 +402,30 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      * Processes all the filters and creates the query's source.
      *
      * @param nodeType the type of results to return, a node type like {@code cards:Form} or {@code cards:Subject}
-     * @param joinNodeType an optional, additional node type to use for the filter values, like {@code cards:Answer}
      * @param filters a list of filters
      * @param session the current JCR session
      * @return the query fragment listing all sub-sources except the main node type itself (the "join ..." part); empty
      *         if there are no filters for descendant nodes
      */
-    private String getQuerySources(final String nodeType, final String joinNodeType,
+    private String getQuerySources(final String nodeType,
         final Map<FilterType, List<Filter>> filters, final Session session)
     {
-        if (StringUtils.isBlank(joinNodeType)) {
-            return "";
-        }
-
         final Map<String, String> questionnairesToFormSource = new HashMap<>();
-        final Map<String, List<String>> questionnairesToQuestions = new HashMap<>();
-        final Map<String, String> questionsToAnswerSource = new HashMap<>();
+        final Map<String, List<Filter>> questionnairesToQuestions = new HashMap<>();
 
-        String sanitizednodetype = joinNodeType.replaceAll("[\\\\\\]]", "\\\\$0");
         // Resolve all questions to questionnaires and group them by questionnaires
         filters.forEach((type, values) -> mapFiltersToSources(nodeType, type, values, questionnairesToFormSource,
-            questionnairesToQuestions, questionsToAnswerSource, session));
+            questionnairesToQuestions, session));
 
         if (nodeType.equals(SUBJECT_IDENTIFIER)) {
             // Make joins per questionnaire/form, and per each question/answer in a form
-            return createSubjectJoins(sanitizednodetype, questionnairesToFormSource, questionnairesToQuestions,
-                questionsToAnswerSource);
+            return createSubjectJoins(questionnairesToFormSource, questionnairesToQuestions);
         } else {
             // There should be only one questionnaire in the end, but there's no way to enforce this in the UI.
             // If there's more than one questionnaire involved, then no form will ever match.
             // Just assume that all the questions belong to the same questionnaire, and append joins for answers for
             // each question, regardless of the questionnaire
-            return createFormJoins(sanitizednodetype, questionnairesToFormSource, questionnairesToQuestions,
-                questionsToAnswerSource);
+            return createFormJoins(questionnairesToFormSource, questionnairesToQuestions);
         }
     }
 
@@ -444,7 +439,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      *            the format {@code f1}
      * @param questionnairesToQuestions out parameter, maps from a questionnaire's UUID to a list of questions that
      *            belong to it
-     * @param filtersToAnswerSource out parameter, maps from a question UUID to an answer source identifier, in the
+     * @param questionsToAnswerSource out parameter, maps from a question UUID to an answer source identifier, in the
      *            format {@code child1_1}, where {@code child} is the specified prefix, the first number is the form
      *            source number, and the second number is a counter of the sub-sources belonging to the same form
      * @param session the current JCR session
@@ -452,8 +447,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
     private void mapFiltersToSources(
         final String nodeType, final FilterType filterType, final List<Filter> filters,
         final Map<String, String> questionnairesToFormSource,
-        final Map<String, List<String>> questionnairesToQuestions,
-        final Map<String, String> questionsToAnswerSource,
+        final Map<String, List<Filter>> questionnairesToQuestions,
         final Session session)
     {
         if (filters == null) {
@@ -493,18 +487,30 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                     continue;
                 }
 
-                List<String> questions =
+                List<Filter> questions =
                     questionnairesToQuestions.computeIfAbsent(questionnaire, k -> new ArrayList<>());
-                questions.add(filter.name);
+                questions.add(filter);
 
                 // Filters count for this questionnaire
                 String fcount = Integer.toString(questions.size());
-                // <uuid> -> "childf1_1"
-                questionsToAnswerSource.put(filter.name,
-                    filterType.sourcePrefix + questionnairesToFormSource.get(questionnaire) + "_" + fcount);
-                // Update the source name in the filter
-                filter.source = questionsToAnswerSource.get(filter.name);
+                // Update the source name in the filter, e.g. "childf1_1"
+                filter.source = filterType.sourcePrefix + questionnairesToFormSource.get(questionnaire) + "_" + fcount;
+                // Update the source node type in the filter, e.g. "cards:BooleanAnswer"
+                filter.nodeType = getAnswerNodeType(filter.type);
             }
+        }
+    }
+
+    private String getAnswerNodeType(final String valueType)
+    {
+        switch (valueType) {
+            case "":
+                return "cards:Answer";
+            case "file":
+                return "cards:FileResourceAnswer";
+            default:
+                return "cards:" + valueType.substring(0, 1).toUpperCase(Locale.ROOT) + valueType.substring(1)
+                    + "Answer";
         }
     }
 
@@ -513,26 +519,24 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      * each question a new {@code cards:Answer} source to the sources on the condition that it belongs to the targeted
      * node.
      *
-     * @param joinNodeType an optional, additional node type to use for the filter values, like {@code cards:Answer}
      * @param questionnairesToFormSource maps from a questionnaire's UUID to a form source identifier
-     * @param questionnairesToQuestions maps from a questionnaire's UUID to a list of questions that belong to it
-     * @param questionsToAnswerSource maps from a question UUID to an answer source identifier
+     * @param questionnairesToFilters maps from a questionnaire's UUID to a list of answer filters that belong to it
      * @return the query fragment listing all sub-sources except the main node type itself (the "join ..." part); empty
      *         if there are no filters for descendant nodes
      */
-    private String createFormJoins(final String joinNodeType, Map<String, String> questionnairesToFormSource,
-        Map<String, List<String>> questionnairesToQuestions, Map<String, String> questionsToAnswerSource)
+    private String createFormJoins(Map<String, String> questionnairesToFormSource,
+        Map<String, List<Filter>> questionnairesToFilters)
     {
         StringBuilder joins = new StringBuilder();
         for (String questionnaire : questionnairesToFormSource.keySet()) {
-            final List<String> filtersInQuestionnaire =
-                questionnairesToQuestions.getOrDefault(questionnaire, Collections.emptyList());
-            for (String filter : filtersInQuestionnaire) {
-                final String answerSource = questionsToAnswerSource.get(filter);
+            final List<Filter> filtersInQuestionnaire =
+                questionnairesToFilters.getOrDefault(questionnaire, Collections.emptyList());
+            for (Filter filter : filtersInQuestionnaire) {
+                final String answerSource = filter.source;
                 joins.append(
                     String.format(
                         " inner join [%s] as %s on isdescendantnode(%s, n)",
-                        joinNodeType,
+                        filter.nodeType,
                         answerSource,
                         answerSource));
             }
@@ -547,15 +551,13 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      * that the targeted subject is one of its {@code relatedSubjects}, and for each question a new {@code cards:Answer}
      * source to the sources on the condition that it belongs to the correct form source.
      *
-     * @param joinNodeType an optional, additional node type to use for the filter values, like {@code cards:Answer}
      * @param questionnairesToFormSource maps from a questionnaire's UUID to a form source identifier
-     * @param questionnairesToQuestions maps from a questionnaire's UUID to a list of questions that belong to it
-     * @param questionsToAnswerSource maps from a question UUID to an answer source identifier
+     * @param questionnairesToFilters maps from a questionnaire's UUID to a list of answer filters that belong to it
      * @return the query fragment listing all sub-sources except the main node type itself (the "join ..." part); empty
      *         if there are no filters for descendant nodes
      */
-    private String createSubjectJoins(final String joinNodeType, Map<String, String> questionnairesToFormSource,
-        Map<String, List<String>> questionnairesToQuestions, Map<String, String> questionsToAnswerSource)
+    private String createSubjectJoins(final Map<String, String> questionnairesToFormSource,
+        final Map<String, List<Filter>> questionnairesToFilters)
     {
         StringBuilder joins = new StringBuilder();
 
@@ -567,14 +569,14 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                     formSource,
                     formSource));
 
-            final List<String> questions =
-                questionnairesToQuestions.getOrDefault(questionnaire, Collections.emptyList());
-            for (String question : questions) {
-                final String answerSource = questionsToAnswerSource.get(question);
+            final List<Filter> filters =
+                questionnairesToFilters.getOrDefault(questionnaire, Collections.emptyList());
+            for (Filter filter : filters) {
+                final String answerSource = filter.source;
                 joins.append(
                     String.format(
                         " inner join [%s] as %s on isdescendantnode(%s, %s)",
-                        joinNodeType,
+                        filter.nodeType,
                         answerSource,
                         answerSource,
                         formSource));
@@ -911,7 +913,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             Node parent = session.getNodeByIdentifier(questionUuid);
             while (parent.getParent() != null) {
                 parent = parent.getParent();
-                if (parent.isNodeType("cards:Questionnaire")) {
+                if (parent.isNodeType(QUESTIONNAIRE_IDENTIFIER)) {
                     return parent.getProperty("jcr:uuid").getString();
                 }
             }

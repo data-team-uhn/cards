@@ -43,7 +43,7 @@ function LiveTable(props) {
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Define the component's state
 
-  const { customUrl, columns, defaultLimit, joinChildren, updateData, classes,
+  const { customUrl, columns, defaultLimit, updateData, classes,
     filters, entryType, actions, admin, disableTopPagination, disableBottomPagination,
     onDataReceived, onFiltersChange, filtersJsonString, ...rest } = props;
   const [tableData, setTableData] = useState();
@@ -116,7 +116,6 @@ function LiveTable(props) {
 
     // Add the filters (if they exist)
     if (filters != null) {
-      url.searchParams.set("joinchildren", joinChildren);
       filters["fields"].forEach((field) => {url.searchParams.append("filternames", field)});
       filters["comparators"].forEach((comparator) => {url.searchParams.append("filtercomparators", comparator)});
       filters["values"].forEach((value) => {url.searchParams.append("filtervalues", value)});
