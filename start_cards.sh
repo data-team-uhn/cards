@@ -221,6 +221,13 @@ do
     ARGS_LENGTH=${ARGS_LENGTH}+1
     ARGS[$ARGS_LENGTH]=io.dropwizard.metrics:metrics-core:ALL
     ARGS_LENGTH=${ARGS_LENGTH}+1
+  elif [[ ${ARGS[$i]} == '--keycloak_demo' ]]
+  then
+    unset ARGS[$i]
+    ARGS[$ARGS_LENGTH]=-f
+    ARGS_LENGTH=${ARGS_LENGTH}+1
+    ARGS[$ARGS_LENGTH]=mvn:io.uhndata.cards/cards-keycloakdemo-saml-support/0.9-SNAPSHOT/slingosgifeature
+    ARGS_LENGTH=${ARGS_LENGTH}+1
   else
     ARGS[$i]=${ARGS[$i]/VERSION/${CARDS_VERSION}}
   fi

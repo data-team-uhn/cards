@@ -1,0 +1,4 @@
+{
+  "jcr:primaryType": "nt:unstructured",
+  "value": "http://localhost:8484/auth/realms/myrealm/protocol/saml"
+}
