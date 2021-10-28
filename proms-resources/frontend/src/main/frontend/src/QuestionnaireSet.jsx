@@ -157,6 +157,7 @@ function QuestionnaireSet(props) {
   }, [subjectData, questionnaireIds]);
 
   const loadExistingData = () => {
+    setComplete(undefined);
     fetchWithReLogin(globalLoginDisplay, `${subject}.data.deep.json`)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
@@ -351,7 +352,9 @@ function QuestionnaireSet(props) {
     </Grid>
   ];
 
-  let exitScreen = [
+  let exitScreen = (typeof(isComplete) == 'undefined') ? [
+    <CircularProgress />
+  ] : [
     <Typography variant="h4">{title}</Typography>,
     <List>
     { (questionnaireIds || []).map((q, i) => (
