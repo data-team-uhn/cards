@@ -25,11 +25,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.jcr.ItemNotFoundException;
@@ -190,8 +192,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             // Check for special cases in request and return zero results if any
             if (checkForSpecialEmptyFilter(request, filters, response)) {
                 // Write the empty response
-                final Iterator<Resource> results = Collections.emptyIterator();
-                writeResponse(request, response, offset, limit, results);
+                writeEmptyResponse(request, response, offset, limit);
                 return;
             }
 
@@ -201,17 +202,8 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             // Create the Query object
             Query filterQuery = queryManager.createQuery(createQuery(request, session, filters), "JCR-SQL2");
 
-            // Set the limit and offset here to improve query performance
-            filterQuery.setLimit((QUERY_SIZE_MULTIPLIER * limit) + 1);
-            filterQuery.setOffset(offset);
-
-            // Execute the query
-            final QueryResult filterResult = filterQuery.execute();
-            final Iterator<Resource> results =
-                new ResourceIterator(request.getResourceResolver(), filterResult.getNodes());
-
-            // Write the response
-            writeResponse(request, response, offset, limit, results);
+            // Get the results and write the response
+            writeResponse(request, response, offset, limit, filterQuery);
         } catch (Exception e) {
             LOGGER.warn("Failed to execute query: {}", e.getMessage(), e);
             return;
@@ -243,20 +235,19 @@ public class PaginationServlet extends SlingSafeMethodsServlet
     }
 
     /**
-     * Write the response.
+     * Write an empty results response.
      *
      * @param request the current request
      * @param response the HTTP response
      * @param offset how many resources from the query results were skipped
      * @param limit how many resources from the query results to serialize, may be 0 if we only want a count of the
      *            resources
-     * @param results request results
      * @throws IOException if failed or interrupted I/O operation
      * @throws RepositoryException if accessing the repository fails
      */
-    private void writeResponse(final SlingHttpServletRequest request, final SlingHttpServletResponse response,
-        final long offset, final long limit, final Iterator<Resource> results)
-            throws IOException, RepositoryException
+    private void writeEmptyResponse(final SlingHttpServletRequest request, final SlingHttpServletResponse response,
+        final long offset, final long limit)
+        throws IOException, RepositoryException
     {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -264,7 +255,38 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         final Writer out = response.getWriter();
         try (JsonGenerator jsonGen = Json.createGenerator(out)) {
             jsonGen.writeStartObject();
-            long[] limits = writeResources(jsonGen, results, offset, limit);
+            jsonGen.writeStartArray("rows").writeEnd();
+            long[] limits = new long[] { offset, limit, 0, 0, 0 };
+            writeSummary(jsonGen, request, limits);
+            jsonGen.writeEnd().flush();
+        }
+    }
+
+    /**
+     * Write the response.
+     *
+     * @param request the current request
+     * @param response the HTTP response
+     * @param offset how many resources from the query results were skipped
+     * @param limit how many resources from the query results to serialize, may be 0 if we only want a count of the
+     *            resources
+     * @param query the query to execute
+     * @throws IOException if failed or interrupted I/O operation
+     * @throws RepositoryException if accessing the repository fails
+     */
+    private void writeResponse(final SlingHttpServletRequest request, final SlingHttpServletResponse response,
+        final long offset, final long limit, final Query query)
+        throws IOException, RepositoryException
+    {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        // The writer doesn't need to be explicitly closed since the auto-closed jsonGen will also close the writer
+        final Writer out = response.getWriter();
+        try (JsonGenerator jsonGen = Json.createGenerator(out)) {
+            jsonGen.writeStartObject();
+            jsonGen.writeStartArray("rows");
+            long[] limits = writeResources(jsonGen, query, offset, limit, request);
+            jsonGen.writeEnd();
             writeSummary(jsonGen, request, limits);
             jsonGen.writeEnd().flush();
         }
@@ -821,13 +843,12 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      */
     private void writeSummary(final JsonGenerator jsonGen, final SlingHttpServletRequest request, final long[] limits)
     {
-        final boolean totalIsApproximate = (limits[3] > (QUERY_SIZE_MULTIPLIER * limits[1]));
+        final boolean totalIsApproximate = limits[4] == 1;
         jsonGen.write("req", request.getParameter("req"));
         jsonGen.write("offset", limits[0]);
         jsonGen.write("limit", limits[1]);
         jsonGen.write("returnedrows", limits[2]);
-        jsonGen.write("totalrows", totalIsApproximate
-            ? ((QUERY_SIZE_MULTIPLIER * limits[1]) + limits[0]) : (limits[0] + limits[3]));
+        jsonGen.write("totalrows", limits[3]);
         jsonGen.write("totalIsApproximate", totalIsApproximate);
     }
 
@@ -837,40 +858,94 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      * accepts a limit, and only at most that many resources will actually be included in the response.
      *
      * @param jsonGen the JSON generator where the results should be serialized
-     * @param resources the resources returned from the query
-     * @param offset how many resources from the query results were skipped
-     * @param limit how many resources from the query results to serialize, may be 0 if we only want a count of the
-     *            resources
+     * @param query the query to execute
+     * @param resultOffset how many resources from the query results were skipped
+     * @param resultLimit how many resources from the query results to serialize, may be 0 if we only want a count of
+     *            the resources
+     * @param request the current request
      * @return an array of values defining the range of the result: limits[0] is the 0-based offset, i.e. how many
      *         results were skipped; limits[1] is the requested limit, the maximum number of results to return;
      *         limits[2] is the number of results actually returned, equal to or less than limits[1]; limits[3] is an
      *         approximate number of total items that match the query
      */
-    private long[] writeResources(final JsonGenerator jsonGen, final Iterator<Resource> resources,
-        final long offset, final long limit)
+    private long[] writeResources(final JsonGenerator jsonGen, final Query query,
+        final long resultOffset, final long resultLimit, final SlingHttpServletRequest request)
     {
-        final long[] counts = new long[4];
-        counts[0] = offset;
-        counts[1] = limit;
-        counts[2] = 0;
-        counts[3] = 0;
+        // Problem 1: Currently Oak does not support DISTINCT, so we must manually ensure uniqueness of the results.
+        // Problem 2: Currently Oak does not support giving a total number of matches, so we must gauge it.
+        // - Request results in batches of size (limit * QUERY_SIZE_MULTIPLIER).
+        // - Deduplicate the results in a batch
+        // - Keep a count of how many unique results were skipped so far, until the requested "offset" items are skipped
+        // - After skipping "offset" items, output at most "limit" unique items to the resulting JSON
+        // - After outputting "limit" items, keep counting how many new unique items are there until there are no more
+        // results or encounter (limit + QUERY_SIZE_MULTIPLIER + 1) unique items (the termination condition)
+        // - If all the items in the current batch have been processed without reaching the termination condition,
+        // request the next batch
+        final long[] counts = new long[] {
+            // The requested offset
+            resultOffset,
+            // The requested number of items
+            resultLimit,
+            // The returned number of items
+            0,
+            // The total number of items matching the query, up to (QUERY_SIZE_MULTIPLIER * resultLimit + 1);
+            0,
+            // There are probably more results than seen
+            0
+        };
+        // Which unique items have been seen so far in the query results
+        final Set<String> seenResources = new HashSet<>();
 
-        long limitCounter = limit < 0 ? 0 : limit;
+        // Items in a query batch
+        long batchSize = (QUERY_SIZE_MULTIPLIER * resultLimit);
+        // Current batch start
+        long batchStart = 0;
+        // Termination condition limit: when to stop looking for new unique results
+        long totalLimit = (((long) Math.ceil(((double) resultOffset) / ((double) batchSize))) + 1) * batchSize + 1;
+        // How many more items to include in the output
+        long limitCounter = resultLimit < 0 ? 0 : resultLimit;
 
-        jsonGen.writeStartArray("rows");
+        // How many results were returned by the query
+        long itemsInBatch = 0;
 
-        while (resources.hasNext()) {
-            Resource n = resources.next();
-            if (limitCounter > 0) {
-                jsonGen.write(n.adaptTo(JsonObject.class));
-                --limitCounter;
-                ++counts[2];
+        query.setLimit(batchSize + 1);
+        do {
+            query.setOffset(batchStart);
+
+            // Execute the query
+            try {
+                final QueryResult filterResult = query.execute();
+                final Iterator<Resource> results =
+                    new ResourceIterator(request.getResourceResolver(), filterResult.getNodes());
+
+                itemsInBatch = 0;
+                while (results.hasNext()) {
+                    ++itemsInBatch;
+                    Resource n = results.next();
+                    // If this resource was already seen, ignore it
+                    if (!seenResources.contains(n.getPath())) {
+                        seenResources.add(n.getPath());
+                        // If we've passed the "offset" mark, and we didn't output "limit" items yet, include the
+                        // resource in the output
+                        if (seenResources.size() > resultOffset && limitCounter > 0) {
+                            jsonGen.write(n.adaptTo(JsonObject.class));
+                            --limitCounter;
+                            ++counts[2];
+                        }
+                        ++counts[3];
+                    }
+                }
+                batchStart += batchSize;
+            } catch (RepositoryException e) {
+                //
             }
-            ++counts[3];
+        } while (counts[3] < totalLimit && itemsInBatch > batchSize);
+
+        if (itemsInBatch > batchSize) {
+            counts[4] = 1;
+            // We included the "and more" extra result in the count, remove 1 to get back to a round number
+            counts[3] = totalLimit - 1;
         }
-
-        jsonGen.writeEnd();
-
         return counts;
     }
 
