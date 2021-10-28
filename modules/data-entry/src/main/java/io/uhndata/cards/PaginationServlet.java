@@ -525,15 +525,9 @@ public class PaginationServlet extends SlingSafeMethodsServlet
 
     private String getAnswerNodeType(final String valueType)
     {
-        switch (valueType) {
-            case "":
-                return "cards:Answer";
-            case "file":
-                return "cards:FileResourceAnswer";
-            default:
-                return "cards:" + valueType.substring(0, 1).toUpperCase(Locale.ROOT) + valueType.substring(1)
-                    + "Answer";
-        }
+        return StringUtils.isBlank(valueType) ? "cards:Answer"
+            : "cards:" + valueType.substring(0, 1).toUpperCase(Locale.ROOT) + valueType.substring(1)
+                + "Answer";
     }
 
     /**

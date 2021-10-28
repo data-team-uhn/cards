@@ -654,9 +654,9 @@ export default function VariantFilesContainer() {
       data.append(formPath + "/subject", `/${subjectPath}/${tumorPath}` + (file?.region?.path ? `/${regionPath}` : ""));
       data.append(formPath + "/subject@TypeHint", "Reference");
 
-      // Assemble the FileResourceAnswer
+      // Assemble the FileAnswer
       let answerPath = formPath + "/" + uuidv4();
-      data.append(answerPath + "/jcr:primaryType", "cards:FileResourceAnswer");
+      data.append(answerPath + "/jcr:primaryType", "cards:FileAnswer");
       data.append(answerPath + "/question", "/Questionnaires/SomaticVariants/file");
       data.append(answerPath + "/question@TypeHint", "Reference");
       data.append(answerPath + "/value", "/" + answerPath + "/" + file.name);

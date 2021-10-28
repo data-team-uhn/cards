@@ -205,7 +205,7 @@
                 }
             }
         },
-        "cards:FileResourceAnswer": {
+        "cards:FileAnswer": {
             "jcr:primaryType": "nt:unstructured",
             "properties": {
                 "jcr:primaryType": "nt:unstructured",

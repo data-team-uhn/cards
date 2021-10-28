@@ -652,7 +652,7 @@
 
 //-----------------------------------------------------------------------------
 // File resource answers, whose children are nt:files with the answer
-[cards:FileResourceAnswer] > cards:Answer
+[cards:FileAnswer] > cards:Answer
   // The value does nothing
   - value (string)
 
@@ -660,7 +660,7 @@
   + * (nt:file) = nt:file
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "cards/FileResourceAnswer" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/FileAnswer" mandatory autocreated protected
 
   // Hardcode the resource supertype.
   - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected

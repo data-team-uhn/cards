@@ -46,7 +46,7 @@ public class FileLabelProcessor extends SimpleAnswerLabelProcessor implements Re
     public void leave(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
     {
         try {
-            if (node.isNodeType("cards:FileResourceAnswer")) {
+            if (node.isNodeType("cards:FileAnswer")) {
                 addProperty(node, json, serializeNode);
             }
         } catch (RepositoryException e) {
