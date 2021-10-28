@@ -26,6 +26,11 @@
 		<type>String</type>
 	</property>
 	<property>
+		<name>paginate</name>
+		<value>True</value>
+		<type>Boolean</type>
+	</property>
+	<property>
 		<name>requiredSubjectTypes</name>
 		<values>
 			<value>/SubjectTypes/Patient/Visit</value>
@@ -244,225 +249,224 @@ Objectively determine initial symptoms severity and monitor symptom changes/effe
 		</node>
 	</node>
 	<node>
-		<name>gad7_survey</name>
-		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
 			<value>How often have you been bothered by the following over the past 2 weeks?</value>
 			<type>String</type>
 		</property>
+	</node>
+	<node>
+		<name>gad7_1</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Feeling nervous, anxious, or on edge</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>list</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>long</value>
+			<type>String</type>
+		</property>
 		<node>
-			<name>gad7_1</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
+			<name>AnswerOption48</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
-				<name>text</name>
-				<value>Feeling nervous, anxious, or on edge</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
+				<name>defaultOrder</name>
 				<value>1</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
+				<name>label</name>
+				<value>Not at all</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>long</value>
+				<name>value</name>
+				<value>0</value>
 				<type>String</type>
 			</property>
-			<node>
-				<name>AnswerOption48</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value>Not at all</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>0</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>AnswerOption49</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>2</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value>Several days</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>1</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>AnswerOption50</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>3</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value>More than half the days</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>2</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>AnswerOption51</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>4</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value>Nearly every day</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>3</value>
-					<type>String</type>
-				</property>
-			</node>
 		</node>
 		<node>
-			<name>gad7_2</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
+			<name>AnswerOption49</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
-				<name>text</name>
-				<value>Not being able to stop or control worrying</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
+				<name>defaultOrder</name>
+				<value>2</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>maxAnswers</name>
+				<name>label</name>
+				<value>Several days</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
 				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>dataType</name>
-				<value>long</value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>AnswerOption48</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value>Not at all</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>0</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>AnswerOption49</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>2</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value>Several days</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>1</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>AnswerOption50</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>3</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value>More than half the days</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>2</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>AnswerOption51</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>4</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value>Nearly every day</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>3</value>
-					<type>String</type>
-				</property>
-			</node>
 		</node>
+		<node>
+			<name>AnswerOption50</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>defaultOrder</name>
+				<value>3</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>More than half the days</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>2</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>AnswerOption51</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>defaultOrder</name>
+				<value>4</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>Nearly every day</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>3</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>gad7_2</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Not being able to stop or control worrying</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>list</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>long</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>AnswerOption48</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>defaultOrder</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>Not at all</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>0</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>AnswerOption49</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>defaultOrder</name>
+				<value>2</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>Several days</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>1</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>AnswerOption50</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>defaultOrder</name>
+				<value>3</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>More than half the days</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>2</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>AnswerOption51</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>defaultOrder</name>
+				<value>4</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>Nearly every day</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>3</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
 
-		<node>
+	<node>
 		<name>gad7_more</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
@@ -1179,7 +1183,7 @@ Objectively determine initial symptoms severity and monitor symptom changes/effe
 			</node>
 		</node>
 
-		</node>
 	</node>
+
 
 </node>

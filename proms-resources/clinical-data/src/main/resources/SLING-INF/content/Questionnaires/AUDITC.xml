@@ -26,6 +26,11 @@
 		<type>String</type>
 	</property>
 	<property>
+		<name>paginate</name>
+		<value>True</value>
+		<type>Boolean</type>
+	</property>
+	<property>
 		<name>requiredSubjectTypes</name>
 		<values>
 			<value>/SubjectTypes/Patient/Visit</value>
@@ -123,379 +128,376 @@ disorder. AUDIT-C has been validated in mental health and primary care clinics.
 		</node>
 	</node>
 	<node>
-		<name>audit_survey</name>
-		<primaryNodeType>cards:Section</primaryNodeType>
+		<name>audit_1</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>How often did you have a drink containing alcohol in the past year?</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>list</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>long</value>
+			<type>String</type>
+		</property>
 		<node>
-			<name>audit_1</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
+			<name>AnswerOption48</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
-				<name>text</name>
-				<value>How often did you have a drink containing alcohol in the past year?</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
+				<name>defaultOrder</name>
 				<value>1</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
+				<name>label</name>
+				<value>Never</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>long</value>
+				<name>value</name>
+				<value>0</value>
 				<type>String</type>
 			</property>
-			<node>
-				<name>AnswerOption48</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value>Never</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>0</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>AnswerOption49</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>2</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value>Monthly or less</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>1</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>AnswerOption50</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>3</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value>Two to four times a month</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>2</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>AnswerOption51</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>4</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value>Two to three times a week</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>3</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>AnswerOption52</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>5</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value>Four or more times a week</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>4</value>
-					<type>String</type>
-				</property>
-			</node>
 		</node>
 		<node>
-			<name>audit_2</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
+			<name>AnswerOption49</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
-				<name>text</name>
-				<value>How many drinks did you have on a typical day when you were drinking in the past year?</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
+				<name>defaultOrder</name>
+				<value>2</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>maxAnswers</name>
+				<name>label</name>
+				<value>Monthly or less</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
 				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>dataType</name>
-				<value>long</value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>AnswerOption48</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value>None (I don't drink) or 1-2</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>0</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>AnswerOption49</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>2</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value>3 or 4</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>1</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>AnswerOption50</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>3</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value>5 or 6</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>2</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>AnswerOption51</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>4</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value>7 to 8</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>3</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>AnswerOption52</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>5</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value>10 or more</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>4</value>
-					<type>String</type>
-				</property>
-			</node>
 		</node>
 		<node>
-			<name>audit_3</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
+			<name>AnswerOption50</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
-				<name>text</name>
-				<value>How often did you have six or more drinks on one occasion in the past year?</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
+				<name>defaultOrder</name>
+				<value>3</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
+				<name>label</name>
+				<value>Two to four times a month</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>2</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>AnswerOption51</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>defaultOrder</name>
+				<value>4</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>displayMode</name>
-				<value>list</value>
+				<name>label</name>
+				<value>Two to three times a week</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>long</value>
+				<name>value</name>
+				<value>3</value>
 				<type>String</type>
 			</property>
-			<node>
-				<name>AnswerOption48</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value>Never</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>0</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>AnswerOption49</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>2</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value>Less than monthly</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>1</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>AnswerOption50</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>3</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value>Monthly</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>2</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>AnswerOption51</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>4</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value>Weekly</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>3</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>AnswerOption52</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>5</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value>Daily or almost dayly</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>4</value>
-					<type>String</type>
-				</property>
-			</node>
+		</node>
+		<node>
+			<name>AnswerOption52</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>defaultOrder</name>
+				<value>5</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>Four or more times a week</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>4</value>
+				<type>String</type>
+			</property>
 		</node>
 	</node>
+	<node>
+		<name>audit_2</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>How many drinks did you have on a typical day when you were drinking in the past year?</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>list</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>long</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>AnswerOption48</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>defaultOrder</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>None (I don't drink) or 1-2</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>0</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>AnswerOption49</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>defaultOrder</name>
+				<value>2</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>3 or 4</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>1</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>AnswerOption50</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>defaultOrder</name>
+				<value>3</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>5 or 6</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>2</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>AnswerOption51</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>defaultOrder</name>
+				<value>4</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>7 to 8</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>3</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>AnswerOption52</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>defaultOrder</name>
+				<value>5</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>10 or more</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>4</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>audit_3</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>How often did you have six or more drinks on one occasion in the past year?</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>list</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>long</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>AnswerOption48</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>defaultOrder</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>Never</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>0</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>AnswerOption49</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>defaultOrder</name>
+				<value>2</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>Less than monthly</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>1</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>AnswerOption50</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>defaultOrder</name>
+				<value>3</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>Monthly</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>2</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>AnswerOption51</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>defaultOrder</name>
+				<value>4</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>Weekly</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>3</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>AnswerOption52</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>defaultOrder</name>
+				<value>5</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>Daily or almost dayly</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>4</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+
 </node>

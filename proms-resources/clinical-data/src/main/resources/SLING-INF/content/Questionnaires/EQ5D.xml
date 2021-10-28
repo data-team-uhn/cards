@@ -26,6 +26,11 @@
 		<type>String</type>
 	</property>
 	<property>
+		<name>paginate</name>
+		<value>True</value>
+		<type>Boolean</type>
+	</property>
+	<property>
 		<name>requiredSubjectTypes</name>
 		<values>
 			<value>/SubjectTypes/Patient/Visit</value>
@@ -81,514 +86,512 @@
 		</node>
 	</node>
 	<node>
-		<name>eq5d_survey</name>
-		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
 			<value>Under each heading, please tick the ONE box that best describes your health TODAY.</value>
 			<type>String</type>
 		</property>
+	</node>
+	<node>
+		<name>eq5d_1</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Mobility</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>list</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>long</value>
+			<type>String</type>
+		</property>
 		<node>
-			<name>eq5d_1</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
+			<name>AnswerOption48</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
-				<name>text</name>
-				<value>Mobility</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
+				<name>defaultOrder</name>
 				<value>1</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
+				<name>label</name>
+				<value>I have no problems in walking about</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>long</value>
+				<name>value</name>
+				<value>2</value>
 				<type>String</type>
 			</property>
-			<node>
-				<name>AnswerOption48</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value>I have no problems in walking about</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>2</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>AnswerOption49</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>2</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value>I have some problems in walking about</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>1</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>AnswerOption50</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>3</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value>I am confined to bed</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>0</value>
-					<type>String</type>
-				</property>
-			</node>
 		</node>
 		<node>
-			<name>eq5d_2</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
+			<name>AnswerOption49</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
-				<name>text</name>
-				<value>Self-care</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
+				<name>defaultOrder</name>
+				<value>2</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>maxAnswers</name>
+				<name>label</name>
+				<value>I have some problems in walking about</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
 				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>dataType</name>
-				<value>long</value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>AnswerOption48</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value>I have no problems with self-care</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>2</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>AnswerOption49</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>2</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value>I have some problems washing or dressing myself</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>1</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>AnswerOption50</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>3</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value> I am unable to wash or dress myself</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>0</value>
-					<type>String</type>
-				</property>
-			</node>
 		</node>
 		<node>
-			<name>eq5d_3</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
+			<name>AnswerOption50</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
-				<name>text</name>
-				<value>Usual activities</value>
+				<name>defaultOrder</name>
+				<value>3</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>I am confined to bed</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>E.g. work,study, housework, family or leisure activities</value>
+				<name>value</name>
+				<value>0</value>
 				<type>String</type>
 			</property>
+		</node>
+	</node>
+	<node>
+		<name>eq5d_2</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Self-care</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>list</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>long</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>AnswerOption48</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
-				<name>minAnswers</name>
+				<name>defaultOrder</name>
 				<value>1</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
+				<name>label</name>
+				<value>I have no problems with self-care</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>long</value>
+				<name>value</name>
+				<value>2</value>
 				<type>String</type>
 			</property>
-			<node>
-				<name>AnswerOption48</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value>I have no problems with performing my usual activities</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>2</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>AnswerOption49</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>2</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value>I have some problems with performing my usual activities</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>1</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>AnswerOption50</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>3</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value>I am unable to perform my usual activities</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>0</value>
-					<type>String</type>
-				</property>
-			</node>
 		</node>
 		<node>
-			<name>eq5d_4</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
+			<name>AnswerOption49</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
-				<name>text</name>
-				<value>Pain / discomfort</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
+				<name>defaultOrder</name>
+				<value>2</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>maxAnswers</name>
+				<name>label</name>
+				<value>I have some problems washing or dressing myself</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
 				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>dataType</name>
-				<value>long</value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>AnswerOption48</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value>I have no pain or discomfort</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>2</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>AnswerOption49</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>2</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value>I have moderate pain or discomfort</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>1</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>AnswerOption50</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>3</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value>I have severe pain or discomfort</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>0</value>
-					<type>String</type>
-				</property>
-			</node>
 		</node>
 		<node>
-			<name>eq5d_5</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
+			<name>AnswerOption50</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
-				<name>text</name>
-				<value>Anxiety / depression</value>
+				<name>defaultOrder</name>
+				<value>3</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value> I am unable to wash or dress myself</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>minAnswers</name>
+				<name>value</name>
+				<value>0</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>eq5d_3</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Usual activities</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>E.g. work,study, housework, family or leisure activities</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>list</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>long</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>AnswerOption48</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>defaultOrder</name>
 				<value>1</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
+				<name>label</name>
+				<value>I have no problems with performing my usual activities</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>long</value>
+				<name>value</name>
+				<value>2</value>
 				<type>String</type>
 			</property>
-			<node>
-				<name>AnswerOption48</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value>I am not anxious or depressed</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>2</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>AnswerOption49</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>2</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value>I am moderately anxious or depressed</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>1</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>AnswerOption50</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>defaultOrder</name>
-					<value>3</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>label</name>
-					<value>I am extremely anxious or depressed</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>0</value>
-					<type>String</type>
-				</property>
-			</node>
 		</node>
 		<node>
-			<name>eq5d_6</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
+			<name>AnswerOption49</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
-				<name>text</name>
-				<value>We would like to know how good or bad your health is TODAY.</value>
+				<name>defaultOrder</name>
+				<value>2</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>I have some problems with performing my usual activities</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>
+				<name>value</name>
+				<value>1</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>AnswerOption50</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>defaultOrder</name>
+				<value>3</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>I am unable to perform my usual activities</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>0</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>eq5d_4</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Pain / discomfort</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>list</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>long</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>AnswerOption48</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>defaultOrder</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>I have no pain or discomfort</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>2</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>AnswerOption49</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>defaultOrder</name>
+				<value>2</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>I have moderate pain or discomfort</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>1</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>AnswerOption50</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>defaultOrder</name>
+				<value>3</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>I have severe pain or discomfort</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>0</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>eq5d_5</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Anxiety / depression</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>list</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>long</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>AnswerOption48</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>defaultOrder</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>I am not anxious or depressed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>2</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>AnswerOption49</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>defaultOrder</name>
+				<value>2</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>I am moderately anxious or depressed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>1</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>AnswerOption50</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>defaultOrder</name>
+				<value>3</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>I am extremely anxious or depressed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>0</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>eq5d_6</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>We would like to know how good or bad your health is TODAY.</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>
 On a scale from 0 to 100, 100 means the **best** health you can imagine, and 0 means the **worst** health you can imagine.
 Please indicate on the scale how your health is TODAY.
-				</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>minValue</name>
-				<value>0</value>
-				<type>Double</type>
-			</property>
-			<property>
-				<name>minValueLabel</name>
-				<value>Worst health</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxValue</name>
-				<value>100</value>
-				<type>Double</type>
-			</property>
-			<property>
-				<name>maxValueLabel</name>
-				<value>Best health</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>slider</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>sliderOrientation</name>
-				<value>vertical</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>sliderMarkStep</name>
-				<value>10</value>
-				<type>Double</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>long</value>
-				<type>String</type>
-			</property>
-		</node>
+			</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>minValueLabel</name>
+			<value>Worst health</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>100</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>maxValueLabel</name>
+			<value>Best health</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>slider</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>sliderOrientation</name>
+			<value>vertical</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>sliderMarkStep</name>
+			<value>10</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>long</value>
+			<type>String</type>
+		</property>
 	</node>
 </node>
