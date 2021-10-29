@@ -37,7 +37,7 @@ import TimeQuestion from "./TimeQuestion";
 import TextQuestion from "./TextQuestion";
 import ComputedQuestion from "./ComputedQuestion";
 import VocabularyQuestion from "./VocabularyQuestion";
-import FileResourceQuestion from "./FileResourceQuestion";
+import FileQuestion from "./FileQuestion";
 
 import FormattedText from "../components/FormattedText";
 

@@ -42,7 +42,7 @@ import AnswerComponentManager from "./AnswerComponentManager";
 //
 // Sample usage:
 // (TODO)
-function FileResourceQuestion(props) {
+function FileQuestion(props) {
   const { classes, existingAnswer, ...rest } = props;
   const { maxAnswers, minAnswers, namePattern } = { ...props.questionDefinition, ...props }
   let initialValues =
@@ -214,7 +214,7 @@ function FileResourceQuestion(props) {
     // Also NB: Since we save before this, we're guaranteed to have the parent created
     let data = new FormData();
     data.append(file['name'], file);
-    data.append('jcr:primaryType', 'cards:FileResourceAnswer');
+    data.append('jcr:primaryType', 'cards:FileAnswer');
     data.append('question', props.questionDefinition['jcr:uuid']);
     data.append('question@TypeHint', "Reference");
     return fetchWithReLogin(globalLoginDisplay, outURL, {
@@ -339,7 +339,7 @@ function FileResourceQuestion(props) {
         answers={answers}
         questionDefinition={props.questionDefinition}
         existingAnswer={existingAnswer}
-        answerNodeType="cards:FileResourceAnswer"
+        answerNodeType="cards:FileAnswer"
         onDecidedOutputPath={setAnswerPath}
         valueType="path"
         isMultivalued={maxAnswers != 1}
@@ -348,7 +348,7 @@ function FileResourceQuestion(props) {
     </Question>);
 }
 
-FileResourceQuestion.propTypes = {
+FileQuestion.propTypes = {
   classes: PropTypes.object.isRequired,
   questionDefinition: PropTypes.shape({
     text: PropTypes.string.isRequired,
@@ -356,11 +356,11 @@ FileResourceQuestion.propTypes = {
   namePattern: PropTypes.string
 };
 
-const StyledFileResourceQuestion = withStyles(QuestionnaireStyle)(FileResourceQuestion)
-export default StyledFileResourceQuestion;
+const StyledFileQuestion = withStyles(QuestionnaireStyle)(FileQuestion)
+export default StyledFileQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
   if (questionDefinition.dataType === "file") {
-    return [StyledFileResourceQuestion, 50];
+    return [StyledFileQuestion, 50];
   }
 });
