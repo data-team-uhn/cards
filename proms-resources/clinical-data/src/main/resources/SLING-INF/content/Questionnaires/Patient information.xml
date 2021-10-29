@@ -37,11 +37,6 @@
 		<value>1</value>
 		<type>Long</type>
 	</property>
-	<property>
-		<name>maxPerSubject</name>
-		<value>1</value>
-		<type>Long</type>
-	</property>
 	<node>
 		<name>last_name</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
@@ -95,6 +90,20 @@
 		</property>
 	</node>
 	<node>
+		<name>sex</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Sex</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+	</node>
+	<node>
 		<name>mrn</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
@@ -114,6 +123,39 @@
 		<property>
 			<name>text</name>
 			<value>Health card number</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+	</node>
+	<node>
+		<name>email_ok</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>The patient consents to being contacted by email</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>boolean</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>email</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Email address</value>
 			<type>String</type>
 		</property>
 		<property>
