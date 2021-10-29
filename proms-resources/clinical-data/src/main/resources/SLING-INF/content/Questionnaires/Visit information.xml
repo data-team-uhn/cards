@@ -103,4 +103,18 @@
 			<type>String</type>
 		</property>
 	</node>
+	<node>
+		<name>fihr_id</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>FIHR id</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+	</node>
 </node>
