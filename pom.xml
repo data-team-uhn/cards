@@ -951,7 +951,7 @@
                   <filesets>
                     <fileset>
                       <directory>sling/</directory>
-                      <directory>launcher/</directory>
+                      <directory>.cards-data/</directory>
                     </fileset>
                   </filesets>
                 </configuration>
