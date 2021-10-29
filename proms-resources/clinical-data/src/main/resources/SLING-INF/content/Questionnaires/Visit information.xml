@@ -62,6 +62,15 @@
 		</property>
 	</node>
 	<node>
+		<name>provider</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Provider</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
 		<name>status</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
