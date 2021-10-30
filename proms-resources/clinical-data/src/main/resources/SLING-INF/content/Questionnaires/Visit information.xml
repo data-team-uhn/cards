@@ -18,17 +18,17 @@
 -->
 
 <node>
-	<name>Patient information</name>
+	<name>Visit information</name>
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
-		<value>Patient information</value>
+		<value>Visit information</value>
 		<type>String</type>
 	</property>
 	<property>
 		<name>requiredSubjectTypes</name>
 		<values>
-			<value>/SubjectTypes/Patient</value>
+			<value>/SubjectTypes/Patient/Visit</value>
 		</values>
 		<type>Reference</type>
 	</property>
@@ -38,39 +38,11 @@
 		<type>Long</type>
 	</property>
 	<node>
-		<name>last_name</name>
+		<name>time</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Last name</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-	</node>
-	<node>
-		<name>first_name</name>
-		<primaryNodeType>cards:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>First name</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-	</node>
-	<node>
-		<name>date_of_birth</name>
-		<primaryNodeType>cards:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>Date of birth</value>
+			<value>Time</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -85,16 +57,25 @@
 		</property>
 		<property>
 			<name>dateFormat</name>
-			<value>yyyy-MM-dd</value>
+			<value>yyyy-MM-dd HH:mm</value>
 			<type>String</type>
 		</property>
 	</node>
 	<node>
-		<name>sex</name>
+		<name>provider</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Sex</value>
+			<value>Provider</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>status</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Status</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -104,11 +85,11 @@
 		</property>
 	</node>
 	<node>
-		<name>mrn</name>
+		<name>surveys</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>MRN</value>
+			<value>Surveys</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -118,45 +99,12 @@
 		</property>
 	</node>
 	<node>
-		<name>health_card</name>
+		<name>surveys_complete</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Health card number</value>
+			<value>The patient completed the pre-appointment surveys</value>
 			<type>String</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-	</node>
-	<node>
-		<name>fihr_id</name>
-		<primaryNodeType>cards:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>FIHR id</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-	</node>
-	<node>
-		<name>email_ok</name>
-		<primaryNodeType>cards:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>The patient consents to being contacted by email</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -165,11 +113,11 @@
 		</property>
 	</node>
 	<node>
-		<name>email</name>
+		<name>fihr_id</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Email address</value>
+			<value>FIHR id</value>
 			<type>String</type>
 		</property>
 		<property>
