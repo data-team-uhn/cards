@@ -150,16 +150,28 @@ class SignIn extends React.Component {
                             }
                           })
                           .then((data) => {
-                            let popupWidth = 600;
-                            let popupHeight = 600;
-                            let screenLeft = window.screenLeft !== undefined ? window.screenLeft : window.screenX;
-                            let screenTop = window.screenTop !== undefined ? window.screenTop : window.screenY;
-                            let screenWidth = window.innerWidth;
-                            let screenHeight = window.innerHeight;
-                            let systemZoom = screenWidth / window.screen.availWidth;
-                            let left = (screenWidth - popupWidth) / 2 / systemZoom + screenLeft;
-                            let top = (screenHeight - popupHeight) / 2 / systemZoom + screenTop;
-                            data && window.open(data.value + "&username=" + this.state.username, "FederatedLoginPopupWindow", "width=" + (popupWidth / systemZoom) + ",height=" + (popupHeight / systemZoom) + ",top=" + top + ",left=" + left);
+                            if (window.location.pathname === "/login" || window.location.pathname === "/login/") {
+                              // We are logging in at a main login screen
+                              window.location = data.value + window.location.search;
+                            } else {
+                              // We are logging in from a fetchWithReLogin() window
+                              let popupWidth = 600;
+                              let popupHeight = 600;
+                              let screenLeft = window.screenLeft !== undefined ? window.screenLeft : window.screenX;
+                              let screenTop = window.screenTop !== undefined ? window.screenTop : window.screenY;
+                              let screenWidth = window.innerWidth;
+                              let screenHeight = window.innerHeight;
+                              let systemZoom = screenWidth / window.screen.availWidth;
+                              let left = (screenWidth - popupWidth) / 2 / systemZoom + screenLeft;
+                              let top = (screenHeight - popupHeight) / 2 / systemZoom + screenTop;
+                              let loginPopup = data && window.open(window.location.origin + "/fetch_requires_saml_login.html", "FederatedLoginPopupWindow", "width=" + (popupWidth / systemZoom) + ",height=" + (popupHeight / systemZoom) + ",top=" + top + ",left=" + left);
+                              let checkLoginTimer = setInterval(() => {
+                                if (loginPopup.closed === true) {
+                                  clearInterval(checkLoginTimer);
+                                  this.props.handleLogin && this.props.handleLogin(true);
+                                }
+                              }, 1000);
+                            }
                           })
                           .catch((err) => this.setState({failedLogin: "Error occurred while handling third-party identity provider"}))
                         } else {
