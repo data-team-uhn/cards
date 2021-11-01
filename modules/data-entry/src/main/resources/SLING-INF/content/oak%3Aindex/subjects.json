@@ -5,6 +5,7 @@
     "async": "async",
     "evaluatePathRestrictions": true,
     "includedPaths": ["/Subjects"],
+    "tags": ["cards"],
     "indexRules" : {
         "jcr:primaryType": "nt:unstructured",
         "cards:Subject" : {
