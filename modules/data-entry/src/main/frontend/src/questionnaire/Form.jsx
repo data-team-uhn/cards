@@ -390,9 +390,9 @@ function Form (props) {
           title={title}
           breadcrumbs={[<Breadcrumbs separator="/">{getHierarchyAsList(data?.subject).map(a => <Typography variant="overline" key={a}>{a}</Typography>)}</Breadcrumbs>]}
           separator=":"
-          action={formMenu}
+          action={!disableButton ? formMenu : null}
           contentOffset={contentOffset}
-
+          mode={mode}
         >
           <FormattedText variant="subtitle1" color="textSecondary">
             {data?.questionnaire?.description}
