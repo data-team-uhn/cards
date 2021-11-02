@@ -116,11 +116,12 @@ const useStyles = makeStyles(theme => ({
  * @param {string} separator - the breadcrumbs separator, defaults to /
  * @param {node} action - a React node specifying a button or menu associated with the
  *   resource and displayed at the right side of the title
+ * @param {string} mode - mode of the header rendering, ex. "print"
  * @param {Array.<node>} children - any other content that will be displayed in the header, under
  *   the title and titleAction line
  */
 function ResourceHeader (props) {
-  let { title, breadcrumbs, separator, action, children } = props;
+  let { title, breadcrumbs, separator, action, mode, children } = props;
 
   const classes = useStyles();
 
@@ -137,20 +138,20 @@ function ResourceHeader (props) {
         <Grid item>
           <Breadcrumbs separator={separator}>
             {Array.from(breadcrumbs || []).map(item => <Typography variant="overline" key={item}>{item}</Typography>)}
-            <Collapse in={fullBreadcrumbTrigger}>
+            <Collapse in={fullBreadcrumbTrigger && mode !== "print"}>
               <Typography variant="subtitle2">{title}</Typography>
             </Collapse>
           </Breadcrumbs>
         </Grid>
-        <Collapse in={!!action &&  fullBreadcrumbTrigger} component={Grid} item>
+        <Collapse in={!!action && fullBreadcrumbTrigger} component={Grid} item>
           <div className={classes.breadcrumbAction}>{action}</div>
         </Collapse>
       </Grid>
-      <Collapse in={fullBreadcrumbTrigger}>
+      <Collapse in={fullBreadcrumbTrigger && mode !== "print"}>
         <hr className={classes.headerSeparator} />
       </Collapse>
     </Grid>
-    <Collapse in={!(fullBreadcrumbTrigger)}
+    <Collapse in={!(fullBreadcrumbTrigger) || mode === "print"}
       component={Grid} item xs={12} className={classes.resourceTitle}>
         <Grid container direction="row" justify="space-between" alignItems="center">
           <Grid item>
@@ -171,6 +172,7 @@ ResourceHeader.propTypes = {
     PropTypes.node
   ]),
   separator: PropTypes.string,
+  mode: PropTypes.string,
   action: PropTypes.node,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),

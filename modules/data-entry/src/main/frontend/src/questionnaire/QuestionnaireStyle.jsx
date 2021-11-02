@@ -280,6 +280,9 @@ const questionnaireStyle = theme => ({
       "& .MuiTabs-indicator": {
         background: "orange",
       },
+      "@media print" : {
+        display: "none",
+      },
     },
     timelineContainer: {
         alignItems: "center",
@@ -664,6 +667,22 @@ const questionnaireStyle = theme => ({
       flexBasis: "100%",
       paddingLeft: theme.spacing(4)
     },
+    subjectCheckbox: {
+      margin: theme.spacing(-2,0),
+      width: theme.spacing(0),
+    },
+    subjectFiltersHeader: {
+      marginTop: theme.spacing(1),
+      marginLeft: theme.spacing(2)
+    },
+    subjectSelect: {
+      margin: theme.spacing(-2,0),
+    },
+    subjectFormsContainer: {
+      "@media print" : {
+        display: "none",
+      },
+    }
 });
 
 export default questionnaireStyle;

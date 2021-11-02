@@ -38,6 +38,9 @@ const style = theme => ({
     "& .MuiFab-extended .MuiFab-label" : {
       marginRight: theme.spacing(1),
     },
+    "@media print" : {
+      display: "none",
+    },
   },
   userInputAssistant: {
     "& .MuiCard-root" : {
