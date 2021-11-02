@@ -504,6 +504,11 @@ const questionnaireStyle = theme => ({
             display: "none",
         },
     },
+    actionsDropdown: {
+        "@media print" : {
+            display: "none",
+        },
+    },
     actionsMenuItem: {
         padding: theme.spacing(0,1),
         "& .MuiButtonBase-root" : {

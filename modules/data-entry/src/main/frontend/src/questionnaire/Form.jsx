@@ -352,6 +352,7 @@ function Form (props) {
                         vertical: 'top',
                         horizontal: 'right',
                     }}
+                    className={classes.actionsDropdown}
                 >
                   <List>
                     { isEdit &&
