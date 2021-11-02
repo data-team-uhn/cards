@@ -521,13 +521,21 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                 // Update the source name in the filter, e.g. "childf1_1"
                 filter.source = filterType.sourcePrefix + questionnairesToFormSource.get(questionnaire) + "_" + fcount;
                 // Update the source node type in the filter, e.g. "cards:BooleanAnswer"
-                filter.nodeType = getAnswerNodeType(filter.type);
+                filter.nodeType = getAnswerNodeType(filter, session);
             }
         }
     }
 
-    private String getAnswerNodeType(final String valueType)
+    private String getAnswerNodeType(final Filter filter, final Session session)
     {
+        String valueType = filter.type;
+        if (StringUtils.isBlank(valueType)) {
+            try {
+                valueType = session.getNodeByIdentifier(filter.name).getProperty("dataType").getString();
+            } catch (RepositoryException e) {
+                LOGGER.warn("{}", e.getMessage(), e);
+            }
+        }
         return StringUtils.isBlank(valueType) ? "cards:Answer"
             : "cards:" + valueType.substring(0, 1).toUpperCase(Locale.ROOT) + valueType.substring(1)
                 + "Answer";
