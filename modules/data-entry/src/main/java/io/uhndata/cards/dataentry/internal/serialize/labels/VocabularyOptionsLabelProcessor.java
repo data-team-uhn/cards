@@ -36,7 +36,7 @@ import org.osgi.service.component.annotations.Component;
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 
 /**
- * Class with shared processor functionality to get the human-readable question answer options.
+ * Adds a label to Answer Option nodes in a questionnaire's JSON.
  *
  * @version $Id$
  */
@@ -49,7 +49,7 @@ public class VocabularyOptionsLabelProcessor extends SimpleAnswerLabelProcessor 
         try {
             if (node.isNodeType("cards:AnswerOption")
                 && "vocabulary".equals(node.getParent().getProperty("dataType").getString())
-                && !node.hasProperty("label")) {
+                && !node.hasProperty(PROP_LABEL)) {
                 json.add(PROP_LABEL, getAnswerLabel(node));
             }
         } catch (RepositoryException e) {
@@ -80,8 +80,8 @@ public class VocabularyOptionsLabelProcessor extends SimpleAnswerLabelProcessor 
             for (String value : new LinkedHashSet<>(propsMap.keySet())) {
                 if (value.startsWith("/Vocabularies/") && node.getSession().nodeExists(value)) {
                     Node term = node.getSession().getNode(value);
-                    if (term.hasProperty("label")) {
-                        String label = term.getProperty("label").getValue().toString();
+                    if (term.hasProperty(PROP_LABEL)) {
+                        String label = term.getProperty(PROP_LABEL).getValue().toString();
                         propsMap.put(value, label);
                     }
                 }
