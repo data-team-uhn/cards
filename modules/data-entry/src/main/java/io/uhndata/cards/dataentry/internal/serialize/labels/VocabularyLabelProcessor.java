@@ -55,6 +55,12 @@ public class VocabularyLabelProcessor extends AnswerOptionsLabelProcessor implem
     }
 
     @Override
+    public int getPriority()
+    {
+        return 90;
+    }
+
+    @Override
     public JsonValue getAnswerLabel(final Node node, final Node question)
     {
         try {
