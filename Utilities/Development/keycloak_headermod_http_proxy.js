@@ -44,7 +44,10 @@ server.on('request', (s_req, s_res) => {
 			newHeaders.location.startsWith(KEYCLOAK_ENDPOINT + "?SAMLRequest=")
 			&& s_req.url !== "/fetch_requires_saml_login.html") {
 			newHeaders.location = newHeaders.location.replace(KEYCLOAK_ENDPOINT, "http://localhost:" + SERVER_PORT + "/login");
-		}      
+		} else if (c_res.statusCode == 302 &&
+			(s_req.url === "/system/sling/logout" || s_req.url === "/system/console/logout")) {
+			newHeaders['Set-Cookie'] = "sling.formauth=; Path=/; Expires=Thu, 01-Jan-1970 00:00:00 GMT; Max-Age=0; HttpOnly";
+		}
 		s_res.writeHead(c_res.statusCode, newHeaders);
 		c_res.pipe(s_res, {end: true});
 	});
