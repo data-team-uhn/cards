@@ -55,6 +55,12 @@ public class VocabularyLabelProcessor extends AnswerOptionsLabelProcessor implem
     }
 
     @Override
+    public int getPriority()
+    {
+        return 90;
+    }
+
+    @Override
     public JsonValue getAnswerLabel(final Node node, final Node question)
     {
         try {
@@ -74,6 +80,7 @@ public class VocabularyLabelProcessor extends AnswerOptionsLabelProcessor implem
             }
 
             processVocabularyLabels(node, question, propsMap);
+
             super.processOptions(question, propsMap);
 
             if (propsMap.size() == 1) {
@@ -93,7 +100,7 @@ public class VocabularyLabelProcessor extends AnswerOptionsLabelProcessor implem
         for (String value : propsMap.keySet()) {
             if (value.startsWith("/Vocabularies/") && node.getSession().nodeExists(value)) {
                 Node term = node.getSession().getNode(value);
-                String label = term.getProperty("label").getValue().toString();
+                String label = term.getProperty(PROP_LABEL).getValue().toString();
                 if (label != null) {
                     propsMap.put(value, label);
                 }

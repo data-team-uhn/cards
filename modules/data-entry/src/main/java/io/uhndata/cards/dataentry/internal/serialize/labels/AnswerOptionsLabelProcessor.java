@@ -57,6 +57,7 @@ public class AnswerOptionsLabelProcessor extends SimpleAnswerLabelProcessor impl
 
     /**
      * Returns true if the input node has an answer option.
+     *
      * @param question a question Node object to check
      * @return True if there is at least one answer option
      */
