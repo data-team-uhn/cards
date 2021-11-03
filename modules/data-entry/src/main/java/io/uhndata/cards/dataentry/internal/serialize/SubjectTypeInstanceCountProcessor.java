@@ -18,12 +18,13 @@
  */
 package io.uhndata.cards.dataentry.internal.serialize;
 
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
+import javax.jcr.query.RowIterator;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
@@ -33,21 +34,23 @@ import org.osgi.service.component.annotations.Component;
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 
 /**
- * Adds number of corresponding subjects to the subject type json.
- * {@code simple}.
+ * Adds number of corresponding subjects to the subject type json. The name of this processor is {@code instanceCount},
+ * and it is enabled by default.
  *
  * @version $Id$
  */
 @Component(immediate = true)
 public class SubjectTypeInstanceCountProcessor implements ResourceJsonProcessor
 {
+    private static final String NAME = "instanceCount";
+
     /** An original resource path. */
     private ThreadLocal<String> originalPath = new ThreadLocal<>();
 
     @Override
     public String getName()
     {
-        return "instanceCount";
+        return NAME;
     }
 
     @Override
@@ -85,8 +88,16 @@ public class SubjectTypeInstanceCountProcessor implements ResourceJsonProcessor
             }
             Query queryObj = node.getSession().getWorkspace().getQueryManager().createQuery(generateDataQuery(node),
                 "JCR-SQL2");
-            NodeIterator nodeResult = queryObj.execute().getNodes();
-            json.add("instanceCount", nodeResult.getSize());
+            RowIterator queryResult = queryObj.execute().getRows();
+            long count = queryResult.getSize();
+            if (count < 0) {
+                // Getting the count directly fails for some index types, so we have to manually count the number of
+                // items returned.
+                AtomicLong atomicCount = new AtomicLong();
+                queryResult.forEachRemaining(i -> atomicCount.incrementAndGet());
+                count = atomicCount.get();
+            }
+            json.add(NAME, count);
         } catch (RepositoryException e) {
             // Really shouldn't happen
         }
