@@ -5,6 +5,7 @@
     "async": "async",
     "evaluatePathRestrictions": true,
     "includedPaths": ["/Forms"],
+    "tags": ["cards"],
     "indexRules" : {
         "jcr:primaryType": "nt:unstructured",
         "cards:BooleanAnswer": {

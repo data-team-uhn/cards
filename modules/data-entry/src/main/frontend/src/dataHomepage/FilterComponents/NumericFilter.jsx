@@ -71,7 +71,7 @@ const StyledNumericFilter = withStyles(QuestionnaireStyle)(NumericFilter)
 export default StyledNumericFilter;
 
 FilterComponentManager.registerFilterComponent((questionDefinition) => {
-  if (questionDefinition.dataType == 'decimal' || questionDefinition.dataType == 'long') {
+  if (questionDefinition.dataType == 'decimal' || questionDefinition.dataType == 'double' || questionDefinition.dataType == 'long') {
     return [COMPARATORS, StyledNumericFilter, 50];
   }
 });
