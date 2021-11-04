@@ -16,12 +16,12 @@
 # under the License.
 
 # Start from a small JRE8 base image
-FROM openjdk:8-jre-alpine
+FROM alpine:3.14
 
 # Install utilities for patching the JAR file, if such is necessary
+RUN apk update
 RUN apk add \
-  unzip \
-  zip \
+  openjdk8-jre \
   tzdata
 
 # Specify the version
