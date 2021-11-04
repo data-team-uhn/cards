@@ -31,16 +31,67 @@ STORAGE=tar
 #If (inside a docker-compose environment), we are supposed to wait for http://cardsinitial:8080/ to start
 [ -z $WAIT_FOR_CARDSINIT ] || (while true; do (wget -S --spider http://cardsinitial:8080/ 2>&1 | grep 'HTTP/1.1 200 OK') && break; sleep 10; done)
 
+PERMISSIONS="open"
+
 PROJECT_ARTIFACTID=$1
 PROJECT_VERSION=$2
+
+#Parse the (legacy) ADDITIONAL_RUN_MODES environment variable and determine the features that need to be enabled
+featureFlagString=""
+legacyRunModes=$(echo $ADDITIONAL_RUN_MODES | tr "," "\n")
+for legacyRunMode in $legacyRunModes
+do
+  #Perform the translation
+  if [[ ${legacyRunMode} == 'oak_tar' ]]
+  then
+    STORAGE=tar
+  elif [[ ${legacyRunMode} == 'oak_mongo' ]]
+  then
+    STORAGE=mongo
+  elif [[ ${legacyRunMode} == 'dev' ]]
+  then
+    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards/${CARDS_VERSION}/slingosgifeature/composum"
+  elif [[ ${legacyRunMode} == 'cardiac_rehab' ]]
+  then
+    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4care/${CARDS_VERSION}/slingosgifeature"
+  elif [[ ${legacyRunMode} == 'kids' ]]
+  then
+    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4kids/${CARDS_VERSION}/slingosgifeature"
+  elif [[ ${legacyRunMode} == 'lfs' ]]
+  then
+    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4lfs/${CARDS_VERSION}/slingosgifeature"
+  elif [[ ${legacyRunMode} == 'proms' ]]
+  then
+    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4proms/${CARDS_VERSION}/slingosgifeature"
+  elif [[ ${legacyRunMode} == 'test' ]]
+  then
+    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-modules-test-forms/${CARDS_VERSION}/slingosgifeature"
+  elif [[ ${legacyRunMode} == 'demo' ]]
+  then
+    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-modules-demo-banner/${CARDS_VERSION}/slingosgifeature,"
+    featureFlagString="${featureFlagString}mvn:io.uhndata.cards/cards-modules-upgrade-marker/${CARDS_VERSION}/slingosgifeature,"
+    featureFlagString="${featureFlagString}mvn:io.uhndata.cards/cards-dataentry/${CARDS_VERSION}/slingosgifeature/forms_demo"
+  elif [[ ${legacyRunMode} == 'permissions_open' ]]
+  then
+    PERMISSIONS="open"
+  elif [[ ${legacyRunMode} == 'permissions_trusted' ]]
+  then
+    PERMISSIONS="trusted"
+  elif [[ ${legacyRunMode} == 'permissions_ownership' ]]
+  then
+    PERMISSIONS="ownership"
+  fi
+done
 
 echo "STORAGE = $STORAGE"
 echo "DEV = $DEV"
 echo "DEBUG = $DEBUG"
+echo "PERMISSIONS = $PERMISSIONS"
+echo "ADDITIONAL_RUN_MODES = $ADDITIONAL_RUN_MODES"
 echo "PROJECT_ARTIFACTID = $PROJECT_ARTIFACTID"
 echo "PROJECT_VERSION = $PROJECT_VERSION"
 
 #Execute the volume_mounted_init.sh script if it is present
 [ -e /volume_mounted_init.sh ] && /volume_mounted_init.sh
 
-java -Djdk.xml.entityExpansionLimit=0 ${DEBUG:+ -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005} -jar org.apache.sling.feature.launcher.jar -f ./${PROJECT_ARTIFACTID}-${PROJECT_VERSION}-core_${STORAGE}_far.far
+java -Djdk.xml.entityExpansionLimit=0 ${DEBUG:+ -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005} -jar org.apache.sling.feature.launcher.jar -f ./${PROJECT_ARTIFACTID}-${PROJECT_VERSION}-core_${STORAGE}_far.far -f mvn:io.uhndata.cards/cards-dataentry/${CARDS_VERSION}/slingosgifeature/permissions_${PERMISSIONS}${featureFlagString}
