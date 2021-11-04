@@ -36,7 +36,6 @@ PERMISSIONS="${PERMISSIONS:-open}"
 PROJECT_ARTIFACTID=$1
 PROJECT_VERSION=$2
 
-#Parse the (legacy) ADDITIONAL_RUN_MODES environment variable and determine the features that need to be enabled
 featureFlagString=""
 if [[ "${CARDS_PROJECT}" == 'cards4care' ]]
 then
@@ -52,6 +51,7 @@ then
   featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4proms/${CARDS_VERSION}/slingosgifeature"
 fi
 
+#Parse the (legacy) ADDITIONAL_RUN_MODES environment variable and determine the features that need to be enabled
 legacyRunModes=$(echo $ADDITIONAL_RUN_MODES | tr "," "\n")
 for legacyRunMode in $legacyRunModes
 do
