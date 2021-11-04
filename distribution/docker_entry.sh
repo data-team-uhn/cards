@@ -56,6 +56,11 @@ then
   featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards/${CARDS_VERSION}/slingosgifeature/composum"
 fi
 
+if [ ! -z $ADDITIONAL_SLING_FEATURES ]
+then
+  featureFlagString="$featureFlagString -f $ADDITIONAL_SLING_FEATURES"
+fi
+
 #Parse the (legacy) ADDITIONAL_RUN_MODES environment variable and determine the features that need to be enabled
 legacyRunModes=$(echo $ADDITIONAL_RUN_MODES | tr "," "\n")
 for legacyRunMode in $legacyRunModes
@@ -107,6 +112,7 @@ echo "DEV = $DEV"
 echo "DEBUG = $DEBUG"
 echo "PERMISSIONS = $PERMISSIONS"
 echo "ADDITIONAL_RUN_MODES = $ADDITIONAL_RUN_MODES"
+echo "ADDITIONAL_SLING_FEATURES = $ADDITIONAL_SLING_FEATURES"
 echo "PROJECT_ARTIFACTID = $PROJECT_ARTIFACTID"
 echo "PROJECT_VERSION = $PROJECT_VERSION"
 
