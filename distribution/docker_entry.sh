@@ -51,6 +51,11 @@ then
   featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4proms/${CARDS_VERSION}/slingosgifeature"
 fi
 
+if [ ! -z $DEV ]
+then
+  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards/${CARDS_VERSION}/slingosgifeature/composum"
+fi
+
 #Parse the (legacy) ADDITIONAL_RUN_MODES environment variable and determine the features that need to be enabled
 legacyRunModes=$(echo $ADDITIONAL_RUN_MODES | tr "," "\n")
 for legacyRunMode in $legacyRunModes
