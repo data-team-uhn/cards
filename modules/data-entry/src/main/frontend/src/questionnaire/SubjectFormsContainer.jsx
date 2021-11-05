@@ -82,7 +82,7 @@ function SubjectFormsContainer(props) {
     subjects.map(subj => {
       setDescendantSubjectsByType(old => {
         var _new = {...old};
-        var contains = _new[subj.type.label] ? _new[subj.type.label].find(el => el["jcr:uid"] == subj["jcr:uid"]) : null;
+        var contains = _new[subj.type.label] ? _new[subj.type.label].find(el => el["jcr:uuid"] == subj["jcr:uuid"]) : null;
         !contains && (_new[subj.type.label]?.push(subj) || (_new[subj.type.label] = [subj]));
         return _new;
       });
@@ -326,7 +326,7 @@ function SubjectFormMemberInternal (props) {
     <>
       { subjectGroups && Object.keys(subjectGroups).length > 0 &&
         Object.keys(subjectGroups).map( (questionnaireTitle, j) => (
-            <Grid item key={questionnaireTitle}>
+            <Grid item key={questionnaireTitle} className={classes.subjectForm}>
               { subjectGroups[questionnaireTitle].map(form => (
                   <Form id={form["@name"]} key={form["@name"]} disableButton mode="print"/>
               ))}

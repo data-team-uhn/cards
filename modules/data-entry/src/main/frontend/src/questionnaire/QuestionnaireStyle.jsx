@@ -682,6 +682,11 @@ const questionnaireStyle = theme => ({
       "@media print" : {
         display: "none",
       },
+    },
+    subjectForm: {
+      "@media print" : {
+        marginTop: theme.spacing(2)
+      },
     }
 });
 
