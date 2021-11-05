@@ -520,6 +520,8 @@
             <exclude>compose-cluster/shard*/**</exclude>
             <exclude>compose-cluster/secrets/**</exclude>
             <exclude>compose-cluster/SSL_CONFIG/**</exclude>
+            <!-- Ignore the local clone of the source code used for the Docker container build -->
+            <exclude>**/COMPLETE_SOURCE_CODE/**</exclude>
             <!-- Ignore data/template files used for generating UI Extensions / ExtensionPoints -->
             <exclude>Utilities/Development/ExtensionPointResources/**</exclude>
           </excludes>

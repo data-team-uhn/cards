@@ -15,7 +15,30 @@
 # specific language governing permissions and limitations
 # under the License.
 
-# Start from a small JRE8 base image
+# Use Docker multi-stage building so that the production image may be
+# slim yet still be self-contained with all the necessary dependency
+# JARs
+
+# Build Image
+FROM alpine:3.14
+
+RUN apk update
+RUN apk add \
+  openjdk8 \
+  maven \
+  python3 \
+  gcompat
+
+RUN ln -s /usr/bin/python3 /usr/bin/python
+
+# Copy in the source code
+COPY COMPLETE_SOURCE_CODE /cards
+
+# Build so that we can gather all dependency JARs
+WORKDIR /cards
+RUN mvn clean install
+
+# Production Image: Start from a small Alpine Linux base image
 FROM alpine:3.14
 
 # Install utilities for patching the JAR file, if such is necessary
@@ -51,6 +74,9 @@ EXPOSE 8080
 # EXPOSE is just an indication, no port is actually published unless done explicitly when starting the container,
 # so it is safe to always declare it here, even when debug mode isn't active
 EXPOSE 5005
+
+# Copy in the dependency JARs
+COPY --from=0 /root/.m2 /root/.m2
 
 # This is the default command executed when starting the container
 COPY docker_entry.sh /docker_entry.sh
