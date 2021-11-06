@@ -22,6 +22,8 @@
 # Build Image
 FROM alpine:3.14
 
+ARG build_jars
+
 RUN apk update
 RUN apk add \
   openjdk8 \
@@ -36,7 +38,7 @@ COPY COMPLETE_SOURCE_CODE /cards
 
 # Build so that we can gather all dependency JARs
 WORKDIR /cards
-RUN mvn clean install
+RUN if [[ -z "$build_jars" ]] ; then mkdir /root/.m2 ; else mvn clean install ; fi
 
 # Production Image: Start from a small Alpine Linux base image
 FROM alpine:3.14

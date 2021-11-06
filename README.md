@@ -12,6 +12,9 @@
 ## Build:
 `mvn clean install`
 
+#### To build a self-contained Docker image:
+`MAVEN_OPTS="-Ddocker.verbose -Ddocker.buildArg.build_jars=true" mvn clean install`
+
 Additional options include:
 
 `mvn clean -Pclean-node` to remove compiled frontend code
