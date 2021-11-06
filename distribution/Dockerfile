@@ -24,21 +24,16 @@ FROM alpine:3.14
 
 ARG build_jars
 
-RUN apk update
-RUN apk add \
-  openjdk8 \
-  maven \
-  python3 \
-  gcompat
-
-RUN ln -s /usr/bin/python3 /usr/bin/python
+# Copy in the make_filled_m2.sh script and make it executable
+COPY make_filled_m2.sh /
+RUN chmod +x /make_filled_m2.sh
 
 # Copy in the source code
 COPY COMPLETE_SOURCE_CODE /cards
 
-# Build so that we can gather all dependency JARs
+# Build so that we can gather all dependency JARs, if docker.buildArg.build_jars=true
 WORKDIR /cards
-RUN if [[ -z "$build_jars" ]] ; then mkdir /root/.m2 ; else mvn clean install ; fi
+RUN if [[ -z "$build_jars" ]] ; then mkdir /root/.m2 ; else /make_filled_m2.sh ; fi
 
 # Production Image: Start from a small Alpine Linux base image
 FROM alpine:3.14
