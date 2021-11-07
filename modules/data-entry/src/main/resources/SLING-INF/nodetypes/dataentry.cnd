@@ -263,6 +263,19 @@
   + * (cards:VocabularyFilterGroup) = cards:VocabularyFilterGroup
 
 //-----------------------------------------------------------------------------
+// Description for the Questionnaire entry type: Question matrix
+[cards:QuestionMatrix] > cards:Question
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/QuestionMatrix" mandatory autocreated protected
+
+  // Hardcode the resource supertype.
+  - sling:resourceSuperType (STRING) = "cards:Question" mandatory autocreated protected
+
+  // the list of (sub-)questions (representing a row in the matrix)
+  + * (cards:Question) = cards:Question
+
+//-----------------------------------------------------------------------------
 // An informative formatted text (markdown) displayed in edit mode to guide
 // the user through filling out a form.
 [cards:Information] > sling:Folder, mix:referenceable
