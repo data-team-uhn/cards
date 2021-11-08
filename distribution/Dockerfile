@@ -54,16 +54,16 @@ ENV DEBUG=
 ENV DEV=
 
 # Put everything in /opt/cards
-RUN mkdir -p /opt/cards/launcher/
+RUN mkdir -p /opt/cards/.cards-data/
 WORKDIR /opt/cards/
 COPY target/dependency/org.apache.sling.feature.launcher.jar .
 COPY target/${project.artifactId}-${project.version}-core_mongo_far.far .
 COPY target/${project.artifactId}-${project.version}-core_tar_far.far .
-COPY logback.xml ./launcher/
+COPY logback.xml ./.cards-data/
 
 # This is where Sling stores its data
 # Make this a volume which can be persisted between different container versions
-VOLUME ["/opt/cards/launcher"]
+VOLUME ["/opt/cards/.cards-data"]
 
 # Expose the 8080 port where normal HTTP connections are expected
 EXPOSE 8080

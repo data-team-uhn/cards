@@ -233,7 +233,7 @@ try:
 except FileExistsError:
     print("Warning: SLING directory exists - will leave unmodified.")
 
-yaml_obj['services']['cardsinitial']['volumes'] = ["./SLING:/opt/cards/sling"]
+yaml_obj['services']['cardsinitial']['volumes'] = ["./SLING:/opt/cards/.cards-data"]
 
 if args.custom_env_file:
     yaml_obj['services']['cardsinitial']['env_file'] = args.custom_env_file
