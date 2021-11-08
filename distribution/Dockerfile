@@ -33,7 +33,7 @@ ADD COMPLETE_SOURCE_CODE.tar /cards
 
 # Build so that we can gather all dependency JARs, if docker.buildArg.build_jars=true
 WORKDIR /cards
-RUN if [[ -z "$build_jars" ]] ; then mkdir /root/.m2 ; else /make_filled_m2.sh ; fi
+RUN if [[ "$build_jars" == "true" ]] ; then /make_filled_m2.sh ; else mkdir /root/.m2 ; fi
 
 # Production Image: Start from a small Alpine Linux base image
 FROM alpine:3.14
