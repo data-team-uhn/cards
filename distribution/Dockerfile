@@ -29,7 +29,7 @@ COPY make_filled_m2.sh /
 RUN chmod +x /make_filled_m2.sh
 
 # Copy in the source code
-COPY COMPLETE_SOURCE_CODE /cards
+ADD COMPLETE_SOURCE_CODE.tar /cards
 
 # Build so that we can gather all dependency JARs, if docker.buildArg.build_jars=true
 WORKDIR /cards

@@ -37,6 +37,24 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <inherited>false</inherited>
+        <executions>
+          <execution>
+            <configuration>
+              <executable>./complete_git_copy.sh</executable>
+              <workingDirectory>.</workingDirectory>
+            </configuration>
+            <id>complete-git-copy</id>
+            <phase>initialize</phase>
+            <goals>
+               <goal>exec</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.apache.sling</groupId>
         <artifactId>slingfeature-maven-plugin</artifactId>
         <configuration>
