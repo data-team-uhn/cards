@@ -116,7 +116,24 @@ echo "ADDITIONAL_SLING_FEATURES = $ADDITIONAL_SLING_FEATURES"
 echo "PROJECT_ARTIFACTID = $PROJECT_ARTIFACTID"
 echo "PROJECT_VERSION = $PROJECT_VERSION"
 
+#Are we using an external MongoDB service for data storage?
+EXT_MONGO_VARIABLES=""
+if [ ! -z $EXTERNAL_MONGO_ADDRESS ]
+then
+  EXT_MONGO_HOSTNAME=$(echo $EXTERNAL_MONGO_ADDRESS:27017 | cut -d ':' -f1)
+  EXT_MONGO_PORT=$(echo $EXTERNAL_MONGO_ADDRESS:27017 | cut -d ':' -f2)
+  if [ ! -z $MONGO_AUTH ]
+  then
+    EXT_MONGO_VARIABLES="$EXT_MONGO_VARIABLES -V mongo.auth=${MONGO_AUTH}@"
+  fi
+  if [ ! -z $CUSTOM_MONGO_DB_NAME ]
+  then
+    EXT_MONGO_VARIABLES="$EXT_MONGO_VARIABLES -V mongo.db=$CUSTOM_MONGO_DB_NAME"
+  fi
+  EXT_MONGO_VARIABLES="$EXT_MONGO_VARIABLES -V mongo.host=$EXT_MONGO_HOSTNAME -V mongo.port=$EXT_MONGO_PORT"
+fi
+
 #Execute the volume_mounted_init.sh script if it is present
 [ -e /volume_mounted_init.sh ] && /volume_mounted_init.sh
 
-java -Djdk.xml.entityExpansionLimit=0 ${DEBUG:+ -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005} -jar org.apache.sling.feature.launcher.jar -p .cards-data -f ./${PROJECT_ARTIFACTID}-${PROJECT_VERSION}-core_${STORAGE}_far.far -f mvn:io.uhndata.cards/cards-dataentry/${CARDS_VERSION}/slingosgifeature/permissions_${PERMISSIONS}${featureFlagString}
+java -Djdk.xml.entityExpansionLimit=0 ${DEBUG:+ -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005} -jar org.apache.sling.feature.launcher.jar -p .cards-data -f ./${PROJECT_ARTIFACTID}-${PROJECT_VERSION}-core_${STORAGE}_far.far${EXT_MONGO_VARIABLES} -f mvn:io.uhndata.cards/cards-dataentry/${CARDS_VERSION}/slingosgifeature/permissions_${PERMISSIONS}${featureFlagString}
