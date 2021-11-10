@@ -32,6 +32,7 @@ argparser.add_argument('--replicas', help='Number of MongoDB replicas per shard 
 argparser.add_argument('--config_replicas', help='Number of MongoDB cluster configuration servers (must be an odd number)', default=3, type=int)
 argparser.add_argument('--custom_env_file', help='Enable a custom file with environment variables')
 argparser.add_argument('--cards_project', help='The CARDS project to deploy (eg. cards4care, cards4lfs, etc...')
+argparser.add_argument('--composum', help='Enable Composum for the CARDS admin account', action='store_true')
 argparser.add_argument('--enable_ncr', help='Add a Neural Concept Recognizer service to the cluster', action='store_true')
 argparser.add_argument('--oak_filesystem', help='Use the filesystem (instead of MongoDB) as the back-end for Oak/JCR', action='store_true')
 argparser.add_argument('--external_mongo', help='Use an external MongoDB instance instead of providing our own', action='store_true')
@@ -255,6 +256,9 @@ if args.sling_admin_port:
 
 if args.cards_project:
   yaml_obj['services']['cardsinitial']['environment'].append("CARDS_PROJECT={}".format(args.cards_project))
+
+if args.composum:
+    yaml_obj['services']['cardsinitial']['environment'].append("DEV=true")
 
 if args.saml:
     yaml_obj['services']['cardsinitial']['environment'].append("SAML_AUTH_ENABLED=true")
