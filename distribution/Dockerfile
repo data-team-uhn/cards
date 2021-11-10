@@ -41,7 +41,7 @@ FROM alpine:3.14
 # Install utilities for patching the JAR file, if such is necessary
 RUN apk update
 RUN apk add \
-  openjdk8-jre \
+  openjdk11-jre \
   tzdata
 
 # Specify the version
