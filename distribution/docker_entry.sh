@@ -147,6 +147,12 @@ then
   EXT_MONGO_VARIABLES="$EXT_MONGO_VARIABLES -V mongo.host=$EXT_MONGO_HOSTNAME -V mongo.port=$EXT_MONGO_PORT"
 fi
 
+#Should the SAML OSGi bundle be enabled?
+if [[ "$SAML_AUTH_ENABLED" == "true" ]]
+then
+  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-saml-support/${CARDS_VERSION}/slingosgifeature/base -C io.dropwizard.metrics:metrics-core:ALL"
+fi
+
 #Execute the volume_mounted_init.sh script if it is present
 [ -e /volume_mounted_init.sh ] && /volume_mounted_init.sh
 
