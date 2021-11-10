@@ -261,6 +261,7 @@ if args.cards_project:
 
 if args.saml:
     yaml_obj['services']['cardsinitial']['environment'].append("SAML_AUTH_ENABLED=true")
+    yaml_obj['services']['cardsinitial']['volumes'].append("./samlKeystore.p12:/opt/cards/samlKeystore.p12:ro")
 
 #Configure the NCR container (if enabled) - only one for now
 if ENABLE_NCR:
