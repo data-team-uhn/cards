@@ -17,16 +17,19 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 import { InputAdornment, TextField, Typography, withStyles } from "@material-ui/core";
 
 import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
+import DateQuestionUtilities from "./DateQuestionUtilities";
 import Question from "./Question";
+import {Time} from "./TimeQuestion";
 import FormattedText from "../components/FormattedText";
 import QuestionnaireStyle from './QuestionnaireStyle';
 import { useFormReaderContext } from "./FormContext";
+import { MakeRequest } from "../vocabQuery/util.jsx";
 
 
 // Component that renders a computed value as a question field
@@ -47,19 +50,24 @@ import { useFormReaderContext } from "./FormContext";
 //  expression="if (@{question_b} === 0) setError('Can not divide by 0'); return @{question_a}/@{question_b}"
 //  />
 let ComputedQuestion = (props) => {
-  const { existingAnswer, classes, ...rest} = props;
-  const { text, expression, unitOfMeasurement, displayMode } = {...props.questionDefinition, ...props};
+  const { existingAnswer, classes, questionDefinition, ...rest} = props;
+  const { text, expression, unitOfMeasurement, dataType, displayMode, dateFormat, yesLabel, noLabel, unknownLabel } = {...props.questionDefinition, ...props};
   const [error, changeError] = useState(false);
   const [errorMessage, changeErrorMessage] = useState(false);
 
   let initialValue = existingAnswer?.[1].value || "";
-  const [value, changeValue] = useState(initialValue);
+  const [displayValue, changeDisplayValue] = useState(initialValue);
+  const [baseValue, changeBaseValue] = useState(initialValue);
   const [answer, changeAnswer] = useState(initialValue === "" ? [] : [["value", initialValue]]);
+  const [fieldType, changeFieldType] = useState("string")
+  const [muiInputProps, changeMuiInputProps] = useState({});
+  const [isFormatted, changeIsFormatted] = useState(false);
 
   const form = useFormReaderContext();
   const startTag = "@{";
   const endTag = "}";
   const defaultTag = ":-";
+  const booleanDefaultLabels = {"0": "No", "1": "Yes", "-1": "Unknown"}
 
   let setError = (input) => {
     if (error !== input) changeError(input);
@@ -67,10 +75,61 @@ let ComputedQuestion = (props) => {
   let setErrorMessage = (input) => {
     if (errorMessage !== input) changeErrorMessage(input);
   }
+
   let setValue = (input) => {
-    if (value !== input) {
-      changeValue(input);
+    if (input === baseValue) {
+      //Do nothing
+      return;
+    }
+    changeBaseValue(input);
+    let newDisplayedValue = input;
+    // let newAnswer = input;
+    if (dataType === "boolean") {
+      switch (input) {
+        case 1:
+          newDisplayedValue = typeof(yesLabel) === "undefined" ? booleanDefaultLabels["1"] : yesLabel;
+          break;
+        case 0:
+          newDisplayedValue = typeof(noLabel) === "undefined" ? booleanDefaultLabels["0"] : noLabel;
+          break;
+        case -1:
+          newDisplayedValue = typeof(unknownLabel) === "undefined" ? booleanDefaultLabels["-1"] : unknownLabel;
+          break;
+        default:
+          // Default to blank
+          break;
+      }
+    } else if (dataType === "date") {
+      let dateType = DateQuestionUtilities.getDateType(dateFormat);
+      if (dateType === DateQuestionUtilities.MONTH_DATE_TYPE) {
+        newDisplayedValue = DateQuestionUtilities.formatDateAnswer(dateFormat, DateQuestionUtilities.stripTimeZone(newDisplayedValue));
+      } else if (dateType === DateQuestionUtilities.DATETIME_TYPE || dateType === DateQuestionUtilities.FULL_DATE_TYPE) {
+        newDisplayedValue = typeof(newDisplayedValue) === "string" && newDisplayedValue.length > 0
+          ? DateQuestionUtilities.momentToString(DateQuestionUtilities.amendMoment(DateQuestionUtilities.stripTimeZone(newDisplayedValue || ""), dateFormat), dateType)
+          : "";
+      }
+    } else if (dataType === "vocabulary") {
+      var url = new URL("." + newDisplayedValue + ".info.json", window.location.origin);
+      let showInfo = (status, data, params) => {
+        if (status === null && data) {
+          console.log("Setting value to " + data["label"]);
+          changeDisplayValue(data["label"]);
+        } else {
+          setError(true);
+          setErrorMessage(`Error searching vocabulary term. Using value as shown.`);
+        }
+      }
+      MakeRequest(url, showInfo);
+    }
+    if (displayValue !== newDisplayedValue) {
+      changeDisplayValue(newDisplayedValue);
       changeAnswer([["value", typeof(input) === "undefined" ? "" : input]]);
+    }
+  }
+
+  let setFieldType = (value) => {
+    if (fieldType !== value) {
+      changeFieldType(value);
     }
   }
 
@@ -146,43 +205,108 @@ let ComputedQuestion = (props) => {
       setError(false);
     }
 
-    setValue(typeof(result) === "undefined" ? "" : result.toString());
+    setValue(typeof(result) === "undefined" ? "" : result);
   }
 
-  const muiInputProps = {}
-  if (unitOfMeasurement) {
-    muiInputProps.endAdornment = <InputAdornment position="end">{unitOfMeasurement}</InputAdornment>;
-  }
+  useEffect(() => {
+    if (unitOfMeasurement) {
+      muiInputProps.endAdornment = <InputAdornment position="end">{unitOfMeasurement}</InputAdornment>;
+    } else {
+      delete muiInputProps.endAdornment;
+    }
+  }, [unitOfMeasurement])
 
+  useEffect(() => {
+    let formatted = (displayMode === "formatted");
+    if (formatted !== isFormatted) {
+      changeIsFormatted(formatted)
+    };
+  }, [displayMode])
+
+  // Performance improvement? Only compute if inputs have changed
   evaluateExpression();
-  let isFormatted = (displayMode == "formatted");
+
+  let answerType, answerNodeType, newFieldType;
+  switch (dataType) {
+    case "boolean":
+      answerType = "Long"; // Long, not Boolean
+      answerNodeType = "cards:BooleanAnswer";
+      break;
+    case "date":
+      answerNodeType = "cards:DateAnswer";
+      newFieldType = DateQuestionUtilities.getFieldType(dateFormat);
+      setFieldType(newFieldType);
+      switch (newFieldType) {
+        case "long":
+          answerType = "Long";
+          break;
+        case "string":
+          answerType = "Date";
+          break;
+        default:
+          answerType = "Date";
+          break;
+      }
+      break;
+    case "long":
+      answerType = "Long";
+      answerNodeType = "cards:LongAnswer";
+      break;
+    case "double":
+      answerType = "Double";
+      answerNodeType = "cards:DoubleAnswer";
+      break;
+    case "decimal":
+      answerType = "Decimal";
+      answerNodeType = "cards:DecimalAnswer";
+      break;
+    case "vocabulary":
+      answerType = "String";
+      answerNodeType = "cards:VocabularyAnswer";
+      break;
+    case "time":
+      answerType = "String";
+      answerNodeType = "cards:TimeAnswer";
+      newFieldType = Time.timeQuestionFieldType(dateFormat);
+      setFieldType(newFieldType);
+      break;
+    case "text":
+      answerType = "String";
+      answerNodeType = "cards:TextAnswer";
+      break;
+    case "computed": // Fallthrough default to string computed
+    default:
+      answerType = "String";
+      answerNodeType = "cards:ComputedAnswer";
+      break;
+  }
 
   return (
     <Question
       defaultDisplayFormatter={isFormatted ? (label, idx) => <FormattedText>{label}</FormattedText> : undefined}
-      currentAnswers={typeof(value) !== "undefined" && value !== "" ? 1 : 0}
+      currentAnswers={typeof(displayValue) !== "undefined" && displayValue !== "" ? 1 : 0}
       {...props}
       >
       {error && <Typography color='error'>{errorMessage}</Typography>}
       { isFormatted ? <FormattedText>
-          {value + (unitOfMeasurement ? (" " + unitOfMeasurement) : '')}
+          {displayValue + (unitOfMeasurement ? (" " + unitOfMeasurement) : '')}
         </FormattedText>
       :
       <TextField
-        multiline
+        type={fieldType}
+        dateFormat={(fieldType === "date" || fieldType === "time" && dateFormat) || null}
         disabled={true}
         className={classes.textField + " " + classes.answerField}
-        value={value}
+        value={displayValue}
         InputProps={muiInputProps}
-        onChange={evaluateExpression()}
       />
       }
       <Answer
         answers={answer}
         questionDefinition={props.questionDefinition}
         existingAnswer={existingAnswer}
-        answerNodeType="cards:ComputedAnswer"
-        valueType="computed"
+        answerNodeType={answerNodeType}
+        valueType={answerType}
         {...rest}
         />
     </Question>
@@ -204,7 +328,7 @@ const StyledComputedQuestion = withStyles(QuestionnaireStyle)(ComputedQuestion);
 export default StyledComputedQuestion;
 
 AnswerComponentManager.registerAnswerComponent((definition) => {
-  if (definition.dataType === "computed") {
-    return [StyledComputedQuestion, 50];
+  if (definition.dataType === "computed" || definition.entryMode === "computed") {
+    return [StyledComputedQuestion, 80];
   }
 });

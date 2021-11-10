@@ -16,6 +16,7 @@
  */
 package io.uhndata.cards.dataentry.internal;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -192,18 +193,40 @@ public class ComputedAnswersEditor extends DefaultEditor
                     .findFirst().get())
                 // Evaluate it
                 .forEachOrdered(entry -> {
-                    QuestionTree question = entry.getKey();
-                    NodeBuilder answer = entry.getValue();
-                    String result = computeAnswer(answersByQuestionName, question);
-                    if (result == null) {
-                        answer.removeProperty(FormUtils.VALUE_PROPERTY);
-                    } else {
-                        answer.setProperty(FormUtils.VALUE_PROPERTY, result, Type.STRING);
-                    }
-                    // Update the computed value in the map of existing answers
-                    answersByQuestionName.put(this.questionnaireUtils.getQuestionName(question.getNode()), result);
+                    computeAnswer(entry, answersByQuestionName);
                 });
         }
+    }
+    private void computeAnswer(Map.Entry<QuestionTree, NodeBuilder> entry, Map<String, Object> answersByQuestionName)
+    {
+        QuestionTree question = entry.getKey();
+        NodeBuilder answer = entry.getValue();
+        Type resultType = Type.STRING;
+        try {
+            AnswerNodeTypes types = new AnswerNodeTypes(question.getNode());
+            resultType = types.getDataType();
+        } catch (RepositoryException e) {
+            LOGGER.error("Error typing value for question. " + e.getMessage());
+        }
+        Object result = ExpressionUtils.evaluate(question.getNode(), answersByQuestionName, resultType);
+
+        if (result == null || (result instanceof String && "null".equals((String) result))) {
+            answer.removeProperty(FormUtils.VALUE_PROPERTY);
+        } else {
+            if (resultType == Type.LONG) {
+                answer.setProperty(FormUtils.VALUE_PROPERTY, (Long) result, resultType);
+            } else if (resultType == Type.DOUBLE) {
+                answer.setProperty(FormUtils.VALUE_PROPERTY, (Double) result, resultType);
+            } else if (resultType == Type.DECIMAL) {
+                answer.setProperty(FormUtils.VALUE_PROPERTY, (BigDecimal) result, resultType);
+            } else if (resultType == Type.DATE) {
+                answer.setProperty(FormUtils.VALUE_PROPERTY, (String) result, resultType);
+            } else {
+                answer.setProperty(FormUtils.VALUE_PROPERTY, (String) result, resultType);
+            }
+        }
+        // Update the computed value in the map of existing answers
+        answersByQuestionName.put(this.questionnaireUtils.getQuestionName(question.getNode()), result);
     }
 
     private Node getQuestionnaire()
@@ -260,14 +283,12 @@ public class ComputedAnswersEditor extends DefaultEditor
         QuestionTree currentTree = null;
 
         try {
-            if (this.questionnaireUtils.isQuestion(currentNode)) {
-                if ("computed".equals(currentNode.getProperty("dataType").getString())) {
-                    // Skip already answered questions
-                    if (!this.computedAnswerChangeTracker.getModifiedAnswers().contains(currentNode.getIdentifier())) {
-                        currentTree = new QuestionTree(currentNode, true);
-                    }
-                }
+            if (this.questionnaireUtils.isComputedQuestion(currentNode)) {
                 // Ignore questions that are not computed questions
+                // Skip already answered questions
+                if (!this.computedAnswerChangeTracker.getModifiedAnswers().contains(currentNode.getIdentifier())) {
+                    currentTree = new QuestionTree(currentNode, true);
+                }
             } else if (this.questionnaireUtils.isQuestionnaire(currentNode)
                 || this.questionnaireUtils.isSection(currentNode)) {
                 // Recursively check if any children have a computed question
@@ -311,15 +332,16 @@ public class ComputedAnswersEditor extends DefaultEditor
         try {
             if (questionTree.isQuestion()) {
                 if (!currentNode.hasProperty("jcr:" + "primaryType")) {
+                    AnswerNodeTypes types = new AnswerNodeTypes(questionTree.getNode());
                     // New node, insert all required properties
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
                     currentNode.setProperty("jcr:created", dateFormat.format(new Date()), Type.DATE);
                     currentNode.setProperty("jcr:createdBy", this.currentSession.getUserID(), Type.NAME);
                     String questionReference = questionTree.getNode().getIdentifier();
                     currentNode.setProperty(FormUtils.QUESTION_PROPERTY, questionReference, Type.REFERENCE);
-                    currentNode.setProperty("jcr:primaryType", "cards:ComputedAnswer", Type.NAME);
+                    currentNode.setProperty("jcr:primaryType", types.getPrimaryType(), Type.NAME);
                     currentNode.setProperty("sling:resourceSuperType", FormUtils.ANSWER_RESOURCE, Type.STRING);
-                    currentNode.setProperty("sling:resourceType", "cards/ComputedAnswer", Type.STRING);
+                    currentNode.setProperty("sling:resourceType", types.getResourceType(), Type.STRING);
                     currentNode.setProperty("statusFlags", "", Type.STRING);
                 }
                 return Collections.singletonMap(questionTree, currentNode);
@@ -406,11 +428,6 @@ public class ComputedAnswersEditor extends DefaultEditor
         return result;
     }
 
-    private String computeAnswer(Map<String, Object> answers, QuestionTree computedQuestionTree)
-    {
-        return this.expressionUtils.evaluate(computedQuestionTree.getNode(), answers);
-    }
-
     private final class ComputedAnswerChangeTracker extends DefaultEditor
     {
         private final Set<String> modifiedAnswers = new HashSet<>();
@@ -422,9 +439,21 @@ public class ComputedAnswersEditor extends DefaultEditor
         @Override
         public void enter(NodeState before, NodeState after)
         {
+            String questionId = ComputedAnswersEditor.this.formUtils.getQuestionIdentifier(after);
             if ("cards:ComputedAnswer".equals(after.getName("jcr:primaryType"))) {
                 this.inComputedAnswer = true;
-                this.currentAnswer = ComputedAnswersEditor.this.formUtils.getQuestionIdentifier(after);
+                this.currentAnswer = questionId;
+            } else if (questionId != null) {
+                Node questionNode = ComputedAnswersEditor.this.questionnaireUtils.getQuestion(questionId);
+                try {
+                    if (questionNode.hasProperty("entryMode")
+                        && "computed".equals(questionNode.getProperty("entryMode").getString())) {
+                        this.inComputedAnswer = true;
+                        this.currentAnswer = questionId;
+                    }
+                } catch (RepositoryException e) {
+                    // Can't access this answer's question. Ignore
+                }
             }
         }
 
@@ -515,6 +544,85 @@ public class ComputedAnswersEditor extends DefaultEditor
             return "{question:" + this.isQuestion
                 + (this.children == null ? "" : " children: " + this.children.toString())
                 + (this.node == null ? "" : " node: " + this.node.toString()) + " }";
+        }
+    }
+
+    static final class AnswerNodeTypes
+    {
+        private String primaryType;
+        private String resourceType;
+        private Type dataType;
+
+        @SuppressWarnings("checkstyle:CyclomaticComplexity")
+        AnswerNodeTypes(Node questionNode) throws RepositoryException
+        {
+            String dataTypeString = questionNode.getProperty("dataType").getString();
+            switch (dataTypeString) {
+                case "long":
+                    this.primaryType = "cards:LongAnswer";
+                    this.resourceType = "cards/LongAnswer";
+                    this.dataType = Type.LONG;
+                    break;
+                case "double":
+                    this.primaryType = "cards:DoubleAnswer";
+                    this.resourceType = "cards/DoubleAnswer";
+                    this.dataType = Type.DOUBLE;
+                    break;
+                case "decimal":
+                    this.primaryType = "cards:DecimalAnswer";
+                    this.resourceType = "cards/DecimalAnswer";
+                    this.dataType = Type.DECIMAL;
+                    break;
+                case "boolean":
+                    this.primaryType = "cards:BooleanAnswer";
+                    this.resourceType = "cards/BooleanAnswer";
+                    // Long, not boolean
+                    this.dataType = Type.LONG;
+                    break;
+                case "date":
+                    this.primaryType = "cards:DateAnswer";
+                    this.resourceType = "cards/DateAnswer";
+                    this.dataType = (questionNode.hasProperty("dateFormat") && "yyyy".equals(
+                        questionNode.getProperty("dateFormat").getString().toLowerCase()))
+                        ? Type.LONG
+                        : Type.DATE;
+                    break;
+                case "time":
+                    this.primaryType = "cards:TimeAnswer";
+                    this.resourceType = "cards/TimeAnswer";
+                    this.dataType = Type.STRING;
+                    break;
+                case "vocabulary":
+                    this.primaryType = "cards:VocabularyAnswer";
+                    this.resourceType = "cards/VocabularyAnswer";
+                    this.dataType = Type.STRING;
+                    break;
+                case "text":
+                    this.primaryType = "cards:TextAnswer";
+                    this.resourceType = "cards/TextAnswer";
+                    this.dataType = Type.STRING;
+                    break;
+                case "computed":
+                default:
+                    this.primaryType = "cards:ComputedAnswer";
+                    this.resourceType = "cards/ComputedAnswer";
+                    this.dataType = Type.STRING;
+            }
+        }
+
+        public String getPrimaryType()
+        {
+            return this.primaryType;
+        }
+
+        public String getResourceType()
+        {
+            return this.resourceType;
+        }
+
+        public Type getDataType()
+        {
+            return this.dataType;
         }
     }
 }

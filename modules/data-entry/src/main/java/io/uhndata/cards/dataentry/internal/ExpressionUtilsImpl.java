@@ -16,6 +16,7 @@
  */
 package io.uhndata.cards.dataentry.internal;
 
+import java.math.BigDecimal;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
@@ -32,6 +33,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
+import org.apache.jackrabbit.oak.api.Type;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
@@ -67,6 +69,11 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
     @Override
     public String evaluate(final Node question, final Map<String, Object> values)
     {
+        return String.valueOf(evaluate(question, values, Type.STRING));
+    }
+
+    static Object evaluate(final Node question, final Map<String, Object> values, Type type)
+    {
         try {
             String expression = getExpressionFromQuestion(question);
             ExpressionUtilsImpl.ParsedExpression parsedExpression = parseExpressionInputs(expression, values);
@@ -79,7 +86,10 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
             Bindings env = engine.createBindings();
             parsedExpression.getInputs().forEach((key, value) -> env.put(key, value));
             Object result = engine.eval("(function(){" + parsedExpression.getExpression() + "})()", env);
-            return ValueFormatter.formatResult(result);
+            if (type == Type.DOUBLE) {
+                LOGGER.error(String.valueOf(result));
+            }
+            return ValueFormatter.formatResult(result, type);
         } catch (ScriptException e) {
             LOGGER.warn("Evaluating the expression for question {} failed: {}", question,
                 e.getMessage(), e);
@@ -165,12 +175,65 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
 
     private static final class ValueFormatter
     {
-        static String formatResult(Object rawResult)
+        static Object formatResult(Object rawResult, Type type)
         {
-            if (rawResult == null) {
+            if (rawResult == null || (rawResult instanceof String && "null".equals(rawResult))) {
                 return null;
             }
 
+            if (type == Type.LONG) {
+                return formatToLong(rawResult);
+            } else if (type == Type.DOUBLE) {
+                return formatToDouble(rawResult);
+            } else if (type == Type.DECIMAL) {
+                return formatToDecimal(rawResult);
+            } else {
+                return formatToString(rawResult);
+            }
+        }
+
+        static Long formatToLong(Object rawResult)
+        {
+            if (rawResult instanceof String) {
+                return Long.valueOf((String) rawResult);
+            } else if (rawResult instanceof Long) {
+                return (Long) rawResult;
+            } else if (rawResult instanceof Double) {
+                return ((Double) rawResult).longValue();
+            } else {
+                LOGGER.error("Could not parse Long from " + rawResult.getClass().toString());
+                return null;
+            }
+        }
+
+        static Double formatToDouble(Object rawResult)
+        {
+            if (rawResult instanceof String) {
+                return Double.valueOf((String) rawResult);
+            } else if (rawResult instanceof Double) {
+                return (Double) rawResult;
+            } else {
+                LOGGER.error("Could not parse Double from " + rawResult.getClass().toString());
+                return null;
+            }
+        }
+
+        static BigDecimal formatToDecimal(Object rawResult)
+        {
+            if (rawResult instanceof String) {
+                return new BigDecimal((String) rawResult);
+            } else if (rawResult instanceof BigDecimal) {
+                return (BigDecimal) rawResult;
+            } else if (rawResult instanceof Double) {
+                return BigDecimal.valueOf((Double) rawResult);
+            } else {
+                LOGGER.error("Could not parse BigDecimal from " + rawResult.getClass().toString());
+                return null;
+            }
+        }
+
+        static String formatToString(Object rawResult)
+        {
             String formattedResult = String.valueOf(rawResult);
 
             if (rawResult instanceof Double || rawResult instanceof Float) {

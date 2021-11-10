@@ -4,20 +4,32 @@
     "description": "markdown",
     "dataType": {
       "text" : {
-        "validationRegexp": "string",
-        "enableSeparatorDetection": "boolean",
         "minAnswers": "long",
-        "maxAnswers": "long",
-        "displayMode": {
-          "input": {},
-          "textbox": {},
-          "list": {
-            "compact" : "boolean",
-            "answerOptions" : "textOptions"
+        "entryMode": {
+          "user": {
+            "maxAnswers": "long",
+            "validationRegexp": "string",
+            "enableSeparatorDetection": "boolean",
+            "displayMode": {
+              "input": {},
+              "textbox": {},
+              "list": {
+                "compact" : "boolean",
+                "answerOptions" : "textOptions"
+              },
+              "list+input" : {
+                "compact" : "boolean",
+                "answerOptions" : "textOptions"
+              }
+            }
           },
-          "list+input" : {
-            "compact" : "boolean",
-            "answerOptions" : "textOptions"
+          "computed": {
+            "expression": "string",
+            "displayMode" : {
+              "input" : {},
+              "formatted" : {},
+              "hidden": {}
+            }
           }
         }
       },
@@ -27,85 +39,145 @@
         "noLabel": "string",
         "enableUnknown": "boolean",
         "unknownLabel": "string",
-        "compact" : "boolean"
+        "compact" : "boolean",
+        "entryMode": {
+          "user": {
+          },
+          "computed": {
+            "expression": "string",
+            "displayMode" : {
+              "input" : {},
+              "formatted" : {},
+              "hidden": {}
+            }
+          }
+        }
       },
       "date" : {
         "minAnswers": {"0":{}, "1":{}},
-        "dateFormat": "string"
+        "dateFormat": "string",
+        "entryMode": {
+          "user": {
+          },
+          "computed": {
+            "expression": "string",
+            "displayMode" : {
+              "input" : {},
+              "formatted" : {},
+              "hidden": {}
+            }
+          }
+        }
       },
       "long": {
-        "minValue": "double",
-        "maxValue": "double",
         "minAnswers": "long",
-        "maxAnswers": "long",
         "unitOfMeasurement" : "string",
-        "displayMode": {
-          "input": {
-            "isRange" : "boolean"
+        "entryMode": {
+          "user": {
+            "maxAnswers": "long",
+            "minValue": "double",
+            "maxValue": "double",
+            "displayMode": {
+              "input": {
+                "isRange" : "boolean"
+              },
+              "list": {
+                "compact" : "boolean",
+                "answerOptions" : "numberOptions"
+              },
+              "list+input" : {
+                "compact" : "boolean",
+                "answerOptions" : "numberOptions"
+              },
+              "slider": {
+                "isRange" : "boolean",
+                "minValueLabel" : "string",
+                "maxValueLabel" : "string",
+                "sliderStep": "double",
+                "sliderMarkStep": "double",
+                "sliderOrientation": {"horizontal" : {}, "vertical": {}}
+              }
+            }
           },
-          "list": {
-            "compact" : "boolean",
-            "answerOptions" : "numberOptions"
-          },
-          "list+input" : {
-            "compact" : "boolean",
-            "answerOptions" : "numberOptions"
-          },
-          "slider": {
-            "isRange" : "boolean",
-            "minValueLabel" : "string",
-            "maxValueLabel" : "string",
-            "sliderStep": "double",
-            "sliderMarkStep": "double",
-            "sliderOrientation": {"horizontal" : {}, "vertical": {}}
+          "computed": {
+            "expression": "string",
+            "displayMode" : {
+              "input" : {},
+              "formatted" : {},
+              "hidden": {}
+            }
           }
         }
       },
       "decimal": {
-        "minValue": "double",
-        "maxValue": "double",
         "minAnswers": "long",
-        "maxAnswers": "long",
         "unitOfMeasurement" : "string",
-        "displayMode": {
-          "input": {
-            "isRange" : "boolean"
+        "entryMode": {
+          "user": {
+            "maxAnswers": "long",
+            "minValue": "double",
+            "maxValue": "double",
+            "displayMode": {
+              "input": {
+                "isRange" : "boolean"
+              },
+              "list": {
+                "compact" : "boolean",
+                "answerOptions" : "numberOptions"
+              },
+              "list+input" : {
+                "compact" : "boolean",
+                "answerOptions" : "numberOptions"
+              },
+              "slider": {
+                "isRange" : "boolean",
+                "minValueLabel" : "string",
+                "maxValueLabel" : "string",
+                "sliderStep": "double",
+                "sliderMarkStep": "double",
+                "sliderOrientation": {"horizontal" : {}, "vertical": {}}
+              }
+            }
           },
-          "list": {
-            "compact" : "boolean",
-            "answerOptions" : "numberOptions"
-          },
-          "list+input" : {
-            "compact" : "boolean",
-            "answerOptions" : "numberOptions"
-          },
-          "slider": {
-            "isRange" : "boolean",
-            "minValueLabel" : "string",
-            "maxValueLabel" : "string",
-            "sliderStep": "double",
-            "sliderMarkStep": "double",
-            "sliderOrientation": {"horizontal" : {}, "vertical": {}}
+          "computed": {
+            "expression": "string",
+            "displayMode" : {
+              "input" : {},
+              "formatted" : {},
+              "hidden": {}
+            }
           }
         }
       },
       "double": {
-        "minValue": "double",
-        "maxValue": "double",
         "minAnswers": "long",
-        "maxAnswers": "long",
         "unitOfMeasurement" : "string",
-        "displayMode": {
-          "input": {
-            "isRange" : "boolean"
+        "entryMode": {
+          "user": {
+            "maxAnswers": "long",
+            "minValue": "double",
+            "maxValue": "double",
+            "displayMode": {
+              "input": {
+                "isRange" : "boolean"
+              },
+              "slider": {
+                "isRange" : "boolean",
+                "minValueLabel" : "string",
+                "maxValueLabel" : "string",
+                "sliderStep": "double",
+                "sliderMarkStep": "double",
+                "sliderOrientation": {"horizontal" : {}, "vertical": {}}
+              }
+            }
           },
-          "slider": {
-            "isRange" : "boolean",
-            "minValueLabel" : "string",
-            "maxValueLabel" : "string",
-            "sliderStep": "double",
-            "sliderMarkStep": "double",
-            "sliderOrientation": {"horizontal" : {}, "vertical": {}}
+          "computed": {
+            "expression": "string",
+            "displayMode" : {
+              "input" : {},
+              "formatted" : {},
+              "hidden": {}
+            }
           }
         }
       },
@@ -124,19 +196,31 @@
           "identifierProperty": "identifier"
         },
         "minAnswers": "long",
-        "maxAnswers": "long",
-        "displayMode": {
-          "input": {},
-          "list": {
-            "compact" : "boolean",
-            "answerOptions" : "textOptions"
+        "entryMode": {
+          "user": {
+            "maxAnswers": "long",
+            "enableNotes": "boolean",
+            "displayMode": {
+              "input": {},
+              "list": {
+                "compact" : "boolean",
+                "answerOptions" : "textOptions"
+              },
+              "list+input" : {
+                "compact" : "boolean",
+                "answerOptions" : "textOptions"
+              }
+            }
           },
-          "list+input" : {
-            "compact" : "boolean",
-            "answerOptions" : "textOptions"
+          "computed": {
+            "expression": "string",
+            "displayMode" : {
+              "input" : {},
+              "formatted" : {},
+              "hidden": {}
+            }
           }
-        },
-        "enableNotes": "boolean"
+        }
       },
       "computed": {
         "expression": "string",
@@ -148,11 +232,23 @@
         "unitOfMeasurement" : "string"
       },
       "time": {
-        "lowerLimit": "string",
-        "upperLimit": "string",
         "minAnswers": {"0":{}, "1":{}},
-        "errorText": "string",
-        "dateFormat": "string"
+        "dateFormat": "string",
+        "entryMode": {
+          "user": {
+            "lowerLimit": "string",
+            "upperLimit": "string",
+            "errorText": "string"
+          },
+          "computed": {
+            "expression": "string",
+            "displayMode" : {
+              "input" : {},
+              "formatted" : {},
+              "hidden": {}
+            }
+          }
+        }
       },
       "pedigree" : {
         "minAnswers": {"0":{}, "1":{}}

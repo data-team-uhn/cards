@@ -30,7 +30,7 @@ import TextQuestion from "./TextQuestion";
 
 import AnswerComponentManager from "./AnswerComponentManager";
 
-class Time {
+export class Time {
   constructor (timeString, isMinuteSeconds = true) {
     if (typeof(timeString) === "string" && timeString.length === 5 && timeString.charAt(2) === ':') {
       let values = timeString.split(":");
@@ -61,6 +61,14 @@ class Time {
   valueOf() {
     return this.isValid ? (this.first*60 + this.second) * (this.isMinuteSeconds ? 1 : 60) : undefined;
   }
+
+  static formatIsMinuteSeconds(dateFormat) {
+    return typeof(dateFormat) === "string" && dateFormat.toLowerCase() === "mm:ss";
+  }
+
+  static timeQuestionFieldType(dateFormat) {
+    return this.formatIsMinuteSeconds(dateFormat) ? "string" : "time";
+  }
 }
 
 // Component that renders a time question
@@ -89,7 +97,7 @@ function TimeQuestion(props) {
   const [error, setError] = useState(undefined);
   const defaultErrorMessage = errorText || "Please enter a valid time";
   const [errorMessage, setErrorMessage] = useState(defaultErrorMessage);
-  const isMinuteSeconds = typeof(dateFormat) === "string" && dateFormat.toLowerCase() === "mm:ss";
+  const isMinuteSeconds = Time.formatIsMinuteSeconds(dateFormat);
   const lowerTime = new Time(lowerLimit, isMinuteSeconds);
   const upperTime = new Time(upperLimit, isMinuteSeconds);
   const minuteSecondTest = new RegExp(/([0-5]\d):([0-5]\d)/);
@@ -121,7 +129,7 @@ function TimeQuestion(props) {
       {error && <Typography color='error'>{errorMessage}</Typography>}
       <TextField
         /* time input is hh:mm or hh:mm:ss only */
-        type={isMinuteSeconds ? "text" : "time"}
+        type={Time.timeQuestionFieldType(dateFormat)}
         className={classes.textField + " " + classes.answerField}
         InputLabelProps={{
           shrink: true,

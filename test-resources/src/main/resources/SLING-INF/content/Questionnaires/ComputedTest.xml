@@ -27,7 +27,7 @@
 	</property>
 	<property>
 		<name>description</name>
-		<value>CARDS-317, CARDS-699, CARDS-1302</value>
+		<value>CARDS-317, CARDS-699, CARDS-1302, CARDS-1463</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -38,35 +38,43 @@
 		<type>Reference</type>
 	</property>
 	<node>
-		<name>q1</name>
-		<primaryNodeType>cards:Question</primaryNodeType>
+		<name>computedAnswerTest</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
-			<name>text</name>
-			<value>Write something:</value>
+			<name>label</name>
+			<value>Computed Answer Test</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>text</value>
-			<type>String</type>
-		</property>
-	</node>
-	<node>
-		<name>q2</name>
-		<primaryNodeType>cards:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>Computed, plain</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>
+		<node>
+			<name>computedAnswerInput</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Write something:</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>computedAnswerBasicText</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Computed, plain</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>
 Expected output:
 
 > You wrote [text from previous question]
@@ -74,60 +82,60 @@ Expected output:
 or
 
 > You wrote nothing
-			</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>computed</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>expression</name>
-			<value>return "You wrote " + @{q1:-nothing}</value>
-			<type>String</type>
-		</property>
-	</node>
-	<node>
-		<name>q3</name>
-		<primaryNodeType>cards:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>Computed, hidden</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>This should not appear in the form</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>computed</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>displayMode</name>
-			<value>hidden</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>expression</name>
-			<value>return "You wrote " + @{q1:-nothing}</value>
-			<type>String</type>
-		</property>
-	</node>
-	<node>
-		<name>q4</name>
-		<primaryNodeType>cards:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>Computed, formatted</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>
+				</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return "You wrote " + @{computedAnswerInput:-nothing}</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>computedAnswerhidden</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Computed, hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>This should not appear in the form</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return "You wrote " + @{computedAnswerInput:-nothing}</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>computedAnswerFormattedText</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Computed, formatted</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>
 Expected output:
 
 > You **wrote** *[text from question 1]*
@@ -137,36 +145,36 @@ or
 > You **wrote** *nothing*
 
 **Note**: How the text from question 1 is displayed may be affected by formatting characters if it contains markdown formatting characters.
-			</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>computed</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>displayMode</name>
-			<value>formatted</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>expression</name>
-			<value>return "You **wrote** *" + @{q1:-nothing} + "*"</value>
-			<type>String</type>
-		</property>
-	</node>
-	<node>
-		<name>q5</name>
-		<primaryNodeType>cards:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>Computed, formatted multiline</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>
+				</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>formatted</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return "You **wrote** *" + @{computedAnswerInput:-nothing} + "*"</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>computedAnswerFormattedMultiline</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Computed, formatted multiline</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>
 Expected output:
 
 > * You wrote *[text from question 1]*...
@@ -177,25 +185,1511 @@ or
 > You **wrote**: *nothing*
 
 **Note**: How the text from question 1 is displayed may be affected by formatting characters if it contains markdown formatting characters.
-			</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>computed</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>displayMode</name>
-			<value>formatted</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>expression</name>
-			<value>return (@{q1:-} ? ("* You wrote *" + @{q1} + "*...\n* ...and **nothing else**") : "You wrote nothing")</value>
-			<type>String</type>
-		</property>
+				</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>formatted</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return (@{computedAnswerInput:-} ? ("* You wrote *" + @{computedAnswerInput} + "*...\n* ...and **nothing else**") : "You wrote nothing")</value>
+				<type>String</type>
+			</property>
+		</node>
 	</node>
+	<node>
+		<name>textAnswerTest</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Text Answer Test</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>textAnswerInput</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Write something:</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>textAnswerBasicText</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Computed, plain</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>
+Expected output:
 
+> You wrote [text from previous question]
 
+or
+
+> You wrote nothing
+				</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return "You wrote " + @{textAnswerInput:-nothing}</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>textAnswerHidden</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Computed, hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>This should not appear in the form</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return "You wrote " + @{textAnswerInput:-nothing}</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>textAnswerFormattedText</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Computed, formatted</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>
+Expected output:
+
+> You **wrote** *[text from question 1]*
+
+or
+
+> You **wrote** *nothing*
+
+**Note**: How the text from question 1 is displayed may be affected by formatting characters if it contains markdown formatting characters.
+				</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>formatted</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return "You **wrote** *" + @{textAnswerInput:-nothing} + "*"</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>textAnswerFormattedMultiline</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Computed text, formatted multiline</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>
+Expected output:
+
+> * You wrote *[text from question 1]*...
+> * ...and **nothing else**
+
+or
+
+> You **wrote**: *nothing*
+
+**Note**: How the text from question 1 is displayed may be affected by formatting characters if it contains markdown formatting characters.
+				</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>formatted</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return (@{textAnswerInput:-} ? ("* You wrote *" + @{textAnswerInput} + "*...\n* ...and **nothing else**") : "You wrote nothing")</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>boolAnswerTest</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Boolean Answer Test</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>booleanAnswerInputBoolean</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Yes or No?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>boolean</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>enableUnknown</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+		</node>
+		<node>
+			<name>boolAnswerBasic</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Boolean, plain</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Expected output: Same as your selection</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>boolean</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{booleanAnswerInputBoolean}</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>boolAnswerLabeled</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Boolean, labelled</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Expected output: Same as your selection, but with slightly different labels</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>boolean</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{booleanAnswerInputBoolean}</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>yesLabel</name>
+				<value>Yes Label</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>noLabel</name>
+				<value>No Label</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>unknownLabel</name>
+				<value>Unknown Label</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>boolAnswerHidden</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Boolean, hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Expected output: Same as your selection</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>boolean</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{booleanAnswerInputBoolean}</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>dateAnswerTest</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Date Answer Test</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>dateAnswerInput</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Pick a date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>date</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dateAnswerBasic</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Date, plain</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Expected output: Same as your selection</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dateFormat</name>
+				<value>yyyy-MM-DD</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{dateAnswerInput}</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dateAnswerBasicHidden</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Date, plain hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Expected output: Same as your selection</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dateFormat</name>
+				<value>yyyy-MM-DD</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{dateAnswerInput}</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dateAnswerYearInput</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Pick a year</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dateFormat</name>
+				<value>yyyy</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+		</node>
+		<node>
+			<name>dateAnswerYear</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Date, year only</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Expected output: Same as your selection</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{dateAnswerYearInput}</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dateFormat</name>
+				<value>yyyy</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dateAnswerYearHidden</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Date, year only hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Expected output: Same as your selection</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{dateAnswerYearInput}</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dateFormat</name>
+				<value>yyyy</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dateAnswerMonthYearInput</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Pick a month and year</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dateFormat</name>
+				<value>MM/yyyy</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+		</node>
+		<node>
+			<name>dateAnswerMonthYear</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Date, month and year</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Expected output: Same as your selection</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{dateAnswerMonthYearInput}</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dateFormat</name>
+				<value>MM/yyyy</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dateAnswerMonthYearHidden</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Date, month and year hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Expected output: Same as your selection</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{dateAnswerMonthYearInput}</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dateFormat</name>
+				<value>MM/yyyy</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dateAnswerHourMinuteInput</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Pick a date and time</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dateFormat</name>
+				<value>yyyy-MM-DD HH:mm</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+		</node>
+		<node>
+			<name>dateAnswerHourMinute</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Date, include hour and minute</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Expected output: Same as your selection</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{dateAnswerHourMinuteInput}</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dateFormat</name>
+				<value>yyyy-MM-DD HH:mm</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dateAnswerHourMinuteHidden</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Date, include hour and minute hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Expected output: Same as your selection</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{dateAnswerHourMinuteInput}</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dateFormat</name>
+				<value>yyyy-MM-DD HH:mm</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dateAnswerHourMinuteSecondInput</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Pick a date and time down to seconds</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dateFormat</name>
+				<value>yyyy-MM-DD HH:mm:ss</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+		</node>
+		<node>
+			<name>dateAnswerHourMinuteSecond</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Date, include time down to seconds</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Expected output: Same as your selection</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{dateAnswerHourMinuteSecondInput}</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dateFormat</name>
+				<value>yyyy-MM-DD HH:mm:ss</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>dateAnswerHourMinuteSecondHidden</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Date, include time down to seconds hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Expected output: Same as your selection</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{dateAnswerHourMinuteSecondInput}</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dateFormat</name>
+				<value>yyyy-MM-DD HH:mm:ss</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>longAnswerTest</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Long Answer Test</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>longAnswerInput</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Pick a number?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>longAnswerBasic</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Long, plain</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Expected output: Same as your selection</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{longAnswerInput}</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>longAnswerBasicHidden</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Long, plain hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Expected output: Same as your selection</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{longAnswerInput}</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>doubleAnswerTest</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Double Answer Test</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>doubleAnswerInput</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Pick a number</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>double</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>doubleAnswerBasic</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Double, plain</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Expected output: Same as your selection</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>double</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{doubleAnswerInput}</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>doubleAnswerHidden</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Double, plain hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Expected output: Same as your selection</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>double</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{doubleAnswerInput}</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>decimalAnswerTest</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Decimal Answer Test</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>decimalAnswerInput</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Pick a number?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>decimalAnswerBasic</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Decimal, plain</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Expected output: Same as your selection</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{decimalAnswerInput}</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>decimalAnswerHidden</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Decimal, plain hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Expected output: Same as your selection</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{decimalAnswerInput}</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>vocabAnswerTest</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Vocabulary Answer Test</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>vocabularyAnswerInput</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Enter an ancestry (Requires HANCESTRO)</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>vocabulary</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>sourceVocabularies</name>
+				<values>
+					<value>HANCESTRO</value>
+				</values>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>vocabularyAnswerBasic</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Vocabulary, plain</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Expected output: Same as your selection</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>vocabulary</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>sourceVocabularies</name>
+				<values>
+					<value>HANCESTRO</value>
+				</values>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{vocabularyAnswerInput}</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>vocabularyAnswerHidden</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Vocabulary, plain hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Expected output: Same as your selection</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>vocabulary</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>sourceVocabularies</name>
+				<values>
+					<value>HANCESTRO</value>
+				</values>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{vocabularyAnswerInput}</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>timeAnswerTest</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Time Answer Test</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>timeAnswerInput</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Pick a time</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>time</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>timeAnswerBasic</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Time, plain</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Expected output: Same as your selection</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>time</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{timeAnswerInput}</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>timeAnswerHidden</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Time, plain hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Expected output: Same as your selection</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>time</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{timeAnswerInput}</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>timeAnswerHourMinuteSecondInput</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Pick a time down to seconds</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>time</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dateFormat</name>
+				<value>hh:mm:ss</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>timeAnswerHourMinuteSecond</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Time, down to seconds</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Expected output: Same as your selection</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>time</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{timeAnswerHourMinuteSecondInput}</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dateFormat</name>
+				<value>hh:mm:ss</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>timeAnswerHourMinuteSecondHidden</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Time, down to seconds hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Expected output: Same as your selection</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>time</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{timeAnswerHourMinuteSecondInput}</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dateFormat</name>
+				<value>hh:mm:ss</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>timeAnswerMinuteSecondInput</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Pick an amount of minutes and seconds</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>time</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dateFormat</name>
+				<value>mm:ss</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>timeAnswerMinuteSecond</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Time, minutes and seconds</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Expected output: Same as your selection</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>time</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{timeAnswerMinuteSecondInput}</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dateFormat</name>
+				<value>mm:ss</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>timeAnswerMinuteSecondHidden</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Time, minutes and seconds hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Expected output: Same as your selection</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>time</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{timeAnswerMinuteSecondInput}</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dateFormat</name>
+				<value>mm:ss</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
 </node>

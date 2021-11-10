@@ -240,6 +240,11 @@
   // We allow users to place these answers in a Notes section
   - enableNotes (boolean)
 
+  // Specifies what method is used to fill out this question
+  // - user: Filled out by an end user
+  // - computed: Automatically calculated based on user's other inputs
+  - entryMode (string) = 'user' autocreated
+
   // For computed answers, the expression used to calculate the value
   - expression (string)
 

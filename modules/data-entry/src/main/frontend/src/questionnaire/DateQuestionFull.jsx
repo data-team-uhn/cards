@@ -119,12 +119,6 @@ function DateQuestionFull(props) {
     ? "datetime-local"
     : "date";
 
-  let momentToString = (date) => {
-    return (!date || !date.isValid()) ? "" :
-    textFieldType === "date" ? date.format(moment.HTML5_FMT.DATE) :
-    date.format(moment.HTML5_FMT.DATETIME_LOCAL);
-  }
-
   let outputStart = getSlingDate(false);
   let outputEnd = getSlingDate(true);
   let outputAnswers = outputStart && outputStart !== "Invalid date" ? [["date", outputStart]] : [];
@@ -161,12 +155,12 @@ function DateQuestionFull(props) {
       {...props}
       >
       {error && <Typography color='error'>{errorMessage}</Typography>}
-      {getTextField(false, momentToString(startDate))}
+      {getTextField(false, DateQuestionUtilities.momentToString(startDate, textFieldType))}
       { /* If this is an interval, allow the user to select a second date */
       type === DateQuestionUtilities.INTERVAL_TYPE &&
       <React.Fragment>
         <span className={classes.mdash}>&mdash;</span>
-        {getTextField(true, momentToString(endDate))}
+        {getTextField(true, DateQuestionUtilities.momentToString(endDate, textFieldType))}
       </React.Fragment>
       }
       <Answer
