@@ -48,7 +48,6 @@
         <!-- Add AGPL license used by most pedigre eeditor files to the list of approved licenses -->
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
-        <version>0.13</version>
         <configuration>
           <licenses>
             <license implementation="org.apache.rat.analysis.license.SimplePatternBasedLicense">

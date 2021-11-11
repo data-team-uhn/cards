@@ -77,7 +77,6 @@
       <plugin>
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
-        <version>0.13</version>
         <configuration>
           <excludes combine.children="append">
             <!-- These files have already been checked in their original location, there's no need to duplicate the exact ignored list -->
