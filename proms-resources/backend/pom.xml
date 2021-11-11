@@ -22,19 +22,42 @@
 
   <parent>
     <groupId>io.uhndata.cards</groupId>
-    <artifactId>cards-parent</artifactId>
+    <artifactId>proms-resources</artifactId>
     <version>0.9-SNAPSHOT</version>
   </parent>
 
-  <artifactId>proms-resources</artifactId>
-  <packaging>pom</packaging>
-  <name>Cards for PROMs Resources</name>
-  <description>A collection of questionnaires for Cards for PROMs.</description>
+  <artifactId>proms-backend</artifactId>
+  <packaging>bundle</packaging>
+  <name>Proms Resources - Backend code</name>
 
-  <modules>
-    <module>clinical-data</module>
-    <module>frontend</module>
-    <module>feature</module>
-    <module>backend</module>
-  </modules>
+  <build>
+    <plugins>
+      <!-- This is an OSGi bundle -->
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.sling</groupId>
+      <artifactId>org.apache.sling.api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.service.component.annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
 </project>

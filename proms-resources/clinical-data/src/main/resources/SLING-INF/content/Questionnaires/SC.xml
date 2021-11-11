@@ -42,6 +42,11 @@
 		<value>1</value>
 		<type>Long</type>
 	</property>
+	<property>
+		<name>frequency</name>
+		<value>52</value>
+		<type>Long</type>
+	</property>
 	<node>
 		<name>smoking-history-v1-section-1</name>
 		<primaryNodeType>cards:Section</primaryNodeType>

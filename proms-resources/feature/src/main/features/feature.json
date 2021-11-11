@@ -24,13 +24,21 @@
     {
       "id":"${project.groupId}:proms-frontend:${project.version}",
       "start-order":"26"
+    },
+    {
+      "id":"${project.groupId}:proms-backend:${project.version}",
+      "start-order":"26"
     }
   ],
   "configurations":{
     "org.apache.sling.jcr.repoinit.RepositoryInitializer~proms":{
       "service.ranking:Integer":300,
       "scripts": [
-        "create user patient \n set ACL for patient \n     allow jcr:read on /Questionnaires,/SubjectTypes \n     deny jcr:all on /Questionnaires restriction(rep:itemNames,audit_intro,audit_results,eq5d_results,gad7_intro,gad7_results,phq9_intro,phq9_results) \n     allow jcr:read,jcr:write,jcr:nodeTypeManagement,jcr:versionManagement on /Forms restriction(cards:sessionSubject) \n     allow jcr:read on /Subjects restriction(cards:sessionSubject) \n     deny jcr:modifyProperties on /Forms restriction(rep:itemNames,subject,questionnaire) \n end"
+        "create user patient \n set ACL for patient \n     allow jcr:read on /Questionnaires,/SubjectTypes \n     deny jcr:all on /Questionnaires restriction(rep:itemNames,audit_intro,audit_results,eq5d_results,gad7_intro,gad7_results,phq9_intro,phq9_results) \n     allow jcr:read,jcr:write,jcr:nodeTypeManagement,jcr:versionManagement on /Forms restriction(cards:sessionSubject) \n     allow jcr:read on /Subjects restriction(cards:sessionSubject) \n     deny jcr:modifyProperties on /Forms restriction(rep:itemNames,subject,questionnaire) \n end"]
+    },
+    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~cards-export":{
+      "user.mapping":[
+        "io.uhndata.cards.proms-form-scheduler=[sling-readall]"
       ]
     }
   }

@@ -42,6 +42,11 @@
 		<value>Alcohol Use Disorders Identification Test</value>
 		<type>String</type>
 	</property>
+	<property>
+		<name>frequency</name>
+		<value>52</value>
+		<type>Long</type>
+	</property>
 	<node>
 		<name>audit_intro</name>
 		<primaryNodeType>cards:Information</primaryNodeType>
