@@ -51,6 +51,7 @@ import org.slf4j.LoggerFactory;
 import io.uhndata.cards.dataentry.api.ExpressionUtils;
 import io.uhndata.cards.dataentry.api.FormUtils;
 import io.uhndata.cards.dataentry.api.QuestionnaireUtils;
+import io.uhndata.cards.dataentry.internal.ComputedAnswersEditor.AnswerNodeTypes;
 import io.uhndata.cards.dataentry.internal.ComputedAnswersEditor.QuestionTree;
 
 /**
@@ -154,8 +155,7 @@ public class ComputedAnswersEditor extends DefaultEditor
     private void computeMissingAnswers(NodeState form)
     {
         // Get a list of all current answers for the form for use in computing answers
-        Map<Node, NodeState> existingAnswers = getNodeAnswers(form);
-        Map<String, Object> answersByQuestionName = getAnswersByQuestionName(existingAnswers);
+        Map<String, Object> answersByQuestionName = getNodeAnswers(form);
 
         // Get a list of all unanswered computed questions that need to be calculated
         Node questionnaireNode = getQuestionnaire();
@@ -197,6 +197,7 @@ public class ComputedAnswersEditor extends DefaultEditor
                 });
         }
     }
+
     private void computeAnswer(Map.Entry<QuestionTree, NodeBuilder> entry, Map<String, Object> answersByQuestionName)
     {
         QuestionTree question = entry.getKey();
@@ -226,7 +227,13 @@ public class ComputedAnswersEditor extends DefaultEditor
             }
         }
         // Update the computed value in the map of existing answers
-        answersByQuestionName.put(this.questionnaireUtils.getQuestionName(question.getNode()), result);
+        String questionName = this.questionnaireUtils.getQuestionName(question.getNode());
+        if (answersByQuestionName.containsKey(questionName)) {
+            // Question has multiple answers. Ignore this answer, just keep previous.
+            // TODO: Implement better recurrent section handling
+        } else {
+            answersByQuestionName.put(questionName, result);
+        }
     }
 
     private Node getQuestionnaire()
@@ -259,9 +266,9 @@ public class ComputedAnswersEditor extends DefaultEditor
         }
     }
 
-    private Map<Node, NodeState> getNodeAnswers(NodeState currentNode)
+    private Map<String, Object> getNodeAnswers(NodeState currentNode)
     {
-        Map<Node, NodeState> currentAnswers = new HashMap<>();
+        Map<String, Object> currentAnswers = new HashMap<>();
         if (currentNode.exists()) {
             if (this.formUtils.isAnswerSection(currentNode) || this.formUtils.isForm(currentNode)) {
                 // Found a section: Recursively get all of this section's answers
@@ -269,9 +276,19 @@ public class ComputedAnswersEditor extends DefaultEditor
                     currentAnswers.putAll(getNodeAnswers(childNode.getNodeState()));
                 }
             } else if (this.formUtils.isAnswer(currentNode)) {
-                // Found an answer. Store it using the question's UUID to easily compare with the questionnaire's
-                // nodes to retrieve question names and saved answer nodes to avoid duplicating existing answers
-                currentAnswers.put(this.formUtils.getQuestion(currentNode), currentNode);
+                String questionName = this.questionnaireUtils.getQuestionName(this.formUtils.getQuestion(currentNode));
+                Object value = this.formUtils.getValue(currentNode);
+                if (questionName != null && value != null) {
+                    // Found an answer. Store it using the question's name to easily compare with
+                    // saved answer nodes to avoid duplicating existing answers
+                    if (currentAnswers.containsKey(questionName)) {
+                        // Question has multiple answers. Ignore this answer, just keep previous.
+                        // TODO: Implement better recurrent section handling
+                    } else {
+                        currentAnswers.put(questionName, value);
+                    }
+                }
+
             }
         }
         return currentAnswers;
@@ -313,17 +330,6 @@ public class ComputedAnswersEditor extends DefaultEditor
         }
 
         return currentTree;
-    }
-
-    // Convert a map of answered keyed by question UUID into a map keyed by question name
-    private Map<String, Object> getAnswersByQuestionName(Map<Node, NodeState> answers)
-    {
-        return answers.entrySet().stream().map(entry -> {
-            String questionName = this.questionnaireUtils.getQuestionName(entry.getKey());
-            Object value = this.formUtils.getValue(entry.getValue());
-            return Pair.of(questionName, value);
-        }).filter(pair -> pair.getKey() != null && pair.getValue() != null)
-            .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
     }
 
     private Map<QuestionTree, NodeBuilder> createMissingNodes(QuestionTree questionTree,
@@ -550,7 +556,9 @@ public class ComputedAnswersEditor extends DefaultEditor
     static final class AnswerNodeTypes
     {
         private String primaryType;
+
         private String resourceType;
+
         private Type dataType;
 
         @SuppressWarnings("checkstyle:CyclomaticComplexity")
@@ -584,8 +592,8 @@ public class ComputedAnswersEditor extends DefaultEditor
                     this.resourceType = "cards/DateAnswer";
                     this.dataType = (questionNode.hasProperty("dateFormat") && "yyyy".equals(
                         questionNode.getProperty("dateFormat").getString().toLowerCase()))
-                        ? Type.LONG
-                        : Type.DATE;
+                            ? Type.LONG
+                            : Type.DATE;
                     break;
                 case "time":
                     this.primaryType = "cards:TimeAnswer";

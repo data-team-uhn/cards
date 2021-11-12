@@ -578,7 +578,7 @@ This question should copy the previous question
 			</property>
 			<property>
 				<name>expression</name>
-				<value>return @{conditionalQuestionText2}</value>
+				<value>return @{conditionalQuestionText1}</value>
 				<type>String</type>
 			</property>
 		</node>
