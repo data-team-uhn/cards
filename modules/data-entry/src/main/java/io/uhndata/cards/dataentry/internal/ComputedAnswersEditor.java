@@ -278,15 +278,11 @@ public class ComputedAnswersEditor extends DefaultEditor
             } else if (this.formUtils.isAnswer(currentNode)) {
                 String questionName = this.questionnaireUtils.getQuestionName(this.formUtils.getQuestion(currentNode));
                 Object value = this.formUtils.getValue(currentNode);
-                if (questionName != null && value != null) {
+                if (questionName != null && value != null && !currentAnswers.containsKey(questionName)) {
                     // Found an answer. Store it using the question's name to easily compare with
                     // saved answer nodes to avoid duplicating existing answers
-                    if (currentAnswers.containsKey(questionName)) {
-                        // Question has multiple answers. Ignore this answer, just keep previous.
-                        // TODO: Implement better recurrent section handling
-                    } else {
-                        currentAnswers.put(questionName, value);
-                    }
+                    // TODO: Implement better recurrent section handling
+                    currentAnswers.put(questionName, value);
                 }
 
             }
