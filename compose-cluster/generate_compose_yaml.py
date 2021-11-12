@@ -40,6 +40,8 @@ argparser.add_argument('--external_mongo', help='Use an external MongoDB instanc
 argparser.add_argument('--external_mongo_address', help='Address/Hostname of the external MongoDB instance. Only valid if --external_mongo is specified.')
 argparser.add_argument('--external_mongo_dbname', help='Database name of the external MongoDB instance. Only valid if --external_mongo is specified.')
 argparser.add_argument('--saml', help='Make the Apache Sling SAML2 Handler OSGi bundle available for SAML-based logins', action='store_true')
+argparser.add_argument('--saml_idp_destination', help='URL to redirect to for SAML logins')
+argparser.add_argument('--server_address', help='Domain name (or Domain name:port) that the public will use for accessing this CARDS deployment')
 argparser.add_argument('--ssl_proxy', help='Protect this service with SSL/TLS (use https:// instead of http://)', action='store_true')
 argparser.add_argument('--sling_admin_port', help='The localhost TCP port which should be forwarded to cardsinitial:8080', type=int)
 argparser.add_argument('--subnet', help='Manually specify the subnet of IP addresses to be used by the containers in this docker-compose environment (eg. --subnet 172.99.0.0/16)')
@@ -323,14 +325,36 @@ if ENABLE_NCR:
   yaml_obj['services']['proxy']['depends_on'].append('neuralcr')
 
 if SSL_PROXY:
-  shutil.copyfile("proxy/https_000-default.conf", "proxy/000-default.conf")
+  if args.saml:
+    shutil.copyfile("proxy/https_saml_000-default.conf", "proxy/000-default.conf")
+  else:
+    shutil.copyfile("proxy/https_000-default.conf", "proxy/000-default.conf")
   #Volume mount the SSL certificate and key
   yaml_obj['services']['proxy']['volumes'] = []
   yaml_obj['services']['proxy']['volumes'].append("./SSL_CONFIG/certificate.crt:/etc/cert/certificate.crt:ro")
   yaml_obj['services']['proxy']['volumes'].append("./SSL_CONFIG/certificatekey.key:/etc/cert/certificatekey.key:ro")
   yaml_obj['services']['proxy']['volumes'].append("./SSL_CONFIG/certificatechain.crt:/etc/cert/certificatechain.crt:ro")
 else:
-  shutil.copyfile("proxy/http_000-default.conf", "proxy/000-default.conf")
+  if args.saml:
+    shutil.copyfile("proxy/http_saml_000-default.conf", "proxy/000-default.conf")
+  else:
+    shutil.copyfile("proxy/http_000-default.conf", "proxy/000-default.conf")
+
+if args.saml:
+  yaml_obj['services']['proxy']['environment'] = []
+
+  if args.saml_idp_destination:
+    idp_url = args.saml_idp_destination
+  else:
+    idp_url = input("Enter the SAML2 IdP destination: ")
+
+  if args.server_address:
+    cards_server_address = args.server_address
+  else:
+    cards_server_address = input("Enter the public-facing server address for this deployment (eg. localhost:8080): ")
+
+  yaml_obj['services']['proxy']['environment'].append("SAML_IDP_DESTINATION={}".format(idp_url))
+  yaml_obj['services']['proxy']['environment'].append("CARDS_HOST_AND_PORT={}".format(cards_server_address))
 
 #Setup the internal network
 print("Configuring the internal network")
