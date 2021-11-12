@@ -18,4 +18,4 @@
 # under the License.
 
 GIT_ROOT=$(git rev-parse --show-toplevel) || exit 0
-(cd $GIT_ROOT && git archive --format=tar HEAD) > COMPLETE_SOURCE_CODE.tar
+(cd "$GIT_ROOT" && git archive --format=tar HEAD) > COMPLETE_SOURCE_CODE.tar
