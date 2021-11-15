@@ -7,3 +7,5 @@ secrets
 SSL_CONFIG
 SLING
 __pycache__
+samlKeystore.p12
+proxy/000-default.conf
