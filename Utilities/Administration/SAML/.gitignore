@@ -1,0 +1,4 @@
+samlKeystore.p12
+samlSPcert.pem
+samlSPkey.pem
+signingCert.pem
