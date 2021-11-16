@@ -222,15 +222,6 @@
           }
         }
       },
-      "computed": {
-        "expression": "string",
-        "displayMode" : {
-          "input" : {},
-          "formatted" : {},
-          "hidden": {}
-        },
-        "unitOfMeasurement" : "string"
-      },
       "time": {
         "minAnswers": {"0":{}, "1":{}},
         "dateFormat": "string",
