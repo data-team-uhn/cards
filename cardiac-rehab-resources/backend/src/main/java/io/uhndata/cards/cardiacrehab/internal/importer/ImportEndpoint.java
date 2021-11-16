@@ -35,7 +35,7 @@ import org.osgi.service.component.annotations.Reference;
 @SlingServletResourceTypes(
     resourceTypes = { "cards/SubjectsHomepage" },
     selectors = { "s3push" })
-public class ExportEndpoint extends SlingSafeMethodsServlet
+public class ImportEndpoint extends SlingSafeMethodsServlet
 {
     @Reference
     private ResourceResolverFactory resolverFactory;

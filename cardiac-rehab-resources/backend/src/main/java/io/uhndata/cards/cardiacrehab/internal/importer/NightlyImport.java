@@ -47,15 +47,15 @@ public class NightlyImport
     protected void activate(ComponentContext componentContext) throws Exception
     {
         LOGGER.info("NightlyImport activating");
-        final String nightlyExportSchedule = System.getenv("NIGHTLY_IMPORT_SCHEDULE");
-        ScheduleOptions options = this.scheduler.EXPR(nightlyExportSchedule);
+        final String nightlyImportSchedule = System.getenv("NIGHTLY_IMPORT_SCHEDULE");
+        ScheduleOptions options = this.scheduler.EXPR(nightlyImportSchedule);
         options.name("NightlyImport");
         options.canRunConcurrently(true);
 
-        final Runnable exportJob = new ImportTask(this.resolverFactory);
+        final Runnable importJob = new ImportTask(this.resolverFactory);
 
         try {
-            this.scheduler.schedule(exportJob, options);
+            this.scheduler.schedule(importJob, options);
         } catch (Exception e) {
             LOGGER.error("NightlyImport Failed to schedule: {}", e.getMessage(), e);
         }
