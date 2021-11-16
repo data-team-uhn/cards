@@ -42,8 +42,6 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.log.LogService;
 
 /**
  * A servlet that extends the normal JSON object of a VocabularyTermNode by replacing IDs with objects containing their
@@ -67,9 +65,6 @@ public class VocabularyTermInfoServlet extends SlingSafeMethodsServlet
 
     /* Copying over every child tends to bloat the response, so we only copy a subset of the data */
     private static final String[] KEYS_TO_COPY = { "identifier", "label", "@path" };
-
-    @Reference
-    private LogService logger;
 
     @Override
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
@@ -187,6 +182,7 @@ public class VocabularyTermInfoServlet extends SlingSafeMethodsServlet
 
     /**
      * Add the children of the given node to itself.
+     *
      * @param resource The resource whose children we're looking for
      * @param resolver A reference to a resource resolver
      * @param parentPath The path of the vocabulary to search through
