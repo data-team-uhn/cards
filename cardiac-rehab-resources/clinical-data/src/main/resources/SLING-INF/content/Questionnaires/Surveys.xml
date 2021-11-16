@@ -22,12 +22,12 @@
 	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
 	<property>
 		<name>maxPerSubject</name>
-		<value>2</value>
+		<value>5</value>
 		<type>Long</type>
 	</property>
 	<property>
 		<name>description</name>
-		<value>Visits 1, 8</value>
+		<value>Visits 1, 8, 9, 14, 21</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -118,6 +118,48 @@
 				<property>
 					<name>value</name>
 					<value>8</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>9</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>9</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>9</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>14</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>14</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>14</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>21</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>21</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>21</value>
 					<type>String</type>
 				</property>
 			</node>
