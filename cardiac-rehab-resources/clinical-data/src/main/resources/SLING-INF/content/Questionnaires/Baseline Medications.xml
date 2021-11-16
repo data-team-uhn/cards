@@ -22,12 +22,12 @@
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>maxPerSubject</name>
-		<value>4</value>
+		<value>5</value>
 		<type>Long</type>
 	</property>
 	<property>
 		<name>description</name>
-		<value>Visits 1, 5, 6, 8</value>
+		<value>Visits 1, 5, 6, 8, 9</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -146,6 +146,20 @@
 				<property>
 					<name>value</name>
 					<value>8</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>9</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>9</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>9</value>
 					<type>String</type>
 				</property>
 			</node>
