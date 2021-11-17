@@ -478,7 +478,7 @@ or
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
+				<name>entryMode</name>
 				<value>computed</value>
 				<type>String</type>
 			</property>
@@ -504,7 +504,7 @@ This question should copy the previous question
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
+				<name>entryMode</name>
 				<value>computed</value>
 				<type>String</type>0
 			</property>
@@ -1074,7 +1074,7 @@ The entered minutes
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
+				<name>entryMode</name>
 				<value>computed</value>
 				<type>String</type>
 			</property>
@@ -1129,7 +1129,7 @@ or
 					<type>String</type>
 				</property>
 				<property>
-					<name>dataType</name>
+					<name>entryMode</name>
 					<value>computed</value>
 					<type>String</type>
 				</property>
@@ -1180,7 +1180,7 @@ or
 					<type>String</type>
 				</property>
 				<property>
-					<name>dataType</name>
+					<name>entryMode</name>
 					<value>computed</value>
 					<type>String</type>
 				</property>
@@ -1231,7 +1231,7 @@ or
 					<type>String</type>
 				</property>
 				<property>
-					<name>dataType</name>
+					<name>entryMode</name>
 					<value>computed</value>
 					<type>String</type>
 				</property>
