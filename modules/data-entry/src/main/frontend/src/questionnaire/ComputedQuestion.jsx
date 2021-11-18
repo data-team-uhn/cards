@@ -328,7 +328,7 @@ const StyledComputedQuestion = withStyles(QuestionnaireStyle)(ComputedQuestion);
 export default StyledComputedQuestion;
 
 AnswerComponentManager.registerAnswerComponent((definition) => {
-  if (definition.dataType === "computed" || definition.entryMode === "computed") {
+  if (definition.entryMode === "computed") {
     return [StyledComputedQuestion, 80];
   }
 });
