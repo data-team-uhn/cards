@@ -4,9 +4,9 @@
     "description": "markdown",
     "dataType": {
       "text" : {
-        "minAnswers": "long",
         "entryMode": {
           "user": {
+            "minAnswers": "long",
             "maxAnswers": "long",
             "validationRegexp": "string",
             "enableSeparatorDetection": "boolean",
@@ -24,6 +24,7 @@
             }
           },
           "computed": {
+            "minAnswers": {"0":{}, "1":{}},
             "expression": "string",
             "displayMode" : {
               "input" : {},
@@ -70,10 +71,10 @@
         }
       },
       "long": {
-        "minAnswers": "long",
         "unitOfMeasurement" : "string",
         "entryMode": {
           "user": {
+            "minAnswers": "long",
             "maxAnswers": "long",
             "minValue": "double",
             "maxValue": "double",
@@ -100,6 +101,7 @@
             }
           },
           "computed": {
+            "minAnswers": {"0":{}, "1":{}},
             "expression": "string",
             "displayMode" : {
               "input" : {},
@@ -110,10 +112,10 @@
         }
       },
       "decimal": {
-        "minAnswers": "long",
         "unitOfMeasurement" : "string",
         "entryMode": {
           "user": {
+            "minAnswers": "long",
             "maxAnswers": "long",
             "minValue": "double",
             "maxValue": "double",
@@ -140,6 +142,7 @@
             }
           },
           "computed": {
+            "minAnswers": {"0":{}, "1":{}},
             "expression": "string",
             "displayMode" : {
               "input" : {},
@@ -150,10 +153,10 @@
         }
       },
       "double": {
-        "minAnswers": "long",
         "unitOfMeasurement" : "string",
         "entryMode": {
           "user": {
+            "minAnswers": "long",
             "maxAnswers": "long",
             "minValue": "double",
             "maxValue": "double",
@@ -172,6 +175,7 @@
             }
           },
           "computed": {
+            "minAnswers": {"0":{}, "1":{}},
             "expression": "string",
             "displayMode" : {
               "input" : {},
@@ -195,9 +199,9 @@
           "orderProperty": "cards:Vocabulary",
           "identifierProperty": "identifier"
         },
-        "minAnswers": "long",
         "entryMode": {
           "user": {
+            "minAnswers": "long",
             "maxAnswers": "long",
             "enableNotes": "boolean",
             "displayMode": {
@@ -213,6 +217,7 @@
             }
           },
           "computed": {
+            "minAnswers": {"0":{}, "1":{}},
             "expression": "string",
             "displayMode" : {
               "input" : {},
