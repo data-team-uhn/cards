@@ -264,13 +264,33 @@
 
 //-----------------------------------------------------------------------------
 // Description for the Questionnaire entry type: Question matrix
-[cards:QuestionMatrix] > cards:Question
+[cards:QuestionMatrix] > cards:Section
 
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/QuestionMatrix" mandatory autocreated protected
 
   // Hardcode the resource supertype.
-  - sling:resourceSuperType (STRING) = "cards:Question" mandatory autocreated protected
+  - sling:resourceSuperType (STRING) = "cards:Section" mandatory autocreated protected
+
+  - displayMode (string) = 'matrix' autocreated
+
+  // Same as for cards:Question.
+  - minAnswers (long) = '0' autocreated
+
+  // Same as for cards:Question.
+  - maxAnswers (long) = '0' autocreated
+
+  // Which type of data is being recorded?
+  // The possible values are limited to:
+  // - text: simple text, either from a list of predefined options, or free text entered by the user
+  // - long, double, decimal: a number
+  // - vocabulary: a term from a vocabulary
+  - dataType (string) = 'text' mandatory autocreated
+
+  // Children
+
+  // The list of predefined options displayed to the user.
+  + * (cards:AnswerOption) = cards:AnswerOption
 
   // the list of (sub-)questions (representing a row in the matrix)
   + * (cards:Question) = cards:Question
