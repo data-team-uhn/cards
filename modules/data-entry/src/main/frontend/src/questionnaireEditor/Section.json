@@ -8,7 +8,34 @@
         "initialNumberOfInstances" : "long"
       },
       "header" : {},
-      "footer" : {}
+      "footer" : {},
+      "matrix" : {
+        "minAnswers": "long",
+	    "maxAnswers": "long",
+	    "dataType": {
+	      "text": {
+	        "answerOptions" : "textOptions"
+	      },
+	      "long": {
+	        "answerOptions" : "numberOptions"
+	      },
+	      "decimal": {
+	        "answerOptions" : "numberOptions"
+	      },
+	      "vocabulary": {
+	        "answerOptions" : "textOptions",
+	        "sourceVocabularies": {
+	          "type": "list",
+	          "primaryType": "cards:Vocabulary",
+	          "saveType": "String",
+	          "displayProperty": "identifier",
+	          "orderProperty": "cards:Vocabulary",
+	          "identifierProperty": "identifier"
+	        }
+	      }
+	    },
+	    "entries" : "questionOptions"
+	  }
     }
   }
 ]
