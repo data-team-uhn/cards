@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.uhndata.cards.cardiacrehab.internal.importer;
+package io.uhndata.cards.proms.internal.importer;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -34,7 +34,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(
     resourceTypes = { "cards/SubjectsHomepage" },
-    selectors = { "s3push" })
+    selectors = { "import" })
 public class ImportEndpoint extends SlingSafeMethodsServlet
 {
     @Reference
@@ -57,6 +57,6 @@ public class ImportEndpoint extends SlingSafeMethodsServlet
         final Runnable importJob = new ImportTask(this.resolverFactory);
         final Thread thread = new Thread(importJob);
         thread.start();
-        out.write("S3 export started");
+        out.write("Data import started");
     }
 }
