@@ -17,16 +17,24 @@
 #  under the License.
 #
 
-create service user sling-event with path system/sling
+# Backend code specific to the Proms project
+[feature name=proms]
 
-create path (sling:Folder) /var
-create path (sling:Folder) /var/eventing
+[artifacts runModes=proms startLevel=10]
+    io.uhndata.cards/proms-backend
+    com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/2.6.7
+    io.netty/netty-codec-http/4.1.17.Final
+    io.netty/netty-codec/4.1.17.Final
+    io.netty/netty-handler/4.1.17.Final
+    io.netty/netty-buffer/4.1.17.Final
+    io.netty/netty-common/4.1.17.Final
+    io.netty/netty-transport/4.1.17.Final
+    io.netty/netty-resolver/4.1.17.Final
+    software.amazon.ion/ion-java/1.0.2
+    joda-time/joda-time/2.8.1
 
-set principal ACL for sling-event
-    allow   jcr:read,rep:write    on /var/eventing
-end
-
-[artifacts runModes=proms]
-    io.uhndata.cards/proms-resources-clinical-data/${cards.version}
-    io.uhndata.cards/proms-backend/${cards.version}
-    io.uhndata.cards/proms-frontend/${cards.version}
+[configurations]
+  org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended-cards-export
+    user.mapping=[
+      "io.uhndata.cards.proms\=sling-readall"
+    ]

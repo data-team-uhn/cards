@@ -141,11 +141,11 @@
 		</property>
 	</node>
 	<node>
-		<name>fihr_id</name>
+		<name>fhir_id</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>FIHR id</value>
+			<value>FHIR id</value>
 			<type>String</type>
 		</property>
 		<property>
