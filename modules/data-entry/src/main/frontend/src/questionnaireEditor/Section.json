@@ -2,7 +2,7 @@
   {
     "label": "string",
     "description": "markdown",
-    "displayMode" : {
+    "displayMode": {
       "default" : {
         "recurrent": "boolean",
         "initialNumberOfInstances" : "long"
@@ -34,8 +34,7 @@
 	          "identifierProperty": "identifier"
 	        }
 	      }
-	    },
-	    "entries" : "questionOptions"
+	    }
 	  }
     }
   }

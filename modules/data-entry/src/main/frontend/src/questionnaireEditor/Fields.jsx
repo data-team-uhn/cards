@@ -81,7 +81,8 @@ let Fields = (props) => {
       </Grid>
       {
         typeof(value) == "object" && typeof(value[data[key]]) == "object"?
-        Object.entries(value[data[key]]).filter(([k, _]) => !k.startsWith("//")).map(([k, v]) => (typeof(data[k]) != 'undefined' ? displayStaticField(k, v) : ''))
+        Object.entries(value[data[key]]).filter(([k, _]) => !k.startsWith("//"))
+                                        .map(([k, v]) => (typeof(data[k]) != 'undefined' ? displayStaticField(k, v) : ''))
         : ""
       }
     </React.Fragment>);
@@ -91,9 +92,11 @@ let Fields = (props) => {
   return <FieldsProvider>
       {
         edit ?
-          Object.entries(JSON).filter(([key, _]) => !key.startsWith("//")).map(([key, value]) => displayEditField(key, value))
+          Object.entries(JSON).filter(([key, _]) => !key.startsWith("//"))
+                              .map(([key, value]) => displayEditField(key, value))
         :
-          Object.entries(JSON).filter(([key, _]) => !key.startsWith("//")).map(([key, value]) => (typeof(data[key]) != 'undefined' ? displayStaticField(key, value) : ''))
+          Object.entries(JSON).filter(([key, _]) => !key.startsWith("//"))
+                              .map(([key, value]) => (typeof(data[key]) != 'undefined' ? displayStaticField(key, value) : ''))
       }
     </FieldsProvider>;
 }

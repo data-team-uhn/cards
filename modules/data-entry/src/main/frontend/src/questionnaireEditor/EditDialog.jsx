@@ -31,7 +31,8 @@ import {
   withStyles
 } from "@material-ui/core";
 
-import Fields from './Fields'
+import Fields from './Fields';
+import { MATRIX_TYPES } from "../questionnaire/FormEntry";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
 // Dialog for editing or creating questions or sections
@@ -50,7 +51,8 @@ let EditDialog = (props) => {
   let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
   let [ error, setError ] = useState('');
   let [ variableNameError, setVariableNameError ] = useState('');
-  let json = require(`./${type}.json`);
+  let entitySpecsFilename = MATRIX_TYPES.includes(data["jcr:primaryType"]) ? "MatrixQuestion" : type;
+  let json = require(`./${entitySpecsFilename}.json`);
 
   let saveButtonRef = React.useRef();
   const globalLoginDisplay = useContext(GlobalLoginContext);
@@ -194,6 +196,7 @@ let EditDialog = (props) => {
                 data={targetExists && data || {}}
                 JSON={json[0]}
                 edit={true}
+                parentType={data["jcr:primaryType"]}
                 path={data["@path"] + (targetExists ? "" : `/${targetId}`)}
                 saveButtontRef={saveButtonRef}
                />
