@@ -33,7 +33,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import { FormProvider } from "./FormContext";
 import { FormUpdateProvider } from "./FormUpdateContext";
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
-import FormEntry, { QUESTION_TYPES, ENTRY_TYPES } from "./FormEntry";
+import FormEntry, { ENTRY_TYPES } from "./FormEntry";
 import FormPagination from "./FormPagination";
 import MainActionButton from "../components/MainActionButton.jsx";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
