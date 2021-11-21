@@ -52,7 +52,7 @@ import QuestionnairePreview from "./QuestionnairePreview";
 
 let _stripCardsNamespace = str => str.replaceAll(/^cards:/g, "");
 
-export const QUESTIONNAIRE_ITEM_NAMES = ENTRY_TYPES.map(type => _stripCardsNamespace(type));
+const QUESTIONNAIRE_ITEM_NAMES = ENTRY_TYPES.map(type => _stripCardsNamespace(type));
 
 // GUI for displaying details about a questionnaire.
 let Questionnaire = (props) => {
@@ -219,6 +219,7 @@ let Questionnaire = (props) => {
           <CreationMenu
             isMainAction={true}
             data={data}
+            menuItems={QUESTIONNAIRE_ITEM_NAMES}
             onClose={onCreate}
           />
         }
@@ -245,7 +246,7 @@ let QuestionnaireItemSet = (props) => {
         data ?
         Object.entries(data).filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
             .map(([key, value]) => (
-                    EntryType => <Grid item key={key}><EntryType data={value} onActionDone={onActionDone} classes={classes} /></Grid>
+                    EntryType => <Grid item key={key}><EntryType data={value} type={EntryType} onActionDone={onActionDone} classes={classes} /></Grid>
                   )(eval(_stripCardsNamespace(value['jcr:primaryType'])))
                 )
         : <Grid item><Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid></Grid>
@@ -348,25 +349,34 @@ Question.propTypes = {
   data: PropTypes.object.isRequired
 };
 
+let QuestionMatrix = (props) => {
+  return (<Section {...props}/>);
+};
+
 let Section = (props) => {
-  let { onActionDone, data, classes } = props;
+  let { onActionDone, data, type, classes } = props;
   let [ sectionData, setSectionData ] = useState(data);
   let [ doHighlight, setDoHighlight ] = useState(data.doHighlight);
 
   let extractProperties = () => {
     let p = Array();
     let spec = require('../questionnaireEditor/Section.json');
-    Object.keys(spec[0]).filter(key => {return (key != 'label') && !!sectionData[key]}).map(key => {
-      p.push({name: key, label: key.charAt(0).toUpperCase() + key.slice(1).replace( /([A-Z])/g, " $1" ).toLowerCase(), value: sectionData[key] + "", type: spec[0][key]});
-    });
+    Object.keys(spec[0]).filter( key => {return (key != 'label') && !!sectionData[key]} )
+                        .map( key => { p.push({
+                                         name: key,
+                                         label: key.charAt(0).toUpperCase() + key.slice(1).replace( /([A-Z])/g, " $1" ).toLowerCase(),
+                                         value: sectionData[key] + "",
+                                         type: spec[0][key]
+                                       });
+                                     });
     // Find conditionals
-    Object.entries(sectionData).filter(([key, value]) => (value['jcr:primaryType'] == 'cards:Conditional')).map(([key, value]) => {
-      p.push({
-        name: key + sectionData["@name"],
-        label: "Condition",
-        value : value?.operandA?.value.join(', ') + " " + value?.comparator + " " + value?.operandB?.value.join(', ')
-      });
-    })
+    Object.entries(sectionData).filter(([key, value]) => (value['jcr:primaryType'] == 'cards:Conditional'))
+                               .map(([key, value]) => { p.push({
+												          name: key + sectionData["@name"],
+												          label: "Condition",
+												          value : value?.operandA?.value.join(', ') + " " + value?.comparator + " " + value?.operandB?.value.join(', ')
+												        });
+												      });
     return p;
   }
 
@@ -388,7 +398,7 @@ let Section = (props) => {
     <QuestionnaireItemCard
         avatar="view_stream"
         avatarColor="orange"
-        type="Section"
+        type={type}
         data={sectionData}
         classes={classes}
         doHighlight={doHighlight}
@@ -396,6 +406,7 @@ let Section = (props) => {
             <CreationMenu
               data={sectionData}
               onClose={onCreate}
+              menuItems={ (type == "QuestionMatrix") ? ["Question"] : QUESTIONNAIRE_ITEM_NAMES }
             />
         }
         onActionDone={reloadData}

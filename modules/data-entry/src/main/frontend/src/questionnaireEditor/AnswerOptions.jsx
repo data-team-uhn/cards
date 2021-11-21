@@ -46,6 +46,7 @@ import NotesIcon from '@material-ui/icons/Notes';
 import { stringToHash } from "../escape.jsx";
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { MATRIX_TYPES } from "../questionnaire/FormEntry";
 
 import ComposedIcon from "../components/ComposedIcon.jsx";
 
@@ -105,7 +106,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 let AnswerOptions = (props) => {
-  const { objectKey, value, data, path, saveButtonRef } = props;
+  const { objectKey, value, data, path, parentType, saveButtonRef } = props;
   const classes = useStyles();
   let [ options, setOptions ] = useState(extractSortedOptions(data));
   let [ deletedOptions, setDeletedOptions ] = useState([]);
@@ -131,18 +132,19 @@ let AnswerOptions = (props) => {
                                                                                       "noneOfTheAbove" : false,
                                                                                       "@path" : path + "/NoneOfTheAbove"});
 
-  const specialOptionsInfo = [
+  let specialOptionsInfo = [
     {
       tooltip : "This option behaves as 'None' or 'N/A', and unselects/removes all other options upon selection.",
       switchTooltip: "Enable N/A",
       data : notApplicableOption,
       setter : setNotApplicableOption,
       label: "notApplicable",
-      defaultOrder: 0,
+      defaultOrder: MATRIX_TYPES.includes(parentType) ? 99999 : 0,
       isDuplicate: isNADuplicate,
       duplicateSetter: setIsNADuplicate
-    },
-    {
+    }
+  ];
+  !MATRIX_TYPES.includes(parentType) && specialOptionsInfo.push( {
       tooltip : "This option behaves as 'None of the above'. When selected, it removes all existing selections except those entered by the user in the input, if applicable.",
       switchTooltip: "Enable 'None of the above'",
       data : noneOfTheAboveOption,
@@ -152,7 +154,7 @@ let AnswerOptions = (props) => {
       isDuplicate: isNoneDuplicate,
       duplicateSetter: setIsNoneDuplicate
     }
-  ]
+  );
 
   let getItemStyle = (isDragging, draggableStyle) => ({
     // change background colour if dragging
