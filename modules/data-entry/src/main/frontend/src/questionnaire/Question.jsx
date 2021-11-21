@@ -29,7 +29,9 @@ import FormattedText from "../components/FormattedText.jsx";
 // GUI for displaying answers
 function Question (props) {
   let { classes, children, questionDefinition, existingAnswer, isEdit, pageActive, preventDefaultView, defaultDisplayFormatter } = props;
-  let { text, compact, description, disableInstructions } = { ...questionDefinition, ...props }
+  let { text, label, compact, description, disableInstructions } = { ...questionDefinition, ...props }
+
+  let answers = entryDefinition["jcr:primaryType"] === "cards:QuestionMatrix" ? existingAnswer : Array.of(existingAnswer?.[1]["displayedValue"]).flat();
 
   return (
     <Card
@@ -40,7 +42,7 @@ function Question (props) {
         // Note that we need to preserve the hierarchy in which we place children
         // so that pageActive changing does not cause children to lose state
         pageActive && <CardHeader
-          title={text}
+          title={text || label}
           titleTypographyProps={{ variant: 'h6' }}
           subheader={<FormattedText variant="caption">{description}</FormattedText>}
           subheaderTypographyProps={{ component: "div" }}

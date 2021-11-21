@@ -157,7 +157,7 @@ function Filters(props) {
           newQuestionDefinitions[path+title] = object;
           newFilterableUUIDs[path+title] = object["jcr:uuid"];
           newFilterableTitles[path+title] = object["text"];
-        } else if (object["jcr:primaryType"] == "cards:Section") {
+        } else if (object["jcr:primaryType"] == "cards:Section" || object["jcr:primaryType"] == "cards:QuestionMatrix") {
           // If this is an cards:Section, recurse deeper
           retFields.push(...parseSectionOrQuestionnaire(object, path+title+"/"));
         }
