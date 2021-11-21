@@ -40,13 +40,15 @@ import TextQuestion from "./TextQuestion";
 import ComputedQuestion from "./ComputedQuestion";
 import VocabularyQuestion from "./VocabularyQuestion";
 import FileQuestion from "./FileQuestion";
+import QuestionnaireMatrix from "./QuestionnaireMatrix";
 
 import FormattedText from "../components/FormattedText";
 
 export const QUESTION_TYPES = ["cards:Question"];
 export const SECTION_TYPES = ["cards:Section"];
 export const INFO_TYPES = ["cards:Information"];
-export const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES).concat(INFO_TYPES);
+export const MATRIX_TYPES = ["cards:QuestionMatrix"];
+export const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES).concat(MATRIX_TYPES).concat(INFO_TYPES);
 
 /**
  * Method responsible for displaying a question from the questionnaire, along with its answer(s).
@@ -116,7 +118,7 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, o
         sectionAnswersState={sectionAnswersState}
         isEdit={isEdit}
         instanceId={instanceId || ''}
-        />
+      />
     </Grid>
   );
 };
@@ -173,6 +175,67 @@ let displayInformation = (infoDefinition, key, classes, pageActive, isEdit) => {
 }
 
 /**
+ * Method responsible for displaying a matrix section from the questionnaire.
+ *
+ * @param {Object} sectionDefinition the section definition JSON
+ * @param {string} path the path to the parent of the question
+ * @param {Object} existingAnswer form data that may include answers already submitted for this component
+ * @param {string} key the node name of the question definition JCR node
+ * @param {Object} classes style classes
+ * @returns a React component that renders the matrix section
+ */
+let displayMatrix = (sectionDefinition, path, existingAnswer, key, classes, onChange, pageActive, isEdit, instanceId) => {
+  const questionRef = useRef();
+  const anchor = decodeURIComponent(location.hash.substr(1));
+  // create a ref to store the question container DOM element
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      questionRef?.current?.scrollIntoView({block: "center"});
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [questionRef]);
+
+  // Find the existing AnswerSection for this section, if available
+  const existingSectionAnswer = existingAnswer && Object.entries(existingAnswer)
+    .find(([key, value]) => value["sling:resourceType"] == "cards/AnswerSection"
+      && value["section"]["jcr:uuid"] === sectionDefinition["jcr:uuid"]);
+
+  const existingAnswers = Object.entries(existingSectionAnswer.?[1])
+    .filter(answer => answer[1]["sling:resourceSuperType"]
+      && answer[1]["sling:resourceSuperType"] === "cards/Answer");
+
+  // Do not show anything if in view mode and no value is recorded yet
+  if (!isEdit) {
+    if (existingAnswers.filter(answer => answer[1]["displayedValue"]).length == 0) {
+      return null;
+    }
+  }
+
+  // if autofocus is needed and specified in the url
+  const doHighlight = existingAnswers.filter(answer => anchor == answer[1].question["@path"]).length > 0;
+
+  let gridClasses = [];
+  if (doHighlight) {
+    gridClasses.push(classes.focusedQuestionnaireItem);
+  }
+  if (pageActive === false || sectionDefinition.displayMode == 'hidden') {
+    gridClasses.push(classes.hiddenQuestion);
+  }
+
+  return (
+    <Grid item key={key} ref={doHighlight ? questionRef : undefined} className={gridClasses.join(" ")}>
+      <QuestionnaireMatrix
+        sectionDefinition={sectionDefinition}
+        existingSectionAnswer={existingSectionAnswer}
+        existingAnswers={existingAnswers}
+        path={path}
+        isEdit={isEdit}
+      />
+    </Grid>
+  );
+};
+
+/**
  * Display a question or section from the questionnaire, along with its answer(s).
  *
  * @param {Object} entryDefinition the definition for this entry JSON
@@ -194,5 +257,8 @@ let displayInformation = (infoDefinition, key, classes, pageActive, isEdit) => {
     return displaySection(entryDefinition, path, depth, existingAnswers, keyProp, onChange, visibleCallback, pageActive, isEdit, instanceId, contentOffset);
   } else if (INFO_TYPES.includes(entryDefinition["jcr:primaryType"])) {
     return displayInformation(entryDefinition, keyProp, classes, pageActive, isEdit);
+  } else if (MATRIX_TYPES.includes(entryDefinition["jcr:primaryType"])) {
+    if (visibleCallback) visibleCallback(true);
+    return displayMatrix(entryDefinition, path, existingAnswers, keyProp, classes, pageActive, isEdit, instanceId);
   }
 }

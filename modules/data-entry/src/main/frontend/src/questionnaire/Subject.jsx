@@ -25,7 +25,7 @@ import moment from "moment";
 import FormattedText from "../components/FormattedText";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import NewFormDialog from "../dataHomepage/NewFormDialog";
-import { QUESTION_TYPES, SECTION_TYPES, ENTRY_TYPES } from "./FormEntry.jsx";
+import { QUESTION_TYPES, SECTION_TYPES, MATRIX_TYPES, ENTRY_TYPES } from "./FormEntry.jsx";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import MaterialTable, { MTablePagination } from 'material-table';
@@ -637,6 +637,11 @@ function FormData(props) {
   else return;
 }
 
+// Display the question matrix found within sections
+export function displayQuestionMatrix(entryDefinition, data, key, classes) {
+
+}
+
 // Display the questions/question found within sections
 export function displayQuestion(entryDefinition, data, key, classes) {
   const existingQuestionAnswer = data && Object.entries(data)
@@ -647,6 +652,9 @@ export function displayQuestion(entryDefinition, data, key, classes) {
   const questionTitle = entryDefinition["text"];
   // check the display mode and don't display if "hidden"
   const isHidden = (entryDefinition.displayMode == "hidden");
+  if (isHidden) {
+    return null;
+  }
 
   if (typeof(existingQuestionAnswer?.[1]?.value) != "undefined") {
     let prettyPrintedAnswers = existingQuestionAnswer[1]["displayedValue"];
@@ -660,7 +668,7 @@ export function displayQuestion(entryDefinition, data, key, classes) {
         let paths = Array.of(existingQuestionAnswer[1]["value"]).flat();
         content = <>
           {prettyPrintedAnswers.map((answerValue, idx) => {
-            // Encode the filename to ensure special charactars don't result in a broken link
+            // Encode the filename to ensure special characters don't result in a broken link
             let path = paths[idx].slice(0, paths[idx].lastIndexOf(answerValue)) + encodeURIComponent(answerValue);
             return (
                 <Tooltip key={answerValue} title={"Download " + answerValue}>
@@ -706,7 +714,6 @@ export function displayQuestion(entryDefinition, data, key, classes) {
         break;
     }
     return (
-      isHidden ? null :
       <Typography variant="body2" className={classes.formPreviewQuestion} key={key}>
         {questionTitle}
         <span className={classes.formPreviewSeparator}>–</span>
@@ -720,8 +727,8 @@ export function displayQuestion(entryDefinition, data, key, classes) {
 // Handle questions and sections differently
 export function handleDisplay(entryDefinition, data, key, handleDisplayQuestion) {
     if (QUESTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
-      return handleDisplayQuestion(entryDefinition, data, key);
-    } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
+       return handleDisplayQuestion(entryDefinition, data, key);
+    } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"]) || MATRIX_TYPES.includes(entryDefinition["jcr:primaryType"])) {
       // If a section is found, filter questions inside the section
       let currentSection = entryDefinition;
       if (data.questionnaire) {
