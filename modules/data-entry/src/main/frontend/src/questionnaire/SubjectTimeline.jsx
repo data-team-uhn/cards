@@ -272,7 +272,6 @@ function SubjectTimeline(props) {
         currentAnswers = currentAnswers ? currentAnswers[1] : "";
         childSectionData = childSectionData.concat(handleDisplayNodes(Object.entries(currentSection), currentAnswers, formData));
       }
-    }
     })
     return currentSectionData.concat(childSectionData);
   }
