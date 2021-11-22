@@ -237,7 +237,7 @@ export default withStyles(QuestionnaireStyle)(Questionnaire);
 
 
 let QuestionnaireItemSet = (props) => {
-  let { children, onActionDone, data, classes } = props;
+  let { children, onActionDone, data, parentType, classes } = props;
 
   return (
     <Grid container direction="column" spacing={4} wrap="nowrap">
@@ -246,7 +246,15 @@ let QuestionnaireItemSet = (props) => {
         data ?
         Object.entries(data).filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
             .map(([key, value]) => (
-                    EntryType => <Grid item key={key}><EntryType data={value} type={EntryType} onActionDone={onActionDone} classes={classes} /></Grid>
+                    EntryType => <Grid item key={key}>
+                                   <EntryType
+                                     data={value}
+                                     type={_stripCardsNamespace(value['jcr:primaryType'])}
+                                     parentType={parentType}
+                                     onActionDone={onActionDone}
+                                     classes={classes}
+                                   />
+                                 </Grid>
                   )(eval(_stripCardsNamespace(value['jcr:primaryType'])))
                 )
         : <Grid item><Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid></Grid>
@@ -300,11 +308,14 @@ Information.propTypes = {
 // Details about a particular question in a questionnaire.
 // Not to be confused with the public Question component responsible for rendering questions inside a Form.
 let Question = (props) => {
-  let { onActionDone, data, classes } = props;
+  let { onActionDone, data, parentType, classes } = props;
   let [ questionData, setQuestionData ] = useState(data);
   let [ doHighlight, setDoHighlight ] = useState(data.doHighlight);
   let answers = Object.values(questionData).filter(value => value['jcr:primaryType'] == 'cards:AnswerOption')
                       .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder));
+  let json = parentType === "QuestionMatrix"
+             ? require('../questionnaireEditor/QuestionMatrix.json')[0]
+             : require('../questionnaireEditor/Question.json')[0];
 
   let reloadData = (newData) => {
     if (newData) {
@@ -337,9 +348,10 @@ let Question = (props) => {
         classes={classes}
         onActionDone={reloadData}
         doHighlight={doHighlight}
+        parentType={parentType}
     >
-      <Fields data={questionData} JSON={require('../questionnaireEditor/Question.json')[0]} edit={false} />
-      { answers.length > 0 && displayAnswers() }
+      <Fields data={questionData} JSON={json} edit={false} />
+      { parentType != "QuestionMatrix" && answers.length > 0 && displayAnswers() }
     </QuestionnaireItemCard>
   );
 };
@@ -350,7 +362,86 @@ Question.propTypes = {
 };
 
 let QuestionMatrix = (props) => {
-  return (<Section {...props}/>);
+  let { onActionDone, data, type, classes } = props;
+  let [ sectionData, setSectionData ] = useState(data);
+  let [ doHighlight, setDoHighlight ] = useState(data.doHighlight);
+  let answers = Object.values(data).filter(value => value['jcr:primaryType'] == 'cards:AnswerOption')
+                      .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder));
+
+  let extractPropertiesFromJson = (json, p) => {
+    Object.keys(json).filter( key => {return (key != 'label') && !!sectionData[key]} )
+                        .map( key => { p.push({
+                                         name: key,
+                                         label: key.charAt(0).toUpperCase() + key.slice(1).replace( /([A-Z])/g, " $1" ).toLowerCase(),
+                                         value: sectionData[key] + "",
+                                         type: json[key]
+                                       });
+                                     });
+  }
+
+  let extractProperties = () => {
+    let p = Array();
+    let spec = require('../questionnaireEditor/Section.json');
+    extractPropertiesFromJson(spec[0], p);
+    extractPropertiesFromJson(spec[0].displayMode.matrix, p);
+    return p;
+  }
+
+  let reloadData = (newData) => {
+    if (newData) {
+      setSectionData(newData);
+      setDoHighlight(true);
+    } else {
+      onActionDone();
+    }
+  }
+
+  let onCreate = (newData) => {
+    setSectionData({});
+    setSectionData(newData);
+  }
+
+  let displayAnswers = () => {
+    return (
+        <Grid container key={sectionData['jcr:uuid']} alignItems='flex-start' spacing={2}>
+          <Grid item key="label" xs={4}>
+            <Typography variant="subtitle2">Answer options:</Typography>
+          </Grid>
+          <Grid item key="values" xs={8}>
+            { answers.map(item => <Typography key={item['jcr:uuid']}>{(item.label || item.value) + (item.label ? (" (" + item.value + ")") : "")}</Typography>) }
+          </Grid>
+        </Grid>
+    );
+  };
+
+  return (
+    <QuestionnaireItemCard
+        avatar="view_stream"
+        avatarColor="orange"
+        type={type}
+        data={sectionData}
+        classes={classes}
+        doHighlight={doHighlight}
+        action={
+            <CreationMenu
+              data={sectionData}
+              onClose={onCreate}
+              menuItems={["Question"]}
+            />
+        }
+        onActionDone={reloadData}
+    >
+      <QuestionnaireItemSet
+        data={sectionData}
+        classes={classes}
+        onActionDone={onActionDone}
+        parentType={type}
+      >
+         <FieldsGrid fields={extractProperties()} classes={classes}/>
+         { answers.length > 0 && displayAnswers() }
+      </QuestionnaireItemSet>
+    </QuestionnaireItemCard>
+  );
 };
 
 let Section = (props) => {
@@ -406,7 +497,7 @@ let Section = (props) => {
             <CreationMenu
               data={sectionData}
               onClose={onCreate}
-              menuItems={ (type == "QuestionMatrix") ? ["Question"] : QUESTIONNAIRE_ITEM_NAMES }
+              menuItems={ QUESTIONNAIRE_ITEM_NAMES }
             />
         }
         onActionDone={reloadData}
@@ -415,6 +506,7 @@ let Section = (props) => {
         data={sectionData}
         classes={classes}
         onActionDone={onActionDone}
+        parentType={type}
       >
          <FieldsGrid fields={extractProperties()} classes={classes}/>
       </QuestionnaireItemSet>

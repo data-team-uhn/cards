@@ -633,10 +633,9 @@ const questionnaireStyle = theme => ({
       flexBasis: "100%",
       paddingLeft: theme.spacing(4)
     },
-    tableHeader: {
-      paddingLeft: 0,
-      fontWeight: "bold",
-      whiteSpace: 'nowrap',
+    tableCell: {
+      textAlign: "middle",
+      fontWeight: "bold"
     },
 });
 

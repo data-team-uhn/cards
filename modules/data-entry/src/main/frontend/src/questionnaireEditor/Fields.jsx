@@ -104,7 +104,9 @@ let Fields = (props) => {
 Fields.propTypes = {
   data: PropTypes.object.isRequired,
   JSON: PropTypes.object.isRequired,
-  edit: PropTypes.bool.isRequired
+  edit: PropTypes.bool.isRequired,
+  isMatrix: PropTypes.bool,
+  onChange: PropTypes.func
 };
 
 export default withStyles(QuestionnaireStyle)(Fields);
