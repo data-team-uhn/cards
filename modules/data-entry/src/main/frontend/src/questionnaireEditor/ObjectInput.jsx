@@ -35,10 +35,10 @@ import QuestionComponentManager from "../questionnaireEditor/QuestionComponentMa
 // Object Input field used by Edit dialog component
 
 let ObjectInput = (props) => {
-  let { objectKey, value, data, ...rest } = props;
+  let { objectKey, value, data, isMatrix, onChange, ...rest } = props;
   const defaultValue = data[objectKey] || (Object.keys(value || {})[0] || '');
   let [ selectedValue, setSelectedValue ] = useState(defaultValue);
-  
+
   return (
     <>
     <EditorInput name={objectKey}>
@@ -48,6 +48,7 @@ let ObjectInput = (props) => {
         defaultValue={defaultValue}
         onChange={(event) => {
           setSelectedValue(event.target.value);
+          onChange && onChange(event.target.value);
         }}>
         { typeof(value) === 'object' && Object.keys(value).map((name, val) =>
           <MenuItem key={val} name={name} id={name} value={name}>
@@ -57,7 +58,7 @@ let ObjectInput = (props) => {
       </Select>
     </EditorInput>
     { typeof(value) === 'object' && selectedValue != '' && typeof (value[selectedValue]) === 'object' ?
-        <Fields data={data} JSON={value[selectedValue]} edit={true} {...rest} />
+        <Fields data={data} JSON={value[selectedValue]} isMatrix={isMatrix || selectedValue === "matrix"} edit={true} {...rest} />
       :
       (selectedValue != '') && <Typography color="secondary" variant="subtitle2">Unsupported: {selectedValue}</Typography>
     }

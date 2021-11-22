@@ -44,8 +44,9 @@ let QuestionnaireMatrix = (props) => {
   const { maxAnswers, minAnswers } = {...sectionDefinition, ...props};
 
   // Use existing existingAnswer, Otherwise, create a new UUID
-  const sectionPath = path + "/" + existingSectionAnswer[0] || uuidv4();
+  const sectionPath = path + "/" + ( existingSectionAnswer ? existingSectionAnswer[0] || uuidv4() : "");
   const isRadio = maxAnswers === 1;
+  const ControlElement = isRadio ? Radio : Checkbox;
   const valueType = sectionDefinition.dataType.charAt(0).toUpperCase() + sectionDefinition.dataType.slice(1);
 
   const subquestions = Object.entries(sectionDefinition)
@@ -61,32 +62,34 @@ let QuestionnaireMatrix = (props) => {
     .map(value => [value.label || value.value, value.value, true, value.description, value.isDefault]);
 
   // Locate an option value referring to the "none of the above", if it exists
-  const naOption = naValue || Object.values(sectionDefinition)
-    .find((value) => value['notApplicable'])?.["value"];
+  const naOption = Object.values(sectionDefinition).find((value) => value['notApplicable'])?.["value"];
 
-  let initialSelection = existingAnswer?.filter(answer => answer[1]["displayedValue"])
+  let initialSelection = {};
+  existingAnswers?.filter(answer => answer[1]["displayedValue"])
     // The value can either be a single value or an array of values; force it into an array
-    .map(answer => {answer[0]: Array.of(answer[1].value).flat()
-      // Only the internal values are stored, turn them into pairs of [label, value] by using their displayedValue
-      .map((item, index) => [Array.of(answer[1].displayedValue).flat()[index], item]) });
+    .map(answer => { initialSelection[answer[0]] = Array.of(answer[1].value).flat()
+								        .map( (item, index) => [Array.of(answer[1].displayedValue).flat()[index], item] );
+				   });
 
   // When opening a form, if there is no existingAnswer but there are AnswerOptions specified as default values,
   // display those options as selected and ensure they get saved unless modified by the user, by adding them to initialSelection
-  if (!existingAnswer) {
+  if (!existingAnswers) {
     let defaultSelection = defaults.filter(item => item[IS_DEFAULT_ANSWER_POS])
        // If there are more default values than the specified maxAnswers, only take into account the first maxAnswers default values.
       .slice(0, maxAnswers || defaults.length)
       .map(item => [item[LABEL_POS], item[VALUE_POS]]);
-      
-    initialSelection = subquestions.map(subquestion => { subquestion[0]: defaultSelection});
+
+    subquestions.map(subquestion => { initialSelection[subquestion[0]] = defaultSelection; });
   }
+
 
   const [selection, setSelection] = useState(initialSelection);
 
-  let selectOption = (id, option, checked = false) => {
+  let selectOption = (id, option) => {
+    let checked = selection[id]?.find(item => item[VALUE_POS] == option[VALUE_POS]);
 
     setSelection( old => {
-      newSelection = old.slice();
+      let newSelection = old;
       
       // Selecting a radio button or naOption option will select only that option
       if (isRadio || naOption == option[VALUE_POS]) {
@@ -98,7 +101,7 @@ let QuestionnaireMatrix = (props) => {
 
       // If the element was already checked, remove it instead
       if (checked) {
-        newSelection[id] = answer.filter(item => !(String(item[VALUE_POS]) === String(option[VALUE_POS]) );
+        newSelection[id] = answer.filter(item => {return !(String(item[VALUE_POS]) === String(option[VALUE_POS]))});
         return newSelection;
       }
 
@@ -122,18 +125,20 @@ let QuestionnaireMatrix = (props) => {
 
   return (
     <Question
+      questionDefinition={sectionDefinition}
+      answers={existingAnswers}
       {...props}
       disableInstructions
       defaultDisplayFormatter={(subquestion, idx) => 
         <Grid container alignItems='flex-start' spacing={2} direction="row">
           <Grid item xs={6}>
-            <Typography variant="subtitle2">{subquestion[1].question.text}:</Typography>
+            <Typography variant="subtitle2">{subquestion[1].text}:</Typography>
           </Grid>
           <Grid item xs={6}>
             {subquestion[1]["displayedValue"]}
           </Grid>
         </Grid>
-        }
+      }
     >
       <Table>
         <TableHead>
@@ -141,7 +146,7 @@ let QuestionnaireMatrix = (props) => {
           { [["",""]].concat(defaults).map( (option, index) => (
                 <TableCell
                   key={index}
-                  className={classes.tableHeader}
+                  className={classes.tableCell}
                 >
                   {option[LABEL_POS]}
                 </TableCell>
@@ -152,35 +157,27 @@ let QuestionnaireMatrix = (props) => {
         <TableBody>
           { subquestions.map( (question, i) => (
             <TableRow key={question[0] + i}>
-              <TableCell>
-                { [["",""]].concat(defaults).map( (option, index) => index == 0 ? 
-                  (<>
-                    <Typography>{question[1].question.text}</Typography>
+              { [["",""]].concat(defaults).map( (option, index) => (
+                <TableCell key={question[0] + i + index} className={classes.tableCell}>
+                  { index == 0
+                    ? <>
+                    <Typography>{question[1].text}</Typography>
                     <AnswerInstructions
-                      currentAnswers={selection[question[0]]}
+                      currentAnswers={selection[question[0]].length}
                       {...sectionDefinition}
                       {...props}
-                     />
-                  </>) :
-                  isRadio ?
-                  (
-                    <Radio
-                      checked={selection[question[0]]?.find(item => item[VALUE_POS] == option[VALUE_POS])]}
-                      onChange={() => {selectOption(question[0], option, checked);}}
-                      className={classes.checkbox}
-                    />
-                  ) :
-                  (
-                    <Checkbox
+                     /> </>
+                    :
+                    <ControlElement
                       checked={selection[question[0]]?.find(item => item[VALUE_POS] == option[VALUE_POS])}
-                      onChange={() => {selectOption(question[0], option, checked);}}
+                      onChange={() => {selectOption(question[0], option);}}
                       className={classes.checkbox}
                     />
-                  )
+                  }
                 </TableCell>
-              </TableRow>
-            ) )
-           }
+              )) }
+            </TableRow>
+          )) }
         </TableBody>
       </Table>
       <input type="hidden" name={`${sectionPath}/jcr:primaryType`} value={"cards:AnswerSection"}></input>
@@ -188,8 +185,9 @@ let QuestionnaireMatrix = (props) => {
       <input type="hidden" name={`${sectionPath}/section@TypeHint`} value="Reference"></input>
       { subquestions.map(question => 
 	      <Answer
+	        key={question[1]["jcr:uuid"]}
 	        answers={selection[question[0]]}
-	        questionDefinition={question[1].question}
+	        questionDefinition={question[1]}
 	        existingAnswer={question[1]}
 	        answerNodeType={question[1]["jcr:primaryType"]}
 	        valueType={valueType}
@@ -201,16 +199,5 @@ let QuestionnaireMatrix = (props) => {
     </Question>
   )
 }
-
-QuestionnaireMatrix.propTypes = {
-  classes: PropTypes.object.isRequired,
-  sectionDefinition: PropTypes.shape({
-    text: PropTypes.string.isRequired,
-    expression: PropTypes.string.isRequired,
-    description: PropTypes.string,
-    displayMode: PropTypes.oneOf(['input', 'formatted', 'hidden']),
-    unitOfMeasurement: PropTypes.string
-  }).isRequired
-};
 
 export default withStyles(QuestionnaireStyle)(QuestionnaireMatrix);

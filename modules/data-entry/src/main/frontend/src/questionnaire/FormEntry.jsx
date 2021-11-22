@@ -184,7 +184,7 @@ let displayInformation = (infoDefinition, key, classes, pageActive, isEdit) => {
  * @param {Object} classes style classes
  * @returns a React component that renders the matrix section
  */
-let displayMatrix = (sectionDefinition, path, existingAnswer, key, classes, onChange, pageActive, isEdit, instanceId) => {
+let displayMatrix = (sectionDefinition, path, existingAnswer, key, classes, pageActive, isEdit, instanceId) => {
   const questionRef = useRef();
   const anchor = decodeURIComponent(location.hash.substr(1));
   // create a ref to store the question container DOM element
@@ -200,19 +200,19 @@ let displayMatrix = (sectionDefinition, path, existingAnswer, key, classes, onCh
     .find(([key, value]) => value["sling:resourceType"] == "cards/AnswerSection"
       && value["section"]["jcr:uuid"] === sectionDefinition["jcr:uuid"]);
 
-  const existingAnswers = Object.entries(existingSectionAnswer.?[1])
+  const existingAnswers = existingSectionAnswer && Object.entries(existingSectionAnswer[1])
     .filter(answer => answer[1]["sling:resourceSuperType"]
       && answer[1]["sling:resourceSuperType"] === "cards/Answer");
 
   // Do not show anything if in view mode and no value is recorded yet
   if (!isEdit) {
-    if (existingAnswers.filter(answer => answer[1]["displayedValue"]).length == 0) {
+    if (existingAnswers && existingAnswers.filter(answer => answer[1]["displayedValue"]).length == 0) {
       return null;
     }
   }
 
   // if autofocus is needed and specified in the url
-  const doHighlight = existingAnswers.filter(answer => anchor == answer[1].question["@path"]).length > 0;
+  const doHighlight = existingAnswers && existingAnswers.filter(answer => anchor == answer[1].question["@path"]).length > 0;
 
   let gridClasses = [];
   if (doHighlight) {

@@ -38,7 +38,7 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js"
 // Dialog for editing or creating questions or sections
 
 let EditDialog = (props) => {
-  const { data, type, targetExists, isOpen, onClose, onCancel, id } = props;
+  const { data, type, targetExists, isOpen, onClose, onCancel, id, parentType } = props;
   let [ targetId, setTargetId ] = useState('');
   // Marks that a save operation is in progress
   let [ saveInProgress, setSaveInProgress ] = useState();
@@ -49,9 +49,17 @@ let EditDialog = (props) => {
   // FIXME Replace this with a proper formState {unmodified, modified, saving, saved, saveFailed}
   let [ open, setOpen ] = useState(isOpen);
   let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
+  let [ primaryType, setPrimaryType ] = useState(`cards:${type}`);
   let [ error, setError ] = useState('');
-  let entitySpecsFilename = MATRIX_TYPES.includes(data["jcr:primaryType"]) ? "MatrixQuestion" : type;
+  let entitySpecsFilename = targetExists && type === "QuestionMatrix" ? "Section" 
+                          : (!targetExists && MATRIX_TYPES.includes(data["jcr:primaryType"]) || targetExists && parentType === "QuestionMatrix") ? "QuestionMatrix"
+                          : type;
+  
   let json = require(`./${entitySpecsFilename}.json`);
+
+  let onDisplayModeUpdate = (displayMode) => {
+    displayMode === "matrix" && type === "Section" && setPrimaryType("cards:QuestionMatrix");
+  };
 
   let saveButtonRef = React.useRef();
   const globalLoginDisplay = useContext(GlobalLoginContext);
@@ -85,7 +93,6 @@ let EditDialog = (props) => {
     } else {
       // If the entry doesn't exist, create it
       let newData = data;
-      const primaryType = `cards:${type}`;
       var request_data = new FormData(event.currentTarget);
       request_data.append('jcr:primaryType', primaryType);
       fetchWithReLogin(globalLoginDisplay,
@@ -166,7 +173,7 @@ let EditDialog = (props) => {
     <form action={data?.['@path']} method='POST' onSubmit={saveData} onChange={() => setLastSaveStatus(undefined) } key={id}>
        <Dialog disablePortal id='editDialog' open={open} onClose={() => { setOpen(false); onClose && onClose();} } fullWidth maxWidth='md'>
           <DialogTitle>
-          { dialogTitle() }
+            { dialogTitle() }
           </DialogTitle>
           <DialogContent>
             { error && <Typography color="error">{error}</Typography>}
@@ -176,9 +183,9 @@ let EditDialog = (props) => {
                 data={targetExists && data || {}}
                 JSON={json[0]}
                 edit={true}
-                parentType={data["jcr:primaryType"]}
                 path={data["@path"] + (targetExists ? "" : `/${targetId}`)}
                 saveButtontRef={saveButtonRef}
+                onChange={onDisplayModeUpdate}
                />
             </Grid>
           </DialogContent>

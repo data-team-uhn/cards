@@ -350,7 +350,7 @@
 
   // The questions and sub-sections that make up this section.
   // The conditions to display this section may also be listed as children
-  + * (cards:Question, cards:Section, cards:Information, cards:Conditional, cards:ConditionalGroup) = cards:Question
+  + * (cards:Question, cards:Section, cards:Information, cards:Conditional, cards:ConditionalGroup, cards:QuestionMatrix) = cards:Question
 
 //-----------------------------------------------------------------------------
 // A conditional group is a set of conditions that can be imposed on e.g. the display of a section.

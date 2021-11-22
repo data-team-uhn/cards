@@ -106,7 +106,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 let AnswerOptions = (props) => {
-  const { objectKey, value, data, path, parentType, saveButtonRef } = props;
+  const { objectKey, value, data, isMatrix, path, saveButtonRef } = props;
   const classes = useStyles();
   let [ options, setOptions ] = useState(extractSortedOptions(data));
   let [ deletedOptions, setDeletedOptions ] = useState([]);
@@ -131,7 +131,6 @@ let AnswerOptions = (props) => {
                                                                                       "label" : "None of the above",
                                                                                       "noneOfTheAbove" : false,
                                                                                       "@path" : path + "/NoneOfTheAbove"});
-
   let specialOptionsInfo = [
     {
       tooltip : "This option behaves as 'None' or 'N/A', and unselects/removes all other options upon selection.",
@@ -139,12 +138,11 @@ let AnswerOptions = (props) => {
       data : notApplicableOption,
       setter : setNotApplicableOption,
       label: "notApplicable",
-      defaultOrder: MATRIX_TYPES.includes(parentType) ? 99999 : 0,
+      defaultOrder: isMatrix ? 99999 : 0,
       isDuplicate: isNADuplicate,
       duplicateSetter: setIsNADuplicate
-    }
-  ];
-  !MATRIX_TYPES.includes(parentType) && specialOptionsInfo.push( {
+    },
+    {
       tooltip : "This option behaves as 'None of the above'. When selected, it removes all existing selections except those entered by the user in the input, if applicable.",
       switchTooltip: "Enable 'None of the above'",
       data : noneOfTheAboveOption,
@@ -154,7 +152,7 @@ let AnswerOptions = (props) => {
       isDuplicate: isNoneDuplicate,
       duplicateSetter: setIsNoneDuplicate
     }
-  );
+  ];
 
   let getItemStyle = (isDragging, draggableStyle) => ({
     // change background colour if dragging
@@ -366,7 +364,7 @@ let AnswerOptions = (props) => {
       { deletedOptions.map((value, index) =>
         <input type='hidden' name={`${value['@path']}@Delete`} value="0" key={value['@path']} />
       )}
-      { generateSpecialOptions(0) }
+      { !isMatrix && generateSpecialOptions(0) }
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="droppable">
           {(provided, snapshot) => (
@@ -463,7 +461,7 @@ let AnswerOptions = (props) => {
         })}
         multiline
         />
-      { generateSpecialOptions(1) }
+      { isMatrix ? generateSpecialOptions(0) : generateSpecialOptions(1) }
       <Popover
         disableBackdropClick
         disableEscapeKeyDown

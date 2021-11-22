@@ -28,10 +28,10 @@ import FormattedText from "../components/FormattedText.jsx";
 
 // GUI for displaying answers
 function Question (props) {
-  let { classes, children, questionDefinition, existingAnswer, isEdit, preventDefaultView, defaultDisplayFormatter } = props;
+  let { classes, children, questionDefinition, existingAnswer, answers, isEdit, preventDefaultView, defaultDisplayFormatter } = props;
   let { text, label, compact, description, disableInstructions } = { ...questionDefinition, ...props }
 
-  let answers = entryDefinition["jcr:primaryType"] === "cards:QuestionMatrix" ? existingAnswer : Array.of(existingAnswer?.[1]["displayedValue"]).flat();
+  let existingAnswers = answers || existingAnswer ? Array.of(existingAnswer.[1]["displayedValue"]).flat() : null;
 
   return (
     <Card
@@ -53,9 +53,9 @@ function Question (props) {
           />
         }
         { !isEdit && !preventDefaultView ?
-          ( answers ?
+          ( existingAnswers ?
             <List>
-              { answers.map( (item, idx) => {
+              { existingAnswers.map( (item, idx) => {
                 return(
                   <ListItem key={item}> {defaultDisplayFormatter ? defaultDisplayFormatter(item, idx) : item} </ListItem>
                 )})
