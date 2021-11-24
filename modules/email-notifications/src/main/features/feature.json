@@ -1,0 +1,108 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+{
+  "title": "CARDS - Email notification support - base settings",
+  "description": "Feature enabling support for email notifications",
+  "variables":{
+    "emailnotifications.smtps.host":"localhost",
+    "emailnotifications.smtps.port":"8465",
+    "emailnotifications.smtps.from":"envelope-from@localhost",
+    "emailnotifications.smtps.username":"username",
+    "emailnotifications.smtps.password":"DFMeLL3AOICFmg4+uUoOx16clt6Xe0BMdNSBFqcuKiaVKMqfFudz3KOwM5Gj3t/g",
+    "emailnotifications.messageidprovider.host": "localhost"
+  },
+  "bundles":[
+    {
+      "id":"jakarta.mail:jakarta.mail-api:1.6.7",
+      "start-order":"25"
+    },
+    {
+      "id":"com.sun.mail:javax.mail:1.6.2",
+      "start-order":"25"
+    },
+    {
+      "id":"org.jasypt:jasypt:1.9.3",
+      "start-order":"25"
+    },
+    {
+      "id":"org.apache.servicemix.bundles:org.apache.servicemix.bundles.jasypt:1.9.3_1",
+      "start-order":"25"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.api:2.23.6",
+      "start-order":"25"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.commons.messaging.mail:1.0.0",
+      "start-order":"25"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.commons.messaging:1.0.2",
+      "start-order":"25"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.commons.crypto:1.1.0",
+      "start-order":"25"
+    },
+    {
+      "id":"${project.groupId}:${project.artifactId}:${project.version}",
+      "start-order":"25"
+    }
+  ],
+  "configurations":{
+    "org.apache.sling.commons.crypto.internal.EnvironmentVariablePasswordProvider~default":{
+      "names":[
+        "default"
+      ],
+      "name":"MAIL_SERVER_PASSWORD"
+    },
+    "org.apache.sling.commons.crypto.jasypt.internal.JasyptRandomIvGeneratorRegistrar~default":{
+      "algorithm": "SHA1PRNG"
+    },
+    "org.apache.sling.commons.crypto.jasypt.internal.JasyptRandomSaltGeneratorRegistrar~default":{
+      "algorithm": "SHA1PRNG"
+    },
+    "org.apache.sling.commons.crypto.jasypt.internal.JasyptStandardPbeStringCryptoService~default":{
+      "algorithm": "PBEWITHHMACSHA512ANDAES_256",
+      "securityProviderName": "",
+      "keyObtentionIterations": 1000,
+      "names": [
+        "default"
+      ],
+      "stringOutputType": "base64"
+    },
+    "org.apache.sling.commons.messaging.mail.internal.SimpleMailService~default":{
+      "names": [
+        "default"
+      ],
+      "threadpool.name": "default",
+      "mail.smtps.from": "${emailnotifications.smtps.from}",
+      "mail.smtps.host": "${emailnotifications.smtps.host}",
+      "mail.smtps.port": "${emailnotifications.smtps.port}",
+      "username": "${emailnotifications.smtps.username}",
+      "password": "${emailnotifications.smtps.password}",
+      "messageIdProvider.target": "(names=default)"
+    },
+    "org.apache.sling.commons.messaging.mail.internal.SimpleMessageIdProvider~default":{
+      "host": "${emailnotifications.messageidprovider.host}",
+      "names": [
+        "default"
+      ]
+    }
+  }
+}
