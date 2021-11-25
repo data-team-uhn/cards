@@ -69,7 +69,7 @@
       "names":[
         "default"
       ],
-      "name":"MAIL_SERVER_PASSWORD"
+      "name":"SLING_COMMONS_CRYPTO_PASSWORD"
     },
     "org.apache.sling.commons.crypto.jasypt.internal.JasyptRandomIvGeneratorRegistrar~default":{
       "algorithm": "SHA1PRNG"
