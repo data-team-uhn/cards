@@ -267,15 +267,7 @@ function Form (props) {
 
   let onEdit = (event) => {
     // Redirect the user to the edit form mode
-    let hash = window.location.hash ? window.location.hash.substr(1) : '';
-    // Upon opening the invalid/incomplete form in edit mode, scroll to the first invalid/incomplete question
-    if (!hash && incompleteAnswers.length > 0) {
-      hash = incompleteAnswers[0].question["@path"];
-    }
-    props.history.push({
-          pathname: urlBase + formURL + '.edit',
-          hash: hash
-        });
+    props.history.push(urlBase + formURL + '.edit' + window.location.hash);
   }
 
   let onClose = (event) => {
@@ -415,22 +407,7 @@ function Form (props) {
   )
 
   return (
-    <form
-      action={data?.["@path"]}
-      method="POST"
-      onSubmit={handleSubmit}
-      onChange={() => {
-        if (isEdit) {
-          setLastSaveStatus(undefined);
-          // If there's an url anchor at this point, we're coming from view mode and
-          // the first incomplete mandatory question is being highlighted for editing
-          // Drop the anchor to remove the highlight when the form is edited
-          window.location.hash && props.history.replace(window.location.pathname);
-        }
-      }}
-      key={id}
-      ref={formNode}
-      >
+    <form action={data?.["@path"]} method="POST" onSubmit={handleSubmit} onChange={()=>setLastSaveStatus(undefined)} key={id} ref={formNode}>
       <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
         { !disableHeader &&
         <ResourceHeader
