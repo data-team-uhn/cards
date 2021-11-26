@@ -19,36 +19,92 @@
 
 import json
 import csv
+import re
 import regex
 
 
-# Creates conditional statements from ParentLogic to be used by insert_conditional
-def prepare_conditional(question, row):
-    # Remove the word 'if' from the beginning of the logical statement
-    parent_logic = row['ParentLogic']
-    if parent_logic.lower().startswith('if'):
-        parent_logic = parent_logic[3:]
-    prepare_conditional_string(parent_logic, question)
-
 def prepare_conditional_string(conditional_string, question):
     # Split statement into two at the 'or'
-    if conditional_string.rfind(' or ') != -1:
-        conditional_string = conditional_string.partition(' or ')
+    require_all = False
+    if ("all " in conditional_string):
+        conditional_string = conditional_string[4:]
+        require_all = True
+    if len(partition_ignore_strings(conditional_string, " or ")) > 1:
+        conditional_string = partition_ignore_strings(conditional_string, " or ")
         # If one of the resulting statements is incomplete
         # Such as in the case of splitting "if CVLT-C or CVLT-II=yes"
         # Copy what's after the equals sign to the incomplete part
         if "=" not in conditional_string[0]:
-            insert_conditional(conditional_string[0] + conditional_string[2].partition("=")[1] + conditional_string[2].partition("=")[2], question, '1')
+            new_string = conditional_string[0] + conditional_string[2].partition("=")[1] + conditional_string[2].partition("=")[2]
+            insert_conditional(new_string, question, '1', require_all)
         else:
-            insert_conditional(conditional_string[0], question, '1')
-        insert_conditional(conditional_string[2], question, '2')
+            insert_conditional(conditional_string[0], question, '1', require_all)
+        insert_conditional(conditional_string[2], question, '2', require_all)
     else:
         # No title is needed because only a single lfs:Conditional will be created
-        insert_conditional(conditional_string, question, '')
+        insert_conditional(conditional_string, question, '', require_all)
+
+
+def partition_ignore_strings(input, splitter):
+    ignore_map = {
+        "(": ")",
+        "[": "]",
+        "{": "}",
+        "\"": "\"",
+    }
+    ignore_list = []
+    results = [input]
+    i = 0
+    while i < len(input):
+        if len(ignore_list) > 0 and input[i] == ignore_list[len(ignore_list) - 1]:
+            ignore_list.pop()
+        elif input[i] in ignore_map.keys():
+            ignore_list.append(ignore_map[input[i]])
+        elif len(ignore_list) == 0:
+            if input[i:i+len(splitter)] == splitter:
+                results = [input[0:i], splitter, input[i+len(splitter):]]
+                break
+        i += 1
+    if (len(ignore_list) > 0):
+        print("Partition ignore list not cleared for '{}': {}".format(input, ignore_list))
+    return results
+
+def split_ignore_strings(input, splitters, limit = -1):
+    ignore_map = {
+        "(": ")",
+        "[": "]",
+        "{": "}",
+        "\"": "\"",
+    }
+    ignore_list = []
+    results = []
+    number_splits = 0
+    i = 0
+    last_split = 0
+    while i < len(input) and (limit == -1 or number_splits <= limit):
+        if len(ignore_list) > 0 and input[i] == ignore_list[len(ignore_list) - 1]:
+            ignore_list.pop()
+        elif input[i] in ignore_map.keys():
+            ignore_list.append(ignore_map[input[i]])
+        elif len(ignore_list) == 0:
+            for splitter in splitters:
+                if i + len(splitter) <= len(input):
+                    if input[i:i+len(splitter)] == splitter:
+                        results.append(input[last_split:i].strip())
+                        i += len(splitter)
+                        last_split = i
+                        number_splits += 1
+                        break
+        i += 1
+    results.append(input[last_split:].strip())
+    if (len(ignore_list) > 0):
+        # print("Split ignore list not cleared for '{}': {}".format(input, ignore_list))
+        pass
+    return results
 
 
 # Updates the question with lfs:Conditionals from the output of prepare_conditional
-def insert_conditional(conditional_string, question, title):
+def insert_conditional(conditional_string, question, title, require_all=False):
     # Split the conditional into two operands and an operator
     conditional_string = partition_conditional_string(conditional_string)
     operand_a = conditional_string[0].strip()
@@ -56,28 +112,38 @@ def insert_conditional(conditional_string, question, title):
     operand_b = conditional_string[2].strip()
     # If the first operand is a comma-separated list, create a separate conditional for each
     # Enclose the conditionals in a lfs:ConditionalGroup
-    if ',' in operand_a:
-        question.update({'conditionalGroup': {'jcr:primaryType': 'lfs:ConditionalGroup'}})
+    if len(split_ignore_strings(operand_a, ',')) > 1:
+        if 'conditionalGroup' not in question:
+            question.update({'conditionalGroup': {'jcr:primaryType': 'lfs:ConditionalGroup'}})
         # The keyword 'all' in the conditional string should correspond to 'requireAll' == true
         # If it is present, remove it from the operand and add 'requireAll' to the conditional group
+        if 'all' in operand_a or require_all:
+            question['conditionalGroup'].update({'requireAll': True})
         if 'all' in operand_a:
             operand_a = operand_a[:-3]
-            question['conditionalGroup'].update({'requireAll': True})
-        operand_a_list = list(operand_a.replace(' ', '').split(','))
+        operand_a_list = list(split_ignore_strings(operand_a, ','))
         for index, item in enumerate(operand_a_list):
-            question['conditionalGroup'].update(create_conditional(item, operator, operand_b, 'condition' + str(index)))
+            index_mod = 0
+            while 'condition' + str(index_mod) in question['conditionalGroup']:
+                index_mod += 1
+            question['conditionalGroup'].update(create_conditional(item, operator, operand_b, 'condition' + str(index + index_mod)))
     # If the second operand is a comma-separated list, create a separate conditional for each
     # Enclose the conditionals in a lfs:ConditionalGroup
-    elif ',' in operand_b:
-        question.update({'conditionalGroup': {'jcr:primaryType': 'lfs:ConditionalGroup'}})
+    elif len(split_ignore_strings(operand_b, ',')) > 1:
+        if 'conditionalGroup' not in question:
+            question.update({'conditionalGroup': {'jcr:primaryType': 'lfs:ConditionalGroup'}})
         # The keyword 'all' in the conditional string should correspond to 'requireAll' == true
         # If it is present, remove it from the operand and add 'requireAll' to the conditional group
+        if 'all' in operand_b or require_all:
+            question['conditionalGroup'].update({'requireAll': True})
         if 'all' in operand_b:
             operand_b = operand_b[:-3]
-            question['conditionalGroup'].update({'requireAll': True})
-        operand_b_list = list(operand_b.replace(' ', '').split(','))
+        operand_b_list = list(split_ignore_strings(operand_b, ','))
+        index_mod = 0
+        while 'condition' + str(index_mod) in question['conditionalGroup']:
+            index_mod += 1
         for index, item in enumerate(operand_b_list):
-            question['conditionalGroup'].update(create_conditional(operand_a, operator, item, 'condition' + str(index)))
+            question['conditionalGroup'].update(create_conditional(operand_a, operator, item, 'condition' + str(index + index_mod)))
     else:
         question.update(create_conditional(operand_a, operator, operand_b, 'condition' + title))
 
@@ -105,6 +171,8 @@ def create_conditional(operand_a, operator, operand_b, title):
         operand_b_updated = "0"
     else:
         operand_b_updated = operand_b
+    if (len(operand_b_updated) > 1 and operand_b_updated.startswith('"') and operand_b_updated.endswith('"')):
+        operand_b_updated = operand_b_updated[1:-1]
     result = {
         'jcr:primaryType': 'lfs:Conditional',
         'operandA': {
@@ -198,7 +266,7 @@ def insert_options(question, row):
                 'label': label,
                 'value': options[0].strip()
             }
-            answer_option = {options[0].strip().replace("/", "-"):
+            answer_option = {clean_name(options[0].strip()):
                 add_option_properties(option_details, label)
             }
             question.update(answer_option)
@@ -208,7 +276,7 @@ def insert_options(question, row):
                 'label': value.strip(),
                 'value': value.strip()
             }
-            answer_option = {option.replace("/", "-").strip():
+            answer_option = {clean_name(option.strip()):
                 add_option_properties(option_details, value)
             }
             question.update(answer_option)
@@ -252,6 +320,9 @@ def clean_title(title):
         result = result[:result.index(multiple_types)]
     return result.strip()
 
+def clean_name(name):
+    return re.sub(':|\(|\)|\[|\]|\s|\,|\.|\n', '', name.replace("/", "-"))
+
 def parse_count(title):
     multiple_visits = " - Study Visits (# = "
     result = 1
@@ -290,7 +361,7 @@ def csv_to_json(title):
                     main_questionnaire = {}
                 if (len(questionnaire) > 0):
                     if len(section) > 0:
-                        questionnaire[section['label']] = dict.copy(section)
+                        questionnaire[clean_name(section['label'])] = dict.copy(section)
                         section = {}
                     questionnaires.append(dict.copy(questionnaire))
                 questionnaire = {}
@@ -316,7 +387,7 @@ def csv_to_json(title):
                 questionnaire['jcr:reference:requiredSubjectTypes'] = ["/SubjectTypes/Patient"]
             if row['Sub-report']:
                 if len(section) > 0:
-                    questionnaire[section['label']] = dict.copy(section)
+                    questionnaire[clean_name(section['label'])] = dict.copy(section)
                 section = {}
 
                 num_submisssions = parse_count(row['Sub-report'])
@@ -341,7 +412,7 @@ def csv_to_json(title):
 
             parent = section if len(section) > 0 else questionnaire
 
-            question = row['Content Header'].strip().lower()
+            question = clean_name(row['Content Header'].strip().lower())
             if question and 'Response Required?' in row and row['Response Required?'].lower().endswith("other"):
                 # Skip this row as the previous list should have an "other" text field
                 continue
@@ -403,7 +474,7 @@ def csv_to_json(title):
                         # The presence of a conditional will also prevent the question from being inserted into the main thing
                         del parent[question]
     if len(section) > 0:
-        questionnaire[section['label']] = dict.copy(section)
+        questionnaire[clean_name(section['label'])] = dict.copy(section)
     questionnaires.append(dict.copy(questionnaire))
     if (main_questionnaire):
         questionnaires.append(dict.copy(main_questionnaire))
@@ -412,10 +483,14 @@ def csv_to_json(title):
         title = q['title'].replace(": ", " - ")
         with open(title + '.json', 'w') as jsonFile:
             json.dump(q, jsonFile, indent='\t')
-        print('python3 lfs/Utilities/JSON-to-XML/json_to_xml.py "' + title +'.json" > "' + title + '.xml";\\')
+        print('python3 cards/Utilities/JSON-to-XML/json_to_xml.py "' + title +'.json" > "' + title + '.xml";\\')
 
 
-titles = ['6MWD', 'ActiGraph Data', 'Adverse events', 'Baseline Health Information', 'Enrollment Status',
-    'Historical Stress Test', 'Historic Lab Results', 'Questionnaires', 'CPET Interpretation']
+
+titles = [
+    '6MWD', 'ActiGraph Data', 'Adverse events', 'Baseline Health Information', 'Enrollment Status',
+    'Historical Stress Test', 'Historic Lab Results', 'Questionnaires', 'CPET Interpretation',
+    'New Questionnaires'
+]
 for title in titles:
     csv_to_json(title)
