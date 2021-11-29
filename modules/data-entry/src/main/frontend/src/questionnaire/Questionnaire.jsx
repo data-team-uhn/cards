@@ -41,7 +41,7 @@ import PreviewIcon from '@material-ui/icons/FindInPage';
 import DeleteButton from "../dataHomepage/DeleteButton";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import { blue } from '@material-ui/core/colors';
-import { ENTRY_TYPES } from "./FormEntry";
+import { ENTRY_TYPES, QUESTION_TYPES, SECTION_TYPES, INFO_TYPES } from "./FormEntry";
 import Fields from "../questionnaireEditor/Fields";
 import CreationMenu from "../questionnaireEditor/CreationMenu";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
@@ -52,7 +52,7 @@ import QuestionnairePreview from "./QuestionnairePreview";
 
 let _stripCardsNamespace = str => str.replaceAll(/^cards:/g, "");
 
-const QUESTIONNAIRE_ITEM_NAMES = ENTRY_TYPES.map(type => _stripCardsNamespace(type));
+const QUESTIONNAIRE_ITEM_NAMES = QUESTION_TYPES.concat(SECTION_TYPES).concat(INFO_TYPES).map(type => _stripCardsNamespace(type));
 
 // GUI for displaying details about a questionnaire.
 let Questionnaire = (props) => {

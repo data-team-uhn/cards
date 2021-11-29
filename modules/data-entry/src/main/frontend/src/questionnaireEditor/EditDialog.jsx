@@ -52,8 +52,8 @@ let EditDialog = (props) => {
   let [ primaryType, setPrimaryType ] = useState(`cards:${type}`);
   let [ error, setError ] = useState('');
   let [ variableNameError, setVariableNameError ] = useState('');
-  let entitySpecsFilename = targetExists && type === "QuestionMatrix" ? "Section" 
-                          : (!targetExists && MATRIX_TYPES.includes(data["jcr:primaryType"]) || targetExists && parentType === "QuestionMatrix") ? "QuestionMatrix"
+  let entitySpecsFilename = (type === "QuestionMatrix") ? "Section"
+                          : (!targetExists && type === "Question" && MATRIX_TYPES.includes(data["jcr:primaryType"]) || targetExists && parentType === "QuestionMatrix") ? "QuestionMatrix"
                           : type;
   
   let json = require(`./${entitySpecsFilename}.json`);
