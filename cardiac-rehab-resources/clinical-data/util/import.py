@@ -285,7 +285,7 @@ def add_option_properties(option, label):
     base_label = label.lower().strip()
     if base_label == "none of the above":
         option['noneOfTheAbove'] = True
-    if base_label == "n/a" or base_label == "not applicable" or base_label == "none":
+    if base_label == "n/a" or base_label == "not applicable" or base_label == "none" or base_label == "i prefer not to answer":
         option['notApplicable'] = True
     return option
 

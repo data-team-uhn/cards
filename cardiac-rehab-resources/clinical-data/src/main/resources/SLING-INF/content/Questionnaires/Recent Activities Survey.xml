@@ -22,8 +22,13 @@
 	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
 	<property>
 		<name>maxPerSubject</name>
-		<value>1</value>
+		<value>7</value>
 		<type>Long</type>
+	</property>
+	<property>
+		<name>description</name>
+		<value>Visits 9, 10, 12, 14, 16, 18, 21</value>
+		<type>String</type>
 	</property>
 	<property>
 		<name>title</name>
@@ -268,6 +273,11 @@
 					<value>I prefer not to answer</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>notApplicable</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
 			</node>
 		</node>
 		<node>
@@ -470,6 +480,11 @@
 					<value>I prefer not to answer</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>notApplicable</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
 			</node>
 		</node>
 		<node>
@@ -568,6 +583,11 @@
 					<name>value</name>
 					<value>I prefer not to answer</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>notApplicable</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 			</node>
 		</node>
