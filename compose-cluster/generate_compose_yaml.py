@@ -32,6 +32,7 @@ argparser.add_argument('--replicas', help='Number of MongoDB replicas per shard 
 argparser.add_argument('--config_replicas', help='Number of MongoDB cluster configuration servers (must be an odd number)', default=3, type=int)
 argparser.add_argument('--custom_env_file', help='Enable a custom file with environment variables')
 argparser.add_argument('--cards_project', help='The CARDS project to deploy (eg. cards4care, cards4lfs, etc...')
+argparser.add_argument('--dev_docker_image', help='Indicate that the CARDS Docker image being used was built for development, not production.', action='store_true')
 argparser.add_argument('--enable_ncr', help='Add a Neural Concept Recognizer service to the cluster', action='store_true')
 argparser.add_argument('--oak_filesystem', help='Use the filesystem (instead of MongoDB) as the back-end for Oak/JCR', action='store_true')
 argparser.add_argument('--external_mongo', help='Use an external MongoDB instance instead of providing our own', action='store_true')
@@ -234,6 +235,8 @@ except FileExistsError:
   print("Warning: SLING directory exists - will leave unmodified.")
 
 yaml_obj['services']['cardsinitial']['volumes'] = ["./SLING:/opt/cards/.cards-data"]
+if args.dev_docker_image:
+  yaml_obj['services']['cardsinitial']['volumes'].append("{}:/root/.m2:ro".format(os.path.join(os.environ['HOME'], '.m2')))
 
 if args.custom_env_file:
   yaml_obj['services']['cardsinitial']['env_file'] = args.custom_env_file
