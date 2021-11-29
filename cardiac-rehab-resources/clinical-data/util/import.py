@@ -454,6 +454,8 @@ def csv_to_json(title):
                     parent[question]['maxValue'] = float(row['Max Value'])
                 if row['Field Type'].endswith("(single)"):
                     parent[question]['maxAnswers'] = 1
+                if 'Max Answers' in row and row['Max Answers']:
+                    parent[question]['maxAnswers'] = int(row['Max Answers'])
                 if 'Compact' in row and row['Compact'] != '':
                     value = row['Compact']
                     if value[0].lower() == "y":
