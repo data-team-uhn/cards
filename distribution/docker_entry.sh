@@ -56,6 +56,18 @@ then
   featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards/${CARDS_VERSION}/slingosgifeature/composum"
 fi
 
+if [ ! -z $DEMO ]
+then
+  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-modules-demo-banner/${CARDS_VERSION}/slingosgifeature,"
+  featureFlagString="${featureFlagString}mvn:io.uhndata.cards/cards-modules-upgrade-marker/${CARDS_VERSION}/slingosgifeature,"
+  featureFlagString="${featureFlagString}mvn:io.uhndata.cards/cards-dataentry/${CARDS_VERSION}/slingosgifeature/forms_demo"
+fi
+
+if [ ! -z $ENABLE_TEST_FEATURES ]
+then
+  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-modules-test-forms/${CARDS_VERSION}/slingosgifeature"
+fi
+
 if [ ! -z $ADDITIONAL_SLING_FEATURES ]
 then
   featureFlagString="$featureFlagString -f $ADDITIONAL_SLING_FEATURES"
@@ -109,6 +121,8 @@ done
 
 echo "STORAGE = $STORAGE"
 echo "DEV = $DEV"
+echo "DEMO = $DEMO"
+echo "ENABLE_TEST_FEATURES = $ENABLE_TEST_FEATURES"
 echo "DEBUG = $DEBUG"
 echo "PERMISSIONS = $PERMISSIONS"
 echo "ADDITIONAL_RUN_MODES = $ADDITIONAL_RUN_MODES"
