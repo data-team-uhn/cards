@@ -28,6 +28,8 @@ for d in os.walk('.'):
     continue
   if d[0].startswith('./sling/'):
     continue
+  if d[0].startswith('./.cards-data/'):
+    continue
   if '/target/' in d[0]:
     continue
   if '/node_modules/' in d[0]:
