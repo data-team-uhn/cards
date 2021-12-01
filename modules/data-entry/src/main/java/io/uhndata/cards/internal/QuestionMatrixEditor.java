@@ -175,6 +175,14 @@ public class QuestionMatrixEditor extends DefaultEditor
             String label = source.getProperty("label").getValue(Type.STRING);
             newNode.setProperty("label", label, Type.STRING);
         }
+        if (source.hasProperty("value")) {
+            String label = source.getProperty("value").getValue(Type.STRING);
+            newNode.setProperty("value", label, Type.STRING);
+        }
+        if (source.hasProperty("defaultOrder")) {
+            String label = source.getProperty("defaultOrder").getValue(Type.STRING);
+            newNode.setProperty("defaultOrder", label, Type.STRING);
+        }
         if (source.hasProperty("notApplicable")) {
             Boolean notApplicable = source.getProperty("notApplicable").getValue(Type.BOOLEAN);
             newNode.setProperty("notApplicable", notApplicable, Type.BOOLEAN);
