@@ -46,7 +46,6 @@ import NotesIcon from '@material-ui/icons/Notes';
 import { stringToHash } from "../escape.jsx";
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { MATRIX_TYPES } from "../questionnaire/FormEntry";
 
 import ComposedIcon from "../components/ComposedIcon.jsx";
 
@@ -131,6 +130,12 @@ let AnswerOptions = (props) => {
                                                                                       "label" : "None of the above",
                                                                                       "noneOfTheAbove" : false,
                                                                                       "@path" : path + "/NoneOfTheAbove"});
+  // Update options path on parent path change
+  useEffect(() => {
+    setNotApplicableOption({ ...notApplicableOption, "@path" : path + "/None"});
+    setNoneOfTheAboveOption({ ...noneOfTheAboveOption, "@path" : path +  "/NoneOfTheAbove"});
+  }, [path])
+
   let specialOptionsInfo = [
     {
       tooltip : "This option behaves as 'None' or 'N/A', and unselects/removes all other options upon selection.",

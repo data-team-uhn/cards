@@ -263,39 +263,6 @@
   + * (cards:VocabularyFilterGroup) = cards:VocabularyFilterGroup
 
 //-----------------------------------------------------------------------------
-// Description for the Questionnaire entry type: Question matrix
-[cards:QuestionMatrix] > cards:Section
-
-  // Hardcode the resource type.
-  - sling:resourceType (STRING) = "cards/QuestionMatrix" mandatory autocreated protected
-
-  // Hardcode the resource supertype.
-  - sling:resourceSuperType (STRING) = "cards:Section" mandatory autocreated protected
-
-  - displayMode (string) = 'matrix' autocreated
-
-  // Same as for cards:Question.
-  - minAnswers (long) = '0' autocreated
-
-  // Same as for cards:Question.
-  - maxAnswers (long) = '0' autocreated
-
-  // Which type of data is being recorded?
-  // The possible values are limited to:
-  // - text: simple text, either from a list of predefined options, or free text entered by the user
-  // - long, double, decimal: a number
-  // - vocabulary: a term from a vocabulary
-  - dataType (string) = 'text' mandatory autocreated
-
-  // Children
-
-  // The list of predefined options displayed to the user.
-  + * (cards:AnswerOption) = cards:AnswerOption
-
-  // the list of (sub-)questions (representing a row in the matrix)
-  + * (cards:Question) = cards:Question
-
-//-----------------------------------------------------------------------------
 // An informative formatted text (markdown) displayed in edit mode to guide
 // the user through filling out a form.
 [cards:Information] > sling:Folder, mix:referenceable
@@ -346,11 +313,26 @@
   // Can this section be repeated?
   - recurrent (boolean) = false autocreated
 
+  - displayMode (string)
+
+  // Same as for cards:Question.
+  - minAnswers (long) = '0' autocreated
+
+  // Same as for cards:Question.
+  - maxAnswers (long) = '0' autocreated
+
+  // Which type of data is being recorded?
+  // The possible values are limited to:
+  // - text: simple text, either from a list of predefined options, or free text entered by the user
+  // - long, double, decimal: a number
+  // - vocabulary: a term from a vocabulary
+  - dataType (string) = 'text' mandatory autocreated
+
   // Children
 
   // The questions and sub-sections that make up this section.
   // The conditions to display this section may also be listed as children
-  + * (cards:Question, cards:Section, cards:Information, cards:Conditional, cards:ConditionalGroup, cards:QuestionMatrix) = cards:Question
+  + * (cards:Question, cards:Section, cards:Information, cards:Conditional, cards:ConditionalGroup, cards:AnswerOption) = cards:Question
 
 //-----------------------------------------------------------------------------
 // A conditional group is a set of conditions that can be imposed on e.g. the display of a section.
