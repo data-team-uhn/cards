@@ -171,10 +171,10 @@ public class QuestionMatrixEditor extends DefaultEditor
         newNode.setProperty("jcr:primaryType", type, Type.STRING);
         String sType = source.getProperty("sling:resourceSuperType").getValue(Type.STRING);
         newNode.setProperty("sling:resourceSuperType", sType, Type.STRING);
-        String label = source.getProperty("label").getValue(Type.STRING);
-        newNode.setProperty("label", label, Type.STRING);
-        String value = source.getProperty("value").getValue(Type.STRING);
-        newNode.setProperty("value", value, Type.STRING);
+        if (source.hasProperty("label")) {
+            String label = source.getProperty("label").getValue(Type.STRING);
+            newNode.setProperty("label", label, Type.STRING);
+        }
         if (source.hasProperty("notApplicable")) {
             Boolean notApplicable = source.getProperty("notApplicable").getValue(Type.BOOLEAN);
             newNode.setProperty("notApplicable", notApplicable, Type.BOOLEAN);
