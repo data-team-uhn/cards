@@ -175,8 +175,10 @@ public class QuestionMatrixEditor extends DefaultEditor
         newNode.setProperty("label", label, Type.STRING);
         String value = source.getProperty("value").getValue(Type.STRING);
         newNode.setProperty("value", value, Type.STRING);
-        Boolean notApplicable = source.getProperty("label").getValue(Type.BOOLEAN);
-        newNode.setProperty("notApplicable", notApplicable, Type.BOOLEAN);
+        if (source.hasProperty("notApplicable")) {
+            Boolean notApplicable = source.getProperty("notApplicable").getValue(Type.BOOLEAN);
+            newNode.setProperty("notApplicable", notApplicable, Type.BOOLEAN);
+        }
     }
 
     /**
@@ -187,7 +189,8 @@ public class QuestionMatrixEditor extends DefaultEditor
      */
     private boolean isQuestionMatrix(NodeBuilder node)
     {
-        return node.exists() && "cards:QuestionMatrix".equals(getNodeType(node));
+        return node.exists() && "cards:Section".equals(getNodeType(node)) && node.hasProperty("displayMode")
+            && "matrix".equals(node.getProperty("displayMode").getValue(Type.STRING));
     }
 
     /**

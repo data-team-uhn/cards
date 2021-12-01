@@ -25,7 +25,7 @@ import moment from "moment";
 import FormattedText from "../components/FormattedText";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import NewFormDialog from "../dataHomepage/NewFormDialog";
-import { QUESTION_TYPES, SECTION_TYPES, MATRIX_TYPES, ENTRY_TYPES } from "./FormEntry.jsx";
+import { QUESTION_TYPES, SECTION_TYPES, ENTRY_TYPES } from "./FormEntry.jsx";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import MaterialTable, { MTablePagination } from 'material-table';
@@ -639,67 +639,18 @@ function FormData(props) {
     return result;
   }
   // Handle questions and sections differently
-  let handleDisplayQuestionMatrix = (entryDefinition, data, key) => {
-    let result = displayQuestionMatrix(entryDefinition, data, key, classes);
-    if (result && displayed < maxDisplayed) {
-      displayed++;
-    } else {
-      result = null;
-    }
-    return result;
-  }
-
   if (data && data.questionnaire) {
     return (
       <React.Fragment>
         {
           Object.entries(data.questionnaire)
           .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-          .map(([key, entryDefinition]) => handleDisplay(entryDefinition, data, key, handleDisplayQuestion, handleDisplayQuestionMatrix))
+          .map(([key, entryDefinition]) => handleDisplay(entryDefinition, data, key, handleDisplayQuestion))
         }
       </React.Fragment>
     );
   }
   else return;
-}
-
-// Display the question matrix found
-export function displayQuestionMatrix(sectionDefinition, data, key, classes) {
-  const title = sectionDefinition["label"];
-
-  // Find the existing AnswerSection for this section, if available
-  const existingSectionAnswer = data && Object.entries(data)
-    .find(([key, value]) => value["sling:resourceType"] == "cards/AnswerSection"
-      && value["section"]["jcr:uuid"] === sectionDefinition["jcr:uuid"]);
-
-  const existingAnswers = existingSectionAnswer && Object.entries(existingSectionAnswer[1])
-    .filter(answer => answer[1]["sling:resourceSuperType"]
-      && answer[1]["sling:resourceSuperType"] === "cards/Answer" && answer[1]["displayedValue"]);
-
-  if (existingAnswers && existingAnswers.length > 0) {
-    let content = 
-      <React.Fragment>
-        { existingAnswers.map((answer, idx) => 
-	        <Grid container alignItems='flex-start' spacing={2} direction="row" key={idx + answer[0]}>
-	          <Grid item xs={6}>
-	            <Typography variant="subtitle2">{answer[1].question.text}:</Typography>
-	          </Grid>
-	          <Grid item xs={6}>
-	            {Array.of(answer[1].displayedValue).flat().join(", ")}
-	          </Grid>
-	        </Grid>)
-        }
-      </React.Fragment>;
-
-    return (
-      <Typography variant="body2" className={classes.formPreviewQuestion} key={key}>
-        {title}
-        <span className={classes.formPreviewSeparator}>–</span>
-        <div className={classes.formPreviewAnswer}>{content}</div>
-      </Typography>
-    );
-  }
-  else return null;
 }
 
 // Display the questions/question found within sections
@@ -786,11 +737,9 @@ export function displayQuestion(entryDefinition, data, key, classes) {
 };
 
 // Handle questions and sections differently
-export function handleDisplay(entryDefinition, data, key, handleDisplayQuestion, handleDisplayQuestionMatrix) {
+export function handleDisplay(entryDefinition, data, key, handleDisplayQuestion) {
     if (QUESTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
        return handleDisplayQuestion(entryDefinition, data, key);
-    } else if (MATRIX_TYPES.includes(entryDefinition["jcr:primaryType"])) {
-       return handleDisplayQuestionMatrix(entryDefinition, data, key);
     } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
       // If a section is found, filter questions inside the section
       let currentSection = entryDefinition;
@@ -806,8 +755,8 @@ export function handleDisplay(entryDefinition, data, key, handleDisplayQuestion,
                                && value["section"]["@name"] == entryDefinition["@name"])[0];
       currentAnswers = currentAnswers ? currentAnswers[1] : "";
       return Object.entries(currentSection)
-        .filter(([key, value]) => QUESTION_TYPES.concat(SECTION_TYPES).concat(MATRIX_TYPES).includes(value['jcr:primaryType']))
-        .map(([key, entryDefinition]) => handleDisplay(entryDefinition, currentAnswers, key, handleDisplayQuestion, handleDisplayQuestionMatrix))
+        .filter(([key, value]) => QUESTION_TYPES.concat(SECTION_TYPES).includes(value['jcr:primaryType']))
+        .map(([key, entryDefinition]) => handleDisplay(entryDefinition, currentAnswers, key, handleDisplayQuestion))
   }
 }
 

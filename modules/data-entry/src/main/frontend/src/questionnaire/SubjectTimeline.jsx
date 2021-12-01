@@ -37,7 +37,7 @@ import DateQuestionUtilities from "./DateQuestionUtilities.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import { displayQuestion, displayQuestionMatrix } from "./Subject.jsx";
-import { ENTRY_TYPES, QUESTION_TYPES, SECTION_TYPES, MATRIX_TYPES } from "./FormEntry.jsx"
+import { ENTRY_TYPES, QUESTION_TYPES, SECTION_TYPES } from "./FormEntry.jsx"
 
 import {
   Typography,
@@ -255,8 +255,6 @@ function SubjectTimeline(props) {
 	          currentSectionData[currentSectionData.length - 1].followup.push(displayQuestion(entryDefinition, data, key, classes));
 	      }
 	    }
-      } else if (MATRIX_TYPES.includes(entryDefinition["jcr:primaryType"])) {
-        displayQuestionMatrix(entryDefinition, data, key, classes);
       } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
         // If a section is found, filter questions inside the section
         let currentSection = entryDefinition;
