@@ -40,7 +40,7 @@ import TextQuestion from "./TextQuestion";
 import ComputedQuestion from "./ComputedQuestion";
 import VocabularyQuestion from "./VocabularyQuestion";
 import FileQuestion from "./FileQuestion";
-import QuestionnaireMatrix from "./QuestionnaireMatrix";
+import QuestionMatrix from "./QuestionMatrix";
 
 import FormattedText from "../components/FormattedText";
 
@@ -223,7 +223,7 @@ let displayMatrix = (sectionDefinition, path, existingAnswer, key, classes, page
 
   return (
     <Grid item key={key} ref={doHighlight ? questionRef : undefined} className={gridClasses.join(" ")}>
-      <QuestionnaireMatrix
+      <QuestionMatrix
         sectionDefinition={sectionDefinition}
         existingSectionAnswer={existingSectionAnswer}
         existingAnswers={existingAnswers}
