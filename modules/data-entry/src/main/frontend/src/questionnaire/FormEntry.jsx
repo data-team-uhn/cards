@@ -47,8 +47,7 @@ import FormattedText from "../components/FormattedText";
 export const QUESTION_TYPES = ["cards:Question"];
 export const SECTION_TYPES = ["cards:Section"];
 export const INFO_TYPES = ["cards:Information"];
-export const MATRIX_TYPES = ["cards:QuestionMatrix"];
-export const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES).concat(MATRIX_TYPES).concat(INFO_TYPES);
+export const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES).concat(INFO_TYPES);
 
 /**
  * Method responsible for displaying a question from the questionnaire, along with its answer(s).
@@ -254,11 +253,13 @@ let displayMatrix = (sectionDefinition, path, existingAnswer, key, classes, page
     if (visibleCallback) visibleCallback(true);
     return displayQuestion(entryDefinition, path, existingAnswers, keyProp, classes, onAddedAnswerPath, sectionAnswersState, onChange, pageActive, isEdit, instanceId);
   } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
-    return displaySection(entryDefinition, path, depth, existingAnswers, keyProp, onChange, visibleCallback, pageActive, isEdit, instanceId, contentOffset);
+    if (visibleCallback) visibleCallback(true);
+    if ("matrix" === entryDefinition["displayMode"]) {
+      return displayMatrix(entryDefinition, path, existingAnswers, keyProp, classes, pageActive, isEdit, instanceId);
+    } else {
+      return displaySection(entryDefinition, path, depth, existingAnswers, keyProp, onChange, visibleCallback, pageActive, isEdit, instanceId, contentOffset);
+    }
   } else if (INFO_TYPES.includes(entryDefinition["jcr:primaryType"])) {
     return displayInformation(entryDefinition, keyProp, classes, pageActive, isEdit);
-  } else if (MATRIX_TYPES.includes(entryDefinition["jcr:primaryType"])) {
-    if (visibleCallback) visibleCallback(true);
-    return displayMatrix(entryDefinition, path, existingAnswers, keyProp, classes, pageActive, isEdit, instanceId);
   }
 }
