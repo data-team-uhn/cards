@@ -36,7 +36,7 @@ import TimelineOppositeContent from '@material-ui/lab/TimelineOppositeContent';
 import DateQuestionUtilities from "./DateQuestionUtilities.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
-import { displayQuestion, displayQuestionMatrix } from "./Subject.jsx";
+import { displayQuestion } from "./Subject.jsx";
 import { ENTRY_TYPES, QUESTION_TYPES, SECTION_TYPES } from "./FormEntry.jsx"
 
 import {
