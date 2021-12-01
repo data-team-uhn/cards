@@ -47,7 +47,7 @@ const DATA_TO_NODE_TYPE = {
 //   />
 // existingAnswer array of sub-question answers
 
-let QuestionnaireMatrix = (props) => {
+let QuestionMatrix = (props) => {
   const { sectionDefinition, existingSectionAnswer, existingAnswers, path, isEdit, classes, ...rest} = props;
   const { maxAnswers, minAnswers } = {...sectionDefinition, ...props};
 
@@ -240,4 +240,4 @@ let QuestionnaireMatrix = (props) => {
   )
 }
 
-export default withStyles(QuestionnaireStyle)(QuestionnaireMatrix);
+export default withStyles(QuestionnaireStyle)(QuestionMatrix);
