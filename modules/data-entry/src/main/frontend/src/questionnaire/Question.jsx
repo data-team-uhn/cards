@@ -31,7 +31,7 @@ function Question (props) {
   let { classes, children, questionDefinition, existingAnswer, answers, isEdit, preventDefaultView, defaultDisplayFormatter } = props;
   let { text, label, compact, description, disableInstructions } = { ...questionDefinition, ...props }
 
-  let existingAnswers = answers || (existingAnswer ? Array.of(existingAnswer.[1]["displayedValue"]).flat() : null);
+  let existingAnswers = answers || (existingAnswer ? Array.of(existingAnswer[1]["displayedValue"]).flat() : null);
 
   return (
     <Card

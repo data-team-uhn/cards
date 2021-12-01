@@ -37,7 +37,7 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js"
 // Dialog for editing or creating questions or sections
 
 let EditDialog = (props) => {
-  const { data, type, targetExists, isOpen, onClose, onCancel, id, parentType } = props;
+  const { data, type, targetExists, isOpen, onClose, onCancel, id, parentDisplayMode } = props;
   let [ targetId, setTargetId ] = useState('');
   // Marks that a save operation is in progress
   let [ saveInProgress, setSaveInProgress ] = useState();
@@ -50,9 +50,7 @@ let EditDialog = (props) => {
   let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
   let [ primaryType, setPrimaryType ] = useState(`cards:${type}`);
   let [ error, setError ] = useState('');
-  let entitySpecsFilename = (type === "QuestionMatrix") ? "Section"
-                          : (!targetExists && type === "Question" && "matrix" == data["displayMode"] || targetExists && parentType === "QuestionMatrix") ? "QuestionMatrix"
-                          : type;
+  let entitySpecsFilename = (type === "Question" && (parentDisplayMode === "matrix" || data.displayMode === "matrix")) ? "QuestionMatrix" : type;
   
   let json = require(`./${entitySpecsFilename}.json`);
 
