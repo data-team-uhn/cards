@@ -356,7 +356,6 @@ def csv_to_json(title):
     with open(title + '.csv') as tsvfile:
         reader = csv.DictReader(tsvfile, dialect='excel')
         for row in reader:
-            # TODO: Swap Questionnaire calls to parent calls
             if row['Report Type']:
                 if (main_questionnaire):
                     questionnaires.append(dict.copy(main_questionnaire))
