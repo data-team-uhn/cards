@@ -351,15 +351,23 @@ def csv_to_json(title):
     questionnaire = {}
     main_questionnaire = {}
     section = {}
+    subsection = {}
 
     with open(title + '.csv') as tsvfile:
         reader = csv.DictReader(tsvfile, dialect='excel')
         for row in reader:
+            # TODO: Swap Questionnaire calls to parent calls
             if row['Report Type']:
                 if (main_questionnaire):
                     questionnaires.append(dict.copy(main_questionnaire))
                     main_questionnaire = {}
                 if (len(questionnaire) > 0):
+                    if len(subsection) > 0:
+                        if len(section) > 0:
+                            section[clean_name(subsection['label'])] = dict.copy(subsection)
+                        else:
+                            questionnaire[clean_name(subsection['label'])] = dict.copy(subsection)
+                        subsection = {}
                     if len(section) > 0:
                         questionnaire[clean_name(section['label'])] = dict.copy(section)
                         section = {}
@@ -385,7 +393,26 @@ def csv_to_json(title):
                 questionnaire['title'] = clean_title(title)
                 questionnaire['maxPerSubject'] = parse_count(title)
                 questionnaire['jcr:reference:requiredSubjectTypes'] = ["/SubjectTypes/Patient"]
+            if 'recurrent' in row and row['recurrent']:
+                if len(subsection) > 0:
+                    if len(section) > 0:
+                        section[clean_name(subsection['label'])] = dict.copy(subsection)
+                    else:
+                        questionnaire[clean_name(subsection['label'])] = dict.copy(subsection)
+                subsection = {}
+
+                if row['recurrent'] != "end":
+                    subsection['jcr:primaryType'] = 'lfs:Section'
+                    subsection['label'] = clean_title(row['recurrent'])
+                    subsection['recurrent'] = True
+
             if row['Sub-report']:
+                if len(subsection) > 0:
+                    if len(section) > 0:
+                        section[clean_name(subsection['label'])] = dict.copy(subsection)
+                    else:
+                        questionnaire[clean_name(subsection['label'])] = dict.copy(subsection)
+                subsection = {}
                 if len(section) > 0:
                     questionnaire[clean_name(section['label'])] = dict.copy(section)
                 section = {}
@@ -410,7 +437,7 @@ def csv_to_json(title):
                 section['jcr:primaryType'] = 'lfs:Section'
                 section['label'] = clean_title(row['Sub-report'])
 
-            parent = section if len(section) > 0 else questionnaire
+            parent = subsection if len(subsection) > 0 else (section if len(section) > 0 else questionnaire)
 
             question = clean_name(row['Content Header'].strip().lower())
             if question and 'Response Required?' in row and row['Response Required?'].lower().endswith("other"):
@@ -475,6 +502,18 @@ def csv_to_json(title):
                         prepare_conditional_string(value [5:], parent[question + 'Section'])
                         # The presence of a conditional will also prevent the question from being inserted into the main thing
                         del parent[question]
+                        if len(subsection) > 0:
+                            # Add the condition to the subsection as well, if it does not already exist
+                            if 'conditionalGroup' in parent[question + 'Section']:
+                                subsection['conditionalGroup'] = dict.copy(parent[question + 'Section']['conditionalGroup'])
+                            else:
+                                subsection['condition'] = dict.copy(parent[question + 'Section']['condition'])
+
+    if len(subsection) > 0:
+        if len(section) > 0:
+            section[clean_name(subsection['label'])] = dict.copy(subsection)
+        else:
+            questionnaire[clean_name(subsection['label'])] = dict.copy(subsection)
     if len(section) > 0:
         questionnaire[clean_name(section['label'])] = dict.copy(section)
     questionnaires.append(dict.copy(questionnaire))
