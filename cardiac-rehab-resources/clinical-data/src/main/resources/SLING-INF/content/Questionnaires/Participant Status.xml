@@ -157,6 +157,90 @@
 					<type>String</type>
 				</property>
 			</node>
+			<node>
+				<name>Phase 2 enrolled</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Phase 2 enrolled</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Phase 2 enrolled</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Phase 2 withdrawn by study staff</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Phase 2 withdrawn by study staff</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Phase 2 withdrawn by study staff</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Phase 2 withdrawn by subject</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Phase 2 withdrawn by subject</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Phase 2 withdrawn by subject</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Phase 2 paused</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Phase 2 paused</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Phase 2 paused</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Phase 2 resumed</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Phase 2 resumed</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Phase 2 resumed</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Phase 2 completed study</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Phase 2 completed study</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Phase 2 completed study</value>
+					<type>String</type>
+				</property>
+			</node>
 		</node>
 		<node>
 			<name>enrollment_date</name>
@@ -795,6 +879,501 @@
 						<name>value</name>
 						<values>
 							<value>exited</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
+		</node>
+		<node>
+			<name>phase2pause_dateSection</name>
+			<primaryNodeType>lfs:Section</primaryNodeType>
+			<node>
+				<name>phase2pause_date</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Phase 2 Effective Date</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Date paused</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>date</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dateFormat</name>
+					<value>MM/dd/yyyy</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>condition</name>
+				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>enrollment_status</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>Phase 2 paused</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
+		</node>
+		<node>
+			<name>phase2pause_reasonSection</name>
+			<primaryNodeType>lfs:Section</primaryNodeType>
+			<node>
+				<name>phase2pause_reason</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Phase 2 Reason</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Reason for pausing</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list+input</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<node>
+					<name>Covid-19 Concerns</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Covid-19 Concerns</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Covid-19 Concerns</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Personal Illness</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Personal Illness</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Personal Illness</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Personal Injury</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Personal Injury</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Personal Injury</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Family Illness-Injury</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Family Illness/Injury</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Family Illness/Injury</value>
+						<type>String</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>condition</name>
+				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>enrollment_status</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>Phase 2 paused</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
+		</node>
+		<node>
+			<name>phase2pause_commentSection</name>
+			<primaryNodeType>lfs:Section</primaryNodeType>
+			<node>
+				<name>phase2pause_comment</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Phase 2 Comment</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Any additional information regarding pausing</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>condition</name>
+				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>enrollment_status</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>Phase 2 paused</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
+		</node>
+		<node>
+			<name>phase2pauseresume_dateSection</name>
+			<primaryNodeType>lfs:Section</primaryNodeType>
+			<node>
+				<name>phase2pauseresume_date</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Phase 2 Effective Date</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Date resumed</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>date</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dateFormat</name>
+					<value>MM/dd/yyyy</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>condition</name>
+				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>enrollment_status</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>Phase 2 resumed</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
+		</node>
+		<node>
+			<name>phase2resume_commentSection</name>
+			<primaryNodeType>lfs:Section</primaryNodeType>
+			<node>
+				<name>phase2resume_comment</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Phase 2 Comment</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Any additional information regarding resuming</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>condition</name>
+				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>enrollment_status</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>Phase 2 resumed</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
+		</node>
+		<node>
+			<name>phase2exit_dateSection</name>
+			<primaryNodeType>lfs:Section</primaryNodeType>
+			<node>
+				<name>phase2exit_date</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Phase 2 Date exited</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>date</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dateFormat</name>
+					<value>MM/dd/yyyy</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>condition</name>
+				<primaryNodeType>lfs:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>enrollment_status</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>Phase 2 completed study</value>
 						</values>
 						<type>String</type>
 					</property>
