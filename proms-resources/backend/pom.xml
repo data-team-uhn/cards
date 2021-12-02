@@ -32,11 +32,6 @@
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.sling</groupId>
-        <artifactId>slingfeature-maven-plugin</artifactId>
-      </plugin>
-
       <!-- This is an OSGi bundle -->
       <plugin>
         <groupId>org.apache.felix</groupId>
@@ -47,19 +42,6 @@
             <Sling-Initial-Content>SLING-INF/content/apps/cards/proms/clinics/Cardio/mailTemplates;path:=/apps/cards/proms/clinics/Cardio/mailTemplates;overwrite:=true</Sling-Initial-Content>
           </instructions>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.sling</groupId>
-        <artifactId>slingstart-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>attach-prov-model</id>
-            <goals>
-              <goal>attach-slingfeature</goal>
-              <goal>attach-modelarchive</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
