@@ -132,6 +132,8 @@ public class ImportTask implements Runnable
         Calendar dateToQuery = Calendar.getInstance();
         Date today = new Date();
         dateToQuery.setTime(today);
+        // Testing code, set it to a known appointment time
+        dateToQuery.set(2022, 1, 1);
         Calendar endDate = (Calendar) dateToQuery.clone();
         endDate.add(Calendar.DATE, daysToQuery);
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
