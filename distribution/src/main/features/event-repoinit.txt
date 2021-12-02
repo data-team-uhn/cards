@@ -25,8 +25,3 @@ create path (sling:Folder) /var/eventing
 set principal ACL for sling-event
     allow   jcr:read,rep:write    on /var/eventing
 end
-
-[artifacts runModes=proms]
-    io.uhndata.cards/proms-resources-clinical-data/${cards.version}
-    io.uhndata.cards/proms-backend/${cards.version}
-    io.uhndata.cards/proms-frontend/${cards.version}
