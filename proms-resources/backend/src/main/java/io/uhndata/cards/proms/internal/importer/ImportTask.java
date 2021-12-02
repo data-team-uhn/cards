@@ -79,11 +79,15 @@ public class ImportTask implements Runnable
     @Override
     public void run()
     {
-        LOGGER.warn("Running import task");
         String token = getAuthToken();
-        getUpcomingAppointments(token);
+        getUpcomingAppointments(token, 3);
     }
 
+    /**
+     * Obtain an authentication token for use in querying the Torch server.
+     * @return an authentication token to be passed onto as a header, typically begins with "Bearer " or an empty
+     *         string if no token could be obtained.
+     */
     private String getAuthToken()
     {
         String token = "";
@@ -94,14 +98,17 @@ public class ImportTask implements Runnable
             JsonReader jsonReader = Json.createReader(new StringReader(rawResponse.toString()));
             token = "Bearer " + System.getenv("PROM_AUTH_TOKEN");
         } catch (Exception e) {
-            LOGGER.warn("Failed to retrieve token: {}", e.getMessage(), e);
+            LOGGER.error("Failed to retrieve authentication token: {}", e.getMessage(), e);
         }
 
         return token;
     }
 
-    @SuppressWarnings("checkstyle:ExecutableStatementCount")
-    private void getUpcomingAppointments(String authToken)
+    /**
+     * Get any upcoming appointments in the next few days.
+     * @param authToken an authentication token for use in querying the Torch server
+     */
+    private void getUpcomingAppointments(String authToken, int daysToQuery)
     {
         // Since we can't query more than one date at a time, query three dates
         String postRequestTemplate = "{\"query\": \"query{"
@@ -112,7 +119,7 @@ public class ImportTask implements Runnable
         Date today = new Date();
         dateToQuery.setTime(today);
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < daysToQuery; i++)
         {
             String postRequest = String.format(postRequestTemplate, formatter.format(dateToQuery.getTime()));
             // Query the torch server
@@ -136,11 +143,11 @@ public class ImportTask implements Runnable
         }
     }
 
-
     /***
      * Get the response from a URL after submitting a POST request.
      * @param url The URL to send a POST request to
      * @param data The payload to POST
+     * @return The response from the server
      */
     String getPostResponse(String url, String data) throws IOException
     {
@@ -152,6 +159,7 @@ public class ImportTask implements Runnable
      * @param url The URL to send a POST request to
      * @param data The payload to POST
      * @param token an optional token to send as a request property
+     * @return The response from the server
      */
     String getPostResponse(String url, String data, String token) throws IOException
     {
@@ -185,21 +193,29 @@ public class ImportTask implements Runnable
      * Store information about a patient from a JsonObject.
      * @param patient The patient object to add
      */
-    void storePatient(JsonObject patientDetails) throws LoginException, IOException, RepositoryException
+    void storePatient(JsonObject patientDetails)
     {
-        ResourceResolver resolver = this.resolverFactory.getResourceResolver(null);
         String mrn = patientDetails.getString("mrn");
+        try {
+            ResourceResolver resolver = this.resolverFactory.getResourceResolver(null);
 
-        // Determine if this patient exists already
-        Resource patient = getOrCreatePatientSubject(mrn, resolver);
-        Resource patientInfo = getOrCreatePatientInformationForm(patientDetails, patient, resolver);
-        updatePatientInformationForm(patientDetails, patientInfo, resolver);
-        JsonObject appointmentDetails = patientDetails.getJsonObject("nextAppointment");
-        Resource visit = getOrCreateVisit(appointmentDetails, patient, resolver);
-        Resource visitInfo = getOrCreateVisitInformationForm(visit, resolver);
-        updateVisitInformationForm(appointmentDetails, visitInfo, resolver);
-        final Session session = resolver.adaptTo(Session.class);
-        session.save();
+            // Determine if this patient exists already
+            Resource patient = getOrCreatePatientSubject(mrn, resolver);
+            Resource patientInfo = getOrCreatePatientInformationForm(patient, resolver);
+            updatePatientInformationForm(patientDetails, patientInfo, resolver);
+            JsonObject appointmentDetails = patientDetails.getJsonObject("nextAppointment");
+            Resource visit = getOrCreateVisit(appointmentDetails, patient, resolver);
+            Resource visitInfo = getOrCreateVisitInformationForm(visit, resolver);
+            updateVisitInformationForm(appointmentDetails, visitInfo, resolver);
+            final Session session = resolver.adaptTo(Session.class);
+            session.save();
+        } catch (LoginException e) {
+            LOGGER.error("Could not save patient {}: {}", mrn, e.getMessage(), e);
+        } catch (IOException e) {
+            LOGGER.error("Could not save patient {}: {}", mrn, e.getMessage(), e);
+        } catch (RepositoryException e) {
+            LOGGER.error("Could not save patient {}: {}", mrn, e.getMessage(), e);
+        }
     }
 
     /**
@@ -218,16 +234,23 @@ public class ImportTask implements Runnable
             // Create a new patient
             Resource parentResource = resolver.getResource("/Subjects/");
             Resource patientType = resolver.getResource("/SubjectTypes/Patient");
-            return resolver.create(parentResource, UUID.randomUUID().toString(), Map.of(
+            Resource newSubject = resolver.create(parentResource, UUID.randomUUID().toString(), Map.of(
                 ImportTask.PRIMARY_TYPE, "cards:Subject",
                 "identifier", mrn,
                 "fullidentifier", mrn,
                 "type", patientType.adaptTo(Node.class)
             ));
+            return newSubject;
         }
     }
 
-    Resource getOrCreatePatientInformationForm(JsonObject info, Resource patient, ResourceResolver resolver)
+    /**
+     * Grab a Patient Information form, or create it if it doesn't exist.
+     * @param patient Resource of the Patient subject node
+     * @param resolver ResourceResolver to use when searching for/creating the node
+     * @return A Patient Information Form resource
+     */
+    Resource getOrCreatePatientInformationForm(Resource patient, ResourceResolver resolver)
         throws RepositoryException, PersistenceException
     {
         Iterator<Resource> form = resolver.findResources(String.format(
@@ -253,6 +276,13 @@ public class ImportTask implements Runnable
         String get(JsonObject in);
     }
 
+    /**
+     * Get the value from a JSONObject using the given JsonValueGetter function, returning an empty
+     * string if the value does not exist.
+     * @param valueGetter The JsonValueGetter to use when obtaining a value from a JsonObject
+     * @param info The JsonObject to apply valueGetter to.
+     * @return The value, or an empty string if it does not exist
+     */
     String safelyGetValue(JsonValueGetter valueGetter, JsonObject info)
     {
         try {
@@ -263,11 +293,15 @@ public class ImportTask implements Runnable
         }
     }
 
+    /**
+     * Update the patient information form with values from the given JsonObject.
+     * @param info The JsonObject representing a patient returned from Torch
+     * @param form The Patient Information form to update
+     * @param resolver The ResourceResolver to use when creating new nodes
+     */
     void updatePatientInformationForm(JsonObject info, Resource form, ResourceResolver resolver)
         throws RepositoryException, PersistenceException
     {
-        // TODO: Clean up
-
         // Map of Patient information question node name => Function to get JSON value
         Map<String, JsonValueGetter> formMapping = Map.of(
             "mrn", obj -> obj.getString("mrn"),
@@ -335,6 +369,12 @@ public class ImportTask implements Runnable
         }
     }
 
+    /**
+     * Update the visit information form with values from the given JsonObject.
+     * @param info The JsonObject representing a visit returned from Torch
+     * @param form The Visit Information form to update
+     * @param resolver The ResourceResolver to use when creating new nodes
+     */
     void updateVisitInformationForm(JsonObject info, Resource form, ResourceResolver resolver)
         throws RepositoryException, PersistenceException
     {
@@ -405,6 +445,13 @@ public class ImportTask implements Runnable
         }
     }
 
+    /**
+     * Grab a Visit subject, or create it if it doesn't exist.
+     * @param patient Resource of the Patient subject to be a child of
+     * @param visit JsonObject from Torch representing the visit
+     * @param resolver ResourceResolver to use when searching for/creating the node
+     * @return A Visit resource
+     */
     Resource getOrCreateVisit(JsonObject visit, Resource patient, ResourceResolver resolver)
         throws RepositoryException, PersistenceException
     {
@@ -426,6 +473,12 @@ public class ImportTask implements Runnable
         }
     }
 
+    /**
+     * Grab a Visit Information form, or create it if it doesn't exist.
+     * @param visit Resource of the Visit subject for this form
+     * @param resolver ResourceResolver to use when searching for/creating the node
+     * @return A Visit Information form resource
+     */
     Resource getOrCreateVisitInformationForm(Resource visit, ResourceResolver resolver)
         throws RepositoryException, PersistenceException
     {
@@ -443,33 +496,6 @@ public class ImportTask implements Runnable
                 "questionnaire", formType.adaptTo(Node.class),
                 "relatedSubjects", visit.adaptTo(Node.class),
                 "subject", visit.adaptTo(Node.class)
-            ));
-        }
-    }
-
-    /**
-     * Store information about an appointment from a JsonObject.
-     * @param appointment The appointment object to add
-     */
-    void storeAppointment(JsonObject appointment, ResourceResolver resolver, Resource patient)
-        throws RepositoryException, PersistenceException
-    {
-        String id = appointment.getString("fhirID");
-        Iterator<Resource> answer = resolver.findResources(String.format(
-            "SELECT * FROM [cards:Subject] WHERE identifier = \"%s\"", id), ImportTask.JCR_SQL);
-        if (answer.hasNext()) {
-            // Make sure our information is up to date
-            Resource form = answer.next().getParent();
-            // We need to check: time and status
-        } else {
-            Resource parentResource = resolver.getResource("/Forms/");
-            Resource visitFormType = resolver.getResource("/Questionnaires/Visit information/");
-            // Create a new patient information form
-            resolver.create(parentResource, UUID.randomUUID().toString(), Map.of(
-                "questionnaire", visitFormType.adaptTo(Node.class),
-                "questionnaire@TypeHint", "Reference",
-                "relatedSubjects", patient.adaptTo(Node.class),
-                "subject", patient.adaptTo(Node.class)
             ));
         }
     }
