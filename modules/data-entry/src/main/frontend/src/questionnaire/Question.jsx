@@ -31,12 +31,10 @@ function Question (props) {
   let { classes, children, questionDefinition, existingAnswer, isEdit, preventDefaultView, defaultDisplayFormatter } = props;
   let { text, compact, description, disableInstructions } = { ...questionDefinition, ...props }
 
-  let [ hasInvalidAnswer, setHasInvalidAnswer ] = React.useState(existingAnswer?.[1].statusFlags?.length > 0);
-
   return (
     <Card
       variant="outlined"
-      className={classes.questionCard + (hasInvalidAnswer ? (' cards-with-invalid-answer') : '')}
+      className={classes.questionCard}
       >
       <CardHeader
         title={text}
