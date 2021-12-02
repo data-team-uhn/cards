@@ -56,5 +56,10 @@ yarn.lock
 
 # Running instance
 /sling/
+/.cards-data/
 /distribution/sling/
+/distribution/launcher/
 /.metadata/
+
+# Copy of source code needed for building JARs in a Docker container
+/distribution/COMPLETE_SOURCE_CODE.tar

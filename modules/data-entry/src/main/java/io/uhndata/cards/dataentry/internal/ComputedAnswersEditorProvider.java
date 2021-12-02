@@ -16,15 +16,12 @@
  */
 package io.uhndata.cards.dataentry.internal;
 
-import javax.jcr.Session;
-
 import org.apache.jackrabbit.oak.api.CommitFailedException;
 import org.apache.jackrabbit.oak.spi.commit.CommitInfo;
 import org.apache.jackrabbit.oak.spi.commit.Editor;
 import org.apache.jackrabbit.oak.spi.commit.EditorProvider;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
-import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.FieldOption;
@@ -32,6 +29,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
+import io.uhndata.cards.dataentry.api.ExpressionUtils;
 import io.uhndata.cards.dataentry.api.FormUtils;
 import io.uhndata.cards.dataentry.api.QuestionnaireUtils;
 
@@ -53,17 +51,17 @@ public class ComputedAnswersEditorProvider implements EditorProvider
     @Reference
     private FormUtils formUtils;
 
+    @Reference
+    private ExpressionUtils expressionUtils;
+
     @Override
     public Editor getRootEditor(NodeState before, NodeState after, NodeBuilder builder, CommitInfo info)
         throws CommitFailedException
     {
         if (this.rrf != null) {
-            final ResourceResolver myResolver = this.rrf.getThreadResourceResolver();
-            if (myResolver != null) {
-                // Each ComputedEditor maintains a state, so a new instance must be returned each time
-                return new ComputedAnswersEditor(builder, myResolver.adaptTo(Session.class),
-                    this.questionnaireUtils, this.formUtils);
-            }
+            // Each ComputedEditor maintains a state, so a new instance must be returned each time
+            return new ComputedAnswersEditor(builder, this.rrf,
+                this.questionnaireUtils, this.formUtils, this.expressionUtils);
         }
         return null;
     }

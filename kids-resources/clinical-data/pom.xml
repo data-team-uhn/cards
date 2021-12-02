@@ -43,7 +43,7 @@
             <Sling-Initial-Content>
               SLING-INF/content/Questionnaires/;path:=/Questionnaires/;overwrite:=true;checkin:=true,
               SLING-INF/content/libs/cards/resources/;path:=/libs/cards/resources/;overwrite:=true,
-              SLING-INF/content/libs/cards/conf/;path:=/libs/cards/conf/;overwrite:=false
+              SLING-INF/content/libs/cards/conf/;path:=/libs/cards/conf/;overwrite:=true,
             </Sling-Initial-Content>
           </instructions>
         </configuration>

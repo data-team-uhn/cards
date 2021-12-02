@@ -117,6 +117,11 @@ function message_started_cards() {
   echo -e "${TERMINAL_GREEN}**************************$(print_length_of $BIND_PORT '*' 4)${TERMINAL_NOCOLOR}"
 }
 
+function get_cards_version() {
+  CARDS_VERSION=$(cat pom.xml | grep --max-count=1 '<version>' | cut '-d>' -f2 | cut '-d<' -f1)
+  echo CARDS_VERSION $CARDS_VERSION
+}
+
 #Determine the port that CARDS is to bind to
 BIND_PORT=$(ARGUMENT_KEY='-p' ARGUMENT_DEFAULT='8080' python3 Utilities/HostConfig/argparse_bash.py $@)
 export CARDS_URL="http://localhost:${BIND_PORT}"
@@ -138,8 +143,74 @@ then
   python3 Utilities/HostConfig/check_tcp_available.py --tcp_port $BIND_PORT || handle_tcp_bind_fail
 fi
 
+# Filter the parameters to allow a less verbose start command, like `-p` to specify the port, or using `VERSION` to refer to the current version.
+declare -a ARGS=("$@")
+# Unset has strange effect on arrays, it leaves holes that somehow don't count towards the length of the array, so we must manually keep track of the index of the last element.
+declare -i ARGS_LENGTH=${#ARGS[@]}
+# Storage engine: default is TAR storage, allow switching to Mongo
+declare OAK_STORAGE="tar"
+# Permissions scheme: default is open, allow switching to something else
+declare PERMISSIONS="open"
+get_cards_version
+
+for ((i=0; i<${ARGS_LENGTH}; ++i));
+do
+  if [[ ${ARGS[$i]} == '-p' || ${ARGS[$i]} == '--port' ]]
+  then
+    # The port was already extracted, skip over -p and the port number
+    unset ARGS[$i]
+    i=${i}+1
+    unset ARGS[$i]
+  elif [[ ${ARGS[$i]} == '-P' || ${ARGS[$i]} == '--project' ]]
+  then
+    ARGS[$i]='-f'
+    i=${i}+1
+    PROJECTS=${ARGS[$i]//,/ }
+    ARGS[$i]=''
+    for PROJECT in $PROJECTS
+    do
+      ARGS[$i]=${ARGS[$i]},mvn:io.uhndata.cards/${PROJECT}/${CARDS_VERSION}/slingosgifeature
+    done
+    ARGS[$i]=${ARGS[$i]#,}
+  elif [[ ${ARGS[$i]} == '--permissions' ]]
+  then
+    unset ARGS[$i]
+    i=${i}+1
+    PERMISSIONS=${ARGS[$i]}
+    unset ARGS[$i]
+  elif [[ ${ARGS[$i]} == '--mongo' ]]
+  then
+    unset ARGS[$i]
+    OAK_STORAGE="mongo"
+  elif [[ ${ARGS[$i]} == '--dev' ]]
+  then
+    unset ARGS[$i]
+    ARGS[$ARGS_LENGTH]=-f
+    ARGS_LENGTH=${ARGS_LENGTH}+1
+    ARGS[$ARGS_LENGTH]=mvn:io.uhndata.cards/cards/${CARDS_VERSION}/slingosgifeature/composum
+    ARGS_LENGTH=${ARGS_LENGTH}+1
+  elif [[ ${ARGS[$i]} == '--demo' ]]
+  then
+    unset ARGS[$i]
+    ARGS[$ARGS_LENGTH]=-f
+    ARGS_LENGTH=${ARGS_LENGTH}+1
+    ARGS[$ARGS_LENGTH]=mvn:io.uhndata.cards/cards-modules-demo-banner/${CARDS_VERSION}/slingosgifeature,mvn:io.uhndata.cards/cards-modules-upgrade-marker/${CARDS_VERSION}/slingosgifeature,mvn:io.uhndata.cards/cards-dataentry/${CARDS_VERSION}/slingosgifeature/forms_demo
+    ARGS_LENGTH=${ARGS_LENGTH}+1
+  elif [[ ${ARGS[$i]} == '--test' ]]
+  then
+    RUNMODE_TEST=true
+    unset ARGS[$i]
+    ARGS[$ARGS_LENGTH]=-f
+    ARGS_LENGTH=${ARGS_LENGTH}+1
+    ARGS[$ARGS_LENGTH]=mvn:io.uhndata.cards/cards-modules-test-forms/${CARDS_VERSION}/slingosgifeature
+    ARGS_LENGTH=${ARGS_LENGTH}+1
+  else
+    ARGS[$i]=${ARGS[$i]/VERSION/${CARDS_VERSION}}
+  fi
+done
+
 #Start CARDS in the background
-java -jar distribution/target/cards-*jar $@ &
+java -Djdk.xml.entityExpansionLimit=0 -Dorg.osgi.service.http.port=${BIND_PORT} -jar distribution/target/dependency/org.apache.sling.feature.launcher.jar -p .cards-data -f distribution/target/cards-*-core_${OAK_STORAGE}_far.far -f mvn:io.uhndata.cards/cards-dataentry/${CARDS_VERSION}/slingosgifeature/permissions_${PERMISSIONS} "${ARGS[@]}" &
 CARDS_PID=$!
 
 #Check to see if CARDS was able to bind to the TCP port

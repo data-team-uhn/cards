@@ -1,3 +1,7 @@
 {
-  "jcr:primaryType": "cards:PromsHomepage"
+  "jcr:primaryType": "cards:PromsHomepage",
+  "security:acl": [
+    { "principal": "everyone", "granted": ["jcr:read"] },
+    { "principal": "anonymous", "granted": ["jcr:read"] }
+  ]
 }

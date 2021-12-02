@@ -12,6 +12,9 @@
 ## Build:
 `mvn clean install`
 
+#### To build a self-contained Docker image:
+`MAVEN_OPTS="-Ddocker.verbose -Ddocker.buildArg.build_jars=true" mvn clean install`
+
 Additional options include:
 
 `mvn clean -Pclean-node` to remove compiled frontend code
@@ -35,11 +38,13 @@ To specify a different URL, use `-Dsling.url=https://cards.server:8443/system/co
 
 `./start_cards.sh -p PORT` to run at a different port
 
-`./start_cards.sh -Dsling.run.modes=dev` to include the content browser (Composum), accessible at `http://localhost:8080/bin/browser.html`
+`./start_cards.sh -P PROJECT1,PROJECT2` to run a specific project, e.g. `cards4lfs` or `cards4kids`
 
-Installing larger vocabuleries may fail due to default limits imposed on XML documents by the JVM. In this case, the app should be started with an extra parameter:
+`./start_cards.sh --dev` to include the content browser (Composum), accessible at `http://localhost:8080/bin/browser.html`
 
-`./start_cards.sh -Djdk.xml.entityExpansionLimit=0`
+`./start_cards.sh --test` to include the test questionnaires
+
+`./start_cards.sh --demo` to include the demo warning banner
 
 By default, the app will run with username `admin` and password `admin`.
 

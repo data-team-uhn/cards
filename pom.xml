@@ -147,9 +147,15 @@
     <cards.version>${project.version}</cards.version>
     <app.name>Clinical ARchive for Data Science</app.name>
     <platform.name>CARDS</platform.name>
-    <slf4j.version>1.7.26</slf4j.version>
-    <jackrabbit.version>2.16.3</jackrabbit.version>
-    <oak.version>1.8.8</oak.version>
+    <slf4j.version>1.7.32</slf4j.version>
+    <jackrabbit.version>2.20.3</jackrabbit.version>
+    <oak.version>1.40.0</oak.version>
+
+    <!-- Versions to be replaced in the feature files -->
+    <asm.version>9.2</asm.version>
+    <composum.nodes.version>2.6.6</composum.nodes.version>
+    <jackson.version>2.12.1</jackson.version>
+    <groovy.version>3.0.7</groovy.version>
 
     <enforcer.skip>false</enforcer.skip>
     <checkstyle.skip>false</checkstyle.skip>
@@ -170,12 +176,12 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.9</version>
+        <version>3.11</version>
       </dependency>
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
-        <version>2.7</version>
+        <version>2.11.0</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
@@ -185,7 +191,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-collections4</artifactId>
-        <version>4.3</version>
+        <version>4.4</version>
       </dependency>
       <dependency>
         <groupId>commons-collections</groupId>
@@ -266,11 +272,6 @@
       </dependency>
       <dependency>
         <groupId>org.apache.jackrabbit</groupId>
-        <artifactId>jackrabbit-api</artifactId>
-        <version>${jackrabbit.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.jackrabbit</groupId>
         <artifactId>jackrabbit-jcr-commons</artifactId>
         <version>${jackrabbit.version}</version>
       </dependency>
@@ -280,6 +281,12 @@
         <version>${jackrabbit.version}</version>
       </dependency>
       <!-- Oak -->
+      <dependency>
+        <groupId>org.apache.jackrabbit</groupId>
+        <artifactId>oak-jackrabbit-api</artifactId>
+        <version>${oak.version}</version>
+        <scope>provided</scope>
+      </dependency>
       <dependency>
         <groupId>org.apache.jackrabbit</groupId>
         <artifactId>oak-api</artifactId>
@@ -522,6 +529,11 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.sling</groupId>
+        <artifactId>slingfeature-maven-plugin</artifactId>
+        <extensions>true</extensions>
+      </plugin>
     </plugins>
     <pluginManagement>
       <plugins>
@@ -599,19 +611,26 @@
 
         <plugin>
           <groupId>org.apache.sling</groupId>
-          <artifactId>slingstart-maven-plugin</artifactId>
-          <!-- Lock down plugin version for build reproducibility -->
-          <version>1.8.2</version>
-          <!-- This allows us to use the "slingstart" and "slingfeature" packaging type -->
+          <artifactId>slingfeature-maven-plugin</artifactId>
+          <version>1.5.16</version>
           <extensions>true</extensions>
           <configuration>
-            <!-- Add the current project version into the provisioning files -->
-            <setFeatureVersions>true</setFeatureVersions>
-            <!-- Allows using the maven properties defined above as variables in the provisioning files -->
-            <usePomVariables>true</usePomVariables>
-            <!-- Allow defining versions in the POM file -->
-            <usePomDependencies>true</usePomDependencies>
+            <replacePropertyVariables>asm.version,jackrabbit.version,groovy.version,oak.version,slf4j.version,composum.nodes.version,jackson.version,cards.version</replacePropertyVariables>
+            <framework>
+              <groupId>org.apache.felix</groupId>
+              <artifactId>org.apache.felix.framework</artifactId>
+              <version>6.0.3</version>
+            </framework>
           </configuration>
+          <executions>
+            <execution>
+              <id>attach-features</id>
+              <phase>prepare-package</phase>
+              <goals>
+                <goal>attach-features</goal>
+              </goals>
+            </execution>
+          </executions>
         </plugin>
 
         <plugin>
@@ -927,6 +946,7 @@
                   <filesets>
                     <fileset>
                       <directory>sling/</directory>
+                      <directory>.cards-data/</directory>
                     </fileset>
                   </filesets>
                 </configuration>

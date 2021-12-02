@@ -6,3 +6,4 @@ NCR_MODEL
 secrets
 SSL_CONFIG
 SLING
+__pycache__
