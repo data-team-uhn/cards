@@ -309,19 +309,19 @@ function Form (props) {
     }
   }, [data])
 
-  let getIncompleteAnswers = (obj, data) => {
+  let getIncompleteAnswers = (obj, results) => {
     for (var property in obj) {
       if (obj.hasOwnProperty(property)) {
         if (obj[property]["jcr:primaryType"] == "cards:AnswerSection" && (obj[property].statusFlags.includes('INCOMPLETE') || obj[property].statusFlags.includes('INVALID'))) {
-          getIncompleteAnswers(obj[property], data);
+          getIncompleteAnswers(obj[property], results);
         } else {
           if (obj[property]["sling:resourceSuperType"] == "cards/Answer" && (obj[property].statusFlags.includes('INCOMPLETE') || obj[property].statusFlags.includes('INVALID'))) {
-            data.push(obj[property]);
+            results.push(obj[property]);
           }
         }
       }
     }
-    return data;
+    return results;
   }
 
   // If the data has not yet been fetched, return an in-progress symbol
