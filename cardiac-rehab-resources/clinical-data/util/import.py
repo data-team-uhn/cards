@@ -22,6 +22,7 @@ import csv
 import re
 import regex
 
+is_new_form = False
 
 def prepare_conditional_string(conditional_string, question, index=1, require_all_in=False):
     require_all = require_all_in
@@ -338,7 +339,10 @@ def clean_title(title):
     return result.strip()
 
 def clean_name(name):
-    return re.sub(':|\(|\)|\[|\]|\s|\,|\.|\n', '', name.replace("/", "-"))
+    if is_new_form:
+        return re.sub(':|\(|\)|\[|\]|\s|\,|\.|\n', '', name.replace("/", "-"))
+    else:
+        return name.replace("/", "-")
 
 def parse_count(title):
     multiple_visits = " - Study Visits (# = "
@@ -549,4 +553,6 @@ titles = [
     'New Questionnaires'
 ]
 for title in titles:
+    if (title in ['New Questionnaires']):
+        is_new_form = True
     csv_to_json(title)
