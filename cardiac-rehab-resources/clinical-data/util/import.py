@@ -23,26 +23,37 @@ import re
 import regex
 
 
-def prepare_conditional_string(conditional_string, question):
-    # Split statement into two at the 'or'
-    require_all = False
-    if ("all " in conditional_string):
-        conditional_string = conditional_string[4:]
-        require_all = True
-    if len(partition_ignore_strings(conditional_string, " or ")) > 1:
-        conditional_string = partition_ignore_strings(conditional_string, " or ")
+def prepare_conditional_string(conditional_string, question, index=1, require_all_in=False):
+    require_all = require_all_in
+    # Split statement into two at 'or' or 'and'
+    partition_or = partition_ignore_strings(conditional_string, " or ")
+    partition_and = partition_ignore_strings(conditional_string, " and ")
+    if len(partition_or) > 1 or len(partition_and) > 1:
+        conditional_string = []
+        if len(partition_or) > 1 and len(partition_and) > 1:
+            conditional_string = partition_or if len(partition_or) < len(partition_and) else partition_and
+            require_all = True
+        elif len(partition_or) > 1:
+            conditional_string = partition_or
+        else:
+            conditional_string = partition_and
+            require_all = True
+
         # If one of the resulting statements is incomplete
         # Such as in the case of splitting "if CVLT-C or CVLT-II=yes"
         # Copy what's after the equals sign to the incomplete part
-        if "=" not in conditional_string[0]:
-            new_string = conditional_string[0] + conditional_string[2].partition("=")[1] + conditional_string[2].partition("=")[2]
-            insert_conditional(new_string, question, '1', require_all)
-        else:
-            insert_conditional(conditional_string[0], question, '1', require_all)
-        insert_conditional(conditional_string[2], question, '2', require_all)
+        first_string = conditional_string[0]
+        if "=" not in first_string:
+            first_string = conditional_string[0] + conditional_string[2].partition("=")[1] + conditional_string[2].partition("=")[2]
+        insert_conditional(first_string, question, str(index), require_all, True)
+        prepare_conditional_string(conditional_string[2], question, index + 1, require_all)
     else:
         # No title is needed because only a single lfs:Conditional will be created
-        insert_conditional(conditional_string, question, '', require_all)
+        if (index == 1):
+            insert_conditional(conditional_string, question, '', require_all)
+        else:
+
+            insert_conditional(conditional_string, question, str(index), require_all, True)
 
 
 def partition_ignore_strings(input, splitter):
@@ -104,7 +115,7 @@ def split_ignore_strings(input, splitters, limit = -1):
 
 
 # Updates the question with lfs:Conditionals from the output of prepare_conditional
-def insert_conditional(conditional_string, question, title, require_all=False):
+def insert_conditional(conditional_string, question, title, require_all=False, group=False):
     # Split the conditional into two operands and an operator
     conditional_string = partition_conditional_string(conditional_string)
     operand_a = conditional_string[0].strip()
@@ -144,6 +155,12 @@ def insert_conditional(conditional_string, question, title, require_all=False):
             index_mod += 1
         for index, item in enumerate(operand_b_list):
             question['conditionalGroup'].update(create_conditional(operand_a, operator, item, 'condition' + str(index + index_mod)))
+    elif group:
+        if 'conditionalGroup' not in question:
+            question.update({'conditionalGroup': {'jcr:primaryType': 'lfs:ConditionalGroup'}})
+        if require_all:
+            question['conditionalGroup'].update({'requireAll': True})
+        question['conditionalGroup'].update(create_conditional(operand_a, operator, operand_b, 'condition' + title))
     else:
         question.update(create_conditional(operand_a, operator, operand_b, 'condition' + title))
 
@@ -283,9 +300,9 @@ def insert_options(question, row):
 
 def add_option_properties(option, label):
     base_label = label.lower().strip()
-    if base_label == "none of the above":
+    if base_label in ["none of the above", "no"]:
         option['noneOfTheAbove'] = True
-    if base_label == "n/a" or base_label == "not applicable" or base_label == "none" or base_label == "i prefer not to answer":
+    if base_label  in ["n/a", "not applicable", "none", "i prefer not to answer"]:
         option['notApplicable'] = True
     return option
 
