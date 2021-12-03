@@ -361,7 +361,6 @@ public class ImportTask implements Runnable
                         ));
                 }
             } catch (ParseException e) {
-                //TODO: handle exception
                 LOGGER.error("Error occurred while parsing {} for {}, {}", entry, info.toString(), e);
             }
         }
