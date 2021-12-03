@@ -26,6 +26,7 @@ import { Checkbox, Grid, Radio, RadioGroup, Typography, withStyles } from "@mate
 import Answer, {LABEL_POS, VALUE_POS, DESC_POS, IS_DEFAULT_OPTION_POS, IS_DEFAULT_ANSWER_POS} from "./Answer";
 import AnswerInstructions from "./AnswerInstructions";
 import Question from "./Question";
+import FormattedText from "../components/FormattedText.jsx";
 import QuestionnaireStyle from './QuestionnaireStyle';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -165,10 +166,15 @@ let QuestionMatrix = (props) => {
       answers={existingAnswers}
       {...props}
       disableInstructions
-      defaultDisplayFormatter={(subquestion, idx) => 
+      defaultDisplayFormatter={(subquestion, idx) => subquestion[1].displayedValue &&
         <Grid container alignItems='flex-start' spacing={2} direction="row">
           <Grid item xs={6}>
             <Typography variant="subtitle2">{subquestion[1].question.text}:</Typography>
+            { subquestion[1].question.description &&
+              <FormattedText variant="caption" display="block" color="textSecondary">
+                {subquestion[1].question.description}
+              </FormattedText>
+            }
           </Grid>
           <Grid item xs={6}>
             {Array.of(subquestion[1].displayedValue).flat().join(", ")}
@@ -198,8 +204,13 @@ let QuestionMatrix = (props) => {
                   { index == 0
                     ? <>
                     <Typography>{question[1].text}</Typography>
+                    { question[1].description &&
+                      <FormattedText variant="caption" display="block" color="textSecondary">
+                        {question[1].description}
+                      </FormattedText>
+                    }
                     <AnswerInstructions
-                      currentAnswers={selection[question[0]].length}
+                      currentAnswers={selection[question[0]] ? selection[question[0]].length : 0}
                       {...sectionDefinition}
                       {...props}
                      /> </>

@@ -50,7 +50,9 @@ let EditDialog = (props) => {
   let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
   let [ primaryType, setPrimaryType ] = useState(`cards:${type}`);
   let [ error, setError ] = useState('');
-  let entitySpecsFilename = (type === "Question" && (parentDisplayMode === "matrix" || data.displayMode === "matrix")) ? "QuestionMatrix" : type;
+
+  const isMatrixQuestion = type === "Question" && (parentDisplayMode === "matrix" || data.displayMode === "matrix");
+  let entitySpecsFilename = isMatrixQuestion ? "QuestionMatrix" : type;
   
   let json = require(`./${entitySpecsFilename}.json`);
 
@@ -170,6 +172,7 @@ let EditDialog = (props) => {
           </DialogTitle>
           <DialogContent>
             { error && <Typography color="error">{error}</Typography>}
+            { isMatrixQuestion && <input type="hidden" name="displayMode" value="list" /> }
             <Grid container direction="column" spacing={2}>
               <Grid item>{targetIdField()}</Grid>
               <Fields
