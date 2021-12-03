@@ -54,9 +54,17 @@ public class ImportEndpoint extends SlingSafeMethodsServlet
             return;
         }
 
-        final Runnable importJob = new ImportTask(this.resolverFactory);
-        final Thread thread = new Thread(importJob);
-        thread.start();
-        out.write("Data import started");
+        // Load configuration from environment variables
+        try {
+            int daysToParse = Integer.parseInt(System.getenv("PROM_DAYS_TO_QUERY"));
+            String authURL = System.getenv("PROM_AUTH_URL");
+            String endpointURL = System.getenv("PROM_TORCH_URL");
+            final Runnable importJob = new ImportTask(this.resolverFactory, authURL, endpointURL, daysToParse);
+            final Thread thread = new Thread(importJob);
+            thread.start();
+            out.write("Data import started");
+        } catch (NumberFormatException e) {
+            out.write("The PROM_DAYS_TO_QUERY variable should be set to an integer before running this endpoint.");
+        }
     }
 }
