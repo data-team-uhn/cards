@@ -31,6 +31,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -67,6 +68,7 @@ public class ImportTask implements Runnable
     private static final String JCR_SQL = "JCR-SQL2";
     private static final String QUESTION_FIELD = "question";
     private static final String VALUE_FIELD = "value";
+    private static final int DAYS_TO_QUERY = 3;
 
     /** Provides access to resources. */
     private final ResourceResolverFactory resolverFactory;
@@ -80,7 +82,7 @@ public class ImportTask implements Runnable
     public void run()
     {
         String token = getAuthToken();
-        getUpcomingAppointments(token, 3);
+        getUpcomingAppointments(token, DAYS_TO_QUERY);
     }
 
     /**
@@ -127,8 +129,6 @@ public class ImportTask implements Runnable
                 String rawResponse = getPostResponse(ImportTask.URL, postRequest, authToken);
 
                 // Read the response into a JsonObject
-                LOGGER.warn(rawResponse);
-
                 JsonReader jsonReader = Json.createReader(new StringReader(rawResponse));
                 JsonObject response = jsonReader.readObject();
 
@@ -137,7 +137,7 @@ public class ImportTask implements Runnable
                     storePatient(data.getJsonObject(j));
                 }
             } catch (Exception e) {
-                LOGGER.warn("Failed to query server: {}", e.getMessage(), e);
+                LOGGER.error("Failed to query server: {}", e.getMessage(), e);
             }
             dateToQuery.add(Calendar.DATE, 1);
         }
@@ -199,14 +199,18 @@ public class ImportTask implements Runnable
         try {
             ResourceResolver resolver = this.resolverFactory.getResourceResolver(null);
 
-            // Determine if this patient exists already
-            Resource patient = getOrCreatePatientSubject(mrn, resolver);
-            Resource patientInfo = getOrCreatePatientInformationForm(patient, resolver);
-            updatePatientInformationForm(patientDetails, patientInfo, resolver);
+            // Update information about the patient
+            Resource patient = getOrCreateSubject(mrn, "/SubjectTypes/Patient", null, resolver);
+            Resource patientInfo = getOrCreateForm(patient, "/Questionnaires/Patient information/", resolver);
+            updatePatientInformationForm(patientInfo, patientDetails, resolver);
+
+            // Update information about the visit ("appointment" is used interchangably here)
             JsonObject appointmentDetails = patientDetails.getJsonObject("nextAppointment");
-            Resource visit = getOrCreateVisit(appointmentDetails, patient, resolver);
-            Resource visitInfo = getOrCreateVisitInformationForm(visit, resolver);
-            updateVisitInformationForm(appointmentDetails, visitInfo, resolver);
+            Resource visit = getOrCreateSubject(appointmentDetails.getString("fhirID"),
+                "/SubjectTypes/Patient/Visit/", patient, resolver);
+            Resource visitInfo = getOrCreateForm(patient, "/Questionnaires/Visit information/", resolver);
+            updateVisitInformationForm(visitInfo, appointmentDetails, resolver);
+
             final Session session = resolver.adaptTo(Session.class);
             session.save();
         } catch (LoginException e) {
@@ -219,25 +223,30 @@ public class ImportTask implements Runnable
     }
 
     /**
-     * Grab a patient Subject node, or create it if it doesn't exist.
-     * @param mrn MRN of the subject
+     * Grab a subject of the specified type, or create it if it doesn't exist.
+     * @param identifier Identifier to use for the subject
+     * @param parentTypePath path to a SubjectType node for this subject
+     * @param parent parent Resource if this is a child of that resource, or null
      * @param resolver ResourceResolver to use when searching for/creating the node
+     * @return A Subject resource
      */
-    Resource getOrCreatePatientSubject(String mrn, ResourceResolver resolver) throws RepositoryException,
-        PersistenceException
+    Resource getOrCreateSubject(String identifier, String parentTypePath, Resource parent, ResourceResolver resolver)
+        throws RepositoryException, PersistenceException
     {
         Iterator<Resource> patientResource = resolver.findResources(String.format(
-            "SELECT * FROM [cards:Subject] WHERE identifier = \"%s\"", mrn), ImportTask.JCR_SQL);
+            "SELECT * FROM [cards:Subject] WHERE identifier = \"%s\"", identifier), ImportTask.JCR_SQL);
         if (patientResource.hasNext()) {
             return patientResource.next();
         } else {
-            // Create a new patient
-            Resource parentResource = resolver.getResource("/Subjects/");
-            Resource patientType = resolver.getResource("/SubjectTypes/Patient");
+            Resource parentResource = parent;
+            if (parentResource == null) {
+                parentResource = resolver.getResource("/Subjects/");
+            }
+            Resource patientType = resolver.getResource(parentTypePath);
             Resource newSubject = resolver.create(parentResource, UUID.randomUUID().toString(), Map.of(
                 ImportTask.PRIMARY_TYPE, "cards:Subject",
-                "identifier", mrn,
-                "fullidentifier", mrn,
+                "identifier", identifier,
+                "fullidentifier", identifier,
                 "type", patientType.adaptTo(Node.class)
             ));
             return newSubject;
@@ -245,45 +254,47 @@ public class ImportTask implements Runnable
     }
 
     /**
-     * Grab a Patient Information form, or create it if it doesn't exist.
-     * @param patient Resource of the Patient subject node
+     * Grab a form of the specified type, or create it if it doesn't exist.
+     * @param patient Resource of the subject node for the form
      * @param resolver ResourceResolver to use when searching for/creating the node
-     * @return A Patient Information Form resource
+     * @return A Form resource
      */
-    Resource getOrCreatePatientInformationForm(Resource patient, ResourceResolver resolver)
+    Resource getOrCreateForm(Resource subject, String questionnairePath, ResourceResolver resolver)
         throws RepositoryException, PersistenceException
     {
-        Iterator<Resource> form = resolver.findResources(String.format(
-            "SELECT * FROM [cards:Form] WHERE subject = \"%s\"",
-            patient.adaptTo(Node.class).getProperty("jcr:uuid").getString()), ImportTask.JCR_SQL);
-        if (form.hasNext()) {
-            return form.next();
+        Resource formType = resolver.getResource(questionnairePath);
+        Node subjectNode = subject.adaptTo(Node.class);
+        Iterator<Resource> formResource = resolver.findResources(String.format(
+            "SELECT * FROM [cards:Form] WHERE subject = \"%s\" AND questionnaire=\"%s\"",
+            subjectNode.getProperty("jcr:uuid").getString(),
+            formType.adaptTo(Node.class).getProperty("jcr:uuid").getString()), ImportTask.JCR_SQL);
+        if (formResource.hasNext()) {
+            return formResource.next();
         } else {
             Resource parentResource = resolver.getResource("/Forms/");
-            Resource patientFormType = resolver.getResource("/Questionnaires/Patient information/");
-            // Create a new patient information form
-            return resolver.create(parentResource, UUID.randomUUID().toString(), Map.of(
+            Resource newSubject = resolver.create(parentResource, UUID.randomUUID().toString(), Map.of(
                 ImportTask.PRIMARY_TYPE, "cards:Form",
-                "questionnaire", patientFormType.adaptTo(Node.class),
-                "relatedSubjects", patient.adaptTo(Node.class),
-                "subject", patient.adaptTo(Node.class)
+                "questionnaire", formType.adaptTo(Node.class),
+                "relatedSubjects", subjectNode,
+                "subject", subjectNode
             ));
+            return newSubject;
         }
     }
 
-    interface JsonValueGetter
+    interface JsonStringGetter
     {
         String get(JsonObject in);
     }
 
     /**
-     * Get the value from a JSONObject using the given JsonValueGetter function, returning an empty
+     * Get a string from a JSONObject using the given JsonStringGetter function, returning an empty
      * string if the value does not exist.
-     * @param valueGetter The JsonValueGetter to use when obtaining a value from a JsonObject
+     * @param valueGetter The JsonStringGetter to use when obtaining a value from a JsonObject
      * @param info The JsonObject to apply valueGetter to.
-     * @return The value, or an empty string if it does not exist
+     * @return The string, or an empty string if it does not exist
      */
-    String safelyGetValue(JsonValueGetter valueGetter, JsonObject info)
+    String safelyGetValue(JsonStringGetter valueGetter, JsonObject info)
     {
         try {
             return valueGetter.get(info);
@@ -293,17 +304,80 @@ public class ImportTask implements Runnable
         }
     }
 
+    void updateForm(Resource form, JsonObject info, String parentQuestionnaire,
+        Map<String, JsonStringGetter> mapping, Map<String, String> dateFields, ResourceResolver resolver)
+        throws RepositoryException, PersistenceException
+    {
+        // Run through the children of the node, seeing what exists
+        Set<String> seenNodes = new HashSet<String>();
+        Map<String, Node> dateNodes = new HashMap<String, Node>();
+        for (Resource existingAnswer : form.getChildren()) {
+            Node answerNode = existingAnswer.adaptTo(Node.class);
+            Node questionNode = answerNode.getProperty(ImportTask.QUESTION_FIELD).getNode();
+
+            // Make note of the date node, since we handle it differently
+            if (dateFields.containsKey(questionNode.getName())) {
+                dateNodes.put(questionNode.getName(), answerNode);
+            }
+
+            // Do nothing if we don't know how to update this question
+            if (!mapping.containsKey(questionNode.getName())) {
+                continue;
+            }
+
+            seenNodes.add(questionNode.getName());
+            answerNode.setProperty(ImportTask.VALUE_FIELD,
+                safelyGetValue(mapping.get(questionNode.getName()), info));
+        }
+
+        // For each node that does not exist, create a new answer
+        String formPath = form.getPath();
+        for (Map.Entry<String, JsonStringGetter> entry : mapping.entrySet()) {
+            if (seenNodes.contains(entry.getKey())) {
+                continue;
+            }
+
+            resolver.create(form, UUID.randomUUID().toString(), Map.of(
+                ImportTask.QUESTION_FIELD, resolver.getResource(parentQuestionnaire + "/"
+                    + entry.getKey()).adaptTo(Node.class),
+                ImportTask.VALUE_FIELD, safelyGetValue(entry.getValue(), info),
+                ImportTask.PRIMARY_TYPE, "cards:TextAnswer"
+                ));
+        }
+
+        // Finally, do the same with date fields, which have different parameters
+        for (Map.Entry<String, String> entry : dateFields.entrySet()) {
+            try {
+                Calendar entryDate = Calendar.getInstance();
+                entryDate.setTime(new SimpleDateFormat("yyyy-MM-dd").parse(info.getString(entry.getValue())));
+                if (dateNodes.containsKey(entry.getKey())) {
+                    dateNodes.get(entry.getKey()).setProperty(ImportTask.VALUE_FIELD, entryDate);
+                } else {
+                    resolver.create(form, UUID.randomUUID().toString(), Map.of(
+                        ImportTask.QUESTION_FIELD,
+                        resolver.getResource(parentQuestionnaire + "/" + entry.getKey()).adaptTo(Node.class),
+                        ImportTask.VALUE_FIELD, entryDate,
+                        ImportTask.PRIMARY_TYPE, "cards:DateAnswer"
+                        ));
+                }
+            } catch (ParseException e) {
+                //TODO: handle exception
+                LOGGER.error("Error occurred while parsing {} for {}, {}", entry, info.toString(), e);
+            }
+        }
+    }
+
     /**
      * Update the patient information form with values from the given JsonObject.
      * @param info The JsonObject representing a patient returned from Torch
      * @param form The Patient Information form to update
      * @param resolver The ResourceResolver to use when creating new nodes
      */
-    void updatePatientInformationForm(JsonObject info, Resource form, ResourceResolver resolver)
+    void updatePatientInformationForm(Resource form, JsonObject info, ResourceResolver resolver)
         throws RepositoryException, PersistenceException
     {
         // Map of Patient information question node name => Function to get JSON value
-        Map<String, JsonValueGetter> formMapping = Map.of(
+        Map<String, JsonStringGetter> formMapping = Map.of(
             "mrn", obj -> obj.getString("mrn"),
             "health_card", obj -> obj.getString("ohip"),
             "sex", obj -> obj.getString("sex"),
@@ -312,61 +386,11 @@ public class ImportTask implements Runnable
             "email", obj -> obj.getJsonObject("com").getString("email")
         );
 
-        // Run through the children of the node, seeing what exists
-        Set<String> seenNodes = new HashSet<String>();
-        Node dateNode = null;
-        for (Resource existingAnswer : form.getChildren()) {
-            Node answerNode = existingAnswer.adaptTo(Node.class);
-            Node questionNode = answerNode.getProperty(ImportTask.QUESTION_FIELD).getNode();
+        Map<String, String> dateMapping = Map.of(
+            "date_of_birth", "dob"
+        );
 
-            // Make note of the date node, since we handle it differently
-            if ("date_of_birth".equals(questionNode.getName())) {
-                dateNode = answerNode;
-            }
-
-            // Do nothing if we don't know how to update this question
-            if (!formMapping.containsKey(questionNode.getName())) {
-                continue;
-            }
-
-            seenNodes.add(questionNode.getName());
-            answerNode.setProperty(ImportTask.VALUE_FIELD,
-                safelyGetValue(formMapping.get(questionNode.getName()), info));
-        }
-
-        // Determine which of these already exists, and update them
-        for (Map.Entry<String, JsonValueGetter> entry : formMapping.entrySet()) {
-            // Do not create duplicates
-            if (seenNodes.contains(entry.getKey())) {
-                continue;
-            }
-
-            resolver.create(form, UUID.randomUUID().toString(), Map.of(
-                ImportTask.QUESTION_FIELD, resolver.getResource("/Questionnaires/Patient information/"
-                    + entry.getKey()).adaptTo(Node.class),
-                ImportTask.VALUE_FIELD, safelyGetValue(entry.getValue(), info),
-                ImportTask.PRIMARY_TYPE, "cards:TextAnswer"
-                ));
-        }
-
-        // Finally, do the same with the date of birth, which has special parameters
-        try {
-            Calendar birthDate = Calendar.getInstance();
-            birthDate.setTime(new SimpleDateFormat("yyyy-MM-dd").parse(info.getString("dob")));
-            if (dateNode == null) {
-                resolver.create(form, UUID.randomUUID().toString(), Map.of(
-                    ImportTask.QUESTION_FIELD,
-                    resolver.getResource("/Questionnaires/Patient information/date_of_birth").adaptTo(Node.class),
-                    ImportTask.VALUE_FIELD, birthDate,
-                    ImportTask.PRIMARY_TYPE, "cards:DateAnswer"
-                    ));
-            } else {
-                dateNode.setProperty(ImportTask.VALUE_FIELD, birthDate);
-            }
-        } catch (ParseException e) {
-            //TODO: handle exception
-            LOGGER.error("Error occurred while parsing Date of Birth for " + info.toString());
-        }
+        updateForm(form, info, "/Questionnaires/Patient information", formMapping, dateMapping, resolver);
     }
 
     /**
@@ -375,128 +399,19 @@ public class ImportTask implements Runnable
      * @param form The Visit Information form to update
      * @param resolver The ResourceResolver to use when creating new nodes
      */
-    void updateVisitInformationForm(JsonObject info, Resource form, ResourceResolver resolver)
+    void updateVisitInformationForm(Resource form, JsonObject info, ResourceResolver resolver)
         throws RepositoryException, PersistenceException
     {
-        Map<String, JsonValueGetter> formMapping = Map.of(
+        Map<String, JsonStringGetter> formMapping = Map.of(
             "fhir_id", obj -> obj.getString("fhirID"),
             "status", obj -> obj.getString("status"),
             "provider", obj -> obj.getJsonObject("attending").getJsonObject("name").getString("family")
         );
 
-        Set<String> seenNodes = new HashSet<String>();
-        Node dateNode = null;
-        for (Resource existingAnswer : form.getChildren()) {
-            Node answerNode = existingAnswer.adaptTo(Node.class);
-            Node questionNode = answerNode.getProperty(ImportTask.QUESTION_FIELD).getNode();
+        Map<String, String> dateMapping = Map.of(
+            "time", "time"
+        );
 
-            // Make note of the date node, since we handle it differently
-            if ("time".equals(questionNode.getName())) {
-                dateNode = answerNode;
-            }
-
-            // Do nothing if we don't know how to update this question
-            if (!formMapping.containsKey(questionNode.getName())) {
-                continue;
-            }
-
-            seenNodes.add(questionNode.getName());
-            answerNode.setProperty(ImportTask.VALUE_FIELD,
-                safelyGetValue(formMapping.get(questionNode.getName()), info));
-        }
-
-        // Determine which of these already exists, and update them
-        for (Map.Entry<String, JsonValueGetter> entry : formMapping.entrySet()) {
-            // Do not create duplicates
-            if (seenNodes.contains(entry.getKey())) {
-                continue;
-            }
-
-            try {
-                String value = safelyGetValue(entry.getValue(), info);
-                resolver.create(form, UUID.randomUUID().toString(), Map.of(
-                    ImportTask.QUESTION_FIELD, resolver.getResource("/Questionnaires/Visit information/"
-                        + entry.getKey()).adaptTo(Node.class),
-                    ImportTask.VALUE_FIELD, entry.getValue().get(info),
-                    ImportTask.PRIMARY_TYPE, "cards:TextAnswer"
-                    ));
-            } catch (NullPointerException _) {
-                // Skip this field, as it is not filled out
-            }
-        }
-
-        // Finally, do the same with the date of birth, which has special parameters
-        try {
-            Calendar visitTime = Calendar.getInstance();
-            visitTime.setTime(new SimpleDateFormat("yyyy-MM-dd").parse(info.getString("time")));
-            if (dateNode == null) {
-                resolver.create(form, UUID.randomUUID().toString(), Map.of(
-                    ImportTask.QUESTION_FIELD, resolver.getResource("/Questionnaires/Visit information/time")
-                        .adaptTo(Node.class),
-                    ImportTask.VALUE_FIELD, visitTime,
-                    ImportTask.PRIMARY_TYPE, "cards:DateAnswer"
-                    ));
-            } else {
-                dateNode.setProperty(ImportTask.VALUE_FIELD, visitTime);
-            }
-        } catch (ParseException e) {
-            //TODO: handle exception
-            LOGGER.error("Error occurred while parsing Date of Birth for " + info.toString());
-        }
-    }
-
-    /**
-     * Grab a Visit subject, or create it if it doesn't exist.
-     * @param patient Resource of the Patient subject to be a child of
-     * @param visit JsonObject from Torch representing the visit
-     * @param resolver ResourceResolver to use when searching for/creating the node
-     * @return A Visit resource
-     */
-    Resource getOrCreateVisit(JsonObject visit, Resource patient, ResourceResolver resolver)
-        throws RepositoryException, PersistenceException
-    {
-        String id = visit.getString("fhirID");
-        Iterator<Resource> answer = resolver.findResources(String.format(
-            "SELECT * FROM [cards:Subject] WHERE identifier = \"%s\"", id), ImportTask.JCR_SQL);
-        if (answer.hasNext()) {
-            return answer.next();
-        } else {
-            // Create a new Visit
-            Resource visitType = resolver.getResource("/SubjectTypes/Patient/Visit/");
-            // Create a new patient information form
-            return resolver.create(patient, UUID.randomUUID().toString(), Map.of(
-                ImportTask.PRIMARY_TYPE, "cards:Subject",
-                "identifier", id,
-                "fullidentifier", id,
-                "type", visitType.adaptTo(Node.class)
-            ));
-        }
-    }
-
-    /**
-     * Grab a Visit Information form, or create it if it doesn't exist.
-     * @param visit Resource of the Visit subject for this form
-     * @param resolver ResourceResolver to use when searching for/creating the node
-     * @return A Visit Information form resource
-     */
-    Resource getOrCreateVisitInformationForm(Resource visit, ResourceResolver resolver)
-        throws RepositoryException, PersistenceException
-    {
-        Iterator<Resource> form = resolver.findResources(String.format(
-            "SELECT * FROM [cards:Form] WHERE subject = \"%s\"",
-            visit.adaptTo(Node.class).getProperty("jcr:uuid").getString()), ImportTask.JCR_SQL);
-        if (form.hasNext()) {
-            return form.next();
-        } else {
-            Resource parentResource = resolver.getResource("/Forms/");
-            Resource formType = resolver.getResource("/Questionnaires/Visit information/");
-            // Create a new visit information form
-            return resolver.create(parentResource, UUID.randomUUID().toString(), Map.of(
-                ImportTask.PRIMARY_TYPE, "cards:Form",
-                "questionnaire", formType.adaptTo(Node.class),
-                "relatedSubjects", visit.adaptTo(Node.class),
-                "subject", visit.adaptTo(Node.class)
-            ));
-        }
+        updateForm(form, info, "/Questionnaires/Visit information", formMapping, dateMapping, resolver);
     }
 }
