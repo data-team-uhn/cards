@@ -43,135 +43,144 @@
 		<type>Reference</type>
 	</property>
 	<node>
-		<name>survey-visit</name>
-		<primaryNodeType>lfs:Question</primaryNodeType>
+		<name>WorldHealthOrganizationDisabilityAssessmentScale</name>
+		<primaryNodeType>lfs:Section</primaryNodeType>
 		<property>
-			<name>text</name>
-			<value>Visit Number</value>
+			<name>label</name>
+			<value>World Health Organization Disability Assessment Scale</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>dataType</name>
-			<value>long</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>displayMode</name>
-			<value>list</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>compact</name>
-			<value>True</value>
-			<type>Boolean</type>
-		</property>
-		<property>
-			<name>minAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
 		<node>
-			<name>9</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<name>survey-visit</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
 			<property>
-				<name>label</name>
-				<value>9</value>
+				<name>text</name>
+				<value>Visit Number</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>value</name>
-				<value>9</value>
-				<type>String</type>
-			</property>
-		</node>
-		<node>
-			<name>10</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>10</value>
+				<name>dataType</name>
+				<value>long</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>value</name>
-				<value>10</value>
-				<type>String</type>
-			</property>
-		</node>
-		<node>
-			<name>12</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>12</value>
+				<name>displayMode</name>
+				<value>list</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>value</name>
-				<value>12</value>
-				<type>String</type>
-			</property>
-		</node>
-		<node>
-			<name>14</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>14</value>
-				<type>String</type>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
 			</property>
 			<property>
-				<name>value</name>
-				<value>14</value>
-				<type>String</type>
-			</property>
-		</node>
-		<node>
-			<name>16</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>16</value>
-				<type>String</type>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
-				<name>value</name>
-				<value>16</value>
-				<type>String</type>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
 			</property>
-		</node>
-		<node>
-			<name>18</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>18</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>value</name>
-				<value>18</value>
-				<type>String</type>
-			</property>
-		</node>
-		<node>
-			<name>21</name>
-			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>21</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>value</name>
-				<value>21</value>
-				<type>String</type>
-			</property>
+			<node>
+				<name>9</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>9</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>9</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>10</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>10</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>10</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>12</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>12</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>12</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>14</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>14</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>14</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>16</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>16</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>16</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>18</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>18</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>18</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>21</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>21</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>21</value>
+					<type>String</type>
+				</property>
+			</node>
 		</node>
 	</node>
 	<node>

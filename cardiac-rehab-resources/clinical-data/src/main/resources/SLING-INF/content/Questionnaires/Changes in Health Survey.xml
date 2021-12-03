@@ -767,118 +767,28 @@
 				<type>Boolean</type>
 			</property>
 			<node>
-				<name>chs1diagnosisotherSection</name>
-				<primaryNodeType>lfs:Section</primaryNodeType>
-				<node>
-					<name>chs1diagnosisother</name>
-					<primaryNodeType>lfs:Question</primaryNodeType>
-					<property>
-						<name>text</name>
-						<value>Specify other diagnosis</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>dataType</name>
-						<value>text</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>minAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>conditionalGroup</name>
-					<primaryNodeType>lfs:ConditionalGroup</primaryNodeType>
-					<property>
-						<name>requireAll</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-					<node>
-						<name>condition1</name>
-						<primaryNodeType>lfs:Conditional</primaryNodeType>
-						<property>
-							<name>comparator</name>
-							<value>=</value>
-							<type>String</type>
-						</property>
-						<node>
-							<name>operandA</name>
-							<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-							<property>
-								<name>value</name>
-								<values>
-									<value>chs1diagnosis</value>
-								</values>
-								<type>String</type>
-							</property>
-							<property>
-								<name>isReference</name>
-								<value>True</value>
-								<type>Boolean</type>
-							</property>
-						</node>
-						<node>
-							<name>operandB</name>
-							<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-							<property>
-								<name>value</name>
-								<values>
-									<value>Other diagnosis</value>
-								</values>
-								<type>String</type>
-							</property>
-							<property>
-								<name>isReference</name>
-								<value>False</value>
-								<type>Boolean</type>
-							</property>
-						</node>
-					</node>
-					<node>
-						<name>condition2</name>
-						<primaryNodeType>lfs:Conditional</primaryNodeType>
-						<property>
-							<name>comparator</name>
-							<value>=</value>
-							<type>String</type>
-						</property>
-						<node>
-							<name>operandA</name>
-							<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-							<property>
-								<name>value</name>
-								<values>
-									<value>chs1</value>
-								</values>
-								<type>String</type>
-							</property>
-							<property>
-								<name>isReference</name>
-								<value>True</value>
-								<type>Boolean</type>
-							</property>
-						</node>
-						<node>
-							<name>operandB</name>
-							<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-							<property>
-								<name>value</name>
-								<values>
-									<value>I was diagnosed with a new illness or medical condition</value>
-								</values>
-								<type>String</type>
-							</property>
-							<property>
-								<name>isReference</name>
-								<value>False</value>
-								<type>Boolean</type>
-							</property>
-						</node>
-					</node>
-				</node>
+				<name>chs1diagnosisother</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Specify other diagnosis</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
 			</node>
 			<node>
 				<name>conditionalGroup</name>
@@ -972,118 +882,23 @@
 				</node>
 			</node>
 			<node>
-				<name>other_diagnosisdateSection</name>
-				<primaryNodeType>lfs:Section</primaryNodeType>
-				<node>
-					<name>other_diagnosisdate</name>
-					<primaryNodeType>lfs:Question</primaryNodeType>
-					<property>
-						<name>text</name>
-						<value>Specify date of Other diagnosis</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>dataType</name>
-						<value>date</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>minAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>conditionalGroup</name>
-					<primaryNodeType>lfs:ConditionalGroup</primaryNodeType>
-					<property>
-						<name>requireAll</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-					<node>
-						<name>condition1</name>
-						<primaryNodeType>lfs:Conditional</primaryNodeType>
-						<property>
-							<name>comparator</name>
-							<value>=</value>
-							<type>String</type>
-						</property>
-						<node>
-							<name>operandA</name>
-							<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-							<property>
-								<name>value</name>
-								<values>
-									<value>chs1diagnosis</value>
-								</values>
-								<type>String</type>
-							</property>
-							<property>
-								<name>isReference</name>
-								<value>True</value>
-								<type>Boolean</type>
-							</property>
-						</node>
-						<node>
-							<name>operandB</name>
-							<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-							<property>
-								<name>value</name>
-								<values>
-									<value>Other diagnosis</value>
-								</values>
-								<type>String</type>
-							</property>
-							<property>
-								<name>isReference</name>
-								<value>False</value>
-								<type>Boolean</type>
-							</property>
-						</node>
-					</node>
-					<node>
-						<name>condition2</name>
-						<primaryNodeType>lfs:Conditional</primaryNodeType>
-						<property>
-							<name>comparator</name>
-							<value>=</value>
-							<type>String</type>
-						</property>
-						<node>
-							<name>operandA</name>
-							<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-							<property>
-								<name>value</name>
-								<values>
-									<value>chs1</value>
-								</values>
-								<type>String</type>
-							</property>
-							<property>
-								<name>isReference</name>
-								<value>True</value>
-								<type>Boolean</type>
-							</property>
-						</node>
-						<node>
-							<name>operandB</name>
-							<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-							<property>
-								<name>value</name>
-								<values>
-									<value>I was diagnosed with a new illness or medical condition</value>
-								</values>
-								<type>String</type>
-							</property>
-							<property>
-								<name>isReference</name>
-								<value>False</value>
-								<type>Boolean</type>
-							</property>
-						</node>
-					</node>
-				</node>
+				<name>other_diagnosisdate</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Specify date of Other diagnosis</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>date</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
 			</node>
 		</node>
 		<node>
@@ -3554,6 +3369,11 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -5195,159 +5015,28 @@
 				<type>Boolean</type>
 			</property>
 			<node>
-				<name>chs1lungconditionotherSection</name>
-				<primaryNodeType>lfs:Section</primaryNodeType>
-				<node>
-					<name>chs1lungconditionother</name>
-					<primaryNodeType>lfs:Question</primaryNodeType>
-					<property>
-						<name>text</name>
-						<value>Specify other lung condition</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>dataType</name>
-						<value>text</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>minAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>conditionalGroup</name>
-					<primaryNodeType>lfs:ConditionalGroup</primaryNodeType>
-					<property>
-						<name>requireAll</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-					<node>
-						<name>condition1</name>
-						<primaryNodeType>lfs:Conditional</primaryNodeType>
-						<property>
-							<name>comparator</name>
-							<value>=</value>
-							<type>String</type>
-						</property>
-						<node>
-							<name>operandA</name>
-							<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-							<property>
-								<name>value</name>
-								<values>
-									<value>chs1lungcondition</value>
-								</values>
-								<type>String</type>
-							</property>
-							<property>
-								<name>isReference</name>
-								<value>True</value>
-								<type>Boolean</type>
-							</property>
-						</node>
-						<node>
-							<name>operandB</name>
-							<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-							<property>
-								<name>value</name>
-								<values>
-									<value>Other condition</value>
-								</values>
-								<type>String</type>
-							</property>
-							<property>
-								<name>isReference</name>
-								<value>False</value>
-								<type>Boolean</type>
-							</property>
-						</node>
-					</node>
-					<node>
-						<name>condition2</name>
-						<primaryNodeType>lfs:Conditional</primaryNodeType>
-						<property>
-							<name>comparator</name>
-							<value>=</value>
-							<type>String</type>
-						</property>
-						<node>
-							<name>operandA</name>
-							<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-							<property>
-								<name>value</name>
-								<values>
-									<value>chs1diagnosis</value>
-								</values>
-								<type>String</type>
-							</property>
-							<property>
-								<name>isReference</name>
-								<value>True</value>
-								<type>Boolean</type>
-							</property>
-						</node>
-						<node>
-							<name>operandB</name>
-							<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-							<property>
-								<name>value</name>
-								<values>
-									<value>Lung condition</value>
-								</values>
-								<type>String</type>
-							</property>
-							<property>
-								<name>isReference</name>
-								<value>False</value>
-								<type>Boolean</type>
-							</property>
-						</node>
-					</node>
-					<node>
-						<name>condition3</name>
-						<primaryNodeType>lfs:Conditional</primaryNodeType>
-						<property>
-							<name>comparator</name>
-							<value>=</value>
-							<type>String</type>
-						</property>
-						<node>
-							<name>operandA</name>
-							<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-							<property>
-								<name>value</name>
-								<values>
-									<value>chs1</value>
-								</values>
-								<type>String</type>
-							</property>
-							<property>
-								<name>isReference</name>
-								<value>True</value>
-								<type>Boolean</type>
-							</property>
-						</node>
-						<node>
-							<name>operandB</name>
-							<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-							<property>
-								<name>value</name>
-								<values>
-									<value>I was diagnosed with a new illness or medical condition</value>
-								</values>
-								<type>String</type>
-							</property>
-							<property>
-								<name>isReference</name>
-								<value>False</value>
-								<type>Boolean</type>
-							</property>
-						</node>
-					</node>
-				</node>
+				<name>chs1lungconditionother</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Specify other lung condition</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
 			</node>
 			<node>
 				<name>conditionalGroup</name>
@@ -5482,159 +5171,23 @@
 				</node>
 			</node>
 			<node>
-				<name>other_lung_conditiondateSection</name>
-				<primaryNodeType>lfs:Section</primaryNodeType>
-				<node>
-					<name>other_lung_conditiondate</name>
-					<primaryNodeType>lfs:Question</primaryNodeType>
-					<property>
-						<name>text</name>
-						<value>What was the date of diagnosis for other lung condition?</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>dataType</name>
-						<value>date</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>minAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>conditionalGroup</name>
-					<primaryNodeType>lfs:ConditionalGroup</primaryNodeType>
-					<property>
-						<name>requireAll</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-					<node>
-						<name>condition1</name>
-						<primaryNodeType>lfs:Conditional</primaryNodeType>
-						<property>
-							<name>comparator</name>
-							<value>=</value>
-							<type>String</type>
-						</property>
-						<node>
-							<name>operandA</name>
-							<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-							<property>
-								<name>value</name>
-								<values>
-									<value>chs1lungcondition</value>
-								</values>
-								<type>String</type>
-							</property>
-							<property>
-								<name>isReference</name>
-								<value>True</value>
-								<type>Boolean</type>
-							</property>
-						</node>
-						<node>
-							<name>operandB</name>
-							<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-							<property>
-								<name>value</name>
-								<values>
-									<value>Other condition</value>
-								</values>
-								<type>String</type>
-							</property>
-							<property>
-								<name>isReference</name>
-								<value>False</value>
-								<type>Boolean</type>
-							</property>
-						</node>
-					</node>
-					<node>
-						<name>condition2</name>
-						<primaryNodeType>lfs:Conditional</primaryNodeType>
-						<property>
-							<name>comparator</name>
-							<value>=</value>
-							<type>String</type>
-						</property>
-						<node>
-							<name>operandA</name>
-							<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-							<property>
-								<name>value</name>
-								<values>
-									<value>chs1diagnosis</value>
-								</values>
-								<type>String</type>
-							</property>
-							<property>
-								<name>isReference</name>
-								<value>True</value>
-								<type>Boolean</type>
-							</property>
-						</node>
-						<node>
-							<name>operandB</name>
-							<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-							<property>
-								<name>value</name>
-								<values>
-									<value>Lung condition</value>
-								</values>
-								<type>String</type>
-							</property>
-							<property>
-								<name>isReference</name>
-								<value>False</value>
-								<type>Boolean</type>
-							</property>
-						</node>
-					</node>
-					<node>
-						<name>condition3</name>
-						<primaryNodeType>lfs:Conditional</primaryNodeType>
-						<property>
-							<name>comparator</name>
-							<value>=</value>
-							<type>String</type>
-						</property>
-						<node>
-							<name>operandA</name>
-							<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-							<property>
-								<name>value</name>
-								<values>
-									<value>chs1</value>
-								</values>
-								<type>String</type>
-							</property>
-							<property>
-								<name>isReference</name>
-								<value>True</value>
-								<type>Boolean</type>
-							</property>
-						</node>
-						<node>
-							<name>operandB</name>
-							<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-							<property>
-								<name>value</name>
-								<values>
-									<value>I was diagnosed with a new illness or medical condition</value>
-								</values>
-								<type>String</type>
-							</property>
-							<property>
-								<name>isReference</name>
-								<value>False</value>
-								<type>Boolean</type>
-							</property>
-						</node>
-					</node>
-				</node>
+				<name>other_lung_conditiondate</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>What was the date of diagnosis for other lung condition?</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>date</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
 			</node>
 		</node>
 		<node>
@@ -7358,6 +6911,11 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -7584,6 +7142,11 @@
 					<name>dataType</name>
 					<value>text</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>minAnswers</name>
@@ -7814,6 +7377,11 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -8040,6 +7608,11 @@
 					<name>dataType</name>
 					<value>text</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>minAnswers</name>
@@ -8386,13 +7959,18 @@
 				<primaryNodeType>lfs:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Additional medication name</value>
+					<value>Name of medication added</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>dataType</name>
 					<value>text</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>minAnswers</name>
@@ -8623,6 +8201,11 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -8851,6 +8434,11 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -9077,6 +8665,11 @@
 					<name>dataType</name>
 					<value>text</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>minAnswers</name>
@@ -10326,118 +9919,28 @@
 				<type>Boolean</type>
 			</property>
 			<node>
-				<name>chs1clinicaltestotherSection</name>
-				<primaryNodeType>lfs:Section</primaryNodeType>
-				<node>
-					<name>chs1clinicaltestother</name>
-					<primaryNodeType>lfs:Question</primaryNodeType>
-					<property>
-						<name>text</name>
-						<value>Specify other test</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>dataType</name>
-						<value>text</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>minAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>conditionalGroup</name>
-					<primaryNodeType>lfs:ConditionalGroup</primaryNodeType>
-					<property>
-						<name>requireAll</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-					<node>
-						<name>condition1</name>
-						<primaryNodeType>lfs:Conditional</primaryNodeType>
-						<property>
-							<name>comparator</name>
-							<value>=</value>
-							<type>String</type>
-						</property>
-						<node>
-							<name>operandA</name>
-							<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-							<property>
-								<name>value</name>
-								<values>
-									<value>chs1clinicaltest</value>
-								</values>
-								<type>String</type>
-							</property>
-							<property>
-								<name>isReference</name>
-								<value>True</value>
-								<type>Boolean</type>
-							</property>
-						</node>
-						<node>
-							<name>operandB</name>
-							<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-							<property>
-								<name>value</name>
-								<values>
-									<value>Other test</value>
-								</values>
-								<type>String</type>
-							</property>
-							<property>
-								<name>isReference</name>
-								<value>False</value>
-								<type>Boolean</type>
-							</property>
-						</node>
-					</node>
-					<node>
-						<name>condition2</name>
-						<primaryNodeType>lfs:Conditional</primaryNodeType>
-						<property>
-							<name>comparator</name>
-							<value>=</value>
-							<type>String</type>
-						</property>
-						<node>
-							<name>operandA</name>
-							<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-							<property>
-								<name>value</name>
-								<values>
-									<value>chs1</value>
-								</values>
-								<type>String</type>
-							</property>
-							<property>
-								<name>isReference</name>
-								<value>True</value>
-								<type>Boolean</type>
-							</property>
-						</node>
-						<node>
-							<name>operandB</name>
-							<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-							<property>
-								<name>value</name>
-								<values>
-									<value>I had a clinical test</value>
-								</values>
-								<type>String</type>
-							</property>
-							<property>
-								<name>isReference</name>
-								<value>False</value>
-								<type>Boolean</type>
-							</property>
-						</node>
-					</node>
-				</node>
+				<name>chs1clinicaltestother</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Specify other test</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
 			</node>
 			<node>
 				<name>conditionalGroup</name>
@@ -10531,118 +10034,23 @@
 				</node>
 			</node>
 			<node>
-				<name>other_clinical_testdateSection</name>
-				<primaryNodeType>lfs:Section</primaryNodeType>
-				<node>
-					<name>other_clinical_testdate</name>
-					<primaryNodeType>lfs:Question</primaryNodeType>
-					<property>
-						<name>text</name>
-						<value>Specify date of Other Clincal Test</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>dataType</name>
-						<value>date</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>minAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>conditionalGroup</name>
-					<primaryNodeType>lfs:ConditionalGroup</primaryNodeType>
-					<property>
-						<name>requireAll</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-					<node>
-						<name>condition1</name>
-						<primaryNodeType>lfs:Conditional</primaryNodeType>
-						<property>
-							<name>comparator</name>
-							<value>=</value>
-							<type>String</type>
-						</property>
-						<node>
-							<name>operandA</name>
-							<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-							<property>
-								<name>value</name>
-								<values>
-									<value>chs1clinicaltest</value>
-								</values>
-								<type>String</type>
-							</property>
-							<property>
-								<name>isReference</name>
-								<value>True</value>
-								<type>Boolean</type>
-							</property>
-						</node>
-						<node>
-							<name>operandB</name>
-							<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-							<property>
-								<name>value</name>
-								<values>
-									<value>Other test</value>
-								</values>
-								<type>String</type>
-							</property>
-							<property>
-								<name>isReference</name>
-								<value>False</value>
-								<type>Boolean</type>
-							</property>
-						</node>
-					</node>
-					<node>
-						<name>condition2</name>
-						<primaryNodeType>lfs:Conditional</primaryNodeType>
-						<property>
-							<name>comparator</name>
-							<value>=</value>
-							<type>String</type>
-						</property>
-						<node>
-							<name>operandA</name>
-							<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-							<property>
-								<name>value</name>
-								<values>
-									<value>chs1</value>
-								</values>
-								<type>String</type>
-							</property>
-							<property>
-								<name>isReference</name>
-								<value>True</value>
-								<type>Boolean</type>
-							</property>
-						</node>
-						<node>
-							<name>operandB</name>
-							<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-							<property>
-								<name>value</name>
-								<values>
-									<value>I had a clinical test</value>
-								</values>
-								<type>String</type>
-							</property>
-							<property>
-								<name>isReference</name>
-								<value>False</value>
-								<type>Boolean</type>
-							</property>
-						</node>
-					</node>
-				</node>
+				<name>other_clinical_testdate</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Specify date of Other Clincal Test</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>date</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
 			</node>
 		</node>
 		<node>
@@ -11098,68 +10506,23 @@
 				<type>Boolean</type>
 			</property>
 			<node>
-				<name>chs2hospitalemergencydateSection</name>
-				<primaryNodeType>lfs:Section</primaryNodeType>
-				<node>
-					<name>chs2hospitalemergencydate</name>
-					<primaryNodeType>lfs:Question</primaryNodeType>
-					<property>
-						<name>text</name>
-						<value>Other emergency date</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>dataType</name>
-						<value>date</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>minAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>condition</name>
-					<primaryNodeType>lfs:Conditional</primaryNodeType>
-					<property>
-						<name>comparator</name>
-						<value>=</value>
-						<type>String</type>
-					</property>
-					<node>
-						<name>operandA</name>
-						<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-						<property>
-							<name>value</name>
-							<values>
-								<value>chs2hospitalvisit</value>
-							</values>
-							<type>String</type>
-						</property>
-						<property>
-							<name>isReference</name>
-							<value>True</value>
-							<type>Boolean</type>
-						</property>
-					</node>
-					<node>
-						<name>operandB</name>
-						<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-						<property>
-							<name>value</name>
-							<values>
-								<value>Other emergency</value>
-							</values>
-							<type>String</type>
-						</property>
-						<property>
-							<name>isReference</name>
-							<value>False</value>
-							<type>Boolean</type>
-						</property>
-					</node>
-				</node>
+				<name>chs2hospitalemergencydate</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Other emergency date</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>date</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
 			</node>
 			<node>
 				<name>condition</name>
@@ -13388,68 +12751,28 @@
 				<type>Boolean</type>
 			</property>
 			<node>
-				<name>chs6fitnessotherSection</name>
-				<primaryNodeType>lfs:Section</primaryNodeType>
-				<node>
-					<name>chs6fitnessother</name>
-					<primaryNodeType>lfs:Question</primaryNodeType>
-					<property>
-						<name>text</name>
-						<value>Specify other fitness goal</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>dataType</name>
-						<value>text</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>minAnswers</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>condition</name>
-					<primaryNodeType>lfs:Conditional</primaryNodeType>
-					<property>
-						<name>comparator</name>
-						<value>=</value>
-						<type>String</type>
-					</property>
-					<node>
-						<name>operandA</name>
-						<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-						<property>
-							<name>value</name>
-							<values>
-								<value>chs6fitness</value>
-							</values>
-							<type>String</type>
-						</property>
-						<property>
-							<name>isReference</name>
-							<value>True</value>
-							<type>Boolean</type>
-						</property>
-					</node>
-					<node>
-						<name>operandB</name>
-						<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-						<property>
-							<name>value</name>
-							<values>
-								<value>Other goal</value>
-							</values>
-							<type>String</type>
-						</property>
-						<property>
-							<name>isReference</name>
-							<value>False</value>
-							<type>Boolean</type>
-						</property>
-					</node>
-				</node>
+				<name>chs6fitnessother</name>
+				<primaryNodeType>lfs:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Specify other fitness goal</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
 			</node>
 			<node>
 				<name>condition</name>

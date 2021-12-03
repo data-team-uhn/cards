@@ -510,20 +510,19 @@ def csv_to_json(title):
                     if value[0].lower() == "y":
                         insert_min_answers(parent[question], row)
                     if len(value) > 4 and value[2:4].lower() == "if":
-                        previous_data = parent[question]
-                        parent.update({question + 'Section': {
-                            'jcr:primaryType': 'lfs:Section'
-                        }})
-                        parent[question + 'Section'][question] = previous_data
-                        prepare_conditional_string(value [5:], parent[question + 'Section'])
-                        # The presence of a conditional will also prevent the question from being inserted into the main thing
-                        del parent[question]
                         if len(subsection) > 0:
-                            # Add the condition to the subsection as well, if it does not already exist
-                            if 'conditionalGroup' in parent[question + 'Section']:
-                                subsection['conditionalGroup'] = dict.copy(parent[question + 'Section']['conditionalGroup'])
-                            else:
-                                subsection['condition'] = dict.copy(parent[question + 'Section']['condition'])
+                            # Add the condition to the current subsection
+                            prepare_conditional_string(value [5:], parent)
+                        else:
+                            # Add the condition to a new section wrapping the current question
+                            previous_data = parent[question]
+                            parent.update({question + 'Section': {
+                                'jcr:primaryType': 'lfs:Section'
+                            }})
+                            parent[question + 'Section'][question] = previous_data
+                            prepare_conditional_string(value [5:], parent[question + 'Section'])
+                            # The presence of a conditional will also prevent the question from being inserted into the main thing
+                            del parent[question]
 
     if len(subsection) > 0:
         if len(section) > 0:
