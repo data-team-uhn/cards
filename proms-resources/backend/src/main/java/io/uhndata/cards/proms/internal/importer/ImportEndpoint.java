@@ -47,7 +47,7 @@ public class ImportEndpoint extends SlingSafeMethodsServlet
 
         //Ensure that this can only be run when logged in as admin
         final String remoteUser = request.getRemoteUser();
-        if (remoteUser == null || !"admin".equals(remoteUser)) {
+        if (!"admin".equals(remoteUser)) {
             //admin login required
             response.setStatus(403);
             out.write("Only admin can perform this operation.");
