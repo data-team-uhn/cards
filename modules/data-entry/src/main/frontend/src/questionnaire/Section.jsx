@@ -114,7 +114,8 @@ function Section(props) {
     })
   }
 
-  const isDisplayed = isEdit && displayed || !isEdit && hasAnswers;
+  // Display the section in view mode if it has answers or is marked as incomplete
+  const isDisplayed = isEdit && displayed || !isEdit && (hasAnswers || existingAnswer[0]?.[1].statusFlags?.length > 0);
 
   if (visibleCallback) visibleCallback(displayed);
 
@@ -142,7 +143,9 @@ function Section(props) {
   if (isEdit) {
     collapseClasses.push("cards-edit-section");
   }
-  if (isEdit && !displayed || !isEdit && !hasAnswers) {
+  // Hide the section if it is conditioned to be hidden in edit mode
+  // Or if we're in view mode and do not have any answers and the section is not marked as incomplete
+  if (isEdit && !displayed || !isEdit && !hasAnswers && !existingAnswer[0]?.[1].statusFlags) {
     collapseClasses.push(classes.collapsedSection);
   }
   if (hasHeader) {
@@ -179,7 +182,7 @@ function Section(props) {
       {instanceLabels.map( (uuid, idx) => {
           const sectionPath = path + "/" + uuid;
           const existingSectionAnswer = existingAnswer?.find((answer) => answer[0] == uuid)?.[1];
-          const hiddenSection = isDisplayed && labelsToHide[uuid];
+          const hiddenSection = displayed && labelsToHide[uuid];
           return <div
             key={uuid}
             className={"recurrentSectionInstance " + classes.recurrentSectionInstance}

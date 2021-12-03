@@ -52,7 +52,6 @@ const questionnaireStyle = theme => ({
     informationCard: {
     },
     viewModeAnswers :{
-      paddingTop: theme.spacing(0),
       "& .MuiList-root": {
         padding: theme.spacing(0),
       },
@@ -476,6 +475,7 @@ const questionnaireStyle = theme => ({
         border: "1px solid " + theme.palette.divider,
         borderRadius: theme.spacing(3),
         display: "flex",
+        marginBottom: theme.spacing(1),
     },
     actionsMenuItem: {
         padding: theme.spacing(0,1),
@@ -601,9 +601,9 @@ const questionnaireStyle = theme => ({
         }
     },
     focusedQuestionnaireItem: {
-      borderColor: theme.palette.warning.light,
-      borderWidth: '2px',
-      borderStyle: 'solid',
+      "&.MuiCard-root, > .MuiCard-root" : {
+        border: `2px solid ${theme.palette.primary.main}`,
+      },
     },
     fileResourceAnswerList: {
       listStyleType: 'none',

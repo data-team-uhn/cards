@@ -24,6 +24,7 @@ import PropTypes from "prop-types";
 import {
   Breadcrumbs,
   Button,
+  Chip,
   CircularProgress,
   Dialog,
   DialogTitle,
@@ -100,6 +101,7 @@ function Form (props) {
   let [ actionsMenu, setActionsMenu ] = useState(null);
   let [ formContentOffsetTop, setFormContentOffsetTop ] = useState(contentOffset);
   let [ formContentOffsetBottom, setFormContentOffsetBottom ] = useState(0);
+  let [ incompleteAnswers, setIncompleteAnswers ] = useState([]);
 
   // Whether we reached the of the form (as opposed to a page that is not the last on a paginated form)
   let [ endReached, setEndReached ] = useState();
@@ -273,7 +275,7 @@ function Form (props) {
     // ...but only after the Form has been saved and checked-in
     saveDataWithCheckin(undefined, () => {
         removeWindowHandlers && removeWindowHandlers();
-        props.history.push(urlBase + formURL + window.location.hash);
+        props.history.push(urlBase + formURL);
     });
   }
 
@@ -299,6 +301,28 @@ function Form (props) {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (data) {
+      let incompletes = getIncompleteAnswers(data, []);
+      setIncompleteAnswers(incompletes);
+    }
+  }, [data])
+
+  let getIncompleteAnswers = (obj, results) => {
+    for (var property in obj) {
+      if (obj.hasOwnProperty(property)) {
+        if (obj[property]["jcr:primaryType"] == "cards:AnswerSection" && (obj[property].statusFlags.includes('INCOMPLETE') || obj[property].statusFlags.includes('INVALID'))) {
+          getIncompleteAnswers(obj[property], results);
+        } else {
+          if (obj[property]["sling:resourceSuperType"] == "cards/Answer" && (obj[property].statusFlags.includes('INCOMPLETE') || obj[property].statusFlags.includes('INVALID'))) {
+            results.push(obj[property]);
+          }
+        }
+      }
+    }
+    return results;
+  }
 
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
@@ -397,6 +421,15 @@ function Form (props) {
           <FormattedText variant="subtitle1" color="textSecondary">
             {data?.questionnaire?.description}
           </FormattedText>
+          {data.statusFlags.map( item => {
+               return <Chip
+                 key={item}
+                 label={item[0].toUpperCase() + item.slice(1).toLowerCase()}
+                 variant="outlined"
+                 className={`${classes.subjectChip} ${classes[item + "Chip"] || classes.DefaultChip}`}
+                 size="small"
+               />
+          })}
           <Breadcrumbs separator="·">
           {
             data && data['jcr:createdBy'] && data['jcr:created'] ?
