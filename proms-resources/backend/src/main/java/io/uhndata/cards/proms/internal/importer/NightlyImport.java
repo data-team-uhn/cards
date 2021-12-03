@@ -52,10 +52,21 @@ public class NightlyImport
         options.name("NightlyImport");
         options.canRunConcurrently(true);
 
-        final Runnable importJob = new ImportTask(this.resolverFactory);
+        final Runnable importJob;
+        try {
+            int daysToParse = Integer.parseInt(System.getenv("PROM_DAYS_TO_QUERY"));
+            String authURL = System.getenv("PROM_AUTH_URL");
+            String endpointURL = System.getenv("PROM_TORCH_URL");
+            importJob = new ImportTask(this.resolverFactory, authURL, endpointURL, daysToParse);
+        } catch (NumberFormatException e) {
+            LOGGER.error("The PROM_DAYS_TO_PARSE variable should be set to an integer before running this endpoint.");
+            return;
+        }
 
         try {
-            this.scheduler.schedule(importJob, options);
+            if (importJob != null) {
+                this.scheduler.schedule(importJob, options);
+            }
         } catch (Exception e) {
             LOGGER.error("NightlyImport Failed to schedule: {}", e.getMessage(), e);
         }

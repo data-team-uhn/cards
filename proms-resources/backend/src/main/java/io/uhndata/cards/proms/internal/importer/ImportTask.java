@@ -59,29 +59,44 @@ public class ImportTask implements Runnable
     /** Default log. */
     private static final Logger LOGGER = LoggerFactory.getLogger(ImportTask.class);
 
-    private static final String URL = "https://prom.dev.uhn.io/graphql";
-
-    private static final String JWT_URL = "https://vault.dev.uhn.io/v1/auth/jwt/login";
-
+    /** The Sling property name for Node types. */
     private static final String PRIMARY_TYPE = "jcr:primaryType";
+
+    /** JCR-SQL2 query language name for use with {@code ResourceResolver.findResources()}. */
     private static final String JCR_SQL = "JCR-SQL2";
+
+    /** Sling property name for the question reference field on an Answer node. */
     private static final String QUESTION_FIELD = "question";
+
+    /** Sling property name for the value field on an Answer node. */
     private static final String VALUE_FIELD = "value";
-    private static final int DAYS_TO_QUERY = 3;
+
+    /** URL for the Torch server endpoint. */
+    private final String endpointURL;
+
+    /** URL for the Vault JWT authentication endpoint. */
+    private final String authURL;
+
+    /** Numnber of days to query. */
+    private final int daysToQuery;
 
     /** Provides access to resources. */
     private final ResourceResolverFactory resolverFactory;
 
-    ImportTask(final ResourceResolverFactory resolverFactory)
+    ImportTask(final ResourceResolverFactory resolverFactory, final String authURL,
+        final String endpointURL, final int daysToQuery)
     {
         this.resolverFactory = resolverFactory;
+        this.authURL = authURL;
+        this.endpointURL = endpointURL;
+        this.daysToQuery = daysToQuery;
     }
 
     @Override
     public void run()
     {
         String token = getAuthToken();
-        getUpcomingAppointments(token, DAYS_TO_QUERY);
+        getUpcomingAppointments(token, this.daysToQuery);
     }
 
     /**
@@ -95,7 +110,7 @@ public class ImportTask implements Runnable
         String postRequest = "{ \"role\": \"prom_role\", \"jwt\":\"" + System.getenv("PROM_AUTH_TOKEN") + "\" }";
 
         try {
-            String rawResponse = getPostResponse(ImportTask.JWT_URL, postRequest);
+            String rawResponse = getPostResponse(this.authURL, postRequest);
             JsonReader jsonReader = Json.createReader(new StringReader(rawResponse.toString()));
             token = "Bearer " + System.getenv("PROM_AUTH_TOKEN");
         } catch (Exception e) {
@@ -125,7 +140,7 @@ public class ImportTask implements Runnable
             String postRequest = String.format(postRequestTemplate, formatter.format(dateToQuery.getTime()));
             // Query the torch server
             try {
-                String rawResponse = getPostResponse(ImportTask.URL, postRequest, authToken);
+                String rawResponse = getPostResponse(this.endpointURL, postRequest, authToken);
 
                 // Read the response into a JsonObject
                 JsonReader jsonReader = Json.createReader(new StringReader(rawResponse));
