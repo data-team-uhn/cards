@@ -100,31 +100,37 @@ function Section(props) {
   const [ removableAnswers, setRemovableAnswers ] = useState({[ID_STATE_KEY]: 1});
 
   // Determine if we have any conditionals in our definition that would cause us to be hidden
-  const displayed = ConditionalComponentManager.evaluateCondition(
+  const conditionIsMet = ConditionalComponentManager.evaluateCondition(
     sectionDefinition,
     formContext);
 
+  // Determine if the section is flagged as incomplete
+  const isFlagged = (existingAnswer?.[0]?.[1]?.statusFlags?.length > 0);
+
   // Determine if the section has any answers
-  let hasAnswers = isEdit;
-  if (!isEdit && existingAnswer[0]) {
-    Object.entries(existingAnswer[0][1]).forEach( ([key, item]) => {
-      if (item.displayedValue || item.note) {
-        hasAnswers = true;
+  let detectAnswers = (answerSection) => {
+    let result = false;
+    Object.entries(answerSection || {}).forEach( ([key, item]) => {
+      if (item.displayedValue || item.note || item.section && detectAnswers(item)) {
+        result = true;
       }
     })
+    return result;
   }
 
-  // Display the section in view mode if it has answers or is marked as incomplete
-  const isDisplayed = isEdit && displayed || !isEdit && (hasAnswers || existingAnswer[0]?.[1].statusFlags?.length > 0);
+  let hasAnswers = isEdit || detectAnswers(existingAnswer[0]?.[1]);
 
-  if (visibleCallback) visibleCallback(displayed);
+  // Display the section in view mode if it has answers or is marked as incomplete
+  const isDisplayed = isEdit && conditionIsMet || !isEdit && (hasAnswers || isFlagged);
+
+  if (visibleCallback) visibleCallback(conditionIsMet);
 
   let closeDialog = () => {
     setSelectedUUID(undefined);
     setDialogOpen(false);
   }
 
-  const sectionAnswers = Object.entries(sectionDefinition).filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']));
+  const sectionEntries = Object.entries(sectionDefinition).filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']));
 
   function calculateDeletion() {
     let delList = [];
@@ -145,7 +151,7 @@ function Section(props) {
   }
   // Hide the section if it is conditioned to be hidden in edit mode
   // Or if we're in view mode and do not have any answers and the section is not marked as incomplete
-  if (isEdit && !displayed || !isEdit && !hasAnswers && !existingAnswer[0]?.[1].statusFlags) {
+  if (isEdit && !conditionIsMet || !isEdit && !hasAnswers && !isFlagged) {
     collapseClasses.push(classes.collapsedSection);
   }
   if (hasHeader) {
@@ -182,7 +188,7 @@ function Section(props) {
       {instanceLabels.map( (uuid, idx) => {
           const sectionPath = path + "/" + uuid;
           const existingSectionAnswer = existingAnswer?.find((answer) => answer[0] == uuid)?.[1];
-          const hiddenSection = displayed && labelsToHide[uuid];
+          const hiddenSection = conditionIsMet && labelsToHide[uuid];
           return <div
             key={uuid}
             className={"recurrentSectionInstance " + classes.recurrentSectionInstance}
@@ -248,7 +254,7 @@ function Section(props) {
                 >
                 <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
                   {/* Section contents are strange if this isn't a direct child of the above grid, so we wrap another container*/
-                    sectionAnswers.map(([key, definition]) =>
+                    sectionEntries.map(([key, definition]) =>
                       <FormEntry
                         instanceId={instanceId + "-" + idx}
                         key={key}
@@ -326,7 +332,7 @@ function Section(props) {
       </DialogActions>
     </Dialog>
     </React.Fragment>
-    , [displayed, instanceLabels, labelsToHide, dialogOpen, removableAnswers[ID_STATE_KEY], pageActive]);
+    , [conditionIsMet, instanceLabels, labelsToHide, dialogOpen, removableAnswers[ID_STATE_KEY], pageActive]);
 }
 
 Section.propTypes = {
