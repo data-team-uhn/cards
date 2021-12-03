@@ -54,7 +54,6 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SuppressWarnings("checkstyle:ClassDataAbstractionCoupling")
 public class ImportTask implements Runnable
 {
     /** Default log. */
