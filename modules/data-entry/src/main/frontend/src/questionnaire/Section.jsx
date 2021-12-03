@@ -105,14 +105,17 @@ function Section(props) {
     formContext);
 
   // Determine if the section has any answers
-  let hasAnswers = isEdit;
-  if (!isEdit && existingAnswer[0]) {
-    Object.entries(existingAnswer[0][1]).forEach( ([key, item]) => {
-      if (item.displayedValue || item.note) {
-        hasAnswers = true;
+  let detectAnswers = (answerSection) => {
+    let result = false;
+    Object.entries(answerSection || {}).forEach( ([key, item]) => {
+      if (item.displayedValue || item.note || item.section && detectAnswers(item)) {
+        result = true;
       }
     })
+    return result;
   }
+
+  let hasAnswers = isEdit || detectAnswers(existingAnswer[0]?.[1]);
 
   // Display the section in view mode if it has answers or is marked as incomplete
   const isDisplayed = isEdit && displayed || !isEdit && (hasAnswers || existingAnswer[0]?.[1].statusFlags?.length > 0);
