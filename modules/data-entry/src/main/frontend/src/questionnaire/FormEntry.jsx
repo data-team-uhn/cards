@@ -66,7 +66,7 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, o
 
   // if autofocus is needed and specified in the url
   useEffect(() => {
-    setAnchor(decodeURIComponent(location.hash.substr(1)))
+    setAnchor(decodeURIComponent(location.hash.substring(1)))
   }, [location]);
   useEffect(() => {
     setDoHighlight(anchor == questionDefinition["@path"]);
