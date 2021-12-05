@@ -52,7 +52,7 @@ import QuestionnairePreview from "./QuestionnairePreview";
 
 let _stripCardsNamespace = str => str.replaceAll(/^cards:/g, "");
 
-const QUESTIONNAIRE_ITEM_NAMES = QUESTION_TYPES.concat(SECTION_TYPES).concat(INFO_TYPES).map(type => _stripCardsNamespace(type));
+export const QUESTIONNAIRE_ITEM_NAMES = ENTRY_TYPES.map(type => _stripCardsNamespace(type));
 
 // GUI for displaying details about a questionnaire.
 let Questionnaire = (props) => {
@@ -466,11 +466,11 @@ let Section = (props) => {
     // Find conditionals
     Object.entries(sectionData).filter(([key, value]) => (value['jcr:primaryType'] == 'cards:Conditional'))
                                .map(([key, value]) => { p.push({
-												          name: key + sectionData["@name"],
-												          label: "Condition",
-												          value : value?.operandA?.value.join(', ') + " " + value?.comparator + " " + value?.operandB?.value.join(', ')
-												        });
-												      });
+                                                          name: key + sectionData["@name"],
+                                                          label: "Condition",
+                                                          value : value?.operandA?.value.join(', ') + " " + value?.comparator + " " + value?.operandB?.value.join(', ')
+                                                        });
+                                                      });
     return p;
   }
 

@@ -640,7 +640,6 @@ const questionnaireStyle = theme => ({
       paddingLeft: theme.spacing(4)
     },
     tableCell: {
-      textAlign: "middle",
       fontWeight: "bold"
     },
 });

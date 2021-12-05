@@ -31,8 +31,6 @@ function Question (props) {
   let { classes, children, questionDefinition, existingAnswer, answers, isEdit, pageActive, preventDefaultView, defaultDisplayFormatter } = props;
   let { text, label, compact, description, disableInstructions } = { ...questionDefinition, ...props }
 
-  let existingAnswers = answers || (existingAnswer ? Array.of(existingAnswer[1]["displayedValue"]).flat() : null);
-
   return (
     <Card
       variant="outlined"
@@ -65,7 +63,7 @@ function Question (props) {
               <List>
                 { Array.of(existingAnswer?.[1]["displayedValue"]).flat().map( (item, idx) => {
                   return(
-                    <ListItem key={item}> {defaultDisplayFormatter ? defaultDisplayFormatter(item, idx) : item} </ListItem>
+                    <ListItem key={existingAnswer[0] + idx}> {defaultDisplayFormatter ? defaultDisplayFormatter(item, idx) : item} </ListItem>
                   )})
                 }
               </List>

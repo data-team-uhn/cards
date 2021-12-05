@@ -636,7 +636,7 @@ function FormData(props) {
     }
     return result;
   }
-  // Handle questions and sections differently
+
   if (data && data.questionnaire) {
     return (
       <React.Fragment>
@@ -661,9 +661,6 @@ export function displayQuestion(entryDefinition, data, key, classes) {
   const questionTitle = entryDefinition["text"];
   // check the display mode and don't display if "hidden"
   const isHidden = (entryDefinition.displayMode == "hidden");
-  if (isHidden) {
-    return null;
-  }
 
   if (typeof(existingQuestionAnswer?.[1]?.value) != "undefined") {
     let prettyPrintedAnswers = existingQuestionAnswer[1]["displayedValue"];
@@ -677,7 +674,7 @@ export function displayQuestion(entryDefinition, data, key, classes) {
         let paths = Array.of(existingQuestionAnswer[1]["value"]).flat();
         content = <>
           {prettyPrintedAnswers.map((answerValue, idx) => {
-            // Encode the filename to ensure special characters don't result in a broken link
+            // Encode the filename to ensure special charactars don't result in a broken link
             let path = paths[idx].slice(0, paths[idx].lastIndexOf(answerValue)) + encodeURIComponent(answerValue);
             return (
                 <Tooltip key={answerValue} title={"Download " + answerValue}>
@@ -737,7 +734,7 @@ export function displayQuestion(entryDefinition, data, key, classes) {
 // Handle questions and sections differently
 export function handleDisplay(entryDefinition, data, key, handleDisplayQuestion) {
     if (QUESTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
-       return handleDisplayQuestion(entryDefinition, data, key);
+      return handleDisplayQuestion(entryDefinition, data, key);
     } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
       // If a section is found, filter questions inside the section
       let currentSection = entryDefinition;
@@ -753,7 +750,7 @@ export function handleDisplay(entryDefinition, data, key, handleDisplayQuestion)
                                && value["section"]["@name"] == entryDefinition["@name"])[0];
       currentAnswers = currentAnswers ? currentAnswers[1] : "";
       return Object.entries(currentSection)
-        .filter(([key, value]) => QUESTION_TYPES.concat(SECTION_TYPES).includes(value['jcr:primaryType']))
+        .filter(([key, value]) => QUESTION_TYPES.includes(value['jcr:primaryType']) || SECTION_TYPES.includes(value['jcr:primaryType']))
         .map(([key, entryDefinition]) => handleDisplay(entryDefinition, currentAnswers, key, handleDisplayQuestion))
   }
 }

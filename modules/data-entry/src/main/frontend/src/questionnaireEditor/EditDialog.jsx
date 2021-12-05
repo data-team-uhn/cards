@@ -192,7 +192,6 @@ let EditDialog = (props) => {
           </DialogTitle>
           <DialogContent>
             { error && <Typography color="error">{error}</Typography>}
-            { isMatrixQuestion && <input type="hidden" name="displayMode" value="list" /> }
             <Grid container direction="column" spacing={2}>
               <Grid item>{targetIdField()}</Grid>
               <Fields

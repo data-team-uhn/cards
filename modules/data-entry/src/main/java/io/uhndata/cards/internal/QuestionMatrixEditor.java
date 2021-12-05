@@ -82,10 +82,11 @@ public class QuestionMatrixEditor extends DefaultEditor
                 NodeBuilder childNode = this.currentNodeBuilder.getChildNode(childNodeName);
                 if (isQuestion(childNode)) {
                     if (StringUtils.equals(propName, "dataType")) {
-                        childNode.setProperty(propName, after.getValue(Type.STRING), Type.STRING);
+                        childNode.setProperty(propName, after.getValue(Type.STRING));
                     } else {
-                        childNode.setProperty(propName, after.getValue(Type.LONG), Type.LONG);
+                        childNode.setProperty(propName, after.getValue(Type.LONG));
                     }
+                    childNode.setProperty("displayMode", "list", Type.STRING);
                 }
             }
         }

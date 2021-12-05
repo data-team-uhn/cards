@@ -231,30 +231,31 @@ function SubjectTimeline(props) {
   let handleDisplayNodes = (entries, data, formData) => {
     let currentSectionData = [];
     let childSectionData = [];
-    entries.forEach( ([key, entryDefinition]) => {
+    entries.forEach(([key, entryDefinition]) => {
       if (QUESTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
         const existingQuestionAnswer = Object.entries(data)
           .find(([key, value]) => value["sling:resourceSuperType"] == "cards/Answer"
             && value["question"]["jcr:uuid"] === entryDefinition["jcr:uuid"]);
 
-	    if (typeof(existingQuestionAnswer?.[1]?.value) != "undefined") {
-	      if (existingQuestionAnswer[1]["jcr:primaryType"] === "cards:DateAnswer") {
-	        // Push a new date answer
-	        currentSectionData.push({
-	           "date": existingQuestionAnswer[1],
-	            followup:[],
-	            formTitle: formData.title,
-	            level: formData.level,
-	            names: formData.names
-	        });
-	      } else if (currentSectionData.length > 0
-	          && currentSectionData[currentSectionData.length - 1].followup.length < NUM_QUESTIONS
-	        ) {
-	          // Append the non-date answer to the previous date answer,
-	          // if a previous date answer exists and hasn't met the followup question limit.
-	          currentSectionData[currentSectionData.length - 1].followup.push(displayQuestion(entryDefinition, data, key, classes));
-	      }
-	    }
+      if (typeof(existingQuestionAnswer?.[1]?.value) != "undefined") {
+        if (existingQuestionAnswer[1]["jcr:primaryType"] === "cards:DateAnswer") {
+          // Push a new date answer
+          currentSectionData.push({
+            "date": existingQuestionAnswer[1],
+            followup:[],
+            formTitle: formData.title,
+            level: formData.level,
+            names: formData.names
+          });
+        } else if (currentSectionData.length > 0
+          && currentSectionData[currentSectionData.length - 1].followup.length < NUM_QUESTIONS
+        ) {
+          // Append the non-date answer to the previous date answer,
+          // if a previous date answer exists and hasn't met the followup question limit.
+          currentSectionData[currentSectionData.length - 1].followup.push(displayQuestion(entryDefinition, data, key, classes));
+        }
+      }
+
       } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
         // If a section is found, filter questions inside the section
         let currentSection = entryDefinition;
