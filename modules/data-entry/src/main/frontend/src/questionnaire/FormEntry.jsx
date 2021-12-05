@@ -117,7 +117,7 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, o
         sectionAnswersState={sectionAnswersState}
         isEdit={isEdit}
         instanceId={instanceId || ''}
-      />
+        />
     </Grid>
   );
 };

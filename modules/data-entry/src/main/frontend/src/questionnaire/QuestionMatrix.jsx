@@ -41,10 +41,14 @@ const DATA_TO_NODE_TYPE = {
 //
 // Sample usage:
 //
-// <MatrixQuestion
-//   sectionDefinition={{
-//     ...
-//   }}
+// <QuestionMatrix
+//   sectionDefinition={sectionDefinition}
+//   existingSectionAnswer={existingSectionAnswer}
+//   existingAnswers={existingAnswers}
+//   path={path}
+//   isEdit={isEdit}
+//   ...
+// }}
 //   />
 // existingAnswer array of sub-question answers
 
@@ -160,10 +164,12 @@ let QuestionMatrix = (props) => {
     setSelectionElementStates(getSelectionElementStates(newSelection));
   }
 
+  let existingAnswerMock = [sectionAnswerPath, {displayedValue: existingAnswers}];
+  let newQuestionDefinition = { ...sectionDefinition, text: sectionDefinition.label};
   return (
     <Question
-      questionDefinition={sectionDefinition}
-      answers={existingAnswers}
+      questionDefinition={newQuestionDefinition}
+      existingAnswer={existingAnswerMock}
       {...props}
       disableInstructions
       defaultDisplayFormatter={(subquestion, idx) => subquestion[1].displayedValue &&

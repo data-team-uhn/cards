@@ -28,10 +28,8 @@ import FormattedText from "../components/FormattedText.jsx";
 
 // GUI for displaying answers
 function Question (props) {
-  let { classes, children, questionDefinition, existingAnswer, answers, isEdit, preventDefaultView, defaultDisplayFormatter } = props;
-  let { text, label, compact, description, disableInstructions } = { ...questionDefinition, ...props }
-
-  let existingAnswers = answers || (existingAnswer ? Array.of(existingAnswer[1]["displayedValue"]).flat() : null);
+  let { classes, children, questionDefinition, existingAnswer, isEdit, preventDefaultView, defaultDisplayFormatter } = props;
+  let { text, compact, description, disableInstructions } = { ...questionDefinition, ...props }
 
   return (
     <Card
@@ -39,7 +37,7 @@ function Question (props) {
       className={classes.questionCard}
       >
       <CardHeader
-        title={text || label}
+        title={text}
         titleTypographyProps={{ variant: 'h6' }}
         subheader={<FormattedText variant="caption">{description}</FormattedText>}
         subheaderTypographyProps={{ component: "div" }}
@@ -53,11 +51,11 @@ function Question (props) {
           />
         }
         { !isEdit && !preventDefaultView ?
-          ( existingAnswers ?
+          ( existingAnswer ?
             <List>
-              { existingAnswers.map( (item, idx) => {
+              { Array.of(existingAnswer?.[1]["displayedValue"]).flat().map( (item, idx) => {
                 return(
-                  <ListItem key={item}> {defaultDisplayFormatter ? defaultDisplayFormatter(item, idx) : item} </ListItem>
+                  <ListItem key={existingAnswer[0] + idx}> {defaultDisplayFormatter ? defaultDisplayFormatter(item, idx) : item} </ListItem>
                 )})
               }
             </List>
