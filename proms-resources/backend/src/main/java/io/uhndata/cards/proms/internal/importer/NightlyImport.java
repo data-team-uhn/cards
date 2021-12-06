@@ -26,10 +26,12 @@ import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Component(immediate = true)
+@Designate(ocd = ImportConfig.class)
 public class NightlyImport
 {
     /** Default log. */
@@ -44,24 +46,17 @@ public class NightlyImport
     private Scheduler scheduler;
 
     @Activate
-    protected void activate(ComponentContext componentContext) throws Exception
+    protected void activate(ImportConfig config, ComponentContext componentContext) throws Exception
     {
         LOGGER.info("NightlyImport activating");
-        final String nightlyImportSchedule = System.getenv("NIGHTLY_IMPORT_SCHEDULE");
+        final String nightlyImportSchedule = config.nightly_import_schedule();
         ScheduleOptions options = this.scheduler.EXPR(nightlyImportSchedule);
         options.name("NightlyImport");
         options.canRunConcurrently(true);
 
         final Runnable importJob;
-        try {
-            int daysToParse = Integer.parseInt(System.getenv("PROM_DAYS_TO_QUERY"));
-            String authURL = System.getenv("PROM_AUTH_URL");
-            String endpointURL = System.getenv("PROM_TORCH_URL");
-            importJob = new ImportTask(this.resolverFactory, authURL, endpointURL, daysToParse);
-        } catch (NumberFormatException e) {
-            LOGGER.error("The PROM_DAYS_TO_PARSE variable should be set to an integer before running this endpoint.");
-            return;
-        }
+        importJob = new ImportTask(this.resolverFactory, config.auth_url(), config.endpoint_url(),
+            config.days_to_query(), config.vault_token());
 
         try {
             if (importJob != null) {
