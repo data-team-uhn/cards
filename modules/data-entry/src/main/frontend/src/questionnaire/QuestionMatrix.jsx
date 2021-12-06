@@ -172,8 +172,8 @@ let QuestionMatrix = (props) => {
       existingAnswer={existingAnswerMock}
       {...props}
       disableInstructions
-      defaultDisplayFormatter={(subquestion, idx) => subquestion[1].displayedValue &&
-        <Grid container alignItems='flex-start' spacing={2} direction="row">
+      defaultDisplayFormatter={(subquestion, idx) => (subquestion[1].displayedValue || subquestion[1].statusFlags?.length > 0) &&
+        <Grid container alignItems='flex-start' spacing={2} direction="row" className={idx < existingAnswers.length -1 ? classes.matrixViewModeQuestion : ''}>
           <Grid item xs={6}>
             <Typography variant="subtitle2">{subquestion[1].question.text}:</Typography>
             { subquestion[1].question.description &&
@@ -181,6 +181,13 @@ let QuestionMatrix = (props) => {
                 {subquestion[1].question.description}
               </FormattedText>
             }
+            <AnswerInstructions
+              currentAnswers={selection[subquestion[0]] ? selection[subquestion[0]].length : 0}
+              isEdit={isEdit}
+              {...sectionDefinition}
+              existingAnswer={subquestion}
+              classes={classes}
+            />
           </Grid>
           <Grid item xs={6}>
             {Array.of(subquestion[1].displayedValue).flat().join(", ")}
@@ -194,7 +201,8 @@ let QuestionMatrix = (props) => {
           { [["",""]].concat(defaults).map( (option, index) => (
                 <TableCell
                   key={index}
-                  className={classes.tableCell}
+                  align={index > 0 ? "center" : "left"}
+                  className={classes.matrixTableCell}
                 >
                   {option[LABEL_POS]}
                 </TableCell>
@@ -204,9 +212,13 @@ let QuestionMatrix = (props) => {
         </TableHead>
         <TableBody>
           { selection && subquestions.map( (question, i) => (
-            <TableRow key={question[0] + i}>
+            <TableRow key={question[0] + i} className={classes.matrixTableRow}>
               { [["",""]].concat(defaults).map( (option, index) => (
-                <TableCell key={question[0] + i + index} className={classes.tableCell}>
+                <TableCell
+                  key={question[0] + i + index}
+                  align={index > 0 ? "center" : "left"}
+                  className={classes.matrixTableCell}
+                >
                   { index == 0
                     ? <>
                     <Typography>{question[1].text}</Typography>
