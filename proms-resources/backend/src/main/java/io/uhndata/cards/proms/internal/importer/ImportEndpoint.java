@@ -28,17 +28,47 @@ import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.metatype.annotations.Designate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(
     resourceTypes = { "cards/SubjectsHomepage" },
     selectors = { "import" })
+@Designate(ocd = ImportConfig.class)
 public class ImportEndpoint extends SlingSafeMethodsServlet
 {
+    /** Default log. */
+    private static final Logger LOGGER = LoggerFactory.getLogger(ImportEndpoint.class);
+
     @Reference
     private ResourceResolverFactory resolverFactory;
+
+    /** Number of days to look ahead when querying for appointments. */
+    private int daysToQuery;
+
+    /** Torch FIHR GraphQL endpoint. */
+    private String endpointURL;
+
+    /** Vault JWT refresh endpoint. */
+    private String authURL;
+
+    /** Vault JWT token. */
+    private String vaultToken;
+
+    @Activate
+    protected void activate(ImportConfig config, ComponentContext componentContext) throws Exception
+    {
+        this.authURL = config.auth_url();
+        this.endpointURL = config.endpoint_url();
+        this.daysToQuery = config.days_to_query();
+        this.vaultToken = config.vault_token();
+    }
 
     @Override
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
@@ -55,16 +85,10 @@ public class ImportEndpoint extends SlingSafeMethodsServlet
         }
 
         // Load configuration from environment variables
-        try {
-            int daysToParse = Integer.parseInt(System.getenv("PROM_DAYS_TO_QUERY"));
-            String authURL = System.getenv("PROM_AUTH_URL");
-            String endpointURL = System.getenv("PROM_TORCH_URL");
-            final Runnable importJob = new ImportTask(this.resolverFactory, authURL, endpointURL, daysToParse);
-            final Thread thread = new Thread(importJob);
-            thread.start();
-            out.write("Data import started");
-        } catch (NumberFormatException e) {
-            out.write("The PROM_DAYS_TO_QUERY variable should be set to an integer before running this endpoint.");
-        }
+        final Runnable importJob = new ImportTask(this.resolverFactory, this.authURL, this.endpointURL,
+            this.daysToQuery, this.vaultToken);
+        final Thread thread = new Thread(importJob);
+        thread.start();
+        out.write("Data import started");
     }
 }

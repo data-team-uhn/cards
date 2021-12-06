@@ -77,6 +77,9 @@ public class ImportTask implements Runnable
     /** URL for the Vault JWT authentication endpoint. */
     private final String authURL;
 
+    /** JWT token for querying the endpoint. */
+    private final String vaultToken;
+
     /** Numnber of days to query. */
     private final int daysToQuery;
 
@@ -84,12 +87,13 @@ public class ImportTask implements Runnable
     private final ResourceResolverFactory resolverFactory;
 
     ImportTask(final ResourceResolverFactory resolverFactory, final String authURL,
-        final String endpointURL, final int daysToQuery)
+        final String endpointURL, final int daysToQuery, final String vaultToken)
     {
         this.resolverFactory = resolverFactory;
         this.authURL = authURL;
         this.endpointURL = endpointURL;
         this.daysToQuery = daysToQuery;
+        this.vaultToken = vaultToken;
     }
 
     @Override
@@ -107,12 +111,11 @@ public class ImportTask implements Runnable
     private String getAuthToken()
     {
         String token = "";
-        String postRequest = "{ \"role\": \"prom_role\", \"jwt\":\"" + System.getenv("PROM_AUTH_TOKEN") + "\" }";
+        String postRequest = "{ \"role\": \"prom_role\", \"jwt\":\"" + this.vaultToken + "\" }";
 
         try {
             String rawResponse = getPostResponse(this.authURL, postRequest);
-            JsonReader jsonReader = Json.createReader(new StringReader(rawResponse.toString()));
-            token = "Bearer " + System.getenv("PROM_AUTH_TOKEN");
+            token = "Bearer " + this.vaultToken;
         } catch (Exception e) {
             LOGGER.error("Failed to retrieve authentication token: {}", e.getMessage(), e);
         }
