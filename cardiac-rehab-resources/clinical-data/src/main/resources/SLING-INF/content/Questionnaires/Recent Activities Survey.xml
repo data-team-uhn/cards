@@ -1,0 +1,722 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+
+<node>
+	<name>Recent Activities Survey</name>
+	<primaryNodeType>lfs:Questionnaire</primaryNodeType>
+	<property>
+		<name>maxPerSubject</name>
+		<value>7</value>
+		<type>Long</type>
+	</property>
+	<property>
+		<name>description</name>
+		<value>Visits 9, 10, 12, 14, 16, 18, 21</value>
+		<type>String</type>
+	</property>
+	<property>
+		<name>title</name>
+		<value>Recent Activities Survey</value>
+		<type>String</type>
+	</property>
+	<property>
+		<name>requiredSubjectTypes</name>
+		<values>
+			<value>/SubjectTypes/Patient</value>
+		</values>
+		<type>Reference</type>
+	</property>
+	<node>
+		<name>RecentActivities</name>
+		<primaryNodeType>lfs:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Recent Activities</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>survey-visit</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Visit Number</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<node>
+				<name>9</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>9</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>9</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>10</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>10</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>10</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>12</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>12</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>12</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>14</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>14</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>14</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>16</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>16</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>16</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>18</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>18</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>18</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>21</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>21</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>21</value>
+					<type>String</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>ras1</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Have you done or experienced any of the following in the past 1-4 weeks?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<node>
+				<name><![CDATA[Iliveatlowaltitudeandtraveledtohighaltitude>5000ft]]></name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value><![CDATA[I live at low altitude and traveled to high altitude (>5000 ft)]]></value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value><![CDATA[I live at low altitude and traveled to high altitude (>5000 ft)]]></value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name><![CDATA[Iliveathighaltitude>5000ftandtraveledtolowaltitude]]></name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value><![CDATA[I live at high altitude (>5000 ft) and traveled to low altitude]]></value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value><![CDATA[I live at high altitude (>5000 ft) and traveled to low altitude]]></value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Iwentonvacation</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>I went on vacation</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>I went on vacation</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Iwentbackpackingorhikedwithabackpackonmultipledays</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>I went backpacking or hiked with a backpack on multiple days</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>I went backpacking or hiked with a backpack on multiple days</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Ihadacoldorillnessthatlastedlessthanaweek</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>I had a cold or illness that lasted less than a week</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>I had a cold or illness that lasted less than a week</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Ihadacoldorillnessthatlastedmorethanaweek</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>I had a cold or illness that lasted more than a week</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>I had a cold or illness that lasted more than a week</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Iexperiencedamusculoskeletalinjury</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>I experienced a musculoskeletal injury</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>I experienced a musculoskeletal injury</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Idecreasedmytypicalactivitylevelorintensity</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>I decreased my typical activity level or intensity</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>I decreased my typical activity level or intensity</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Iincreasedmytypicalactivitylevelorintensity</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>I increased my typical activity level or intensity</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>I increased my typical activity level or intensity</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name><![CDATA[Myweightincreasedby>5lbs]]></name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value><![CDATA[My weight increased by >5 lbs]]></value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value><![CDATA[My weight increased by >5 lbs]]></value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name><![CDATA[Myweightdecreasedby>5lbs]]></name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value><![CDATA[My weight decreased by >5 lbs]]></value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value><![CDATA[My weight decreased by >5 lbs]]></value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Iexperiencedafallortrip</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>I experienced a fall or trip</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>I experienced a fall or trip</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Noneoftheabove</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>None of the above</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>None of the above</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>noneOfTheAbove</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>Iprefernottoanswer</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>I prefer not to answer</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>I prefer not to answer</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>notApplicable</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>ras2</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Have you had any of the following symptoms in the past 1-4 weeks?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<node>
+				<name>Heartpalpitationsforexampleapoundingracingorveryrapidheartbeat</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Heart palpitations (for example, a pounding, racing, or very rapid heartbeat)</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Heart palpitations (for example, a pounding, racing, or very rapid heartbeat)</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Painortightnessinyourchestduringactivity</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Pain or tightness in your chest during activity</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Pain or tightness in your chest during activity</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Painortightnessinyourchestduringrest</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Pain or tightness in your chest during rest</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Pain or tightness in your chest during rest</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Decreasedshortnessofbreathduringactivity</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Decreased shortness of breath during activity</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Decreased shortness of breath during activity</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Increasedshortnessofbreathduringactivity</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Increased shortness of breath during activity</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Increased shortness of breath during activity</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Decreasedfatigue</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Decreased fatigue</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Decreased fatigue</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Increasedfatigue</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Increased fatigue</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Increased fatigue</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Decreaseinabilitytoexercise</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Decrease in ability to exercise</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Decrease in ability to exercise</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Significantstressorworryaboutyourhealth</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Significant stress or worry about your health</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Significant stress or worry about your health</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Painorheavinessinyourlegswhichstartedduringwalkingandworeoffwhenyoupaused</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Pain or heaviness in your leg(s) which started during walking and wore off when you paused</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Pain or heaviness in your leg(s) which started during walking and wore off when you paused</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Noneoftheabove</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>None of the above</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>None of the above</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>noneOfTheAbove</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>Iprefernottoanswer</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>I prefer not to answer</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>I prefer not to answer</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>notApplicable</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>ras3</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>How often do you wear your Apple Watch when you are physically active?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<node>
+				<name>Always</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Always</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Always</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Usually</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Usually</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Usually</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Sometimes</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Sometimes</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Sometimes</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Never</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Never</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Never</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Iprefernottoanswer</name>
+				<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>I prefer not to answer</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>I prefer not to answer</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>notApplicable</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+		</node>
+	</node>
+</node>
