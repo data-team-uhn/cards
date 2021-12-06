@@ -52,6 +52,7 @@ public class QuestionnaireQuickSearchEngine implements QuickSearchEngine
     }
 
     @Override
+    @SuppressWarnings({"checkstyle:CyclomaticComplexity"})
     public void quickSearch(final SearchParameters query, final ResourceResolver resourceResolver,
         final List<JsonObject> output)
     {
@@ -77,13 +78,15 @@ public class QuestionnaireQuickSearchEngine implements QuickSearchEngine
             String question = null;
             String path = "";
             if (thisResource.isResourceType("cards/AnswerOption")) {
-                // Found resource is of type [cards:AnswerOption]
-                String[] resourceValues = thisResource.getValueMap().get("value", String[].class);
-                matchedValue = SearchUtils.getMatchFromArray(resourceValues, query.getQuery());
                 // Find the Question parent of this question
                 Resource questionParent = getQuestion(thisResource);
-                question = "Possible answer for question " + questionParent.getValueMap().get("text", String.class);
-                path = questionParent.getPath();
+                if (questionParent != null) {
+                    // Found resource is of type [cards:AnswerOption]
+                    String[] resourceValues = thisResource.getValueMap().get("value", String[].class);
+                    matchedValue = SearchUtils.getMatchFromArray(resourceValues, query.getQuery());
+                    question = "Possible answer for question " + questionParent.getValueMap().get("text", String.class);
+                    path = questionParent.getPath();
+                }
             } else if (thisResource.isResourceType("cards/Question")) {
                 // Found resource is of type [cards:Question]
                 matchedValue = thisResource.getValueMap().get("text", String.class);
