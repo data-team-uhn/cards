@@ -210,11 +210,14 @@ let displayMatrix = (sectionDefinition, path, existingAnswer, key, classes, page
     .filter(answer => answer[1]["sling:resourceSuperType"]
       && answer[1]["sling:resourceSuperType"] === "cards/Answer");
 
-  // Do not show anything if in view mode and no value is recorded yet
-  if (!isEdit) {
-    if (existingAnswers && existingAnswers.filter(answer => answer[1]["displayedValue"]).length == 0) {
+  // Determine if the section is flagged as incomplete/invalid
+  // Note: bay be better explicitly check <statusFlags.includes('INCOMPLETE')> and same for INVALID
+  const isFlagged = (existingSectionAnswer?.[1]?.statusFlags?.length > 0);
+  // View mode should display all mandatory questions whether or not they have an answer
+  const hasAnswers = existingAnswers?.filter(answer => answer[1]["displayedValue"]).length > 0;
+  if (!isEdit && !isFlagged && !hasAnswers) {
+      // Do not show anything if not mandatory, in view mode and no value is recorded yet
       return null;
-    }
   }
 
   // if autofocus is needed and specified in the url
