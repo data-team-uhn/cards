@@ -631,8 +631,12 @@ const questionnaireStyle = theme => ({
       flexBasis: "100%",
       paddingLeft: theme.spacing(4)
     },
-    tableCell: {
-      fontWeight: "bold"
+    matrixTableCell: {
+      fontWeight: "bold",
+      padding: theme.spacing(1)
+    },
+    matrixViewModeQuestion: {
+      marginBottom: theme.spacing(0.5)
     },
 });
 
