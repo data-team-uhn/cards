@@ -17,10 +17,7 @@
 //  under the License.
 //
 
-import React, { useRef, useEffect, useState } from "react";
-
-import { useLocation } from 'react-router-dom';
-
+import React, { useEffect, useState } from "react";
 import { Card, CardContent, Grid } from "@material-ui/core";
 
 import AnswerComponentManager from "./AnswerComponentManager";
@@ -60,30 +57,6 @@ export const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES).concat(INFO_TYPE
  * @returns a React component that renders the question
  */
 let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, onAddedAnswerPath, sectionAnswersState, onChange, pageActive, isEdit, instanceId) => {
-  const [ doHighlight, setDoHighlight ] = useState();
-  const [ anchor, setAnchor ] = useState();
-
-  const location = useLocation();
-
-  // if autofocus is needed and specified in the url
-  useEffect(() => {
-    setAnchor(decodeURIComponent(location.hash.substring(1)))
-  }, [location]);
-  useEffect(() => {
-    setDoHighlight(anchor == questionDefinition["@path"]);
-  }, [anchor, questionDefinition]);
-
-  const questionRef = useRef();
-
-  // create a ref to store the question container DOM element
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      questionRef?.current?.scrollIntoView({block: "center"});
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [questionRef]);
-
-
   const existingQuestionAnswer = existingAnswer && Object.entries(existingAnswer)
     .find(([key, value]) => value["sling:resourceSuperType"] == "cards/Answer"
       && value["question"]["jcr:uuid"] === questionDefinition["jcr:uuid"]);
@@ -97,16 +70,13 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, o
   const QuestionDisplay = AnswerComponentManager.getAnswerComponent(questionDefinition);
 
   let gridClasses = [];
-  if (doHighlight) {
-    gridClasses.push(classes.focusedQuestionnaireItem);
-  }
   if (pageActive === false || questionDefinition.displayMode == 'hidden') {
     gridClasses.push(classes.hiddenQuestion);
   }
 
   // component will either render the default question display, or a list of questions/answers from the form (used for subjects)
   return (
-    <Grid item key={key} ref={doHighlight ? questionRef : undefined} className={gridClasses.join(" ")}>
+    <Grid item key={key} className={gridClasses.join(" ")}>
       <QuestionDisplay
         questionDefinition={questionDefinition}
         existingAnswer={existingQuestionAnswer}
@@ -184,16 +154,6 @@ let displayInformation = (infoDefinition, key, classes, pageActive, isEdit) => {
  * @returns a React component that renders the matrix section
  */
 let displayMatrix = (sectionDefinition, path, existingAnswer, key, classes, pageActive, isEdit, instanceId) => {
-  const questionRef = useRef();
-  const anchor = decodeURIComponent(location.hash.substr(1));
-  // create a ref to store the question container DOM element
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      questionRef?.current?.scrollIntoView({block: "center"});
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [questionRef]);
-
   // Find the existing AnswerSection for this section, if available
   const existingSectionAnswer = existingAnswer && Object.entries(existingAnswer)
     .find(([key, value]) => value["sling:resourceType"] == "cards/AnswerSection"
@@ -213,19 +173,13 @@ let displayMatrix = (sectionDefinition, path, existingAnswer, key, classes, page
       return null;
   }
 
-  // if autofocus is needed and specified in the url
-  const doHighlight = existingAnswers && existingAnswers.filter(answer => anchor == answer[1].question["@path"]).length > 0;
-
   let gridClasses = [];
-  if (doHighlight) {
-    gridClasses.push(classes.focusedQuestionnaireItem);
-  }
   if (pageActive === false || sectionDefinition.displayMode == 'hidden') {
     gridClasses.push(classes.hiddenQuestion);
   }
 
   return (
-    <Grid item key={key} ref={doHighlight ? questionRef : undefined} className={gridClasses.join(" ")}>
+    <Grid item key={key} className={gridClasses.join(" ")}>
       <QuestionMatrix
         sectionDefinition={sectionDefinition}
         existingSectionAnswer={existingSectionAnswer}

@@ -17,8 +17,9 @@
 //  under the License.
 //
 
-import React from "react";
+import React, { useRef, useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import { useLocation } from 'react-router-dom';
 
 import { Card, CardHeader, CardContent, List, ListItem, Typography, withStyles } from "@material-ui/core";
 
@@ -31,10 +32,45 @@ function Question (props) {
   let { classes, children, questionDefinition, existingAnswer, isEdit, preventDefaultView, defaultDisplayFormatter } = props;
   let { text, compact, description, disableInstructions } = { ...questionDefinition, ...props }
 
+  const [ doHighlight, setDoHighlight ] = useState();
+  const [ anchor, setAnchor ] = useState();
+
+  const location = useLocation();
+
+  // if autofocus is needed and specified in the url
+  useEffect(() => {
+    setAnchor(decodeURIComponent(location.hash.substring(1)))
+  }, [location]);
+  useEffect(() => {
+    if (anchor && questionDefinition) {
+      if (questionDefinition.displayMode === "matrix") {
+        setDoHighlight(Array.of(existingAnswer?.[1]["displayedValue"]).flat().filter(answer => anchor == answer[1].question["@path"]).length > 0);
+      } else {
+         setDoHighlight(anchor == questionDefinition["@path"]);
+      }
+    }
+  }, [anchor, questionDefinition]);
+
+  const questionRef = useRef();
+
+  // create a ref to store the question container DOM element
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      questionRef?.current?.scrollIntoView({block: "center"});
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [questionRef]);
+
+  let gridClasses = [classes.questionCard];
+  if (doHighlight) {
+    gridClasses.push(classes.focusedQuestionnaireItem);
+  }
+
   return (
     <Card
       variant="outlined"
-      className={classes.questionCard}
+      ref={doHighlight ? questionRef : undefined}
+      className={gridClasses.join(" ")}
       >
       <CardHeader
         title={text}
