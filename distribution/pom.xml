@@ -43,8 +43,9 @@
         <executions>
           <execution>
             <configuration>
-              <executable>./complete_git_copy.sh</executable>
+              <executable>bash</executable>
               <workingDirectory>.</workingDirectory>
+              <commandlineArgs>complete_git_copy.sh</commandlineArgs>
             </configuration>
             <id>complete-git-copy</id>
             <phase>initialize</phase>
