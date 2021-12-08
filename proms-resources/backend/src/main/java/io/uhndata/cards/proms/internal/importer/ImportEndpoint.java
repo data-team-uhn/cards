@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 @SlingServletResourceTypes(
     resourceTypes = { "cards/SubjectsHomepage" },
     selectors = { "import" })
-@Designate(ocd = ImportConfig.class)
+@Designate(ocd = EndpointImportConfig.class)
 public class ImportEndpoint extends SlingSafeMethodsServlet
 {
     /** Default log. */
@@ -62,7 +62,7 @@ public class ImportEndpoint extends SlingSafeMethodsServlet
     private String vaultToken;
 
     @Activate
-    protected void activate(ImportConfig config, ComponentContext componentContext) throws Exception
+    protected void activate(EndpointImportConfig config, ComponentContext componentContext) throws Exception
     {
         this.authURL = config.auth_url();
         this.endpointURL = config.endpoint_url();
