@@ -80,22 +80,24 @@ public class ImportTask implements Runnable
     @Override
     public void run()
     {
-        String token = getAuthToken();
+        String token = loginWithJWT();
         getUpcomingAppointments(token, this.daysToQuery);
     }
 
     /**
-     * Obtain an authentication token for use in querying the Torch server.
+     * Obtain an authentication token for use in querying the Torch server. Currently, this sends a JWT Login
+     * request to Vault, which authorizes our JWT token to query the server. This should be called before performing
+     * {@code getUpcomingAppointments}.
      * @return an authentication token to be passed onto as a header, typically begins with "Bearer " or an empty
      *         string if no token could be obtained.
      */
-    private String getAuthToken()
+    private String loginWithJWT()
     {
         String token = "";
         String postRequest = "{ \"role\": \"prom_role\", \"jwt\":\"" + this.vaultToken + "\" }";
 
         try {
-            String rawResponse = getPostResponse(this.authURL, postRequest);
+            getPostResponse(this.authURL, postRequest);
             token = "Bearer " + this.vaultToken;
         } catch (Exception e) {
             LOGGER.error("Failed to activate authentication token: {}", e.getMessage(), e);
@@ -174,7 +176,7 @@ public class ImportTask implements Runnable
         }
         http.setDoOutput(true);
 
-        // Get the next date
+        // Write our POST data to the server
         try (OutputStream os = con.getOutputStream()) {
             byte[] input = data.getBytes("utf-8");
             os.write(input, 0, input.length);
