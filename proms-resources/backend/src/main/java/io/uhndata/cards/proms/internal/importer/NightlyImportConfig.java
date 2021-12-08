@@ -23,8 +23,9 @@ import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.AttributeType;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
-@ObjectClassDefinition(name = "Import config", description = "Configuration for the PROMs importer")
-public @interface ImportConfig
+@ObjectClassDefinition(name = "Nightly PROMs Import Config",
+  description = "Configuration for the PROMs nightly importer")
+public @interface NightlyImportConfig
 {
     /** Number of days to look ahead when querying for appointments. */
     int DAYS_TO_QUERY = 3;
@@ -35,13 +36,18 @@ public @interface ImportConfig
     /** Vault JWT refresh endpoint. */
     String VAULT_AUTH_URL = "https://vault.dev.uhn.io/v1/auth/jwt/login";
 
-    /** Cron-readable import schedule. */
-    String NIGHTLY_IMPORT_SCHEDULE = "";
-
     /** Vault JWT token. */
     String VAULT_TOKEN = "";
 
-    @AttributeDefinition(type = AttributeType.INTEGER, name = "daysToQuery")
+    /** Cron-readable import schedule. */
+    String NIGHTLY_IMPORT_SCHEDULE = "";
+
+    @AttributeDefinition(name = "Import schedule",
+        description = "Cron-readable import schedule")
+    String nightly_import_schedule() default NIGHTLY_IMPORT_SCHEDULE;
+
+    @AttributeDefinition(type = AttributeType.INTEGER, name = "days to query",
+        description = "Number of days of appointments to query ahead of schedule")
     int days_to_query() default DAYS_TO_QUERY;
 
     @AttributeDefinition(name = "endpoint URL")
@@ -49,9 +55,6 @@ public @interface ImportConfig
 
     @AttributeDefinition(name = "authentication URL")
     String auth_url() default VAULT_AUTH_URL;
-
-    @AttributeDefinition(name = "Import schedule")
-    String nightly_import_schedule() default NIGHTLY_IMPORT_SCHEDULE;
 
     @AttributeDefinition(name = "Vault token")
     String vault_token() default VAULT_TOKEN;

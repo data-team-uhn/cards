@@ -17,18 +17,28 @@
 
 {
   "configurations":{
-      // Endpoint URLs
-      "io.uhndata.cards.proms.internal.importer.ImportConfig":{
-          // Look ahead 3 days for appointments by default
-          "days.to.query": 3,
-          // Vault JWT refresh endpoint.
-          "torch.endpoint.url": "https://prom.dev.uhn.io/graphql",
-          // Vault JWT refresh endpoint.
-          "vault.auth.url": "https://vault.dev.uhn.io/v1/auth/jwt/login",
-          // Cron-readable import schedule.
-          "nightly.import.schedule": "",
-          // Vault JWT token
-          "vault.token": ""
-      }
+    // Endpoint URLs
+    "io.uhndata.cards.proms.internal.importer.EndpointImportConfig":{
+      // Look ahead 3 days for appointments by default
+      "days.to.query": 3,
+      // Vault JWT refresh endpoint.
+      "torch.endpoint.url": "https://prom.dev.uhn.io/graphql",
+      // Vault JWT refresh endpoint.
+      "vault.auth.url": "https://vault.dev.uhn.io/v1/auth/jwt/login",
+      // Vault JWT token
+      "vault.token": ""
+    },
+    "io.uhndata.cards.proms.internal.importer.NightlyImportConfig":{
+      // Look ahead 3 days for appointments by default
+      "days.to.query": 3,
+      // Vault JWT refresh endpoint.
+      "torch.endpoint.url": "https://prom.dev.uhn.io/graphql",
+      // Vault JWT refresh endpoint.
+      "vault.auth.url": "https://vault.dev.uhn.io/v1/auth/jwt/login",
+      // Cron-readable import schedule.
+      "nightly.import.schedule": "",
+      // Vault JWT token
+      "vault.token": ""
+    }
   }
 }

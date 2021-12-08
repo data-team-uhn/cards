@@ -31,7 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Component(immediate = true)
-@Designate(ocd = ImportConfig.class)
+@Designate(ocd = NightlyImportConfig.class)
 public class NightlyImport
 {
     /** Default log. */
@@ -46,7 +46,7 @@ public class NightlyImport
     private Scheduler scheduler;
 
     @Activate
-    protected void activate(ImportConfig config, ComponentContext componentContext) throws Exception
+    protected void activate(NightlyImportConfig config, ComponentContext componentContext) throws Exception
     {
         LOGGER.info("NightlyImport activating");
         final String nightlyImportSchedule = config.nightly_import_schedule();
