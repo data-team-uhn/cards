@@ -313,7 +313,8 @@
   // Can this section be repeated?
   - recurrent (boolean) = false autocreated
 
-  - displayMode (string)
+  // Section display mode, one of default, header, footer, matrix
+  - displayMode (string) = 'default' autocreated
 
   // Same as for cards:Question.
   - minAnswers (long) = '0' autocreated

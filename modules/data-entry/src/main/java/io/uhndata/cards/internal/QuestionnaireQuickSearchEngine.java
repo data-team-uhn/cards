@@ -52,7 +52,6 @@ public class QuestionnaireQuickSearchEngine implements QuickSearchEngine
     }
 
     @Override
-    @SuppressWarnings({"checkstyle:CyclomaticComplexity"})
     public void quickSearch(final SearchParameters query, final ResourceResolver resourceResolver,
         final List<JsonObject> output)
     {
@@ -68,41 +67,46 @@ public class QuestionnaireQuickSearchEngine implements QuickSearchEngine
             if (output.size() >= query.getMaxResults() && !query.showTotalResults()) {
                 break;
             }
+
             Resource thisResource = foundResources.next();
+            addResult(thisResource, query, output);
+        }
+    }
 
-            // Find the Questionnaire parent of this question
-            Resource questionnaire = getQuestionnaire(thisResource);
+    private void addResult(final Resource res, final SearchParameters query, final List<JsonObject> output)
+    {
+        // Find the Questionnaire parent of this question
+        Resource questionnaire = getQuestionnaire(res);
 
-            String matchedValue = null;
+        String matchedValue = null;
 
-            String question = null;
-            String path = "";
-            if (thisResource.isResourceType("cards/AnswerOption")) {
-                // Find the Question parent of this question
-                Resource questionParent = getQuestion(thisResource);
-                if (questionParent != null) {
-                    // Found resource is of type [cards:AnswerOption]
-                    String[] resourceValues = thisResource.getValueMap().get("value", String[].class);
-                    matchedValue = SearchUtils.getMatchFromArray(resourceValues, query.getQuery());
-                    question = "Possible answer for question " + questionParent.getValueMap().get("text", String.class);
-                    path = questionParent.getPath();
-                }
-            } else if (thisResource.isResourceType("cards/Question")) {
-                // Found resource is of type [cards:Question]
-                matchedValue = thisResource.getValueMap().get("text", String.class);
-                question = "Question";
-                path = thisResource.getPath();
-            } else if (thisResource.isResourceType("cards/Questionnaire")) {
-                // Found resource is of type [cards:Questionnaire]
-                matchedValue = thisResource.getValueMap().get("title", String.class);
-                question = "Questionnaire name";
-                path = thisResource.getPath();
+        String question = null;
+        String path = "";
+        if (res.isResourceType("cards/AnswerOption")) {
+            // Find the Question parent of this question
+            Resource questionParent = getQuestion(res);
+            if (questionParent != null) {
+                // Found resource is of type [cards:AnswerOption]
+                String[] resourceValues = res.getValueMap().get("value", String[].class);
+                matchedValue = SearchUtils.getMatchFromArray(resourceValues, query.getQuery());
+                question = "Possible answer for question " + questionParent.getValueMap().get("text", String.class);
+                path = questionParent.getPath();
             }
+        } else if (res.isResourceType("cards/Question")) {
+            // Found resource is of type [cards:Question]
+            matchedValue = res.getValueMap().get("text", String.class);
+            question = "Question";
+            path = res.getPath();
+        } else if (res.isResourceType("cards/Questionnaire")) {
+            // Found resource is of type [cards:Questionnaire]
+            matchedValue = res.getValueMap().get("title", String.class);
+            question = "Questionnaire name";
+            path = res.getPath();
+        }
 
-            if (matchedValue != null) {
-                output.add(SearchUtils.addMatchMetadata(
-                    matchedValue, query.getQuery(), question, questionnaire.adaptTo(JsonObject.class), false, path));
-            }
+        if (matchedValue != null) {
+            output.add(SearchUtils.addMatchMetadata(
+                matchedValue, query.getQuery(), question, questionnaire.adaptTo(JsonObject.class), false, path));
         }
     }
 
