@@ -154,7 +154,8 @@ public class PatientLocalStorage
 
     /**
      * Grab a form of the specified type, or create it if it doesn't exist.
-     * @param patient Resource of the subject node for the form
+     * @param subject Resource of the subject node for the form
+     * @param questionnairePath Path to the questionnaire that this is a form of
      * @param resolver ResourceResolver to use when searching for/creating the node
      * @return A Form resource
      */
@@ -204,6 +205,18 @@ public class PatientLocalStorage
         }
     }
 
+    /**
+     * Update the answers in a form with the values that we were given.
+     * @param form The form to fill out
+     * @param info The JsonObject with responses to the form, to grab data from
+     * @param parentQuestionnaire The questionnaire that this form applies to
+     * @param mapping A map of Question node names to the method of getting their String answers from
+     *                the {@code info} JsonObject.
+     * @param dateFields A map of Question node names to the method of getting their Date answers from
+     *                   the {@code info} JsonObject.
+     * @param resolver a reference to a ResourceResolver to resolve queries
+     * @return The string, or an empty string if it does not exist
+     */
     void updateForm(Resource form, JsonObject info, String parentQuestionnaire,
         Map<String, JsonStringGetter> mapping, Map<String, String> dateFields, ResourceResolver resolver)
         throws RepositoryException, PersistenceException
@@ -268,8 +281,8 @@ public class PatientLocalStorage
 
     /**
      * Update the patient information form with values from the given JsonObject.
-     * @param info The JsonObject representing a patient returned from Torch
      * @param form The Patient Information form to update
+     * @param info The JsonObject representing a patient returned from Torch
      * @param resolver The ResourceResolver to use when creating new nodes
      */
     void updatePatientInformationForm(Resource form, JsonObject info, ResourceResolver resolver)
@@ -294,8 +307,8 @@ public class PatientLocalStorage
 
     /**
      * Update the visit information form with values from the given JsonObject.
-     * @param info The JsonObject representing a visit returned from Torch
      * @param form The Visit Information form to update
+     * @param info The JsonObject representing a visit returned from Torch
      * @param resolver The ResourceResolver to use when creating new nodes
      */
     void updateVisitInformationForm(Resource form, JsonObject info, ResourceResolver resolver)
