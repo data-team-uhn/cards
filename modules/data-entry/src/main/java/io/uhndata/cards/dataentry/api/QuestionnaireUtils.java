@@ -114,7 +114,7 @@ public interface QuestionnaireUtils
      * Retrieve the Question with the given UUID.
      *
      * @param identifier an UUID that references a question.
-     * @return a Node
+     * @return a Node, or {@code null} if the question could not be found
      */
     Node getQuestion(String identifier);
 
