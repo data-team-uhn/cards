@@ -107,7 +107,7 @@ let QuestionMatrix = (props) => {
     let selectionState = {};
     subquestions.map(subquestion => {
       defaults.map( option => { let name = subquestion[0] + option[VALUE_POS];
-                                let isChecked = !!(selections[subquestion[0]]?.find( item => item[VALUE_POS] === option[VALUE_POS]));
+                                let isChecked = !!(selections[subquestion[0]]?.find( item => String(item[VALUE_POS]) === String(option[VALUE_POS])));
                                 selectionState[name] = isChecked;
                                } )
                            });
