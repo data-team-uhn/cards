@@ -61,16 +61,16 @@ function Question (props) {
     return () => clearTimeout(timer);
   }, [questionRef]);
 
-  let gridClasses = [classes.questionCard];
+  let cardClasses = [classes.questionCard];
   if (doHighlight) {
-    gridClasses.push(classes.focusedQuestionnaireItem);
+    cardClasses.push(classes.focusedQuestionnaireItem);
   }
 
   return (
     <Card
       variant="outlined"
       ref={doHighlight ? questionRef : undefined}
-      className={gridClasses.join(" ")}
+      className={cardClasses.join(" ")}
       >
       {
         // Note that we need to preserve the hierarchy in which we place children
