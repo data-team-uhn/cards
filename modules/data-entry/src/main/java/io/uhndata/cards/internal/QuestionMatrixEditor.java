@@ -82,7 +82,6 @@ public class QuestionMatrixEditor extends DefaultEditor
                 NodeBuilder childNode = this.currentNodeBuilder.getChildNode(childNodeName);
                 if (isQuestion(childNode)) {
                     childNode.setProperty(propName, after.getValue(after.getType()));
-                    childNode.setProperty("displayMode", "list", Type.STRING);
                 }
             }
         }
@@ -99,14 +98,26 @@ public class QuestionMatrixEditor extends DefaultEditor
         if (this.isQuestionMatrixNode) {
             NodeBuilder childNode = this.currentNodeBuilder.getChildNode(name);
 
+            boolean isAnswerOptionNodeAdded = isAnswerOption(childNode);
+            boolean isQuestionNodeAdded = isQuestion(childNode);
+            // Question is added -> copy all matrix section props
+            if (isQuestionNodeAdded) {
+                PropertyState minAnswers = this.currentNodeBuilder.getProperty("minAnswers");
+                childNode.setProperty("minAnswers", minAnswers.getValue(Type.LONG));
+                PropertyState maxAnswers = this.currentNodeBuilder.getProperty("maxAnswers");
+                childNode.setProperty("maxAnswers", maxAnswers.getValue(Type.LONG));
+                childNode.setProperty("dataType", this.currentNodeBuilder.getString("dataType"));
+                childNode.setProperty("displayMode", "list", Type.STRING);
+            }
+
             for (String childNodeName : this.currentNodeBuilder.getChildNodeNames()) {
                 NodeBuilder qNode = this.currentNodeBuilder.getChildNode(childNodeName);
 
                 // Answer Option is added -> copy this option to every question node
-                if (isAnswerOption(childNode) && isQuestion(qNode)) {
+                if (isAnswerOptionNodeAdded && isQuestion(qNode)) {
                     copyOptionNode(name, childNode, qNode);
                 // Question is added -> copy all options to this question node
-                } else if (isQuestion(childNode) && isAnswerOption(qNode)) {
+                } else if (isQuestionNodeAdded && isAnswerOption(qNode)) {
                     copyOptionNode(childNodeName, qNode, childNode);
                 }
             }
