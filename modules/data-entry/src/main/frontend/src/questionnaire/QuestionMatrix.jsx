@@ -57,7 +57,6 @@ let QuestionMatrix = (props) => {
   const { maxAnswers, minAnswers } = {...sectionDefinition, ...props};
 
   // Use existing existingAnswer, Otherwise, create a new UUID
-  const sectionPath = path + "/" + ( existingSectionAnswer ? existingSectionAnswer[0] || uuidv4() : "");
   const isRadio = maxAnswers === 1;
   const ControlElement = isRadio ? Radio : Checkbox;
   const valueType = sectionDefinition.dataType.charAt(0).toUpperCase() + sectionDefinition.dataType.slice(1);
