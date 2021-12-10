@@ -55,7 +55,7 @@ public class QuestionMatrixEditorProvider implements EditorProvider
             final ResourceResolver myResolver = this.rrf.getThreadResourceResolver();
             if (myResolver != null) {
                 Session session = myResolver.adaptTo(Session.class);
-                // Each FormRelatedSubjectsEditor maintains a state, so a new instance must be returned each time
+                // Each QuestionMatrixEditor maintains a state, so a new instance must be returned each time
                 return new QuestionMatrixEditor(builder, session);
             }
         }
