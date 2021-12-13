@@ -22,6 +22,10 @@
       "start-order":"26"
     },
     {
+      "id":"${project.groupId}:proms-resources-patient-authentication:${project.version}",
+      "start-order":"26"
+    },
+    {
       "id":"${project.groupId}:proms-frontend:${project.version}",
       "start-order":"26"
     }
@@ -29,7 +33,15 @@
   "configurations":{
     "org.apache.sling.jcr.repoinit.RepositoryInitializer~proms":{
       "service.ranking:Integer":300,
-      "scripts":["create group patients \n set ACL for patients \n     deny jcr:all on /Questionnaires restriction(rep:itemNames,audit_intro,audit_results,eq5d_results,gad7_intro,gad7_results,phq9_intro,phq9_results) \n end"]
+      "scripts": [
+        "create service user cards-token-manager \n create path (rep:Unstructured) /jcr:system/cards:tokens \n set ACL for cards-token-manager \n     allow jcr:all on /jcr:system/cards:tokens \n     allow jcr:read on / \n end",
+        "create user patient \n set ACL for patient \n     allow jcr:read on /Questionnaires,/SubjectTypes \n     deny jcr:all on /Questionnaires restriction(rep:itemNames,audit_intro,audit_results,eq5d_results,gad7_intro,gad7_results,phq9_intro,phq9_results) \n     allow jcr:read,jcr:write,jcr:nodeTypeManagement,jcr:versionManagement on /Forms restriction(cards:visit) \n     allow jcr:read on /Subjects restriction(cards:visit) \n end"
+      ]
+    },
+    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~cards-patient-auth":{
+      "user.mapping":[
+        "io.uhndata.cards.proms-resources-patient-authentication=[cards-token-manager]"
+      ]
     }
   }
 }
