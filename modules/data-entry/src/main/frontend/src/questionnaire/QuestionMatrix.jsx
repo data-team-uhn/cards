@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from 'prop-types';
 
 import { Table, TableHead, TableBody, TableRow, TableCell } from "@material-ui/core";
@@ -60,7 +60,13 @@ let QuestionMatrix = (props) => {
   const isRadio = maxAnswers === 1;
   const ControlElement = isRadio ? Radio : Checkbox;
   const valueType = sectionDefinition.dataType.charAt(0).toUpperCase() + sectionDefinition.dataType.slice(1);
-  const sectionAnswerPath = path + "/" + ( existingSectionAnswer ? existingSectionAnswer[0] : uuidv4());
+  const [sectionAnswerPath, setSectionAnswerPath ] = useState(path + "/" + ( existingSectionAnswer ? existingSectionAnswer[0] : uuidv4()));
+
+  useEffect(() => {
+    if (existingSectionAnswer) {
+      setSectionAnswerPath(path + "/" + existingSectionAnswer[0]);
+    }
+  }, [existingSectionAnswer]);
 
   const subquestions = Object.entries(sectionDefinition)
       .filter(([key, value]) => value['jcr:primaryType'] == 'cards:Question');
