@@ -111,6 +111,52 @@ class SignIn extends React.Component {
     const { classes } = this.props;
     const { passwordIsMasked } = this.state;
 
+    const nextButtonCallback = () => {
+      if (this.state.username.split("@").length - 1 == 0) {
+        this.setState({phase: "PASSWORD_ENTRY"});
+      } else if (this.state.username.split("@").length - 1 == 1) {
+        let remoteUser = this.state.username.split("@")[0];
+        let remoteDomain = this.state.username.split("@")[1];
+        // Do a fetch() to see if we have a SAML configuration for this domain
+        fetch(window.location.origin + "/apps/cards/SAMLDomains/" + remoteDomain + ".json")
+        .then((resp) => {
+          if (resp.ok) {
+            this.setState({failedLogin: undefined});
+            return resp.json();
+          } else {
+            this.setState({failedLogin: "Unrecognized email domain"});
+          }
+        })
+        .then((data) => {
+          if (window.location.pathname === "/login" || window.location.pathname === "/login/") {
+            // We are logging in at a main login screen
+            window.location = data.value + window.location.search;
+          } else {
+            // We are logging in from a fetchWithReLogin() window
+            let popupWidth = 600;
+            let popupHeight = 600;
+            let screenLeft = window.screenLeft !== undefined ? window.screenLeft : window.screenX;
+            let screenTop = window.screenTop !== undefined ? window.screenTop : window.screenY;
+            let screenWidth = window.innerWidth;
+            let screenHeight = window.innerHeight;
+            let systemZoom = screenWidth / window.screen.availWidth;
+            let left = (screenWidth - popupWidth) / 2 / systemZoom + screenLeft;
+            let top = (screenHeight - popupHeight) / 2 / systemZoom + screenTop;
+            let loginPopup = data && window.open(window.location.origin + "/fetch_requires_saml_login.html", "FederatedLoginPopupWindow", "width=" + (popupWidth / systemZoom) + ",height=" + (popupHeight / systemZoom) + ",top=" + top + ",left=" + left);
+            let checkLoginTimer = setInterval(() => {
+              if (loginPopup.closed === true) {
+                clearInterval(checkLoginTimer);
+                this.props.handleLogin && this.props.handleLogin(true);
+              }
+            }, 1000);
+          }
+        })
+        .catch((err) => this.setState({failedLogin: "Error occurred while handling third-party identity provider"}))
+      } else {
+        this.setState({failedLogin: "Invalid email address"});
+      }
+    }
+
     if (this.state.singleStepEntry === undefined) {
       return null;
     }
@@ -119,8 +165,17 @@ class SignIn extends React.Component {
         <div className={classes.main}>
             {this.state.failedLogin && <Typography component="h2" className={classes.errorMessage}>{this.state.failedLogin}</Typography>}
 
-            <form className={classes.form} onSubmit={(event)=>{event.preventDefault(); this.submitLogin();}} >
-
+            <form
+              className={classes.form}
+              onSubmit={(event)=> {
+                event.preventDefault();
+                if (this.state.phase == "PASSWORD_ENTRY" || this.state.singleStepEntry === true) {
+                  this.submitLogin();
+                } else if (this.state.phase == "USERNAME_ENTRY" && this.state.singleStepEntry === false) {
+                  nextButtonCallback();
+                }
+              }}
+            >
               { (this.state.phase == "USERNAME_ENTRY" || this.state.singleStepEntry) &&
                 <React.Fragment>
                   <FormControl margin="normal" required fullWidth>
@@ -133,51 +188,7 @@ class SignIn extends React.Component {
                       variant="contained"
                       color="primary"
                       className={classes.submit}
-                      onClick={() => {
-                        if (this.state.username.split("@").length - 1 == 0) {
-                          this.setState({phase: "PASSWORD_ENTRY"});
-                        } else if (this.state.username.split("@").length - 1 == 1) {
-                          let remoteUser = this.state.username.split("@")[0];
-                          let remoteDomain = this.state.username.split("@")[1];
-                          // Do a fetch() to see if we have a SAML configuration for this domain
-                          fetch(window.location.origin + "/apps/cards/SAMLDomains/" + remoteDomain + ".json")
-                          .then((resp) => {
-                            if (resp.ok) {
-                              this.setState({failedLogin: undefined});
-                              return resp.json();
-                            } else {
-                              this.setState({failedLogin: "Unrecognized email domain"});
-                            }
-                          })
-                          .then((data) => {
-                            if (window.location.pathname === "/login" || window.location.pathname === "/login/") {
-                              // We are logging in at a main login screen
-                              window.location = data.value + window.location.search;
-                            } else {
-                              // We are logging in from a fetchWithReLogin() window
-                              let popupWidth = 600;
-                              let popupHeight = 600;
-                              let screenLeft = window.screenLeft !== undefined ? window.screenLeft : window.screenX;
-                              let screenTop = window.screenTop !== undefined ? window.screenTop : window.screenY;
-                              let screenWidth = window.innerWidth;
-                              let screenHeight = window.innerHeight;
-                              let systemZoom = screenWidth / window.screen.availWidth;
-                              let left = (screenWidth - popupWidth) / 2 / systemZoom + screenLeft;
-                              let top = (screenHeight - popupHeight) / 2 / systemZoom + screenTop;
-                              let loginPopup = data && window.open(window.location.origin + "/fetch_requires_saml_login.html", "FederatedLoginPopupWindow", "width=" + (popupWidth / systemZoom) + ",height=" + (popupHeight / systemZoom) + ",top=" + top + ",left=" + left);
-                              let checkLoginTimer = setInterval(() => {
-                                if (loginPopup.closed === true) {
-                                  clearInterval(checkLoginTimer);
-                                  this.props.handleLogin && this.props.handleLogin(true);
-                                }
-                              }, 1000);
-                            }
-                          })
-                          .catch((err) => this.setState({failedLogin: "Error occurred while handling third-party identity provider"}))
-                        } else {
-                          this.setState({failedLogin: "Invalid email address"});
-                        }
-                      }}
+                      onClick={nextButtonCallback}
                     >
                       Next
                     </Button>
