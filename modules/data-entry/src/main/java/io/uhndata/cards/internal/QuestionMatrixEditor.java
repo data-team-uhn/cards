@@ -16,8 +16,6 @@
  */
 package io.uhndata.cards.internal;
 
-import javax.jcr.Session;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.oak.api.CommitFailedException;
 import org.apache.jackrabbit.oak.api.PropertyState;
@@ -26,7 +24,6 @@ import org.apache.jackrabbit.oak.spi.commit.DefaultEditor;
 import org.apache.jackrabbit.oak.spi.commit.Editor;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
-
 
 /**
  * An {@link Editor} that sets (copies) the {@code QuestionMatrix} question-related properties and children
@@ -40,8 +37,6 @@ import org.apache.jackrabbit.oak.spi.state.NodeState;
  */
 public class QuestionMatrixEditor extends DefaultEditor
 {
-    private final Session session;
-
     // This holds the builder for the current node. The methods called for editing specific properties don't receive the
     // actual parent node of those properties, so we must manually keep track of the current node.
     private final NodeBuilder currentNodeBuilder;
@@ -52,12 +47,10 @@ public class QuestionMatrixEditor extends DefaultEditor
      * Simple constructor.
      *
      * @param nodeBuilder the current node
-     * @param session the session used to retrieve subjects by UUID
      */
-    public QuestionMatrixEditor(final NodeBuilder nodeBuilder, final Session session)
+    public QuestionMatrixEditor(final NodeBuilder nodeBuilder)
     {
         this.currentNodeBuilder = nodeBuilder;
-        this.session = session;
         this.isQuestionMatrixNode = isQuestionMatrix(this.currentNodeBuilder);
     }
 
@@ -125,7 +118,7 @@ public class QuestionMatrixEditor extends DefaultEditor
             return null;
         }
 
-        return new QuestionMatrixEditor(this.currentNodeBuilder.getChildNode(name), this.session);
+        return new QuestionMatrixEditor(this.currentNodeBuilder.getChildNode(name));
     }
 
     @Override
@@ -148,7 +141,7 @@ public class QuestionMatrixEditor extends DefaultEditor
             return null;
         }
 
-        return new QuestionMatrixEditor(this.currentNodeBuilder.getChildNode(name), this.session);
+        return new QuestionMatrixEditor(this.currentNodeBuilder.getChildNode(name));
     }
 
     @Override
@@ -168,7 +161,7 @@ public class QuestionMatrixEditor extends DefaultEditor
             return null;
         }
 
-        return new QuestionMatrixEditor(this.currentNodeBuilder.getChildNode(name), this.session);
+        return new QuestionMatrixEditor(this.currentNodeBuilder.getChildNode(name));
 
     }
 
