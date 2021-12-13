@@ -168,8 +168,8 @@ public class QuestionMatrixEditor extends DefaultEditor
     private void copyOptionNode(final String name, final NodeBuilder source, final NodeBuilder destination)
     {
         NodeBuilder newNode = destination.setChildNode(name);
-        String type = source.getProperty("jcr:primaryType").getValue(Type.STRING);
-        newNode.setProperty("jcr:primaryType", type, Type.STRING);
+        String type = source.getProperty("jcr:primaryType").getValue(Type.NAME);
+        newNode.setProperty("jcr:primaryType", type, Type.NAME);
         String sType = source.getProperty("sling:resourceSuperType").getValue(Type.STRING);
         newNode.setProperty("sling:resourceSuperType", sType, Type.STRING);
         if (source.hasProperty("label")) {
