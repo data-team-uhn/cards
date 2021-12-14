@@ -28,7 +28,7 @@ import QuestionnaireStyle from "./QuestionnaireStyle";
 // based on minAnswers and maxAnswers from the question definition
 
 function AnswerInstructions (props) {
-  let { classes, minAnswers, maxAnswers, currentAnswers, answerLabel, displayMode } = props;
+  let { classes, minAnswers, maxAnswers, currentAnswers, answerLabel } = props;
   let { isEdit, existingAnswer } = props;
   let [ answerIsAcceptable, setAnswerAcceptable] = useState();
 
@@ -54,7 +54,7 @@ function AnswerInstructions (props) {
     <Typography
       component="p"
       color={ answerIsAcceptable ? 'textSecondary' : 'error'}
-      className={displayMode === "matrix" ? classes.answerMatrixInstructions : classes.answerInstructions}
+      className={classes.answerInstructions}
       variant="caption"
     >
       {
