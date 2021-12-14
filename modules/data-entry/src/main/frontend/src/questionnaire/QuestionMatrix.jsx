@@ -21,7 +21,7 @@ import React, { useState, useEffect } from "react";
 import PropTypes from 'prop-types';
 
 import { Table, TableHead, TableBody, TableRow, TableCell } from "@material-ui/core";
-import { Checkbox, Grid, Radio, RadioGroup, Typography, withStyles } from "@material-ui/core";
+import { Checkbox, Radio, RadioGroup, Typography, withStyles } from "@material-ui/core";
 
 import Answer, {LABEL_POS, VALUE_POS, DESC_POS, IS_DEFAULT_OPTION_POS, IS_DEFAULT_ANSWER_POS} from "./Answer";
 import AnswerInstructions from "./AnswerInstructions";
@@ -101,7 +101,7 @@ let QuestionMatrix = (props) => {
     subquestions.map(subquestion => { initialSelection[subquestion[0]] = defaultSelection; });
   }
 
-  // Stores the current matrix answer state in a for of object where question variable id corresponds to the array of selected [item[LABEL_POS], item[VALUE_POS]]
+  // Stores the current matrix answer state in a form of object where question variable id corresponds to the array of selected [item[LABEL_POS], item[VALUE_POS]]
   // {
   //  "question1": [ ["Male", "M"], ...],
   //  ...
@@ -169,35 +169,37 @@ let QuestionMatrix = (props) => {
     setSelectionElementStates(getSelectionElementStates(newSelection));
   }
 
-  let existingAnswerMock = [sectionAnswerPath, {displayedValue: existingAnswers}];
+  let existingAnswerMock = [sectionAnswerPath, {displayedValue: existingAnswers, statusFlags: existingSectionAnswer[1].statusFlags}];
   let newQuestionDefinition = { ...sectionDefinition, text: sectionDefinition.label};
+  let currentAnswers = Math.floor(Object.keys(selection).reduce((sum, item) => {return sum + selection[item].length;}, 0) / subquestions.length);
   return (
     <Question
       questionDefinition={newQuestionDefinition}
       existingAnswer={existingAnswerMock}
+      currentAnswers={currentAnswers}
       {...props}
-      disableInstructions
       defaultDisplayFormatter={(subquestion, idx) => (subquestion[1].displayedValue || subquestion[1].statusFlags?.length > 0) &&
-        <Grid container alignItems='flex-start' spacing={2} direction="row" className={idx < existingAnswers.length -1 ? classes.matrixViewModeQuestion : ''}>
-          <Grid item xs={6}>
-            <Typography variant="subtitle2">{subquestion[1].question.text}:</Typography>
-            { subquestion[1].question.description &&
-              <FormattedText variant="caption" display="block" color="textSecondary">
-                {subquestion[1].question.description}
-              </FormattedText>
-            }
-            <AnswerInstructions
-              currentAnswers={selection[subquestion[0]] ? selection[subquestion[0]].length : 0}
-              isEdit={isEdit}
-              {...sectionDefinition}
-              existingAnswer={subquestion}
-              classes={classes}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            {Array.of(subquestion[1].displayedValue).flat().join(", ")}
-          </Grid>
-        </Grid>
+        <Table className={classes.matrixTable}>
+          <TableBody>
+            <TableRow>
+              <TableCell
+                  key={subquestion[0] + idx}
+                  align="left"
+                  className={classes.matrixTableCell}
+                >
+                <Typography variant="subtitle1" color={ subquestion[1].statusFlags?.length > 0 ? 'error' : 'inherit'}>{subquestion[1].question.text}:</Typography>
+                { subquestion[1].question.description &&
+                  <FormattedText variant="caption" display="block" color="textSecondary">
+                    {subquestion[1].question.description}
+                  </FormattedText>
+                }
+              </TableCell>
+              <TableCell>
+                {Array.of(subquestion[1].displayedValue).flat().join(", ")}
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
       }
     >
       <Table>
@@ -217,7 +219,7 @@ let QuestionMatrix = (props) => {
         </TableHead>
         <TableBody>
           { selection && subquestions.map( (question, i) => (
-            <TableRow key={question[0] + i} className={classes.matrixTableRow}>
+            <TableRow key={question[0] + i}>
               { [["",""]].concat(defaults).map( (option, index) => (
                 <TableCell
                   key={question[0] + i + index}
@@ -225,23 +227,20 @@ let QuestionMatrix = (props) => {
                   className={classes.matrixTableCell}
                 >
                   { index == 0
-                    ? <>
+                    ?
+                    <>
                     <Typography>{question[1].text}</Typography>
                     { question[1].description &&
                       <FormattedText variant="caption" display="block" color="textSecondary">
                         {question[1].description}
                       </FormattedText>
                     }
-                    <AnswerInstructions
-                      currentAnswers={selection[question[0]] ? selection[question[0]].length : 0}
-                      {...sectionDefinition}
-                      {...props}
-                     /> </>
+                    </>
                     :
                     <ControlElement
                       checked={selectionElementStates[question[0] + option[VALUE_POS]]}
                       value={option[VALUE_POS]}
-                      name={"answer-" + question[0]}
+                      name={"answer-" + sectionAnswerPath + question[0]}
                       onChange={(event) => {selectOption(question[0], option, event);}}
                       className={classes.checkbox}
                     />
