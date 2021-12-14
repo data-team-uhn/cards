@@ -10149,88 +10149,6 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>chs1clinicaltest</value>
-							</values>
-							<type>String</type>
-						</property>
-						<property>
-							<name>isReference</name>
-							<value>True</value>
-							<type>Boolean</type>
-						</property>
-					</node>
-					<node>
-						<name>operandB</name>
-						<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-						<property>
-							<name>value</name>
-							<values>
-								<value>Exercise stress test</value>
-							</values>
-							<type>String</type>
-						</property>
-						<property>
-							<name>isReference</name>
-							<value>False</value>
-							<type>Boolean</type>
-						</property>
-					</node>
-				</node>
-				<node>
-					<name>condition1</name>
-					<primaryNodeType>lfs:Conditional</primaryNodeType>
-					<property>
-						<name>comparator</name>
-						<value>=</value>
-						<type>String</type>
-					</property>
-					<node>
-						<name>operandA</name>
-						<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-						<property>
-							<name>value</name>
-							<values>
-								<value>chs1clinicaltest</value>
-							</values>
-							<type>String</type>
-						</property>
-						<property>
-							<name>isReference</name>
-							<value>True</value>
-							<type>Boolean</type>
-						</property>
-					</node>
-					<node>
-						<name>operandB</name>
-						<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-						<property>
-							<name>value</name>
-							<values>
-								<value>Nuclear stress test</value>
-							</values>
-							<type>String</type>
-						</property>
-						<property>
-							<name>isReference</name>
-							<value>False</value>
-							<type>Boolean</type>
-						</property>
-					</node>
-				</node>
-				<node>
-					<name>condition2</name>
-					<primaryNodeType>lfs:Conditional</primaryNodeType>
-					<property>
-						<name>comparator</name>
-						<value>=</value>
-						<type>String</type>
-					</property>
-					<node>
-						<name>operandA</name>
-						<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-						<property>
-							<name>value</name>
-							<values>
 								<value>chs1</value>
 							</values>
 							<type>String</type>
@@ -10256,6 +10174,138 @@
 							<value>False</value>
 							<type>Boolean</type>
 						</property>
+					</node>
+				</node>
+				<node>
+					<name>conditionalGroup</name>
+					<primaryNodeType>lfs:ConditionalGroup</primaryNodeType>
+					<property>
+						<name>requireAll</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+					<node>
+						<name>condition0</name>
+						<primaryNodeType>lfs:Conditional</primaryNodeType>
+						<property>
+							<name>comparator</name>
+							<value>=</value>
+							<type>String</type>
+						</property>
+						<node>
+							<name>operandA</name>
+							<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>chs1clinicaltest</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>True</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+						<node>
+							<name>operandB</name>
+							<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>Exercise stress test</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>False</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+					</node>
+					<node>
+						<name>condition1</name>
+						<primaryNodeType>lfs:Conditional</primaryNodeType>
+						<property>
+							<name>comparator</name>
+							<value>=</value>
+							<type>String</type>
+						</property>
+						<node>
+							<name>operandA</name>
+							<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>chs1clinicaltest</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>True</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+						<node>
+							<name>operandB</name>
+							<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>Nuclear stress test</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>False</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+					</node>
+					<node>
+						<name>condition2</name>
+						<primaryNodeType>lfs:Conditional</primaryNodeType>
+						<property>
+							<name>comparator</name>
+							<value>=</value>
+							<type>String</type>
+						</property>
+						<node>
+							<name>operandA</name>
+							<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>chs1clinicaltest</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>True</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+						<node>
+							<name>operandB</name>
+							<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>Nuclear pharmacologic stress test</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>False</value>
+								<type>Boolean</type>
+							</property>
+						</node>
 					</node>
 				</node>
 			</node>
@@ -11747,89 +11797,44 @@
 						</node>
 					</node>
 					<node>
-						<name>conditionalGroup</name>
-						<primaryNodeType>lfs:ConditionalGroup</primaryNodeType>
+						<name>condition1</name>
+						<primaryNodeType>lfs:Conditional</primaryNodeType>
+						<property>
+							<name>comparator</name>
+							<value>=</value>
+							<type>String</type>
+						</property>
 						<node>
-							<name>condition0</name>
-							<primaryNodeType>lfs:Conditional</primaryNodeType>
+							<name>operandA</name>
+							<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
 							<property>
-								<name>comparator</name>
-								<value>=</value>
+								<name>value</name>
+								<values>
+									<value>chs1operations</value>
+								</values>
 								<type>String</type>
 							</property>
-							<node>
-								<name>operandA</name>
-								<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-								<property>
-									<name>value</name>
-									<values>
-										<value>chs1operations</value>
-									</values>
-									<type>String</type>
-								</property>
-								<property>
-									<name>isReference</name>
-									<value>True</value>
-									<type>Boolean</type>
-								</property>
-							</node>
-							<node>
-								<name>operandB</name>
-								<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-								<property>
-									<name>value</name>
-									<values>
-										<value>Joint replacement</value>
-									</values>
-									<type>String</type>
-								</property>
-								<property>
-									<name>isReference</name>
-									<value>False</value>
-									<type>Boolean</type>
-								</property>
-							</node>
+							<property>
+								<name>isReference</name>
+								<value>True</value>
+								<type>Boolean</type>
+							</property>
 						</node>
 						<node>
-							<name>condition1</name>
-							<primaryNodeType>lfs:Conditional</primaryNodeType>
+							<name>operandB</name>
+							<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
 							<property>
-								<name>comparator</name>
-								<value>=</value>
+								<name>value</name>
+								<values>
+									<value>Other bone, joint, or muscle surgery</value>
+								</values>
 								<type>String</type>
 							</property>
-							<node>
-								<name>operandA</name>
-								<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-								<property>
-									<name>value</name>
-									<values>
-										<value>chs1operations</value>
-									</values>
-									<type>String</type>
-								</property>
-								<property>
-									<name>isReference</name>
-									<value>True</value>
-									<type>Boolean</type>
-								</property>
-							</node>
-							<node>
-								<name>operandB</name>
-								<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-								<property>
-									<name>value</name>
-									<values>
-										<value>Other bone, joint, or muscle surgery</value>
-									</values>
-									<type>String</type>
-								</property>
-								<property>
-									<name>isReference</name>
-									<value>False</value>
-									<type>Boolean</type>
-								</property>
-							</node>
+							<property>
+								<name>isReference</name>
+								<value>False</value>
+								<type>Boolean</type>
+							</property>
 						</node>
 					</node>
 				</node>
