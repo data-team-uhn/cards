@@ -73,9 +73,6 @@ public class PatientLocalStorage
     /** Details about a patient that we will parse and store in JCR. */
     private JsonObject patientDetails;
 
-    /** List of nodes to check in. */
-    private Set<String> nodesToCheckin;
-
     PatientLocalStorage(JsonObject patientDetails, ResourceResolver resolver)
     {
         this.resolver = resolver;
@@ -88,25 +85,27 @@ public class PatientLocalStorage
     public void store()
     {
         String mrn = this.patientDetails.getString("mrn");
-        this.nodesToCheckin = new HashSet<String>();
+        Set<String> nodesToCheckin = new HashSet<String>();
         try {
             // Update information about the patient
-            Resource patient = getOrCreateSubject(mrn, "/SubjectTypes/Patient", null, this.resolver);
-            Resource patientInfo = getOrCreateForm(patient, "/Questionnaires/Patient information/", this.resolver);
+            Resource patient = getOrCreateSubject(mrn, "/SubjectTypes/Patient", null, this.resolver, nodesToCheckin);
+            Resource patientInfo = getOrCreateForm(patient, "/Questionnaires/Patient information/", this.resolver,
+                nodesToCheckin);
             updatePatientInformationForm(patientInfo, this.patientDetails, this.resolver);
 
             // Update information about the visit ("appointment" is used interchangably here)
             JsonObject appointmentDetails = this.patientDetails.getJsonObject("nextAppointment");
             Resource visit = getOrCreateSubject(appointmentDetails.getString("fhirID"),
-                "/SubjectTypes/Patient/Visit/", patient, this.resolver);
-            Resource visitInfo = getOrCreateForm(patient, "/Questionnaires/Visit information/", this.resolver);
+                "/SubjectTypes/Patient/Visit/", patient, this.resolver, nodesToCheckin);
+            Resource visitInfo = getOrCreateForm(patient, "/Questionnaires/Visit information/", this.resolver,
+                nodesToCheckin);
             updateVisitInformationForm(visitInfo, appointmentDetails, this.resolver);
 
             final Session session = this.resolver.adaptTo(Session.class);
             session.save();
 
             final VersionManager vm = session.getWorkspace().getVersionManager();
-            this.nodesToCheckin.forEach(node -> {
+            nodesToCheckin.forEach(node -> {
                 try {
                     vm.checkin(node);
                 } catch (RepositoryException e) {
@@ -126,9 +125,11 @@ public class PatientLocalStorage
      * @param parentTypePath path to a SubjectType node for this subject
      * @param parent parent Resource if this is a child of that resource, or null
      * @param resolver ResourceResolver to use when searching for/creating the node
+     * @param nodesToCheckin Set of nodes that should be checked in after all edits are complete
      * @return A Subject resource
      */
-    Resource getOrCreateSubject(String identifier, String parentTypePath, Resource parent, ResourceResolver resolver)
+    Resource getOrCreateSubject(String identifier, String parentTypePath, Resource parent, ResourceResolver resolver,
+        Set<String> nodesToCheckin)
         throws RepositoryException, PersistenceException
     {
         Iterator<Resource> patientResource = resolver.findResources(String.format(
@@ -147,7 +148,7 @@ public class PatientLocalStorage
                 "fullidentifier", identifier,
                 "type", patientType.adaptTo(Node.class)
             ));
-            this.nodesToCheckin.add(newSubject.getPath());
+            nodesToCheckin.add(newSubject.getPath());
             return newSubject;
         }
     }
@@ -157,9 +158,11 @@ public class PatientLocalStorage
      * @param subject Resource of the subject node for the form
      * @param questionnairePath Path to the questionnaire that this is a form of
      * @param resolver ResourceResolver to use when searching for/creating the node
+     * @param nodesToCheckin Set of nodes that should be checked in after all edits are complete
      * @return A Form resource
      */
-    Resource getOrCreateForm(Resource subject, String questionnairePath, ResourceResolver resolver)
+    Resource getOrCreateForm(Resource subject, String questionnairePath, ResourceResolver resolver,
+        Set<String> nodesToCheckin)
         throws RepositoryException, PersistenceException
     {
         Resource formType = resolver.getResource(questionnairePath);
@@ -178,7 +181,7 @@ public class PatientLocalStorage
                 "relatedSubjects", subjectNode,
                 "subject", subjectNode
             ));
-            this.nodesToCheckin.add(newForm.getPath());
+            nodesToCheckin.add(newForm.getPath());
             return newForm;
         }
     }
