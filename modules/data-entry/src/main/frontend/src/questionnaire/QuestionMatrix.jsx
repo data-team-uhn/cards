@@ -169,43 +169,46 @@ let QuestionMatrix = (props) => {
     setSelectionElementStates(getSelectionElementStates(newSelection));
   }
 
-  let existingAnswerMock = [sectionAnswerPath, {displayedValue: existingAnswers, statusFlags: existingSectionAnswer[1].statusFlags}];
+  let existingAnswerMock = [sectionAnswerPath, {displayedValue: existingAnswers, statusFlags: existingSectionAnswer ? existingSectionAnswer[1].statusFlags : null}];
   let newQuestionDefinition = { ...sectionDefinition, text: sectionDefinition.label};
-  let currentAnswers = Math.floor(Object.keys(selection).reduce((sum, item) => {return sum + selection[item].length;}, 0) / subquestions.length);
+  let currentAnswers = subquestions.reduce((min, item) => {return Math.min(min, selection[item[0]]?.length || 0);}, minAnswers);
+
+  let generateViewMode = () => {
+    return (
+      <TableBody>
+        { existingAnswers.map((subquestion, idx) => (subquestion[1].displayedValue || subquestion[1].statusFlags?.length > 0) &&
+          <TableRow key={subquestion[0] + idx}>
+            <TableCell className={classes.matrixViewTableCell}>
+              <Typography variant="subtitle1" color={ subquestion[1].statusFlags?.length > 0 ? 'error' : 'inherit'}>{subquestion[1].question.text}:</Typography>
+              { subquestion[1].question.description &&
+                <FormattedText variant="caption" display="block" color="textSecondary">
+                  {subquestion[1].question.description}
+                </FormattedText>
+              }
+            </TableCell>
+            <TableCell className={classes.matrixViewTableCell}>
+              {Array.of(subquestion[1].displayedValue).flat().join(", ")}
+            </TableCell>
+          </TableRow>
+        )}
+      </TableBody>
+    );
+  }
+
   return (
     <Question
       questionDefinition={newQuestionDefinition}
       existingAnswer={existingAnswerMock}
       currentAnswers={currentAnswers}
+      preventDefaultView
       {...props}
-      defaultDisplayFormatter={(subquestion, idx) => (subquestion[1].displayedValue || subquestion[1].statusFlags?.length > 0) &&
-        <Table className={classes.matrixTable}>
-          <TableBody>
-            <TableRow>
-              <TableCell
-                  key={subquestion[0] + idx}
-                  align="left"
-                  className={classes.matrixTableCell}
-                >
-                <Typography variant="subtitle1" color={ subquestion[1].statusFlags?.length > 0 ? 'error' : 'inherit'}>{subquestion[1].question.text}:</Typography>
-                { subquestion[1].question.description &&
-                  <FormattedText variant="caption" display="block" color="textSecondary">
-                    {subquestion[1].question.description}
-                  </FormattedText>
-                }
-              </TableCell>
-              <TableCell>
-                {Array.of(subquestion[1].displayedValue).flat().join(", ")}
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      }
     >
-      <Table>
-        <TableHead>
-          <TableRow>
-          { [["",""]].concat(defaults).map( (option, index) => (
+      <Table className={!isEdit ? classes.matrixTable : ''} >
+        { !isEdit && generateViewMode() }
+        { isEdit &&
+          <TableHead>
+            <TableRow>
+              { [["",""]].concat(defaults).map( (option, index) => (
                 <TableCell
                   key={index}
                   align={index > 0 ? "center" : "left"}
@@ -213,18 +216,17 @@ let QuestionMatrix = (props) => {
                 >
                   {option[LABEL_POS]}
                 </TableCell>
-              ) )
-          }
-          </TableRow>
-        </TableHead>
-        <TableBody>
+              ) ) }
+            </TableRow>
+          </TableHead>
+        }
+        { isEdit && <TableBody>
           { selection && subquestions.map( (question, i) => (
             <TableRow key={question[0] + i}>
               { [["",""]].concat(defaults).map( (option, index) => (
                 <TableCell
                   key={question[0] + i + index}
                   align={index > 0 ? "center" : "left"}
-                  className={classes.matrixTableCell}
                 >
                   { index == 0
                     ?
@@ -250,7 +252,9 @@ let QuestionMatrix = (props) => {
             </TableRow>
           )) }
         </TableBody>
+        }
       </Table>
+      { isEdit && <>
       <input type="hidden" name={`${sectionAnswerPath}/jcr:primaryType`} value={"cards:AnswerSection"}></input>
       <input type="hidden" name={`${sectionAnswerPath}/section`} value={sectionDefinition['jcr:uuid']}></input>
       <input type="hidden" name={`${sectionAnswerPath}/section@TypeHint`} value="Reference"></input>
@@ -269,6 +273,7 @@ let QuestionMatrix = (props) => {
             {...rest}
           />
       )}
+      </> }
     </Question>
   )
 }
