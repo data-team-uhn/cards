@@ -67,12 +67,7 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
     }
 
     @Override
-    public String evaluate(final Node question, final Map<String, Object> values)
-    {
-        return String.valueOf(evaluate(question, values, Type.STRING));
-    }
-
-    static Object evaluate(final Node question, final Map<String, Object> values, Type type)
+    public Object evaluate(final Node question, final Map<String, Object> values, Type<?> type)
     {
         try {
             String expression = getExpressionFromQuestion(question);
@@ -175,7 +170,7 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
 
     private static final class ValueFormatter
     {
-        static Object formatResult(Object rawResult, Type type)
+        static Object formatResult(Object rawResult, Type<?> type)
         {
             if (rawResult == null || (rawResult instanceof String && "null".equals(rawResult))) {
                 return null;

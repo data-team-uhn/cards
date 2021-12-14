@@ -16,7 +16,6 @@
  */
 package io.uhndata.cards.dataentry.internal;
 
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -72,9 +71,7 @@ public class ComputedAnswersEditor extends DefaultEditor
     /** The current user session. **/
     private Session currentSession;
 
-    /**
-     * A session that has access to all the questionnaire questions and can access restricted questions.
-     */
+    /** A session that has access to all the questionnaire questions and can access restricted questions. */
     private Session serviceSession;
 
     private final QuestionnaireUtils questionnaireUtils;
@@ -202,29 +199,21 @@ public class ComputedAnswersEditor extends DefaultEditor
     {
         QuestionTree question = entry.getKey();
         NodeBuilder answer = entry.getValue();
-        Type resultType = Type.STRING;
+        Type<?> resultType = Type.STRING;
         try {
             AnswerNodeTypes types = new AnswerNodeTypes(question.getNode());
             resultType = types.getDataType();
         } catch (RepositoryException e) {
             LOGGER.error("Error typing value for question. " + e.getMessage());
         }
-        Object result = ExpressionUtils.evaluate(question.getNode(), answersByQuestionName, resultType);
+        Object result = this.expressionUtils.evaluate(question.getNode(), answersByQuestionName, resultType);
 
         if (result == null || (result instanceof String && "null".equals((String) result))) {
             answer.removeProperty(FormUtils.VALUE_PROPERTY);
         } else {
-            if (resultType == Type.LONG) {
-                answer.setProperty(FormUtils.VALUE_PROPERTY, (Long) result, resultType);
-            } else if (resultType == Type.DOUBLE) {
-                answer.setProperty(FormUtils.VALUE_PROPERTY, (Double) result, resultType);
-            } else if (resultType == Type.DECIMAL) {
-                answer.setProperty(FormUtils.VALUE_PROPERTY, (BigDecimal) result, resultType);
-            } else if (resultType == Type.DATE) {
-                answer.setProperty(FormUtils.VALUE_PROPERTY, (String) result, resultType);
-            } else {
-                answer.setProperty(FormUtils.VALUE_PROPERTY, (String) result, resultType);
-            }
+            // Type erasure makes the actual type irrelevant, there's only one real implementation method
+            // The implementation can extract the right type from the type object
+            answer.setProperty(FormUtils.VALUE_PROPERTY, result, (Type<Object>) resultType);
         }
         // Update the computed value in the map of existing answers
         String questionName = this.questionnaireUtils.getQuestionName(question.getNode());
