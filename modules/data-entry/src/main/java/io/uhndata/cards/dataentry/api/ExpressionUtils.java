@@ -74,7 +74,8 @@ public interface ExpressionUtils
      * @param question the question node
      * @param values the other values in the form
      * @param type the expected type of the result
-     * @return a string representation of the result, may be {@code null} if the expression has unmet dependencies
+     * @return a representation of the evaluation result, forced into the desired data type; may be {@code null} if the
+     *         expression has unmet dependencies or the actual evaluation result cannot be converted to the desired type
      */
     Object evaluate(Node question, Map<String, Object> values, Type<?> type);
 }
