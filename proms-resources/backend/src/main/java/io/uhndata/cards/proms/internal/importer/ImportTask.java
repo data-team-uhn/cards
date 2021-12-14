@@ -52,7 +52,7 @@ public class ImportTask implements Runnable
     /** Default log. */
     private static final Logger LOGGER = LoggerFactory.getLogger(ImportTask.class);
 
-    /** Numnber of days to query. */
+    /** Number of days to query. */
     private final int daysToQuery;
 
     /** URL for the Vault JWT authentication endpoint. */

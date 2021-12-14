@@ -172,14 +172,14 @@ public class PatientLocalStorage
             return formResource.next();
         } else {
             Resource parentResource = resolver.getResource("/Forms/");
-            Resource newSubject = resolver.create(parentResource, UUID.randomUUID().toString(), Map.of(
+            Resource newForm = resolver.create(parentResource, UUID.randomUUID().toString(), Map.of(
                 PatientLocalStorage.PRIMARY_TYPE, "cards:Form",
                 "questionnaire", formType.adaptTo(Node.class),
                 "relatedSubjects", subjectNode,
                 "subject", subjectNode
             ));
-            this.nodesToCheckin.add(newSubject.getPath());
-            return newSubject;
+            this.nodesToCheckin.add(newForm.getPath());
+            return newForm;
         }
     }
 
