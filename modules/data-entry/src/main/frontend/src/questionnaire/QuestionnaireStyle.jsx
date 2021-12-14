@@ -632,8 +632,12 @@ const questionnaireStyle = theme => ({
       paddingLeft: theme.spacing(4)
     },
     matrixTableCell: {
-      fontWeight: "bold",
-      padding: theme.spacing(1)
+      fontWeight: "bold"
+    },
+    matrixViewTableCell: {
+      border: "none",
+      padding: theme.spacing(1),
+      verticalAlign: "baseline"
     },
     matrixTable: {
       width: "auto"
