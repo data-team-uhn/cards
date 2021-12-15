@@ -33,6 +33,7 @@ import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
@@ -50,8 +51,6 @@ import org.slf4j.LoggerFactory;
 import io.uhndata.cards.dataentry.api.ExpressionUtils;
 import io.uhndata.cards.dataentry.api.FormUtils;
 import io.uhndata.cards.dataentry.api.QuestionnaireUtils;
-import io.uhndata.cards.dataentry.internal.ComputedAnswersEditor.AnswerNodeTypes;
-import io.uhndata.cards.dataentry.internal.ComputedAnswersEditor.QuestionTree;
 
 /**
  * An {@link Editor} that calculates any computed answers that were not submitted by the client.
@@ -213,7 +212,9 @@ public class ComputedAnswersEditor extends DefaultEditor
         } else {
             // Type erasure makes the actual type irrelevant, there's only one real implementation method
             // The implementation can extract the right type from the type object
-            answer.setProperty(FormUtils.VALUE_PROPERTY, result, (Type<Object>) resultType);
+            @SuppressWarnings("unchecked")
+            Type<Object> untypedResultType = (Type<Object>) resultType;
+            answer.setProperty(FormUtils.VALUE_PROPERTY, result, untypedResultType);
         }
         // Update the computed value in the map of existing answers
         String questionName = this.questionnaireUtils.getQuestionName(question.getNode());
@@ -499,7 +500,7 @@ public class ComputedAnswersEditor extends DefaultEditor
         }
     }
 
-    static final class QuestionTree
+    private static final class QuestionTree
     {
         private Map<String, QuestionTree> children;
 
@@ -538,61 +539,44 @@ public class ComputedAnswersEditor extends DefaultEditor
         }
     }
 
-    static final class AnswerNodeTypes
+    private static final class AnswerNodeTypes
     {
         private String primaryType;
 
         private String resourceType;
 
-        private Type dataType;
+        private Type<?> dataType;
 
         @SuppressWarnings("checkstyle:CyclomaticComplexity")
         AnswerNodeTypes(Node questionNode) throws RepositoryException
         {
-            String dataTypeString = questionNode.getProperty("dataType").getString();
+            final String dataTypeString = questionNode.getProperty("dataType").getString();
+            final String capitalizedType = StringUtils.capitalize(dataTypeString);
+            this.primaryType = "cards:" + capitalizedType + "Answer";
+            this.resourceType = "cards/" + capitalizedType + "Answer";
             switch (dataTypeString) {
                 case "long":
-                    this.primaryType = "cards:LongAnswer";
-                    this.resourceType = "cards/LongAnswer";
                     this.dataType = Type.LONG;
                     break;
                 case "double":
-                    this.primaryType = "cards:DoubleAnswer";
-                    this.resourceType = "cards/DoubleAnswer";
                     this.dataType = Type.DOUBLE;
                     break;
                 case "decimal":
-                    this.primaryType = "cards:DecimalAnswer";
-                    this.resourceType = "cards/DecimalAnswer";
                     this.dataType = Type.DECIMAL;
                     break;
                 case "boolean":
-                    this.primaryType = "cards:BooleanAnswer";
-                    this.resourceType = "cards/BooleanAnswer";
                     // Long, not boolean
                     this.dataType = Type.LONG;
                     break;
                 case "date":
-                    this.primaryType = "cards:DateAnswer";
-                    this.resourceType = "cards/DateAnswer";
                     this.dataType = (questionNode.hasProperty("dateFormat") && "yyyy".equals(
                         questionNode.getProperty("dateFormat").getString().toLowerCase()))
                             ? Type.LONG
                             : Type.DATE;
                     break;
                 case "time":
-                    this.primaryType = "cards:TimeAnswer";
-                    this.resourceType = "cards/TimeAnswer";
-                    this.dataType = Type.STRING;
-                    break;
                 case "vocabulary":
-                    this.primaryType = "cards:VocabularyAnswer";
-                    this.resourceType = "cards/VocabularyAnswer";
-                    this.dataType = Type.STRING;
-                    break;
                 case "text":
-                    this.primaryType = "cards:TextAnswer";
-                    this.resourceType = "cards/TextAnswer";
                     this.dataType = Type.STRING;
                     break;
                 case "computed":
@@ -613,7 +597,7 @@ public class ComputedAnswersEditor extends DefaultEditor
             return this.resourceType;
         }
 
-        public Type getDataType()
+        public Type<?> getDataType()
         {
             return this.dataType;
         }

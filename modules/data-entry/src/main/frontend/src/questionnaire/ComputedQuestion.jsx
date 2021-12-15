@@ -226,14 +226,13 @@ let ComputedQuestion = (props) => {
   // Performance improvement? Only compute if inputs have changed
   evaluateExpression();
 
-  let answerType, answerNodeType, newFieldType;
+  let capitalizedDataType = dataType.substring(0, 1).toUpperCase() + dataType.substring(1);
+  let answerType, answerNodeType = `cards:${capitalizedDataType}Answer`, newFieldType;
   switch (dataType) {
     case "boolean":
       answerType = "Long"; // Long, not Boolean
-      answerNodeType = "cards:BooleanAnswer";
       break;
     case "date":
-      answerNodeType = "cards:DateAnswer";
       newFieldType = DateQuestionUtilities.getFieldType(dateFormat);
       setFieldType(newFieldType);
       switch (newFieldType) {
@@ -249,30 +248,20 @@ let ComputedQuestion = (props) => {
       }
       break;
     case "long":
-      answerType = "Long";
-      answerNodeType = "cards:LongAnswer";
-      break;
     case "double":
-      answerType = "Double";
-      answerNodeType = "cards:DoubleAnswer";
-      break;
     case "decimal":
-      answerType = "Decimal";
-      answerNodeType = "cards:DecimalAnswer";
+      answerType = capitalizedDataType;
       break;
     case "vocabulary":
       answerType = "String";
-      answerNodeType = "cards:VocabularyAnswer";
       break;
     case "time":
       answerType = "String";
-      answerNodeType = "cards:TimeAnswer";
       newFieldType = Time.timeQuestionFieldType(dateFormat);
       setFieldType(newFieldType);
       break;
     case "text":
       answerType = "String";
-      answerNodeType = "cards:TextAnswer";
       break;
     case "computed": // Fallthrough default to string computed
     default:
