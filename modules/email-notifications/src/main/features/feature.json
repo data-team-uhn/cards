@@ -28,11 +28,15 @@
   },
   "bundles":[
     {
-      "id":"jakarta.mail:jakarta.mail-api:1.6.7",
+      "id":"jakarta.mail:jakarta.mail-api:2.0.1",
       "start-order":"25"
     },
     {
-      "id":"com.sun.mail:javax.mail:1.6.2",
+      "id":"jakarta.activation:jakarta.activation-api:2.0.1",
+      "start-order":"25"
+    },
+    {
+      "id":"com.sun.mail:jakarta.mail:2.0.1",
       "start-order":"25"
     },
     {
@@ -48,7 +52,7 @@
       "start-order":"25"
     },
     {
-      "id":"org.apache.sling:org.apache.sling.commons.messaging.mail:1.0.0",
+      "id":"org.apache.sling:org.apache.sling.commons.messaging.mail:2.0.0",
       "start-order":"25"
     },
     {

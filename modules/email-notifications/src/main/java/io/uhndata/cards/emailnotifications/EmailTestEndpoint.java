@@ -19,8 +19,6 @@ package io.uhndata.cards.emailnotifications;
 import java.io.IOException;
 import java.io.Writer;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 import javax.servlet.Servlet;
 
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -30,6 +28,9 @@ import org.apache.sling.commons.messaging.mail.MailService;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(
