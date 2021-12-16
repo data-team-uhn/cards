@@ -336,7 +336,7 @@
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Enter a time with minutes and questions:</value>
+			<value>Enter a time with minutes and seconds:</value>
 			<type>String</type>
 		</property>
 		<property>
