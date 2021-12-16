@@ -130,10 +130,19 @@ let AnswerOptions = (props) => {
                                                                                       "label" : "None of the above",
                                                                                       "noneOfTheAbove" : false,
                                                                                       "@path" : path + "/NoneOfTheAbove"});
-  // Update options path on parent path change
+  // Update all options path on parent path change
   useEffect(() => {
     setNotApplicableOption({ ...notApplicableOption, "@path" : path + "/None"});
     setNoneOfTheAboveOption({ ...noneOfTheAboveOption, "@path" : path +  "/NoneOfTheAbove"});
+    setOptions(oldOptions => {
+      let newOptions = oldOptions.slice();
+      newOptions.map(opt => { if (opt.isNew) {
+                                opt["@path"] = path + "/AnswerOption" + stringToHash(opt.value);
+                              }
+                              return opt;
+                            });
+      return newOptions;
+    });
   }, [path])
 
   let specialOptionsInfo = [
@@ -231,7 +240,7 @@ let AnswerOptions = (props) => {
       newOption.value = inputs[0].trim();
       newOption["@path"] = path + "/AnswerOption" + stringToHash(newOption.value);
       newOption.label = inputs[1] ? inputs[1].trim() : "";
-
+      newOption.isNew = true;
       setOptions(oldValue => {
         var value = oldValue.slice();
         value.push(newOption);
