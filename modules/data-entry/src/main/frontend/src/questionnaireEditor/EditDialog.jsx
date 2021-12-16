@@ -39,6 +39,7 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js"
 let EditDialog = (props) => {
   const { data, type, targetExists, isOpen, onClose, onCancel, id, parentDisplayMode } = props;
   let [ targetId, setTargetId ] = useState('');
+  let [ dialogData, setDialogData ] = useState(targetExists ? data : {});
   // Marks that a save operation is in progress
   let [ saveInProgress, setSaveInProgress ] = useState();
   // Indicates whether the form has been saved or not. This has three possible values:
@@ -166,6 +167,7 @@ let EditDialog = (props) => {
             onBlur={(event)=> { checkVariableName(event.target.value?.trim()); }}
             error={variableNameError}
             helperText={variableNameError}
+            required
             multiline
             fullWidth
           />
@@ -195,7 +197,7 @@ let EditDialog = (props) => {
             <Grid container direction="column" spacing={2}>
               <Grid item>{targetIdField()}</Grid>
               <Fields
-                data={targetExists && data || {}}
+                data={dialogData}
                 JSON={json[0]}
                 edit={true}
                 path={data["@path"] + (targetExists ? "" : `/${targetId}`)}
