@@ -97,7 +97,7 @@ public class PatientLocalStorage
             JsonObject appointmentDetails = this.patientDetails.getJsonObject("nextAppointment");
             Resource visit = getOrCreateSubject(appointmentDetails.getString("fhirID"),
                 "/SubjectTypes/Patient/Visit/", patient, this.resolver, nodesToCheckin);
-            Resource visitInfo = getOrCreateForm(patient, "/Questionnaires/Visit information/", this.resolver,
+            Resource visitInfo = getOrCreateForm(visit, "/Questionnaires/Visit information/", this.resolver,
                 nodesToCheckin);
             updateVisitInformationForm(visitInfo, appointmentDetails, this.resolver);
 
