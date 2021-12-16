@@ -67,7 +67,7 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
     }
 
     @Override
-    public Object evaluate(final Node question, final Map<String, Object> values, Type<?> type)
+    public Object evaluate(final Node question, final Map<String, Object> values, final Type<?> type)
     {
         try {
             String expression = getExpressionFromQuestion(question);
@@ -81,9 +81,6 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
             Bindings env = engine.createBindings();
             parsedExpression.getInputs().forEach((key, value) -> env.put(key, value));
             Object result = engine.eval("(function(){" + parsedExpression.getExpression() + "})()", env);
-            if (type == Type.DOUBLE) {
-                LOGGER.error(String.valueOf(result));
-            }
             return ValueFormatter.formatResult(result, type);
         } catch (ScriptException e) {
             LOGGER.warn("Evaluating the expression for question {} failed: {}", question,
@@ -170,7 +167,7 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
 
     private static final class ValueFormatter
     {
-        static Object formatResult(Object rawResult, Type<?> type)
+        static Object formatResult(final Object rawResult, final Type<?> type)
         {
             if (rawResult == null || (rawResult instanceof String && "null".equals(rawResult))) {
                 return null;
@@ -187,7 +184,7 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
             }
         }
 
-        static Long formatToLong(Object rawResult)
+        static Long formatToLong(final Object rawResult)
         {
             if (rawResult instanceof String) {
                 return Long.valueOf((String) rawResult);
@@ -201,7 +198,7 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
             }
         }
 
-        static Double formatToDouble(Object rawResult)
+        static Double formatToDouble(final Object rawResult)
         {
             if (rawResult instanceof String) {
                 return Double.valueOf((String) rawResult);
@@ -213,7 +210,7 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
             }
         }
 
-        static BigDecimal formatToDecimal(Object rawResult)
+        static BigDecimal formatToDecimal(final Object rawResult)
         {
             if (rawResult instanceof String) {
                 return new BigDecimal((String) rawResult);
@@ -227,7 +224,7 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
             }
         }
 
-        static String formatToString(Object rawResult)
+        static String formatToString(final Object rawResult)
         {
             String formattedResult = String.valueOf(rawResult);
 

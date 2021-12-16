@@ -95,7 +95,7 @@ public class ComputedAnswersEditor extends DefaultEditor
      * @param expressionUtils for evaluating the computed questions
      */
     public ComputedAnswersEditor(final NodeBuilder nodeBuilder, final ResourceResolverFactory rrf,
-        final QuestionnaireUtils questionnaireUtils, FormUtils formUtils, final ExpressionUtils expressionUtils)
+        final QuestionnaireUtils questionnaireUtils, final FormUtils formUtils, final ExpressionUtils expressionUtils)
     {
         this.currentNodeBuilder = nodeBuilder;
         this.rrf = rrf;
@@ -107,7 +107,7 @@ public class ComputedAnswersEditor extends DefaultEditor
     }
 
     @Override
-    public Editor childNodeAdded(String name, NodeState after)
+    public Editor childNodeAdded(final String name, final NodeState after)
     {
         if (this.isFormNode) {
             // Found a modified form. Flag for the current editor to checking computed answers.
@@ -122,13 +122,13 @@ public class ComputedAnswersEditor extends DefaultEditor
     }
 
     @Override
-    public Editor childNodeChanged(String name, NodeState before, NodeState after)
+    public Editor childNodeChanged(final String name, final NodeState before, final NodeState after)
     {
         return childNodeAdded(name, after);
     }
 
     @Override
-    public void leave(NodeState before, NodeState after)
+    public void leave(final NodeState before, final NodeState after)
     {
         if (!this.formEditorHasChanged) {
             return;
@@ -136,7 +136,7 @@ public class ComputedAnswersEditor extends DefaultEditor
 
         final Map<String, Object> parameters =
             Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, "computedAnswers");
-        ResourceResolver sessionResolver = this.rrf.getThreadResourceResolver();
+        final ResourceResolver sessionResolver = this.rrf.getThreadResourceResolver();
         try (ResourceResolver serviceResolver = this.rrf.getServiceResourceResolver(parameters)) {
             if (sessionResolver != null && serviceResolver != null) {
                 this.currentSession = sessionResolver.adaptTo(Session.class);
@@ -148,31 +148,31 @@ public class ComputedAnswersEditor extends DefaultEditor
         }
     }
 
-    private void computeMissingAnswers(NodeState form)
+    private void computeMissingAnswers(final NodeState form)
     {
         // Get a list of all current answers for the form for use in computing answers
-        Map<String, Object> answersByQuestionName = getNodeAnswers(form);
+        final Map<String, Object> answersByQuestionName = getNodeAnswers(form);
 
         // Get a list of all unanswered computed questions that need to be calculated
-        Node questionnaireNode = getQuestionnaire();
+        final Node questionnaireNode = getQuestionnaire();
         if (questionnaireNode == null) {
             return;
         }
-        QuestionTree computedQuestionsTree = getUnansweredComputedQuestions(questionnaireNode);
+        final QuestionTree computedQuestionsTree = getUnansweredComputedQuestions(questionnaireNode);
 
         // There are missing computed questions, let's create them!
         if (computedQuestionsTree != null) {
             // Create the missing structure, i.e. AnswerSection and Answer nodes
-            Map<QuestionTree, NodeBuilder> answersToCompute =
+            final Map<QuestionTree, NodeBuilder> answersToCompute =
                 createMissingNodes(computedQuestionsTree, this.currentNodeBuilder);
 
             // Try to determine the right order in which answers should be computed, so that the answers that depend on
             // other computed answers are evaluated after all their dependencies have been evaluated
-            Set<String> questionNames = answersToCompute.keySet().stream()
+            final Set<String> questionNames = answersToCompute.keySet().stream()
                 .map(QuestionTree::getNode)
                 .map(this.questionnaireUtils::getQuestionName)
                 .collect(Collectors.toSet());
-            Map<String, Set<String>> computedAnswerDependencies =
+            final Map<String, Set<String>> computedAnswerDependencies =
                 answersToCompute.keySet().stream().map(question -> {
                     Set<String> dependencies = this.expressionUtils.getDependencies(question.getNode());
                     dependencies.retainAll(questionNames);
@@ -194,10 +194,11 @@ public class ComputedAnswersEditor extends DefaultEditor
         }
     }
 
-    private void computeAnswer(Map.Entry<QuestionTree, NodeBuilder> entry, Map<String, Object> answersByQuestionName)
+    private void computeAnswer(final Map.Entry<QuestionTree, NodeBuilder> entry,
+        final Map<String, Object> answersByQuestionName)
     {
-        QuestionTree question = entry.getKey();
-        NodeBuilder answer = entry.getValue();
+        final QuestionTree question = entry.getKey();
+        final NodeBuilder answer = entry.getValue();
         Type<?> resultType = Type.STRING;
         try {
             AnswerNodeTypes types = new AnswerNodeTypes(question.getNode());
@@ -228,7 +229,7 @@ public class ComputedAnswersEditor extends DefaultEditor
 
     private Node getQuestionnaire()
     {
-        String questionnaireId = this.currentNodeBuilder.getProperty("questionnaire").getValue(Type.REFERENCE);
+        final String questionnaireId = this.currentNodeBuilder.getProperty("questionnaire").getValue(Type.REFERENCE);
         try {
             return this.serviceSession.getNodeByIdentifier(questionnaireId);
         } catch (RepositoryException e) {
@@ -245,8 +246,8 @@ public class ComputedAnswersEditor extends DefaultEditor
         return result;
     }
 
-    private void addAnswer(String answer, Map<String, Set<String>> dependencies, List<String> orderedAnswersToCompute,
-        Set<String> processedAnswers)
+    private void addAnswer(final String answer, final Map<String, Set<String>> dependencies,
+        final List<String> orderedAnswersToCompute, final Set<String> processedAnswers)
     {
         if (!processedAnswers.contains(answer)) {
             processedAnswers.add(answer);
@@ -256,9 +257,9 @@ public class ComputedAnswersEditor extends DefaultEditor
         }
     }
 
-    private Map<String, Object> getNodeAnswers(NodeState currentNode)
+    private Map<String, Object> getNodeAnswers(final NodeState currentNode)
     {
-        Map<String, Object> currentAnswers = new HashMap<>();
+        final Map<String, Object> currentAnswers = new HashMap<>();
         if (currentNode.exists()) {
             if (this.formUtils.isAnswerSection(currentNode) || this.formUtils.isForm(currentNode)) {
                 // Found a section: Recursively get all of this section's answers
@@ -281,7 +282,7 @@ public class ComputedAnswersEditor extends DefaultEditor
     }
 
     // Returns a QuestionTree if any children of this node contains an unanswered computed question, else null
-    private QuestionTree getUnansweredComputedQuestions(Node currentNode)
+    private QuestionTree getUnansweredComputedQuestions(final Node currentNode)
     {
         QuestionTree currentTree = null;
 
@@ -318,8 +319,8 @@ public class ComputedAnswersEditor extends DefaultEditor
         return currentTree;
     }
 
-    private Map<QuestionTree, NodeBuilder> createMissingNodes(QuestionTree questionTree,
-        NodeBuilder currentNode)
+    private Map<QuestionTree, NodeBuilder> createMissingNodes(final QuestionTree questionTree,
+        final NodeBuilder currentNode)
     {
         try {
             if (questionTree.isQuestion()) {
@@ -358,7 +359,7 @@ public class ComputedAnswersEditor extends DefaultEditor
         }
     }
 
-    private Map<String, List<NodeBuilder>> getChildNodesByReference(NodeBuilder nodeBuilder)
+    private Map<String, List<NodeBuilder>> getChildNodesByReference(final NodeBuilder nodeBuilder)
     {
         Map<String, List<NodeBuilder>> result = new HashMap<>();
         for (String childNodeName : nodeBuilder.getChildNodeNames()) {
@@ -381,9 +382,8 @@ public class ComputedAnswersEditor extends DefaultEditor
         return result;
     }
 
-    private Map<QuestionTree, NodeBuilder> createChildrenNodes(QuestionTree computedQuestionTree,
-        Map<String, List<NodeBuilder>> childNodesByReference,
-        NodeBuilder nodeBuilder)
+    private Map<QuestionTree, NodeBuilder> createChildrenNodes(final QuestionTree computedQuestionTree,
+        final Map<String, List<NodeBuilder>> childNodesByReference, final NodeBuilder nodeBuilder)
     {
         Map<QuestionTree, NodeBuilder> result = new HashMap<>();
         for (Map.Entry<String, QuestionTree> childQuestion : computedQuestionTree.getChildren().entrySet()) {
@@ -508,7 +508,7 @@ public class ComputedAnswersEditor extends DefaultEditor
 
         private boolean isQuestion;
 
-        QuestionTree(Node node, boolean isQuestion)
+        QuestionTree(final Node node, final boolean isQuestion)
         {
             this.isQuestion = isQuestion;
             this.node = node;
@@ -548,7 +548,7 @@ public class ComputedAnswersEditor extends DefaultEditor
         private Type<?> dataType;
 
         @SuppressWarnings("checkstyle:CyclomaticComplexity")
-        AnswerNodeTypes(Node questionNode) throws RepositoryException
+        AnswerNodeTypes(final Node questionNode) throws RepositoryException
         {
             final String dataTypeString = questionNode.getProperty("dataType").getString();
             final String capitalizedType = StringUtils.capitalize(dataTypeString);

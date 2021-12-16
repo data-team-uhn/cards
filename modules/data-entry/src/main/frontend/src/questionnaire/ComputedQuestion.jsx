@@ -83,7 +83,6 @@ let ComputedQuestion = (props) => {
     }
     changeBaseValue(input);
     let newDisplayedValue = input;
-    // let newAnswer = input;
     if (dataType === "boolean") {
       switch (input) {
         case 1:
