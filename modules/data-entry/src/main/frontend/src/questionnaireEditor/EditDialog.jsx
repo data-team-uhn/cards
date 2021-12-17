@@ -49,6 +49,7 @@ let EditDialog = (props) => {
   let [ open, setOpen ] = useState(isOpen);
   let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
   let [ error, setError ] = useState('');
+  let [ variableNameError, setVariableNameError ] = useState('');
   let json = require(`./${type}.json`);
 
   let saveButtonRef = React.useRef();
@@ -154,10 +155,29 @@ let EditDialog = (props) => {
         <Grid item xs={8}>{
           targetExists ?
           <Typography>{data["@name"]}</Typography> :
-          <TextField name='' value={targetId} onChange={(event)=> { setTargetId(event.target.value); }} multiline fullWidth/>
+          <TextField
+            name=''
+            value={targetId}
+            onChange={(event)=> { setTargetId(event.target.value); setVariableNameError(''); }}
+            onBlur={(event)=> { checkVariableName(event.target.value?.trim()); }}
+            error={variableNameError}
+            helperText={variableNameError}
+            multiline
+            fullWidth
+          />
         }</Grid>
       </Grid>
     )
+  }
+
+  let checkVariableName = (newValue) => {
+    // The path with this variable name exists
+    if (newValue && Object.keys(data).includes(newValue) && data[newValue]["@path"]) {
+      let mainType = data["sling:resourceType"].replaceAll(/^cards\//g, "");
+      let type = (data[newValue].dataType ? data[newValue].dataType + " " : "") + data[newValue]["sling:resourceType"].replaceAll(/^cards\//g, "");
+      let label = data[newValue].label || data[newValue].text || newValue;
+      setVariableNameError(`The identifier ${newValue} is already in use in this ${mainType} for the ${type} '${label}'. Please choose a different identifier.`);
+    }
   }
 
   return (
@@ -185,7 +205,7 @@ let EditDialog = (props) => {
               type='submit'
               variant='contained'
               color='primary'
-              disabled={saveInProgress}
+              disabled={saveInProgress || variableNameError}
             >
               {saveInProgress ? 'Saving' :
               lastSaveStatus === true ? 'Saved' :
