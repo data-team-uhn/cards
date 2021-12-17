@@ -835,78 +835,28 @@
 			</node>
 		</node>
 		<node>
-			<name>phase2enrollment_dateSection</name>
-			<primaryNodeType>lfs:Section</primaryNodeType>
-			<node>
-				<name>phase2enrollment_date</name>
-				<primaryNodeType>lfs:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Phase 2 Date enrolled</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dateFormat</name>
-					<value>MM/dd/yyyy</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>lfs:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>enrollment_status</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>lfs:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>Phase 2 enrolled</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
+			<name>phase2enrollment_date</name>
+			<primaryNodeType>lfs:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Phase 2 Date enrolled</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dateFormat</name>
+				<value>MM/dd/yyyy</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
 		</node>
 		<node>
 			<name>phase2exit_dateSection</name>
