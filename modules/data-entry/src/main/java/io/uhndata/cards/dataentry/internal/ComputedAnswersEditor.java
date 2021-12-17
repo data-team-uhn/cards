@@ -33,6 +33,7 @@ import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
@@ -50,7 +51,6 @@ import org.slf4j.LoggerFactory;
 import io.uhndata.cards.dataentry.api.ExpressionUtils;
 import io.uhndata.cards.dataentry.api.FormUtils;
 import io.uhndata.cards.dataentry.api.QuestionnaireUtils;
-import io.uhndata.cards.dataentry.internal.ComputedAnswersEditor.QuestionTree;
 
 /**
  * An {@link Editor} that calculates any computed answers that were not submitted by the client.
@@ -70,9 +70,7 @@ public class ComputedAnswersEditor extends DefaultEditor
     /** The current user session. **/
     private Session currentSession;
 
-    /**
-     * A session that has access to all the questionnaire questions and can access restricted questions.
-     */
+    /** A session that has access to all the questionnaire questions and can access restricted questions. */
     private Session serviceSession;
 
     private final QuestionnaireUtils questionnaireUtils;
@@ -97,7 +95,7 @@ public class ComputedAnswersEditor extends DefaultEditor
      * @param expressionUtils for evaluating the computed questions
      */
     public ComputedAnswersEditor(final NodeBuilder nodeBuilder, final ResourceResolverFactory rrf,
-        final QuestionnaireUtils questionnaireUtils, FormUtils formUtils, final ExpressionUtils expressionUtils)
+        final QuestionnaireUtils questionnaireUtils, final FormUtils formUtils, final ExpressionUtils expressionUtils)
     {
         this.currentNodeBuilder = nodeBuilder;
         this.rrf = rrf;
@@ -109,7 +107,7 @@ public class ComputedAnswersEditor extends DefaultEditor
     }
 
     @Override
-    public Editor childNodeAdded(String name, NodeState after)
+    public Editor childNodeAdded(final String name, final NodeState after)
     {
         if (this.isFormNode) {
             // Found a modified form. Flag for the current editor to checking computed answers.
@@ -124,13 +122,13 @@ public class ComputedAnswersEditor extends DefaultEditor
     }
 
     @Override
-    public Editor childNodeChanged(String name, NodeState before, NodeState after)
+    public Editor childNodeChanged(final String name, final NodeState before, final NodeState after)
     {
         return childNodeAdded(name, after);
     }
 
     @Override
-    public void leave(NodeState before, NodeState after)
+    public void leave(final NodeState before, final NodeState after)
     {
         if (!this.formEditorHasChanged) {
             return;
@@ -138,7 +136,7 @@ public class ComputedAnswersEditor extends DefaultEditor
 
         final Map<String, Object> parameters =
             Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, "computedAnswers");
-        ResourceResolver sessionResolver = this.rrf.getThreadResourceResolver();
+        final ResourceResolver sessionResolver = this.rrf.getThreadResourceResolver();
         try (ResourceResolver serviceResolver = this.rrf.getServiceResourceResolver(parameters)) {
             if (sessionResolver != null && serviceResolver != null) {
                 this.currentSession = sessionResolver.adaptTo(Session.class);
@@ -150,32 +148,31 @@ public class ComputedAnswersEditor extends DefaultEditor
         }
     }
 
-    private void computeMissingAnswers(NodeState form)
+    private void computeMissingAnswers(final NodeState form)
     {
         // Get a list of all current answers for the form for use in computing answers
-        Map<Node, NodeState> existingAnswers = getNodeAnswers(form);
-        Map<String, Object> answersByQuestionName = getAnswersByQuestionName(existingAnswers);
+        final Map<String, Object> answersByQuestionName = getNodeAnswers(form);
 
         // Get a list of all unanswered computed questions that need to be calculated
-        Node questionnaireNode = getQuestionnaire();
+        final Node questionnaireNode = getQuestionnaire();
         if (questionnaireNode == null) {
             return;
         }
-        QuestionTree computedQuestionsTree = getUnansweredComputedQuestions(questionnaireNode);
+        final QuestionTree computedQuestionsTree = getUnansweredComputedQuestions(questionnaireNode);
 
         // There are missing computed questions, let's create them!
         if (computedQuestionsTree != null) {
             // Create the missing structure, i.e. AnswerSection and Answer nodes
-            Map<QuestionTree, NodeBuilder> answersToCompute =
+            final Map<QuestionTree, NodeBuilder> answersToCompute =
                 createMissingNodes(computedQuestionsTree, this.currentNodeBuilder);
 
             // Try to determine the right order in which answers should be computed, so that the answers that depend on
             // other computed answers are evaluated after all their dependencies have been evaluated
-            Set<String> questionNames = answersToCompute.keySet().stream()
+            final Set<String> questionNames = answersToCompute.keySet().stream()
                 .map(QuestionTree::getNode)
                 .map(this.questionnaireUtils::getQuestionName)
                 .collect(Collectors.toSet());
-            Map<String, Set<String>> computedAnswerDependencies =
+            final Map<String, Set<String>> computedAnswerDependencies =
                 answersToCompute.keySet().stream().map(question -> {
                     Set<String> dependencies = this.expressionUtils.getDependencies(question.getNode());
                     dependencies.retainAll(questionNames);
@@ -192,23 +189,47 @@ public class ComputedAnswersEditor extends DefaultEditor
                     .findFirst().get())
                 // Evaluate it
                 .forEachOrdered(entry -> {
-                    QuestionTree question = entry.getKey();
-                    NodeBuilder answer = entry.getValue();
-                    String result = computeAnswer(answersByQuestionName, question);
-                    if (result == null) {
-                        answer.removeProperty(FormUtils.VALUE_PROPERTY);
-                    } else {
-                        answer.setProperty(FormUtils.VALUE_PROPERTY, result, Type.STRING);
-                    }
-                    // Update the computed value in the map of existing answers
-                    answersByQuestionName.put(this.questionnaireUtils.getQuestionName(question.getNode()), result);
+                    computeAnswer(entry, answersByQuestionName);
                 });
+        }
+    }
+
+    private void computeAnswer(final Map.Entry<QuestionTree, NodeBuilder> entry,
+        final Map<String, Object> answersByQuestionName)
+    {
+        final QuestionTree question = entry.getKey();
+        final NodeBuilder answer = entry.getValue();
+        Type<?> resultType = Type.STRING;
+        try {
+            AnswerNodeTypes types = new AnswerNodeTypes(question.getNode());
+            resultType = types.getDataType();
+        } catch (RepositoryException e) {
+            LOGGER.error("Error typing value for question. " + e.getMessage());
+        }
+        Object result = this.expressionUtils.evaluate(question.getNode(), answersByQuestionName, resultType);
+
+        if (result == null || (result instanceof String && "null".equals((String) result))) {
+            answer.removeProperty(FormUtils.VALUE_PROPERTY);
+        } else {
+            // Type erasure makes the actual type irrelevant, there's only one real implementation method
+            // The implementation can extract the right type from the type object
+            @SuppressWarnings("unchecked")
+            Type<Object> untypedResultType = (Type<Object>) resultType;
+            answer.setProperty(FormUtils.VALUE_PROPERTY, result, untypedResultType);
+        }
+        // Update the computed value in the map of existing answers
+        String questionName = this.questionnaireUtils.getQuestionName(question.getNode());
+        if (answersByQuestionName.containsKey(questionName)) {
+            // Question has multiple answers. Ignore this answer, just keep previous.
+            // TODO: Implement better recurrent section handling
+        } else {
+            answersByQuestionName.put(questionName, result);
         }
     }
 
     private Node getQuestionnaire()
     {
-        String questionnaireId = this.currentNodeBuilder.getProperty("questionnaire").getValue(Type.REFERENCE);
+        final String questionnaireId = this.currentNodeBuilder.getProperty("questionnaire").getValue(Type.REFERENCE);
         try {
             return this.serviceSession.getNodeByIdentifier(questionnaireId);
         } catch (RepositoryException e) {
@@ -225,8 +246,8 @@ public class ComputedAnswersEditor extends DefaultEditor
         return result;
     }
 
-    private void addAnswer(String answer, Map<String, Set<String>> dependencies, List<String> orderedAnswersToCompute,
-        Set<String> processedAnswers)
+    private void addAnswer(final String answer, final Map<String, Set<String>> dependencies,
+        final List<String> orderedAnswersToCompute, final Set<String> processedAnswers)
     {
         if (!processedAnswers.contains(answer)) {
             processedAnswers.add(answer);
@@ -236,9 +257,9 @@ public class ComputedAnswersEditor extends DefaultEditor
         }
     }
 
-    private Map<Node, NodeState> getNodeAnswers(NodeState currentNode)
+    private Map<String, Object> getNodeAnswers(final NodeState currentNode)
     {
-        Map<Node, NodeState> currentAnswers = new HashMap<>();
+        final Map<String, Object> currentAnswers = new HashMap<>();
         if (currentNode.exists()) {
             if (this.formUtils.isAnswerSection(currentNode) || this.formUtils.isForm(currentNode)) {
                 // Found a section: Recursively get all of this section's answers
@@ -246,28 +267,32 @@ public class ComputedAnswersEditor extends DefaultEditor
                     currentAnswers.putAll(getNodeAnswers(childNode.getNodeState()));
                 }
             } else if (this.formUtils.isAnswer(currentNode)) {
-                // Found an answer. Store it using the question's UUID to easily compare with the questionnaire's
-                // nodes to retrieve question names and saved answer nodes to avoid duplicating existing answers
-                currentAnswers.put(this.formUtils.getQuestion(currentNode), currentNode);
+                String questionName = this.questionnaireUtils.getQuestionName(this.formUtils.getQuestion(currentNode));
+                Object value = this.formUtils.getValue(currentNode);
+                if (questionName != null && value != null && !currentAnswers.containsKey(questionName)) {
+                    // Found an answer. Store it using the question's name to easily compare with
+                    // saved answer nodes to avoid duplicating existing answers
+                    // TODO: Implement better recurrent section handling
+                    currentAnswers.put(questionName, value);
+                }
+
             }
         }
         return currentAnswers;
     }
 
     // Returns a QuestionTree if any children of this node contains an unanswered computed question, else null
-    private QuestionTree getUnansweredComputedQuestions(Node currentNode)
+    private QuestionTree getUnansweredComputedQuestions(final Node currentNode)
     {
         QuestionTree currentTree = null;
 
         try {
-            if (this.questionnaireUtils.isQuestion(currentNode)) {
-                if ("computed".equals(currentNode.getProperty("dataType").getString())) {
-                    // Skip already answered questions
-                    if (!this.computedAnswerChangeTracker.getModifiedAnswers().contains(currentNode.getIdentifier())) {
-                        currentTree = new QuestionTree(currentNode, true);
-                    }
-                }
+            if (this.questionnaireUtils.isComputedQuestion(currentNode)) {
                 // Ignore questions that are not computed questions
+                // Skip already answered questions
+                if (!this.computedAnswerChangeTracker.getModifiedAnswers().contains(currentNode.getIdentifier())) {
+                    currentTree = new QuestionTree(currentNode, true);
+                }
             } else if (this.questionnaireUtils.isQuestionnaire(currentNode)
                 || this.questionnaireUtils.isSection(currentNode)) {
                 // Recursively check if any children have a computed question
@@ -294,33 +319,23 @@ public class ComputedAnswersEditor extends DefaultEditor
         return currentTree;
     }
 
-    // Convert a map of answered keyed by question UUID into a map keyed by question name
-    private Map<String, Object> getAnswersByQuestionName(Map<Node, NodeState> answers)
-    {
-        return answers.entrySet().stream().map(entry -> {
-            String questionName = this.questionnaireUtils.getQuestionName(entry.getKey());
-            Object value = this.formUtils.getValue(entry.getValue());
-            return Pair.of(questionName, value);
-        }).filter(pair -> pair.getKey() != null && pair.getValue() != null)
-            .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
-    }
-
-    private Map<QuestionTree, NodeBuilder> createMissingNodes(QuestionTree questionTree,
-        NodeBuilder currentNode)
+    private Map<QuestionTree, NodeBuilder> createMissingNodes(final QuestionTree questionTree,
+        final NodeBuilder currentNode)
     {
         try {
             if (questionTree.isQuestion()) {
                 if (!currentNode.hasProperty("jcr:" + "primaryType")) {
+                    AnswerNodeTypes types = new AnswerNodeTypes(questionTree.getNode());
                     // New node, insert all required properties
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
                     currentNode.setProperty("jcr:created", dateFormat.format(new Date()), Type.DATE);
                     currentNode.setProperty("jcr:createdBy", this.currentSession.getUserID(), Type.NAME);
                     String questionReference = questionTree.getNode().getIdentifier();
                     currentNode.setProperty(FormUtils.QUESTION_PROPERTY, questionReference, Type.REFERENCE);
-                    currentNode.setProperty("jcr:primaryType", "cards:ComputedAnswer", Type.NAME);
+                    currentNode.setProperty("jcr:primaryType", types.getPrimaryType(), Type.NAME);
                     currentNode.setProperty("sling:resourceSuperType", FormUtils.ANSWER_RESOURCE, Type.STRING);
-                    currentNode.setProperty("sling:resourceType", "cards/ComputedAnswer", Type.STRING);
-                    currentNode.setProperty("statusFlags", "", Type.STRING);
+                    currentNode.setProperty("sling:resourceType", types.getResourceType(), Type.STRING);
+                    currentNode.setProperty("statusFlags", Collections.emptyList(), Type.STRINGS);
                 }
                 return Collections.singletonMap(questionTree, currentNode);
             } else {
@@ -332,7 +347,7 @@ public class ComputedAnswersEditor extends DefaultEditor
                     currentNode.setProperty("jcr:primaryType", FormUtils.ANSWER_SECTION_NODETYPE, Type.NAME);
                     currentNode.setProperty("sling:resourceSuperType", "cards/Resource", Type.STRING);
                     currentNode.setProperty("sling:resourceType", FormUtils.ANSWER_SECTION_RESOURCE, Type.STRING);
-                    currentNode.setProperty("statusFlags", "", Type.STRING);
+                    currentNode.setProperty("statusFlags", Collections.emptyList(), Type.STRINGS);
                 }
                 Map<String, List<NodeBuilder>> childNodesByReference = getChildNodesByReference(currentNode);
                 return createChildrenNodes(questionTree, childNodesByReference, currentNode);
@@ -344,7 +359,7 @@ public class ComputedAnswersEditor extends DefaultEditor
         }
     }
 
-    private Map<String, List<NodeBuilder>> getChildNodesByReference(NodeBuilder nodeBuilder)
+    private Map<String, List<NodeBuilder>> getChildNodesByReference(final NodeBuilder nodeBuilder)
     {
         Map<String, List<NodeBuilder>> result = new HashMap<>();
         for (String childNodeName : nodeBuilder.getChildNodeNames()) {
@@ -367,9 +382,8 @@ public class ComputedAnswersEditor extends DefaultEditor
         return result;
     }
 
-    private Map<QuestionTree, NodeBuilder> createChildrenNodes(QuestionTree computedQuestionTree,
-        Map<String, List<NodeBuilder>> childNodesByReference,
-        NodeBuilder nodeBuilder)
+    private Map<QuestionTree, NodeBuilder> createChildrenNodes(final QuestionTree computedQuestionTree,
+        final Map<String, List<NodeBuilder>> childNodesByReference, final NodeBuilder nodeBuilder)
     {
         Map<QuestionTree, NodeBuilder> result = new HashMap<>();
         for (Map.Entry<String, QuestionTree> childQuestion : computedQuestionTree.getChildren().entrySet()) {
@@ -406,11 +420,6 @@ public class ComputedAnswersEditor extends DefaultEditor
         return result;
     }
 
-    private String computeAnswer(Map<String, Object> answers, QuestionTree computedQuestionTree)
-    {
-        return this.expressionUtils.evaluate(computedQuestionTree.getNode(), answers);
-    }
-
     private final class ComputedAnswerChangeTracker extends DefaultEditor
     {
         private final Set<String> modifiedAnswers = new HashSet<>();
@@ -422,9 +431,21 @@ public class ComputedAnswersEditor extends DefaultEditor
         @Override
         public void enter(NodeState before, NodeState after)
         {
+            String questionId = ComputedAnswersEditor.this.formUtils.getQuestionIdentifier(after);
             if ("cards:ComputedAnswer".equals(after.getName("jcr:primaryType"))) {
                 this.inComputedAnswer = true;
-                this.currentAnswer = ComputedAnswersEditor.this.formUtils.getQuestionIdentifier(after);
+                this.currentAnswer = questionId;
+            } else if (questionId != null) {
+                Node questionNode = ComputedAnswersEditor.this.questionnaireUtils.getQuestion(questionId);
+                try {
+                    if (questionNode.hasProperty("entryMode")
+                        && "computed".equals(questionNode.getProperty("entryMode").getString())) {
+                        this.inComputedAnswer = true;
+                        this.currentAnswer = questionId;
+                    }
+                } catch (RepositoryException e) {
+                    // Can't access this answer's question. Ignore
+                }
             }
         }
 
@@ -479,7 +500,7 @@ public class ComputedAnswersEditor extends DefaultEditor
         }
     }
 
-    static final class QuestionTree
+    private static final class QuestionTree
     {
         private Map<String, QuestionTree> children;
 
@@ -487,7 +508,7 @@ public class ComputedAnswersEditor extends DefaultEditor
 
         private boolean isQuestion;
 
-        QuestionTree(Node node, boolean isQuestion)
+        QuestionTree(final Node node, final boolean isQuestion)
         {
             this.isQuestion = isQuestion;
             this.node = node;
@@ -515,6 +536,70 @@ public class ComputedAnswersEditor extends DefaultEditor
             return "{question:" + this.isQuestion
                 + (this.children == null ? "" : " children: " + this.children.toString())
                 + (this.node == null ? "" : " node: " + this.node.toString()) + " }";
+        }
+    }
+
+    private static final class AnswerNodeTypes
+    {
+        private String primaryType;
+
+        private String resourceType;
+
+        private Type<?> dataType;
+
+        @SuppressWarnings("checkstyle:CyclomaticComplexity")
+        AnswerNodeTypes(final Node questionNode) throws RepositoryException
+        {
+            final String dataTypeString = questionNode.getProperty("dataType").getString();
+            final String capitalizedType = StringUtils.capitalize(dataTypeString);
+            this.primaryType = "cards:" + capitalizedType + "Answer";
+            this.resourceType = "cards/" + capitalizedType + "Answer";
+            switch (dataTypeString) {
+                case "long":
+                    this.dataType = Type.LONG;
+                    break;
+                case "double":
+                    this.dataType = Type.DOUBLE;
+                    break;
+                case "decimal":
+                    this.dataType = Type.DECIMAL;
+                    break;
+                case "boolean":
+                    // Long, not boolean
+                    this.dataType = Type.LONG;
+                    break;
+                case "date":
+                    this.dataType = (questionNode.hasProperty("dateFormat") && "yyyy".equals(
+                        questionNode.getProperty("dateFormat").getString().toLowerCase()))
+                            ? Type.LONG
+                            : Type.DATE;
+                    break;
+                case "time":
+                case "vocabulary":
+                case "text":
+                    this.dataType = Type.STRING;
+                    break;
+                case "computed":
+                default:
+                    this.primaryType = "cards:ComputedAnswer";
+                    this.resourceType = "cards/ComputedAnswer";
+                    this.dataType = Type.STRING;
+            }
+        }
+
+        public String getPrimaryType()
+        {
+            return this.primaryType;
+        }
+
+        public String getResourceType()
+        {
+            return this.resourceType;
+        }
+
+        public Type<?> getDataType()
+        {
+            return this.dataType;
         }
     }
 }

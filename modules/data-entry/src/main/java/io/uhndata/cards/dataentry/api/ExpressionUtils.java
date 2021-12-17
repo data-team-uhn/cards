@@ -21,6 +21,8 @@ import java.util.Set;
 
 import javax.jcr.Node;
 
+import org.apache.jackrabbit.oak.api.Type;
+
 /**
  * Utility class for parsing and evaluating an expression.
  *
@@ -61,5 +63,19 @@ public interface ExpressionUtils
      * @param values the other values in the form
      * @return a string representation of the result, may be {@code null} if the expression has unmet dependencies
      */
-    String evaluate(Node question, Map<String, Object> values);
+    default String evaluate(Node question, Map<String, Object> values)
+    {
+        return String.valueOf(evaluate(question, values, Type.STRING));
+    }
+
+    /**
+     * Evaluate a computed answer based on the other values present in the context.
+     *
+     * @param question the question node
+     * @param values the other values in the form
+     * @param type the expected type of the result
+     * @return a representation of the evaluation result, forced into the desired data type; may be {@code null} if the
+     *         expression has unmet dependencies or the actual evaluation result cannot be converted to the desired type
+     */
+    Object evaluate(Node question, Map<String, Object> values, Type<?> type);
 }

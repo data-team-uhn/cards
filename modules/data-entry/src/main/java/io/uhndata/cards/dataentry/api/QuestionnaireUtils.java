@@ -102,6 +102,15 @@ public interface QuestionnaireUtils
     boolean isQuestion(Node node);
 
     /**
+     * Check if the given node is a Question node for a computed question.
+     *
+     * @param node the node to check, a JCR Node, may be {@code null}
+     * @return {@code true} if the node is not {@code null}, is computed and is of type {@code cards:Question},
+     *         {@code false} otherwise
+     */
+    boolean isComputedQuestion(Node node);
+
+    /**
      * Retrieve the Question with the given UUID.
      *
      * @param identifier an UUID that references a question.

@@ -98,6 +98,11 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 			</property>
 			<property>
 				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
 				<value>computed</value>
 				<type>String</type>
 			</property>
@@ -128,7 +133,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
+				<name>entryMode</name>
 				<value>computed</value>
 				<type>String</type>
 			</property>
@@ -262,7 +267,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
+				<name>entryMode</name>
 				<value>computed</value>
 				<type>String</type>
 			</property>

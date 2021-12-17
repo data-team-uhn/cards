@@ -27,7 +27,7 @@
 	</property>
 	<property>
 		<name>description</name>
-		<value>CARDS-1347</value>
+		<value>CARDS-1347, CARDS-1463</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -57,11 +57,11 @@
 		</property>
 	</node>
 	<node>
-		<name>numberQuestion</name>
+		<name>booleanQuestion</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Enter a number:</value>
+			<value>Yes or No?</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -71,8 +71,13 @@
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>long</value>
+			<value>boolean</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>enableUnknown</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 	</node>
 	<node>
@@ -100,11 +105,190 @@
 		</property>
 	</node>
 	<node>
+		<name>dateQuestionYear</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Enter a year:</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>date</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dateFormat</name>
+			<value>yyyy</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>dateQuestionMonth</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Enter a month:</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>date</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dateFormat</name>
+			<value>MM/yyyy</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>dateQuestionTime</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Enter a datetime:</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>date</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dateFormat</name>
+			<value>yyyy/MM/DD HH:mm</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>dateQuestionSeconds</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Enter a datetime with seconds:</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>date</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dateFormat</name>
+			<value>yyyy/MM/DD HH:mm:ss</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>longQuestion</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Enter a long:</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>long</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>doubleQuestion</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Enter a double:</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>double</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>decimalQuestion</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Enter a decimal:</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>decimal</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>vocabularyQuestion</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Enter an ancestry (HANCESTRO)</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>vocabulary</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>sourceVocabularies</name>
+			<values>
+				<value>HANCESTRO</value>
+			</values>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
 		<name>timeQuestion</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Enter a time:</value>
+			<value>Enter a time with hours and minutes:</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -124,11 +308,11 @@
 		</property>
 	</node>
 	<node>
-		<name>boolQuestion</name>
+		<name>timeQuestionSeconds</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Yes or no:</value>
+			<value>Enter a time with hours, minutes and seconds:</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -138,7 +322,36 @@
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>boolean</value>
+			<value>time</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dateFormat</name>
+			<value>hh:mm:ss</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>timeQuestionMinutes</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Enter a time with minutes and seconds:</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>time</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dateFormat</name>
+			<value>mm:ss</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -244,7 +457,65 @@
 			</node>
 		</node>
 		<node>
-			<name>conditionalQuestion1a</name>
+			<name>conditionalQuestionComputed1</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Computed, plain</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>
+Expected output:
+
+> You wrote [text from previous question]
+
+or
+
+> You wrote nothing
+				</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return "You wrote " + @{textQuestion:-nothing}</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>conditionalQuestionComputed2</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Computed, plain</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>
+This question should copy the previous question
+				</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>0
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{conditionalQuestionComputed1}</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>conditionalQuestionText1</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -266,6 +537,11 @@ or
 			</property>
 			<property>
 				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
 				<value>computed</value>
 				<type>String</type>
 			</property>
@@ -276,7 +552,7 @@ or
 			</property>
 		</node>
 		<node>
-			<name>conditionalQuestion1b</name>
+			<name>conditionalQuestionText2</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -292,40 +568,17 @@ This question should copy the previous question
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>computed</value>
+				<value>text</value>
 				<type>String</type>0
 			</property>
 			<property>
-				<name>expression</name>
-				<value>return @{conditionalQuestion1a}</value>
-				<type>String</type>
-			</property>
-		</node>
-		<node>
-			<name>conditionalQuestionNumber</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Computed, plain</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>
-Expected output:
-
-> 1 + [entered number] = [1 + entered number]
-				</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
+				<name>entryMode</name>
 				<value>computed</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>expression</name>
-				<value>return "1 + " + @{numberQuestion} + " = " + (1 + @{numberQuestion})</value>
+				<value>return @{conditionalQuestionText1}</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -342,18 +595,23 @@ Expected output:
 				<value>
 Expected output:
 
-> You entered the boolean [0/1]
+The entered boolean [0/1/-1]
 				</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>dataType</name>
+				<value>boolean</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
 				<value>computed</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>expression</name>
-				<value>return "You entered the boolean " + @{boolQuestion}</value>
+				<value>return @{booleanQuestion}</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -370,18 +628,319 @@ Expected output:
 				<value>
 Expected output:
 
-> You entered the date [entered date]
+The entered basic date
 				</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>dataType</name>
+				<value>date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dateFormat</name>
+				<value>MM/dd/yyyy</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{dateQuestion}</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>conditionalQuestionDateYear</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Computed, plain</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>
+Expected output:
+
+The entered year
+				</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dateFormat</name>
+				<value>yyyy</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{dateQuestionYear}</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>conditionalQuestionDateMonth</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Computed, plain</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>
+Expected output:
+
+The entered month
+				</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dateFormat</name>
+				<value>MM/yyyy</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{dateQuestionMonth}</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>conditionalQuestionDateTime</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Computed, plain</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>
+Expected output:
+
+The entered datetime
+				</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dateFormat</name>
+				<value>MM/dd/yyyy HH:mm</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{dateQuestionTime}</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>conditionalQuestionDateSeconds</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Computed, plain</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>
+Expected output:
+
+The entered datetime with seconds
+				</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dateFormat</name>
+				<value>MM/dd/yyyy HH:mm:ss</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{dateQuestionSeconds}</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>conditionalQuestionLong</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Computed, plain</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>
+Expected output:
+
+1 + the entered number
+				</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
 				<value>computed</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>expression</name>
-				<value>return "You entered the date " + @{dateQuestion}</value>
+				<value>return 1 + @{longQuestion}</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>conditionalQuestionDouble</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Computed, plain</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>
+Expected output:
+
+1.5 + the entered number
+				</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>double</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return 1.5 + @{doubleQuestion}</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>conditionalQuestionDecimal</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Computed, plain</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>
+Expected output:
+
+1.5 + the entered number
+				</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return 1.5 + @{decimalQuestion}</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>conditionalQuestionVocabulary</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Computed, plain</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>
+Expected output:
+
+The entered vocabulary term
+				</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>vocabulary</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>sourceVocabularies</name>
+				<values>
+					<value>HANCESTRO</value>
+				</values>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{vocabularyQuestion}</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -398,18 +957,104 @@ Expected output:
 				<value>
 Expected output:
 
-> You entered the time [entered time]
+The entered time
 				</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>dataType</name>
+				<value>time</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dateFormat</name>
+				<value>HH:MM (AM/PM)</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
 				<value>computed</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>expression</name>
-				<value>return "You entered the time " + @{timeQuestion}</value>
+				<value>return @{timeQuestion}</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>conditionalQuestionTimeSeconds</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Computed, plain</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>
+Expected output:
+
+The entered time with seconds
+				</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>time</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dateFormat</name>
+				<value>hh:mm:ss</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{timeQuestionSeconds}</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>conditionalQuestionTimeMinutes</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Computed, plain</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>
+Expected output:
+
+The entered minutes
+				</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>time</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dateFormat</name>
+				<value>mm:ss</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{timeQuestionMinutes}</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -427,7 +1072,7 @@ Expected output:
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
+				<name>entryMode</name>
 				<value>computed</value>
 				<type>String</type>
 			</property>
@@ -482,7 +1127,7 @@ or
 					<type>String</type>
 				</property>
 				<property>
-					<name>dataType</name>
+					<name>entryMode</name>
 					<value>computed</value>
 					<type>String</type>
 				</property>
@@ -533,7 +1178,7 @@ or
 					<type>String</type>
 				</property>
 				<property>
-					<name>dataType</name>
+					<name>entryMode</name>
 					<value>computed</value>
 					<type>String</type>
 				</property>
@@ -584,7 +1229,7 @@ or
 					<type>String</type>
 				</property>
 				<property>
-					<name>dataType</name>
+					<name>entryMode</name>
 					<value>computed</value>
 					<type>String</type>
 				</property>

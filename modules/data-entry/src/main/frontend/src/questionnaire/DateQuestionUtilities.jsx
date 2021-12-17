@@ -65,6 +65,26 @@ export default class DateQuestionUtilities {
     return this.DEFAULT_DATE_TYPE;
   }
 
+  static getFieldType(dateFormat) {
+    let dateType = this.getDateType(dateFormat)
+    let result;
+    switch (dateType) {
+      case this.YEAR_DATE_TYPE:
+        result = "long";
+        break;
+      case this.MONTH_DATE_TYPE:
+        result = "string";
+        break;
+      case this.DATETIME_TYPE:
+        result = "datetime-local";
+        break;
+      default:
+        result = "date"
+        break;
+    }
+    return result;
+  }
+
   // Truncates fields in the given moment object or date string
   // according to the given format string
   static amendMoment(date, format) {
@@ -99,6 +119,12 @@ export default class DateQuestionUtilities {
     }
 
     return(new_date.startOf(truncateTo));
+  }
+
+  static momentToString(date, textFieldType) {
+    return (!date || !date.isValid()) ? "" :
+    textFieldType === "date" ? date.format(moment.HTML5_FMT.DATE) :
+    date.format(moment.HTML5_FMT.DATETIME_LOCAL);
   }
 
   // Convert a moment string to a month display

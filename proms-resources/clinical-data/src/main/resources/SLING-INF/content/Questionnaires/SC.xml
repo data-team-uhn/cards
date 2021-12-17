@@ -1490,7 +1490,7 @@ return @{smoking_history_v2_program_referral_requested_by_patient:-"none"} != "n
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
+				<name>entryMode</name>
 				<value>computed</value>
 				<type>String</type>
 			</property>

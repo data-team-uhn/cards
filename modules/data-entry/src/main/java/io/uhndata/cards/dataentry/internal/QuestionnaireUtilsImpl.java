@@ -69,6 +69,19 @@ public final class QuestionnaireUtilsImpl extends AbstractNodeUtils implements Q
         return isNodeType(node, QUESTION_NODETYPE);
     }
 
+
+    @Override
+    public boolean isComputedQuestion(Node node)
+    {
+        try {
+            return isQuestion(node)
+                && ("computed".equals(node.getProperty("dataType").getString())
+                || "computed".equals(node.getProperty("entryMode").getString()));
+        } catch (RepositoryException e) {
+            return false;
+        }
+    }
+
     @Override
     public Node getQuestion(final String identifier)
     {
