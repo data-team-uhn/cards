@@ -38,7 +38,7 @@
     },
     "org.apache.sling.jcr.repoinit.RepositoryInitializer~proms_backend":{
       "service.ranking:Integer":200,
-      "scripts":["create service user proms-visit-backend \n set ACL on /Forms,/Questionnaires,/Subjects \n   allow jcr:read for proms-visit-backend \n end \n set ACL on /Forms \n   allow jcr:read,rep:write,jcr:versionManagement for proms-visit-backend \n end \n"]
+      "scripts":["create service user proms-visit-backend \n set ACL on /Forms,/Questionnaires,/Subjects,/SubjectTypes \n   allow jcr:read for proms-visit-backend \n end \n set ACL on /Forms \n   allow jcr:read,rep:write,jcr:versionManagement for proms-visit-backend \n end \n"]
     },
     "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~":{
       "user.mapping":[

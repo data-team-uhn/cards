@@ -29,6 +29,7 @@ import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.Value;
 import javax.jcr.version.VersionManager;
 
 import org.apache.sling.api.resource.LoginException;
@@ -58,13 +59,15 @@ import io.uhndata.cards.dataentry.api.QuestionnaireUtils;
     property = {
         EventConstants.EVENT_TOPIC + "=org/apache/sling/api/resource/Resource/ADDED",
         EventConstants.EVENT_TOPIC + "=org/apache/sling/api/resource/Resource/CHANGED",
-        EventConstants.EVENT_FILTER + "=(resourceType=cards/Form)"
+        EventConstants.EVENT_FILTER + "=(&(resourceType=cards/Form)(path=/Forms/*))"
     }
 )
 public class VisitChangeListener implements EventHandler
 {
     private static final int FREQUENCY_MARGIN = 2;
     private static final Logger LOGGER = LoggerFactory.getLogger(VisitChangeListener.class);
+    private Session session;
+    private ResourceResolver resolver;
 
     /** Provides access to resources. */
     @Reference
@@ -79,35 +82,26 @@ public class VisitChangeListener implements EventHandler
     @Override
     public void handleEvent(Event event)
     {
-        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
-            Session session = resolver.adaptTo(Session.class);
-            Node eventFormNode = session.getNode(event.getProperty("path").toString());
-            Node visitNode = eventFormNode.getProperty("subject").getNode();
-            VisitInformation visitInformation = null;
+        try (ResourceResolver localResolver = this.resolverFactory.getServiceResourceResolver(null)) {
+            this.resolver = localResolver;
+            this.session = this.resolver.adaptTo(Session.class);
+
+            String path = event.getProperty("path").toString();
+
+            Node eventFormNode = this.session.getNode(path);
+            Node subjectNode = eventFormNode.getProperty("subject").getNode();
+            String subjectType = subjectNode.getProperty("type").getNode().getProperty("label").getString();
 
             // Get the information needed from the triggering form
             Node questionnaireNode = this.formUtils.getQuestionnaire(eventFormNode);
             if (VisitInformation.isVisitInformationForm(questionnaireNode)) {
-                visitInformation = new VisitInformation(questionnaireNode, eventFormNode);
-            } else {
-                // Not a visit information form, skip
-                return;
+                // Create any forms that need to be created for this new visit
+                handleVisitInformationForm(eventFormNode, subjectNode, questionnaireNode);
+            } else if ("Visit".equals(subjectType)) {
+                // Not a new visit information form, but it is a form for a visit.
+                // Check if all forms for the current visit are complete.
+                handleVisitDataForm(subjectNode);
             }
-            if (visitInformation.missingQuestionSetInfo()) {
-                return;
-            }
-
-            Map<String, QuestionnaireFrequency> questionnaireSetInfo
-                = getQuestionnaireSetInformation(session, visitInformation);
-            if (questionnaireSetInfo.size() < 1) {
-                // No questionnaires that need to be created
-                return;
-            }
-
-            pruneQuestionnaireSet(visitNode, visitInformation, questionnaireSetInfo);
-
-            List<String> createdForms = createForms(resolver, visitNode, questionnaireSetInfo);
-            commitForms(session, resolver, createdForms);
         } catch (LoginException e) {
             LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
         } catch (RepositoryException | PersistenceException e) {
@@ -115,52 +109,176 @@ public class VisitChangeListener implements EventHandler
         }
     }
 
+    /**
+     * Creates any forms that need to be completed per the visit's questionnaire set.
+     *
+     * @param eventFormNode the Visit Information form that triggered the current event
+     * @param visitNode the Visit that is the subject for the triggering form
+     * @param questionnaireNode the Visit Information questionnaire
+     *
+     * @throws RepositoryException if any required data could not be checked
+     * @throws PersistenceException if created forms could not be commited
+     */
+    private void handleVisitInformationForm(Node eventFormNode, Node visitNode, Node questionnaireNode)
+        throws RepositoryException, PersistenceException
+    {
+        VisitInformation visitInformation = new VisitInformation(questionnaireNode, eventFormNode);
+
+        if (visitInformation.missingQuestionSetInfo()) {
+            return;
+        }
+
+        Map<String, QuestionnaireFrequency> questionnaireSetInfo
+            = getQuestionnaireSetInformation(visitInformation);
+        if (questionnaireSetInfo.size() < 1) {
+            // No questionnaires that need to be created
+            return;
+        }
+
+        // TODO: Shortcut the question set pruning and end early if this visit already has forms for
+        // every entry in the questionnaireSet, so checking all visits doesn't happen unless needed
+
+        pruneQuestionnaireSet(visitNode, visitInformation, questionnaireSetInfo);
+
+        List<String> createdForms = createForms(visitNode, questionnaireSetInfo);
+        commitForms(createdForms);
+    }
+
+    /**
+     * Update the visit's Visit Information form if all forms have been completed.
+     *
+     * @param visitNode the visit subject which should have all forms checked for completion
+     *
+     * @throws RepositoryException if any required data could not be retrieved
+     */
+    private void handleVisitDataForm(Node visitNode) throws RepositoryException
+    {
+        boolean complete = true;
+        Node visitInformationForm = null;
+        String surveysCompleteIdentifier = null;
+        int numberOfForms = 0;
+
+
+        for (PropertyIterator forms = visitNode.getReferences(); forms.hasNext();)
+        {
+            Node form = forms.nextProperty().getParent();
+
+            Node questionnaireNode = this.formUtils.getQuestionnaire(form);
+            if (VisitInformation.isVisitInformationForm(questionnaireNode)) {
+                visitInformationForm = form;
+                if (questionnaireNode.hasNode("surveys_complete")) {
+                    surveysCompleteIdentifier = questionnaireNode.getNode("surveys_complete").getIdentifier();
+                    Property surveysCompleted = getFormAnswerValue(visitInformationForm, surveysCompleteIdentifier);
+                    if (surveysCompleted != null && surveysCompleted.getLong() == 1L) {
+                        // Form is already complete: exit
+                        return;
+                    }
+                }
+            } else {
+                numberOfForms++;
+            }
+
+            if (isFormIncomplete(form)) {
+                complete = false;
+            }
+        }
+
+        handleVisitCompleted(complete, numberOfForms, visitInformationForm, surveysCompleteIdentifier);
+    }
+
+    /**
+     * Get a date answer for the requested form and question.
+     *
+     * @param formNode the form which should have it's answers checked
+     * @param questionIdentifier the question for which we want the answer
+     * @return the requested date or null
+     */
     private static Calendar getFormDate(Node formNode, String questionIdentifier)
     {
         try {
-            Property prop = getFormProperty(formNode, questionIdentifier);
+            Property prop = getFormAnswerValue(formNode, questionIdentifier);
             return prop == null ? null : prop.getDate();
         } catch (RepositoryException e) {
-            // Do nothing
-            // TODO: Can this be handled better?
+            LOGGER.warn("Requested answer could not be parsed to a date: {}", questionIdentifier, e);
+            return null;
         }
-        return null;
     }
 
+    /**
+     * Get a string answer for the requested form and question.
+     *
+     * @param formNode the form which should have it's answers checked
+     * @param questionIdentifier the question for which we want the answer
+     * @return the requested string or null
+     */
     private static String getFormString(Node formNode, String questionIdentifier)
     {
         try {
-            Property prop = getFormProperty(formNode, questionIdentifier);
+            Property prop = getFormAnswerValue(formNode, questionIdentifier);
             return prop == null ? null : prop.getString();
         } catch (RepositoryException e) {
-            // Do nothing
-            // TODO: Can this be handled better?
+            LOGGER.warn("Requested answer could not be parsed to a string: {}", questionIdentifier, e);
+            return null;
         }
-        return null;
     }
 
-    private static Property getFormProperty(Node formNode, String questionIdentifier)
+    /**
+     * Get an answer Value for the requested form and question.
+     *
+     * @param formNode the form which should have it's answers checked
+     * @param questionIdentifier the question for which we want the answer
+     * @return the requested value or null
+     */
+    private static Property getFormAnswerValue(Node formNode, String questionIdentifier)
+    {
+        try {
+            Node answer = getFormAnswer(formNode, questionIdentifier);
+            if (answer != null && answer.hasProperty("value")) {
+                return answer.getProperty("value");
+            } else {
+                // Question wasn't answered
+                return null;
+            }
+        } catch (RepositoryException e) {
+            LOGGER.warn("Requested answer Value could not be found: {}", questionIdentifier, e);
+            return null;
+        }
+    }
+
+    /**
+     * Get an answer Node for the requested form and question.
+     *
+     * @param formNode the form which should have it's answers checked
+     * @param questionIdentifier the question for which we want the answer
+     * @return the requested Node or null
+     */
+    private static Node getFormAnswer(Node formNode, String questionIdentifier)
     {
         try {
             for (NodeIterator answers = formNode.getNodes(); answers.hasNext();) {
                 Node answer = answers.nextNode();
                 if (answer.hasProperty("question")
                     && questionIdentifier.equals(answer.getProperty("question").getString())) {
-                    if (answer.hasProperty("value")) {
-                        return answer.getProperty("value");
-                    } else {
-                        // Question wasn't answered
-                        break;
-                    }
+                    return answer;
                 }
             }
         } catch (RepositoryException e) {
-            // Do nothing
-            // TODO: Can this be handled better?
+            LOGGER.warn("Requested answer could not be found: {}", questionIdentifier, e);
+            return null;
         }
         return null;
     }
 
+    /**
+     * From a frequency and visit date, calculate the cutoff date for other forms to satisfy the frequency.
+     * Other forms before this cutoff date should be ignored as too old, while dates after this cutoff meet the
+     * required frequency.
+     * Adds in a FREQUENCY_MARGIN, to allow for some scheduling discrepencies.
+     *
+     * @param visitDate the date that is being checked for what forms should be created.
+     * @param frequency The number of weeks between submissions of the form
+     * @return the cutoff date beyond which forms do not count towards the form's frequency
+     */
     private static Calendar getFrequencyDate(Calendar visitDate, int frequency)
     {
         Calendar result = (Calendar) visitDate.clone();
@@ -168,13 +286,17 @@ public class VisitChangeListener implements EventHandler
         return result;
     }
 
-    private Map<String, QuestionnaireFrequency> getQuestionnaireSetInformation(Session session,
-        VisitInformation visitInformation)
+    /**
+     * Get the questionnare set defined by the Visit Information form.
+     *
+     * @param visitInformation the Visit Information form data for which the questionnaire set should be retrieved.
+     * @return a map of all questionnaires with frequency in the questionnaire set, keyed by questionnaire uuid
+     */
+    private Map<String, QuestionnaireFrequency> getQuestionnaireSetInformation(VisitInformation visitInformation)
     {
         Map<String, QuestionnaireFrequency> result = new HashMap<>();
         try {
-            // Get frequencies
-            for (NodeIterator questionnaireSet = session.getNode("/Proms/"
+            for (NodeIterator questionnaireSet = this.session.getNode("/Proms/"
                 + visitInformation.getQuestionnaireSet()).getNodes();
                 questionnaireSet.hasNext();)
             {
@@ -193,6 +315,17 @@ public class VisitChangeListener implements EventHandler
         return result;
     }
 
+    /**
+     * Remove any questionnaires from the questionnaire set which do not need to be created per their frequency.
+     *
+     * Iterates through all of the patient's visits and checks these visits for forms that satisfy that form's
+     * frequency requirements. If that is the case, remove that form's questionnaire from the questionnaire set.
+     *
+     * @param visitNode the visit Subject which should be checked for forms
+     * @param visitInformation the set of data about the visit that triggered this event
+     * @param questionnaireSetInfo the current questionnaireSet. This will be modified by removing key-value pairs
+     * @throws RepositoryException if iterating the patient's visits fails
+     */
     private void pruneQuestionnaireSet(Node visitNode,
         VisitInformation visitInformation,
         Map<String, QuestionnaireFrequency> questionnaireSetInfo)
@@ -236,8 +369,16 @@ public class VisitChangeListener implements EventHandler
         }
     }
 
-    private List<String> createForms(ResourceResolver resolver,
-        Node visitNode, Map<String,
+    /**
+     * Create a new form for each questionnaire in the questionnaireSet, with the visit as the parent subject.
+     *
+     * @param visitNode the visit which should be the new form's subject
+     * @param questionnaireSetInfo the set of questionnaires which should be created
+     * @throws PersistenceException TODO: document
+     * @throws RepositoryException TODO: document
+     * @return a list of paths for all created forms
+     */
+    private List<String> createForms(Node visitNode, Map<String,
         QuestionnaireFrequency> questionnaireSetInfo)
         throws PersistenceException, RepositoryException
     {
@@ -250,31 +391,111 @@ public class VisitChangeListener implements EventHandler
             formProperties.put("subject", visitNode);
 
             String uuid = UUID.randomUUID().toString();
-            resolver.create(resolver.resolve("/Forms/"), uuid, formProperties);
+            this.resolver.create(this.resolver.resolve("/Forms/"), uuid, formProperties);
             results.add("/Forms/" + uuid);
         }
 
         return results;
     }
 
-    private void commitForms(Session session, ResourceResolver resolver, List<String> createdForms)
+    /**
+     * Commit all changes in the current resource resolver and check in all listed forms.
+     *
+     * @param createdForms the list of paths that should be checked in
+     */
+    private void commitForms(List<String> createdForms)
     {
         if (createdForms.size() > 0) {
             // Commit new forms and check them in
             try {
-                resolver.commit();
+                this.resolver.commit();
             } catch (PersistenceException e) {
                 LOGGER.error("Failed to commit forms: {}", e.getMessage(), e);
             }
 
             try {
-                VersionManager versionManager = session.getWorkspace().getVersionManager();
+                VersionManager versionManager = this.session.getWorkspace().getVersionManager();
                 for (String formPath: createdForms) {
                     try {
                         versionManager.checkin(formPath);
                     } catch (RepositoryException e) {
                         LOGGER.error("Failed to checkin form: {}", e.getMessage(), e);
                     }
+                }
+            } catch (RepositoryException e) {
+                LOGGER.error("Failed to obtain version manager: {}", e.getMessage(), e);
+            }
+        }
+    }
+
+    /**
+     * Check if the provided form has the INCOMPLETE status flag.
+     *
+     * @param form the form which should be checked
+     * @return true if the form's statusFlags property contains INCOMPLETE
+     */
+    private boolean isFormIncomplete(Node form)
+    {
+        boolean incomplete = false;
+        try {
+            if (this.formUtils.isForm(form) && form.hasProperty("statusFlags")) {
+                Property statusProp = form.getProperty("statusFlags");
+                if (statusProp.isMultiple()) {
+                    Value[] statuses = form.getProperty("statusFlags").getValues();
+                    for (Value status : statuses) {
+                        String str = status.getString();
+                        if ("INCOMPLETE".equals(str)) {
+                            incomplete = true;
+                        }
+                    }
+                } else {
+                    String str = statusProp.getString();
+                    if ("INCOMPLETE".equals(str)) {
+                        incomplete = true;
+                    }
+                }
+            }
+            return incomplete;
+        } catch (RepositoryException e) {
+            // Can't check if the form is INCOMPLETE, assume it is
+            return true;
+        }
+    }
+
+    /**
+     * If all forms are complete, record that the visit is complete.
+     *
+     * Do not count all forms as complete if the visit only contains a Visit Information form.
+     * Save the completion status to the Visit Information form's surveysComplete answer.
+     *
+     * @param complete True if all forms for the visit are complete
+     * @param numberOfForms How many forms exist for the visit, excluding the Visit Information form
+     * @param visitInformationForm the Visit Information form to save the completion status to, if relevant.
+     * @param surveysCompleteIdentifier the uuid of the surveysComplete question
+     */
+    private void handleVisitCompleted(boolean complete,
+        int numberOfForms,
+        Node visitInformationForm,
+        String surveysCompleteIdentifier)
+    {
+        if (complete && numberOfForms > 0 && visitInformationForm != null && surveysCompleteIdentifier != null) {
+            try {
+                VersionManager versionManager = this.session.getWorkspace().getVersionManager();
+                String formPath = visitInformationForm.getPath();
+                try {
+                    versionManager.checkout(formPath);
+                } catch (RepositoryException e) {
+                    LOGGER.error("Failed to checkout form: {}", e.getMessage(), e);
+                }
+
+                Node answer = getFormAnswer(visitInformationForm, surveysCompleteIdentifier);
+                answer.setProperty("value", 1L);
+                answer.save();
+
+                try {
+                    versionManager.checkin(formPath);
+                } catch (RepositoryException e) {
+                    LOGGER.error("Failed to checkin form: {}", e.getMessage(), e);
                 }
             } catch (RepositoryException e) {
                 LOGGER.error("Failed to obtain version manager: {}", e.getMessage(), e);
