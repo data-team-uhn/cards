@@ -963,14 +963,12 @@ The entered time
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>vocabulary</value>
+				<value>time</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>sourceVocabularies</name>
-				<values>
-					<value>HANCESTRO</value>
-				</values>
+				<name>dateFormat</name>
+				<value>HH:MM (AM/PM)</value>
 				<type>String</type>
 			</property>
 			<property>
