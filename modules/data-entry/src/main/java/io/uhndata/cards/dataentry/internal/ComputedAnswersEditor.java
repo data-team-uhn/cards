@@ -335,7 +335,7 @@ public class ComputedAnswersEditor extends DefaultEditor
                     currentNode.setProperty("jcr:primaryType", types.getPrimaryType(), Type.NAME);
                     currentNode.setProperty("sling:resourceSuperType", FormUtils.ANSWER_RESOURCE, Type.STRING);
                     currentNode.setProperty("sling:resourceType", types.getResourceType(), Type.STRING);
-                    currentNode.setProperty("statusFlags", "", Type.STRING);
+                    currentNode.setProperty("statusFlags", Collections.emptyList(), Type.STRINGS);
                 }
                 return Collections.singletonMap(questionTree, currentNode);
             } else {
@@ -347,7 +347,7 @@ public class ComputedAnswersEditor extends DefaultEditor
                     currentNode.setProperty("jcr:primaryType", FormUtils.ANSWER_SECTION_NODETYPE, Type.NAME);
                     currentNode.setProperty("sling:resourceSuperType", "cards/Resource", Type.STRING);
                     currentNode.setProperty("sling:resourceType", FormUtils.ANSWER_SECTION_RESOURCE, Type.STRING);
-                    currentNode.setProperty("statusFlags", "", Type.STRING);
+                    currentNode.setProperty("statusFlags", Collections.emptyList(), Type.STRINGS);
                 }
                 Map<String, List<NodeBuilder>> childNodesByReference = getChildNodesByReference(currentNode);
                 return createChildrenNodes(questionTree, childNodesByReference, currentNode);
