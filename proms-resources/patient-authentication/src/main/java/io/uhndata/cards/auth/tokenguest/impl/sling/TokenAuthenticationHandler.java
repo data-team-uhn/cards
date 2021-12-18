@@ -89,8 +89,13 @@ public class TokenAuthenticationHandler extends DefaultAuthenticationFeedbackHan
             .findFirst()
             .orElse(null);
         if (existingCookie != null) {
-            existingCookie.setMaxAge(0);
-            response.addCookie(existingCookie);
+            response.reset();
+            final Cookie eraseCookie = new Cookie(TOKEN_COOKIE_NAME, "");
+            eraseCookie.setMaxAge(0);
+            final String ctxPath = request.getContextPath();
+            final String cookiePath = (ctxPath == null || ctxPath.length() == 0) ? "/" : ctxPath;
+            eraseCookie.setPath(cookiePath);
+            response.addCookie(eraseCookie);
         }
     }
 
