@@ -374,9 +374,9 @@ public class VisitChangeListener implements EventHandler
      *
      * @param visitNode the visit which should be the new form's subject
      * @param questionnaireSetInfo the set of questionnaires which should be created
+     * @return a list of paths for all created forms
      * @throws PersistenceException TODO: document
      * @throws RepositoryException TODO: document
-     * @return a list of paths for all created forms
      */
     private List<String> createForms(Node visitNode, Map<String,
         QuestionnaireFrequency> questionnaireSetInfo)
