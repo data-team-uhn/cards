@@ -23,8 +23,10 @@ import {
   Button,
   MobileStepper,
   withStyles,
+  useMediaQuery
 } from "@material-ui/core";
 
+import { useTheme } from '@material-ui/core/styles';
 import PropTypes from "prop-types";
 import { SECTION_TYPES, ENTRY_TYPES } from "./FormEntry";
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
@@ -57,6 +59,9 @@ function FormPagination (props) {
   let questionIndex = 0;
   let pagesResults = {};
   let pagesArray = [];
+
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   useEffect(() => {
     setPagesCallback(null);
@@ -165,7 +170,7 @@ function FormPagination (props) {
       // Change the color of the back bar
       LinearProgressProps={isBack ? {classes: {barColorPrimary: classes.formStepperTopBar}}: null}
       // Hide the backround of the front bar to segment of back bar
-      className={`${classes.formStepper} ${isBack ? classes.formStepperTop : classes.formStepperBottom}`}
+      className={`${classes.formStepper} ${isBack && classes.formStepperBottom} ${!fullScreen && classes.formStepperFullScreen}`}
       classes={isBack ? null : {progress:classes.formStepperBottomBackground}}
       // base 0 to base 1, plus 1 for the "current page" region
       steps={lastValidPage() + 2}
@@ -193,9 +198,9 @@ function FormPagination (props) {
     lastValidPage() > 0 ?
       <React.Fragment>
         {/* Back bar to show a different colored current page section*/}
-        {stepper(true)}
-        {/* Front bar to color completed pages differently from current page */}
         {stepper(false)}
+        {/* Front bar to color completed pages differently from current page */}
+        {stepper(true)}
       </React.Fragment>
     :
       saveButton
