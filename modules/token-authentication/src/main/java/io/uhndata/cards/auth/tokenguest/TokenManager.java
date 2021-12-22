@@ -32,18 +32,6 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface TokenManager
 {
     /**
-     * Create and persist a new token for the default guest user, {@code patient}.
-     *
-     * @param expiration date after which the token becomes invalid
-     * @param extraData optional data to store in the token
-     * @return a new token
-     */
-    default TokenInfo create(Calendar expiration, Map<String, String> extraData)
-    {
-        return create("patient", expiration, extraData);
-    }
-
-    /**
      * Create and persist a new token.
      *
      * @param user local username to associate with the token

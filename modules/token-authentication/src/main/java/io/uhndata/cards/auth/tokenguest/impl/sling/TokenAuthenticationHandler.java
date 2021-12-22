@@ -44,8 +44,10 @@ import io.uhndata.cards.auth.tokenguest.TokenManager;
  *
  * @version $Id$
  */
-@Component(service = AuthenticationHandler.class, immediate = true,
-    property = { AuthenticationHandler.TYPE_PROPERTY + "=" + HttpServletRequest.FORM_AUTH, "path=/" })
+@Component(service = AuthenticationHandler.class, immediate = true, property = {
+    AuthenticationHandler.TYPE_PROPERTY + "=" + HttpServletRequest.FORM_AUTH,
+    "path=/",
+    "sling.auth.requirements=-/Expired" })
 public class TokenAuthenticationHandler extends DefaultAuthenticationFeedbackHandler implements AuthenticationHandler
 {
     /** The name of the request parameter that may hold a login token. */
@@ -63,11 +65,11 @@ public class TokenAuthenticationHandler extends DefaultAuthenticationFeedbackHan
         AuthenticationInfo info = null;
 
         // 1. Try credentials from request parameters
-        info = this.extractRequestParameterAuthentication(request);
+        info = this.extractRequestParameterAuthentication(request, response);
 
         // 2. Try credentials from a cookie
         if (info == null) {
-            info = this.extractCookieAuthentication(request);
+            info = this.extractCookieAuthentication(request, response);
         }
 
         return info;
@@ -83,6 +85,9 @@ public class TokenAuthenticationHandler extends DefaultAuthenticationFeedbackHan
     @Override
     public void dropCredentials(HttpServletRequest request, HttpServletResponse response)
     {
+        if (request.getCookies() == null) {
+            return;
+        }
         final Cookie existingCookie = Arrays.asList(request.getCookies())
             .stream()
             .filter(cookie -> TOKEN_COOKIE_NAME.equals(cookie.getName()))
@@ -124,9 +129,7 @@ public class TokenAuthenticationHandler extends DefaultAuthenticationFeedbackHan
     public void authenticationFailed(HttpServletRequest request, HttpServletResponse response,
         AuthenticationInfo authInfo)
     {
-        // Signal the reason for login failure; this will be present in the URL
-        // FIXME Find a way to not trigger a redirect to /login if this fails
-        request.setAttribute(FAILURE_REASON, "Invalid token");
+        showError(request, response);
     }
 
     @Override
@@ -143,11 +146,12 @@ public class TokenAuthenticationHandler extends DefaultAuthenticationFeedbackHan
      * @return an AuthenticationInfo with TokenCredentials in it, if a valid login token was sent in the request, or
      *         {@code null} otherwise
      */
-    private AuthenticationInfo extractRequestParameterAuthentication(HttpServletRequest request)
+    private AuthenticationInfo extractRequestParameterAuthentication(final HttpServletRequest request,
+        final HttpServletResponse response)
     {
         // The login token may be sent as a request parameter
         final String loginToken = request.getParameter(TOKEN_REQUEST_PARAMETER);
-        return processLoginToken(loginToken, true, request);
+        return processLoginToken(loginToken, true, request, response);
     }
 
     /**
@@ -158,7 +162,8 @@ public class TokenAuthenticationHandler extends DefaultAuthenticationFeedbackHan
      * @return an AuthenticationInfo with TokenCredentials in it, if a valid login token was sent in the request, or
      *         {@code null} otherwise
      */
-    private AuthenticationInfo extractCookieAuthentication(HttpServletRequest request)
+    private AuthenticationInfo extractCookieAuthentication(final HttpServletRequest request,
+        final HttpServletResponse response)
     {
         // The login token may be sent as a request cookie, let's look for it
         final Cookie[] cookies = request.getCookies();
@@ -172,7 +177,7 @@ public class TokenAuthenticationHandler extends DefaultAuthenticationFeedbackHan
             .findFirst()
             .orElse(null);
 
-        return processLoginToken(loginToken, false, request);
+        return processLoginToken(loginToken, false, request, response);
     }
 
     /**
@@ -185,12 +190,16 @@ public class TokenAuthenticationHandler extends DefaultAuthenticationFeedbackHan
      *         {@code null} otherwise
      */
     private AuthenticationInfo processLoginToken(final String loginToken, final boolean isLogin,
-        final HttpServletRequest request)
+        final HttpServletRequest request, final HttpServletResponse response)
     {
         // Try to parse it
         final TokenInfo token = this.tokenManager.parse(loginToken);
         // If it is not a valid token, then trying to parse it would return null
         if (token == null) {
+            if (loginToken != null) {
+                // A token was present, but not valid; let the user know that the link expired
+                showError(request, response);
+            }
             return null;
         }
         // Looks like a valid token, let's pass it to Oak for a proper check, including checking the secret key
@@ -203,5 +212,24 @@ public class TokenAuthenticationHandler extends DefaultAuthenticationFeedbackHan
         }
         AuthUtil.setLoginResourceAttribute(request, request.getContextPath());
         return info;
+    }
+
+    /**
+     * If the token sent in the request is not valid, let the user know that it expired by redirecting to a special
+     * page. The response is configured as a redirect and finalized.
+     *
+     * @param request the current request
+     * @param response the current response
+     */
+    private void showError(final HttpServletRequest request, final HttpServletResponse response)
+    {
+        // Signal the reason for login failure
+        request.setAttribute(FAILURE_REASON, "Invalid token");
+        dropCredentials(request, response);
+        try {
+            response.sendRedirect(request.getContextPath() + "/Expired.html");
+        } catch (IOException e) {
+            // Should not happen, but is not critical anyway
+        }
     }
 }

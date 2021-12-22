@@ -34,7 +34,6 @@
   <modules>
     <module>clinical-data</module>
     <module>frontend</module>
-    <module>patient-authentication</module>
     <module>feature</module>
   </modules>
 </project>

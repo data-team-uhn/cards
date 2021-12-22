@@ -24,3 +24,14 @@
 [cards:Token] > mix:referenceable
   - * (UNDEFINED)
   - * (UNDEFINED) multiple
+
+//-----------------------------------------------------------------------------
+// Simple nodetype for identifying the "link expired" page
+[cards:TokenExpired] > sling:Folder
+  // No attributes
+
+  // Properties:
+  // Hardcode the resource type
+  - sling:resourceType (STRING) = "cards/TokenExpired" mandatory autocreated protected
+  // Hardcode the resource supertype
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
