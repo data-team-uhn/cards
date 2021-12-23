@@ -92,7 +92,6 @@ function Form (props) {
   let [ selectorDialogOpen, setSelectorDialogOpen ] = useState(false);
   let [ selectorDialogError, setSelectorDialogError ] = useState("");
   let [ changedSubject, setChangedSubject ] = useState();
-  let [ saveDataPending, setSaveDataPending ] = useState(false);
   let [ errorCode, setErrorCode ] = useState();
   let [ errorMessage, setErrorMessage ] = useState("");
   let [ errorDialogDisplayed, setErrorDialogDisplayed ] = useState(false);
@@ -258,12 +257,6 @@ function Form (props) {
   }
 
   let handleSubmit = (event) => {
-    // Do not save when login in progress
-    // Prevents issue where submitting login dialog would try to save twice,
-    // once before login complete and once after
-    if (saveDataPending === true) {
-      return;
-    }
     saveData(event);
   }
 
