@@ -267,6 +267,10 @@ function Form (props) {
     saveData(event);
   }
 
+  let handlePageChange = (event) => {
+    saveData(event, false, fetchData);
+  }
+
   let onEdit = (event) => {
     // Redirect the user to the edit form mode
     props.history.push(urlBase + formURL + '.edit' + window.location.hash);
@@ -491,7 +495,7 @@ function Form (props) {
             }
             {pages &&
               Object.entries(data.questionnaire)
-                .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
+                .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']) && pages[key].page.visible)
                 .map(([key, entryDefinition]) => {
                   let pageResult = pages[key];
                   return <FormEntry
@@ -522,6 +526,7 @@ function Form (props) {
               paginationEnabled={paginationEnabled}
               questionnaireData={data.questionnaire}
               setPagesCallback={setPages}
+              savePage={handlePageChange}
               onDone={() => { setEndReached(true) }}
               doneLabel={doneLabel}
           />

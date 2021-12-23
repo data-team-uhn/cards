@@ -48,7 +48,7 @@ class Page {
  * Component that displays a page of a Form.
  */
 function FormPagination (props) {
-  let { classes, saveInProgress, lastSaveStatus, setPagesCallback, paginationEnabled, enableSave, onDone, doneLabel, questionnaireData } = props;
+  let { classes, saveInProgress, lastSaveStatus, setPagesCallback, paginationEnabled, enableSave, onDone, doneLabel, questionnaireData, savePage } = props;
 
   let [ savedLastPage, setSavedLastPage ] = useState(false);
   let [ pendingSubmission, setPendingSubmission ] = useState(false);
@@ -109,6 +109,7 @@ function FormPagination (props) {
   }
 
   let handleNext = () => {
+    savePage && savePage();
     setPendingSubmission(true);
     if (activePage === lastValidPage()) {
       setSavedLastPage(true);
@@ -120,6 +121,7 @@ function FormPagination (props) {
   }
 
   let handleBack = () => {
+    savePage && savePage();
     setPendingSubmission(true);
     if (activePage > 0) {
       handlePageChange("back");
@@ -145,7 +147,6 @@ function FormPagination (props) {
 
   let saveButton =
     <Button
-      type="submit"
       variant="contained"
       color="primary"
       disabled={saveInProgress}
@@ -169,7 +170,7 @@ function FormPagination (props) {
       activeStep={activePage + (isBack ? 1 : (lastSaveStatus && savedLastPage ? 1 : 0))}
       // Change the color of the back bar
       LinearProgressProps={isBack ? {classes: {barColorPrimary: classes.formStepperTopBar}}: null}
-      // Hide the backround of the front bar to segment of back bar
+      // Hide the background of the front bar to segment of back bar
       className={`${classes.formStepper} ${isBack && classes.formStepperBottom} ${!fullScreen && classes.formStepperFullScreen}`}
       classes={isBack ? null : {progress:classes.formStepperBottomBackground}}
       // base 0 to base 1, plus 1 for the "current page" region
@@ -178,7 +179,6 @@ function FormPagination (props) {
       backButton={
         lastValidPage() > 0
           ? <Button
-              type="submit"
               // Don't disable until form submission started
               disabled={(activePage === 0 && !pendingSubmission)
                 || saveInProgress
@@ -213,6 +213,7 @@ FormPagination.propTypes = {
   paginationEnabled: PropTypes.bool,
   questionnaireData: PropTypes.object.isRequired,
   setPagesCallback: PropTypes.func.isRequired,
+  savePage: PropTypes.func,
   lastSaveStatus: PropTypes.bool,
   saveInProgress: PropTypes.bool
 };
