@@ -719,7 +719,7 @@
   // Hardcode the resource supertype: each form is a resource.
   - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
-  - statusFlags (STRING) = "INCOMPLETE" mandatory autocreated
+  - statusFlags (STRING) = "INCOMPLETE" mandatory autocreated multiple
 
   // A reference to the questionnaire being filled in.
   // Mandatory, every form has a questionnaire.

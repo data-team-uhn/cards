@@ -42,11 +42,6 @@
 		<value>Objectifies degree of depression severity</value>
 		<type>String</type>
 	</property>
-	<property>
-		<name>frequency</name>
-		<value>2</value>
-		<type>Long</type>
-	</property>
 	<node>
 		<name>phq9_intro</name>
 		<primaryNodeType>cards:Information</primaryNodeType>

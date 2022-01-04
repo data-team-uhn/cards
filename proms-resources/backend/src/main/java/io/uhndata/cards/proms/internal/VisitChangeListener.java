@@ -135,9 +135,6 @@ public class VisitChangeListener implements EventHandler
             return;
         }
 
-        // TODO: Shortcut the question set pruning and end early if this visit already has forms for
-        // every entry in the questionnaireSet, so checking all visits doesn't happen unless needed
-
         pruneQuestionnaireSet(visitNode, visitInformation, questionnaireSetInfo);
 
         List<String> createdForms = createForms(visitNode, questionnaireSetInfo);
@@ -318,8 +315,8 @@ public class VisitChangeListener implements EventHandler
     /**
      * Remove any questionnaires from the questionnaire set which do not need to be created per their frequency.
      *
-     * Iterates through all of the patient's visits and checks these visits for forms that satisfy that form's
-     * frequency requirements. If that is the case, remove that form's questionnaire from the questionnaire set.
+     * Iterates through all of the patient's visits and checks these visits for completed forms that satisfy that
+     * form's frequency requirements. If that is the case, remove that form's questionnaire from the questionnaire set.
      *
      * @param visitNode the visit Subject which should be checked for forms
      * @param visitInformation the set of data about the visit that triggered this event
@@ -332,18 +329,22 @@ public class VisitChangeListener implements EventHandler
         throws RepositoryException
     {
         Node patientNode = visitNode.getParent();
+        String triggeringVisit = visitNode.getName();
         for (NodeIterator visits = patientNode.getNodes(); visits.hasNext();)
         {
             Node visit = visits.nextNode();
+            boolean visitIsTriggeringVisit = triggeringVisit.equals(visit.getName());
 
-            // Create a list of all forms that exist for this visit.
+            // Create a list of all complete forms that exist for this visit.
             // Record the visit's date as well, if there is a Visit Information form with a date.
             List<String> questionnaires = new LinkedList<>();
             Calendar visitDate = null;
             for (PropertyIterator forms = visit.getReferences(); forms.hasNext();)
             {
                 Node form = forms.nextProperty().getParent();
-                if (this.formUtils.isForm(form)) {
+                if (this.formUtils.isForm(form) && (visitIsTriggeringVisit || !isFormIncomplete(form))) {
+                    // Don't factor incomplete forms from previous visits into frequency requirements,
+                    // but consider them for the triggering visit to avoid duplication.
                     String questionnaireIdentifier = this.formUtils.getQuestionnaireIdentifier(form);
                     if (questionnaireIdentifier.equals(visitInformation.getQuestionnaireIdentifier())) {
                         visitDate = getFormDate(form, visitInformation.getTimeQuestionIdentifier());
@@ -375,8 +376,8 @@ public class VisitChangeListener implements EventHandler
      * @param visitNode the visit which should be the new form's subject
      * @param questionnaireSetInfo the set of questionnaires which should be created
      * @return a list of paths for all created forms
-     * @throws PersistenceException TODO: document
-     * @throws RepositoryException TODO: document
+     * @throws PersistenceException if a form could not be created
+     * @throws RepositoryException if the Forms node could not be resolved
      */
     private List<String> createForms(Node visitNode, Map<String,
         QuestionnaireFrequency> questionnaireSetInfo)
@@ -386,6 +387,7 @@ public class VisitChangeListener implements EventHandler
 
         for (String questionnaireIdentifier: questionnaireSetInfo.keySet()) {
             Map<String, Object> formProperties = new HashMap<>();
+
             formProperties.put("jcr:primaryType", "cards:Form");
             formProperties.put("questionnaire", questionnaireSetInfo.get(questionnaireIdentifier).getNode());
             formProperties.put("subject", visitNode);
@@ -490,7 +492,7 @@ public class VisitChangeListener implements EventHandler
 
                 Node answer = getFormAnswer(visitInformationForm, surveysCompleteIdentifier);
                 answer.setProperty("value", 1L);
-                answer.save();
+                this.session.save();
 
                 try {
                     versionManager.checkin(formPath);
