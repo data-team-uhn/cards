@@ -46,7 +46,8 @@
             <Include-Resource>{maven-resources}</Include-Resource>
             <Sling-Nodetypes>SLING-INF/nodetypes/token.cnd</Sling-Nodetypes>
             <Sling-Initial-Content>
-              SLING-INF/content/libs/cards/TokenExpired;path:=/libs/cards/TokenExpired;overwrite:=true,
+              SLING-INF/content/libs/cards/TokenExpired/;path:=/libs/cards/TokenExpired/;overwrite:=true,
+              SLING-INF/content/libs/cards/Subject/;path:=/libs/cards/Subject/;overwrite:=true,
             </Sling-Initial-Content>
           </instructions>
         </configuration>
