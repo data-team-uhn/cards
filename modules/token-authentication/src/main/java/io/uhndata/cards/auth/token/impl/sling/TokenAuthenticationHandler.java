@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.uhndata.cards.auth.tokenguest.impl.sling;
+package io.uhndata.cards.auth.token.impl.sling;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -36,7 +36,7 @@ import org.apache.sling.jcr.resource.api.JcrResourceConstants;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-import io.uhndata.cards.auth.tokenguest.TokenManager;
+import io.uhndata.cards.auth.token.TokenManager;
 
 /**
  * Implements the Sling part of token authentication, reading authentication data from the request and passing the

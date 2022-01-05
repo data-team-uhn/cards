@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.uhndata.cards.auth.tokenguest.impl;
+package io.uhndata.cards.auth.token.impl;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.file.AccessDeniedException;
@@ -46,7 +46,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.uhndata.cards.auth.tokenguest.TokenManager;
+import io.uhndata.cards.auth.token.TokenManager;
 
 /**
  * Implementation of the {@link TokenManager} service using {@code cards:Token} nodes.

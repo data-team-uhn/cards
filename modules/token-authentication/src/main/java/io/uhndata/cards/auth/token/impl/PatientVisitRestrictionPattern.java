@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.uhndata.cards.auth.tokenguest.impl;
+package io.uhndata.cards.auth.token.impl;
 
 import javax.jcr.Session;
 

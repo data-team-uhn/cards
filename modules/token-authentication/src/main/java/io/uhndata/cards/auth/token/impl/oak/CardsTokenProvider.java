@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.uhndata.cards.auth.tokenguest.impl.oak;
+package io.uhndata.cards.auth.token.impl.oak;
 
 import java.util.Map;
 
@@ -29,7 +29,7 @@ import org.apache.jackrabbit.oak.spi.security.authentication.token.TokenConstant
 import org.apache.jackrabbit.oak.spi.security.authentication.token.TokenInfo;
 import org.apache.jackrabbit.oak.spi.security.authentication.token.TokenProvider;
 
-import io.uhndata.cards.auth.tokenguest.impl.CardsTokenImpl;
+import io.uhndata.cards.auth.token.impl.CardsTokenImpl;
 
 /**
  * Custom token provider that uses {@code cards:Token} nodes to store authentication tokens, to be used with the Oak
