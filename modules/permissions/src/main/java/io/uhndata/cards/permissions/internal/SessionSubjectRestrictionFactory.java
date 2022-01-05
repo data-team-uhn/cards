@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.uhndata.cards.auth.token.impl;
+package io.uhndata.cards.permissions.internal;
 
 import javax.jcr.Session;
 
@@ -33,18 +33,18 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import io.uhndata.cards.permissions.spi.RestrictionFactory;
 
 /**
- * Factory for {@link PatientVisitRestrictionPattern}.
+ * Factory for {@link SessionSubjectRestrictionPattern}.
  *
  * @version $Id$
  */
 @Component(immediate = true)
-public class PatientVisitRestrictionFactory implements RestrictionFactory
+public class SessionSubjectRestrictionFactory implements RestrictionFactory
 {
     /** @see #getName */
-    public static final String NAME = "cards:visit";
+    public static final String NAME = "cards:sessionSubject";
 
     /**
-     * This is needed to get access to the current session, which knows if there is a visit bound to it.
+     * This is needed to get access to the current session, which knows if there is a subject bound to it.
      */
     @Reference(fieldOption = FieldOption.REPLACE,
         cardinality = ReferenceCardinality.OPTIONAL,
@@ -58,7 +58,7 @@ public class PatientVisitRestrictionFactory implements RestrictionFactory
         if (this.rrf != null && this.rrf.getThreadResourceResolver() != null) {
             session = this.rrf.getThreadResourceResolver().adaptTo(Session.class);
         }
-        return new PatientVisitRestrictionPattern(session);
+        return new SessionSubjectRestrictionPattern(session);
     }
 
     @Override

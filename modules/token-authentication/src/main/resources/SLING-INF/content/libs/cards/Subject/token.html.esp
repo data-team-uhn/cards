@@ -34,6 +34,6 @@ if (time.hasNext()) {
 } else {
         time = get10MinExpiry();
 }
-var token = sling.getService(Packages.io.uhndata.cards.auth.token.TokenManager).create("patient", time, {"cards:visit": currentNode.getIdentifier()});
+var token = sling.getService(Packages.io.uhndata.cards.auth.token.TokenManager).create("patient", time, {"cards:sessionSubject": currentNode.getPath()});
 out.println(token.getToken());
 %>

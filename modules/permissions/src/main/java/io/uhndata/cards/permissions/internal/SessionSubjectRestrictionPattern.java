@@ -16,8 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.uhndata.cards.auth.token.impl;
+package io.uhndata.cards.permissions.internal;
 
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.apache.commons.lang3.StringUtils;
@@ -27,15 +28,18 @@ import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.security.authorization.restriction.RestrictionPattern;
 
 /**
- * A restriction that makes a permissions entry only be valid on a form or subject node if the authentication is tied to
- * a specific visit, which is what token-based authentication does, and that visit is the subject of the form, the Visit
- * subject itself, or the parent Patient subject of the Visit.
+ * A restriction that makes a permissions entry only be valid on a form or subject node if the session is bound to a
+ * specific subject, and the accessed node belongs to a form that has the target subject as its subject, is the target
+ * subject node itself, or one of its ancestor subjects. Having a subject "bound" to the session means that the session
+ * has an attribute named {@code cards:sessionSubject} with a path leading to a subject as its value. The attributes are
+ * taken from the credentials used to authenticate when creating the session, so this happens automatically when logging
+ * in via a token if the token has such property.
  *
  * @version $Id$
  */
-public class PatientVisitRestrictionPattern implements RestrictionPattern
+public class SessionSubjectRestrictionPattern implements RestrictionPattern
 {
-    /** The current session, which may contain a visit identifier. */
+    /** The current session, which may contain a subject identifier. */
     private final Session session;
 
     /**
@@ -43,7 +47,7 @@ public class PatientVisitRestrictionPattern implements RestrictionPattern
      *
      * @param session the current session
      */
-    public PatientVisitRestrictionPattern(final Session session)
+    public SessionSubjectRestrictionPattern(final Session session)
     {
         this.session = session;
     }
@@ -67,56 +71,49 @@ public class PatientVisitRestrictionPattern implements RestrictionPattern
     public boolean matches(final Tree tree, final PropertyState property)
     {
         if (this.session == null) {
-            // No session, no visit
+            // No session, no bound subject
             return false;
         }
 
-        final String sessionVisit = (String) this.session.getAttribute("cards:visit");
-        if (StringUtils.isBlank(sessionVisit)) {
-            // No visit identifier, the access rule does not apply
+        final String sessionSubject = (String) this.session.getAttribute("cards:sessionSubject");
+        if (StringUtils.isBlank(sessionSubject)) {
+            // No bound subject, the access rule does not apply
             return false;
         }
 
-        return isFormForVisit(tree, sessionVisit) || isSubjectForVisit(tree, sessionVisit);
+        return isFormForSubject(tree, sessionSubject) || isSubjectOrAncestor(tree, sessionSubject);
     }
 
-    private boolean isFormForVisit(final Tree start, final String sessionVisit)
+    private boolean isFormForSubject(final Tree start, final String sessionSubject)
     {
         final Tree form = findAncestor(start, "cards:Form");
         if (form == null) {
+            // Not part of a form
             return false;
         }
 
         // This is a form. Check if the node has a subject
         final PropertyState subjectProperty = form.getProperty("subject");
-        // There is a subject set, this authorization rule only applies if the subject
-        // is the same as the target visit
-        return subjectProperty != null && StringUtils.equals(subjectProperty.getValue(Type.STRING), sessionVisit);
+        // If there is a subject set, this authorization rule only applies if it is the same as the session's subject
+        try {
+            return subjectProperty != null && StringUtils.equals(sessionSubject,
+                this.session.getNodeByIdentifier(subjectProperty.getValue(Type.STRING)).getPath());
+        } catch (RepositoryException e) {
+            return false;
+        }
     }
 
-    private boolean isSubjectForVisit(final Tree start, final String sessionVisit)
+    private boolean isSubjectOrAncestor(final Tree start, final String sessionSubject)
     {
         final Tree subject = findAncestor(start, "cards:Subject");
         if (subject == null) {
+            // Not part of a subject
             return false;
         }
 
-        // This is a subject. Check if the node is the right subject.
-        final PropertyState uuidProperty = subject.getProperty("jcr:uuid");
-        // There is a subject set, this authorization rule only applies if the subject
-        // is the same as the target visit
-        boolean result = uuidProperty != null && StringUtils.equals(uuidProperty.getValue(Type.STRING), sessionVisit);
-        if (!result) {
-            // We also want to allow access to the Patient subject that is parent for the visit
-            // Look for the target visit among the children of the current subject
-            for (Tree child : subject.getChildren()) {
-                if (child.hasProperty("jcr:uuid")
-                    && StringUtils.equals(child.getProperty("jcr:uuid").getValue(Type.STRING), sessionVisit)) {
-                    return true;
-                }
-            }
-        }
-        return result;
+        // This is a subject, this authorization rule only applies if it is the same as the session's subject or one of
+        // its ancestors
+        return StringUtils.startsWith(sessionSubject, subject.getPath());
     }
 
     private Tree findAncestor(final Tree start, final String targetNodetype)
