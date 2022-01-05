@@ -63,7 +63,7 @@ export default function TokenExpired() {
           </Grid>
           <Grid item>
             <Typography variant="h1" color="primary" gutterBottom>
-              The link expired, please close the page.
+              This link is no longer valid, please close the page.
             </Typography>
           </Grid>
         </Grid>
