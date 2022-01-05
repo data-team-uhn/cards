@@ -52,5 +52,6 @@
     <module>upgrade-marker</module>
     <module>vocabularies-ignore</module>
     <module>statistics</module>
+    <module>email-notifications</module>
   </modules>
 </project>
