@@ -78,6 +78,8 @@ function QuestionnaireSet(props) {
   // Questionnaire set title, to display to the patient user
   const [ title, setTitle ] = useState();
   // The ids of the questionnaires in this set
+  const [ questionnaireSetIds, setQuestionnaireSetIds ] = useState();
+  // The ids of the questionnaires displayed to the patient
   const [ questionnaireIds, setQuestionnaireIds ] = useState();
   // Map questionnaire id -> title, path and optional time estimate (in minutes) for filling it out
   const [ questionnaires, setQuestionnaires ] = useState();
@@ -161,12 +163,15 @@ function QuestionnaireSet(props) {
     fetchWithReLogin(globalLoginDisplay, `${subject}.data.deep.json`)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
+        let ids = [];
         let data = {};
-        questionnaireIds.forEach(q => {
+        questionnaireSetIds.forEach(q => {
           if (json[questionnaires[q]?.title]?.[0]?.['jcr:primaryType'] == "cards:Form") {
             data[q] = json[questionnaires[q]?.title][0];
+            ids.push(q);
           }
         });
+        setQuestionnaireIds(ids);
         setSubjectData(data);
       })
       .catch((response) => {
@@ -186,7 +191,7 @@ function QuestionnaireSet(props) {
         } else {
           setError(`Loading the survey failed with error code ${response.status}: ${response.statusText}`);
         }
-        setQuestionnaireIds(null);
+        setQuestionnaireSetIds(null);
       });
   }
 
@@ -195,7 +200,7 @@ function QuestionnaireSet(props) {
     setTitle(json.name);
 
     // Extract the ids
-    setQuestionnaireIds(
+    setQuestionnaireSetIds(
       Object.values(json || {})
         .filter(value => value['jcr:primaryType'] == 'cards:QuestionnaireRef')
         .sort((a, b) => (a.order - b.order))
@@ -318,7 +323,8 @@ function QuestionnaireSet(props) {
         <ListItemAvatar>{isFormComplete(q) ? doneIndicator : stepIndicator(i)}</ListItemAvatar>
         <ListItemText
           primary={questionnaires[q]?.title}
-          secondary={!isFormComplete(q) && (displayEstimate(q) + (subjectData[q] ? " (in progress)" : ""))}
+          secondary={!isFormComplete(q) && (displayEstimate(q)
+            + (subjectData[q]?.["jcr:lastModifiedBy"] === "patient" ? " (in progress)" : ""))}
         />
       </ListItem>
     ))}
