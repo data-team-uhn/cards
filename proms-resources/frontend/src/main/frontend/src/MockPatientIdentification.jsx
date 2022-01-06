@@ -21,6 +21,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 import {
   Button,
+  DialogActions,
+  DialogContent,
   FormControl,
   FormHelperText,
   Grid,
@@ -29,6 +31,9 @@ import {
   Typography,
   makeStyles
 } from '@material-ui/core';
+
+import FormattedText from "./components/FormattedText.jsx";
+import ResponsiveDialog from "./components/ResponsiveDialog";
 
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
@@ -91,6 +96,12 @@ function MockPatientIdentification(props) {
 
   const [ subjectTypes, setSubjectTypes ] = useState();
 
+  const [ touAccepted, setTouAccepted ] = useState(false);
+  const [ touText, setTouText ] = useState('');
+  const [ showTou, setShowTou ] = useState(false);
+  const [ showConfirmationTou, setShowConfirmationTou ] = useState(false);
+  const [ pformPath, setPFormPath ] = useState('');
+
   const classes = useStyles();
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
@@ -126,6 +137,9 @@ function MockPatientIdentification(props) {
       return;
     }
     setError("");
+    setIdData(null);
+    setPatient(null);
+    setVisit(null);
     let data = identify();
     if (data) {
       setIdData(data);
@@ -134,7 +148,7 @@ function MockPatientIdentification(props) {
     }
   }
 
-  // When the identification data is successfuly obtained, get the patient subject's path
+  // When the identification data is successfully obtained, get the patient subject's path
   useEffect(() => {
     idData && getPatient();
   }, [idData]);
@@ -164,12 +178,11 @@ function MockPatientIdentification(props) {
     );
   }
 
-  // When the visit is successfully obtained, pass it along with the identification data
+  // When the visit is successfully obtained ant terms of use accepted, pass it along with the identification data
   // to the parent component
   useEffect(() => {
-    visit && onSuccess && onSuccess(Object.assign({subject: visit}, idData));
-  }, [visit]);
-
+    visit && touAccepted && onSuccess && onSuccess(Object.assign({subject: visit}, idData));
+  }, [visit, touAccepted]);
 
   // Get the path of a subject with a specific identifier
   // if the subject doesn't exist, create it
@@ -253,9 +266,8 @@ function MockPatientIdentification(props) {
         // Check if the data includes a patient information form
         let piForm = json?.[piDefinition['title']]?.[0];
         if (piForm?.["jcr:primaryType"] == "cards:Form") {
-          // The form already exists, get its path for the update request
-          updatePatientInfo(piForm['@path']);
-
+          // The form already exists, check terms of use and get its path for the update request
+          checkTou(piForm.tou_accepted.value, piForm['@path']);
         } else {
           // The form doesn't exist, generate the path and populate the request data for form creation
           let request_data = new FormData();
@@ -268,7 +280,7 @@ function MockPatientIdentification(props) {
 
           // Create or update the Patient information form
           fetchWithReLogin(globalLoginDisplay, formPath, { method: 'POST', body: request_data })
-            .then( (response) => response.ok ? updatePatientInfo(formPath) : Promise.reject(response))
+            .then( (response) => response.ok ? checkTou(false, formPath) : Promise.reject(response))
             .catch((response) => {
               setError(`Information sync failed with error code ${response.status}: ${response.statusText}`);
             });
@@ -280,10 +292,46 @@ function MockPatientIdentification(props) {
       });
   }
 
-  let updatePatientInfo = (formPath) => {
-    let request_data = new FormData();
+  const checkTou = (touAccepted, formPath) => {
+    if (!touAccepted) {
+      setPFormPath(formPath);
+      setShowTou(true);
+    } else {
+      updatePatientInfo(formPath);
+    }
+  }
+
+  const onAccept = () => {
+    setShowConfirmationTou(false);
+    setShowTou(false);
+    updatePatientInfo(pformPath);
+  }
+
+  const onDecline = () => {
+    setShowConfirmationTou(true);
+  }
+
+  const onFinalDecline = () => {
+    setShowConfirmationTou(false);
+    setShowTou(false);
+    setIdData(null);
+    setPatient(null);
+  }
+
+  // Show terms of use dialog
+  useEffect(() => {
+    if (showTou) {
+      let tou = require('./TOU.json');
+      setTouText(tou.text);
+      setShowTou(true);
+    }
+  }, [showTou]);
+
+  const updatePatientInfo = (formPath) => {
+     let request_data = new FormData();
      // Populate the request data with the values obtained when identifying the patient
      let fields = Object.keys(piDefinition).filter(k => piDefinition[k]?.["jcr:primaryType"] == "cards:Question");
+     idData.tou_accepted = 1;
      fields.forEach(f => {
        let qDef = piDefinition[f];
        let type = (qDef.dataType || 'text');
@@ -297,12 +345,12 @@ function MockPatientIdentification(props) {
        request_data.append(`./${f}/value`, idData[f]);
        request_data.append(`./${f}/value@TypeHint`, type == 'Text' ? 'String' : type);
      })
-
      // Update the Patient information form
      fetchWithReLogin(globalLoginDisplay, formPath, { method: 'POST', body: request_data })
-       .then( (response) => response.ok ? null : Promise.reject(response))
+       .then( (response) => response.ok ? setTouAccepted(true) : Promise.reject(response))
        .catch((response) => {
-         setError(`Information sync failed with error code ${response.status}: ${response.statusText}`);
+         let errMsg = "Information sync failed";
+         setError(errMsg + (response.status ? ` with error code ${response.status}: ${response.statusText}` : ''));
        });
   }
 
@@ -313,7 +361,33 @@ function MockPatientIdentification(props) {
     return null;
   }
 
-  return (
+  return (<>
+   <ResponsiveDialog title="Terms of Use" open={showTou} width="lg" >
+     <DialogContent dividers>
+       <FormattedText variant="caption">{touText}</FormattedText>
+     </DialogContent>
+     <DialogActions>
+       <Button color="primary" onClick={onAccept} variant="contained">
+         Accept
+       </Button>
+       <Button color="default" onClick={onDecline} variant="contained" >
+         Decline
+       </Button>
+     </DialogActions>
+   </ResponsiveDialog>
+   <ResponsiveDialog title="Terms of Use" open={showConfirmationTou} >
+     <DialogContent dividers>
+       You can only fill out your pre-appointment surveys online after accepting the DATA PRO Terms of Use
+     </DialogContent>
+     <DialogActions>
+       <Button color="primary" onClick={onAccept} variant="contained" >
+         Accept Terms of Use
+       </Button>
+       <Button color="default" onClick={onFinalDecline} variant="contained" >
+         Decline
+       </Button>
+     </DialogActions>
+   </ResponsiveDialog>
     <form className={classes.form} onSubmit={onSubmit} >
       <Grid container direction="column" spacing={4} alignItems="center" justify="center">
          <Grid item xs={12}>
@@ -371,7 +445,7 @@ function MockPatientIdentification(props) {
           </Grid>
        </Grid>
     </form>
-  )
+  </>)
 }
 
 export default MockPatientIdentification;
