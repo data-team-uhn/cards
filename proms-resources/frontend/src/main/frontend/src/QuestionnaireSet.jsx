@@ -239,35 +239,7 @@ function QuestionnaireSet(props) {
     if (subjectData[nextQuestionnaire['@name']]) {
       // Form already exists and is incomplete: prepare to edit it
       setCrtFormId(subjectData[nextQuestionnaire['@name']]['@name']);
-    } else {
-      // Form doesn't exist: create it
-      let formId = uuidv4();
-      createNextForm(formId, () => setCrtFormId(formId));
     }
-  }
-
-  let createNextForm = (formId, successCallback) => {
-    if (!formId) return;
-    // Make a POST request to create a new form, with a randomly generated UUID
-    const URL = "/Forms/" + formId;
-    var request_data = new FormData();
-    request_data.append('jcr:primaryType', 'cards:Form');
-    request_data.append('questionnaire', nextQuestionnaire["@path"]);
-    request_data.append('questionnaire@TypeHint', 'Reference');
-    request_data.append('subject', subject);
-    request_data.append('subject@TypeHint', 'Reference');
-    fetchWithReLogin(globalLoginDisplay, URL, { method: 'POST', body: request_data })
-      .then( (response) => {
-        if (response.ok) {
-          // Advance to the next step
-          successCallback();
-        } else {
-          return(Promise.reject(response));
-        }
-      })
-      .catch((response) => {
-        setError(`New form request failed with error code ${response.status}: ${response.statusText}`);
-      });
   }
 
   // Load all questionnaires that need to be filled out
