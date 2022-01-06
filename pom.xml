@@ -534,6 +534,23 @@
         <artifactId>slingfeature-maven-plugin</artifactId>
         <extensions>true</extensions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <!-- Deploy a copy locally, to avoid coflicts with other builds -->
+        <executions>
+          <execution>
+            <id>local-deploy</id>
+            <phase>install</phase>
+            <goals>
+              <goal>deploy</goal>
+            </goals>
+            <configuration>
+              <altDeploymentRepository>localBuild::default::file://.mvnrepo</altDeploymentRepository>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
     <pluginManagement>
       <plugins>
@@ -672,6 +689,9 @@
             <filesets>
               <fileset>
                 <directory>src/main/frontend/dist/</directory>
+              </fileset>
+              <fileset>
+                <directory>.mvnrepo/</directory>
               </fileset>
             </filesets>
           </configuration>
