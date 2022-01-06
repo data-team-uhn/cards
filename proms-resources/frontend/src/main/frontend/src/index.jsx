@@ -21,6 +21,8 @@ import ReactDOM from "react-dom";
 import { Router, Route, Redirect, Switch } from "react-router-dom";
 import {
   AppBar,
+  DialogContent,
+  Link,
   Toolbar,
   Typography,
   makeStyles,
@@ -28,8 +30,10 @@ import {
 import { createBrowserHistory } from "history";
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { appTheme } from "./themePalette.jsx";
-import QuestionnaireSet from "./QuestionnaireSet.jsx"
-import PatientIdentification from "./MockPatientIdentification.jsx"
+import QuestionnaireSet from "./QuestionnaireSet.jsx";
+import PatientIdentification from "./MockPatientIdentification.jsx";
+import FormattedText from "./components/FormattedText.jsx";
+import ResponsiveDialog from "./components/ResponsiveDialog";
 
 const useStyles = makeStyles(theme => ({
   appbar : {
@@ -43,6 +47,10 @@ const useStyles = makeStyles(theme => ({
   },
   logo : {
     maxHeight: theme.spacing(4),
+  },
+  tou : {
+    verticalAlign: "text-bottom",
+    left: theme.spacing(0.5),
   }
 }));
 
@@ -50,8 +58,11 @@ function PromsHomepage (props) {
   // Current user and associated subject
   const [ username, setUsername ] = useState("");
   const [ subject, setSubject ] = useState();
+  const [ showTou, setShowTou ] = useState(false);
 
   const classes = useStyles();
+
+  const tou = require('./TOU.json');
 
   let onPatientIdentified = (p) => {
     setUsername(`${p.first_name} ${p.last_name}`);
@@ -68,7 +79,19 @@ function PromsHomepage (props) {
   return (<>
     <AppBar position="static" className={classes.appbar}>
       <Toolbar variant="dense" className={classes.toolbar}>
-        <img src="/libs/cards/resources/logo.png" alt="logo" className={classes.logo} />
+        <div>
+          <img src="/libs/cards/resources/logo.png" alt="logo" className={classes.logo} />
+          <Link
+            component="button"
+            color="inherit"
+            variant="body2"
+            underline="always"
+            onClick={() => {setShowTou(true);}}
+            className={classes.tou}
+          >
+            Terms of Use
+          </Link>
+        </div>
         { username &&
           <Typography variant="h6" color="inherit">
             Hello, {username}
@@ -77,6 +100,17 @@ function PromsHomepage (props) {
       </Toolbar>
     </AppBar>
     <QuestionnaireSet id={promId} subject={subject} />
+    <ResponsiveDialog
+      title="Terms of Use"
+      open={showTou}
+      withCloseButton
+      width="lg"
+      onClose={() => {setShowTou(false);}}
+    >
+     <DialogContent dividers>
+       <FormattedText variant="caption">{tou.text}</FormattedText>
+     </DialogContent>
+   </ResponsiveDialog>
   </>);
 }
 
