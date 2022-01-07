@@ -323,7 +323,8 @@ public class PatientLocalStorage
             "sex", obj -> obj.getString("sex"),
             "first_name", obj -> obj.getJsonObject("name").getJsonArray("given").getString(0),
             "last_name", obj -> obj.getJsonObject("name").getString("family"),
-            "email", obj -> obj.getJsonObject("com").getString("email")
+            "email", obj -> obj.getJsonObject("com").getString("email"),
+            "email_ok", obj -> obj.getString("emailOk")
         );
 
         Map<String, String> dateMapping = Map.of(
