@@ -31,8 +31,8 @@ import {
   makeStyles
 } from '@material-ui/core';
 
-import FormattedText from "./components/FormattedText.jsx";
 import ResponsiveDialog from "./components/ResponsiveDialog";
+import ToUDialog from "./ToUDialog.jsx";
 
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
@@ -64,7 +64,6 @@ function MockPatientIdentification(props) {
   const [ subjectTypes, setSubjectTypes ] = useState();
 
   const [ touAccepted, setTouAccepted ] = useState(false);
-  const [ touText, setTouText ] = useState('');
   const [ showTou, setShowTou ] = useState(false);
   const [ showConfirmationTou, setShowConfirmationTou ] = useState(false);
   const [ pformPath, setPFormPath ] = useState('');
@@ -145,7 +144,7 @@ function MockPatientIdentification(props) {
     );
   }
 
-  // When the visit is successfully obtained ant terms of use accepted, pass it along with the identification data
+  // When the visit is successfully obtained and Terms of Use accepted, pass it along with the identification data
   // to the parent component
   useEffect(() => {
     visit && touAccepted && onSuccess && onSuccess(Object.assign({subject: visit}, idData));
@@ -288,8 +287,6 @@ function MockPatientIdentification(props) {
   // Show terms of use dialog
   useEffect(() => {
     if (showTou) {
-      let tou = require('./TOU.json');
-      setTouText(tou.text);
       setShowTou(true);
     }
   }, [showTou]);
@@ -329,10 +326,7 @@ function MockPatientIdentification(props) {
   }
 
   return (<>
-   <ResponsiveDialog title="Terms of Use" open={showTou} width="lg" >
-     <DialogContent dividers>
-       <FormattedText variant="caption">{touText}</FormattedText>
-     </DialogContent>
+   <ToUDialog open={showTou}>
      <DialogActions>
        <Button color="primary" onClick={onAccept} variant="contained">
          Accept
@@ -341,8 +335,8 @@ function MockPatientIdentification(props) {
          Decline
        </Button>
      </DialogActions>
-   </ResponsiveDialog>
-   <ResponsiveDialog title="Terms of Use" open={showConfirmationTou} >
+   </ToUDialog>
+   <ResponsiveDialog open={showConfirmationTou} >
      <DialogContent dividers>
        You can only fill out your pre-appointment surveys online after accepting the DATA PRO Terms of Use
      </DialogContent>
