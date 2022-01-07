@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -34,6 +35,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.version.VersionManager;
+import javax.json.JsonArray;
 import javax.json.JsonObject;
 
 import org.apache.sling.api.resource.PersistenceException;
@@ -53,7 +55,7 @@ import org.slf4j.LoggerFactory;
 public class PatientLocalStorage
 {
     /** Default logger. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(NightlyImport.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PatientLocalStorage.class);
 
     /** The Sling property name for Node types. */
     private static final String PRIMARY_TYPE = "jcr:primaryType";
@@ -81,8 +83,9 @@ public class PatientLocalStorage
 
     /**
      * Store the patient details given to us.
+     * @param date The date of the appointment to find from within the patient
      */
-    public void store()
+    public void store(Calendar date)
     {
         String mrn = this.patientDetails.getString("mrn");
         Set<String> nodesToCheckin = new HashSet<String>();
@@ -94,12 +97,30 @@ public class PatientLocalStorage
             updatePatientInformationForm(patientInfo, this.patientDetails, this.resolver);
 
             // Update information about the visit ("appointment" is used interchangably here)
-            JsonObject appointmentDetails = this.patientDetails.getJsonObject("nextAppointment");
-            Resource visit = getOrCreateSubject(appointmentDetails.getString("fhirID"),
-                "/SubjectTypes/Patient/Visit/", patient, this.resolver, nodesToCheckin);
-            Resource visitInfo = getOrCreateForm(visit, "/Questionnaires/Visit information/", this.resolver,
-                nodesToCheckin);
-            updateVisitInformationForm(visitInfo, appointmentDetails, this.resolver);
+            JsonArray appointmentDetails = this.patientDetails.getJsonArray("appointments");
+            for (int i = 0; i < appointmentDetails.size(); i++) {
+                // In one usage of patientLocalStorage.store(), only store those with a specific date
+                JsonObject thisAppointment = appointmentDetails.getJsonObject(i);
+                try {
+                    Date thisDate = new SimpleDateFormat("yyyy-MM-dd").parse(thisAppointment.getString("time"));
+                    Calendar thisCalendar = Calendar.getInstance();
+                    thisCalendar.setTime(thisDate);
+                    if (!(thisCalendar.get(Calendar.DAY_OF_YEAR) == date.get(Calendar.DAY_OF_YEAR)
+                        && thisCalendar.get(Calendar.YEAR) == date.get(Calendar.YEAR))) {
+                        continue;
+                    }
+
+                    Resource visit = getOrCreateSubject(thisAppointment.getString("fhirID"),
+                        "/SubjectTypes/Patient/Visit/", patient, this.resolver, nodesToCheckin);
+                    Resource visitInfo = getOrCreateForm(visit, "/Questionnaires/Visit information/", this.resolver,
+                        nodesToCheckin);
+                    updateVisitInformationForm(visitInfo, thisAppointment, this.resolver);
+                } catch (ParseException e) {
+                    //TODO: handle exception
+                    LOGGER.error("Could not parse date for appointment {}: {}", thisAppointment.getString("fhirID"),
+                        e.getMessage(), e);
+                }
+            }
 
             final Session session = this.resolver.adaptTo(Session.class);
             session.save();
@@ -132,10 +153,12 @@ public class PatientLocalStorage
         Set<String> nodesToCheckin)
         throws RepositoryException, PersistenceException
     {
-        Iterator<Resource> patientResource = resolver.findResources(String.format(
+        Iterator<Resource> patientResourceIter = resolver.findResources(String.format(
             "SELECT * FROM [cards:Subject] WHERE identifier = \"%s\"", identifier), PatientLocalStorage.JCR_SQL);
-        if (patientResource.hasNext()) {
-            return patientResource.next();
+        if (patientResourceIter.hasNext()) {
+            Resource patientResource = patientResourceIter.next();
+            nodesToCheckin.add(patientResource.getPath());
+            return patientResource;
         } else {
             Resource parentResource = parent;
             if (parentResource == null) {
@@ -167,12 +190,14 @@ public class PatientLocalStorage
     {
         Resource formType = resolver.getResource(questionnairePath);
         Node subjectNode = subject.adaptTo(Node.class);
-        Iterator<Resource> formResource = resolver.findResources(String.format(
+        Iterator<Resource> formResourceIter = resolver.findResources(String.format(
             "SELECT * FROM [cards:Form] WHERE subject = \"%s\" AND questionnaire=\"%s\"",
             subjectNode.getProperty("jcr:uuid").getString(),
             formType.adaptTo(Node.class).getProperty("jcr:uuid").getString()), PatientLocalStorage.JCR_SQL);
-        if (formResource.hasNext()) {
-            return formResource.next();
+        if (formResourceIter.hasNext()) {
+            Resource formResource = formResourceIter.next();
+            nodesToCheckin.add(formResource.getPath());
+            return formResource;
         } else {
             Resource parentResource = resolver.getResource("/Forms/");
             Resource newForm = resolver.create(parentResource, UUID.randomUUID().toString(), Map.of(

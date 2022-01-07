@@ -117,7 +117,7 @@ public class ImportTask implements Runnable
         String postRequestTemplate = "{\"query\": \"query{"
             + "patientsByDateAndClinic(clinic: \\\"PMH 8 Palliative Care Oncology Clinic\\\", date: \\\"%s\\\") {"
             + "name {given family} sex mrn ohip dob emailOk com {email} "
-            + "nextAppointment {fhirID time status attending {name {family}}} }}\"}";
+            + "appointments {fhirID time status attending {name {family}}} }}\"}";
         Calendar dateToQuery = Calendar.getInstance();
         Date today = new Date();
         dateToQuery.setTime(today);
@@ -137,7 +137,7 @@ public class ImportTask implements Runnable
                 for (int j = 0; j < data.size(); j++) {
                     PatientLocalStorage thisPatient = new PatientLocalStorage(data.getJsonObject(j),
                         this.resolverFactory.getResourceResolver(null));
-                    thisPatient.store();
+                    thisPatient.store(dateToQuery);
                 }
             } catch (Exception e) {
                 LOGGER.error("Failed to query server: {}", e.getMessage(), e);
