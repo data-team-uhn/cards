@@ -61,7 +61,7 @@ function ToUDialog(props) {
       onClose={onClose}
     >
       <DialogContent dividers>
-       <FormattedText>{tou.text.join('\\\n')}</FormattedText>
+       <FormattedText>{tou.text.join('  \n\n')}</FormattedText>
       </DialogContent>
       { children }
     </ResponsiveDialog>
