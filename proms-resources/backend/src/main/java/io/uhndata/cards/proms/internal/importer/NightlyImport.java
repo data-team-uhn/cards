@@ -48,10 +48,10 @@ public class NightlyImport
     @Activate
     protected void activate(NightlyImportConfig config, ComponentContext componentContext) throws Exception
     {
-        LOGGER.info("NightlyImport activating");
+        LOGGER.info("NightlyTorchImport activating");
         final String nightlyImportSchedule = config.nightly_import_schedule();
         ScheduleOptions options = this.scheduler.EXPR(nightlyImportSchedule);
-        options.name("NightlyImport");
+        options.name("NightlyTorchImport");
         options.canRunConcurrently(true);
 
         final Runnable importJob;
@@ -63,7 +63,7 @@ public class NightlyImport
                 this.scheduler.schedule(importJob, options);
             }
         } catch (Exception e) {
-            LOGGER.error("NightlyImport Failed to schedule: {}", e.getMessage(), e);
+            LOGGER.error("NightlyTorchImport Failed to schedule: {}", e.getMessage(), e);
         }
     }
 }

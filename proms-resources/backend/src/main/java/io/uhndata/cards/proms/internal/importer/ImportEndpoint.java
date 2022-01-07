@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(
     resourceTypes = { "cards/SubjectsHomepage" },
-    selectors = { "import" })
+    selectors = { "importTorch" })
 @Designate(ocd = EndpointImportConfig.class)
 public class ImportEndpoint extends SlingSafeMethodsServlet
 {
