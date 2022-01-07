@@ -53,5 +53,6 @@
     <module>vocabularies-ignore</module>
     <module>statistics</module>
     <module>email-notifications</module>
+    <module>token-authentication</module>
   </modules>
 </project>
