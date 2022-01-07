@@ -183,7 +183,7 @@
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>The patient consents to terms of use</value>
+			<value>The patient accepted the Terms of Use</value>
 			<type>String</type>
 		</property>
 		<property>
