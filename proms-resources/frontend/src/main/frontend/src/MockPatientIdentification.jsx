@@ -21,8 +21,6 @@ import { v4 as uuidv4 } from 'uuid';
 
 import {
   Button,
-  DialogActions,
-  DialogContent,
   FormControl,
   Grid,
   Input,
@@ -31,7 +29,6 @@ import {
   makeStyles
 } from '@material-ui/core';
 
-import ResponsiveDialog from "./components/ResponsiveDialog";
 import ToUDialog from "./ToUDialog.jsx";
 
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
@@ -65,7 +62,6 @@ function MockPatientIdentification(props) {
 
   const [ touAccepted, setTouAccepted ] = useState(false);
   const [ showTou, setShowTou ] = useState(false);
-  const [ showConfirmationTou, setShowConfirmationTou ] = useState(false);
   const [ pformPath, setPFormPath ] = useState('');
 
   const classes = useStyles();
@@ -267,23 +263,6 @@ function MockPatientIdentification(props) {
     }
   }
 
-  const onAccept = () => {
-    setShowConfirmationTou(false);
-    setShowTou(false);
-    updatePatientInfo(pformPath);
-  }
-
-  const onDecline = () => {
-    setShowConfirmationTou(true);
-  }
-
-  const onFinalDecline = () => {
-    setShowConfirmationTou(false);
-    setShowTou(false);
-    setIdData(null);
-    setPatient(null);
-  }
-
   // Show terms of use dialog
   useEffect(() => {
     if (showTou) {
@@ -326,29 +305,20 @@ function MockPatientIdentification(props) {
   }
 
   return (<>
-   <ToUDialog open={showTou}>
-     <DialogActions>
-       <Button color="primary" onClick={onAccept} variant="contained">
-         Accept
-       </Button>
-       <Button color="default" onClick={onDecline} variant="contained" >
-         Decline
-       </Button>
-     </DialogActions>
-   </ToUDialog>
-   <ResponsiveDialog open={showConfirmationTou} >
-     <DialogContent dividers>
-       You can only fill out your pre-appointment surveys online after accepting the DATA PRO Terms of Use
-     </DialogContent>
-     <DialogActions>
-       <Button color="primary" onClick={onAccept} variant="contained" >
-         Accept Terms of Use
-       </Button>
-       <Button color="default" onClick={onFinalDecline} variant="contained" >
-         Decline
-       </Button>
-     </DialogActions>
-   </ResponsiveDialog>
+    <ToUDialog
+      open={showTou}
+      actionRequired={!touAccepted}
+      onClose={() => setShowTou(false)}
+      onAccept={() => {
+        setShowTou(false);
+        updatePatientInfo(pformPath);
+      }}
+      onDecline={() => {
+        setShowTou(false)
+        setIdData(null);
+        setPatient(null);
+      }}
+    />
     <form className={classes.form} onSubmit={onSubmit} >
       <Grid container direction="column" spacing={4} alignItems="center" justify="center">
          <Grid item xs={12}>
