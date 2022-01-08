@@ -296,13 +296,6 @@ function MockPatientIdentification(props) {
     }
   }
 
-  // Show terms of use dialog
-  useEffect(() => {
-    if (showTou) {
-      setShowTou(true);
-    }
-  }, [showTou]);
-
   const updatePatientInfo = (formPath) => {
      let request_data = new FormData();
      // Populate the request data with the values obtained when identifying the patient
