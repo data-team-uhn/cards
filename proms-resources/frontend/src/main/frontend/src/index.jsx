@@ -21,7 +21,6 @@ import ReactDOM from "react-dom";
 import { Router, Route, Redirect, Switch } from "react-router-dom";
 import {
   AppBar,
-  DialogContent,
   Link,
   Toolbar,
   Typography,
@@ -72,15 +71,15 @@ function PromsHomepage (props) {
   return (<>
     <AppBar position="static" className={classes.appbar}>
       <Toolbar variant="dense" className={classes.toolbar}>
-          <img src="/libs/cards/resources/logo.png" alt="logo" className={classes.logo} />
-          <Link
-            component="button"
-            color="inherit"
-            variant="body2"
-            onClick={() => {setShowTou(true);}}
-          >
-            Terms of Use
-          </Link>
+        <img src="/libs/cards/resources/logo.png" alt="logo" className={classes.logo} />
+        <Link
+          component="button"
+          color="inherit"
+          variant="body2"
+          onClick={() => {setShowTou(true);}}
+        >
+          Terms of Use
+        </Link>
         { username &&
           <Typography variant="h6" color="inherit">
             Hello, {username}
