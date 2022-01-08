@@ -91,7 +91,6 @@ function PromsHomepage (props) {
     <QuestionnaireSet id={promId} subject={subject} />
     <ToUDialog
       open={showTou}
-      withCloseButton
       onClose={() => {setShowTou(false);}}
     />
   </>);
