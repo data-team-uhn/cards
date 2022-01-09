@@ -38,8 +38,6 @@ import CloseIcon from '@material-ui/icons/Close';
 
 import ToUDialog from "./ToUDialog.jsx";
 
-import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
-
 import { identifyPatient } from "./patientLookup.jsx";
 
 import DropdownsDatePicker from "./components/DropdownsDatePicker.jsx";
@@ -125,11 +123,9 @@ function MockPatientIdentification(props) {
 
   const classes = useStyles();
 
-  const globalLoginDisplay = useContext(GlobalLoginContext);
-
   // At startup, load subjectTypes
   useEffect(() => {
-    fetchWithReLogin(globalLoginDisplay, "/query?query=" + encodeURIComponent("SELECT * FROM [cards:SubjectType]"))
+    fetch("/query?query=" + encodeURIComponent("SELECT * FROM [cards:SubjectType]"))
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         let types = {};
@@ -218,13 +214,14 @@ function MockPatientIdentification(props) {
 
     // Look for the subject identified by subjectId
     let query=`SELECT * FROM [cards:Subject] as s WHERE ischildnode(s, "${pathPrefix}") AND s.identifier="${subjectId}"`;
-    fetchWithReLogin(globalLoginDisplay, "/query?query=" + encodeURIComponent(query))
+    fetch("/query?query=" + encodeURIComponent(query))
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
          let results = json.rows;
          if (results.length == 0) {
-           // Subject not found: create it
-           createSubject(subjectType, pathPrefix, subjectId, successCallback);
+           // Subject not found
+           // Note: This should never actually happen
+           setError("No matching records found. Please inform the technical administrator.");
          } else if (results.length == 1) {
            // Subject found: return its path
            successCallback(results[0]['@path']);
@@ -237,113 +234,6 @@ function MockPatientIdentification(props) {
       .catch((response) => {
         setError(`Record identification failed with error code ${response.status}: ${response.statusText}`);
       });
-  }
-
-  // Create a new subject if it's the first time we receive this identifier
-  const createSubject = (type, path, id, successCallback) => {
-    // Make a POST request to create a new subject
-    let requestData = new FormData();
-    requestData.append('jcr:primaryType', 'cards:Subject');
-    requestData.append('identifier', id);
-    requestData.append('type', subjectTypes[type]);
-    requestData.append('type@TypeHint', 'Reference');
-
-    let subjectPath = `${path}/` + uuidv4();
-    fetchWithReLogin(globalLoginDisplay, subjectPath, { method: 'POST', body: requestData })
-      .then((response) => response.ok ? successCallback(subjectPath) : Promise.reject(response))
-      .catch((response) => {
-        setError(`Data recording failed with error code ${response.status}: ${response.statusText}`);
-      });
-  }
-
-  // ---------------------------------------------------------------------------------------------------
-  // Keep the patient information up to date
-
-  // The definition of the Patient information questionnaire
-  // Info about each patient is stored in a Patient information form
-  const [ piDefinition, setPiDefinition ] = useState();
-
-  // Load the Patient Information questionnaire
-  useEffect(() => {
-    fetchWithReLogin(globalLoginDisplay, "/Questionnaires/Patient information.deep.json")
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => setPiDefinition(json))
-      .catch((response) => {
-         setError(`Initializing information sync failed with error code ${response.status}: ${response.statusText}`);
-       });
-  }, []);
-
-  // When the patient is successfully identified, sync their information
-  useEffect(() => {
-    patient && piDefinition && syncPatientInfo();
-  }, [patient, piDefinition]);
-
-  // Now the Terms of Use can be shown if applicable
-  useEffect(() => {
-    patientData && setShowTou(true);
-  }, [patientData]);
-
-  const syncPatientInfo = () => {
-    // Fetch the patient subject and forms associated with it
-    fetchWithReLogin(globalLoginDisplay, `${patient}.data.deep.json`)
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => {
-
-        // Check if the data includes a patient information form
-        let piForm = json?.[piDefinition['title']]?.[0];
-        setPatientData(piForm);
-        if (piForm?.["jcr:primaryType"] == "cards:Form") {
-          // The form already exists, get its path for the update request
-          updatePatientInfo(piForm['@path']);
-        } else {
-          // The form doesn't exist, generate the path and populate the request data for form creation
-          let request_data = new FormData();
-          let formPath = "/Forms/" + uuidv4();
-          request_data.append('jcr:primaryType', 'cards:Form');
-          request_data.append('questionnaire', piDefinition["@path"]);
-          request_data.append('questionnaire@TypeHint', 'Reference');
-          request_data.append('subject', patient);
-          request_data.append('subject@TypeHint', 'Reference');
-
-          // Create or update the Patient information form
-          fetchWithReLogin(globalLoginDisplay, formPath, { method: 'POST', body: request_data })
-            .then( (response) => response.ok ? updatePatientInfo(formPath) : Promise.reject(response))
-            .catch((response) => {
-              setError(`Information sync failed with error code ${response.status}: ${response.statusText}`);
-            });
-        }
-      })
-      .catch((response) => {
-        setError(`Local record retrieval failed with error code ${response.status}: ${response.statusText}`);
-        console.log(response);
-      });
-  }
-
-  const updatePatientInfo = (formPath) => {
-     let request_data = new FormData();
-     // Populate the request data with the values obtained when identifying the patient
-     let fields = Object.keys(piDefinition).filter(k => piDefinition[k]?.["jcr:primaryType"] == "cards:Question");
-     fields.forEach(f => {
-       if (!idData[f]) return;
-       let qDef = piDefinition[f];
-       let type = (qDef.dataType || 'text');
-       // Capitalize the type:
-       type = type[0].toUpperCase() + type.substring(1);
-
-       // Add each field to the request
-       request_data.append(`./${f}/jcr:primaryType`, `cards:${type}Answer`);
-       request_data.append(`./${f}/question`, qDef['jcr:uuid']);
-       request_data.append(`./${f}/question@TypeHint`, "Reference");
-       request_data.append(`./${f}/value`, idData[f]);
-       request_data.append(`./${f}/value@TypeHint`, type == 'Text' ? 'String' : type);
-     })
-     // Update the Patient information form
-     fetchWithReLogin(globalLoginDisplay, formPath, { method: 'POST', body: request_data })
-       .then( (response) => response.ok ? null : Promise.reject(response))
-       .catch((response) => {
-         let errMsg = "Information sync failed";
-         setError(errMsg + (response.status ? ` with error code ${response.status}: ${response.statusText}` : ''));
-       });
   }
 
   // -----------------------------------------------------------------------------------------------------
