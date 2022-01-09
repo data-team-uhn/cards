@@ -112,7 +112,7 @@ function ToUDialog(props) {
           <Button color="primary" onClick={onAccept} variant="contained" >
             Accept
           </Button>
-          <Button color="default" onClick={onDecline} variant="contained" >
+          <Button color="default" onClick={() => {setShowConfirmationTou(false); onDecline && onDecline()}} variant="contained" >
             Decline
           </Button>
         </DialogActions>
