@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 import {
@@ -26,6 +26,8 @@ import {
   DialogContent,
   makeStyles
 } from "@material-ui/core";
+
+import { Alert, AlertTitle } from "@material-ui/lab";
 
 import FormattedText from "./components/FormattedText.jsx";
 import ResponsiveDialog from "./components/ResponsiveDialog";
@@ -68,10 +70,22 @@ const useStyles = makeStyles(theme => ({
 
 function ToUDialog(props) {
   const { open, actionRequired, onAccept, onDecline, onClose, ...rest } = props;
-  const [ showConfirmationTou, setShowConfirmationTou ] = React.useState(false);
-  const tou = require('./ToU.json');
+  const [ showConfirmationTou, setShowConfirmationTou ] = useState(false);
+  const [ tou, setTou ] = useState();
+  const [ error, setError ] = useState();
 
   const classes = useStyles();
+
+  useEffect(() => {
+    fetch("/Proms/TermsOfUse.json")
+      .then( response => response.ok ? response.json() : Promise.reject(response) )
+      .then( setTou )
+      .catch( err => setError("Loading the Terms of Use failed, please try again later") );
+  }, []);
+
+  if (!tou && !error) {
+    return null;
+  }
 
   return (<>
     <ResponsiveDialog
@@ -81,10 +95,17 @@ function ToUDialog(props) {
       onClose={onClose}
     >
       <DialogContent dividers className={classes.touText}>
-       <FormattedText>{tou.text.join('  \n\n')}</FormattedText>
+      { error ?
+        <Alert severity="error">
+          <AlertTitle>An error occurred</AlertTitle>
+          {error}
+        </Alert>
+        :
+        <FormattedText>{tou.text}</FormattedText>
+      }
       </DialogContent>
       <DialogActions>
-      { actionRequired ?
+      { actionRequired && !error ?
         <>
           <Button color="primary" onClick={onAccept} variant="contained">
             Accept
