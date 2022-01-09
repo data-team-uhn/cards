@@ -60,7 +60,7 @@ function MockPatientIdentification(props) {
 
   const [ subjectTypes, setSubjectTypes ] = useState();
 
-  const [ touAccepted, setTouAccepted ] = useState(false);
+  const [ touAccepted, setTouAccepted ] = useState();
   const [ showTou, setShowTou ] = useState(false);
   // Info about each patient is stored in a Patient information form
   const [ piForm, setPiForm ] = useState();
@@ -154,18 +154,17 @@ function MockPatientIdentification(props) {
        .then((response) => {
           // There should be exactly one form of this type
           let piData = response["Patient information"]?.[0];
-          let answer = Object.values(piData || {})
-            .filter(item => item["sling:resourceSuperType"] == "cards/Answer")
-            .find(item => item.question?.["@name"] == TOU_ACCEPTED_VARNAME)?.value;
-          if (answer) {
-            // Terms of use have already been accepted
-            setTouAccepted(true);
-          } else {
-             // Save the form data for use when the user accepts the Terms of Use
-             // and that form needs to be updated
-             setPiForm(piData);
-             // Pop up the Terms of Use
-             setShowTou(true);
+          if (piData) {
+            let answer = Object.values(piData)
+              .filter(item => item["sling:resourceSuperType"] == "cards/Answer")
+              .find(item => item.question?.["@name"] == TOU_ACCEPTED_VARNAME)?.value;
+            // Store the version of Terms of use that has already been accepted, if any
+            answer && setTouAccepted(answer);
+            // Store the form data for when the user accepts the Terms of Use
+            // and that form needs to be updated
+            setPiForm(piData);
+            // Now the Terms of Use can be shown if applicable
+            setShowTou(true);
           }
         })
         .catch( response => {
@@ -186,11 +185,11 @@ function MockPatientIdentification(props) {
      // Populate the request data with information about the tou_accepted answer
      let f = TOU_ACCEPTED_VARNAME;
      let qDef = piForm.questionnaire[f];
-     request_data.append(`./${f}/jcr:primaryType`, `cards:BooleanAnswer`);
+     request_data.append(`./${f}/jcr:primaryType`, `cards:TextAnswer`);
      request_data.append(`./${f}/question`, qDef['jcr:uuid']);
      request_data.append(`./${f}/question@TypeHint`, "Reference");
-     request_data.append(`./${f}/value`, 1);
-     request_data.append(`./${f}/value@TypeHint`, "Long");
+     request_data.append(`./${f}/value`, touAccepted);
+     request_data.append(`./${f}/value@TypeHint`, "String");
 
      // Update the Patient information form
      fetch(piForm['@path'], { method: 'POST', body: request_data })
@@ -352,10 +351,11 @@ function MockPatientIdentification(props) {
   return (<>
     <ToUDialog
       open={showTou}
-      actionRequired={!touAccepted}
+      actionRequired={true}
+      acceptedVersion={touAccepted}
       onClose={() => setShowTou(false)}
-      onAccept={() => {
-        setTouAccepted(true);
+      onAccept={(version) => {
+        setTouAccepted(version);
       }}
       onDecline={() => {
         setShowTou(false)
