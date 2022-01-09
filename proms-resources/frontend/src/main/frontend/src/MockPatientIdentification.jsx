@@ -95,7 +95,10 @@ function MockPatientIdentification(props) {
 
   const [ touAccepted, setTouAccepted ] = useState(false);
   const [ showTou, setShowTou ] = useState(false);
-  const [ pformPath, setPFormPath ] = useState('');
+  // Info about each patient is stored in a Patient information form
+  const [ piForm, setPiForm ] = useState();
+
+  const TOU_ACCEPTED_VARNAME = 'tou_accepted'
 
   const classes = useStyles();
 
@@ -171,6 +174,64 @@ function MockPatientIdentification(props) {
       'visit number',       /* id label */
       setVisit              /* successCallback */
     );
+  }
+
+  // When the patient subject is successfully obtained, check if terms of use have been accepted
+  useEffect(() => {
+    patient && queryTouStatus();
+  }, [patient]);
+
+  const queryTouStatus = () => {
+     fetch(`${patient}.data.deep.json`)
+       .then( response => response.ok ? response.json() : Promise.reject(response) )
+       .then((response) => {
+          // There should be exactly one form of this type
+          let piData = response["Patient information"]?.[0];
+          let answer = Object.values(piData || {})
+            .filter(item => item["sling:resourceSuperType"] == "cards/Answer")
+            .find(item => item.question?.["@name"] == TOU_ACCEPTED_VARNAME)?.value;
+          if (answer) {
+            // Terms of use have already been accepted
+            setTouAccepted(true);
+          } else {
+             // Save the form data for use when the user accepts the Terms of Use
+             // and that form needs to be updated
+             setPiForm(piData);
+             // Pop up the Terms of Use
+             setShowTou(true);
+          }
+        })
+        .catch( response => {
+          let errMsg = "Loading account information failed";
+          setError(errMsg + (response.status ? ` with error code ${response.status}: ${response.statusText}` : ''));
+        });
+  }
+
+  // When the patient user accepts the terms of use, hide the ToU dialog and save their preference
+  useEffect(() => {
+    if (!touAccepted || !showTou || !piForm) return;
+    setShowTou(false);
+    saveTouAccepted(piForm);
+  }, [touAccepted, showTou, piForm]);
+
+  const saveTouAccepted = (piForm) => {
+     let request_data = new FormData();
+     // Populate the request data with information about the tou_accepted answer
+     let f = TOU_ACCEPTED_VARNAME;
+     let qDef = piForm.questionnaire[f];
+     request_data.append(`./${f}/jcr:primaryType`, `cards:BooleanAnswer`);
+     request_data.append(`./${f}/question`, qDef['jcr:uuid']);
+     request_data.append(`./${f}/question@TypeHint`, "Reference");
+     request_data.append(`./${f}/value`, 1);
+     request_data.append(`./${f}/value@TypeHint`, "Long");
+
+     // Update the Patient information form
+     fetch(piForm['@path'], { method: 'POST', body: request_data })
+       .then( (response) => response.ok ? null : Promise.reject(response))
+       .catch((response) => {
+         let errMsg = "Recording acceptance of Terms of Use failed";
+         setError(errMsg + (response.status ? ` with error code ${response.status}: ${response.statusText}` : ''));
+       });
   }
 
   // When the visit is successfully obtained and Terms of Use accepted, pass it along with the identification data
@@ -261,8 +322,8 @@ function MockPatientIdentification(props) {
         // Check if the data includes a patient information form
         let piForm = json?.[piDefinition['title']]?.[0];
         if (piForm?.["jcr:primaryType"] == "cards:Form") {
-          // The form already exists, check terms of use and get its path for the update request
-          checkTou(piForm.tou_accepted.value, piForm['@path']);
+          // The form already exists, get its path for the update request
+          updatePatientInfo(piForm['@path']);
         } else {
           // The form doesn't exist, generate the path and populate the request data for form creation
           let request_data = new FormData();
@@ -275,7 +336,7 @@ function MockPatientIdentification(props) {
 
           // Create or update the Patient information form
           fetchWithReLogin(globalLoginDisplay, formPath, { method: 'POST', body: request_data })
-            .then( (response) => response.ok ? checkTou(false, formPath) : Promise.reject(response))
+            .then( (response) => response.ok ? updatePatientInfo(formPath) : Promise.reject(response))
             .catch((response) => {
               setError(`Information sync failed with error code ${response.status}: ${response.statusText}`);
             });
@@ -287,21 +348,12 @@ function MockPatientIdentification(props) {
       });
   }
 
-  const checkTou = (touAccepted, formPath) => {
-    if (!touAccepted) {
-      setPFormPath(formPath);
-      setShowTou(true);
-    } else {
-      updatePatientInfo(formPath);
-    }
-  }
-
   const updatePatientInfo = (formPath) => {
      let request_data = new FormData();
      // Populate the request data with the values obtained when identifying the patient
      let fields = Object.keys(piDefinition).filter(k => piDefinition[k]?.["jcr:primaryType"] == "cards:Question");
-     idData.tou_accepted = 1;
      fields.forEach(f => {
+       if (!idData[f]) return;
        let qDef = piDefinition[f];
        let type = (qDef.dataType || 'text');
        // Capitalize the type:
@@ -316,7 +368,7 @@ function MockPatientIdentification(props) {
      })
      // Update the Patient information form
      fetchWithReLogin(globalLoginDisplay, formPath, { method: 'POST', body: request_data })
-       .then( (response) => response.ok ? setTouAccepted(true) : Promise.reject(response))
+       .then( (response) => response.ok ? null : Promise.reject(response))
        .catch((response) => {
          let errMsg = "Information sync failed";
          setError(errMsg + (response.status ? ` with error code ${response.status}: ${response.statusText}` : ''));
@@ -336,8 +388,7 @@ function MockPatientIdentification(props) {
       actionRequired={!touAccepted}
       onClose={() => setShowTou(false)}
       onAccept={() => {
-        setShowTou(false);
-        updatePatientInfo(pformPath);
+        setTouAccepted(true);
       }}
       onDecline={() => {
         setShowTou(false)
