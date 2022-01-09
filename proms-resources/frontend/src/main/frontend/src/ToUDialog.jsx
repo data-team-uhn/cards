@@ -23,11 +23,25 @@ import PropTypes from "prop-types";
 import {
   Button,
   DialogActions,
-  DialogContent
+  DialogContent,
+  makeStyles
 } from "@material-ui/core";
 
 import FormattedText from "./components/FormattedText.jsx";
 import ResponsiveDialog from "./components/ResponsiveDialog";
+
+const useStyles = makeStyles(theme => ({
+  touText : {
+    "& .wmde-markdown blockquote" : {
+      borderLeft: "0 none",
+      color: "inherit",
+      fontStyle: "italic",
+    }
+  },
+  reviewButton : {
+    marginRight: "auto",
+  }
+}));
 
 // Component that renders the Dialog width Terms of Use
 //
@@ -57,6 +71,8 @@ function ToUDialog(props) {
   const [ showConfirmationTou, setShowConfirmationTou ] = React.useState(false);
   const tou = require('./ToU.json');
 
+  const classes = useStyles();
+
   return (<>
     <ResponsiveDialog
       title={tou.title}
@@ -64,7 +80,7 @@ function ToUDialog(props) {
       width="md"
       onClose={onClose}
     >
-      <DialogContent dividers>
+      <DialogContent dividers className={classes.touText}>
        <FormattedText>{tou.text.join('  \n\n')}</FormattedText>
       </DialogContent>
       <DialogActions>
@@ -90,7 +106,7 @@ function ToUDialog(props) {
           You can only fill out your pre-appointment surveys online after accepting the DATA PRO Terms of Use.
         </DialogContent>
         <DialogActions>
-          <Button color="secondary" onClick={() => setShowConfirmationTou(false)} variant="contained" style={{marginRight: "auto"}}>
+          <Button color="secondary" onClick={() => setShowConfirmationTou(false)} variant="contained" className={classes.reviewButton}>
             Review Terms
           </Button>
           <Button color="primary" onClick={onAccept} variant="contained" >
