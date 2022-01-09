@@ -56,12 +56,15 @@ const useStyles = makeStyles(theme => ({
 //   If true, Accept/Decline action buttons will be displayed at the bottom
 //   If false, a Close action will be displayed at the bottom
 // onAccept: Callback specifying what happens when the user accepts the terms
+//   The accepted version of Terms of use (string) is passed to the parent component
+//   through this handler: onAccept(version)
 // onDecline: Callback specifying what happens when the user declines the terms
 //
 // Sample usage:
 // <ToUDialog
 //   open={open}
 //   actionRequired={true}
+//   acceptedVersion="2022-01-01"
 //   onClose={onClose}
 //   onAccept={onAccept}
 //   onDecline={onDecline}
@@ -69,7 +72,7 @@ const useStyles = makeStyles(theme => ({
 //
 
 function ToUDialog(props) {
-  const { open, actionRequired, onAccept, onDecline, onClose, ...rest } = props;
+  const { open, acceptedVersion, actionRequired, onAccept, onDecline, onClose, ...rest } = props;
   const [ showConfirmationTou, setShowConfirmationTou ] = useState(false);
   const [ tou, setTou ] = useState();
   const [ error, setError ] = useState();
@@ -90,7 +93,7 @@ function ToUDialog(props) {
   return (<>
     <ResponsiveDialog
       title={tou.title}
-      open={open}
+      open={open && (acceptedVersion !== tou.version || !actionRequired)}
       width="md"
       onClose={onClose}
       scroll={actionRequired? "body" : "paper"}
@@ -101,6 +104,12 @@ function ToUDialog(props) {
             Please read the Terms of Use and click Accept at the bottom to continue.
           </Alert>
         </DialogContent>
+      }
+      { acceptedVersion &&
+        <Alert severity="warning">
+          <AlertTitle>The Terms of Use have been updated</AlertTitle>
+          Please review and accept the new terms of use to continue
+        </Alert>
       }
       <DialogContent dividers={!actionRequired} className={classes.touText}>
       { error ?
@@ -115,7 +124,7 @@ function ToUDialog(props) {
       <DialogActions>
       { actionRequired && !error ?
         <>
-          <Button color="primary" onClick={onAccept} variant="contained">
+          <Button color="primary" onClick={() => onAccept && onAccept(tou.version)} variant="contained">
             Accept
           </Button>
           <Button color="default" onClick={() => setShowConfirmationTou(true)} variant="contained" >
@@ -138,7 +147,7 @@ function ToUDialog(props) {
           <Button color="secondary" onClick={() => setShowConfirmationTou(false)} variant="contained" className={classes.reviewButton}>
             Review Terms
           </Button>
-          <Button color="primary" onClick={onAccept} variant="contained" >
+          <Button color="primary" onClick={() => onAccept && onAccept(tou.version)} variant="contained" >
             Accept
           </Button>
           <Button color="default" onClick={() => {setShowConfirmationTou(false); onDecline && onDecline()}} variant="contained" >
@@ -154,6 +163,7 @@ ToUDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   actionRequired: PropTypes.bool,
+  acceptedVersion: PropTypes.string,
   onAccept: PropTypes.func,
   onDecline: PropTypes.func,
 }
