@@ -90,7 +90,10 @@ public abstract class SimpleAnswerLabelProcessor implements ResourceJsonProcesso
         try {
             if (node.hasProperty(PROP_VALUE)) {
                 final Node question = getQuestionNode(node);
-                json.add(PROP_DISPLAYED_VALUE, getAnswerLabel(node, question));
+                final JsonValue label = getAnswerLabel(node, question);
+                if (label != null) {
+                    json.add(PROP_DISPLAYED_VALUE, getAnswerLabel(node, question));
+                }
             }
         } catch (RepositoryException e) {
             // Really shouldn't happen
