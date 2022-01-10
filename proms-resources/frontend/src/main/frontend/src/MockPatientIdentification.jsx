@@ -42,8 +42,9 @@ const useStyles = makeStyles(theme => ({
   },
   description : {
     maxWidth: "550px",
-    "& > p" : {
-      padding: theme.spacing(1, 0),
+    "& > *" : {
+      textAlign: "center",
+      marginBottom: "16px",
     }
   },
 }));
@@ -290,16 +291,16 @@ function MockPatientIdentification(props) {
            <img src="/libs/cards/resources/logo_light_bg.png" className={classes.logo} alt="logo" />
          </Grid>
          <Grid item xs={12} className={classes.description}>
-           <Typography variant="h6" align="center">
+           <Typography variant="h6">
              Welcome to DATAPRO
            </Typography>
-           <Typography variant="body1" align="center">
+           <Typography paragraph>
              DATAPRO is designed to ask you the most important questions about your health and well being. Your responses will remain confidential and will help your provider determine how we can best help you.
            </Typography>
-           <Typography variant="body1" align="center">
+           <Typography paragraph>
              Completing the questionnaire is voluntary, so if you would rather not complete it, you do not have to.
            </Typography>
-           <Typography variant="body1" align="center">
+           <Typography paragraph>
              If routine service evaluations or research projects are undertaken, your responses may be analyzed in a completely anonymous way.
            </Typography>
          </Grid>
