@@ -216,6 +216,11 @@ public class PatientLocalStorage
         String get(JsonObject in);
     }
 
+    interface JsonDateGetter
+    {
+        Date get(JsonObject in) throws ParseException;
+    }
+
     /**
      * Get a string from a JSONObject using the given JsonStringGetter function, returning an empty
      * string if the value does not exist.
@@ -246,7 +251,7 @@ public class PatientLocalStorage
      * @return The string, or an empty string if it does not exist
      */
     void updateForm(Resource form, JsonObject info, String parentQuestionnaire,
-        Map<String, JsonStringGetter> mapping, Map<String, String> dateFields, ResourceResolver resolver)
+        Map<String, JsonStringGetter> mapping, Map<String, JsonDateGetter> dateFields, ResourceResolver resolver)
         throws RepositoryException, PersistenceException
     {
         // Run through the children of the node, seeing what exists
@@ -287,10 +292,10 @@ public class PatientLocalStorage
         }
 
         // Finally, do the same with date fields, which have different parameters
-        for (Map.Entry<String, String> entry : dateFields.entrySet()) {
+        for (Map.Entry<String, JsonDateGetter> entry : dateFields.entrySet()) {
             try {
                 Calendar entryDate = Calendar.getInstance();
-                entryDate.setTime(new SimpleDateFormat("yyyy-MM-dd").parse(info.getString(entry.getValue())));
+                entryDate.setTime(entry.getValue().get(info));
                 if (dateNodes.containsKey(entry.getKey())) {
                     dateNodes.get(entry.getKey()).setProperty(PatientLocalStorage.VALUE_FIELD, entryDate);
                 } else {
@@ -327,8 +332,8 @@ public class PatientLocalStorage
             "email_ok", obj -> obj.getString("emailOk")
         );
 
-        Map<String, String> dateMapping = Map.of(
-            "date_of_birth", "dob"
+        Map<String, JsonDateGetter> dateMapping = Map.of(
+            "date_of_birth", obj -> new SimpleDateFormat("yyyy-MM-dd").parse(obj.getString("dob"))
         );
 
         updateForm(form, info, "/Questionnaires/Patient information", formMapping, dateMapping, resolver);
@@ -349,8 +354,8 @@ public class PatientLocalStorage
             "provider", obj -> obj.getJsonObject("attending").getJsonObject("name").getString("family")
         );
 
-        Map<String, String> dateMapping = Map.of(
-            "time", "time"
+        Map<String, JsonDateGetter> dateMapping = Map.of(
+            "time", obj -> new SimpleDateFormat("yyyy-MM-dd").parse(obj.getString("time"))
         );
 
         updateForm(form, info, "/Questionnaires/Visit information", formMapping, dateMapping, resolver);
