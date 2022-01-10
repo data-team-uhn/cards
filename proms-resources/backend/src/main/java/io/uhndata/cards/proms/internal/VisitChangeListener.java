@@ -64,7 +64,8 @@ import io.uhndata.cards.dataentry.api.QuestionnaireUtils;
 )
 public class VisitChangeListener implements EventHandler
 {
-    private static final int FREQUENCY_MARGIN = 2;
+    private static final int FREQUENCY_MARGIN_DAYS = 2;
+    private static final int VISIT_CREATION_MARGIN_DAYS = 3;
     private static final Logger LOGGER = LoggerFactory.getLogger(VisitChangeListener.class);
     private Session session;
     private ResourceResolver resolver;
@@ -130,15 +131,35 @@ public class VisitChangeListener implements EventHandler
 
         Map<String, QuestionnaireFrequency> questionnaireSetInfo
             = getQuestionnaireSetInformation(visitInformation);
-        if (questionnaireSetInfo.size() < 1) {
-            // No questionnaires that need to be created
+
+        if (questionnaireSetInfo == null) {
+            // No valid questionnaireset: Skip
+            return;
+        }
+        int baseQuestionnaireSetSize = questionnaireSetInfo.size();
+
+        pruneQuestionnaireSetByVisit(visitNode, visitInformation, questionnaireSetInfo);
+
+        int prunedQuestionnaireSetSize = questionnaireSetInfo.size();
+        if (prunedQuestionnaireSetSize < 1) {
+            // Visit already has all needed forms: end early
             return;
         }
 
         pruneQuestionnaireSet(visitNode, visitInformation, questionnaireSetInfo);
 
-        List<String> createdForms = createForms(visitNode, questionnaireSetInfo);
-        commitForms(createdForms);
+        if (questionnaireSetInfo.size() < 1) {
+            if (prunedQuestionnaireSetSize == baseQuestionnaireSetSize) {
+                // Visit does not need any forms due to other visits meeting frequency requirements:
+                // mark form as complete.
+                changeVisitComplete(eventFormNode, true);
+            }
+            return;
+        } else {
+            changeVisitComplete(eventFormNode, false);
+            List<String> createdForms = createForms(visitNode, questionnaireSetInfo);
+            commitForms(createdForms);
+        }
     }
 
     /**
@@ -150,7 +171,6 @@ public class VisitChangeListener implements EventHandler
      */
     private void handleVisitDataForm(Node visitNode) throws RepositoryException
     {
-        boolean complete = true;
         Node visitInformationForm = null;
         String surveysCompleteIdentifier = null;
         int numberOfForms = 0;
@@ -176,11 +196,14 @@ public class VisitChangeListener implements EventHandler
             }
 
             if (isFormIncomplete(form)) {
-                complete = false;
+                // Visit is not complete: stop checking
+                return;
             }
         }
 
-        handleVisitCompleted(complete, numberOfForms, visitInformationForm, surveysCompleteIdentifier);
+        if (numberOfForms > 0 && visitInformationForm != null) {
+            changeVisitComplete(visitInformationForm, true);
+        }
     }
 
     /**
@@ -266,20 +289,25 @@ public class VisitChangeListener implements EventHandler
         return null;
     }
 
-    /**
-     * From a frequency and visit date, calculate the cutoff date for other forms to satisfy the frequency.
-     * Other forms before this cutoff date should be ignored as too old, while dates after this cutoff meet the
-     * required frequency.
-     * Adds in a FREQUENCY_MARGIN, to allow for some scheduling discrepencies.
-     *
-     * @param visitDate the date that is being checked for what forms should be created.
-     * @param frequency The number of weeks between submissions of the form
-     * @return the cutoff date beyond which forms do not count towards the form's frequency
-     */
-    private static Calendar getFrequencyDate(Calendar visitDate, int frequency)
+    private static boolean isWithinDateRange(Calendar testedDate, Calendar baseDate, int days)
     {
-        Calendar result = (Calendar) visitDate.clone();
-        result.add(Calendar.DATE, (-7 * frequency + VisitChangeListener.FREQUENCY_MARGIN));
+        Calendar start = addDays(baseDate, -Math.abs(days));
+        Calendar end = addDays(baseDate, Math.abs(days));
+        return testedDate.after(start) && testedDate.before(end);
+    }
+
+    /**
+     * Get the result of adding days to a Calendar.
+     * Does not mutate the provided date.
+     *
+     * @param date the date that is being added to.
+     * @param days number of days being added
+     * @return the resulting calenar
+     */
+    private static Calendar addDays(Calendar date, int days)
+    {
+        Calendar result = (Calendar) date.clone();
+        result.add(Calendar.DATE, (days));
         return result;
     }
 
@@ -308,6 +336,7 @@ public class VisitChangeListener implements EventHandler
             }
         } catch (RepositoryException e) {
             LOGGER.warn("Failed to retrieve questionnaire frequency: {}", e.getMessage(), e);
+            return null;
         }
         return result;
     }
@@ -333,36 +362,59 @@ public class VisitChangeListener implements EventHandler
         for (NodeIterator visits = patientNode.getNodes(); visits.hasNext();)
         {
             Node visit = visits.nextNode();
-            boolean visitIsTriggeringVisit = triggeringVisit.equals(visit.getName());
+            // Check if visit is not the triggering visit, since the triggering visit has already been processed.
+            if (!triggeringVisit.equals(visit.getName())) {
+                pruneQuestionnaireSetByVisit(visit, visitInformation, questionnaireSetInfo);
+            }
+        }
+    }
 
-            // Create a list of all complete forms that exist for this visit.
-            // Record the visit's date as well, if there is a Visit Information form with a date.
-            List<String> questionnaires = new LinkedList<>();
-            Calendar visitDate = null;
-            for (PropertyIterator forms = visit.getReferences(); forms.hasNext();)
-            {
-                Node form = forms.nextProperty().getParent();
-                if (this.formUtils.isForm(form) && (visitIsTriggeringVisit || !isFormIncomplete(form))) {
-                    // Don't factor incomplete forms from previous visits into frequency requirements,
-                    // but consider them for the triggering visit to avoid duplication.
-                    String questionnaireIdentifier = this.formUtils.getQuestionnaireIdentifier(form);
-                    if (questionnaireIdentifier.equals(visitInformation.getQuestionnaireIdentifier())) {
-                        visitDate = getFormDate(form, visitInformation.getTimeQuestionIdentifier());
-                    } else {
-                        questionnaires.add(questionnaireIdentifier);
-                    }
+    /**
+     * Remove any questionnaires from the questionnaire set which do not need to be created per their frequency.
+     *
+     * Iterates through all of the provided visit's forms and checks if they meet the frequency requirements for the
+     * provided visitInformation. If they do, remove that form's questionnaire from the questionnaire set.
+     *
+     * @param visitNode the visit Subject which should be checked for forms
+     * @param visitInformation the set of data about the visit that triggered this event
+     * @param questionnaireSetInfo the current questionnaireSet. This will be modified by removing key-value pairs
+     * @throws RepositoryException if iterating the patient's visits fails
+     */
+    private void pruneQuestionnaireSetByVisit(Node visit,
+        VisitInformation visitInformation,
+        Map<String, QuestionnaireFrequency> questionnaireSetInfo)
+        throws RepositoryException
+    {
+        // Create a list of all complete forms that exist for this visit.
+        // Record the visit's date as well, if there is a Visit Information form with a date.
+        Map<String, Boolean> questionnaires = new HashMap<>();
+        Calendar visitDate = null;
+        for (PropertyIterator forms = visit.getReferences(); forms.hasNext();)
+        {
+            Node form = forms.nextProperty().getParent();
+            if (this.formUtils.isForm(form)) {
+                String questionnaireIdentifier = this.formUtils.getQuestionnaireIdentifier(form);
+                if (questionnaireIdentifier.equals(visitInformation.getQuestionnaireIdentifier())) {
+                    visitDate = getFormDate(form, visitInformation.getTimeQuestionIdentifier());
+                } else {
+                    questionnaires.put(questionnaireIdentifier, !isFormIncomplete(form));
                 }
             }
+        }
 
-            // Check if any of this visit's forms meet a frequency requirement for the current questionnaire set.
-            // If they do, remove those forms' questionnaires from the set.
-            for (String questionnaireIdentifier: questionnaires) {
-                if (questionnaireSetInfo.containsKey(questionnaireIdentifier)) {
-                    Calendar compareDate = getFrequencyDate(visitInformation.getEventDate(),
-                        questionnaireSetInfo.get(questionnaireIdentifier).getFrequency());
-                    if (compareDate.compareTo(visitDate) <= 0) {
-                        // Current visit is the same day or after the compare threshold:
-                        // This form satisfies the questionnaire's frequency requirement
+        Calendar triggeringDate = visitInformation.getEventDate();
+        boolean isWithinVisitMargin = isWithinDateRange(visitDate, triggeringDate, VISIT_CREATION_MARGIN_DAYS);
+
+        // Check if any of this visit's forms meet a frequency requirement for the current questionnaire set.
+        // If they do, remove those forms' questionnaires from the set.
+        for (String questionnaireIdentifier: questionnaires.keySet()) {
+            if (questionnaireSetInfo.containsKey(questionnaireIdentifier)) {
+                int frequencyPeriod = questionnaireSetInfo.get(questionnaireIdentifier).getFrequency()
+                    * 7 - FREQUENCY_MARGIN_DAYS;
+                boolean complete = questionnaires.get(questionnaireIdentifier);
+
+                if (isWithinDateRange(visitDate, triggeringDate, frequencyPeriod)) {
+                    if (complete || isWithinVisitMargin) {
                         questionnaireSetInfo.remove(questionnaireIdentifier);
                     }
                 }
@@ -465,43 +517,48 @@ public class VisitChangeListener implements EventHandler
     }
 
     /**
-     * If all forms are complete, record that the visit is complete.
+     * Record a visit's completion status to it's visit information surveysComplete field.
      *
-     * Do not count all forms as complete if the visit only contains a Visit Information form.
-     * Save the completion status to the Visit Information form's surveysComplete answer.
-     *
-     * @param complete True if all forms for the visit are complete
-     * @param numberOfForms How many forms exist for the visit, excluding the Visit Information form
-     * @param visitInformationForm the Visit Information form to save the completion status to, if relevant.
-     * @param surveysCompleteIdentifier the uuid of the surveysComplete question
+     * @param form the Visit Information form to save the completion status to, if relevant.
+     * @param complete the value that completion status should be set to; true for complete, false for incomplete.
      */
-    private void handleVisitCompleted(boolean complete,
-        int numberOfForms,
-        Node visitInformationForm,
-        String surveysCompleteIdentifier)
+    private void changeVisitComplete(Node form, Boolean complete)
     {
-        if (complete && numberOfForms > 0 && visitInformationForm != null && surveysCompleteIdentifier != null) {
-            try {
-                VersionManager versionManager = this.session.getWorkspace().getVersionManager();
-                String formPath = visitInformationForm.getPath();
-                try {
-                    versionManager.checkout(formPath);
-                } catch (RepositoryException e) {
-                    LOGGER.error("Failed to checkout form: {}", e.getMessage(), e);
+        try {
+            Long newValue = complete ? 1L : 0L;
+            Node questionnaireNode = this.formUtils.getQuestionnaire(form);
+            final String surveysCompleteIdentifier;
+            if (questionnaireNode.hasNode("surveys_complete")) {
+                surveysCompleteIdentifier = questionnaireNode.getNode("surveys_complete").getIdentifier();
+                Property surveysCompleted = getFormAnswerValue(form, surveysCompleteIdentifier);
+                if (surveysCompleted != null && surveysCompleted.getLong() == newValue) {
+                    // Form is already set to the right value
+                    return;
                 }
-
-                Node answer = getFormAnswer(visitInformationForm, surveysCompleteIdentifier);
-                answer.setProperty("value", 1L);
-                this.session.save();
-
-                try {
-                    versionManager.checkin(formPath);
-                } catch (RepositoryException e) {
-                    LOGGER.error("Failed to checkin form: {}", e.getMessage(), e);
-                }
-            } catch (RepositoryException e) {
-                LOGGER.error("Failed to obtain version manager: {}", e.getMessage(), e);
+            } else {
+                LOGGER.warn("Could not save visit completion status as surveys_complete could not be found");
+                return;
             }
+
+            VersionManager versionManager = this.session.getWorkspace().getVersionManager();
+            String formPath = form.getPath();
+            try {
+                versionManager.checkout(formPath);
+            } catch (RepositoryException e) {
+                LOGGER.error("Failed to checkout form: {}", e.getMessage(), e);
+            }
+
+            Node answer = getFormAnswer(form, surveysCompleteIdentifier);
+            answer.setProperty("value", newValue);
+            this.session.save();
+
+            try {
+                versionManager.checkin(formPath);
+            } catch (RepositoryException e) {
+                LOGGER.error("Failed to checkin form: {}", e.getMessage(), e);
+            }
+        } catch (RepositoryException e) {
+            LOGGER.error("Failed to obtain version manager or questionnaire data: {}", e.getMessage(), e);
         }
     }
 
