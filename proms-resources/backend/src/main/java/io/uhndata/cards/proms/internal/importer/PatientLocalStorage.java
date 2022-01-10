@@ -143,13 +143,13 @@ public class PatientLocalStorage
     /**
      * Grab a subject of the specified type, or create it if it doesn't exist.
      * @param identifier Identifier to use for the subject
-     * @param parentTypePath path to a SubjectType node for this subject
+     * @param subjectTypePath path to a SubjectType node for this subject
      * @param parent parent Resource if this is a child of that resource, or null
      * @param resolver ResourceResolver to use when searching for/creating the node
      * @param nodesToCheckin Set of nodes that should be checked in after all edits are complete
      * @return A Subject resource
      */
-    Resource getOrCreateSubject(String identifier, String parentTypePath, Resource parent, ResourceResolver resolver,
+    Resource getOrCreateSubject(String identifier, String subjectTypePath, Resource parent, ResourceResolver resolver,
         Set<String> nodesToCheckin)
         throws RepositoryException, PersistenceException
     {
@@ -164,11 +164,10 @@ public class PatientLocalStorage
             if (parentResource == null) {
                 parentResource = resolver.getResource("/Subjects/");
             }
-            Resource patientType = resolver.getResource(parentTypePath);
+            Resource patientType = resolver.getResource(subjectTypePath);
             Resource newSubject = resolver.create(parentResource, UUID.randomUUID().toString(), Map.of(
                 PatientLocalStorage.PRIMARY_TYPE, "cards:Subject",
                 "identifier", identifier,
-                "fullidentifier", identifier,
                 "type", patientType.adaptTo(Node.class)
             ));
             nodesToCheckin.add(newSubject.getPath());
@@ -192,8 +191,8 @@ public class PatientLocalStorage
         Node subjectNode = subject.adaptTo(Node.class);
         Iterator<Resource> formResourceIter = resolver.findResources(String.format(
             "SELECT * FROM [cards:Form] WHERE subject = \"%s\" AND questionnaire=\"%s\"",
-            subjectNode.getProperty("jcr:uuid").getString(),
-            formType.adaptTo(Node.class).getProperty("jcr:uuid").getString()), PatientLocalStorage.JCR_SQL);
+            subjectNode.getIdentifier(),
+            formType.adaptTo(Node.class).getIdentifier()), PatientLocalStorage.JCR_SQL);
         if (formResourceIter.hasNext()) {
             Resource formResource = formResourceIter.next();
             nodesToCheckin.add(formResource.getPath());
@@ -203,7 +202,6 @@ public class PatientLocalStorage
             Resource newForm = resolver.create(parentResource, UUID.randomUUID().toString(), Map.of(
                 PatientLocalStorage.PRIMARY_TYPE, "cards:Form",
                 "questionnaire", formType.adaptTo(Node.class),
-                "relatedSubjects", subjectNode,
                 "subject", subjectNode
             ));
             nodesToCheckin.add(newForm.getPath());
