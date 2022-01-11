@@ -36,15 +36,24 @@ import { identifyPatient } from "./patientLookup.jsx";
 const useStyles = makeStyles(theme => ({
   form : {
     margin: theme.spacing(6, 3, 3),
+    "@media (max-height: 725px)" : {
+      marginTop: theme.spacing(4),
+    }
   },
   logo : {
     maxWidth: "240px",
+    "@media (max-height: 725px)" : {
+      maxHeight: "70px",
+    }
   },
   description : {
     maxWidth: "550px",
     "& > *" : {
       textAlign: "center",
       marginBottom: "16px",
+      "@media (max-width: 400px)" : {
+        fontSize: "x-small",
+      }
     }
   },
 }));
@@ -305,11 +314,13 @@ function MockPatientIdentification(props) {
            </Typography>
          </Grid>
          <Grid item xs={12}>
+            <div className={classes.description}>
             { error ?
-              <Typography color="error" align="center">{error}</Typography>
+              <Typography color="error">{error}</Typography>
               :
-              <Typography variant="h6" align="center">Please enter the following information for identification</Typography>
+              <Typography variant="h6">Please enter the following information for identification</Typography>
             }
+            </div>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="j_dob" shrink={true}>Date of birth</InputLabel>
               <Input id="j_dob" name="j_dob" autoComplete="off" type="date" autoFocus onChange={event => setDob(event.target.value)}/>
