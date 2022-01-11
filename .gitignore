@@ -63,3 +63,6 @@ yarn.lock
 
 # Copy of source code needed for building JARs in a Docker container
 /distribution/COMPLETE_SOURCE_CODE.tar
+
+# SAML Keys
+samlKeystore.p12
