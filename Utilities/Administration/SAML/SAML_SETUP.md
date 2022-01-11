@@ -4,6 +4,13 @@
 If you are testing locally, you may use a Keycloak Docker container
 
 ```bash
+docker pull quay.io/keycloak/keycloak
+docker run --rm -p 8484:8080 -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin quay.io/keycloak/keycloak
+```
+
+or for using version _15.0.2_ that was used while creating this documentation
+
+```bash
 docker pull quay.io/keycloak/keycloak:15.0.2
 docker run --rm -p 8484:8080 -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin quay.io/keycloak/keycloak:15.0.2
 ```
