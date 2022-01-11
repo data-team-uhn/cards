@@ -59,5 +59,17 @@
       "id":"org.apache.jackrabbit:oak-security-spi:${oak.version}",
       "start-order":"15"
     }
-  ]
+  ],
+  "configurations": {
+    "org.apache.sling.jcr.repoinit.RepositoryInitializer~saml_support":{
+      "scripts": [
+        "create service user saml2-user-mgt \n set ACL for saml2-user-mgt \n     allow jcr:all on /home \n end"
+      ]
+    },
+    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~saml_support":{
+      "user.mapping":[
+        "org.apache.sling.auth.saml2:Saml2UserMgtService=saml2-user-mgt"
+      ]
+    }
+  }
 }
