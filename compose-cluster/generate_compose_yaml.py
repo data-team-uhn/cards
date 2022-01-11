@@ -33,11 +33,13 @@ argparser.add_argument('--config_replicas', help='Number of MongoDB cluster conf
 argparser.add_argument('--custom_env_file', help='Enable a custom file with environment variables')
 argparser.add_argument('--cards_project', help='The CARDS project to deploy (eg. cards4care, cards4lfs, etc...')
 argparser.add_argument('--dev_docker_image', help='Indicate that the CARDS Docker image being used was built for development, not production.', action='store_true')
+argparser.add_argument('--composum', help='Enable Composum for the CARDS admin account', action='store_true')
 argparser.add_argument('--enable_ncr', help='Add a Neural Concept Recognizer service to the cluster', action='store_true')
 argparser.add_argument('--oak_filesystem', help='Use the filesystem (instead of MongoDB) as the back-end for Oak/JCR', action='store_true')
 argparser.add_argument('--external_mongo', help='Use an external MongoDB instance instead of providing our own', action='store_true')
 argparser.add_argument('--external_mongo_address', help='Address/Hostname of the external MongoDB instance. Only valid if --external_mongo is specified.')
 argparser.add_argument('--external_mongo_dbname', help='Database name of the external MongoDB instance. Only valid if --external_mongo is specified.')
+argparser.add_argument('--saml', help='Make the Apache Sling SAML2 Handler OSGi bundle available for SAML-based logins', action='store_true')
 argparser.add_argument('--ssl_proxy', help='Protect this service with SSL/TLS (use https:// instead of http://)', action='store_true')
 argparser.add_argument('--sling_admin_port', help='The localhost TCP port which should be forwarded to cardsinitial:8080', type=int)
 argparser.add_argument('--subnet', help='Manually specify the subnet of IP addresses to be used by the containers in this docker-compose environment (eg. --subnet 172.99.0.0/16)')
@@ -257,6 +259,13 @@ if args.sling_admin_port:
 
 if args.cards_project:
   yaml_obj['services']['cardsinitial']['environment'].append("CARDS_PROJECT={}".format(args.cards_project))
+
+if args.composum:
+  yaml_obj['services']['cardsinitial']['environment'].append("DEV=true")
+
+if args.saml:
+  yaml_obj['services']['cardsinitial']['environment'].append("SAML_AUTH_ENABLED=true")
+  yaml_obj['services']['cardsinitial']['volumes'].append("./samlKeystore.p12:/opt/cards/samlKeystore.p12:ro")
 
 #Configure the NCR container (if enabled) - only one for now
 if ENABLE_NCR:

@@ -151,6 +151,7 @@ declare -i ARGS_LENGTH=${#ARGS[@]}
 declare OAK_STORAGE="tar"
 # Permissions scheme: default is open, allow switching to something else
 declare PERMISSIONS="open"
+declare PERMISSIONS_EXPLICITLY_SET="false"
 get_cards_version
 
 for ((i=0; i<${ARGS_LENGTH}; ++i));
@@ -174,6 +175,7 @@ do
     ARGS[$i]=${ARGS[$i]#,}
   elif [[ ${ARGS[$i]} == '--permissions' ]]
   then
+    PERMISSIONS_EXPLICITLY_SET="true"
     unset ARGS[$i]
     i=${i}+1
     PERMISSIONS=${ARGS[$i]}
@@ -203,6 +205,21 @@ do
     ARGS[$ARGS_LENGTH]=-f
     ARGS_LENGTH=${ARGS_LENGTH}+1
     ARGS[$ARGS_LENGTH]=mvn:io.uhndata.cards/cards-modules-test-forms/${CARDS_VERSION}/slingosgifeature
+    ARGS_LENGTH=${ARGS_LENGTH}+1
+  elif [[ ${ARGS[$i]} == '--saml' ]]
+  then
+    if [[ ${PERMISSIONS_EXPLICITLY_SET} == 'false' ]]
+    then
+      PERMISSIONS="trusted"
+    fi
+    unset ARGS[$i]
+    ARGS[$ARGS_LENGTH]=-f
+    ARGS_LENGTH=${ARGS_LENGTH}+1
+    ARGS[$ARGS_LENGTH]=mvn:io.uhndata.cards/cards-saml-support/${CARDS_VERSION}/slingosgifeature/base
+    ARGS_LENGTH=${ARGS_LENGTH}+1
+    ARGS[$ARGS_LENGTH]=-C
+    ARGS_LENGTH=${ARGS_LENGTH}+1
+    ARGS[$ARGS_LENGTH]=io.dropwizard.metrics:metrics-core:ALL
     ARGS_LENGTH=${ARGS_LENGTH}+1
   else
     ARGS[$i]=${ARGS[$i]/VERSION/${CARDS_VERSION}}
