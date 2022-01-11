@@ -24,7 +24,6 @@
 
 import React, { useState } from "react";
 import { Select, MenuItem,  makeStyles } from "@material-ui/core";
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import PropTypes from "prop-types";
 import moment from "moment";
 
@@ -45,14 +44,11 @@ const useStyles = makeStyles(theme => ({
   select : {
     paddingLeft: theme.spacing(1),
   },
-  icon : {
-    float: "right"
-  },
   default : {
     opacity: "50%"
   },
-  container : {
-    borderBottom: "1px solid " + theme.palette.grey["800"],
+  month : {
+    minWidth: "110px"
   },
 }));
 
@@ -96,7 +92,7 @@ function DropdownsDatePicker(props) {
 
   let generateYearOptions = () => {
     let yearOptions = [];
-    yearOptions.push(<MenuItem key={-1} value="-1">yyyy</MenuItem>);
+    yearOptions.push(<MenuItem key={-1} value="-1"></MenuItem>);
 
     let years = []
     for (let i = startYear; i <= endYear; i++) {
@@ -109,7 +105,7 @@ function DropdownsDatePicker(props) {
 
   let generateMonthOptions = () => {
     let monthOptions = [];
-    monthOptions.push( <MenuItem key={-1} value="-1">mm</MenuItem> );
+    monthOptions.push( <MenuItem key={-1} value="-1"></MenuItem> );
 
     let start = selectedYear === startYear ? startMonth : 0;
     let end = selectedYear === endYear ? endMonth : 11;
@@ -127,7 +123,7 @@ function DropdownsDatePicker(props) {
 
   let generateDayOptions = () => {
     let dayOptions = [];
-    dayOptions.push(<MenuItem key={-1} value="-1">dd</MenuItem>);
+    dayOptions.push(<MenuItem key={-1} value="-1"></MenuItem>);
 
     let start = (selectedYear === startYear && selectedMonth === startMonth) ? startDay : 1;
     const monthDays = getDaysInMonth(selectedYear, selectedMonth);
@@ -200,7 +196,7 @@ function DropdownsDatePicker(props) {
         autoFocus={autoFocus && order.indexOf("year") == 0}
         renderValue={(selected) => {
             if (selected < 0 ) {
-              return <div className={classes.default}>yyyy</div>;
+              return <div className={classes.default}>Year</div>;
             }
             return selected;
         }}
@@ -217,16 +213,13 @@ function DropdownsDatePicker(props) {
         onChange={handleMonthChange}
         value={selectedMonth}
         disabled={disabled}
-        className={order.indexOf("month") != 0 ? classes.select : ''}
+        className={(order.indexOf("month") != 0 ? classes.select : '') + ' ' + classes.month}
         autoFocus={autoFocus && order.indexOf("month") == 0}
         renderValue={(selected) => {
             if (selected < 0 ) {
-              return <div className={classes.default}>mm</div>;
+              return <div className={classes.default}>Month</div>;
             }
-            if (selected < 9 ) {
-              return "0" + (selected+1);
-            }
-            return selected+1;
+            return monthShort ? moment().month(selected).format("MMM") : moment().month(selected).format("MMMM");
         }}
       >
         {generateMonthOptions()}
@@ -245,7 +238,7 @@ function DropdownsDatePicker(props) {
         autoFocus={autoFocus && order.indexOf("day") == 0}
         renderValue={(selected) => {
             if (selected < 0 ) {
-              return <div className={classes.default}>dd</div>;
+              return <div className={classes.default}>Day</div>;
             }
             if (selected < 10 ) {
               return "0" + selected;
@@ -267,7 +260,6 @@ function DropdownsDatePicker(props) {
   return (
     <div id="dropdown-date" className={classes.container}>
       { order.map(part => { return renderParts[part]() }) }
-      <CalendarTodayIcon fontSize="small" className={classes.icon}/>
     </div>
   );
 }
