@@ -22,6 +22,7 @@ import { v4 as uuidv4 } from 'uuid';
 import {
   Button,
   FormControl,
+  FormHelperText,
   Grid,
   Input,
   InputLabel,
@@ -32,6 +33,8 @@ import {
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
 import { identifyPatient } from "./patientLookup.jsx";
+
+import DropdownsDatePicker from "./components/DropdownsDatePicker.jsx";
 
 const useStyles = makeStyles(theme => ({
   form : {
@@ -68,6 +71,9 @@ const useStyles = makeStyles(theme => ({
         '-webkit-appearance': 'none',
         margin: 0
     }
+  },
+  dateLabel : {
+      paddingTop: theme.spacing(1),
   }
 }));
 
@@ -335,10 +341,8 @@ function MockPatientIdentification(props) {
               <Typography variant="h6">Please enter the following information for identification</Typography>
             }
             </div>
-            <FormControl margin="normal" required fullWidth>
-              <InputLabel htmlFor="j_dob" shrink={true}>Date of birth</InputLabel>
-              <Input id="j_dob" name="j_dob" autoComplete="off" type="date" autoFocus onChange={event => setDob(event.target.value)}/>
-            </FormControl>
+            <InputLabel htmlFor="j_dob" shrink={true} className={classes.dateLabel}>Date of birth</InputLabel>
+            <DropdownsDatePicker id="j_dob" name="j_dob" formatDate onDateChange={setDob} autoFocus/>
             <Grid container direction="row" alignItems="flex-end" spacing={3} wrap="nowrap" justify="space-between">
               <Grid item>
                 <FormControl margin="normal" fullWidth>
