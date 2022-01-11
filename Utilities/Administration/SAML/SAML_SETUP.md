@@ -72,7 +72,7 @@ the CARDS project. You may now start CARDS with _SAML Login Support_
 enabled (`./start_cards.sh --dev --saml`).
 
 4. Enable and configure the SAML login for CARDS by running:
-`./setup_saml.sh`.
+`python3 add_saml_sp_config.py`.
 
 5. Point your browser to CARDS (`http://localhost:8080` if testing
 locally). You should automatically be redirected to the SSO login page
