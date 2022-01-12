@@ -30,7 +30,7 @@ public @interface NightlyImportConfig
     /** Number of days to look ahead when querying for appointments. */
     int DAYS_TO_QUERY = 3;
 
-    /** Torch FIHR GraphQL endpoint. */
+    /** Torch FHIR GraphQL endpoint. */
     String TORCH_ENDPOINT_URL = "https://prom.dev.uhn.io/graphql";
 
     /** Vault JWT refresh endpoint. */

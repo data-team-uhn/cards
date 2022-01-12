@@ -149,12 +149,12 @@ public class PatientLocalStorage
     Resource getOrCreateSubject(String identifier, String subjectTypePath, Resource parent, Set<String> nodesToCheckin)
         throws RepositoryException, PersistenceException
     {
-        Iterator<Resource> patientResourceIter = this.resolver.findResources(String.format(
+        Iterator<Resource> subjectResourceIter = this.resolver.findResources(String.format(
             "SELECT * FROM [cards:Subject] WHERE identifier = \"%s\"", identifier), PatientLocalStorage.JCR_SQL);
-        if (patientResourceIter.hasNext()) {
-            Resource patientResource = patientResourceIter.next();
-            nodesToCheckin.add(patientResource.getPath());
-            return patientResource;
+        if (subjectResourceIter.hasNext()) {
+            Resource subjectResource = subjectResourceIter.next();
+            nodesToCheckin.add(subjectResource.getPath());
+            return subjectResource;
         } else {
             Resource parentResource = parent;
             if (parentResource == null) {
