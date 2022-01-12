@@ -29,43 +29,59 @@
   "bundles":[
     {
       "id":"jakarta.mail:jakarta.mail-api:2.0.1",
-      "start-order":"25"
+      "start-order":"26"
     },
     {
       "id":"jakarta.activation:jakarta.activation-api:2.0.1",
-      "start-order":"25"
+      "start-order":"26"
+    },
+    {
+      "id":"commons-beanutils:commons-beanutils:1.9.4",
+      "start-order":"26"
+    },
+    {
+      "id":"commons-digester:commons-digester:2.1",
+      "start-order":"26"
+    },
+    {
+      "id":"commons-validator:commons-validator:1.7",
+      "start-order":"26"
     },
     {
       "id":"com.sun.mail:jakarta.mail:2.0.1",
-      "start-order":"25"
+      "start-order":"26"
     },
     {
       "id":"org.jasypt:jasypt:1.9.3",
-      "start-order":"25"
+      "start-order":"26"
     },
     {
       "id":"org.apache.servicemix.bundles:org.apache.servicemix.bundles.jasypt:1.9.3_1",
-      "start-order":"25"
+      "start-order":"26"
     },
     {
       "id":"org.apache.sling:org.apache.sling.api:2.23.6",
-      "start-order":"25"
+      "start-order":"26"
     },
     {
       "id":"org.apache.sling:org.apache.sling.commons.messaging.mail:2.0.0",
-      "start-order":"25"
+      "start-order":"26"
     },
     {
       "id":"org.apache.sling:org.apache.sling.commons.messaging:1.0.2",
-      "start-order":"25"
+      "start-order":"26"
     },
     {
       "id":"org.apache.sling:org.apache.sling.commons.crypto:1.1.0",
-      "start-order":"25"
+      "start-order":"26"
+    },
+    {
+      "id":"${project.groupId}:cards-token-authentication:${project.version}",
+      "start-order":"26"
     },
     {
       "id":"${project.groupId}:${project.artifactId}:${project.version}",
-      "start-order":"25"
+      "start-order":"26"
     }
   ],
   "configurations":{
@@ -106,6 +122,11 @@
       "host": "${emailnotifications.messageidprovider.host}",
       "names": [
         "default"
+      ]
+    },
+    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~emailNotifications":{
+      "user.mapping":[
+        "io.uhndata.cards.email-notifications=[sling-readall]"
       ]
     }
   }
