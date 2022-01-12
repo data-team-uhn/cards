@@ -48,9 +48,8 @@ import io.uhndata.cards.dataentry.api.FormUtils;
 import io.uhndata.cards.dataentry.api.QuestionnaireUtils;
 
 /**
- * Change listener looking for new or modified Visit Information forms.
- * Creates any forms in the specified survey set that needs to be created,
- * based on the seurvey set's specified frequency.
+ * Change listener looking for new or modified Visit Information forms. Creates any forms in the specified survey set
+ * that needs to be created, based on the seurvey set's specified frequency.
  *
  * @version $Id$
  */
@@ -65,9 +64,13 @@ import io.uhndata.cards.dataentry.api.QuestionnaireUtils;
 public class VisitChangeListener implements EventHandler
 {
     private static final int FREQUENCY_MARGIN_DAYS = 2;
+
     private static final int VISIT_CREATION_MARGIN_DAYS = 3;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(VisitChangeListener.class);
+
     private Session session;
+
     private ResourceResolver resolver;
 
     /** Provides access to resources. */
@@ -81,20 +84,20 @@ public class VisitChangeListener implements EventHandler
     private FormUtils formUtils;
 
     @Override
-    public void handleEvent(Event event)
+    public void handleEvent(final Event event)
     {
         try (ResourceResolver localResolver = this.resolverFactory.getServiceResourceResolver(null)) {
             this.resolver = localResolver;
             this.session = this.resolver.adaptTo(Session.class);
 
-            String path = event.getProperty("path").toString();
+            final String path = event.getProperty("path").toString();
 
-            Node eventFormNode = this.session.getNode(path);
-            Node subjectNode = eventFormNode.getProperty("subject").getNode();
-            String subjectType = subjectNode.getProperty("type").getNode().getProperty("label").getString();
+            final Node eventFormNode = this.session.getNode(path);
+            final Node subjectNode = eventFormNode.getProperty("subject").getNode();
+            final String subjectType = subjectNode.getProperty("type").getNode().getProperty("label").getString();
 
             // Get the information needed from the triggering form
-            Node questionnaireNode = this.formUtils.getQuestionnaire(eventFormNode);
+            final Node questionnaireNode = this.formUtils.getQuestionnaire(eventFormNode);
             if (VisitInformation.isVisitInformationForm(questionnaireNode)) {
                 // Create any forms that need to be created for this new visit
                 handleVisitInformationForm(eventFormNode, subjectNode, questionnaireNode);
@@ -103,7 +106,7 @@ public class VisitChangeListener implements EventHandler
                 // Check if all forms for the current visit are complete.
                 handleVisitDataForm(subjectNode);
             }
-        } catch (LoginException e) {
+        } catch (final LoginException e) {
             LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
         } catch (RepositoryException | PersistenceException e) {
             LOGGER.error(e.getMessage(), e);
@@ -116,31 +119,31 @@ public class VisitChangeListener implements EventHandler
      * @param eventFormNode the Visit Information form that triggered the current event
      * @param visitNode the Visit that is the subject for the triggering form
      * @param questionnaireNode the Visit Information questionnaire
-     *
      * @throws RepositoryException if any required data could not be checked
      * @throws PersistenceException if created forms could not be commited
      */
-    private void handleVisitInformationForm(Node eventFormNode, Node visitNode, Node questionnaireNode)
+    private void handleVisitInformationForm(final Node eventFormNode, final Node visitNode,
+        final Node questionnaireNode)
         throws RepositoryException, PersistenceException
     {
-        VisitInformation visitInformation = new VisitInformation(questionnaireNode, eventFormNode);
+        final VisitInformation visitInformation = new VisitInformation(questionnaireNode, eventFormNode);
 
         if (visitInformation.missingQuestionSetInfo()) {
             return;
         }
 
-        Map<String, QuestionnaireFrequency> questionnaireSetInfo
-            = getQuestionnaireSetInformation(visitInformation);
+        final Map<String, QuestionnaireFrequency> questionnaireSetInfo =
+            getQuestionnaireSetInformation(visitInformation);
 
         if (questionnaireSetInfo == null) {
             // No valid questionnaireset: Skip
             return;
         }
-        int baseQuestionnaireSetSize = questionnaireSetInfo.size();
+        final int baseQuestionnaireSetSize = questionnaireSetInfo.size();
 
         pruneQuestionnaireSetByVisit(visitNode, visitInformation, questionnaireSetInfo);
 
-        int prunedQuestionnaireSetSize = questionnaireSetInfo.size();
+        final int prunedQuestionnaireSetSize = questionnaireSetInfo.size();
         if (prunedQuestionnaireSetSize < 1) {
             // Visit already has all needed forms: end early
             return;
@@ -157,7 +160,7 @@ public class VisitChangeListener implements EventHandler
             return;
         } else {
             changeVisitComplete(eventFormNode, false);
-            List<String> createdForms = createForms(visitNode, questionnaireSetInfo);
+            final List<String> createdForms = createForms(visitNode, questionnaireSetInfo);
             commitForms(createdForms);
         }
     }
@@ -166,26 +169,24 @@ public class VisitChangeListener implements EventHandler
      * Update the visit's Visit Information form if all forms have been completed.
      *
      * @param visitNode the visit subject which should have all forms checked for completion
-     *
      * @throws RepositoryException if any required data could not be retrieved
      */
-    private void handleVisitDataForm(Node visitNode) throws RepositoryException
+    private void handleVisitDataForm(final Node visitNode) throws RepositoryException
     {
         Node visitInformationForm = null;
         String surveysCompleteIdentifier = null;
         int numberOfForms = 0;
 
+        for (final PropertyIterator forms = visitNode.getReferences(); forms.hasNext();) {
+            final Node form = forms.nextProperty().getParent();
 
-        for (PropertyIterator forms = visitNode.getReferences(); forms.hasNext();)
-        {
-            Node form = forms.nextProperty().getParent();
-
-            Node questionnaireNode = this.formUtils.getQuestionnaire(form);
+            final Node questionnaireNode = this.formUtils.getQuestionnaire(form);
             if (VisitInformation.isVisitInformationForm(questionnaireNode)) {
                 visitInformationForm = form;
                 if (questionnaireNode.hasNode("surveys_complete")) {
                     surveysCompleteIdentifier = questionnaireNode.getNode("surveys_complete").getIdentifier();
-                    Property surveysCompleted = getFormAnswerValue(visitInformationForm, surveysCompleteIdentifier);
+                    final Property surveysCompleted =
+                        getFormAnswerValue(visitInformationForm, surveysCompleteIdentifier);
                     if (surveysCompleted != null && surveysCompleted.getLong() == 1L) {
                         // Form is already complete: exit
                         return;
@@ -213,12 +214,12 @@ public class VisitChangeListener implements EventHandler
      * @param questionIdentifier the question for which we want the answer
      * @return the requested date or null
      */
-    private static Calendar getFormDate(Node formNode, String questionIdentifier)
+    private static Calendar getFormDate(final Node formNode, final String questionIdentifier)
     {
         try {
-            Property prop = getFormAnswerValue(formNode, questionIdentifier);
+            final Property prop = getFormAnswerValue(formNode, questionIdentifier);
             return prop == null ? null : prop.getDate();
-        } catch (RepositoryException e) {
+        } catch (final RepositoryException e) {
             LOGGER.warn("Requested answer could not be parsed to a date: {}", questionIdentifier, e);
             return null;
         }
@@ -231,12 +232,12 @@ public class VisitChangeListener implements EventHandler
      * @param questionIdentifier the question for which we want the answer
      * @return the requested string or null
      */
-    private static String getFormString(Node formNode, String questionIdentifier)
+    private static String getFormString(final Node formNode, final String questionIdentifier)
     {
         try {
-            Property prop = getFormAnswerValue(formNode, questionIdentifier);
+            final Property prop = getFormAnswerValue(formNode, questionIdentifier);
             return prop == null ? null : prop.getString();
-        } catch (RepositoryException e) {
+        } catch (final RepositoryException e) {
             LOGGER.warn("Requested answer could not be parsed to a string: {}", questionIdentifier, e);
             return null;
         }
@@ -249,17 +250,17 @@ public class VisitChangeListener implements EventHandler
      * @param questionIdentifier the question for which we want the answer
      * @return the requested value or null
      */
-    private static Property getFormAnswerValue(Node formNode, String questionIdentifier)
+    private static Property getFormAnswerValue(final Node formNode, final String questionIdentifier)
     {
         try {
-            Node answer = getFormAnswer(formNode, questionIdentifier);
+            final Node answer = getFormAnswer(formNode, questionIdentifier);
             if (answer != null && answer.hasProperty("value")) {
                 return answer.getProperty("value");
             } else {
                 // Question wasn't answered
                 return null;
             }
-        } catch (RepositoryException e) {
+        } catch (final RepositoryException e) {
             LOGGER.warn("Requested answer Value could not be found: {}", questionIdentifier, e);
             return null;
         }
@@ -272,41 +273,40 @@ public class VisitChangeListener implements EventHandler
      * @param questionIdentifier the question for which we want the answer
      * @return the requested Node or null
      */
-    private static Node getFormAnswer(Node formNode, String questionIdentifier)
+    private static Node getFormAnswer(final Node formNode, final String questionIdentifier)
     {
         try {
-            for (NodeIterator answers = formNode.getNodes(); answers.hasNext();) {
-                Node answer = answers.nextNode();
+            for (final NodeIterator answers = formNode.getNodes(); answers.hasNext();) {
+                final Node answer = answers.nextNode();
                 if (answer.hasProperty("question")
                     && questionIdentifier.equals(answer.getProperty("question").getString())) {
                     return answer;
                 }
             }
-        } catch (RepositoryException e) {
+        } catch (final RepositoryException e) {
             LOGGER.warn("Requested answer could not be found: {}", questionIdentifier, e);
             return null;
         }
         return null;
     }
 
-    private static boolean isWithinDateRange(Calendar testedDate, Calendar baseDate, int days)
+    private static boolean isWithinDateRange(final Calendar testedDate, final Calendar baseDate, final int days)
     {
-        Calendar start = addDays(baseDate, -Math.abs(days));
-        Calendar end = addDays(baseDate, Math.abs(days));
+        final Calendar start = addDays(baseDate, -Math.abs(days));
+        final Calendar end = addDays(baseDate, Math.abs(days));
         return testedDate.after(start) && testedDate.before(end);
     }
 
     /**
-     * Get the result of adding days to a Calendar.
-     * Does not mutate the provided date.
+     * Get the result of adding days to a Calendar. Does not mutate the provided date.
      *
      * @param date the date that is being added to.
      * @param days number of days being added
      * @return the resulting calenar
      */
-    private static Calendar addDays(Calendar date, int days)
+    private static Calendar addDays(final Calendar date, final int days)
     {
-        Calendar result = (Calendar) date.clone();
+        final Calendar result = (Calendar) date.clone();
         result.add(Calendar.DATE, (days));
         return result;
     }
@@ -317,24 +317,22 @@ public class VisitChangeListener implements EventHandler
      * @param visitInformation the Visit Information form data for which the questionnaire set should be retrieved.
      * @return a map of all questionnaires with frequency in the questionnaire set, keyed by questionnaire uuid
      */
-    private Map<String, QuestionnaireFrequency> getQuestionnaireSetInformation(VisitInformation visitInformation)
+    private Map<String, QuestionnaireFrequency> getQuestionnaireSetInformation(final VisitInformation visitInformation)
     {
-        Map<String, QuestionnaireFrequency> result = new HashMap<>();
+        final Map<String, QuestionnaireFrequency> result = new HashMap<>();
         try {
-            for (NodeIterator questionnaireSet = this.session.getNode("/Proms/"
-                + visitInformation.getQuestionnaireSet()).getNodes();
-                questionnaireSet.hasNext();)
-            {
-                Node questionnaireRef = questionnaireSet.nextNode();
-                Node questionnaire = questionnaireRef.getProperty("questionnaire").getNode();
-                String uuid = questionnaire.getIdentifier();
+            for (final NodeIterator questionnaireSet = session.getNode("/Proms/"
+                + visitInformation.getQuestionnaireSet()).getNodes(); questionnaireSet.hasNext();) {
+                final Node questionnaireRef = questionnaireSet.nextNode();
+                final Node questionnaire = questionnaireRef.getProperty("questionnaire").getNode();
+                final String uuid = questionnaire.getIdentifier();
                 int frequency = 0;
                 if (questionnaireRef.hasProperty("frequency")) {
                     frequency = (int) questionnaireRef.getProperty("frequency").getLong();
                 }
                 result.put(uuid, new QuestionnaireFrequency(frequency, questionnaire));
             }
-        } catch (RepositoryException e) {
+        } catch (final RepositoryException e) {
             LOGGER.warn("Failed to retrieve questionnaire frequency: {}", e.getMessage(), e);
             return null;
         }
@@ -343,25 +341,23 @@ public class VisitChangeListener implements EventHandler
 
     /**
      * Remove any questionnaires from the questionnaire set which do not need to be created per their frequency.
-     *
-     * Iterates through all of the patient's visits and checks these visits for completed forms that satisfy that
-     * form's frequency requirements. If that is the case, remove that form's questionnaire from the questionnaire set.
+     * Iterates through all of the patient's visits and checks these visits for completed forms that satisfy that form's
+     * frequency requirements. If that is the case, remove that form's questionnaire from the questionnaire set.
      *
      * @param visitNode the visit Subject which should be checked for forms
      * @param visitInformation the set of data about the visit that triggered this event
      * @param questionnaireSetInfo the current questionnaireSet. This will be modified by removing key-value pairs
      * @throws RepositoryException if iterating the patient's visits fails
      */
-    private void pruneQuestionnaireSet(Node visitNode,
-        VisitInformation visitInformation,
-        Map<String, QuestionnaireFrequency> questionnaireSetInfo)
+    private void pruneQuestionnaireSet(final Node visitNode,
+        final VisitInformation visitInformation,
+        final Map<String, QuestionnaireFrequency> questionnaireSetInfo)
         throws RepositoryException
     {
-        Node patientNode = visitNode.getParent();
-        String triggeringVisit = visitNode.getName();
-        for (NodeIterator visits = patientNode.getNodes(); visits.hasNext();)
-        {
-            Node visit = visits.nextNode();
+        final Node patientNode = visitNode.getParent();
+        final String triggeringVisit = visitNode.getName();
+        for (final NodeIterator visits = patientNode.getNodes(); visits.hasNext();) {
+            final Node visit = visits.nextNode();
             // Check if visit is not the triggering visit, since the triggering visit has already been processed.
             if (!triggeringVisit.equals(visit.getName())) {
                 pruneQuestionnaireSetByVisit(visit, visitInformation, questionnaireSetInfo);
@@ -371,7 +367,6 @@ public class VisitChangeListener implements EventHandler
 
     /**
      * Remove any questionnaires from the questionnaire set which do not need to be created per their frequency.
-     *
      * Iterates through all of the provided visit's forms and checks if they meet the frequency requirements for the
      * provided visitInformation. If they do, remove that form's questionnaire from the questionnaire set.
      *
@@ -380,20 +375,19 @@ public class VisitChangeListener implements EventHandler
      * @param questionnaireSetInfo the current questionnaireSet. This will be modified by removing key-value pairs
      * @throws RepositoryException if iterating the patient's visits fails
      */
-    private void pruneQuestionnaireSetByVisit(Node visit,
-        VisitInformation visitInformation,
-        Map<String, QuestionnaireFrequency> questionnaireSetInfo)
+    private void pruneQuestionnaireSetByVisit(final Node visit,
+        final VisitInformation visitInformation,
+        final Map<String, QuestionnaireFrequency> questionnaireSetInfo)
         throws RepositoryException
     {
         // Create a list of all complete forms that exist for this visit.
         // Record the visit's date as well, if there is a Visit Information form with a date.
-        Map<String, Boolean> questionnaires = new HashMap<>();
+        final Map<String, Boolean> questionnaires = new HashMap<>();
         Calendar visitDate = null;
-        for (PropertyIterator forms = visit.getReferences(); forms.hasNext();)
-        {
-            Node form = forms.nextProperty().getParent();
+        for (final PropertyIterator forms = visit.getReferences(); forms.hasNext();) {
+            final Node form = forms.nextProperty().getParent();
             if (this.formUtils.isForm(form)) {
-                String questionnaireIdentifier = this.formUtils.getQuestionnaireIdentifier(form);
+                final String questionnaireIdentifier = this.formUtils.getQuestionnaireIdentifier(form);
                 if (questionnaireIdentifier.equals(visitInformation.getQuestionnaireIdentifier())) {
                     visitDate = getFormDate(form, visitInformation.getTimeQuestionIdentifier());
                 } else {
@@ -402,16 +396,16 @@ public class VisitChangeListener implements EventHandler
             }
         }
 
-        Calendar triggeringDate = visitInformation.getEventDate();
-        boolean isWithinVisitMargin = isWithinDateRange(visitDate, triggeringDate, VISIT_CREATION_MARGIN_DAYS);
+        final Calendar triggeringDate = visitInformation.getEventDate();
+        final boolean isWithinVisitMargin = isWithinDateRange(visitDate, triggeringDate, VISIT_CREATION_MARGIN_DAYS);
 
         // Check if any of this visit's forms meet a frequency requirement for the current questionnaire set.
         // If they do, remove those forms' questionnaires from the set.
-        for (String questionnaireIdentifier: questionnaires.keySet()) {
+        for (final String questionnaireIdentifier : questionnaires.keySet()) {
             if (questionnaireSetInfo.containsKey(questionnaireIdentifier)) {
-                int frequencyPeriod = questionnaireSetInfo.get(questionnaireIdentifier).getFrequency()
+                final int frequencyPeriod = questionnaireSetInfo.get(questionnaireIdentifier).getFrequency()
                     * 7 - FREQUENCY_MARGIN_DAYS;
-                boolean complete = questionnaires.get(questionnaireIdentifier);
+                final boolean complete = questionnaires.get(questionnaireIdentifier);
 
                 if (isWithinDateRange(visitDate, triggeringDate, frequencyPeriod)) {
                     if (complete || isWithinVisitMargin) {
@@ -431,20 +425,20 @@ public class VisitChangeListener implements EventHandler
      * @throws PersistenceException if a form could not be created
      * @throws RepositoryException if the Forms node could not be resolved
      */
-    private List<String> createForms(Node visitNode, Map<String,
-        QuestionnaireFrequency> questionnaireSetInfo)
+    private List<String> createForms(final Node visitNode,
+        final Map<String, QuestionnaireFrequency> questionnaireSetInfo)
         throws PersistenceException, RepositoryException
     {
-        List<String> results = new LinkedList<>();
+        final List<String> results = new LinkedList<>();
 
-        for (String questionnaireIdentifier: questionnaireSetInfo.keySet()) {
-            Map<String, Object> formProperties = new HashMap<>();
+        for (final String questionnaireIdentifier : questionnaireSetInfo.keySet()) {
+            final Map<String, Object> formProperties = new HashMap<>();
 
             formProperties.put("jcr:primaryType", "cards:Form");
             formProperties.put("questionnaire", questionnaireSetInfo.get(questionnaireIdentifier).getNode());
             formProperties.put("subject", visitNode);
 
-            String uuid = UUID.randomUUID().toString();
+            final String uuid = UUID.randomUUID().toString();
             this.resolver.create(this.resolver.resolve("/Forms/"), uuid, formProperties);
             results.add("/Forms/" + uuid);
         }
@@ -457,7 +451,7 @@ public class VisitChangeListener implements EventHandler
      *
      * @param createdForms the list of paths that should be checked in
      */
-    private void commitForms(List<String> createdForms)
+    private void commitForms(final List<String> createdForms)
     {
         if (createdForms.size() > 0) {
             // Commit new forms and check them in
@@ -468,15 +462,15 @@ public class VisitChangeListener implements EventHandler
             }
 
             try {
-                VersionManager versionManager = this.session.getWorkspace().getVersionManager();
-                for (String formPath: createdForms) {
+                final VersionManager versionManager = this.session.getWorkspace().getVersionManager();
+                for (final String formPath : createdForms) {
                     try {
                         versionManager.checkin(formPath);
-                    } catch (RepositoryException e) {
+                    } catch (final RepositoryException e) {
                         LOGGER.error("Failed to checkin form: {}", e.getMessage(), e);
                     }
                 }
-            } catch (RepositoryException e) {
+            } catch (final RepositoryException e) {
                 LOGGER.error("Failed to obtain version manager: {}", e.getMessage(), e);
             }
         }
@@ -488,29 +482,29 @@ public class VisitChangeListener implements EventHandler
      * @param form the form which should be checked
      * @return true if the form's statusFlags property contains INCOMPLETE
      */
-    private boolean isFormIncomplete(Node form)
+    private boolean isFormIncomplete(final Node form)
     {
         boolean incomplete = false;
         try {
             if (this.formUtils.isForm(form) && form.hasProperty("statusFlags")) {
-                Property statusProp = form.getProperty("statusFlags");
+                final Property statusProp = form.getProperty("statusFlags");
                 if (statusProp.isMultiple()) {
-                    Value[] statuses = form.getProperty("statusFlags").getValues();
-                    for (Value status : statuses) {
-                        String str = status.getString();
+                    final Value[] statuses = form.getProperty("statusFlags").getValues();
+                    for (final Value status : statuses) {
+                        final String str = status.getString();
                         if ("INCOMPLETE".equals(str)) {
                             incomplete = true;
                         }
                     }
                 } else {
-                    String str = statusProp.getString();
+                    final String str = statusProp.getString();
                     if ("INCOMPLETE".equals(str)) {
                         incomplete = true;
                     }
                 }
             }
             return incomplete;
-        } catch (RepositoryException e) {
+        } catch (final RepositoryException e) {
             // Can't check if the form is INCOMPLETE, assume it is
             return true;
         }
@@ -522,15 +516,15 @@ public class VisitChangeListener implements EventHandler
      * @param form the Visit Information form to save the completion status to, if relevant.
      * @param complete the value that completion status should be set to; true for complete, false for incomplete.
      */
-    private void changeVisitComplete(Node form, Boolean complete)
+    private void changeVisitComplete(final Node form, final Boolean complete)
     {
         try {
-            Long newValue = complete ? 1L : 0L;
-            Node questionnaireNode = this.formUtils.getQuestionnaire(form);
+            final Long newValue = complete ? 1L : 0L;
+            final Node questionnaireNode = this.formUtils.getQuestionnaire(form);
             final String surveysCompleteIdentifier;
             if (questionnaireNode.hasNode("surveys_complete")) {
                 surveysCompleteIdentifier = questionnaireNode.getNode("surveys_complete").getIdentifier();
-                Property surveysCompleted = getFormAnswerValue(form, surveysCompleteIdentifier);
+                final Property surveysCompleted = getFormAnswerValue(form, surveysCompleteIdentifier);
                 if (surveysCompleted != null && surveysCompleted.getLong() == newValue) {
                     // Form is already set to the right value
                     return;
@@ -540,24 +534,24 @@ public class VisitChangeListener implements EventHandler
                 return;
             }
 
-            VersionManager versionManager = this.session.getWorkspace().getVersionManager();
-            String formPath = form.getPath();
+            final VersionManager versionManager = this.session.getWorkspace().getVersionManager();
+            final String formPath = form.getPath();
             try {
                 versionManager.checkout(formPath);
-            } catch (RepositoryException e) {
+            } catch (final RepositoryException e) {
                 LOGGER.error("Failed to checkout form: {}", e.getMessage(), e);
             }
 
-            Node answer = getFormAnswer(form, surveysCompleteIdentifier);
+            final Node answer = getFormAnswer(form, surveysCompleteIdentifier);
             answer.setProperty("value", newValue);
             this.session.save();
 
             try {
                 versionManager.checkin(formPath);
-            } catch (RepositoryException e) {
+            } catch (final RepositoryException e) {
                 LOGGER.error("Failed to checkin form: {}", e.getMessage(), e);
             }
-        } catch (RepositoryException e) {
+        } catch (final RepositoryException e) {
             LOGGER.error("Failed to obtain version manager or questionnaire data: {}", e.getMessage(), e);
         }
     }
@@ -565,26 +559,29 @@ public class VisitChangeListener implements EventHandler
     private static final class VisitInformation
     {
         private final Calendar eventDate;
+
         private final String questionnaireIdentifier;
+
         private final String timeQuestionIdentifier;
+
         private final String questionnaireSet;
 
-        VisitInformation(Node questionnaireNode, Node formNode) throws RepositoryException
+        VisitInformation(final Node questionnaireNode, final Node formNode) throws RepositoryException
         {
             this.questionnaireIdentifier = questionnaireNode.getIdentifier();
             this.timeQuestionIdentifier = questionnaireNode.getNode("time").getIdentifier();
             this.eventDate = getFormDate(formNode, this.timeQuestionIdentifier);
-            String questionSetIdentifier = questionnaireNode.getNode("surveys").getIdentifier();
+            final String questionSetIdentifier = questionnaireNode.getNode("surveys").getIdentifier();
             this.questionnaireSet = getFormString(formNode, questionSetIdentifier);
         }
 
-        public static Boolean isVisitInformationForm(Node node)
+        public static Boolean isVisitInformationForm(final Node node)
         {
             try {
                 return node != null
                     && node.hasProperty("title")
                     && "Visit information".equals(node.getProperty("title").getString());
-            } catch (RepositoryException e) {
+            } catch (final RepositoryException e) {
                 LOGGER.warn("Failed check for visit information form: {}", e.getMessage(), e);
                 return false;
             }
@@ -621,9 +618,10 @@ public class VisitChangeListener implements EventHandler
     private static final class QuestionnaireFrequency
     {
         private final Integer frequency;
+
         private final Node node;
 
-        QuestionnaireFrequency(int frequency, Node node)
+        QuestionnaireFrequency(final int frequency, final Node node)
         {
             this.frequency = frequency;
             this.node = node;
