@@ -36,7 +36,6 @@ import io.uhndata.cards.auth.token.TokenManager;
 import jakarta.mail.MessagingException;
 
 
-@SuppressWarnings("checkstyle:MultipleStringLiterals")
 public class InitialNotificationsTask implements Runnable
 {
     /** Default log. */
