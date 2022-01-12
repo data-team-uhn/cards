@@ -36,12 +36,25 @@ import { identifyPatient } from "./patientLookup.jsx";
 const useStyles = makeStyles(theme => ({
   form : {
     margin: theme.spacing(6, 3, 3),
+    "@media (max-height: 725px)" : {
+      marginTop: theme.spacing(4),
+    }
   },
   logo : {
     maxWidth: "240px",
+    "@media (max-height: 725px)" : {
+      maxHeight: "70px",
+    }
   },
-  instructions : {
-    textAlign: "center",
+  description : {
+    maxWidth: "550px",
+    "& > *" : {
+      textAlign: "center",
+      marginBottom: "16px",
+      "@media (max-width: 400px)" : {
+        fontSize: "x-small",
+      }
+    }
   },
 }));
 
@@ -286,19 +299,33 @@ function MockPatientIdentification(props) {
          <Grid item xs={12}>
            <img src="/libs/cards/resources/logo_light_bg.png" className={classes.logo} alt="logo" />
          </Grid>
-         <Grid item xs={12} className={classes.instructions}>
-         { error ?
-           <Typography color="error">{error}</Typography>
-           :
-           <Typography>Please enter the following information for identification</Typography>
-         }
+         <Grid item xs={12} className={classes.description}>
+           <Typography variant="h6">
+             Welcome to DATAPRO
+           </Typography>
+           <Typography paragraph>
+             DATAPRO is designed to ask you the most important questions about your health and well being. Your responses will remain confidential and will help your provider determine how we can best help you.
+           </Typography>
+           <Typography paragraph>
+             Completing the questionnaire is voluntary, so if you would rather not complete it, you do not have to.
+           </Typography>
+           <Typography paragraph>
+             If routine service evaluations or research projects are undertaken, your responses may be analyzed in a completely anonymous way.
+           </Typography>
          </Grid>
          <Grid item xs={12}>
+            <div className={classes.description}>
+            { error ?
+              <Typography color="error">{error}</Typography>
+              :
+              <Typography variant="h6">Please enter the following information for identification</Typography>
+            }
+            </div>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="j_dob" shrink={true}>Date of birth</InputLabel>
               <Input id="j_dob" name="j_dob" autoComplete="off" type="date" autoFocus onChange={event => setDob(event.target.value)}/>
             </FormControl>
-            <Grid container direction="row" alignItems="flex-end" spacing={3} wrap="nowrap">
+            <Grid container direction="row" alignItems="flex-end" spacing={3} wrap="nowrap" justify="space-between">
               <Grid item>
                 <FormControl margin="normal" fullWidth>
                   <InputLabel htmlFor="j_mrn" shrink={true}>MRN</InputLabel>
