@@ -133,12 +133,11 @@ public class ImportTask implements Runnable
                 JsonReader jsonReader = Json.createReader(new StringReader(rawResponse));
                 JsonObject response = jsonReader.readObject();
 
+                // Create the storage object and store every patient/visit
                 JsonArray data = response.getJsonObject("data").getJsonArray("patientsByDateAndClinic");
-                for (int j = 0; j < data.size(); j++) {
-                    PatientLocalStorage thisPatient = new PatientLocalStorage(data.getJsonObject(j),
-                        this.resolverFactory.getResourceResolver(null));
-                    thisPatient.store(dateToQuery);
-                }
+                final PatientLocalStorage storage = new PatientLocalStorage(
+                    this.resolverFactory.getServiceResourceResolver(null), dateToQuery);
+                data.forEach(storage::store);
             } catch (Exception e) {
                 LOGGER.error("Failed to query server: {}", e.getMessage(), e);
             }

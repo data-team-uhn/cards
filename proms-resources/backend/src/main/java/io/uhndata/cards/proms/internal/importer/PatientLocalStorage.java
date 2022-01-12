@@ -37,6 +37,7 @@ import javax.jcr.Session;
 import javax.jcr.version.VersionManager;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.json.JsonValue;
 
 import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.Resource;
@@ -75,18 +76,26 @@ public class PatientLocalStorage
     /** Details about a patient that we will parse and store in JCR. */
     private JsonObject patientDetails;
 
-    PatientLocalStorage(JsonObject patientDetails, ResourceResolver resolver)
+    /** Date to query. */
+    private Calendar date;
+
+    /**
+     * @param resolver A reference to a ResourceResolver
+     * @param date The date of the appointment to find from within the patient
+     */
+    PatientLocalStorage(ResourceResolver resolver, final Calendar date)
     {
         this.resolver = resolver;
-        this.patientDetails = patientDetails;
+        this.date = date;
     }
 
     /**
      * Store the patient details given to us.
-     * @param date The date of the appointment to find from within the patient
+     * @param value A JsonObject representing the patient
      */
-    public void store(Calendar date)
+    public void store(final JsonValue value)
     {
+        this.patientDetails = value.asJsonObject();
         String mrn = this.patientDetails.getString("mrn");
         Set<String> nodesToCheckin = new HashSet<String>();
         try {
@@ -104,8 +113,8 @@ public class PatientLocalStorage
                     Date thisDate = new SimpleDateFormat("yyyy-MM-dd").parse(thisAppointment.getString("time"));
                     Calendar thisCalendar = Calendar.getInstance();
                     thisCalendar.setTime(thisDate);
-                    if (!(thisCalendar.get(Calendar.DAY_OF_YEAR) == date.get(Calendar.DAY_OF_YEAR)
-                        && thisCalendar.get(Calendar.YEAR) == date.get(Calendar.YEAR))) {
+                    if (!(thisCalendar.get(Calendar.DAY_OF_YEAR) == this.date.get(Calendar.DAY_OF_YEAR)
+                        && thisCalendar.get(Calendar.YEAR) == this.date.get(Calendar.YEAR))) {
                         continue;
                     }
 
