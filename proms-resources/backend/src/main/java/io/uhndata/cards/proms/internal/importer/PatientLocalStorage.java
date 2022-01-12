@@ -91,10 +91,9 @@ public class PatientLocalStorage
         Set<String> nodesToCheckin = new HashSet<String>();
         try {
             // Update information about the patient
-            Resource patient = getOrCreateSubject(mrn, "/SubjectTypes/Patient", null, this.resolver, nodesToCheckin);
-            Resource patientInfo = getOrCreateForm(patient, "/Questionnaires/Patient information/", this.resolver,
-                nodesToCheckin);
-            updatePatientInformationForm(patientInfo, this.patientDetails, this.resolver);
+            Resource patient = getOrCreateSubject(mrn, "/SubjectTypes/Patient", null, nodesToCheckin);
+            Resource patientInfo = getOrCreateForm(patient, "/Questionnaires/Patient information/", nodesToCheckin);
+            updatePatientInformationForm(patientInfo, this.patientDetails);
 
             // Update information about the visit ("appointment" is used interchangably here)
             JsonArray appointmentDetails = this.patientDetails.getJsonArray("appointments");
@@ -111,10 +110,9 @@ public class PatientLocalStorage
                     }
 
                     Resource visit = getOrCreateSubject(thisAppointment.getString("fhirID"),
-                        "/SubjectTypes/Patient/Visit/", patient, this.resolver, nodesToCheckin);
-                    Resource visitInfo = getOrCreateForm(visit, "/Questionnaires/Visit information/", this.resolver,
-                        nodesToCheckin);
-                    updateVisitInformationForm(visitInfo, thisAppointment, this.resolver);
+                        "/SubjectTypes/Patient/Visit/", patient, nodesToCheckin);
+                    Resource visitInfo = getOrCreateForm(visit, "/Questionnaires/Visit information/", nodesToCheckin);
+                    updateVisitInformationForm(visitInfo, thisAppointment);
                 } catch (ParseException e) {
                     //TODO: handle exception
                     LOGGER.error("Could not parse date for appointment {}: {}", thisAppointment.getString("fhirID"),
@@ -145,15 +143,13 @@ public class PatientLocalStorage
      * @param identifier Identifier to use for the subject
      * @param subjectTypePath path to a SubjectType node for this subject
      * @param parent parent Resource if this is a child of that resource, or null
-     * @param resolver ResourceResolver to use when searching for/creating the node
      * @param nodesToCheckin Set of nodes that should be checked in after all edits are complete
      * @return A Subject resource
      */
-    Resource getOrCreateSubject(String identifier, String subjectTypePath, Resource parent, ResourceResolver resolver,
-        Set<String> nodesToCheckin)
+    Resource getOrCreateSubject(String identifier, String subjectTypePath, Resource parent, Set<String> nodesToCheckin)
         throws RepositoryException, PersistenceException
     {
-        Iterator<Resource> patientResourceIter = resolver.findResources(String.format(
+        Iterator<Resource> patientResourceIter = this.resolver.findResources(String.format(
             "SELECT * FROM [cards:Subject] WHERE identifier = \"%s\"", identifier), PatientLocalStorage.JCR_SQL);
         if (patientResourceIter.hasNext()) {
             Resource patientResource = patientResourceIter.next();
@@ -162,10 +158,10 @@ public class PatientLocalStorage
         } else {
             Resource parentResource = parent;
             if (parentResource == null) {
-                parentResource = resolver.getResource("/Subjects/");
+                parentResource = this.resolver.getResource("/Subjects/");
             }
-            Resource patientType = resolver.getResource(subjectTypePath);
-            Resource newSubject = resolver.create(parentResource, UUID.randomUUID().toString(), Map.of(
+            Resource patientType = this.resolver.getResource(subjectTypePath);
+            Resource newSubject = this.resolver.create(parentResource, UUID.randomUUID().toString(), Map.of(
                 PatientLocalStorage.PRIMARY_TYPE, "cards:Subject",
                 "identifier", identifier,
                 "type", patientType.adaptTo(Node.class)
@@ -179,17 +175,15 @@ public class PatientLocalStorage
      * Grab a form of the specified type, or create it if it doesn't exist.
      * @param subject Resource of the subject node for the form
      * @param questionnairePath Path to the questionnaire that this is a form of
-     * @param resolver ResourceResolver to use when searching for/creating the node
      * @param nodesToCheckin Set of nodes that should be checked in after all edits are complete
      * @return A Form resource
      */
-    Resource getOrCreateForm(Resource subject, String questionnairePath, ResourceResolver resolver,
-        Set<String> nodesToCheckin)
+    Resource getOrCreateForm(Resource subject, String questionnairePath, Set<String> nodesToCheckin)
         throws RepositoryException, PersistenceException
     {
-        Resource formType = resolver.getResource(questionnairePath);
+        Resource formType = this.resolver.getResource(questionnairePath);
         Node subjectNode = subject.adaptTo(Node.class);
-        Iterator<Resource> formResourceIter = resolver.findResources(String.format(
+        Iterator<Resource> formResourceIter = this.resolver.findResources(String.format(
             "SELECT * FROM [cards:Form] WHERE subject = \"%s\" AND questionnaire=\"%s\"",
             subjectNode.getIdentifier(),
             formType.adaptTo(Node.class).getIdentifier()), PatientLocalStorage.JCR_SQL);
@@ -198,8 +192,8 @@ public class PatientLocalStorage
             nodesToCheckin.add(formResource.getPath());
             return formResource;
         } else {
-            Resource parentResource = resolver.getResource("/Forms/");
-            Resource newForm = resolver.create(parentResource, UUID.randomUUID().toString(), Map.of(
+            Resource parentResource = this.resolver.getResource("/Forms/");
+            Resource newForm = this.resolver.create(parentResource, UUID.randomUUID().toString(), Map.of(
                 PatientLocalStorage.PRIMARY_TYPE, "cards:Form",
                 "questionnaire", formType.adaptTo(Node.class),
                 "subject", subjectNode
@@ -245,11 +239,10 @@ public class PatientLocalStorage
      *                the {@code info} JsonObject.
      * @param dateFields A map of Question node names to the method of getting their Date answers from
      *                   the {@code info} JsonObject.
-     * @param resolver a reference to a ResourceResolver to resolve queries
      * @return The string, or an empty string if it does not exist
      */
     void updateForm(Resource form, JsonObject info, String parentQuestionnaire,
-        Map<String, JsonStringGetter> mapping, Map<String, JsonDateGetter> dateFields, ResourceResolver resolver)
+        Map<String, JsonStringGetter> mapping, Map<String, JsonDateGetter> dateFields)
         throws RepositoryException, PersistenceException
     {
         // Run through the children of the node, seeing what exists
@@ -281,8 +274,8 @@ public class PatientLocalStorage
                 continue;
             }
 
-            resolver.create(form, UUID.randomUUID().toString(), Map.of(
-                PatientLocalStorage.QUESTION_FIELD, resolver.getResource(parentQuestionnaire + "/"
+            this.resolver.create(form, UUID.randomUUID().toString(), Map.of(
+                PatientLocalStorage.QUESTION_FIELD, this.resolver.getResource(parentQuestionnaire + "/"
                     + entry.getKey()).adaptTo(Node.class),
                 PatientLocalStorage.VALUE_FIELD, safelyGetValue(entry.getValue(), info),
                 PatientLocalStorage.PRIMARY_TYPE, "cards:TextAnswer"
@@ -297,9 +290,9 @@ public class PatientLocalStorage
                 if (dateNodes.containsKey(entry.getKey())) {
                     dateNodes.get(entry.getKey()).setProperty(PatientLocalStorage.VALUE_FIELD, entryDate);
                 } else {
-                    resolver.create(form, UUID.randomUUID().toString(), Map.of(
+                    this.resolver.create(form, UUID.randomUUID().toString(), Map.of(
                         PatientLocalStorage.QUESTION_FIELD,
-                        resolver.getResource(parentQuestionnaire + "/" + entry.getKey()).adaptTo(Node.class),
+                        this.resolver.getResource(parentQuestionnaire + "/" + entry.getKey()).adaptTo(Node.class),
                         PatientLocalStorage.VALUE_FIELD, entryDate,
                         PatientLocalStorage.PRIMARY_TYPE, "cards:DateAnswer"
                         ));
@@ -314,9 +307,8 @@ public class PatientLocalStorage
      * Update the patient information form with values from the given JsonObject.
      * @param form The Patient Information form to update
      * @param info The JsonObject representing a patient returned from Torch
-     * @param resolver The ResourceResolver to use when creating new nodes
      */
-    void updatePatientInformationForm(Resource form, JsonObject info, ResourceResolver resolver)
+    void updatePatientInformationForm(Resource form, JsonObject info)
         throws RepositoryException, PersistenceException
     {
         // Map of Patient information question node name => Function to get JSON value
@@ -334,16 +326,15 @@ public class PatientLocalStorage
             "date_of_birth", obj -> new SimpleDateFormat("yyyy-MM-dd").parse(obj.getString("dob"))
         );
 
-        updateForm(form, info, "/Questionnaires/Patient information", formMapping, dateMapping, resolver);
+        updateForm(form, info, "/Questionnaires/Patient information", formMapping, dateMapping);
     }
 
     /**
      * Update the visit information form with values from the given JsonObject.
      * @param form The Visit Information form to update
      * @param info The JsonObject representing a visit returned from Torch
-     * @param resolver The ResourceResolver to use when creating new nodes
      */
-    void updateVisitInformationForm(Resource form, JsonObject info, ResourceResolver resolver)
+    void updateVisitInformationForm(Resource form, JsonObject info)
         throws RepositoryException, PersistenceException
     {
         Map<String, JsonStringGetter> formMapping = Map.of(
@@ -356,6 +347,6 @@ public class PatientLocalStorage
             "time", obj -> new SimpleDateFormat("yyyy-MM-dd").parse(obj.getString("time"))
         );
 
-        updateForm(form, info, "/Questionnaires/Visit information", formMapping, dateMapping, resolver);
+        updateForm(form, info, "/Questionnaires/Visit information", formMapping, dateMapping);
     }
 }
