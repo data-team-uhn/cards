@@ -39,6 +39,9 @@ public interface FormUtils
     /** The name of the property of a Form node that links to the Questionnaire being answered. */
     String QUESTIONNAIRE_PROPERTY = "questionnaire";
 
+    /** The name of the property of a Form node that links to the Subject the form belongs to. */
+    String SUBJECT_PROPERTY = "subject";
+
     /**
      * The primary node type for an Answer Section, a group of related answers and subsections in a Form, corresponding
      * to a Section in the answered Questionnaire.
