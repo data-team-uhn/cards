@@ -276,6 +276,11 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 	<node>
 		<name>review</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>displayMode</name>
+			<value>review</value>
+			<type>String</type>
+		</property>
 		<node>
 			<name>review_risk_assessment</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
@@ -310,7 +315,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 			</property>
 			<property>
 				<name>displayMode</name>
-				<value>hidden</value>
+				<value>review</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -342,7 +347,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 			</property>
 			<property>
 				<name>displayMode</name>
-				<value>hidden</value>
+				<value>review</value>
 				<type>String</type>
 			</property>
 			<property>

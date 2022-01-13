@@ -58,7 +58,7 @@ export const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES).concat(INFO_TYPE
  * @param {Object} classes style classes
  * @returns a React component that renders the question
  */
-let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, onAddedAnswerPath, sectionAnswersState, onChange, pageActive, isEdit, instanceId) => {
+let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, onAddedAnswerPath, sectionAnswersState, onChange, pageActive, isEdit, isReview, instanceId) => {
   const [ doHighlight, setDoHighlight ] = useState();
   const [ anchor, setAnchor ] = useState();
 
@@ -99,7 +99,8 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, o
   if (doHighlight) {
     gridClasses.push(classes.focusedQuestionnaireItem);
   }
-  if (pageActive === false || questionDefinition.displayMode == 'hidden') {
+  let displayMode = questionDefinition.displayMode;
+  if (pageActive === false || displayMode == 'hidden' || (isReview && displayMode !== "review") || (!isReview && displayMode === "review")) {
     gridClasses.push(classes.hiddenQuestion);
   }
 
@@ -133,6 +134,10 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, o
  * @returns a React component that renders the section
  */
 let displaySection = (sectionDefinition, path, depth, existingAnswer, key, onChange, visibleCallback, pageActive, isEdit, isReview, instanceId, contentOffset) => {
+  if (isReview && sectionDefinition.displayMode !== "review") {
+    return null;
+  }
+
   // Find the existing AnswerSection for this section, if available
   const existingQuestionAnswer = existingAnswer && Object.entries(existingAnswer)
     .filter(([key, value]) => value["sling:resourceType"] == "cards/AnswerSection"
@@ -186,20 +191,11 @@ let displayInformation = (infoDefinition, key, classes, pageActive, isEdit) => {
  */
  export default function FormEntry(props) {
   let { classes, entryDefinition, path, depth, existingAnswers, keyProp, onAddedAnswerPath, sectionAnswersState, onChange, visibleCallback, pageActive, isEdit, isReview, instanceId, contentOffset} = props;
-  // TODO: Implement a more in depth review display mode.
-  // This works for the PROMS release, but may not work for other situations.
-  if (isReview) {
-    if (!("review" === entryDefinition["@name"] || entryDefinition["@name"].startsWith("review"))) {
-      return null;
-    } else if (entryDefinition.displayMode == "hidden") {
-      entryDefinition.displayMode = "formatted";
-    }
-  }
   // TODO: As before, I'm writing something that's basically an if statement
   // this should instead be via a componentManager
   if (QUESTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
     if (visibleCallback) visibleCallback(true);
-    return displayQuestion(entryDefinition, path, existingAnswers, keyProp, classes, onAddedAnswerPath, sectionAnswersState, onChange, pageActive, isEdit, instanceId);
+    return displayQuestion(entryDefinition, path, existingAnswers, keyProp, classes, onAddedAnswerPath, sectionAnswersState, onChange, pageActive, isEdit, isReview, instanceId);
   } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
     return displaySection(entryDefinition, path, depth, existingAnswers, keyProp, onChange, visibleCallback, pageActive, isEdit, isReview, instanceId, contentOffset);
   } else if (INFO_TYPES.includes(entryDefinition["jcr:primaryType"])) {

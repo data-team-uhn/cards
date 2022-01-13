@@ -29,7 +29,8 @@
             "displayMode" : {
               "input" : {},
               "formatted" : {},
-              "hidden": {}
+              "hidden": {},
+              "review": {}
             }
           }
         }

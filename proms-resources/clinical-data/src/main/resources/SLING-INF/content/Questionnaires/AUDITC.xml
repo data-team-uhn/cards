@@ -149,6 +149,11 @@ disorder. AUDIT-C has been validated in mental health and primary care clinics.
 	<node>
 		<name>review</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>displayMode</name>
+			<value>review</value>
+			<type>String</type>
+		</property>
 		<node>
 			<name>review_score</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
@@ -178,7 +183,7 @@ disorder. AUDIT-C has been validated in mental health and primary care clinics.
 			</property>
 			<property>
 				<name>displayMode</name>
-				<value>hidden</value>
+				<value>review</value>
 				<type>String</type>
 			</property>
 			<property>

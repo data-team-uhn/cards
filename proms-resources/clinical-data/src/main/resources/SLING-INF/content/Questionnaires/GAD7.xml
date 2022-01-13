@@ -251,6 +251,11 @@ Objectively determine initial symptoms severity and monitor symptom changes/effe
 	<node>
 		<name>review</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>displayMode</name>
+			<value>review</value>
+			<type>String</type>
+		</property>
 		<node>
 			<name>review_score</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
@@ -274,7 +279,7 @@ Objectively determine initial symptoms severity and monitor symptom changes/effe
 			</property>
 			<property>
 				<name>displayMode</name>
-				<value>hidden</value>
+				<value>review</value>
 				<type>String</type>
 			</property>
 			<property>
