@@ -56,7 +56,21 @@ const useStyles = makeStyles(theme => ({
       }
     }
   },
+  mrnInput : {
+    '& input[type=number]': {
+        '-moz-appearance': 'textfield'
+    },
+    '& input[type=number]::-webkit-outer-spin-button': {
+        '-webkit-appearance': 'none',
+        margin: 0
+    },
+    '& input[type=number]::-webkit-inner-spin-button': {
+        '-webkit-appearance': 'none',
+        margin: 0
+    }
+  }
 }));
+
 
 function MockPatientIdentification(props) {
   const { onSuccess } = props;
@@ -329,7 +343,7 @@ function MockPatientIdentification(props) {
               <Grid item>
                 <FormControl margin="normal" fullWidth>
                   <InputLabel htmlFor="j_mrn" shrink={true}>MRN</InputLabel>
-                  <Input id="j_mrn" name="j_mrn" autoComplete="off" type="number" placeholder="E.g.: 1234567" onChange={event => setMrn(event.target.value)}/>
+                  <Input id="j_mrn" name="j_mrn" autoComplete="off" type="number" placeholder="E.g.: 1234567" className={classes.mrnInput} onChange={event => setMrn(event.target.value)}/>
                  </FormControl>
               </Grid>
               <Grid item>or</Grid>
