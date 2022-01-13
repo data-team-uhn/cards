@@ -17,9 +17,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-python3 create_service_user_mapping.py || { echo "Failed to create service user mapping"; exit -1; }
-python3 create_saml_service_user.py || { echo "Failed to create saml service user"; exit -1; }
-python3 configure_saml_service_user_permissions.py || { echo "Failed to configure saml service user permissions"; exit -1; }
 python3 add_saml_sp_config.py --saml2LogoutURL https://localhost/ --entityID https://localhost/ || { echo "Failed to add SAML SP configuration"; exit -1; }
 
 echo "CARDS login via SAML now enabled for localhost:8484 using the realm \"myrealm\""
