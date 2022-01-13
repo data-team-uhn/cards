@@ -128,6 +128,67 @@ disorder. AUDIT-C has been validated in mental health and primary care clinics.
 		</node>
 	</node>
 	<node>
+		<name>sex</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Sex</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>hidden</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+	</node>
+	<node>
+		<name>review</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<node>
+			<name>review_score</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>expression</name>
+				<value>
+					let maleText = 4 >= @{audit_score} ? "If your symptoms result in a score of 0 - 4, consider accessing self-care resources available on [Peter Munk Cardiac Centre's website](https://www.uhn.ca/PMCC/Clinics/Adult_Congenital_Cardiac#information) for how to manage those symptoms."
+							: "If your symptoms result in a score of 5 or more, make sure to bring them up to your provider at your next appointment as further assessment of alcohol use may be required. Note that if your symptoms are severe (for example 8 - 12), you should consider telling your health care team right away or go to the closest emergency department."
+					let femaleText = 3 >= @{audit_score} ? "If your symptoms result in a score of 0 - 3, consider accessing self-care resources available on [Peter Munk Cardiac Centre's website](https://www.uhn.ca/PMCC/Clinics/Adult_Congenital_Cardiac#information) for how to manage those symptoms."
+							: "If your symptoms result in a score of 4 or more, make sure to bring them up to your provider at your next appointment as further assessment of alcohol use may be required. Note that if your symptoms are severe (for example 8 - 12), you should consider telling your health care team right away or go to the closest emergency department."
+					return (
+						"Your Score: " + @{audit_score}
+						+ "\n\n" +
+						(
+							"male" === @{sex:-""}.toLowerCase() ? maleText
+								: "female" === @{sex:-""}.toLowerCase() ? femaleText
+									: "For Males:\n\n" + maleText + "\n\n For Females:\n\n" + femaleText
+						)
+					)
+				</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>AUDIT-C Alcohol Use Questionnaire</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
 		<name>audit_survey</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<node>
