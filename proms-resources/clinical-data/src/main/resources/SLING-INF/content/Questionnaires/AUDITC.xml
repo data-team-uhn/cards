@@ -147,15 +147,15 @@ disorder. AUDIT-C has been validated in mental health and primary care clinics.
 		</property>
 	</node>
 	<node>
-		<name>review</name>
+		<name>summary</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>displayMode</name>
-			<value>review</value>
+			<value>summary</value>
 			<type>String</type>
 		</property>
 		<node>
-			<name>review_score</name>
+			<name>summary_score</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>expression</name>
@@ -170,7 +170,7 @@ disorder. AUDIT-C has been validated in mental health and primary care clinics.
 						(
 							"male" === @{sex:-""}.toLowerCase() ? maleText
 								: "female" === @{sex:-""}.toLowerCase() ? femaleText
-									: "For Males:\n\n" + maleText + "\n\n For Females:\n\n" + femaleText
+									: "If you are a man:\n\n" + maleText + "\n\n If you are a woman:\n\n" + femaleText
 						)
 					)
 				</value>
@@ -178,12 +178,12 @@ disorder. AUDIT-C has been validated in mental health and primary care clinics.
 			</property>
 			<property>
 				<name>text</name>
-				<value>AUDIT-C Alcohol Use Questionnaire</value>
+				<value>AUDIT-C Interpretation</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>displayMode</name>
-				<value>review</value>
+				<value>summary</value>
 				<type>String</type>
 			</property>
 			<property>

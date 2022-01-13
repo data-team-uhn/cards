@@ -216,7 +216,7 @@ let ComputedQuestion = (props) => {
   }, [unitOfMeasurement])
 
   useEffect(() => {
-    let formatted = (displayMode === "formatted" || displayMode === "review");
+    let formatted = (displayMode === "formatted" || displayMode === "summary");
     if (formatted !== isFormatted) {
       changeIsFormatted(formatted)
     };

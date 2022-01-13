@@ -330,58 +330,57 @@ function QuestionnaireSet(props) {
     </Grid>
   ];
 
-  let exitScreen = (typeof(isComplete) == 'undefined') ? [
-    <CircularProgress />
-  ] : [
-    <Typography variant="h4">{title}</Typography>,
-    <List>
-    { (questionnaireIds || []).map((q, i) => (
-      <ListItem key={q}>
-        <ListItemAvatar>{isFormComplete(q) ? doneIndicator : incompleteIndicator}</ListItemAvatar>
-        <ListItemText
-          primary={questionnaires[q]?.title}
-          secondary={!isFormComplete(q) && "Incomplete"}
-        />
-      </ListItem>
-    ))}
-    </List>,
-    isComplete ?
-      <>
-        <Typography variant="h4">Thank you for your submission.</Typography>
-        <Typography color="textSecondary">Please note:</Typography>
-        <ul>
-          <li><Typography color="textSecondary">
+  let summaryScreen = [
+      <Typography variant="h4">Thank you for your submission.</Typography>,
+      <Typography color="textSecondary">Please note:</Typography>,
+      <ul>
+        <li><Typography color="textSecondary">
 For your privacy and security, once this screen is closed the information below will not be accessible until the day of
 your appointment with your provider. Please print or note this information for your reference.
-          </Typography></li>
-          <li><Typography color="textSecondary">
+        </Typography></li>
+        <li><Typography color="textSecondary">
 Your responses may not be reviewed by your care team until the day of your next appointment. If your symptoms are
 worsening while waiting for your next appointment, please proceed to your nearest Emergency Department today, or call
 911.
-          </Typography></li>
-        </ul>
-        <Typography variant="h4">Interpreting your results</Typography>
-        <Typography color="textSecondary">There are different actions you can take now depending on how you have scored
-your symptoms. Please see below for a summary of your scores and suggested actions.</Typography>
-        <Grid item>
-        {/* This is failing to display the review: Debug why */}
-          { (questionnaireIds || []).map((q, i) => (
-            <Form
-              key={i}
-              id={subjectData[q]['@name']}
-              mode="review"
-              disableHeader
-              disableButton
-              contentOffset={contentOffset}
+        </Typography></li>
+      </ul>,
+      <Typography variant="h4">Interpreting your results</Typography>,
+      <Typography color="textSecondary">There are different actions you can take now depending on how you have scored
+your symptoms. Please see below for a summary of your scores and suggested actions.</Typography>,
+      <Grid item>
+      { (questionnaireIds || []).map((q, i) => (
+        <Form
+          key={i}
+          id={subjectData[q]['@name']}
+          mode="summary"
+          disableHeader
+          disableButton
+          contentOffset={contentOffset}
+        />
+      ))}
+      </Grid>
+    ];
+
+  let exitScreen = (typeof(isComplete) == 'undefined') ? [
+    <CircularProgress />
+  ] : [
+    isComplete ? summaryScreen
+      : [
+        <Typography variant="h4">{title}</Typography>,
+        <List>
+        { (questionnaireIds || []).map((q, i) => (
+          <ListItem key={q}>
+            <ListItemAvatar>{isFormComplete(q) ? doneIndicator : incompleteIndicator}</ListItemAvatar>
+            <ListItemText
+              primary={questionnaires[q]?.title}
+              secondary={!isFormComplete(q) && "Incomplete"}
             />
-          ))}
-        </Grid>
-      </>
-      :
-      <>
-        <Typography color="error">Your answers are incomplete. Please return to the main screen and check for any mandatory questions you may have missed.</Typography>
+          </ListItem>
+        ))}
+        </List>,
+        <Typography color="error">Your answers are incomplete. Please return to the main screen and check for any mandatory questions you may have missed.</Typography>,
         <Fab variant="extended" color="primary" onClick={() => {setCrtStep(-1)}}>Update answers</Fab>
-      </>
+      ]
   ];
 
   return (

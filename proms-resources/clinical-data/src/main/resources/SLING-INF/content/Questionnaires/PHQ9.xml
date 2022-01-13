@@ -274,15 +274,15 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 		</node>
 	</node>
 	<node>
-		<name>review</name>
+		<name>summary</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>displayMode</name>
-			<value>review</value>
+			<value>summary</value>
 			<type>String</type>
 		</property>
 		<node>
-			<name>review_risk_assessment</name>
+			<name>summary_risk_assessment</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>expression</name>
@@ -295,13 +295,13 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 							+ "\n" + "- Can connect you to responders immediately"
 							+ "\n" + "- Online chat and text options are also available"
 							+ "\n" + "For more information, see [Crisis Services Canada's website](https://www.crisisservicescanada.ca/en/)."
-							+ "\n\n" + "**Telehealth Ontario (across Ontario)**"
+							+ "\n\n" + "**Telehealth Ontario** (across Ontario)"
 							+ "\n\n" + "Call [1-866-797-0000](tel:1-866-797-0000)"
 							+ "\n" + "- Telehealth is available 24/7/365 and can provide you with immediate assistance"
 							+ "\n" + "- Free, confidential service provided by a Registered Nurse"
 							+ "\n" + "For more information, see [Telehealth Ontario's website](https://www.ontario.ca/page/get-medical-advice-telehealth-ontario)."
 							+ "\n\n" + "**Immediate Assistance**"
-							+ "\n\n" + "If you need immediate assistance, please proceed to your nearest Emergency Department or call 911."
+							+ "\n\n" + "**If you need immediate assistance, please proceed to your nearest Emergency Department or call 911.**"
 							: null
 						)
 					)]]>
@@ -315,7 +315,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 			</property>
 			<property>
 				<name>displayMode</name>
-				<value>review</value>
+				<value>summary</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -325,7 +325,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 			</property>
 		</node>
 		<node>
-			<name>review_score</name>
+			<name>summary_score</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>expression</name>
@@ -342,12 +342,12 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 			</property>
 			<property>
 				<name>text</name>
-				<value>PHQ-9 Depression Questionnaire</value>
+				<value>PHQ-9 Interpretation</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>displayMode</name>
-				<value>review</value>
+				<value>summary</value>
 				<type>String</type>
 			</property>
 			<property>

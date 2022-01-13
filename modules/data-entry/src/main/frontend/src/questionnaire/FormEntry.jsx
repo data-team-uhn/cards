@@ -58,7 +58,7 @@ export const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES).concat(INFO_TYPE
  * @param {Object} classes style classes
  * @returns a React component that renders the question
  */
-let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, onAddedAnswerPath, sectionAnswersState, onChange, pageActive, isEdit, isReview, instanceId) => {
+let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, onAddedAnswerPath, sectionAnswersState, onChange, pageActive, isEdit, isSummary, instanceId) => {
   const [ doHighlight, setDoHighlight ] = useState();
   const [ anchor, setAnchor ] = useState();
 
@@ -100,7 +100,7 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, o
     gridClasses.push(classes.focusedQuestionnaireItem);
   }
   let displayMode = questionDefinition.displayMode;
-  if (pageActive === false || displayMode == 'hidden' || (isReview && displayMode !== "review") || (!isReview && displayMode === "review")) {
+  if (pageActive === false || displayMode == 'hidden' || (isSummary && displayMode !== "summary") || (!isSummary && displayMode === "summary")) {
     gridClasses.push(classes.hiddenQuestion);
   }
 
@@ -133,8 +133,8 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, o
  * @param {string} key the node name of the section definition JCR node
  * @returns a React component that renders the section
  */
-let displaySection = (sectionDefinition, path, depth, existingAnswer, key, onChange, visibleCallback, pageActive, isEdit, isReview, instanceId, contentOffset) => {
-  if (isReview && sectionDefinition.displayMode !== "review") {
+let displaySection = (sectionDefinition, path, depth, existingAnswer, key, onChange, visibleCallback, pageActive, isEdit, isSummary, instanceId, contentOffset) => {
+  if (isSummary && sectionDefinition.displayMode !== "summary") {
     return null;
   }
 
@@ -154,7 +154,7 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key, onCha
       visibleCallback={visibleCallback}
       pageActive={pageActive}
       isEdit={isEdit}
-      isReview={isReview}
+      isSummary={isSummary}
       instanceId={instanceId || ''}
       contentOffset={contentOffset}
       />
@@ -190,14 +190,14 @@ let displayInformation = (infoDefinition, key, classes, pageActive, isEdit) => {
  * @returns a React component that renders the section
  */
  export default function FormEntry(props) {
-  let { classes, entryDefinition, path, depth, existingAnswers, keyProp, onAddedAnswerPath, sectionAnswersState, onChange, visibleCallback, pageActive, isEdit, isReview, instanceId, contentOffset} = props;
+  let { classes, entryDefinition, path, depth, existingAnswers, keyProp, onAddedAnswerPath, sectionAnswersState, onChange, visibleCallback, pageActive, isEdit, isSummary, instanceId, contentOffset} = props;
   // TODO: As before, I'm writing something that's basically an if statement
   // this should instead be via a componentManager
   if (QUESTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
     if (visibleCallback) visibleCallback(true);
-    return displayQuestion(entryDefinition, path, existingAnswers, keyProp, classes, onAddedAnswerPath, sectionAnswersState, onChange, pageActive, isEdit, isReview, instanceId);
+    return displayQuestion(entryDefinition, path, existingAnswers, keyProp, classes, onAddedAnswerPath, sectionAnswersState, onChange, pageActive, isEdit, isSummary, instanceId);
   } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
-    return displaySection(entryDefinition, path, depth, existingAnswers, keyProp, onChange, visibleCallback, pageActive, isEdit, isReview, instanceId, contentOffset);
+    return displaySection(entryDefinition, path, depth, existingAnswers, keyProp, onChange, visibleCallback, pageActive, isEdit, isSummary, instanceId, contentOffset);
   } else if (INFO_TYPES.includes(entryDefinition["jcr:primaryType"])) {
     return displayInformation(entryDefinition, keyProp, classes, pageActive, isEdit);
   }
