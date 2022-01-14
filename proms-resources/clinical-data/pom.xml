@@ -43,6 +43,7 @@
             <Include-Resource>{maven-resources},src/main/media</Include-Resource>
             <Sling-Initial-Content>
               SLING-INF/content/apps/cards/ExtensionPoints/;path:=/apps/cards/ExtensionPoints/;overwrite:=true,
+              SLING-INF/content/Extensions/;path:=/;overwrite:=true,
               SLING-INF/content/Homepage/;path:=/;overwrite:=true,
               SLING-INF/content/Questionnaires/;path:=/Questionnaires/;overwrite:=true;checkin:=true,
               SLING-INF/content/SubjectTypes/Patient/;path:=/SubjectTypes/Patient/;overwrite:=true,
