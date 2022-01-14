@@ -42,7 +42,7 @@ public @interface NightlyImportConfig
     /** Cron-readable import schedule. */
     String NIGHTLY_IMPORT_SCHEDULE = "";
 
-    /** Name of the clinic to query for. */
+    /** Pipe-delimited list of names of clinics to query. */
     String CLINIC_NAME = "PMH 8 Palliative Care Oncology Clinic";
 
     @AttributeDefinition(name = "Import schedule",

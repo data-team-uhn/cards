@@ -58,8 +58,8 @@ public class ImportTask implements Runnable
     /** URL for the Vault JWT authentication endpoint. */
     private final String authURL;
 
-    /** Name of the clinic to query. */
-    private final String clinicName;
+    /** Pipe-delimited list of names of clinics to query. */
+    private final String clinicNames;
 
     /** URL for the Torch server endpoint. */
     private final String endpointURL;
@@ -71,21 +71,26 @@ public class ImportTask implements Runnable
     private final ResourceResolverFactory resolverFactory;
 
     ImportTask(final ResourceResolverFactory resolverFactory, final String authURL,
-        final String endpointURL, final int daysToQuery, final String vaultToken, final String clinicName)
+        final String endpointURL, final int daysToQuery, final String vaultToken, final String clinicNames)
     {
         this.resolverFactory = resolverFactory;
         this.authURL = authURL;
         this.endpointURL = endpointURL;
         this.daysToQuery = daysToQuery;
         this.vaultToken = vaultToken;
-        this.clinicName = clinicName;
+        this.clinicNames = clinicNames;
     }
 
     @Override
     public void run()
     {
         String token = loginWithJWT();
-        getUpcomingAppointments(token, this.daysToQuery);
+        // Iterate over every clinic name
+        String[] clinics = this.clinicNames.split("\\|");
+        for (int i = 0; i < clinics.length; i++)
+        {
+            getUpcomingAppointments(token, this.daysToQuery, clinics[i]);
+        }
     }
 
     /**
@@ -115,11 +120,11 @@ public class ImportTask implements Runnable
      * @param authToken an authentication token for use in querying the Torch server
      * @param daysToQuery the number of days to query
      */
-    private void getUpcomingAppointments(String authToken, int daysToQuery)
+    private void getUpcomingAppointments(String authToken, int daysToQuery, String clinicName)
     {
         // Since we can't query more than one date at a time, query three dates
         String postRequestTemplate = "{\"query\": \"query{"
-            + "patientsByDateAndClinic(clinic: \\\"" + this.clinicName + "\\\", date: \\\"%s\\\") {"
+            + "patientsByDateAndClinic(clinic: \\\"" + clinicName + "\\\", date: \\\"%s\\\") {"
             + "name {given family} sex mrn ohip dob emailOk com {email} "
             + "appointments {fhirID time status attending {name {family}}} }}\"}";
         Calendar dateToQuery = Calendar.getInstance();
@@ -140,7 +145,8 @@ public class ImportTask implements Runnable
                 // Create the storage object and store every patient/visit
                 JsonArray data = response.getJsonObject("data").getJsonArray("patientsByDateAndClinic");
                 final PatientLocalStorage storage = new PatientLocalStorage(
-                    this.resolverFactory.getServiceResourceResolver(null), dateToQuery);
+                    this.resolverFactory.getServiceResourceResolver(
+                        Map.of(ResourceResolverFactory.SUBSERVICE, "TorchImporter")), dateToQuery);
                 data.forEach(storage::store);
             } catch (Exception e) {
                 LOGGER.error("Failed to query server: {}", e.getMessage(), e);
