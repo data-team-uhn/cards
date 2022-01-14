@@ -61,6 +61,9 @@ public class ImportEndpoint extends SlingSafeMethodsServlet
     /** Vault JWT token. */
     private String vaultToken;
 
+    /** Name of the clinic to query for. */
+    private String clinicName = "";
+
     @Activate
     protected void activate(EndpointImportConfig config, ComponentContext componentContext) throws Exception
     {
@@ -68,6 +71,7 @@ public class ImportEndpoint extends SlingSafeMethodsServlet
         this.endpointURL = config.endpoint_url();
         this.daysToQuery = config.days_to_query();
         this.vaultToken = config.vault_token();
+        this.clinicName = config.clinic_name();
     }
 
     @Override
@@ -86,7 +90,7 @@ public class ImportEndpoint extends SlingSafeMethodsServlet
 
         // Load configuration from environment variables
         final Runnable importJob = new ImportTask(this.resolverFactory, this.authURL, this.endpointURL,
-            this.daysToQuery, this.vaultToken);
+            this.daysToQuery, this.vaultToken, this.clinicName);
         final Thread thread = new Thread(importJob);
         thread.start();
         out.write("Data import started");

@@ -56,7 +56,7 @@ public class NightlyImport
 
         final Runnable importJob;
         importJob = new ImportTask(this.resolverFactory, config.auth_url(), config.endpoint_url(),
-            config.days_to_query(), config.vault_token());
+            config.days_to_query(), config.vault_token(), config.clinic_name());
 
         try {
             if (importJob != null) {
