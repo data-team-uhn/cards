@@ -8,6 +8,7 @@ module.exports = {
   entry: {
     [module_name + 'index']: './src/index.jsx',
     [module_name + 'ToULink']: './src/ToULink.jsx'
+    [module_name + 'cardioIcon']: '@material-ui/icons/Favorite.js'
   },
   plugins: [
     new CleanWebpackPlugin(),

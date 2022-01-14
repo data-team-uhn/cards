@@ -4,5 +4,5 @@
   "cards:extensionName": "Questionnaires",
   "cards:targetURL": "/content.html/Forms",
   "cards:icon": "asset:cards-dataentry.formsIcon.js",
-  "cards:defaultOrder": 3
+  "cards:defaultOrder": 40
 }
