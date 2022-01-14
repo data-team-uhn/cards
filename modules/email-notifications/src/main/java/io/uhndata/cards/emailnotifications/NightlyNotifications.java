@@ -59,15 +59,16 @@ public class NightlyNotifications
     {
         LOGGER.info("NightlyNotifications activating");
         final String nightlyNotificationsSchedule = System.getenv("NIGHTLY_NOTIFICATIONS_SCHEDULE");
-        ScheduleOptions options = this.scheduler.EXPR(nightlyNotificationsSchedule);
-        options.name("NightlyNotifications");
-        options.canRunConcurrently(true);
+
+        ScheduleOptions initialNotificationsOptions = this.scheduler.EXPR(nightlyNotificationsSchedule);
+        initialNotificationsOptions.name("InitialNightlyNotifications");
+        initialNotificationsOptions.canRunConcurrently(true);
 
         final Runnable initialNotificationsJob = new InitialNotificationsTask(
             this.resolverFactory, this.tokenManager, this.mailService);
 
         try {
-            this.scheduler.schedule(initialNotificationsJob, options);
+            this.scheduler.schedule(initialNotificationsJob, initialNotificationsOptions);
             LOGGER.info("Scheduled InitialNotificationsTask");
         } catch (Exception e) {
             LOGGER.error("InitialNotificationsTask Failed to schedule: {}", e.getMessage(), e);
