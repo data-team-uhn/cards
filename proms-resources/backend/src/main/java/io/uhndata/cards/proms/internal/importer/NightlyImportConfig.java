@@ -42,6 +42,9 @@ public @interface NightlyImportConfig
     /** Cron-readable import schedule. */
     String NIGHTLY_IMPORT_SCHEDULE = "";
 
+    /** Name of the clinic to query for. */
+    String CLINIC_NAME = "PMH 8 Palliative Care Oncology Clinic";
+
     @AttributeDefinition(name = "Import schedule",
         description = "Cron-readable import schedule")
     String nightly_import_schedule() default NIGHTLY_IMPORT_SCHEDULE;
@@ -58,4 +61,7 @@ public @interface NightlyImportConfig
 
     @AttributeDefinition(name = "Vault token")
     String vault_token() default VAULT_TOKEN;
+
+    @AttributeDefinition(name = "Clinic name")
+    String clinic_name() default CLINIC_NAME;
 }

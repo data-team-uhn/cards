@@ -58,6 +58,9 @@ public class ImportTask implements Runnable
     /** URL for the Vault JWT authentication endpoint. */
     private final String authURL;
 
+    /** Name of the clinic to query. */
+    private final String clinicName;
+
     /** URL for the Torch server endpoint. */
     private final String endpointURL;
 
@@ -68,13 +71,14 @@ public class ImportTask implements Runnable
     private final ResourceResolverFactory resolverFactory;
 
     ImportTask(final ResourceResolverFactory resolverFactory, final String authURL,
-        final String endpointURL, final int daysToQuery, final String vaultToken)
+        final String endpointURL, final int daysToQuery, final String vaultToken, final String clinicName)
     {
         this.resolverFactory = resolverFactory;
         this.authURL = authURL;
         this.endpointURL = endpointURL;
         this.daysToQuery = daysToQuery;
         this.vaultToken = vaultToken;
+        this.clinicName = clinicName;
     }
 
     @Override
@@ -115,7 +119,7 @@ public class ImportTask implements Runnable
     {
         // Since we can't query more than one date at a time, query three dates
         String postRequestTemplate = "{\"query\": \"query{"
-            + "patientsByDateAndClinic(clinic: \\\"PMH 8 Palliative Care Oncology Clinic\\\", date: \\\"%s\\\") {"
+            + "patientsByDateAndClinic(clinic: \\\"" + this.clinicName + "\\\", date: \\\"%s\\\") {"
             + "name {given family} sex mrn ohip dob emailOk com {email} "
             + "appointments {fhirID time status attending {name {family}}} }}\"}";
         Calendar dateToQuery = Calendar.getInstance();

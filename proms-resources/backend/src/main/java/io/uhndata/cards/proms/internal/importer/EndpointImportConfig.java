@@ -39,6 +39,9 @@ public @interface EndpointImportConfig
     /** Vault JWT token. */
     String VAULT_TOKEN = "";
 
+    /** Name of the clinic to query for. */
+    String CLINIC_NAME = "PMH 8 Palliative Care Oncology Clinic";
+
     @AttributeDefinition(type = AttributeType.INTEGER, name = "days to query",
         description = "Number of days of appointments to query ahead of schedule")
     int days_to_query() default DAYS_TO_QUERY;
@@ -51,4 +54,7 @@ public @interface EndpointImportConfig
 
     @AttributeDefinition(name = "Vault token")
     String vault_token() default VAULT_TOKEN;
+
+    @AttributeDefinition(name = "Clinic name")
+    String clinic_name() default CLINIC_NAME;
 }
