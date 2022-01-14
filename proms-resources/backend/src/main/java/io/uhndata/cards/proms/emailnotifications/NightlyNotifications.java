@@ -75,5 +75,19 @@ public class NightlyNotifications
         } catch (Exception e) {
             LOGGER.error("InitialNotificationsTask Failed to schedule: {}", e.getMessage(), e);
         }
+
+        ScheduleOptions reminderNotificationsOptions = this.scheduler.EXPR(nightlyNotificationsSchedule);
+        reminderNotificationsOptions.name("ReminderNightlyNotifications");
+        reminderNotificationsOptions.canRunConcurrently(true);
+
+        final Runnable reminderNotificationsJob = new ReminderNotificationsTask(
+            this.resolverFactory, this.tokenManager, this.mailService);
+
+        try {
+            this.scheduler.schedule(reminderNotificationsJob, reminderNotificationsOptions);
+            LOGGER.info("Scheduled ReminderNotificationsTask");
+        } catch (Exception e) {
+            LOGGER.error("ReminderNotificationsTask Failed to schedule: {}", e.getMessage(), e);
+        }
     }
 }
