@@ -41,14 +41,30 @@ const getDaysInMonth = (year, month) => {
 };
 
 const useStyles = makeStyles(theme => ({
-  select : {
-    paddingLeft: theme.spacing(1),
+  container : {
+    "& > *:not(:first-child)" : {
+      paddingLeft: theme.spacing(2),
+    },
   },
-  default : {
+  stretch: {
+    "& > *" : {
+      minWidth: "25%",
+    },
+    "& > .dropdowndate-month" : {
+      minWidth: "50%",
+    }
+  },
+  withShortMonth : {
+    "& > *" : {
+      minWidth: "33.33% !important"
+    }
+  },
+  emptyOption : {
+    opacity: "50%",
+    padding: theme.spacing(2),
+  },
+  placeholder : {
     opacity: "50%"
-  },
-  month : {
-    minWidth: "110px"
   },
 }));
 
@@ -67,11 +83,12 @@ const useStyles = makeStyles(theme => ({
  * @param {bool} monthShort optional, If true, months options are listed as 3 first characters
  * @param {bool} formatDate optional, If true, formats date according to the provided `order`
  * @param {bool} autoFocus optional, If true, autofocus of the first select
+ * @param {bool} fullWidth optional, If true, the dropdowns stretch to the full width of the container
  *
  */
 
 function DropdownsDatePicker(props) {
-  const { startDate, endDate, selectedDate, order, onDateChange, yearReverse, disabled, monthShort, formatDate, autoFocus, ...rest } = props;
+  const { startDate, endDate, selectedDate, order, onDateChange, yearReverse, disabled, monthShort, formatDate, autoFocus, fullWidth, ...rest } = props;
   const classes = useStyles();
 
   const sDate = new Date(startDate);
@@ -92,7 +109,7 @@ function DropdownsDatePicker(props) {
 
   let generateYearOptions = () => {
     let yearOptions = [];
-    yearOptions.push(<MenuItem key={-1} value="-1"></MenuItem>);
+    yearOptions.push(<MenuItem key={-1} value="-1" className={classes.emptyOption}>Year</MenuItem>);
 
     let years = []
     for (let i = startYear; i <= endYear; i++) {
@@ -105,7 +122,7 @@ function DropdownsDatePicker(props) {
 
   let generateMonthOptions = () => {
     let monthOptions = [];
-    monthOptions.push( <MenuItem key={-1} value="-1"></MenuItem> );
+    monthOptions.push( <MenuItem key={-1} value="-1" className={classes.emptyOption}>Month</MenuItem> );
 
     let start = selectedYear === startYear ? startMonth : 0;
     let end = selectedYear === endYear ? endMonth : 11;
@@ -123,7 +140,7 @@ function DropdownsDatePicker(props) {
 
   let generateDayOptions = () => {
     let dayOptions = [];
-    dayOptions.push(<MenuItem key={-1} value="-1"></MenuItem>);
+    dayOptions.push(<MenuItem key={-1} value="-1" className={classes.emptyOption}>Day</MenuItem>);
 
     let start = (selectedYear === startYear && selectedMonth === startMonth) ? startDay : 1;
     const monthDays = getDaysInMonth(selectedYear, selectedMonth);
@@ -192,11 +209,11 @@ function DropdownsDatePicker(props) {
         onChange={handleYearChange}
         value={selectedYear}
         disabled={disabled}
-        className={order.indexOf("year") != 0 ? classes.select : ''}
+        className="dropdowndate-year"
         autoFocus={autoFocus && order.indexOf("year") == 0}
         renderValue={(selected) => {
             if (selected < 0 ) {
-              return <div className={classes.default}>Year</div>;
+              return <div className={classes.placeholder}>Year</div>;
             }
             return selected;
         }}
@@ -213,11 +230,11 @@ function DropdownsDatePicker(props) {
         onChange={handleMonthChange}
         value={selectedMonth}
         disabled={disabled}
-        className={(order.indexOf("month") != 0 ? classes.select : '') + ' ' + classes.month}
+        className="dropdowndate-month"
         autoFocus={autoFocus && order.indexOf("month") == 0}
         renderValue={(selected) => {
             if (selected < 0 ) {
-              return <div className={classes.default}>Month</div>;
+              return <div className={classes.placeholder}>Month</div>;
             }
             return monthShort ? moment().month(selected).format("MMM") : moment().month(selected).format("MMMM");
         }}
@@ -234,11 +251,11 @@ function DropdownsDatePicker(props) {
         value={selectedDay}
         onChange={handleDayChange}
         disabled={disabled}
-        className={order.indexOf("day") != 0 ? classes.select : ''}
+        className="dropdowndate-day"
         autoFocus={autoFocus && order.indexOf("day") == 0}
         renderValue={(selected) => {
             if (selected < 0 ) {
-              return <div className={classes.default}>Day</div>;
+              return <div className={classes.placeholder}>Day</div>;
             }
             if (selected < 10 ) {
               return "0" + selected;
@@ -257,8 +274,16 @@ function DropdownsDatePicker(props) {
     [DropdownDate.day]: renderDay,
   }
 
+  let containerClasses = [classes.container];
+  if (fullWidth) {
+    containerClasses.push(classes.stretch);
+    if (monthShort) {
+      containerClasses.push(classes.withShortMonth);
+    }
+  }
+
   return (
-    <div id="dropdown-date" className={classes.container}>
+    <div id="dropdown-date" className={containerClasses.join(' ')}>
       { order.map(part => { return renderParts[part]() }) }
     </div>
   );
@@ -276,6 +301,7 @@ DropdownsDatePicker.propTypes = {
   monthShort: PropTypes.bool,
   formatDate: PropTypes.bool,
   autoFocus: PropTypes.bool,
+  fullWidth: PropTypes.bool,
 };
 
 DropdownsDatePicker.defaultProps = {
