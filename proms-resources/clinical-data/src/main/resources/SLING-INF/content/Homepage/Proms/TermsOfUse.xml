@@ -27,7 +27,7 @@
     <property>
         <name>text</name>
         <value>
-These terms and conditions (the "Agreement") for a symptoms survey located at ePRO.uhn.ca and any associated website, portal, or similar service (collectively, the "Application"), constitute a legal agreement and is entered into by and between you ("you", "your") and the University Health Network ("UHN", "we", "us", "our").  
+These terms and conditions (the "Agreement") for a symptoms survey located at datapro.uhn.ca and any associated website, portal, or similar service (collectively, the "Application"), constitute a legal agreement and is entered into by and between you ("you", "your") and the University Health Network ("UHN", "we", "us", "our").  
 
 **IMPORTANT! BY USING OR ACCESSING THE APPLICATION, YOU AGREE TO BECOME BOUND BY THE AGREEMENT. IF YOU DO NOT AGREE WITH THE AGREEMENT, YOU MUST NOT USE OR ACCESS THE APPLICATION. NOTE THAT THERE ARE ALTERNATIVE METHODS TO COMPLETE THE SURVEY IF YOU WOULD NOT LIKE TO PROCEED WITH THIS APPLICATION.**  
 
@@ -88,7 +88,7 @@ a) **Transmission of data to UHN.** The Application collects data (user metrics)
 
 b) **Transmission of anonymized or aggregated data to Matomo Analytics.** The Application collects data, including Personal Health Information (PHI), through the Application regarding the use of the Application in order to better understand use of the Application and to help us identify areas for improvement. If you do not consent to the transmission of this data, then you must not use the Application.  
 
-c) **Transmission and Storage of Identifying Data and PHI.** The Application also collects the users' personal information and/or PHI including name (first name or pseudonym) and self-reported symptoms. This information is stored on the Application and also transferred to the EPRO server. The EPRO Servers are hosted at several sites. User data is only transferred to one server, which is the server from which the account was created. Information stored on UHN Servers is accessible by UHN authorized staff at these sites. More information can be found in the Application Privacy Policy.  
+c) **Transmission and Storage of Identifying Data and PHI.** The Application also collects the users' personal information and/or PHI including name (first name or pseudonym) and self-reported symptoms. This information is stored on the Application and also transferred to the DATA-PRO server. The DATA-PRO Servers are hosted at several sites. User data is only transferred to one server, which is the server from which the account was created. Information stored on UHN Servers is accessible by UHN authorized staff at these sites. More information can be found in the Application Privacy Policy.  
 
 ### DISCLAIMER  
 
@@ -106,9 +106,9 @@ If any term or provision of this Agreement is invalid, illegal, or unenforceable
 
 This Agreement and applicable UHN policies and procedures constitute the sole and entire agreement between you and UHN regarding the Application and supersedes all prior and contemporaneous understandings, agreements, representations and warranties, both written and oral, regarding such subject matter.  
 
-### EPRO PRIVACY POLICY  
+### DATA-PRO PRIVACY POLICY  
 
-This privacy policy governs your use of the software application EPRO (**Application**) that was created by Smart Cancer Care and the UHN (UHN). EPRO assists patients in reporting their symptoms and other health-related data to their healthcare providers. Based on the data you enter and the status of your health, you will get feedback and self-care instructions. It is not intended to replace your current care, but to supplement it with additional support.  
+This privacy policy governs your use of the software application DATA-PRO (**Application**) that was created by Smart Cancer Care and the UHN (UHN). DATA-PRO assists patients in reporting their symptoms and other health-related data to their healthcare providers. Based on the data you enter and the status of your health, you will get feedback and self-care instructions. It is not intended to replace your current care, but to supplement it with additional support.  
 
 #### What information does the Application collect and how is it used?  
 
