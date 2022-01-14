@@ -22,8 +22,8 @@
 //SOFTWARE.
 //
 
-import React, { useState } from "react";
-import { Select, MenuItem,  makeStyles } from "@material-ui/core";
+import React, { useState, useRef } from "react";
+import { Input, Select, MenuItem,  makeStyles } from "@material-ui/core";
 import PropTypes from "prop-types";
 import moment from "moment";
 
@@ -153,6 +153,8 @@ function DropdownsDatePicker(props) {
     return dayOptions;
   }
 
+  let refs = order.map(item => useRef()) ;
+
   let handleDateChange = (type, value) => {
     let dateObj = {
       [DropdownDate.year] : (type === DropdownDate.year) ? value : selectedYear,
@@ -172,6 +174,8 @@ function DropdownsDatePicker(props) {
 
       onDateChange(date);
     }
+    // Focus on the next dropdown, if one exists
+    refs[order.indexOf(type) + 1]?.current?.focus();
   }
 
   let handleYearChange = (event) => {
@@ -206,6 +210,7 @@ function DropdownsDatePicker(props) {
     return (
       <Select
         key="year"
+        input={<Input inputRef={refs[order.indexOf(DropdownDate.year)]} />}
         onChange={handleYearChange}
         value={selectedYear}
         disabled={disabled}
@@ -227,6 +232,7 @@ function DropdownsDatePicker(props) {
     return (
       <Select
         key="month"
+        input={<Input inputRef={refs[order.indexOf(DropdownDate.month)]} />}
         onChange={handleMonthChange}
         value={selectedMonth}
         disabled={disabled}
@@ -248,6 +254,7 @@ function DropdownsDatePicker(props) {
     return (
       <Select
         key="day"
+        input={<Input inputRef={refs[order.indexOf(DropdownDate.day)]} />}
         value={selectedDay}
         onChange={handleDayChange}
         disabled={disabled}
