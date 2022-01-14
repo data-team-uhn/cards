@@ -4,7 +4,7 @@
 [![Build Status](https://travis-ci.com/ccmbioinfo/lfs.svg?branch=dev)](https://travis-ci.com/ccmbioinfo/lfs)
 
 ## Prerequisites:
-* Java 1.8+
+* Java 11
 * Maven 3.3+
 * Python 2.5+ or Python 3.0+
 * psutil Python module (recommended)
