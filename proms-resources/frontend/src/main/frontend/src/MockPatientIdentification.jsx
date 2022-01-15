@@ -95,6 +95,7 @@ function MockPatientIdentification(props) {
 
   const [ touAccepted, setTouAccepted ] = useState();
   const [ showTou, setShowTou ] = useState(false);
+  const [ touOk, setTouOk ] = useState(false);
   // Info about each patient is stored in a Patient information form
   const [ piForm, setPiForm ] = useState();
 
@@ -193,6 +194,7 @@ function MockPatientIdentification(props) {
               .find(item => item.question?.["@name"] == TOU_ACCEPTED_VARNAME)?.value;
             // Store the version of Terms of use that has already been accepted, if any
             answer && setTouAccepted(answer);
+console.log(answer);
             // Store the form data for when the user accepts the Terms of Use
             // and that form needs to be updated
             setPiForm(piData);
@@ -233,11 +235,11 @@ function MockPatientIdentification(props) {
        });
   }
 
-  // When the visit is successfully obtained and Terms of Use accepted, pass it along with the identification data
+  // When the visit is successfully obtained and the latest version of Terms of Use accepted, pass it along with the identification data
   // to the parent component
   useEffect(() => {
-    visit && touAccepted && onSuccess && onSuccess(Object.assign({subject: visit}, idData));
-  }, [visit, touAccepted]);
+    visit && touOk && onSuccess && onSuccess(Object.assign({subject: visit}, idData));
+  }, [visit, touOk]);
 
   // Get the path of a subject with a specific identifier
   // if the subject doesn't exist, create it
@@ -384,12 +386,11 @@ function MockPatientIdentification(props) {
   return (<>
     <ToUDialog
       open={showTou}
+      onLoad={setTouOk}
       actionRequired={true}
       acceptedVersion={touAccepted}
       onClose={() => setShowTou(false)}
-      onAccept={(version) => {
-        setTouAccepted(version);
-      }}
+      onAccept={setTouAccepted}
       onDecline={() => {
         setShowTou(false)
         setIdData(null);
