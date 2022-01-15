@@ -119,6 +119,7 @@
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.core</artifactId>
       <version>6.0.0</version>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -126,14 +127,16 @@
       <artifactId>org.apache.sling.servlets.annotations</artifactId>
     </dependency>
     <dependency>
-     <groupId>org.apache.sling</groupId>
-     <artifactId>org.apache.sling.testing.sling-mock.core</artifactId>
-     <version>2.3.4</version>
+      <groupId>org.apache.sling</groupId>
+      <artifactId>org.apache.sling.testing.sling-mock.core</artifactId>
+      <version>2.3.4</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.testing.sling-mock.junit4</artifactId>
       <version>2.3.4</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.sling</groupId>
@@ -145,6 +148,7 @@
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.testing.jcr-mock</artifactId>
       <version>1.4.4</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -172,6 +176,7 @@
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>29.0-jre</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
