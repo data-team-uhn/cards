@@ -72,7 +72,7 @@ const useStyles = makeStyles(theme => ({
 //
 
 function ToUDialog(props) {
-  const { open, acceptedVersion, actionRequired, onAccept, onDecline, onClose, ...rest } = props;
+  const { open, onLoad, acceptedVersion, actionRequired, onAccept, onDecline, onClose, ...rest } = props;
   const [ showConfirmationTou, setShowConfirmationTou ] = useState(false);
   const [ tou, setTou ] = useState();
   const [ error, setError ] = useState();
@@ -86,11 +86,19 @@ function ToUDialog(props) {
       .catch( err => setError("Loading the Terms of Use failed, please try again later") );
   }, []);
 
-  if (!tou && !error) {
-    return null;
-  }
+  useEffect(() => {
+console.log("ToU load", tou?.version, acceptedVersion, tou?.version == acceptedVersion)
+    if (!tou) return;
+    onLoad && onLoad(tou.version == acceptedVersion);
+  }, [tou]);
 
-  return (<>
+  if (!tou && !error) {
+    return <div>Loading ToS...</div>;
+  }
+console.log("Accepted: ", acceptedVersion)
+console.log("Actual: ", tou?.version)
+  return (
+    <div>{tou.version}</div>
     <ResponsiveDialog
       title={tou.title}
       open={open && (acceptedVersion !== tou.version || !actionRequired)}
