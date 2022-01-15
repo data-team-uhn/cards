@@ -74,7 +74,7 @@ import ResourceHeader from "./ResourceHeader.jsx";
  */
 function Form (props) {
   let { classes, id, contentOffset } = props;
-  let { mode, disableHeader, disableButton, doneButtonStyle, doneIcon, doneLabel, onDone } = props;
+  let { mode, className, disableHeader, disableFooter, disableButton, doneButtonStyle, doneIcon, doneLabel, onDone } = props;
   // This holds the full form JSON, once it is received from the server
   let [ data, setData ] = useState();
   // Error message set when fetching the data from the server fails
@@ -408,7 +408,7 @@ function Form (props) {
   )
 
   return (
-    <form action={data?.["@path"]} method="POST" onSubmit={handleSubmit} onChange={()=>setLastSaveStatus(undefined)} key={id} ref={formNode}>
+    <form action={data?.["@path"]} method="POST" onSubmit={handleSubmit} onChange={()=>setLastSaveStatus(undefined)} key={id} ref={formNode} className={className || null}>
       <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
         { !disableHeader &&
         <ResourceHeader
@@ -501,7 +501,7 @@ function Form (props) {
             }
           </FormUpdateProvider>
         </FormProvider>
-        <Grid item xs={12} className={classes.formFooter} id="cards-resource-footer">
+        <Grid item xs={12} className={disableFooter ? classes.hiddenFooter : classes.formFooter} id="cards-resource-footer">
           <FormPagination
               saveInProgress={saveInProgress}
               lastSaveStatus={lastSaveStatus}

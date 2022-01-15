@@ -21,6 +21,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import {
   Avatar,
+  Button,
   CircularProgress,
   Fab,
   Grid,
@@ -70,6 +71,22 @@ const useStyles = makeStyles(theme => ({
     justify: "space-between",
     flexWrap: "nowrap",
   },
+  formSpacer : {
+    marginTop: "1em"
+  },
+  formTitle : {
+    marginTop: "1em",
+  },
+  updateButton : {
+    marginTop: "1em",
+  },
+  reviewFab : {
+    margin: theme.spacing(1),
+    position: "fixed",
+    bottom: theme.spacing(2),
+    right: theme.spacing(4),
+    zIndex: 100,
+  }
 }));
 
 function QuestionnaireSet(props) {
@@ -86,8 +103,14 @@ function QuestionnaireSet(props) {
 
   // Data already associated with the subject
   const [ subjectData, setSubjectData ] = useState();
+  // Visit information form
+  const [ visitInformation, setVisitInformation ] = useState();
   // Did the user make it to the last screen?
   const [ endReached, setEndReached ] = useState();
+  // Is the user reviewing an already complete form?
+  const [ reviewMode, setReviewMode ] = useState(false);
+  // Has the user submitted their answers?
+  const [ isSubmitted, setSubmitted ] = useState(false);
   // Has everything been filled out?
   const [ isComplete, setComplete ] = useState();
 
@@ -107,6 +130,8 @@ function QuestionnaireSet(props) {
   const classes = useStyles();
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
+
+  const visitInformationFormTitle = "Visit information";
 
   // Find the data already associated with the subject
   useEffect(() => {
@@ -142,7 +167,11 @@ function QuestionnaireSet(props) {
 
   // When the uuid of the next form is set, move to the next step to launch the form
   useEffect(() => {
-    crtFormId && nextStep();
+    if (reviewMode) {
+      setReviewMode(false);
+    } else {
+      crtFormId && nextStep();
+    }
   }, [crtFormId]);
 
   // At the last step, reload the form data to determine if all the questionnaires have been completed
@@ -158,6 +187,25 @@ function QuestionnaireSet(props) {
     setComplete(Object.keys(subjectData || {}).filter(q => isFormComplete(q)).length == questionnaireIds.length);
   }, [subjectData, questionnaireIds]);
 
+  // Determine if the user has already submitted their forms
+  useEffect(() => {
+    let submittedQuestionUuid = visitInformation?.questionnaire?.surveys_submitted?.["jcr:uuid"] || null;
+    if (!submittedQuestionUuid) return;
+    let answer = Object.values(visitInformation).find(value => value.question?.["jcr:uuid"] == submittedQuestionUuid)?.value || 0;
+    if (answer == 1) {
+      setSubmitted(true);
+    } else {
+      setSubmitted(false);
+    }
+  }, [visitInformation]);
+
+  // When the user lands on a completed visit that has not been submit, proceed to reviewing their forms
+  useEffect(() => {
+    if(isComplete && !isSubmitted && questionnaireIds && crtStep == -1) {
+      setCrtStep(questionnaireIds.length)
+    }
+  }, [isComplete, isSubmitted, questionnaireIds])
+
   const loadExistingData = () => {
     setComplete(undefined);
     fetchWithReLogin(globalLoginDisplay, `${subject}.data.deep.json`)
@@ -171,6 +219,7 @@ function QuestionnaireSet(props) {
             ids.push(q);
           }
         });
+        setVisitInformation(json[visitInformationFormTitle]?.[0] || {});
         setQuestionnaireIds(ids);
         setSubjectData(data);
       })
@@ -283,6 +332,28 @@ function QuestionnaireSet(props) {
     return e ? (e + " minute" + (e != 1 ? "s" : "")) : "";
   }
 
+  let postSubmission = () => {
+    let submittedQuestionUuid = visitInformation?.questionnaire?.surveys_submitted?.["jcr:uuid"] || null;
+    let url = visitInformation?.["@path"];
+
+    if (submittedQuestionUuid && url) {
+      let answerUuid = Object.values(visitInformation).find(value => value.question?.["jcr:uuid"] == submittedQuestionUuid)?.["@name"] || uuidv4();
+      let data = new FormData();
+      data.append("./" + answerUuid + "/jcr:primaryType", "cards:BooleanAnswer");
+      data.append("./" + answerUuid + "/question", submittedQuestionUuid);
+      data.append("./" + answerUuid + "/question@TypeHint", "Reference");
+      data.append("./" + answerUuid + "/value", 1);
+      data.append("./" + answerUuid + "/value@TypeHint", "Long");
+      fetchWithReLogin(
+        globalLoginDisplay,
+        url,
+        { method: 'POST', body: data }
+      )
+    }
+
+    setSubmitted(true);
+  }
+
   let doneIndicator = <Avatar className={classes.doneIndicator}><DoneIcon /></Avatar>;
 
   let incompleteIndicator = <Avatar className={classes.incompleteIndicator}><WarningIcon /></Avatar>;
@@ -291,7 +362,7 @@ function QuestionnaireSet(props) {
     <Typography variant="h4">{title}</Typography>,
     <List>
     { (questionnaireIds || []).map((q, i) => (
-      <ListItem key={q}>
+      <ListItem key={q+"Welcome"}>
         <ListItemAvatar>{isFormComplete(q) ? doneIndicator : stepIndicator(i)}</ListItemAvatar>
         <ListItemText
           primary={questionnaires[q]?.title}
@@ -301,7 +372,7 @@ function QuestionnaireSet(props) {
       </ListItem>
     ))}
     </List>,
-    isComplete ? <Typography color="textSecondary" variant="h4">You already completed the survey</Typography> :
+    isComplete && isSubmitted ? <Typography color="textSecondary" variant="h4">You already completed the survey</Typography> :
     nextQuestionnaire && <Fab variant="extended" color="primary" onClick={launchNextForm}>Start</Fab>
   ];
 
@@ -312,7 +383,7 @@ function QuestionnaireSet(props) {
         breadcrumbs={[<>{title}</>]}
         separator=":"
         action={stepIndicator(crtStep, true)}
-        contentOffset={contentOffset}
+        contentOffset={contentOffset || 0}
        />
       <Grid item>
         <Form
@@ -321,24 +392,51 @@ function QuestionnaireSet(props) {
           mode="edit"
           disableHeader
           doneIcon={nextQuestionnaire ? <NextStepIcon /> : <DoneIcon />}
-          doneLabel={nextQuestionnaire ? `Continue to ${nextQuestionnaire?.title}` : "Finish"}
+          doneLabel={nextQuestionnaire ? `Continue to ${nextQuestionnaire?.title}` : "Review my answers"}
           onDone={nextQuestionnaire ? launchNextForm : nextStep}
           doneButtonStyle={{position: "relative", right: 0, bottom: "unset", textAlign: "center"}}
-          contentOffset={contentOffset}
+          contentOffset={contentOffset || 0}
         />
       </Grid>
     </Grid>
   ];
 
+  let reviewScreen = <>
+    <Typography variant="h4">Please review your answers before final submission</Typography>
+      {(questionnaireIds || []).map((q, i) => (
+        <Grid item key={q+"Review"}>
+          <Typography variant="h5" className={classes.formTitle}>{questionnaires[q].title || questionnaires[q]["@name"]}</Typography>
+          <Form
+            className={classes.formSpacer}
+            id={subjectData[q]['@name']}
+            disableHeader
+            disableFooter
+            disableButton
+            contentOffset={contentOffset || 0}
+          />
+          <Button
+            variant="text"
+            color="primary"
+            className={classes.updateButton}
+            onClick={() => {setReviewMode(true); setCrtFormId(subjectData[q]["@name"]); setCrtStep(i)}}>
+              Update answers
+          </Button>
+      </Grid>
+      ))}
+    <div className={classes.reviewFab}>
+      <Fab variant="extended" color="primary" onClick={() => {postSubmission()}}>Submit my Answers</Fab>
+    </div>
+  </>
+
   let summaryScreen = [
       <Typography variant="h4">Thank you for your submission.</Typography>,
       <Typography color="textSecondary">Please note:</Typography>,
       <ul>
-        <li><Typography color="textSecondary">
+        <li key="0"><Typography color="textSecondary">
 For your privacy and security, once this screen is closed the information below will not be accessible until the day of
 your appointment with your provider. Please print or note this information for your reference.
         </Typography></li>
-        <li><Typography color="textSecondary">
+        <li key="1"><Typography color="textSecondary">
 Your responses may not be reviewed by your care team until the day of your next appointment. If your symptoms are
 worsening while waiting for your next appointment, please proceed to your nearest Emergency Department today, or call
 911.
@@ -350,12 +448,14 @@ your symptoms. Please see below for a summary of your scores and suggested actio
       <Grid item>
       { (questionnaireIds || []).map((q, i) => (
         <Form
-          key={i}
+          className={classes.formSpacer}
+          key={q+"Summary"}
           id={subjectData[q]['@name']}
           mode="summary"
           disableHeader
+          disableFooter
           disableButton
-          contentOffset={contentOffset}
+          contentOffset={contentOffset || 0}
         />
       ))}
       </Grid>
@@ -364,12 +464,12 @@ your symptoms. Please see below for a summary of your scores and suggested actio
   let exitScreen = (typeof(isComplete) == 'undefined') ? [
     <CircularProgress />
   ] : [
-    isComplete ? summaryScreen
+    isComplete ? (isSubmitted ? summaryScreen : reviewScreen)
       : [
         <Typography variant="h4">{title}</Typography>,
         <List>
         { (questionnaireIds || []).map((q, i) => (
-          <ListItem key={q}>
+          <ListItem key={q+"Exit"}>
             <ListItemAvatar>{isFormComplete(q) ? doneIndicator : incompleteIndicator}</ListItemAvatar>
             <ListItemText
               primary={questionnaires[q]?.title}
@@ -379,7 +479,9 @@ your symptoms. Please see below for a summary of your scores and suggested actio
         ))}
         </List>,
         <Typography color="error">Your answers are incomplete. Please return to the main screen and check for any mandatory questions you may have missed.</Typography>,
-        <Fab variant="extended" color="primary" onClick={() => {setCrtStep(-1)}}>Update answers</Fab>
+        <div className={classes.updateButton}>
+          <Fab variant="extended" color="primary" onClick={() => {setCrtStep(-1)}}>Update answers</Fab>
+        </div>
       ]
   ];
 
@@ -402,7 +504,7 @@ function QuestionnaireSetScreen (props) {
   return (
   <Paper elevation={0} className={classes.mainContainer}>
     <Grid container direction="column" spacing={4} {...rest}>
-      {Array.from(children || []).filter(c => c).map((c, i) => <Grid item key={i} xs={12}>{c}</Grid>)}
+      {Array.from(children || []).filter(c => c).map((c, i) => <Grid item key={i+"MainItem"} xs={12}>{c}</Grid>)}
     </Grid>
   </Paper>
   );

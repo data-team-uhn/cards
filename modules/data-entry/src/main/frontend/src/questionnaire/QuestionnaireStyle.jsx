@@ -452,6 +452,9 @@ const questionnaireStyle = theme => ({
         maxHeight: "68px",
         marginTop: theme.spacing(5),
     },
+    hiddenFooter: {
+        display: "none",
+    },
     formStepper: {
         position: "fixed",
         bottom: theme.spacing(2),
