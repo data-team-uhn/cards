@@ -412,7 +412,10 @@
               <goal>analyze-only</goal>
             </goals>
             <configuration>
-              <failOnWarning>true</failOnWarning>
+              <!-- FIXME the plugin at version 3.1.2 does not work with Java 11,
+                   and at version 3.2.0 fails to detect the correct scope of dependencies (MDEP-753).
+                   Re-enable failing the build once MDEP-753 is fixed and released. -->
+              <failOnWarning>false</failOnWarning>
               <ignoreNonCompile>true</ignoreNonCompile>
               <skip>${dependencyCheck.skip}</skip>
             </configuration>
@@ -719,10 +722,10 @@
           <artifactId>maven-compiler-plugin</artifactId>
           <!-- Lock down plugin version for build reproducibility -->
           <version>3.8.0</version>
-          <!-- Java 1.8 is required -->
+          <!-- Java 11 is required -->
           <configuration>
-            <source>1.8</source>
-            <target>1.8</target>
+            <source>11</source>
+            <target>11</target>
           </configuration>
         </plugin>
         <!-- Compile the React code -->
@@ -793,7 +796,7 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-dependency-plugin</artifactId>
           <!-- Lock down plugin version for build reproducibility -->
-          <version>3.1.1</version>
+          <version>3.2.0</version>
           <configuration>
             <ignoredUsedUndeclaredDependencies>
               <ignoredUsedUndeclaredDependency>javax.inject:javax.inject</ignoredUsedUndeclaredDependency>
