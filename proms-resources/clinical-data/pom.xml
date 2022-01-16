@@ -42,6 +42,7 @@
             <Sling-Nodetypes>SLING-INF/nodetypes/proms.cnd</Sling-Nodetypes>
             <Include-Resource>{maven-resources},src/main/media</Include-Resource>
             <Sling-Initial-Content>
+              SLING-INF/content/apps/cards/ExtensionPoints/;path:=/apps/cards/ExtensionPoints/;overwrite:=true,
               SLING-INF/content/Homepage/;path:=/;overwrite:=true,
               SLING-INF/content/Questionnaires/;path:=/Questionnaires/;overwrite:=true;checkin:=true,
               SLING-INF/content/SubjectTypes/Patient/;path:=/SubjectTypes/Patient/;overwrite:=true,
@@ -49,6 +50,7 @@
               SLING-INF/content/libs/cards/conf/;path:=/libs/cards/conf/;overwrite:=true,
               SLING-INF/content/apps/cards/config/CopyAnswers;path:=/apps/cards/config/CopyAnswers;overwrite:=true,
               SLING-INF/content/Statistics/;path:=/Statistics/;overwrite:=false,
+              SLING-INF/content/Extensions/Footer;path:=/Extensions/Footer;overwrite:=true,
             </Sling-Initial-Content>
           </instructions>
         </configuration>

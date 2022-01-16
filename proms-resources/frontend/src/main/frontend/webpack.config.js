@@ -6,7 +6,8 @@ module_name = require("./package.json").name + ".";
 module.exports = {
   mode: 'development',
   entry: {
-    [module_name + 'index']: './src/index.jsx'
+    [module_name + 'index']: './src/index.jsx',
+    [module_name + 'ToULink']: './src/ToULink.jsx'
   },
   plugins: [
     new CleanWebpackPlugin(),

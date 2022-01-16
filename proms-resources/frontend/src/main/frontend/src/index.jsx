@@ -31,7 +31,7 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import { appTheme } from "./themePalette.jsx";
 import QuestionnaireSet from "./QuestionnaireSet.jsx";
 import PatientIdentification from "./MockPatientIdentification.jsx";
-import ToUDialog from "./ToUDialog.jsx";
+import PromsFooter from "./Footer.jsx";
 
 const useStyles = makeStyles(theme => ({
   appbar : {
@@ -52,7 +52,6 @@ function PromsHomepage (props) {
   // Current user and associated subject
   const [ username, setUsername ] = useState("");
   const [ subject, setSubject ] = useState();
-  const [ showTou, setShowTou ] = useState(false);
 
   const classes = useStyles();
 
@@ -62,7 +61,10 @@ function PromsHomepage (props) {
   }
 
   if (!subject) {
-    return <PatientIdentification onSuccess={onPatientIdentified} />;
+    return (<>
+      <PatientIdentification onSuccess={onPatientIdentified} />
+      <PromsFooter />
+    </>);
   }
 
   // Obtain the id of the questionnaire set to display
@@ -72,14 +74,6 @@ function PromsHomepage (props) {
     <AppBar position="static" className={classes.appbar}>
       <Toolbar variant="dense" className={classes.toolbar}>
         <img src="/libs/cards/resources/logo.png" alt="logo" className={classes.logo} />
-        <Link
-          component="button"
-          color="inherit"
-          variant="body2"
-          onClick={() => {setShowTou(true);}}
-        >
-          Terms of Use
-        </Link>
         { username &&
           <Typography variant="h6" color="inherit">
             Hello, {username}
@@ -88,10 +82,7 @@ function PromsHomepage (props) {
       </Toolbar>
     </AppBar>
     <QuestionnaireSet id={promId} subject={subject} />
-    <ToUDialog
-      open={showTou}
-      onClose={() => {setShowTou(false);}}
-    />
+    <PromsFooter />
   </>);
 }
 
