@@ -70,10 +70,10 @@ public final class AppointmentUtils
         return null;
     }
 
-    public static <T> T getQuestionAnswerForPatientSubject(
-        ResourceResolver resolver, Resource patientSubject, String questionPath, String cardsDataType, T defaultValue)
+    public static <T> T getQuestionAnswerForSubject(
+        ResourceResolver resolver, Resource subject, String questionPath, String cardsDataType, T defaultValue)
     {
-        final String subjectUUID = patientSubject.getValueMap().get("jcr:uuid", "");
+        final String subjectUUID = subject.getValueMap().get("jcr:uuid", "");
         final String questionUUID = resolver.getResource(questionPath).getValueMap().get("jcr:uuid", "");
         if ("".equals(questionUUID)) {
             return defaultValue;
@@ -93,14 +93,14 @@ public final class AppointmentUtils
 
     public static String getPatientConsentedEmail(ResourceResolver resolver, Resource patientSubject)
     {
-        long patientEmailOk = getQuestionAnswerForPatientSubject(
+        long patientEmailOk = getQuestionAnswerForSubject(
             resolver,
             patientSubject,
             "/Questionnaires/Patient information/email_ok",
             "cards:BooleanAnswer",
             0
         );
-        String patientEmailAddress = getQuestionAnswerForPatientSubject(
+        String patientEmailAddress = getQuestionAnswerForSubject(
             resolver,
             patientSubject,
             "/Questionnaires/Patient information/email",
@@ -116,14 +116,14 @@ public final class AppointmentUtils
     }
     public static String getPatientFullName(ResourceResolver resolver, Resource patientSubject)
     {
-        String firstName = getQuestionAnswerForPatientSubject(
+        String firstName = getQuestionAnswerForSubject(
             resolver,
             patientSubject,
             "/Questionnaires/Patient information/first_name",
             "cards:TextAnswer",
             ""
         );
-        String lastName = getQuestionAnswerForPatientSubject(
+        String lastName = getQuestionAnswerForSubject(
             resolver,
             patientSubject,
             "/Questionnaires/Patient information/last_name",
