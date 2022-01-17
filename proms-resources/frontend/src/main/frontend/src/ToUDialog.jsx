@@ -93,8 +93,16 @@ function ToUDialog(props) {
       open={open}
       width="md"
       onClose={onClose}
+      scroll={actionRequired? "body" : "paper"}
     >
-      <DialogContent dividers className={classes.touText}>
+      { actionRequired &&
+        <DialogContent>
+          <Alert icon={false} severity="info">
+            Please read the Terms of Use and click Accept at the bottom to continue.
+          </Alert>
+        </DialogContent>
+      }
+      <DialogContent dividers={!actionRequired} className={classes.touText}>
       { error ?
         <Alert severity="error">
           <AlertTitle>An error occurred</AlertTitle>
