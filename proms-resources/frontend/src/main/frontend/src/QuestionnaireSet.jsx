@@ -62,7 +62,10 @@ const useStyles = makeStyles(theme => ({
     }
   },
   stepIndicator : {
-    background: theme.palette.primary.main,
+    border: "3px solid " + theme.palette.primary.main,
+    background: "transparent",
+    color: theme.palette.primary.main,
+    fontWeight: 800,
   },
   incompleteIndicator : {
     border: "1px solid " + theme.palette.secondary.main,
@@ -70,9 +73,7 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.secondary.main,
   },
   doneIndicator : {
-    border: "1px solid " + theme.palette.primary.main,
-    background: "transparent",
-    color: theme.palette.primary.main,
+    background: theme.palette.primary.main,
   },
   survey : {
     alignItems: "stretch",
