@@ -144,6 +144,54 @@ public interface FormUtils
      */
     String getQuestionnaireIdentifier(NodeState form);
 
+    /**
+     * Retrieve the JCR node of the Subject that a Form belongs to.
+     *
+     * @param form a Form node, may be {@code null}
+     * @return a Subject node, or {@code null} if the provided node is not a Form
+     */
+    Node getSubject(Node form);
+
+    /**
+     * Retrieve the JCR node of the Subject that a Form belongs to.
+     *
+     * @param form a Form node, may be {@code null}
+     * @return a Subject node, or {@code null} if the provided node is not a Form
+     */
+    Node getSubject(NodeBuilder form);
+
+    /**
+     * Retrieve the JCR node of the Subject that a Form belongs to.
+     *
+     * @param form a Form node, may be {@code null}
+     * @return a Subject node, or {@code null} if the provided node is not a Form
+     */
+    Node getSubject(NodeState form);
+
+    /**
+     * Retrieve the UUID of the Subject that a Form belongs to.
+     *
+     * @param form a Form node, may be {@code null}
+     * @return an identifier, or {@code null} if the provided node is not a Form
+     */
+    String getSubjectIdentifier(Node form);
+
+    /**
+     * Retrieve the UUID of the Subject that a Form belongs to.
+     *
+     * @param form a Form node, may be {@code null}
+     * @return an identifier, or {@code null} if the provided node is not a Form
+     */
+    String getSubjectIdentifier(NodeBuilder form);
+
+    /**
+     * Retrieve the UUID of the Subject that a Form belongs to.
+     *
+     * @param form a Form node, may be {@code null}
+     * @return an identifier, or {@code null} if the provided node is not a Form
+     */
+    String getSubjectIdentifier(NodeState form);
+
     // AnswerSection methods
 
     /**
@@ -222,6 +270,15 @@ public interface FormUtils
     String getSectionIdentifier(NodeState answerSection);
 
     // Answer methods
+
+    /**
+     * Get the first answer for a specific question, if any.
+     *
+     * @param form a Form node
+     * @param question a question node, part of the questionnaire that the form is answering
+     * @return an Answer node, may be {@code null}
+     */
+    Node getAnswer(Node form, Node question);
 
     /**
      * Check if the given node is an Answer node.

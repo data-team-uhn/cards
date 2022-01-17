@@ -47,7 +47,7 @@ public abstract class AbstractNodeUtils
         }
         try {
             return node.isNodeType(targetNodeType);
-        } catch (RepositoryException e) {
+        } catch (final RepositoryException e) {
             return false;
         }
     }
@@ -66,7 +66,7 @@ public abstract class AbstractNodeUtils
         if (session == null) {
             return false;
         }
-        PropertyState primaryType = node.getProperty("jcr:primaryType");
+        final PropertyState primaryType = node.getProperty("jcr:primaryType");
         if (primaryType != null) {
             final String actualNodeType = primaryType.getValue(Type.NAME);
             try {
@@ -74,7 +74,7 @@ public abstract class AbstractNodeUtils
                     .getNodeType(actualNodeType).isNodeType(targetNodeType)) {
                     return true;
                 }
-            } catch (RepositoryException e) {
+            } catch (final RepositoryException e) {
                 // Shouldn't happen
             }
         }
@@ -92,7 +92,7 @@ public abstract class AbstractNodeUtils
     {
         try {
             return node.getProperty(property).getNode();
-        } catch (RepositoryException e) {
+        } catch (final RepositoryException e) {
             return null;
         }
     }
@@ -108,7 +108,7 @@ public abstract class AbstractNodeUtils
     {
         try {
             return node.getProperty(property).getString();
-        } catch (RepositoryException e) {
+        } catch (final RepositoryException e) {
             return null;
         }
     }
@@ -123,6 +123,18 @@ public abstract class AbstractNodeUtils
     protected String getStringProperty(final NodeState node, final String property)
     {
         return node.getProperty(property).getValue(Type.STRING);
+    }
+
+    protected Node getNodeByIdentifier(final String identifier, final Session session)
+    {
+        try {
+            if (session == null) {
+                return null;
+            }
+            return session.getNodeByIdentifier(identifier);
+        } catch (final RepositoryException e) {
+            return null;
+        }
     }
 
     /**

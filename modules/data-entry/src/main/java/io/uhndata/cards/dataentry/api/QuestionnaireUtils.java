@@ -93,6 +93,15 @@ public interface QuestionnaireUtils
     Node getSection(String identifier);
 
     /**
+     * Get a Question from a Questionnaire.
+     *
+     * @param questionnaire a Questionnaire node
+     * @param relativePath relative path from the Questionnaire node to a Question
+     * @return a Question node, may be {@code null}
+     */
+    Node getQuestion(Node questionnaire, String relativePath);
+
+    /**
      * Check if the given node is a Question node.
      *
      * @param node the node to check, a JCR Node, may be {@code null}

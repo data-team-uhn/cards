@@ -17,11 +17,13 @@
 package io.uhndata.cards.dataentry.internal;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
@@ -35,13 +37,14 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import io.uhndata.cards.dataentry.api.FormUtils;
 import io.uhndata.cards.dataentry.api.QuestionnaireUtils;
+import io.uhndata.cards.dataentry.api.SubjectUtils;
 
 /**
  * Basic utilities for working with Form data.
  *
  * @version $Id$
  */
-@Component(service = FormUtils.class)
+@Component
 public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
 {
     @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,
@@ -50,6 +53,9 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
 
     @Reference
     private QuestionnaireUtils questionnaires;
+
+    @Reference
+    private SubjectUtils subjects;
 
     // Form methods
 
@@ -105,6 +111,42 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
     public String getQuestionnaireIdentifier(final NodeState form)
     {
         return isForm(form) ? getStringProperty(form, QUESTIONNAIRE_PROPERTY) : null;
+    }
+
+    @Override
+    public Node getSubject(final Node form)
+    {
+        return isForm(form) ? getReferencedNode(form, SUBJECT_PROPERTY) : null;
+    }
+
+    @Override
+    public Node getSubject(final NodeBuilder form)
+    {
+        return getSubject(form.getNodeState());
+    }
+
+    @Override
+    public Node getSubject(final NodeState form)
+    {
+        return isForm(form) ? this.subjects.getSubject(getSubjectIdentifier(form)) : null;
+    }
+
+    @Override
+    public String getSubjectIdentifier(final Node form)
+    {
+        return isForm(form) ? getStringProperty(form, SUBJECT_PROPERTY) : null;
+    }
+
+    @Override
+    public String getSubjectIdentifier(final NodeBuilder form)
+    {
+        return getSubjectIdentifier(form.getNodeState());
+    }
+
+    @Override
+    public String getSubjectIdentifier(final NodeState form)
+    {
+        return isForm(form) ? getStringProperty(form, SUBJECT_PROPERTY) : null;
     }
 
     // AnswerSection methods
@@ -227,10 +269,10 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
         }
         Object result = null;
         try {
-            Property value = answer.getProperty(VALUE_PROPERTY);
+            final Property value = answer.getProperty(VALUE_PROPERTY);
             if (value != null) {
                 if (value.isMultiple()) {
-                    Value[] values = value.getValues();
+                    final Value[] values = value.getValues();
                     result = new Object[values.length];
                     for (int i = 0; i < values.length; i++) {
                         ((Object[]) result)[i] = getValue(values[i]);
@@ -239,7 +281,7 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
                     result = getValue(value.getValue());
                 }
             }
-        } catch (RepositoryException e) {
+        } catch (final RepositoryException e) {
             // Shouldn't happen
         }
         return result;
@@ -258,9 +300,9 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
             return null;
         }
         Object result = null;
-        PropertyState valuePropertyState = answer.getProperty(VALUE_PROPERTY);
+        final PropertyState valuePropertyState = answer.getProperty(VALUE_PROPERTY);
         if (valuePropertyState != null) {
-            Type<?> valueType = valuePropertyState.getType();
+            final Type<?> valueType = valuePropertyState.getType();
 
             if (valuePropertyState.isArray()) {
                 result = new Object[valuePropertyState.count()];
@@ -305,9 +347,44 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
                 default:
                     result = value.getString();
             }
-        } catch (RepositoryException e) {
+        } catch (final RepositoryException e) {
             // Shouldn't happen
         }
         return result;
     }
+
+    @Override
+    public Node getAnswer(final Node form, final Node question)
+    {
+        try {
+            if (isForm(form)) {
+                return findNode(form, QUESTION_PROPERTY, question.getIdentifier());
+            }
+        } catch (final RepositoryException e) {
+            // Should not happen
+        }
+        return null;
+    }
+
+    private Node findNode(final Node parent, final String property, final String value)
+    {
+        try {
+            if (parent.hasProperty(property)
+                && StringUtils.equals(parent.getProperty(property).getValue().getString(), value)) {
+                return parent;
+            }
+            final NodeIterator children = parent.getNodes();
+            while (children.hasNext()) {
+                final Node child = children.nextNode();
+                final Node result = findNode(child, property, value);
+                if (result != null) {
+                    return result;
+                }
+            }
+        } catch (IllegalStateException | RepositoryException e) {
+            // Not found or not accessible, just return null
+        }
+        return null;
+    }
+
 }
