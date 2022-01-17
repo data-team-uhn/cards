@@ -71,7 +71,7 @@ public interface SubjectUtils
      * Retrieve the Subject with the given UUID.
      *
      * @param identifier a UUID that references a Subject.
-     * @return a Node
+     * @return a Node, or {@code null} if the identifier does not point to a Subject
      */
     Node getSubject(String identifier);
 

@@ -50,7 +50,7 @@ import io.uhndata.cards.dataentry.api.SubjectUtils;
 
 /**
  * Change listener looking for new or modified forms related to a Visit subject. Initially, when a new Visit Information
- * form is created, it also creates any forms in the specified survey set that needs to be created, based on the survey
+ * form is created, it also creates any forms in the specified survey set that need to be created, based on the survey
  * set's specified frequency. Then, when all the forms required for a visit are completed, it also marks in the Visit
  * Information that the patient has completed the surveys.
  *
@@ -511,11 +511,12 @@ public class VisitChangeListener implements ResourceChangeListener
                     // Checkin
                     versionManager.checkin(formPath);
                     // All done, exit the try-loop
-                    break;
+                    return;
                 } catch (final RepositoryException e) {
-                    LOGGER.error("Failed to checkin form: {}", e.getMessage(), e);
+                    LOGGER.info("Failed to checkin form {}, trying again", formPath);
                 }
             }
+            LOGGER.error("Failed to checkin form {} after multiple attempts", formPath);
         } catch (final RepositoryException e) {
             LOGGER.error("Failed to obtain version manager or questionnaire data: {}", e.getMessage(), e);
         }

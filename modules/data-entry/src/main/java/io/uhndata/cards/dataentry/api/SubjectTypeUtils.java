@@ -68,7 +68,7 @@ public interface SubjectTypeUtils
      * Retrieve the SubjectType with the given UUID.
      *
      * @param identifier a UUID that references a SubjectType.
-     * @return a Node
+     * @return a Node, or {@code null} if the identifier does not point to a SubjectType
      */
     Node getSubjectType(String identifier);
 
