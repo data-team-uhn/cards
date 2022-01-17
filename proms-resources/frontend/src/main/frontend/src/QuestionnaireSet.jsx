@@ -79,6 +79,7 @@ const useStyles = makeStyles(theme => ({
   },
   updateButton : {
     marginTop: "1em",
+    marginBottom: "4em",
   },
   reviewFab : {
     margin: theme.spacing(1),
@@ -415,8 +416,8 @@ function QuestionnaireSet(props) {
             contentOffset={contentOffset || 0}
           />
           <Button
-            variant="text"
-            color="primary"
+            variant="outlined"
+            color="secondary"
             className={classes.updateButton}
             onClick={() => {setReviewMode(true); setCrtFormId(subjectData[q]["@name"]); setCrtStep(i)}}>
               Update answers
