@@ -36,11 +36,10 @@ import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.observation.ResourceChange;
+import org.apache.sling.api.resource.observation.ResourceChangeListener;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.event.Event;
-import org.osgi.service.event.EventConstants;
-import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,15 +52,12 @@ import io.uhndata.cards.dataentry.api.QuestionnaireUtils;
  *
  * @version $Id$
  */
-@Component(
-    service = EventHandler.class,
-    property = {
-        EventConstants.EVENT_TOPIC + "=org/apache/sling/api/resource/Resource/ADDED",
-        EventConstants.EVENT_TOPIC + "=org/apache/sling/api/resource/Resource/CHANGED",
-        EventConstants.EVENT_FILTER + "=(&(resourceType=cards/Form)(path=/Forms/*))"
-    }
-)
-public class VisitChangeListener implements EventHandler
+@Component(immediate = true, property = {
+    ResourceChangeListener.PATHS + "=/Forms",
+    ResourceChangeListener.CHANGES + "=ADDED",
+    ResourceChangeListener.CHANGES + "=CHANGED"
+})
+public class VisitChangeListener implements ResourceChangeListener
 {
     private static final int FREQUENCY_MARGIN_DAYS = 2;
 
@@ -80,12 +76,24 @@ public class VisitChangeListener implements EventHandler
     private FormUtils formUtils;
 
     @Override
-    public void handleEvent(final Event event)
+    public void onChange(final List<ResourceChange> changes)
+    {
+        changes.forEach(this::handleEvent);
+    }
+
+    /**
+     * For every form change, either creates the forms scheduled for a visit, if it's a new Visit Information, or
+     * updates the flag that indicates that all the forms have been completed by the patient, if it's a regular survey
+     * needed for a visit.
+     *
+     * @param event a change that happened in the repository
+     */
+    private void handleEvent(final ResourceChange event)
     {
         try (ResourceResolver localResolver = this.resolverFactory.getServiceResourceResolver(null)) {
             final Session session = localResolver.adaptTo(Session.class);
 
-            final String path = event.getProperty("path").toString();
+            final String path = event.getPath();
 
             final Node eventFormNode = session.getNode(path);
             final Node subjectNode = eventFormNode.getProperty("subject").getNode();
