@@ -71,17 +71,7 @@ function PromsHomepage (props) {
   const promId = /Proms.html\/([^.\/]+)/.exec(location.pathname)?.[1];
 
   return (<>
-    <AppBar position="static" className={classes.appbar}>
-      <Toolbar variant="dense" className={classes.toolbar}>
-        <img src="/libs/cards/resources/logo.png" alt="logo" className={classes.logo} />
-        { username &&
-          <Typography variant="h6" color="inherit">
-            Hello, {username}
-          </Typography>
-        }
-      </Toolbar>
-    </AppBar>
-    <QuestionnaireSet id={promId} subject={subject} />
+    <QuestionnaireSet id={promId} subject={subject} username={username}/>
     <PromsFooter />
   </>);
 }

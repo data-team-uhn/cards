@@ -38,7 +38,7 @@ import DoneIcon from '@material-ui/icons/Done';
 import WarningIcon from '@material-ui/icons/Warning';
 
 import Form from "./questionnaire/Form.jsx";
-import ResourceHeader from "./questionnaire/ResourceHeader.jsx";
+import PromsHeader from "./Header.jsx";
 
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
@@ -100,7 +100,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function QuestionnaireSet(props) {
-  const { id, subject, contentOffset } = props;
+  const { id, subject, username, contentOffset } = props;
 
   // Questionnaire set title, to display to the patient user
   const [ title, setTitle ] = useState();
@@ -403,9 +403,24 @@ function QuestionnaireSet(props) {
 
   let incompleteIndicator = <Avatar className={classes.incompleteIndicator}><WarningIcon /></Avatar>;
 
+
+  const greet = (name) => {
+    let hourOfDay = (new Date()).getHours();
+    let timeOfDay = hourOfDay < 12 ? "morning" : hourOfDay < 18 ? "afternoon" : "evening";
+    return `Good ${timeOfDay}, ${name}`;
+  }
+
   let welcomeScreen = [
-    <Typography variant="h4">{title}</Typography>,
-    <List>
+    <Typography variant="h4" key="welcome-greeting">{ greet(username) }</Typography>,
+    isComplete && isSubmitted ?
+      <Typography color="textSecondary" variant="subtitle1" key="welcome-message">
+        You already completed the survey.
+      </Typography>
+    :
+      <Typography paragraph key="welcome-message">
+        Tell us about your symptoms prior to your appointment.
+      </Typography>,
+    <List key="welcome-surveys">
     { (questionnaireIds || []).map((q, i) => (
       <ListItem key={q+"Welcome"}>
         <ListItemAvatar>{isFormComplete(q) ? doneIndicator : stepIndicator(i)}</ListItemAvatar>
@@ -417,20 +432,11 @@ function QuestionnaireSet(props) {
       </ListItem>
     ))}
     </List>,
-    isComplete && isSubmitted ? <Typography color="textSecondary" variant="h4">You already completed the survey</Typography> :
-    nextQuestionnaire && <Fab variant="extended" color="primary" onClick={launchNextForm}>Start</Fab>
+    isComplete && isSubmitted ? <></> :
+    nextQuestionnaire && <Fab variant="extended" color="primary" onClick={launchNextForm} key="welcome-action">Begin</Fab>
   ];
 
   let formScreen = [
-    <Grid container direction="column" spacing={4} className={classes.survey}>
-      <ResourceHeader
-        title={questionnaires[questionnaireIds[crtStep]]?.title || ""}
-        breadcrumbs={[<>{title}</>]}
-        separator=":"
-        action={stepIndicator(crtStep, true)}
-        contentOffset={contentOffset || 0}
-       />
-      <Grid item>
         <Form
           key={crtStep}
           id={crtFormId}
@@ -442,8 +448,6 @@ function QuestionnaireSet(props) {
           doneButtonStyle={{position: "relative", right: 0, bottom: "unset", textAlign: "center"}}
           contentOffset={contentOffset || 0}
         />
-      </Grid>
-    </Grid>
   ];
 
   let reviewScreen = <>
@@ -509,7 +513,6 @@ your symptoms. Please see below for a summary of your scores and suggested actio
   ] : [
     isComplete ? (isSubmitted ? summaryScreen : reviewScreen)
       : [
-        <Typography variant="h4">{title}</Typography>,
         <List>
         { (questionnaireIds || []).map((q, i) => (
           <ListItem key={q+"Exit"}>
@@ -525,10 +528,19 @@ your symptoms. Please see below for a summary of your scores and suggested actio
         <div className={classes.updateButton}>
           <Fab variant="extended" color="primary" onClick={() => {setCrtStep(-1)}}>Update answers</Fab>
         </div>
-      ]
+    ]
   ];
 
-  return (
+  const progress = crtStep <= 0 ? 0 : 100.0 * crtStep / (questionnaireIds?.length || 1);
+
+  return (<>
+      <PromsHeader
+        title={title}
+        greeting={username}
+        progress={progress}
+        subtitle={questionnaires[questionnaireIds[crtStep]]?.title}
+        step={stepIndicator(crtStep, true)}
+      />
       <QuestionnaireSetScreen className={classes[screenType]}>
         {
           crtStep == -1 ? welcomeScreen :
@@ -536,7 +548,7 @@ your symptoms. Please see below for a summary of your scores and suggested actio
           exitScreen
         }
       </QuestionnaireSetScreen>
-  )
+  </>)
 }
 
 function QuestionnaireSetScreen (props) {
