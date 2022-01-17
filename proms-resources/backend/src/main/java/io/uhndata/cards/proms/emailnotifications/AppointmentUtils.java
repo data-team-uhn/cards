@@ -249,6 +249,21 @@ public final class AppointmentUtils
         return htmlTemplate;
     }
 
+    public static boolean getVisitSurveysComplete(ResourceResolver resolver, Resource visitSubject)
+    {
+        long isComplete = getQuestionAnswerForSubject(
+            resolver,
+            visitSubject,
+            "/Questionnaires/Visit information/surveys_complete",
+            "cards:BooleanAnswer",
+            0
+        );
+        if (isComplete == 1) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Returns the CARDS Form JCR Resource associated with a given CARDS
      * answer Resource or null if no match can be found.
