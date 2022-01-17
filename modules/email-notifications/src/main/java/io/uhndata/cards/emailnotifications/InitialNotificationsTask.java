@@ -56,7 +56,6 @@ public class InitialNotificationsTask implements Runnable
         this.mailService = mailService;
     }
 
-    @SuppressWarnings("checkstyle:ExecutableStatementCount")
     @Override
     public void run()
     {
@@ -99,20 +98,15 @@ public class InitialNotificationsTask implements Runnable
                 // Get the Patient Subject associated with this appointment Form
                 Resource patientSubject = AppointmentUtils.getRelatedSubjectOfType(
                     resolver, appointmentForm, "/SubjectTypes/Patient");
-                LOGGER.warn("Patient {} has a scheduled visit on {}",
-                    patientSubject.getPath(), appointmentResult.getValueMap().get("value", ""));
                 Resource visitSubject = AppointmentUtils.getRelatedSubjectOfType(
                     resolver, appointmentForm, "/SubjectTypes/Patient/Visit");
-                LOGGER.warn("The associated visit subject is {}", visitSubject.getPath());
                 String patientEmailAddress = AppointmentUtils.getPatientConsentedEmail(resolver, patientSubject);
                 if (patientEmailAddress == null) {
                     continue;
                 }
                 String patientFullName = AppointmentUtils.getPatientFullName(resolver, patientSubject);
-                LOGGER.warn("Surveys email to {}", patientEmailAddress);
                 Calendar tokenExpiryDate = AppointmentUtils.parseDate(appointmentResult.getValueMap().get("value", ""));
                 tokenExpiryDate.add(Calendar.HOUR, 2);
-                LOGGER.warn("The following token will expire on: {}", tokenExpiryDate);
                 String surveysLink = "http://localhost:8080/Proms.html/Cardio?auth_token="
                     + this.tokenManager.create(
                         "patient",
@@ -122,7 +116,6 @@ public class InitialNotificationsTask implements Runnable
                             visitSubject.getPath()
                         )
                     ).getToken();
-                LOGGER.warn("{}", surveysLink);
                 // Send the Initial Notification Email
                 String emailBody = "You have an appointment in 3 days from now.";
                 emailBody += " Please complete your surveys beforehand at";
