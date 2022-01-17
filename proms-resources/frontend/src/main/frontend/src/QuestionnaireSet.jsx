@@ -230,7 +230,10 @@ function QuestionnaireSet(props) {
           }
         });
         setVisitInformation(json[visitInformationFormTitle]?.[0] || {});
-        setQuestionnaireIds(ids);
+        // If questionnaireIds is defined, this is not the first time we're loading the data.
+        // The purpose of loading it a second time is to check the completion status of forms.
+        // In that case, we do not reassign questionnaireIds to avoid loading this data in a loop
+        !questionnaireIds && setQuestionnaireIds(ids);
         setSubjectData(data);
       })
       .catch((response) => {
