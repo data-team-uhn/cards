@@ -56,7 +56,6 @@ public class ReminderNotificationsTask implements Runnable
         this.mailService = mailService;
     }
 
-    @SuppressWarnings("checkstyle:ExecutableStatementCount")
     @Override
     public void run()
     {
@@ -77,19 +76,14 @@ public class ReminderNotificationsTask implements Runnable
                 // Get the Patient Subject associated with this appointment Form
                 Resource patientSubject = AppointmentUtils.getRelatedSubjectOfType(
                     resolver, appointmentForm, "/SubjectTypes/Patient");
-                LOGGER.warn("Patient {} has a scheduled visit on {}",
-                    patientSubject.getPath(), appointmentResult.getValueMap().get("value", ""));
                 Resource visitSubject = AppointmentUtils.getRelatedSubjectOfType(
                     resolver, appointmentForm, "/SubjectTypes/Patient/Visit");
-                LOGGER.warn("The associated visit subject is {}", visitSubject.getPath());
                 String patientEmailAddress = AppointmentUtils.getPatientConsentedEmail(resolver, patientSubject);
                 if (patientEmailAddress == null) {
                     continue;
                 }
                 String patientFullName = AppointmentUtils.getPatientFullName(resolver, patientSubject);
                 boolean patientSurveysComplete = AppointmentUtils.getVisitSurveysComplete(resolver, visitSubject);
-                LOGGER.warn("For this visit, surveys complete status is: {}", patientSurveysComplete);
-                LOGGER.warn("Surveys email to {}", patientEmailAddress);
 
                 // Send the Reminder Notification Email
                 String emailBody = "You have an appointment in 1 day from now.";
@@ -98,7 +92,6 @@ public class ReminderNotificationsTask implements Runnable
                     Calendar tokenExpiryDate = AppointmentUtils.parseDate(
                         appointmentResult.getValueMap().get("value", ""));
                     tokenExpiryDate.add(Calendar.HOUR, 2);
-                    LOGGER.warn("The following token will expire on: {}", tokenExpiryDate);
                     String surveysLink = "http://localhost:8080/Proms.html/Cardio?auth_token="
                         + this.tokenManager.create(
                             "patient",
@@ -108,7 +101,6 @@ public class ReminderNotificationsTask implements Runnable
                                 visitSubject.getPath()
                             )
                         ).getToken();
-                    LOGGER.warn("{}", surveysLink);
                     emailBody += " Please complete your surveys beforehand at";
                     emailBody += " ";
                     emailBody += surveysLink;
