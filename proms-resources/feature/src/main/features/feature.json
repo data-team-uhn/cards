@@ -42,7 +42,7 @@
     },
     "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~":{
       "user.mapping":[
-        "io.uhndata.cards.proms-backend=[proms-visit-backend]"
+        "io.uhndata.cards.proms-backend:VisitFormsPreparation=[proms-visit-backend]"
       ]
     }
   }
