@@ -1,0 +1,5 @@
+{
+  "jcr:primaryType": "cards:ExtensionPoint",
+  "cards:extensionPointId": "proms/dashboard/cardio",
+  "cards:extensionPointName": "Cardo clinic dashboard"
+}

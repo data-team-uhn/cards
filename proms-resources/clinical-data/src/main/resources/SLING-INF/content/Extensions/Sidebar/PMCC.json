@@ -2,7 +2,7 @@
   "jcr:primaryType": "cards:Extension",
   "cards:extensionPointId": "cards/coreUI/sidebar/entry",
   "cards:extensionName": "PMCC",
-  "cards:targetURL": "/content.html/Questionnaires/User/Cardio",
+  "cards:targetURL": "/content.html/Dashboard/Cardio",
   "cards:icon": "asset:proms-homepage.cardioIcon.js",
   "cards:defaultOrder": 10
 }
