@@ -56,8 +56,8 @@
   // An optional frequency for re-taking the questionnaire, in weeks
   - frequency (long)
 
-  //  Where we will store the columns configuration for this view
-  - view
+  //  An optional configuration describing the columns of the livetable that lists the forms of corresponding to this questionnaire
+  - view (string)
 
 //-----------------------------------------------------------------------------
 // QuestionnaireSet: a sequence of questionnaires to be filled out

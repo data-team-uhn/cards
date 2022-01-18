@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import { Grid, withStyles } from "@material-ui/core";
 import questionnaireStyle from "./questionnaire/QuestionnaireStyle.jsx";
@@ -28,19 +28,14 @@ function PromsView(props) {
   const [ columns, setColumns ] = useState();
   const [ questionnaireId, setQuestionnaireId ] = useState();
 
-  if (data) {
+  if (data && !columns) {
+    // to do: fetchWithReLogin
+    // to do: prevent fetches in a loop
     fetch(data + ".deep.json")
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
-        json["view"] && setColumns(JSON.parse(json["view"]));
-
-        if (json["questionnaire"]) {
-          fetch(json["questionnaire"] + ".deep.json")
-          .then((response) => response.ok ? response.json() : Promise.reject(response))
-          .then((json) => {
-            setQuestionnairePath(json["@path"]);
-          });
-        }
+        setColumns(JSON.parse(json["view"] || "[]"));
+        setQuestionnaireId(json.questionnaire?.["jcr:uuid"] || "");
       });
   }
 

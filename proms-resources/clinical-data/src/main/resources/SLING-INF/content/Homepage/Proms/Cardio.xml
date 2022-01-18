@@ -72,6 +72,29 @@
             <value>2</value>
             <type>Long</type>
         </property>
+        <property>
+            <name>view</name>
+            <value>
+[
+    {
+      "key": "subject/parents/identifier",
+      "label": "Patient",
+      "format": "string"
+    },
+    {
+      "key": "questionnaire/title",
+      "label": "Questionnaire",
+      "format": "string"
+    },
+    {
+      "key": "jcr:created",
+      "label": "Created on",
+      "format": "date:YYYY-MM-DD HH:mm"
+    }
+]
+            </value>
+            <type>String</type>
+        </property>
     </node>
     <node>
         <name>Step3</name>
