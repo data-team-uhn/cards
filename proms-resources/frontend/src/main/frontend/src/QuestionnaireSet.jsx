@@ -411,7 +411,6 @@ function QuestionnaireSet(props) {
             className={classes.formSpacer}
             id={subjectData[q]['@name']}
             disableHeader
-            disableFooter
             disableButton
             contentOffset={contentOffset || 0}
           />
@@ -420,7 +419,7 @@ function QuestionnaireSet(props) {
             color="secondary"
             className={classes.updateButton}
             onClick={() => {setReviewMode(true); setCrtFormId(subjectData[q]["@name"]); setCrtStep(i)}}>
-              Update answers
+              Update this survey
           </Button>
       </Grid>
       ))}
@@ -454,7 +453,6 @@ your symptoms. Please see below for a summary of your scores and suggested actio
           id={subjectData[q]['@name']}
           mode="summary"
           disableHeader
-          disableFooter
           disableButton
           contentOffset={contentOffset || 0}
         />
