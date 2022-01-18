@@ -124,6 +124,7 @@ function Form (props) {
   const formURL = `/Forms/${id}`;
   const urlBase = "/content.html";
   const isEdit = window.location.pathname.endsWith(".edit") || mode == "edit";
+  const isSummary = window.location.pathname.endsWith(".summary") || mode == "summary";
   let globalLoginDisplay = useContext(GlobalLoginContext);
 
   useEffect(() => {
@@ -493,6 +494,7 @@ function Form (props) {
                     visibleCallback={pageResult.callback}
                     pageActive={pageResult.page.visible}
                     isEdit={isEdit}
+                    isSummary={isSummary}
                     contentOffset={{top: formContentOffsetTop, bottom: formContentOffsetBottom}}
                   />
                 })

@@ -90,7 +90,7 @@ TextQuestion.propTypes = {
     text: PropTypes.string.isRequired,
     minAnswers: PropTypes.number,
     maxAnswers: PropTypes.number,
-    displayMode: PropTypes.oneOf([undefined, "input", "textbox", "list", "list+input"]),
+    displayMode: PropTypes.oneOf([undefined, "input", "textbox", "list", "list+input", "hidden"]),
     regexp: PropTypes.string,
   }).isRequired,
   text: PropTypes.string,
