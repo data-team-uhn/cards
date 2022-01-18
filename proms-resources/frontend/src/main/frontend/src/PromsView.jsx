@@ -18,10 +18,9 @@
 //
 import React, { useEffect, useState } from "react";
 
-import { Grid, Typography, withStyles } from "@material-ui/core";
-import questionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
-import FormView from "./FormView.jsx";
-import { usePageNameWriterContext } from "../themePage/Page.jsx";
+import { Grid, withStyles } from "@material-ui/core";
+import questionnaireStyle from "./questionnaire/QuestionnaireStyle.jsx";
+import FormView from "./dataHomepage/FormView.jsx";
 
 function PromsView(props) {
   const { data, classes } = props;
