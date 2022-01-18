@@ -1,16 +1,8 @@
 {
   "jcr:primaryType": "cards:Extension",
-  "cards:extensionPointId": "cards/coreUI/dashboardviews/entry",
+  "cards:extensionPointId": "cards/coreUI/dashboardviews/entry/Cardio",
   "cards:extensionName": "PHQ9 View",
-  "cards:extensionRenderURL": "asset:cards-dataentry.FormView.js",
+  "cards:extensionRenderURL": "asset:cards-dataentry.PromsView.js",
   "cards:defaultOrder": 1,
-  "cards:category": ["Cardio"],
-  "questionnaire" : "/Questionnaires/PHQ9",
-  "columns" : [
-    {
-      "key": "subject/fullIdentifier",
-      "label": "Patient Identifier",
-      "link": "dashboard+path",
-    }
-  ]
+  "cards:data": "/Proms/Cardio/Step1"
 }

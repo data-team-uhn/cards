@@ -56,6 +56,9 @@
   // An optional frequency for re-taking the questionnaire, in weeks
   - frequency (long)
 
+  //  Where we will store the columns configuration for this view
+  - view
+
 //-----------------------------------------------------------------------------
 // QuestionnaireSet: a sequence of questionnaires to be filled out
 [cards:QuestionnaireSet] > sling:Folder, mix:referenceable, mix:versionable

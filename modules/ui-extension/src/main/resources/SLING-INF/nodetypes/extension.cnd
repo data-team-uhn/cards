@@ -97,6 +97,9 @@
   // Optional short description of the extension's content
   - cards:hint (STRING)
 
+  // Optional data (stored in the JCR node) to be passed to the rendered component
+  - cards:data (REFERENCE)
+
   // And any other properties
   - * (undefined) multiple
   - * (undefined)

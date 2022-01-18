@@ -39,8 +39,12 @@ import {
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 
+
 async function getDashboardExtensions() {
-  return loadExtensions("DashboardViews")
+  // if there's an extra path segment, we append it to the extension point
+  let pathname = window.location.pathname.split("/UserDashboard");
+  let path = "DashboardViews" + (pathname.length > 1 ? pathname[1] : '');
+  return loadExtensions(path)
     .then(extensions => extensions.slice()
       .sort((a, b) => a["cards:defaultOrder"] - b["cards:defaultOrder"])
     )
@@ -99,7 +103,7 @@ function UserDashboard(props) {
           dashboardExtensions.map((extension, index) => {
             let Extension = extension["cards:extensionRender"];
             return <Grid item lg={12} xl={6} key={"extension-" + index} className={classes.dashboardEntry}>
-              <Extension />
+              <Extension data={extension["cards:data"]}/>
             </Grid>
           })
         }
