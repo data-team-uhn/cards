@@ -114,6 +114,9 @@ public class VisitChangeListener implements ResourceChangeListener
             .getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "VisitFormsPreparation"))) {
             // Get the information needed from the triggering form
             final Session session = localResolver.adaptTo(Session.class);
+            if (!session.nodeExists(event.getPath())) {
+                return;
+            }
             final String path = event.getPath();
             final Node form = session.getNode(path);
             if (!this.formUtils.isForm(form)) {
@@ -241,6 +244,9 @@ public class VisitChangeListener implements ResourceChangeListener
      */
     private static boolean isWithinDateRange(final Calendar testedDate, final Calendar baseDate, final int days)
     {
+        if (testedDate == null || baseDate == null) {
+            return false;
+        }
         final Calendar start = addDays(baseDate, -Math.abs(days));
         final Calendar end = addDays(baseDate, Math.abs(days));
         return testedDate.after(start) && testedDate.before(end);
@@ -347,7 +353,7 @@ public class VisitChangeListener implements ResourceChangeListener
                     visitDate = (Calendar) this.formUtils
                         .getValue(this.formUtils.getAnswer(form, visitInformation.getVisitDateQuestion()));
                 } else {
-                    questionnaires.put(questionnaire.getIdentifier(), !isFormIncomplete(form));
+                    questionnaires.merge(questionnaire.getIdentifier(), !isFormIncomplete(form), Boolean::logicalOr);
                 }
             }
         }
