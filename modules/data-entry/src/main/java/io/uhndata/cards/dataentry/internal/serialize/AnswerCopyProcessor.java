@@ -18,6 +18,9 @@
  */
 package io.uhndata.cards.dataentry.internal.serialize;
 
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.function.Function;
 
 import javax.jcr.Node;
@@ -130,9 +133,16 @@ public class AnswerCopyProcessor implements ResourceJsonProcessor
                 final String question = toCopy.get(key, String.class);
                 final Node answer = getAnswer(node, question);
                 if (answer != null && answer.hasProperty("value")) {
-                    final String value = answer.getProperty("value").getString();
-                    if (value != null) {
-                        json.add(key, value);
+                    final Object value = this.formUtils.getValue(answer);
+                    if (value instanceof Long) {
+                        json.add(key, (Long) value);
+                    } else if (value instanceof Double) {
+                        json.add(key, (Double) value);
+                    } else if (value instanceof Calendar) {
+                        json.add(key, DateTimeFormatter.ISO_DATE_TIME.format(OffsetDateTime.ofInstant(
+                            ((Calendar) value).toInstant(), ((Calendar) value).getTimeZone().toZoneId())));
+                    } else if (value != null) {
+                        json.add(key, String.valueOf(value));
                     }
                 }
             } catch (final RepositoryException e) {
