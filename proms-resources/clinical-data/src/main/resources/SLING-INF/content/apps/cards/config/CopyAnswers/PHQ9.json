@@ -1,0 +1,4 @@
+{
+  "jcr:primaryType": "nt:unstructured",
+  "jcr:reference:score": "/Questionnaires/PHQ9/phq9_results/phq9_score"
+}

@@ -1,0 +1,4 @@
+{
+  "jcr:primaryType": "nt:unstructured",
+  "jcr:reference:score": "/Questionnaires/EQ5D/eq5d_results/eq5d_score"
+}
