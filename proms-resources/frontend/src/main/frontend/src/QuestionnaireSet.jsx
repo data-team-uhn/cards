@@ -361,21 +361,30 @@ function QuestionnaireSet(props) {
   }
 
   let checkinForms = () => {
+    if (!questionnaireIds || questionnaireIds.length < 1) {
+      // Nothing to check in
+      return;
+    }
+
+    // Requests to /Forms get sent to the dataImportServlet and fail to checkin, so send it to a specific form
+    const URL = "/Forms/" + subjectData[questionnaireIds[0]]["@name"];
+    var request_data = new FormData();
+    request_data.append(":operation", "checkin");
+
     questionnaireIds.forEach(q => {
-      let id = subjectData[q]?.["@name"];
-      const URL = "/Forms/" + id;
-      var request_data = new FormData();
-      request_data.append(":checkin", "true");
-      fetchWithReLogin(globalLoginDisplay, URL, { method: 'POST', body: request_data })
-        .then( (response) => {
-          if (!response.ok) {
-            return(Promise.reject(response));
-          }
-        })
-        .catch((response) => {
-          setError(`Failed to check in form with error code ${response.status}: ${response.statusText}`);
-        });
+      let id = subjectData[q]["@name"];
+      request_data.append(":applyTo", "/Forms/" + id);
     });
+
+    fetchWithReLogin(globalLoginDisplay, URL, { method: 'POST', body: request_data })
+      .then( (response) => {
+        if (!response.ok) {
+          return(Promise.reject(response));
+        }
+      })
+      .catch((response) => {
+        setError(`Failed to check in form with error code ${response.status}: ${response.statusText}`);
+      });
   }
 
   let doneIndicator = <Avatar className={classes.doneIndicator}><DoneIcon /></Avatar>;
