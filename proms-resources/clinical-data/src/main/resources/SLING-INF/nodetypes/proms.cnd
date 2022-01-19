@@ -53,6 +53,9 @@
   // An optional estimate for the time it would take to fill out the questionnaire, in minutes
   - estimate (long)
 
+  // An optional frequency for re-taking the questionnaire, in weeks
+  - frequency (long)
+
 //-----------------------------------------------------------------------------
 // QuestionnaireSet: a sequence of questionnaires to be filled out
 [cards:QuestionnaireSet] > sling:Folder, mix:referenceable, mix:versionable

@@ -18,7 +18,6 @@ package io.uhndata.cards.dataentry.internal;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -30,12 +29,19 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import io.uhndata.cards.dataentry.api.QuestionnaireUtils;
 
-@Component(service = QuestionnaireUtils.class)
+@Component
 public final class QuestionnaireUtilsImpl extends AbstractNodeUtils implements QuestionnaireUtils
 {
     @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,
         policyOption = ReferencePolicyOption.GREEDY)
     private ResourceResolverFactory rrf;
+
+    @Override
+    public Node getQuestionnaire(final String identifier)
+    {
+        final Node result = getNodeByIdentifier(identifier, getSession(this.rrf));
+        return isQuestionnaire(result) ? result : null;
+    }
 
     @Override
     public boolean isQuestionnaire(final Node node)
@@ -44,40 +50,49 @@ public final class QuestionnaireUtilsImpl extends AbstractNodeUtils implements Q
     }
 
     @Override
-    public Node getQuestionnaire(final String identifier)
+    public Node getSection(final String identifier)
     {
-        final Node result = getNodeByIdentifier(identifier);
-        return isQuestionnaire(result) ? result : null;
+        final Node result = getNodeByIdentifier(identifier, getSession(this.rrf));
+        return isSection(result) ? result : null;
     }
 
     @Override
-    public boolean isSection(Node node)
+    public boolean isSection(final Node node)
     {
         return isNodeType(node, SECTION_NODETYPE);
     }
 
     @Override
-    public Node getSection(final String identifier)
+    public Node getQuestion(final Node questionnaire, final String relativePath)
     {
-        final Node result = getNodeByIdentifier(identifier);
-        return isSection(result) ? result : null;
+        try {
+            if (isQuestionnaire(questionnaire)) {
+                final Node question = questionnaire.getNode(relativePath);
+                // Only return if this is indeed a question that is part of the questionnaire
+                if (isQuestion(question) && question.getPath().startsWith(questionnaire.getPath() + "/")) {
+                    return question;
+                }
+            }
+        } catch (final RepositoryException e) {
+            // Not found or not accessible, just return null
+        }
+        return null;
     }
 
     @Override
-    public boolean isQuestion(Node node)
+    public boolean isQuestion(final Node node)
     {
         return isNodeType(node, QUESTION_NODETYPE);
     }
 
-
     @Override
-    public boolean isComputedQuestion(Node node)
+    public boolean isComputedQuestion(final Node node)
     {
         try {
             return isQuestion(node)
                 && ("computed".equals(node.getProperty("dataType").getString())
-                || "computed".equals(node.getProperty("entryMode").getString()));
-        } catch (RepositoryException e) {
+                    || "computed".equals(node.getProperty("entryMode").getString()));
+        } catch (final RepositoryException e) {
             return false;
         }
     }
@@ -85,7 +100,7 @@ public final class QuestionnaireUtilsImpl extends AbstractNodeUtils implements Q
     @Override
     public Node getQuestion(final String identifier)
     {
-        final Node result = getNodeByIdentifier(identifier);
+        final Node result = getNodeByIdentifier(identifier, getSession(this.rrf));
         return isQuestion(result) ? result : null;
     }
 
@@ -94,33 +109,20 @@ public final class QuestionnaireUtilsImpl extends AbstractNodeUtils implements Q
     {
         try {
             return isQuestion(question) ? question.getName() : null;
-        } catch (RepositoryException e) {
+        } catch (final RepositoryException e) {
             return null;
         }
     }
 
     @Override
-    public String getQuestionText(Node question)
+    public String getQuestionText(final Node question)
     {
         return isQuestion(question) ? StringUtils.defaultString(getStringProperty(question, "text")) : "";
     }
 
     @Override
-    public String getQuestionDescription(Node question)
+    public String getQuestionDescription(final Node question)
     {
         return isQuestion(question) ? StringUtils.defaultString(getStringProperty(question, "description")) : "";
-    }
-
-    private Node getNodeByIdentifier(final String identifier)
-    {
-        try {
-            final Session session = getSession(this.rrf);
-            if (session == null) {
-                return null;
-            }
-            return session.getNodeByIdentifier(identifier);
-        } catch (RepositoryException e) {
-            return null;
-        }
     }
 }

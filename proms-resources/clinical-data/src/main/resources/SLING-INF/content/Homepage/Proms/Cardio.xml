@@ -39,6 +39,11 @@
             <type>Long</type>
         </property>
         <property>
+            <name>frequency</name>
+            <value>2</value>
+            <type>Long</type>
+        </property>
+        <property>
             <name>order</name>
             <value>1</value>
             <type>Long</type>
@@ -54,6 +59,11 @@
         </property>
         <property>
             <name>estimate</name>
+            <value>2</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>frequency</name>
             <value>2</value>
             <type>Long</type>
         </property>
@@ -77,6 +87,11 @@
             <type>Long</type>
         </property>
         <property>
+            <name>frequency</name>
+            <value>2</value>
+            <type>Long</type>
+        </property>
+        <property>
             <name>order</name>
             <value>3</value>
             <type>Long</type>
@@ -96,6 +111,11 @@
             <type>Long</type>
         </property>
         <property>
+            <name>frequency</name>
+            <value>52</value>
+            <type>Long</type>
+        </property>
+        <property>
             <name>order</name>
             <value>4</value>
             <type>Long</type>
@@ -112,6 +132,11 @@
         <property>
             <name>estimate</name>
             <value>5</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>frequency</name>
+            <value>52</value>
             <type>Long</type>
         </property>
         <property>
