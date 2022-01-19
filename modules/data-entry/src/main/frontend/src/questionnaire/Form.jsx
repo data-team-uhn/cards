@@ -74,7 +74,7 @@ import ResourceHeader from "./ResourceHeader.jsx";
  */
 function Form (props) {
   let { classes, id, contentOffset } = props;
-  let { mode, disableHeader, disableButton, doneButtonStyle, doneIcon, doneLabel, onDone } = props;
+  let { mode, className, disableHeader, disableButton, doneButtonStyle, doneIcon, doneLabel, onDone } = props;
   // This holds the full form JSON, once it is received from the server
   let [ data, setData ] = useState();
   // Error message set when fetching the data from the server fails
@@ -408,7 +408,7 @@ function Form (props) {
   )
 
   return (
-    <form action={data?.["@path"]} method="POST" onSubmit={handleSubmit} onChange={()=>setLastSaveStatus(undefined)} key={id} ref={formNode}>
+    <form action={data?.["@path"]} method="POST" onSubmit={handleSubmit} onChange={()=>setLastSaveStatus(undefined)} key={id} ref={formNode} className={className || null}>
       <Grid container {...FORM_ENTRY_CONTAINER_PROPS} >
         { !disableHeader &&
         <ResourceHeader
@@ -501,7 +501,9 @@ function Form (props) {
             }
           </FormUpdateProvider>
         </FormProvider>
-        <Grid item xs={12} className={classes.formFooter} id="cards-resource-footer">
+        {/* If the form is in edit mode, padding from the pagination is used to space out the save button, even with
+            pagination disabled. In view modes, there is no save button, so hide the pagination completely*/}
+        <Grid item xs={12} className={isEdit ? classes.formFooter : classes.hiddenFooter} id="cards-resource-footer">
           <FormPagination
               saveInProgress={saveInProgress}
               lastSaveStatus={lastSaveStatus}

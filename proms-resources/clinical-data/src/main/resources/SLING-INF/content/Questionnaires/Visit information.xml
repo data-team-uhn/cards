@@ -38,6 +38,53 @@
 		<type>Long</type>
 	</property>
 	<node>
+		<name>surveys</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Surveys</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>hidden</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+	</node>
+	<node>
+		<name>surveys_complete</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>The patient completed the pre-appointment surveys</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>boolean</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>surveys_submitted</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>The patient submitted the pre-appointment surveys</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>boolean</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
 		<name>time</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
@@ -82,34 +129,6 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
-		</property>
-	</node>
-	<node>
-		<name>surveys</name>
-		<primaryNodeType>cards:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>Surveys</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-	</node>
-	<node>
-		<name>surveys_complete</name>
-		<primaryNodeType>cards:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>The patient completed the pre-appointment surveys</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>boolean</value>
-			<type>String</type>
 		</property>
 	</node>
 	<node>

@@ -120,8 +120,10 @@ function Section(props) {
 
   let hasAnswers = isEdit || detectAnswers(existingAnswer[0]?.[1]);
 
-  // Display the section in view mode if it has answers or is marked as incomplete
-  const isDisplayed = isEdit && conditionIsMet || !isEdit && (hasAnswers || isFlagged);
+  // Display the section in view mode if it has answers or is marked as incomplete.
+  // Do not display summary questions outside of summary mode, or regular questions in summary mode.
+  const isDisplayed = (isEdit && conditionIsMet || !isEdit && (hasAnswers || isFlagged))
+    && (isSummary && "summary" === displayMode || !isSummary && displayMode !== "summary");
 
   if (visibleCallback) visibleCallback(conditionIsMet);
 

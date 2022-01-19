@@ -160,10 +160,10 @@ disorder. AUDIT-C has been validated in mental health and primary care clinics.
 			<property>
 				<name>expression</name>
 				<value>
-					let maleText = 4 >= @{audit_score} ? "If your symptoms result in a score of 0 - 4, consider accessing self-care resources available on [Peter Munk Cardiac Centre's website](https://www.uhn.ca/PMCC/Clinics/Adult_Congenital_Cardiac#information) for how to manage those symptoms."
-							: "If your symptoms result in a score of 5 or more, make sure to bring them up to your provider at your next appointment as further assessment of alcohol use may be required. Note that if your symptoms are severe (for example 8 - 12), you should consider telling your health care team right away or go to the closest emergency department."
-					let femaleText = 3 >= @{audit_score} ? "If your symptoms result in a score of 0 - 3, consider accessing self-care resources available on [Peter Munk Cardiac Centre's website](https://www.uhn.ca/PMCC/Clinics/Adult_Congenital_Cardiac#information) for how to manage those symptoms."
-							: "If your symptoms result in a score of 4 or more, make sure to bring them up to your provider at your next appointment as further assessment of alcohol use may be required. Note that if your symptoms are severe (for example 8 - 12), you should consider telling your health care team right away or go to the closest emergency department."
+					var maleText = 4 >= @{audit_score} ? "If your symptoms result in a score of 0 - 4, consider accessing self-care resources available on [Peter Munk Cardiac Centre's website](https://www.uhn.ca/PMCC/Clinics/Adult_Congenital_Cardiac#information) for how to manage those symptoms."
+							: "If your symptoms result in a score of 5 or more, make sure to bring them up to your provider at your next appointment as further assessment of alcohol use may be required. Note that if your symptoms are severe (for example 8 - 12), you should consider telling your health care team right away or go to the closest emergency department.";
+					var femaleText = 3 >= @{audit_score} ? "If your symptoms result in a score of 0 - 3, consider accessing self-care resources available on [Peter Munk Cardiac Centre's website](https://www.uhn.ca/PMCC/Clinics/Adult_Congenital_Cardiac#information) for how to manage those symptoms."
+							: "If your symptoms result in a score of 4 or more, make sure to bring them up to your provider at your next appointment as further assessment of alcohol use may be required. Note that if your symptoms are severe (for example 8 - 12), you should consider telling your health care team right away or go to the closest emergency department.";
 					return (
 						"Your Score: " + @{audit_score}
 						+ "\n\n" +
