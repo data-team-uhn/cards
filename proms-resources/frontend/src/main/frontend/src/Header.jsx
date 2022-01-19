@@ -20,6 +20,7 @@ import React, { useState } from "react";
 import {
   AppBar,
   Collapse,
+  Fade,
   LinearProgress,
   Toolbar,
   Typography,
@@ -32,13 +33,14 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(-1, -1, 4),
     padding: theme.spacing(0, 1),
     boxSizing: "content-box",
-    background: theme.palette.background.paper,
+    background: "transparent",
     color: theme.palette.text.primary,
     boxShadow: "none",
   },
   toolbar : {
     display: "flex",
     justifyContent: "space-between",
+    background: theme.palette.background.paper,
     paddingTop: theme.spacing(1),
     paddingBottom: theme.spacing(1),
   },
@@ -59,8 +61,8 @@ const useStyles = makeStyles(theme => ({
     },
   },
   fullSize : {
-    marginTop: theme.spacing(4),
-    "& .MuiToolbar-root > .MuiTypography-root" : {
+    paddingTop: theme.spacing(5),
+    "&.MuiToolbar-root > .MuiTypography-root" : {
       zoom: 1.2,
     }
   },
@@ -99,7 +101,7 @@ function PromsHeader (props) {
       </Collapse>
       { subtitle && <Collapse in={scrollTrigger}>{subtitleBar}</Collapse> }
       <LinearProgress variant="determinate" value={progress} />
-      { subtitle && <Collapse in={!scrollTrigger} className={classes.fullSize}>{subtitleBar}</Collapse> }
+      { subtitle && <Fade in={!scrollTrigger} className={classes.fullSize + ' ' + classes.toolbar}>{subtitleBar}</Fade> }
     </AppBar>
   );
 }
