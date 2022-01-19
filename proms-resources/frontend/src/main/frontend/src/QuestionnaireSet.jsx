@@ -333,6 +333,11 @@ function QuestionnaireSet(props) {
     return e ? (e + " minute" + (e != 1 ? "s" : "")) : "";
   }
 
+  let onSubmit = () => {
+    postSubmission();
+    checkinForms();
+  }
+
   let postSubmission = () => {
     let submittedQuestionUuid = visitInformation?.questionnaire?.surveys_submitted?.["jcr:uuid"] || null;
     let url = visitInformation?.["@path"];
@@ -353,6 +358,24 @@ function QuestionnaireSet(props) {
     }
 
     setSubmitted(true);
+  }
+
+  let checkinForms = () => {
+    questionnaireIds.forEach(q => {
+      let id = subjectData[q]?.["@name"];
+      const URL = "/Forms/" + id;
+      var request_data = new FormData();
+      request_data.append(":checkin", "true");
+      fetchWithReLogin(globalLoginDisplay, URL, { method: 'POST', body: request_data })
+        .then( (response) => {
+          if (!response.ok) {
+            return(Promise.reject(response));
+          }
+        })
+        .catch((response) => {
+          setError(`Failed to check in form with error code ${response.status}: ${response.statusText}`);
+        });
+    });
   }
 
   let doneIndicator = <Avatar className={classes.doneIndicator}><DoneIcon /></Avatar>;
@@ -424,7 +447,7 @@ function QuestionnaireSet(props) {
       </Grid>
       ))}
     <div className={classes.reviewFab}>
-      <Fab variant="extended" color="primary" onClick={() => {postSubmission()}}>Submit my Answers</Fab>
+      <Fab variant="extended" color="primary" onClick={() => {onSubmit()}}>Submit my Answers</Fab>
     </div>
   </>
 
