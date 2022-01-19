@@ -1,0 +1,4 @@
+{
+  "jcr:primaryType": "nt:unstructured",
+  "jcr:reference:score": "/Questionnaires/AUDITC/audit_results/audit_score"
+}

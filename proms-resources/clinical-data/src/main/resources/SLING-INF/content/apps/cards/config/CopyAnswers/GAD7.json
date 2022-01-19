@@ -1,0 +1,4 @@
+{
+  "jcr:primaryType": "nt:unstructured",
+  "jcr:reference:score": "/Questionnaires/GAD7/gad7_results/gad7_score"
+}
