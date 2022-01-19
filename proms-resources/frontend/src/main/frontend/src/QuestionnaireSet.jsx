@@ -531,7 +531,7 @@ your symptoms. Please see below for a summary of your scores and suggested actio
     ]
   ];
 
-  const progress = crtStep <= 0 ? 0 : 100.0 * crtStep / (questionnaireIds?.length || 1);
+  const progress = 100.0 * (crtStep + 1) / ((questionnaireIds?.length || 0) + 1);
 
   return (<>
       <PromsHeader

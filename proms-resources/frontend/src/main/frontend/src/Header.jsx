@@ -58,8 +58,11 @@ const useStyles = makeStyles(theme => ({
       display: "none",
     },
   },
-  subtitle : {
+  fullSize : {
     marginTop: theme.spacing(4),
+    "& .MuiToolbar-root > .MuiTypography-root" : {
+      zoom: 1.2,
+    }
   },
 }));
 
@@ -71,35 +74,32 @@ function PromsHeader (props) {
   const scrollTrigger = useScrollTrigger({
     target: window,
     disableHysteresis: true,
-    threshold: 64,
+    threshold: 250,
   });
+
+  let subtitleBar = subtitle ?
+    <Toolbar variant="dense" className={classes.toolbar}>
+      <Typography variant="h6" color="textPrimary">{ subtitle }</Typography>
+      { step }
+    </Toolbar>
+    : <></>;
 
   return (
     <AppBar position="sticky" className={classes.appbar}>
-      <Collapse in={!(scrollTrigger)}>
-      <Toolbar variant="dense" className={classes.toolbar}>
-        <div className={classes.titleLine}>
-          <img src="/libs/cards/resources/logo_light_bg.png" alt="logo" className={classes.logo} />
-          { title &&
-            <Typography variant="overline" color="textPrimary">
-            { title }
-            </Typography>
-          }
-        </div>
-        <span className={classes.greeting}>{ greeting }</span>
-      </Toolbar>
-      </Collapse>
-      <LinearProgress variant="determinate" value={progress} />
-      { subtitle &&
-        <Toolbar variant="dense" className={classes.toolbar + (!scrollTrigger ? ' ' + classes.subtitle : "")}>
-        { subtitle &&
-          <Typography variant={scrollTrigger ? "h6" : "h5"} color="textPrimary">
-          { subtitle } 
-          </Typography>
-        }
-        { step }
+      <Collapse in={!subtitle || !(scrollTrigger)}>
+        <Toolbar variant="dense" className={classes.toolbar}>
+          <div className={classes.titleLine}>
+            <img src="/libs/cards/resources/logo_light_bg.png" alt="logo" className={classes.logo} />
+            { title &&
+              <Typography variant="overline" color="textPrimary">{ title }</Typography>
+            }
+          </div>
+          <span className={classes.greeting}>{ greeting }</span>
         </Toolbar>
-      }
+      </Collapse>
+      { subtitle && <Collapse in={scrollTrigger}>{subtitleBar}</Collapse> }
+      <LinearProgress variant="determinate" value={progress} />
+      { subtitle && <Collapse in={!scrollTrigger} className={classes.fullSize}>{subtitleBar}</Collapse> }
     </AppBar>
   );
 }
