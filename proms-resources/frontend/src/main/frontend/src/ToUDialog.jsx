@@ -22,6 +22,7 @@ import PropTypes from "prop-types";
 
 import {
   Button,
+  CircularProgress,
   DialogActions,
   DialogContent,
   makeStyles
@@ -100,7 +101,7 @@ function ToUDialog(props) {
   }, []);
 
   if (!tou && !error) {
-    return <div>Loading ToS...</div>;
+    return <CircularProgress/>;
   }
   
   if (tou && touAcceptedVersion && tou.version == touAcceptedVersion) {
@@ -129,7 +130,6 @@ function ToUDialog(props) {
   }
 
   return (<>
-    <div>{tou.version}</div>
     <ResponsiveDialog
       title={tou.title}
       open={open && (touAcceptedVersion !== tou.version || !actionRequired)}
@@ -139,16 +139,17 @@ function ToUDialog(props) {
     >
       { actionRequired &&
         <DialogContent>
-          <Alert icon={false} severity="info">
-            Please read the Terms of Use and click Accept at the bottom to continue.
-          </Alert>
+          { touAcceptedVersion ?
+            <Alert severity="warning">
+              <AlertTitle>The Terms of Use have been updated</AlertTitle>
+              Please review and accept the new Terms of Use to continue.
+            </Alert>
+            :
+            <Alert icon={false} severity="info">
+              Please read the Terms of Use and click Accept at the bottom to continue.
+            </Alert>
+          }
         </DialogContent>
-      }
-      { touAcceptedVersion &&
-        <Alert severity="warning">
-          <AlertTitle>The Terms of Use have been updated</AlertTitle>
-          Please review and accept the new terms of use to continue
-        </Alert>
       }
       <DialogContent dividers={!actionRequired} className={classes.touText}>
       { error ?

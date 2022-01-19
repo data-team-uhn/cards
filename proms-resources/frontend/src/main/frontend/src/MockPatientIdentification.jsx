@@ -252,6 +252,11 @@ function MockPatientIdentification(props) {
   useEffect(() => {
     patient && piDefinition && syncPatientInfo();
   }, [patient, piDefinition]);
+  
+  // Now the Terms of Use can be shown if applicable
+  useEffect(() => {
+    patientData && setShowTou(true);
+  }, [patientData]);
 
   const syncPatientInfo = () => {
     // Fetch the patient subject and forms associated with it
@@ -262,8 +267,6 @@ function MockPatientIdentification(props) {
         // Check if the data includes a patient information form
         let piForm = json?.[piDefinition['title']]?.[0];
         setPatientData(piForm);
-        // Now the Terms of Use can be shown if applicable
-        setShowTou(true);
         if (piForm?.["jcr:primaryType"] == "cards:Form") {
           // The form already exists, get its path for the update request
           updatePatientInfo(piForm['@path']);
