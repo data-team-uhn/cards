@@ -90,16 +90,13 @@ function MockPatientIdentification(props) {
   const [ idData, setIdData ] = useState();
   const [ patient, setPatient ] = useState();
   const [ visit, setVisit ] = useState();
-
   const [ subjectTypes, setSubjectTypes ] = useState();
 
-  const [ touAccepted, setTouAccepted ] = useState();
   const [ showTou, setShowTou ] = useState(false);
+  // Whether terms of use are up-to-date
   const [ touOk, setTouOk ] = useState(false);
   // Info about each patient is stored in a Patient information form
-  const [ piForm, setPiForm ] = useState();
-
-  const TOU_ACCEPTED_VARNAME = 'tou_accepted'
+  const [ patientData, setPatientData ] = useState();
 
   const classes = useStyles();
 
@@ -175,64 +172,6 @@ function MockPatientIdentification(props) {
       'visit number',       /* id label */
       setVisit              /* successCallback */
     );
-  }
-
-  // When the patient subject is successfully obtained, check if terms of use have been accepted
-  useEffect(() => {
-    patient && queryTouStatus();
-  }, [patient]);
-
-  const queryTouStatus = () => {
-     fetch(`${patient}.data.deep.json`)
-       .then( response => response.ok ? response.json() : Promise.reject(response) )
-       .then((response) => {
-          // There should be exactly one form of this type
-          let piData = response["Patient information"]?.[0];
-          if (piData) {
-            let answer = Object.values(piData)
-              .filter(item => item["sling:resourceSuperType"] == "cards/Answer")
-              .find(item => item.question?.["@name"] == TOU_ACCEPTED_VARNAME)?.value;
-            // Store the version of Terms of use that has already been accepted, if any
-            answer && setTouAccepted(answer);
-console.log(answer);
-            // Store the form data for when the user accepts the Terms of Use
-            // and that form needs to be updated
-            setPiForm(piData);
-            // Now the Terms of Use can be shown if applicable
-            setShowTou(true);
-          }
-        })
-        .catch( response => {
-          let errMsg = "Loading account information failed";
-          setError(errMsg + (response.status ? ` with error code ${response.status}: ${response.statusText}` : ''));
-        });
-  }
-
-  // When the patient user accepts the terms of use, hide the ToU dialog and save their preference
-  useEffect(() => {
-    if (!touAccepted || !showTou || !piForm) return;
-    setShowTou(false);
-    saveTouAccepted(piForm);
-  }, [touAccepted, showTou, piForm]);
-
-  const saveTouAccepted = (piForm) => {
-     let request_data = new FormData();
-     // Populate the request data with information about the tou_accepted answer
-     let f = TOU_ACCEPTED_VARNAME;
-     let qDef = piForm.questionnaire[f];
-     request_data.append(`./${f}/jcr:primaryType`, `cards:TextAnswer`);
-     request_data.append(`./${f}/question`, qDef['jcr:uuid']);
-     request_data.append(`./${f}/question@TypeHint`, "Reference");
-     request_data.append(`./${f}/value`, touAccepted);
-     request_data.append(`./${f}/value@TypeHint`, "String");
-
-     // Update the Patient information form
-     fetch(piForm['@path'], { method: 'POST', body: request_data })
-       .then( (response) => response.ok ? null : Promise.reject(response))
-       .catch((response) => {
-         let errMsg = "Recording acceptance of Terms of Use failed";
-         setError(errMsg + (response.status ? ` with error code ${response.status}: ${response.statusText}` : ''));
-       });
   }
 
   // When the visit is successfully obtained and the latest version of Terms of Use accepted, pass it along with the identification data
@@ -322,6 +261,9 @@ console.log(answer);
 
         // Check if the data includes a patient information form
         let piForm = json?.[piDefinition['title']]?.[0];
+        setPatientData(piForm);
+        // Now the Terms of Use can be shown if applicable
+        setShowTou(true);
         if (piForm?.["jcr:primaryType"] == "cards:Form") {
           // The form already exists, get its path for the update request
           updatePatientInfo(piForm['@path']);
@@ -386,11 +328,10 @@ console.log(answer);
   return (<>
     <ToUDialog
       open={showTou}
-      onLoad={setTouOk}
+      patientData={patientData}
       actionRequired={true}
-      acceptedVersion={touAccepted}
       onClose={() => setShowTou(false)}
-      onAccept={setTouAccepted}
+      onAccept={() => { setShowTou(false); setTouOk(true);}}
       onDecline={() => {
         setShowTou(false)
         setIdData(null);
