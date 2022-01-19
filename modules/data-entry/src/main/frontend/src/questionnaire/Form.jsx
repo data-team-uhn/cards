@@ -522,6 +522,7 @@ function Form (props) {
                 onClick={handleSubmit}
                 icon={saveInProgress ? <CloudUploadIcon /> : doneIcon || <DoneIcon />}
                 label={saveInProgress ? "Saving..." : lastSaveStatus ? "Saved" : doneLabel || "Save"}
+                {...doneButtonProps}
               />
             }
           </div>

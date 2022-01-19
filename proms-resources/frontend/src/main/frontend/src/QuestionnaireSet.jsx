@@ -77,11 +77,13 @@ function QuestionnaireSet(props) {
 
   // Questionnaire set title, to display to the patient user
   const [ title, setTitle ] = useState();
+  // If true, the user cannot progress to the next questionnaire or save their progress until they finish
+  const [ mandatory, setMandatory ] = useState(false);
   // The ids of the questionnaires in this set
   const [ questionnaireSetIds, setQuestionnaireSetIds ] = useState();
   // The ids of the questionnaires displayed to the patient
   const [ questionnaireIds, setQuestionnaireIds ] = useState();
-  // Map questionnaire id -> title, path and optional time estimate (in minutes) for filling it out
+  // Map questionnaire id -> title, path and optional time estimate (in minutes) and whether it is mandatory to be fully filled out
   const [ questionnaires, setQuestionnaires ] = useState();
 
   // Data already associated with the subject
@@ -198,6 +200,7 @@ function QuestionnaireSet(props) {
   let parseQuestionnaireSet = (json) => {
     // Extract the title
     setTitle(json.name);
+    setMandatory(json.mandatory);
 
     // Extract the ids
     setQuestionnaireSetIds(
@@ -322,9 +325,11 @@ function QuestionnaireSet(props) {
           disableHeader
           doneIcon={nextQuestionnaire ? <NextStepIcon /> : <DoneIcon />}
           doneLabel={nextQuestionnaire ? `Continue to ${nextQuestionnaire?.title}` : "Finish"}
+          onChange={checkFinished}
           onDone={nextQuestionnaire ? launchNextForm : nextStep}
           doneButtonStyle={{position: "relative", right: 0, bottom: "unset", textAlign: "center"}}
           contentOffset={contentOffset}
+          doneButtonProps={{enabled: !mandatory || isComplete}}
         />
       </Grid>
     </Grid>

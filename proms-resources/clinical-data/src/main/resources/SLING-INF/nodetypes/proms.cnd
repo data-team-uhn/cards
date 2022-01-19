@@ -75,6 +75,9 @@
   // Mandatory, each QuestionnaireSet must have a name.
   - name (string) mandatory
 
+  // If true, the questionnaire set cannot be continued unless all fields on this questionnaire are filled out
+  - mandatory (BOOLEAN) = 'false'
+
   // Children
 
   // The questionnaire references that make up this questionnaire set.
