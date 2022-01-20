@@ -100,4 +100,4 @@
   - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // Set a default title.
-  - title (String) = "PROMs" mandatory autocreated
+  - title (String) = "DATA-PRO" mandatory autocreated
