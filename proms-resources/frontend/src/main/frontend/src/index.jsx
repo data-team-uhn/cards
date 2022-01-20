@@ -21,6 +21,7 @@ import ReactDOM from "react-dom";
 import { Router, Route, Redirect, Switch } from "react-router-dom";
 import {
   AppBar,
+  Link,
   Toolbar,
   Typography,
   makeStyles,
@@ -28,8 +29,9 @@ import {
 import { createBrowserHistory } from "history";
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { appTheme } from "./themePalette.jsx";
-import QuestionnaireSet from "./QuestionnaireSet.jsx"
-import PatientIdentification from "./MockPatientIdentification.jsx"
+import QuestionnaireSet from "./QuestionnaireSet.jsx";
+import PatientIdentification from "./MockPatientIdentification.jsx";
+import PromsFooter from "./Footer.jsx";
 
 const useStyles = makeStyles(theme => ({
   appbar : {
@@ -59,24 +61,18 @@ function PromsHomepage (props) {
   }
 
   if (!subject) {
-    return <PatientIdentification onSuccess={onPatientIdentified} />;
+    return (<>
+      <PatientIdentification onSuccess={onPatientIdentified} />
+      <PromsFooter />
+    </>);
   }
 
   // Obtain the id of the questionnaire set to display
   const promId = /Proms.html\/([^.\/]+)/.exec(location.pathname)?.[1];
 
   return (<>
-    <AppBar position="static" className={classes.appbar}>
-      <Toolbar variant="dense" className={classes.toolbar}>
-        <img src="/libs/cards/resources/logo.png" alt="logo" className={classes.logo} />
-        { username &&
-          <Typography variant="h6" color="inherit">
-            Hello, {username}
-          </Typography>
-        }
-      </Toolbar>
-    </AppBar>
-    <QuestionnaireSet id={promId} subject={subject} />
+    <QuestionnaireSet id={promId} subject={subject} username={username}/>
+    <PromsFooter />
   </>);
 }
 

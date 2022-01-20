@@ -1,0 +1,5 @@
+{
+  "jcr:primaryType": "cards:ExtensionPoint",
+  "cards:extensionPointId": "proms/footer",
+  "cards:extensionPointName": "Proms footer links"
+}

@@ -1,0 +1,7 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "proms/footer",
+  "cards:extensionName": "Terms of Use",
+  "cards:extensionRenderURL": "asset:proms-homepage.ToULink.js",
+  "cards:defaultOrder": 10
+}

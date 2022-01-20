@@ -178,4 +178,18 @@
 			<type>Long</type>
 		</property>
 	</node>
+	<node>
+		<name>tou_accepted</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Version of Terms of Use accepted</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+	</node>
 </node>
