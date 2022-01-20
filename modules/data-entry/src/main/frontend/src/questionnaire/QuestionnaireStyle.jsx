@@ -530,6 +530,15 @@ const questionnaireStyle = theme => ({
             display: "none",
         },
     },
+    textBreadcrumbs: {
+        "@media not print" : {
+            display: "none",
+        },
+        marginBottom: theme.spacing(-3),
+        "& > *" : {
+            padding: theme.spacing(0, 2),
+        },
+    },
     childSubjectHeaderButton: {
         left: theme.spacing(1)
     },

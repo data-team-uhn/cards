@@ -420,7 +420,8 @@ function Form (props) {
   return (
     <form action={data?.["@path"]} method="POST" onSubmit={handleSubmit} onChange={()=>setLastSaveStatus(undefined)} key={id} ref={formNode} className={className || null}>
       <Grid container {...FORM_ENTRY_CONTAINER_PROPS} className={classes.formContainer}>
-        { !disableHeader &&
+        { !disableHeader && <>
+        <Grid item className={classes.textBreadcrumbs}><Typography variant="overline" component="div">{getTextHierarchy(data?.subject, true)}</Typography></Grid>
         <ResourceHeader
           title={title}
           breadcrumbs={[<Breadcrumbs separator="/">{getHierarchyAsList(data?.subject).map(a => <Typography variant="overline" key={a}>{a}</Typography>)}</Breadcrumbs>]}
@@ -462,6 +463,7 @@ function Form (props) {
           }
           </Breadcrumbs>
         </ResourceHeader>
+        </>
         }
         { /* We also expose the URL of the output form and the save function to any children. This shouldn't interfere
           with any other values placed inside the context since no variable name should be able to have a '/' in it */}

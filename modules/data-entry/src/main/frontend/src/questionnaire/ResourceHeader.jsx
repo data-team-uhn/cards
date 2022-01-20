@@ -43,6 +43,9 @@ const useStyles = makeStyles(theme => ({
       zIndex: "1010",
       "& .MuiBreadcrumbs-root" : {
         width: "fit-content",
+        "@media print" : {
+          display: "none",
+        },
       },
       "& .MuiBreadcrumbs-li" : {
         color: theme.palette.text.primary,
