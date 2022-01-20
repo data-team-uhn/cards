@@ -378,6 +378,9 @@ const questionnaireStyle = theme => ({
       },
       "& .MuiGrid-item:not(.MuiCollapse-container) > *": {
         background: grey[100],
+        "@media print" : {
+          background: "transparent",
+        },
       },
       "& .MuiCard-root" : {
         borderColor: "transparent",
@@ -400,6 +403,9 @@ const questionnaireStyle = theme => ({
       },
       "& .MuiGrid-item:not(.MuiCollapse-container) > *": {
         background: grey[100],
+        "@media print" : {
+          background: "transparent",
+        },
       },
       "& .MuiCard-root" : {
         borderColor: "transparent",
