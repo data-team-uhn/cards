@@ -93,7 +93,7 @@ function MockPatientIdentification(props) {
   const [ subjectTypes, setSubjectTypes ] = useState();
 
   const [ showTou, setShowTou ] = useState(false);
-  // Whether terms of use are up-to-date
+  // Whether the patient user has accepted the latest version of the Terms of Use
   const [ touOk, setTouOk ] = useState(false);
   // Info about each patient is stored in a Patient information form
   const [ patientData, setPatientData ] = useState();

@@ -22,7 +22,6 @@ import PropTypes from "prop-types";
 
 import {
   Button,
-  CircularProgress,
   DialogActions,
   DialogContent,
   makeStyles
@@ -58,8 +57,6 @@ const useStyles = makeStyles(theme => ({
 //   If true, Accept/Decline action buttons will be displayed at the bottom
 //   If false, a Close action will be displayed at the bottom
 // onAccept: Callback specifying what happens when the user accepts the terms
-//   The accepted version of Terms of use (string) is passed to the parent component
-//   through this handler: onAccept(version)
 // onDecline: Callback specifying what happens when the user declines the terms
 //
 // Sample usage:
@@ -101,7 +98,7 @@ function ToUDialog(props) {
   }, []);
 
   if (!tou && !error) {
-    return <CircularProgress/>;
+    return null;
   }
   
   if (tou && touAcceptedVersion && tou.version == touAcceptedVersion) {
