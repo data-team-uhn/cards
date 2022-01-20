@@ -1,8 +1,8 @@
 {
   "jcr:primaryType": "cards:Extension",
   "cards:extensionPointId": "proms/dashboard/cardio",
-  "cards:extensionName": "PHQ9 View",
+  "cards:extensionName": "EQ5D View",
   "cards:extensionRenderURL": "asset:proms-homepage.PromsView.js",
-  "cards:defaultOrder": 2,
-  "cards:data": "/Proms/Cardio/Step2"
+  "cards:defaultOrder": 1,
+  "cards:data": "/Proms/Cardio/Step1"
 }
