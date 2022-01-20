@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 
 import questionnaireStyle from "./questionnaire/QuestionnaireStyle.jsx";
 import LiveTable from "./dataHomepage/LiveTable.jsx";
@@ -38,6 +38,8 @@ import { Link } from 'react-router-dom';
 import DescriptionIcon from '@material-ui/icons/Description';
 import LaunchIcon from '@material-ui/icons/Launch';
 
+import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
+
 function PromsView(props) {
   const { data, expanded, disableHeader, disableAvatar, classes } = props;
 
@@ -57,20 +59,23 @@ function PromsView(props) {
   };
   const tabs = Object.keys(tabFilter);
 
+  const globalLoginDisplay = useContext(GlobalLoginContext);
+
   const activeTabParam = new URLSearchParams(window.location.hash.substring(1)).get("forms:activeTab");
   let activeTabIndex = Math.max(tabs.indexOf(activeTabParam), 0);
   const [ activeTab, setActiveTab ] = useState(activeTabIndex);
 
-  if (data && !columns) {
-    // to do: fetchWithReLogin
-    // to do: prevent fetches in a loop
-    fetch(data + ".deep.json")
+  // At startup, load questionnaire
+  useEffect(() => {
+    if (data && !columns) {
+      fetchWithReLogin(globalLoginDisplay, data + ".deep.json")
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         setColumns(JSON.parse(json["view"] || "[]"));
         setQuestionnaireId(json.questionnaire?.["jcr:uuid"] || "");
       });
-  }
+    }
+  }, [data]);
 
   let qFilter = '';
 
