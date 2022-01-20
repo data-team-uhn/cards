@@ -375,10 +375,15 @@ export function NewSubjectDialog (props) {
       handleError);
   }
 
-  // Callback when an error occurs during createNewSubjectRecursive
+  // Callback when an error occurs during createNewSubjectRecursive. Expects a Response object
   let handleError = (error) => {
     setIsPosting(false);
-    setError(error);
+    if (error.status == 409) {
+      // HTTP Conflict occurs when the given user does not have permission to create a subject
+      setError("You do not have permissions to create this subject.");
+    } else {
+      setError("Error while creating subject: " + error.statusText);
+    }
 
     // Since the error will always be during the creation of a subject, we'll revert back to the create subject page and remove all details
     clearDialog(false);
@@ -772,9 +777,12 @@ export function createSubjects(globalLoginDisplay, newSubjects, subjectType, sub
     if (lastPromise) {
       lastPromise
         .then(newPromise)
-        .then(() => {fetchWithReLogin(globalLoginDisplay, url, { method: 'POST', body: requestData })});
+        .then(() => fetchWithReLogin(globalLoginDisplay, url, { method: 'POST', body: requestData }))
+        .then((response) => response.ok || Promise.reject(response));
     } else {
-      lastPromise = newPromise.then(() => fetchWithReLogin(globalLoginDisplay, url, { method: 'POST', body: requestData }));
+      lastPromise = newPromise
+        .then(() => fetchWithReLogin(globalLoginDisplay, url, { method: 'POST', body: requestData }))
+        .then((response) => response.ok || Promise.reject(response));
     }
   }
   // If we're finished creating subjects, create the rest of the form
