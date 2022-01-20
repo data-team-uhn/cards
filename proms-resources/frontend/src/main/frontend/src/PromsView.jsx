@@ -18,15 +18,50 @@
 //
 import React, { useState } from "react";
 
-import { Grid, withStyles } from "@material-ui/core";
 import questionnaireStyle from "./questionnaire/QuestionnaireStyle.jsx";
-import FormView from "./dataHomepage/FormView.jsx";
+import LiveTable from "./dataHomepage/LiveTable.jsx";
+
+import {
+  Avatar,
+  Card,
+  CardContent,
+  CardHeader,
+  Divider,
+  Grid,
+  IconButton,
+  Tab,
+  Tabs,
+  Tooltip,
+  Typography,
+  withStyles
+} from "@material-ui/core";
+import { Link } from 'react-router-dom';
+import DescriptionIcon from '@material-ui/icons/Description';
+import LaunchIcon from '@material-ui/icons/Launch';
+import NewFormDialog from "./dataHomepage/NewFormDialog.jsx";
 
 function PromsView(props) {
   const { data, classes } = props;
 
   const [ columns, setColumns ] = useState();
   const [ questionnaireId, setQuestionnaireId ] = useState();
+
+  const [ title, setTitle ] = useState(props.title);
+  const [ subtitle, setSubtitle ] = useState(props.subtitle);
+  const [ questionnairePath, setQuestionnairePath ] = useState();
+  const [ qFetchSent, setQFetchStatus ] = useState(false);
+  const [ filtersJsonString, setFiltersJsonString ] = useState(new URLSearchParams(window.location.hash.substring(1)).get("forms:filters"));
+
+  const tabFilter = {
+    "Today" : '',
+    "Upcoming" : '',
+    "Past" : '',
+  };
+  const tabs = Object.keys(tabFilter);
+
+  const activeTabParam = new URLSearchParams(window.location.hash.substring(1)).get("forms:activeTab");
+  let activeTabIndex = Math.max(tabs.indexOf(activeTabParam), 0);
+  const [ activeTab, setActiveTab ] = useState(activeTabIndex);
 
   if (data && !columns) {
     // to do: fetchWithReLogin
@@ -39,14 +74,85 @@ function PromsView(props) {
       });
   }
 
+  let qFilter = '';
+
+  if (questionnaireId) {
+    // Set the questionnaire filter for displayed forms
+    qFilter = '&fieldname=questionnaire&fieldvalue=' + encodeURIComponent(questionnaireId);
+    // Also fetch the title and other info if we haven't yet
+    if (!qFetchSent) {
+      setQFetchStatus(true);
+      fetch('/query?query=' + encodeURIComponent(`select * from [cards:Questionnaire] as n WHERE n.'jcr:uuid'='${questionnaireId}'`))
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((json) => {
+        let qData = json["rows"][0];
+        if (qData) {
+          setTitle(qData["title"]);
+          setSubtitle(qData["description"]);
+          setQuestionnairePath(qData["@path"]);
+        }
+      });
+    }
+  }
+
   return (
     <Grid container direction="column" spacing={4}>
       <Grid item className={classes.dashboardEntry}>
-        <FormView
-          expanded
-          columns={columns}
-          questionnaire={questionnaireId}
-        />
+        <Card className={classes.formView}>
+          {title &&
+          <CardHeader
+            title={
+              <>
+                {title && <Typography variant="h4">{title}</Typography>}
+                {subtitle && <Typography variant="subtitle1">{subtitle}</Typography>}
+              </>
+            }
+          />
+          }
+          {(!expanded || !disableHeader && !disableAvatar) &&
+          <CardHeader
+            avatar={!disableAvatar && <Avatar className={classes.formViewAvatar}><DescriptionIcon/></Avatar>}
+            title={
+              <>
+                <Tabs value={activeTab} onChange={(event, value) => setActiveTab(value)}>
+                { tabs.map((value, index) => {
+                  return <Tab label={<Typography variant="h6">{value}</Typography>}  key={"form-" + index} />;
+                })}
+                </Tabs>
+              </>
+            }
+            action={
+              !expanded &&
+              <Tooltip title="Expand">
+                <Link to={"/content.html/Forms#" + new URLSearchParams({"forms:activeTab" : tabs?.[activeTab] || "", "forms:filters" : filtersJsonString || ""}).toString()}>
+                  <IconButton>
+                    <LaunchIcon/>
+                  </IconButton>
+                </Link>
+              </Tooltip>
+            }
+          />
+          }
+          <Divider />
+          <CardContent>
+            <LiveTable
+              columns={props.columns || columns}
+              customUrl={'/query?query=' + encodeURIComponent(`select * from [cards:Form] as n WHERE n.'questionnaire'='${questionnaireId}'`)}
+              defaultLimit={10}
+              filters
+              questionnaire={questionnaireId}
+              entryType={"Form"}
+              disableTopPagination={!topPagination}
+              onFiltersChange={(str) => { setFiltersJsonString(str); }}
+              filtersJsonString={filtersJsonString}
+            />
+          {expanded &&
+            <NewFormDialog presetPath={questionnairePath}>
+              New questionnaire
+            </NewFormDialog>
+          }
+          </CardContent>
+        </Card>
       </Grid>
     </Grid>
   );
