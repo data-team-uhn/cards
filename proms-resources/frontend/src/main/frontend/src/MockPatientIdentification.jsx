@@ -91,10 +91,10 @@ function MockPatientIdentification(props) {
   const [ patient, setPatient ] = useState();
   const [ visit, setVisit ] = useState();
   const [ subjectTypes, setSubjectTypes ] = useState();
-
-  const [ showTou, setShowTou ] = useState(false);
   // Whether the patient user has accepted the latest version of the Terms of Use
-  const [ touOk, setTouOk ] = useState(false);
+  const [ touAccepted, setTouAccepted ] = useState(false);
+  // Whether the Terms of Use dialog can be displayed after patient identification
+  const [ showTou, setShowTou ] = useState(false);
   // Info about each patient is stored in a Patient information form
   const [ patientData, setPatientData ] = useState();
 
@@ -177,8 +177,8 @@ function MockPatientIdentification(props) {
   // When the visit is successfully obtained and the latest version of Terms of Use accepted, pass it along with the identification data
   // to the parent component
   useEffect(() => {
-    visit && touOk && onSuccess && onSuccess(Object.assign({subject: visit}, idData));
-  }, [visit, touOk]);
+    visit && touAccepted && onSuccess && onSuccess(Object.assign({subject: visit}, idData));
+  }, [visit, touAccepted]);
 
   // Get the path of a subject with a specific identifier
   // if the subject doesn't exist, create it
@@ -334,7 +334,10 @@ function MockPatientIdentification(props) {
       patientData={patientData}
       actionRequired={true}
       onClose={() => setShowTou(false)}
-      onAccept={() => { setShowTou(false); setTouOk(true);}}
+      onAccept={() => {
+        setShowTou(false);
+        setTouAccepted(true);
+      }}
       onDecline={() => {
         setShowTou(false)
         setIdData(null);
