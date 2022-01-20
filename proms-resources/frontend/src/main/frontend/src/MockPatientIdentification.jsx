@@ -313,6 +313,8 @@ function MockPatientIdentification(props) {
     return null;
   }
 
+  let appName = document.querySelector('meta[name="title"]')?.content;
+
   return (
     <form className={classes.form} onSubmit={onSubmit} >
       <Grid container direction="column" spacing={4} alignItems="center" justify="center">
@@ -321,10 +323,10 @@ function MockPatientIdentification(props) {
          </Grid>
          <Grid item xs={12} className={classes.description}>
            <Typography variant="h6">
-             Welcome to DATAPRO
+             Welcome to {appName}
            </Typography>
            <Typography paragraph>
-             DATAPRO is designed to ask you the most important questions about your health and well being. Your responses will remain confidential and will help your provider determine how we can best help you.
+             {appName} is designed to ask you the most important questions about your health and well being. Your responses will remain confidential and will help your provider determine how we can best help you.
            </Typography>
            <Typography paragraph>
              Completing the questionnaire is voluntary, so if you would rather not complete it, you do not have to.
