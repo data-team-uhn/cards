@@ -27,7 +27,6 @@ import {
   CardContent,
   CardHeader,
   Divider,
-  Grid,
   IconButton,
   Tab,
   Tabs,
@@ -95,50 +94,46 @@ function PromsView(props) {
   }
 
   return (
-    <Grid container direction="column" spacing={4}>
-      <Grid item className={classes.dashboardEntry}>
-        <Card className={classes.formView}>
-          {title &&
-          <CardHeader
-            title={
-              <>
-                {title && <Typography variant="h4">{title}</Typography>}
-                {subtitle && <Typography variant="subtitle1">{subtitle}</Typography>}
-              </>
-            }
-          />
-          }
-          {(!expanded || !disableHeader && !disableAvatar) &&
-          <CardHeader
-            avatar={!disableAvatar && <Avatar className={classes.formViewAvatar}><DescriptionIcon/></Avatar>}
-            title={
-              <>
-                <Tabs value={activeTab} onChange={(event, value) => setActiveTab(value)}>
-                { tabs.map((value, index) => {
-                  return <Tab label={<Typography variant="h6">{value}</Typography>}  key={"form-" + index} />;
-                })}
-                </Tabs>
-              </>
-            }
-          />
-          }
-          <Divider />
-          <CardContent>
-            <LiveTable
-              columns={props.columns || columns}
-              customUrl={'/query?query=' + encodeURIComponent(`select * from [cards:Form] as n WHERE n.'questionnaire'='${questionnaireId}'`)}
-              defaultLimit={10}
-              filters
-              questionnaire={questionnaireId}
-              entryType={"Form"}
-              disableTopPagination={!topPagination}
-              onFiltersChange={(str) => { setFiltersJsonString(str); }}
-              filtersJsonString={filtersJsonString}
-            />
-          </CardContent>
-        </Card>
-      </Grid>
-    </Grid>
+    <Card className={classes.formView}>
+      {title &&
+      <CardHeader
+        title={
+          <>
+            {title && <Typography variant="h4">{title}</Typography>}
+            {subtitle && <Typography variant="subtitle1">{subtitle}</Typography>}
+          </>
+        }
+      />
+      }
+      {(!expanded || !disableHeader && !disableAvatar) &&
+      <CardHeader
+        avatar={!disableAvatar && <Avatar className={classes.formViewAvatar}><DescriptionIcon/></Avatar>}
+        title={
+          <>
+            <Tabs value={activeTab} onChange={(event, value) => setActiveTab(value)}>
+            { tabs.map((value, index) => {
+              return <Tab label={<Typography variant="h6">{value}</Typography>}  key={"form-" + index} />;
+            })}
+            </Tabs>
+          </>
+        }
+      />
+      }
+      <Divider />
+      <CardContent>
+        <LiveTable
+          columns={props.columns || columns}
+          customUrl={'/query?query=' + encodeURIComponent(`select * from [cards:Form] as n WHERE n.'questionnaire'='${questionnaireId}'`)}
+          defaultLimit={10}
+          filters
+          questionnaire={questionnaireId}
+          entryType={"Form"}
+          disableTopPagination={!topPagination}
+          onFiltersChange={(str) => { setFiltersJsonString(str); }}
+          filtersJsonString={filtersJsonString}
+        />
+      </CardContent>
+    </Card>
   );
 }
 
