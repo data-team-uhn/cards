@@ -25,6 +25,11 @@
         <type>String</type>
     </property>
     <property>
+        <name>version</name>
+        <value>2022-01-01</value>
+        <type>String</type>
+    </property>
+    <property>
         <name>text</name>
         <value>
 These terms and conditions (the "Agreement") for a symptoms survey located at datapro.uhn.ca and any associated website, portal, or similar service (collectively, the "Application"), constitute a legal agreement and is entered into by and between you ("you", "your") and the University Health Network ("UHN", "we", "us", "our").  

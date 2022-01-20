@@ -52,6 +52,7 @@ const useStyles = makeStyles(theme => ({
 // onClose: Callback specifying what happens when the dialog is closed
 //
 // Optional props:
+// patientData: Patient data including Version of Terms of Use accepted by user in the past
 // actionRequired: Boolean specifying whether the user has yet to accept the terms.
 //   If true, Accept/Decline action buttons will be displayed at the bottom
 //   If false, a Close action will be displayed at the bottom
@@ -62,19 +63,32 @@ const useStyles = makeStyles(theme => ({
 // <ToUDialog
 //   open={open}
 //   actionRequired={true}
+//   patientData={...}
 //   onClose={onClose}
 //   onAccept={onAccept}
 //   onDecline={onDecline}
 /// />
 //
 
+const TOU_ACCEPTED_VARNAME = 'tou_accepted';
+
+const getAcceptedVersion = (patientData) => {
+    if (!patientData) return null;
+    let answer = Object.values(patientData)
+              .filter(item => item["sling:resourceSuperType"] == "cards/Answer")
+              .find(item => item.question?.["@name"] == TOU_ACCEPTED_VARNAME)?.value;
+    return answer;
+}
+
 function ToUDialog(props) {
-  const { open, actionRequired, onAccept, onDecline, onClose, ...rest } = props;
+  const { open, patientData, actionRequired, onAccept, onDecline, onClose, ...rest } = props;
+
   const [ showConfirmationTou, setShowConfirmationTou ] = useState(false);
   const [ tou, setTou ] = useState();
   const [ error, setError ] = useState();
 
   const classes = useStyles();
+  const touAcceptedVersion = getAcceptedVersion(patientData);
 
   useEffect(() => {
     fetch("/Proms/TermsOfUse.json")
@@ -86,20 +100,52 @@ function ToUDialog(props) {
   if (!tou && !error) {
     return null;
   }
+  
+  if (tou && touAcceptedVersion && tou.version == touAcceptedVersion) {
+    onAccept && onAccept();
+  }
+
+  // When the patient user accepts the terms of use, save their preference and hide the ToU dialog
+  const saveTouAccepted = (version) => {
+    let request_data = new FormData();
+    // Populate the request data with information about the tou_accepted answer
+    let f = TOU_ACCEPTED_VARNAME;
+    let qDef = patientData.questionnaire[f];
+    request_data.append(`./${f}/jcr:primaryType`, `cards:TextAnswer`);
+    request_data.append(`./${f}/question`, qDef['jcr:uuid']);
+    request_data.append(`./${f}/question@TypeHint`, "Reference");
+    request_data.append(`./${f}/value`, version);
+    request_data.append(`./${f}/value@TypeHint`, "String");
+
+    // Update the Patient information form
+    fetch(patientData['@path'], { method: 'POST', body: request_data })
+      .then( (response) => response.ok ? onAccept && onAccept() : Promise.reject(response))
+      .catch((response) => {
+        let errMsg = "Recording acceptance of Terms of Use failed";
+        setError(errMsg + (response.status ? ` with error code ${response.status}: ${response.statusText}` : ''));
+      });
+  }
 
   return (<>
     <ResponsiveDialog
       title={tou.title}
-      open={open}
+      open={open && (touAcceptedVersion !== tou.version || !actionRequired)}
       width="md"
       onClose={onClose}
       scroll={actionRequired? "body" : "paper"}
     >
       { actionRequired &&
         <DialogContent>
-          <Alert icon={false} severity="info">
-            Please read the Terms of Use and click Accept at the bottom to continue.
-          </Alert>
+          { touAcceptedVersion ?
+            <Alert severity="warning">
+              <AlertTitle>The Terms of Use have been updated</AlertTitle>
+              Please review and accept the new Terms of Use to continue.
+            </Alert>
+            :
+            <Alert icon={false} severity="info">
+              Please read the Terms of Use and click Accept at the bottom to continue.
+            </Alert>
+          }
         </DialogContent>
       }
       <DialogContent dividers={!actionRequired} className={classes.touText}>
@@ -115,7 +161,7 @@ function ToUDialog(props) {
       <DialogActions>
       { actionRequired && !error ?
         <>
-          <Button color="primary" onClick={onAccept} variant="contained">
+          <Button color="primary" onClick={() => saveTouAccepted(tou.version)} variant="contained">
             Accept
           </Button>
           <Button color="default" onClick={() => setShowConfirmationTou(true)} variant="contained" >
@@ -138,7 +184,7 @@ function ToUDialog(props) {
           <Button color="secondary" onClick={() => setShowConfirmationTou(false)} variant="contained" className={classes.reviewButton}>
             Review Terms
           </Button>
-          <Button color="primary" onClick={onAccept} variant="contained" >
+          <Button color="primary" onClick={() => saveTouAccepted(tou.version)} variant="contained" >
             Accept
           </Button>
           <Button color="default" onClick={() => {setShowConfirmationTou(false); onDecline && onDecline()}} variant="contained" >
@@ -154,6 +200,7 @@ ToUDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   actionRequired: PropTypes.bool,
+  patientData: PropTypes.object,
   onAccept: PropTypes.func,
   onDecline: PropTypes.func,
 }
