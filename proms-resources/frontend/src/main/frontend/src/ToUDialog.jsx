@@ -45,7 +45,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-// Component that renders the Dialog width Terms of Use
+// Component that renders the Dialog with Terms of Use
 //
 // Required props:
 // open: Boolean specifying whether the dialog is open
