@@ -38,10 +38,9 @@ import {
 import { Link } from 'react-router-dom';
 import DescriptionIcon from '@material-ui/icons/Description';
 import LaunchIcon from '@material-ui/icons/Launch';
-import NewFormDialog from "./dataHomepage/NewFormDialog.jsx";
 
 function PromsView(props) {
-  const { data, classes } = props;
+  const { data, expanded, disableHeader, disableAvatar, classes } = props;
 
   const [ columns, setColumns ] = useState();
   const [ questionnaireId, setQuestionnaireId ] = useState();
@@ -121,16 +120,6 @@ function PromsView(props) {
                 </Tabs>
               </>
             }
-            action={
-              !expanded &&
-              <Tooltip title="Expand">
-                <Link to={"/content.html/Forms#" + new URLSearchParams({"forms:activeTab" : tabs?.[activeTab] || "", "forms:filters" : filtersJsonString || ""}).toString()}>
-                  <IconButton>
-                    <LaunchIcon/>
-                  </IconButton>
-                </Link>
-              </Tooltip>
-            }
           />
           }
           <Divider />
@@ -146,11 +135,6 @@ function PromsView(props) {
               onFiltersChange={(str) => { setFiltersJsonString(str); }}
               filtersJsonString={filtersJsonString}
             />
-          {expanded &&
-            <NewFormDialog presetPath={questionnairePath}>
-              New questionnaire
-            </NewFormDialog>
-          }
           </CardContent>
         </Card>
       </Grid>
