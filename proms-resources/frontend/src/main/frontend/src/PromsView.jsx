@@ -41,7 +41,7 @@ import LaunchIcon from '@material-ui/icons/Launch';
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
 function PromsView(props) {
-  const { data, expanded, disableHeader, disableAvatar, classes } = props;
+  const { data, expanded, disableHeader, disableAvatar, topPagination, classes } = props;
 
   const [ columns, setColumns ] = useState();
   const [ questionnaireId, setQuestionnaireId ] = useState();
