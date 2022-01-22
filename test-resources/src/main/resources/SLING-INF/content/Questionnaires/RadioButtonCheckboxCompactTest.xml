@@ -93,6 +93,11 @@
 			<type>String</type>
 		</property>
 		<property>
+                    <name>displayMode</name>
+                    <value>list</value>
+                    <type>String</type>
+                </property>
+		<property>
 			<name>compact</name>
 			<value>True</value>
 			<type>Boolean</type>
@@ -134,6 +139,11 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
+                <property>
+                    <name>displayMode</name>
+                    <value>list</value>
+                    <type>String</type>
+                </property>
 		<property>
 			<name>compact</name>
 			<value>True</value>
@@ -262,6 +272,11 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
+                <property>
+                    <name>displayMode</name>
+                    <value>list</value>
+                    <type>String</type>
+                </property>
 		<property>
 			<name>compact</name>
 			<value>True</value>
