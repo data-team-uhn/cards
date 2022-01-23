@@ -90,7 +90,7 @@
 			</property>
 			<property>
 				<name>compact</name>
-				<value>False</value>
+				<value>True</value>
 				<type>Boolean</type>
 			</property>
 			<property>
@@ -221,7 +221,7 @@
 				</property>
 				<property>
 					<name>text</name>
-					<value>Check all that apply:</value>
+					<value>Others using tobacco products at home</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -406,9 +406,9 @@
 			<primaryNodeType>cards:Information</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>## Quitting is an important part of cancer treatment.
+				<value>## Quitting is an important part of heath care.
 
-### For people who have cancer or have finished treatment for cancer, the benefits start right away and can last a long time.**
+### The benefits start right away and can last a long time.**
 
 We know that quitting can be difficult. Your healthcare team is here to support you.
 
