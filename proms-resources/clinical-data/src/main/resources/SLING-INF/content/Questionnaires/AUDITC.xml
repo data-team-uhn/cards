@@ -178,7 +178,7 @@ disorder. AUDIT-C has been validated in mental health and primary care clinics.
 			</property>
 			<property>
 				<name>text</name>
-				<value>AUDIT-C Interpretation</value>
+				<value>Alcohol Use Disorders Identification Test</value>
 				<type>String</type>
 			</property>
 			<property>
