@@ -277,10 +277,23 @@ function QuestionnaireSet(props) {
         'title': value.questionnaire?.title || value.questionnaire?.['@name'],
         '@path': value.questionnaire?.['@path'],
         '@name': value.questionnaire?.['@name'],
+        'hasInterpretation': hasInterpretation(value.questionnaire),
         'estimate': value.estimate
        }});
     setQuestionnaires(data);
   };
+
+  // Find out if a questionnaire has an interpretation for the patient, i.e. a "summary" section
+  let hasInterpretation = (json) => {
+     if (json?.displayMode == "summary") {
+       return true;
+     }
+     let result = false;
+     Object.values(json || {})
+       .filter(value => value['jcr:primaryType'] == 'cards:Section')
+       .forEach(section => { result ||= hasInterpretation(section) });
+     return result;
+  }
 
   // Find the next step : Skip questionnaires that have already been filled out
   let findNextStep = (step) => {
@@ -477,8 +490,11 @@ function QuestionnaireSet(props) {
     </div>
   </>
 
-  let summaryScreen = [
-      <Typography variant="h4">Thank you for your submission.</Typography>,
+  // Are there any response interpretations to display to the patient?
+  let hasInterpretations = (questionnaireIds || []).some(q => questionnaires?.[q]?.hasInterpretation);
+
+  let summaryScreen = hasInterpretations ? [
+      <Typography variant="h4">Thank you for your submission</Typography>,
       <Typography color="textSecondary">Please note:</Typography>,
       <ul>
         <li key="0"><Typography color="textSecondary">
@@ -507,6 +523,12 @@ your symptoms. Please see below for a summary of your scores and suggested actio
         />
       ))}
       </Grid>
+    ] : [
+      <Typography variant="h4">Thank you for your submission</Typography>,
+      <Typography color="textSecondary">
+Please note that your responses may not be reviewed by your care team until the day of your next appointment. If your symptoms are
+worsening while waiting for your next appointment, please proceed to your nearest Emergency Department today, or call 911.
+      </Typography>
     ];
 
   let exitScreen = (typeof(isComplete) == 'undefined') ? [
