@@ -443,7 +443,7 @@ function QuestionnaireSet(props) {
           mode="edit"
           disableHeader
           doneIcon={nextQuestionnaire ? <NextStepIcon /> : <DoneIcon />}
-          doneLabel={nextQuestionnaire ? `Continue to ${nextQuestionnaire?.title}` : "Review my answers"}
+          doneLabel={nextQuestionnaire ? `Continue to ${nextQuestionnaire?.title}` : "Review"}
           onDone={nextQuestionnaire ? launchNextForm : nextStep}
           doneButtonStyle={{position: "relative", right: 0, bottom: "unset", textAlign: "center"}}
           contentOffset={contentOffset || 0}
@@ -451,7 +451,8 @@ function QuestionnaireSet(props) {
   ];
 
   let reviewScreen = <>
-    <Typography variant="h4">Please review your answers before final submission</Typography>
+    <Typography variant="h4">Please review your answers</Typography>
+    <Typography paragraph>You can update the answers for each survey and continue to this review screen before final submission.</Typography>
       {(questionnaireIds || []).map((q, i) => (
         <Grid item key={q+"Review"}>
           <Typography variant="h5" className={classes.formTitle}>{questionnaires[q].title || questionnaires[q]["@name"]}</Typography>
@@ -472,7 +473,7 @@ function QuestionnaireSet(props) {
       </Grid>
       ))}
     <div className={classes.reviewFab}>
-      <Fab variant="extended" color="primary" onClick={() => {onSubmit()}}>Submit my Answers</Fab>
+      <Fab variant="extended" color="primary" onClick={() => {onSubmit()}}>Submit my answers</Fab>
     </div>
   </>
 
