@@ -249,6 +249,71 @@ public final class AppointmentUtils
         return htmlTemplate;
     }
 
+    private static boolean isValidClinicNameChar(char c)
+    {
+        /*
+         * Python's string.ascii_letters + Python's string.digits + Blank spaces + Underscores
+         */
+        final String allowedChars = ""
+            + "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            + "0123456789"
+            + " "
+            + "_";
+
+        if (allowedChars.indexOf(c) >= 0) {
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean isValidClinicName(String clinicName)
+    {
+        for (int i = 0; i < clinicName.length(); i++) {
+            if (!isValidClinicNameChar(clinicName.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static Resource getValidClinicNode(ResourceResolver resolver, Resource formRelatedSubject,
+        String clinicIdLink, String clinicsJcrPath)
+    {
+        String clinicId = getQuestionAnswerForSubject(
+            resolver,
+            formRelatedSubject,
+            clinicIdLink,
+            "cards:TextAnswer",
+            ""
+        );
+
+        if ("".equals(clinicId)) {
+            return null;
+        }
+
+        if (!isValidClinicName(clinicId)) {
+            return null;
+        }
+
+        String clinicNodePath = clinicsJcrPath.replaceAll("/$", "") + "/" + clinicId;
+        Resource clinicNode = resolver.getResource(clinicNodePath);
+        return clinicNode;
+    }
+
+    public static String getValidClinicEmail(ResourceResolver resolver, Resource formRelatedSubject,
+        String clinicIdLink, String clinicsJcrPath, String clinicEmailProperty)
+    {
+        Resource clinicNode = getValidClinicNode(resolver, formRelatedSubject, clinicIdLink, clinicsJcrPath);
+        if (clinicNode == null) {
+            return null;
+        }
+        String clinicEmail = clinicNode.getValueMap().get(clinicEmailProperty, "");
+        if ("".equals(clinicEmail)) {
+            return null;
+        }
+        return clinicEmail;
+    }
+
     /**
      * Returns the completion status of surveys for a Visit.
      *

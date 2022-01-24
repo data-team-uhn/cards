@@ -81,6 +81,9 @@
   // Mandatory, each QuestionnaireSet must have a name.
   - name (string) mandatory
 
+  // An emergency contact for the clinic
+  - emergencyContact (string)
+
   // Children
 
   // The questionnaire references that make up this questionnaire set.

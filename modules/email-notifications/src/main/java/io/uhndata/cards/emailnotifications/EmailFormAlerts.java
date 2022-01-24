@@ -85,8 +85,15 @@ public final class EmailFormAlerts
         @AttributeDefinition(name = "Alert Description", description = "Alert Description")
         String alertDescription() default "";
 
-        @AttributeDefinition(name = "Alert Email", description = "Alert Email")
-        String alertEmail() default "oncallnurse@uhn.ca";
+        @AttributeDefinition(name = "Clinic ID Link", description = "Response associated with the"
+            + " subject of Linking Subject Type that associates it with a clinic")
+        String clinicIdLink() default "/Questionnaires/Visit information/surveys";
+
+        @AttributeDefinition(name = "Clinics JCR Path", description = "Clinics JCR Path")
+        String clinicsJcrPath() default "/Proms";
+
+        @AttributeDefinition(name = "Clinic Email Property", description = "Clinic Email Property")
+        String clinicEmailProperty() default "emergencyContact";
     }
 
     @Activate
@@ -123,7 +130,9 @@ public final class EmailFormAlerts
             listenerParams.put("alertingQuestionDataType", config.alertingQuestionDataType());
             listenerParams.put("triggerExpression", config.triggerExpression());
             listenerParams.put("alertDescription", config.alertDescription());
-            listenerParams.put("alertEmail", config.alertEmail());
+            listenerParams.put("clinicIdLink", config.clinicIdLink());
+            listenerParams.put("clinicsJcrPath", config.clinicsJcrPath());
+            listenerParams.put("clinicEmailProperty", config.clinicEmailProperty());
             EventListener myEventListener = new EmailAlertEventListener(
                 this.resolver, this.mailService, listenerParams);
 

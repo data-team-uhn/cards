@@ -19,6 +19,7 @@ package io.uhndata.cards.emailnotifications;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 import javax.jcr.observation.EventListener;
@@ -44,7 +45,9 @@ public final class EmailAlertEventListener implements EventListener
     private String alertingQuestionDataType;
     private String triggerExpression;
     private String alertDescription;
-    private String alertEmail;
+    private String clinicIdLink;
+    private String clinicsJcrPath;
+    private String clinicEmailProperty;
 
     public EmailAlertEventListener(ResourceResolver resolver,
         MailService mailService, Map<String, String> listenerParams)
@@ -58,7 +61,35 @@ public final class EmailAlertEventListener implements EventListener
         this.alertingQuestionDataType = listenerParams.get("alertingQuestionDataType");
         this.triggerExpression = listenerParams.get("triggerExpression");
         this.alertDescription = listenerParams.get("alertDescription");
-        this.alertEmail = listenerParams.get("alertEmail");
+        this.clinicIdLink = listenerParams.get("clinicIdLink");
+        this.clinicsJcrPath = listenerParams.get("clinicsJcrPath");
+        this.clinicEmailProperty = listenerParams.get("clinicEmailProperty");
+    }
+
+    private String getModifedValueNodePath(Event thisEvent) throws RepositoryException
+    {
+        if (!thisEvent.getPath().endsWith("/value")) {
+            return null;
+        }
+
+        String modifiedValueNodePath = thisEvent.getPath();
+        modifiedValueNodePath = modifiedValueNodePath.substring(
+            0, modifiedValueNodePath.length() - "/value".length());
+
+        return modifiedValueNodePath;
+    }
+
+    private boolean isSubmissionEvent(Resource modifiedValueNode, String submittedFlagUUID)
+    {
+        String modifiedValueNodeQuestion = modifiedValueNode.getValueMap().get("question", "");
+        if (!submittedFlagUUID.equals(modifiedValueNodeQuestion)) {
+            return false;
+        }
+        long modifiedValue = modifiedValueNode.getValueMap().get("value", 0);
+        if (modifiedValue != 1) {
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -67,32 +98,20 @@ public final class EmailAlertEventListener implements EventListener
         try {
             while (events.hasNext()) {
                 Event thisEvent = events.nextEvent();
-                // Check that the property modified was the "value" property
-                if (!thisEvent.getPath().endsWith("/value")) {
+                String modifiedValueNodePath = getModifedValueNodePath(thisEvent);
+                if (modifiedValueNodePath == null) {
                     continue;
                 }
 
-                String modifiedPropertyNodePath = thisEvent.getPath();
-                modifiedPropertyNodePath = modifiedPropertyNodePath.substring(
-                    0, modifiedPropertyNodePath.length() - "/value".length());
+                Resource modifiedValueNode = this.resolver.getResource(modifiedValueNodePath);
 
-                /* Check that the modified node has a question "property" that
-                 * points to the "submissionComplete" question.
-                 */
-                Resource modifiedPropertyNode = this.resolver.getResource(modifiedPropertyNodePath);
-                String modifiedPropertyNodeQuestion = modifiedPropertyNode.getValueMap().get("question", "");
-                if (!this.submittedFlagUUID.equals(modifiedPropertyNodeQuestion)) {
+                // Check that this event is a "surveys submission" event
+                if (!isSubmissionEvent(modifiedValueNode, this.submittedFlagUUID)) {
                     continue;
                 }
 
-                // Check that the "submissionComplete" value is true
-                long modifiedPropertyNodeValue = modifiedPropertyNode.getValueMap().get("value", 0);
-                if (modifiedPropertyNodeValue != 1) {
-                    continue;
-                }
-
-                // Get the cards:Form node that this modified property descends from
-                Resource modifiedFormNode = AppointmentUtils.getFormForAnswer(this.resolver, modifiedPropertyNode);
+                // Get the cards:Form node that this modified value property descends from
+                Resource modifiedFormNode = AppointmentUtils.getFormForAnswer(this.resolver, modifiedValueNode);
                 if (modifiedFormNode == null) {
                     continue;
                 }
@@ -107,6 +126,17 @@ public final class EmailAlertEventListener implements EventListener
                     continue;
                 }
                 String formRelatedSubjectUUID = formRelatedSubject.getValueMap().get("jcr:uuid", "");
+
+                /*
+                 * This subject is of type Visit, therefore get the value of
+                 * /Questionnaires/Visit information/surveys associated with
+                 * this visit.
+                 */
+                String clinicAlertEmail = AppointmentUtils.getValidClinicEmail(this.resolver,
+                    formRelatedSubject, this.clinicIdLink, this.clinicsJcrPath, this.clinicEmailProperty);
+                if (clinicAlertEmail == null) {
+                    continue;
+                }
 
                 /*
                  * Find all the answer nodes that match the trigger filter criteria and are linked with the submit
@@ -136,7 +166,8 @@ public final class EmailAlertEventListener implements EventListener
 
                     // Send this email
                     try {
-                        EmailUtils.sendNotificationEmail(this.mailService, this.alertEmail, this.alertEmail, emailBody);
+                        EmailUtils.sendNotificationEmail(this.mailService,
+                            clinicAlertEmail, clinicAlertEmail, emailBody);
                     } catch (MessagingException e) {
                         LOGGER.warn("Failed to send Alert Email");
                     }
