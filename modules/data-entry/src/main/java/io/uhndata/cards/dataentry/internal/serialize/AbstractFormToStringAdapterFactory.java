@@ -32,7 +32,7 @@ import org.apache.sling.api.adapter.AdapterFactory;
 import org.apache.sling.api.resource.Resource;
 
 /**
- * AdapterFactory that converts forms to plain text.
+ * Base class for adapting a Form resource to a text-based format.
  *
  * @version $Id$
  */
@@ -86,7 +86,7 @@ public abstract class AbstractFormToStringAdapterFactory
     }
 
     /**
-     * Converts a JSON fragment (object) to plain text displaying the form's subject it, questionnaire title,
+     * Converts a JSON fragment (object) to plain text displaying the form's subject, questionnaire title,
      * and creation date.
      *
      * @param nodeJson a JSON serialization of a node
@@ -136,7 +136,7 @@ public abstract class AbstractFormToStringAdapterFactory
 
     /**
      * Converts a JSON fragment (object) to plain text, if it is a simple answer or an answer section. All other kinds
-     * of information is ignored.
+     * of information are ignored.
      *
      * @param nodeJson a JSON serialization of a node
      * @param result the string builder where the serialization must be appended
@@ -238,7 +238,7 @@ public abstract class AbstractFormToStringAdapterFactory
      *
      * @param element a kind of questionnaire element: question or section
      * @param answerElementJson a JSON serialization of an answer or answer section
-     * @return the display mode as String. Expected one of: default, header, footer, summary.
+     * @return the display mode as String, e.g. hidden, default, header, footer, summary.
      */
     private String getDisplayMode(final String element, final JsonObject answerElementJson)
     {
