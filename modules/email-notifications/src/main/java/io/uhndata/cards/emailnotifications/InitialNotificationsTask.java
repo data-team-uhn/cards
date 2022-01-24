@@ -41,6 +41,9 @@ public class InitialNotificationsTask implements Runnable
     /** Default log. */
     private static final Logger LOGGER = LoggerFactory.getLogger(InitialNotificationsTask.class);
 
+    private static final String CARDS_HOST_AND_PORT = System.getenv("CARDS_HOST_AND_PORT");
+    private static final String CLINIC_SLING_PATH = System.getenv("CLINIC_SLING_PATH");
+
     /** Provides access to resources. */
     private final ResourceResolverFactory resolverFactory;
 
@@ -107,7 +110,7 @@ public class InitialNotificationsTask implements Runnable
                 String patientFullName = AppointmentUtils.getPatientFullName(resolver, patientSubject);
                 Calendar tokenExpiryDate = AppointmentUtils.parseDate(appointmentResult.getValueMap().get("value", ""));
                 tokenExpiryDate.add(Calendar.HOUR, 2);
-                String surveysLink = "http://localhost:8080/Proms.html/Cardio?auth_token="
+                String surveysLink = "https://" + CARDS_HOST_AND_PORT + CLINIC_SLING_PATH + "?auth_token="
                     + this.tokenManager.create(
                         "patient",
                         tokenExpiryDate,
