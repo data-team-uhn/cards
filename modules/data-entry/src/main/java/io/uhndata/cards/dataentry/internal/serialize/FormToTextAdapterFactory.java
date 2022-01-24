@@ -169,6 +169,14 @@ public class FormToTextAdapterFactory
     private void processSection(final JsonObject answerSectionJson, final StringBuilder result,
         final Map<String, Integer> sectionCounts)
     {
+        final String displayMode = getDisplayMode("section", answerSectionJson);
+        if ("summary".equals(displayMode)) {
+            // Do not output summary sections
+            return;
+        }
+        if ("footer".equals(displayMode)) {
+            formatSectionSeparator(result);
+        }
         final String sectionTitle = getSectionTitle(answerSectionJson, sectionCounts);
         if (StringUtils.isNotBlank(sectionTitle)) {
             formatSectionTitle(sectionTitle, result);
@@ -178,6 +186,9 @@ public class FormToTextAdapterFactory
             .map(JsonValue::asJsonObject)
             .filter(value -> value.containsKey("jcr:primaryType"))
             .forEach(value -> processElement(value, result, sectionCounts));
+        if ("header".equals(displayMode)) {
+            formatSectionSeparator(result);
+        }
     }
 
     /**
@@ -191,15 +202,16 @@ public class FormToTextAdapterFactory
      */
     private void processAnswer(final JsonObject answerJson, final String nodeType, final StringBuilder result)
     {
-        final JsonValue value = answerJson.get("displayedValue");
-        final String note = answerJson.containsKey("note") ? answerJson.getString("note") : null;
-        if (value == null && StringUtils.isBlank(note)) {
+        final String displayMode = getDisplayMode("question", answerJson);
+        if ("hidden".equals(displayMode)) {
             return;
         }
+        final JsonValue value = answerJson.get("displayedValue");
+        final String note = answerJson.containsKey("note") ? answerJson.getString("note") : null;
 
         formatQuestion(answerJson.getJsonObject("question").getString("text"), result);
         if (value == null) {
-            // Ignore null values, we probably only have notes
+            formatAnswer("—", result);
         } else if ("cards:PedigreeAnswer".equals(nodeType)) {
             formatPedigree(((JsonString) value).getString(), result);
         } else {
@@ -224,6 +236,23 @@ public class FormToTextAdapterFactory
         } else {
             formatAnswer(((JsonString) value).getString(), result);
         }
+    }
+
+    /**
+     * Retrieves the display mode specified for a section or question, if any.
+     *
+     * @param element a kind of questionnaire element: question or section
+     * @param answerElementJson a JSON serialization of an answer or answer section
+     * @return the display mode as String. Expected one of: default, header, footer, summary.
+     */
+    private String getDisplayMode(final String element, final JsonObject answerElementJson)
+    {
+        try {
+            return ((JsonString) answerElementJson.getValue("/" + element + "/displayMode")).getString();
+        } catch (JsonException | NullPointerException ex) {
+            // Not there, return
+        }
+        return null;
     }
 
     /**
@@ -287,6 +316,11 @@ public class FormToTextAdapterFactory
     private void formatQuestion(final String question, final StringBuilder result)
     {
         result.append(question).append('\n');
+    }
+
+    private void formatEmptyAnswer(final StringBuilder result)
+    {
+        formatAnswer("-", result);
     }
 
     private void formatAnswer(final String answer, final StringBuilder result)
