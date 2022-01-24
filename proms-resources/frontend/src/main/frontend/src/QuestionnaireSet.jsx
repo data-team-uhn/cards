@@ -81,13 +81,6 @@ const useStyles = makeStyles(theme => ({
     justify: "space-between",
     flexWrap: "nowrap",
   },
-  formTitle : {
-    marginTop: "1em",
-  },
-  updateButton : {
-    marginTop: "1em",
-    marginBottom: "4em",
-  },
   reviewFab : {
     margin: theme.spacing(1),
     position: "fixed",
@@ -464,23 +457,30 @@ function QuestionnaireSet(props) {
   let reviewScreen = [
     <Typography variant="h4">Please review your answers</Typography>,
     <Typography paragraph>You can update the answers for each survey and continue to this review screen before final submission.</Typography>,
-    <Grid container direction="column" spacing={3}>
+    <Grid container direction="column" spacing={8}>
       {(questionnaireIds || []).map((q, i) => (
-        <Grid item key={q+"Review"}>
-          <Typography variant="h5" className={classes.formTitle}>{questionnaires[q].title || questionnaires[q]["@name"]}</Typography>
+      <Grid item key={q+"Review"}>
+      <Grid container spacing={4}>
+        <Grid item>
+          <Typography variant="h5">{questionnaires[q].title || questionnaires[q]["@name"]}</Typography>
+        </Grid>
+        <Grid item>
           <Form
             id={subjectData[q]['@name']}
             disableHeader
             disableButton
             contentOffset={contentOffset || 0}
           />
+        </Grid>
+        <Grid item>
           <Button
             variant="outlined"
             color="secondary"
-            className={classes.updateButton}
             onClick={() => {setReviewMode(true); setCrtFormId(subjectData[q]["@name"]); setCrtStep(i)}}>
               Update this survey
           </Button>
+        </Grid>
+      </Grid>
       </Grid>
       ))}
     </Grid>,
@@ -546,9 +546,7 @@ worsening while waiting for your next appointment, please proceed to your neares
         ))}
         </List>,
         <Typography color="error">Your answers are incomplete. Please update your answers by responding to all mandatory questions.</Typography>,
-        <div className={classes.updateButton}>
-          <Fab variant="extended" color="primary" onClick={() => {setCrtStep(-1)}}>Update my answers</Fab>
-        </div>
+        <Fab variant="extended" color="primary" onClick={() => {setCrtStep(-1)}}>Update my answers</Fab>
   ];
 
   let exitScreen = (typeof(isComplete) == 'undefined') ? loadingScreen : (isComplete ? (isSubmitted ? summaryScreen : reviewScreen) : incompleteScreen);
