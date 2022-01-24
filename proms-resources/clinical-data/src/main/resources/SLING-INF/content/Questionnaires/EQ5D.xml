@@ -39,7 +39,7 @@
 	</property>
 	<property>
 		<name>description</name>
-		<value>Health  Questionnaire</value>
+		<value>EQ-5D</value>
 		<type>String</type>
 	</property>
 	<node>

@@ -39,7 +39,7 @@
 	</property>
 	<property>
 		<name>description</name>
-		<value>Measures severity of anxiety</value>
+		<value>GAD-7</value>
 		<type>String</type>
 	</property>
 	<node>
