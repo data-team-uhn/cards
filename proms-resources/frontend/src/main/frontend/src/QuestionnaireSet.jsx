@@ -209,9 +209,9 @@ function QuestionnaireSet(props) {
     }
   }, [visitInformation]);
 
-  // When the user lands on a completed visit that has not been submit, proceed to reviewing their forms
+  // When the user lands on a completed visit that has not been submited, proceed to reviewing their forms
   useEffect(() => {
-    if(isComplete && !isSubmitted && questionnaireIds && crtStep == -1) {
+    if(isComplete && !isSubmitted && questionnaireIds?.length > 0 && crtStep == -1) {
       setCrtStep(questionnaireIds.length)
     }
   }, [isComplete, isSubmitted, questionnaireIds])
@@ -325,7 +325,7 @@ function QuestionnaireSet(props) {
     );
   }
 
-  if (!questionnaires || !subjectData) {
+  if (!questionnaireIds || !questionnaires || !subjectData) {
     return (
       <QuestionnaireSetScreen className={classes.screen}>
         <CircularProgress />
@@ -412,9 +412,9 @@ function QuestionnaireSet(props) {
 
   let welcomeScreen = [
     <Typography variant="h4" key="welcome-greeting">{ greet(username) }</Typography>,
-    isComplete && isSubmitted ?
+    questionnaireIds.length == 0 ?
       <Typography color="textSecondary" variant="subtitle1" key="welcome-message">
-        You already completed the survey.
+        You have no pending surveys to fill out for your next appointment.
       </Typography>
     :
       <Typography paragraph key="welcome-message">
