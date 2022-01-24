@@ -525,9 +525,9 @@ your symptoms. Please see below for a summary of your scores and suggested actio
           </ListItem>
         ))}
         </List>,
-        <Typography color="error">Your answers are incomplete. Please return to the main screen and check for any mandatory questions you may have missed.</Typography>,
+        <Typography color="error">Your answers are incomplete. Please update your answers by responding to all mandatory questions.</Typography>,
         <div className={classes.updateButton}>
-          <Fab variant="extended" color="primary" onClick={() => {setCrtStep(-1)}}>Update answers</Fab>
+          <Fab variant="extended" color="primary" onClick={() => {setCrtStep(-1)}}>Update my answers</Fab>
         </div>
     ]
   ];
