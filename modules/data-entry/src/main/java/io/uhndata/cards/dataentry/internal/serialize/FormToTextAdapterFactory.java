@@ -80,9 +80,7 @@ public class FormToTextAdapterFactory
         StringBuilder result = new StringBuilder();
 
         // Metadata
-        result.append(getSubjectIdentifier(formJson)).append('\n');
-        result.append(getQuestionnaireTitle(formJson)).append('\n');
-        result.append(getCreationDate(formJson)).append("\n\n\n");
+        generateMetadata(formJson, result);
 
         // Answers and sections
         final Map<String, Integer> sectionCounts = new HashMap<>();
@@ -90,6 +88,21 @@ public class FormToTextAdapterFactory
 
         // All done!
         return result.toString().trim();
+    }
+
+    /**
+     * Converts a JSON fragment (object) to plain text displaying the form's subject it, questionnaire title,
+     * and creation date.
+     *
+     * @param nodeJson a JSON serialization of a node
+     * @param result the string builder where the serialization must be appended
+     */
+    private void generateMetadata(final JsonObject formJson, StringBuilder result)
+    {
+        formatMetadata(getSubjectIdentifier(formJson), result);
+        formatMetadata(getQuestionnaireTitle(formJson), result);
+        formatMetadata(getCreationDate(formJson), result);
+        formatMetadata("\n", result);
     }
 
     /**
@@ -112,7 +125,7 @@ public class FormToTextAdapterFactory
      */
     private String getQuestionnaireTitle(final JsonObject formJson)
     {
-        return formJson.getJsonObject("questionnaire").getString("title").toUpperCase(Locale.ROOT);
+        return formJson.getJsonObject("questionnaire").getString("title");
     }
 
     /**
@@ -140,10 +153,8 @@ public class FormToTextAdapterFactory
         final String nodeType = nodeJson.getString("jcr:primaryType");
         if ("cards:AnswerSection".equals(nodeType)) {
             processSection(nodeJson, result, sectionCounts);
-        } else if ("cards:PedigreeAnswer".equals(nodeType)) {
-            processPedigreeAnswer(nodeJson, result);
         } else if (nodeType.startsWith("cards:") && nodeType.endsWith("Answer")) {
-            processAnswer(nodeJson, result);
+            processAnswer(nodeJson, nodeType, result);
         }
     }
 
@@ -160,7 +171,7 @@ public class FormToTextAdapterFactory
     {
         final String sectionTitle = getSectionTitle(answerSectionJson, sectionCounts);
         if (StringUtils.isNotBlank(sectionTitle)) {
-            result.append(sectionTitle).append("\n\n");
+            formatSectionTitle(sectionTitle, result);
         }
         answerSectionJson.values().stream()
             .filter(value -> ValueType.OBJECT.equals(value.getValueType()))
@@ -175,9 +186,10 @@ public class FormToTextAdapterFactory
      * the output.
      *
      * @param answerJson a JSON serialization of an answer
+     * @param nodeType the type of node, dictating how answers are displayed
      * @param result the string builder where the serialization must be appended
      */
-    private void processAnswer(final JsonObject answerJson, final StringBuilder result)
+    private void processAnswer(final JsonObject answerJson, final String nodeType, final StringBuilder result)
     {
         final JsonValue value = answerJson.get("displayedValue");
         final String note = answerJson.containsKey("note") ? answerJson.getString("note") : null;
@@ -185,47 +197,33 @@ public class FormToTextAdapterFactory
             return;
         }
 
-        result.append(answerJson.getJsonObject("question").getString("text")).append('\n');
+        formatQuestion(answerJson.getJsonObject("question").getString("text"), result);
         if (value == null) {
             // Ignore null values, we probably only have notes
-        } else if (ValueType.ARRAY.equals(value.getValueType())) {
-            value.asJsonArray().forEach(v -> result.append("  ").append(((JsonString) v).getString()).append('\n'));
+        } else if ("cards:PedigreeAnswer".equals(nodeType)) {
+            formatPedigree(((JsonString) value).getString(), result);
         } else {
-            result.append("  ").append(((JsonString) value).getString()).append('\n');
+            processAnswerValue(value, result);
         }
         if (StringUtils.isNotBlank(note)) {
-            result.append("\n  NOTES:\n  ").append(note.replaceAll("\n", "\n  ")).append('\n');
+            formatNote(note, result);
         }
         result.append("\n\n");
     }
 
     /**
-     * Converts a JSON serialization of a pedigree answer to plain text. Normal answer processing through
-     * {@link #processAnswer} would include the whole pedigree image SVG source, but that is not a proper user-friendly
-     * answer, so instead a simple "Pedigree provided" answer is included in the plain text serialization if indeed a
-     * pedigree is included. Otherwise, the whole question is skipped.
+     * Converts a JSON serialiization of a textual answer value to plain text.
      *
-     * @param answerJson a JSON serialization of a pedigree answer
+     * @param value the value to be displayed, can be either a single value or an array of values
      * @param result the string builder where the serialization must be appended
      */
-    private void processPedigreeAnswer(final JsonObject answerJson, final StringBuilder result)
+    private void processAnswerValue(final JsonValue value, final StringBuilder result)
     {
-        final JsonValue value = answerJson.get("displayedValue");
-        final String note = answerJson.containsKey("note") ? answerJson.getString("note") : null;
-        if (value == null && StringUtils.isBlank(note)) {
-            return;
-        }
-
-        result.append(answerJson.getJsonObject("question").getString("text")).append('\n');
-        if (value == null) {
-            // Ignore null values, we probably only have notes
+        if (ValueType.ARRAY.equals(value.getValueType())) {
+            value.asJsonArray().forEach(v -> formatAnswer(((JsonString) v).getString(), result));
         } else {
-            result.append("  Pedigree provided\n");
+            formatAnswer(((JsonString) value).getString(), result);
         }
-        if (StringUtils.isNotBlank(note)) {
-            result.append("\n  NOTES:\n  ").append(note.replaceAll("\n", "\n  ")).append('\n');
-        }
-        result.append("\n\n");
     }
 
     /**
@@ -240,7 +238,7 @@ public class FormToTextAdapterFactory
     {
         try {
             String label = ((JsonString) answerSectionJson.getValue("/section/label")).getString();
-            return label.toUpperCase(Locale.ROOT) + getSectionInstanceSuffix(answerSectionJson, sectionCounts);
+            return label + getSectionInstanceSuffix(answerSectionJson, sectionCounts);
         } catch (JsonException | NullPointerException ex) {
             // Not there, return
         }
@@ -269,5 +267,40 @@ public class FormToTextAdapterFactory
         }
 
         return "";
+    }
+
+    private void formatMetadata(final String metadata, final StringBuilder result)
+    {
+        result.append(metadata.toUpperCase(Locale.ROOT)).append('\n');
+    }
+
+    private void formatSectionTitle(final String title, final StringBuilder result)
+    {
+        result.append(title.toUpperCase(Locale.ROOT)).append("\n\n");
+    }
+
+    private void formatSectionSeparator(final StringBuilder result)
+    {
+        result.append("---------------------------------------------").append("\n\n");
+    }
+
+    private void formatQuestion(final String question, final StringBuilder result)
+    {
+        result.append(question).append('\n');
+    }
+
+    private void formatAnswer(final String answer, final StringBuilder result)
+    {
+        result.append("  ").append(answer).append('\n');
+    }
+
+    private void formatNote(final String note, final StringBuilder result)
+    {
+        result.append("\n  NOTES\n  ").append(note.replaceAll("\n", "\n  ")).append('\n');
+    }
+
+    private void formatPedigree(final String image, final StringBuilder result)
+    {
+        result.append("  Pedigree provided\n");
     }
 }
