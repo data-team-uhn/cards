@@ -381,14 +381,14 @@ function MockPatientIdentification(props) {
               <Grid item>
                 <FormControl margin="normal" fullWidth>
                   <InputLabel htmlFor="j_mrn" shrink={true}>MRN</InputLabel>
-                  <Input id="j_mrn" name="j_mrn" autoComplete="off" type="number" placeholder="E.g.: 1234567" className={classes.mrnInput} onChange={event => setMrn(event.target.value)}/>
+                  <Input id="j_mrn" name="j_mrn" autoComplete="off" type="number" placeholder="1234567" className={classes.mrnInput} onChange={event => setMrn(event.target.value)}/>
                  </FormControl>
               </Grid>
               <Grid item>or</Grid>
               <Grid item>
                 <FormControl margin="normal" fullWidth>
                   <InputLabel htmlFor="j_hc" shrink={true}>Health card number</InputLabel>
-                  <Input id="j_hc" name="j_hc" autoComplete="off" placeholder="E.g.: 2345 678 901 XY" onChange={event => setHc(sanitizeHC(event.target.value))}/>
+                  <Input id="j_hc" name="j_hc" autoComplete="off" placeholder="2345 678 901 XY" onChange={event => setHc(sanitizeHC(event.target.value))}/>
                  </FormControl>
               </Grid>
             </Grid>
