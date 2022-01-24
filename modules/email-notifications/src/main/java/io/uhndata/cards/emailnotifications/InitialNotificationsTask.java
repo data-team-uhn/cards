@@ -66,25 +66,11 @@ public class InitialNotificationsTask implements Runnable
         /*
          * Query the `Visit information` Forms for appointments happening
          * on day NOW+3. For example, if today is January 1st 2022, find
-         * all appointments on January 4th 2022.
-         *
-         * Suppose that the nightly ImportTask runs every night at 00:00:00.
-         * Therefore, when it runs at 2022-01-01T00:00:00 with a daysToQuery
-         * parameter of 3, it will import appointments for 2022-01-01,
-         * 2022-01-02, and 2022-01-03.
-         *
-         * Now suppose that this nightly InitialNotificationsTask runs every night
-         * at 00:30:00. When it runs at 2022-01-01T00:30:00 it will obtain
-         * all the appointments happening on 2022-01-04 and immediately send
-         * out the notification emails requesting completion of the
-         * pre-appointment surveys. If an appointment is scheduled for
-         * 2022-01-04T00:00:00 (although highly unlikely at this hour)
-         * the email notification will thus be sent out 71.5 hours before
-         * the appointment. If an appointment is scheduled for
-         * 2022-01-04T23:59:59 (although highly unlikely at this hour) the
-         * email notification will thus be sent out 95.5 hours before the
-         * appointment.
-         *
+         * all appointments on January 4th 2022. This task should run as
+         * close as possible to the start of the day, but after any
+         * upstream data is fetched (eg. from Data Lake), so that
+         * patients will have the maximum amount of time to complete
+         * their surveys.
          */
         final Date today = new Date();
         final Calendar dateToQuery = Calendar.getInstance();
