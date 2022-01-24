@@ -423,7 +423,7 @@ function QuestionnaireSet(props) {
 
   let welcomeScreen = [
     <Typography variant="h4" key="welcome-greeting">{ greet(username) }</Typography>,
-    questionnaireIds.length == 0 ?
+    isComplete && isSubmitted || questionnaireIds.length == 0 ?
       <Typography color="textSecondary" variant="subtitle1" key="welcome-message">
         You have no pending surveys to fill out for your next appointment.
       </Typography>
