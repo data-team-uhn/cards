@@ -18,68 +18,86 @@
  */
 package io.uhndata.cards.dataentry.internal.serialize;
 
-import java.util.Locale;
-
 import org.apache.sling.api.adapter.AdapterFactory;
 import org.osgi.service.component.annotations.Component;
 
 /**
- * AdapterFactory that converts forms to plain text.
+ * AdapterFactory that converts forms to markdown.
  *
  * @version $Id$
  */
 @Component(
     service = { AdapterFactory.class },
-    property = { "adaptables=org.apache.sling.api.resource.Resource", "adapters=java.lang.String" })
-public class FormToTextAdapterFactory
+    property = { "adaptables=org.apache.sling.api.resource.Resource", "adapters=java.lang.CharSequence" })
+public class FormToMarkdownAdapterFactory
     extends AbstractFormToStringAdapterFactory
 {
+
+    private static final String MD_LINE_END = "  \n";
+
     @Override
     void formatMetadata(final String metadata, final StringBuilder result)
     {
-        result.append(metadata.toUpperCase(Locale.ROOT)).append('\n');
+        // Don't output metadata
     }
 
     @Override
     void formatSectionTitle(final String title, final StringBuilder result)
     {
-        result.append(title.toUpperCase(Locale.ROOT)).append("\n\n");
+        result.append("\n\n### ").append(title).append(MD_LINE_END).append('\n');
     }
 
     @Override
     void formatSectionSeparator(final StringBuilder result)
     {
-        result.append("---------------------------------------------").append("\n\n");
+        result.append("----").append(MD_LINE_END).append('\n');
     }
+
 
     @Override
     void formatQuestion(final String question, final StringBuilder result)
     {
-        result.append(question).append('\n');
+        result.append("\n**").append(question).append("**").append(MD_LINE_END);
     }
 
     @Override
     void formatEmptyAnswer(final StringBuilder result)
     {
-        formatAnswer("-", result);
+        formatAnswer("—", result);
     }
-
 
     @Override
     void formatAnswer(final String answer, final StringBuilder result)
     {
-        result.append("  ").append(answer).append('\n');
+        result.append(answer).append(MD_LINE_END);
     }
 
     @Override
     void formatNote(final String note, final StringBuilder result)
     {
-        result.append("\n  NOTES\n  ").append(note.replaceAll("\n", "\n  ")).append('\n');
+        result.append("**Notes**").append(MD_LINE_END).append(note.replaceAll("\n", MD_LINE_END)).append(MD_LINE_END);
     }
 
     @Override
     void formatPedigree(final String image, final StringBuilder result)
     {
-        result.append("  Pedigree provided\n");
+        // TODO:
+        // Wrap the SVG in a div and size the div to fit in the viewport
+        // We're assuming the h/w ratio of the pedigree does not exceed the h/w ratio of the viewport
+        // The wrapper will have:
+        // * width = 90%
+        // * height = 100vw * .9 * svg.height / svg.width
+        // double imgHWRatio = imgH / imgW;
+        double imgHWRatio = 1;
+        result.append("<div style='")
+            .append("display: inline-block; ")
+            .append("width: 90%; ")
+            .append("height: calc(100vw * ").append(0.9 * imgHWRatio).append(");")
+            .append("overflow: hidden;")
+            .append("'>")
+            .append("<svg style='width: 100%' ")
+            .append(image.substring(4))
+            .append("</div>")
+            .append(MD_LINE_END);
     }
 }
