@@ -73,14 +73,14 @@ public final class AppointmentUtils
     public static Resource getRelatedSubjectOfType(ResourceResolver resolver, Resource formResource,
         String subjectTypePath)
     {
-        final String patientTypeUuid = resolver.getResource(subjectTypePath).getValueMap().get("jcr:uuid", "");
+        final String subjectTypeUuid = resolver.getResource(subjectTypePath).getValueMap().get("jcr:uuid", "");
         final String[] relatedSubjects = formResource.getValueMap().get("relatedSubjects", String[].class);
         for (int i = 0; i < relatedSubjects.length; i++) {
             Resource tmpSubject = getSubjectNode(resolver, relatedSubjects[i]);
             if (tmpSubject == null) {
                 continue;
             }
-            if (patientTypeUuid.equals(tmpSubject.getValueMap().get("type", ""))) {
+            if (subjectTypeUuid.equals(tmpSubject.getValueMap().get("type", ""))) {
                 return tmpSubject;
             }
         }
