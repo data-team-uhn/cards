@@ -125,35 +125,37 @@ public class ImportTask implements Runnable
     {
         // Since we can't query more than one date at a time, query three dates
         String postRequestTemplate = "{\"query\": \"query{"
-            + "patientsByDateAndClinic(clinic: \\\"" + clinicName + "\\\", date: \\\"%s\\\") {"
+            + "patientsByDateAndClinic(location: \\\"" + clinicName + "\\\", start: \\\"%s\\\", end: \\\"%s\\\") {"
             + "name {given family} sex mrn ohip dob emailOk com {email} "
-            + "appointments {fhirID time status attending {name {family}}} }}\"}";
+            + "appointments {fhirID time status location attending {name {family}}} }}\"}";
+
         Calendar dateToQuery = Calendar.getInstance();
         Date today = new Date();
         dateToQuery.setTime(today);
+        Calendar endDate = (Calendar) dateToQuery.clone();
+        endDate.add(Calendar.DATE, daysToQuery);
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        for (int i = 0; i < daysToQuery; i++)
-        {
-            String postRequest = String.format(postRequestTemplate, formatter.format(dateToQuery.getTime()));
-            // Query the torch server
-            try {
-                String rawResponse = getPostResponse(this.endpointURL, postRequest, authToken);
+        String postRequest = String.format(postRequestTemplate, formatter.format(dateToQuery.getTime()),
+            formatter.format(endDate.getTime()));
 
-                // Read the response into a JsonObject
-                JsonReader jsonReader = Json.createReader(new StringReader(rawResponse));
-                JsonObject response = jsonReader.readObject();
+        // Query the torch server
+        try {
+            String rawResponse = getPostResponse(this.endpointURL, postRequest, authToken);
 
-                // Create the storage object and store every patient/visit
-                JsonArray data = response.getJsonObject("data").getJsonArray("patientsByDateAndClinic");
-                final PatientLocalStorage storage = new PatientLocalStorage(
-                    this.resolverFactory.getServiceResourceResolver(
-                        Map.of(ResourceResolverFactory.SUBSERVICE, "TorchImporter")), dateToQuery);
-                data.forEach(storage::store);
-            } catch (Exception e) {
-                LOGGER.error("Failed to query server: {}", e.getMessage(), e);
-            }
-            dateToQuery.add(Calendar.DATE, 1);
+            // Read the response into a JsonObject
+            JsonReader jsonReader = Json.createReader(new StringReader(rawResponse));
+            JsonObject response = jsonReader.readObject();
+
+            // Create the storage object and store every patient/visit
+            JsonArray data = response.getJsonObject("data").getJsonArray("patientsByDateAndClinic");
+            final PatientLocalStorage storage = new PatientLocalStorage(
+                this.resolverFactory.getServiceResourceResolver(
+                    Map.of(ResourceResolverFactory.SUBSERVICE, "TorchImporter")), dateToQuery);
+            data.forEach(storage::store);
+        } catch (Exception e) {
+            LOGGER.error("Failed to query server: {}", e.getMessage(), e);
         }
+        dateToQuery.add(Calendar.DATE, 1);
     }
 
     /***
