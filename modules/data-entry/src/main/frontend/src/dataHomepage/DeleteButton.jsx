@@ -120,6 +120,9 @@ function DeleteButton(props) {
     if (deleteRecursive) {
       url.searchParams.set("recursive", true);
     }
+
+    // We should not use fetchWithReLogin here, since the deletion can cause a 401 error
+    // if the currently-logged-in user is unauthorized. Instead, fetch, and handle 401s separately
     fetchWithReLogin(globalLoginDisplay, url, {
       method: 'DELETE',
       headers: {
