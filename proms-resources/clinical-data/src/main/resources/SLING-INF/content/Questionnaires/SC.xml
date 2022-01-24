@@ -66,7 +66,7 @@
 			<type>Boolean</type>
 		</property>
 		<node>
-			<name>smoking-history-v1-has-patient-used-tobacco-products-in-past-6-months</name>
+			<name>smoking_history_v1_has_patient_used_tobacco_products_in_past_6_months</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>minAnswers</name>
@@ -364,7 +364,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>smoking-history-v1-has-patient-used-tobacco-products-in-past-6-months</value>
+						<value>smoking_history_v1_has_patient_used_tobacco_products_in_past_6months</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -693,7 +693,7 @@ After:
 				<property>
 					<name>value</name>
 					<values>
-						<value>smoking-history-v1-has-patient-used-tobacco-products-in-past-6-months</value>
+						<value>smoking_history_v1_has_patient_used_tobacco_products_in_past_6_months</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -787,7 +787,7 @@ After:
 				<property>
 					<name>value</name>
 					<values>
-						<value>smoking-history-v1-has-patient-used-tobacco-products-in-past-6-months</value>
+						<value>smoking_history_v1_has_patient_used_tobacco_products_in_past_6_months</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -1088,7 +1088,7 @@ Click on the program you want to register in.</value>
 					<property>
 						<name>value</name>
 						<values>
-							<value>smoking-history-v1-has-patient-used-tobacco-products-in-past-6-months</value>
+							<value>smoking_history_v1_has_patient_used_tobacco_products_in_past_6_months</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -1257,7 +1257,7 @@ Click on the program you want to register in.</value>
 				<property>
 					<name>value</name>
 					<values>
-						<value>smoking-history-v1-has-patient-used-tobacco-products-in-past-6-months</value>
+						<value>smoking_history_v1_has_patient_used_tobacco_products_in_past_6_months</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -1440,7 +1440,7 @@ Click on the program you want to register in.</value>
 				<property>
 					<name>value</name>
 					<values>
-						<value>smoking-history-v1-has-patient-used-tobacco-products-in-past-6-months</value>
+						<value>smoking_history_v1_has_patient_used_tobacco_products_in_past_6_months</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -1473,7 +1473,8 @@ Click on the program you want to register in.</value>
 			<property>
 				<name>expression</name>
 				<value>
-return @{smoking_history_v2_program_referral_requested_by_patient:-none} != "none" ?
+return @{smoking_history_v1_has_patient_used_tobacco_products_in_past_6_months:-0} == 0 ? null :
+     @{smoking_history_v2_program_referral_requested_by_patient:-none} != "none" ?
        "You have selected **" + @{smoking_history_v2_program_referral_requested_by_patient} + "**. Someone from the program will call you to share more details and finish registering you in the program. Your health care team will also be informed that you have registered.\n\nFor more details read the UHN pamphlet *Smoking: It’s never too late to quit*"
      : "You have selected not to be referred to a program. Your health care team will be informed of your choice.\n\nFor more details read the UHN pamphlet on quitting smoking during your cancer treatment."
 				</value>
