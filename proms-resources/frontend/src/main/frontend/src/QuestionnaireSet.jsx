@@ -56,7 +56,8 @@ const useStyles = makeStyles(theme => ({
   },
   screen : {
     alignItems: "center",
-    justify: "center",
+    margin: "auto",
+    maxWidth: "780px",
     "& h4, h6" : {
       textAlign: "center",
     }
@@ -79,9 +80,6 @@ const useStyles = makeStyles(theme => ({
     alignItems: "stretch",
     justify: "space-between",
     flexWrap: "nowrap",
-  },
-  formSpacer : {
-    marginTop: "1em"
   },
   formTitle : {
     marginTop: "1em",
@@ -463,14 +461,14 @@ function QuestionnaireSet(props) {
         />
   ];
 
-  let reviewScreen = <>
-    <Typography variant="h4">Please review your answers</Typography>
-    <Typography paragraph>You can update the answers for each survey and continue to this review screen before final submission.</Typography>
+  let reviewScreen = [
+    <Typography variant="h4">Please review your answers</Typography>,
+    <Typography paragraph>You can update the answers for each survey and continue to this review screen before final submission.</Typography>,
+    <Grid container direction="column" spacing={3}>
       {(questionnaireIds || []).map((q, i) => (
         <Grid item key={q+"Review"}>
           <Typography variant="h5" className={classes.formTitle}>{questionnaires[q].title || questionnaires[q]["@name"]}</Typography>
           <Form
-            className={classes.formSpacer}
             id={subjectData[q]['@name']}
             disableHeader
             disableButton
@@ -485,10 +483,11 @@ function QuestionnaireSet(props) {
           </Button>
       </Grid>
       ))}
+    </Grid>,
     <div className={classes.reviewFab}>
       <Fab variant="extended" color="primary" onClick={() => {onSubmit()}}>Submit my answers</Fab>
     </div>
-  </>
+  ];
 
   // Are there any response interpretations to display to the patient?
   let hasInterpretations = (questionnaireIds || []).some(q => questionnaires?.[q]?.hasInterpretation);
@@ -510,10 +509,10 @@ worsening while waiting for your next appointment, please proceed to your neares
       <Typography variant="h4">Interpreting your results</Typography>,
       <Typography color="textSecondary">There are different actions you can take now depending on how you have scored
 your symptoms. Please see below for a summary of your scores and suggested actions.</Typography>,
-      <Grid item>
+      <Grid container direction="column" spacing={3}>
       { (questionnaireIds || []).map((q, i) => (
+        <Grid item>
         <Form
-          className={classes.formSpacer}
           key={q+"Summary"}
           id={subjectData[q]['@name']}
           mode="summary"
@@ -521,6 +520,7 @@ your symptoms. Please see below for a summary of your scores and suggested actio
           disableButton
           contentOffset={contentOffset || 0}
         />
+        </Grid>
       ))}
       </Grid>
     ] : [
@@ -531,11 +531,9 @@ worsening while waiting for your next appointment, please proceed to your neares
       </Typography>
     ];
 
-  let exitScreen = (typeof(isComplete) == 'undefined') ? [
-    <CircularProgress />
-  ] : [
-    isComplete ? (isSubmitted ? summaryScreen : reviewScreen)
-      : [
+  let loadingScreen = [ <CircularProgress /> ];
+
+  let incompleteScreen = [
         <List>
         { (questionnaireIds || []).map((q, i) => (
           <ListItem key={q+"Exit"}>
@@ -551,8 +549,9 @@ worsening while waiting for your next appointment, please proceed to your neares
         <div className={classes.updateButton}>
           <Fab variant="extended" color="primary" onClick={() => {setCrtStep(-1)}}>Update my answers</Fab>
         </div>
-    ]
   ];
+
+  let exitScreen = (typeof(isComplete) == 'undefined') ? loadingScreen : (isComplete ? (isSubmitted ? summaryScreen : reviewScreen) : incompleteScreen);
 
   const progress = 100.0 * (crtStep + 1) / ((questionnaireIds?.length || 0) + 1);
 
