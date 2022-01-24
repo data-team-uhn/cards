@@ -26,9 +26,9 @@ import jakarta.mail.internet.MimeMessage;
 
 public final class EmailUtils
 {
-    private static final String FROM_ADDRESS = "noreply@datapro.uhn.io";
-    private static final String FROM_NAME = "UHN Data Pro";
-    private static final String SUBJECT = "UHN Data Pro Notification";
+    private static final String FROM_ADDRESS = System.getenv("PATIENT_NOTIFICATION_FROM_ADDRESS");
+    private static final String FROM_NAME = System.getenv("PATIENT_NOTIFICATION_FROM_NAME");
+    private static final String SUBJECT = System.getenv("PATIENT_NOTIFICATION_SUBJECT");
 
     // Hide the utility class constructor
     private EmailUtils()
