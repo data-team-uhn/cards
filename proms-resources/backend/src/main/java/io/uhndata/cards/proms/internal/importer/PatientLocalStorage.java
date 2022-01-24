@@ -22,11 +22,13 @@ package io.uhndata.cards.proms.internal.importer;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -118,10 +120,15 @@ public class PatientLocalStorage
                         continue;
                     }
 
-                    Resource visit = getOrCreateSubject(thisAppointment.getString("fhirID"),
-                        "/SubjectTypes/Patient/Visit/", patient, nodesToCheckin);
-                    Resource visitInfo = getOrCreateForm(visit, "/Questionnaires/Visit information/", nodesToCheckin);
-                    updateVisitInformationForm(visitInfo, thisAppointment);
+                    List<String> surveyIDs = getSurveyIDs(thisAppointment.getJsonArray("location"));
+                    for (String surveyID : surveyIDs)
+                    {
+                        Resource visit = getOrCreateSubject(thisAppointment.getString("fhirID") + "-" + surveyID,
+                            "/SubjectTypes/Patient/Visit/", patient, nodesToCheckin);
+                        Resource visitInfo = getOrCreateForm(visit, "/Questionnaires/Visit information/",
+                            nodesToCheckin);
+                        updateVisitInformationForm(visitInfo, thisAppointment, surveyID);
+                    }
                 } catch (ParseException e) {
                     //TODO: handle exception
                     LOGGER.error("Could not parse date for appointment {}: {}", thisAppointment.getString("fhirID"),
@@ -342,14 +349,18 @@ public class PatientLocalStorage
      * Update the visit information form with values from the given JsonObject.
      * @param form The Visit Information form to update
      * @param info The JsonObject representing a visit returned from Torch
+     * @param surveyID A string representing the internally mapped survey ID for the location of this visit
      */
-    void updateVisitInformationForm(Resource form, JsonObject info)
+    void updateVisitInformationForm(Resource form, JsonObject info, String surveyID)
         throws RepositoryException, PersistenceException
     {
         Map<String, JsonStringGetter> formMapping = Map.of(
             "fhir_id", obj -> obj.getString("fhirID"),
             "status", obj -> obj.getString("status"),
-            "provider", obj -> obj.getJsonObject("attending").getJsonObject("name").getString("family")
+            "provider", obj -> obj.getJsonObject("attending").getJsonObject("name").getString("family"),
+            // We need to map the display name of the clinic given to a survey ID
+            // The mappings are stored at /Proms/ClinicMapping/<location hashcCode>
+            "surveys", obj -> surveyID
         );
 
         Map<String, JsonDateGetter> dateMapping = Map.of(
@@ -357,5 +368,33 @@ public class PatientLocalStorage
         );
 
         updateForm(form, info, "/Questionnaires/Visit information", formMapping, dateMapping);
+    }
+
+    /**
+     * Map the given clinic display names to a survey ID.
+     * @param appointments The appointments array to parse
+     * @return The survey IDs as a | delimited string
+     */
+    List<String> getSurveyIDs(JsonArray appointments)
+    {
+        List<String> retVal = new ArrayList<>();
+        for (int i = 0; i < appointments.size(); i++) {
+            // Resolve this name from our mapping
+            String clinic = appointments.getString(i);
+            // TODO: What do we do in case of a colission?
+            Resource mapping = this.resolver.getResource("/Proms/ClinicMapping/" + clinic.hashCode());
+            if (mapping == null) {
+                LOGGER.error("Could not find mapping for location " + clinic);
+            } else {
+                try
+                {
+                    retVal.add(mapping.adaptTo(Node.class).getProperty("surveyID").getString());
+                } catch (RepositoryException e) {
+                    LOGGER.error("Erorr while resolving clinic mapping: {} {} ", clinic, e.getMessage(), e);
+                }
+            }
+        }
+
+        return retVal;
     }
 }
