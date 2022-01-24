@@ -1,0 +1,5 @@
+{
+    "security:acl": [
+        { "principal": "everyone", "granted": ["jcr:read"] }
+    ]
+}

@@ -32,7 +32,7 @@ and _never_ in production environments.**
 2.3. Create the `myuser` user. Go to _Users_ --> _Add user_ and enter
 the following values:
   - _Username_: `myuser`
-  - _Email_: `myuser@uhn.ca`
+  - _Email_: `myuser@keycloakdemo`
   - _First Name_: `My`
   - _Last Name_: `User`
 then click _Save_. Click on the _Credentials_ tab and enter the
@@ -75,17 +75,25 @@ from the IdP's XML metadata URL. Enter the keystore export password from
 _step 3.2_ and enter `yes` for `Trust this certificate? [no]:`.
 
 3.5. Lastly, copy the file `samlKeystore.p12` into the root directory for
-the CARDS project. You may now start CARDS with _SAML Login Support_
-enabled (`./start_cards.sh --dev --saml`).
+the CARDS project. You may now start CARDS with _SAML Login Support_ and
+the `keycloak_demo` SAML IdP enabled
+(`./start_cards.sh --dev --saml --keycloak_demo`).
 
 4. Enable and configure the SAML login for CARDS by running:
 `python3 add_saml_sp_config.py`.
 
-5. Point your browser to CARDS (`http://localhost:8080` if testing
+5. Start the _keycloak_headermod_http_proxy_ by running:
+```bash
+cd Utilities/Development
+nodejs keycloak_headermod_http_proxy.js
+```
+
+6. Point your browser to CARDS (`http://localhost:9090` if testing
 locally). You should automatically be redirected to the SSO login page
 (Keycloak instance at `localhost:8484` if testing locally). Login with
-your credentials (`myuser`:`password` if using the testing Keycloak
-Docker container). You should now be able to access CARDS as your user.
+your credentials (`myuser@keycloakdemo`:`password` if using the testing
+Keycloak Docker container). You should now be able to access CARDS as
+your user.
 
 ### Security Tests
 
@@ -105,13 +113,13 @@ Keycloak Docker container as an IdP:
     - _Key use_: _sig_
   - Click _Save_
   - Go back to the _Providers_ tab and delete the `rsa-generated` key
-  - Visit `localhost:8080` again and you will be redirected to Keycloak (`localhost:8484`) just as before
+  - Visit `localhost:9090` again and you will be redirected to Keycloak (`localhost:8484`) just as before
   - Attempt to login as `myuser`:`password`
   - You should be shown a page with the error `Signature cryptographic validation not successful`
   - Go back to `http://localhost:8484/auth/admin` and login as `admin`:`admin`
   - Go to _Clients_ --> _http://localhost:8080/_
   - Disable _Sign Documents_ and _Sign Assertions_
   - Click _Save_
-  - Visit `localhost:8080` again and you will be redirected to Keycloak (`localhost:8484`) just as before
+  - Visit `localhost:9090` again and you will be redirected to Keycloak (`localhost:8484`) just as before
   - Attempt to login as `myuser`:`password`
   - You should be shown a page with the error `The SAML Assertion was not signed!`

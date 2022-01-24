@@ -156,7 +156,7 @@ fi
 #Should the SAML OSGi bundle be enabled?
 if [[ "$SAML_AUTH_ENABLED" == "true" ]]
 then
-  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-saml-support/${CARDS_VERSION}/slingosgifeature/base -C io.dropwizard.metrics:metrics-core:ALL"
+  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-saml-support/${CARDS_VERSION}/slingosgifeature/base -C io.dropwizard.metrics:metrics-core:ALL -f mvn:io.uhndata.cards/cards-fetch-requires-saml-login/${CARDS_VERSION}/slingosgifeature"
 fi
 
 #Execute the volume_mounted_init.sh script if it is present

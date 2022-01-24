@@ -31,7 +31,7 @@ argparser.add_argument('--entityID', help='SAML Entity ID for this Service Provi
 argparser.add_argument('--acsPath', help='SAML Consumer Endpoint path [default: /sp/consumer]', default='/sp/consumer')
 argparser.add_argument('--saml2userIDAttr', help='SAML claim to be used as the user identifier [default: urn:oid:1.2.840.113549.1.9.1]', default='urn:oid:1.2.840.113549.1.9.1')
 argparser.add_argument('--saml2IDPDestination', help='The URL on the Identity Provider (IdP) that will provide the authentication screen [default: http://localhost:8484/auth/realms/myrealm/protocol/saml]', default='http://localhost:8484/auth/realms/myrealm/protocol/saml')
-argparser.add_argument('--saml2LogoutURL', help='The URL to redirect the client to after logging out [default: http://localhost:8484/]', default='http://localhost:8484/')
+argparser.add_argument('--saml2LogoutURL', help='The URL to redirect the client to after logging out [default: http://localhost:9090/]', default='http://localhost:9090/')
 argparser.add_argument('--jksFileLocation', help='The location of the keystore file containing the SAML decryption and verification keys [default: ./samlKeystore.p12]', default='./samlKeystore.p12')
 argparser.add_argument('--idpCertAlias', help='Keystore identifier for the IdP verification certificate [default: idpsigningalias]', default='idpsigningalias')
 argparser.add_argument('--spKeysAlias', help='Keystore identifier for the SAML IdP response decryption key [default: 1]', default='1')
