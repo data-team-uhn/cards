@@ -342,7 +342,7 @@ Objectively determines severity of initial symptoms, and also monitors symptom c
 			</property>
 			<property>
 				<name>text</name>
-				<value>PHQ-9 Interpretation</value>
+				<value>Patient Health Questionnaire-9</value>
 				<type>String</type>
 			</property>
 			<property>

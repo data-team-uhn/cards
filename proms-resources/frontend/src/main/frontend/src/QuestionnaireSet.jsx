@@ -56,7 +56,8 @@ const useStyles = makeStyles(theme => ({
   },
   screen : {
     alignItems: "center",
-    justify: "center",
+    margin: "auto",
+    maxWidth: "780px",
     "& h4, h6" : {
       textAlign: "center",
     }
@@ -79,16 +80,6 @@ const useStyles = makeStyles(theme => ({
     alignItems: "stretch",
     justify: "space-between",
     flexWrap: "nowrap",
-  },
-  formSpacer : {
-    marginTop: "1em"
-  },
-  formTitle : {
-    marginTop: "1em",
-  },
-  updateButton : {
-    marginTop: "1em",
-    marginBottom: "4em",
   },
   reviewFab : {
     margin: theme.spacing(1),
@@ -209,9 +200,9 @@ function QuestionnaireSet(props) {
     }
   }, [visitInformation]);
 
-  // When the user lands on a completed visit that has not been submit, proceed to reviewing their forms
+  // When the user lands on a completed visit that has not been submited, proceed to reviewing their forms
   useEffect(() => {
-    if(isComplete && !isSubmitted && questionnaireIds && crtStep == -1) {
+    if(isComplete && !isSubmitted && questionnaireIds?.length > 0 && crtStep == -1) {
       setCrtStep(questionnaireIds.length)
     }
   }, [isComplete, isSubmitted, questionnaireIds])
@@ -277,10 +268,23 @@ function QuestionnaireSet(props) {
         'title': value.questionnaire?.title || value.questionnaire?.['@name'],
         '@path': value.questionnaire?.['@path'],
         '@name': value.questionnaire?.['@name'],
+        'hasInterpretation': hasInterpretation(value.questionnaire),
         'estimate': value.estimate
        }});
     setQuestionnaires(data);
   };
+
+  // Find out if a questionnaire has an interpretation for the patient, i.e. a "summary" section
+  let hasInterpretation = (json) => {
+     if (json?.displayMode == "summary") {
+       return true;
+     }
+     let result = false;
+     Object.values(json || {})
+       .filter(value => value['jcr:primaryType'] == 'cards:Section')
+       .forEach(section => { result ||= hasInterpretation(section) });
+     return result;
+  }
 
   // Find the next step : Skip questionnaires that have already been filled out
   let findNextStep = (step) => {
@@ -325,7 +329,7 @@ function QuestionnaireSet(props) {
     );
   }
 
-  if (!questionnaires || !subjectData) {
+  if (!questionnaireIds || !questionnaires || !subjectData) {
     return (
       <QuestionnaireSetScreen className={classes.screen}>
         <CircularProgress />
@@ -412,9 +416,9 @@ function QuestionnaireSet(props) {
 
   let welcomeScreen = [
     <Typography variant="h4" key="welcome-greeting">{ greet(username) }</Typography>,
-    isComplete && isSubmitted ?
+    isComplete && isSubmitted || questionnaireIds.length == 0 ?
       <Typography color="textSecondary" variant="subtitle1" key="welcome-message">
-        You already completed the survey.
+        You have no pending surveys to fill out for your next appointment.
       </Typography>
     :
       <Typography paragraph key="welcome-message">
@@ -443,41 +447,53 @@ function QuestionnaireSet(props) {
           mode="edit"
           disableHeader
           doneIcon={nextQuestionnaire ? <NextStepIcon /> : <DoneIcon />}
-          doneLabel={nextQuestionnaire ? `Continue to ${nextQuestionnaire?.title}` : "Review my answers"}
+          doneLabel={nextQuestionnaire ? `Continue to ${nextQuestionnaire?.title}` : "Review"}
           onDone={nextQuestionnaire ? launchNextForm : nextStep}
           doneButtonStyle={{position: "relative", right: 0, bottom: "unset", textAlign: "center"}}
           contentOffset={contentOffset || 0}
         />
   ];
 
-  let reviewScreen = <>
-    <Typography variant="h4">Please review your answers before final submission</Typography>
+  let reviewScreen = [
+    <Typography variant="h4">Please review your answers</Typography>,
+    <Typography paragraph>You can update the answers for each survey and continue to this review screen before final submission.</Typography>,
+    <Grid container direction="column" spacing={8}>
       {(questionnaireIds || []).map((q, i) => (
-        <Grid item key={q+"Review"}>
-          <Typography variant="h5" className={classes.formTitle}>{questionnaires[q].title || questionnaires[q]["@name"]}</Typography>
+      <Grid item key={q+"Review"}>
+      <Grid container spacing={4}>
+        <Grid item>
+          <Typography variant="h5">{questionnaires[q].title || questionnaires[q]["@name"]}</Typography>
+        </Grid>
+        <Grid item>
           <Form
-            className={classes.formSpacer}
             id={subjectData[q]['@name']}
             disableHeader
             disableButton
             contentOffset={contentOffset || 0}
           />
+        </Grid>
+        <Grid item>
           <Button
             variant="outlined"
             color="secondary"
-            className={classes.updateButton}
             onClick={() => {setReviewMode(true); setCrtFormId(subjectData[q]["@name"]); setCrtStep(i)}}>
               Update this survey
           </Button>
+        </Grid>
+      </Grid>
       </Grid>
       ))}
+    </Grid>,
     <div className={classes.reviewFab}>
-      <Fab variant="extended" color="primary" onClick={() => {onSubmit()}}>Submit my Answers</Fab>
+      <Fab variant="extended" color="primary" onClick={() => {onSubmit()}}>Submit my answers</Fab>
     </div>
-  </>
+  ];
 
-  let summaryScreen = [
-      <Typography variant="h4">Thank you for your submission.</Typography>,
+  // Are there any response interpretations to display to the patient?
+  let hasInterpretations = (questionnaireIds || []).some(q => questionnaires?.[q]?.hasInterpretation);
+
+  let summaryScreen = hasInterpretations ? [
+      <Typography variant="h4">Thank you for your submission</Typography>,
       <Typography color="textSecondary">Please note:</Typography>,
       <ul>
         <li key="0"><Typography color="textSecondary">
@@ -493,10 +509,10 @@ worsening while waiting for your next appointment, please proceed to your neares
       <Typography variant="h4">Interpreting your results</Typography>,
       <Typography color="textSecondary">There are different actions you can take now depending on how you have scored
 your symptoms. Please see below for a summary of your scores and suggested actions.</Typography>,
-      <Grid item>
+      <Grid container direction="column" spacing={3}>
       { (questionnaireIds || []).map((q, i) => (
+        <Grid item>
         <Form
-          className={classes.formSpacer}
           key={q+"Summary"}
           id={subjectData[q]['@name']}
           mode="summary"
@@ -504,15 +520,20 @@ your symptoms. Please see below for a summary of your scores and suggested actio
           disableButton
           contentOffset={contentOffset || 0}
         />
+        </Grid>
       ))}
       </Grid>
+    ] : [
+      <Typography variant="h4">Thank you for your submission</Typography>,
+      <Typography color="textSecondary">
+Please note that your responses may not be reviewed by your care team until the day of your next appointment. If your symptoms are
+worsening while waiting for your next appointment, please proceed to your nearest Emergency Department today, or call 911.
+      </Typography>
     ];
 
-  let exitScreen = (typeof(isComplete) == 'undefined') ? [
-    <CircularProgress />
-  ] : [
-    isComplete ? (isSubmitted ? summaryScreen : reviewScreen)
-      : [
+  let loadingScreen = [ <CircularProgress /> ];
+
+  let incompleteScreen = [
         <List>
         { (questionnaireIds || []).map((q, i) => (
           <ListItem key={q+"Exit"}>
@@ -524,12 +545,11 @@ your symptoms. Please see below for a summary of your scores and suggested actio
           </ListItem>
         ))}
         </List>,
-        <Typography color="error">Your answers are incomplete. Please return to the main screen and check for any mandatory questions you may have missed.</Typography>,
-        <div className={classes.updateButton}>
-          <Fab variant="extended" color="primary" onClick={() => {setCrtStep(-1)}}>Update answers</Fab>
-        </div>
-    ]
+        <Typography color="error">Your answers are incomplete. Please update your answers by responding to all mandatory questions.</Typography>,
+        <Fab variant="extended" color="primary" onClick={() => {setCrtStep(-1)}}>Update my answers</Fab>
   ];
+
+  let exitScreen = (typeof(isComplete) == 'undefined') ? loadingScreen : (isComplete ? (isSubmitted ? summaryScreen : reviewScreen) : incompleteScreen);
 
   const progress = 100.0 * (crtStep + 1) / ((questionnaireIds?.length || 0) + 1);
 
