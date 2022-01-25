@@ -33,7 +33,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  IconButton,
   Typography,
   makeStyles,
   useMediaQuery
