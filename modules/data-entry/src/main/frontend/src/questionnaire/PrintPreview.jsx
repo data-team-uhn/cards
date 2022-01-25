@@ -73,6 +73,9 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js"
 
 const useStyles = makeStyles(theme => ({
   printPreview : {
+    "& .wmde-markdown h1, .wmde-markdown h2" : {
+      borderBottom: "0 none",
+    },
     "@media print" : {
       "& .MuiDialogContent-root" : {
         paddingTop: theme.spacing(3),
@@ -115,11 +118,13 @@ const PrintPreview = forwardRef((props, ref) => {
       onClose={onClose}
       {...rest}
     >
+      { (breadcrumb || title || subtitle) &&
       <DialogTitle>
         { breadcrumb && <Typography variant="overline" color="textSecondary">{breadcrumb}</Typography> }
-        <Typography variant="h4">{title}</Typography>
+        { title && <Typography variant="h4">{title}</Typography> }
         { subtitle && <Typography variant="overline" color="textSecondary">{subtitle}</Typography> }
       </DialogTitle>
+      }
       <DialogContent dividers>
         { content ?
           <FormattedText>{content}</FormattedText>
@@ -140,7 +145,7 @@ const PrintPreview = forwardRef((props, ref) => {
 
 PrintPreview.propTypes = {
   resourcePath: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
   breadcrumb: PropTypes.string,
   subtitle: PropTypes.string,
   onClose: PropTypes.func,
