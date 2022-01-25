@@ -71,4 +71,11 @@ public class ContentTypeSetter implements Use
     {
         this.response.setContentType("text/plain;charset=UTF-8");
     }
+
+    /** Set the content type to text/markdown. */
+    public void markdown()
+    {
+        this.response.setContentType("text/markdown;charset=UTF-8");
+    }
+
 }
