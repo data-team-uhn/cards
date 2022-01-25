@@ -68,10 +68,9 @@ const useStyles = makeStyles(theme => ({
     }
   },
   stepIndicator : {
-    border: "3px solid " + theme.palette.primary.main,
+    border: "1px solid " + theme.palette.text.secondary,
     background: "transparent",
-    color: theme.palette.primary.main,
-    fontWeight: 800,
+    color: theme.palette.text.secondary,
   },
   incompleteIndicator : {
     border: "1px solid " + theme.palette.secondary.main,
@@ -79,7 +78,7 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.secondary.main,
   },
   doneIndicator : {
-    background: theme.palette.primary.main,
+    background: theme.palette.success.main,
   },
   survey : {
     alignItems: "stretch",
@@ -566,20 +565,20 @@ function QuestionnaireSet(props) {
   // Are there any response interpretations to display to the patient?
   let hasInterpretations = (questionnaireIds || []).some(q => questionnaires?.[q]?.hasInterpretation);
 
+  let disclaimer = (
+      <Alert severity="warning">
+Please note that your responses may not be reviewed by your care team until the day of your next appointment. If your symptoms are
+worsening while waiting for your next appointment, please proceed to your nearest Emergency Department today, or call 911.
+      </Alert>
+  )
+
   let summaryScreen = hasInterpretations ? [
       <Typography variant="h4">Thank you for your submission</Typography>,
-      <Typography color="textSecondary">Please note:</Typography>,
-      <ul>
-        <li key="0"><Typography color="textSecondary">
+      <Typography color="textSecondary">
 For your privacy and security, once this screen is closed the information below will not be accessible until the day of
 your appointment with your provider. Please print or note this information for your reference.
-        </Typography></li>
-        <li key="1"><Typography color="textSecondary">
-Your responses may not be reviewed by your care team until the day of your next appointment. If your symptoms are
-worsening while waiting for your next appointment, please proceed to your nearest Emergency Department today, or call
-911.
-        </Typography></li>
-      </ul>,
+      </Typography>,
+      disclaimer,
       <Typography variant="h4">Interpreting your results</Typography>,
       <Typography color="textSecondary">There are different actions you can take now depending on how you have scored
 your symptoms. Please see below for a summary of your scores and suggested actions.</Typography>,
@@ -599,10 +598,7 @@ your symptoms. Please see below for a summary of your scores and suggested actio
       </Grid>
     ] : [
       <Typography variant="h4">Thank you for your submission</Typography>,
-      <Typography color="textSecondary">
-Please note that your responses may not be reviewed by your care team until the day of your next appointment. If your symptoms are
-worsening while waiting for your next appointment, please proceed to your nearest Emergency Department today, or call 911.
-      </Typography>
+      disclaimer
     ];
 
   let loadingScreen = [ <CircularProgress /> ];
