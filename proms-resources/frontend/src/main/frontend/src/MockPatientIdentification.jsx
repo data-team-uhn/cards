@@ -40,10 +40,9 @@ import DropdownsDatePicker from "./components/DropdownsDatePicker.jsx";
 
 const useStyles = makeStyles(theme => ({
   form : {
-    margin: theme.spacing(6, 3, 3),
-    "@media (max-height: 725px)" : {
-      marginTop: theme.spacing(4),
-    }
+    maxWidth: "500px",
+    margin: "auto",
+    padding: theme.spacing(2),
   },
   logo : {
     maxWidth: "240px",
@@ -52,7 +51,6 @@ const useStyles = makeStyles(theme => ({
     }
   },
   description : {
-    maxWidth: "550px",
     "& > *" : {
       textAlign: "center",
       marginBottom: "16px",
@@ -60,6 +58,10 @@ const useStyles = makeStyles(theme => ({
         fontSize: "x-small",
       }
     }
+  },
+  formFields : {
+    marginTop: 0,
+    width : "100%",
   },
   mrnInput : {
     '& input[type=number]': {
@@ -365,12 +367,12 @@ function MockPatientIdentification(props) {
              If routine service evaluations or research projects are undertaken, your responses may be analyzed in a completely anonymous way.
            </Typography>
          </Grid>
-         <Grid item xs={12}>
+         <Grid item xs={12} className={classes.formFields}>
             <div className={classes.description}>
             { error ?
               <Typography color="error">{error}</Typography>
               :
-              <Typography variant="h6">Please enter the following information for identification</Typography>
+              <Typography variant="h6">Enter the following information for identification</Typography>
             }
             </div>
             <InputLabel htmlFor="j_dob" shrink={true} className={classes.dateLabel}>Date of birth</InputLabel>
@@ -379,14 +381,14 @@ function MockPatientIdentification(props) {
               <Grid item>
                 <FormControl margin="normal" fullWidth>
                   <InputLabel htmlFor="j_mrn" shrink={true}>MRN</InputLabel>
-                  <Input id="j_mrn" name="j_mrn" autoComplete="off" type="number" placeholder="E.g.: 1234567" className={classes.mrnInput} onChange={event => setMrn(event.target.value)}/>
+                  <Input id="j_mrn" name="j_mrn" autoComplete="off" type="number" placeholder="1234567" className={classes.mrnInput} onChange={event => setMrn(event.target.value)}/>
                  </FormControl>
               </Grid>
               <Grid item>or</Grid>
               <Grid item>
                 <FormControl margin="normal" fullWidth>
                   <InputLabel htmlFor="j_hc" shrink={true}>Health card number</InputLabel>
-                  <Input id="j_hc" name="j_hc" autoComplete="off" placeholder="E.g.: 2345 678 901 XY" onChange={event => setHc(sanitizeHC(event.target.value))}/>
+                  <Input id="j_hc" name="j_hc" autoComplete="off" placeholder="2345 678 901 XY" onChange={event => setHc(sanitizeHC(event.target.value))}/>
                  </FormControl>
               </Grid>
             </Grid>
