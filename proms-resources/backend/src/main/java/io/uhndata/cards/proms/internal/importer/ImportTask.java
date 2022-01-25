@@ -127,7 +127,7 @@ public class ImportTask implements Runnable
         // Since we can't query more than one date at a time, query three dates
         String postRequestTemplate = "{\"query\": \"query{"
             + "patientsByDateAndClinic(location: \\\"" + clinicName + "\\\", start: \\\"%s\\\", end: \\\"%s\\\") {"
-            + "name {given family} sex mrn ohip dob emailOk com {email} "
+            + "fhirID name {given family} sex mrn ohip dob emailOk com {email} "
             + "appointments {fhirID time status location attending {name {family}}} }}\"}";
 
         Calendar startDate = Calendar.getInstance();

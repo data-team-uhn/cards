@@ -362,7 +362,8 @@ public class PatientLocalStorage
             "first_name", obj -> obj.getJsonObject("name").getJsonArray("given").getString(0),
             "last_name", obj -> obj.getJsonObject("name").getString("family"),
             "email", obj -> obj.getJsonObject("com").getString("email"),
-            "email_ok", obj -> obj.getString("emailOk")
+            "email_ok", obj -> obj.getString("emailOk"),
+            "fhir_id", obj -> obj.getString("fhirID")
         );
 
         Map<String, JsonDateGetter> dateMapping = Map.of(
@@ -387,7 +388,8 @@ public class PatientLocalStorage
             "provider", obj -> obj.getJsonObject("attending").getJsonObject("name").getString("family"),
             // We need to map the display name of the clinic given to a survey ID
             // The mappings are stored at /Proms/ClinicMapping/<location hashcCode>
-            "surveys", obj -> surveyID
+            "surveys", obj -> surveyID,
+            "location", obj -> surveyID
         );
 
         Map<String, JsonDateGetter> dateMapping = Map.of(
