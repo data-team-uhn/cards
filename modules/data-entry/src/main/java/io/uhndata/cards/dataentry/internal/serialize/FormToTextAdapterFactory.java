@@ -35,9 +35,27 @@ public class FormToTextAdapterFactory
     extends AbstractFormToStringAdapterFactory
 {
     @Override
-    void formatMetadata(final String metadata, final StringBuilder result)
+    void formatSubject(final String subject, final StringBuilder result)
     {
-        result.append(metadata.toUpperCase(Locale.ROOT)).append('\n');
+        result.append(subject).append('\n');
+    }
+
+    @Override
+    void formatTitle(final String title, final StringBuilder result)
+    {
+        result.append(title.toUpperCase(Locale.ROOT)).append('\n');
+    }
+
+    @Override
+    void formatDate(final String date, final StringBuilder result)
+    {
+        result.append(date).append('\n');
+    }
+
+    @Override
+    void formatMetadataSeparator(final StringBuilder result)
+    {
+        result.append("\n\n");
     }
 
     @Override

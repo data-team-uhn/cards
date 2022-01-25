@@ -94,10 +94,10 @@ public abstract class AbstractFormToStringAdapterFactory
      */
     private void generateMetadata(final JsonObject formJson, StringBuilder result)
     {
-        formatMetadata(getSubjectIdentifier(formJson), result);
-        formatMetadata(getQuestionnaireTitle(formJson), result);
-        formatMetadata(getCreationDate(formJson), result);
-        formatMetadata("\n", result);
+        formatSubject(getSubjectIdentifier(formJson), result);
+        formatTitle(getQuestionnaireTitle(formJson), result);
+        formatDate(getCreationDate(formJson), result);
+        formatMetadataSeparator(result);
     }
 
     /**
@@ -293,7 +293,13 @@ public abstract class AbstractFormToStringAdapterFactory
         return "";
     }
 
-    abstract void formatMetadata(String metadata, StringBuilder result);
+    abstract void formatSubject(String metadata, StringBuilder result);
+
+    abstract void formatTitle(String metadata, StringBuilder result);
+
+    abstract void formatDate(String metadata, StringBuilder result);
+
+    abstract void formatMetadataSeparator(StringBuilder result);
 
     abstract void formatSectionTitle(String title, StringBuilder result);
 

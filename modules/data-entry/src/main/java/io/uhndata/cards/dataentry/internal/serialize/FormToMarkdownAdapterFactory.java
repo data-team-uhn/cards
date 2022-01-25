@@ -36,9 +36,27 @@ public class FormToMarkdownAdapterFactory
     private static final String MD_LINE_END = "  \n";
 
     @Override
-    void formatMetadata(final String metadata, final StringBuilder result)
+    void formatSubject(final String subject, final StringBuilder result)
     {
-        // Don't output metadata
+        // Don't output the subject
+    }
+
+    @Override
+    void formatTitle(final String title, final StringBuilder result)
+    {
+        result.append("# ").append(title).append(MD_LINE_END);
+    }
+
+    @Override
+    void formatDate(final String date, final StringBuilder result)
+    {
+        // Don't output the subject
+    }
+
+    @Override
+    void formatMetadataSeparator(final StringBuilder result)
+    {
+        result.append("\n\n\n\n");
     }
 
     @Override
@@ -52,7 +70,6 @@ public class FormToMarkdownAdapterFactory
     {
         result.append("----").append(MD_LINE_END).append('\n');
     }
-
 
     @Override
     void formatQuestion(final String question, final StringBuilder result)
