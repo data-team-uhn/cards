@@ -22,7 +22,7 @@
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
-		<value>AUDIT-C</value>
+		<value>Alcohol Use Disorders Identification Test</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -39,7 +39,7 @@
 	</property>
 	<property>
 		<name>description</name>
-		<value>Alcohol Use Disorders Identification Test</value>
+		<value>AUDIT-C</value>
 		<type>String</type>
 	</property>
 	<node>

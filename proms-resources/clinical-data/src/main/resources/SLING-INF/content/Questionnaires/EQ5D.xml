@@ -22,7 +22,7 @@
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
-		<value>EQ-5D</value>
+		<value>Physical Health Assessment</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -39,7 +39,7 @@
 	</property>
 	<property>
 		<name>description</name>
-		<value>Health  Questionnaire</value>
+		<value>EQ-5D</value>
 		<type>String</type>
 	</property>
 	<node>
@@ -55,7 +55,7 @@
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>expression</name>
-				<value>return (10 * (+@{eq5d_1:-0} + +@{eq5d_2:-0} + +@{eq5d_3:-0} + +@{eq5d_4:-0} + +@{eq5d_5:-0}) + (100 - +@{eq5d_6:-0}))</value>
+				<value>return (+@{eq5d_1:-0} + +@{eq5d_2:-0} + +@{eq5d_3:-0} + +@{eq5d_4:-0} + +@{eq5d_5:-0})</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -88,11 +88,15 @@
 	<node>
 		<name>eq5d_survey</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
-		<property>
-			<name>label</name>
-			<value>Under each heading, please tick the ONE box that best describes your health TODAY.</value>
-			<type>String</type>
-		</property>
+		<node>
+			<name>eq5d_instructions</name>
+			<primaryNodeType>cards:Information</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>#### Under each heading, please tick the ONE box that best describes your health TODAY.</value>
+				<type>String</type>
+			</property>
+		</node>
 		<node>
 			<name>eq5d_1</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
@@ -136,7 +140,7 @@
 				</property>
 				<property>
 					<name>value</name>
-					<value>2</value>
+					<value>0</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -174,7 +178,7 @@
 				</property>
 				<property>
 					<name>value</name>
-					<value>0</value>
+					<value>2</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -222,7 +226,7 @@
 				</property>
 				<property>
 					<name>value</name>
-					<value>2</value>
+					<value>0</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -260,7 +264,7 @@
 				</property>
 				<property>
 					<name>value</name>
-					<value>0</value>
+					<value>2</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -313,7 +317,7 @@
 				</property>
 				<property>
 					<name>value</name>
-					<value>2</value>
+					<value>0</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -351,7 +355,7 @@
 				</property>
 				<property>
 					<name>value</name>
-					<value>0</value>
+					<value>2</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -399,7 +403,7 @@
 				</property>
 				<property>
 					<name>value</name>
-					<value>2</value>
+					<value>0</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -437,7 +441,7 @@
 				</property>
 				<property>
 					<name>value</name>
-					<value>0</value>
+					<value>2</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -485,7 +489,7 @@
 				</property>
 				<property>
 					<name>value</name>
-					<value>2</value>
+					<value>0</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -523,7 +527,7 @@
 				</property>
 				<property>
 					<name>value</name>
-					<value>0</value>
+					<value>2</value>
 					<type>String</type>
 				</property>
 			</node>

@@ -22,7 +22,7 @@
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
-		<value>General Anxiety Disorder</value>
+		<value>General Anxiety Disorder-7</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -39,7 +39,7 @@
 	</property>
 	<property>
 		<name>description</name>
-		<value>Measures severity of anxiety</value>
+		<value>GAD-7</value>
 		<type>String</type>
 	</property>
 	<node>

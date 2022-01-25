@@ -39,7 +39,7 @@
 	</property>
 	<property>
 		<name>description</name>
-		<value>Objectifies degree of depression severity</value>
+		<value>PHQ-9</value>
 		<type>String</type>
 	</property>
 	<node>
