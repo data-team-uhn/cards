@@ -64,17 +64,17 @@ public class FormToTextAdapterFactory
         formatAnswer("-", result);
     }
 
-
     @Override
     void formatAnswer(final String answer, final StringBuilder result)
     {
-        result.append("  ").append(answer).append('\n');
+        result.append("  ").append(answer.replaceAll("\n", "\n  ")).append('\n');
     }
 
     @Override
     void formatNote(final String note, final StringBuilder result)
     {
-        result.append("\n  NOTES\n  ").append(note.replaceAll("\n", "\n  ")).append('\n');
+        result.append("\n  NOTES\n");
+        formatAnswer(note, result);
     }
 
     @Override
