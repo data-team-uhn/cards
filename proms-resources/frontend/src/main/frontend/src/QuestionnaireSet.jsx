@@ -33,12 +33,17 @@ import {
   Typography,
   makeStyles
 } from '@material-ui/core';
+import { Alert, AlertTitle } from '@material-ui/lab';
 import NextStepIcon from '@material-ui/icons/ChevronRight';
 import DoneIcon from '@material-ui/icons/Done';
 import WarningIcon from '@material-ui/icons/Warning';
 
+import moment from "moment";
+import * as jdfp from "moment-jdateformatparser";
+
 import Form from "./questionnaire/Form.jsx";
 import PromsHeader from "./Header.jsx";
+import DateQuestionUtilities from "./questionnaire/DateQuestionUtilities";
 
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
@@ -414,15 +419,71 @@ function QuestionnaireSet(props) {
     return `Good ${timeOfDay}, ${name}`;
   }
 
+  const getVisitDate = () => {
+    let dateQuestion = visitInformation?.questionnaire?.time?.["jcr:uuid"];
+    let dateAnswer = Object.values(visitInformation).find(value => value.question?.["jcr:uuid"] == dateQuestion)?.value || null;
+    return dateAnswer == null ? null : DateQuestionUtilities.amendMoment(DateQuestionUtilities.stripTimeZone(dateAnswer));
+  }
+
+  const appointmentDate = () => {
+    let date = getVisitDate();
+    return date == null ? ""
+      : date.formatWithJDF("EEEE, MMMM d, yyyy h:mma");
+  }
+
+  const diffString = (startDate, endDate, division, result, modulus = null) => {
+    let diff = endDate.diff(startDate, division);
+    if (modulus != null) {
+      diff = diff % modulus;
+    }
+    if (diff > 0) {
+      result.push(diff + " " + (diff == 1 && division[division.length - 1] == "s"
+        ? division.substring(0, division.length -1)
+        : division));
+    }
+  }
+
+  const expiryDate = () => {
+    let result = "";
+    const date = getVisitDate();
+    if (date != null) {
+      // Tokens expire 2 hours after the visit
+      date.add(2, 'hours');
+
+      // Get the date difference in the format: X days, Y hours and Z minutes,
+      // skipping any time division that has a value of 0
+      const now = moment();
+      const diffStrings = [];
+      diffString(now, date, "days", diffStrings);
+      diffString(now, date, "hours", diffStrings, 24);
+      diffString(now, date, "minutes", diffStrings, 60);
+
+      if (diffStrings.length > 1) {
+        result = " and " + diffStrings.pop();
+      }
+      if (diffStrings.length > 0) {
+        result = " This survey link will expire in " + diffStrings.join(", ") + result + ".";
+      }
+    }
+
+    return result;
+  }
+
   let welcomeScreen = [
     <Typography variant="h4" key="welcome-greeting">{ greet(username) }</Typography>,
+    visitInformation?.questionnaire?.time ?
+      <Alert severity="info">
+        <AlertTitle>Upcoming appointment</AlertTitle>
+        {appointmentDate()}
+      </Alert>
+      : null,
     isComplete && isSubmitted || questionnaireIds.length == 0 ?
       <Typography color="textSecondary" variant="subtitle1" key="welcome-message">
         You have no pending surveys to fill out for your next appointment.
       </Typography>
     :
       <Typography paragraph key="welcome-message">
-        Tell us about your symptoms prior to your appointment.
+        Tell us about your symptoms prior to your appointment.{expiryDate()}
       </Typography>,
     <List key="welcome-surveys">
     { (questionnaireIds || []).map((q, i) => (
