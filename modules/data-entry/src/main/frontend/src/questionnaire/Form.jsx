@@ -401,16 +401,16 @@ function Form (props) {
                     </ListItem>
                     <ListItem className={classes.actionsMenuItem}>
                       <Button onClick={(e) => {
-                         // Save before printing to ensure all the data is included
-                         saveData(e, false, () => history.push(urlBase + formURL + ".print"));
+                         // Save before exporting from edit mode to ensure all the data is included
+                         isEdit ? saveData(e, false, () => history.push(urlBase + formURL + ".print")) : history.push(urlBase + formURL + ".print");
                         }}>
                         Print preview
                       </Button>
                     </ListItem>
                     <ListItem className={classes.actionsMenuItem}>
                       <Button onClick={(e) => {
-                         // Save before exporting to ensure all the data is included
-                         saveData(e, false, () => {window.open(formURL + ".txt")});
+                         // Save before exporting from edit mode to ensure all the data is included
+                         isEdit ? saveData(e, false, () => window.open(formURL + ".txt")) : window.open(formURL + ".txt");
                          setActionsMenu(null);
                         }}>
                         Export as text
