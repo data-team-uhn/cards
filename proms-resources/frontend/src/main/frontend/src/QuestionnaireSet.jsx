@@ -419,9 +419,14 @@ function QuestionnaireSet(props) {
     return `Good ${timeOfDay}, ${name}`;
   }
 
+  const getVisitInformation = (questionName) => {
+    let question = visitInformation?.questionnaire?.[questionName]?.["jcr:uuid"];
+    let answer = Object.values(visitInformation).find(value => value.question?.["jcr:uuid"] == question)?.value || null;
+    return answer;
+  }
+
   const getVisitDate = () => {
-    let dateQuestion = visitInformation?.questionnaire?.time?.["jcr:uuid"];
-    let dateAnswer = Object.values(visitInformation).find(value => value.question?.["jcr:uuid"] == dateQuestion)?.value || null;
+    let dateAnswer = getVisitInformation("time");
     return dateAnswer == null ? null : DateQuestionUtilities.amendMoment(DateQuestionUtilities.stripTimeZone(dateAnswer));
   }
 
@@ -429,6 +434,19 @@ function QuestionnaireSet(props) {
     let date = getVisitDate();
     return date == null ? ""
       : date.formatWithJDF("EEEE, MMMM d, yyyy h:mma");
+  }
+
+  let appointmentAlert = () => {
+    const location = getVisitInformation("location");
+    const provider = getVisitInformation("provider");
+    return visitInformation?.questionnaire?.time ?
+      <Alert severity="info">
+        <AlertTitle>Upcoming appointment</AlertTitle>
+        {appointmentDate()}
+        {location ? <><br />{location}</> : null}
+        {provider ? <><br />{provider}</> : null}
+      </Alert>
+      : null
   }
 
   const diffString = (startDate, endDate, division, result, modulus = null) => {
@@ -471,12 +489,7 @@ function QuestionnaireSet(props) {
 
   let welcomeScreen = [
     <Typography variant="h4" key="welcome-greeting">{ greet(username) }</Typography>,
-    visitInformation?.questionnaire?.time ?
-      <Alert severity="info">
-        <AlertTitle>Upcoming appointment</AlertTitle>
-        {appointmentDate()}
-      </Alert>
-      : null,
+    appointmentAlert(),
     isComplete && isSubmitted || questionnaireIds.length == 0 ?
       <Typography color="textSecondary" variant="subtitle1" key="welcome-message">
         You have no pending surveys to fill out for your next appointment.
