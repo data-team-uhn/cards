@@ -78,17 +78,25 @@ public class PatientLocalStorage
     /** Details about a patient that we will parse and store in JCR. */
     private JsonObject patientDetails;
 
-    /** Date to query. */
-    private Calendar date;
+    /** Start date of appointments to store. */
+    private Calendar startDate;
+
+    /** End date of appointments to store. */
+    private Calendar endDate;
+
+    /** Set of nodes that must be checked in at the end of this function. */
+    private Set<String> nodesToCheckin;
 
     /**
      * @param resolver A reference to a ResourceResolver
-     * @param date The date of the appointment to find from within the patient
+     * @param startDate The start of the range of dates for appointments to find from within the patient
+     * @param endDate The end of the range of dates for appointments to find from within the patient
      */
-    PatientLocalStorage(ResourceResolver resolver, final Calendar date)
+    PatientLocalStorage(ResourceResolver resolver, final Calendar startDate, final Calendar endDate)
     {
         this.resolver = resolver;
-        this.date = date;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     /**
@@ -99,40 +107,19 @@ public class PatientLocalStorage
     {
         this.patientDetails = value.asJsonObject();
         String mrn = this.patientDetails.getString("mrn");
-        Set<String> nodesToCheckin = new HashSet<String>();
+        this.nodesToCheckin = new HashSet<String>();
         try {
             // Update information about the patient
-            Resource patient = getOrCreateSubject(mrn, "/SubjectTypes/Patient", null, nodesToCheckin);
-            Resource patientInfo = getOrCreateForm(patient, "/Questionnaires/Patient information/", nodesToCheckin);
+            Resource patient = getOrCreateSubject(mrn, "/SubjectTypes/Patient", null);
+            Resource patientInfo = getOrCreateForm(patient, "/Questionnaires/Patient information/");
             updatePatientInformationForm(patientInfo, this.patientDetails);
 
             // Update information about the visit ("appointment" is used interchangably here)
             JsonArray appointmentDetails = this.patientDetails.getJsonArray("appointments");
             for (int i = 0; i < appointmentDetails.size(); i++) {
-                // In one usage of patientLocalStorage.store(), only store those with a specific date
-                JsonObject thisAppointment = appointmentDetails.getJsonObject(i);
-                try {
-                    Date thisDate = new SimpleDateFormat("yyyy-MM-dd").parse(thisAppointment.getString("time"));
-                    Calendar thisCalendar = Calendar.getInstance();
-                    thisCalendar.setTime(thisDate);
-                    if (!(thisCalendar.get(Calendar.DAY_OF_YEAR) == this.date.get(Calendar.DAY_OF_YEAR)
-                        && thisCalendar.get(Calendar.YEAR) == this.date.get(Calendar.YEAR))) {
-                        continue;
-                    }
-
-                    List<String> surveyIDs = getSurveyIDs(thisAppointment.getJsonArray("location"));
-                    for (String surveyID : surveyIDs)
-                    {
-                        Resource visit = getOrCreateSubject(thisAppointment.getString("fhirID") + "-" + surveyID,
-                            "/SubjectTypes/Patient/Visit/", patient, nodesToCheckin);
-                        Resource visitInfo = getOrCreateForm(visit, "/Questionnaires/Visit information/",
-                            nodesToCheckin);
-                        updateVisitInformationForm(visitInfo, thisAppointment, surveyID);
-                    }
-                } catch (ParseException e) {
-                    //TODO: handle exception
-                    LOGGER.error("Could not parse date for appointment {}: {}", thisAppointment.getString("fhirID"),
-                        e.getMessage(), e);
+                JsonObject appointment = appointmentDetails.getJsonObject(i);
+                if (isAppointmentInTimeframe(appointment)) {
+                    storeAppointment(appointment, patient);
                 }
             }
 
@@ -140,7 +127,7 @@ public class PatientLocalStorage
             session.save();
 
             final VersionManager vm = session.getWorkspace().getVersionManager();
-            nodesToCheckin.forEach(node -> {
+            this.nodesToCheckin.forEach(node -> {
                 try {
                     vm.checkin(node);
                 } catch (RepositoryException e) {
@@ -155,21 +142,62 @@ public class PatientLocalStorage
     }
 
     /**
+     * Store an appointment from the given JsonObject, if it is within the right time frame.
+     * @param appointment JsonObject of an appointment to store
+     * @param patient path to a patient subject for this appointment
+     */
+    void storeAppointment(JsonObject appointment, Resource patient)
+        throws RepositoryException, PersistenceException
+    {
+        // In one usage of patientLocalStorage.store(), only store those within a specific timeframe
+        List<String> surveyIDs = getSurveyIDs(appointment.getJsonArray("location"));
+        for (String surveyID : surveyIDs)
+        {
+            LOGGER.warn("Prosessing: " + surveyID);
+            Resource visit = getOrCreateSubject(appointment.getString("fhirID") + "-" + surveyID,
+                "/SubjectTypes/Patient/Visit/", patient);
+            Resource visitInfo = getOrCreateForm(visit, "/Questionnaires/Visit information/");
+            updateVisitInformationForm(visitInfo, appointment, surveyID);
+        }
+    }
+
+    /**
+     * Returns whether or not the given appointment is between our start and end dates.
+     * @param appointment JsonObject of an appointment to check
+     * @return True if the appointment is between our dates, or false if either the date is outside our range
+     *     or if we cannot parse it
+     */
+    Boolean isAppointmentInTimeframe(JsonObject appointment)
+    {
+        try {
+            Date thisDate = new SimpleDateFormat("yyyy-MM-dd").parse(appointment.getString("time"));
+            Calendar thisCalendar = Calendar.getInstance();
+            thisCalendar.setTime(thisDate);
+            LOGGER.warn("Checking appointment: " + appointment.getString("time"));
+            return thisCalendar.after(this.startDate) && thisCalendar.before(this.endDate);
+        } catch (ParseException e) {
+            //TODO: handle exception
+            LOGGER.error("Could not parse date for appointment {}: {}", appointment.getString("fhirID"),
+                e.getMessage(), e);
+        }
+        return false;
+    }
+
+    /**
      * Grab a subject of the specified type, or create it if it doesn't exist.
      * @param identifier Identifier to use for the subject
      * @param subjectTypePath path to a SubjectType node for this subject
      * @param parent parent Resource if this is a child of that resource, or null
-     * @param nodesToCheckin Set of nodes that should be checked in after all edits are complete
      * @return A Subject resource
      */
-    Resource getOrCreateSubject(String identifier, String subjectTypePath, Resource parent, Set<String> nodesToCheckin)
+    Resource getOrCreateSubject(String identifier, String subjectTypePath, Resource parent)
         throws RepositoryException, PersistenceException
     {
         Iterator<Resource> subjectResourceIter = this.resolver.findResources(String.format(
             "SELECT * FROM [cards:Subject] WHERE identifier = \"%s\"", identifier), PatientLocalStorage.JCR_SQL);
         if (subjectResourceIter.hasNext()) {
             Resource subjectResource = subjectResourceIter.next();
-            nodesToCheckin.add(subjectResource.getPath());
+            this.nodesToCheckin.add(subjectResource.getPath());
             return subjectResource;
         } else {
             Resource parentResource = parent;
@@ -182,7 +210,7 @@ public class PatientLocalStorage
                 "identifier", identifier,
                 "type", patientType.adaptTo(Node.class)
             ));
-            nodesToCheckin.add(newSubject.getPath());
+            this.nodesToCheckin.add(newSubject.getPath());
             return newSubject;
         }
     }
@@ -191,10 +219,9 @@ public class PatientLocalStorage
      * Grab a form of the specified type, or create it if it doesn't exist.
      * @param subject Resource of the subject node for the form
      * @param questionnairePath Path to the questionnaire that this is a form of
-     * @param nodesToCheckin Set of nodes that should be checked in after all edits are complete
      * @return A Form resource
      */
-    Resource getOrCreateForm(Resource subject, String questionnairePath, Set<String> nodesToCheckin)
+    Resource getOrCreateForm(Resource subject, String questionnairePath)
         throws RepositoryException, PersistenceException
     {
         Resource formType = this.resolver.getResource(questionnairePath);
@@ -205,7 +232,7 @@ public class PatientLocalStorage
             formType.adaptTo(Node.class).getIdentifier()), PatientLocalStorage.JCR_SQL);
         if (formResourceIter.hasNext()) {
             Resource formResource = formResourceIter.next();
-            nodesToCheckin.add(formResource.getPath());
+            this.nodesToCheckin.add(formResource.getPath());
             return formResource;
         } else {
             Resource parentResource = this.resolver.getResource("/Forms/");
@@ -214,7 +241,7 @@ public class PatientLocalStorage
                 "questionnaire", formType.adaptTo(Node.class),
                 "subject", subjectNode
             ));
-            nodesToCheckin.add(newForm.getPath());
+            this.nodesToCheckin.add(newForm.getPath());
             return newForm;
         }
     }
@@ -382,15 +409,17 @@ public class PatientLocalStorage
             // Resolve this name from our mapping
             String clinic = appointments.getString(i);
             // TODO: What do we do in case of a colission?
-            Resource mapping = this.resolver.getResource("/Proms/ClinicMapping/" + clinic.hashCode());
+            String mapPath = "/Proms/ClinicMapping/" + String.valueOf(clinic.hashCode());
+            Resource mapping = this.resolver.getResource(mapPath);
+
             if (mapping == null) {
-                LOGGER.error("Could not find mapping for location " + clinic);
+                LOGGER.error("Could not find mapping for location {} (checking {})", clinic, mapPath);
             } else {
                 try
                 {
                     retVal.add(mapping.adaptTo(Node.class).getProperty("surveyID").getString());
                 } catch (RepositoryException e) {
-                    LOGGER.error("Erorr while resolving clinic mapping: {} {} ", clinic, e.getMessage(), e);
+                    LOGGER.error("Error while resolving clinic mapping: {} {} ", clinic, e.getMessage(), e);
                 }
             }
         }

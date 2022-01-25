@@ -104,3 +104,25 @@
 
   // Set a default title.
   - title (String) = "DATA-PRO" mandatory autocreated
+
+//-----------------------------------------------------------------------------
+// A mapping reference from clinic name to a survey ID.
+[cards:ClinicMapping] > sling:Folder
+  // Attributes:
+
+  // We can use this homepage in a query.
+  query
+
+  // Properties
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/PromsHomepage" mandatory autocreated protected
+
+  // Hardcode the resource supertype.
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
+
+  // The clinic name as returned from Torch
+  - clinicName (String) mandatory
+
+  // The internal survey ID to use for this clinic
+  - surveyID (String) mandatory

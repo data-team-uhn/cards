@@ -37,6 +37,7 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 
+import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -129,13 +130,13 @@ public class ImportTask implements Runnable
             + "name {given family} sex mrn ohip dob emailOk com {email} "
             + "appointments {fhirID time status location attending {name {family}}} }}\"}";
 
-        Calendar dateToQuery = Calendar.getInstance();
+        Calendar startDate = Calendar.getInstance();
         Date today = new Date();
-        dateToQuery.setTime(today);
-        Calendar endDate = (Calendar) dateToQuery.clone();
+        startDate.setTime(today);
+        Calendar endDate = (Calendar) startDate.clone();
         endDate.add(Calendar.DATE, daysToQuery);
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        String postRequest = String.format(postRequestTemplate, formatter.format(dateToQuery.getTime()),
+        String postRequest = String.format(postRequestTemplate, formatter.format(startDate.getTime()),
             formatter.format(endDate.getTime()));
 
         // Query the torch server
@@ -148,14 +149,15 @@ public class ImportTask implements Runnable
 
             // Create the storage object and store every patient/visit
             JsonArray data = response.getJsonObject("data").getJsonArray("patientsByDateAndClinic");
-            final PatientLocalStorage storage = new PatientLocalStorage(
-                this.resolverFactory.getServiceResourceResolver(
-                    Map.of(ResourceResolverFactory.SUBSERVICE, "TorchImporter")), dateToQuery);
+            ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(
+                Map.of(ResourceResolverFactory.SUBSERVICE, "TorchImporter"));
+            final PatientLocalStorage storage = new PatientLocalStorage(resolver, startDate, endDate);
+
             data.forEach(storage::store);
+            resolver.close();
         } catch (Exception e) {
             LOGGER.error("Failed to query server: {}", e.getMessage(), e);
         }
-        dateToQuery.add(Calendar.DATE, 1);
     }
 
     /***

@@ -21,7 +21,7 @@
     <name>ClinicMapping</name>
     <node>
         <name>214157396</name>
-        <primaryNodeType>nt:unstructured</primaryNodeType>
+        <primaryNodeType>cards:ClinicMapping</primaryNodeType>
         <property>
             <name>clinicName</name>
             <value>PM-8 Palliative Care Oncology</value>
@@ -35,7 +35,7 @@
     </node>
     <node>
         <name>1659442479</name>
-        <primaryNodeType>nt:unstructured</primaryNodeType>
+        <primaryNodeType>cards:ClinicMapping</primaryNodeType>
         <property>
             <name>clinicName</name>
             <value>PMH 8 Palliative Care Oncology Clinic</value>
