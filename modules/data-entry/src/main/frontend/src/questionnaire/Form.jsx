@@ -394,11 +394,13 @@ function Form (props) {
                     }}
                 >
                   <List>
+                    { isEdit &&
                     <ListItem className={classes.actionsMenuItem}>
                       <Button onClick={() => {setSelectorDialogOpen(true); setActionsMenu(null)}}>
                         Change subject
                       </Button>
                     </ListItem>
+                    }
                     <ListItem className={classes.actionsMenuItem}>
                       <Button onClick={(e) => {
                          // Save before exporting from edit mode to ensure all the data is included
