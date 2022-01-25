@@ -354,6 +354,7 @@ function Form (props) {
         fullScreen
         resourcePath={formURL}
         breadcrumb={getTextHierarchy(data?.subject, true)}
+        date={moment(data['jcr:created']).format("MMM Do YYYY")}
         onClose={() => (history.length > 2 ? history.goBack() : history.push(urlBase + formURL))}
       />
     );

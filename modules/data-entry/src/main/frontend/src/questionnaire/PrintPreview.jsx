@@ -85,10 +85,14 @@ const useStyles = makeStyles(theme => ({
       },
     }
   },
+  header : {
+    display: "flex",
+    justifyContent: "space-between",
+  },
 }));
 
 const PrintPreview = forwardRef((props, ref) => {
-  const { resourcePath, title, breadcrumb, subtitle, fullScreen, onClose, ...rest } = props;
+  const { resourcePath, title, breadcrumb, date, subtitle, fullScreen, onClose, ...rest } = props;
 
   const [ content, setContent ] = useState();
   const [ error, setError ] = useState();
@@ -118,9 +122,14 @@ const PrintPreview = forwardRef((props, ref) => {
       onClose={onClose}
       {...rest}
     >
-      { (breadcrumb || title || subtitle) &&
+      { (breadcrumb || date || title || subtitle) &&
       <DialogTitle>
-        { breadcrumb && <Typography variant="overline" color="textSecondary">{breadcrumb}</Typography> }
+        { (breadcrumb || date) &&
+          <div className={classes.header}>
+            <Typography variant="overline" color="textSecondary">{breadcrumb}</Typography>
+            <Typography variant="overline" color="textSecondary">{date}</Typography>
+          </div>
+        }
         { title && <Typography variant="h4">{title}</Typography> }
         { subtitle && <Typography variant="overline" color="textSecondary">{subtitle}</Typography> }
       </DialogTitle>
@@ -147,6 +156,7 @@ PrintPreview.propTypes = {
   resourcePath: PropTypes.string.isRequired,
   title: PropTypes.string,
   breadcrumb: PropTypes.string,
+  date: PropTypes.string,
   subtitle: PropTypes.string,
   onClose: PropTypes.func,
 }
