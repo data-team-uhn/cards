@@ -41,7 +41,7 @@ import LaunchIcon from '@material-ui/icons/Launch';
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
 function PromsView(props) {
-  const { data, expanded, disableHeader, disableAvatar, topPagination, classes } = props;
+  const { data, visitInfo, expanded, disableHeader, disableAvatar, topPagination, classes } = props;
 
   const [ columns, setColumns ] = useState();
   const [ questionnaireId, setQuestionnaireId ] = useState();
@@ -50,20 +50,39 @@ function PromsView(props) {
   const [ subtitle, setSubtitle ] = useState(props.subtitle);
   const [ questionnairePath, setQuestionnairePath ] = useState();
   const [ qFetchSent, setQFetchStatus ] = useState(false);
-  const [ filtersJsonString, setFiltersJsonString ] = useState(new URLSearchParams(window.location.hash.substring(1)).get("forms:filters"));
+
+  let toMidnight = (date) => {
+     date.setHours(0);
+     date.setMinutes(0);
+     date.setSeconds(0);
+     return date;
+  }
+
+  let today = new Date(), tomorrow = new Date();
+  tomorrow.setDate(today.getDate() + 1);
+  today = toMidnight(today).toISOString();
+  tomorrow = toMidnight(tomorrow).toISOString();
 
   const tabFilter = {
-    "Today" : '',
-    "Upcoming" : '',
-    "Past" : '',
+    "Past" : {
+      dateFilter :  `visitDate.value < '${today}' `,
+      order : "desc"
+    },
+    "Today" : {
+      dateFilter :  `visitDate.value >= '${today}' and visitDate.value < '${tomorrow}' `,
+      order: ""
+    },
+    "Upcoming" : {
+      dateFilter :  `visitDate.value >= '${tomorrow}' `,
+      order: ""
+    },
   };
+
   const tabs = Object.keys(tabFilter);
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
-  const activeTabParam = new URLSearchParams(window.location.hash.substring(1)).get("forms:activeTab");
-  let activeTabIndex = Math.max(tabs.indexOf(activeTabParam), 0);
-  const [ activeTab, setActiveTab ] = useState(activeTabIndex);
+  const [ activeTab, setActiveTab ] = useState(1); // Today
 
   // At startup, load questionnaire
   useEffect(() => {
@@ -80,6 +99,21 @@ function PromsView(props) {
     }
   }, [data]);
 
+  let query = (
+"select distinct dataForm.* " +
+  "from " +
+    "[cards:Subject] as visitSubject " +
+    "inner join [cards:Form] as visitInformation on visitSubject.[jcr:uuid] = visitInformation.subject " +
+      "inner join [cards:Answer] as visitDate on isdescendantnode(visitDate, visitInformation) " +
+      "inner join [cards:Answer] as patientSubmitted on isdescendantnode(patientSubmitted, visitInformation) " +
+    "inner join [cards:Form] as dataForm on visitSubject.[jcr:uuid] = dataForm.subject " +
+  "where " +
+    `visitInformation.questionnaire = '${visitInfo?.["jcr:uuid"]}' ` +
+      `and visitDate.question = '${visitInfo?.time?.["jcr:uuid"]}' and ` + tabFilter[tabs[activeTab]].dateFilter + " " +
+      `and patientSubmitted.question = '${visitInfo?.surveys_submitted?.["jcr:uuid"]}' and patientSubmitted.value = 1 ` +
+    `and dataForm.questionnaire = '${questionnaireId}' ` +
+  "order by visitDate.value " + tabFilter[tabs[activeTab]].order
+  )
 
   return (
     <Card className={classes.formView}>
@@ -111,7 +145,7 @@ function PromsView(props) {
       <CardContent>
         <LiveTable
           columns={props.columns || columns}
-          customUrl={'/query?query=' + encodeURIComponent(`select * from [cards:Form] as n WHERE n.'questionnaire'='${questionnaireId}'`)}
+          customUrl={'/query?query=' + encodeURIComponent(query)}
           defaultLimit={10}
           filters
           questionnaire={questionnaireId}

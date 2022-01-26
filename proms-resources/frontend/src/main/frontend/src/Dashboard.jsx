@@ -16,12 +16,13 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 
 import MaterialTable from "material-table";
 
 import { loadExtensions } from "./uiextension/extensionManager";
 import QuestionnaireStyle from "./questionnaire/QuestionnaireStyle.jsx";
+import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
 import {
   CircularProgress,
@@ -49,6 +50,18 @@ function PromsDashboard(props) {
   let [ dashboardExtensions, setDashboardExtensions ] = useState([]);
   let [ loading, setLoading ] = useState(true);
 
+  let [ visitInfo, setVisitInfo ] = useState();
+
+  const globalLoginDisplay = useContext(GlobalLoginContext);
+
+  // At startup, load the visit information questionnaire to pass it to all extensions
+  useEffect(() => {
+    fetchWithReLogin(globalLoginDisplay, "/Questionnaires/Visit information.deep.json")
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((json) => setVisitInfo(json));
+  }, []);
+
+  // Also load all extensions
   useEffect(() => {
     getDashboardExtensions()
       .then(extensions => setDashboardExtensions(extensions))
@@ -56,7 +69,7 @@ function PromsDashboard(props) {
       .finally(() => setLoading(false));
   }, [])
 
-  if (loading) {
+  if (loading || !visitInfo) {
     return (
       <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
     );
@@ -70,7 +83,7 @@ function PromsDashboard(props) {
           dashboardExtensions.map((extension, index) => {
             let Extension = extension["cards:extensionRender"];
             return <Grid item lg={12} xl={6} key={"extension-" + index} className={classes.dashboardEntry}>
-              <Extension data={extension["cards:data"]}/>
+              <Extension data={extension["cards:data"]} visitInfo={visitInfo} />
             </Grid>
           })
         }
