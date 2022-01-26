@@ -18,6 +18,8 @@
 //
 import React, { useState, useEffect, useContext } from "react";
 
+import { useLocation } from 'react-router-dom';
+
 import MaterialTable from "material-table";
 
 import { loadExtensions } from "./uiextension/extensionManager";
@@ -32,10 +34,8 @@ import {
 } from "@material-ui/core";
 
 
-async function getDashboardExtensions() {
-  // If there's an extra path segment, we use it to obtain the extension point
-  // Otherwise default to "DashboardViews" (main dashboard)
-  let name = window.location.pathname.split("/Dashboard/")?.[1] || "";
+
+async function getDashboardExtensions(name) {
   return loadExtensions("DashboardViews" + name)
     .then(extensions => extensions.slice()
       .sort((a, b) => a["cards:defaultOrder"] - b["cards:defaultOrder"])
@@ -47,12 +47,18 @@ async function getDashboardExtensions() {
 // Each LiveTable contains all forms that use the given questionnaire.
 function PromsDashboard(props) {
   const { classes, theme } = props;
+  let [ name, setName ] = useState();
+  let [ dashboardTitle, setDashboardTitle ] = useState();
   let [ dashboardExtensions, setDashboardExtensions ] = useState([]);
   let [ loading, setLoading ] = useState(true);
-
   let [ visitInfo, setVisitInfo ] = useState();
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
+  const location = useLocation();
+
+  // If there's an extra path segment, we use it to obtain the extension point
+  // Otherwise default to "DashboardViews" (main dashboard)
+  useEffect(() => setName(location.pathname.split("/Dashboard/")?.[1] || ""), [location]);
 
   // At startup, load the visit information questionnaire to pass it to all extensions
   useEffect(() => {
@@ -63,11 +69,18 @@ function PromsDashboard(props) {
 
   // Also load all extensions
   useEffect(() => {
-    getDashboardExtensions()
+    getDashboardExtensions(name)
       .then(extensions => setDashboardExtensions(extensions))
       .catch(err => console.log("Something went wrong loading the proms dashboard", err))
       .finally(() => setLoading(false));
-  }, [])
+  }, [name])
+
+  // And the extension point definition to obtain its name
+  useEffect(() => {
+    fetchWithReLogin(globalLoginDisplay, `/apps/cards/ExtensionPoints/DashboardViews${name}.json`)
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((json) => setDashboardTitle(json?.["cards:extensionPointName"]));
+  }, [name]);
 
   if (loading || !visitInfo) {
     return (
@@ -77,7 +90,7 @@ function PromsDashboard(props) {
 
   return (
     <>
-      <Typography variant="h4">Dashboard</Typography>
+      <Typography variant="overline">{dashboardTitle}</Typography>
       <Grid container spacing={3}>
         {
           dashboardExtensions.map((extension, index) => {
