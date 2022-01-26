@@ -24,7 +24,6 @@ import javax.json.JsonValue;
 import javax.json.JsonValue.ValueType;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.adapter.AdapterFactory;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 
@@ -33,23 +32,12 @@ import org.apache.sling.api.resource.ResourceResolver;
  *
  * @version $Id$
  */
-public abstract class AbstractSubjectToStringAdapterFactory
-    implements AdapterFactory
+public abstract class AbstractSubjectToStringSerializer
 {
     private ThreadLocal<ResourceResolver> resolver = new ThreadLocal<>();
 
-    @Override
-    public <A> A getAdapter(final Object adaptable, final Class<A> type)
+    protected String toString(final Resource originalResource)
     {
-        if (adaptable == null) {
-            return null;
-        }
-
-        final Resource originalResource = (Resource) adaptable;
-        if (!originalResource.isResourceType("cards/Subject")) {
-            return type.cast(originalResource.getPath());
-        }
-
         this.resolver.set(originalResource.getResourceResolver());
 
         // The proper serialization depends on "deep", "dereference" and "labels", but we may allow other JSON
@@ -60,16 +48,16 @@ public abstract class AbstractSubjectToStringAdapterFactory
 
         JsonObject result = resource.adaptTo(JsonObject.class);
         if (result != null) {
-            return type.cast(processSubject(result, subjectPath));
+            return processSubject(result, subjectPath);
         }
         return null;
     }
 
     /**
      * Converts the JSON representation of a subject into a string.
+     *
      * @param subjectJson a JSON serialization of a node
      * @param subjectPath processed subject path
-     *
      * @param subjectJson a subject serialized as JSON
      * @return plain text serialization of the subject
      */

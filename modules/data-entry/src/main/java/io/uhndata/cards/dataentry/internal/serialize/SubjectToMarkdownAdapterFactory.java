@@ -20,23 +20,33 @@ package io.uhndata.cards.dataentry.internal.serialize;
 
 import java.util.Locale;
 
-import org.apache.sling.api.adapter.AdapterFactory;
 import org.apache.sling.api.resource.Resource;
 import org.osgi.service.component.annotations.Component;
 
+import io.uhndata.cards.serialize.spi.ResourceMarkdownProcessor;
+
 /**
- * AdapterFactory that converts Subject to markdown.
+ * Markdown serializer that can process Subjects.
  *
  * @version $Id$
  */
-@Component(
-    service = { AdapterFactory.class },
-    property = { "adaptables=org.apache.sling.api.resource.Resource", "adapters=java.lang.CharSequence" })
-public class SubjectToMarkdownAdapterFactory
-    extends AbstractSubjectToStringAdapterFactory
+@Component(service = ResourceMarkdownProcessor.class)
+public class SubjectToMarkdownAdapterFactory extends AbstractSubjectToStringSerializer
+    implements ResourceMarkdownProcessor
 {
-
     private static final String MD_LINE_END = "  \n";
+
+    @Override
+    public boolean canProcess(final Resource resource)
+    {
+        return resource.isResourceType("cards/Subject");
+    }
+
+    @Override
+    public String serialize(Resource resource)
+    {
+        return toString(resource);
+    }
 
     @Override
     void formatMetadata(final String metadata, final StringBuilder result)
