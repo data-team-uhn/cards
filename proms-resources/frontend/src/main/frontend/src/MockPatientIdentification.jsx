@@ -30,6 +30,7 @@ import {
   IconButton,
   Input,
   InputLabel,
+  Link,
   Typography,
   makeStyles
 } from '@material-ui/core';
@@ -95,6 +96,9 @@ const useStyles = makeStyles(theme => ({
   },
   mrnHelperImage: {
     maxWidth: '100%',
+  },
+  mrnHelperLink: {
+    cursor: 'pointer',
   }
 }));
 
@@ -420,12 +424,14 @@ function MockPatientIdentification(props) {
                   <InputLabel htmlFor="j_mrn" shrink={true}>MRN</InputLabel>
                   <Input id="j_mrn" name="j_mrn" autoComplete="off" type="number" placeholder="1234567" className={classes.mrnInput} onChange={event => setMrn(event.target.value)}/>
                   <FormHelperText id="mrn_helper">
-                  <Button
-                    variant="link"
+                  <Link
+                    color="inherit"
+                    variant="caption"
                     onClick={() => {setMrnHelperOpen(true)}}
+                    className={classes.mrnHelperLink}
                     >
                     Where can I find my MRN?
-                    </Button>
+                    </Link>
                   </FormHelperText>
                  </FormControl>
               </Grid>
