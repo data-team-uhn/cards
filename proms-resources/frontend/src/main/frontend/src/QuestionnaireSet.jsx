@@ -33,12 +33,17 @@ import {
   Typography,
   makeStyles
 } from '@material-ui/core';
+import { Alert, AlertTitle } from '@material-ui/lab';
 import NextStepIcon from '@material-ui/icons/ChevronRight';
 import DoneIcon from '@material-ui/icons/Done';
 import WarningIcon from '@material-ui/icons/Warning';
 
+import moment from "moment";
+import * as jdfp from "moment-jdateformatparser";
+
 import Form from "./questionnaire/Form.jsx";
 import PromsHeader from "./Header.jsx";
+import DateQuestionUtilities from "./questionnaire/DateQuestionUtilities";
 
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
@@ -63,10 +68,9 @@ const useStyles = makeStyles(theme => ({
     }
   },
   stepIndicator : {
-    border: "3px solid " + theme.palette.primary.main,
+    border: "1px solid " + theme.palette.text.secondary,
     background: "transparent",
-    color: theme.palette.primary.main,
-    fontWeight: 800,
+    color: theme.palette.text.secondary,
   },
   incompleteIndicator : {
     border: "1px solid " + theme.palette.secondary.main,
@@ -74,7 +78,7 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.secondary.main,
   },
   doneIndicator : {
-    background: theme.palette.primary.main,
+    background: theme.palette.success.main,
   },
   survey : {
     alignItems: "stretch",
@@ -414,16 +418,86 @@ function QuestionnaireSet(props) {
     return `Good ${timeOfDay}, ${name}`;
   }
 
-  let welcomeScreen = [
+  const getVisitInformation = (questionName) => {
+    let question = visitInformation?.questionnaire?.[questionName]?.["jcr:uuid"];
+    let answer = Object.values(visitInformation).find(value => value.question?.["jcr:uuid"] == question)?.value || null;
+    return answer;
+  }
+
+  const getVisitDate = () => {
+    let dateAnswer = getVisitInformation("time");
+    return dateAnswer == null ? null : DateQuestionUtilities.amendMoment(DateQuestionUtilities.stripTimeZone(dateAnswer));
+  }
+
+  const appointmentDate = () => {
+    let date = getVisitDate();
+    return date == null ? ""
+      : date.formatWithJDF("EEEE, MMMM d, yyyy h:mma");
+  }
+
+  let appointmentAlert = () => {
+    const location = getVisitInformation("location");
+    const provider = getVisitInformation("provider");
+    return visitInformation?.questionnaire?.time ?
+      <Alert severity="info">
+        <AlertTitle>Upcoming appointment</AlertTitle>
+        {appointmentDate()}
+        {location ? <> at {location}</> : null}
+        {provider ? <> with {provider}</> : null}
+      </Alert>
+      : null
+  }
+
+  const diffString = (startDate, endDate, division, result, modulus = null) => {
+    let diff = endDate.diff(startDate, division);
+    if (modulus != null) {
+      diff = diff % modulus;
+    }
+    if (diff > 0) {
+      result.push(diff + " " + (diff == 1 && division[division.length - 1] == "s"
+        ? division.substring(0, division.length -1)
+        : division));
+    }
+  }
+
+  const expiryDate = () => {
+    let result = "";
+    const date = getVisitDate();
+    if (date != null) {
+      // Tokens expire 2 hours after the visit
+      date.add(2, 'hours');
+
+      // Get the date difference in the format: X days, Y hours and Z minutes,
+      // skipping any time division that has a value of 0
+      const now = moment();
+      const diffStrings = [];
+      diffString(now, date, "days", diffStrings);
+      diffString(now, date, "hours", diffStrings, 24);
+      diffString(now, date, "minutes", diffStrings, 60);
+
+      if (diffStrings.length > 1) {
+        result = " and " + diffStrings.pop();
+      }
+      if (diffStrings.length > 0) {
+        result = " This survey link will expire in " + diffStrings.join(", ") + result + ".";
+      }
+    }
+
+    return result;
+  }
+
+  let welcomeScreen = (isComplete && isSubmitted || questionnaireIds.length == 0) ? [
     <Typography variant="h4" key="welcome-greeting">{ greet(username) }</Typography>,
-    isComplete && isSubmitted || questionnaireIds.length == 0 ?
-      <Typography color="textSecondary" variant="subtitle1" key="welcome-message">
+    appointmentAlert(),
+    <Typography color="textSecondary" variant="subtitle1" key="welcome-message">
         You have no pending surveys to fill out for your next appointment.
-      </Typography>
-    :
-      <Typography paragraph key="welcome-message">
+    </Typography>
+  ] : [
+    <Typography variant="h4" key="welcome-greeting">{ greet(username) }</Typography>,
+    appointmentAlert(),
+    <Typography paragraph key="welcome-message">
         Tell us about your symptoms prior to your appointment.
-      </Typography>,
+    </Typography>,
     <List key="welcome-surveys">
     { (questionnaireIds || []).map((q, i) => (
       <ListItem key={q+"Welcome"}>
@@ -436,7 +510,9 @@ function QuestionnaireSet(props) {
       </ListItem>
     ))}
     </List>,
-    isComplete && isSubmitted ? <></> :
+    <Typography paragraph key="expiry-message" color="textSecondary">
+        {expiryDate()}
+    </Typography>,
     nextQuestionnaire && <Fab variant="extended" color="primary" onClick={launchNextForm} key="welcome-action">Begin</Fab>
   ];
 
@@ -492,20 +568,20 @@ function QuestionnaireSet(props) {
   // Are there any response interpretations to display to the patient?
   let hasInterpretations = (questionnaireIds || []).some(q => questionnaires?.[q]?.hasInterpretation);
 
+  let disclaimer = (
+      <Alert severity="warning">
+Please note that your responses may not be reviewed by your care team until the day of your next appointment. If your symptoms are
+worsening while waiting for your next appointment, please proceed to your nearest Emergency Department today, or call 911.
+      </Alert>
+  )
+
   let summaryScreen = hasInterpretations ? [
       <Typography variant="h4">Thank you for your submission</Typography>,
-      <Typography color="textSecondary">Please note:</Typography>,
-      <ul>
-        <li key="0"><Typography color="textSecondary">
+      <Typography color="textSecondary">
 For your privacy and security, once this screen is closed the information below will not be accessible until the day of
 your appointment with your provider. Please print or note this information for your reference.
-        </Typography></li>
-        <li key="1"><Typography color="textSecondary">
-Your responses may not be reviewed by your care team until the day of your next appointment. If your symptoms are
-worsening while waiting for your next appointment, please proceed to your nearest Emergency Department today, or call
-911.
-        </Typography></li>
-      </ul>,
+      </Typography>,
+      disclaimer,
       <Typography variant="h4">Interpreting your results</Typography>,
       <Typography color="textSecondary">There are different actions you can take now depending on how you have scored
 your symptoms. Please see below for a summary of your scores and suggested actions.</Typography>,
@@ -525,10 +601,7 @@ your symptoms. Please see below for a summary of your scores and suggested actio
       </Grid>
     ] : [
       <Typography variant="h4">Thank you for your submission</Typography>,
-      <Typography color="textSecondary">
-Please note that your responses may not be reviewed by your care team until the day of your next appointment. If your symptoms are
-worsening while waiting for your next appointment, please proceed to your nearest Emergency Department today, or call 911.
-      </Typography>
+      disclaimer
     ];
 
   let loadingScreen = [ <CircularProgress /> ];
