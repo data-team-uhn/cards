@@ -48,6 +48,36 @@
             <value>1</value>
             <type>Long</type>
         </property>
+        <property>
+            <name>view</name>
+            <value>
+[
+    {
+      "key": "last_name",
+      "label": "Last name",
+      "format": "string"
+    },
+    {
+      "key": "first_name",
+      "label": "First name",
+      "format": "string"
+    },
+    {
+      "key": "time",
+      "label": "Visit time",
+      "format": "date:YYYY-MM-DD hh:mm",
+      "link" : "dashboard+path"
+    },
+    {
+      "key": "score",
+      "label": "Score",
+      "format": "string",
+      "link" : "dashboard+path"
+    }
+]
+            </value>
+            <type>String</type>
+        </property>
     </node>
     <node>
         <name>Step2</name>
@@ -77,19 +107,32 @@
             <value>
 [
     {
-      "key": "subject/parents/identifier",
-      "label": "Patient",
+      "key": "last_name",
+      "label": "Last name",
       "format": "string"
     },
     {
-      "key": "questionnaire/title",
-      "label": "Questionnaire",
+      "key": "first_name",
+      "label": "First name",
       "format": "string"
     },
     {
-      "key": "jcr:created",
-      "label": "Created on",
-      "format": "date:YYYY-MM-DD HH:mm"
+      "key": "time",
+      "label": "Visit time",
+      "format": "date:YYYY-MM-DD hh:mm",
+      "link" : "dashboard+path"
+    },
+    {
+      "key": "score",
+      "label": "Score",
+      "format": "string",
+      "link" : "dashboard+path"
+    },
+    {
+      "key": "risk",
+      "label": "Risk",
+      "format": "string",
+      "link" : "dashboard+path"
     }
 ]
             </value>
@@ -119,6 +162,36 @@
             <value>3</value>
             <type>Long</type>
         </property>
+        <property>
+            <name>view</name>
+            <value>
+[
+    {
+      "key": "last_name",
+      "label": "Last name",
+      "format": "string"
+    },
+    {
+      "key": "first_name",
+      "label": "First name",
+      "format": "string"
+    },
+    {
+      "key": "time",
+      "label": "Visit time",
+      "format": "date:YYYY-MM-DD hh:mm",
+      "link" : "dashboard+path"
+    },
+    {
+      "key": "score",
+      "label": "Score",
+      "format": "string",
+      "link" : "dashboard+path"
+    }
+]
+            </value>
+            <type>String</type>
+        </property>
     </node>
     <node>
         <name>Step4</name>
@@ -143,6 +216,36 @@
             <value>4</value>
             <type>Long</type>
         </property>
+        <property>
+            <name>view</name>
+            <value>
+[
+    {
+      "key": "last_name",
+      "label": "Last name",
+      "format": "string"
+    },
+    {
+      "key": "first_name",
+      "label": "First name",
+      "format": "string"
+    },
+    {
+      "key": "time",
+      "label": "Visit time",
+      "format": "date:YYYY-MM-DD hh:mm",
+      "link" : "dashboard+path"
+    },
+    {
+      "key": "score",
+      "label": "Score",
+      "format": "string",
+      "link" : "dashboard+path"
+    }
+]
+            </value>
+            <type>String</type>
+        </property>
     </node>
     <node>
         <name>Step5</name>
@@ -166,6 +269,30 @@
             <name>order</name>
             <value>5</value>
             <type>Long</type>
+        </property>
+        <property>
+            <name>view</name>
+            <value>
+[
+    {
+      "key": "last_name",
+      "label": "Last name",
+      "format": "string"
+    },
+    {
+      "key": "first_name",
+      "label": "First name",
+      "format": "string"
+    },
+    {
+      "key": "time",
+      "label": "Visit time",
+      "format": "date:YYYY-MM-DD hh:mm",
+      "link" : "dashboard+path"
+    }
+]
+            </value>
+            <type>String</type>
         </property>
     </node>
 </node>
