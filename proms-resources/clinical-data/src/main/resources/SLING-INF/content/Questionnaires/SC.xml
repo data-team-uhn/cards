@@ -364,7 +364,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>smoking_history_v1_has_patient_used_tobacco_products_in_past_6months</value>
+						<value>smoking_history_v1_has_patient_used_tobacco_products_in_past_6_months</value>
 					</values>
 					<type>String</type>
 				</property>
