@@ -90,6 +90,7 @@ function PromsDashboard(props) {
 
   return (
     <>
+      <Typography variant="h4">{name}</Typography>
       <Typography variant="overline">{dashboardTitle}</Typography>
       <Grid container spacing={3}>
         {

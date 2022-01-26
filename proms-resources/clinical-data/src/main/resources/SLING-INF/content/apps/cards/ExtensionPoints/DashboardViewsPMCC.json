@@ -1,5 +1,5 @@
 {
   "jcr:primaryType": "cards:ExtensionPoint",
   "cards:extensionPointId": "proms/dashboard/cardio",
-  "cards:extensionPointName": "PMCC pre-appointment questionnaires dashboard"
+  "cards:extensionPointName": "Pre-appointment questionnaires"
 }
