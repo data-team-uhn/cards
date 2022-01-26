@@ -21,14 +21,19 @@ import { v4 as uuidv4 } from 'uuid';
 
 import {
   Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
   FormControl,
   FormHelperText,
   Grid,
+  IconButton,
   Input,
   InputLabel,
   Typography,
   makeStyles
 } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 
 import ToUDialog from "./ToUDialog.jsx";
 
@@ -78,6 +83,18 @@ const useStyles = makeStyles(theme => ({
   },
   dateLabel : {
       paddingTop: theme.spacing(1),
+  },
+  identifierDivider : {
+    marginTop: '35px',
+  },
+  identifierContainer : {
+    alignItems: "start",
+  },
+  closeButton: {
+    float: 'right',
+  },
+  mrnHelperImage: {
+    maxWidth: '100%',
   }
 }));
 
@@ -99,6 +116,8 @@ function MockPatientIdentification(props) {
   const [ showTou, setShowTou ] = useState(false);
   // Info about each patient is stored in a Patient information form
   const [ patientData, setPatientData ] = useState();
+
+  const [ mrnHelperOpen, setMrnHelperOpen ] = useState(false);
 
   const classes = useStyles();
 
@@ -254,7 +273,7 @@ function MockPatientIdentification(props) {
   useEffect(() => {
     patient && piDefinition && syncPatientInfo();
   }, [patient, piDefinition]);
-  
+
   // Now the Terms of Use can be shown if applicable
   useEffect(() => {
     patientData && setShowTou(true);
@@ -348,6 +367,24 @@ function MockPatientIdentification(props) {
         setPatient(null);
       }}
     />
+    <Dialog onClose={() => {setMrnHelperOpen(false)}} open={mrnHelperOpen}>
+      <DialogTitle>
+        <span className={classes.dialogTitle}>Where can I find my MRN?</span>
+        <IconButton onClick={() => setMrnHelperOpen(false)} className={classes.closeButton}>
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
+      <DialogContent>
+        <Typography paragraph>
+          1. Check the top right-hand corner of your Patient Itinerary.
+        </Typography>
+        <img src="/libs/cards/resources/mrn_helper_1.png" alt="MRN location within the Appointment Itinerary" className={classes.mrnHelperImage} />
+        <Typography paragraph>
+          2. Check your account page on the myUHN PatientPortal.
+        </Typography>
+        <img src="/libs/cards/resources/mrn_helper_2.png" alt="MRN location within the Patient Portal side bar" className={classes.mrnHelperImage} />
+      </DialogContent>
+    </Dialog>
     <form className={classes.form} onSubmit={onSubmit} >
       <Grid container direction="column" spacing={4} alignItems="center" justify="center">
          <Grid item xs={12}>
@@ -377,14 +414,22 @@ function MockPatientIdentification(props) {
             </div>
             <InputLabel htmlFor="j_dob" shrink={true} className={classes.dateLabel}>Date of birth</InputLabel>
             <DropdownsDatePicker id="j_dob" name="j_dob" formatDate onDateChange={setDob} autoFocus fullWidth/>
-            <Grid container direction="row" alignItems="flex-end" spacing={3} wrap="nowrap" justify="space-between">
+            <Grid container direction="row" alignItems="flex-end" spacing={3} wrap="nowrap" justify="space-between" className={classes.identifierContainer}>
               <Grid item>
                 <FormControl margin="normal" fullWidth>
                   <InputLabel htmlFor="j_mrn" shrink={true}>MRN</InputLabel>
                   <Input id="j_mrn" name="j_mrn" autoComplete="off" type="number" placeholder="1234567" className={classes.mrnInput} onChange={event => setMrn(event.target.value)}/>
+                  <FormHelperText id="mrn_helper">
+                  <Button
+                    variant="link"
+                    onClick={() => {setMrnHelperOpen(true)}}
+                    >
+                    Where can I find my MRN?
+                    </Button>
+                  </FormHelperText>
                  </FormControl>
               </Grid>
-              <Grid item>or</Grid>
+              <Grid item className={classes.identifierDivider}>or</Grid>
               <Grid item>
                 <FormControl margin="normal" fullWidth>
                   <InputLabel htmlFor="j_hc" shrink={true}>Health card number</InputLabel>
