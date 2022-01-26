@@ -41,7 +41,7 @@ import LaunchIcon from '@material-ui/icons/Launch';
 
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = color => makeStyles(theme => ({
   promsView : {
     border: "1px solid " + theme.palette.divider,
     "& .MuiTab-root": {
@@ -49,9 +49,15 @@ const useStyles = makeStyles(theme => ({
       textTransform: "none",
       fontWeight: "300",
     },
+    "& .MuiTab-root.Mui-selected" : {
+      color: color,
+    },
+    "& .MuiTabs-indicator": {
+      background: color,
+    },
   },
   promsViewAvatar: {
-    background: theme.palette.primary.main,
+    background: color,
   },
   promsViewTitle: {
     fontWeight: "600",
@@ -61,9 +67,9 @@ const useStyles = makeStyles(theme => ({
 
 
 function PromsView(props) {
-  const { data, visitInfo } = props;
+  const { data, color, visitInfo } = props;
 
-  const classes = useStyles();
+  const classes = useStyles(color)();
 
   const [ columns, setColumns ] = useState();
   const [ questionnaireId, setQuestionnaireId ] = useState();

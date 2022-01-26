@@ -115,6 +115,21 @@ function PromsDashboard(props) {
 
   const classes = useStyles();
 
+  // Colors assigned to the dashboard widgets
+  // If we have more widgets than colors, start reusing golors from the top
+  const colors = [
+    "#a61c00",
+    "#f94900",
+    "#ff9900",
+    "#36b37e",
+    "#00b8d9",
+    "#3c78d8",
+    "#974efd",
+    "#9e4973",
+  ];
+
+  const getColor = (index) => (colors[index % colors.length])
+
   if (loading || !visitInfo) {
     return (
       <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
@@ -130,7 +145,7 @@ function PromsDashboard(props) {
           dashboardExtensions.map((extension, index) => {
             let Extension = extension["cards:extensionRender"];
             return <Grid item lg={12} xl={6} key={"extension-" + index} className={classes.dashboardEntry}>
-              <Extension data={extension["cards:data"]} visitInfo={visitInfo} />
+              <Extension data={extension["cards:data"]} color={getColor(index)} visitInfo={visitInfo} />
             </Grid>
           })
         }
