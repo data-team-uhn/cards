@@ -425,7 +425,7 @@ function MockPatientIdentification(props) {
                   <Input id="j_mrn" name="j_mrn" autoComplete="off" type="number" placeholder="1234567" className={classes.mrnInput} onChange={event => setMrn(event.target.value)}/>
                   <FormHelperText id="mrn_helper">
                   <Link
-                    color="inherit"
+                    color="primary"
                     variant="caption"
                     onClick={() => {setMrnHelperOpen(true)}}
                     className={classes.mrnHelperLink}
