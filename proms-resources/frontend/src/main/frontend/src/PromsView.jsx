@@ -67,7 +67,7 @@ const useStyles = color => makeStyles(theme => ({
 
 
 function PromsView(props) {
-  const { data, color, visitInfo } = props;
+  const { data, surveysId, color, visitInfo } = props;
 
   const classes = useStyles(color)();
 
@@ -135,11 +135,13 @@ function PromsView(props) {
     "[cards:Subject] as visitSubject " +
     "inner join [cards:Form] as visitInformation on visitSubject.[jcr:uuid] = visitInformation.subject " +
       "inner join [cards:Answer] as visitDate on isdescendantnode(visitDate, visitInformation) " +
+      "inner join [cards:Answer] as visitSurveys on isdescendantnode(visitSurveys, visitInformation) " +
       "inner join [cards:Answer] as patientSubmitted on isdescendantnode(patientSubmitted, visitInformation) " +
     "inner join [cards:Form] as dataForm on visitSubject.[jcr:uuid] = dataForm.subject " +
   "where " +
     `visitInformation.questionnaire = '${visitInfo?.["jcr:uuid"]}' ` +
       `and visitDate.question = '${visitInfo?.time?.["jcr:uuid"]}' and ` + tabFilter[tabs[activeTab]].dateFilter + " " +
+      `and visitSurveys.question = '${visitInfo?.surveys?.["jcr:uuid"]}' and visitSurveys.value = '${surveysId}' ` +
       `and patientSubmitted.question = '${visitInfo?.surveys_submitted?.["jcr:uuid"]}' and patientSubmitted.value = 1 ` +
     `and dataForm.questionnaire = '${questionnaireId}' ` +
   "order by visitDate.value " + tabFilter[tabs[activeTab]].order

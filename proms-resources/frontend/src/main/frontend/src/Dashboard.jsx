@@ -80,6 +80,7 @@ const useStyles = makeStyles(theme => ({
 function PromsDashboard(props) {
   let [ name, setName ] = useState();
   let [ dashboardTitle, setDashboardTitle ] = useState();
+  let [ surveysId, setSurveysId ] = useState("");
   let [ dashboardExtensions, setDashboardExtensions ] = useState([]);
   let [ loading, setLoading ] = useState(true);
   let [ visitInfo, setVisitInfo ] = useState();
@@ -110,7 +111,10 @@ function PromsDashboard(props) {
   useEffect(() => {
     fetchWithReLogin(globalLoginDisplay, `/apps/cards/ExtensionPoints/DashboardViews${name}.json`)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => setDashboardTitle(json?.["cards:extensionPointName"]));
+      .then((json) => {
+        setDashboardTitle(json?.["cards:extensionPointName"]);
+        setSurveysId(json?.surveys || "");
+      });
   }, [name]);
 
   const classes = useStyles();
@@ -145,7 +149,7 @@ function PromsDashboard(props) {
           dashboardExtensions.map((extension, index) => {
             let Extension = extension["cards:extensionRender"];
             return <Grid item lg={12} xl={6} key={"extension-" + index} className={classes.dashboardEntry}>
-              <Extension data={extension["cards:data"]} color={getColor(index)} visitInfo={visitInfo} />
+              <Extension data={extension["cards:data"]} color={getColor(index)} visitInfo={visitInfo} surveysId={surveysId} />
             </Grid>
           })
         }
