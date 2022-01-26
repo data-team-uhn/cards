@@ -99,7 +99,10 @@ const useStyles = makeStyles(theme => ({
   },
   mrnHelperLink: {
     cursor: 'pointer',
-  }
+  },
+  dialogTitle: {
+    paddingTop: theme.spacing(2)
+  },
 }));
 
 
@@ -373,7 +376,7 @@ function MockPatientIdentification(props) {
     />
     <Dialog onClose={() => {setMrnHelperOpen(false)}} open={mrnHelperOpen}>
       <DialogTitle>
-        <span className={classes.dialogTitle}>Where can I find my MRN?</span>
+        Where can I find my MRN?
         <IconButton onClick={() => setMrnHelperOpen(false)} className={classes.closeButton}>
           <CloseIcon />
         </IconButton>
