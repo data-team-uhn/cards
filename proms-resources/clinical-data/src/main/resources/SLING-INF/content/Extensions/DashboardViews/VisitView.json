@@ -1,0 +1,7 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "proms/dashboard/cardio",
+  "cards:extensionName": "Visit View",
+  "cards:extensionRenderURL": "asset:proms-homepage.VisitView.js",
+  "cards:defaultOrder": -1
+}

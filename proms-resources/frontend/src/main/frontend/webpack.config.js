@@ -10,6 +10,7 @@ module.exports = {
     [module_name + 'ToULink']: './src/ToULink.jsx'
     [module_name + 'Dashboard']: './src/Dashboard.jsx',
     [module_name + 'PromsView']: './src/PromsView.jsx',
+    [module_name + 'VisitView']: './src/VisitView.jsx',
     [module_name + 'cardioIcon']: '@material-ui/icons/Favorite.js'
   },
   plugins: [

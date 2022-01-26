@@ -129,7 +129,7 @@ function PromsDashboard(props) {
   // Colors assigned to the dashboard widgets
   // If we have more widgets than colors, start reusing golors from the top
   const colors = [
-    "#a61c00",
+    "#003366",
     "#f94900",
     "#ff9900",
     "#36b37e",
