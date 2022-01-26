@@ -1,6 +1,5 @@
 {
   "jcr:primaryType": "nt:unstructured",
-  "jcr:reference:score": "/Questionnaires/EQ5D/eq5d_results/eq5d_score",
   "jcr:reference:time": "/Questionnaires/Visit information/time",
   "jcr:reference:first_name": "/Questionnaires/Patient information/first_name",
   "jcr:reference:last_name": "/Questionnaires/Patient information/last_name"

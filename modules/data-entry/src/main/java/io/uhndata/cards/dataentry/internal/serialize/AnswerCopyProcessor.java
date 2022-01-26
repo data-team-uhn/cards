@@ -24,21 +24,22 @@ import java.util.Calendar;
 import java.util.function.Function;
 
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
 import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
+import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ValueMap;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.dataentry.api.FormUtils;
+import io.uhndata.cards.dataentry.api.QuestionnaireUtils;
+import io.uhndata.cards.dataentry.api.SubjectUtils;
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 
 /**
@@ -57,7 +58,13 @@ public class AnswerCopyProcessor implements ResourceJsonProcessor
 
     private static final String CONFIGURATION_NODE = "/apps/cards/config/CopyAnswers";
 
-    private final ThreadLocal<ValueMap> answersToCopy = ThreadLocal.withInitial(() -> ValueMap.EMPTY);
+    private final ThreadLocal<Node> answersToCopy = ThreadLocal.withInitial(() -> null);
+
+    @Reference
+    private QuestionnaireUtils questionnaireUtils;
+
+    @Reference
+    private SubjectUtils subjectUtils;
 
     @Reference
     private FormUtils formUtils;
@@ -97,7 +104,7 @@ public class AnswerCopyProcessor implements ResourceJsonProcessor
                     resource.getValueMap().get(FormUtils.QUESTIONNAIRE_PROPERTY, Property.class).getNode().getName();
                 final Resource configuration = allConfigurations.getChild(questionnaireName);
                 if (configuration != null) {
-                    this.answersToCopy.set(configuration.getValueMap());
+                    this.answersToCopy.set(configuration.adaptTo(Node.class));
                 }
             } catch (final RepositoryException e) {
                 LOGGER.warn("Cannot access configuration for AnswerCopyProcessor: {}", e.getMessage(), e);
@@ -125,12 +132,18 @@ public class AnswerCopyProcessor implements ResourceJsonProcessor
         this.answersToCopy.remove();
     }
 
-    private void copyAnswers(final Node node, final JsonObjectBuilder json)
+    private void copyAnswers(final Node node, final JsonObjectBuilder json) throws RepositoryException
     {
-        final ValueMap toCopy = this.answersToCopy.get();
-        toCopy.keySet().forEach(key -> {
+        final Node toCopy = this.answersToCopy.get();
+        final PropertyIterator properties = toCopy.getProperties();
+        while (properties.hasNext()) {
+            final Property property = properties.nextProperty();
+            if (property.getType() != PropertyType.REFERENCE) {
+                continue;
+            }
+            final String key = property.getName();
             try {
-                final String question = toCopy.get(key, String.class);
+                final Node question = property.getNode();
                 final Node answer = getAnswer(node, question);
                 if (answer != null && answer.hasProperty("value")) {
                     final Object value = this.formUtils.getValue(answer);
@@ -149,31 +162,43 @@ public class AnswerCopyProcessor implements ResourceJsonProcessor
                 // Should not happen
                 LOGGER.warn("Failed to access answer {}: {}", key, e.getMessage(), e);
             }
-        });
+        }
     }
 
-    private Node getAnswer(final Node form, final String question)
+    private Node getAnswer(final Node form, final Node question)
     {
-        return findNode(form, "question", question);
+        final Node targetForm = findForm(form, question);
+        return this.formUtils.getAnswer(targetForm, question);
     }
 
-    private Node findNode(final Node parent, final String property, final String value)
+    private Node findForm(final Node sourceForm, final Node question)
     {
+        Node targetQuestionnaire = this.questionnaireUtils.getOwnerQuestionnaire(question);
         try {
-            if (parent.hasProperty(property)
-                && StringUtils.equals(parent.getProperty(property).getValue().getString(), value)) {
-                return parent;
+            if (targetQuestionnaire.isSame(this.formUtils.getQuestionnaire(sourceForm))) {
+                return sourceForm;
             }
-            final NodeIterator children = parent.getNodes();
-            while (children.hasNext()) {
-                final Node child = children.nextNode();
-                final Node result = findNode(child, property, value);
-                if (result != null) {
-                    return result;
+            // If the questionnaire answered by the current form is not the target one,
+            // look for a related form answering that questionnaire belonging to the form's related subjects.
+            Node nextSubject = this.formUtils.getSubject(sourceForm);
+            while (true) {
+                // We stop when we've reached the end of the subjects hierarchy
+                if (!this.subjectUtils.isSubject(nextSubject)) {
+                    return null;
                 }
+                // Look for a form answering the right questionnaire
+                final PropertyIterator otherForms = nextSubject.getReferences(FormUtils.SUBJECT_PROPERTY);
+                while (otherForms.hasNext()) {
+                    final Node otherForm = otherForms.nextProperty().getParent();
+                    if (targetQuestionnaire.isSame(this.formUtils.getQuestionnaire(otherForm))) {
+                        return otherForm;
+                    }
+                }
+                // Not found among the subject's forms, next look in the parent subject's forms
+                nextSubject = nextSubject.getParent();
             }
-        } catch (IllegalStateException | RepositoryException e) {
-            // Not found or not accessible, just return null
+        } catch (RepositoryException e) {
+            LOGGER.warn("Failed to look for the right answer to copy: {}", e.getMessage(), e);
         }
         return null;
     }

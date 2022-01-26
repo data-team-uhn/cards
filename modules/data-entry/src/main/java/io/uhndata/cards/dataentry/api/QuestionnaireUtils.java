@@ -128,6 +128,25 @@ public interface QuestionnaireUtils
     Node getQuestion(String identifier);
 
     /**
+     * Check if a node is an element of the given questionnaire, i.e. a question or section that is part of the
+     * questionnaire.
+     *
+     * @param element a node to check
+     * @param questionnaire the questionnaire that should be an ancestor of the element
+     * @return {@code true} if the element does belong to the questionnaire, {@code false} if either element is
+     *         {@code null}, or not an expected node type
+     */
+    boolean belongs(Node element, Node questionnaire);
+
+    /**
+     * Return the questionnaire that owns the provided element, if any.
+     *
+     * @param element a node that belongs to a questionnaire, e.g. a Question or Section node
+     * @return a questionnaire node, or {@code null}
+     */
+    Node getOwnerQuestionnaire(Node element);
+
+    /**
      * Retrieve the name of a question, a short internal name.
      *
      * @param question a {@code cards:Question} node

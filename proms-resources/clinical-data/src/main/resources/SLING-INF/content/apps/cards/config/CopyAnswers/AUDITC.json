@@ -1,4 +1,7 @@
 {
   "jcr:primaryType": "nt:unstructured",
-  "jcr:reference:score": "/Questionnaires/AUDITC/audit_results/audit_score"
+  "jcr:reference:score": "/Questionnaires/AUDITC/audit_results/audit_score",
+  "jcr:reference:time": "/Questionnaires/Visit information/time",
+  "jcr:reference:first_name": "/Questionnaires/Patient information/first_name",
+  "jcr:reference:last_name": "/Questionnaires/Patient information/last_name"
 }
