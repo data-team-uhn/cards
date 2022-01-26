@@ -55,11 +55,11 @@
             <value>text</value>
             <type>String</type>
         </property>
-		<property>
-			<name>displayMode</name>
-			<value>list</value>
-			<type>String</type>
-		</property>
+        <property>
+            <name>displayMode</name>
+            <value>list</value>
+            <type>String</type>
+        </property>
         <node>
             <name>A</name>
             <primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -98,10 +98,10 @@
             <type>String</type>
         </property>
         <property>
-			<name>displayMode</name>
-			<value>list</value>
-			<type>String</type>
-		</property>
+            <name>displayMode</name>
+            <value>list</value>
+            <type>String</type>
+        </property>
         <property>
             <name>compact</name>
             <value>True</value>
@@ -144,11 +144,11 @@
             <value>text</value>
             <type>String</type>
         </property>
-		<property>
-			<name>displayMode</name>
-			<value>list</value>
-			<type>String</type>
-		</property>
+        <property>
+            <name>displayMode</name>
+            <value>list</value>
+            <type>String</type>
+        </property>
         <property>
             <name>compact</name>
             <value>True</value>
@@ -240,11 +240,11 @@
             <value>text</value>
             <type>String</type>
         </property>
-		<property>
-			<name>displayMode</name>
-			<value>list</value>
-			<type>String</type>
-		</property>
+        <property>
+            <name>displayMode</name>
+            <value>list</value>
+            <type>String</type>
+        </property>
         <node>
             <name>A</name>
             <primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -282,11 +282,11 @@
             <value>text</value>
             <type>String</type>
         </property>
-		<property>
-			<name>displayMode</name>
-			<value>list</value>
-			<type>String</type>
-		</property>
+        <property>
+            <name>displayMode</name>
+            <value>list</value>
+            <type>String</type>
+        </property>
         <property>
             <name>compact</name>
             <value>True</value>
