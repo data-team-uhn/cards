@@ -18,7 +18,7 @@
 //
 
 import React, {
-  forwardRef,
+  useRef,
   useState,
   useEffect,
   useContext
@@ -42,18 +42,20 @@ import { useTheme } from '@material-ui/core/styles';
 
 import FormattedText from "../components/FormattedText.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+import { useReactToPrint } from 'react-to-print';
 
 // Component that renders a form in a format/style ready for printing.
 // Internally, it queries and renders the markdown (.md) export of the form.
 //
 // Required props:
 // resourcePath: String specifying the path of the form to print
-// title: String specifyingthe title to associate with the rendered content.
-//   Note: the .md export doesn't generate a title.
 //
 // Optional props:
+// title: String specifying the title to associate with the rendered content.
+//   Note: the .md export doesn't generate a title.
 // breadcrumb: String displayed in small fonts above the title, providing some context for the printed resource.
 //   Example usage: the formatted identifier of the subject for this resource.
+// date: String displayed with breadcrumb in the header above the title, providing the time context for the printed resource
 // subtitle: String displayed in small fonts under the title, expected to be a relevant date or description 
 // fullScreen: Boolean specifying if the preview is full screen or displayed as a modal
 // onClose: Callback for closing the dialog
@@ -82,7 +84,10 @@ const useStyles = makeStyles(theme => ({
       "& .MuiDialogActions-root" : {
         display: "none",
       },
-    }
+    },
+    "& .MuiDialogActions-root" : {
+        padding: theme.spacing(2),
+      },
   },
   header : {
     display: "flex",
@@ -90,10 +95,10 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const PrintPreview = forwardRef((props, ref) => {
-  const { resourcePath, title, breadcrumb, date, subtitle, fullScreen, onClose, ...rest } = props;
+function PrintPreview(props) {
+  const { open, resourcePath, title, breadcrumb, date, subtitle, fullScreen, onClose, ...rest } = props;
 
-  const [ content, setContent ] = useState();
+  const [ content, setContent ] = useState(null);
   const [ error, setError ] = useState();
 
   const classes = useStyles();
@@ -104,16 +109,23 @@ const PrintPreview = forwardRef((props, ref) => {
 
   let globalLoginDisplay = useContext(GlobalLoginContext);
 
+  const ref = useRef();
+
+  const handlePrint = useReactToPrint({
+    content: () => ref.current,
+  });
+
   useEffect(() => {
-    fetchWithReLogin(globalLoginDisplay, resourcePath + '.md')
+    open && fetchWithReLogin(globalLoginDisplay, resourcePath + '.md')
       .then((response) => response.ok ? response.text() : Promise.reject(response))
       .then(setContent)
       .catch(response => setError(true));
-  }, []);
+  }, [open]);
 
   return (
     <Dialog
       ref={ref}
+      open={open && !!content}
       className={classes.printPreview}
       maxWidth={width}
       fullWidth
@@ -145,14 +157,16 @@ const PrintPreview = forwardRef((props, ref) => {
       </DialogContent>
       <DialogActions>
         <Button variant="contained" onClick={onClose}>Close</Button>
-        <Button variant="contained" color="primary" onClick={() => {window.print()}} disabled={!!!content}>Print</Button>
+        <Button variant="contained" onClick={handlePrint} disabled={!!!content}>Print</Button>
       </DialogActions>
     </Dialog>
   );
-})
+}
 
 PrintPreview.propTypes = {
   resourcePath: PropTypes.string.isRequired,
+  open: PropTypes.bool,
+  fullScreen: PropTypes.bool,
   title: PropTypes.string,
   breadcrumb: PropTypes.string,
   date: PropTypes.string,

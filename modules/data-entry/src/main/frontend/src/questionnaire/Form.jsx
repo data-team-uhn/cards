@@ -54,12 +54,12 @@ import { FormProvider } from "./FormContext";
 import { FormUpdateProvider } from "./FormUpdateContext";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import DeleteButton from "../dataHomepage/DeleteButton";
+import PrintButton from "../dataHomepage/PrintButton.jsx";
 import MainActionButton from "../components/MainActionButton.jsx";
 import FormPagination from "./FormPagination";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import FormattedText from "../components/FormattedText.jsx";
 import ResourceHeader from "./ResourceHeader.jsx";
-import PrintPreview from "./PrintPreview.jsx";
 
 // TODO Once components from the login module can be imported, open the login Dialog in-page instead of opening a popup window
 
@@ -125,7 +125,6 @@ function Form (props) {
   const formURL = `/Forms/${id}`;
   const urlBase = "/content.html";
   const isEdit = window.location.pathname.endsWith(".edit") || mode == "edit";
-  const isPrint = window.location.pathname.endsWith(".print") || mode == "print";
   const isSummary = window.location.pathname.endsWith(".summary") || mode == "summary";
   let globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -347,19 +346,6 @@ function Form (props) {
     );
   }
 
-  if (isPrint) {
-    return (
-      <PrintPreview
-        open
-        fullScreen
-        resourcePath={formURL}
-        breadcrumb={getTextHierarchy(data?.subject, true)}
-        date={moment(data['jcr:created']).format("MMM Do YYYY")}
-        onClose={() => (history.length > 2 ? history.goBack() : history.push(urlBase + formURL))}
-      />
-    );
-  }
-
   let formMenu = (
             <div className={classes.actionsMenu}>
                 {isEdit ?
@@ -394,30 +380,31 @@ function Form (props) {
                     }}
                 >
                   <List>
-                    { isEdit &&
+                    { isEdit ?
                     <ListItem className={classes.actionsMenuItem}>
                       <Button onClick={() => {setSelectorDialogOpen(true); setActionsMenu(null)}}>
                         Change subject
                       </Button>
                     </ListItem>
-                    }
+                    : <>
                     <ListItem className={classes.actionsMenuItem}>
-                      <Button onClick={(e) => {
-                         // Save before exporting from edit mode to ensure all the data is included
-                         isEdit ? saveData(e, false, () => history.push(urlBase + formURL + ".print")) : history.push(urlBase + formURL + ".print");
-                        }}>
-                        Print preview
-                      </Button>
+                      <PrintButton
+                         variant="text"
+                         resourcePath={formURL}
+                         breadcrumb={getTextHierarchy(data?.subject, true)}
+                         date={moment(data['jcr:created']).format("MMM Do YYYY")}
+                         onClose={() => { setActionsMenu(null); }}
+                       />
                     </ListItem>
                     <ListItem className={classes.actionsMenuItem}>
-                      <Button onClick={(e) => {
-                         // Save before exporting from edit mode to ensure all the data is included
-                         isEdit ? saveData(e, false, () => window.open(formURL + ".txt")) : window.open(formURL + ".txt");
+                      <Button onClick={() => {
+                         window.open(formURL + ".txt");
                          setActionsMenu(null);
                         }}>
                         Export as text
                       </Button>
                     </ListItem>
+                    </> }
                     <ListItem className={classes.actionsMenuItem}>
                       <DeleteButton
                           entryPath={data ? data["@path"] : formURL}

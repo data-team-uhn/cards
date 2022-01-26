@@ -44,6 +44,7 @@
     "react-dom": "16.14.0",
     "react-number-format": "4.4.1",
     "react-router-dom": "5.2.0",
+    "react-to-print": "2.14.4",
     "material-table": "1.69.2",
     "material-ui-dropzone": "3.5.0",
     "moment-jdateformatparser": "1.2.1",
