@@ -558,7 +558,7 @@ disorder. AUDIT-C has been validated in mental health and primary care clinics.
 				</property>
 				<property>
 					<name>label</name>
-					<value>Daily or almost dayly</value>
+					<value>Daily or almost daily</value>
 					<type>String</type>
 				</property>
 				<property>
