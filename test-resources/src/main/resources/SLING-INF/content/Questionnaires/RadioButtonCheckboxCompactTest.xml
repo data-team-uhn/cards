@@ -55,6 +55,11 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
+                <property>
+                    <name>displayMode</name>
+                    <value>list</value>
+                    <type>String</type>
+                </property>
 		<node>
 			<name>A</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -139,6 +144,11 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
+                <property>
+                    <name>displayMode</name>
+                    <value>list</value>
+                    <type>String</type>
+                </property>
                 <property>
                     <name>displayMode</name>
                     <value>list</value>
@@ -235,6 +245,11 @@
 			<value>text</value>
 			<type>String</type>
 		</property>
+                <property>
+                    <name>displayMode</name>
+                    <value>list</value>
+                    <type>String</type>
+                </property>
 		<node>
 			<name>A</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
