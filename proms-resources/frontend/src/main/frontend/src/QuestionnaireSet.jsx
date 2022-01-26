@@ -443,8 +443,8 @@ function QuestionnaireSet(props) {
       <Alert severity="info">
         <AlertTitle>Upcoming appointment</AlertTitle>
         {appointmentDate()}
-        {location ? <><br />{location}</> : null}
-        {provider ? <><br />{provider}</> : null}
+        {location ? <> at {location}</> : null}
+        {provider ? <> with {provider}</> : null}
       </Alert>
       : null
   }
@@ -487,17 +487,18 @@ function QuestionnaireSet(props) {
     return result;
   }
 
-  let welcomeScreen = [
+  let welcomeScreen = (isComplete && isSubmitted || questionnaireIds.length == 0) ? [
     <Typography variant="h4" key="welcome-greeting">{ greet(username) }</Typography>,
     appointmentAlert(),
-    isComplete && isSubmitted || questionnaireIds.length == 0 ?
-      <Typography color="textSecondary" variant="subtitle1" key="welcome-message">
+    <Typography color="textSecondary" variant="subtitle1" key="welcome-message">
         You have no pending surveys to fill out for your next appointment.
-      </Typography>
-    :
-      <Typography paragraph key="welcome-message">
-        Tell us about your symptoms prior to your appointment.{expiryDate()}
-      </Typography>,
+    </Typography>
+  ] : [
+    <Typography variant="h4" key="welcome-greeting">{ greet(username) }</Typography>,
+    appointmentAlert(),
+    <Typography paragraph key="welcome-message">
+        Tell us about your symptoms prior to your appointment.
+    </Typography>,
     <List key="welcome-surveys">
     { (questionnaireIds || []).map((q, i) => (
       <ListItem key={q+"Welcome"}>
@@ -510,7 +511,9 @@ function QuestionnaireSet(props) {
       </ListItem>
     ))}
     </List>,
-    isComplete && isSubmitted ? <></> :
+    <Typography paragraph key="expiry-message" color="textSecondary">
+        {expiryDate()}
+    </Typography>,
     nextQuestionnaire && <Fab variant="extended" color="primary" onClick={launchNextForm} key="welcome-action">Begin</Fab>
   ];
 
