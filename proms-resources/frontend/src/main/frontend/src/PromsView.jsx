@@ -32,6 +32,7 @@ import {
   Tabs,
   Tooltip,
   Typography,
+  makeStyles,
   withStyles
 } from "@material-ui/core";
 import { Link } from 'react-router-dom';
@@ -40,8 +41,29 @@ import LaunchIcon from '@material-ui/icons/Launch';
 
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
+const useStyles = makeStyles(theme => ({
+  promsView : {
+    border: "1px solid " + theme.palette.divider,
+    "& .MuiTab-root": {
+      paddingBottom: theme.spacing(1),
+      textTransform: "none",
+      fontWeight: "300",
+    },
+  },
+  promsViewAvatar: {
+    background: theme.palette.primary.main,
+  },
+  promsViewTitle: {
+    fontWeight: "600",
+    fontSize: "90%",
+  },
+}));
+
+
 function PromsView(props) {
-  const { data, visitInfo, expanded, disableHeader, disableAvatar, topPagination, classes } = props;
+  const { data, visitInfo } = props;
+
+  const classes = useStyles();
 
   const [ columns, setColumns ] = useState();
   const [ questionnaireId, setQuestionnaireId ] = useState();
@@ -49,6 +71,7 @@ function PromsView(props) {
   const [ title, setTitle ] = useState(props.title);
   const [ subtitle, setSubtitle ] = useState(props.subtitle);
   const [ questionnairePath, setQuestionnairePath ] = useState();
+  const [ acronym, setAcronym ] = useState();
   const [ qFetchSent, setQFetchStatus ] = useState(false);
 
   let toMidnight = (date) => {
@@ -95,6 +118,7 @@ function PromsView(props) {
         setTitle(json.questionnaire?.["title"]);
         setSubtitle(json.questionnaire?.["description"]);
         setQuestionnairePath(json.questionnaire?.["@path"]);
+        setAcronym(json.questionnaire?.["@name"]);
       });
     }
   }, [data]);
@@ -116,47 +140,33 @@ function PromsView(props) {
   )
 
   return (
-    <Card className={classes.formView}>
+    <Card className={classes.promsView}>
       {title &&
       <CardHeader
-        title={
-          <>
-            {title && <Typography variant="h4">{title}</Typography>}
-            {subtitle && <Typography variant="subtitle1">{subtitle}</Typography>}
-          </>
-        }
+        disableTypography
+        avatar={<Avatar className={classes.promsViewAvatar}><Typography variant="caption">{acronym?.substring(0,4)}</Typography></Avatar>}
+        title={<Typography variant="overline" className={classes.promsViewTitle}>{title}</Typography>}
       />
       }
-      {(!expanded || !disableHeader && !disableAvatar) &&
-      <CardHeader
-        avatar={!disableAvatar && <Avatar className={classes.formViewAvatar}><DescriptionIcon/></Avatar>}
-        title={
-          <>
-            <Tabs value={activeTab} onChange={(event, value) => setActiveTab(value)}>
+      <Tabs value={activeTab} onChange={(event, value) => setActiveTab(value)}>
             { tabs.map((value, index) => {
-              return <Tab label={<Typography variant="h6">{value}</Typography>}  key={"form-" + index} />;
+              return <Tab label={value}  key={"form-" + index} />;
             })}
-            </Tabs>
-          </>
-        }
-      />
-      }
+      </Tabs>
       <Divider />
       <CardContent>
         <LiveTable
-          columns={props.columns || columns}
+          columns={columns}
           customUrl={'/query?query=' + encodeURIComponent(query)}
           defaultLimit={10}
           filters
           questionnaire={questionnaireId}
           entryType={"Form"}
-          disableTopPagination={!topPagination}
-          onFiltersChange={(str) => { setFiltersJsonString(str); }}
-          filtersJsonString={filtersJsonString}
+          disableTopPagination={true}
         />
       </CardContent>
     </Card>
   );
 }
 
-export default withStyles(questionnaireStyle)(PromsView);
+export default PromsView;

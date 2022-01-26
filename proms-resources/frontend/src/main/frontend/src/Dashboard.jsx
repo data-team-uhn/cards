@@ -23,14 +23,13 @@ import { useLocation } from 'react-router-dom';
 import MaterialTable from "material-table";
 
 import { loadExtensions } from "./uiextension/extensionManager";
-import QuestionnaireStyle from "./questionnaire/QuestionnaireStyle.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
 import {
   CircularProgress,
   Grid,
   Typography,
-  withStyles,
+  makeStyles,
 } from "@material-ui/core";
 
 
@@ -43,10 +42,42 @@ async function getDashboardExtensions(name) {
   // To do: also load the default dashboard if the extension point is invalid
 }
 
+const useStyles = makeStyles(theme => ({
+  dashboardName: {
+    marginTop: theme.spacing(-4),
+  },
+  dashboardEntry: {
+    "& > *": {
+      height: "100%",
+      marginTop: theme.spacing(4),
+    },
+    "& .MuiCardHeader-root" : {
+      paddingBottom: 0,
+    },
+    "& .MuiCardHeader-avatar" : {
+      marginTop: theme.spacing(-.5),
+    },
+    "& .MuiTab-root": {
+      width: "auto",
+      minWidth: theme.spacing(10),
+      paddingBottom: theme.spacing(1),
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(2),
+      textTransform: "none",
+      fontWeight: "300",
+    },
+    "& .MuiTabs-indicator" : {
+      height: theme.spacing(.5),
+    },
+    "& .MuiCardContent-root": {
+      padding: theme.spacing(3, 0),
+    },
+  },
+}));
+
 // Component that renders the proms dashboard, with one LiveTable per questionnaire.
 // Each LiveTable contains all forms that use the given questionnaire.
 function PromsDashboard(props) {
-  const { classes, theme } = props;
   let [ name, setName ] = useState();
   let [ dashboardTitle, setDashboardTitle ] = useState();
   let [ dashboardExtensions, setDashboardExtensions ] = useState([]);
@@ -82,6 +113,8 @@ function PromsDashboard(props) {
       .then((json) => setDashboardTitle(json?.["cards:extensionPointName"]));
   }, [name]);
 
+  const classes = useStyles();
+
   if (loading || !visitInfo) {
     return (
       <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
@@ -90,7 +123,7 @@ function PromsDashboard(props) {
 
   return (
     <>
-      <Typography variant="h4">{name}</Typography>
+      <Typography variant="h4" className={classes.dashboardName}>{name}</Typography>
       <Typography variant="overline">{dashboardTitle}</Typography>
       <Grid container spacing={3}>
         {
@@ -106,4 +139,4 @@ function PromsDashboard(props) {
   );
 }
 
-export default withStyles(QuestionnaireStyle, {withTheme: true})(PromsDashboard);
+export default PromsDashboard;
