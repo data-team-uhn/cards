@@ -73,30 +73,13 @@ function PromsView(props) {
       .then((json) => {
         setColumns(JSON.parse(json["view"] || "[]"));
         setQuestionnaireId(json.questionnaire?.["jcr:uuid"] || "");
+        setTitle(json.questionnaire?.["title"]);
+        setSubtitle(json.questionnaire?.["description"]);
+        setQuestionnairePath(json.questionnaire?.["@path"]);
       });
     }
   }, [data]);
 
-  let qFilter = '';
-
-  if (questionnaireId) {
-    // Set the questionnaire filter for displayed forms
-    qFilter = '&fieldname=questionnaire&fieldvalue=' + encodeURIComponent(questionnaireId);
-    // Also fetch the title and other info if we haven't yet
-    if (!qFetchSent) {
-      setQFetchStatus(true);
-      fetch('/query?query=' + encodeURIComponent(`select * from [cards:Questionnaire] as n WHERE n.'jcr:uuid'='${questionnaireId}'`))
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => {
-        let qData = json["rows"][0];
-        if (qData) {
-          setTitle(qData["title"]);
-          setSubtitle(qData["description"]);
-          setQuestionnairePath(qData["@path"]);
-        }
-      });
-    }
-  }
 
   return (
     <Card className={classes.formView}>
