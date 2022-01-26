@@ -167,7 +167,6 @@ function PromsView(props) {
           columns={columns}
           customUrl={'/query?query=' + encodeURIComponent(query)}
           defaultLimit={10}
-          filters
           questionnaire={questionnaireId}
           entryType={"Form"}
           disableTopPagination={true}
