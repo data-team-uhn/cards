@@ -28,7 +28,9 @@
       // Vault JWT token
       "vault.token": "",
       // Name of the clinic to query for
-      "clinic.name": "PMH 8 Palliative Care Oncology Clinic"
+      "clinic.name": "PMH 8 Palliative Care Oncology Clinic",
+      // Name of the provider to filter to, or empty for no filter
+      "provider.name": ""
     },
     "io.uhndata.cards.proms.internal.importer.NightlyImportConfig":{
       // Look ahead 3 days for appointments by default
@@ -42,7 +44,9 @@
       // Vault JWT token
       "vault.token": "",
       // Name of the clinic to query for
-      "clinic.name": "PMH 8 Palliative Care Oncology Clinic"
+      "clinic.name": "PMH 8 Palliative Care Oncology Clinic",
+      // Name of the provider to filter to, or empty for no filter
+      "provider.name": ""
     }
   }
 }

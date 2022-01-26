@@ -45,6 +45,9 @@ public @interface NightlyImportConfig
     /** Pipe-delimited list of names of clinics to query. */
     String CLINIC_NAME = "PMH 8 Palliative Care Oncology Clinic";
 
+    /** Pipe-delimited list of names of providers to query. If empty, all providers will be fetched. */
+    String PROVIDER_NAME = "";
+
     @AttributeDefinition(name = "Import schedule",
         description = "Cron-readable import schedule")
     String nightly_import_schedule() default NIGHTLY_IMPORT_SCHEDULE;
@@ -64,4 +67,7 @@ public @interface NightlyImportConfig
 
     @AttributeDefinition(name = "Clinic name")
     String clinic_name() default CLINIC_NAME;
+
+    @AttributeDefinition(name = "Provider name")
+    String provider_name() default PROVIDER_NAME;
 }

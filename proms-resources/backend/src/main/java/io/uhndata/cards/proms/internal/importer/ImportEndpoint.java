@@ -64,6 +64,9 @@ public class ImportEndpoint extends SlingSafeMethodsServlet
     /** Name of the clinic to query for. */
     private String clinicName = "";
 
+    /** Pipe-delimited list of providers to filter our query to. */
+    private String providerIDs = "";
+
     @Activate
     protected void activate(EndpointImportConfig config, ComponentContext componentContext) throws Exception
     {
@@ -72,6 +75,7 @@ public class ImportEndpoint extends SlingSafeMethodsServlet
         this.daysToQuery = config.days_to_query();
         this.vaultToken = config.vault_token();
         this.clinicName = config.clinic_name();
+        this.providerIDs = config.provider_name();
     }
 
     @Override
@@ -90,7 +94,7 @@ public class ImportEndpoint extends SlingSafeMethodsServlet
 
         // Load configuration from environment variables
         final Runnable importJob = new ImportTask(this.resolverFactory, this.authURL, this.endpointURL,
-            this.daysToQuery, this.vaultToken, this.clinicName);
+            this.daysToQuery, this.vaultToken, this.clinicName, this.providerIDs);
         final Thread thread = new Thread(importJob);
         thread.start();
         out.write("Data import started");

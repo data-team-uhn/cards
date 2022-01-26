@@ -28,8 +28,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import javax.json.Json;
@@ -63,6 +66,9 @@ public class ImportTask implements Runnable
     /** Pipe-delimited list of names of clinics to query. */
     private final String clinicNames;
 
+    /** List of providers to query. If empty, all providers' appointments are used. */
+    private final List<String> providerIDs;
+
     /** URL for the Torch server endpoint. */
     private final String endpointURL;
 
@@ -72,8 +78,17 @@ public class ImportTask implements Runnable
     /** Provides access to resources. */
     private final ResourceResolverFactory resolverFactory;
 
-    ImportTask(final ResourceResolverFactory resolverFactory, final String authURL,
-        final String endpointURL, final int daysToQuery, final String vaultToken, final String clinicNames)
+    /**
+     * @param resolverFactory A reference to a ResourceResolverFactory to use
+     * @param authURL The URL for the Vault JWT authentication endpoint
+     * @param endpointURL The URL for the Torch server endpoint
+     * @param daysToQuery Number of days to query
+     * @param vaultToken JWT token for querying the endpoint
+     * @param clinicNames Pipe-delimited list of names of clinics to query
+     * @param providerIDs Pipe-delimited list of names of providers to filter queries to
+     */
+    ImportTask(final ResourceResolverFactory resolverFactory, final String authURL, final String endpointURL,
+        final int daysToQuery, final String vaultToken, final String clinicNames, final String providerIDs)
     {
         this.resolverFactory = resolverFactory;
         this.authURL = authURL;
@@ -81,6 +96,9 @@ public class ImportTask implements Runnable
         this.daysToQuery = daysToQuery;
         this.vaultToken = vaultToken;
         this.clinicNames = clinicNames;
+        // If we have no provider IDs, we want an empty list instead of a list of length 1 with an empty string
+        this.providerIDs = "".equals(providerIDs) ? new ArrayList<String>()
+            : Arrays.asList(providerIDs.split("\\|"));
     }
 
     @Override
@@ -128,7 +146,7 @@ public class ImportTask implements Runnable
         String postRequestTemplate = "{\"query\": \"query{"
             + "patientsByDateAndClinic(location: \\\"" + clinicName + "\\\", start: \\\"%s\\\", end: \\\"%s\\\") {"
             + "fhirID name {given family} sex mrn ohip dob emailOk com {email} "
-            + "appointments {fhirID time status location attending {name {family}}} }}\"}";
+            + "appointments {fhirID time status location attending {name {family} fhirID}} }}\"}";
 
         Calendar startDate = Calendar.getInstance();
         Date today = new Date();
@@ -151,7 +169,8 @@ public class ImportTask implements Runnable
             JsonArray data = response.getJsonObject("data").getJsonArray("patientsByDateAndClinic");
             ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(
                 Map.of(ResourceResolverFactory.SUBSERVICE, "TorchImporter"));
-            final PatientLocalStorage storage = new PatientLocalStorage(resolver, startDate, endDate);
+            final PatientLocalStorage storage = new PatientLocalStorage(resolver, startDate, endDate,
+                this.providerIDs);
 
             data.forEach(storage::store);
             resolver.close();

@@ -75,6 +75,9 @@ public class PatientLocalStorage
     /** Sling property name for the value field on an Answer node. */
     private static final String STATUS_FIELD = "statusFlags";
 
+    /** Sling property name for the fhir ID field returned from a Patient or Provider. */
+    private static final String FHIR_FIELD = "fhirID";
+
     /** Provides access to resources. */
     private final ResourceResolver resolver;
 
@@ -87,6 +90,9 @@ public class PatientLocalStorage
     /** End date of appointments to store. */
     private Calendar endDate;
 
+    /** Pipe-delimited list of providers to query. If empty, all providers' appointments are used. */
+    private final List<String> providerIDs;
+
     /** Set of nodes that must be checked in at the end of this function. */
     private Set<String> nodesToCheckin;
 
@@ -97,12 +103,15 @@ public class PatientLocalStorage
      * @param resolver A reference to a ResourceResolver
      * @param startDate The start of the range of dates for appointments to find from within the patient
      * @param endDate The end of the range of dates for appointments to find from within the patient
+     * @param providerIDs List of providers to query. If empty, all providers' appointments are used
      */
-    PatientLocalStorage(ResourceResolver resolver, final Calendar startDate, final Calendar endDate)
+    PatientLocalStorage(ResourceResolver resolver, final Calendar startDate, final Calendar endDate,
+        final List<String> providerIDs)
     {
         this.resolver = resolver;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.providerIDs = providerIDs;
     }
 
     /**
@@ -127,7 +136,7 @@ public class PatientLocalStorage
             JsonArray appointmentDetails = this.patientDetails.getJsonArray("appointments");
             for (int i = 0; i < appointmentDetails.size(); i++) {
                 JsonObject appointment = appointmentDetails.getJsonObject(i);
-                if (isAppointmentInTimeframe(appointment)) {
+                if (isAppointmentInTimeframe(appointment) && isAppointmentByAllowedProvider(appointment)) {
                     storeAppointment(appointment, patient);
                 }
             }
@@ -160,8 +169,8 @@ public class PatientLocalStorage
         List<String> surveyIDs = getSurveyIDs(appointment.getJsonArray("location"));
         for (String surveyID : surveyIDs)
         {
-            Resource visit = getOrCreateSubject(appointment.getString("fhirID") + "-" + surveyID,
-                "/SubjectTypes/Patient/Visit/", patient);
+            Resource visit = getOrCreateSubject(appointment.getString(PatientLocalStorage.FHIR_FIELD)
+                + "-" + surveyID, "/SubjectTypes/Patient/Visit/", patient);
             Resource visitInfo = getOrCreateForm(visit, "/Questionnaires/Visit information/");
             updateVisitInformationForm(visitInfo, appointment, surveyID);
         }
@@ -182,9 +191,44 @@ public class PatientLocalStorage
             return thisCalendar.after(this.startDate) && thisCalendar.before(this.endDate);
         } catch (ParseException e) {
             //TODO: handle exception
-            LOGGER.error("Could not parse date for appointment {}: {}", appointment.getString("fhirID"),
-                e.getMessage(), e);
+            LOGGER.error("Could not parse date for appointment {}: {}",
+                appointment.getString(PatientLocalStorage.FHIR_FIELD), e.getMessage(), e);
         }
+        return false;
+    }
+
+    /**
+     * Returns whether or not the given appointment is attended by an approved provider.
+     * @param appointment JsonObject of an appointment to check
+     * @return True if the appointment is with an approved provider or if no providers are used.
+     */
+    Boolean isAppointmentByAllowedProvider(JsonObject appointment)
+    {
+        // Check if we even have provider IDs to use
+        if (this.providerIDs.size() == 0) {
+            return true;
+        }
+
+        // Return true if at least one provider matches
+        try {
+            JsonArray providers = appointment.getJsonArray("attending");
+            for (int i = 0; i < providers.size(); i++) {
+                for (String providerID : this.providerIDs) {
+                    if (providerID.equals(providers.getJsonObject(0).getString(PatientLocalStorage.FHIR_FIELD))) {
+                        return true;
+                    }
+                }
+            }
+        } catch (ClassCastException e) {
+            // If we are returned a single object, it is a single provider
+            JsonObject provider = appointment.getJsonObject("attending");
+            for (String providerID : this.providerIDs) {
+                if (providerID.equals(provider.getString(PatientLocalStorage.FHIR_FIELD))) {
+                    return true;
+                }
+            }
+        }
+
         return false;
     }
 
@@ -372,7 +416,7 @@ public class PatientLocalStorage
             "last_name", obj -> obj.getJsonObject("name").getString("family"),
             "email", obj -> obj.getJsonObject("com").getString("email"),
             "email_ok", obj -> obj.getString("emailOk"),
-            "fhir_id", obj -> obj.getString("fhirID")
+            "fhir_id", obj -> obj.getString(PatientLocalStorage.FHIR_FIELD)
         );
 
         Map<String, JsonDateGetter> dateMapping = Map.of(
@@ -392,7 +436,7 @@ public class PatientLocalStorage
         throws RepositoryException, PersistenceException
     {
         Map<String, JsonStringGetter> formMapping = Map.of(
-            "fhir_id", obj -> obj.getString("fhirID"),
+            "fhir_id", obj -> obj.getString(PatientLocalStorage.FHIR_FIELD),
             "status", obj -> obj.getString("status"),
             "provider", obj -> obj.getJsonObject("attending").getJsonObject("name").getString("family"),
             // We need to map the display name of the clinic given to a survey ID
