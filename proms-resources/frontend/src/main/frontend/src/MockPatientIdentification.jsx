@@ -100,9 +100,6 @@ const useStyles = makeStyles(theme => ({
   mrnHelperLink: {
     cursor: 'pointer',
   },
-  dialogTitle: {
-    paddingTop: theme.spacing(2)
-  },
 }));
 
 
