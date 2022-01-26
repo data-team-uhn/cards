@@ -72,6 +72,9 @@ public class PatientLocalStorage
     /** Sling property name for the value field on an Answer node. */
     private static final String VALUE_FIELD = "value";
 
+    /** Sling property name for the value field on an Answer node. */
+    private static final String STATUS_FIELD = "statusFlags";
+
     /** Provides access to resources. */
     private final ResourceResolver resolver;
 
@@ -86,6 +89,9 @@ public class PatientLocalStorage
 
     /** Set of nodes that must be checked in at the end of this function. */
     private Set<String> nodesToCheckin;
+
+    /** Version Manager for checking in or out nodes. */
+    private VersionManager versionManager;
 
     /**
      * @param resolver A reference to a ResourceResolver
@@ -109,6 +115,9 @@ public class PatientLocalStorage
         String mrn = this.patientDetails.getString("mrn");
         this.nodesToCheckin = new HashSet<String>();
         try {
+            final Session session = this.resolver.adaptTo(Session.class);
+            this.versionManager = session.getWorkspace().getVersionManager();
+
             // Update information about the patient
             Resource patient = getOrCreateSubject(mrn, "/SubjectTypes/Patient", null);
             Resource patientInfo = getOrCreateForm(patient, "/Questionnaires/Patient information/");
@@ -123,13 +132,11 @@ public class PatientLocalStorage
                 }
             }
 
-            final Session session = this.resolver.adaptTo(Session.class);
             session.save();
 
-            final VersionManager vm = session.getWorkspace().getVersionManager();
             this.nodesToCheckin.forEach(node -> {
                 try {
-                    vm.checkin(node);
+                    this.versionManager.checkin(node);
                 } catch (RepositoryException e) {
                     LOGGER.warn("Failed to check in node {}: {}", node, e.getMessage(), e);
                 }
@@ -153,7 +160,6 @@ public class PatientLocalStorage
         List<String> surveyIDs = getSurveyIDs(appointment.getJsonArray("location"));
         for (String surveyID : surveyIDs)
         {
-            LOGGER.warn("Prosessing: " + surveyID);
             Resource visit = getOrCreateSubject(appointment.getString("fhirID") + "-" + surveyID,
                 "/SubjectTypes/Patient/Visit/", patient);
             Resource visitInfo = getOrCreateForm(visit, "/Questionnaires/Visit information/");
@@ -173,7 +179,6 @@ public class PatientLocalStorage
             Date thisDate = new SimpleDateFormat("yyyy-MM-dd").parse(appointment.getString("time"));
             Calendar thisCalendar = Calendar.getInstance();
             thisCalendar.setTime(thisDate);
-            LOGGER.warn("Checking appointment: " + appointment.getString("time"));
             return thisCalendar.after(this.startDate) && thisCalendar.before(this.endDate);
         } catch (ParseException e) {
             //TODO: handle exception
@@ -197,6 +202,7 @@ public class PatientLocalStorage
             "SELECT * FROM [cards:Subject] WHERE identifier = \"%s\"", identifier), PatientLocalStorage.JCR_SQL);
         if (subjectResourceIter.hasNext()) {
             Resource subjectResource = subjectResourceIter.next();
+            this.versionManager.checkout(subjectResource.getPath());
             this.nodesToCheckin.add(subjectResource.getPath());
             return subjectResource;
         } else {
@@ -232,6 +238,7 @@ public class PatientLocalStorage
             formType.adaptTo(Node.class).getIdentifier()), PatientLocalStorage.JCR_SQL);
         if (formResourceIter.hasNext()) {
             Resource formResource = formResourceIter.next();
+            this.versionManager.checkout(formResource.getPath());
             this.nodesToCheckin.add(formResource.getPath());
             return formResource;
         } else {
@@ -321,11 +328,12 @@ public class PatientLocalStorage
                 PatientLocalStorage.QUESTION_FIELD, this.resolver.getResource(parentQuestionnaire + "/"
                     + entry.getKey()).adaptTo(Node.class),
                 PatientLocalStorage.VALUE_FIELD, safelyGetValue(entry.getValue(), info),
-                PatientLocalStorage.PRIMARY_TYPE, "cards:TextAnswer"
+                PatientLocalStorage.PRIMARY_TYPE, "cards:TextAnswer",
+                PatientLocalStorage.STATUS_FIELD, ""
                 ));
         }
 
-        // Finally, do the same with date fields, which have different parameters
+        // Do the same with date fields, which have different parameters
         for (Map.Entry<String, JsonDateGetter> entry : dateFields.entrySet()) {
             try {
                 Calendar entryDate = Calendar.getInstance();
@@ -337,7 +345,8 @@ public class PatientLocalStorage
                         PatientLocalStorage.QUESTION_FIELD,
                         this.resolver.getResource(parentQuestionnaire + "/" + entry.getKey()).adaptTo(Node.class),
                         PatientLocalStorage.VALUE_FIELD, entryDate,
-                        PatientLocalStorage.PRIMARY_TYPE, "cards:DateAnswer"
+                        PatientLocalStorage.PRIMARY_TYPE, "cards:DateAnswer",
+                        PatientLocalStorage.STATUS_FIELD, ""
                         ));
                 }
             } catch (ParseException e) {
@@ -397,6 +406,37 @@ public class PatientLocalStorage
         );
 
         updateForm(form, info, "/Questionnaires/Visit information", formMapping, dateMapping);
+
+        // Also create some questions that need to be present for the VisitChangeListener, if they don't exist
+        ensureAnswerExists(form, "/Questionnaires/Visit information/surveys_complete", "cards:BooleanAnswer", false);
+        ensureAnswerExists(form, "/Questionnaires/Visit information/surveys_submitted", "cards:BooleanAnswer", false);
+    }
+
+    /**
+     * Ensure that an answer to the question exists for the given form.
+     * @param form Form resource to alter
+     * @param questionPath Boolean question path for the question
+     * @param primaryType Answer Node type (e.g. cards:TextAnswer)
+     * @param defaultValue Default value to use for the node
+     */
+    void ensureAnswerExists(Resource form, String questionPath, String primaryType, Object defaultValue)
+        throws RepositoryException, PersistenceException
+    {
+        for (Resource existingAnswer : form.getChildren()) {
+            Node answerNode = existingAnswer.adaptTo(Node.class);
+            Node questionNode = answerNode.getProperty(PatientLocalStorage.QUESTION_FIELD).getNode();
+
+            if (questionPath.equals(questionNode.getPath())) {
+                return;
+            }
+        }
+        this.resolver.create(form, UUID.randomUUID().toString(), Map.of(
+            PatientLocalStorage.QUESTION_FIELD,
+            this.resolver.getResource(questionPath).adaptTo(Node.class),
+            PatientLocalStorage.VALUE_FIELD, defaultValue,
+            PatientLocalStorage.PRIMARY_TYPE, primaryType,
+            PatientLocalStorage.STATUS_FIELD, ""
+            ));
     }
 
     /**
