@@ -29,10 +29,11 @@ import {
   CircularProgress,
   Grid,
   Typography,
+  useMediaQuery,
   makeStyles,
 } from "@material-ui/core";
 
-
+import { useTheme } from '@material-ui/core/styles';
 
 async function getDashboardExtensions(name) {
   return loadExtensions("DashboardViews" + name)
@@ -43,8 +44,12 @@ async function getDashboardExtensions(name) {
 }
 
 const useStyles = makeStyles(theme => ({
-  dashboardName: {
+  dashboardTitle: {
     marginTop: theme.spacing(-4),
+    marginRight: theme.spacing(4),
+  },
+  withMargin: {
+    marginRight: "320px",
   },
   dashboardEntry: {
     "& > *": {
@@ -79,7 +84,8 @@ const useStyles = makeStyles(theme => ({
 // Each LiveTable contains all forms that use the given questionnaire.
 function PromsDashboard(props) {
   let [ name, setName ] = useState();
-  let [ dashboardTitle, setDashboardTitle ] = useState();
+  let [ title, setTitle ] = useState();
+  let [ description, setDescription ] = useState();
   let [ surveysId, setSurveysId ] = useState("");
   let [ dashboardExtensions, setDashboardExtensions ] = useState([]);
   let [ loading, setLoading ] = useState(true);
@@ -112,7 +118,8 @@ function PromsDashboard(props) {
     fetchWithReLogin(globalLoginDisplay, `/apps/cards/ExtensionPoints/DashboardViews${name}.json`)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
-        setDashboardTitle(json?.["cards:extensionPointName"]);
+        setTitle(json?.title || json?.["cards:extensionPointName"] || name);
+        setDescription(json?.description || "")
         setSurveysId(json?.surveys || "");
       });
   }, [name]);
@@ -134,6 +141,9 @@ function PromsDashboard(props) {
 
   const getColor = (index) => (colors[index % colors.length])
 
+  const theme = useTheme();
+  const appbarExpanded = useMediaQuery(theme.breakpoints.up('md'));
+
   if (loading || !visitInfo) {
     return (
       <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
@@ -142,8 +152,8 @@ function PromsDashboard(props) {
 
   return (
     <>
-      <Typography variant="h4" className={classes.dashboardName}>{name}</Typography>
-      <Typography variant="overline">{dashboardTitle}</Typography>
+      <Typography variant="h4" className={classes.dashboardTitle + (appbarExpanded ? ' ' + classes.withMargin : '')}>{title}</Typography>
+      { description && <Typography variant="overline">{description}</Typography>}
       <Grid container spacing={3}>
         {
           dashboardExtensions.map((extension, index) => {
