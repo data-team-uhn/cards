@@ -2,7 +2,7 @@ You are receiving this email because you have an upcoming appointment.
 
 Make the most of your appointment by answering your Pre-Appointment Questions.
 
-Answer your Pre-Appointment Questions
+Answer your Pre-Appointment Questions: ${surveysLink}
 
 Note: DATAPRO will not load if you're using Internet Explorer. Please go to `datapro.uhn.ca' on another browser, such as Edge, Chrome, or Firefox.
 
