@@ -56,20 +56,6 @@ import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
  * {@link ResourceJsonProcessor#isEnabledByDefault(Resource) enabled by default}, for example the {@code properties},
  * {@code identify}, and {@code dereference} processors; to disable them, use their name prefixed by {@code -} in the
  * selectors, e.g. {@code /path/to/resource.-dereference.json}.
- * <p>
- * This class uses ThreadLocal variables to maintain state, which means that nested invocations in the same thread are
- * not supported. If a processor needs to call {@code resource.adaptTo(JsonObject.class)}, it should do so in a new
- * Thread, for example:
- * </p>
- * <code>
- * final Iterator&lt;Resource&gt; resources = ...;
- * final List&lt;JsonObject&gt; result = new ArrayList&lt;&gt;();
- * final Thread serializer = new Thread(() -&gt; resources
- *     .forEachRemaining(r -&gt; result.add(r.adaptTo(JsonObject.class))));
- * serializer.start();
- * serializer.join();
- * // Now result contains the serialized subresources
- * </code>
  *
  * @version $Id$
  */
@@ -87,15 +73,6 @@ public class ResourceToJsonAdapterFactory
         policy = ReferencePolicy.DYNAMIC)
     private volatile List<ResourceJsonProcessor> allProcessors;
 
-    /** The list of processors that are enabled for the current resource serialization. */
-    private ThreadLocal<List<ResourceJsonProcessor>> enabledProcessors = new ThreadLocal<>();
-
-    /**
-     * To prevent infinite recursion in case of circular references among nodes, keep track of the nodes processed so
-     * far down the stack.
-     */
-    private ThreadLocal<Stack<String>> processedNodes = ThreadLocal.withInitial(Stack::new);
-
     @Override
     public <A> A getAdapter(final Object adaptable, final Class<A> type)
     {
@@ -103,19 +80,19 @@ public class ResourceToJsonAdapterFactory
             return null;
         }
         final Resource resource = (Resource) adaptable;
-        setupProcessors(resource);
+        // The list of processors that are enabled for the current resource serialization.
+        List<ResourceJsonProcessor> enabledProcessors = setupProcessors(resource);
 
-        try {
-            start(resource);
-            final Node node = resource.adaptTo(Node.class);
-            JsonValue result = serializeNode(node);
-            end(resource);
-            if (result != null) {
-                return type.cast(result);
-            }
-        } finally {
-            this.processedNodes.remove();
-            this.enabledProcessors.remove();
+        // To prevent infinite recursion in case of circular references among nodes, keep track of the nodes processed
+        // so far down the stack.
+        Stack<String> processedNodes = new Stack<>();
+
+        start(resource, enabledProcessors);
+        final Node node = resource.adaptTo(Node.class);
+        JsonValue result = serializeNode(node, enabledProcessors, processedNodes);
+        end(resource, enabledProcessors);
+        if (result != null) {
+            return type.cast(result);
         }
         return null;
     }
@@ -127,21 +104,22 @@ public class ResourceToJsonAdapterFactory
      * @param node the node to serialize
      * @return a JSON value, either a JsonObject or a JsonString
      */
-    private JsonValue serializeNode(final Node node)
+    private JsonValue serializeNode(final Node node, final List<ResourceJsonProcessor> enabledProcessors,
+        final Stack<String> processedNodes)
     {
         if (node == null) {
             return null;
         }
 
         try {
-            final boolean alreadyProcessed = this.processedNodes.get().contains(node.getPath());
-            this.processedNodes.get().add(node.getPath());
+            final boolean alreadyProcessed = processedNodes.contains(node.getPath());
+            processedNodes.add(node.getPath());
             if (!alreadyProcessed) {
                 final JsonObjectBuilder result = Json.createObjectBuilder();
-                enterNode(node, result);
-                processProperties(node, result);
-                processChildren(node, result);
-                leaveNode(node, result);
+                enterNode(node, result, enabledProcessors, processedNodes);
+                processProperties(node, result, enabledProcessors, processedNodes);
+                processChildren(node, result, enabledProcessors, processedNodes);
+                leaveNode(node, result, enabledProcessors, processedNodes);
                 return result.build();
             }
             // If the node has already been processed, only include its path in the output
@@ -149,7 +127,7 @@ public class ResourceToJsonAdapterFactory
         } catch (RepositoryException e) {
             LOGGER.error("Failed to serialize node [{}] to JSON: {}", node, e.getMessage(), e);
         } finally {
-            this.processedNodes.get().pop();
+            processedNodes.pop();
         }
         return null;
     }
@@ -160,9 +138,9 @@ public class ResourceToJsonAdapterFactory
      *
      * @param resource the resource being serialized
      */
-    private void start(Resource resource)
+    private void start(final Resource resource, final List<ResourceJsonProcessor> enabledProcessors)
     {
-        this.enabledProcessors.get().forEach(p -> p.start(resource));
+        enabledProcessors.forEach(p -> p.start(resource));
     }
 
     /**
@@ -171,9 +149,10 @@ public class ResourceToJsonAdapterFactory
      * @param node the node to serialize
      * @param json the JSON being built
      */
-    private void enterNode(Node node, JsonObjectBuilder json)
+    private void enterNode(final Node node, final JsonObjectBuilder json,
+        final List<ResourceJsonProcessor> enabledProcessors, final Stack<String> processedNodes)
     {
-        this.enabledProcessors.get().forEach(p -> p.enter(node, json, this::serializeNode));
+        enabledProcessors.forEach(p -> p.enter(node, json, n -> serializeNode(n, enabledProcessors, processedNodes)));
     }
 
     /**
@@ -184,14 +163,17 @@ public class ResourceToJsonAdapterFactory
      * @param json the JSON being built
      * @throws RepositoryException if accessing the repository fails
      */
-    private void processProperties(Node node, JsonObjectBuilder json) throws RepositoryException
+    private void processProperties(final Node node, final JsonObjectBuilder json,
+        final List<ResourceJsonProcessor> enabledProcessors, final Stack<String> processedNodes)
+        throws RepositoryException
     {
         final PropertyIterator properties = node.getProperties();
         while (properties.hasNext()) {
             Property thisProp = properties.nextProperty();
             JsonValue value = null;
-            for (ResourceJsonProcessor p : this.enabledProcessors.get()) {
-                value = p.processProperty(node, thisProp, value, this::serializeNode);
+            for (ResourceJsonProcessor p : enabledProcessors) {
+                value =
+                    p.processProperty(node, thisProp, value, n -> serializeNode(n, enabledProcessors, processedNodes));
             }
             if (value != null) {
                 json.add(thisProp.getName(), value);
@@ -207,14 +189,16 @@ public class ResourceToJsonAdapterFactory
      * @param json the JSON being built
      * @throws RepositoryException if accessing the repository fails
      */
-    private void processChildren(Node node, JsonObjectBuilder json) throws RepositoryException
+    private void processChildren(final Node node, final JsonObjectBuilder json,
+        final List<ResourceJsonProcessor> enabledProcessors, final Stack<String> processedNodes)
+        throws RepositoryException
     {
         final NodeIterator children = node.getNodes();
         while (children.hasNext()) {
             final Node child = children.nextNode();
             JsonValue value = null;
-            for (ResourceJsonProcessor p : this.enabledProcessors.get()) {
-                value = p.processChild(node, child, value, this::serializeNode);
+            for (ResourceJsonProcessor p : enabledProcessors) {
+                value = p.processChild(node, child, value, n -> serializeNode(n, enabledProcessors, processedNodes));
             }
             if (value != null) {
                 json.add(child.getName(), value);
@@ -229,9 +213,10 @@ public class ResourceToJsonAdapterFactory
      * @param node the node to serialize
      * @param json the JSON being built
      */
-    private void leaveNode(Node node, JsonObjectBuilder json)
+    private void leaveNode(final Node node, final JsonObjectBuilder json,
+        final List<ResourceJsonProcessor> enabledProcessors, final Stack<String> processedNodes)
     {
-        this.enabledProcessors.get().forEach(p -> p.leave(node, json, this::serializeNode));
+        enabledProcessors.forEach(p -> p.leave(node, json, n -> serializeNode(n, enabledProcessors, processedNodes)));
     }
 
     /**
@@ -240,9 +225,9 @@ public class ResourceToJsonAdapterFactory
      *
      * @param resource the resource that was serialized
      */
-    private void end(Resource resource)
+    private void end(final Resource resource, final List<ResourceJsonProcessor> enabledProcessors)
     {
-        this.enabledProcessors.get().forEach(p -> p.end(resource));
+        enabledProcessors.forEach(p -> p.end(resource));
     }
 
     /**
@@ -252,7 +237,7 @@ public class ResourceToJsonAdapterFactory
      *
      * @param resource the resource to serialize
      */
-    private void setupProcessors(Resource resource)
+    private List<ResourceJsonProcessor> setupProcessors(final Resource resource)
     {
         // Compute the list of requested processor names:
         // These are enabled by default
@@ -286,6 +271,6 @@ public class ResourceToJsonAdapterFactory
             .collect(Collectors.toList());
         enabled.sort((o1, o2) -> o1.getPriority() - o2.getPriority());
 
-        this.enabledProcessors.set(enabled);
+        return enabled;
     }
 }
