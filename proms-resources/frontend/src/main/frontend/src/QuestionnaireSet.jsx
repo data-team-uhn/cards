@@ -108,6 +108,12 @@ function QuestionnaireSet(props) {
 
   // Data already associated with the subject
   const [ subjectData, setSubjectData ] = useState();
+  // Since we cannot use subjectData directly as a dependency for useEffect,
+  // but we must re-run effects when subjectData gets refetched,
+  // use a simple counter to mark that new data arrived.
+  // setSubjectDataLoadCount must be called every time setSubjectData is called!
+  const [ subjectDataLoadCount, setSubjectDataLoadCount] = useState(0);
+
   // Visit information form
   const [ visitInformation, setVisitInformation ] = useState();
   // Did the user make it to the last screen?
@@ -138,11 +144,9 @@ function QuestionnaireSet(props) {
 
   const visitInformationFormTitle = "Visit information";
 
-  // Find the data already associated with the subject
-  useEffect(() => {
-    if (!questionnaires) return;
-    loadExistingData();
-  }, [questionnaires]);
+  const isFormComplete = (questionnaireId) => {
+    return subjectData?.[questionnaireId] && !subjectData[questionnaireId].statusFlags?.includes("INCOMPLETE");
+  }
 
   // Determine the screen type (and style) based on the step number
   useEffect(() => {
@@ -160,7 +164,7 @@ function QuestionnaireSet(props) {
     // Find the next unfilled questionnaire, if any:
     let nextStep = findNextStep(crtStep);
     setNextQuestionnaire(nextStep < questionnaireIds?.length ? questionnaires[questionnaireIds?.[nextStep]] : null);
-  }, [crtStep, questionnaires, subjectData]);
+  }, [crtStep, subjectDataLoadCount]);
 
   // If we're back to the start because the user was directed to add missing answers,
   // dont't show the welcome screen and skip to the next step without them pressing start
@@ -168,7 +172,7 @@ function QuestionnaireSet(props) {
     if (crtStep == -1 && endReached) {
       nextQuestionnaire && launchNextForm();
     }
-  }, [crtStep, endReached, nextQuestionnaire]);
+  }, [crtStep, endReached, subjectDataLoadCount, nextQuestionnaire?.["@path"]]);
 
   // When the uuid of the next form is set, move to the next step to launch the form
   useEffect(() => {
@@ -184,13 +188,13 @@ function QuestionnaireSet(props) {
     if (!questionnaireIds || crtStep < questionnaireIds.length) return;
     setEndReached(true);
     loadExistingData();
-  }, [crtStep, questionnaireSetIds]);
+  }, [crtStep]);
 
   // Determine if all surveys have been filled out
   useEffect(() => {
     if (!subjectData || !questionnaireIds) return;
     setComplete(Object.keys(subjectData || {}).filter(q => isFormComplete(q)).length == questionnaireIds.length);
-  }, [subjectData, questionnaireIds]);
+  }, [subjectDataLoadCount]);
 
   // Determine if the user has already submitted their forms
   useEffect(() => {
@@ -202,16 +206,17 @@ function QuestionnaireSet(props) {
     } else {
       setSubmitted(false);
     }
-  }, [visitInformation]);
+  }, [subjectDataLoadCount]);
 
   // When the user lands on a completed visit that has not been submited, proceed to reviewing their forms
   useEffect(() => {
     if(isComplete && !isSubmitted && questionnaireIds?.length > 0 && crtStep == -1) {
       setCrtStep(questionnaireIds.length)
     }
-  }, [isComplete, isSubmitted, questionnaireIds])
+  }, [isComplete, isSubmitted])
 
   const loadExistingData = () => {
+    if (!questionnaireSetIds || !questionnaires) return;
     setComplete(undefined);
     fetchWithReLogin(globalLoginDisplay, `${subject}.data.deep.json`)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
@@ -219,8 +224,8 @@ function QuestionnaireSet(props) {
         let ids = [];
         let data = {};
         questionnaireSetIds.forEach(q => {
-          if (json[questionnaires[q]?.title]?.[0]?.['jcr:primaryType'] == "cards:Form") {
-            data[q] = json[questionnaires[q]?.title][0];
+          if (json[questionnaires?.[q]?.title]?.[0]?.['jcr:primaryType'] == "cards:Form") {
+            data[q] = json[questionnaires?.[q]?.title][0];
             ids.push(q);
           }
         });
@@ -230,6 +235,7 @@ function QuestionnaireSet(props) {
         // In that case, we do not reassign questionnaireIds to avoid loading this data in a loop
         !questionnaireIds && setQuestionnaireIds(ids);
         setSubjectData(data);
+        setSubjectDataLoadCount((counter) => counter+1)
       })
       .catch((response) => {
         setError(`Loading the visit failed with error code ${response.status}: ${response.statusText}`);
@@ -237,6 +243,9 @@ function QuestionnaireSet(props) {
   }
 
   const loadQuestionnaireSet = () => {
+    if (!!!id) {
+      return;
+    }
     fetchWithReLogin(globalLoginDisplay, `/Proms/${id}.deep.json`)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
@@ -301,21 +310,17 @@ function QuestionnaireSet(props) {
   // Advance to the next step
   let nextStep = () => { setCrtStep(findNextStep) }
 
-  let isFormComplete = (questionnaireId) => {
-    return subjectData?.[questionnaireId] && !subjectData[questionnaireId].statusFlags?.includes("INCOMPLETE");
-  }
-
   let launchNextForm = () => {;
-    if (subjectData[nextQuestionnaire['@name']]) {
+    if (subjectData?.[nextQuestionnaire['@name']]) {
       // Form already exists and is incomplete: prepare to edit it
       setCrtFormId(subjectData[nextQuestionnaire['@name']]['@name']);
     }
   }
 
   // Load all questionnaires that need to be filled out
-  if (typeof questionnaireIds === "undefined") {
-    loadQuestionnaireSet();
-  }
+  useEffect(loadQuestionnaireSet, [id]);
+  // After the questionnaireSet arrives, load the existing subject data
+  useEffect(loadExistingData, [id, subject, questionnaires != undefined, questionnaireSetIds != undefined]);
 
   if (!id) {
     return (
@@ -387,12 +392,12 @@ function QuestionnaireSet(props) {
     }
 
     // Requests to /Forms get sent to the dataImportServlet and fail to checkin, so send it to a specific form
-    const URL = "/Forms/" + subjectData[questionnaireIds[0]]["@name"];
+    const URL = "/Forms/" + subjectData?.[questionnaireIds[0]]["@name"];
     var request_data = new FormData();
     request_data.append(":operation", "checkin");
 
     questionnaireIds.forEach(q => {
-      let id = subjectData[q]["@name"];
+      let id = subjectData?.[q]["@name"];
       request_data.append(":applyTo", "/Forms/" + id);
     });
 
@@ -505,7 +510,7 @@ function QuestionnaireSet(props) {
         <ListItemText
           primary={questionnaires[q]?.title}
           secondary={!isFormComplete(q) && (displayEstimate(q)
-            + (subjectData[q]?.["jcr:lastModifiedBy"] === "patient" ? " (in progress)" : ""))}
+            + (subjectData?.[q]?.["jcr:lastModifiedBy"] === "patient" ? " (in progress)" : ""))}
         />
       </ListItem>
     ))}
@@ -542,7 +547,7 @@ function QuestionnaireSet(props) {
         </Grid>
         <Grid item>
           <Form
-            id={subjectData[q]['@name']}
+            id={subjectData?.[q]?.['@name']}
             disableHeader
             disableButton
             contentOffset={contentOffset || 0}
@@ -552,7 +557,7 @@ function QuestionnaireSet(props) {
           <Button
             variant="outlined"
             color="secondary"
-            onClick={() => {setReviewMode(true); setCrtFormId(subjectData[q]["@name"]); setCrtStep(i)}}>
+            onClick={() => {setReviewMode(true); setCrtFormId(subjectData?.[q]["@name"]); setCrtStep(i)}}>
               Update this survey
           </Button>
         </Grid>
@@ -590,7 +595,7 @@ your symptoms. Please see below for a summary of your scores and suggested actio
         <Grid item>
         <Form
           key={q+"Summary"}
-          id={subjectData[q]['@name']}
+          id={subjectData?.[q]['@name']}
           mode="summary"
           disableHeader
           disableButton
