@@ -46,6 +46,7 @@ import {
 import FileIcon from "@material-ui/icons/InsertDriveFile";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 import EditButton from "../dataHomepage/EditButton.jsx";
+import PrintButton from "../dataHomepage/PrintButton.jsx";
 import ResourceHeader from "./ResourceHeader.jsx"
 import SubjectTimeline from "./SubjectTimeline.jsx";
 
@@ -168,7 +169,7 @@ function Subject(props) {
         { "New questionnaire for this " + (currentSubject?.type?.label || "Subject") }
       </NewFormDialog>
       <Grid container spacing={4} direction="column" className={classes.subjectContainer}>
-        <SubjectHeader id={currentSubjectId} key={"SubjectHeader"}  classes={classes} getSubject={handleSubject} history={history} contentOffset={props.contentOffset}/>
+        <SubjectHeader id={currentSubjectId} key={"SubjectHeader"} pageTitle={pageTitle} classes={classes} getSubject={handleSubject} history={history} contentOffset={props.contentOffset}/>
         <Grid item>
           <Tabs className={classes.subjectTabs} value={activeTab} onChange={(event, value) => {
             setTab(value);
@@ -288,7 +289,7 @@ function SubjectContainer(props) {
  * Component that displays the header for the selected subject and its SubjectType
  */
 function SubjectHeader(props) {
-  let { id, classes, getSubject, history } = props;
+  let { id, classes, getSubject, history, pageTitle } = props;
   // This holds the full form JSON, once it is received from the server
   let [ subject, setSubject ] = useState(null);
   // Error message set when fetching the data from the server fails
@@ -360,6 +361,11 @@ function SubjectHeader(props) {
                  entryType={label}
                  onComplete={handleDeletion}
                  size="medium"
+               />
+               <PrintButton
+                 resourcePath={path}
+                 breadcrumb={pageTitle}
+                 date={moment(subject?.data['jcr:created']).format("MMM Do YYYY")}
                />
             </div>
   );
@@ -450,14 +456,21 @@ function SubjectMemberInternal (props) {
   let title = `${label} ${identifier}`;
   let path = data ? data["@path"] : "/Subjects/" + id;
   let avatar = <Avatar className={classes.subjectAvatar}>{label.split(' ').map(s => s?.charAt(0)).join('').toUpperCase()}</Avatar>;
-  let action = <DeleteButton
-                 entryPath={path}
-                 entryName={title}
-                 entryType={label}
-                 onComplete={onDelete}
-                 buttonClass={classes.childSubjectHeaderButton}
-               />
-
+  let action = <>
+                 <DeleteButton
+                   entryPath={path}
+                   entryName={title}
+                   entryType={label}
+                   onComplete={onDelete}
+                   buttonClass={classes.childSubjectHeaderButton}
+                 />
+                 <PrintButton
+                   resourcePath={path}
+                   breadcrumb={getTextHierarchy(data, true)}
+                   date={moment(data['jcr:created']).format("MMM Do YYYY")}
+                   buttonClass={classes.childSubjectHeaderButton}
+                 />
+               </>
   // If this is the top-level subject and we have no data to display for it, inform the user:
   if (data && level == 0 && !(Object.keys(subjectGroups || {}).length) && !hasChildren) {
     return (
