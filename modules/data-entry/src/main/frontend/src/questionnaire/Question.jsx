@@ -51,7 +51,7 @@ function Question (props) {
           />
         }
         { !isEdit && !preventDefaultView ?
-          ( existingAnswer ?
+          ( existingAnswer?.[1]["displayedValue"] ?
             <List>
               { Array.of(existingAnswer?.[1]["displayedValue"]).flat().map( (item, idx) => {
                 return(
