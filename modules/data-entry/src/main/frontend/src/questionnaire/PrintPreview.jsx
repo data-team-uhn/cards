@@ -157,7 +157,7 @@ function PrintPreview(props) {
       </DialogContent>
       <DialogActions>
         <Button variant="contained" onClick={onClose}>Close</Button>
-        <Button variant="contained" onClick={handlePrint} disabled={!!!content}>Print</Button>
+        <Button variant="contained" color="primary" onClick={handlePrint} disabled={!!!content}>Print</Button>
       </DialogActions>
     </Dialog>
   );
