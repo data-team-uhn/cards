@@ -214,7 +214,7 @@ public class PatientLocalStorage
             JsonArray providers = appointment.getJsonArray("attending");
             for (int i = 0; i < providers.size(); i++) {
                 for (String providerID : this.providerIDs) {
-                    if (providerID.equals(providers.getJsonObject(0).getString(PatientLocalStorage.FHIR_FIELD))) {
+                    if (providerID.equals(providers.getJsonObject(0).getString("eID"))) {
                         return true;
                     }
                 }
@@ -223,7 +223,7 @@ public class PatientLocalStorage
             // If we are returned a single object, it is a single provider
             JsonObject provider = appointment.getJsonObject("attending");
             for (String providerID : this.providerIDs) {
-                if (providerID.equals(provider.getString(PatientLocalStorage.FHIR_FIELD))) {
+                if (providerID.equals(provider.getString("eID"))) {
                     return true;
                 }
             }
