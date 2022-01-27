@@ -56,7 +56,7 @@ function PromsHomepage (props) {
   const classes = useStyles();
 
   let onPatientIdentified = (p) => {
-    setUsername(`${p.first_name} ${p.last_name}`);
+    setUsername(`${p.first_name || ""} ${p.last_name || ""}`);
     setSubject(p.subject);
   }
 

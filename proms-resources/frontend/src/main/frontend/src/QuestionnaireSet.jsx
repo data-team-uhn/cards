@@ -441,12 +441,13 @@ function QuestionnaireSet(props) {
   }
 
   let appointmentAlert = () => {
+    const time = appointmentDate();
     const location = getVisitInformation("location");
     const provider = getVisitInformation("provider");
-    return visitInformation?.questionnaire?.time ?
+    return (time || location || provider) ?
       <Alert severity="info">
         <AlertTitle>Upcoming appointment</AlertTitle>
-        {appointmentDate()}
+        {time ? <> {time} </> : null}
         {location ? <> at {location}</> : null}
         {provider ? <> with {provider}</> : null}
       </Alert>
