@@ -63,6 +63,6 @@ public class SubjectToMarkdownAdapterFactory extends AbstractSubjectToStringSeri
     @Override
     void formatForm(final Resource resource, final StringBuilder result)
     {
-        result.append("\n\n### ").append(resource.adaptTo(CharSequence.class)).append(MD_LINE_END).append('\n');
+        result.append(resource.adaptTo(CharSequence.class)).append(MD_LINE_END).append('\n');
     }
 }
