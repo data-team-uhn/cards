@@ -81,7 +81,7 @@ public class SessionSubjectRestrictionPattern implements RestrictionPattern
             return false;
         }
 
-        return isFormForSubject(tree, sessionSubject) || isSubjectOrAncestor(tree, sessionSubject);
+        return isFormForSubject(tree, sessionSubject) || isSubject(tree, sessionSubject);
     }
 
     private boolean isFormForSubject(final Tree start, final String sessionSubject)
@@ -103,7 +103,7 @@ public class SessionSubjectRestrictionPattern implements RestrictionPattern
         }
     }
 
-    private boolean isSubjectOrAncestor(final Tree start, final String sessionSubject)
+    private boolean isSubject(final Tree start, final String sessionSubject)
     {
         final Tree subject = findAncestor(start, "cards:Subject");
         if (subject == null) {
@@ -111,9 +111,8 @@ public class SessionSubjectRestrictionPattern implements RestrictionPattern
             return false;
         }
 
-        // This is a subject, this authorization rule only applies if it is the same as the session's subject or one of
-        // its ancestors
-        return StringUtils.startsWith(sessionSubject, subject.getPath());
+        // This is a subject, this authorization rule only applies if it is the same as the session's subject
+        return StringUtils.equals(sessionSubject, subject.getPath());
     }
 
     private Tree findAncestor(final Tree start, final String targetNodetype)
