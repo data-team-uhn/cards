@@ -30,7 +30,7 @@ import { createBrowserHistory } from "history";
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { appTheme } from "./themePalette.jsx";
 import QuestionnaireSet from "./QuestionnaireSet.jsx";
-import PatientIdentification from "./MockPatientIdentification.jsx";
+import PatientIdentification from "./PatientIdentification.jsx";
 import PromsFooter from "./Footer.jsx";
 
 const useStyles = makeStyles(theme => ({

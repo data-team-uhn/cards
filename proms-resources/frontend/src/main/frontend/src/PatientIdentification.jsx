@@ -38,8 +38,6 @@ import CloseIcon from '@material-ui/icons/Close';
 
 import ToUDialog from "./ToUDialog.jsx";
 
-import { identifyPatient } from "./patientLookup.jsx";
-
 import DropdownsDatePicker from "./components/DropdownsDatePicker.jsx";
 
 const useStyles = makeStyles(theme => ({
@@ -100,53 +98,65 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-
-function MockPatientIdentification(props) {
+// The patient is already authenticated via the token.
+// This just makes sure that the correct person accessed the application.
+function PatientIdentification(props) {
+  // Callback for reporting successful authentication
   const { onSuccess } = props;
 
+  // The values entered by the user
   const [ dob, setDob ] = useState();
   const [ mrn, setMrn ] = useState();
   const [ hc, setHc ] = useState();
+
+  // Internal state
+  // Holds an error message for display
   const [ error, setError ] = useState();
-  const [ idData, setIdData ] = useState();
-  const [ patient, setPatient ] = useState();
+  // Returned from the server after successul validation of the authentication,
+  // and will be returned back to the rest of the PROMS UI through the onSuccess callback
+  const [ patientDetails, setPatientDetails ] = useState();
   const [ visit, setVisit ] = useState();
-  const [ subjectTypes, setSubjectTypes ] = useState();
   // Whether the patient user has accepted the latest version of the Terms of Use
   const [ touAccepted, setTouAccepted ] = useState(false);
   // Whether the Terms of Use dialog can be displayed after patient identification
   const [ showTou, setShowTou ] = useState(false);
   // Info about each patient is stored in a Patient information form
-  const [ patientData, setPatientData ] = useState();
 
   const [ mrnHelperOpen, setMrnHelperOpen ] = useState(false);
 
   const classes = useStyles();
-
-  // At startup, load subjectTypes
-  useEffect(() => {
-    fetch("/query?query=" + encodeURIComponent("SELECT * FROM [cards:SubjectType]"))
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => {
-        let types = {};
-        json.rows.forEach(r => types[r['@name']] = r['jcr:uuid']);
-        setSubjectTypes(types);
-      })
-      .catch((response) => {
-        setError(`Subject type retrieval failed with error code ${response.status}: ${response.statusText}`);
-      });
-  }, []);
 
   const sanitizeHC = (str) => {
     return str?.toUpperCase().replaceAll(/[^A-Z0-9]*/g, "") || "";
   }
 
   const identify = () => {
-    return identifyPatient(dob, mrn, hc);
+    if (!dob || !mrn && !hc) {
+      return null;
+    }
+    let requestData = new FormData();
+    requestData.append("date_of_birth", dob);
+    requestData.append("mrn", mrn);
+    requestData.append("health_card", hc);
+    fetch("/Proms.validateCredentials", {
+      "method": "POST",
+      "body": requestData
+      })
+      .then((response) => response.json())
+      .then((json) => {
+        if (json.status != "success") {
+          return Promise.reject(json.error);
+        }
+        setPatientDetails(json.patientInformation);
+        setVisit(json.sessionSubject);
+        setShowTou(true);
+      })
+      .catch((error) => {
+        setError(error.statusText ? error.statusText : error);
+      });
   }
 
   // On submitting the patient login form, make a request to identify the patient
-  // If identification is successful, store the returned identification data (idData)
   const onSubmit = (event) => {
     event?.preventDefault();
     if (!dob || !mrn && !hc) {
@@ -154,101 +164,25 @@ function MockPatientIdentification(props) {
       return;
     }
     setError("");
-    setIdData(null);
-    setPatient(null);
+    setPatientDetails(null);
     setVisit(null);
-    let data = identify();
-    if (data) {
-      setIdData(data);
-    } else {
-      setError("No records match the submitted information");
-    }
-  }
-
-  // When the identification data is successfully obtained, get the patient subject's path
-  useEffect(() => {
-    idData && getPatient();
-  }, [idData]);
-
-  const getPatient = () => {
-    getSubject(
-      "Patient",   /* subject type */
-      "/Subjects", /* path prefix*/
-      idData.mrn,  /* id */
-      'MRN',       /* id label */
-      setPatient   /* successCallback */
-    );
-  }
-
-  // When the patient subject path is successfully obtained, get the visit "subject"
-  useEffect(() => {
-    patient && getVisit();
-  }, [patient]);
-
-  const getVisit = () => {
-    getSubject(
-      "Visit",              /* subject type */
-      patient,              /* path prefix*/
-      idData.visit_number,  /* id */
-      'visit number',       /* id label */
-      setVisit              /* successCallback */
-    );
+    identify();
   }
 
   // When the visit is successfully obtained and the latest version of Terms of Use accepted, pass it along with the identification data
   // to the parent component
   useEffect(() => {
-    visit && touAccepted && onSuccess && onSuccess(Object.assign({subject: visit}, idData));
+    visit && touAccepted && onSuccess && onSuccess(Object.assign({subject: visit}, patientDetails));
   }, [visit, touAccepted]);
-
-  // Get the path of a subject with a specific identifier
-  // if the subject doesn't exist, create it
-  const getSubject = (subjectType, pathPrefix, subjectId, subjectIdLabel, successCallback) => {
-    // If the patient doesn't yet have an MRN, or the visit doesn't yet have a number, abort mission
-    // TODO: after we find out if the MRN is not always assigned in the DHP,
-    // in which case implement a different logic for finding the patient
-    if (!subjectId) {
-      setError(`The record was found but no ${subjectIdLabel} has been assigned yet. Please try again later or contact your care team for next steps.`);
-      return;
-    }
-
-    // Look for the subject identified by subjectId
-    let query=`SELECT * FROM [cards:Subject] as s WHERE ischildnode(s, "${pathPrefix}") AND s.identifier="${subjectId}"`;
-    fetch("/query?query=" + encodeURIComponent(query))
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => {
-         let results = json.rows;
-         if (results.length == 0) {
-           // Subject not found
-           // Note: This should never actually happen
-           setError("No matching records found. Please inform the technical administrator.");
-         } else if (results.length == 1) {
-           // Subject found: return its path
-           successCallback(results[0]['@path']);
-         } else {
-           // More than one subject found, not sure which one to pick: display error
-           // Note: This should never actually happen
-           setError("More than one matching record found. Please inform the technical administrator.");
-         }
-      })
-      .catch((response) => {
-        setError(`Record identification failed with error code ${response.status}: ${response.statusText}`);
-      });
-  }
 
   // -----------------------------------------------------------------------------------------------------
   // Rendering
-
-  if (!subjectTypes) {
-    return null;
-  }
 
   let appName = document.querySelector('meta[name="title"]')?.content;
 
   return (<>
     <ToUDialog
       open={showTou}
-      patientData={patientData}
       actionRequired={true}
       onClose={() => setShowTou(false)}
       onAccept={() => {
@@ -257,8 +191,8 @@ function MockPatientIdentification(props) {
       }}
       onDecline={() => {
         setShowTou(false)
-        setIdData(null);
-        setPatient(null);
+        setPatientDetails(null);
+        setVisit(null);
       }}
     />
     <Dialog onClose={() => {setMrnHelperOpen(false)}} open={mrnHelperOpen}>
@@ -349,4 +283,4 @@ function MockPatientIdentification(props) {
   </>)
 }
 
-export default MockPatientIdentification;
+export default PatientIdentification;
