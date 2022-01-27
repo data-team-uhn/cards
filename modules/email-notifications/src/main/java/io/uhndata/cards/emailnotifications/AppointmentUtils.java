@@ -181,6 +181,75 @@ public final class AppointmentUtils
     }
 
     /**
+     * Gets the clinic name associated with a Visit Subject Resource, or
+     * null if the clinic name cannot be found.
+     *
+     * @param resolver a ResourceResolver that can be used to query the JCR
+     * @param visitSubject the JCR Resource for the visit whose clinic name we wish to obtain
+     * @return the clinic name associated with the Visit or null
+     */
+    public static String getVisitClinic(ResourceResolver resolver, Resource visitSubject)
+    {
+        String clinicId = getQuestionAnswerForSubject(
+            resolver,
+            visitSubject,
+            "/Questionnaires/Visit information/surveys",
+            "cards:TextAnswer",
+            ""
+        );
+        if ("".equals(clinicId)) {
+            return null;
+        }
+        return clinicId;
+    }
+
+    /**
+     * Gets an email template for a given clinic.
+     *
+     * @param resolver a ResourceResolver that can be used to query the JCR
+     * @param clinicId the clinic name whose email template we would like to obtain
+     * @param templateName the name of the clinic's template to be obtained (eg. 72h.txt, 24h.txt, etc...)
+     * @return the clinic email template or null if no template can be found
+     */
+    public static String getClinicEmailTemplate(ResourceResolver resolver, String clinicId, String templateName)
+    {
+        Resource mailTemplateResource = resolver.getResource(
+            "/apps/cards/proms/clinics/"
+            + clinicId
+            + "/mailTemplates/"
+            + templateName
+            + "/jcr:content"
+        );
+        if (mailTemplateResource == null) {
+            return null;
+        }
+
+        String htmlTemplate = mailTemplateResource.getValueMap().get("jcr:data", "");
+        if ("".equals(htmlTemplate)) {
+            return null;
+        }
+        return htmlTemplate;
+    }
+
+    /**
+     * Gets an email template for a given visit.
+     *
+     * @param resolver a ResourceResolver that can be used to query the JCR
+     * @param visitSubject the JCR Resource for the visit whose email template we wish to obtain
+     * @param templateName the name of the visit's clinic's template to be obtained (eg. 72h.txt, 24h.txt, etc...)
+     * @return the visit's clinic's email template or null if no template can be found
+     */
+    public static String getVisitEmailTemplate(ResourceResolver resolver, Resource visitSubject, String templateName)
+    {
+        String clinicId = getVisitClinic(resolver, visitSubject);
+        if (clinicId == null) {
+            return null;
+        }
+        String htmlTemplate = getClinicEmailTemplate(resolver, clinicId, templateName);
+        return htmlTemplate;
+    }
+
+    /**
      * Returns the CARDS Form JCR Resource associated with a given CARDS
      * answer Resource or null if no match can be found.
      *

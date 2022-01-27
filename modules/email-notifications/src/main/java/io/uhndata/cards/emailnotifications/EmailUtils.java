@@ -19,6 +19,10 @@
 
 package io.uhndata.cards.emailnotifications;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.commons.text.StringSubstitutor;
 import org.apache.sling.commons.messaging.mail.MailService;
 
 import jakarta.mail.MessagingException;
@@ -35,15 +39,38 @@ public final class EmailUtils
     {
     }
 
+    /**
+     * Generates an email by completing a template with a surveys links.
+     *
+     * @param emailTemplate the template for the body of the email
+     * @param surveysLink the link to the patient's surveys to be completed
+     * @return the body of the email ready to be sent
+     */
+    public static String renderEmailTemplate(String emailTemplate, String surveysLink)
+    {
+        Map<String, String> valuesMap = new HashMap<String, String>();
+        valuesMap.put("surveysLink", surveysLink);
+        StringSubstitutor sub = new StringSubstitutor(valuesMap);
+        return sub.replace(emailTemplate);
+    }
+
+    /**
+     * Sends a notification email.
+     *
+     * @param mailService the MailService object which sends the email
+     * @param toAddress the destination email address
+     * @param toName the name of the email recipient
+     * @param emailTextBody the plaintext body of the email
+     */
     public static void sendNotificationEmail(MailService mailService, String toAddress,
-        String toName, String emailBody) throws MessagingException
+        String toName, String emailTextBody) throws MessagingException
     {
         MimeMessage message = mailService.getMessageBuilder()
             .from(FROM_ADDRESS, FROM_NAME)
             .to(toAddress, toName)
             .replyTo(FROM_ADDRESS)
             .subject(SUBJECT)
-            .text(emailBody)
+            .text(emailTextBody)
             .build();
 
         mailService.sendMessage(message);

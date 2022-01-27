@@ -93,6 +93,10 @@ public class InitialNotificationsTask implements Runnable
                 if (patientEmailAddress == null) {
                     continue;
                 }
+                String emailTextTemplate = AppointmentUtils.getVisitEmailTemplate(resolver, visitSubject, "72h.txt");
+                if (emailTextTemplate == null) {
+                    continue;
+                }
                 String patientFullName = AppointmentUtils.getPatientFullName(resolver, patientSubject);
                 Calendar tokenExpiryDate = AppointmentUtils.parseDate(appointmentResult.getValueMap().get("value", ""));
                 tokenExpiryDate.add(Calendar.HOUR, 2);
@@ -106,12 +110,10 @@ public class InitialNotificationsTask implements Runnable
                         )
                     ).getToken();
                 // Send the Initial Notification Email
-                String emailBody = "You have an appointment in 3 days from now.";
-                emailBody += " Please complete your surveys beforehand at";
-                emailBody += " ";
-                emailBody += surveysLink;
+                String emailTextBody = EmailUtils.renderEmailTemplate(emailTextTemplate, surveysLink);
                 try {
-                    EmailUtils.sendNotificationEmail(this.mailService, patientEmailAddress, patientFullName, emailBody);
+                    EmailUtils.sendNotificationEmail(this.mailService, patientEmailAddress,
+                        patientFullName, emailTextBody);
                 } catch (MessagingException e) {
                     LOGGER.warn("Failed to send Initial Notification Email");
                 }
