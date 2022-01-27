@@ -60,6 +60,13 @@ function PromsHomepage (props) {
     setSubject(p.subject);
   }
 
+  if (!("hasSessionSubject" in document.getElementById("proms-container").dataset)) {
+    return (<>
+      <h1>Invalid access</h1>
+      <h2>This page can only be accessed by opening an invitation to fill in a survey.</h2>
+    </>);
+  }
+
   if (!subject) {
     return (<>
       <PatientIdentification onSuccess={onPatientIdentified} />
