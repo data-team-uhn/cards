@@ -128,15 +128,17 @@ public class TermsOfUseServlet extends SlingAllMethodsServlet
                 writeError(response, SlingHttpServletResponse.SC_CONFLICT, "Sorry, cannot record your answer");
                 return;
             }
+
+            final VersionManager versionManager = session.getWorkspace().getVersionManager();
+            final boolean checkin = !versionManager.isCheckedOut(patientInformationForm.getPath());
+            versionManager.checkout(patientInformationForm.getPath());
+
             final Node touQuestion = this.questionnaireUtils.getQuestion(patientInformationQuestionnaire, TOU);
             Node touAnswer = this.formUtils.getAnswer(patientInformationForm, touQuestion);
             if (touAnswer == null && patientInformationForm != null) {
                 touAnswer = patientInformationForm.addNode(UUID.randomUUID().toString(), "cards:TextAnswer");
                 touAnswer.setProperty("question", touQuestion);
             }
-            final VersionManager versionManager = session.getWorkspace().getVersionManager();
-            final boolean checkin = !versionManager.isCheckedOut(patientInformationForm.getPath());
-            versionManager.checkout(patientInformationForm.getPath());
             touAnswer.setProperty(FormUtils.VALUE_PROPERTY, touVersionAccepted);
             session.save();
             if (checkin) {

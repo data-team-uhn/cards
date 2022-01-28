@@ -174,6 +174,9 @@ public class AnswerCopyProcessor implements ResourceJsonProcessor
     private Node findForm(final Node sourceForm, final Node question)
     {
         Node targetQuestionnaire = this.questionnaireUtils.getOwnerQuestionnaire(question);
+        if (targetQuestionnaire == null) {
+            return null;
+        }
         try {
             if (targetQuestionnaire.isSame(this.formUtils.getQuestionnaire(sourceForm))) {
                 return sourceForm;
