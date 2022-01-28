@@ -38,6 +38,9 @@ import jakarta.mail.MessagingException;
 
 public class InitialNotificationsTask implements Runnable
 {
+    private static final String PATIENT_NOTIFICATION_SUBJECT =
+        "Welcome to DATAPRO: Answer your Pre-Appointment Questions";
+
     /** Default log. */
     private static final Logger LOGGER = LoggerFactory.getLogger(InitialNotificationsTask.class);
 
@@ -113,7 +116,7 @@ public class InitialNotificationsTask implements Runnable
                 String emailTextBody = EmailUtils.renderEmailTemplate(emailTextTemplate, surveysLink);
                 try {
                     EmailUtils.sendNotificationEmail(this.mailService, patientEmailAddress,
-                        patientFullName, emailTextBody);
+                        patientFullName, PATIENT_NOTIFICATION_SUBJECT, emailTextBody);
                 } catch (MessagingException e) {
                     LOGGER.warn("Failed to send Initial Notification Email");
                 }

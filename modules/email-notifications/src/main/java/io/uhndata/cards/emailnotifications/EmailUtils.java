@@ -32,7 +32,6 @@ public final class EmailUtils
 {
     private static final String FROM_ADDRESS = System.getenv("PATIENT_NOTIFICATION_FROM_ADDRESS");
     private static final String FROM_NAME = System.getenv("PATIENT_NOTIFICATION_FROM_NAME");
-    private static final String SUBJECT = System.getenv("PATIENT_NOTIFICATION_SUBJECT");
 
     // Hide the utility class constructor
     private EmailUtils()
@@ -60,16 +59,17 @@ public final class EmailUtils
      * @param mailService the MailService object which sends the email
      * @param toAddress the destination email address
      * @param toName the name of the email recipient
+     * @param emailSubject the subject line of the email
      * @param emailTextBody the plaintext body of the email
      */
     public static void sendNotificationEmail(MailService mailService, String toAddress,
-        String toName, String emailTextBody) throws MessagingException
+        String toName, String emailSubject, String emailTextBody) throws MessagingException
     {
         MimeMessage message = mailService.getMessageBuilder()
             .from(FROM_ADDRESS, FROM_NAME)
             .to(toAddress, toName)
             .replyTo(FROM_ADDRESS)
-            .subject(SUBJECT)
+            .subject(emailSubject)
             .text(emailTextBody)
             .build();
 
