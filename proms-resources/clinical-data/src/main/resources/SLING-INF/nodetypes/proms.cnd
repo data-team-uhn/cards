@@ -56,7 +56,7 @@
   // An optional frequency for re-taking the questionnaire, in weeks
   - frequency (long)
 
-  //  An optional configuration describing the columns of the livetable that lists the forms of corresponding to this questionnaire
+  //  An optional configuration describing the columns of the livetable that lists the forms corresponding to this questionnaire
   - view (string)
 
 //-----------------------------------------------------------------------------
