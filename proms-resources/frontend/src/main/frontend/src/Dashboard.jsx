@@ -107,6 +107,7 @@ function PromsDashboard(props) {
 
   // Also load all extensions
   useEffect(() => {
+    if (!name) return;
     getDashboardExtensions(name)
       .then(extensions => setDashboardExtensions(extensions))
       .catch(err => console.log("Something went wrong loading the proms dashboard", err))
@@ -115,6 +116,7 @@ function PromsDashboard(props) {
 
   // And the extension point definition to obtain its name
   useEffect(() => {
+    if (!name) return;
     fetchWithReLogin(globalLoginDisplay, `/apps/cards/ExtensionPoints/DashboardViews${name}.json`)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
