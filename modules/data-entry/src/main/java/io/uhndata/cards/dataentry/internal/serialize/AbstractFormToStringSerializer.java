@@ -189,10 +189,14 @@ public abstract class AbstractFormToStringSerializer
         if ("hidden".equals(displayMode)) {
             return;
         }
+        final String questionText = answerJson.getJsonObject("question").getString("text");
+        if (StringUtils.isBlank(questionText)) {
+            return;
+        }
         final JsonValue value = answerJson.get("displayedValue");
         final String note = answerJson.containsKey("note") ? answerJson.getString("note") : null;
 
-        formatQuestion(answerJson.getJsonObject("question").getString("text"), result);
+        formatQuestion(questionText, result);
         if (value == null) {
             formatAnswer("—", result);
         } else if ("cards:PedigreeAnswer".equals(nodeType)) {
