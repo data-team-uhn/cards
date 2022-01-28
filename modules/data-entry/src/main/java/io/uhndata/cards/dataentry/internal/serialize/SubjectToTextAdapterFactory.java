@@ -48,7 +48,7 @@ public class SubjectToTextAdapterFactory extends AbstractSubjectToStringSerializ
     @Override
     void formatSubjectTitle(String type, String identifier, StringBuilder result)
     {
-        result.append(type).append("  ").append(identifier).append("\n");
+        result.append(type).append(" ").append(identifier).append("\n");
     }
 
     @Override

@@ -49,7 +49,7 @@ public class SubjectToMarkdownAdapterFactory extends AbstractSubjectToStringSeri
     @Override
     void formatParent(String metadata, StringBuilder result)
     {
-        // Don't output the subject
+        // Don't output the parent subject
     }
 
     @Override
