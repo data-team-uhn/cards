@@ -17,10 +17,8 @@
 //  under the License.
 //
 
-let TEST_PATIENTS = require('./testPatients.json');
-
-export function identifyPatient (dob, mrn, hc) {
-   // TO DO: replace mock with authentication call
-  if (!dob || !mrn && !hc) return null;
-  return TEST_PATIENTS.filter(p => (p.date_of_birth == dob && (!mrn || p.mrn == mrn) && (!hc || p.health_card == hc)))[0];
-}
+use(function () {
+    var info = {};
+    info["hasSessionSubject"] = (currentSession.getAttribute("cards:sessionSubject") != null);
+    return info;
+});

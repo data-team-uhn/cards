@@ -114,24 +114,17 @@ public class DataSubjectProcessor implements ResourceJsonProcessor
             Iterator<Resource> forms = this.resolver.get().findResources(generateDataQuery(node), Query.JCR_SQL2);
             final Map<String, JsonArrayBuilder> formsJsons = new HashMap<>();
 
-            // Since the adaptTo serialization process uses ThreadLocal variables, we need to serialize other resources
-            // in a separate thread in order to not pollute the current state. We must extract the needed state from the
-            // current ThreadLocals to be used in the sub-thread.
             final ResourceResolver currentResolver = this.resolver.get();
             final String currentSelectors = this.selectors.get();
-            final Thread serializer = new Thread(() -> forms
-                .forEachRemaining(f -> storeForm(currentResolver.resolve(f.getPath() + currentSelectors), formsJsons)));
-            serializer.start();
-            // Wait for the serialization of forms to finish
-            serializer.join();
-            // Now the data JSONs should be available, add them to the subject's JSON
+            forms.forEachRemaining(f -> storeForm(currentResolver.resolve(f.getPath() + currentSelectors), formsJsons));
+            // The data JSONs have been collected, add them to the subject's JSON
             formsJsons.forEach(json::add);
             final JsonObjectBuilder filtersJson = Json.createObjectBuilder();
             this.filters.get().forEach(filtersJson::add);
             json.add("dataFilters", filtersJson);
             json.add("exportDate",
                 new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").format(Calendar.getInstance().getTime()));
-        } catch (RepositoryException | InterruptedException e) {
+        } catch (RepositoryException e) {
             // Really shouldn't happen
         }
     }

@@ -30,7 +30,7 @@ import { createBrowserHistory } from "history";
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { appTheme } from "./themePalette.jsx";
 import QuestionnaireSet from "./QuestionnaireSet.jsx";
-import PatientIdentification from "./MockPatientIdentification.jsx";
+import PatientIdentification from "./PatientIdentification.jsx";
 import PromsFooter from "./Footer.jsx";
 
 const useStyles = makeStyles(theme => ({
@@ -56,8 +56,15 @@ function PromsHomepage (props) {
   const classes = useStyles();
 
   let onPatientIdentified = (p) => {
-    setUsername(`${p.first_name} ${p.last_name}`);
+    setUsername(`${p.first_name || ""} ${p.last_name || ""}`);
     setSubject(p.subject);
+  }
+
+  if (!("hasSessionSubject" in document.getElementById("proms-container").dataset)) {
+    return (<>
+      <h1>Invalid access</h1>
+      <h2>This page can only be accessed by opening an invitation to fill in a survey.</h2>
+    </>);
   }
 
   if (!subject) {
