@@ -35,6 +35,18 @@ public class SubjectToMarkdownAdapterFactory extends AbstractSubjectToStringSeri
     private static final String MD_LINE_END = "  \n";
 
     @Override
+    public boolean canProcess(final Resource resource)
+    {
+        return resource.isResourceType("cards/Subject");
+    }
+
+    @Override
+    public String serialize(Resource resource)
+    {
+        return toString(resource);
+    }
+
+    @Override
     void formatSubjectTitle(String type, String identifier, StringBuilder result)
     {
         // Don't output the subject
@@ -50,18 +62,6 @@ public class SubjectToMarkdownAdapterFactory extends AbstractSubjectToStringSeri
     void formatParent(String metadata, StringBuilder result)
     {
         // Don't output the parent subject
-    }
-
-    @Override
-    public boolean canProcess(final Resource resource)
-    {
-        return resource.isResourceType("cards/Subject");
-    }
-
-    @Override
-    public String serialize(Resource resource)
-    {
-        return toString(resource);
     }
 
     @Override
