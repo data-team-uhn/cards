@@ -85,7 +85,7 @@ function VisitView(props) {
     },
     {
       "key" : "status",
-      "label" : "Surveys completion",
+      "label" : "Survey completion",
       "format" : (row) => (
          <Link
            className={classes["status" + (!row.surveys_complete ? "Incomplete" : (!row.surveys_submitted ? "Unreviewed" : "Completed"))]}
