@@ -38,7 +38,8 @@
         "create service user proms-visit-backend \n set ACL on /Questionnaires,/Subjects,/SubjectTypes \n   allow jcr:read for proms-visit-backend \n end \n set ACL on /Forms \n   allow jcr:read,rep:write,jcr:versionManagement for proms-visit-backend \n end",
         "create service user proms-patient-validation \n set ACL for proms-patient-validation \n   allow jcr:read on /Questionnaires,/Subjects,/SubjectTypes,/Forms \n end",
         "create service user proms-patient-tou \n set ACL for proms-patient-tou \n   allow jcr:read,rep:write,jcr:versionManagement on /Forms \n   allow jcr:read on /Questionnaires,/Subjects \n end",
-        "create group TrustedUsers \n\n set ACL on /Subjects \n   deny rep:write for TrustedUsers \n end"
+        "create group TrustedUsers \n\n set ACL on /Subjects \n   deny rep:write for TrustedUsers \n end",
+        "set ACL for everyone \n     allow   jcr:read    on /RedirectURL \n end"
       ]
     },
     "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~proms":{
