@@ -341,6 +341,8 @@ public class VisitChangeListener implements ResourceChangeListener
     private void pruneQuestionnaireSetByVisit(final Node visit, final VisitInformation visitInformation,
         final Map<String, QuestionnaireFrequency> questionnaireSetInfo) throws RepositoryException
     {
+        String visitQuestionnaireSet = null;
+
         // Create a list of all complete forms that exist for this visit.
         // Record the visit's date as well, if there is a Visit Information form with a date.
         final Map<String, Boolean> questionnaires = new HashMap<>();
@@ -352,12 +354,35 @@ public class VisitChangeListener implements ResourceChangeListener
                 if (questionnaire.isSame(visitInformation.getQuestionnaire())) {
                     visitDate = (Calendar) this.formUtils
                         .getValue(this.formUtils.getAnswer(form, visitInformation.getVisitDateQuestion()));
+                    visitQuestionnaireSet = (String) this.formUtils
+                        .getValue(this.formUtils.getAnswer(form, visitInformation.getQuestionnaireSetQuestion()));
                 } else {
                     questionnaires.merge(questionnaire.getIdentifier(), !isFormIncomplete(form), Boolean::logicalOr);
                 }
             }
         }
 
+        // Ignore forms for different clinics, or forms without a clinic
+        if (visitQuestionnaireSet == null || visitInformation.getQuestionnaireSet() != visitQuestionnaireSet) {
+            return;
+        } else {
+            removeQuestionnairesFromVisit(visitInformation, visitDate, questionnaires, questionnaireSetInfo);
+        }
+    }
+
+    /**
+     * Remove any questionnaires from the questionnaire set which do not need to be created per their frequency.
+     * Uses a provided list of questionnaires and the date that list occured on to compare with the questionnaire set
+     *
+     * @param visitInformation the set of data about the visit that triggered this event
+     * @param visitDate the data of the visit being checked
+     * @param questionnaires the list of questionnaires for the visit being checked, along with their completion status
+     * @param questionnaireSetInfo the current questionnaireSet. This will be modified by removing key-value pairs
+     * @throws RepositoryException if iterating the patient's visits fails
+     */
+    private void removeQuestionnairesFromVisit(final VisitInformation visitInformation, final Calendar visitDate,
+        final Map<String, Boolean> questionnaires, final Map<String, QuestionnaireFrequency> questionnaireSetInfo)
+    {
         final Calendar triggeringDate = visitInformation.getVisitDate();
         final boolean isWithinVisitMargin = isWithinDateRange(visitDate, triggeringDate, VISIT_CREATION_MARGIN_DAYS);
 
@@ -395,13 +420,61 @@ public class VisitChangeListener implements ResourceChangeListener
         for (final String questionnaireIdentifier : questionnaireSetInfo.keySet()) {
             final String uuid = UUID.randomUUID().toString();
             final Node form = session.getNode("/Forms").addNode(uuid, FormUtils.FORM_NODETYPE);
-            form.setProperty(FormUtils.QUESTIONNAIRE_PROPERTY,
-                questionnaireSetInfo.get(questionnaireIdentifier).getQuestionnaire());
+            final Node questionnaire = questionnaireSetInfo.get(questionnaireIdentifier).getQuestionnaire();
+            form.setProperty(FormUtils.QUESTIONNAIRE_PROPERTY, questionnaire);
             form.setProperty(FormUtils.SUBJECT_PROPERTY, visit);
+            if ("AUDITC".equals(questionnaire.getName())) {
+                final String sex = getPatientSex(visit);
+                if (sex != null) {
+                    try {
+                        final Node answer = form.addNode(UUID.randomUUID().toString(), "cards:TextAnswer");
+                        final Node sexQuestion = session.getNode("/Questionnaires/AUDITC/sex");
+                        answer.setProperty(FormUtils.QUESTION_PROPERTY, sexQuestion);
+                        answer.setProperty(FormUtils.VALUE_PROPERTY, sex);
+                    } catch (final RepositoryException e) {
+                        LOGGER.error("Failed to set sex: {}", e.getMessage(), e);
+                    }
+                }
+            }
             results.add(form.getPath());
         }
 
         return results;
+    }
+
+    /**
+     * Get the sex for a visit's parent patient, as specified by their patient information form.
+     *
+     * @param visit the visit which shoulkd have it's patient checked
+     * @return the patient sex as listed in the patient information form or null
+     */
+    private String getPatientSex(final Node visit)
+    {
+        try {
+            final Node patient = visit.getParent();
+            if (this.subjectUtils.isSubject(patient)) {
+                for (final PropertyIterator references = patient.getReferences(); references.hasNext();) {
+                    final Node form = references.nextProperty().getParent();
+                    final Node questionnaire = this.formUtils.getQuestionnaire(form);
+                    if (questionnaire != null && isPatientInformation(questionnaire)) {
+                        for (final NodeIterator answers = form.getNodes(); answers.hasNext();) {
+                            final Node answer = answers.nextNode();
+                            final Node question = this.formUtils.getQuestion(answer);
+                            if (question != null && "sex".equals(question.getName())) {
+                                return answer.hasProperty("value") ? answer.getProperty("value").getString() : null;
+                            }
+                        }
+                        // Found the patient information form, but it is missing the information we need.
+                        // Exit & return default
+                        break;
+                    }
+                }
+            }
+        } catch (final RepositoryException e) {
+            LOGGER.warn("Failed to find sex: {}", e.getMessage(), e);
+            // Could not retrieve required information: Return default
+        }
+        return null;
     }
 
     /**
@@ -534,12 +607,35 @@ public class VisitChangeListener implements ResourceChangeListener
      * @param questionnaire the questionnaire to check
      * @return {@code true} if the questionnaire is indeed the {@code Visit Information}
      */
-    private boolean isVisitInformation(final Node questionnaire)
+    private static boolean isVisitInformation(final Node questionnaire)
+    {
+        return isSpecificQuestionnaire(questionnaire, "/Questionnaires/Visit information");
+    }
+
+    /**
+     * Check if a questionnaire is the {@code Patient Information} questionnaire.
+     *
+     * @param questionnaire the questionnaire to check
+     * @return {@code true} if the questionnaire is indeed the {@code Patient Information}
+     */
+    private static boolean isPatientInformation(final Node questionnaire)
+    {
+        return isSpecificQuestionnaire(questionnaire, "/Questionnaires/Patient information");
+    }
+
+    /**
+     * Check if a questionnaire is the specified questionnaire.
+     *
+     * @param questionnaire the questionnaire to check
+     * @param questionnairePath the path to the desired questionnaire
+     * @return {@code true} if the questionnaire is indeed the questionnaire specified by path
+     */
+    private static boolean isSpecificQuestionnaire(final Node questionnaire, final String questionnairePath)
     {
         try {
-            return questionnaire != null && "/Questionnaires/Visit information".equals(questionnaire.getPath());
+            return questionnaire != null && questionnairePath.equals(questionnaire.getPath());
         } catch (final RepositoryException e) {
-            LOGGER.warn("Failed check for visit information form: {}", e.getMessage(), e);
+            LOGGER.warn("Failed check if form is of questionnaire type {}: {}", questionnairePath, e.getMessage(), e);
             return false;
         }
     }
@@ -552,6 +648,8 @@ public class VisitChangeListener implements ResourceChangeListener
 
         private final Node visitDateQuestion;
 
+        private final Node questionnaireSetQuestion;
+
         private final String questionnaireSet;
 
         VisitInformation(final Node questionnaire, final Node form) throws RepositoryException
@@ -560,10 +658,10 @@ public class VisitChangeListener implements ResourceChangeListener
             this.visitDateQuestion = questionnaire.getNode("time");
             this.visitDate = (Calendar) VisitChangeListener.this.formUtils
                 .getValue(VisitChangeListener.this.formUtils.getAnswer(form, this.visitDateQuestion));
-            final Node questionnaireSetQuestion =
+            this.questionnaireSetQuestion =
                 VisitChangeListener.this.questionnaireUtils.getQuestion(questionnaire, "surveys");
             final String questionnaireSetName = (String) VisitChangeListener.this.formUtils
-                .getValue(VisitChangeListener.this.formUtils.getAnswer(form, questionnaireSetQuestion));
+                .getValue(VisitChangeListener.this.formUtils.getAnswer(form, this.questionnaireSetQuestion));
             this.questionnaireSet =
                 questionnaire.getSession().nodeExists("/Proms/" + questionnaireSetName) ? questionnaireSetName : null;
 
@@ -592,6 +690,11 @@ public class VisitChangeListener implements ResourceChangeListener
         public String getQuestionnaireSet()
         {
             return this.questionnaireSet;
+        }
+
+        public Node getQuestionnaireSetQuestion()
+        {
+            return this.questionnaireSetQuestion;
         }
     }
 

@@ -526,6 +526,9 @@
   // We allow users to place these answers in a Note section
   - note (string)
 
+  // A potentially empty list of status flags for the answer
+  - statusFlags (STRING) autocreated multiple
+
   // We don't define any subchildren.
 
 //-----------------------------------------------------------------------------
@@ -719,6 +722,7 @@
   // Hardcode the resource supertype: each form is a resource.
   - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
+  // A potentially empty list of status flags for the form
   - statusFlags (STRING) = "INCOMPLETE" mandatory autocreated multiple
 
   // A reference to the questionnaire being filled in.
