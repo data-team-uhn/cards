@@ -98,7 +98,7 @@
   - cards:hint (STRING)
 
   // Optional data (stored in the JCR node) to be passed to the rendered component
-  - cards:data (REFERENCE)
+  - cards:data (STRING)
 
   // And any other properties
   - * (undefined) multiple
