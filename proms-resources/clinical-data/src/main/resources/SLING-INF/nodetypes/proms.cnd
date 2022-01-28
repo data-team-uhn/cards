@@ -126,3 +126,6 @@
 
   // The internal survey ID to use for this clinic
   - surveyID (String) mandatory
+
+  // The display name to return to the user
+  - displayName (String) mandatory

@@ -22,12 +22,12 @@ package io.uhndata.cards.proms.internal.importer;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -39,6 +39,7 @@ import javax.jcr.Session;
 import javax.jcr.version.VersionManager;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.json.JsonString;
 import javax.json.JsonValue;
 
 import org.apache.sling.api.resource.PersistenceException;
@@ -166,13 +167,13 @@ public class PatientLocalStorage
         throws RepositoryException, PersistenceException
     {
         // In one usage of patientLocalStorage.store(), only store those within a specific timeframe
-        List<String> surveyIDs = getSurveyIDs(appointment.getJsonArray("location"));
-        for (String surveyID : surveyIDs)
+        List<SurveyInfo> surveyInfos = getSurveyInfo(appointment.getJsonArray("location"));
+        for (SurveyInfo surveyInfo : surveyInfos)
         {
             Resource visit = getOrCreateSubject(appointment.getString(PatientLocalStorage.FHIR_FIELD)
-                + "-" + surveyID, "/SubjectTypes/Patient/Visit/", patient);
+                + "-" + surveyInfo.getSurveyID(), "/SubjectTypes/Patient/Visit/", patient);
             Resource visitInfo = getOrCreateForm(visit, "/Questionnaires/Visit information/");
-            updateVisitInformationForm(visitInfo, appointment, surveyID);
+            updateVisitInformationForm(visitInfo, appointment, surveyInfo.getSurveyID(), surveyInfo.getDisplayName());
         }
     }
 
@@ -431,18 +432,33 @@ public class PatientLocalStorage
      * @param form The Visit Information form to update
      * @param info The JsonObject representing a visit returned from Torch
      * @param surveyID A string representing the internally mapped survey ID for the location of this visit
+     * @param locationName A string representing the display name of the location for this visit
      */
-    void updateVisitInformationForm(Resource form, JsonObject info, String surveyID)
+    void updateVisitInformationForm(Resource form, JsonObject info, String surveyID, String locationName)
         throws RepositoryException, PersistenceException
     {
         Map<String, JsonStringGetter> formMapping = Map.of(
             "fhir_id", obj -> obj.getString(PatientLocalStorage.FHIR_FIELD),
             "status", obj -> obj.getString("status"),
-            "provider", obj -> obj.getJsonObject("attending").getJsonObject("name").getString("family"),
+            "provider", obj -> {
+                JsonObject nameObj = obj.getJsonObject("attending").getJsonObject("name");
+                if (obj == null) {
+                    return "";
+                }
+
+                List<String> fullName = new LinkedList<String>(
+                    PatientLocalStorage.mapJsonString(obj.getJsonArray("prefix")));
+                fullName.addAll(PatientLocalStorage.mapJsonString(obj.getJsonArray("given")));
+                if (obj.containsKey("family")) {
+                    fullName.add(obj.getString("family"));
+                }
+                fullName.addAll(PatientLocalStorage.mapJsonString(obj.getJsonArray("suffix")));
+                return String.join(" ", fullName);
+            },
             // We need to map the display name of the clinic given to a survey ID
             // The mappings are stored at /Proms/ClinicMapping/<location hashcCode>
             "surveys", obj -> surveyID,
-            "location", obj -> surveyID
+            "location", obj -> locationName
         );
 
         Map<String, JsonDateGetter> dateMapping = Map.of(
@@ -454,6 +470,25 @@ public class PatientLocalStorage
         // Also create some questions that need to be present for the VisitChangeListener, if they don't exist
         ensureAnswerExists(form, "/Questionnaires/Visit information/surveys_complete", "cards:BooleanAnswer", false);
         ensureAnswerExists(form, "/Questionnaires/Visit information/surveys_submitted", "cards:BooleanAnswer", false);
+    }
+
+    /**
+     * Convert a {@code JsonArray} of strings to a {@code List<String>}.
+     * @param list A JsonArray full of JsonStrings to convert
+     * @return List of Strings
+     */
+    static List<String> mapJsonString(JsonArray list)
+    {
+        List<String> retVal = new LinkedList<String>();
+
+        if (list == null) {
+            return retVal;
+        }
+
+        for (JsonString str : list.getValuesAs(JsonString.class)) {
+            retVal.add(str.getString());
+        }
+        return retVal;
     }
 
     /**
@@ -484,13 +519,42 @@ public class PatientLocalStorage
     }
 
     /**
-     * Map the given clinic display names to a survey ID.
-     * @param appointments The appointments array to parse
-     * @return The survey IDs as a | delimited string
+     * Storage class for survey information.
      */
-    List<String> getSurveyIDs(JsonArray appointments)
+    class SurveyInfo
     {
-        List<String> retVal = new ArrayList<>();
+        private String surveyID;
+        private String displayName;
+
+        public void setSurveyID(String id)
+        {
+            this.surveyID = id;
+        }
+
+        public String getSurveyID()
+        {
+            return this.surveyID;
+        }
+
+        public void setDisplayName(String name)
+        {
+            this.displayName = name;
+        }
+
+        public String getDisplayName()
+        {
+            return this.displayName;
+        }
+    }
+
+    /**
+     * Map the given Torch clinic name to a survey ID and display name.
+     * @param appointments The appointments array to parse
+     * @return The survey information as a list
+     */
+    List<SurveyInfo> getSurveyInfo(JsonArray appointments)
+    {
+        List<SurveyInfo> retVal = new LinkedList<>();
         for (int i = 0; i < appointments.size(); i++) {
             // Resolve this name from our mapping
             String clinic = appointments.getString(i);
@@ -503,7 +567,11 @@ public class PatientLocalStorage
             } else {
                 try
                 {
-                    retVal.add(mapping.adaptTo(Node.class).getProperty("surveyID").getString());
+                    SurveyInfo thisSurvey = new SurveyInfo();
+                    Node thisNode = mapping.adaptTo(Node.class);
+                    thisSurvey.setSurveyID(thisNode.getProperty("surveyID").getString());
+                    thisSurvey.setDisplayName(thisNode.getProperty("displayName").getString());
+                    retVal.add(thisSurvey);
                 } catch (RepositoryException e) {
                     LOGGER.error("Error while resolving clinic mapping: {} {} ", clinic, e.getMessage(), e);
                 }
