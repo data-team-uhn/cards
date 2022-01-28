@@ -166,6 +166,7 @@ public abstract class AbstractSubjectToStringSerializer
         String formPath = nodeJson.getString("@path");
         final Resource formResource = this.resolver.get().resolve(formPath + ".deep.dereference.labels");
 
+        formatResourceSeparator(result);
         formatForm(formResource, result);
     }
 
@@ -174,6 +175,8 @@ public abstract class AbstractSubjectToStringSerializer
     abstract void formatSubjectTitle(String type, String identifier, StringBuilder result);
 
     abstract void formatCreationDate(String date, StringBuilder result);
+
+    abstract void formatResourceSeparator(StringBuilder result);
 
     abstract void formatForm(Resource resource, StringBuilder result);
 }

@@ -18,8 +18,6 @@
  */
 package io.uhndata.cards.dataentry.internal.serialize;
 
-import java.util.Locale;
-
 import org.apache.sling.api.resource.Resource;
 import org.osgi.service.component.annotations.Component;
 
@@ -46,6 +44,12 @@ public class SubjectToTextAdapterFactory extends AbstractSubjectToStringSerializ
     }
 
     @Override
+    void formatParent(String parent, StringBuilder result)
+    {
+        // Don't output the parent
+    }
+
+    @Override
     void formatSubjectTitle(String type, String identifier, StringBuilder result)
     {
         result.append(type).append(" ").append(identifier).append("\n");
@@ -54,18 +58,18 @@ public class SubjectToTextAdapterFactory extends AbstractSubjectToStringSerializ
     @Override
     void formatCreationDate(String date, StringBuilder result)
     {
-        result.append(date).append("\n\n");
+        result.append(date).append("\n");
     }
 
     @Override
-    void formatParent(String metadata, StringBuilder result)
+    void formatResourceSeparator(final StringBuilder result)
     {
-        result.append(metadata.toUpperCase(Locale.ROOT)).append("\n");
+        result.append("\n\n\n\n");
     }
 
     @Override
     void formatForm(final Resource resource, final StringBuilder result)
     {
-        result.append(resource.adaptTo(String.class)).append("\n\n");
+        result.append(resource.adaptTo(String.class));
     }
 }

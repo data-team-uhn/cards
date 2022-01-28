@@ -32,7 +32,6 @@ import io.uhndata.cards.serialize.spi.ResourceMarkdownProcessor;
 public class SubjectToMarkdownAdapterFactory extends AbstractSubjectToStringSerializer
     implements ResourceMarkdownProcessor
 {
-    private static final String MD_LINE_END = "  \n";
 
     @Override
     public boolean canProcess(final Resource resource)
@@ -47,26 +46,32 @@ public class SubjectToMarkdownAdapterFactory extends AbstractSubjectToStringSeri
     }
 
     @Override
-    void formatSubjectTitle(String type, String identifier, StringBuilder result)
-    {
-        // Don't output the subject
-    }
-
-    @Override
-    void formatCreationDate(String metadata, StringBuilder result)
-    {
-        // Don't output the subject
-    }
-
-    @Override
-    void formatParent(String metadata, StringBuilder result)
+    void formatParent(String parent, StringBuilder result)
     {
         // Don't output the parent subject
     }
 
     @Override
+    void formatSubjectTitle(String type, String identifier, StringBuilder result)
+    {
+        // Don't output the subject title
+    }
+
+    @Override
+    void formatCreationDate(String date, StringBuilder result)
+    {
+        // Don't output the date
+    }
+
+    @Override
+    void formatResourceSeparator(StringBuilder result)
+    {
+        result.append("\n\n");
+    }
+
+    @Override
     void formatForm(final Resource resource, final StringBuilder result)
     {
-        result.append(resource.adaptTo(CharSequence.class)).append(MD_LINE_END).append('\n');
+        result.append(resource.adaptTo(CharSequence.class));
     }
 }
