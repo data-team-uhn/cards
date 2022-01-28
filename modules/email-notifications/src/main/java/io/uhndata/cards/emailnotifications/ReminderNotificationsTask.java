@@ -38,8 +38,14 @@ import jakarta.mail.MessagingException;
 
 public class ReminderNotificationsTask implements Runnable
 {
+    private static final String PATIENT_NOTIFICATION_SUBJECT =
+        "Reminder: You have 24 hours left to complete your pre-appointment questions";
+
     /** Default log. */
     private static final Logger LOGGER = LoggerFactory.getLogger(ReminderNotificationsTask.class);
+
+    private static final String CARDS_HOST_AND_PORT = System.getenv("CARDS_HOST_AND_PORT");
+    private static final String CLINIC_SLING_PATH = System.getenv("CLINIC_SLING_PATH");
 
     /** Provides access to resources. */
     private final ResourceResolverFactory resolverFactory;
@@ -60,7 +66,6 @@ public class ReminderNotificationsTask implements Runnable
     public void run()
     {
         LOGGER.warn("Executing ReminderNotificationsTask");
-
         final Date today = new Date();
         final Calendar dateToQuery = Calendar.getInstance();
         dateToQuery.setTime(today);
@@ -82,33 +87,34 @@ public class ReminderNotificationsTask implements Runnable
                 if (patientEmailAddress == null) {
                     continue;
                 }
-                String patientFullName = AppointmentUtils.getPatientFullName(resolver, patientSubject);
-                boolean patientSurveysComplete = AppointmentUtils.getVisitSurveysComplete(resolver, visitSubject);
-
-                // Send the Reminder Notification Email
-                String emailBody = "You have an appointment in 1 day from now.";
-                // Only send a reminder about incomplete surveys if there are incomplete surveys for the patient
-                if (!patientSurveysComplete) {
-                    Calendar tokenExpiryDate = AppointmentUtils.parseDate(
-                        appointmentResult.getValueMap().get("value", ""));
-                    tokenExpiryDate.add(Calendar.HOUR, 2);
-                    String surveysLink = "http://localhost:8080/Proms.html/Cardio?auth_token="
-                        + this.tokenManager.create(
-                            "patient",
-                            tokenExpiryDate,
-                            Collections.singletonMap(
-                                "cards:sessionSubject",
-                                visitSubject.getPath()
-                            )
-                        ).getToken();
-                    emailBody += " Please complete your surveys beforehand at";
-                    emailBody += " ";
-                    emailBody += surveysLink;
-                } else {
-                    emailBody += " Thank you for completing your surveys.";
+                String emailTextTemplate = AppointmentUtils.getVisitEmailTemplate(resolver, visitSubject, "24h.txt");
+                if (emailTextTemplate == null) {
+                    continue;
                 }
+
+                // Only send a reminder if there are incomplete surveys for the patient
+                boolean patientSurveysComplete = AppointmentUtils.getVisitSurveysComplete(resolver, visitSubject);
+                if (patientSurveysComplete) {
+                    continue;
+                }
+                String patientFullName = AppointmentUtils.getPatientFullName(resolver, patientSubject);
+
+                Calendar tokenExpiryDate = AppointmentUtils.parseDate(appointmentResult.getValueMap().get("value", ""));
+                tokenExpiryDate.add(Calendar.HOUR, 2);
+                String surveysLink = "https://" + CARDS_HOST_AND_PORT + CLINIC_SLING_PATH + "?auth_token="
+                    + this.tokenManager.create(
+                        "patient",
+                        tokenExpiryDate,
+                        Collections.singletonMap(
+                            "cards:sessionSubject",
+                            visitSubject.getPath()
+                        )
+                    ).getToken();
+                // Send the Reminder Notification Email
+                String emailTextBody = EmailUtils.renderEmailTemplate(emailTextTemplate, surveysLink);
                 try {
-                    EmailUtils.sendNotificationEmail(this.mailService, patientEmailAddress, patientFullName, emailBody);
+                    EmailUtils.sendNotificationEmail(this.mailService, patientEmailAddress,
+                        patientFullName, PATIENT_NOTIFICATION_SUBJECT, emailTextBody);
                 } catch (MessagingException e) {
                     LOGGER.warn("Failed to send Reminder Notification Email");
                 }
