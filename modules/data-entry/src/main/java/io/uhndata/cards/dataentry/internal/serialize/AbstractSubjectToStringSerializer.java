@@ -79,14 +79,10 @@ public abstract class AbstractSubjectToStringSerializer
     {
         String parent = getSubjectFullIdentifier(subjectJson);
         if (parent != null) {
-            formatMetadata(getSubjectFullIdentifier(subjectJson), result);
+            formatParent(getSubjectFullIdentifier(subjectJson), result);
         }
-        formatMetadata("\n", result);
-        formatType(getSubjectType(subjectJson), result);
-        formatMetadata(getSubjectIdentifier(subjectJson), result);
-        formatMetadata("\n", result);
-        formatMetadata(getCreationDate(subjectJson), result);
-        formatMetadata("\n", result);
+        formatSubjectTitle(getSubjectType(subjectJson), getSubjectIdentifier(subjectJson), result);
+        formatCreationDate(getCreationDate(subjectJson), result);
     }
 
     /**
@@ -173,9 +169,11 @@ public abstract class AbstractSubjectToStringSerializer
         formatForm(formResource, result);
     }
 
-    abstract void formatMetadata(String metadata, StringBuilder result);
+    abstract void formatParent(String metadata, StringBuilder result);
 
-    abstract void formatType(String metadata, StringBuilder result);
+    abstract void formatSubjectTitle(String type, String identifier, StringBuilder result);
+
+    abstract void formatCreationDate(String date, StringBuilder result);
 
     abstract void formatForm(Resource resource, StringBuilder result);
 }

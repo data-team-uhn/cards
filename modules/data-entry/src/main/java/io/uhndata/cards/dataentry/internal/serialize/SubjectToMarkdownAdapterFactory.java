@@ -18,8 +18,6 @@
  */
 package io.uhndata.cards.dataentry.internal.serialize;
 
-import java.util.Locale;
-
 import org.apache.sling.api.resource.Resource;
 import org.osgi.service.component.annotations.Component;
 
@@ -37,6 +35,24 @@ public class SubjectToMarkdownAdapterFactory extends AbstractSubjectToStringSeri
     private static final String MD_LINE_END = "  \n";
 
     @Override
+    void formatSubjectTitle(String type, String identifier, StringBuilder result)
+    {
+        // Don't output the subject
+    }
+
+    @Override
+    void formatCreationDate(String metadata, StringBuilder result)
+    {
+        // Don't output the subject
+    }
+
+    @Override
+    void formatParent(String metadata, StringBuilder result)
+    {
+        // Don't output the subject
+    }
+
+    @Override
     public boolean canProcess(final Resource resource)
     {
         return resource.isResourceType("cards/Subject");
@@ -46,18 +62,6 @@ public class SubjectToMarkdownAdapterFactory extends AbstractSubjectToStringSeri
     public String serialize(Resource resource)
     {
         return toString(resource);
-    }
-
-    @Override
-    void formatMetadata(final String metadata, final StringBuilder result)
-    {
-        result.append(metadata.toUpperCase(Locale.ROOT)).append(MD_LINE_END).append('\n');
-    }
-
-    @Override
-    void formatType(final String type, final StringBuilder result)
-    {
-        result.append("\n\n### ").append(type).append(MD_LINE_END).append('\n');
     }
 
     @Override

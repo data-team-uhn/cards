@@ -46,15 +46,21 @@ public class SubjectToTextAdapterFactory extends AbstractSubjectToStringSerializ
     }
 
     @Override
-    void formatMetadata(final String metadata, final StringBuilder result)
+    void formatSubjectTitle(String type, String identifier, StringBuilder result)
     {
-        result.append(metadata.toUpperCase(Locale.ROOT)).append('\n');
+        result.append(type).append("  ").append(identifier).append("\n");
     }
 
     @Override
-    void formatType(final String type, final StringBuilder result)
+    void formatCreationDate(String date, StringBuilder result)
     {
-        result.append(type.toUpperCase(Locale.ROOT)).append("\n\n");
+        result.append(date).append("\n\n");
+    }
+
+    @Override
+    void formatParent(String metadata, StringBuilder result)
+    {
+        result.append(metadata.toUpperCase(Locale.ROOT)).append("\n");
     }
 
     @Override
