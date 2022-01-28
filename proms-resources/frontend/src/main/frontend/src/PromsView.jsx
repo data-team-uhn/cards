@@ -19,6 +19,7 @@
 import React, { useState, useEffect, useContext } from "react";
 
 import {
+  CircularProgress,
   Typography,
   makeStyles,
 } from "@material-ui/core";
@@ -49,6 +50,10 @@ function PromsView(props) {
       });
     }
   }, [data]);
+
+  if (!questionnaireId || !visitInfo) {
+    return <CircularProgress/>;
+  }
 
   let query = (
 "select distinct dataForm.* " +
