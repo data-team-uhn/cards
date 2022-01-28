@@ -31,7 +31,7 @@ import io.uhndata.cards.serialize.spi.ResourceMarkdownProcessor;
 @Component(service = ResourceMarkdownProcessor.class)
 public class FormToMarkdownProcessor extends AbstractFormToStringSerializer implements ResourceMarkdownProcessor
 {
-    private static final String MD_LINE_END = "  \n";
+    private static final String MD_LINE_BREAK = "  \n";
 
     @Override
     public boolean canProcess(final Resource resource)
@@ -54,7 +54,7 @@ public class FormToMarkdownProcessor extends AbstractFormToStringSerializer impl
     @Override
     void formatTitle(final String title, final StringBuilder result)
     {
-        result.append("# ").append(title).append(MD_LINE_END);
+        result.append("# ").append(title).append('\n');
     }
 
     @Override
@@ -66,25 +66,25 @@ public class FormToMarkdownProcessor extends AbstractFormToStringSerializer impl
     @Override
     void formatMetadataSeparator(final StringBuilder result)
     {
-        result.append("\n\n\n\n");
+        // Don't output additional separation
     }
 
     @Override
     void formatSectionTitle(final String title, final StringBuilder result)
     {
-        result.append("\n\n### ").append(title).append(MD_LINE_END).append('\n');
+        result.append("\n### ").append(title).append('\n');
     }
 
     @Override
     void formatSectionSeparator(final StringBuilder result)
     {
-        result.append("----").append(MD_LINE_END).append('\n');
+        result.append('\n').append("----").append('\n');
     }
 
     @Override
     void formatQuestion(final String question, final StringBuilder result)
     {
-        result.append("\n**").append(question).append("**").append(MD_LINE_END);
+        result.append("\n**").append(question).append("**  ");
     }
 
     @Override
@@ -96,13 +96,13 @@ public class FormToMarkdownProcessor extends AbstractFormToStringSerializer impl
     @Override
     void formatAnswer(final String answer, final StringBuilder result)
     {
-        result.append(answer).append(MD_LINE_END);
+        result.append('\n').append(answer).append('\n');
     }
 
     @Override
     void formatNote(final String note, final StringBuilder result)
     {
-        result.append("**Notes**").append(MD_LINE_END).append(note.replaceAll("\n", MD_LINE_END)).append(MD_LINE_END);
+        result.append("\n**Notes**").append(MD_LINE_BREAK).append(note.replaceAll("\n", MD_LINE_BREAK)).append('\n');
     }
 
     @Override
@@ -125,6 +125,6 @@ public class FormToMarkdownProcessor extends AbstractFormToStringSerializer impl
             .append("<svg style='width: 100%' ")
             .append(image.substring(4))
             .append("</div>")
-            .append(MD_LINE_END);
+            .append('\n');
     }
 }

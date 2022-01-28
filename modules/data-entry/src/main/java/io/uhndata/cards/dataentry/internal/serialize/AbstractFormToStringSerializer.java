@@ -211,7 +211,6 @@ public abstract class AbstractFormToStringSerializer
         if (StringUtils.isNotBlank(note)) {
             formatNote(note, result);
         }
-        result.append("\n\n");
     }
 
     /**
