@@ -29,3 +29,7 @@ set ACL for everyone
     allow   jcr:read    on /Extensions
     allow   jcr:read    on /RedirectURL
 end
+
+set properties on /RedirectURL
+  set RedirectURL to "/Proms.html/Cardio"
+end

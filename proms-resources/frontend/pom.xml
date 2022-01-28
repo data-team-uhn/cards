@@ -39,8 +39,7 @@
           <instructions>
             <Include-Resource>{maven-resources}</Include-Resource>
             <Sling-Initial-Content>
-              SLING-INF/content/libs/cards/PromsHomepage/;path:=/libs/cards/PromsHomepage/;overwrite:=true,
-              SLING-INF/content/RedirectURL/;path:=/;overwriteProperties:=true
+              SLING-INF/content/libs/cards/PromsHomepage/;path:=/libs/cards/PromsHomepage/;overwrite:=true
             </Sling-Initial-Content>
           </instructions>
         </configuration>
