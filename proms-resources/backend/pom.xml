@@ -71,5 +71,10 @@
       <artifactId>cards-dataentry</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>io.uhndata.cards</groupId>
+      <artifactId>cards-permissions</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 </project>
