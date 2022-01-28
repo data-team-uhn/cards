@@ -167,7 +167,7 @@ public final class EmailAlertEventListener implements EventListener
                     // Send this email
                     try {
                         EmailUtils.sendNotificationEmail(this.mailService,
-                            clinicAlertEmail, clinicAlertEmail, emailBody);
+                            clinicAlertEmail, clinicAlertEmail, "DATAPRO Alert: " + this.alertName, emailBody);
                     } catch (MessagingException e) {
                         LOGGER.warn("Failed to send Alert Email");
                     }
