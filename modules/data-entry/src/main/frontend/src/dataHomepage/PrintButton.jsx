@@ -55,7 +55,7 @@ import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
  *
  */
 function PrintButton(props) {
-  const { resourcePath, title, date, breadcrumb, onOpen, onClose, size, variant, buttonText, buttonClass, fullScreen } = props;
+  const { resourcePath, title, date, breadcrumb, onOpen, onClose, size, variant, label, buttonClass, disablePreview, fullScreen } = props;
 
   const [ open, setOpen ] = useState(false);
 
@@ -69,9 +69,12 @@ function PrintButton(props) {
     setOpen(false);
   }
 
+  let buttonText = label || (disablePreview ? "Print" : "Print preview");
+
   return( <>
     <PrintPreview
       open={open}
+      disablePreview={disablePreview}
       fullScreen={fullScreen}
       title={title}
       resourcePath={resourcePath}
@@ -115,7 +118,6 @@ PrintButton.defaultProps = {
   variant: "icon",
   size: "medium",
   fullScreen: true,
-  buttonText: "Print preview"
 }
 
 export default withStyles(QuestionnaireStyle)(withRouter(PrintButton));

@@ -102,7 +102,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function PrintPreview(props) {
-  const { open, resourcePath, title, breadcrumb, date, subtitle, fullScreen, onClose, ...rest } = props;
+  const { open, resourcePath, title, breadcrumb, date, subtitle, disablePreview, fullScreen, onClose, ...rest } = props;
 
   const [ content, setContent ] = useState();
   const [ error, setError ] = useState();
@@ -128,6 +128,13 @@ function PrintPreview(props) {
       .catch(response => setError(true));
   }, [open]);
 
+  useEffect(() => {
+    if (disablePreview && typeof(content) != undefined) {
+      handlePrint();
+      // onClose && onClose();
+    }
+  }, [content]);
+
   let header = (
     (breadcrumb || date) ?
       <div className={classes.header}>
@@ -150,6 +157,7 @@ function PrintPreview(props) {
         </CardContent>
       </Card>
     }
+    { !disablePreview &&
     <Dialog
       open={open}
       className={classes.printPreview}
@@ -183,12 +191,14 @@ function PrintPreview(props) {
         <Button variant="contained" color="primary" onClick={handlePrint} disabled={!!!content}>Print</Button>
       </DialogActions>
     </Dialog>
-  );
+    }
+  </>);
 }
 
 PrintPreview.propTypes = {
   resourcePath: PropTypes.string.isRequired,
   open: PropTypes.bool,
+  disablePreview: PropTypes.bool,
   fullScreen: PropTypes.bool,
   title: PropTypes.string,
   breadcrumb: PropTypes.string,
