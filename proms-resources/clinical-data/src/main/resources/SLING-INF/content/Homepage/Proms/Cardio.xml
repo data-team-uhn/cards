@@ -130,7 +130,7 @@
     },
     {
       "key": "risk",
-      "label": "Risk",
+      "label": "Self-harm risk",
       "format": "string",
       "link" : "dashboard+path"
     }
