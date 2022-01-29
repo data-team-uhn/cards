@@ -158,22 +158,22 @@ function PrintPreview(props) {
       </Card>
     }
     { !disablePreview &&
-    <Dialog
-      open={open}
-      className={classes.printPreview}
-      maxWidth={width}
-      fullWidth
-      fullScreen={isFullScreen}
-      onClose={onClose}
-      {...rest}
-    >
-      { (title || subtitle) &&
-      <DialogTitle>
-        { title && <Typography variant="h4">{title}</Typography> }
-        { subtitle && <Typography variant="overline" color="textSecondary">{subtitle}</Typography> }
-      </DialogTitle>
-      }
-      <DialogContent dividers>
+      <Dialog
+        open={open}
+        className={classes.printPreview}
+        maxWidth={width}
+        fullWidth
+        fullScreen={isFullScreen}
+        onClose={onClose}
+        {...rest}
+      >
+        { (title || subtitle) &&
+        <DialogTitle>
+          { title && <Typography variant="h4">{title}</Typography> }
+          { subtitle && <Typography variant="overline" color="textSecondary">{subtitle}</Typography> }
+        </DialogTitle>
+        }
+        <DialogContent dividers>
         { content ?
           <>
             { header }
@@ -185,12 +185,12 @@ function PrintPreview(props) {
           :
           <CircularProgress />
         }
-      </DialogContent>
-      <DialogActions>
-        <Button variant="contained" onClick={onClose}>Close</Button>
-        <Button variant="contained" color="primary" onClick={handlePrint} disabled={!!!content}>Print</Button>
-      </DialogActions>
-    </Dialog>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="contained" onClick={onClose}>Close</Button>
+          <Button variant="contained" color="primary" onClick={handlePrint} disabled={!!!content}>Print</Button>
+        </DialogActions>
+      </Dialog>
     }
   </>);
 }
