@@ -1,6 +1,6 @@
 {
   "jcr:primaryType": "cards:Extension",
-  "cards:extensionPointId": "proms/dashboard/cardio",
+  "cards:extensionPointId": "proms/dashboard/pmcc",
   "cards:extensionName": "GAD7 View",
   "cards:extensionRenderURL": "asset:proms-homepage.PromsView.js",
   "cards:defaultOrder": 3,

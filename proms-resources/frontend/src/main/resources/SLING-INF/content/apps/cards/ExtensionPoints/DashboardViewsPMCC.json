@@ -1,6 +1,6 @@
 {
   "jcr:primaryType": "cards:ExtensionPoint",
-  "cards:extensionPointId": "proms/dashboard/cardio",
+  "cards:extensionPointId": "proms/dashboard/pmcc",
   "cards:extensionPointName": "PMCC pre-appointment questionnaires dashboard",
   "title" : "Peter Munk Cardiac Centre",
   "description" : "Pre-appointment questionnaires",

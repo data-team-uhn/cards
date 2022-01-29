@@ -3,6 +3,6 @@
   "cards:extensionPointId": "cards/coreUI/sidebar/entry",
   "cards:extensionName": "PMCC",
   "cards:targetURL": "/content.html/Dashboard/PMCC",
-  "cards:icon": "asset:proms-homepage.cardioIcon.js",
+  "cards:icon": "asset:proms-homepage.pmccIcon.js",
   "cards:defaultOrder": 10
 }
