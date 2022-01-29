@@ -28,6 +28,8 @@ import PropTypes from "prop-types";
 
 import {
   Button,
+  Card,
+  CardContent,
   CircularProgress,
   Dialog,
   DialogActions,
@@ -77,28 +79,32 @@ const useStyles = makeStyles(theme => ({
     "& .wmde-markdown h1, .wmde-markdown h2" : {
       borderBottom: "0 none",
     },
-    "@media print" : {
-      "& .MuiDialogContent-root" : {
-        paddingTop: theme.spacing(3),
-      },
-      "& .MuiDialogActions-root" : {
-        display: "none",
-      },
+    "& .MuiDialogContent-dividers" : {
+      borderBottomColor: theme.palette.primary.main,
     },
     "& .MuiDialogActions-root" : {
-        padding: theme.spacing(2),
-      },
+      padding: theme.spacing(2),
+    },
   },
   header : {
     display: "flex",
     justifyContent: "space-between",
+    borderBottom: "1px solid " + theme.palette.divider,
+    marginBottom: theme.spacing(3),
+  },
+  printTarget : {
+    display: "none",
+    "@media print" : {
+      display: "block",
+      padding: theme.spacing(3, 5),
+    }
   },
 }));
 
 function PrintPreview(props) {
   const { open, resourcePath, title, breadcrumb, date, subtitle, fullScreen, onClose, ...rest } = props;
 
-  const [ content, setContent ] = useState(null);
+  const [ content, setContent ] = useState();
   const [ error, setError ] = useState();
 
   const classes = useStyles();
@@ -122,10 +128,30 @@ function PrintPreview(props) {
       .catch(response => setError(true));
   }, [open]);
 
-  return (
+  let header = (
+    (breadcrumb || date) ?
+      <div className={classes.header}>
+        <Typography variant="overline" color="textSecondary">{breadcrumb}</Typography>
+        <Typography variant="overline" color="textSecondary">{date}</Typography>
+      </div>
+    : ""
+  );
+
+  return (<>
+    { open && content &&
+      <Card
+        ref={ref}
+        elevation={0}
+        className={classes.printPreview + " " + classes.printTarget}
+        >
+        <CardContent>
+          { header }
+          <FormattedText>{content}</FormattedText>
+        </CardContent>
+      </Card>
+    }
     <Dialog
-      ref={ref}
-      open={open && !!content}
+      open={open}
       className={classes.printPreview}
       maxWidth={width}
       fullWidth
@@ -133,21 +159,18 @@ function PrintPreview(props) {
       onClose={onClose}
       {...rest}
     >
-      { (breadcrumb || date || title || subtitle) &&
+      { (title || subtitle) &&
       <DialogTitle>
-        { (breadcrumb || date) &&
-          <div className={classes.header}>
-            <Typography variant="overline" color="textSecondary">{breadcrumb}</Typography>
-            <Typography variant="overline" color="textSecondary">{date}</Typography>
-          </div>
-        }
         { title && <Typography variant="h4">{title}</Typography> }
         { subtitle && <Typography variant="overline" color="textSecondary">{subtitle}</Typography> }
       </DialogTitle>
       }
       <DialogContent dividers>
         { content ?
-          <FormattedText>{content}</FormattedText>
+          <>
+            { header }
+            <FormattedText>{content}</FormattedText>
+          </>
           :
           error ?
           <Typography color="error">Print preview cannot be loaded</Typography>
