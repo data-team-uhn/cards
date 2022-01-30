@@ -74,7 +74,7 @@ export function getHierarchy (node, RenderComponent, propsCreator) {
   let hpropsCreator = propsCreator || defaultCreator;
   let props = hpropsCreator(node);
   let output = <React.Fragment>{node.type.label} <HComponent {...props}>{node.identifier}</HComponent></React.Fragment>;
-  if (node["parents"]) {
+  if (node["parents"] && node["parents"].type) {
     let ancestors = getHierarchy(node["parents"], HComponent, propsCreator);
     return <React.Fragment>{ancestors} / {output}</React.Fragment>
   } else {
