@@ -225,6 +225,11 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>description</name>
+					<value>Check all that apply</value>
+					<type>String</type>
+				</property>
+				<property>
 					<name>enableSeparatorDetection</name>
 					<value>False</value>
 					<type>Boolean</type>
