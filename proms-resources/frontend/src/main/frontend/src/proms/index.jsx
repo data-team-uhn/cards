@@ -19,41 +19,18 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import { Router, Route, Redirect, Switch } from "react-router-dom";
-import {
-  AppBar,
-  Link,
-  Toolbar,
-  Typography,
-  makeStyles,
-} from "@material-ui/core";
 import { createBrowserHistory } from "history";
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { appTheme } from "../themePalette.jsx";
 import QuestionnaireSet from "./QuestionnaireSet.jsx";
 import PatientIdentification from "./PatientIdentification.jsx";
 import PromsFooter from "./Footer.jsx";
-
-const useStyles = makeStyles(theme => ({
-  appbar : {
-    margin: theme.spacing(-1, -1, 4),
-    padding: theme.spacing(0, 1),
-    boxSizing: "content-box",
-  },
-  toolbar : {
-    display: "flex",
-    justifyContent: "space-between",
-  },
-  logo : {
-    maxHeight: theme.spacing(4),
-  }
-}));
+import ErrorPage from "../components/ErrorPage.jsx";
 
 function PromsHomepage (props) {
   // Current user and associated subject
   const [ username, setUsername ] = useState("");
   const [ subject, setSubject ] = useState();
-
-  const classes = useStyles();
 
   let onPatientIdentified = (p) => {
     setUsername(`${p.first_name || ""} ${p.last_name || ""}`);
@@ -61,10 +38,14 @@ function PromsHomepage (props) {
   }
 
   if (!("hasSessionSubject" in document.getElementById("proms-container").dataset)) {
-    return (<>
-      <h1>Invalid access</h1>
-      <h2>This page can only be accessed by opening an invitation to fill in a survey.</h2>
-    </>);
+    return (
+      <ErrorPage
+        title="Invalid access"
+        message="This page can only be accessed by opening an invitation to fill in a survey"
+        buttonLink="/content.html/Questionnaires/User"
+        buttonLabel="Go to the dashboard"
+      />
+    );
   }
 
   if (!subject) {
