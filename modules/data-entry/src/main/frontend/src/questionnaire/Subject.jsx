@@ -355,17 +355,17 @@ function SubjectHeader(props) {
   let path = subject?.data?.["@path"] || "/Subjects/" + id;
   let subjectMenu = (
             <div className={classes.actionsMenu}>
+               <PrintButton
+                 resourcePath={path}
+                 breadcrumb={pageTitle}
+                 date={moment(subject?.data['jcr:created']).format("MMM Do YYYY")}
+               />
                <DeleteButton
                  entryPath={path}
                  entryName={title}
                  entryType={label}
                  onComplete={handleDeletion}
                  size="medium"
-               />
-               <PrintButton
-                 resourcePath={path}
-                 breadcrumb={pageTitle}
-                 date={moment(subject?.data['jcr:created']).format("MMM Do YYYY")}
                />
             </div>
   );
@@ -457,17 +457,17 @@ function SubjectMemberInternal (props) {
   let path = data ? data["@path"] : "/Subjects/" + id;
   let avatar = <Avatar className={classes.subjectAvatar}>{label.split(' ').map(s => s?.charAt(0)).join('').toUpperCase()}</Avatar>;
   let action = <>
+                 <PrintButton
+                   resourcePath={path}
+                   breadcrumb={getTextHierarchy(data, true)}
+                   date={moment(data['jcr:created']).format("MMM Do YYYY")}
+                   buttonClass={classes.childSubjectHeaderButton}
+                 />
                  <DeleteButton
                    entryPath={path}
                    entryName={title}
                    entryType={label}
                    onComplete={onDelete}
-                   buttonClass={classes.childSubjectHeaderButton}
-                 />
-                 <PrintButton
-                   resourcePath={path}
-                   breadcrumb={getTextHierarchy(data, true)}
-                   date={moment(data['jcr:created']).format("MMM Do YYYY")}
                    buttonClass={classes.childSubjectHeaderButton}
                  />
                </>
