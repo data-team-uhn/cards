@@ -18,7 +18,7 @@
 //
 import React, { useState } from "react";
 
-import LiveTable from "./dataHomepage/LiveTable.jsx";
+import LiveTable from "../dataHomepage/LiveTable.jsx";
 
 import {
   Avatar,

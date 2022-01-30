@@ -24,7 +24,7 @@ import {
   makeStyles,
 } from "@material-ui/core";
 
-import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import PromsViewInternal from "./PromsViewInternal.jsx";
 
 function PromsView(props) {

@@ -29,7 +29,7 @@ import {
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 
-import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
 // Todo: make the component more scalable once the number of QuestionnaireSet a grows
 // and fetching/displaying them needs pagination

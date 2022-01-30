@@ -22,8 +22,8 @@ import { useLocation } from 'react-router-dom';
 
 import MaterialTable from "material-table";
 
-import { loadExtensions } from "./uiextension/extensionManager";
-import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
+import { loadExtensions } from "../uiextension/extensionManager";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
 import {
   CircularProgress,

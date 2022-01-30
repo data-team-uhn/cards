@@ -38,7 +38,7 @@ import CloseIcon from '@material-ui/icons/Close';
 
 import ToUDialog from "./ToUDialog.jsx";
 
-import DropdownsDatePicker from "./components/DropdownsDatePicker.jsx";
+import DropdownsDatePicker from "../components/DropdownsDatePicker.jsx";
 
 const useStyles = makeStyles(theme => ({
   form : {

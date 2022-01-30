@@ -2,7 +2,7 @@
   "jcr:primaryType": "cards:Extension",
   "cards:extensionPointId": "cards/coreUI/view",
   "cards:extensionName": "Dashboard",
-  "cards:extensionRenderURL": "asset:proms-homepage.Dashboard.js",
+  "cards:extensionRenderURL": "asset:proms-homepage.PromsDashboard.js",
   "cards:targetURL": "/content.html/Dashboard",
   "cards:exactURLMatch": false
 }
