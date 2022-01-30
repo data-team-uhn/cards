@@ -32,4 +32,5 @@ end
 
 set properties on /RedirectURL
   set RedirectURL to "/Proms.html/Cardio"
+  set RedirectLabel to "Go to the dashboard"
 end

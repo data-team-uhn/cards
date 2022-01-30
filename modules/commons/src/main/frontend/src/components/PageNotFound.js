@@ -46,12 +46,13 @@ const useStyles = makeStyles(theme => ({
 export default function PageNotFound() {
   const classes = useStyles();
   const [redirectURL, setRedirectURL] = useState("/content.html/Questionnaires/User");
+  const [redirectLabel, setRedirectLabel] = useState("Go to the dashboard");
 
   // Grab the redirect URL on first rerender
   useEffect(() => {
     fetch("/RedirectURL.json")
       .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => setRedirectURL(json["RedirectURL"]));
+      .then((json) => { setRedirectURL(json["RedirectURL"]); setRedirectLabel(json["RedirectLabel"]); });
   });
 
   return (
@@ -86,7 +87,7 @@ export default function PageNotFound() {
               onClick={() => window.location.href = redirectURL}
             >
               <NavigationIcon className={classes.extendedIcon} />
-              Go to the dashboard
+              {redirectLabel}
             </Fab>
           </Grid>
         </Grid>
