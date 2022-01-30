@@ -210,7 +210,7 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
     @Override
     public boolean isAnswer(final Node node)
     {
-        return isNodeType(node, ANSWER_SECTION_NODETYPE);
+        return isNodeType(node, ANSWER_NODETYPE);
     }
 
     @Override
