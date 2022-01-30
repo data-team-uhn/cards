@@ -20,20 +20,31 @@ package io.uhndata.cards.dataentry.internal.serialize;
 
 import java.util.Locale;
 
-import org.apache.sling.api.adapter.AdapterFactory;
+import org.apache.sling.api.resource.Resource;
 import org.osgi.service.component.annotations.Component;
 
+import io.uhndata.cards.serialize.spi.ResourceTextProcessor;
+
 /**
- * AdapterFactory that converts forms to plain text.
+ * Plain text serializer that can process Forms.
  *
  * @version $Id$
  */
-@Component(
-    service = { AdapterFactory.class },
-    property = { "adaptables=org.apache.sling.api.resource.Resource", "adapters=java.lang.String" })
-public class FormToTextAdapterFactory
-    extends AbstractFormToStringAdapterFactory
+@Component(service = ResourceTextProcessor.class)
+public class FormToTextAdapterFactory extends AbstractFormToStringSerializer implements ResourceTextProcessor
 {
+    @Override
+    public boolean canProcess(final Resource resource)
+    {
+        return resource.isResourceType("cards/Form");
+    }
+
+    @Override
+    public String serialize(Resource resource)
+    {
+        return toString(resource);
+    }
+
     @Override
     void formatSubject(final String subject, final StringBuilder result)
     {
@@ -55,25 +66,25 @@ public class FormToTextAdapterFactory
     @Override
     void formatMetadataSeparator(final StringBuilder result)
     {
-        result.append("\n\n");
+        // Don't output additional separation
     }
 
     @Override
     void formatSectionTitle(final String title, final StringBuilder result)
     {
-        result.append(title.toUpperCase(Locale.ROOT)).append("\n\n");
+        result.append('\n').append(title.toUpperCase(Locale.ROOT)).append('\n');
     }
 
     @Override
     void formatSectionSeparator(final StringBuilder result)
     {
-        result.append("---------------------------------------------").append("\n\n");
+        result.append('\n').append("---------------------------------------------").append('\n');
     }
 
     @Override
     void formatQuestion(final String question, final StringBuilder result)
     {
-        result.append(question).append('\n');
+        result.append('\n').append(question);
     }
 
     @Override
@@ -85,19 +96,19 @@ public class FormToTextAdapterFactory
     @Override
     void formatAnswer(final String answer, final StringBuilder result)
     {
-        result.append("  ").append(answer.replaceAll("\n", "\n  ")).append('\n');
+        result.append('\n').append("  ").append(answer.replaceAll("\n", "\n  ")).append('\n');
     }
 
     @Override
     void formatNote(final String note, final StringBuilder result)
     {
-        result.append("\n  NOTES\n");
+        result.append("\n  NOTES");
         formatAnswer(note, result);
     }
 
     @Override
     void formatPedigree(final String image, final StringBuilder result)
     {
-        result.append("  Pedigree provided\n");
+        formatAnswer("Pedigree provided", result);
     }
 }

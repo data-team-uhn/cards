@@ -18,22 +18,32 @@
  */
 package io.uhndata.cards.dataentry.internal.serialize;
 
-import org.apache.sling.api.adapter.AdapterFactory;
+import org.apache.sling.api.resource.Resource;
 import org.osgi.service.component.annotations.Component;
 
+import io.uhndata.cards.serialize.spi.ResourceMarkdownProcessor;
+
 /**
- * AdapterFactory that converts forms to markdown.
+ * Markdown serializer that can process Forms.
  *
  * @version $Id$
  */
-@Component(
-    service = { AdapterFactory.class },
-    property = { "adaptables=org.apache.sling.api.resource.Resource", "adapters=java.lang.CharSequence" })
-public class FormToMarkdownAdapterFactory
-    extends AbstractFormToStringAdapterFactory
+@Component(service = ResourceMarkdownProcessor.class)
+public class FormToMarkdownProcessor extends AbstractFormToStringSerializer implements ResourceMarkdownProcessor
 {
+    private static final String MD_LINE_BREAK = "  \n";
 
-    private static final String MD_LINE_END = "  \n";
+    @Override
+    public boolean canProcess(final Resource resource)
+    {
+        return resource.isResourceType("cards/Form");
+    }
+
+    @Override
+    public String serialize(Resource resource)
+    {
+        return toString(resource);
+    }
 
     @Override
     void formatSubject(final String subject, final StringBuilder result)
@@ -44,7 +54,7 @@ public class FormToMarkdownAdapterFactory
     @Override
     void formatTitle(final String title, final StringBuilder result)
     {
-        result.append("# ").append(title).append(MD_LINE_END);
+        result.append("# ").append(title).append('\n');
     }
 
     @Override
@@ -56,25 +66,25 @@ public class FormToMarkdownAdapterFactory
     @Override
     void formatMetadataSeparator(final StringBuilder result)
     {
-        result.append("\n\n\n\n");
+        // Don't output additional separation
     }
 
     @Override
     void formatSectionTitle(final String title, final StringBuilder result)
     {
-        result.append("\n\n### ").append(title).append(MD_LINE_END).append('\n');
+        result.append("\n### ").append(title).append('\n');
     }
 
     @Override
     void formatSectionSeparator(final StringBuilder result)
     {
-        result.append("----").append(MD_LINE_END).append('\n');
+        result.append('\n').append("----").append('\n');
     }
 
     @Override
     void formatQuestion(final String question, final StringBuilder result)
     {
-        result.append("\n**").append(question).append("**").append(MD_LINE_END);
+        result.append("\n**").append(question).append("**  ");
     }
 
     @Override
@@ -86,13 +96,13 @@ public class FormToMarkdownAdapterFactory
     @Override
     void formatAnswer(final String answer, final StringBuilder result)
     {
-        result.append(answer).append(MD_LINE_END);
+        result.append('\n').append(answer).append('\n');
     }
 
     @Override
     void formatNote(final String note, final StringBuilder result)
     {
-        result.append("**Notes**").append(MD_LINE_END).append(note.replaceAll("\n", MD_LINE_END)).append(MD_LINE_END);
+        result.append("\n**Notes**").append(MD_LINE_BREAK).append(note.replaceAll("\n", MD_LINE_BREAK)).append('\n');
     }
 
     @Override
@@ -115,6 +125,6 @@ public class FormToMarkdownAdapterFactory
             .append("<svg style='width: 100%' ")
             .append(image.substring(4))
             .append("</div>")
-            .append(MD_LINE_END);
+            .append('\n');
     }
 }

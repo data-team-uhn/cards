@@ -28,7 +28,6 @@ import javax.json.JsonValue;
 import javax.json.JsonValue.ValueType;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.adapter.AdapterFactory;
 import org.apache.sling.api.resource.Resource;
 
 /**
@@ -36,21 +35,10 @@ import org.apache.sling.api.resource.Resource;
  *
  * @version $Id$
  */
-public abstract class AbstractFormToStringAdapterFactory
-    implements AdapterFactory
+public abstract class AbstractFormToStringSerializer
 {
-    @Override
-    public <A> A getAdapter(final Object adaptable, final Class<A> type)
+    protected String toString(final Resource originalResource)
     {
-        if (adaptable == null) {
-            return null;
-        }
-
-        final Resource originalResource = (Resource) adaptable;
-        if (!originalResource.isResourceType("cards/Form")) {
-            return type.cast(originalResource.getPath());
-        }
-
         // The proper serialization depends on "deep", "dereference" and "labels", but we may allow other JSON
         // processors to be enabled/disabled to further customize the data, so we also append the original selectors
         final String processedPath = originalResource.getPath()
@@ -59,7 +47,7 @@ public abstract class AbstractFormToStringAdapterFactory
 
         JsonObject result = resource.adaptTo(JsonObject.class);
         if (result != null) {
-            return type.cast(processForm(result));
+            return processForm(result);
         }
         return null;
     }
@@ -201,12 +189,20 @@ public abstract class AbstractFormToStringAdapterFactory
         if ("hidden".equals(displayMode)) {
             return;
         }
+
         final JsonValue value = answerJson.get("displayedValue");
         final String note = answerJson.containsKey("note") ? answerJson.getString("note") : null;
 
-        formatQuestion(answerJson.getJsonObject("question").getString("text"), result);
+        final String questionText = answerJson.getJsonObject("question").getString("text");
+        final boolean questionHasText = StringUtils.isNotBlank(questionText);
+        if (questionHasText) {
+            formatQuestion(questionText, result);
+        }
+
         if (value == null) {
-            formatAnswer("—", result);
+            if (questionHasText) {
+                formatAnswer("—", result);
+            }
         } else if ("cards:PedigreeAnswer".equals(nodeType)) {
             formatPedigree(((JsonString) value).getString(), result);
         } else {
@@ -215,7 +211,6 @@ public abstract class AbstractFormToStringAdapterFactory
         if (StringUtils.isNotBlank(note)) {
             formatNote(note, result);
         }
-        result.append("\n\n");
     }
 
     /**
