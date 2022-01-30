@@ -38,7 +38,7 @@
         "create service user proms-visit-backend \n set ACL on /Questionnaires,/Subjects,/SubjectTypes \n   allow jcr:read for proms-visit-backend \n end \n set ACL on /Forms \n   allow jcr:read,rep:write,jcr:versionManagement for proms-visit-backend \n end",
         "create service user proms-patient-validation \n set ACL for proms-patient-validation \n   allow jcr:read on /Questionnaires,/Subjects,/SubjectTypes,/Forms \n end",
         "create service user proms-patient-tou \n set ACL for proms-patient-tou \n   allow jcr:read,rep:write,jcr:versionManagement on /Forms \n   allow jcr:read on /Questionnaires,/Subjects \n end",
-        "create group TrustedUsers \n\n set ACL on /Subjects \n   deny rep:write for TrustedUsers \n end",
+        "create group TrustedUsers \n\n set ACL for TrustedUsers \n   deny rep:write on /Subjects \n   deny jcr:all on /Forms restriction(cards:unsubmittedForms) \n end ",
         "create path (sling:Folder) /RedirectURL \n set ACL on /RedirectURL \n   deny jcr:read for everyone \n   allow jcr:read for patient \n end \n set properties on /RedirectURL \n   set RedirectURL to /Proms.html/Cardio \n   set RedirectLabel to \"Go to my surveys\" \n end "
       ]
     },

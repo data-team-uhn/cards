@@ -1,4 +1,8 @@
 {
   "jcr:primaryType": "nt:unstructured",
-  "jcr:reference:score": "/Questionnaires/PHQ9/phq9_results/phq9_score"
+  "jcr:reference:score": "/Questionnaires/PHQ9/phq9_results/phq9_score",
+  "jcr:reference:risk": "/Questionnaires/PHQ9/phq9_survey/phq9_more/phq9_9",
+  "jcr:reference:time": "/Questionnaires/Visit information/time",
+  "jcr:reference:first_name": "/Questionnaires/Patient information/first_name",
+  "jcr:reference:last_name": "/Questionnaires/Patient information/last_name"
 }

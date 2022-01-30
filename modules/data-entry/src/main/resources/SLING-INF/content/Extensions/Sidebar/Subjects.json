@@ -4,5 +4,5 @@
   "cards:extensionName": "Patients",
   "cards:targetURL": "/content.html/Subjects",
   "cards:icon": "asset:cards-dataentry.subjectsIcon.js",
-  "cards:defaultOrder": 1
+  "cards:defaultOrder": 20
 }

@@ -29,8 +29,8 @@ import {
 
 import { Alert, AlertTitle } from "@material-ui/lab";
 
-import FormattedText from "./components/FormattedText.jsx";
-import ResponsiveDialog from "./components/ResponsiveDialog";
+import FormattedText from "../components/FormattedText.jsx";
+import ResponsiveDialog from "../components/ResponsiveDialog";
 
 const useStyles = makeStyles(theme => ({
   touText : {

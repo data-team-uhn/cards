@@ -23,7 +23,7 @@ import {
   makeStyles,
 } from "@material-ui/core";
 
-import { loadExtensions } from "./uiextension/extensionManager";
+import { loadExtensions } from "../uiextension/extensionManager";
 
 async function getFooterExtensions() {
   return loadExtensions("Footer")

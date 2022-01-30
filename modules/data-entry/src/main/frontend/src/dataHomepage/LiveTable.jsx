@@ -323,10 +323,9 @@ function LiveTable(props) {
   }
 
   // Initialize the component: if there's no data loaded yet, fetch the first page
-
-  if (fetchStatus.currentRequestNumber == -1) {
-    fetchData(paginationData, true);
-  }
+  useEffect(() => {
+    if (fetchStatus.currentRequestNumber == -1) fetchData(paginationData, true);
+  }, [fetchStatus.currentRequestNumber]);
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // The rendering code

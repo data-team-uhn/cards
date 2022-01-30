@@ -1,0 +1,8 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "proms/dashboard/pmcc",
+  "cards:extensionName": "SC View",
+  "cards:extensionRenderURL": "asset:proms-homepage.PromsView.js",
+  "cards:defaultOrder": 5,
+  "cards:data": "/Proms/Cardio/Step5"
+}

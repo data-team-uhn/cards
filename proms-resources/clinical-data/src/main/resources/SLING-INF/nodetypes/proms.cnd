@@ -56,6 +56,9 @@
   // An optional frequency for re-taking the questionnaire, in weeks
   - frequency (long)
 
+  //  An optional configuration describing the columns of the livetable that lists the forms corresponding to this questionnaire
+  - view (string)
+
 //-----------------------------------------------------------------------------
 // QuestionnaireSet: a sequence of questionnaires to be filled out
 [cards:QuestionnaireSet] > sling:Folder, mix:referenceable, mix:versionable

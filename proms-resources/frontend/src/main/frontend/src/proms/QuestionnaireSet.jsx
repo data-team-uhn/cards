@@ -41,11 +41,11 @@ import WarningIcon from '@material-ui/icons/Warning';
 import moment from "moment";
 import * as jdfp from "moment-jdateformatparser";
 
-import Form from "./questionnaire/Form.jsx";
+import Form from "../questionnaire/Form.jsx";
 import PromsHeader from "./Header.jsx";
-import DateQuestionUtilities from "./questionnaire/DateQuestionUtilities";
+import DateQuestionUtilities from "../questionnaire/DateQuestionUtilities";
 
-import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
 const useStyles = makeStyles(theme => ({
   mainContainer: {

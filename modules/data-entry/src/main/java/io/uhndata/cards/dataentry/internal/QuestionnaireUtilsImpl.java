@@ -50,6 +50,34 @@ public final class QuestionnaireUtilsImpl extends AbstractNodeUtils implements Q
     }
 
     @Override
+    public boolean belongs(final Node element, final Node questionnaire)
+    {
+        try {
+            if (element != null && questionnaire != null && isQuestionnaire(questionnaire)) {
+                return element.getPath().startsWith(questionnaire.getPath() + "/");
+            }
+        } catch (RepositoryException e) {
+            // Not critical, just ignore it
+        }
+        return false;
+    }
+
+    @Override
+    public Node getOwnerQuestionnaire(final Node element)
+    {
+        try {
+            Node target = element;
+            while (target != null && !isQuestionnaire(target)) {
+                target = target.getParent();
+            }
+            return target;
+        } catch (RepositoryException e) {
+            // Not critical, just return null
+        }
+        return null;
+    }
+
+    @Override
     public Node getSection(final String identifier)
     {
         final Node result = getNodeByIdentifier(identifier, getSession(this.rrf));
