@@ -1,0 +1,8 @@
+{
+  "jcr:primaryType": "cards:ExtensionPoint",
+  "cards:extensionPointId": "proms/dashboard/pmcc",
+  "cards:extensionPointName": "PMCC-ACHD pre-appointment questionnaires dashboard",
+  "title" : "Adult Congenital Heart Disease Clinic",
+  "description" : "Peter Munk Cardiac Centre",
+  "surveys" : "Cardio"
+}
