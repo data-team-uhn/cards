@@ -29,6 +29,7 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     alignItems: 'center',
     padding: theme.spacing(12, 3, 3),
+    textAlign: "center",
     "& .MuiGrid-item" : {
       textAlign: "center",
     },
@@ -47,7 +48,7 @@ export default function ErrorPage(props) {
 
   return (
     <MuiThemeProvider theme={appTheme}>
-      <Paper className={`${classes.paper}`} elevation={0}>
+      <Paper className={classes.paper} elevation={0}>
         <Grid
           container
           direction="column"
@@ -59,7 +60,7 @@ export default function ErrorPage(props) {
             <img src="/libs/cards/resources/logo_light_bg.png" alt="this.state.title" className={classes.logo}/>
           </Grid>
           <Grid item>
-            {errorCode && <Typography variant="h1" color={errorCodeColor || "error"}>
+            {errorCode && <Typography variant="h1" color={errorCodeColor || "primary"}>
               {errorCode}
             </Typography> }
             <Typography variant="h1" color={titleColor || "primary"} gutterBottom>
