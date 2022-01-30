@@ -96,7 +96,7 @@ const useStyles = makeStyles(theme => ({
     display: "none",
     "@media print" : {
       display: "block",
-      padding: theme.spacing(3, 5),
+      padding: theme.spacing(2),
     }
   },
 }));
