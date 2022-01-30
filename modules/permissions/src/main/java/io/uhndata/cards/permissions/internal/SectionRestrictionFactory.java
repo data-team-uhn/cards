@@ -33,15 +33,15 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import io.uhndata.cards.permissions.spi.RestrictionFactory;
 
 /**
- * Factory for {@link QuestionRestrictionPattern}.
+ * Factory for {@link SectionRestrictionPattern}.
  *
  * @version $Id$
  */
 @Component(immediate = true)
-public class QuestionRestrictionFactory implements RestrictionFactory
+public class SectionRestrictionFactory implements RestrictionFactory
 {
     /** @see #getName */
-    public static final String NAME = "cards:question";
+    public static final String NAME = "cards:section";
 
     @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,
         policyOption = ReferencePolicyOption.GREEDY)
@@ -54,7 +54,7 @@ public class QuestionRestrictionFactory implements RestrictionFactory
         if (this.rrf != null && this.rrf.getThreadResourceResolver() != null) {
             session = this.rrf.getThreadResourceResolver().adaptTo(Session.class);
         }
-        return new QuestionRestrictionPattern(value.getValue(Type.STRINGS), session);
+        return new SectionRestrictionPattern(value.getValue(Type.STRINGS), session);
     }
 
     @Override
