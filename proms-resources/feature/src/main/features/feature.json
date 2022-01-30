@@ -34,11 +34,12 @@
     "org.apache.sling.jcr.repoinit.RepositoryInitializer~proms":{
       "service.ranking:Integer":300,
       "scripts": [
-        "create user patient \n set ACL for patient \n     allow jcr:read on /Questionnaires,/SubjectTypes \n     deny jcr:all on /Questionnaires restriction(rep:itemNames,audit_intro,audit_results,eq5d_results,gad7_intro,gad7_results,phq9_intro,phq9_results) \n     allow jcr:read,jcr:write,jcr:nodeTypeManagement,jcr:versionManagement on /Forms restriction(cards:sessionSubject) \n     allow jcr:read on /Subjects restriction(cards:sessionSubject) \n     deny jcr:modifyProperties on /Forms restriction(rep:itemNames,subject,questionnaire) \n end",
+        "create user patient \n set ACL for patient \n     allow jcr:read on /Questionnaires,/SubjectTypes \n     deny jcr:all on /Questionnaires restriction(rep:itemNames,audit_intro,audit_results,eq5d_results,gad7_intro,gad7_results,phq9_intro,phq9_results) \n     allow jcr:read,jcr:write,jcr:nodeTypeManagement,jcr:versionManagement on /Forms restriction(cards:sessionSubject) \n     allow jcr:read on /Subjects restriction(cards:sessionSubject) \n     deny jcr:modifyProperties on /Forms restriction(rep:itemNames,subject,questionnaire) \n     deny jcr:all on /content \n end",
         "create service user proms-visit-backend \n set ACL on /Questionnaires,/Subjects,/SubjectTypes \n   allow jcr:read for proms-visit-backend \n end \n set ACL on /Forms \n   allow jcr:read,rep:write,jcr:versionManagement for proms-visit-backend \n end",
         "create service user proms-patient-validation \n set ACL for proms-patient-validation \n   allow jcr:read on /Questionnaires,/Subjects,/SubjectTypes,/Forms \n end",
         "create service user proms-patient-tou \n set ACL for proms-patient-tou \n   allow jcr:read,rep:write,jcr:versionManagement on /Forms \n   allow jcr:read on /Questionnaires,/Subjects \n end",
-        "create group TrustedUsers \n\n set ACL on /Subjects \n   deny rep:write for TrustedUsers \n end"
+        "create group TrustedUsers \n\n set ACL on /Subjects \n   deny rep:write for TrustedUsers \n end",
+        "create path (sling:Folder) /RedirectURL \n set ACL on /RedirectURL \n   deny jcr:read for everyone \n   allow jcr:read for patient \n end \n set properties on /RedirectURL \n   set RedirectURL to /Proms.html/Cardio \n   set RedirectLabel to \"Go to my surveys\" \n end "
       ]
     },
     "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~proms":{

@@ -21,9 +21,16 @@ create path (sling:Folder) /libs/cards
 create path (sling:Folder) /libs/cards/resources
 create path (sling:Folder) /apps/cards
 create path (sling:Folder) /Extensions
+create path (sling:Folder) /RedirectURL
 
 set ACL for everyone
     allow   jcr:read    on /libs/cards
     allow   jcr:read    on /apps/cards
     allow   jcr:read    on /Extensions
+    allow   jcr:read    on /RedirectURL
+end
+
+set properties on /RedirectURL
+  set RedirectURL to "/Proms.html/Cardio"
+  set RedirectLabel to "Go to the dashboard"
 end

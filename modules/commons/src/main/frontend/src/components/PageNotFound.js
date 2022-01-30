@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Fab, Grid, Paper, Typography, makeStyles } from '@material-ui/core';
 import { MuiThemeProvider } from '@material-ui/core/styles';
@@ -45,6 +45,15 @@ const useStyles = makeStyles(theme => ({
 
 export default function PageNotFound() {
   const classes = useStyles();
+  const [redirectURL, setRedirectURL] = useState("/content.html/Questionnaires/User");
+  const [redirectLabel, setRedirectLabel] = useState("Go to the dashboard");
+
+  // Grab the redirect URL on first rerender
+  useEffect(() => {
+    fetch("/RedirectURL.json")
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((json) => { setRedirectURL(json["RedirectURL"]); setRedirectLabel(json["RedirectLabel"]); });
+  });
 
   return (
     <MuiThemeProvider theme={appTheme}>
@@ -75,10 +84,10 @@ export default function PageNotFound() {
             <Fab
               variant="extended"
               color="primary"
-              onClick={() => window.location.href = "/content.html/Questionnaires/User"}
+              onClick={() => window.location.href = redirectURL}
             >
               <NavigationIcon className={classes.extendedIcon} />
-              Go to the dashboard
+              {redirectLabel}
             </Fab>
           </Grid>
         </Grid>
