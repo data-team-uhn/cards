@@ -28,43 +28,43 @@ import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.security.authorization.restriction.RestrictionPattern;
 
 /**
- * A restriction that makes a permissions entry only be valid on a node of type Answer for a specific Question.
+ * A restriction that makes a permissions entry only be valid on a node of type AnswerSection for a specific Section.
  *
  * @version $Id$
  */
-public class QuestionRestrictionPattern implements RestrictionPattern
+public class SectionRestrictionPattern implements RestrictionPattern
 {
     private final Session session;
 
-    private final Iterable<String> targetQuestions;
+    private final Iterable<String> targetSections;
 
     /**
      * Constructor which receives the configured restriction.
      *
-     * @param values paths to specific question for which the rule applies
-     * @param session current session, needed for dereferencing the current node's question
+     * @param values paths to specific sections for which the rule applies
+     * @param session current session, needed for dereferencing the current node's section
      */
-    public QuestionRestrictionPattern(final Iterable<String> values, final Session session)
+    public SectionRestrictionPattern(final Iterable<String> values, final Session session)
     {
-        this.targetQuestions = values;
+        this.targetSections = values;
         this.session = session;
     }
 
     @Override
     public boolean matches(final Tree tree, final PropertyState property)
     {
-        // This restriction only applies to Answers.
-        // If this is not an Answer node, we do not care.
-        if (!tree.hasProperty("sling:resourceSuperType")
-            || !tree.getProperty("sling:resourceSuperType").getValue(Type.STRING).equals("cards/Answer")) {
+        // This restriction only applies to AnswerSections.
+        // If this is not an AnswerSection node, we do not care.
+        if (!tree.hasProperty("sling:resourceType")
+            || !tree.getProperty("sling:resourceType").getValue(Type.STRING).equals("cards/AnswerSection")) {
             return false;
         }
         try {
-            // Check if the question for this answer is one of the ones specified in the restriction
-            final String answerQuestionPath =
-                this.session.getNodeByIdentifier(tree.getProperty("question").getValue(Type.REFERENCE)).getPath();
-            for (final String targetQuestion : this.targetQuestions) {
-                if (StringUtils.equals(targetQuestion, answerQuestionPath)) {
+            // Check if the section for this AnswerSection is one of the ones specified in the restriction
+            final String sectionPath =
+                this.session.getNodeByIdentifier(tree.getProperty("section").getValue(Type.REFERENCE)).getPath();
+            for (final String targetSection : this.targetSections) {
+                if (StringUtils.equals(targetSection, sectionPath)) {
                     return true;
                 }
             }

@@ -262,10 +262,11 @@ Objectively determine initial symptoms severity and monitor symptom changes/effe
 			<property>
 				<name>expression</name>
 				<value>
+					var score = (+@{gad7_1:-0} + +@{gad7_2:-0} + +@{gad7_3:-0} + +@{gad7_4:-0} + +@{gad7_5:-0} + +@{gad7_6:-0} + +@{gad7_7:-0});
 					return (
-						"Your Score: " + @{gad7_score}
+						"Your Score: " + score
 						+ "\n\n" +
-						( 10 >= @{gad7_score} ? "If your symptoms result in a score of 0 - 10, consider accessing self-care resources available on [Peter Munk Cardiac Centre's website](https://www.uhn.ca/PMCC/Clinics/Adult_Congenital_Cardiac#information) for how to manage those symptoms."
+						( 10 >= score ? "If your symptoms result in a score of 0 - 10, consider accessing self-care resources available on [Peter Munk Cardiac Centre's website](https://www.uhn.ca/PMCC/Clinics/Adult_Congenital_Cardiac#information) for how to manage those symptoms."
 							: "If your symptoms result in a score of 11 or more, make sure to bring them up to your provider at your next appointment as further assessment of anxiety symptoms may be required. Note that if your symptoms are severe (for example 15 - 21), you should consider telling your health care team right away or go to the closest emergency department."
 						)
 					)

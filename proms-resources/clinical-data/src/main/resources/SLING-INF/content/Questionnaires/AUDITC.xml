@@ -160,12 +160,13 @@ disorder. AUDIT-C has been validated in mental health and primary care clinics.
 			<property>
 				<name>expression</name>
 				<value>
-					var maleText = 4 >= @{audit_score} ? "If your symptoms result in a score of 0 - 4, consider accessing self-care resources available on [Peter Munk Cardiac Centre's website](https://www.uhn.ca/PMCC/Clinics/Adult_Congenital_Cardiac#information) for how to manage those symptoms."
+					var score = (+@{audit_1:-0} + +@{audit_2:-0} + +@{audit_3:-0});
+					var maleText = 4 >= score ? "If your symptoms result in a score of 0 - 4, consider accessing self-care resources available on [Peter Munk Cardiac Centre's website](https://www.uhn.ca/PMCC/Clinics/Adult_Congenital_Cardiac#information) for how to manage those symptoms."
 							: "If your symptoms result in a score of 5 or more, make sure to bring them up to your provider at your next appointment as further assessment of alcohol use may be required. Note that if your symptoms are severe (for example 8 - 12), you should consider telling your health care team right away or go to the closest emergency department.";
-					var femaleText = 3 >= @{audit_score} ? "If your symptoms result in a score of 0 - 3, consider accessing self-care resources available on [Peter Munk Cardiac Centre's website](https://www.uhn.ca/PMCC/Clinics/Adult_Congenital_Cardiac#information) for how to manage those symptoms."
+					var femaleText = 3 >= score ? "If your symptoms result in a score of 0 - 3, consider accessing self-care resources available on [Peter Munk Cardiac Centre's website](https://www.uhn.ca/PMCC/Clinics/Adult_Congenital_Cardiac#information) for how to manage those symptoms."
 							: "If your symptoms result in a score of 4 or more, make sure to bring them up to your provider at your next appointment as further assessment of alcohol use may be required. Note that if your symptoms are severe (for example 8 - 12), you should consider telling your health care team right away or go to the closest emergency department.";
 					return (
-						"Your Score: " + @{audit_score}
+						"Your Score: " + score
 						+ "\n\n" +
 						(
 							"male" === @{sex:-""}.toLowerCase() ? maleText
