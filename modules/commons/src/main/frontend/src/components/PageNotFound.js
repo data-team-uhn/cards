@@ -18,33 +18,9 @@
 //
 import React, { useEffect, useState } from 'react';
 
-import { Fab, Grid, Paper, Typography, makeStyles } from '@material-ui/core';
-import { MuiThemeProvider } from '@material-ui/core/styles';
-import NavigationIcon from '@material-ui/icons/Navigation';
-import { lightBlue } from '@material-ui/core/colors';
-import { appTheme } from "../themePalette.jsx";
-import { useHistory } from 'react-router-dom';
-
-const useStyles = makeStyles(theme => ({
-  paper: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: theme.spacing(12, 3, 3),
-    "& .MuiGrid-item" : {
-      textAlign: "center",
-    },
-  },
-  logo: {
-    maxWidth: "240px",
-  },
-  extendedIcon: {
-    marginRight: theme.spacing(1),
-  },
-}));
+import ErrorPage from './ErrorPage.jsx';
 
 export default function PageNotFound() {
-  const classes = useStyles();
   const [redirectURL, setRedirectURL] = useState("/content.html/Questionnaires/User");
   const [redirectLabel, setRedirectLabel] = useState("Go to the dashboard");
 
@@ -56,42 +32,12 @@ export default function PageNotFound() {
   });
 
   return (
-    <MuiThemeProvider theme={appTheme}>
-      <Paper className={`${classes.paper}`} elevation={0}>
-        <Grid
-          container
-          direction="column"
-          spacing={7}
-          alignItems="center"
-          alignContent="center"
-          className={classes.notFoundContainer}
-        >
-          <Grid item>
-            <img src="/libs/cards/resources/logo_light_bg.png" alt="this.state.title" className={classes.logo}/>
-          </Grid>
-          <Grid item>
-            <Typography variant="h1" color="primary">
-              404
-            </Typography>
-            <Typography variant="h1" color="primary" gutterBottom>
-              Not found
-            </Typography>
-            <Typography variant="subtitle1" color="textSecondary">
-              The page you are trying to reach does not exist
-            </Typography>
-          </Grid>
-          <Grid item>
-            <Fab
-              variant="extended"
-              color="primary"
-              onClick={() => window.location.href = redirectURL}
-            >
-              <NavigationIcon className={classes.extendedIcon} />
-              {redirectLabel}
-            </Fab>
-          </Grid>
-        </Grid>
-      </Paper>
-    </MuiThemeProvider>
+    <ErrorPage
+      errorCode="404"
+      title="Not found"
+      message="The page you are trying to reach does not exist"
+      buttonLink={redirectURL}
+      buttonLabel={redirectLabel}
+    />
   );
 }
