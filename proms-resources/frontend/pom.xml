@@ -42,6 +42,7 @@
               SLING-INF/content/libs/cards/PromsHomepage/;path:=/libs/cards/PromsHomepage/;overwrite:=true,
               SLING-INF/content/apps/cards/ExtensionPoints/;path:=/apps/cards/ExtensionPoints/;overwrite:=true,
               SLING-INF/content/Extensions/DashboardViews/;path:=/Extensions/DashboardViews/;overwrite:=true,
+              SLING-INF/content/Extensions/PendingUsersView/;path:=/Extensions/PendingUsersView/;overwrite:=true,
               SLING-INF/content/Extensions/Views/;path:=/Extensions/Views/;overwrite:=true,
               SLING-INF/content/Extensions/Sidebar/;path:=/Extensions/Sidebar/;overwrite:=true,
               SLING-INF/content/Extensions/Footer;path:=/Extensions/Footer;overwrite:=true,
