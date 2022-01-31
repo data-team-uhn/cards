@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package io.uhndata.cards.emailnotifications;
+package io.uhndata.cards.proms.emailnotifications;
 
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;

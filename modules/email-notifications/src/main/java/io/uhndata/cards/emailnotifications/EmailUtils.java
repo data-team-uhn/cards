@@ -19,7 +19,6 @@
 
 package io.uhndata.cards.emailnotifications;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.text.StringSubstitutor;
@@ -39,22 +38,20 @@ public final class EmailUtils
     }
 
     /**
-     * Generates an email by completing a template with a surveys links.
+     * Generates an email by completing a template with substituted strings.
      *
      * @param emailTemplate the template for the body of the email
-     * @param surveysLink the link to the patient's surveys to be completed
+     * @param valuesMap the list of strings to be substituted
      * @return the body of the email ready to be sent
      */
-    public static String renderEmailTemplate(String emailTemplate, String surveysLink)
+    public static String renderEmailTemplate(String emailTemplate, Map<String, String> valuesMap)
     {
-        Map<String, String> valuesMap = new HashMap<String, String>();
-        valuesMap.put("surveysLink", surveysLink);
         StringSubstitutor sub = new StringSubstitutor(valuesMap);
         return sub.replace(emailTemplate);
     }
 
     /**
-     * Sends a notification email.
+     * Sends an email.
      *
      * @param mailService the MailService object which sends the email
      * @param toAddress the destination email address

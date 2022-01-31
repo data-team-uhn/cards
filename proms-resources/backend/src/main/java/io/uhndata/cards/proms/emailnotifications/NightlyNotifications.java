@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package io.uhndata.cards.emailnotifications;
+package io.uhndata.cards.proms.emailnotifications;
 
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.commons.messaging.mail.MailService;

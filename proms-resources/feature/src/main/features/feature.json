@@ -28,6 +28,22 @@
     {
       "id":"${project.groupId}:proms-backend:${project.version}",
       "start-order":"26"
+    },
+    {
+      "id":"commons-beanutils:commons-beanutils:1.9.4",
+      "start-order":"25"
+    },
+    {
+      "id":"commons-digester:commons-digester:2.1",
+      "start-order":"25"
+    },
+    {
+      "id":"commons-validator:commons-validator:1.7",
+      "start-order":"25"
+    },
+    {
+      "id":"${project.groupId}:cards-token-authentication:${project.version}",
+      "start-order":"25"
     }
   ],
   "configurations":{
@@ -46,7 +62,8 @@
       "user.mapping":[
         "io.uhndata.cards.proms-backend:VisitFormsPreparation=[proms-visit-backend]",
         "io.uhndata.cards.proms-backend:validateCredentials=[proms-patient-validation]",
-        "io.uhndata.cards.proms-backend:tou=[proms-patient-tou]"
+        "io.uhndata.cards.proms-backend:tou=[proms-patient-tou]",
+        "io.uhndata.cards.proms-backend:EmailNotifications=[sling-readall]"
       ]
     }
   }
