@@ -18,7 +18,7 @@
 //
 
 import React, {
-  forwardRef,
+  useRef,
   useState,
   useEffect,
   useContext
@@ -28,6 +28,8 @@ import PropTypes from "prop-types";
 
 import {
   Button,
+  Card,
+  CardContent,
   CircularProgress,
   Dialog,
   DialogActions,
@@ -42,18 +44,20 @@ import { useTheme } from '@material-ui/core/styles';
 
 import FormattedText from "../components/FormattedText.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+import { useReactToPrint } from 'react-to-print';
 
 // Component that renders a form in a format/style ready for printing.
 // Internally, it queries and renders the markdown (.md) export of the form.
 //
 // Required props:
 // resourcePath: String specifying the path of the form to print
-// title: String specifyingthe title to associate with the rendered content.
-//   Note: the .md export doesn't generate a title.
 //
 // Optional props:
+// title: String specifying the title to associate with the rendered content.
+//   Note: the .md export doesn't generate a title.
 // breadcrumb: String displayed in small fonts above the title, providing some context for the printed resource.
 //   Example usage: the formatted identifier of the subject for this resource.
+// date: String displayed with breadcrumb in the header above the title, providing the time context for the printed resource
 // subtitle: String displayed in small fonts under the title, expected to be a relevant date or description 
 // fullScreen: Boolean specifying if the preview is full screen or displayed as a modal
 // onClose: Callback for closing the dialog
@@ -75,23 +79,30 @@ const useStyles = makeStyles(theme => ({
     "& .wmde-markdown h1, .wmde-markdown h2" : {
       borderBottom: "0 none",
     },
-    "@media print" : {
-      "& .MuiDialogContent-root" : {
-        paddingTop: theme.spacing(3),
-      },
-      "& .MuiDialogActions-root" : {
-        display: "none",
-      },
-    }
+    "& .MuiDialogContent-dividers" : {
+      borderBottomColor: theme.palette.primary.main,
+    },
+    "& .MuiDialogActions-root" : {
+      padding: theme.spacing(2),
+    },
   },
   header : {
     display: "flex",
     justifyContent: "space-between",
+    borderBottom: "1px solid " + theme.palette.divider,
+    marginBottom: theme.spacing(3),
+  },
+  printTarget : {
+    display: "none",
+    "@media print" : {
+      display: "block",
+      padding: theme.spacing(2),
+    }
   },
 }));
 
-const PrintPreview = forwardRef((props, ref) => {
-  const { resourcePath, title, breadcrumb, date, subtitle, fullScreen, onClose, ...rest } = props;
+function PrintPreview(props) {
+  const { open, resourcePath, title, breadcrumb, date, subtitle, disablePreview, fullScreen, onClose, ...rest } = props;
 
   const [ content, setContent ] = useState();
   const [ error, setError ] = useState();
@@ -104,55 +115,91 @@ const PrintPreview = forwardRef((props, ref) => {
 
   let globalLoginDisplay = useContext(GlobalLoginContext);
 
+  const ref = useRef();
+
+  const handlePrint = useReactToPrint({
+    content: () => ref.current,
+  });
+
   useEffect(() => {
-    fetchWithReLogin(globalLoginDisplay, resourcePath + '.md')
+    open && fetchWithReLogin(globalLoginDisplay, resourcePath + '.md')
       .then((response) => response.ok ? response.text() : Promise.reject(response))
       .then(setContent)
       .catch(response => setError(true));
-  }, []);
+  }, [open]);
 
-  return (
-    <Dialog
-      ref={ref}
-      className={classes.printPreview}
-      maxWidth={width}
-      fullWidth
-      fullScreen={isFullScreen}
-      onClose={onClose}
-      {...rest}
-    >
-      { (breadcrumb || date || title || subtitle) &&
-      <DialogTitle>
-        { (breadcrumb || date) &&
-          <div className={classes.header}>
-            <Typography variant="overline" color="textSecondary">{breadcrumb}</Typography>
-            <Typography variant="overline" color="textSecondary">{date}</Typography>
-          </div>
-        }
-        { title && <Typography variant="h4">{title}</Typography> }
-        { subtitle && <Typography variant="overline" color="textSecondary">{subtitle}</Typography> }
-      </DialogTitle>
-      }
-      <DialogContent dividers>
-        { content ?
+  useEffect(() => {
+    if (disablePreview && typeof(content) != undefined) {
+      handlePrint();
+      // onClose && onClose();
+    }
+  }, [content]);
+
+  let header = (
+    (breadcrumb || date) ?
+      <div className={classes.header}>
+        <Typography variant="overline" color="textSecondary">{breadcrumb}</Typography>
+        <Typography variant="overline" color="textSecondary">{date}</Typography>
+      </div>
+    : ""
+  );
+
+  return (<>
+    { open && content &&
+      <Card
+        ref={ref}
+        elevation={0}
+        className={classes.printPreview + " " + classes.printTarget}
+        >
+        <CardContent>
+          { header }
           <FormattedText>{content}</FormattedText>
+        </CardContent>
+      </Card>
+    }
+    { !disablePreview &&
+      <Dialog
+        open={open}
+        className={classes.printPreview}
+        maxWidth={width}
+        fullWidth
+        fullScreen={isFullScreen}
+        onClose={onClose}
+        {...rest}
+      >
+        { (title || subtitle) &&
+        <DialogTitle>
+          { title && <Typography variant="h4">{title}</Typography> }
+          { subtitle && <Typography variant="overline" color="textSecondary">{subtitle}</Typography> }
+        </DialogTitle>
+        }
+        <DialogContent dividers>
+        { content ?
+          <>
+            { header }
+            <FormattedText>{content}</FormattedText>
+          </>
           :
           error ?
           <Typography color="error">Print preview cannot be loaded</Typography>
           :
           <CircularProgress />
         }
-      </DialogContent>
-      <DialogActions>
-        <Button variant="contained" onClick={onClose}>Close</Button>
-        <Button variant="contained" color="primary" onClick={() => {window.print()}} disabled={!!!content}>Print</Button>
-      </DialogActions>
-    </Dialog>
-  );
-})
+        </DialogContent>
+        <DialogActions>
+          <Button variant="contained" onClick={onClose}>Close</Button>
+          <Button variant="contained" color="primary" onClick={handlePrint} disabled={!!!content}>Print</Button>
+        </DialogActions>
+      </Dialog>
+    }
+  </>);
+}
 
 PrintPreview.propTypes = {
   resourcePath: PropTypes.string.isRequired,
+  open: PropTypes.bool,
+  disablePreview: PropTypes.bool,
+  fullScreen: PropTypes.bool,
   title: PropTypes.string,
   breadcrumb: PropTypes.string,
   date: PropTypes.string,
