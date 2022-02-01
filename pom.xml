@@ -554,7 +554,7 @@
         <executions>
           <execution>
             <id>local-deploy</id>
-            <phase>install</phase>
+            <phase>verify</phase>
             <goals>
               <goal>deploy</goal>
             </goals>
