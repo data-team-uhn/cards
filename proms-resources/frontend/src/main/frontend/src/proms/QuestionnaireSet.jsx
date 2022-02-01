@@ -442,8 +442,10 @@ function QuestionnaireSet(props) {
 
   let appointmentAlert = () => {
     const time = appointmentDate();
-    const location = getVisitInformation("location");
-    const provider = getVisitInformation("provider");
+    let location = getVisitInformation("location");
+    let provider = getVisitInformation("provider");
+    location = location && location.length > 1 ? location.join(", ") : location;
+    provider = provider && provider.length > 1 ? provider.join(", ") : provider;
     return (time || location || provider) ?
       <Alert severity="info">
         <AlertTitle>Upcoming appointment</AlertTitle>
