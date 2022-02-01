@@ -95,16 +95,18 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function QuestionnaireSet(props) {
-  const { id, subject, username, contentOffset } = props;
+  const { subject, username, contentOffset } = props;
 
+  // Identifier of the questionnaire set used for the visit
+  const [ id, setId ] = useState();
   // Questionnaire set title, to display to the patient user
   const [ title, setTitle ] = useState();
-  // The ids of the questionnaires in this set
+  // Map questionnaire id -> title, path and optional time estimate (in minutes) for filling it out
+  const [ questionnaires, setQuestionnaires ] = useState();
+  // The ids of the questionnaires in this set, in the order they must be filled in
   const [ questionnaireSetIds, setQuestionnaireSetIds ] = useState();
   // The ids of the questionnaires displayed to the patient
   const [ questionnaireIds, setQuestionnaireIds ] = useState();
-  // Map questionnaire id -> title, path and optional time estimate (in minutes) for filling it out
-  const [ questionnaires, setQuestionnaires ] = useState();
 
   // Data already associated with the subject
   const [ subjectData, setSubjectData ] = useState();
@@ -216,26 +218,17 @@ function QuestionnaireSet(props) {
   }, [isComplete, isSubmitted])
 
   const loadExistingData = () => {
-    if (!questionnaireSetIds || !questionnaires) return;
     setComplete(undefined);
     fetchWithReLogin(globalLoginDisplay, `${subject}.data.deep.json`)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
-        let ids = [];
-        let data = {};
-        questionnaireSetIds.forEach(q => {
-          if (json[questionnaires?.[q]?.title]?.[0]?.['jcr:primaryType'] == "cards:Form") {
-            data[q] = json[questionnaires?.[q]?.title][0];
-            ids.push(q);
-          }
-        });
-        setVisitInformation(json[visitInformationFormTitle]?.[0] || {});
-        // If questionnaireIds is defined, this is not the first time we're loading the data.
-        // The purpose of loading it a second time is to check the completion status of forms.
-        // In that case, we do not reassign questionnaireIds to avoid loading this data in a loop
-        !questionnaireIds && setQuestionnaireIds(ids);
-        setSubjectData(data);
-        setSubjectDataLoadCount((counter) => counter+1)
+        if (!questionnaires) {
+          setSubjectData(json);
+          setVisitInformation(json[visitInformationFormTitle]?.[0] || {});
+          setId(Object.values(json[visitInformationFormTitle]?.[0]).find(o => o?.question?.text == "Surveys")?.value);
+          return;
+        }
+        selectDataForQuestionnaireSet(json, questionnaires, questionnaireSetIds);
       })
       .catch((response) => {
         setError(`Loading the visit failed with error code ${response.status}: ${response.statusText}`);
@@ -257,21 +250,13 @@ function QuestionnaireSet(props) {
         } else {
           setError(`Loading the survey failed with error code ${response.status}: ${response.statusText}`);
         }
-        setQuestionnaireSetIds(null);
+        setQuestionnaires(null);
       });
   }
 
   let parseQuestionnaireSet = (json) => {
     // Extract the title
     setTitle(json.name);
-
-    // Extract the ids
-    setQuestionnaireSetIds(
-      Object.values(json || {})
-        .filter(value => value['jcr:primaryType'] == 'cards:QuestionnaireRef')
-        .sort((a, b) => (a.order - b.order))
-        .map(value => value.questionnaire['@name'])
-    );
 
     // Map the relevant questionnaire info
     let data = {};
@@ -285,6 +270,31 @@ function QuestionnaireSet(props) {
         'estimate': value.estimate
        }});
     setQuestionnaires(data);
+
+    let qids = Object.values(json || {})
+      .filter(value => value['jcr:primaryType'] == 'cards:QuestionnaireRef')
+      .sort((a, b) => (a.order - b.order))
+      .map(value => value.questionnaire['@name'])
+    setQuestionnaireSetIds(qids);
+
+    selectDataForQuestionnaireSet(subjectData, data, qids);
+  };
+
+  let selectDataForQuestionnaireSet = (subjectData, questionnaireSet, questionnaireSetIds) => {
+    let ids = [];
+    let data = {};
+    questionnaireSetIds.forEach(q => {
+      if (subjectData[questionnaireSet.[q]?.title]?.[0]?.['jcr:primaryType'] == "cards:Form") {
+        data[q] = subjectData[questionnaireSet?.[q]?.title][0];
+        ids.push(q);
+      }
+    });
+    // If questionnaireIds is defined, this is not the first time we're loading the data.
+    // The purpose of loading it a second time is to check the completion status of forms.
+    // In that case, we do not reassign questionnaireIds to avoid loading this data in a loop
+    !questionnaireIds && setQuestionnaireIds(ids);
+    setSubjectData(data);
+    setSubjectDataLoadCount((counter) => counter+1);
   };
 
   // Find out if a questionnaire has an interpretation for the patient, i.e. a "summary" section
@@ -317,10 +327,10 @@ function QuestionnaireSet(props) {
     }
   }
 
-  // Load all questionnaires that need to be filled out
+  // At first, load the existing subject data to determine which questionnaire set is bound to the visit
+  useEffect(loadExistingData, []);
+  // After the visit is loaded and we know the questionnaire set identifier, load all questionnaires that need to be filled out
   useEffect(loadQuestionnaireSet, [id]);
-  // After the questionnaireSet arrives, load the existing subject data
-  useEffect(loadExistingData, [id, subject, questionnaires != undefined, questionnaireSetIds != undefined]);
 
   if (!id) {
     return (
@@ -397,8 +407,8 @@ function QuestionnaireSet(props) {
     request_data.append(":operation", "checkin");
 
     questionnaireIds.forEach(q => {
-      let id = subjectData?.[q]["@name"];
-      request_data.append(":applyTo", "/Forms/" + id);
+      let id = subjectData?.[q]?.["@name"];
+      id && request_data.append(":applyTo", "/Forms/" + id);
     });
 
     fetchWithReLogin(globalLoginDisplay, URL, { method: 'POST', body: request_data })
@@ -492,7 +502,7 @@ function QuestionnaireSet(props) {
     return result;
   }
 
-  let welcomeScreen = (isComplete && isSubmitted || questionnaireIds.length == 0) ? [
+  let welcomeScreen = (isComplete && isSubmitted || questionnaireIds?.length == 0) ? [
     <Typography variant="h4" key="welcome-greeting">{ greet(username) }</Typography>,
     appointmentAlert(),
     <Typography color="textSecondary" variant="subtitle1" key="welcome-message">
@@ -558,7 +568,7 @@ function QuestionnaireSet(props) {
           <Button
             variant="outlined"
             color="secondary"
-            onClick={() => {setReviewMode(true); setCrtFormId(subjectData?.[q]["@name"]); setCrtStep(i)}}>
+            onClick={() => {setReviewMode(true); setCrtFormId(subjectData?.[q]?.["@name"]); setCrtStep(i)}}>
               Update this survey
           </Button>
         </Grid>
@@ -596,7 +606,7 @@ your symptoms. Please see below for a summary of your scores and suggested actio
         <Grid item>
         <Form
           key={q+"Summary"}
-          id={subjectData?.[q]['@name']}
+          id={subjectData?.[q]?.['@name']}
           mode="summary"
           disableHeader
           disableButton

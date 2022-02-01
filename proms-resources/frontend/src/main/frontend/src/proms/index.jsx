@@ -55,11 +55,8 @@ function PromsHomepage (props) {
     </>);
   }
 
-  // Obtain the id of the questionnaire set to display
-  const promId = /Proms.html\/([^.\/]+)/.exec(location.pathname)?.[1];
-
   return (<>
-    <QuestionnaireSet id={promId} subject={subject} username={username}/>
+    <QuestionnaireSet subject={subject} username={username}/>
     <PromsFooter />
   </>);
 }
