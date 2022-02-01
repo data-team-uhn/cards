@@ -284,7 +284,7 @@ function QuestionnaireSet(props) {
     let ids = [];
     let data = {};
     questionnaireSetIds.forEach(q => {
-      if (subjectData[questionnaireSet.[q]?.title]?.[0]?.['jcr:primaryType'] == "cards:Form") {
+      if (subjectData[questionnaireSet?.[q]?.title]?.[0]?.['jcr:primaryType'] == "cards:Form") {
         data[q] = subjectData[questionnaireSet?.[q]?.title][0];
         ids.push(q);
       }
