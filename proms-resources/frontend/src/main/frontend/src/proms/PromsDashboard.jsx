@@ -51,10 +51,12 @@ const useStyles = makeStyles(theme => ({
   withMargin: {
     marginRight: "320px",
   },
+  dashboardContainer: {
+    marginTop: theme.spacing(2),
+  },
   dashboardEntry: {
     "& > *": {
       height: "100%",
-      marginTop: theme.spacing(4),
     },
     "& .MuiCardHeader-root" : {
       paddingBottom: 0,
@@ -75,7 +77,7 @@ const useStyles = makeStyles(theme => ({
       height: theme.spacing(.5),
     },
     "& .MuiCardContent-root": {
-      padding: theme.spacing(3, 0),
+      padding: theme.spacing(3, 0, 1, 0),
     },
   },
 }));
@@ -156,7 +158,7 @@ function PromsDashboard(props) {
     <>
       <Typography variant="h4" className={classes.dashboardTitle + (appbarExpanded ? ' ' + classes.withMargin : '')}>{title}</Typography>
       { description && <Typography variant="overline">{description}</Typography>}
-      <Grid container spacing={3}>
+      <Grid container spacing={4} className={classes.dashboardContainer}>
         {
           dashboardExtensions.map((extension, index) => {
             let Extension = extension["cards:extensionRender"];
