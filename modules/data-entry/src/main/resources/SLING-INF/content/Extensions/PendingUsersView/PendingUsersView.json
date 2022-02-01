@@ -1,0 +1,8 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/view",
+  "cards:extensionName": "Your account is pending approval",
+  "cards:targetURL": "/content.html/",
+  "cards:defaultOrder": 1000,
+  "cards:extensionRenderURL": "asset:proms-homepage.PendingView.js"
+}
