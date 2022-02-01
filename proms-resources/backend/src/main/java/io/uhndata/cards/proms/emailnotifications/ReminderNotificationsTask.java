@@ -17,12 +17,14 @@
  * under the License.
  */
 
-package io.uhndata.cards.emailnotifications;
+package io.uhndata.cards.proms.emailnotifications;
 
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
@@ -33,6 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.auth.token.TokenManager;
+import io.uhndata.cards.emailnotifications.EmailUtils;
 import jakarta.mail.MessagingException;
 
 
@@ -63,6 +66,7 @@ public class ReminderNotificationsTask implements Runnable
     }
 
     @Override
+    @SuppressWarnings("checkstyle:ExecutableStatementCount")
     public void run()
     {
         LOGGER.warn("Executing ReminderNotificationsTask");
@@ -70,7 +74,9 @@ public class ReminderNotificationsTask implements Runnable
         final Calendar dateToQuery = Calendar.getInstance();
         dateToQuery.setTime(today);
         dateToQuery.add(Calendar.DATE, 1);
-        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
+        final Map<String, Object> parameters =
+            Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, "EmailNotifications");
+        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(parameters)) {
             Iterator<Resource> appointmentResults = AppointmentUtils.getAppointmentsForDay(resolver, dateToQuery);
             while (appointmentResults.hasNext()) {
                 Resource appointmentResult = appointmentResults.next();
@@ -111,7 +117,9 @@ public class ReminderNotificationsTask implements Runnable
                         )
                     ).getToken();
                 // Send the Reminder Notification Email
-                String emailTextBody = EmailUtils.renderEmailTemplate(emailTextTemplate, surveysLink);
+                Map<String, String> valuesMap = new HashMap<String, String>();
+                valuesMap.put("surveysLink", surveysLink);
+                String emailTextBody = EmailUtils.renderEmailTemplate(emailTextTemplate, valuesMap);
                 try {
                     EmailUtils.sendNotificationEmail(this.mailService, patientEmailAddress,
                         patientFullName, PATIENT_NOTIFICATION_SUBJECT, emailTextBody);
