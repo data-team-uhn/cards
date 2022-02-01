@@ -118,7 +118,7 @@
                 <configuration>
                   <executable>bash</executable>
                   <workingDirectory>.</workingDirectory>
-                  <commandlineArgs>complete_git_copy.sh</commandlineArgs>
+                  <commandlineArgs>copy_mvnrepo.sh</commandlineArgs>
                 </configuration>
                 <id>complete-git-copy</id>
                 <phase>install</phase>
@@ -127,31 +127,6 @@
                 </goals>
               </execution>
             </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.sling</groupId>
-            <artifactId>slingfeature-maven-plugin</artifactId>
-            <configuration>
-              <archives>
-                <archive>
-                  <classifier>core_tar_far</classifier>
-                  <includeClassifier>core_tar</includeClassifier>
-                </archive>
-                <archive>
-                  <classifier>core_mongo_far</classifier>
-                  <includeClassifier>core_mongo</includeClassifier>
-                </archive>
-              </archives>
-            </configuration>
-            <executions>
-              <execution>
-                <id>aggregate-archives</id>
-                <phase>prepare-package</phase>
-                <goals>
-                  <goal>attach-featurearchives</goal>
-                </goals>
-              </execution>
-             </executions>
           </plugin>
           <plugin>
             <groupId>io.fabric8</groupId>

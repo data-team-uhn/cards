@@ -17,7 +17,4 @@
 # specific language governing permissions and limitations
 # under the License.
 
-apk update || exit -1
-apk add bash openjdk11 maven python3 gcompat || exit -1
-ln -s /usr/bin/python3 /usr/bin/python || exit -1
-mvn clean install -Prelease -Dgpg.skip -Dmaven.javadoc.skip || exit -1
+cp -r ../.mvnrepo .
