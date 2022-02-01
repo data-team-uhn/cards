@@ -155,8 +155,18 @@ function PrintPreview(props) {
         className={classes.printPreview + " " + classes.printTarget}
         >
         <CardContent>
-          { header }
-          <FormattedText>{content}</FormattedText>
+          <table>
+            <thead>
+              <tr><td>
+                { header }
+              </td></tr>
+            </thead>
+            <tbody>
+              <tr><td>
+                <FormattedText>{content}</FormattedText>
+              </td></tr>
+            </tbody>
+          </table>
         </CardContent>
       </Card>
     }
