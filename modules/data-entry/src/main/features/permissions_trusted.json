@@ -21,7 +21,13 @@
   "configurations":{
     "org.apache.sling.jcr.repoinit.RepositoryInitializer~forms_trusted":{
       "service.ranking:Integer":200,
-      "scripts":["create group TrustedUsers \n\n set ACL on /Forms,/Subjects \n   allow jcr:all for TrustedUsers \n end \n\n set ACL on /Questionnaires,/SubjectTypes \n   allow jcr:read for TrustedUsers \n end"]
+      "scripts":[
+        "create group TrustedUsers \n\n set ACL on /Forms,/Subjects \n   allow jcr:all for TrustedUsers \n end \n\n set ACL on /Questionnaires,/SubjectTypes \n   allow jcr:read for TrustedUsers \n end",
+        // Pending users can only see "wait for your account to be approved"
+        "create path (sling:Folder) /Extensions/Views \n set ACL on /Extensions/Views \n   deny jcr:read for everyone \n   allow jcr:read for TrustedUsers \n end ",
+        "create path (sling:Folder) /Extensions/Sidebar \n set ACL on /Extensions/Sidebar \n   deny jcr:read for everyone \n   allow jcr:read for TrustedUsers \n end ",
+        "create path (sling:Folder) /Extensions/PendingUsersView \n set ACL on /Extensions/PendingUsersView \n   deny jcr:read for TrustedUsers \n end "
+      ]
     }
   }
 }
