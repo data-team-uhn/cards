@@ -31,6 +31,6 @@ set ACL for everyone
 end
 
 set properties on /RedirectURL
-  set RedirectURL to "/content.html/Questionnaires/User"
-  set RedirectLabel to "Go to the dashboard"
+  default RedirectURL to "/content.html/Questionnaires/User"
+  default RedirectLabel to "Go to the dashboard"
 end
