@@ -19,116 +19,25 @@
 
 package io.uhndata.cards.proms.emailnotifications;
 
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
-import org.apache.sling.api.resource.LoginException;
-import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.commons.messaging.mail.MailService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.auth.token.TokenManager;
-import io.uhndata.cards.emailnotifications.EmailUtils;
-import jakarta.mail.MessagingException;
 
-
-public class ReminderNotificationsTask implements Runnable
+public class ReminderNotificationsTask extends AbstractPromsNotification implements Runnable
 {
     private static final String PATIENT_NOTIFICATION_SUBJECT =
         "Reminder: You have 24 hours left to complete your pre-appointment questions";
 
-    /** Default log. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(ReminderNotificationsTask.class);
-
-    private static final String CARDS_HOST_AND_PORT = System.getenv("CARDS_HOST_AND_PORT");
-    private static final String CLINIC_SLING_PATH = System.getenv("CLINIC_SLING_PATH");
-
-    /** Provides access to resources. */
-    private final ResourceResolverFactory resolverFactory;
-
-    private final TokenManager tokenManager;
-
-    private final MailService mailService;
-
     ReminderNotificationsTask(final ResourceResolverFactory resolverFactory,
         final TokenManager tokenManager, final MailService mailService)
     {
-        this.resolverFactory = resolverFactory;
-        this.tokenManager = tokenManager;
-        this.mailService = mailService;
+        super(resolverFactory, tokenManager, mailService);
     }
 
     @Override
-    @SuppressWarnings("checkstyle:ExecutableStatementCount")
     public void run()
     {
-        LOGGER.warn("Executing ReminderNotificationsTask");
-        final Date today = new Date();
-        final Calendar dateToQuery = Calendar.getInstance();
-        dateToQuery.setTime(today);
-        dateToQuery.add(Calendar.DATE, 1);
-        final Map<String, Object> parameters =
-            Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, "EmailNotifications");
-        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(parameters)) {
-            Iterator<Resource> appointmentResults = AppointmentUtils.getAppointmentsForDay(resolver, dateToQuery);
-            while (appointmentResults.hasNext()) {
-                Resource appointmentResult = appointmentResults.next();
-                Resource appointmentForm = AppointmentUtils.getFormForAnswer(resolver, appointmentResult);
-                if (appointmentForm == null) {
-                    continue;
-                }
-                // Get the Patient Subject associated with this appointment Form
-                Resource patientSubject = AppointmentUtils.getRelatedSubjectOfType(
-                    resolver, appointmentForm, "/SubjectTypes/Patient");
-                Resource visitSubject = AppointmentUtils.getRelatedSubjectOfType(
-                    resolver, appointmentForm, "/SubjectTypes/Patient/Visit");
-                String patientEmailAddress = AppointmentUtils.getPatientConsentedEmail(resolver, patientSubject);
-                if (patientEmailAddress == null) {
-                    continue;
-                }
-                String emailTextTemplate = AppointmentUtils.getVisitEmailTemplate(resolver, visitSubject, "24h.txt");
-                if (emailTextTemplate == null) {
-                    continue;
-                }
-
-                // Only send a reminder if there are incomplete surveys for the patient
-                boolean patientSurveysComplete = AppointmentUtils.getVisitSurveysComplete(resolver, visitSubject);
-                if (patientSurveysComplete) {
-                    continue;
-                }
-                String patientFullName = AppointmentUtils.getPatientFullName(resolver, patientSubject);
-
-                Calendar tokenExpiryDate = AppointmentUtils.parseDate(appointmentResult.getValueMap().get("value", ""));
-                tokenExpiryDate.add(Calendar.HOUR, 2);
-                String surveysLink = "https://" + CARDS_HOST_AND_PORT + CLINIC_SLING_PATH + "?auth_token="
-                    + this.tokenManager.create(
-                        "patient",
-                        tokenExpiryDate,
-                        Collections.singletonMap(
-                            "cards:sessionSubject",
-                            visitSubject.getPath()
-                        )
-                    ).getToken();
-                // Send the Reminder Notification Email
-                Map<String, String> valuesMap = new HashMap<String, String>();
-                valuesMap.put("surveysLink", surveysLink);
-                String emailTextBody = EmailUtils.renderEmailTemplate(emailTextTemplate, valuesMap);
-                try {
-                    EmailUtils.sendNotificationEmail(this.mailService, patientEmailAddress,
-                        patientFullName, PATIENT_NOTIFICATION_SUBJECT, emailTextBody);
-                } catch (MessagingException e) {
-                    LOGGER.warn("Failed to send Reminder Notification Email");
-                }
-            }
-        } catch (LoginException e) {
-            LOGGER.warn("Failed to results.next().getPath()");
-        }
+        sendNotification(1, "24h.txt", PATIENT_NOTIFICATION_SUBJECT);
     }
 }
