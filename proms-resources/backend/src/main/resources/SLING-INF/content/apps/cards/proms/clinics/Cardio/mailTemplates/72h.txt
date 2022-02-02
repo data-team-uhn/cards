@@ -30,7 +30,7 @@ UHN is updating the way we obtain consent for emailing our patients. UHN may sen
 - UHN is not responsible for the security of patients' internet service providers, email domains, personal devices, personal computers, applications on those devices, etc. We suggest you take all steps recommended by your various providers to maximize the security of those tools.
 - We suggest that you use your personal email when communicating with health care providers such as UHN and not a work email address, as your employer may have the right to inspect your work email.
 - Use a secure internet connection. Do not use a public internet connection such as at the airport, internet cafe, public library or other open public area, where it may be easier to "hack" into your email account and access your personal information.
-- For more information on how to protect yourself against security risks associated with electronic communication, read this article on UHN.ca: Don't let a phishing attack reel you in.
+- For more information on how to protect yourself against security risks associated with electronic communication, read this article on UHN.ca: Don't let a phishing attack reel you in. Available at https://www.uhn.ca/corporate/News/Pages/Dont_let_a_phishing_attack_reel_you_in.aspx
 
 Please contact your care provider or the UHN Privacy Office at 416-340-4800 ext. 6937 if you do not wish to receive email communication from UHN. You may withdraw your consent to receive email communication from UHN at any time.
 
