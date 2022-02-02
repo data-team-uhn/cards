@@ -105,7 +105,8 @@ public class InitialNotificationsTask implements Runnable
                 }
                 String patientFullName = AppointmentUtils.getPatientFullName(resolver, patientSubject);
                 Calendar tokenExpiryDate = AppointmentUtils.parseDate(appointmentDate.getValueMap().get("value", ""));
-                tokenExpiryDate.add(Calendar.HOUR, 2);
+                tokenExpiryDate.add(Calendar.DATE, 1);
+                atMidnight(tokenExpiryDate);
                 String surveysLink = "https://" + CARDS_HOST_AND_PORT + CLINIC_SLING_PATH + "?auth_token="
                     + this.tokenManager.create(
                         "patient",
@@ -129,5 +130,13 @@ public class InitialNotificationsTask implements Runnable
         } catch (LoginException e) {
             LOGGER.warn("Failed to results.next().getPath()");
         }
+    }
+
+    private void atMidnight(final Calendar c)
+    {
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
     }
 }
