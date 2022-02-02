@@ -19,6 +19,7 @@
 
 package io.uhndata.cards.proms.emailnotifications;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.commons.messaging.mail.MailService;
 import org.apache.sling.commons.scheduler.ScheduleOptions;
@@ -58,7 +59,8 @@ public class NightlyNotifications
     protected void activate(ComponentContext componentContext) throws Exception
     {
         LOGGER.info("NightlyNotifications activating");
-        final String nightlyNotificationsSchedule = System.getenv("NIGHTLY_NOTIFICATIONS_SCHEDULE");
+        final String nightlyNotificationsSchedule =
+            StringUtils.defaultIfEmpty(System.getenv("NIGHTLY_NOTIFICATIONS_SCHEDULE"), "0 0 6 * * ? *");
 
         ScheduleOptions initialNotificationsOptions = this.scheduler.EXPR(nightlyNotificationsSchedule);
         initialNotificationsOptions.name("InitialNightlyNotifications");

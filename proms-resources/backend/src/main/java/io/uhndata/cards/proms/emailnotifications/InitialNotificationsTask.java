@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -47,8 +48,10 @@ public class InitialNotificationsTask implements Runnable
     /** Default log. */
     private static final Logger LOGGER = LoggerFactory.getLogger(InitialNotificationsTask.class);
 
-    private static final String CARDS_HOST_AND_PORT = System.getenv("CARDS_HOST_AND_PORT");
-    private static final String CLINIC_SLING_PATH = System.getenv("CLINIC_SLING_PATH");
+    private static final String CARDS_HOST_AND_PORT =
+        StringUtils.defaultIfEmpty(System.getenv("CARDS_HOST_AND_PORT"), "localhost:8080");
+
+    private static final String CLINIC_SLING_PATH = "/Proms.html";
 
     /** Provides access to resources. */
     private final ResourceResolverFactory resolverFactory;
