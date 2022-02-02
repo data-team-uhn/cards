@@ -525,6 +525,8 @@
             <exclude>compose-cluster/SSL_CONFIG/**</exclude>
             <!-- Ignore data/template files used for generating UI Extensions / ExtensionPoints -->
             <exclude>Utilities/Development/ExtensionPointResources/**</exclude>
+            <!-- Ignore email template files since we do not send a license in notification emails -->
+            <exclude>**/mailTemplates/**</exclude>
           </excludes>
         </configuration>
         <executions>

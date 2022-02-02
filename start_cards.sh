@@ -170,7 +170,17 @@ do
     ARGS[$i]=''
     for PROJECT in $PROJECTS
     do
+      # Support both "cards4project" and just "project": make sure the PROJECT starts with "cards4"
+      PROJECT="cards4${PROJECT#cards4}"
       ARGS[$i]=${ARGS[$i]},mvn:io.uhndata.cards/${PROJECT}/${CARDS_VERSION}/slingosgifeature
+      if [[ ${PROJECT} == 'cards4proms' ]]
+      then
+        # cards4proms requires the email module, make sure it's enabled
+        ARGS[$ARGS_LENGTH]=-f
+        ARGS_LENGTH=${ARGS_LENGTH}+1
+        ARGS[$ARGS_LENGTH]=mvn:io.uhndata.cards/cards-email-notifications/${CARDS_VERSION}/slingosgifeature
+        ARGS_LENGTH=${ARGS_LENGTH}+1
+      fi
     done
     ARGS[$i]=${ARGS[$i]#,}
   elif [[ ${ARGS[$i]} == '--permissions' ]]

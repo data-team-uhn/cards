@@ -32,19 +32,52 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.sling</groupId>
+        <artifactId>slingfeature-maven-plugin</artifactId>
+      </plugin>
+
       <!-- This is an OSGi bundle -->
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Sling-Initial-Content>SLING-INF/content/apps/cards/proms/clinics/Cardio/mailTemplates;path:=/apps/cards/proms/clinics/Cardio/mailTemplates;overwrite:=true</Sling-Initial-Content>
+          </instructions>
+        </configuration>
       </plugin>
     </plugins>
   </build>
 
   <dependencies>
     <dependency>
+      <groupId>commons-validator</groupId>
+      <artifactId>commons-validator</artifactId>
+      <version>1.7</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.mail</groupId>
+      <artifactId>jakarta.mail-api</artifactId>
+      <version>2.0.1</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.sling</groupId>
+      <artifactId>org.apache.sling.commons.messaging.mail</artifactId>
+      <version>2.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.sling</groupId>
+      <artifactId>org.apache.sling.commons.scheduler</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.service.component</artifactId>
     </dependency>
     <dependency>
       <groupId>org.osgi</groupId>
@@ -74,6 +107,16 @@
     <dependency>
       <groupId>io.uhndata.cards</groupId>
       <artifactId>cards-permissions</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.uhndata.cards</groupId>
+      <artifactId>cards-token-authentication</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.uhndata.cards</groupId>
+      <artifactId>cards-email-notifications</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>
