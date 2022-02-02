@@ -250,6 +250,28 @@ public final class AppointmentUtils
     }
 
     /**
+     * Returns the completion status of surveys for a Visit.
+     *
+     * @param resolver a ResourceResolver that can be used to query the JCR
+     * @param visitSubject the JCR Resource for the visit whose survey completion status we wish to obtain
+     * @return the boolean survey completion status for the visit
+     */
+    public static boolean getVisitSurveysComplete(ResourceResolver resolver, Resource visitSubject)
+    {
+        long isComplete = getQuestionAnswerForSubject(
+            resolver,
+            visitSubject,
+            "/Questionnaires/Visit information/surveys_complete",
+            "cards:BooleanAnswer",
+            0
+        );
+        if (isComplete == 1) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Returns the CARDS Form JCR Resource associated with a given CARDS
      * answer Resource or null if no match can be found.
      *

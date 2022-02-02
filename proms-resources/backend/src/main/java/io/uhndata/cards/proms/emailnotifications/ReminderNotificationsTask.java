@@ -24,12 +24,12 @@ import org.apache.sling.commons.messaging.mail.MailService;
 
 import io.uhndata.cards.auth.token.TokenManager;
 
-public class InitialNotificationsTask extends AbstractPromsNotification implements Runnable
+public class ReminderNotificationsTask extends AbstractPromsNotification implements Runnable
 {
     private static final String PATIENT_NOTIFICATION_SUBJECT =
-        "Welcome to DATAPRO: Answer your Pre-Appointment Questions";
+        "Reminder: You have 24 hours left to complete your pre-appointment questions";
 
-    InitialNotificationsTask(final ResourceResolverFactory resolverFactory,
+    ReminderNotificationsTask(final ResourceResolverFactory resolverFactory,
         final TokenManager tokenManager, final MailService mailService)
     {
         super(resolverFactory, tokenManager, mailService);
@@ -38,6 +38,6 @@ public class InitialNotificationsTask extends AbstractPromsNotification implemen
     @Override
     public void run()
     {
-        sendNotification(3, "72h.txt", PATIENT_NOTIFICATION_SUBJECT);
+        sendNotification(1, "24h.txt", PATIENT_NOTIFICATION_SUBJECT);
     }
 }
