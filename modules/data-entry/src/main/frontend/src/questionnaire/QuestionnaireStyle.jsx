@@ -145,6 +145,9 @@ const questionnaireStyle = theme => ({
     formBottom: {
         minHeight: theme.spacing(8),
     },
+    dashboardContainer: {
+        marginTop: theme.spacing(2),
+    },
     dashboardEntry: {
         "& > *": {
             height: "100%",
@@ -171,7 +174,7 @@ const questionnaireStyle = theme => ({
              height: theme.spacing(.5),
          },
          "& .MuiCardContent-root": {
-            padding: theme.spacing(3, 0),
+            padding: theme.spacing(3, 0, 1, 0),
          },
          "& .MuiTableCell-body": {
             padding: theme.spacing(0, 2),
