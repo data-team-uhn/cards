@@ -151,7 +151,6 @@ const questionnaireStyle = theme => ({
     dashboardEntry: {
         "& > *": {
             height: "100%",
-            marginTop: theme.spacing(4),
         },
         "& .MuiCardHeader-root" : {
             paddingBottom: 0,
