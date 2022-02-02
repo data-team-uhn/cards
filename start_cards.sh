@@ -170,6 +170,8 @@ do
     ARGS[$i]=''
     for PROJECT in $PROJECTS
     do
+      # Support both "cards4project" and just "project": make sure the PROJECT starts with "cards4"
+      PROJECT="cards4${PROJECT#cards4}"
       ARGS[$i]=${ARGS[$i]},mvn:io.uhndata.cards/${PROJECT}/${CARDS_VERSION}/slingosgifeature
     done
     ARGS[$i]=${ARGS[$i]#,}
