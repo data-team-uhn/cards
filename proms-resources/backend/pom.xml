@@ -44,7 +44,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Sling-Initial-Content>SLING-INF/content/;path:=/</Sling-Initial-Content>
+            <Sling-Initial-Content>SLING-INF/content/apps/cards/proms/clinics/Cardio/mailTemplates;path:=/apps/cards/proms/clinics/Cardio/mailTemplates;overwrite:=true</Sling-Initial-Content>
           </instructions>
         </configuration>
       </plugin>

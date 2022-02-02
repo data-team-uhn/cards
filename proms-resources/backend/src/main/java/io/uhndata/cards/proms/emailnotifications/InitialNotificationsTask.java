@@ -21,7 +21,6 @@ package io.uhndata.cards.proms.emailnotifications;
 
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -38,7 +37,6 @@ import org.slf4j.LoggerFactory;
 import io.uhndata.cards.auth.token.TokenManager;
 import io.uhndata.cards.emailnotifications.EmailUtils;
 import jakarta.mail.MessagingException;
-
 
 public class InitialNotificationsTask implements Runnable
 {
@@ -69,10 +67,8 @@ public class InitialNotificationsTask implements Runnable
     }
 
     @Override
-    @SuppressWarnings("checkstyle:ExecutableStatementCount")
     public void run()
     {
-        LOGGER.warn("Executing InitialNotificationsTask");
         /*
          * Query the `Visit information` Forms for appointments happening
          * on day NOW+3. For example, if today is January 1st 2022, find
@@ -82,20 +78,16 @@ public class InitialNotificationsTask implements Runnable
          * patients will have the maximum amount of time to complete
          * their surveys.
          */
-        final Date today = new Date();
         final Calendar dateToQuery = Calendar.getInstance();
-        dateToQuery.setTime(today);
         dateToQuery.add(Calendar.DATE, 3);
         final Map<String, Object> parameters =
             Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, "EmailNotifications");
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(parameters)) {
             Iterator<Resource> appointmentResults = AppointmentUtils.getAppointmentsForDay(resolver, dateToQuery);
             while (appointmentResults.hasNext()) {
-                LOGGER.warn("Processing appointment");
-                Resource appointmentResult = appointmentResults.next();
-                Resource appointmentForm = AppointmentUtils.getFormForAnswer(resolver, appointmentResult);
+                Resource appointmentDate = appointmentResults.next();
+                Resource appointmentForm = AppointmentUtils.getFormForAnswer(resolver, appointmentDate);
                 if (appointmentForm == null) {
-                    LOGGER.warn("Exit 1");
                     continue;
                 }
                 // Get the Patient Subject associated with this appointment Form
@@ -105,16 +97,14 @@ public class InitialNotificationsTask implements Runnable
                     resolver, appointmentForm, "/SubjectTypes/Patient/Visit");
                 String patientEmailAddress = AppointmentUtils.getPatientConsentedEmail(resolver, patientSubject);
                 if (patientEmailAddress == null) {
-                    LOGGER.warn("Exit 2");
                     continue;
                 }
                 String emailTextTemplate = AppointmentUtils.getVisitEmailTemplate(resolver, visitSubject, "72h.txt");
                 if (emailTextTemplate == null) {
-                    LOGGER.warn("Exit 3");
                     continue;
                 }
                 String patientFullName = AppointmentUtils.getPatientFullName(resolver, patientSubject);
-                Calendar tokenExpiryDate = AppointmentUtils.parseDate(appointmentResult.getValueMap().get("value", ""));
+                Calendar tokenExpiryDate = AppointmentUtils.parseDate(appointmentDate.getValueMap().get("value", ""));
                 tokenExpiryDate.add(Calendar.HOUR, 2);
                 String surveysLink = "https://" + CARDS_HOST_AND_PORT + CLINIC_SLING_PATH + "?auth_token="
                     + this.tokenManager.create(
@@ -126,7 +116,7 @@ public class InitialNotificationsTask implements Runnable
                         )
                     ).getToken();
                 // Send the Initial Notification Email
-                Map<String, String> valuesMap = new HashMap<String, String>();
+                Map<String, String> valuesMap = new HashMap<>();
                 valuesMap.put("surveysLink", surveysLink);
                 String emailTextBody = EmailUtils.renderEmailTemplate(emailTextTemplate, valuesMap);
                 try {
