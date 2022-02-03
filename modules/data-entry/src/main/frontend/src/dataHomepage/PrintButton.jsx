@@ -73,7 +73,7 @@ function PrintButton(props) {
     event.stopPropagation();
     event.preventDefault ? event.preventDefault() : (event.returnValue = false);
 
-    if (event.ctrlKey && (event.key == "p" || event.keyCode == 80)) {
+    if ((event.ctrlKey || event.metaKey) && (event.key == "p" || event.keyCode == 80)) {
       onOpenView();
     }
   }
