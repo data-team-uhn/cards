@@ -367,7 +367,8 @@ function Form (props) {
                   </IconButton>
                 </Tooltip>
                 <Popover
-                    open={Boolean(actionsMenu)}
+                    open
+                    style={{ visibility: Boolean(actionsMenu) ? 'visible' : 'hidden' }}
                     anchorEl={actionsMenu}
                     onClose={() => {setActionsMenu(null)}}
                     anchorOrigin={{
