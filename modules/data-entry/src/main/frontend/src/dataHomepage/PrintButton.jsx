@@ -67,7 +67,7 @@ function PrintButton(props) {
       // unsubscribe event
       document.removeEventListener("keydown", handleOnPrintKeydown);
     };
-  });
+  }, []);
 
   let handleOnPrintKeydown = (event) => {
     if ((event.ctrlKey || event.metaKey) && (event.key == "p" || event.keyCode == 80)) {
