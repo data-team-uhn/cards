@@ -27,8 +27,8 @@ events {
 
 stream {
   server {
-    listen 8465 ssl;
-    proxy_pass ${DOCKER_HOST_IP}:25;
+    listen ${DOCKER_HOST_IP}:8465 ssl;
+    proxy_pass 127.0.0.1:25;
 
     ssl_certificate /etc/cert/smtps_certificate.crt;
     ssl_certificate_key /etc/cert/smtps_certificatekey.key;
