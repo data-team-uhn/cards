@@ -125,7 +125,7 @@ function ResourceHeader (props) {
           </Breadcrumbs>
         </Grid>
         <Collapse in={!!action &&  fullBreadcrumbTrigger} component={Grid} item>
-          <div className={classes.breadcrumbAction}>{action}</div>
+          { fullBreadcrumbTrigger && <div className={classes.breadcrumbAction}>{action}</div> }
         </Collapse>
       </Grid>
       <Collapse in={fullBreadcrumbTrigger}>
@@ -138,7 +138,7 @@ function ResourceHeader (props) {
           <Grid item>
             <Typography component="h2" variant="h4">{title}</Typography>
           </Grid>
-          {action && <Grid item>{action}</Grid>}
+          {action && !fullBreadcrumbTrigger && <Grid item>{action}</Grid>}
         </Grid>
         {children}
     </Collapse>
