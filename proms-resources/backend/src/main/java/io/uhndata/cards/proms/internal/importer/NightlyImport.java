@@ -26,12 +26,10 @@ import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Component(immediate = true)
-@Designate(ocd = NightlyImportConfig.class)
 public class NightlyImport
 {
     /** Default log. */
@@ -45,18 +43,25 @@ public class NightlyImport
     @Reference
     private Scheduler scheduler;
 
+    @Reference
+    private ImportConfig config;
+
     @Activate
-    protected void activate(NightlyImportConfig config, ComponentContext componentContext) throws Exception
+    protected void activate(ComponentContext componentContext) throws Exception
     {
         LOGGER.info("NightlyTorchImport activating");
-        final String nightlyImportSchedule = config.nightly_import_schedule();
+        final String nightlyImportSchedule = this.config.getConfig().nightly_import_schedule();
         ScheduleOptions options = this.scheduler.EXPR(nightlyImportSchedule);
         options.name("NightlyTorchImport");
         options.canRunConcurrently(true);
 
         final Runnable importJob;
-        importJob = new ImportTask(this.resolverFactory, config.auth_url(), config.endpoint_url(),
-            config.days_to_query(), config.vault_token(), config.clinic_name(), config.provider_name());
+        importJob =
+            new ImportTask(this.resolverFactory, this.config.getConfig().auth_url(),
+                this.config.getConfig().endpoint_url(),
+                this.config.getConfig().days_to_query(), this.config.getConfig().vault_token(),
+                this.config.getConfig().clinic_name(),
+                this.config.getConfig().provider_name());
 
         try {
             if (importJob != null) {

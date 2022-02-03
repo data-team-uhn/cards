@@ -20,6 +20,7 @@ package io.uhndata.cards.proms.internal.importer;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Locale;
 
 import javax.servlet.Servlet;
 
@@ -32,15 +33,14 @@ import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(
     resourceTypes = { "cards/SubjectsHomepage" },
-    selectors = { "importTorch" })
-@Designate(ocd = EndpointImportConfig.class)
+    extensions = { "importTorch" },
+    methods = { "GET" })
 public class ImportEndpoint extends SlingSafeMethodsServlet
 {
     /** Default log. */
@@ -48,6 +48,9 @@ public class ImportEndpoint extends SlingSafeMethodsServlet
 
     @Reference
     private ResourceResolverFactory resolverFactory;
+
+    @Reference
+    private ImportConfig config;
 
     /** Number of days to look ahead when querying for appointments. */
     private int daysToQuery;
@@ -68,14 +71,14 @@ public class ImportEndpoint extends SlingSafeMethodsServlet
     private String providerIDs = "";
 
     @Activate
-    protected void activate(EndpointImportConfig config, ComponentContext componentContext) throws Exception
+    protected void activate(ComponentContext componentContext) throws Exception
     {
-        this.authURL = config.auth_url();
-        this.endpointURL = config.endpoint_url();
-        this.daysToQuery = config.days_to_query();
-        this.vaultToken = config.vault_token();
-        this.clinicName = config.clinic_name();
-        this.providerIDs = config.provider_name();
+        this.authURL = this.config.getConfig().auth_url();
+        this.endpointURL = this.config.getConfig().endpoint_url();
+        this.daysToQuery = this.config.getConfig().days_to_query();
+        this.vaultToken = this.config.getConfig().vault_token();
+        this.clinicName = this.config.getConfig().clinic_name();
+        this.providerIDs = this.config.getConfig().provider_name();
     }
 
     @Override
@@ -83,10 +86,10 @@ public class ImportEndpoint extends SlingSafeMethodsServlet
     {
         final Writer out = response.getWriter();
 
-        //Ensure that this can only be run when logged in as admin
+        // Ensure that this can only be run when logged in as admin
         final String remoteUser = request.getRemoteUser();
-        if (!"admin".equals(remoteUser)) {
-            //admin login required
+        if (!"admin".equals(remoteUser.toLowerCase(Locale.ROOT))) {
+            // admin login required
             response.setStatus(403);
             out.write("Only admin can perform this operation.");
             return;

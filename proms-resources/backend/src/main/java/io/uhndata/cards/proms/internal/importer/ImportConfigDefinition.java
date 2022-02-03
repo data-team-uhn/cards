@@ -25,7 +25,7 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 @ObjectClassDefinition(name = "Endpoint-triggered PROMs import config",
     description = "Configuration for the PROMs endpoint-triggered importer")
-public @interface EndpointImportConfig
+public @interface ImportConfigDefinition
 {
     /** Number of days to look ahead when querying for appointments. */
     int DAYS_TO_QUERY = 3;
@@ -39,11 +39,18 @@ public @interface EndpointImportConfig
     /** Vault JWT token. */
     String VAULT_TOKEN = "";
 
+    /** Cron-readable import schedule. */
+    String NIGHTLY_IMPORT_SCHEDULE = "";
+
     /** Pipe-delimited list of names of clinics to query. */
     String CLINIC_NAME = "PMH 8 Palliative Care Oncology Clinic";
 
     /** Pipe-delimited list of names of providers to query. If empty, all providers will be fetched. */
     String PROVIDER_NAME = "";
+
+    @AttributeDefinition(name = "Import schedule",
+        description = "Cron-readable import schedule")
+    String nightly_import_schedule() default NIGHTLY_IMPORT_SCHEDULE;
 
     @AttributeDefinition(type = AttributeType.INTEGER, name = "days to query",
         description = "Number of days of appointments to query ahead of schedule")
