@@ -67,7 +67,7 @@ public final class EmailFormAlerts
         String name() default "PatientHealthAlert001";
 
         @AttributeDefinition(name = "Submitted Flag Path", description = "Submitted Flag Path")
-        String submittedFlagPath() default "/Questionnaires/Visit information/surveys_complete";
+        String submittedFlagPath() default "/Questionnaires/Visit information/surveys_submitted";
 
         @AttributeDefinition(name = "Linking Subject Type", description = "Subject type that links the Form with the"
             + " \"submit\" button to the Form with the alert generating question")
