@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.uhndata.cards.emailnotifications;
+package io.uhndata.cards.proms.emailnotifications;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -30,6 +30,7 @@ import org.apache.sling.commons.messaging.mail.MailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.emailnotifications.EmailUtils;
 import jakarta.mail.MessagingException;
 
 public final class EmailAlertEventListener implements EventListener

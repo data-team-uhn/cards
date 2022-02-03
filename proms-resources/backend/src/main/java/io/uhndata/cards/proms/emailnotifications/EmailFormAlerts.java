@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.uhndata.cards.emailnotifications;
+package io.uhndata.cards.proms.emailnotifications;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -103,7 +103,7 @@ public final class EmailFormAlerts
 
         try {
             Map<String, Object> params = new HashMap<String, Object>();
-            params.put(ResourceResolverFactory.SUBSERVICE, "eventingService");
+            params.put(ResourceResolverFactory.SUBSERVICE, "EmailNotifications");
             this.resolver = this.resolverFactory.getServiceResourceResolver(params);
 
             // Get the UUID associated with config.submittedFlagPath()

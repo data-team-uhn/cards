@@ -36,6 +36,9 @@ public final class AppointmentUtils
     /** Default log. */
     private static final Logger LOGGER = LoggerFactory.getLogger(AppointmentUtils.class);
 
+    /** The primary node type for a Subject, an entity about which data is collected. */
+    private static final String TEXT_ANSWER = "cards:TextAnswer";
+
     // Hide the utility class constructor
     private AppointmentUtils()
     {
@@ -143,7 +146,7 @@ public final class AppointmentUtils
             resolver,
             patientSubject,
             "/Questionnaires/Patient information/email",
-            "cards:TextAnswer",
+            TEXT_ANSWER,
             ""
         );
         if (patientEmailOk == 1) {
@@ -167,14 +170,14 @@ public final class AppointmentUtils
             resolver,
             patientSubject,
             "/Questionnaires/Patient information/first_name",
-            "cards:TextAnswer",
+            TEXT_ANSWER,
             ""
         );
         String lastName = getQuestionAnswerForSubject(
             resolver,
             patientSubject,
             "/Questionnaires/Patient information/last_name",
-            "cards:TextAnswer",
+            TEXT_ANSWER,
             ""
         );
         return firstName + " " + lastName;
@@ -194,7 +197,7 @@ public final class AppointmentUtils
             resolver,
             visitSubject,
             "/Questionnaires/Visit information/surveys",
-            "cards:TextAnswer",
+            TEXT_ANSWER,
             ""
         );
         if ("".equals(clinicId)) {
@@ -294,7 +297,7 @@ public final class AppointmentUtils
             resolver,
             formRelatedSubject,
             clinicIdLink,
-            "cards:TextAnswer",
+            TEXT_ANSWER,
             ""
         );
 
