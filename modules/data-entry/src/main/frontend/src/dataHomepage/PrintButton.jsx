@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 
@@ -58,6 +58,25 @@ function PrintButton(props) {
   const { resourcePath, title, date, breadcrumb, onOpen, onClose, size, variant, label, buttonClass, disablePreview, fullScreen } = props;
 
   const [ open, setOpen ] = useState(false);
+
+  // Prevent browser to open print dialog on user ctrl+P keydown and force to go through the custom print preview
+  useEffect(() => {
+    // subscribe event
+    document.addEventListener("keydown", handleOnPrintKeydown);
+    return () => {
+      // unsubscribe event
+      document.removeEventListener("keydown", handleOnPrintKeydown);
+    };
+  }, []);
+
+  let handleOnPrintKeydown = (event) => {
+    event.stopPropagation();
+    event.preventDefault ? event.preventDefault() : (event.returnValue = false);
+
+    if (event.ctrlKey && (event.key == "p" || event.keyCode == 80)) {
+      onOpenView();
+    }
+  }
 
   let onOpenView = () => {
     onOpen && onOpen();
