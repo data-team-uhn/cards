@@ -33,7 +33,7 @@ import {
   IconButton,
   List,
   ListItem,
-  Popover,
+  Paper,
   Tooltip,
   Typography,
   withStyles
@@ -361,24 +361,13 @@ function Form (props) {
                     </IconButton>
                   </Tooltip>
                 }
-                <Tooltip title="More actions" onClick={(event) => {setActionsMenu(event.currentTarget)}}>
+                <Tooltip title="More actions" onClick={(event) => {setActionsMenu(Boolean(actionsMenu) ? null : event.currentTarget)}}>
                   <IconButton>
                     <MoreIcon fontSize="small" />
                   </IconButton>
                 </Tooltip>
-                <Popover
-                    open
-                    style={{ visibility: Boolean(actionsMenu) ? 'visible' : 'hidden' }}
-                    anchorEl={actionsMenu}
-                    onClose={() => {setActionsMenu(null)}}
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'right',
-                    }}
-                    transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                    }}
+                <Paper
+                  className={classes.actionsMenuList + " " + (Boolean(actionsMenu) ? classes.actionsMenuListVisible : classes.actionsMenuListHidden)}
                 >
                   <List>
                     { isEdit ?
@@ -416,7 +405,7 @@ function Form (props) {
                         />
                     </ListItem>
                   </List>
-                </Popover>
+                </Paper>
             </div>
   )
 
