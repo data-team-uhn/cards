@@ -33,7 +33,7 @@ import {
   IconButton,
   List,
   ListItem,
-  Paper,
+  Popover,
   Tooltip,
   Typography,
   withStyles
@@ -346,29 +346,7 @@ function Form (props) {
     );
   }
 
-  let formMenu = (
-            <div className={classes.actionsMenu}>
-                {isEdit ?
-                  <Tooltip title="Save and view" onClick={onClose}>
-                    <IconButton color="primary">
-                      <DoneIcon />
-                    </IconButton>
-                  </Tooltip>
-                  :
-                  <Tooltip title="Edit">
-                    <IconButton color="primary" onClick={onEdit}>
-                      <EditIcon />
-                    </IconButton>
-                  </Tooltip>
-                }
-                <Tooltip title="More actions" onClick={(event) => {setActionsMenu(Boolean(actionsMenu) ? null : event.currentTarget)}}>
-                  <IconButton>
-                    <MoreIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-                <Paper
-                  className={classes.actionsMenuList + " " + (Boolean(actionsMenu) ? classes.actionsMenuListVisible : classes.actionsMenuListHidden)}
-                >
+  let dropdownList = (
                   <List>
                     { isEdit ?
                     <ListItem className={classes.actionsMenuItem}>
@@ -405,7 +383,44 @@ function Form (props) {
                         />
                     </ListItem>
                   </List>
-                </Paper>
+  )
+
+  let formMenu = (
+            <div className={classes.actionsMenu}>
+                {isEdit ?
+                  <Tooltip title="Save and view" onClick={onClose}>
+                    <IconButton color="primary">
+                      <DoneIcon />
+                    </IconButton>
+                  </Tooltip>
+                  :
+                  <Tooltip title="Edit">
+                    <IconButton color="primary" onClick={onEdit}>
+                      <EditIcon />
+                    </IconButton>
+                  </Tooltip>
+                }
+                <Tooltip title="More actions" onClick={(event) => {setActionsMenu(event.currentTarget)}}>
+                  <IconButton>
+                    <MoreIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+                { !actionsMenu && <div style={{display: "none"}}>{ dropdownList }</div> }
+                <Popover
+                    open={Boolean(actionsMenu)}
+                    anchorEl={actionsMenu}
+                    onClose={() => {setActionsMenu(null)}}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'right',
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                    }}
+                >
+                  { dropdownList }
+                </Popover>
             </div>
   )
 

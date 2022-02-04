@@ -633,17 +633,6 @@ const questionnaireStyle = theme => ({
       flexBasis: "100%",
       paddingLeft: theme.spacing(4)
     },
-    actionsMenuList: {
-      position: 'absolute',
-      marginTop: theme.spacing(6.25),
-      marginLeft: theme.spacing(-3.5),
-    },
-    actionsMenuListHidden: {
-      visibility: 'hidden',
-    },
-    actionsMenuListVisible: {
-      visibility: 'visible',
-    }
 });
 
 export default questionnaireStyle;
