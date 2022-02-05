@@ -449,18 +449,18 @@ public class PatientLocalStorage
             "fhir_id", obj -> obj.getString(PatientLocalStorage.FHIR_FIELD),
             "status", obj -> obj.getString("status"),
             "provider", obj -> {
-                JsonObject nameObj = obj.getJsonObject("attending").getJsonObject("name");
-                if (obj == null) {
+                final JsonObject nameObj = obj.getJsonObject("attending").getJsonObject("name");
+                if (nameObj == null) {
                     return "";
                 }
 
-                List<String> fullName = new LinkedList<String>(
-                    PatientLocalStorage.mapJsonString(obj.getJsonArray("prefix")));
-                fullName.addAll(PatientLocalStorage.mapJsonString(obj.getJsonArray("given")));
-                if (obj.containsKey("family")) {
-                    fullName.add(obj.getString("family"));
+                final List<String> fullName = new LinkedList<String>(
+                    PatientLocalStorage.mapJsonString(nameObj.getJsonArray("prefix")));
+                fullName.addAll(PatientLocalStorage.mapJsonString(nameObj.getJsonArray("given")));
+                if (nameObj.containsKey("family")) {
+                    fullName.add(nameObj.getString("family"));
                 }
-                fullName.addAll(PatientLocalStorage.mapJsonString(obj.getJsonArray("suffix")));
+                fullName.addAll(PatientLocalStorage.mapJsonString(nameObj.getJsonArray("suffix")));
                 return String.join(" ", fullName);
             },
             // We need to map the display name of the clinic given to a survey ID
