@@ -40,34 +40,32 @@ public @interface ImportConfigDefinition
     String VAULT_TOKEN = "";
 
     /** Cron-readable import schedule. */
-    String NIGHTLY_IMPORT_SCHEDULE = "";
+    String NIGHTLY_IMPORT_SCHEDULE = "0 0 0 * * ? *";
 
-    /** Pipe-delimited list of names of clinics to query. */
-    String CLINIC_NAME = "PMH 8 Palliative Care Oncology Clinic";
+    @AttributeDefinition(name = "Name", description = "Configuration name")
+    String name();
 
-    /** Pipe-delimited list of names of providers to query. If empty, all providers will be fetched. */
-    String PROVIDER_NAME = "";
-
-    @AttributeDefinition(name = "Import schedule",
-        description = "Cron-readable import schedule")
+    @AttributeDefinition(name = "Import schedule", description = "Cron-readable import schedule")
     String nightly_import_schedule() default NIGHTLY_IMPORT_SCHEDULE;
 
     @AttributeDefinition(type = AttributeType.INTEGER, name = "days to query",
         description = "Number of days of appointments to query ahead of schedule")
     int days_to_query() default DAYS_TO_QUERY;
 
-    @AttributeDefinition(name = "endpoint URL")
+    @AttributeDefinition(name = "Endpoint URL", description = "The Torch endpoint to query")
     String endpoint_url() default TORCH_ENDPOINT_URL;
 
-    @AttributeDefinition(name = "authentication URL")
+    @AttributeDefinition(name = "Authentication URL",
+        description = "The Vault URL to query for an auth token for accessing Torch")
     String auth_url() default VAULT_AUTH_URL;
 
-    @AttributeDefinition(name = "Vault token")
+    @AttributeDefinition(name = "Vault token", description = "Authentication token for accessing Vault")
     String vault_token() default VAULT_TOKEN;
 
-    @AttributeDefinition(name = "Clinic name")
-    String clinic_name() default CLINIC_NAME;
+    @AttributeDefinition(name = "Clinic names", description = "The clinic names to query")
+    String[] clinic_names();
 
-    @AttributeDefinition(name = "Provider name")
-    String provider_name() default PROVIDER_NAME;
+    @AttributeDefinition(name = "Provider names",
+        description = "List of names of providers to query. If empty, all providers will be fetched.", required = false)
+    String[] provider_names();
 }

@@ -19,22 +19,21 @@
 package io.uhndata.cards.proms.internal.importer;
 
 import java.io.IOException;
-import java.io.Writer;
+import java.util.List;
 import java.util.Locale;
 
+import javax.json.Json;
+import javax.json.JsonObjectBuilder;
 import javax.servlet.Servlet;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
-import org.osgi.service.component.ComponentContext;
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(
@@ -43,63 +42,68 @@ import org.slf4j.LoggerFactory;
     methods = { "GET" })
 public class ImportEndpoint extends SlingSafeMethodsServlet
 {
-    /** Default log. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(ImportEndpoint.class);
+    @Reference
+    private volatile ResourceResolverFactory resolverFactory;
 
     @Reference
-    private ResourceResolverFactory resolverFactory;
-
-    @Reference
-    private ImportConfig config;
-
-    /** Number of days to look ahead when querying for appointments. */
-    private int daysToQuery;
-
-    /** Torch FIHR GraphQL endpoint. */
-    private String endpointURL;
-
-    /** Vault JWT refresh endpoint. */
-    private String authURL;
-
-    /** Vault JWT token. */
-    private String vaultToken;
-
-    /** Name of the clinic to query for. */
-    private String clinicName = "";
-
-    /** Pipe-delimited list of providers to filter our query to. */
-    private String providerIDs = "";
-
-    @Activate
-    protected void activate(ComponentContext componentContext) throws Exception
-    {
-        this.authURL = this.config.getConfig().auth_url();
-        this.endpointURL = this.config.getConfig().endpoint_url();
-        this.daysToQuery = this.config.getConfig().days_to_query();
-        this.vaultToken = this.config.getConfig().vault_token();
-        this.clinicName = this.config.getConfig().clinic_name();
-        this.providerIDs = this.config.getConfig().provider_name();
-    }
+    private volatile List<ImportConfig> configs;
 
     @Override
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
     {
-        final Writer out = response.getWriter();
-
         // Ensure that this can only be run when logged in as admin
         final String remoteUser = request.getRemoteUser();
         if (!"admin".equals(remoteUser.toLowerCase(Locale.ROOT))) {
             // admin login required
-            response.setStatus(403);
-            out.write("Only admin can perform this operation.");
+            writeError(403, "Only admin can perform this operation.", response);
+            return;
+        }
+        final String configName = request.getParameter("config");
+        if (StringUtils.isBlank(configName)) {
+            writeError(400, "Configuration name must be specified", response);
+            return;
+        }
+        final ImportConfigDefinition config =
+            this.configs.stream()
+                .filter(c -> configName.equals(c.getConfig().name()))
+                .map(ImportConfig::getConfig)
+                .findFirst().orElse(null);
+        if (config == null) {
+            writeError(404, "Unknown configuration", response);
             return;
         }
 
         // Load configuration from environment variables
-        final Runnable importJob = new ImportTask(this.resolverFactory, this.authURL, this.endpointURL,
-            this.daysToQuery, this.vaultToken, this.clinicName, this.providerIDs);
+        final Runnable importJob = new ImportTask(this.resolverFactory, config.auth_url(), config.endpoint_url(),
+            config.days_to_query(), config.vault_token(), config.clinic_names(), config.provider_names());
         final Thread thread = new Thread(importJob);
         thread.start();
-        out.write("Data import started");
+        writeSuccess(response);
+    }
+
+    private void writeError(final int status, final String message, final SlingHttpServletResponse response)
+        throws IOException
+    {
+        final JsonObjectBuilder json = Json.createObjectBuilder();
+        json.add("status", "error");
+        json.add("error", message);
+        writeResponse(status, json.build().toString(), response);
+    }
+
+    private void writeSuccess(final SlingHttpServletResponse response)
+        throws IOException
+    {
+        final JsonObjectBuilder json = Json.createObjectBuilder();
+        json.add("status", "success");
+        json.add("message", "Data import started");
+        writeResponse(200, json.build().toString(), response);
+    }
+
+    private void writeResponse(final int status, final String body, final SlingHttpServletResponse response)
+        throws IOException
+    {
+        response.setStatus(status);
+        response.setContentType("application/json;charset=UTF-8");
+        response.getWriter().write(body);
     }
 }

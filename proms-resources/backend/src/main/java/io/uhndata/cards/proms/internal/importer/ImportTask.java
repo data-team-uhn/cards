@@ -28,11 +28,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 import javax.json.Json;
@@ -40,6 +37,7 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.slf4j.Logger;
@@ -64,10 +62,10 @@ public class ImportTask implements Runnable
     private final String authURL;
 
     /** Pipe-delimited list of names of clinics to query. */
-    private final String clinicNames;
+    private final String[] clinicNames;
 
     /** List of providers to query. If empty, all providers' appointments are used. */
-    private final List<String> providerIDs;
+    private final String[] providerIDs;
 
     /** URL for the Torch server endpoint. */
     private final String endpointURL;
@@ -88,7 +86,7 @@ public class ImportTask implements Runnable
      * @param providerIDs Pipe-delimited list of names of providers to filter queries to
      */
     ImportTask(final ResourceResolverFactory resolverFactory, final String authURL, final String endpointURL,
-        final int daysToQuery, final String vaultToken, final String clinicNames, final String providerIDs)
+        final int daysToQuery, final String vaultToken, final String[] clinicNames, final String[] providerIDs)
     {
         this.resolverFactory = resolverFactory;
         this.authURL = authURL;
@@ -97,19 +95,16 @@ public class ImportTask implements Runnable
         this.vaultToken = vaultToken;
         this.clinicNames = clinicNames;
         // If we have no provider IDs, we want an empty list instead of a list of length 1 with an empty string
-        this.providerIDs = "".equals(providerIDs) ? new ArrayList<String>()
-            : Arrays.asList(providerIDs.split("\\|"));
+        this.providerIDs = StringUtils.isAllBlank(providerIDs) ? new String[0] : providerIDs;
     }
 
     @Override
     public void run()
     {
-        String token = loginWithJWT();
+        final String token = loginWithJWT();
         // Iterate over every clinic name
-        String[] clinics = this.clinicNames.split("\\|");
-        for (int i = 0; i < clinics.length; i++)
-        {
-            getUpcomingAppointments(token, this.daysToQuery, clinics[i]);
+        for (int i = 0; i < this.clinicNames.length; i++) {
+            getUpcomingAppointments(token, this.daysToQuery, this.clinicNames[i]);
         }
     }
 
@@ -123,12 +118,12 @@ public class ImportTask implements Runnable
     private String loginWithJWT()
     {
         String token = "";
-        String postRequest = "{ \"role\": \"prom_role\", \"jwt\":\"" + this.vaultToken + "\" }";
+        final String postRequest = "{ \"role\": \"prom_role\", \"jwt\":\"" + this.vaultToken + "\" }";
 
         try {
             getPostResponse(this.authURL, postRequest);
             token = "Bearer " + this.vaultToken;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.error("Failed to activate authentication token: {}", e.getMessage(), e);
         }
 
@@ -137,70 +132,73 @@ public class ImportTask implements Runnable
 
     /**
      * Get any upcoming appointments in the next few days.
+     *
      * @param authToken an authentication token for use in querying the Torch server
      * @param daysToQuery the number of days to query
      */
-    private void getUpcomingAppointments(String authToken, int daysToQuery, String clinicName)
+    private void getUpcomingAppointments(final String authToken, final int daysToQuery, final String clinicName)
     {
         // Since we can't query more than one date at a time, query three dates
-        String postRequestTemplate = "{\"query\": \"query{"
+        final String postRequestTemplate = "{\"query\": \"query{"
             + "patientsByDateAndClinic(location: \\\"" + clinicName + "\\\", start: \\\"%s\\\", end: \\\"%s\\\") {"
             + "fhirID name {given family} sex mrn ohip dob emailOk com {email} "
             + "appointments {fhirID time status location attending {name {prefix given family suffix} eID}} }}\"}";
 
-        Calendar startDate = Calendar.getInstance();
-        Date today = new Date();
+        final Calendar startDate = Calendar.getInstance();
+        final Date today = new Date();
         startDate.setTime(today);
-        Calendar endDate = (Calendar) startDate.clone();
+        final Calendar endDate = (Calendar) startDate.clone();
         endDate.add(Calendar.DATE, daysToQuery);
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        String postRequest = String.format(postRequestTemplate, formatter.format(startDate.getTime()),
+        final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        final String postRequest = String.format(postRequestTemplate, formatter.format(startDate.getTime()),
             formatter.format(endDate.getTime()));
 
         // Query the torch server
         try {
-            String rawResponse = getPostResponse(this.endpointURL, postRequest, authToken);
+            final String rawResponse = getPostResponse(this.endpointURL, postRequest, authToken);
 
             // Read the response into a JsonObject
-            JsonReader jsonReader = Json.createReader(new StringReader(rawResponse));
-            JsonObject response = jsonReader.readObject();
+            final JsonReader jsonReader = Json.createReader(new StringReader(rawResponse));
+            final JsonObject response = jsonReader.readObject();
 
             // Create the storage object and store every patient/visit
-            JsonArray data = response.getJsonObject("data").getJsonArray("patientsByDateAndClinic");
-            ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(
+            final JsonArray data = response.getJsonObject("data").getJsonArray("patientsByDateAndClinic");
+            final ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(
                 Map.of(ResourceResolverFactory.SUBSERVICE, "TorchImporter"));
             final PatientLocalStorage storage = new PatientLocalStorage(resolver, startDate, endDate,
                 this.providerIDs);
 
             data.forEach(storage::store);
             resolver.close();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.error("Failed to query server: {}", e.getMessage(), e);
         }
     }
 
     /***
      * Get the response from a URL after submitting a POST request.
+     *
      * @param url The URL to send a POST request to
      * @param data The payload to POST
      * @return The response from the server
      */
-    String getPostResponse(String url, String data) throws IOException
+    String getPostResponse(final String url, final String data) throws IOException
     {
         return getPostResponse(url, data, "");
     }
 
     /***
      * Get the response from a URL after submitting a POST request.
+     *
      * @param url The URL to send a POST request to
      * @param data The payload to POST
      * @param token an optional token to send as a request property
      * @return The response from the server
      */
-    String getPostResponse(String url, String data, String token) throws IOException
+    String getPostResponse(final String url, final String data, final String token) throws IOException
     {
-        URLConnection con = new URL(url).openConnection();
-        HttpURLConnection http = (HttpURLConnection) con;
+        final URLConnection con = new URL(url).openConnection();
+        final HttpURLConnection http = (HttpURLConnection) con;
 
         http.setRequestMethod("POST");
         http.setRequestProperty("Content-Type", "application/json");
@@ -211,14 +209,14 @@ public class ImportTask implements Runnable
 
         // Write our POST data to the server
         try (OutputStream os = con.getOutputStream()) {
-            byte[] input = data.getBytes("utf-8");
+            final byte[] input = data.getBytes("utf-8");
             os.write(input, 0, input.length);
         }
 
         // Get the response from the server
-        BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), "utf-8"));
+        final BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), "utf-8"));
         String responseLine = null;
-        StringBuilder rawResponse = new StringBuilder();
+        final StringBuilder rawResponse = new StringBuilder();
         while ((responseLine = br.readLine()) != null) {
             rawResponse.append(responseLine.trim());
         }

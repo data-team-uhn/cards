@@ -25,13 +25,14 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.metatype.annotations.Designate;
 
 @Component(immediate = true, service = ImportConfig.class)
-@Designate(ocd = ImportConfigDefinition.class)
+@Designate(ocd = ImportConfigDefinition.class, factory = true)
 public class ImportConfig
 {
     private ImportConfigDefinition config;
 
     @Activate
-    protected void activate(ImportConfigDefinition config, ComponentContext componentContext) throws Exception
+    protected void activate(final ImportConfigDefinition config, final ComponentContext componentContext)
+        throws Exception
     {
         this.config = config;
     }

@@ -22,6 +22,7 @@ package io.uhndata.cards.proms.internal.importer;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -106,13 +107,13 @@ public class PatientLocalStorage
      * @param endDate The end of the range of dates for appointments to find from within the patient
      * @param providerIDs List of providers to query. If empty, all providers' appointments are used
      */
-    PatientLocalStorage(ResourceResolver resolver, final Calendar startDate, final Calendar endDate,
-        final List<String> providerIDs)
+    PatientLocalStorage(final ResourceResolver resolver, final Calendar startDate, final Calendar endDate,
+        final String[] providerIDs)
     {
         this.resolver = resolver;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.providerIDs = providerIDs;
+        this.providerIDs = Arrays.asList(providerIDs);
     }
 
     /**
@@ -160,6 +161,7 @@ public class PatientLocalStorage
 
     /**
      * Store an appointment from the given JsonObject, if it is within the right time frame.
+     *
      * @param appointment JsonObject of an appointment to store
      * @param patient path to a patient subject for this appointment
      */
@@ -179,6 +181,7 @@ public class PatientLocalStorage
 
     /**
      * Returns whether or not the given appointment is between our start and end dates.
+     *
      * @param appointment JsonObject of an appointment to check
      * @return True if the appointment is between our dates, or false if either the date is outside our range
      *     or if we cannot parse it
@@ -200,6 +203,7 @@ public class PatientLocalStorage
 
     /**
      * Returns whether or not the given appointment is attended by an approved provider.
+     *
      * @param appointment JsonObject of an appointment to check
      * @return True if the appointment is with an approved provider or if no providers are used.
      */
@@ -235,6 +239,7 @@ public class PatientLocalStorage
 
     /**
      * Grab a subject of the specified type, or create it if it doesn't exist.
+     *
      * @param identifier Identifier to use for the subject
      * @param subjectTypePath path to a SubjectType node for this subject
      * @param parent parent Resource if this is a child of that resource, or null
@@ -268,6 +273,7 @@ public class PatientLocalStorage
 
     /**
      * Grab a form of the specified type, or create it if it doesn't exist.
+     *
      * @param subject Resource of the subject node for the form
      * @param questionnairePath Path to the questionnaire that this is a form of
      * @return A Form resource
@@ -309,8 +315,9 @@ public class PatientLocalStorage
     }
 
     /**
-     * Get a string from a JSONObject using the given JsonStringGetter function, returning an empty
-     * string if the value does not exist.
+     * Get a string from a JSONObject using the given JsonStringGetter function, returning an empty string if the value
+     * does not exist.
+     *
      * @param valueGetter The JsonStringGetter to use when obtaining a value from a JsonObject
      * @param info The JsonObject to apply valueGetter to.
      * @return The string, or an empty string if it does not exist
@@ -327,6 +334,7 @@ public class PatientLocalStorage
 
     /**
      * Update the answers in a form with the values that we were given.
+     *
      * @param form The form to fill out
      * @param info The JsonObject with responses to the form, to grab data from
      * @param parentQuestionnaire The questionnaire that this form applies to
@@ -362,8 +370,6 @@ public class PatientLocalStorage
                 safelyGetValue(mapping.get(questionNode.getName()), info));
         }
 
-        // For each node that does not exist, create a new answer
-        String formPath = form.getPath();
         for (Map.Entry<String, JsonStringGetter> entry : mapping.entrySet()) {
             if (seenNodes.contains(entry.getKey())) {
                 continue;
@@ -402,6 +408,7 @@ public class PatientLocalStorage
 
     /**
      * Update the patient information form with values from the given JsonObject.
+     *
      * @param form The Patient Information form to update
      * @param info The JsonObject representing a patient returned from Torch
      */
@@ -429,6 +436,7 @@ public class PatientLocalStorage
 
     /**
      * Update the visit information form with values from the given JsonObject.
+     *
      * @param form The Visit Information form to update
      * @param info The JsonObject representing a visit returned from Torch
      * @param surveyID A string representing the internally mapped survey ID for the location of this visit
@@ -493,6 +501,7 @@ public class PatientLocalStorage
 
     /**
      * Ensure that an answer to the question exists for the given form.
+     *
      * @param form Form resource to alter
      * @param questionPath Boolean question path for the question
      * @param primaryType Answer Node type (e.g. cards:TextAnswer)
@@ -524,6 +533,7 @@ public class PatientLocalStorage
     class SurveyInfo
     {
         private String surveyID;
+
         private String displayName;
 
         public void setSurveyID(String id)
@@ -549,6 +559,7 @@ public class PatientLocalStorage
 
     /**
      * Map the given Torch clinic name to a survey ID and display name.
+     *
      * @param appointments The appointments array to parse
      * @return The survey information as a list
      */
@@ -565,8 +576,7 @@ public class PatientLocalStorage
             if (mapping == null) {
                 LOGGER.error("Could not find mapping for location {} (checking {})", clinic, mapPath);
             } else {
-                try
-                {
+                try {
                     SurveyInfo thisSurvey = new SurveyInfo();
                     Node thisNode = mapping.adaptTo(Node.class);
                     thisSurvey.setSurveyID(thisNode.getProperty("surveyID").getString());
