@@ -462,6 +462,7 @@ function SubjectMemberInternal (props) {
                    breadcrumb={getTextHierarchy(data, true)}
                    date={moment(data['jcr:created']).format("MMM Do YYYY")}
                    buttonClass={classes.childSubjectHeaderButton}
+                   disableShortcut
                  />
                  <DeleteButton
                    entryPath={path}
