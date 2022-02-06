@@ -87,8 +87,8 @@ public class UnsubmittedFormsRestrictionPattern implements RestrictionPattern
     public boolean matches(final Tree tree, final PropertyState property)
     {
         try {
-            if (this.session == null) {
-                // No session, cannot proceed
+            if (this.session == null || property != null) {
+                // This only applies to the form node itself, and only when we have a session
                 return false;
             }
 
