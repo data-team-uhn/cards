@@ -44,9 +44,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Query the Torch server provided for patients with appointments in the coming few days (default: 3),
- * and stores them in JCR local storage. This will overwrite existing patients/appointments with updated
- * information, if it is available, but will not remove any existing patients/appointments.
+ * Query the Torch server provided for patients with appointments in the coming few days (default: 3), and stores them
+ * in JCR local storage. This will overwrite existing patients/appointments with updated information, if it is
+ * available, but will not remove any existing patients/appointments.
  *
  * @version $Id$
  */
@@ -109,11 +109,12 @@ public class ImportTask implements Runnable
     }
 
     /**
-     * Obtain an authentication token for use in querying the Torch server. Currently, this sends a JWT Login
-     * request to Vault, which authorizes our JWT token to query the server. This should be called before performing
+     * Obtain an authentication token for use in querying the Torch server. Currently, this sends a JWT Login request to
+     * Vault, which authorizes our JWT token to query the server. This should be called before performing
      * {@code getUpcomingAppointments}.
-     * @return an authentication token to be passed onto as a header, typically begins with "Bearer " or an empty
-     *         string if no token could be obtained.
+     *
+     * @return an authentication token to be passed onto as a header, typically begins with "Bearer " or an empty string
+     *         if no token could be obtained.
      */
     private String loginWithJWT()
     {
@@ -135,10 +136,10 @@ public class ImportTask implements Runnable
      *
      * @param authToken an authentication token for use in querying the Torch server
      * @param daysToQuery the number of days to query
+     * @param clinicName the clinic for which to retrieve appointments
      */
     private void getUpcomingAppointments(final String authToken, final int daysToQuery, final String clinicName)
     {
-        // Since we can't query more than one date at a time, query three dates
         final String postRequestTemplate = "{\"query\": \"query{"
             + "patientsByDateAndClinic(location: \\\"" + clinicName + "\\\", start: \\\"%s\\\", end: \\\"%s\\\") {"
             + "fhirID name {given family} sex mrn ohip dob emailOk com {email} "
