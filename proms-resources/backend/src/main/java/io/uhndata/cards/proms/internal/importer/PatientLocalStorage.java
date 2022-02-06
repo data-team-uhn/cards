@@ -50,10 +50,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Utility class to store a patient JSON object as returned by our Torch server into JCR. This
- * is mostly a utility class for ImportTask, as it assumes the JsonObject has the following fields:
- * { name {given family} sex mrn ohip dob emailOk com {email} nextAppointment {fhirID time
- * status attending {name {family}}}
+ * Utility class to store a patient JSON object as returned by our Torch server into JCR. This is mostly a utility class
+ * for ImportTask, as it assumes the JsonObject has the following fields: { name {given family} sex mrn ohip dob emailOk
+ * com {email} nextAppointment {fhirID time status attending {name {family}}}
  *
  * @version $Id$
  */
@@ -87,10 +86,10 @@ public class PatientLocalStorage
     private JsonObject patientDetails;
 
     /** Start date of appointments to store. */
-    private Calendar startDate;
+    private final Calendar startDate;
 
     /** End date of appointments to store. */
-    private Calendar endDate;
+    private final Calendar endDate;
 
     /** Pipe-delimited list of providers to query. If empty, all providers' appointments are used. */
     private final List<String> providerIDs;
@@ -118,26 +117,27 @@ public class PatientLocalStorage
 
     /**
      * Store the patient details given to us.
+     *
      * @param value A JsonObject representing the patient
      */
     public void store(final JsonValue value)
     {
         this.patientDetails = value.asJsonObject();
-        String mrn = this.patientDetails.getString("mrn");
+        final String mrn = this.patientDetails.getString("mrn");
         this.nodesToCheckin = new HashSet<String>();
         try {
             final Session session = this.resolver.adaptTo(Session.class);
             this.versionManager = session.getWorkspace().getVersionManager();
 
             // Update information about the patient
-            Resource patient = getOrCreateSubject(mrn, "/SubjectTypes/Patient", null);
-            Resource patientInfo = getOrCreateForm(patient, "/Questionnaires/Patient information/");
+            final Resource patient = getOrCreateSubject(mrn, "/SubjectTypes/Patient", null);
+            final Resource patientInfo = getOrCreateForm(patient, "/Questionnaires/Patient information");
             updatePatientInformationForm(patientInfo, this.patientDetails);
 
-            // Update information about the visit ("appointment" is used interchangably here)
-            JsonArray appointmentDetails = this.patientDetails.getJsonArray("appointments");
+            // Update information about the visit ("appointment" is used interchangeably here)
+            final JsonArray appointmentDetails = this.patientDetails.getJsonArray("appointments");
             for (int i = 0; i < appointmentDetails.size(); i++) {
-                JsonObject appointment = appointmentDetails.getJsonObject(i);
+                final JsonObject appointment = appointmentDetails.getJsonObject(i);
                 if (isAppointmentInTimeframe(appointment) && isAppointmentByAllowedProvider(appointment)) {
                     storeAppointment(appointment, patient);
                 }
@@ -148,13 +148,13 @@ public class PatientLocalStorage
             this.nodesToCheckin.forEach(node -> {
                 try {
                     this.versionManager.checkin(node);
-                } catch (RepositoryException e) {
+                } catch (final RepositoryException e) {
                     LOGGER.warn("Failed to check in node {}: {}", node, e.getMessage(), e);
                 }
             });
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LOGGER.error("Could not save patient {}: {}", mrn, e.getMessage(), e);
-        } catch (RepositoryException e) {
+        } catch (final RepositoryException e) {
             LOGGER.error("Could not save patient {}: {}", mrn, e.getMessage(), e);
         }
     }
@@ -165,16 +165,15 @@ public class PatientLocalStorage
      * @param appointment JsonObject of an appointment to store
      * @param patient path to a patient subject for this appointment
      */
-    void storeAppointment(JsonObject appointment, Resource patient)
+    void storeAppointment(final JsonObject appointment, final Resource patient)
         throws RepositoryException, PersistenceException
     {
         // In one usage of patientLocalStorage.store(), only store those within a specific timeframe
-        List<SurveyInfo> surveyInfos = getSurveyInfo(appointment.getJsonArray("location"));
-        for (SurveyInfo surveyInfo : surveyInfos)
-        {
-            Resource visit = getOrCreateSubject(appointment.getString(PatientLocalStorage.FHIR_FIELD)
+        final List<SurveyInfo> surveyInfos = getSurveyInfo(appointment.getJsonArray("location"));
+        for (final SurveyInfo surveyInfo : surveyInfos) {
+            final Resource visit = getOrCreateSubject(appointment.getString(PatientLocalStorage.FHIR_FIELD)
                 + "-" + surveyInfo.getSurveyID(), "/SubjectTypes/Patient/Visit/", patient);
-            Resource visitInfo = getOrCreateForm(visit, "/Questionnaires/Visit information/");
+            final Resource visitInfo = getOrCreateForm(visit, "/Questionnaires/Visit information");
             updateVisitInformationForm(visitInfo, appointment, surveyInfo.getSurveyID(), surveyInfo.getDisplayName());
         }
     }
@@ -183,18 +182,17 @@ public class PatientLocalStorage
      * Returns whether or not the given appointment is between our start and end dates.
      *
      * @param appointment JsonObject of an appointment to check
-     * @return True if the appointment is between our dates, or false if either the date is outside our range
-     *     or if we cannot parse it
+     * @return True if the appointment is between our dates, or false if either the date is outside our range or if we
+     *         cannot parse it
      */
-    Boolean isAppointmentInTimeframe(JsonObject appointment)
+    Boolean isAppointmentInTimeframe(final JsonObject appointment)
     {
         try {
-            Date thisDate = new SimpleDateFormat("yyyy-MM-dd").parse(appointment.getString("time"));
-            Calendar thisCalendar = Calendar.getInstance();
+            final Date thisDate = new SimpleDateFormat("yyyy-MM-dd").parse(appointment.getString("time"));
+            final Calendar thisCalendar = Calendar.getInstance();
             thisCalendar.setTime(thisDate);
             return thisCalendar.after(this.startDate) && thisCalendar.before(this.endDate);
-        } catch (ParseException e) {
-            //TODO: handle exception
+        } catch (final ParseException e) {
             LOGGER.error("Could not parse date for appointment {}: {}",
                 appointment.getString(PatientLocalStorage.FHIR_FIELD), e.getMessage(), e);
         }
@@ -207,27 +205,28 @@ public class PatientLocalStorage
      * @param appointment JsonObject of an appointment to check
      * @return True if the appointment is with an approved provider or if no providers are used.
      */
-    Boolean isAppointmentByAllowedProvider(JsonObject appointment)
+    Boolean isAppointmentByAllowedProvider(final JsonObject appointment)
     {
         // Check if we even have provider IDs to use
+        // If there are none, it is assumed that all providers in the clinic are allowed
         if (this.providerIDs.size() == 0) {
             return true;
         }
 
         // Return true if at least one provider matches
         try {
-            JsonArray providers = appointment.getJsonArray("attending");
+            final JsonArray providers = appointment.getJsonArray("attending");
             for (int i = 0; i < providers.size(); i++) {
-                for (String providerID : this.providerIDs) {
+                for (final String providerID : this.providerIDs) {
                     if (providerID.equals(providers.getJsonObject(0).getString("eID"))) {
                         return true;
                     }
                 }
             }
-        } catch (ClassCastException e) {
+        } catch (final ClassCastException e) {
             // If we are returned a single object, it is a single provider
-            JsonObject provider = appointment.getJsonObject("attending");
-            for (String providerID : this.providerIDs) {
+            final JsonObject provider = appointment.getJsonObject("attending");
+            for (final String providerID : this.providerIDs) {
                 if (providerID.equals(provider.getString("eID"))) {
                     return true;
                 }
@@ -245,13 +244,13 @@ public class PatientLocalStorage
      * @param parent parent Resource if this is a child of that resource, or null
      * @return A Subject resource
      */
-    Resource getOrCreateSubject(String identifier, String subjectTypePath, Resource parent)
+    Resource getOrCreateSubject(final String identifier, final String subjectTypePath, final Resource parent)
         throws RepositoryException, PersistenceException
     {
-        Iterator<Resource> subjectResourceIter = this.resolver.findResources(String.format(
+        final Iterator<Resource> subjectResourceIter = this.resolver.findResources(String.format(
             "SELECT * FROM [cards:Subject] WHERE identifier = \"%s\"", identifier), PatientLocalStorage.JCR_SQL);
         if (subjectResourceIter.hasNext()) {
-            Resource subjectResource = subjectResourceIter.next();
+            final Resource subjectResource = subjectResourceIter.next();
             this.versionManager.checkout(subjectResource.getPath());
             this.nodesToCheckin.add(subjectResource.getPath());
             return subjectResource;
@@ -260,12 +259,11 @@ public class PatientLocalStorage
             if (parentResource == null) {
                 parentResource = this.resolver.getResource("/Subjects/");
             }
-            Resource patientType = this.resolver.getResource(subjectTypePath);
-            Resource newSubject = this.resolver.create(parentResource, UUID.randomUUID().toString(), Map.of(
+            final Resource patientType = this.resolver.getResource(subjectTypePath);
+            final Resource newSubject = this.resolver.create(parentResource, UUID.randomUUID().toString(), Map.of(
                 PatientLocalStorage.PRIMARY_TYPE, "cards:Subject",
                 "identifier", identifier,
-                "type", patientType.adaptTo(Node.class)
-            ));
+                "type", patientType.adaptTo(Node.class)));
             this.nodesToCheckin.add(newSubject.getPath());
             return newSubject;
         }
@@ -278,27 +276,26 @@ public class PatientLocalStorage
      * @param questionnairePath Path to the questionnaire that this is a form of
      * @return A Form resource
      */
-    Resource getOrCreateForm(Resource subject, String questionnairePath)
+    Resource getOrCreateForm(final Resource subject, final String questionnairePath)
         throws RepositoryException, PersistenceException
     {
-        Resource formType = this.resolver.getResource(questionnairePath);
-        Node subjectNode = subject.adaptTo(Node.class);
-        Iterator<Resource> formResourceIter = this.resolver.findResources(String.format(
+        final Resource formType = this.resolver.getResource(questionnairePath);
+        final Node subjectNode = subject.adaptTo(Node.class);
+        final Iterator<Resource> formResourceIter = this.resolver.findResources(String.format(
             "SELECT * FROM [cards:Form] WHERE subject = \"%s\" AND questionnaire=\"%s\"",
             subjectNode.getIdentifier(),
             formType.adaptTo(Node.class).getIdentifier()), PatientLocalStorage.JCR_SQL);
         if (formResourceIter.hasNext()) {
-            Resource formResource = formResourceIter.next();
+            final Resource formResource = formResourceIter.next();
             this.versionManager.checkout(formResource.getPath());
             this.nodesToCheckin.add(formResource.getPath());
             return formResource;
         } else {
-            Resource parentResource = this.resolver.getResource("/Forms/");
-            Resource newForm = this.resolver.create(parentResource, UUID.randomUUID().toString(), Map.of(
+            final Resource parentResource = this.resolver.getResource("/Forms/");
+            final Resource newForm = this.resolver.create(parentResource, UUID.randomUUID().toString(), Map.of(
                 PatientLocalStorage.PRIMARY_TYPE, "cards:Form",
                 "questionnaire", formType.adaptTo(Node.class),
-                "subject", subjectNode
-            ));
+                "subject", subjectNode));
             this.nodesToCheckin.add(newForm.getPath());
             return newForm;
         }
@@ -322,11 +319,11 @@ public class PatientLocalStorage
      * @param info The JsonObject to apply valueGetter to.
      * @return The string, or an empty string if it does not exist
      */
-    String safelyGetValue(JsonStringGetter valueGetter, JsonObject info)
+    String safelyGetValue(final JsonStringGetter valueGetter, final JsonObject info)
     {
         try {
             return valueGetter.get(info);
-        } catch (ClassCastException e) {
+        } catch (final NullPointerException | ClassCastException e) {
             // Class cast exceptions represent a value of "null", which could not be obtained
             return "";
         }
@@ -338,22 +335,22 @@ public class PatientLocalStorage
      * @param form The form to fill out
      * @param info The JsonObject with responses to the form, to grab data from
      * @param parentQuestionnaire The questionnaire that this form applies to
-     * @param mapping A map of Question node names to the method of getting their String answers from
-     *                the {@code info} JsonObject.
-     * @param dateFields A map of Question node names to the method of getting their Date answers from
-     *                   the {@code info} JsonObject.
+     * @param mapping A map of Question node names to the method of getting their String answers from the {@code info}
+     *            JsonObject.
+     * @param dateFields A map of Question node names to the method of getting their Date answers from the {@code info}
+     *            JsonObject.
      * @return The string, or an empty string if it does not exist
      */
-    void updateForm(Resource form, JsonObject info, String parentQuestionnaire,
-        Map<String, JsonStringGetter> mapping, Map<String, JsonDateGetter> dateFields)
+    void updateForm(final Resource form, final JsonObject info, final String parentQuestionnaire,
+        final Map<String, JsonStringGetter> mapping, final Map<String, JsonDateGetter> dateFields)
         throws RepositoryException, PersistenceException
     {
         // Run through the children of the node, seeing what exists
-        Set<String> seenNodes = new HashSet<String>();
-        Map<String, Node> dateNodes = new HashMap<String, Node>();
-        for (Resource existingAnswer : form.getChildren()) {
-            Node answerNode = existingAnswer.adaptTo(Node.class);
-            Node questionNode = answerNode.getProperty(PatientLocalStorage.QUESTION_FIELD).getNode();
+        final Set<String> seenNodes = new HashSet<String>();
+        final Map<String, Node> dateNodes = new HashMap<String, Node>();
+        for (final Resource existingAnswer : form.getChildren()) {
+            final Node answerNode = existingAnswer.adaptTo(Node.class);
+            final Node questionNode = answerNode.getProperty(PatientLocalStorage.QUESTION_FIELD).getNode();
 
             // Make note of the date node, since we handle it differently
             if (dateFields.containsKey(questionNode.getName())) {
@@ -370,7 +367,7 @@ public class PatientLocalStorage
                 safelyGetValue(mapping.get(questionNode.getName()), info));
         }
 
-        for (Map.Entry<String, JsonStringGetter> entry : mapping.entrySet()) {
+        for (final Map.Entry<String, JsonStringGetter> entry : mapping.entrySet()) {
             if (seenNodes.contains(entry.getKey())) {
                 continue;
             }
@@ -380,14 +377,13 @@ public class PatientLocalStorage
                     + entry.getKey()).adaptTo(Node.class),
                 PatientLocalStorage.VALUE_FIELD, safelyGetValue(entry.getValue(), info),
                 PatientLocalStorage.PRIMARY_TYPE, "cards:TextAnswer",
-                PatientLocalStorage.STATUS_FIELD, ""
-                ));
+                PatientLocalStorage.STATUS_FIELD, ""));
         }
 
         // Do the same with date fields, which have different parameters
-        for (Map.Entry<String, JsonDateGetter> entry : dateFields.entrySet()) {
+        for (final Map.Entry<String, JsonDateGetter> entry : dateFields.entrySet()) {
             try {
-                Calendar entryDate = Calendar.getInstance();
+                final Calendar entryDate = Calendar.getInstance();
                 entryDate.setTime(entry.getValue().get(info));
                 if (dateNodes.containsKey(entry.getKey())) {
                     dateNodes.get(entry.getKey()).setProperty(PatientLocalStorage.VALUE_FIELD, entryDate);
@@ -397,11 +393,10 @@ public class PatientLocalStorage
                         this.resolver.getResource(parentQuestionnaire + "/" + entry.getKey()).adaptTo(Node.class),
                         PatientLocalStorage.VALUE_FIELD, entryDate,
                         PatientLocalStorage.PRIMARY_TYPE, "cards:DateAnswer",
-                        PatientLocalStorage.STATUS_FIELD, ""
-                        ));
+                        PatientLocalStorage.STATUS_FIELD, ""));
                 }
-            } catch (ParseException e) {
-                LOGGER.error("Error occurred while parsing {} for {}, {}", entry, info.toString(), e);
+            } catch (final ParseException e) {
+                LOGGER.error("Error occurred while parsing {} for {}, {}", entry.getKey(), info.toString(), e);
             }
         }
     }
@@ -412,11 +407,11 @@ public class PatientLocalStorage
      * @param form The Patient Information form to update
      * @param info The JsonObject representing a patient returned from Torch
      */
-    void updatePatientInformationForm(Resource form, JsonObject info)
+    void updatePatientInformationForm(final Resource form, final JsonObject info)
         throws RepositoryException, PersistenceException
     {
         // Map of Patient information question node name => Function to get JSON value
-        Map<String, JsonStringGetter> formMapping = Map.of(
+        final Map<String, JsonStringGetter> formMapping = Map.of(
             "mrn", obj -> obj.getString("mrn"),
             "health_card", obj -> obj.getString("ohip"),
             "sex", obj -> obj.getString("sex"),
@@ -424,12 +419,10 @@ public class PatientLocalStorage
             "last_name", obj -> obj.getJsonObject("name").getString("family"),
             "email", obj -> obj.getJsonObject("com").getString("email"),
             "email_ok", obj -> obj.getString("emailOk"),
-            "fhir_id", obj -> obj.getString(PatientLocalStorage.FHIR_FIELD)
-        );
+            "fhir_id", obj -> obj.getString(PatientLocalStorage.FHIR_FIELD));
 
-        Map<String, JsonDateGetter> dateMapping = Map.of(
-            "date_of_birth", obj -> new SimpleDateFormat("yyyy-MM-dd").parse(obj.getString("dob"))
-        );
+        final Map<String, JsonDateGetter> dateMapping = Map.of(
+            "date_of_birth", obj -> new SimpleDateFormat("yyyy-MM-dd").parse(obj.getString("dob")));
 
         updateForm(form, info, "/Questionnaires/Patient information", formMapping, dateMapping);
     }
@@ -442,10 +435,11 @@ public class PatientLocalStorage
      * @param surveyID A string representing the internally mapped survey ID for the location of this visit
      * @param locationName A string representing the display name of the location for this visit
      */
-    void updateVisitInformationForm(Resource form, JsonObject info, String surveyID, String locationName)
+    void updateVisitInformationForm(final Resource form, final JsonObject info, final String surveyID,
+        final String locationName)
         throws RepositoryException, PersistenceException
     {
-        Map<String, JsonStringGetter> formMapping = Map.of(
+        final Map<String, JsonStringGetter> formMapping = Map.of(
             "fhir_id", obj -> obj.getString(PatientLocalStorage.FHIR_FIELD),
             "status", obj -> obj.getString("status"),
             "provider", obj -> {
@@ -466,12 +460,10 @@ public class PatientLocalStorage
             // We need to map the display name of the clinic given to a survey ID
             // The mappings are stored at /Proms/ClinicMapping/<location hashcCode>
             "surveys", obj -> surveyID,
-            "location", obj -> locationName
-        );
+            "location", obj -> locationName);
 
-        Map<String, JsonDateGetter> dateMapping = Map.of(
-            "time", obj -> new SimpleDateFormat("yyyy-MM-dd").parse(obj.getString("time"))
-        );
+        final Map<String, JsonDateGetter> dateMapping = Map.of(
+            "time", obj -> new SimpleDateFormat("yyyy-MM-dd").parse(obj.getString("time")));
 
         updateForm(form, info, "/Questionnaires/Visit information", formMapping, dateMapping);
 
@@ -482,21 +474,22 @@ public class PatientLocalStorage
 
     /**
      * Convert a {@code JsonArray} of strings to a {@code List<String>}.
+     *
      * @param list A JsonArray full of JsonStrings to convert
      * @return List of Strings
      */
-    static List<String> mapJsonString(JsonArray list)
+    static List<String> mapJsonString(final JsonArray list)
     {
-        List<String> retVal = new LinkedList<String>();
+        final List<String> results = new LinkedList<String>();
 
         if (list == null) {
-            return retVal;
+            return results;
         }
 
-        for (JsonString str : list.getValuesAs(JsonString.class)) {
-            retVal.add(str.getString());
+        for (final JsonString str : list.getValuesAs(JsonString.class)) {
+            results.add(str.getString());
         }
-        return retVal;
+        return results;
     }
 
     /**
@@ -507,12 +500,13 @@ public class PatientLocalStorage
      * @param primaryType Answer Node type (e.g. cards:TextAnswer)
      * @param defaultValue Default value to use for the node
      */
-    void ensureAnswerExists(Resource form, String questionPath, String primaryType, Object defaultValue)
+    void ensureAnswerExists(final Resource form, final String questionPath, final String primaryType,
+        final Object defaultValue)
         throws RepositoryException, PersistenceException
     {
-        for (Resource existingAnswer : form.getChildren()) {
-            Node answerNode = existingAnswer.adaptTo(Node.class);
-            Node questionNode = answerNode.getProperty(PatientLocalStorage.QUESTION_FIELD).getNode();
+        for (final Resource existingAnswer : form.getChildren()) {
+            final Node answerNode = existingAnswer.adaptTo(Node.class);
+            final Node questionNode = answerNode.getProperty(PatientLocalStorage.QUESTION_FIELD).getNode();
 
             if (questionPath.equals(questionNode.getPath())) {
                 return;
@@ -523,8 +517,7 @@ public class PatientLocalStorage
             this.resolver.getResource(questionPath).adaptTo(Node.class),
             PatientLocalStorage.VALUE_FIELD, defaultValue,
             PatientLocalStorage.PRIMARY_TYPE, primaryType,
-            PatientLocalStorage.STATUS_FIELD, ""
-            ));
+            PatientLocalStorage.STATUS_FIELD, ""));
     }
 
     /**
@@ -536,7 +529,7 @@ public class PatientLocalStorage
 
         private String displayName;
 
-        public void setSurveyID(String id)
+        public void setSurveyID(final String id)
         {
             this.surveyID = id;
         }
@@ -546,7 +539,7 @@ public class PatientLocalStorage
             return this.surveyID;
         }
 
-        public void setDisplayName(String name)
+        public void setDisplayName(final String name)
         {
             this.displayName = name;
         }
@@ -560,34 +553,34 @@ public class PatientLocalStorage
     /**
      * Map the given Torch clinic name to a survey ID and display name.
      *
-     * @param appointments The appointments array to parse
+     * @param locations The appointment locations array to parse
      * @return The survey information as a list
      */
-    List<SurveyInfo> getSurveyInfo(JsonArray appointments)
+    List<SurveyInfo> getSurveyInfo(final JsonArray locations)
     {
-        List<SurveyInfo> retVal = new LinkedList<>();
-        for (int i = 0; i < appointments.size(); i++) {
+        final List<SurveyInfo> results = new LinkedList<>();
+        for (int i = 0; i < locations.size(); i++) {
             // Resolve this name from our mapping
-            String clinic = appointments.getString(i);
-            // TODO: What do we do in case of a colission?
-            String mapPath = "/Proms/ClinicMapping/" + String.valueOf(clinic.hashCode());
-            Resource mapping = this.resolver.getResource(mapPath);
+            final String clinic = locations.getString(i);
+            // TODO: What do we do in case of a collision?
+            final String mapPath = "/Proms/ClinicMapping/" + String.valueOf(clinic.hashCode());
+            final Resource mapping = this.resolver.getResource(mapPath);
 
             if (mapping == null) {
-                LOGGER.error("Could not find mapping for location {} (checking {})", clinic, mapPath);
+                LOGGER.warn("Could not find mapping for location {} (checking {})", clinic, mapPath);
             } else {
                 try {
-                    SurveyInfo thisSurvey = new SurveyInfo();
-                    Node thisNode = mapping.adaptTo(Node.class);
+                    final SurveyInfo thisSurvey = new SurveyInfo();
+                    final Node thisNode = mapping.adaptTo(Node.class);
                     thisSurvey.setSurveyID(thisNode.getProperty("surveyID").getString());
                     thisSurvey.setDisplayName(thisNode.getProperty("displayName").getString());
-                    retVal.add(thisSurvey);
-                } catch (RepositoryException e) {
+                    results.add(thisSurvey);
+                } catch (final RepositoryException e) {
                     LOGGER.error("Error while resolving clinic mapping: {} {} ", clinic, e.getMessage(), e);
                 }
             }
         }
 
-        return retVal;
+        return results;
     }
 }
