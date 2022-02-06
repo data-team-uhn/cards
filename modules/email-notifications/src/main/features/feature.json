@@ -21,6 +21,7 @@
   "variables":{
     "emailnotifications.smtps.host":"localhost",
     "emailnotifications.smtps.port":"8465",
+    "emailnotifications.smtps.checkserveridentity": "true",
     "emailnotifications.smtps.from":"envelope-from@localhost",
     "emailnotifications.smtps.username":"username",
     "emailnotifications.smtps.password":"DFMeLL3AOICFmg4+uUoOx16clt6Xe0BMdNSBFqcuKiaVKMqfFudz3KOwM5Gj3t/g",
@@ -102,6 +103,7 @@
       "mail.smtps.from": "${emailnotifications.smtps.from}",
       "mail.smtps.host": "${emailnotifications.smtps.host}",
       "mail.smtps.port": "${emailnotifications.smtps.port}",
+      "mail.smtps.ssl.checkserveridentity": "${emailnotifications.smtps.checkserveridentity}",
       "username": "${emailnotifications.smtps.username}",
       "password": "${emailnotifications.smtps.password}",
       "messageIdProvider.target": "(names=default)"

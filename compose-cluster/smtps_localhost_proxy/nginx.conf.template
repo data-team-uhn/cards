@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -17,30 +15,22 @@
 # specific language governing permissions and limitations
 # under the License.
 
-echo "Removing shard directories"
-rm -r shard*
+user www-data;
+worker_processes auto;
+pid /run/nginx.pid;
+include /etc/nginx/modules-enabled/*.conf;
 
-echo "Removing docker-compose.yml"
-rm docker-compose.yml
+events {
+  worker_connections 768;
+  # multi_accept on;
+}
 
-echo "Removing initializer/initialize_all.sh"
-rm initializer/initialize_all.sh
+stream {
+  server {
+    listen ${DOCKER_HOST_IP}:8465 ssl;
+    proxy_pass 127.0.0.1:25;
 
-echo "Removing mongos/mongo-router.conf"
-rm mongos/mongo-router.conf
-
-echo "Removing proxy/000-default.conf"
-rm proxy/000-default.conf
-
-echo "Removing smtps_localhost_proxy/nginx.conf"
-rm smtps_localhost_proxy/nginx.conf
-
-echo "Removing secrets"
-rm -r secrets
-
-# Due permissions issues, we have to first remove all contents of SLING with Docker
-echo "Removing SLING"
-docker run --rm -v $(realpath ./SLING):/sling -it alpine:3.14 sh -c 'cd /sling; find . -delete'
-rm -rf SLING
-
-echo "Done"
+    ssl_certificate /etc/cert/smtps_certificate.crt;
+    ssl_certificate_key /etc/cert/smtps_certificatekey.key;
+  }
+}

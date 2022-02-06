@@ -42,6 +42,8 @@ argparser.add_argument('--external_mongo_dbname', help='Database name of the ext
 argparser.add_argument('--saml', help='Make the Apache Sling SAML2 Handler OSGi bundle available for SAML-based logins', action='store_true')
 argparser.add_argument('--saml_idp_destination', help='URL to redirect to for SAML logins')
 argparser.add_argument('--server_address', help='Domain name (or Domain name:port) that the public will use for accessing this CARDS deployment')
+argparser.add_argument('--smtps', help='Enable SMTPS emailing functionality', action='store_true')
+argparser.add_argument('--smtps_localhost_proxy', help='Run an SSL termination proxy so that the CARDS container may connect to the host\'s SMTP server at localhost:25', action='store_true')
 argparser.add_argument('--ssl_proxy', help='Protect this service with SSL/TLS (use https:// instead of http://)', action='store_true')
 argparser.add_argument('--sling_admin_port', help='The localhost TCP port which should be forwarded to cardsinitial:8080', type=int)
 argparser.add_argument('--subnet', help='Manually specify the subnet of IP addresses to be used by the containers in this docker-compose environment (eg. --subnet 172.99.0.0/16)')
@@ -61,6 +63,24 @@ if (MONGO_REPLICA_COUNT % 2) != 1:
 if (CONFIGDB_REPLICA_COUNT % 2) != 1:
   print("ERROR: Config replica count must be *odd* to achieve distributed consensus")
   sys.exit(-1)
+
+if args.smtps_localhost_proxy:
+  if not args.subnet:
+    print("ERROR: A --subnet must be explicitly specified when using --smtps_localhost_proxy")
+    sys.exit(-1)
+
+def getDockerHostIP(subnet):
+  network_address = subnet.split('/')[0]
+  network_address_octets = network_address.split('.')
+  network_address_octets[-1] = '1'
+  return '.'.join(network_address_octets)
+
+def generateSmtpsProxyConfigFile(docker_host_ip):
+  with open("smtps_localhost_proxy/nginx.conf.template", 'r') as f:
+    nginx_template = f.read()
+  nginx_config = nginx_template.replace("${DOCKER_HOST_IP}", docker_host_ip)
+  with open("smtps_localhost_proxy/nginx.conf", 'w') as f:
+    f.write(nginx_config)
 
 OUTPUT_FILENAME = "docker-compose.yml"
 
@@ -269,6 +289,17 @@ if args.saml:
   yaml_obj['services']['cardsinitial']['environment'].append("SAML_AUTH_ENABLED=true")
   yaml_obj['services']['cardsinitial']['volumes'].append("./samlKeystore.p12:/opt/cards/samlKeystore.p12:ro")
 
+if args.smtps:
+  yaml_obj['services']['cardsinitial']['environment'].append("SMTPS_ENABLED=true")
+  yaml_obj['services']['cardsinitial']['environment'].append("SLING_COMMONS_CRYPTO_PASSWORD=password")
+
+if args.smtps_localhost_proxy:
+  yaml_obj['services']['cardsinitial']['environment'].append("SMTPS_HOST=smtps_localhost_proxy")
+  yaml_obj['services']['cardsinitial']['environment'].append("SMTPS_LOCALHOST_PROXY=true")
+  yaml_obj['services']['cardsinitial']['volumes'].append("./SSL_CONFIG/smtps_certificate.crt:/etc/cert/smtps_certificate.crt:ro")
+  yaml_obj['services']['cardsinitial']['extra_hosts'] = {}
+  yaml_obj['services']['cardsinitial']['extra_hosts']['smtps_localhost_proxy'] = getDockerHostIP(args.subnet)
+
 #Configure the NCR container (if enabled) - only one for now
 if ENABLE_NCR:
   print("Configuring service: neuralcr")
@@ -355,6 +386,19 @@ if args.saml:
 
   yaml_obj['services']['proxy']['environment'].append("SAML_IDP_DESTINATION={}".format(idp_url))
   yaml_obj['services']['proxy']['environment'].append("CARDS_HOST_AND_PORT={}".format(cards_server_address))
+
+#Configure the SMTPS localhost proxy container (if enabled)
+if args.smtps_localhost_proxy:
+  print("Configuring service: smtps_localhost_proxy")
+  yaml_obj['services']['smtps_localhost_proxy'] = {}
+  yaml_obj['services']['smtps_localhost_proxy']['image'] = "nginx"
+  yaml_obj['services']['smtps_localhost_proxy']['network_mode'] = 'host'
+  # envsubst the nginx.conf.template file and volume mount it
+  generateSmtpsProxyConfigFile(getDockerHostIP(args.subnet))
+  yaml_obj['services']['smtps_localhost_proxy']['volumes'] = []
+  yaml_obj['services']['smtps_localhost_proxy']['volumes'].append("./smtps_localhost_proxy/nginx.conf:/etc/nginx/nginx.conf:ro")
+  yaml_obj['services']['smtps_localhost_proxy']['volumes'].append("./SSL_CONFIG/smtps_certificate.crt:/etc/cert/smtps_certificate.crt:ro")
+  yaml_obj['services']['smtps_localhost_proxy']['volumes'].append("./SSL_CONFIG/smtps_certificatekey.key:/etc/cert/smtps_certificatekey.key:ro")
 
 #Setup the internal network
 print("Configuring the internal network")

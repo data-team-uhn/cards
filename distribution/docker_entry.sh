@@ -153,13 +153,31 @@ then
   EXT_MONGO_VARIABLES="$EXT_MONGO_VARIABLES -V mongo.host=$EXT_MONGO_HOSTNAME -V mongo.port=$EXT_MONGO_PORT"
 fi
 
+SMTPS_VARIABLES=""
+if [ ! -z $SMTPS_HOST ]
+then
+  SMTPS_VARIABLES="$SMTPS_VARIABLES -V emailnotifications.smtps.host=$SMTPS_HOST"
+fi
+
+#Should the SMTPS OSGi bundle be enabled?
+if [[ "$SMTPS_ENABLED" == "true" ]]
+then
+  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-email-notifications/${CARDS_VERSION}/slingosgifeature"
+fi
+
 #Should the SAML OSGi bundle be enabled?
 if [[ "$SAML_AUTH_ENABLED" == "true" ]]
 then
   featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-saml-support/${CARDS_VERSION}/slingosgifeature/base -C io.dropwizard.metrics:metrics-core:ALL -f mvn:io.uhndata.cards/cards-fetch-requires-saml-login/${CARDS_VERSION}/slingosgifeature"
 fi
 
+if [[ "$SMTPS_LOCALHOST_PROXY" == "true" ]]
+then
+  keytool -import -trustcacerts -file /etc/cert/smtps_certificate.crt -keystore /etc/ssl/certs/java/cacerts -keypass changeit -storepass changeit -noprompt
+  SMTPS_VARIABLES="$SMTPS_VARIABLES -V emailnotifications.smtps.checkserveridentity=false"
+fi
+
 #Execute the volume_mounted_init.sh script if it is present
 [ -e /volume_mounted_init.sh ] && /volume_mounted_init.sh
 
-java -Djdk.xml.entityExpansionLimit=0 ${DEBUG:+ -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005} -jar org.apache.sling.feature.launcher.jar -p .cards-data -f ./${PROJECT_ARTIFACTID}-${PROJECT_VERSION}-core_${STORAGE}_far.far${EXT_MONGO_VARIABLES} -f mvn:io.uhndata.cards/cards-dataentry/${CARDS_VERSION}/slingosgifeature/permissions_${PERMISSIONS}${featureFlagString}
+java -Djdk.xml.entityExpansionLimit=0 ${DEBUG:+ -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005} -jar org.apache.sling.feature.launcher.jar -p .cards-data -f ./${PROJECT_ARTIFACTID}-${PROJECT_VERSION}-core_${STORAGE}_far.far${EXT_MONGO_VARIABLES}${SMTPS_VARIABLES} -f mvn:io.uhndata.cards/cards-dataentry/${CARDS_VERSION}/slingosgifeature/permissions_${PERMISSIONS}${featureFlagString}
