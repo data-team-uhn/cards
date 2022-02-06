@@ -54,6 +54,7 @@
         "create user patient \n set ACL for patient \n     allow jcr:read on /Questionnaires,/SubjectTypes \n     deny jcr:all on /Questionnaires restriction(rep:itemNames,audit_intro,audit_results,eq5d_results,gad7_intro,gad7_results,phq9_intro,phq9_results) \n     allow jcr:read,jcr:write,jcr:nodeTypeManagement,jcr:versionManagement on /Forms restriction(cards:sessionSubject) \n     deny jcr:read on /Forms restriction(cards:question,/Questionnaires/AUDITC/audit_results/audit_score,/Questionnaires/AUDITC/audit_results/audit_interpretation,/Questionnaires/EQ5D/eq5d_results/eq5d_score,/Questionnaires/GAD7/gad7_results/gad7_score,/Questionnaires/GAD7/gad7_results/gad7_classification,/Questionnaires/GAD7/gad7_results/gad7_interpretation,/Questionnaires/PHQ9/phq9_results/phq9_score,/Questionnaires/PHQ9/phq9_results/phq9_classification,/Questionnaires/PHQ9/phq9_results/phq9_interpretation) \n     allow jcr:read on /Subjects restriction(cards:sessionSubject) \n     deny jcr:modifyProperties on /Forms restriction(rep:itemNames,subject,questionnaire) \n     deny jcr:all on /content \n end",
         // Service users handling different aspects of the data handling:
         // Importing visits and generating forms
+        "create service user proms-import-backend \n set ACL on /Questionnaires,/SubjectTypes \n   allow jcr:read for proms-import-backend \n end \n set ACL on /Forms,/Subjects \n   allow jcr:read,rep:write,jcr:versionManagement for proms-import-backend \n end",
         "create service user proms-visit-backend \n set ACL on /Questionnaires,/Subjects,/SubjectTypes \n   allow jcr:read for proms-visit-backend \n end \n set ACL on /Forms \n   allow jcr:read,rep:write,jcr:versionManagement for proms-visit-backend \n end",
         // Validating patient's credentials
         "create service user proms-patient-validation \n set ACL for proms-patient-validation \n   allow jcr:read on /Questionnaires,/Subjects,/SubjectTypes,/Forms \n end",
@@ -70,7 +71,8 @@
         "io.uhndata.cards.proms-backend:VisitFormsPreparation=[proms-visit-backend]",
         "io.uhndata.cards.proms-backend:validateCredentials=[proms-patient-validation]",
         "io.uhndata.cards.proms-backend:tou=[proms-patient-tou]",
-        "io.uhndata.cards.proms-backend:EmailNotifications=[sling-readall]"
+        "io.uhndata.cards.proms-backend:EmailNotifications=[sling-readall]",
+        "io.uhndata.cards.proms-backend:TorchImporter=[proms-import-backend]"
       ]
     }
   }

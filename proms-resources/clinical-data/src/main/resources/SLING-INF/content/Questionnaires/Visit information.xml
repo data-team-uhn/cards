@@ -141,17 +141,26 @@
 		</property>
 	</node>
 	<node>
-		<name>fihr_id</name>
+		<name>fhir_id</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>FIHR id</value>
+			<value>FHIR id</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+	</node>
+	<node>
+		<name>location</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Location</value>
+			<type>String</type>
 		</property>
 	</node>
 </node>
