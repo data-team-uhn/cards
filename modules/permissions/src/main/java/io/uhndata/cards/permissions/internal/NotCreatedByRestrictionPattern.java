@@ -25,8 +25,6 @@ import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Tree;
 import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.security.authorization.restriction.RestrictionPattern;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A restriction that makes a permissions entry only be valid on nodes not created by the accessing user.
@@ -35,9 +33,7 @@ import org.slf4j.LoggerFactory;
  */
 public class NotCreatedByRestrictionPattern implements RestrictionPattern
 {
-    /** Default log. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(CreatedByRestrictionPattern.class);
-
+    /** A reference to the session that created this pattern. */
     private final Session session;
 
     /**

@@ -25,7 +25,6 @@ import { Tooltip, Typography, withStyles } from "@material-ui/core";
 import { Delete, Close } from "@material-ui/icons";
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
-import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
 /**
  * A component that renders an icon to open a dialog to delete an entry.
@@ -45,8 +44,6 @@ function DeleteButton(props) {
   const defaultDialogAction = `Are you sure you want to delete ${entryType} ${entryName}?`;
   const defaultErrorMessage = entryName + " could not be removed.";
   const history = useHistory();
-
-  const globalLoginDisplay = useContext(GlobalLoginContext);
 
   let openDialog = () => {
     closeError();
@@ -77,6 +74,10 @@ function DeleteButton(props) {
     if (status === 404) {
       setErrorMessage(`${entryName} could not be found. This ${entryType ? entryType : "item"} may have already been deleted.`);
       setEntryNotFound(true);
+      openError();
+    } else if (status === 401 || response.url.startsWith(window.location.origin + "/login")) {
+      setErrorMessage(`The currently signed in user does not have permission to delete ${entryName}.`);
+      setEntryNotFound(false);
       openError();
     } else {
       try {
@@ -123,13 +124,17 @@ function DeleteButton(props) {
 
     // We should not use fetchWithReLogin here, since the deletion can cause a 401 error
     // if the currently-logged-in user is unauthorized. Instead, fetch, and handle 401s separately
-    fetchWithReLogin(globalLoginDisplay, url, {
+    fetch(url, {
       method: 'DELETE',
       headers: {
         Accept: "application/json"
       }
     }).then((response) => {
-      if (response.ok)  {
+      if (response.status == 401 || response.status == 500) {
+        handleError(response.status, response);
+      } else if (response.ok && response.url.startsWith(window.location.origin + "/login")) {
+        handleError(response.status, response);
+      } else if (response.ok)  {
         closeDialog();
         if (onComplete) {onComplete();}
         if (shouldGoBack) {goBack();}
