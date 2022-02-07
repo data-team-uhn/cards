@@ -32,8 +32,6 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import io.uhndata.cards.dataentry.api.FormUtils;
 import io.uhndata.cards.dataentry.api.QuestionnaireUtils;
-import io.uhndata.cards.dataentry.api.SubjectTypeUtils;
-import io.uhndata.cards.dataentry.api.SubjectUtils;
 import io.uhndata.cards.permissions.spi.RestrictionFactory;
 
 /**
@@ -59,23 +57,16 @@ public class UnsubmittedFormsRestrictionFactory implements RestrictionFactory
     private FormUtils formUtils;
 
     @Reference
-    private SubjectUtils subjectUtils;
-
-    @Reference
-    private SubjectTypeUtils subjectTypeUtils;
-
-    @Reference
     private QuestionnaireUtils questionnaireUtils;
 
     @Override
-    public RestrictionPattern forValue(PropertyState value)
+    public RestrictionPattern forValue(final PropertyState value)
     {
         Session session = null;
         if (this.rrf != null && this.rrf.getThreadResourceResolver() != null) {
             session = this.rrf.getThreadResourceResolver().adaptTo(Session.class);
         }
-        return new UnsubmittedFormsRestrictionPattern(session, this.formUtils, this.subjectUtils,
-            this.subjectTypeUtils, this.questionnaireUtils);
+        return new UnsubmittedFormsRestrictionPattern(session, this.formUtils, this.questionnaireUtils);
     }
 
     @Override
