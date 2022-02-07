@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 
@@ -42,6 +42,7 @@ import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
  * buttonClass: String of class name that applies to the button element if the IconButton when variant == "icon"
  * buttonText: String specifying the text to be displayed on the button or the tooltip, default "Print preview"
  * fullScreen: Boolean specifying if the preview is full screen or displayed as a modal, default true
+ * disableShortcut: Boolean specifying if Ctrl+P should activate this button or not. Default is false, meaning the shortcut is active.
  * onOpen: Callback for opening the preview dialog
  * onClose: Callback for closing the preview dialog
  *
@@ -55,9 +56,28 @@ import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
  *
  */
 function PrintButton(props) {
-  const { resourcePath, title, date, breadcrumb, onOpen, onClose, size, variant, label, buttonClass, disablePreview, fullScreen } = props;
+  const { resourcePath, title, date, breadcrumb, onOpen, onClose, size, variant, label, buttonClass, disablePreview, fullScreen, disableShortcut } = props;
 
   const [ open, setOpen ] = useState(false);
+
+  // Prevent browser to open print dialog on user ctrl+P keydown and force to go through the custom print preview
+  useEffect(() => {
+    if (disableShortcut) return;
+    // subscribe event
+    window.addEventListener("keydown", handleOnPrintKeydown);
+    return () => {
+      // unsubscribe event
+      document.removeEventListener("keydown", handleOnPrintKeydown);
+    };
+  }, []);
+
+  let handleOnPrintKeydown = (event) => {
+    if ((event.ctrlKey || event.metaKey) && (event.key == "p" || event.keyCode == 80)) {
+      event.stopPropagation();
+      event.preventDefault ? event.preventDefault() : (event.returnValue = false);
+      onOpenView();
+    }
+  }
 
   let onOpenView = () => {
     onOpen && onOpen();
@@ -108,6 +128,7 @@ PrintButton.propTypes = {
   buttonClass: PropTypes.string,
   breadcrumb: PropTypes.string,
   fullScreen: PropTypes.bool,
+  disableShortcut: PropTypes.bool,
   date: PropTypes.string,
   onOpen: PropTypes.func,
   onClose: PropTypes.func,
