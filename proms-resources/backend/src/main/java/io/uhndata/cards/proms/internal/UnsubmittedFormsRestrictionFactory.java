@@ -18,8 +18,6 @@
  */
 package io.uhndata.cards.proms.internal;
 
-import javax.jcr.Session;
-
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.security.authorization.restriction.RestrictionPattern;
@@ -62,11 +60,7 @@ public class UnsubmittedFormsRestrictionFactory implements RestrictionFactory
     @Override
     public RestrictionPattern forValue(final PropertyState value)
     {
-        Session session = null;
-        if (this.rrf != null && this.rrf.getThreadResourceResolver() != null) {
-            session = this.rrf.getThreadResourceResolver().adaptTo(Session.class);
-        }
-        return new UnsubmittedFormsRestrictionPattern(session, this.formUtils, this.questionnaireUtils);
+        return new UnsubmittedFormsRestrictionPattern(this.rrf, this.formUtils, this.questionnaireUtils);
     }
 
     @Override
