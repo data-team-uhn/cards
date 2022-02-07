@@ -556,7 +556,12 @@ public class DeleteServlet extends SlingAllMethodsServlet
 
         Node ancestor = n.getParent();
         while (ancestor.getDepth() > 0 && !ancestor.isNodeType("mix:versionable")) {
-            ancestor = ancestor.getParent();
+            try {
+                ancestor = ancestor.getParent();
+            } catch (AccessDeniedException e) {
+                // The parent is inaccessible to us
+                return null;
+            }
         }
 
         if (ancestor.isNodeType("mix:versionable")) {
