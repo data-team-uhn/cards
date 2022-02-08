@@ -721,7 +721,7 @@ export function displayQuestion(entryDefinition, data, key, classes) {
     }
     return (
       isHidden ? null :
-      <Typography variant="body2" className={classes.formPreviewQuestion} key={key}>
+      <Typography variant="body2" component="div" className={classes.formPreviewQuestion} key={key}>
         {questionTitle}
         <span className={classes.formPreviewSeparator}>–</span>
         <div className={classes.formPreviewAnswer}>{content}</div>
