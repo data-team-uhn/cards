@@ -132,7 +132,8 @@ public class PrincipalsServlet extends SlingSafeMethodsServlet
         final long offset = getLongValueOrDefault(request.getParameter("offset"), 0);
         Session session = request.getResourceResolver().adaptTo(Session.class);
 
-        try (Writer out = response.getWriter(); JsonGenerator jsonGen = Json.createGenerator(out)) {
+        try (Writer out = response.getWriter()) {
+            JsonGenerator jsonGen = Json.createGenerator(out);
             if (session == null || !(session instanceof JackrabbitSession)) {
                 writeBlankJson(jsonGen);
             } else {
