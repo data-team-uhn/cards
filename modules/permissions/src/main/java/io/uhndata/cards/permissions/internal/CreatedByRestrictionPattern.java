@@ -27,11 +27,11 @@ import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.security.authorization.restriction.RestrictionPattern;
 
 /**
- * A restriction that makes a permissions entry only be valid on nodes not created by the accessing user.
+ * A restriction that makes a permissions entry only be valid on nodes created by the accessing user.
  *
  * @version $Id$
  */
-public class NotCreatedByRestrictionPattern implements RestrictionPattern
+public class CreatedByRestrictionPattern implements RestrictionPattern
 {
     /** A reference to the session that created this pattern. */
     private final Session session;
@@ -41,7 +41,7 @@ public class NotCreatedByRestrictionPattern implements RestrictionPattern
      *
      * @param session the current session
      */
-    public NotCreatedByRestrictionPattern(final Session session)
+    public CreatedByRestrictionPattern(final Session session)
     {
         this.session = session;
     }
@@ -59,8 +59,8 @@ public class NotCreatedByRestrictionPattern implements RestrictionPattern
             return false;
         }
 
-        // Check if this user is not the one that created this node
-        return !StringUtils.equals(tree.getProperty("jcr:createdBy").getValue(Type.STRING), this.session.getUserID());
+        // Check if this user is the one that created this node
+        return StringUtils.equals(tree.getProperty("jcr:createdBy").getValue(Type.STRING), this.session.getUserID());
     }
 
     @Override

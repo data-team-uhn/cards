@@ -33,15 +33,15 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import io.uhndata.cards.permissions.spi.RestrictionFactory;
 
 /**
- * Factory for {@link NotCreatedByRestrictionPattern}.
+ * Factory for {@link CreatedByRestrictionPattern}.
  *
  * @version $Id$
  */
 @Component(immediate = true)
-public class NotCreatedByRestrictionFactory implements RestrictionFactory
+public class CreatedByRestrictionFactory implements RestrictionFactory
 {
     /** @see #getName */
-    public static final String NAME = "cards:notCreatedBy";
+    public static final String NAME = "cards:createdBy";
 
     /**
      * This is needed to get access to the current session.
@@ -58,7 +58,7 @@ public class NotCreatedByRestrictionFactory implements RestrictionFactory
         if (this.rrf != null && this.rrf.getThreadResourceResolver() != null) {
             session = this.rrf.getThreadResourceResolver().adaptTo(Session.class);
         }
-        return new NotCreatedByRestrictionPattern(session);
+        return new CreatedByRestrictionPattern(session);
     }
 
     @Override
