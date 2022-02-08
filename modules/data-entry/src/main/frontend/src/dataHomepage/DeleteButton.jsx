@@ -24,9 +24,8 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton }
 import { Tooltip, Typography, withStyles } from "@material-ui/core";
 import { Delete, Close } from "@material-ui/icons";
 
-import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
-
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
 /**
  * A component that renders an icon to open a dialog to delete an entry.
@@ -127,7 +126,6 @@ function DeleteButton(props) {
     if (deleteRecursive) {
       url.searchParams.set("recursive", true);
     }
-
     fetchWithReLogin(globalLoginDisplay, url, {
       method: 'DELETE',
       headers: {
