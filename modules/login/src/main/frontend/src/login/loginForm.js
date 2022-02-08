@@ -215,7 +215,7 @@ class SignIn extends React.Component {
                       }
                     />
                   </FormControl>
-                  <Grid container direction="row" justifyContent="center" alignItems="center">
+                  <Grid container direction="row" justify="center" alignItems="center">
                     {  (!this.state.singleStepEntry) &&
                       <Grid item xs={3}>
                       </Grid>
