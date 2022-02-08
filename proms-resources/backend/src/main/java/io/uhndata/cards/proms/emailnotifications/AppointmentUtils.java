@@ -36,6 +36,9 @@ public final class AppointmentUtils
     /** Default log. */
     private static final Logger LOGGER = LoggerFactory.getLogger(AppointmentUtils.class);
 
+    /** The primary node type for a Subject, an entity about which data is collected. */
+    private static final String TEXT_ANSWER = "cards:TextAnswer";
+
     // Hide the utility class constructor
     private AppointmentUtils()
     {
@@ -143,7 +146,7 @@ public final class AppointmentUtils
             resolver,
             patientSubject,
             "/Questionnaires/Patient information/email",
-            "cards:TextAnswer",
+            TEXT_ANSWER,
             ""
         );
         if (patientEmailOk == 1) {
@@ -167,14 +170,14 @@ public final class AppointmentUtils
             resolver,
             patientSubject,
             "/Questionnaires/Patient information/first_name",
-            "cards:TextAnswer",
+            TEXT_ANSWER,
             ""
         );
         String lastName = getQuestionAnswerForSubject(
             resolver,
             patientSubject,
             "/Questionnaires/Patient information/last_name",
-            "cards:TextAnswer",
+            TEXT_ANSWER,
             ""
         );
         return firstName + " " + lastName;
@@ -194,7 +197,7 @@ public final class AppointmentUtils
             resolver,
             visitSubject,
             "/Questionnaires/Visit information/surveys",
-            "cards:TextAnswer",
+            TEXT_ANSWER,
             ""
         );
         if ("".equals(clinicId)) {
@@ -247,6 +250,94 @@ public final class AppointmentUtils
         }
         String htmlTemplate = getClinicEmailTemplate(resolver, clinicId, templateName);
         return htmlTemplate;
+    }
+
+    private static boolean isValidClinicNameChar(char c)
+    {
+        /*
+         * Python's string.ascii_letters + Python's string.digits + Blank spaces + Underscores
+         */
+        final String allowedChars = ""
+            + "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            + "0123456789"
+            + " "
+            + "_";
+
+        if (allowedChars.indexOf(c) >= 0) {
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean isValidClinicName(String clinicName)
+    {
+        for (int i = 0; i < clinicName.length(); i++) {
+            if (!isValidClinicNameChar(clinicName.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Returns the cards:QuestionnaireSet JCR Resource associated with
+     * the formRelatedSubject or null if no such associated Resource can
+     * be found.
+     *
+     * @param resolver a ResourceResolver that can be used to query the JCR
+     * @param formRelatedSubject the JCR Subject Resource for which the Clinic is associated with
+     * @param clinicIdLink the question linking the Subject to a clinic (eg. /Questionnaires/Visit information/surveys)
+     * @param clinicsJcrPath the JCR path for information on the clinics (eg. /Proms)
+     * @return the associated cards:QuestionnaireSet JCR Resource or null
+     */
+    public static Resource getValidClinicNode(ResourceResolver resolver, Resource formRelatedSubject,
+        String clinicIdLink, String clinicsJcrPath)
+    {
+        String clinicId = getQuestionAnswerForSubject(
+            resolver,
+            formRelatedSubject,
+            clinicIdLink,
+            TEXT_ANSWER,
+            ""
+        );
+
+        if ("".equals(clinicId)) {
+            return null;
+        }
+
+        if (!isValidClinicName(clinicId)) {
+            return null;
+        }
+
+        String clinicNodePath = clinicsJcrPath.replaceAll("/$", "") + "/" + clinicId;
+        Resource clinicNode = resolver.getResource(clinicNodePath);
+        return clinicNode;
+    }
+
+    /**
+     * Returns the email address associated (through the clinicEmailProperty String)
+     * with the clinic linked to the formRelatedSubject Resource or null
+     * if it cannot be found.
+     *
+     * @param resolver a ResourceResolver that can be used to query the JCR
+     * @param formRelatedSubject the JCR Subject Resource for which the Clinic is associated with
+     * @param clinicIdLink the question linking the Subject to a clinic (eg. /Questionnaires/Visit information/surveys)
+     * @param clinicsJcrPath clinicsJcrPath the JCR path for information on the clinics (eg. /Proms)
+     * @param clinicEmailProperty the JCR node property holding the email address (eg. "emergencyContact")
+     * @return the contact email address associated with a subject
+     */
+    public static String getValidClinicEmail(ResourceResolver resolver, Resource formRelatedSubject,
+        String clinicIdLink, String clinicsJcrPath, String clinicEmailProperty)
+    {
+        Resource clinicNode = getValidClinicNode(resolver, formRelatedSubject, clinicIdLink, clinicsJcrPath);
+        if (clinicNode == null) {
+            return null;
+        }
+        String clinicEmail = clinicNode.getValueMap().get(clinicEmailProperty, "");
+        if ("".equals(clinicEmail)) {
+            return null;
+        }
+        return clinicEmail;
     }
 
     /**
