@@ -561,7 +561,7 @@ public class VisitChangeListener implements ResourceChangeListener
                 return;
             }
 
-            final Node surveysCompletedAnswer =
+            Node surveysCompletedAnswer =
                 this.formUtils.getAnswer(visitInformationForm, surveysCompleteQuestion);
             // Check if the value is already the correct one
             if (surveysCompletedAnswer != null
@@ -583,6 +583,12 @@ public class VisitChangeListener implements ResourceChangeListener
                     // Checkout
                     versionManager.checkout(formPath);
 
+                    if (surveysCompletedAnswer == null) {
+                        // No answer node yet, create one
+                        surveysCompletedAnswer =
+                            visitInformationForm.addNode(UUID.randomUUID().toString(), "cards:BooleanAnswer");
+                        surveysCompletedAnswer.setProperty(FormUtils.QUESTION_PROPERTY, surveysCompleteQuestion);
+                    }
                     // Set the new value
                     surveysCompletedAnswer.setProperty("value", newValue);
                     session.save();
