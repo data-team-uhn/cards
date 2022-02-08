@@ -39,7 +39,7 @@ function Subjects(props) {
   }, [entry]);
 
   if (entry) {
-    return <Subject id={entry} contentOffset={props.contentOffset} />;
+    return <Subject id={entry} contentOffset={props.contentOffset} key={entry} />;
   }
 
   const columns = [

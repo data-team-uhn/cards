@@ -41,7 +41,7 @@ function Forms(props) {
   }, [entry]);
 
   if (entry) {
-    return <Form id={entry[1]} key={location.pathname} contentOffset={props.contentOffset}/>;
+    return <Form id={entry[1]} key={location.pathname} contentOffset={props.contentOffset} key={entry[1]} />;
   }
 
   const columns = [
