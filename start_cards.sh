@@ -51,6 +51,15 @@ function print_length_of() {
   done
 }
 
+function handle_missing_sling_commons_crypto_fail() {
+  echo -e "${TERMINAL_RED}**********************************************************************************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*                                                                                *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*   The SLING_COMMONS_CRYPTO_PASSWORD enviroment variable is missing. Exiting.   *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*                                                                                *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}**********************************************************************************${TERMINAL_NOCOLOR}"
+  exit -1
+}
+
 function handle_cards_java_fail() {
   echo -e "${TERMINAL_RED}**********************************************$(print_length_of $BIND_PORT '*' 4)${TERMINAL_NOCOLOR}"
   echo -e "${TERMINAL_RED}*                                             $(print_length_of $BIND_PORT ' ' 3)*${TERMINAL_NOCOLOR}"
@@ -246,6 +255,17 @@ do
     ARGS[$i]=${ARGS[$i]/VERSION/${CARDS_VERSION}}
   fi
 done
+
+SMTPS_ENABLED=false
+echo "${ARGS[@]}" | grep -q "mvn:io.uhndata.cards/cards-email-notifications/" && SMTPS_ENABLED=true
+
+if [ $SMTPS_ENABLED = true ]
+then
+  if [ -z $SLING_COMMONS_CRYPTO_PASSWORD ]
+  then
+    handle_missing_sling_commons_crypto_fail
+  fi
+fi
 
 #Start CARDS in the background
 java -Djdk.xml.entityExpansionLimit=0 -Dorg.osgi.service.http.port=${BIND_PORT} -jar distribution/target/dependency/org.apache.sling.feature.launcher.jar -u "file://$(realpath .mvnrepo),file://$(realpath ${HOME}/.m2/repository),https://repo.maven.apache.org/maven2,https://repository.apache.org/content/groups/snapshots" -p .cards-data -f distribution/target/cards-*-core_${OAK_STORAGE}_far.far -f mvn:io.uhndata.cards/cards-dataentry/${CARDS_VERSION}/slingosgifeature/permissions_${PERMISSIONS} "${ARGS[@]}" &
