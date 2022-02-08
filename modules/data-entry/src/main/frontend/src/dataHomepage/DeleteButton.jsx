@@ -24,6 +24,8 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton }
 import { Tooltip, Typography, withStyles } from "@material-ui/core";
 import { Delete, Close } from "@material-ui/icons";
 
+import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 /**
@@ -44,6 +46,8 @@ function DeleteButton(props) {
   const defaultDialogAction = `Are you sure you want to delete ${entryType} ${entryName}?`;
   const defaultErrorMessage = entryName + " could not be removed.";
   const history = useHistory();
+
+  const globalLoginDisplay = useContext(GlobalLoginContext);
 
   let openDialog = () => {
     closeError();
@@ -72,10 +76,12 @@ function DeleteButton(props) {
 
   let handleError = (status, response) => {
     if (status === 404) {
+      // NOT FOUND
       setErrorMessage(`${entryName} could not be found. This ${entryType ? entryType : "item"} may have already been deleted.`);
       setEntryNotFound(true);
       openError();
-    } else if (status === 401 || response.url.startsWith(window.location.origin + "/login")) {
+    } else if (status === 403) {
+      // FORBIDDEN
       setErrorMessage(`The currently signed in user does not have permission to delete ${entryName}.`);
       setEntryNotFound(false);
       openError();
@@ -122,19 +128,13 @@ function DeleteButton(props) {
       url.searchParams.set("recursive", true);
     }
 
-    // We should not use fetchWithReLogin here, since the deletion can cause a 401 error
-    // if the currently-logged-in user is unauthorized. Instead, fetch, and handle 401s separately
-    fetch(url, {
+    fetchWithReLogin(globalLoginDisplay, url, {
       method: 'DELETE',
       headers: {
         Accept: "application/json"
       }
     }).then((response) => {
-      if (response.status == 401 || response.status == 500) {
-        handleError(response.status, response);
-      } else if (response.ok && response.url.startsWith(window.location.origin + "/login")) {
-        handleError(response.status, response);
-      } else if (response.ok)  {
+      if (response.ok)  {
         closeDialog();
         if (onComplete) {onComplete();}
         if (shouldGoBack) {goBack();}

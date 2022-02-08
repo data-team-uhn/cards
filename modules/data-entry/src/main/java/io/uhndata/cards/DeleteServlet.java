@@ -201,7 +201,8 @@ public class DeleteServlet extends SlingAllMethodsServlet
             }
         } catch (AccessDeniedException e) {
             LOGGER.error("AccessDeniedException trying to delete node: {}", e.getMessage(), e);
-            sendJsonError(response, SlingHttpServletResponse.SC_UNAUTHORIZED);
+            sendJsonError(response, request.getRemoteUser() == null ? SlingHttpServletResponse.SC_UNAUTHORIZED
+                : SlingHttpServletResponse.SC_FORBIDDEN);
         } catch (RepositoryException e) {
             LOGGER.error("Unknown RepositoryException trying to delete node: {}", e.getMessage(), e);
             sendJsonError(response, SlingHttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage(), e);
