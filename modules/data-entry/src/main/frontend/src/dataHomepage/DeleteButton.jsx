@@ -82,7 +82,7 @@ function DeleteButton(props) {
       openError();
     } else if (status === 403) {
       // FORBIDDEN
-      setErrorMessage(`The currently signed in user does not have permission to delete ${entryName}.`);
+      setErrorMessage(`You do not have permission to delete ${entryName}.`);
       setEntryNotFound(false);
       openError();
     } else {
