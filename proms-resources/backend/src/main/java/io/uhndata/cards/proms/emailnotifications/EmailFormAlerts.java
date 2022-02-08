@@ -59,50 +59,52 @@ public final class EmailFormAlerts
 
     private Session session;
 
-    @ObjectClassDefinition(name = "Email Configured Feature",
-        description = "Email feature configuration")
+    @ObjectClassDefinition(name = "Email Alerts",
+        description = "Configuration for triggering an email alert based on the patient's responses")
     public static @interface Config
     {
         @AttributeDefinition(name = "Name", description = "Name")
         String name() default "PatientHealthAlert001";
 
-        @AttributeDefinition(name = "Submitted Flag Path", description = "Submitted Flag Path")
+        @AttributeDefinition(name = "Submitted Flag Path",
+            description = "A question that marks a form as submitted. Unsubmitted forms do not trigger an alert.")
         String submittedFlagPath() default "/Questionnaires/Visit information/surveys_submitted";
 
         @AttributeDefinition(name = "Linking Subject Type", description = "Subject type that links the Form with the"
             + " \"submit\" button to the Form with the alert generating question")
         String linkingSubjectType() default "/SubjectTypes/Patient/Visit";
 
-        @AttributeDefinition(name = "Alerting Question Path", description = "Alerting Question Path")
+        @AttributeDefinition(name = "Alerting Question Path", description = "A question that can trigger the alert")
         String alertingQuestionPath() default "/Questionnaires/PHQ9/phq9_survey/phq9_more/phq9_9";
 
-        @AttributeDefinition(name = "Alerting Question Data Type", description = "Alerting Question Data Type")
+        @AttributeDefinition(name = "Alerting Question Data Type")
         String alertingQuestionDataType() default "cards:LongAnswer";
 
         @AttributeDefinition(name = "Trigger Expression", description = "Trigger Expression")
         String triggerExpression() default ">0";
 
-        @AttributeDefinition(name = "Alert Description", description = "Alert Description")
+        @AttributeDefinition(name = "Alert Description", description = "A message to be placed in the email body.")
         String alertDescription() default "";
 
         @AttributeDefinition(name = "Clinic ID Link", description = "Response associated with the"
             + " subject of Linking Subject Type that associates it with a clinic")
         String clinicIdLink() default "/Questionnaires/Visit information/surveys";
 
-        @AttributeDefinition(name = "Clinics JCR Path", description = "Clinics JCR Path")
+        @AttributeDefinition(name = "Clinics JCR Path")
         String clinicsJcrPath() default "/Proms";
 
-        @AttributeDefinition(name = "Clinic Email Property", description = "Clinic Email Property")
+        @AttributeDefinition(name = "Clinic Email Property",
+            description = "Property of the Clinic definition where the emergency contact is stored")
         String clinicEmailProperty() default "emergencyContact";
     }
 
     @Activate
     private void activate(final Config config)
     {
-        LOGGER.warn("ACTIVATING EmailFormAlerts with name: {}", config.name());
+        LOGGER.info("ACTIVATING EmailFormAlerts with name: {}", config.name());
 
         try {
-            Map<String, Object> params = new HashMap<String, Object>();
+            Map<String, Object> params = new HashMap<>();
             params.put(ResourceResolverFactory.SUBSERVICE, "EmailNotifications");
             this.resolver = this.resolverFactory.getServiceResourceResolver(params);
 
@@ -122,7 +124,7 @@ public final class EmailFormAlerts
                 return;
             }
 
-            Map<String, String> listenerParams = new HashMap<String, String>();
+            Map<String, String> listenerParams = new HashMap<>();
             listenerParams.put("alertName", config.name());
             listenerParams.put("submittedFlagUUID", submittedFlagUUID);
             listenerParams.put("linkingSubjectType", config.linkingSubjectType());
@@ -147,7 +149,7 @@ public final class EmailFormAlerts
                 false
             );
         } catch (Exception e) {
-            LOGGER.warn("Failed to register EmailFormAlerts event handler");
+            LOGGER.warn("Failed to register EmailFormAlerts event handler: {}", e.getMessage());
         }
     }
 
