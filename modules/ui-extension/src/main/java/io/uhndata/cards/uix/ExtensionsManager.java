@@ -37,20 +37,20 @@ import org.slf4j.LoggerFactory;
 /**
  * A HTL Use-API that lists UI Extensions. To use this API, simply place the following code in a HTL file:
  * <p>
- * <tt>
+ * <code>
  * &lt;input data-sly-use.em="${'io.uhndata.cards.uix.ExtensionsManager' @ uixp='ExtensionPointName'}"
  *   type="hidden" id="SomeIdentifier" value="${em.enabled}" /&gt;
- * </tt>
+ * </code>
  * </p>
  * <p>
  * Another way, using the resources themselves instead of the JSON serialization:
  * </p>
  * <p>
- * <tt>
+ * <code>
  *   &lt;ul data-sly-use.em="${'io.uhndata.cards.uix.ExtensionsManager' @ uixp='ExtensionPointName'}"&gt;
  *     &lt;li data-sly-repeat="${em.listAll}"&gt;${item.name}&lt;/li&gt;
  *   &lt;/ul&gt;
- * </tt>
+ * </code>
  * </p>
  *
  * @version $Id$

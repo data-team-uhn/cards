@@ -63,12 +63,12 @@ import org.slf4j.LoggerFactory;
  * This servlet supports the following parameters:
  * </p>
  * <ul>
- * <li><tt>offset</tt>: a 0-based number representing how many resources to skip; 0 by default</li>
- * <li><tt>limit</tt>: a number representing how many resources to include at most in the result; 10 by default</li>
- * <li><tt>filter</tt>: a (lucene-like) search term, such as {@code germline}, {@code cancer OR tumor},
+ * <li><code>offset</code>: a 0-based number representing how many resources to skip; 0 by default</li>
+ * <li><code>limit</code>: a number representing how many resources to include at most in the result; 10 by default</li>
+ * <li><code>filter</code>: a (lucene-like) search term, such as {@code germline}, {@code cancer OR tumor},
  * {@code (*blastoma OR *noma OR tumor*) recurrent}; no filter set by default</li>
- * <li><tt>includeallstatus</tt>: if true, incomplete forms will be included. Otherwise, they will be excluded unless
- * searched for directly using `fieldname="statusFlags"`
+ * <li><code>includeallstatus</code>: if true, incomplete forms will be included. Otherwise, they will be excluded
+ * unless searched for directly using {@code fieldname="statusFlags"}
  * </ul>
  *
  * @version $Id$

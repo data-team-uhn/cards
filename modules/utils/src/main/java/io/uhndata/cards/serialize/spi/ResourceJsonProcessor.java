@@ -35,7 +35,7 @@ import io.uhndata.cards.serialize.ResourceToJsonAdapterFactory;
  * <p>
  * Each implementation has a {@link #getName() name} that can be used to enable or disable it. Selecting which modules
  * to use when serializing a resource is done through the resource's selectors. This can be accomplished by appending
- * them in the request URL for a resource, for example <tt>http://server.example/path/to/resource.deep.simple.json</tt>,
+ * them in the request URL for a resource, for example {@code http://server.example/path/to/resource.deep.simple.json},
  * or by appending them in the resource path when using {@code ResourceResolver#resolve}, for example
  * {@code resourceResolver.resolve("/path/to/resource.deep.simple")}. Some implementations are
  * {@link #isEnabledByDefault(Resource) enabled by default} for all, or just some resources, like the {@code properties}
@@ -48,8 +48,8 @@ import io.uhndata.cards.serialize.ResourceToJsonAdapterFactory;
  * process, the result is {@code null}, then that property or child is not included in the output. To serialize a
  * property or child as {@code null}, return {@code JsonValue.NULL}. The name under which a property or child is
  * serialized is its actual name by default, and this cannot be changed by the {@link #processProperty} or
- * {@link #processChild} methods. Changing the key names, or adding extra keys in the JSON, can be accomplished using the
- * {@link #leave} method.
+ * {@link #processChild} methods. Changing the key names, or adding extra keys in the JSON, can be accomplished using
+ * the {@link #leave} method.
  * </p>
  * <p>
  * For each serialized node, first all its properties are serialized using {@link #processProperty}, then all its
