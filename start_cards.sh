@@ -189,6 +189,10 @@ do
         ARGS_LENGTH=${ARGS_LENGTH}+1
         ARGS[$ARGS_LENGTH]=mvn:io.uhndata.cards/cards-email-notifications/${CARDS_VERSION}/slingosgifeature
         ARGS_LENGTH=${ARGS_LENGTH}+1
+        if [[ ${PERMISSIONS_EXPLICITLY_SET} == 'false' ]]
+        then
+          PERMISSIONS="trusted"
+        fi
       fi
     done
     ARGS[$i]=${ARGS[$i]#,}
