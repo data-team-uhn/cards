@@ -150,6 +150,7 @@
     <slf4j.version>1.7.32</slf4j.version>
     <jackrabbit.version>2.20.3</jackrabbit.version>
     <oak.version>1.40.0</oak.version>
+    <sling.saml.version>0.2.6.cards.1</sling.saml.version>
 
     <!-- Versions to be replaced in the feature files -->
     <asm.version>9.2</asm.version>
@@ -642,7 +643,7 @@
           <version>1.5.16</version>
           <extensions>true</extensions>
           <configuration>
-            <replacePropertyVariables>asm.version,jackrabbit.version,groovy.version,oak.version,slf4j.version,composum.nodes.version,jackson.version,cards.version</replacePropertyVariables>
+            <replacePropertyVariables>asm.version,jackrabbit.version,groovy.version,oak.version,sling.saml.version,slf4j.version,composum.nodes.version,jackson.version,cards.version</replacePropertyVariables>
             <framework>
               <groupId>org.apache.felix</groupId>
               <artifactId>org.apache.felix.framework</artifactId>
