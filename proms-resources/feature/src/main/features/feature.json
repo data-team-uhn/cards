@@ -61,7 +61,7 @@
         // Enforcing Terms Of Use acceptance
         "create service user proms-patient-tou \n set ACL for proms-patient-tou \n   allow jcr:read,rep:write,jcr:versionManagement on /Forms \n   allow jcr:read on /Questionnaires,/Subjects \n end",
         // Trusted users can only access forms submitted by their patients, and delete forms that they created
-        "create group TrustedUsers \n\n set ACL for TrustedUsers \n   deny rep:write on /Subjects \n   allow jcr:removeChildNodes on /Forms \n     deny jcr:removeNode on /Forms \n     allow jcr:removeNode on /Forms restriction(cards:createdBy) \n    deny jcr:all on /Forms restriction(cards:unsubmittedForms) \n end ",
+        "create group TrustedUsers \n\n set ACL for TrustedUsers \n   deny rep:write on /Subjects \n   allow jcr:removeChildNodes on /Forms \n     deny jcr:removeNode on /Forms restriction(rep:ntNames,cards:Form,cards:Subject) \n     allow jcr:removeNode on /Forms restriction(cards:createdBy) \n    deny jcr:all on /Forms restriction(cards:unsubmittedForms) \n end ",
         // Special handling of the 404 page button: patients go to the PROMS UI, all other users go to the dashboard
         "create path (sling:Folder) /RedirectURL \n set ACL on /RedirectURL \n   deny jcr:read for everyone \n   allow jcr:read for patient \n end \n set properties on /RedirectURL \n   set RedirectURL to /Proms.html/Cardio \n   set RedirectLabel to \"Go to my surveys\" \n end "
       ]
