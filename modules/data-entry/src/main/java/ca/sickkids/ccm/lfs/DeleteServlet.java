@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
  * This servlet supports the following parameters:
  * </p>
  * <ul>
- * <li><tt>recursive</tt>: whether nodes which reference the item should be deleted; defaults to false</li>
+ * <li><code>recursive</code>: whether nodes which reference the item should be deleted; defaults to false</li>
  * </ul>
  *
  * @version $Id$

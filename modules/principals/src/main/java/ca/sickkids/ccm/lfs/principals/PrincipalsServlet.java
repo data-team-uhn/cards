@@ -54,9 +54,9 @@ import org.osgi.service.log.LogService;
  * This servlet supports the following parameters:
  * </p>
  * <ul>
- * <li><tt>filter</tt>: a lucene search term, such as "david" or "adm*"; no filter set by default</li>
- * <li><tt>offset</tt>: a 0-based number representing how many principals to skip; 0 by default</li>
- * <li><tt>limit</tt>: a number representing how many principals to include at most in the result; 0 by default</li>
+ * <li><code>filter</code>: a lucene search term, such as "david" or "adm*"; no filter set by default</li>
+ * <li><code>offset</code>: a 0-based number representing how many principals to skip; 0 by default</li>
+ * <li><code>limit</code>: a number representing how many principals to include at most in the result; 0 by default</li>
  * </ul>
  *
  * @version $Id$

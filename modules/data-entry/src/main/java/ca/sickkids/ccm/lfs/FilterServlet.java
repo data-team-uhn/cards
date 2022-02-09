@@ -45,7 +45,7 @@ import org.osgi.service.component.annotations.Component;
  * This servlet supports the following parameters:
  * </p>
  * <ul>
- * <li><tt>questionnaire</tt>: a path to a questionnaire whose filterable options to retrieve</li>
+ * <li><code>questionnaire</code>: a path to a questionnaire whose filterable options to retrieve</li>
  * </ul>
  *
  * @version $Id$

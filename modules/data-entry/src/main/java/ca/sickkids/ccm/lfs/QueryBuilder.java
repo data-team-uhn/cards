@@ -50,9 +50,9 @@ import ca.sickkids.ccm.lfs.spi.SearchParametersFactory;
  * parameter {@code query}, and must be in the JCR-SQL2 syntax. To use this API, simply place the following code in a
  * HTL file:
  *
- * <p><tt>
+ * <p><code>
  * &lt;sly data-sly-use.query="ca.sickkids.ccm.lfs.QueryBuilder"&gt;${query.content @ context='unsafe'}&lt;/sly&gt;
- * </tt></p>
+ * </code></p>
  *
  * <p>Or, send a HTTP request to {@code /query?query=select%20*%20from%20[lfs:Form]}.</p>
  *

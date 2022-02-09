@@ -48,8 +48,8 @@ import ca.sickkids.ccm.lfs.serialize.ResourceToJsonAdapterFactory;
  * process, the result is {@code null}, then that property or child is not included in the output. To serialize a
  * property or child as {@code null}, return {@code JsonValue.NULL}. The name under which a property or child is
  * serialized is its actual name by default, and this cannot be changed by the {@link #processProperty} or
- * {@link #processChild} methods. Changing the key names, or adding extra keys in the JSON, can be accomplished using the
- * {@link #leave} method.
+ * {@link #processChild} methods. Changing the key names, or adding extra keys in the JSON, can be accomplished using
+ * the {@link #leave} method.
  * </p>
  * <p>
  * For each serialized node, first all its properties are serialized using {@link #processProperty}, then all its
