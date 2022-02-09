@@ -27,9 +27,9 @@ import org.apache.sling.scripting.sightly.pojo.Use;
  * parameters, only simple getter-like methods. To use this API, simply place the following code in a HTL file,
  * replacing with the needed status code method:
  * <p>
- * <tt>
+ * <code>
  * &lt;sly data-sly-use.statusCode="io.uhndata.cards.scripting.StatusCodeSetter"&gt;${statusCode.created}&lt;/sly&gt;
- * </tt>
+ * </code>
  * </p>
  *
  * @version $Id$

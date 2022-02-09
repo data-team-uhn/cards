@@ -50,7 +50,7 @@ import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
  * of the serialization process is implemented by implementations of the {@link ResourceJsonProcessor} service. To
  * configure the serialization process, include serializer names in the resource selectors. This can be accomplished by
  * appending them in the request URL for a resource, for example
- * <tt>http://server.example/path/to/resource.deep.simple.json</tt>, or by appending them in the resource path when
+ * <code>http://server.example/path/to/resource.deep.simple.json</code>, or by appending them in the resource path when
  * using {@code resourceResolver.resolve}, for example
  * {@code resourceResolver.resolve("/path/to/resource.deep.simple")}. A few processors are
  * {@link ResourceJsonProcessor#isEnabledByDefault(Resource) enabled by default}, for example the {@code properties},
