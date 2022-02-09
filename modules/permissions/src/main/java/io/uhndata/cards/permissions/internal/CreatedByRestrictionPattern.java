@@ -49,7 +49,7 @@ public class CreatedByRestrictionPattern implements RestrictionPattern
     @Override
     public boolean matches(final Tree tree, final PropertyState property)
     {
-        // An ownerless node should be allowed through
+        // A node without a creator should be allowed through
         if (tree.getProperty("jcr:createdBy") == null) {
             return false;
         }
