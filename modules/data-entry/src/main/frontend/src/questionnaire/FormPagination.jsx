@@ -110,13 +110,6 @@ function FormPagination (props) {
 
   let handleNext = () => {
     setPendingSubmission(true);
-    if (activePage === lastValidPage()) {
-      setSavedLastPage(true);
-      onDone && onDone();
-    } else {
-      setSavedLastPage(false);
-      handlePageChange("next");
-    }
   }
 
   let handleBack = () => {
@@ -124,10 +117,6 @@ function FormPagination (props) {
     if (activePage > 0) {
       handlePageChange("back");
     }
-  }
-
-  if (saveInProgress && pendingSubmission) {
-    setPendingSubmission(false);
   }
 
   let handlePageChange = (direction) => {
@@ -141,6 +130,17 @@ function FormPagination (props) {
       window.scrollTo(0, 0);
     }
     setActivePage(nextPage);
+  }
+
+  if (saveInProgress && pendingSubmission) {
+    setPendingSubmission(false);
+    if (activePage === lastValidPage()) {
+      setSavedLastPage(true);
+      onDone && onDone();
+    } else {
+      setSavedLastPage(false);
+      handlePageChange("next");
+    }
   }
 
   let saveButton =
