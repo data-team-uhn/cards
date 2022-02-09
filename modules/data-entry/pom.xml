@@ -55,7 +55,6 @@
               SLING-INF/content/Extensions/AdminDashboard/;path:=/Extensions/AdminDashboard/;overwrite:=true,
               SLING-INF/content/Extensions/DashboardMenuItems/;path:=/Extensions/DashboardMenuItems/;overwrite:=true,
               SLING-INF/content/Extensions/DashboardViews/;path:=/Extensions/DashboardViews/;overwrite:=true,
-              SLING-INF/content/Extensions/PendingUsersView/;path:=/Extensions/PendingUsersView/;overwrite:=true,
               SLING-INF/content/Extensions/Sidebar/;path:=/Extensions/Sidebar/;overwrite:=true,
               SLING-INF/content/Extensions/Views/;path:=/Extensions/Views/;overwrite:=true,
               SLING-INF/content/SubjectTypes/;path:=/SubjectTypes/;overwrite:=true
