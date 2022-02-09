@@ -18,6 +18,12 @@
 {
   "title": "CARDS - Data entry - Trusted permissions scheme",
   "description":"Configuration allowing only trusted users to create and edit all records",
+  "bundles":[
+    {
+      "id":"io.uhndata.cards:cards-permissions-trusted:${cards.version}",
+      "start-order":"25"
+    }
+  ],
   "configurations":{
     "org.apache.sling.jcr.repoinit.RepositoryInitializer~forms_trusted":{
       "service.ranking:Integer":200,
