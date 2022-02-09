@@ -167,7 +167,6 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key, onCha
         existingAnswer={existingQuestionAnswer}
         path={path}
         onChange={onChange}
-        visibleCallback={visibleCallback}
         pageActive={pageActive}
         isEdit={isEdit}
         isSummary={isSummary}
