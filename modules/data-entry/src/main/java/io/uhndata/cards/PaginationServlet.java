@@ -80,7 +80,7 @@ import org.slf4j.LoggerFactory;
     selectors = { "paginate" })
 public class PaginationServlet extends SlingSafeMethodsServlet
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DataImportServlet.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PaginationServlet.class);
 
     private static final long serialVersionUID = -6068156942302219324L;
 
