@@ -18,6 +18,10 @@
 {
   "bundles":[
     {
+      "id":"${project.groupId}:cards-patient-subject-type:${project.version}",
+      "start-order":"25"
+    },
+    {
       "id":"${project.groupId}:kids-resources-clinical-data:${project.version}",
       "start-order":"26"
     }

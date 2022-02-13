@@ -18,6 +18,18 @@
 {
   "bundles":[
     {
+      "id":"${project.groupId}:cards-patient-subject-type:${project.version}",
+      "start-order":"20"
+    },
+    {
+      "id":"${project.groupId}:cards-tumor-subject-type:${project.version}",
+      "start-order":"21"
+    },
+    {
+      "id":"${project.groupId}:cards-tumor-region-subject-type:${project.version}",
+      "start-order":"22"
+    },
+    {
       "id":"${project.groupId}:lfs-resources-clinical-data:${project.version}",
       "start-order":"26"
     },

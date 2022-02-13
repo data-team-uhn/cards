@@ -62,6 +62,10 @@
       "start-order":"26"
     },
     {
+      "id":"${project.groupId}:cards-patient-subject-type:${project.version}",
+      "start-order":"25"
+    },
+    {
       "id":"${project.groupId}:cardiac-rehab-backend:${project.version}",
       "start-order":"26"
     },

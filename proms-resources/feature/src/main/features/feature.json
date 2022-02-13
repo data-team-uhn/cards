@@ -18,6 +18,14 @@
 {
   "bundles":[
     {
+      "id":"${project.groupId}:cards-patient-subject-type:${project.version}",
+      "start-order":"20"
+    },
+    {
+      "id":"${project.groupId}:cards-visit-subject-type:${project.version}",
+      "start-order":"21"
+    },
+    {
       "id":"${project.groupId}:proms-resources-clinical-data:${project.version}",
       "start-order":"26"
     },

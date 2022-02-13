@@ -7,9 +7,7 @@
   to you under the Apache License, Version 2.0 (the
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
-
   http://www.apache.org/licenses/LICENSE-2.0
-
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -22,33 +20,28 @@
 
   <parent>
     <groupId>io.uhndata.cards</groupId>
-    <artifactId>proms-resources</artifactId>
+    <artifactId>cards-data-model</artifactId>
     <version>0.9-SNAPSHOT</version>
   </parent>
 
-  <artifactId>proms-resources-clinical-data</artifactId>
+  <artifactId>cards-visit-subject-type</artifactId>
   <packaging>bundle</packaging>
-  <name>Cards for PROMs Resources - Clinical Data</name>
+  <name>CARDS Data Model - Visit subject type</name>
 
   <build>
     <plugins>
-      <!-- This is an OSGi bundle -->
+      <plugin>
+        <groupId>org.apache.sling</groupId>
+        <artifactId>slingfeature-maven-plugin</artifactId>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Sling-Nodetypes>SLING-INF/nodetypes/proms.cnd</Sling-Nodetypes>
-            <Include-Resource>{maven-resources},src/main/media</Include-Resource>
-            <Sling-Initial-Content>
-              SLING-INF/content/Homepage/;path:=/;overwrite:=true,
-              SLING-INF/content/Questionnaires/;path:=/Questionnaires/;overwrite:=true;checkin:=true,
-              SLING-INF/content/libs/cards/resources/;path:=/libs/cards/resources/;overwrite:=true,
-              SLING-INF/content/libs/cards/conf/;path:=/libs/cards/conf/;overwrite:=true,
-              SLING-INF/content/apps/cards/config/CopyAnswers;path:=/apps/cards/config/CopyAnswers;overwrite:=true,
-              SLING-INF/content/Statistics/;path:=/Statistics/;overwrite:=false,
-            </Sling-Initial-Content>
+            <Sling-Initial-Content>SLING-INF/content/SubjectTypes/Patient/;path:=/SubjectTypes/Patient/;overwrite:=true</Sling-Initial-Content>
           </instructions>
         </configuration>
       </plugin>
@@ -59,12 +52,6 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>cards-patient-subject-type</artifactId>
-      <version>${project.version}</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>cards-visit-subject-type</artifactId>
       <version>${project.version}</version>
       <scope>runtime</scope>
     </dependency>
