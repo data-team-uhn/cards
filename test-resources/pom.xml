@@ -42,8 +42,8 @@
         <configuration>
           <instructions>
             <Sling-Initial-Content>
-              SLING-INF/content/Questionnaires/;path:=/Questionnaires/;overwrite:=true;checkin:=true,
-              SLING-INF/content/Subjects/;path:=/Subjects/;overwrite:=true;checkin:=true
+              SLING-INF/content/Questionnaires/;path:=/Questionnaires/;overwriteProperties:=true;uninstall:=true;checkin:=true,
+              SLING-INF/content/Subjects/;path:=/Subjects/;uninstall:=true;checkin:=true,
             </Sling-Initial-Content>
           </instructions>
         </configuration>

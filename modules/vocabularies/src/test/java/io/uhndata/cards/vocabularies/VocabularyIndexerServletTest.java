@@ -37,11 +37,12 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.servlets.HttpConstants;
 import org.apache.sling.testing.mock.jcr.MockJcr;
-import org.apache.sling.testing.mock.sling.MockSling;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletRequest;
 import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletResponse;
@@ -86,12 +87,22 @@ public class VocabularyIndexerServletTest
     @Mock(answer = Answers.CALLS_REAL_METHODS)
     private VocabularyParserUtils parserUtils;
 
+    // BundleContext and ResourceResolver for creating resources and instantiating requests
+    private BundleContext slingBundleContext;
+
+    private ResourceResolver resourceResolver;
+
     @Before
-    public void setup()
+    public void setup() throws LoginException
     {
         MockitoAnnotations.initMocks(this);
         List<VocabularyIndexer> realParsers = Collections.singletonList(this.flatParser);
         Mockito.when(this.parsers.iterator()).thenReturn(realParsers.iterator());
+        // BundleContext and ResourceResolver for creating resources and instantiating requests
+        this.slingBundleContext = this.context.bundleContext();
+        this.resourceResolver = this.slingBundleContext
+            .getService(this.slingBundleContext.getServiceReference(ResourceResolverFactory.class))
+            .getAdministrativeResourceResolver(null);
     }
 
     /**
@@ -238,19 +249,16 @@ public class VocabularyIndexerServletTest
         final Session session = MockJcr.newSession();
         registerResourceToNodeAdapter(session);
 
-        // BundleContext and ResourceResolver for creating resources and instantiating requests
-        BundleContext slingBundleContext = this.context.bundleContext();
-        ResourceResolver resourceResolver = MockSling.newResourceResolver(slingBundleContext);
-
         // Create a mock VocabulariesHomepage node /Vocabularies to act as the resource for the request
-        makeRequestResource(resourceResolver);
+        makeRequestResource(this.resourceResolver);
 
         // Execute request
 
-        MockSlingHttpServletRequest request = new MockSlingHttpServletRequest(resourceResolver, slingBundleContext);
+        MockSlingHttpServletRequest request =
+            new MockSlingHttpServletRequest(this.resourceResolver, this.slingBundleContext);
 
         // Set the resource of the request as the /Vocabularies node
-        request.setResource(resourceResolver.getResource("/Vocabularies"));
+        request.setResource(this.resourceResolver.getResource("/Vocabularies"));
 
         MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
 
@@ -292,19 +300,16 @@ public class VocabularyIndexerServletTest
         final Session session = MockJcr.newSession();
         registerResourceToNodeAdapter(session);
 
-        // BundleContext and ResourceResolver for creating resources and instantiating requests
-        BundleContext slingBundleContext = this.context.bundleContext();
-        ResourceResolver resourceResolver = MockSling.newResourceResolver(slingBundleContext);
-
         // Create a mock VocabulariesHomepage node /Vocabularies to act as the resource for the request
-        makeRequestResource(resourceResolver);
+        makeRequestResource(this.resourceResolver);
 
         // Execute request
 
-        MockSlingHttpServletRequest request = new MockSlingHttpServletRequest(resourceResolver, slingBundleContext);
+        MockSlingHttpServletRequest request =
+            new MockSlingHttpServletRequest(this.resourceResolver, this.slingBundleContext);
 
         // Set the resource of the request as the /Vocabularies node
-        request.setResource(resourceResolver.getResource("/Vocabularies"));
+        request.setResource(this.resourceResolver.getResource("/Vocabularies"));
 
         MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
 
@@ -350,19 +355,16 @@ public class VocabularyIndexerServletTest
         final Session session = MockJcr.newSession();
         registerResourceToNodeAdapter(session);
 
-        // BundleContext and ResourceResolver for creating resources and instantiating requests
-        BundleContext slingBundleContext = this.context.bundleContext();
-        ResourceResolver resourceResolver = MockSling.newResourceResolver(slingBundleContext);
-
         // Create a mock VocabulariesHomepage node /Vocabularies to act as the resource for the request
-        makeRequestResource(resourceResolver);
+        makeRequestResource(this.resourceResolver);
 
         // Execute request
 
-        MockSlingHttpServletRequest request = new MockSlingHttpServletRequest(resourceResolver, slingBundleContext);
+        MockSlingHttpServletRequest request =
+            new MockSlingHttpServletRequest(this.resourceResolver, this.slingBundleContext);
 
         // Set the resource of the request as the /Vocabularies node
-        request.setResource(resourceResolver.getResource("/Vocabularies"));
+        request.setResource(this.resourceResolver.getResource("/Vocabularies"));
 
         MockSlingHttpServletResponse response = new MockSlingHttpServletResponse();
 

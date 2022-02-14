@@ -39,8 +39,7 @@
           <instructions>
             <Include-Resource>{maven-resources}</Include-Resource>
             <Sling-Initial-Content>
-              SLING-INF/content/Extensions/Views/;path:=/Extensions/Views/;overwrite:=true,
-              SLING-INF/content/Extensions/AdminDashboard/;path:=/Extensions/AdminDashboard/;overwrite:=true
+              SLING-INF/content/Extensions/;path:=/Extensions/;overwriteProperties:=true;uninstall:=true,
             </Sling-Initial-Content>
           </instructions>
         </configuration>

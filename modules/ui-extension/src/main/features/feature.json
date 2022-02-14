@@ -18,7 +18,7 @@
 {
   "bundles":[
     {
-      "id":"org.apache.sling:org.apache.sling.scripting.sightly:1.4.12-1.4.0",
+      "id":"org.apache.sling:org.apache.sling.scripting.sightly:1.4.16-1.4.0",
       "start-order":"26"
     },
     {
@@ -26,11 +26,11 @@
       "start-order":"26"
     },
     {
-      "id":"org.apache.commons:commons-lang3:3.11",
+      "id":"org.apache.commons:commons-lang3:3.12.0",
       "start-order":"26"
     },
     {
-      "id":"org.apache.sling:org.apache.sling.api:2.23.6",
+      "id":"org.apache.sling:org.apache.sling.api:2.24.0",
       "start-order":"26"
     },
     {

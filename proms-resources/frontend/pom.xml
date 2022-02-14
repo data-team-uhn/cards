@@ -40,11 +40,8 @@
             <Include-Resource>{maven-resources}</Include-Resource>
             <Sling-Initial-Content>
               SLING-INF/content/libs/cards/PromsHomepage/;path:=/libs/cards/PromsHomepage/;overwrite:=true,
-              SLING-INF/content/apps/cards/ExtensionPoints/;path:=/apps/cards/ExtensionPoints/;overwrite:=true,
-              SLING-INF/content/Extensions/DashboardViews/;path:=/Extensions/DashboardViews/;overwrite:=true,
-              SLING-INF/content/Extensions/Views/;path:=/Extensions/Views/;overwrite:=true,
-              SLING-INF/content/Extensions/Sidebar/;path:=/Extensions/Sidebar/;overwrite:=true,
-              SLING-INF/content/Extensions/Footer;path:=/Extensions/Footer;overwrite:=true,
+              SLING-INF/content/apps/cards/ExtensionPoints/;path:=/apps/cards/ExtensionPoints/;overwriteProperties:=true;uninstall:=true,
+              SLING-INF/content/Extensions/;path:=/Extensions/;overwriteProperties:=true;uninstall:=true,
             </Sling-Initial-Content>
           </instructions>
         </configuration>

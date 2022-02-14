@@ -42,12 +42,13 @@
             <Sling-Nodetypes>SLING-INF/nodetypes/proms.cnd</Sling-Nodetypes>
             <Include-Resource>{maven-resources},src/main/media</Include-Resource>
             <Sling-Initial-Content>
-              SLING-INF/content/Homepage/;path:=/;overwrite:=true,
-              SLING-INF/content/Questionnaires/;path:=/Questionnaires/;overwrite:=true;checkin:=true,
-              SLING-INF/content/libs/cards/resources/;path:=/libs/cards/resources/;overwrite:=true,
-              SLING-INF/content/libs/cards/conf/;path:=/libs/cards/conf/;overwrite:=true,
-              SLING-INF/content/apps/cards/config/CopyAnswers;path:=/apps/cards/config/CopyAnswers;overwrite:=true,
-              SLING-INF/content/Statistics/;path:=/Statistics/;overwrite:=false,
+              SLING-INF/content/Homepage/Proms;path:=/Proms;overwrite:=true,
+              SLING-INF/content/Questionnaires/;path:=/Questionnaires/;overwriteProperties:=true;uninstall:=true;checkin:=true,
+              SLING-INF/content/libs/cards/resources/;path:=/libs/cards/resources/;overwriteProperties:=true;uninstall:=true,
+              SLING-INF/content/libs/cards/conf/AppName.json;path:=/libs/cards/conf/AppName;overwrite:=true,
+              SLING-INF/content/libs/cards/conf/ThemeColor.json;path:=/libs/cards/conf/ThemeColor;overwrite:=true,
+              SLING-INF/content/apps/cards/config/CopyAnswers;path:=/apps/cards/config/CopyAnswers;overwriteProperties:=true;uninstall:=true,
+              SLING-INF/content/Statistics/;path:=/Statistics/;overwrite:=false;overwriteProperties:=true;uninstall:=true,
             </Sling-Initial-Content>
           </instructions>
         </configuration>

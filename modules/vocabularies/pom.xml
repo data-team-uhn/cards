@@ -51,9 +51,8 @@
             <Sling-Nodetypes>SLING-INF/nodetypes/vocabularies.cnd</Sling-Nodetypes>
             <!-- Initial content to be loaded on bundle installation -->
             <Sling-Initial-Content>
-              SLING-INF/content/oak%3Aindex/;path:=/oak:index/;overwrite:=true,
-              SLING-INF/content/Extensions/Views/;path:=/Extensions/Views/;overwrite:=true,
-              SLING-INF/content/Extensions/AdminDashboard/;path:=/Extensions/AdminDashboard/;overwrite:=true
+              SLING-INF/content/oak%3Aindex/;path:=/oak:index/;overwriteProperties:=true;uninstall:=true,
+              SLING-INF/content/Extensions/;path:=/Extensions/;overwriteProperties:=true;uninstall:=true,
             </Sling-Initial-Content>
           </instructions>
         </configuration>
@@ -104,7 +103,7 @@
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpcore</artifactId>
-      <version>4.4.10</version>
+      <version>4.4.15</version>
     </dependency>
     <dependency>
       <groupId>org.apache.sling</groupId>
@@ -113,7 +112,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-osgi</artifactId>
-      <version>3.11.0</version>
+      <version>3.17.0</version>
     </dependency>
     <dependency>
       <groupId>org.osgi</groupId>
@@ -129,25 +128,25 @@
     <dependency>
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.testing.sling-mock.core</artifactId>
-      <version>2.3.4</version>
+      <version>3.2.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.testing.sling-mock.junit4</artifactId>
-      <version>2.3.4</version>
+      <version>3.2.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.testing.sling-mock-oak</artifactId>
-      <version>2.1.6</version>
+      <version>3.1.2-1.40.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.testing.jcr-mock</artifactId>
-      <version>1.4.4</version>
+      <version>1.5.4</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -169,20 +168,17 @@
     <dependency>
       <groupId>biz.aQute.bnd</groupId>
       <artifactId>biz.aQute.bndlib</artifactId>
-      <version>3.5.0</version>
+      <version>6.1.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>29.0-jre</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>${slf4j.version}</version>
-      <scope>provided</scope>
     </dependency>
   </dependencies>
 </project>

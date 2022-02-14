@@ -42,7 +42,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Sling-Initial-Content>SLING-INF/content/Extensions/PageStart/;path:=/Extensions/PageStart/;overwrite:=true</Sling-Initial-Content>
+            <Sling-Initial-Content>SLING-INF/content/Extensions/PageStart/;path:=/Extensions/PageStart/;overwriteProperties:=true;uninstall:=true</Sling-Initial-Content>
           </instructions>
         </configuration>
       </plugin>
