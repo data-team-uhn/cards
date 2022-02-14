@@ -1,16 +1,16 @@
 networks:
   internalnetwork: {}
 services:
-  lfsinitial:
+  cardsinitial:
     environment:
     - INITIAL_SLING_NODE=true
-    - LFS_RELOAD=${LFS_RELOAD:-}
+    - CARDS_RELOAD=${CARDS_RELOAD:-}
     - OAK_FILESYSTEM=true
-    image: lfs/lfs:latest
+    image: cards/cards:latest
     networks:
       internalnetwork:
         aliases:
-        - lfsinitial
+        - cardsinitial
     ports:
     - 8080:8080
   ldap:
