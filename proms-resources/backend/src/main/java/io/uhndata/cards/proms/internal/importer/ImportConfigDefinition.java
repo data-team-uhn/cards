@@ -23,8 +23,8 @@ import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.AttributeType;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
-@ObjectClassDefinition(name = "Endpoint-triggered PROMs import config",
-    description = "Configuration for the PROMs endpoint-triggered importer")
+@ObjectClassDefinition(name = "PROMs import",
+    description = "Configuration for the PROMs importer")
 public @interface ImportConfigDefinition
 {
     /** Number of days to look ahead when querying for appointments. */
