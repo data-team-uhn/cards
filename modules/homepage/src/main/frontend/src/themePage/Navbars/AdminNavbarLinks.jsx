@@ -55,7 +55,7 @@ function HeaderLinks (props) {
     if (username && username.length > 0) {
       fetchWithReLogin(globalLoginDisplay, `/system/userManager/user/${username}.json`)
         .then((response) => response.ok ? response.json() : Promise.reject(response))
-        .then((json) => setRemote(json["rep:externalId"] && json["rep:externalId"].length > 0))
+        .then((json) => setRemote((json["rep:externalId"] && json["rep:externalId"].length > 0) || (json["path"] && json["path"].startsWith("/home/users/saml/"))))
         .catch((error) => console.log(error));
     }
   }, [username]);
