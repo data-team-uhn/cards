@@ -1,0 +1,23 @@
+networks:
+  internalnetwork: {}
+services:
+  lfsinitial:
+    environment:
+    - INITIAL_SLING_NODE=true
+    - LFS_RELOAD=${LFS_RELOAD:-}
+    - OAK_FILESYSTEM=true
+    image: lfs/lfs:latest
+    networks:
+      internalnetwork:
+        aliases:
+        - lfsinitial
+    ports:
+    - 8080:8080
+  ldap:
+    image: dwimberger/ldap-ad-it
+    networks:
+     internalnetwork:
+       aliases:
+       - ldapmock
+version: '3'
+volumes: {}
