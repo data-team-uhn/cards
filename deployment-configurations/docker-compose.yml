@@ -6,7 +6,10 @@ services:
     - INITIAL_SLING_NODE=true
     - CARDS_RELOAD=${CARDS_RELOAD:-}
     - OAK_FILESYSTEM=true
+    - ADDITIONAL_SLING_FEATURES=mvn:io.uhndata.cards/cards-ldap-support/0.9-SNAPSHOT/slingosgifeature/base
     image: cards/cards:latest
+    volumes:
+    - ~/.m2:/root/.m2:ro
     networks:
       internalnetwork:
         aliases:
