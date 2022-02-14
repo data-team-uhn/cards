@@ -18,7 +18,7 @@
 {
   "bundles":[
     {
-      "id":"org.apache.sling:org.apache.sling.scripting.sightly:1.4.12-1.4.0",
+      "id":"org.apache.sling:org.apache.sling.scripting.sightly:1.4.16-1.4.0",
       "start-order":"25"
     },
     {
@@ -30,19 +30,19 @@
       "start-order":"25"
     },
     {
-      "id":"org.apache.commons:commons-compress:1.18",
+      "id":"org.apache.commons:commons-compress:1.21",
       "start-order":"26"
     },
     {
-      "id":"org.apache.sling:org.apache.sling.api:2.23.6",
+      "id":"org.apache.sling:org.apache.sling.api:2.24.0",
       "start-order":"25"
     },
     {
-      "id":"org.apache.jena:jena-osgi:3.11.0",
+      "id":"org.apache.jena:jena-osgi:3.17.0",
       "start-order":"25"
     },
     {
-      "id":"org.apache.thrift:libthrift:0.12.0",
+      "id":"org.apache.thrift:libthrift:0.15.0",
       "start-order":"25"
     },
     {
@@ -50,7 +50,7 @@
       "start-order":"25"
     },
     {
-      "id":"com.github.jsonld-java:jsonld-java:0.12.3",
+      "id":"com.github.jsonld-java:jsonld-java:0.13.4",
       "start-order":"25"
     },
     {

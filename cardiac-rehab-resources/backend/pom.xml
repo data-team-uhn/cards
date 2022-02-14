@@ -85,7 +85,7 @@
     <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk-osgi</artifactId>
-      <version>1.11.924</version>
+      <version>1.12.158</version>
     </dependency>
   </dependencies>
 </project>

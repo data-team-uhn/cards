@@ -46,8 +46,8 @@
             <Include-Resource>{maven-resources}</Include-Resource>
             <Sling-Nodetypes>SLING-INF/nodetypes/token.cnd</Sling-Nodetypes>
             <Sling-Initial-Content>
-              SLING-INF/content/libs/cards/TokenExpired/;path:=/libs/cards/TokenExpired/;overwrite:=true,
-              SLING-INF/content/libs/cards/Subject/;path:=/libs/cards/Subject/;overwrite:=true,
+              SLING-INF/content/libs/cards/TokenExpired/;path:=/libs/cards/TokenExpired/;overwriteProperties:=true;uninstall:=true,
+              SLING-INF/content/libs/cards/Subject/;path:=/libs/cards/Subject/;overwriteProperties:=true;uninstall:=true,
             </Sling-Initial-Content>
           </instructions>
         </configuration>
@@ -67,7 +67,7 @@
     <dependency>
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.auth.core</artifactId>
-      <version>1.4.2</version>
+      <version>1.5.6</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -105,7 +105,7 @@
     <dependency>
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.jcr.resource</artifactId>
-      <version>3.0.22</version>
+      <version>3.2.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
