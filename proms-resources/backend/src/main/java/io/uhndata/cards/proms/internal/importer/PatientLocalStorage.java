@@ -231,7 +231,7 @@ public class PatientLocalStorage
             final JsonArray providers = rawProvider.asJsonArray();
             for (int i = 0; i < providers.size(); i++) {
                 for (final String providerID : this.providerIDs) {
-                    if (providerID.equals(providers.getJsonObject(0).getString("eID"))) {
+                    if (providerID.equals(providers.getJsonObject(i).getString("eID"))) {
                         return true;
                     }
                 }
