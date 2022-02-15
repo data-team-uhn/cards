@@ -42,6 +42,9 @@ public @interface ImportConfigDefinition
     /** Cron-readable import schedule. */
     String NIGHTLY_IMPORT_SCHEDULE = "0 0 0 * * ? *";
 
+    /** Vault role to login to. */
+    String VAULT_ROLE = "prom_role";
+
     @AttributeDefinition(name = "Name", description = "Configuration name")
     String name();
 
@@ -68,4 +71,9 @@ public @interface ImportConfigDefinition
     @AttributeDefinition(name = "Provider names",
         description = "List of names of providers to query. If empty, all providers will be fetched.", required = false)
     String[] provider_names();
+
+    @AttributeDefinition(name = "Vault role name",
+        description = "Name of the role to login to Vault with. If not given, skip the Vault login process.",
+        required = false)
+    String vault_role();
 }

@@ -21,6 +21,7 @@ package io.uhndata.cards.proms.internal.importer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.StringReader;
@@ -50,6 +51,7 @@ import org.slf4j.LoggerFactory;
  *
  * @version $Id$
  */
+@SuppressWarnings({"checkstyle:ClassDataAbstractionCoupling"})
 public class ImportTask implements Runnable
 {
     /** Default log. */
@@ -73,6 +75,9 @@ public class ImportTask implements Runnable
     /** JWT token for querying the endpoint. */
     private final String vaultToken;
 
+    /** Vault role name for use when logging in with the JWT. */
+    private final String vaultRole;
+
     /** Provides access to resources. */
     private final ResourceResolverFactory resolverFactory;
 
@@ -85,8 +90,10 @@ public class ImportTask implements Runnable
      * @param clinicNames Pipe-delimited list of names of clinics to query
      * @param providerIDs Pipe-delimited list of names of providers to filter queries to
      */
+    @SuppressWarnings({"checkstyle:ParameterNumber"})
     ImportTask(final ResourceResolverFactory resolverFactory, final String authURL, final String endpointURL,
-        final int daysToQuery, final String vaultToken, final String[] clinicNames, final String[] providerIDs)
+        final int daysToQuery, final String vaultToken, final String[] clinicNames, final String[] providerIDs,
+        final String vaultRole)
     {
         this.resolverFactory = resolverFactory;
         this.authURL = authURL;
@@ -96,16 +103,45 @@ public class ImportTask implements Runnable
         this.clinicNames = clinicNames;
         // If we have no provider IDs, we want an empty list instead of a list of length 1 with an empty string
         this.providerIDs = StringUtils.isAllBlank(providerIDs) ? new String[0] : providerIDs;
+        this.vaultRole = vaultRole;
     }
 
     @Override
     public void run()
     {
-        final String token = "Bearer " + this.vaultToken;
+        final String token = loginWithJWT();
         // Iterate over every clinic name
         for (int i = 0; i < this.clinicNames.length; i++) {
             getUpcomingAppointments(token, this.daysToQuery, this.clinicNames[i]);
         }
+    }
+
+    /**
+     * Obtain an authentication token for use in querying the Torch server. Currently, this sends a JWT Login request to
+     * Vault, which authorizes our JWT token to query the server. This should be called before performing
+     * {@code getUpcomingAppointments}.
+     *
+     * @return an authentication token to be passed onto as a header, typically begins with "Bearer " or an empty string
+     *         if no token could be obtained.
+     */
+    private String loginWithJWT()
+    {
+        String token = "Bearer " + this.vaultToken;
+
+        // If we have no role to login to, we can skip the rest of the Vault auth process
+        if ("".equals(this.vaultRole)) {
+            return token;
+        }
+
+        final String postRequest = "{ \"role\": \"" + this.vaultRole + "\", \"jwt\":\"" + this.vaultToken + "\" }";
+
+        try {
+            getPostResponse(this.authURL, postRequest);
+        } catch (final Exception e) {
+            LOGGER.error("Failed to activate authentication token: {}", e.getMessage(), e);
+        }
+
+        return token;
     }
 
     /**
@@ -166,6 +202,23 @@ public class ImportTask implements Runnable
     }
 
     /***
+     * Place all of the data from a given input stream into a string.
+     *
+     * @param stream The stream to read data from
+     * @return The string output from the given input stream
+     */
+    private static String readInputStream(InputStream stream) throws IOException
+    {
+        final BufferedReader br = new BufferedReader(new InputStreamReader(stream, "utf-8"));
+        String responseLine = null;
+        final StringBuilder retVal = new StringBuilder();
+        while ((responseLine = br.readLine()) != null) {
+            retVal.append(responseLine.trim());
+        }
+        return retVal.toString();
+    }
+
+    /***
      * Get the response from a URL after submitting a POST request.
      *
      * @param url The URL to send a POST request to
@@ -189,15 +242,16 @@ public class ImportTask implements Runnable
         try (OutputStream os = con.getOutputStream()) {
             final byte[] input = data.getBytes("utf-8");
             os.write(input, 0, input.length);
+        } catch (IOException e) {
+            // If we can obtain a better error message from the POST result, log it
+            InputStream errorStream = http.getErrorStream();
+            if (errorStream != null) {
+                throw new IOException("Error during POST: " + ImportTask.readInputStream(errorStream));
+            } else {
+                throw e;
+            }
         }
 
-        // Get the response from the server
-        final BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), "utf-8"));
-        String responseLine = null;
-        final StringBuilder rawResponse = new StringBuilder();
-        while ((responseLine = br.readLine()) != null) {
-            rawResponse.append(responseLine.trim());
-        }
-        return rawResponse.toString();
+        return ImportTask.readInputStream(con.getInputStream());
     }
 }
