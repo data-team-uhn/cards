@@ -370,7 +370,9 @@ public class PaginationServlet extends SlingSafeMethodsServlet
 
         // Results ordering
         final boolean sortDescending = Boolean.valueOf(request.getParameter("descending"));
-        query.append(" order by n.'jcr:created'").append(sortDescending ? " DESC" : " ASC");
+        final String orderBy = request.getParameter("orderBy");
+        String orderField = StringUtils.isNotBlank(orderBy) ? orderBy : "jcr:created";
+        query.append(" order by n.'" + orderField + "'").append(sortDescending ? " DESC" : " ASC");
 
         // Force using the lucene indexes
         query.append(" option(index tag cards)");

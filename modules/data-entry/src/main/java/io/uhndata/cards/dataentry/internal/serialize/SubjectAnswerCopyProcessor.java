@@ -20,7 +20,10 @@ package io.uhndata.cards.dataentry.internal.serialize;
 
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
+import java.util.List;
 import java.util.function.Function;
 
 import javax.jcr.Node;
@@ -43,31 +46,31 @@ import io.uhndata.cards.dataentry.api.SubjectUtils;
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 
 /**
- * A processor that copies the values of certain answers to the root of the JSON for easy access from, for example, the
- * dashboard through the pagination servlet. The answers to copy are configured in
- * {@code /apps/cards/config/CopyAnswers/[questionnaire name]/} as properties with the desired property name as the key,
+ * A processor that copies the values of certain answers from forms to the root of the subject JSON
+ * for easy access from, for ex., the dashboard through the pagination servlet. The answers to copy are configured in
+ * {@code /apps/cards/config/CopySubjectAnswers/[questionnaire name]/} as properties with the desired name as the key,
  * and a references to a question as the value. The name of this processor is {@code answerCopy} and it is enabled by
  * default.
  *
  * @version $Id$
  */
 @Component(immediate = true)
-public class AnswerCopyProcessor implements ResourceJsonProcessor
+public class SubjectAnswerCopyProcessor implements ResourceJsonProcessor
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AnswerCopyProcessor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SubjectAnswerCopyProcessor.class);
 
-    private static final String CONFIGURATION_NODE = "/apps/cards/config/CopyAnswers";
+    private static final String CONFIGURATION_NODE = "/apps/cards/config/CopySubjectAnswers";
 
-    private final ThreadLocal<Node> answersToCopy = ThreadLocal.withInitial(() -> null);
+    private final ThreadLocal<List<Node>> answersToCopy = ThreadLocal.withInitial(() -> null);
 
     @Reference
     private QuestionnaireUtils questionnaireUtils;
 
     @Reference
-    private SubjectUtils subjectUtils;
+    private FormUtils formUtils;
 
     @Reference
-    private FormUtils formUtils;
+    private SubjectUtils subjectUtils;
 
     @Override
     public String getName()
@@ -90,8 +93,8 @@ public class AnswerCopyProcessor implements ResourceJsonProcessor
     @Override
     public boolean canProcess(final Resource resource)
     {
-        // This only works on forms
-        return resource.isResourceType("cards/Form");
+        // This only works on subjects
+        return resource.isResourceType("cards/Subject");
     }
 
     @Override
@@ -99,16 +102,12 @@ public class AnswerCopyProcessor implements ResourceJsonProcessor
     {
         final Resource allConfigurations = resource.getResourceResolver().getResource(CONFIGURATION_NODE);
         if (allConfigurations != null) {
-            try {
-                final String questionnaireName =
-                    resource.getValueMap().get(FormUtils.QUESTIONNAIRE_PROPERTY, Property.class).getNode().getName();
-                final Resource configuration = allConfigurations.getChild(questionnaireName);
-                if (configuration != null) {
-                    this.answersToCopy.set(configuration.adaptTo(Node.class));
-                }
-            } catch (final RepositoryException e) {
-                LOGGER.warn("Cannot access configuration for AnswerCopyProcessor: {}", e.getMessage(), e);
+            final Iterator<Resource> configurations = allConfigurations.getChildren().iterator();
+            final List<Node> result = new ArrayList<>();
+            while (configurations.hasNext()) {
+                result.add(configurations.next().adaptTo(Node.class));
             }
+            this.answersToCopy.set(result);
         }
         // TODO Auto-generated method stub
         ResourceJsonProcessor.super.start(resource);
@@ -118,8 +117,8 @@ public class AnswerCopyProcessor implements ResourceJsonProcessor
     public void leave(final Node node, final JsonObjectBuilder json, final Function<Node, JsonValue> serializeNode)
     {
         try {
-            if (this.answersToCopy.get() != null && node.isNodeType(FormUtils.FORM_NODETYPE)) {
-                copyAnswers(node, json);
+            if (this.answersToCopy.get() != null && node.isNodeType(SubjectUtils.SUBJECT_NODETYPE)) {
+                processCopyConfigurations(node, json);
             }
         } catch (final RepositoryException e) {
             // Should not happen
@@ -132,9 +131,17 @@ public class AnswerCopyProcessor implements ResourceJsonProcessor
         this.answersToCopy.remove();
     }
 
-    private void copyAnswers(final Node node, final JsonObjectBuilder json) throws RepositoryException
+    private void processCopyConfigurations(final Node node, final JsonObjectBuilder json) throws RepositoryException
     {
-        final Node toCopy = this.answersToCopy.get();
+        final List<Node> configurations = this.answersToCopy.get();
+        for (Node configNode : configurations) {
+            copyAnswers(node, json, configNode);
+        }
+    }
+
+    private void copyAnswers(final Node node, final JsonObjectBuilder json, final Node toCopy)
+        throws RepositoryException
+    {
         final PropertyIterator properties = toCopy.getProperties();
         while (properties.hasNext()) {
             final Property property = properties.nextProperty();
@@ -165,36 +172,31 @@ public class AnswerCopyProcessor implements ResourceJsonProcessor
         }
     }
 
-    private Node getAnswer(final Node form, final Node question)
+    private Node getAnswer(final Node subject, final Node question)
     {
-        final Node targetForm = findForm(form, question);
+        final Node targetForm = findForm(subject, question);
         return this.formUtils.getAnswer(targetForm, question);
     }
 
-    private Node findForm(final Node sourceForm, final Node question)
+    private Node findForm(final Node sourceSubject, final Node question)
     {
         Node targetQuestionnaire = this.questionnaireUtils.getOwnerQuestionnaire(question);
         if (targetQuestionnaire == null) {
             return null;
         }
         try {
-            if (targetQuestionnaire.isSame(this.formUtils.getQuestionnaire(sourceForm))) {
-                return sourceForm;
-            }
-            // If the questionnaire answered by the current form is not the target one,
-            // look for a related form answering that questionnaire belonging to the form's related subjects.
-            Node nextSubject = this.formUtils.getSubject(sourceForm);
+            Node nextSubject = sourceSubject;
             while (true) {
                 // We stop when we've reached the end of the subjects hierarchy
                 if (!this.subjectUtils.isSubject(nextSubject)) {
                     return null;
                 }
-                // Look for a form answering the right questionnaire
-                final PropertyIterator otherForms = nextSubject.getReferences(FormUtils.SUBJECT_PROPERTY);
-                while (otherForms.hasNext()) {
-                    final Node otherForm = otherForms.nextProperty().getParent();
-                    if (targetQuestionnaire.isSame(this.formUtils.getQuestionnaire(otherForm))) {
-                        return otherForm;
+                // Look for all forms answering the right questionnaire belonging to the subject
+                final PropertyIterator forms = sourceSubject.getReferences(FormUtils.SUBJECT_PROPERTY);
+                while (forms.hasNext()) {
+                    final Node form = forms.nextProperty().getParent();
+                    if (targetQuestionnaire.isSame(this.formUtils.getQuestionnaire(form))) {
+                        return form;
                     }
                 }
                 // Not found among the subject's forms, next look in the parent subject's forms

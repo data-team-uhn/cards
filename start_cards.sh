@@ -143,14 +143,14 @@ EXPR='{"operation": "includes", "key": "sling.run.modes", "val": "test"}' python
 python3 -c 'import psutil' 2>/dev/null && PSUTIL_INSTALLED=true || PSUTIL_INSTALLED=false
 
 #If we are in WSL, psutil will not work, therefore act as if it is not installed
-python3 -c 'import os; import sys; sys.exit(1 * ("Microsoft" not in os.uname().release))' && PSUTIL_INSTALLED=false
+python3 -c 'import platform; import sys; sys.exit(1 * ("Microsoft" not in platform.uname().release))' && PSUTIL_INSTALLED=false
 
 #If psutil is not installed, simply check if BIND_PORT is available now,
 # and therefore will likely be available in the very near future
-if [ $PSUTIL_INSTALLED = false ]
-then
-  python3 Utilities/HostConfig/check_tcp_available.py --tcp_port $BIND_PORT || handle_tcp_bind_fail
-fi
+#if [ $PSUTIL_INSTALLED = false ]
+#then
+#  python3 Utilities/HostConfig/check_tcp_available.py --tcp_port $BIND_PORT || handle_tcp_bind_fail
+#fi
 
 # Filter the parameters to allow a less verbose start command, like `-p` to specify the port, or using `VERSION` to refer to the current version.
 declare -a ARGS=("$@")
@@ -279,7 +279,7 @@ then
 fi
 
 #Start CARDS in the background
-java -Djdk.xml.entityExpansionLimit=0 -Dorg.osgi.service.http.port=${BIND_PORT} -jar distribution/target/dependency/org.apache.sling.feature.launcher.jar -u "file://$(realpath .mvnrepo),file://$(realpath "${HOME}/.m2/repository"),https://nexus.phenotips.org/nexus/content/groups/public,https://repo.maven.apache.org/maven2,https://repository.apache.org/content/groups/snapshots" -p .cards-data -f distribution/target/cards-*-core_${OAK_STORAGE}_far.far -f mvn:io.uhndata.cards/cards-dataentry/${CARDS_VERSION}/slingosgifeature/permissions_${PERMISSIONS} "${ARGS[@]}" &
+java -Djdk.xml.entityExpansionLimit=0 -Dorg.osgi.service.http.port=${BIND_PORT} -jar distribution/target/dependency/org.apache.sling.feature.launcher.jar -p .cards-data -f distribution/target/cards-*-core_${OAK_STORAGE}_far.far -f mvn:io.uhndata.cards/cards-dataentry/${CARDS_VERSION}/slingosgifeature/permissions_${PERMISSIONS} "${ARGS[@]}" &
 CARDS_PID=$!
 
 #Check to see if CARDS was able to bind to the TCP port
