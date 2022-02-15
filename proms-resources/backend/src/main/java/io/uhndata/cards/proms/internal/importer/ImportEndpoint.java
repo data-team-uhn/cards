@@ -75,7 +75,8 @@ public class ImportEndpoint extends SlingSafeMethodsServlet
 
         // Load configuration from environment variables
         final Runnable importJob = new ImportTask(this.resolverFactory, config.auth_url(), config.endpoint_url(),
-            config.days_to_query(), config.vault_token(), config.clinic_names(), config.provider_names());
+            config.days_to_query(), config.vault_token(), config.clinic_names(), config.provider_names(),
+            config.vault_role());
         final Thread thread = new Thread(importJob);
         thread.start();
         writeSuccess(response);
