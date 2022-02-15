@@ -80,6 +80,9 @@ public class PatientLocalStorage
     /** Sling property name for the value field on an Answer node. */
     private static final String STATUS_FIELD = "statusFlags";
 
+    /** Empty status flags value. */
+    private static final String[] STATUS_FLAGS = new String[0];
+
     /** Sling property name for the fhir ID field returned from a Patient or Provider. */
     private static final String FHIR_FIELD = "fhirID";
 
@@ -388,7 +391,7 @@ public class PatientLocalStorage
                     + questionName).adaptTo(Node.class),
                 PatientLocalStorage.VALUE_FIELD, safelyGetValue(entry.getValue(), info),
                 PatientLocalStorage.PRIMARY_TYPE, answerType,
-                PatientLocalStorage.STATUS_FIELD, ""));
+                PatientLocalStorage.STATUS_FIELD, STATUS_FLAGS));
         }
 
         // Do the same with date fields, which have different parameters
@@ -404,7 +407,7 @@ public class PatientLocalStorage
                         this.resolver.getResource(parentQuestionnaire + "/" + entry.getKey()).adaptTo(Node.class),
                         PatientLocalStorage.VALUE_FIELD, entryDate,
                         PatientLocalStorage.PRIMARY_TYPE, "cards:DateAnswer",
-                        PatientLocalStorage.STATUS_FIELD, ""));
+                        PatientLocalStorage.STATUS_FIELD, STATUS_FLAGS));
                 }
             } catch (final ParseException e) {
                 LOGGER.error("Error occurred while parsing {} for {}, {}", entry.getKey(), info.toString(), e);
@@ -544,7 +547,7 @@ public class PatientLocalStorage
             this.resolver.getResource(questionPath).adaptTo(Node.class),
             PatientLocalStorage.VALUE_FIELD, defaultValue,
             PatientLocalStorage.PRIMARY_TYPE, primaryType,
-            PatientLocalStorage.STATUS_FIELD, ""));
+            PatientLocalStorage.STATUS_FIELD, STATUS_FLAGS));
     }
 
     /**
