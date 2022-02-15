@@ -22,43 +22,18 @@
 
   <parent>
     <groupId>io.uhndata.cards</groupId>
-    <artifactId>cards-parent</artifactId>
+    <artifactId>cards-modules</artifactId>
     <version>0.9-SNAPSHOT</version>
   </parent>
 
-  <artifactId>cards-modules</artifactId>
+  <artifactId>cards-data-model</artifactId>
   <packaging>pom</packaging>
-  <name>CARDS Modules</name>
+  <name>CARDS Data Model elements</name>
 
   <modules>
-    <module>startup-customization</module>
-    <module>form-completion-status</module>
-    <module>commons</module>
-    <module>ui-extension</module>
-    <module>login</module>
-    <module>homepage</module>
-    <module>pedigree</module>
-    <module>subjects</module>
-    <module>data-entry</module>
-    <module>data-model</module>
-    <module>ldap-support</module>
-    <module>saml-support</module>
-    <module>utils</module>
-    <module>principals</module>
-    <module>permissions</module>
-    <module>permissions-ownership</module>
-    <module>permissions-trusted</module>
-    <module>vocabularies</module>
-    <module>demo-banner</module>
-    <module>versioning</module>
-    <module>favicon</module>
-    <module>upgrade-marker</module>
-    <module>vocabularies-ignore</module>
-    <module>statistics</module>
-    <module>email-notifications</module>
-    <module>token-authentication</module>
-    <module>keycloakdemo-saml</module>
-    <module>uhn-saml</module>
-    <module>fetch-requires-saml-login</module>
+    <module>patient</module>
+    <module>tumor</module>
+    <module>tumor-region</module>
+    <module>visit</module>
   </modules>
 </project>
