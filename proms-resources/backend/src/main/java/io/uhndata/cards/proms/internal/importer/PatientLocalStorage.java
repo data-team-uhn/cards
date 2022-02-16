@@ -37,12 +37,16 @@ import java.util.UUID;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.Value;
+import javax.jcr.ValueFactory;
 import javax.jcr.version.VersionManager;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonString;
 import javax.json.JsonValue;
 
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -301,9 +305,9 @@ public class PatientLocalStorage
         }
     }
 
-    interface JsonStringGetter
+    interface JsonGetter
     {
-        String get(JsonObject in);
+        Object get(JsonObject in);
     }
 
     interface JsonDateGetter
@@ -319,7 +323,7 @@ public class PatientLocalStorage
      * @param info The JsonObject to apply valueGetter to.
      * @return The string, or an empty string if it does not exist
      */
-    String safelyGetValue(final JsonStringGetter valueGetter, final JsonObject info)
+    Object safelyGetValue(final JsonGetter valueGetter, final JsonObject info)
     {
         try {
             return valueGetter.get(info);
@@ -342,12 +346,13 @@ public class PatientLocalStorage
      * @return The string, or an empty string if it does not exist
      */
     void updateForm(final Resource form, final JsonObject info, final String parentQuestionnaire,
-        final Map<String, JsonStringGetter> mapping, final Map<String, JsonDateGetter> dateFields)
+        final Map<String, JsonGetter> mapping, final Map<String, JsonDateGetter> dateFields)
         throws RepositoryException, PersistenceException
     {
         // Run through the children of the node, seeing what exists
-        final Set<String> seenNodes = new HashSet<String>();
-        final Map<String, Node> dateNodes = new HashMap<String, Node>();
+        final Set<String> seenNodes = new HashSet<>();
+        final Map<String, Node> dateNodes = new HashMap<>();
+        final ValueFactory valueFactory = form.getResourceResolver().adaptTo(Session.class).getValueFactory();
         for (final Resource existingAnswer : form.getChildren()) {
             final Node answerNode = existingAnswer.adaptTo(Node.class);
             final Node questionNode = answerNode.getProperty(PatientLocalStorage.QUESTION_FIELD).getNode();
@@ -363,20 +368,24 @@ public class PatientLocalStorage
             }
 
             seenNodes.add(questionNode.getName());
-            answerNode.setProperty(PatientLocalStorage.VALUE_FIELD,
-                safelyGetValue(mapping.get(questionNode.getName()), info));
+            final Object newRawValue = safelyGetValue(mapping.get(questionNode.getName()), info);
+            answerNode.setProperty(PatientLocalStorage.VALUE_FIELD, toValue(newRawValue, valueFactory));
         }
 
-        for (final Map.Entry<String, JsonStringGetter> entry : mapping.entrySet()) {
+        for (final Map.Entry<String, JsonGetter> entry : mapping.entrySet()) {
             if (seenNodes.contains(entry.getKey())) {
                 continue;
             }
 
+            final String questionName = StringUtils.substringBefore(entry.getKey(), "@");
+            final String answerType =
+                StringUtils.defaultIfEmpty(StringUtils.substringAfter(entry.getKey(), "@"), "cards:TextAnswer");
+
             this.resolver.create(form, UUID.randomUUID().toString(), Map.of(
                 PatientLocalStorage.QUESTION_FIELD, this.resolver.getResource(parentQuestionnaire + "/"
-                    + entry.getKey()).adaptTo(Node.class),
+                    + questionName).adaptTo(Node.class),
                 PatientLocalStorage.VALUE_FIELD, safelyGetValue(entry.getValue(), info),
-                PatientLocalStorage.PRIMARY_TYPE, "cards:TextAnswer",
+                PatientLocalStorage.PRIMARY_TYPE, answerType,
                 PatientLocalStorage.STATUS_FIELD, ""));
         }
 
@@ -401,6 +410,22 @@ public class PatientLocalStorage
         }
     }
 
+    private Value toValue(final Object rawValue, final ValueFactory valueFactory)
+    {
+        Value result = null;
+        if (rawValue instanceof Long) {
+            result = valueFactory.createValue((Long) rawValue);
+        } else if (rawValue instanceof Double) {
+            result = valueFactory.createValue((Double) rawValue);
+        } else if (rawValue instanceof Boolean) {
+            result = valueFactory.createValue(
+                BooleanUtils.toInteger((Boolean) rawValue, 1, 0, -1));
+        } else {
+            result = valueFactory.createValue(String.valueOf(rawValue));
+        }
+        return result;
+    }
+
     /**
      * Update the patient information form with values from the given JsonObject.
      *
@@ -411,14 +436,14 @@ public class PatientLocalStorage
         throws RepositoryException, PersistenceException
     {
         // Map of Patient information question node name => Function to get JSON value
-        final Map<String, JsonStringGetter> formMapping = Map.of(
+        final Map<String, JsonGetter> formMapping = Map.of(
             "mrn", obj -> obj.getString("mrn"),
             "health_card", obj -> obj.getString("ohip"),
             "sex", obj -> obj.getString("sex"),
             "first_name", obj -> obj.getJsonObject("name").getJsonArray("given").getString(0),
             "last_name", obj -> obj.getJsonObject("name").getString("family"),
             "email", obj -> obj.getJsonObject("com").getString("email"),
-            "email_ok", obj -> obj.getString("emailOk"),
+            "email_ok@cards:BooleanAnswer", obj -> BooleanUtils.toInteger(obj.getBoolean("emailOk", false), 1, 0, -1),
             "fhir_id", obj -> obj.getString(PatientLocalStorage.FHIR_FIELD));
 
         final Map<String, JsonDateGetter> dateMapping = Map.of(
@@ -439,7 +464,7 @@ public class PatientLocalStorage
         final String locationName)
         throws RepositoryException, PersistenceException
     {
-        final Map<String, JsonStringGetter> formMapping = Map.of(
+        final Map<String, JsonGetter> formMapping = Map.of(
             "fhir_id", obj -> obj.getString(PatientLocalStorage.FHIR_FIELD),
             "status", obj -> obj.getString("status"),
             "provider", obj -> {
