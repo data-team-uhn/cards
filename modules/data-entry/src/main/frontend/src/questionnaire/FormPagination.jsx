@@ -54,6 +54,7 @@ function FormPagination (props) {
   let [ pendingSubmission, setPendingSubmission ] = useState(false);
   let [ pages, setPages ] = useState([]);
   let [ activePage, setActivePage ] = useState(0);
+  let [ direction, setDirection ] = useState("next");
 
   let previousEntryType;
   let questionIndex = 0;
@@ -110,25 +111,26 @@ function FormPagination (props) {
 
   let handleNext = () => {
     setPendingSubmission(true);
+    setDirection("next");
   }
 
   let handleBack = () => {
     setPendingSubmission(true);
-    if (activePage > 0) {
-      handlePageChange("back");
-    }
+    setDirection("back");
+    console.log("Going back");
   }
 
-  let handlePageChange = (direction) => {
+  let handlePageChange = () => {
     let change = (direction === "next" ? 1 : -1);
     let nextPage = activePage;
-    while ((change === 1 || nextPage > 0) && (change === -1 || nextPage < lastValidPage())) {
+    while ((change === 1 || nextPage >= 0) && (change === -1 || nextPage < lastValidPage())) {
       nextPage += change;
       if (pages[nextPage].canBeVisible) break;
     }
     if (nextPage !== activePage) {
       window.scrollTo(0, 0);
     }
+    console.log("Switch to " + nextPage);
     setActivePage(nextPage);
   }
 
@@ -139,7 +141,7 @@ function FormPagination (props) {
       onDone && onDone();
     } else {
       setSavedLastPage(false);
-      handlePageChange("next");
+      handlePageChange();
     }
   }
 

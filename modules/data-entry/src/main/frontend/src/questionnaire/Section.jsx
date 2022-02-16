@@ -172,7 +172,7 @@ function Section(props) {
   // mountOnEnter and unmountOnExit force the inputs and children to be outside of the DOM during form submission
   // if it is not currently visible
   return useCallback(
-  <React.Fragment>
+  pageActive && <React.Fragment>
     {/* if conditional is true, the collapse component is rendered and displayed.
         else, the corresponding input tag to the conditional section is deleted  */}
     { isDisplayed

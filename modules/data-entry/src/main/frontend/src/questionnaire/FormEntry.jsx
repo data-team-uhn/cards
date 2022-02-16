@@ -160,7 +160,7 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key, onCha
 
   return (
     <>
-      {pageActive && <Section
+      {<Section
         key={key}
         depth={depth}
         sectionDefinition={sectionDefinition}
