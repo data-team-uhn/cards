@@ -44,6 +44,7 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonString;
 import javax.json.JsonValue;
+import javax.json.JsonValue.ValueType;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -223,23 +224,28 @@ public class PatientLocalStorage
         }
 
         // Return true if at least one provider matches
-        try {
-            final JsonArray providers = appointment.getJsonArray("attending");
-            for (int i = 0; i < providers.size(); i++) {
-                for (final String providerID : this.providerIDs) {
-                    if (providerID.equals(providers.getJsonObject(0).getString("eID"))) {
-                        return true;
-                    }
-                }
-            }
-        } catch (final ClassCastException e) {
+        final JsonValue rawProvider = appointment.get("attending");
+        if (rawProvider == null) {
+            return false;
+        }
+        if (rawProvider.getValueType() == ValueType.OBJECT) {
             // If we are returned a single object, it is a single provider
-            final JsonObject provider = appointment.getJsonObject("attending");
+            final JsonObject provider = rawProvider.asJsonObject();
             for (final String providerID : this.providerIDs) {
                 if (providerID.equals(provider.getString("eID"))) {
                     return true;
                 }
             }
+        } else if (rawProvider.getValueType() == ValueType.ARRAY) {
+            final JsonArray providers = rawProvider.asJsonArray();
+            for (int i = 0; i < providers.size(); i++) {
+                for (final String providerID : this.providerIDs) {
+                    if (providerID.equals(providers.getJsonObject(i).getString("eID"))) {
+                        return true;
+                    }
+                }
+            }
+
         }
 
         return false;
