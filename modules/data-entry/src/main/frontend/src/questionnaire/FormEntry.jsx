@@ -24,8 +24,6 @@ import { useLocation } from 'react-router-dom';
 import { Card, CardContent, Grid } from "@material-ui/core";
 
 import AnswerComponentManager from "./AnswerComponentManager";
-import ConditionalComponentManager from "./ConditionalComponentManager";
-import { useFormReaderContext } from "./FormContext";
 import Section from "./Section";
 
 // FIXME In order for the questions to be registered, they need to be loaded, and the only way to do that at the moment is to explicitly invoke them here. Find a way to automatically load all question types, possibly using self-declaration in a node, like the assets, or even by filtering through assets.
@@ -135,7 +133,7 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, o
  * @param {string} key the node name of the section definition JCR node
  * @returns a React component that renders the section
  */
-let displaySection = (sectionDefinition, path, depth, existingAnswer, key, onChange, visibleCallback, pageActive, isEdit, isSummary, instanceId, contentOffset, ) => {
+let displaySection = (sectionDefinition, path, depth, existingAnswer, key, onChange, visibleCallback, pageActive, isEdit, isSummary, instanceId, contentOffset) => {
   if (isSummary && sectionDefinition.displayMode !== "summary") {
     return null;
   }
@@ -147,19 +145,20 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key, onCha
 
   return (
     <Section
-        key={key}
-        depth={depth}
-        sectionDefinition={sectionDefinition}
-        existingAnswer={existingQuestionAnswer}
-        path={path}
-        onChange={onChange}
-        pageActive={pageActive}
-        isEdit={isEdit}
-        isSummary={isSummary}
-        instanceId={instanceId || ''}
-        contentOffset={contentOffset}
-        />
-    );
+      key={key}
+      depth={depth}
+      sectionDefinition={sectionDefinition}
+      existingAnswer={existingQuestionAnswer}
+      path={path}
+      onChange={onChange}
+      visibleCallback={visibleCallback}
+      pageActive={pageActive}
+      isEdit={isEdit}
+      isSummary={isSummary}
+      instanceId={instanceId || ''}
+      contentOffset={contentOffset}
+      />
+  );
 }
 
 let displayInformation = (infoDefinition, key, classes, pageActive, isEdit) => {
