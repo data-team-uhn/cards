@@ -145,22 +145,8 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key, onCha
     .filter(([key, value]) => value["sling:resourceType"] == "cards/AnswerSection"
       && value["section"]["jcr:uuid"] === sectionDefinition["jcr:uuid"]);
 
-  // We want to render nothing if the page is not active
-  // However, certain upstream components might need to know if the section is eligible to be visible
-  // So, we determine its visibility here
-  if (visibleCallback) {
-    const formContext = useFormReaderContext();
-    visibleCallback(
-      ConditionalComponentManager.evaluateCondition(
-        sectionDefinition,
-        formContext
-      )
-    );
-  }
-
   return (
-    <>
-      {<Section
+    <Section
         key={key}
         depth={depth}
         sectionDefinition={sectionDefinition}
@@ -173,9 +159,7 @@ let displaySection = (sectionDefinition, path, depth, existingAnswer, key, onCha
         instanceId={instanceId || ''}
         contentOffset={contentOffset}
         />
-      }
-    </>
-  );
+    );
 }
 
 let displayInformation = (infoDefinition, key, classes, pageActive, isEdit) => {

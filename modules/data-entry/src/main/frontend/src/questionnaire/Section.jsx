@@ -64,7 +64,7 @@ function createTitle(label, idx, isRecurrent) {
  * @param {Object} sectionDefinition the section definition JSON
  */
 function Section(props) {
-  const { classes, depth, existingAnswer, path, sectionDefinition, onChange, pageActive, isEdit, isSummary, instanceId, contentOffset } = props;
+  const { classes, depth, existingAnswer, path, sectionDefinition, onChange, visibleCallback, pageActive, isEdit, isSummary, instanceId, contentOffset } = props;
   const isRecurrent = sectionDefinition['recurrent'];
   const { displayMode } = sectionDefinition;
   const [ focus, setFocus ] = useState(false);
@@ -132,6 +132,8 @@ function Section(props) {
   // Do not display summary questions outside of summary mode, or regular questions in summary mode.
   const isDisplayed = (isEdit && conditionIsMet || !isEdit && (hasAnswers || isFlagged))
     && (isSummary && "summary" === displayMode || !isSummary && displayMode !== "summary");
+
+  if (visibleCallback) visibleCallback(conditionIsMet);
 
   let closeDialog = () => {
     setSelectedUUID(undefined);
