@@ -130,7 +130,7 @@ class SignIn extends React.Component {
         .then((data) => {
           if (window.location.pathname === "/login" || window.location.pathname === "/login/") {
             // We are logging in at a main login screen
-            window.location = data.value + window.location.search;
+            window.location = window.location.origin + "/goto_saml_login";
           } else {
             // We are logging in from a fetchWithReLogin() window
             let popupWidth = 600;

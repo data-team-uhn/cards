@@ -37,13 +37,17 @@ server.on('request', (s_req, s_res) => {
 		method: s_req.method,
 		headers: s_req.headers
 	};
-  var client_req = http.request(client_opts, (c_res) => {
+	if (client_opts.path == "/goto_saml_login") {
+		client_opts.path = "/";
+	}
+	var client_req = http.request(client_opts, (c_res) => {
 		let newHeaders = c_res.headers;
 		if (c_res.statusCode == 302 &&
 			newHeaders.location &&
 			newHeaders.location.startsWith(KEYCLOAK_ENDPOINT + "?SAMLRequest=")
-			&& s_req.url !== "/fetch_requires_saml_login.html") {
-			newHeaders.location = newHeaders.location.replace(KEYCLOAK_ENDPOINT, "http://localhost:" + SERVER_PORT + "/login");
+			&& s_req.url !== "/fetch_requires_saml_login.html"
+			&& s_req.url !== "/goto_saml_login") {
+			newHeaders.location = "http://localhost:" + SERVER_PORT + "/login";
 		} else if (c_res.statusCode == 302 &&
 			(s_req.url === "/system/sling/logout" || s_req.url === "/system/console/logout")) {
 			newHeaders['Set-Cookie'] = "sling.formauth=; Path=/; Expires=Thu, 01-Jan-1970 00:00:00 GMT; Max-Age=0; HttpOnly";
