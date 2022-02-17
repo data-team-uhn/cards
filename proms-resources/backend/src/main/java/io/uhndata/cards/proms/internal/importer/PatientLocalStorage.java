@@ -128,21 +128,23 @@ public class PatientLocalStorage
     {
         this.patientDetails = value.asJsonObject();
         final String mrn = this.patientDetails.getString("mrn");
-        this.nodesToCheckin = new HashSet<String>();
+        this.nodesToCheckin = new HashSet<>();
         try {
             final Session session = this.resolver.adaptTo(Session.class);
             this.versionManager = session.getWorkspace().getVersionManager();
-
-            // Update information about the patient
-            final Resource patient = getOrCreateSubject(mrn, "/SubjectTypes/Patient", null);
-            final Resource patientInfo = getOrCreateForm(patient, "/Questionnaires/Patient information");
-            updatePatientInformationForm(patientInfo, this.patientDetails);
+            Resource patient = null;
 
             // Update information about the visit ("appointment" is used interchangeably here)
             final JsonArray appointmentDetails = this.patientDetails.getJsonArray("appointments");
             for (int i = 0; i < appointmentDetails.size(); i++) {
                 final JsonObject appointment = appointmentDetails.getJsonObject(i);
                 if (isAppointmentInTimeframe(appointment) && isAppointmentByAllowedProvider(appointment)) {
+                    if (patient == null) {
+                        // Update information about the patient, but only if we already know a visit is also valid
+                        patient = getOrCreateSubject(mrn, "/SubjectTypes/Patient", null);
+                        final Resource patientInfo = getOrCreateForm(patient, "/Questionnaires/Patient information");
+                        updatePatientInformationForm(patientInfo, this.patientDetails);
+                    }
                     storeAppointment(appointment, patient);
                 }
             }
