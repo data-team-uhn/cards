@@ -126,7 +126,12 @@ function FormPagination (props) {
       setDirection(changeDirection);
     } else {
       // If saving is not enabled, we can call handlePageChange directly
+      // And call the onDone() if we're on the last page
       handlePageChange(changeDirection);
+      if (activePage === lastValidPage() && changeDirection === "next") {
+        setSavedLastPage(true);
+        onDone && onDone();
+      }
     }
   }
 
