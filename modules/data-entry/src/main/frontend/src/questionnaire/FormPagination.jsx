@@ -145,7 +145,7 @@ function FormPagination (props) {
 
   if (saveInProgress && pendingSubmission) {
     setPendingSubmission(false);
-    if (activePage === lastValidPage()) {
+    if (activePage === lastValidPage() && direction === "next") {
       setSavedLastPage(true);
       onDone && onDone();
     } else {
