@@ -490,7 +490,7 @@ public class PatientLocalStorage
             "location", obj -> locationName);
 
         final Map<String, JsonDateGetter> dateMapping = Map.of(
-            "time", obj -> new SimpleDateFormat("yyyy-MM-dd").parse(obj.getString("time")));
+            "time", obj -> new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(obj.getString("time")));
 
         updateForm(form, info, "/Questionnaires/Visit information", formMapping, dateMapping);
 
