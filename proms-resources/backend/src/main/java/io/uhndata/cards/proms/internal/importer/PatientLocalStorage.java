@@ -453,7 +453,10 @@ public class PatientLocalStorage
             "sex", obj -> obj.getString("sex"),
             "first_name", obj -> obj.getJsonObject("name").getJsonArray("given").getString(0),
             "last_name", obj -> obj.getJsonObject("name").getString("family"),
-            "email", obj -> obj.getJsonObject("com").getString("email"),
+            "email", obj -> obj.getJsonObject("com").getJsonObject("email").values().stream()
+                .filter(e -> e != null && e != JsonValue.NULL)
+                .map(Object::toString)
+                .findFirst().orElse(""),
             "email_ok@cards:BooleanAnswer", obj -> BooleanUtils.toInteger(obj.getBoolean("emailOk", false), 1, 0, -1),
             "fhir_id", obj -> obj.getString(PatientLocalStorage.FHIR_FIELD));
 
