@@ -110,18 +110,28 @@ function FormPagination (props) {
   }
 
   let handleNext = () => {
-    setPendingSubmission(true);
-    setDirection("next");
+    initChangePage("next");
   }
 
   let handleBack = () => {
-    setPendingSubmission(true);
-    setDirection("back");
-    console.log("Going back");
+    initChangePage("back");
   }
 
-  let handlePageChange = () => {
-    let change = (direction === "next" ? 1 : -1);
+  // Change the page in the given direction
+  let initChangePage = (changeDirection) => {
+    if (enableSave) {
+      // If we must save the page before going, we make sure to not call handlePageChange
+      // until the submission process is complete.
+      setPendingSubmission(true);
+      setDirection(changeDirection);
+    } else {
+      // If saving is not enabled, we can call handlePageChange directly
+      handlePageChange(changeDirection);
+    }
+  }
+
+  let handlePageChange = (overrideDirection) => {
+    let change = ((overrideDirection || direction) === "next" ? 1 : -1);
     let nextPage = activePage;
     while ((change === 1 || nextPage >= 0) && (change === -1 || nextPage < lastValidPage())) {
       nextPage += change;
@@ -130,7 +140,6 @@ function FormPagination (props) {
     if (nextPage !== activePage) {
       window.scrollTo(0, 0);
     }
-    console.log("Switch to " + nextPage);
     setActivePage(nextPage);
   }
 
