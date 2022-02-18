@@ -97,6 +97,9 @@ const useStyles = makeStyles(theme => ({
     "@media print" : {
       display: "block",
       padding: theme.spacing(2),
+      "& table" : {
+        width: "100%",
+      },
       "& h1:not(:first-of-type)" : {
         breakBefore: "page",
       }
