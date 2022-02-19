@@ -32,6 +32,7 @@ function PromsView(props) {
 
   const [ columns, setColumns ] = useState();
   const [ questionnaireId, setQuestionnaireId ] = useState();
+  const [ questionnairePath, setQuestionnairePath ] = useState();
   const [ title, setTitle ] = useState(props.title);
   const [ acronym, setAcronym ] = useState();
 
@@ -45,33 +46,45 @@ function PromsView(props) {
       .then((json) => {
         setColumns(JSON.parse(json["view"] || "[]"));
         setQuestionnaireId(json.questionnaire?.["jcr:uuid"] || "");
+        setQuestionnairePath(json.questionnaire?.["@path"] || "");
         setTitle(json.questionnaire?.["title"]);
         setAcronym(json.questionnaire?.["@name"]);
       });
     }
   }, [data]);
 
-  if (!questionnaireId || !visitInfo) {
+  if (!questionnairePath || !visitInfo) {
     return <CircularProgress/>;
   }
 
-  let query = (
-"select distinct dataForm.* " +
-  "from " +
-    "[cards:Subject] as visitSubject " +
-    "inner join [cards:Form] as visitInformation on visitSubject.[jcr:uuid] = visitInformation.subject " +
-      "inner join [cards:Answer] as visitDate on isdescendantnode(visitDate, visitInformation) " +
-      "inner join [cards:Answer] as visitSurveys on isdescendantnode(visitSurveys, visitInformation) " +
-      "inner join [cards:Answer] as patientSubmitted on isdescendantnode(patientSubmitted, visitInformation) " +
-    "inner join [cards:Form] as dataForm on visitSubject.[jcr:uuid] = dataForm.subject " +
-  "where " +
-    `visitInformation.questionnaire = '${visitInfo?.["jcr:uuid"]}' ` +
-      `and visitDate.question = '${visitInfo?.time?.["jcr:uuid"]}' and __DATE_FILTER_PLACEHOLDER__ ` +
-      `and visitSurveys.question = '${visitInfo?.surveys?.["jcr:uuid"]}' and visitSurveys.value = '${surveysId}' ` +
-      `and patientSubmitted.question = '${visitInfo?.surveys_submitted?.["jcr:uuid"]}' and patientSubmitted.value = 1 ` +
-    `and dataForm.questionnaire = '${questionnaireId}' ` +
-  "order by visitDate.value __SORT_ORDER_PLACEHOLDER__"
-  )
+  let generateFilters = () => {
+    let result = [];
+    result.surveys = {
+      comparator: "=",
+      name: "surveys",
+      title: visitInfo?.surveys?.["text"],
+      type: visitInfo?.surveys?.["dataType"],
+      uuid: visitInfo?.surveys?.["jcr:uuid"],
+      value: surveysId
+    };
+    result.submitted = {
+      comparator: "=",
+      name: "surveys_submitted",
+      title: visitInfo?.surveys_submitted?.["text"],
+      type: visitInfo?.surveys_submitted?.["dataType"],
+      uuid: visitInfo?.surveys_submitted?.["jcr:uuid"],
+      value: 1
+    };
+    result.date = {
+      comparator: "=",
+      name: "time",
+      title: visitInfo?.time?.["text"],
+      type: visitInfo?.time?.["dataType"],
+      uuid: visitInfo?.time?.["jcr:uuid"],
+      value: '__DATE_FILTER_PLACEHOLDER__'
+    };
+    return result;
+  }
 
   return (
     <PromsViewInternal
@@ -79,9 +92,9 @@ function PromsView(props) {
       avatar={<Typography variant="caption">{acronym?.substring(0,4)}</Typography>}
       title={title}
       columns={columns}
-      query={query}
-      dateField="visitDate"
-      questionnaireId={questionnaireId}
+      questionnaireId={questionnairePath}
+      query={`/Forms.paginate?fieldname=questionnaire&fieldvalue=${encodeURIComponent(questionnaireId)}&orderBy=${visitInfo?.time?.["jcr:uuid"]}`}
+      filters={generateFilters()}
     />
   );
 }

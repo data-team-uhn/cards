@@ -370,11 +370,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         // Conditions on child nodes
         query.append(getQueryConditions(nodeType, filters));
 
-        // Results ordering
-        final boolean sortDescending = Boolean.valueOf(request.getParameter("descending"));
-        final String orderBy = request.getParameter("orderBy");
-        String orderField = StringUtils.isNotBlank(orderBy) ? orderBy : "jcr:created";
-        query.append(" order by n.'" + orderField + "'").append(sortDescending ? " DESC" : " ASC");
+        query.append(getOrderingConditions(request, session, filters));
 
         // Force using the lucene indexes
         query.append(" option(index tag cards)");
@@ -383,6 +379,36 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         String finalquery = query.toString();
         LOGGER.debug("Computed final query: {}", finalquery);
         return finalquery;
+    }
+
+    private String getOrderingConditions(final SlingHttpServletRequest request, Session session,
+        Map<FilterType, List<Filter>> filters)
+    {
+        StringBuilder order = new StringBuilder();
+        // Results ordering
+        final String orderBy = request.getParameter("orderBy");
+        // Check if the order field is in the existing filters
+        if (StringUtils.isNotBlank(orderBy)) {
+            Filter orderFilter = filters.values().stream()
+                        .flatMap(list -> list.stream())
+                        .collect(Collectors.toList())
+                        .stream()
+                        .filter(filter -> filter.name.equals(orderBy))
+                        .findFirst()
+                        .orElse(null);
+            if (orderFilter != null) {
+                order.append(" order by " + orderFilter.source + ".'value'");
+            } else {
+                // Here we need to  check if orderBy is a uuid for a question
+                //   String questionnaire = getQuestionnaire(new Filter(orderBy, null, null, null), session);
+                //   if (StringUtils.isNotBlank(questionnaire)) { ...
+                // But for now safely assume that we can order only by selected filtered values
+                order.append(" order by n.'jcr:created'");
+            }
+        }
+        final boolean sortDescending = Boolean.valueOf(request.getParameter("descending"));
+        order.append(sortDescending ? " DESC" : " ASC");
+        return order.toString();
     }
 
     /**
@@ -1002,7 +1028,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
     /**
      * Retrieves the UUID of the questionnaire that the given question belongs to.
      *
-     * @param filetr the filter of a question
+     * @param filter the filter of a question
      * @param session the current JCR session
      * @return an UUID, if the input UUID does correspond to a valid, accessible question that belongs to a
      *         questionnaire, or the empty string otherwise

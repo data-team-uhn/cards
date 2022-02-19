@@ -113,7 +113,7 @@ function Filters(props) {
     let url;
 
     if (questionnaire) {
-      // Setting the questionnaire prop will go through the fitler servlet (FilterServlet.java)
+      // Setting the questionnaire prop will go through the filter servlet (FilterServlet.java)
       url = new URL(FILTER_URL, window.location.origin);
       url.searchParams.set("questionnaire", questionnaire);
       fetchWithReLogin(globalLoginDisplay, url)
