@@ -20,10 +20,17 @@ package io.uhndata.cards;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
+import javax.jcr.Node;
+import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
+import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -38,6 +45,8 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A servlet that lists the filters applicable to the given questionnaire, or all questionnaires visible by the user.
@@ -56,11 +65,17 @@ import org.osgi.service.component.annotations.Component;
     selectors = { "filters" })
 public class FilterServlet extends SlingSafeMethodsServlet
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FilterServlet.class);
+
     private static final long serialVersionUID = 2558430802619674046L;
 
     private static final String DEEP_JSON_SUFFIX = ".deep.json";
 
     private static final String JCR_UUID = "jcr:uuid";
+
+    private static final String CONFIGURATION_NODE = "/apps/cards/config/CopyFormAnswers";
+
+    private final ThreadLocal<List<Node>> answersToCopy = ThreadLocal.withInitial(ArrayList::new);
 
     @Override
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
@@ -69,12 +84,22 @@ public class FilterServlet extends SlingSafeMethodsServlet
         String questionnaire = request.getParameter("questionnaire");
         String homepagePath = request.getResource().getPath();
 
+        // get configs for additional answers
+        final Resource allConfigurations = request.getResourceResolver().getResource(CONFIGURATION_NODE);
+        if (allConfigurations != null) {
+            final Iterator<Resource> configurations = allConfigurations.getChildren().iterator();
+            while (configurations.hasNext()) {
+                this.answersToCopy.get().add(configurations.next().adaptTo(Node.class));
+            }
+        }
+
         // If a questionnaire is specified, return all fields by the given questionnaire
         // Otherwise, we return all questionnaires under this node that are visible by the user
         JsonObject allProperties = questionnaire == null
             ? getAllFieldsFromAllQuestionnaires(request.getResourceResolver(), homepagePath)
             : getAllFields(request.getResourceResolver(), questionnaire);
 
+        this.answersToCopy.remove();
         // Return the entire thing as a json file, except join together fields that have the same
         // name and type
         final Writer out = response.getWriter();
@@ -100,6 +125,7 @@ public class FilterServlet extends SlingSafeMethodsServlet
         // JsonObjects are immutable, so we have to manually copy over non-questions to a new object
         JsonObjectBuilder builder = Json.createObjectBuilder();
         this.copyQuestions(resource.adaptTo(JsonObject.class), builder);
+        this.copyConfigAnswers(resolver, questionnairePath, builder);
         return builder.build();
     }
 
@@ -129,6 +155,7 @@ public class FilterServlet extends SlingSafeMethodsServlet
             String path = resource.getResourceMetadata().getResolutionPath();
             resource = resolver.resolve(path.concat(DEEP_JSON_SUFFIX));
             this.copyQuestions(resource.adaptTo(JsonObject.class), builder, seenTypes, seenElements);
+            this.copyConfigAnswers(resolver, path, builder);
         }
         return builder.build();
     }
@@ -233,5 +260,37 @@ public class FilterServlet extends SlingSafeMethodsServlet
     private void copyQuestions(JsonObject questions, JsonObjectBuilder builder)
     {
         this.copyQuestions(questions, builder, null, null);
+    }
+
+    /**
+     * Copies over fields from another questionnaires configured to be added to the questionnaire JSON form.
+     *
+     * @param resolver a reference to a ResourceResolver
+     * @param questionnairePath the path to the questionnaire to compare
+     * @param builder A JsonObjectBuilder to copy results to
+     */
+    private void copyConfigAnswers(ResourceResolver resolver, String questionnairePath, JsonObjectBuilder builder)
+    {
+        if (this.answersToCopy.get() == null) {
+            return;
+        }
+        try {
+            for (Node configNode : this.answersToCopy.get()) {
+                final PropertyIterator properties = configNode.getProperties();
+                while (properties.hasNext()) {
+                    final Property property = properties.nextProperty();
+                    if (property.getType() != PropertyType.REFERENCE) {
+                        continue;
+                    }
+                    final String path = property.getNode().getPath();
+                    if (!path.startsWith(questionnairePath)) {
+                        JsonObject question = resolver.resolve(path).adaptTo(JsonObject.class);
+                        builder.add(question.getString("@name"), question);
+                    }
+                }
+            }
+        } catch (RepositoryException e) {
+            LOGGER.warn("Failed to look for the right answer to copy: {}", e.getMessage(), e);
+        }
     }
 }
