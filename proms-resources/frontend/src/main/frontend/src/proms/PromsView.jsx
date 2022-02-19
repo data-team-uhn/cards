@@ -81,6 +81,7 @@ function PromsView(props) {
       title: visitInfo?.time?.["text"],
       type: visitInfo?.time?.["dataType"],
       uuid: visitInfo?.time?.["jcr:uuid"],
+      dateFormat: visitInfo?.time?.dateFormat || "yyyy-MM-dd",
       value: '__DATE_FILTER_PLACEHOLDER__'
     };
     return result;

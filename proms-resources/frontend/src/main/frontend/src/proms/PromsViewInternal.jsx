@@ -17,8 +17,8 @@
 //  under the License.
 //
 import React, { useState } from "react";
-
 import LiveTable from "../dataHomepage/LiveTable.jsx";
+import DateQuestionUtilities from "../questionnaire/DateQuestionUtilities";
 
 import {
   Avatar,
@@ -63,18 +63,11 @@ function PromsViewInternal (props) {
 
   const [ filtersJson, setFiltersJson ] = useState(filters);
 
-  let toMidnight = (date) => {
-     date.setHours(0);
-     date.setMinutes(0);
-     date.setSeconds(0);
-     date.setMilliseconds(0);
-     return date;
-  }
-
-  let today = new Date(), tomorrow = new Date();
-  tomorrow.setDate(today.getDate() + 1);
-  today = toMidnight(today).toISOString();
-  tomorrow = toMidnight(tomorrow).toISOString();
+  let dateFormat = filtersJson.date.dateFormat;
+  let today = DateQuestionUtilities.getTodayDate(dateFormat);
+  //today = DateQuestionUtilities.momentToString(today, filtersJson.date.type);
+  let tomorrow = DateQuestionUtilities.getTomorrowDate(dateFormat);
+  //tomorrow = DateQuestionUtilities.momentToString(tomorrow, filtersJson.date.type);
 
   const tabFilter = {
     "Past" : {
@@ -109,9 +102,10 @@ function PromsViewInternal (props) {
     filtersJson.enddate.value = tabFilter[tabs[activeTab]].dateFilter[1];
     filtersJsonString = window.btoa(JSON.stringify(Object.values(filtersJson)));
   } else {
-    filters.date.comparator = tabFilter[tabs[activeTab]].comparator;
-    filters.date.value = tabFilter[tabs[activeTab]].dateFilter;
-    filtersJsonString = window.btoa(JSON.stringify(Object.values(filters)));
+    delete filtersJson.enddate;
+    filtersJson.date.comparator = tabFilter[tabs[activeTab]].comparator;
+    filtersJson.date.value = tabFilter[tabs[activeTab]].dateFilter;
+    filtersJsonString = window.btoa(JSON.stringify(Object.values(filtersJson)));
   }
 
   const classes = useStyles(color)();
