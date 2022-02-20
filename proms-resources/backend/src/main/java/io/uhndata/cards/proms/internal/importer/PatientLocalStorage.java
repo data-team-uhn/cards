@@ -25,7 +25,6 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -357,21 +356,15 @@ public class PatientLocalStorage
      * @return The string, or an empty string if it does not exist
      */
     void updateForm(final Resource form, final JsonObject info, final String parentQuestionnaire,
-        final Map<String, JsonGetter> mapping, final Map<String, JsonDateGetter> dateFields)
+        final Map<String, JsonGetter> mapping)
         throws RepositoryException, PersistenceException
     {
         // Run through the children of the node, seeing what exists
         final Set<String> seenNodes = new HashSet<>();
-        final Map<String, Node> dateNodes = new HashMap<>();
         final ValueFactory valueFactory = form.getResourceResolver().adaptTo(Session.class).getValueFactory();
         for (final Resource existingAnswer : form.getChildren()) {
             final Node answerNode = existingAnswer.adaptTo(Node.class);
             final Node questionNode = answerNode.getProperty(PatientLocalStorage.QUESTION_FIELD).getNode();
-
-            // Make note of the date node, since we handle it differently
-            if (dateFields.containsKey(questionNode.getName())) {
-                dateNodes.put(questionNode.getName(), answerNode);
-            }
 
             // Do nothing if we don't know how to update this question
             if (!mapping.containsKey(questionNode.getName())) {
@@ -399,26 +392,6 @@ public class PatientLocalStorage
                 PatientLocalStorage.PRIMARY_TYPE, answerType,
                 PatientLocalStorage.STATUS_FIELD, STATUS_FLAGS));
         }
-
-        // Do the same with date fields, which have different parameters
-        for (final Map.Entry<String, JsonDateGetter> entry : dateFields.entrySet()) {
-            try {
-                final Calendar entryDate = Calendar.getInstance();
-                entryDate.setTime(entry.getValue().get(info));
-                if (dateNodes.containsKey(entry.getKey())) {
-                    dateNodes.get(entry.getKey()).setProperty(PatientLocalStorage.VALUE_FIELD, entryDate);
-                } else {
-                    this.resolver.create(form, UUID.randomUUID().toString(), Map.of(
-                        PatientLocalStorage.QUESTION_FIELD,
-                        this.resolver.getResource(parentQuestionnaire + "/" + entry.getKey()).adaptTo(Node.class),
-                        PatientLocalStorage.VALUE_FIELD, entryDate,
-                        PatientLocalStorage.PRIMARY_TYPE, "cards:DateAnswer",
-                        PatientLocalStorage.STATUS_FIELD, STATUS_FLAGS));
-                }
-            } catch (final ParseException e) {
-                LOGGER.error("Error occurred while parsing {} for {}, {}", entry.getKey(), info.toString(), e);
-            }
-        }
     }
 
     private Value toValue(final Object rawValue, final ValueFactory valueFactory)
@@ -431,6 +404,8 @@ public class PatientLocalStorage
         } else if (rawValue instanceof Boolean) {
             result = valueFactory.createValue(
                 BooleanUtils.toInteger((Boolean) rawValue, 1, 0, -1));
+        } else if (rawValue instanceof Calendar) {
+            result = valueFactory.createValue((Calendar) rawValue);
         } else {
             result = valueFactory.createValue(String.valueOf(rawValue));
         }
@@ -453,6 +428,7 @@ public class PatientLocalStorage
             "sex", obj -> obj.getString("sex"),
             "first_name", obj -> obj.getJsonObject("name").getJsonArray("given").getString(0),
             "last_name", obj -> obj.getJsonObject("name").getString("family"),
+            "date_of_birth@cards:DateAnswer", obj -> toCalendar(obj.getString("dob"), "yyyy-MM-dd"),
             "email", obj -> obj.getJsonObject("com").getJsonObject("email").values().stream()
                 .filter(e -> e != null && e != JsonValue.NULL)
                 .map(Object::toString)
@@ -460,10 +436,7 @@ public class PatientLocalStorage
             "email_ok@cards:BooleanAnswer", obj -> BooleanUtils.toInteger(obj.getBoolean("emailOk", false), 1, 0, -1),
             "fhir_id", obj -> obj.getString(PatientLocalStorage.FHIR_FIELD));
 
-        final Map<String, JsonDateGetter> dateMapping = Map.of(
-            "date_of_birth", obj -> new SimpleDateFormat("yyyy-MM-dd").parse(obj.getString("dob")));
-
-        updateForm(form, info, "/Questionnaires/Patient information", formMapping, dateMapping);
+        updateForm(form, info, "/Questionnaires/Patient information", formMapping);
     }
 
     /**
@@ -480,6 +453,7 @@ public class PatientLocalStorage
     {
         final Map<String, JsonGetter> formMapping = Map.of(
             "fhir_id", obj -> obj.getString(PatientLocalStorage.FHIR_FIELD),
+            "time@cards:DateAnswer", obj -> toCalendar(obj.getString("time"), "yyyy-MM-dd'T'HH:mm:ss"),
             "status", obj -> obj.getString("status"),
             "provider", obj -> {
                 final JsonObject nameObj = obj.getJsonObject("attending").getJsonObject("name");
@@ -501,14 +475,33 @@ public class PatientLocalStorage
             "surveys", obj -> surveyID,
             "location", obj -> locationName);
 
-        final Map<String, JsonDateGetter> dateMapping = Map.of(
-            "time", obj -> new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(obj.getString("time")));
-
-        updateForm(form, info, "/Questionnaires/Visit information", formMapping, dateMapping);
+        updateForm(form, info, "/Questionnaires/Visit information", formMapping);
 
         // Also create some questions that need to be present for the VisitChangeListener, if they don't exist
         ensureAnswerExists(form, "/Questionnaires/Visit information/surveys_complete", "cards:BooleanAnswer", false);
         ensureAnswerExists(form, "/Questionnaires/Visit information/surveys_submitted", "cards:BooleanAnswer", false);
+    }
+
+    /**
+     * Parse a date/time string into a Calendar object, or {@code null} if the value is missing or not according to the
+     * format.
+     *
+     * @param dateStr a date or datetime representation, may be {@code null} or an empty string
+     * @param format the expected date or datetime format of {@code dateStr}
+     * @return the parsed date as a Calendar, or {@code null}
+     */
+    private Calendar toCalendar(final String dateStr, final String format)
+    {
+        if (StringUtils.isBlank(dateStr)) {
+            return null;
+        }
+        try {
+            final Calendar result = Calendar.getInstance();
+            result.setTime(new SimpleDateFormat(format).parse(dateStr));
+            return result;
+        } catch (ParseException e) {
+            return null;
+        }
     }
 
     /**
