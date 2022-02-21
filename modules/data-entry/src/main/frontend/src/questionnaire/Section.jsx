@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Button, Collapse, Dialog, DialogActions, DialogTitle, Grid, IconButton, Tooltip, Typography, withStyles } from "@material-ui/core";
 import Add from "@material-ui/icons/Add";
@@ -98,6 +98,14 @@ function Section(props) {
   const [ selectedUUID, setSelectedUUID ] = useState();
   const [ uuid ] = useState(uuidv4());  // To keep our IDs separate from any other sections
   const [ removableAnswers, setRemovableAnswers ] = useState({[ID_STATE_KEY]: 1});
+  const [ cached, setCached ] = useState(pageActive);
+
+  // We want to cache this section (i.e. keep it in DOM but do not render it) if we were ever the active page in the past
+  useEffect(() => {
+    if (!cached && pageActive) {
+      setCached(true);
+    }
+  }, [pageActive]);
 
   // Determine if we have any conditionals in our definition that would cause us to be hidden
   const conditionIsMet = ConditionalComponentManager.evaluateCondition(
@@ -174,7 +182,7 @@ function Section(props) {
   // mountOnEnter and unmountOnExit force the inputs and children to be outside of the DOM during form submission
   // if it is not currently visible
   return useCallback(
-  <React.Fragment>
+  (pageActive || cached) && <React.Fragment>
     {/* if conditional is true, the collapse component is rendered and displayed.
         else, the corresponding input tag to the conditional section is deleted  */}
     { isDisplayed
