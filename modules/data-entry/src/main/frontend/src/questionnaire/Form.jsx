@@ -97,8 +97,7 @@ function Form (props) {
   let [ errorMessage, setErrorMessage ] = useState("");
   let [ errorDialogDisplayed, setErrorDialogDisplayed ] = useState(false);
   let [ pages, setPages ] = useState(null);
-  // To prevent the entire form from rendering itself for the first frame, assume pagination until told otherwise
-  let [ paginationEnabled, setPaginationEnabled ] = useState(true);
+  let [ paginationEnabled, setPaginationEnabled ] = useState(false);
   let [ removeWindowHandlers, setRemoveWindowHandlers ] = useState();
   let [ actionsMenu, setActionsMenu ] = useState(null);
   let [ formContentOffsetTop, setFormContentOffsetTop ] = useState(contentOffset);

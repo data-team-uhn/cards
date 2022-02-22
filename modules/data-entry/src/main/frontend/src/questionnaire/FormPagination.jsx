@@ -54,9 +54,6 @@ function FormPagination (props) {
   let [ pendingSubmission, setPendingSubmission ] = useState(false);
   let [ pages, setPages ] = useState([]);
   let [ activePage, setActivePage ] = useState(0);
-  let [ direction, setDirection ] = useState();
-
-  const DIRECTION_NEXT = 1, DIRECTION_PREV = -1;
 
   let previousEntryType;
   let questionIndex = 0;
@@ -112,35 +109,31 @@ function FormPagination (props) {
   }
 
   let handleNext = () => {
-    initChangePage(DIRECTION_NEXT);
-  }
-
-  let handleBack = () => {
-    initChangePage(DIRECTION_PREV);
-  }
-
-  // Change the page in the given direction
-  let initChangePage = (changeDirection) => {
-    if (enableSave) {
-      // If we must save the page before going, we make sure to not call handlePageChange
-      // until the submission process is complete.
-      setPendingSubmission(true);
-      setDirection(changeDirection);
+    setPendingSubmission(true);
+    if (activePage === lastValidPage()) {
+      setSavedLastPage(true);
+      onDone && onDone();
     } else {
-      // If saving is not enabled, we can call handlePageChange directly
-      // And call the onDone() if we're on the last page
-      handlePageChange(changeDirection);
-      if (activePage === lastValidPage() && changeDirection === DIRECTION_NEXT) {
-        setSavedLastPage(true);
-        onDone && onDone();
-      }
+      setSavedLastPage(false);
+      handlePageChange("next");
     }
   }
 
-  let handlePageChange = (overrideDirection) => {
-    let change = (overrideDirection || direction);
+  let handleBack = () => {
+    setPendingSubmission(true);
+    if (activePage > 0) {
+      handlePageChange("back");
+    }
+  }
+
+  if (saveInProgress && pendingSubmission) {
+    setPendingSubmission(false);
+  }
+
+  let handlePageChange = (direction) => {
+    let change = (direction === "next" ? 1 : -1);
     let nextPage = activePage;
-    while ((change === DIRECTION_NEXT || nextPage >= 0) && (change === DIRECTION_PREV || nextPage < lastValidPage())) {
+    while ((change === 1 || nextPage > 0) && (change === -1 || nextPage < lastValidPage())) {
       nextPage += change;
       if (pages[nextPage].canBeVisible) break;
     }
@@ -148,17 +141,6 @@ function FormPagination (props) {
       window.scrollTo(0, 0);
     }
     setActivePage(nextPage);
-  }
-
-  if (saveInProgress && pendingSubmission) {
-    setPendingSubmission(false);
-    if (activePage === lastValidPage() && direction === DIRECTION_NEXT) {
-      setSavedLastPage(true);
-      onDone && onDone();
-    } else {
-      setSavedLastPage(false);
-      handlePageChange();
-    }
   }
 
   let saveButton =
