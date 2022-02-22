@@ -43,10 +43,10 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.uhndata.cards.dataentry.api.FormUtils;
-import io.uhndata.cards.dataentry.api.QuestionnaireUtils;
-import io.uhndata.cards.dataentry.api.SubjectTypeUtils;
-import io.uhndata.cards.dataentry.api.SubjectUtils;
+import io.uhndata.cards.forms.api.FormUtils;
+import io.uhndata.cards.forms.api.QuestionnaireUtils;
+import io.uhndata.cards.subjects.api.SubjectTypeUtils;
+import io.uhndata.cards.subjects.api.SubjectUtils;
 import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 
 /**
@@ -399,8 +399,8 @@ public class VisitChangeListener implements ResourceChangeListener
     }
 
     /**
-     * Remove any questionnaires from the questionnaire set which do not need to be created per their frequency.
-     * Uses a provided list of questionnaires and the date that list occured on to compare with the questionnaire set
+     * Remove any questionnaires from the questionnaire set which do not need to be created per their frequency. Uses a
+     * provided list of questionnaires and the date that list occured on to compare with the questionnaire set
      *
      * @param visitInformation the set of data about the visit that triggered this event
      * @param visitDate the data of the visit being checked

@@ -37,8 +37,8 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.uhndata.cards.dataentry.api.FormUtils;
-import io.uhndata.cards.dataentry.api.QuestionnaireUtils;
+import io.uhndata.cards.forms.api.FormUtils;
+import io.uhndata.cards.forms.api.QuestionnaireUtils;
 
 /**
  * A restriction that makes a permissions entry only be valid on a form if the form belongs to a Visit subject that has

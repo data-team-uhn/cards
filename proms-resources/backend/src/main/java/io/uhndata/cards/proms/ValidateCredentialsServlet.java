@@ -57,10 +57,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.auth.token.TokenManager;
-import io.uhndata.cards.dataentry.api.FormUtils;
-import io.uhndata.cards.dataentry.api.QuestionnaireUtils;
-import io.uhndata.cards.dataentry.api.SubjectTypeUtils;
-import io.uhndata.cards.dataentry.api.SubjectUtils;
+import io.uhndata.cards.forms.api.FormUtils;
+import io.uhndata.cards.forms.api.QuestionnaireUtils;
+import io.uhndata.cards.subjects.api.SubjectTypeUtils;
+import io.uhndata.cards.subjects.api.SubjectUtils;
 
 @Component(service = { Servlet.class }, property = { "sling.auth.requirements=-/Proms" })
 @SlingServletResourceTypes(resourceTypes = { "cards/PromsHomepage" }, extensions = {
