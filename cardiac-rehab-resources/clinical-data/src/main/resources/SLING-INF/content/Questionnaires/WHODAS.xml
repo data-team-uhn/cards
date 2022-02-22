@@ -184,7 +184,7 @@
 		</node>
 	</node>
 	<node>
-		<name>Thinkbackoverthepast30daysandanswerthesequestionsthinkingabouthowmuchdifficultyyouhaddoingthefollowingactivitiesForeachquestionpleaseselectonlyoneresponseInthepast30dayshowmuchdifficultydidyouhavein</name>
+		<name>Difficultyinpast30days</name>
 		<primaryNodeType>lfs:Section</primaryNodeType>
 		<property>
 			<name>label</name>
