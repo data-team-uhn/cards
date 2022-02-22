@@ -77,7 +77,8 @@ const liveTableStyle = theme => ({
         opacity: 0.3
     },
     deleteButton: {
-        width: "100%"
+        width: "100%",
+        marginLeft: theme.spacing(2.5),
     },
     tableActions: {
         "& .MuiIconButton-root": {
