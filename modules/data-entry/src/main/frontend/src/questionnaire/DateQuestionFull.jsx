@@ -52,7 +52,7 @@ import DateQuestionUtilities from "./DateQuestionUtilities";
 //  type="timestamp"
 //  />
 function DateQuestionFull(props) {
-  let {existingAnswer, classes, ...rest} = props;
+  let {existingAnswer, classes, pageActive, ...rest} = props;
   let {text, dateFormat, minAnswers, type, lowerLimit, upperLimit} = {dateFormat: "yyyy-MM-dd", minAnswers: 0, type: DateQuestionUtilities.TIMESTAMP_TYPE, ...props.questionDefinition, ...props};
 
   let startValues = existingAnswer && existingAnswer[1].value || "";
@@ -154,14 +154,18 @@ function DateQuestionFull(props) {
       currentAnswers={DateQuestionUtilities.isAnswerComplete(outputAnswers, type) ? 1 : 0}
       {...props}
       >
-      {error && <Typography color='error'>{errorMessage}</Typography>}
-      {getTextField(false, DateQuestionUtilities.momentToString(startDate, textFieldType))}
-      { /* If this is an interval, allow the user to select a second date */
-      type === DateQuestionUtilities.INTERVAL_TYPE &&
-      <React.Fragment>
-        <span className={classes.mdash}>&mdash;</span>
-        {getTextField(true, DateQuestionUtilities.momentToString(endDate, textFieldType))}
-      </React.Fragment>
+      {
+        pageActive && <>
+          {error && <Typography color='error'>{errorMessage}</Typography>}
+          {getTextField(false, DateQuestionUtilities.momentToString(startDate, textFieldType))}
+          { /* If this is an interval, allow the user to select a second date */
+          type === DateQuestionUtilities.INTERVAL_TYPE &&
+          <React.Fragment>
+            <span className={classes.mdash}>&mdash;</span>
+            {getTextField(true, DateQuestionUtilities.momentToString(endDate, textFieldType))}
+          </React.Fragment>
+          }
+        </>
       }
       <Answer
         answers={outputAnswers}

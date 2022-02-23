@@ -51,7 +51,7 @@ import DateQuestionUtilities from "./DateQuestionUtilities";
 //  type="timestamp"
 //  />
 function DateQuestionMonth(props) {
-  let {existingAnswer, classes, ...rest} = props;
+  let {existingAnswer, classes, pageActive, ...rest} = props;
   let {text, dateFormat, minAnswers, type, lowerLimit, upperLimit} = {dateFormat: "yyyy/MM", minAnswers: 0, type: DateQuestionUtilities.TIMESTAMP_TYPE, ...props.questionDefinition, ...props};
 
   let startValues = existingAnswer && existingAnswer[1].value || "";
@@ -197,15 +197,17 @@ function DateQuestionMonth(props) {
       currentAnswers={DateQuestionUtilities.isAnswerComplete(outputAnswers, type) ? 1 : 0}
       {...props}
       >
-      {error && <Typography color='error'>{errorMessage}</Typography>}
-      {getTextField(false, displayedDate)}
-      { /* If this is an interval, allow the user to select a second date */
-      type === DateQuestionUtilities.INTERVAL_TYPE &&
-      <React.Fragment>
-        <span className={classes.mdash}>&mdash;</span>
-        {getTextField(true, displayedEndDate)}
-      </React.Fragment>
-      }
+      {pageActive && <>
+        {error && <Typography color='error'>{errorMessage}</Typography>}
+        {getTextField(false, displayedDate)}
+        { /* If this is an interval, allow the user to select a second date */
+        type === DateQuestionUtilities.INTERVAL_TYPE &&
+        <React.Fragment>
+          <span className={classes.mdash}>&mdash;</span>
+          {getTextField(true, displayedEndDate)}
+        </React.Fragment>
+        }
+      </>}
       <Answer
         answers={outputAnswers}
         questionDefinition={props.questionDefinition}

@@ -89,7 +89,7 @@ export class Time {
 //  upperLimit={"23:59"}
 //  />
 function TimeQuestion(props) {
-  let {existingAnswer, classes, ...rest} = props;
+  let {existingAnswer, classes, pageActive, ...rest} = props;
   let {text, lowerLimit, upperLimit, errorText, minAnswers, dateFormat} = {...props.questionDefinition, ...props};
   let currentStartValue = (existingAnswer && existingAnswer[1].value && new Time(existingAnswer[1].value).isValid)
     ? existingAnswer[1].value : "";
@@ -126,28 +126,32 @@ function TimeQuestion(props) {
       currentAnswers={!!selectedTime ? 1 : 0}
       {...props}
       >
-      {error && <Typography color='error'>{errorMessage}</Typography>}
-      <TextField
-        /* time input is hh:mm or hh:mm:ss only */
-        type={Time.timeQuestionFieldType(dateFormat)}
-        className={classes.textField + " " + classes.answerField}
-        InputLabelProps={{
-          shrink: true,
-        }}
-        InputProps={{
-          className: classes.textField
-        }}
-        inputProps={{
-          max: upperLimit,
-          min: lowerLimit
-        }}
-        onChange={(event) => {
-          checkError(event.target.value);
-          changeTime(event.target.value);
-        }}
+      {
+        pageActive && <>
+          {error && <Typography color='error'>{errorMessage}</Typography>}
+          <TextField
+            /* time input is hh:mm or hh:mm:ss only */
+            type={Time.timeQuestionFieldType(dateFormat)}
+            className={classes.textField + " " + classes.answerField}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            InputProps={{
+              className: classes.textField
+            }}
+            inputProps={{
+              max: upperLimit,
+              min: lowerLimit
+            }}
+            onChange={(event) => {
+              checkError(event.target.value);
+              changeTime(event.target.value);
+            }}
 
-        value={selectedTime}
-      />
+            value={selectedTime}
+          />
+        </>
+      }
       <Answer
         answers={outputAnswers}
         questionDefinition={props.questionDefinition}

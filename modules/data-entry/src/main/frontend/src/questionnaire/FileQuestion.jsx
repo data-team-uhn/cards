@@ -291,50 +291,54 @@ function FileQuestion(props) {
       defaultDisplayFormatter={defaultDisplayFormatter}
       {...props}
       >
-      { uploadInProgress && (
-        <Grid item className={classes.root}>
-          <LinearProgress color="primary" />
-        </Grid>
-      ) }
-      <DragAndDrop
-        handleDrop={addFiles}
-        multifile={maxAnswers != 1}
-        error={error}
-        disabled={disableUploads}
-        />
-      { uploadedFiles && Object.values(uploadedFiles).length > 0 && <ul className={classes.answerField + " " + classes.fileResourceAnswerList}>
-        {Object.keys(uploadedFiles).map((filepath, idx) =>
-          <li key={idx}>
-            <div>
-              <span>File </span>
-              <Link href={fixFileURL(uploadedFiles[filepath], filepath)} target="_blank" rel="noopener" download>
-                {filepath}
-              </Link>:
-              <IconButton
-                onClick={() => {deletePath(idx)}}
-                className={classes.deleteButton + " " + classes.fileResourceDeleteButton}
-                color="secondary"
-                title="Delete"
-              >
-                <Delete color="action" className={classes.deleteIcon}/>
-              </IconButton>
-            </div>
-            { namePattern &&
-              <span>
-                {varNames.map((name, nameIdx) => (
-                  <TextField
-                    label={name}
-                    value={knownAnswers?.[filepath]?.[nameIdx]}
-                    className={classes.fileDetail + " " + classes.fileResourceAnswerInput}
-                    key={nameIdx}
-                    readOnly
-                  />
-                ))}
-              </span>
-            }
-          </li>
-        )}
-      </ul>}
+      {
+        pageActive && <>
+          { uploadInProgress && (
+            <Grid item className={classes.root}>
+              <LinearProgress color="primary" />
+            </Grid>
+          ) }
+          <DragAndDrop
+            handleDrop={addFiles}
+            multifile={maxAnswers != 1}
+            error={error}
+            disabled={disableUploads}
+            />
+          { uploadedFiles && Object.values(uploadedFiles).length > 0 && <ul className={classes.answerField + " " + classes.fileResourceAnswerList}>
+            {Object.keys(uploadedFiles).map((filepath, idx) =>
+              <li key={idx}>
+                <div>
+                  <span>File </span>
+                  <Link href={fixFileURL(uploadedFiles[filepath], filepath)} target="_blank" rel="noopener" download>
+                    {filepath}
+                  </Link>:
+                  <IconButton
+                    onClick={() => {deletePath(idx)}}
+                    className={classes.deleteButton + " " + classes.fileResourceDeleteButton}
+                    color="secondary"
+                    title="Delete"
+                  >
+                    <Delete color="action" className={classes.deleteIcon}/>
+                  </IconButton>
+                </div>
+                { namePattern &&
+                  <span>
+                    {varNames.map((name, nameIdx) => (
+                      <TextField
+                        label={name}
+                        value={knownAnswers?.[filepath]?.[nameIdx]}
+                        className={classes.fileDetail + " " + classes.fileResourceAnswerInput}
+                        key={nameIdx}
+                        readOnly
+                      />
+                    ))}
+                  </span>
+                }
+              </li>
+            )}
+          </ul>}
+        </>
+      }
       <Answer
         answers={answers}
         questionDefinition={props.questionDefinition}

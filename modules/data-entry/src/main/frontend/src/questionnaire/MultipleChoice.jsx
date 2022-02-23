@@ -47,10 +47,11 @@ const GHOST_SENTINEL = "custom-input";
   * @param {Object} muiInputProps additional props to be forwarded to the MUI input element
   * @param {Object} naValue if provided, any answer with this value will de-select all other selected options, and will be unselected if any other option is selected
   * @param {Object} noneOfTheAboveValue if provided, any answer with this value will de-select all other pre-defined options, and will be unselected if any other option is selected
+  * @param {bool} pageActive if true, this page will render graphical components. Otherwise, it will skip rendering (to save on performance)
   * @param {bool} error indicates if the current selection is in a state of error
   */
 function MultipleChoice(props) {
-  let { classes, customInput, customInputProps, existingAnswer, input, textbox, onUpdate, onChange, additionalInputProps, muiInputProps, naValue, noneOfTheAboveValue, error, questionName, ...rest } = props;
+  let { classes, customInput, customInputProps, existingAnswer, input, textbox, onUpdate, onChange, additionalInputProps, muiInputProps, naValue, noneOfTheAboveValue, error, pageActive, questionName, ...rest } = props;
   let { maxAnswers, minAnswers, displayMode, enableSeparatorDetection } = {...props.questionDefinition, ...props};
   let { instanceId } = props;
 
@@ -416,18 +417,22 @@ function MultipleChoice(props) {
   if (isSelect) {
     return (
       <React.Fragment>
-        {instructions}
-        <Select
-          value={selection?.[0]?.[0] || ''}
-          className={classes.textField + ' ' + classes.answerField}
-          onChange={(event) => {
-            setSelection([[event.target.value, event.target.value]]);
-          }
-        }>
-        {defaults.map(function([name, key], index) {
-            return <MenuItem value={key} key={key}>{name}</MenuItem>;
-        })}
-        </Select>
+        {
+          pageActive && <>
+            {instructions}
+            <Select
+              value={selection?.[0]?.[0] || ''}
+              className={classes.textField + ' ' + classes.answerField}
+              onChange={(event) => {
+                setSelection([[event.target.value, event.target.value]]);
+              }
+            }>
+            {defaults.map(function([name, key], index) {
+                return <MenuItem value={key} key={key}>{name}</MenuItem>;
+            })}
+            </Select>
+          </>
+        }
         <Answer
           answers={answers}
           existingAnswer={existingAnswer}
@@ -440,8 +445,12 @@ function MultipleChoice(props) {
   } else if (isBare) {
     return(
       <React.Fragment>
-        {instructions}
-        {ghostInput}
+        {
+          pageActive && <>
+            {instructions}
+            {ghostInput}
+          </>
+        }
         <Answer
           answers={answers}
           existingAnswer={existingAnswer}
@@ -454,44 +463,48 @@ function MultipleChoice(props) {
   } else if (isRadio) {
     return (
       <React.Fragment>
-        {instructions}
-        <RadioGroup
-          aria-label="selection"
-          name={props.questionDefinition['jcr:uuid'] + (instanceId || '')}
-          className={classes.selectionList}
-          value={selection.length > 0 && String(selection[0][VALUE_POS])}
-        >
-          <List className={classes.optionsList}>
-          {generateDefaultOptions(options, selection, disabled, isRadio, selectNonGhostOption, removeOption)}
-          {/* Ghost radio for the text input */}
-          {
-          ghostInput && <ListItem className={classes.ghostListItem}>
-            <FormControlLabel
-              control={
-              <Radio
-                checked={ghostSelected}
-                onChange={() => {
-                  selectOption(ghostValue, ghostName);
-                  onUpdate && onUpdate(ghostSelected ? undefined : ghostName);
-                }}
-                onClick={() => {inputEl && inputEl.select();}}
-                disabled={!ghostSelected && disabled}
-                className={classes.ghostRadiobox}
-              />
+        {
+          pageActive && <>
+            {instructions}
+            <RadioGroup
+              aria-label="selection"
+              name={props.questionDefinition['jcr:uuid'] + (instanceId || '')}
+              className={classes.selectionList}
+              value={selection.length > 0 && String(selection[0][VALUE_POS])}
+            >
+              <List className={classes.optionsList}>
+              {generateDefaultOptions(options, selection, disabled, isRadio, selectNonGhostOption, removeOption)}
+              {/* Ghost radio for the text input */}
+              {
+              ghostInput && <ListItem className={classes.ghostListItem}>
+                <FormControlLabel
+                  control={
+                  <Radio
+                    checked={ghostSelected}
+                    onChange={() => {
+                      selectOption(ghostValue, ghostName);
+                      onUpdate && onUpdate(ghostSelected ? undefined : ghostName);
+                    }}
+                    onClick={() => {inputEl && inputEl.select();}}
+                    disabled={!ghostSelected && disabled}
+                    className={classes.ghostRadiobox}
+                  />
+                  }
+                  label="&nbsp;"
+                  value={ghostValue}
+                  key={ghostValue}
+                  className={classes.ghostFormControl + " " + classes.childFormControl}
+                  classes={{
+                    label: classes.inputLabel
+                  }}
+                />
+                {ghostInput}
+              </ListItem>
               }
-              label="&nbsp;"
-              value={ghostValue}
-              key={ghostValue}
-              className={classes.ghostFormControl + " " + classes.childFormControl}
-              classes={{
-                label: classes.inputLabel
-              }}
-            />
-            {ghostInput}
-          </ListItem>
-          }
-          </List>
-        </RadioGroup>
+              </List>
+            </RadioGroup>
+          </>
+        }
         <Answer
           answers={answers}
           existingAnswer={existingAnswer}
@@ -504,11 +517,15 @@ function MultipleChoice(props) {
   } else {
     return (
       <React.Fragment>
-        {instructions}
-        <List className={classes.optionsList}>
-          {generateDefaultOptions(options, selection, disabled, isRadio, selectNonGhostOption, removeOption)}
-          {ghostInput && <ListItem>{ghostInput}</ListItem>}
-        </List>
+        {
+          pageActive && <>
+            {instructions}
+            <List className={classes.optionsList}>
+              {generateDefaultOptions(options, selection, disabled, isRadio, selectNonGhostOption, removeOption)}
+              {ghostInput && <ListItem>{ghostInput}</ListItem>}
+            </List>
+          </>
+        }
         <Answer
           answers={answers}
           existingAnswer={existingAnswer}

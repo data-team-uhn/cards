@@ -114,6 +114,7 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, o
         questionName={key}
         onChange={onChange}
         onAddedAnswerPath={onAddedAnswerPath}
+        pageActive={pageActive}
         sectionAnswersState={sectionAnswersState}
         isEdit={isEdit}
         instanceId={instanceId || ''}
