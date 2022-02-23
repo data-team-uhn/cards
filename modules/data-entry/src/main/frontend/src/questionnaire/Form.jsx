@@ -97,7 +97,8 @@ function Form (props) {
   let [ errorMessage, setErrorMessage ] = useState("");
   let [ errorDialogDisplayed, setErrorDialogDisplayed ] = useState(false);
   let [ pages, setPages ] = useState(null);
-  let [ paginationEnabled, setPaginationEnabled ] = useState(false);
+  // Avoid rendering everything at once before we get all of the questionnaire details
+  let [ paginationEnabled, setPaginationEnabled ] = useState(true);
   let [ removeWindowHandlers, setRemoveWindowHandlers ] = useState();
   let [ actionsMenu, setActionsMenu ] = useState(null);
   let [ formContentOffsetTop, setFormContentOffsetTop ] = useState(contentOffset);

@@ -28,7 +28,7 @@ import FormattedText from "../components/FormattedText.jsx";
 
 // GUI for displaying answers
 function Question (props) {
-  let { classes, children, questionDefinition, existingAnswer, isEdit, preventDefaultView, defaultDisplayFormatter } = props;
+  let { classes, children, questionDefinition, existingAnswer, isEdit, pageActive, preventDefaultView, defaultDisplayFormatter } = props;
   let { text, compact, description, disableInstructions } = { ...questionDefinition, ...props }
 
   return (
@@ -36,45 +36,53 @@ function Question (props) {
       variant="outlined"
       className={classes.questionCard}
       >
-      <CardHeader
-        title={text}
-        titleTypographyProps={{ variant: 'h6' }}
-        subheader={<FormattedText variant="caption">{description}</FormattedText>}
-        subheaderTypographyProps={{ component: "div" }}
-        />
+      {
+        // Note that we need to preserve the hierarchy in which we place children
+        // so that pageActive changing does not cause children to lose state
+        pageActive && <CardHeader
+          title={text}
+          titleTypographyProps={{ variant: 'h6' }}
+          subheader={<FormattedText variant="caption">{description}</FormattedText>}
+          subheaderTypographyProps={{ component: "div" }}
+          />
+      }
       <CardContent className={isEdit ? classes.editModeAnswers : classes.viewModeAnswers}>
         <div className={compact ? classes.compactLayout : null}>
-        { !(isEdit && disableInstructions) &&
-          <AnswerInstructions
-             {...questionDefinition}
-             {...props}
-          />
-        }
-        { !isEdit && !preventDefaultView ?
-          ( existingAnswer?.[1]["displayedValue"] ?
-            <List>
-              { Array.of(existingAnswer?.[1]["displayedValue"]).flat().map( (item, idx) => {
-                return(
-                  <ListItem key={item}> {defaultDisplayFormatter ? defaultDisplayFormatter(item, idx) : item} </ListItem>
-                )})
+          {
+            pageActive && <>
+              { !(isEdit && disableInstructions) &&
+                <AnswerInstructions
+                  {...questionDefinition}
+                  {...props}
+                />
               }
-            </List>
+            </>
+          }
+          { !isEdit && !preventDefaultView ?
+            ( existingAnswer?.[1]["displayedValue"] ?
+              <List>
+                { Array.of(existingAnswer?.[1]["displayedValue"]).flat().map( (item, idx) => {
+                  return(
+                    <ListItem key={item}> {defaultDisplayFormatter ? defaultDisplayFormatter(item, idx) : item} </ListItem>
+                  )})
+                }
+              </List>
+              :
+              ""
+            )
             :
-            ""
-          )
-          :
-          children
-        }
-        { !isEdit && existingAnswer?.[1]?.note &&
-          <div className={classes.notesContainer}>
-            <Typography variant="subtitle1">Notes</Typography>
-            {existingAnswer[1].note}
-          </div>
-        }
+            children
+          }
+          { !isEdit && existingAnswer?.[1]?.note && pageActive &&
+            <div className={classes.notesContainer}>
+              <Typography variant="subtitle1">Notes</Typography>
+              {existingAnswer[1].note}
+            </div>
+          }
         </div>
       </CardContent>
     </Card>
-    );
+    )
 }
 
 Question.propTypes = {
