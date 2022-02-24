@@ -57,6 +57,8 @@ import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.dataentry.api.FormUtils;
+
 /**
  * A servlet that lists resources of a specific type, depending on which "homepage" resource the request is targeting.
  * <p>
@@ -389,9 +391,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         final String orderBy = request.getParameter("orderBy");
         // Check if the order field is in the existing filters
         if (StringUtils.isNotBlank(orderBy)) {
-            Filter orderFilter = filters.values().stream()
-                        .flatMap(list -> list.stream())
-                        .collect(Collectors.toList())
+            Filter orderFilter = filters.getOrDefault(FilterType.CHILD, Collections.emptyList())
                         .stream()
                         .filter(filter -> filter.name.equals(orderBy))
                         .findFirst()
@@ -399,12 +399,14 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             if (orderFilter != null) {
                 order.append(" order by " + orderFilter.source + ".'value'");
             } else {
-                // Here we need to  check if orderBy is a uuid for a question
+                // Here we need to check if orderBy is a uuid for a question
                 //   String questionnaire = getQuestionnaire(new Filter(orderBy, null, null, null), session);
                 //   if (StringUtils.isNotBlank(questionnaire)) { ...
                 // But for now safely assume that we can order only by selected filtered values
                 order.append(" order by n.'jcr:created'");
             }
+        } else {
+            order.append(" order by n.'jcr:created'");
         }
         final boolean sortDescending = Boolean.valueOf(request.getParameter("descending"));
         order.append(sortDescending ? " DESC" : " ASC");
@@ -472,19 +474,26 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         filters.forEach((type, values) -> mapFiltersToSources(nodeType, type, values, questionnairesToFormSource,
             questionnairesToQuestions, session));
 
+        long explicitQuestionnaireFilterCount = filters.getOrDefault(FilterType.CHILD, Collections.emptyList())
+                .stream()
+                .filter(filter -> QUESTIONNAIRE_IDENTIFIER.equals(filter.name))
+                .map(filter -> filter.value).distinct().count();
+        long implicitQuestionnaireFilterCount = questionnairesToFormSource.size() - explicitQuestionnaireFilterCount;
+        boolean includeSubjectJoints = nodeType.equals(FormUtils.FORM_NODETYPE) && implicitQuestionnaireFilterCount > 0;
+
         if (nodeType.equals(SUBJECT_IDENTIFIER)) {
             // Make joins per questionnaire/form, and per each question/answer in a form
             query.append(createSubjectJoins(questionnairesToFormSource, questionnairesToQuestions));
         } else {
-            // If more than one questionnaire is in the filters -> join forms by the mutual subject
-            if (questionnairesToFormSource.size() > 1) {
+            // If filters come from more than one questionnaire -> join forms query by the mutual subject
+            if (includeSubjectJoints) {
                 query = new StringBuilder("select distinct n.* from [cards:Subject] as s ");
             }
 
-            query.append(createFormJoins(questionnairesToFormSource, questionnairesToQuestions));
+            query.append(createFormJoins(questionnairesToFormSource, questionnairesToQuestions, includeSubjectJoints));
         }
 
-        if (questionnairesToFormSource.size() > 1) {
+        if (includeSubjectJoints) {
             for (String questionnaire : questionnairesToFormSource.keySet()) {
                 final String source = questionnairesToFormSource.get(questionnaire);
                 if (!ENTITY_SELECTOR.equals(source)) {
@@ -530,7 +539,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             }
 
             final String questionnaire = getQuestionnaire(filter, session);
-            if (StringUtils.isNotBlank(questionnaire)) {
+            if (StringUtils.isBlank(questionnaire)) {
                 continue;
             }
 
@@ -586,18 +595,20 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      *
      * @param questionnairesToFormSource maps from a questionnaire's UUID to a form source identifier
      * @param questionnairesToFilters maps from a questionnaire's UUID to a list of answer filters that belong to it
+     * @param includeSubjectJoints if true indicates that special joint clauses has to be added to join questionnaires
+     *        by subject to facilitate filters for forms with from different questionnaires
      * @return the query fragment listing all sub-sources except the main node type itself (the "join ..." part); empty
      *         if there are no filters for descendant nodes
      */
     private String createFormJoins(Map<String, String> questionnairesToFormSource,
-        Map<String, List<Filter>> questionnairesToFilters)
+        Map<String, List<Filter>> questionnairesToFilters, boolean includeSubjectJoints)
     {
         StringBuilder joins = new StringBuilder();
         for (String questionnaire : questionnairesToFormSource.keySet()) {
 
             final List<Filter> filtersInQuestionnaire =
                 questionnairesToFilters.getOrDefault(questionnaire, Collections.emptyList());
-            final String formSource = questionnairesToFormSource.size() > 1
+            final String formSource = questionnairesToFormSource.size() > 0
                 ? questionnairesToFormSource.get(questionnaire) : ENTITY_SELECTOR;
 
             for (Filter filter : filtersInQuestionnaire) {
@@ -611,13 +622,17 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                         formSource));
             }
 
-            if (questionnairesToFormSource.size() > 1) {
+            if (includeSubjectJoints) {
                 joins.append(
                     String.format(
                         " inner join [cards:Form] as %s on s.[jcr:uuid] = %s.subject",
                         formSource,
                         formSource));
             }
+        }
+
+        if (includeSubjectJoints) {
+            joins.append(" inner join [cards:Form] as n on s.[jcr:uuid] = n.subject");
         }
 
         return joins.toString();

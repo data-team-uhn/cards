@@ -65,7 +65,8 @@ function PromsView(props) {
       title: visitInfo?.surveys?.["text"],
       type: visitInfo?.surveys?.["dataType"],
       uuid: visitInfo?.surveys?.["jcr:uuid"],
-      value: surveysId
+      value: surveysId,
+      hidden: true
     };
     result.submitted = {
       comparator: "=",
@@ -73,7 +74,8 @@ function PromsView(props) {
       title: visitInfo?.surveys_submitted?.["text"],
       type: visitInfo?.surveys_submitted?.["dataType"],
       uuid: visitInfo?.surveys_submitted?.["jcr:uuid"],
-      value: 1
+      value: 1,
+      hidden: true
     };
     result.date = {
       comparator: "=",
@@ -81,8 +83,9 @@ function PromsView(props) {
       title: visitInfo?.time?.["text"],
       type: visitInfo?.time?.["dataType"],
       uuid: visitInfo?.time?.["jcr:uuid"],
-      dateFormat: visitInfo?.time?.dateFormat || "yyyy-MM-dd",
-      value: '__DATE_FILTER_PLACEHOLDER__'
+      dateFormat: "yyyy-MM-dd",
+      value: '__DATE_FILTER_PLACEHOLDER__',
+      hidden: true
     };
     return result;
   }

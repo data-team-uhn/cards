@@ -63,7 +63,7 @@ const DateFilter = forwardRef((props, ref) => {
       InputProps={{
         className: classes.textField
       }}
-      value={defaultValue}
+      defaultValue={defaultValue}
       onChange={(event) => {onChangeInput(event.target.value)}}
       inputRef={ref}
       {...rest}

@@ -57,7 +57,8 @@ function VisitView(props) {
       title: visitInfo?.surveys?.["text"],
       type: visitInfo?.surveys?.["dataType"],
       uuid: visitInfo?.surveys?.["jcr:uuid"],
-      value: surveysId
+      value: surveysId,
+      hidden: true
     };
     result.date = {
       comparator: "=",
@@ -65,8 +66,9 @@ function VisitView(props) {
       title: visitInfo?.time?.["text"],
       type: visitInfo?.time?.["dataType"],
       uuid: visitInfo?.time?.["jcr:uuid"],
-      dateFormat: visitInfo?.time?.dateFormat || "yyyy-MM-dd",
-      value: '__DATE_FILTER_PLACEHOLDER__'
+      dateFormat: "yyyy-MM-dd",
+      value: '__DATE_FILTER_PLACEHOLDER__',
+      hidden: true
     };
     return result;
   }

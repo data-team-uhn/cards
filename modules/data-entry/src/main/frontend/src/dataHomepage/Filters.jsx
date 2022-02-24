@@ -101,9 +101,11 @@ function Filters(props) {
       newFilters.forEach( (newFilter) => {
         getOutputChoices(newFilter.name);
       });
-      setEditingFilters(newFilters);
-      setActiveFilters(newFilters);
       onChangeFilters && onChangeFilters(newFilters);
+      let visibleFilters = newFilters.filter( (filter) => !filter.hidden);
+      if (visibleFilters.length == 0) return;
+      setEditingFilters(visibleFilters);
+      setActiveFilters(visibleFilters);
     }
   }, [filtersJsonString, questionDefinitions]);
 
