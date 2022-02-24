@@ -430,8 +430,8 @@ public class PatientLocalStorage
             "last_name", obj -> obj.getJsonObject("name").getString("family"),
             "date_of_birth@cards:DateAnswer", obj -> toCalendar(obj.getString("dob"), "yyyy-MM-dd"),
             "email", obj -> obj.getJsonObject("com").getJsonObject("email").values().stream()
-                .filter(e -> e != null && e != JsonValue.NULL)
-                .map(Object::toString)
+                .filter(e -> e != null && e != JsonValue.NULL && (e.getValueType() == JsonValue.ValueType.STRING))
+                .map(e -> ((JsonString) e).getString())
                 .findFirst().orElse(""),
             "email_ok@cards:BooleanAnswer", obj -> BooleanUtils.toInteger(obj.getBoolean("emailOk", false), 1, 0, -1),
             "fhir_id", obj -> obj.getString(PatientLocalStorage.FHIR_FIELD));
