@@ -23,18 +23,40 @@
 const LISTEN_HOST = '0.0.0.0';
 const LISTEN_PORT = 8011;
 
+const process = require('process');
 const bodyParser = require('body-parser');
 const express = require('express');
 const webApp = express();
 webApp.use(bodyParser.text({type: '*/*'}));
 const webServer = require('http').createServer(webApp);
 
-const tomorrowAsIsoString = function() {
-  const date = new Date();
-  date.setHours(date.getHours() + 24);
-  return date.toISOString();
-}
+const dateToTorchString = (date) => {
+  let dateStr = "";
+  dateStr += date.getFullYear().toString().padStart(4, '0');
+  dateStr += '-';
+  dateStr += (date.getMonth()+1).toString().padStart(2, '0');
+  dateStr += '-';
+  dateStr += date.getDate().toString().padStart(2, '0');
+  dateStr += 'T';
+  dateStr += date.getHours().toString().padStart(2, '0');
+  dateStr += ':';
+  dateStr += date.getMinutes().toString().padStart(2, '0');
+  dateStr += ':';
+  dateStr += date.getSeconds().toString().padStart(2, '0');
+  return dateStr;
+};
 
+const getMockAppointmentTime = () => {
+  for (let i = 0; i < process.argv.length; i++) {
+    if (process.argv[i].startsWith("--appointment-time-hours-from-now=")) {
+      let timeOffset = parseInt(process.argv[i].split("=")[1]);
+      let nowTime = new Date();
+      let apptTime = new Date(nowTime.getTime() + (1000*60*60*timeOffset));
+      return dateToTorchString(apptTime);
+    }
+  }
+  return "2022-02-20T10:00:00";
+};
 
 const graphQlResponse = {
   data: {
@@ -76,7 +98,7 @@ const graphQlResponse = {
                 ]
               }
             },
-            time: {toJSON: tomorrowAsIsoString}
+            time: {toJSON: getMockAppointmentTime}
           }
         ]
       }
