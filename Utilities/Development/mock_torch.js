@@ -29,6 +29,13 @@ const webApp = express();
 webApp.use(bodyParser.text({type: '*/*'}));
 const webServer = require('http').createServer(webApp);
 
+const tomorrowAsIsoString = function() {
+  const date = new Date();
+  date.setHours(date.getHours() + 24);
+  return date.toISOString();
+}
+
+
 const graphQlResponse = {
   data: {
     patientsByDateAndClinic: [
@@ -69,7 +76,7 @@ const graphQlResponse = {
                 ]
               }
             },
-            time: '2022-02-20T10:00:00'
+            time: {toJSON: tomorrowAsIsoString}
           }
         ]
       }
