@@ -119,7 +119,7 @@
   // Properties
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "cards/PromsHomepage" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/ClinicMapping" mandatory autocreated protected
 
   // Hardcode the resource supertype.
   - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
@@ -135,3 +135,21 @@
 
   // If TRUE, the email_ok question in Patient Information is ignored
   - ignoreEmailConsent (boolean)
+
+//-----------------------------------------------------------------------------
+// The holder for all clinic mappings. This is mostly empty, but used so the
+// pagination servlet can understand it
+[cards:ClinicMappingFolder] > sling:Folder
+  // Attributes:
+
+  // We can use this homepage in a query.
+  query
+
+  // Properties
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/ClinicMappingFolder" mandatory autocreated protected
+
+  // Hardcode the resource supertype.
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
+

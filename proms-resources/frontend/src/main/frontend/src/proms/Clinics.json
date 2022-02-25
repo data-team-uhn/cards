@@ -1,0 +1,8 @@
+{
+  "clinicName": "string",
+  "displayName": "string",
+  "sidebarLabel": "string",
+  "surveyID": "string",
+  "emergencyContactEmail": "string",
+  "//REQUIRED": ["clinicName", "displayName"]
+}

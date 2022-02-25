@@ -19,6 +19,12 @@
 
 <node>
     <name>ClinicMapping</name>
+    <primaryNodeType>cards:ClinicMappingFolder</primaryNodeType>
+    <property>
+        <name>childNodeType</name>
+        <value>cards:ClinicMapping</value>
+        <type>String</type>
+    </property>
     <node>
         <name>481110456</name>
         <primaryNodeType>cards:ClinicMapping</primaryNodeType>
