@@ -368,9 +368,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         // Conditions on child nodes
         query.append(getQueryConditions(nodeType, filters));
 
-        // Results ordering
-        final boolean sortDescending = Boolean.valueOf(request.getParameter("descending"));
-        query.append(" order by n.'jcr:created'").append(sortDescending ? " DESC" : " ASC");
+        query.append(getOrderingConditions(request, session, filters));
 
         // Force using the lucene indexes
         query.append(" option(index tag cards)");
@@ -379,6 +377,36 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         String finalquery = query.toString();
         LOGGER.debug("Computed final query: {}", finalquery);
         return finalquery;
+    }
+
+    private String getOrderingConditions(final SlingHttpServletRequest request, Session session,
+        Map<FilterType, List<Filter>> filters)
+    {
+        StringBuilder order = new StringBuilder();
+        // Results ordering
+        final String orderBy = request.getParameter("orderBy");
+        // Check if the order field is in the existing filters
+        if (StringUtils.isNotBlank(orderBy)) {
+            Filter orderFilter = filters.getOrDefault(FilterType.CHILD, Collections.emptyList())
+                        .stream()
+                        .filter(filter -> filter.name.equals(orderBy))
+                        .findFirst()
+                        .orElse(null);
+            if (orderFilter != null) {
+                order.append(" order by " + orderFilter.source + ".'value'");
+            } else {
+                // Here we need to check if orderBy is a uuid for a question
+                //   String questionnaire = getQuestionnaire(new Filter(orderBy, null, null, null), session);
+                //   if (StringUtils.isNotBlank(questionnaire)) { ...
+                // But for now safely assume that we can order only by selected filtered values
+                order.append(" order by n.'jcr:created'");
+            }
+        } else {
+            order.append(" order by n.'jcr:created'");
+        }
+        final boolean sortDescending = Boolean.valueOf(request.getParameter("descending"));
+        order.append(sortDescending ? " DESC" : " ASC");
+        return order.toString();
     }
 
     /**
