@@ -50,20 +50,36 @@ function ClinicVisits(props) {
 
   const classes = useStyles(color)();
 
-  let query = (
-"select distinct visitInformation.* " +
-  "from " +
-    "[cards:Form] as visitInformation " +
-      "inner join [cards:ResourceAnswer] as visitClinic on isdescendantnode(visitClinic, visitInformation) " +
-      "inner join [cards:DateAnswer] as visitDate on isdescendantnode(visitDate, visitInformation) " +
-      "inner join [cards:TextAnswer] as visitStatus on isdescendantnode(visitStatus, visitInformation) " +
-  "where " +
-    `visitInformation.questionnaire = '${visitInfo?.["jcr:uuid"]}' ` +
-      `and visitDate.question = '${visitInfo?.time?.["jcr:uuid"]}' and __DATE_FILTER_PLACEHOLDER__ ` +
-      `and visitClinic.question = '${visitInfo?.clinic?.["jcr:uuid"]}' and visitClinic.value = '/Survey/ClinicMapping/${clinicId}' ` +
-      `and visitStatus.question = '${visitInfo?.status?.["jcr:uuid"]}' and visitStatus.value <> 'cancelled' and visitStatus.value <> 'entered-in-error' ` +
-  "order by visitDate.value __SORT_ORDER_PLACEHOLDER__"
-)
+  let filters = {
+    surveys : {
+      comparator: "=",
+      name: "surveys",
+      title: visitInfo?.surveys?.["text"],
+      type: visitInfo?.surveys?.["dataType"],
+      uuid: visitInfo?.surveys?.["jcr:uuid"],
+      value: surveysId,
+      hidden: true
+    },
+    status : {
+      comparator: "<>",
+      name: "status",
+      title: visitInfo?.status?.["text"],
+      type: visitInfo?.status?.["dataType"],
+      uuid: visitInfo?.status?.["jcr:uuid"],
+      value: "cancelled",
+      hidden: true
+    },
+    date : {
+      comparator: "=",
+      name: "time",
+      title: visitInfo?.time?.["text"],
+      type: visitInfo?.time?.["dataType"],
+      uuid: visitInfo?.time?.["jcr:uuid"],
+      dateFormat: "yyyy-MM-dd",
+      value: '__DATE_FILTER_PLACEHOLDER__',
+      hidden: true
+    }
+  };
 
   let columns = [
     {
@@ -108,10 +124,10 @@ function ClinicVisits(props) {
       avatar={<EventIcon />}
       title={dashboardConfig?.eventsLabel}
       columns={columns}
-      query={query}
-      dateField="visitDate"
-      questionnaireId={visitInfo?.["jcr:uuid"]}
       enableTimeTabs={dashboardConfig?.enableTimeTabs}
+      query={`/Forms.paginate?fieldname=questionnaire&fieldvalue=${encodeURIComponent(visitInfo?.["jcr:uuid"])}&orderBy=${visitInfo?.time?.["jcr:uuid"]}`}
+      filters={filters}
+      questionnairePath={visitInfo?.["@path"]}
     />
   );
 }

@@ -33,6 +33,7 @@ function ClinicForms(props) {
 
   const [ columns, setColumns ] = useState();
   const [ questionnaireId, setQuestionnaireId ] = useState();
+  const [ questionnairePath, setQuestionnairePath ] = useState();
   const [ title, setTitle ] = useState(props.title);
   const [ acronym, setAcronym ] = useState();
 
@@ -43,34 +44,55 @@ function ClinicForms(props) {
     if (data) {
         setColumns(JSON.parse(data["view"] || "[]"));
         setQuestionnaireId(data.questionnaire?.["jcr:uuid"] || "");
+        setQuestionnairePath(json.questionnaire?.["@path"] || "");
         setTitle(data.questionnaire?.["title"]);
         setAcronym(data.questionnaire?.["@name"]);
     }
   }, [data["@path"]]);
 
-  if (!questionnaireId || !visitInfo) {
+  if (!questionnairePath || !visitInfo) {
     return <CircularProgress/>;
   }
 
-  let query = (
-"select distinct dataForm.* " +
-  "from " +
-    "[cards:Subject] as visitSubject " +
-    "inner join [cards:Form] as visitInformation on visitSubject.[jcr:uuid] = visitInformation.subject " +
-      "inner join [cards:DateAnswer] as visitDate on isdescendantnode(visitDate, visitInformation) " +
-      "inner join [cards:ResourceAnswer] as visitClinic on isdescendantnode(visitClinic, visitInformation) " +
-      "inner join [cards:TextAnswer] as visitStatus on isdescendantnode(visitStatus, visitInformation) " +
-      "inner join [cards:BooleanAnswer] as patientSubmitted on isdescendantnode(patientSubmitted, visitInformation) " +
-    "inner join [cards:Form] as dataForm on visitSubject.[jcr:uuid] = dataForm.subject " +
-  "where " +
-    `visitInformation.questionnaire = '${visitInfo?.["jcr:uuid"]}' ` +
-      `and visitDate.question = '${visitInfo?.time?.["jcr:uuid"]}' and __DATE_FILTER_PLACEHOLDER__ ` +
-      `and visitClinic.question = '${visitInfo?.clinic?.["jcr:uuid"]}' and visitClinic.value = '/Survey/ClinicMapping/${clinicId}' ` +
-      `and visitStatus.question = '${visitInfo?.status?.["jcr:uuid"]}' and visitStatus.value <> 'cancelled' and visitStatus.value <> 'entered-in-error' ` +
-      `and patientSubmitted.question = '${visitInfo?.surveys_submitted?.["jcr:uuid"]}' and patientSubmitted.value = 1 ` +
-    `and dataForm.questionnaire = '${questionnaireId}' ` +
-  "order by visitDate.value __SORT_ORDER_PLACEHOLDER__"
-  )
+  let filters = {
+    surveys : {
+      comparator: "=",
+      name: "surveys",
+      title: visitInfo?.surveys?.["text"],
+      type: visitInfo?.surveys?.["dataType"],
+      uuid: visitInfo?.surveys?.["jcr:uuid"],
+      value: surveysId,
+      hidden: true
+    },
+    status : {
+      comparator: "<>",
+      name: "status",
+      title: visitInfo?.status?.["text"],
+      type: visitInfo?.status?.["dataType"],
+      uuid: visitInfo?.status?.["jcr:uuid"],
+      value: "cancelled",
+      hidden: true
+    },
+    submitted : {
+      comparator: "=",
+      name: "surveys_submitted",
+      title: visitInfo?.surveys_submitted?.["text"],
+      type: visitInfo?.surveys_submitted?.["dataType"],
+      uuid: visitInfo?.surveys_submitted?.["jcr:uuid"],
+      value: 1,
+      hidden: true
+    },
+    date : {
+      comparator: "=",
+      name: "time",
+      title: visitInfo?.time?.["text"],
+      type: visitInfo?.time?.["dataType"],
+      uuid: visitInfo?.time?.["jcr:uuid"],
+      dateFormat: "yyyy-MM-dd",
+      value: '__DATE_FILTER_PLACEHOLDER__',
+      hidden: true
+    }
+  };
 
   return (
     <ClinicFormList
@@ -78,11 +100,11 @@ function ClinicForms(props) {
       avatar={<Typography variant="caption">{acronym?.substring(0,4)}</Typography>}
       title={title}
       columns={columns}
-      query={query}
-      dateField="visitDate"
-      questionnaireId={questionnaireId}
       key={data?.["@path"]}
       enableTimeTabs={dashboardConfig?.enableTimeTabs}
+      questionnairePath={questionnairePath}
+      query={`/Forms.paginate?fieldname=questionnaire&fieldvalue=${encodeURIComponent(questionnaireId)}&orderBy=${visitInfo?.time?.["jcr:uuid"]}`}
+      filters={filters}
     />
   );
 }

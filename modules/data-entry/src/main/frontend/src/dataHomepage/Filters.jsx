@@ -63,6 +63,17 @@ function Filters(props) {
   const notesComparator = "notes contain";
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
+  
+  // Parse out the filters
+  let defaultFilters = [];
+  let defaultHiddenFilters = [];
+  try {
+    defaultFilters = JSON.parse(window.atob(filtersJsonString));
+    defaultHiddenFilters = defaultFilters.filter( filter => filter.hidden)
+                                         .map(filter => filter.uuid);
+  } catch (err) {
+    // Ignore silently malformed filters sent in the URL
+  }
 
   // Focus on inputs as they are flagged for focus
   const focusRef = useRef();
@@ -90,22 +101,16 @@ function Filters(props) {
       grabFilters();
     }
 
-    if (filtersJsonString && Object.keys(questionDefinitions).length > 0) {
-      // Parse out the filters
-      let newFilters = [];
-      try {
-        newFilters = JSON.parse(window.atob(filtersJsonString));
-      } catch (err) {
-        // Ignore silently malformed filters sent in the URL
-        return;
-      }
-      if (!Array.isArray(newFilters)) return;
-      newFilters.forEach( (newFilter) => {
+    if (defaultFilters.length > 0 && Object.keys(questionDefinitions).length > 0) {
+
+      onChangeFilters && onChangeFilters(defaultFilters);
+      let visibleFilters = defaultFilters.filter( (filter) => !filter.hidden);
+      if (visibleFilters.length == 0) return;
+      visibleFilters.forEach( (newFilter) => {
         getOutputChoices(newFilter.name);
       });
-      setEditingFilters(newFilters);
-      setActiveFilters(newFilters);
-      onChangeFilters && onChangeFilters(newFilters);
+      setEditingFilters(visibleFilters);
+      setActiveFilters(visibleFilters);
     }
   }, [filtersJsonString, questionDefinitions]);
 
@@ -115,21 +120,17 @@ function Filters(props) {
     let url;
 
     if (questionnaire) {
-      // Setting the questionnaire prop will go through the fitler servlet (FilterServlet.java)
+      // Setting the questionnaire prop will go through the filter servlet (FilterServlet.java)
       url = new URL(FILTER_URL, window.location.origin);
       url.searchParams.set("questionnaire", questionnaire);
-      fetchWithReLogin(globalLoginDisplay, url)
-        .then((response) => response.ok ? response.json() : Promise.reject(response))
-        .then(parseFilterData)
-        .catch(setError);
     } else {
       // Otherwise, we need a structured output -- go through all Questionnaires.deep.json instead
       url = new URL(ALL_QUESTIONNAIRES_URL, window.location.origin);
-      fetchWithReLogin(globalLoginDisplay, url)
+    }
+    fetchWithReLogin(globalLoginDisplay, url)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then(parseQuestionnaireData)
       .catch(setError);
-    }
   }
 
   // Parse the response from examining every questionnaire
@@ -138,21 +139,34 @@ function Filters(props) {
     // It is a list of either strings (for options) or recursive lists
     // Each recursive list must have a string for its 0th option, which
     // is taken to be its title
-    let newFilterableFields = ["Questionnaire", "Subject", "CreatedDate"];
-    // newFilterableUUIDs is a mapping from a string in newFilterableFields to a jcr:uuid
-    let newFilterableUUIDs = {Questionnaire: "cards:Questionnaire", Subject: "cards:Subject", CreatedDate: "cards:CreatedDate"};
-    // newFilterableTitles is a mapping from a string in newFilterableFields to a human-readable title
-    let newFilterableTitles = {Questionnaire: "Questionnaire", Subject: "Subject", CreatedDate: "Created Date"};
-    // newQuestionDefinitions is normally the straight input from FilterServlet.java
+    let newFilterableFields = [];
+
+    // Mapping from a string in newFilterableFields to a jcr:uuid
+    let newFilterableUUIDs = {};
+
+    // Mapping from a string in newFilterableFields to a human-readable title
+    let newFilterableTitles = {};
+
+    // Normally the straight input from FilterServlet.java
     // Instead, we need to reconstruct this client-side
-    let newQuestionDefinitions = {Questionnaire: {dataType: "questionnaire"}, Subject: {dataType: "subject"}}
+    let newQuestionDefinitions = {};
+
+    // If questionnaire is not specified, add filtering by special fields
+    if (!questionnaire) {
+      newFilterableFields = ["Questionnaire", "Subject", "CreatedDate"];
+      newFilterableUUIDs = {Questionnaire: "cards:Questionnaire", Subject: "cards:Subject", CreatedDate: "cards:CreatedDate"};
+      newFilterableTitles = {Questionnaire: "Questionnaire", Subject: "Subject", CreatedDate: "Created Date"};
+      newQuestionDefinitions = {Questionnaire: {dataType: "questionnaire"}, Subject: {dataType: "subject"}, CreatedDate: {dataType: "createddate"}};
+    }
 
     // We'll need a helper recursive function to copy over data from sections/questions
     let parseSectionOrQuestionnaire = (sectionJson, path="") => {
       let retFields = [];
       Object.entries(sectionJson).map(([title, object]) => {
         // We only care about children that are cards:Questions or cards:Sections
-        if (object["jcr:primaryType"] == "cards:Question") {
+        if (object["jcr:primaryType"] == "cards:Question"
+          && object.displayMode != "hidden"
+          && !defaultHiddenFilters.includes(object["jcr:uuid"])) {
           // If this is an cards:Question, copy the entire thing over to our Json value
           retFields.push(path+title);
           // Also save the human-readable name, UUID, and data type
@@ -177,42 +191,11 @@ function Filters(props) {
       newFilterableFields.push([thisQuestionnaire.title || title, ...parseSectionOrQuestionnaire(thisQuestionnaire, title+"/")]);
     }
 
-    newQuestionDefinitions["Subject"] = {
-      dataType: "subject"
-    };
-    newQuestionDefinitions["CreatedDate"] = {
-      dataType: "createddate"
-    };
-
     // We also need a filter over the subject
     setFilterableFields(newFilterableFields);
     setQuestionDefinitions(newQuestionDefinitions);
     setFilterableTitles(newFilterableTitles);
     setFilterableUUIDs(newFilterableUUIDs);
-  }
-
-  // Parse the response from our FilterServlet
-  let parseFilterData = (filterJson) => {
-    // Parse through, but keep a custom field for the subject
-    let fields = ["Subject", "CreatedDate"];
-    let uuids = {Subject: "cards:Subject", CreatedDate: "cards:CreatedDate"};
-    let titles = {Subject: "Subject", CreatedDate: "Created Date"};
-    for (let [questionName, question] of Object.entries(filterJson)) {
-      // For each question, save the name, data type, and answers (if necessary)
-      fields.push(questionName);
-      uuids[questionName] = question["jcr:uuid"];
-      titles[questionName] = question["text"];
-    }
-    filterJson["Subject"] = {
-      dataType: "subject"
-    };
-    filterJson["CreatedDate"] = {
-      dataType: "createddate"
-    };
-    setFilterableFields(fields);
-    setQuestionDefinitions(filterJson);
-    setFilterableTitles(titles);
-    setFilterableUUIDs(uuids);
   }
 
   let removeCreatedDateTimezone = (filters) => {
@@ -371,7 +354,11 @@ function Filters(props) {
         {...toCheck, comparator: (toCheck.comparator == "=" ? "is empty" : "is not empty")}));
     newFilters = addCreatedDateTimezone(newFilters);
     setActiveFilters(newFilters);
-    onChangeFilters && onChangeFilters(newFilters);
+    // we need to concat defaultFilters that might be pre-set elsewhere
+    // but we also need to avoid duplicates
+    let newFilterNames = newFilters.map(item => item.name);
+    let filteredDefaults = defaultHiddenFilters.filter(item => !newFilterNames.includes(item.name));
+    onChangeFilters && onChangeFilters(newFilters.concat(filteredDefaults));
     setDialogOpen(false);
   }
 
@@ -415,7 +402,7 @@ function Filters(props) {
       if (typeof path == "string") {
         // Straight strings are MenuItems
         return <MenuItem value={path} key={path} className={classes.categoryOption + (nested ? " " + classes.nestedSelectOption : "")}>{filterableTitles[path]}</MenuItem>
-      } else if (Array.isArray(path)) {
+      } else if (Array.isArray(path) && path.length > 1) {
         // Arrays represent Questionnaires of Sections
         // which we'll need to turn into opt groups
         return [<MenuItem className={classes.categoryHeader} disabled>{path[0]}</MenuItem>,
@@ -451,7 +438,11 @@ function Filters(props) {
                 const newFilters = activeFilters.slice();
                 newFilters.splice(index, 1);
                 setActiveFilters(newFilters);
-                onChangeFilters && onChangeFilters(newFilters);
+                // we need to concat defaultFilters that might be pre-set elsewhere
+                // but we also need to avoid duplicates
+                let newFilterNames = newFilters.map(item => item.name);
+                let filteredDefaults = defaultHiddenFilters.filter(item => !newFilterNames.includes(item.name));
+                onChangeFilters && onChangeFilters(newFilters.concat(filteredDefaults));
                 }
               }
               onClick={() => {

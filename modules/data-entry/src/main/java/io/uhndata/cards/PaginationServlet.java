@@ -57,6 +57,8 @@ import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.dataentry.api.FormUtils;
+
 /**
  * A servlet that lists resources of a specific type, depending on which "homepage" resource the request is targeting.
  * <p>
@@ -95,6 +97,8 @@ public class PaginationServlet extends SlingSafeMethodsServlet
     private static final String QUESTIONNAIRE_IDENTIFIER = "cards:Questionnaire";
 
     private static final String CREATED_DATE_IDENTIFIER = "cards:CreatedDate";
+
+    private static final String ENTITY_SELECTOR = "n";
 
     /**
      * Various supported filter types.
@@ -321,7 +325,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         final String nodeType = getNodeType(request);
 
         // We select all nodes having the right type
-        final StringBuilder query = new StringBuilder("select distinct n.* from [").append(nodeType).append("] as n");
+        final StringBuilder query = new StringBuilder("");
 
         // The map that stores questionnaires uuids with prefixes in array and maps it to the
         // corresponding group of questions uuids with their prefixes (stored in a map)
@@ -367,9 +371,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         // Conditions on child nodes
         query.append(getQueryConditions(nodeType, filters));
 
-        // Results ordering
-        final boolean sortDescending = Boolean.valueOf(request.getParameter("descending"));
-        query.append(" order by n.'jcr:created'").append(sortDescending ? " DESC" : " ASC");
+        query.append(getOrderingConditions(request, session, filters));
 
         // Force using the lucene indexes
         query.append(" option(index tag cards)");
@@ -378,6 +380,36 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         String finalquery = query.toString();
         LOGGER.debug("Computed final query: {}", finalquery);
         return finalquery;
+    }
+
+    private String getOrderingConditions(final SlingHttpServletRequest request, Session session,
+        Map<FilterType, List<Filter>> filters)
+    {
+        StringBuilder order = new StringBuilder();
+        // Results ordering
+        final String orderBy = request.getParameter("orderBy");
+        // Check if the order field is in the existing filters
+        if (StringUtils.isNotBlank(orderBy)) {
+            Filter orderFilter = filters.getOrDefault(FilterType.CHILD, Collections.emptyList())
+                        .stream()
+                        .filter(filter -> filter.name.equals(orderBy))
+                        .findFirst()
+                        .orElse(null);
+            if (orderFilter != null) {
+                order.append(" order by " + orderFilter.source + ".'value'");
+            } else {
+                // Here we need to check if orderBy is a uuid for a question
+                //   String questionnaire = getQuestionnaire(new Filter(orderBy, null, null, null), session);
+                //   if (StringUtils.isNotBlank(questionnaire)) { ...
+                // But for now safely assume that we can order only by selected filtered values
+                order.append(" order by n.'jcr:created'");
+            }
+        } else {
+            order.append(" order by n.'jcr:created'");
+        }
+        final boolean sortDescending = Boolean.valueOf(request.getParameter("descending"));
+        order.append(sortDescending ? " DESC" : " ASC");
+        return order.toString();
     }
 
     /**
@@ -434,6 +466,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
     private String getQuerySources(final String nodeType,
         final Map<FilterType, List<Filter>> filters, final Session session)
     {
+        StringBuilder query = new StringBuilder("select distinct n.* from [").append(nodeType).append("] as n");
         final Map<String, String> questionnairesToFormSource = new HashMap<>();
         final Map<String, List<Filter>> questionnairesToQuestions = new HashMap<>();
 
@@ -441,16 +474,38 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         filters.forEach((type, values) -> mapFiltersToSources(nodeType, type, values, questionnairesToFormSource,
             questionnairesToQuestions, session));
 
+        List<Filter> filterList = filters.getOrDefault(FilterType.CHILD, new ArrayList<Filter>());
+        long explicitQuestionnaireFilterCount = filterList
+                .stream()
+                .filter(filter -> QUESTIONNAIRE_IDENTIFIER.equals(filter.name))
+                .map(filter -> filter.value).distinct().count();
+        long implicitQuestionnaireFilterCount = questionnairesToFormSource.size() - explicitQuestionnaireFilterCount;
+        boolean includeSubjectJoins = nodeType.equals(FormUtils.FORM_NODETYPE) && implicitQuestionnaireFilterCount > 0;
+
         if (nodeType.equals(SUBJECT_IDENTIFIER)) {
             // Make joins per questionnaire/form, and per each question/answer in a form
-            return createSubjectJoins(questionnairesToFormSource, questionnairesToQuestions);
+            query.append(createSubjectJoins(questionnairesToFormSource, questionnairesToQuestions));
         } else {
-            // There should be only one questionnaire in the end, but there's no way to enforce this in the UI.
-            // If there's more than one questionnaire involved, then no form will ever match.
-            // Just assume that all the questions belong to the same questionnaire, and append joins for answers for
-            // each question, regardless of the questionnaire
-            return createFormJoins(questionnairesToFormSource, questionnairesToQuestions);
+            // If filters come from more than one questionnaire -> join forms query by the mutual subject
+            if (includeSubjectJoins) {
+                query = new StringBuilder("select distinct n.* from [cards:Subject] as s ");
+            }
+
+            query.append(createFormJoins(questionnairesToFormSource, questionnairesToQuestions, includeSubjectJoins));
         }
+
+        if (includeSubjectJoins) {
+            for (String questionnaire : questionnairesToFormSource.keySet()) {
+                final String source = questionnairesToFormSource.get(questionnaire);
+                if (!ENTITY_SELECTOR.equals(source)) {
+                    Filter qFilter = new Filter(QUESTIONNAIRE_IDENTIFIER, questionnaire, "text", "=");
+                    qFilter.source = source;
+                    filterList.add(qFilter);
+                    filters.put(FilterType.CHILD, filterList);
+                }
+            }
+        }
+        return query.toString();
     }
 
     /**
@@ -481,47 +536,42 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         for (Filter filter : filters) {
             if (SUBJECT_IDENTIFIER.equals(filter.name) || CREATED_DATE_IDENTIFIER.equals(filter.name)) {
                 // For special node filters, all we need to do is record the source name in the filter
-                filter.source = "n";
+                filter.source = ENTITY_SELECTOR;
                 continue;
             }
 
-            String questionnaire = "";
+            final String questionnaire = getQuestionnaire(filter, session);
+            if (StringUtils.isBlank(questionnaire)) {
+                continue;
+            }
+
+            // If this is the first time we encounter a questionnaire, add a new source for it
+            questionnairesToFormSource.computeIfAbsent(questionnaire,
+                k -> "f" + (questionnairesToFormSource.size() + 1));
+
             if (QUESTIONNAIRE_IDENTIFIER.equals(filter.name)) {
-                // When filtering explicitly by questionnaire, we already know the questionnaire for the filter
-                questionnaire = filter.value;
-            } else {
-                // Otherwise, we look it up from the question
-                questionnaire = getQuestionnaire(filter.name, session);
-            }
-
-            if (StringUtils.isNotBlank(questionnaire)) {
-                // If this is the first time we encounter a questionnaire, add a new source for it
-                questionnairesToFormSource.computeIfAbsent(questionnaire,
-                    k -> "f" + (questionnairesToFormSource.size() + 1));
-
-                if (QUESTIONNAIRE_IDENTIFIER.equals(filter.name)) {
-                    if (SUBJECT_IDENTIFIER.equals(nodeType)) {
-                        // The source for a questionnaire filter is one of the forms relating to the subject
-                        filter.source = questionnairesToFormSource.get(questionnaire);
-                    } else {
-                        // The source for a questionnaire filter is the form node itself
-                        filter.source = "n";
-                    }
-                    // Not a question, no need to update the list of questions
-                    continue;
+                if (SUBJECT_IDENTIFIER.equals(nodeType)) {
+                    // The source for a questionnaire filter is one of the forms relating to the subject
+                    filter.source = questionnairesToFormSource.get(questionnaire);
+                } else {
+                    // The source for a questionnaire filter is the form node itself
+                    filter.source = ENTITY_SELECTOR;
+                    questionnairesToFormSource.put(questionnaire, ENTITY_SELECTOR);
                 }
-
-                List<Filter> questions =
-                    questionnairesToQuestions.computeIfAbsent(questionnaire, k -> new ArrayList<>());
-                questions.add(filter);
-
-                // Filters count for this questionnaire
-                String fcount = Integer.toString(questions.size());
-                // Update the source name in the filter, e.g. "childf1_1"
-                filter.source = filterType.sourcePrefix + questionnairesToFormSource.get(questionnaire) + "_" + fcount;
-                // Update the source node type in the filter, e.g. "cards:BooleanAnswer"
-                filter.nodeType = getAnswerNodeType(filter, session);
+                // Not a question, no need to update the list of questions
+                continue;
             }
+
+            List<Filter> questions =
+                questionnairesToQuestions.computeIfAbsent(questionnaire, k -> new ArrayList<>());
+            questions.add(filter);
+
+            // Filters count for this questionnaire
+            String fcount = Integer.toString(questions.size());
+            // Update the source name in the filter, e.g. "childf1_1"
+            filter.source = filterType.sourcePrefix + questionnairesToFormSource.get(questionnaire) + "_" + fcount;
+            // Update the source node type in the filter, e.g. "cards:BooleanAnswer"
+            filter.nodeType = getAnswerNodeType(filter, session);
         }
     }
 
@@ -547,25 +597,44 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      *
      * @param questionnairesToFormSource maps from a questionnaire's UUID to a form source identifier
      * @param questionnairesToFilters maps from a questionnaire's UUID to a list of answer filters that belong to it
+     * @param includeSubjectJoins if true indicates that special join clauses has to be added to join questionnaires
+     *        by subject to facilitate filters for forms with from different questionnaires
      * @return the query fragment listing all sub-sources except the main node type itself (the "join ..." part); empty
      *         if there are no filters for descendant nodes
      */
     private String createFormJoins(Map<String, String> questionnairesToFormSource,
-        Map<String, List<Filter>> questionnairesToFilters)
+        Map<String, List<Filter>> questionnairesToFilters, boolean includeSubjectJoins)
     {
         StringBuilder joins = new StringBuilder();
         for (String questionnaire : questionnairesToFormSource.keySet()) {
+
             final List<Filter> filtersInQuestionnaire =
                 questionnairesToFilters.getOrDefault(questionnaire, Collections.emptyList());
+            final String formSource = questionnairesToFormSource.size() > 0
+                ? questionnairesToFormSource.get(questionnaire) : ENTITY_SELECTOR;
+
             for (Filter filter : filtersInQuestionnaire) {
                 final String answerSource = filter.source;
                 joins.append(
                     String.format(
-                        " inner join [%s] as %s on isdescendantnode(%s, n)",
+                        " inner join [%s] as %s on isdescendantnode(%s, %s)",
                         filter.nodeType,
                         answerSource,
-                        answerSource));
+                        answerSource,
+                        formSource));
             }
+
+            if (includeSubjectJoins) {
+                joins.append(
+                    String.format(
+                        " inner join [cards:Form] as %s on s.[jcr:uuid] = %s.relatedSubjects",
+                        formSource,
+                        formSource));
+            }
+        }
+
+        if (includeSubjectJoins) {
+            joins.append(" inner join [cards:Form] as n on s.[jcr:uuid] = n.relatedSubjects");
         }
 
         return joins.toString();
@@ -976,20 +1045,25 @@ public class PaginationServlet extends SlingSafeMethodsServlet
     /**
      * Retrieves the UUID of the questionnaire that the given question belongs to.
      *
-     * @param questionUuid the UUID of a question
+     * @param filter the filter of a question
      * @param session the current JCR session
      * @return an UUID, if the input UUID does correspond to a valid, accessible question that belongs to a
      *         questionnaire, or the empty string otherwise
      */
-    private String getQuestionnaire(String questionUuid, Session session)
+    private String getQuestionnaire(Filter filter, Session session)
     {
+        if (QUESTIONNAIRE_IDENTIFIER.equals(filter.name)) {
+            // When filtering explicitly by questionnaire, we already know the questionnaire for the filter
+            return filter.value;
+        }
+
         if (session == null) {
-            LOGGER.warn("Could not match questionnaire UUID {}: session not found.", questionUuid);
+            LOGGER.warn("Could not match questionnaire UUID {}: session not found.", filter.name);
             return "";
         }
 
         try {
-            Node parent = session.getNodeByIdentifier(questionUuid);
+            Node parent = session.getNodeByIdentifier(filter.name);
             while (parent.getParent() != null) {
                 parent = parent.getParent();
                 if (parent.isNodeType(QUESTIONNAIRE_IDENTIFIER)) {
@@ -997,9 +1071,9 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                 }
             }
         } catch (ItemNotFoundException e) {
-            LOGGER.debug("Questionnaire UUID {} is inaccessible", questionUuid, e);
+            LOGGER.debug("Questionnaire UUID {} is inaccessible", filter.name, e);
         } catch (RepositoryException e) {
-            LOGGER.error("Failed to find questionnaire UUID {}", questionUuid, e);
+            LOGGER.error("Failed to find questionnaire UUID {}", filter.name, e);
         }
         return "";
     }
