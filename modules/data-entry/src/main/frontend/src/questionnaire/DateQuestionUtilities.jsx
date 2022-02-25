@@ -211,4 +211,13 @@ export default class DateQuestionUtilities {
     }
     return result;
   }
+
+  static getTodayDate = (dateFormat) => {
+    let today = moment().startOf('day');
+    return this.formatDateAnswer(dateFormat, today);
+  }
+  static getTomorrowDate = (dateFormat) => {
+    let tomorrow = moment().add(1, 'day').startOf('day');
+    return this.formatDateAnswer(dateFormat, tomorrow);
+  }
 }

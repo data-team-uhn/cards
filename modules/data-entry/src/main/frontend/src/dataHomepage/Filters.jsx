@@ -101,9 +101,11 @@ function Filters(props) {
       newFilters.forEach( (newFilter) => {
         getOutputChoices(newFilter.name);
       });
-      setEditingFilters(newFilters);
-      setActiveFilters(newFilters);
       onChangeFilters && onChangeFilters(newFilters);
+      let visibleFilters = newFilters.filter( (filter) => !filter.hidden);
+      if (visibleFilters.length == 0) return;
+      setEditingFilters(visibleFilters);
+      setActiveFilters(visibleFilters);
     }
   }, [filtersJsonString, questionDefinitions]);
 
@@ -113,7 +115,7 @@ function Filters(props) {
     let url;
 
     if (questionnaire) {
-      // Setting the questionnaire prop will go through the fitler servlet (FilterServlet.java)
+      // Setting the questionnaire prop will go through the filter servlet (FilterServlet.java)
       url = new URL(FILTER_URL, window.location.origin);
       url.searchParams.set("questionnaire", questionnaire);
       fetchWithReLogin(globalLoginDisplay, url)

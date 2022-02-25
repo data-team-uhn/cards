@@ -49,18 +49,29 @@ function VisitView(props) {
 
   const classes = useStyles(color)();
 
-  let query = (
-"select distinct visitInformation.* " +
-  "from " +
-    "[cards:Form] as visitInformation " +
-      "inner join [cards:Answer] as visitSurveys on isdescendantnode(visitSurveys, visitInformation) " +
-      "inner join [cards:Answer] as visitDate on isdescendantnode(visitDate, visitInformation) " +
-  "where " +
-    `visitInformation.questionnaire = '${visitInfo?.["jcr:uuid"]}' ` +
-      `and visitDate.question = '${visitInfo?.time?.["jcr:uuid"]}' and __DATE_FILTER_PLACEHOLDER__ ` +
-      `and visitSurveys.question = '${visitInfo?.surveys?.["jcr:uuid"]}' and visitSurveys.value = '${surveysId}' ` +
-  "order by visitDate.value __SORT_ORDER_PLACEHOLDER__"
-)
+  let generateFilters = () => {
+    let result = [];
+    result.surveys = {
+      comparator: "=",
+      name: "surveys",
+      title: visitInfo?.surveys?.["text"],
+      type: visitInfo?.surveys?.["dataType"],
+      uuid: visitInfo?.surveys?.["jcr:uuid"],
+      value: surveysId,
+      hidden: true
+    };
+    result.date = {
+      comparator: "=",
+      name: "time",
+      title: visitInfo?.time?.["text"],
+      type: visitInfo?.time?.["dataType"],
+      uuid: visitInfo?.time?.["jcr:uuid"],
+      dateFormat: "yyyy-MM-dd",
+      value: '__DATE_FILTER_PLACEHOLDER__',
+      hidden: true
+    };
+    return result;
+  }
 
   let columns = [
     {
@@ -104,9 +115,9 @@ function VisitView(props) {
       avatar={<EventIcon />}
       title="Appointments"
       columns={columns}
-      query={query}
-      dateField="visitDate"
-      questionnaireId={visitInfo?.["jcr:uuid"]}
+      query={`/Forms.paginate?fieldname=questionnaire&fieldvalue=${encodeURIComponent(visitInfo?.["jcr:uuid"])}&orderBy=${visitInfo?.time?.["jcr:uuid"]}`}
+      filters={generateFilters()}
+      questionnaireId={visitInfo?.["@path"]}
     />
   );
 }

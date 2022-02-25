@@ -17,8 +17,8 @@
 //  under the License.
 //
 import React, { useState } from "react";
-
 import LiveTable from "../dataHomepage/LiveTable.jsx";
+import DateQuestionUtilities from "../questionnaire/DateQuestionUtilities";
 
 import {
   Avatar,
@@ -59,32 +59,30 @@ const useStyles = color => makeStyles(theme => ({
 
 
 function PromsViewInternal (props) {
-  const { color, title, avatar, query, dateField, columns, questionnaireId, className } = props;
+  const { color, title, avatar, query, columns, questionnaireId, filters, className } = props;
 
-  let toMidnight = (date) => {
-     date.setHours(0);
-     date.setMinutes(0);
-     date.setSeconds(0);
-     date.setMilliseconds(0);
-     return date;
-  }
+  const [ filtersJson, setFiltersJson ] = useState(filters);
 
-  let today = new Date(), tomorrow = new Date();
-  tomorrow.setDate(today.getDate() + 1);
-  today = toMidnight(today).toISOString();
-  tomorrow = toMidnight(tomorrow).toISOString();
+  let dateFormat = filtersJson.date.dateFormat;
+  let today = DateQuestionUtilities.getTodayDate(dateFormat);
+  //today = DateQuestionUtilities.momentToString(today, filtersJson.date.type);
+  let tomorrow = DateQuestionUtilities.getTomorrowDate(dateFormat);
+  //tomorrow = DateQuestionUtilities.momentToString(tomorrow, filtersJson.date.type);
 
   const tabFilter = {
     "Past" : {
-      dateFilter :  `${dateField}.value < '${today}' `,
-      order : "desc"
+      comparator: "<",
+      dateFilter: today,
+      order: "&descending=true"
     },
     "Today" : {
-      dateFilter :  `${dateField}.value >= '${today}' and ${dateField}.value < '${tomorrow}' `,
+      comparator: [">=", "<"],
+      dateFilter: [today, tomorrow],
       order: ""
     },
     "Upcoming" : {
-      dateFilter :  `${dateField}.value >= '${tomorrow}' `,
+      comparator: ">=",
+      dateFilter: tomorrow,
       order: ""
     },
   };
@@ -93,8 +91,22 @@ function PromsViewInternal (props) {
 
   const [ activeTab, setActiveTab ] = useState(1); // Today
 
-  let finalQuery = query.replaceAll("__DATE_FILTER_PLACEHOLDER__", tabFilter[tabs[activeTab]].dateFilter)
-                        .replaceAll("__SORT_ORDER_PLACEHOLDER__", tabFilter[tabs[activeTab]].order);
+  let sortFilter = tabFilter[tabs[activeTab]].order;
+  let filtersJsonString = "";
+  // need to have 2 filters for Today date filtering
+  if (tabs[activeTab] == "Today") {
+    filtersJson.date.comparator = tabFilter[tabs[activeTab]].comparator[0];
+    filtersJson.date.value = tabFilter[tabs[activeTab]].dateFilter[0];
+    filtersJson.enddate = Object.assign({}, filtersJson.date);
+    filtersJson.enddate.comparator = tabFilter[tabs[activeTab]].comparator[1];
+    filtersJson.enddate.value = tabFilter[tabs[activeTab]].dateFilter[1];
+    filtersJsonString = window.btoa(JSON.stringify(Object.values(filtersJson)));
+  } else {
+    delete filtersJson.enddate;
+    filtersJson.date.comparator = tabFilter[tabs[activeTab]].comparator;
+    filtersJson.date.value = tabFilter[tabs[activeTab]].dateFilter;
+    filtersJsonString = window.btoa(JSON.stringify(Object.values(filtersJson)));
+  }
 
   const classes = useStyles(color)();
 
@@ -112,11 +124,13 @@ function PromsViewInternal (props) {
       <CardContent>
         <LiveTable
           columns={columns}
-          customUrl={'/query?query=' + encodeURIComponent(finalQuery)}
+          customUrl={`${query}${sortFilter}`}
           defaultLimit={10}
           questionnaire={questionnaireId}
           entryType={"Form"}
           disableTopPagination={true}
+          filters
+          filtersJsonString={filtersJsonString}
         />
       </CardContent>
     </Card>
