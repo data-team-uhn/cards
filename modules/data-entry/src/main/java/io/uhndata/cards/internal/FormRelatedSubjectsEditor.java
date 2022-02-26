@@ -59,7 +59,7 @@ public class FormRelatedSubjectsEditor extends DefaultEditor
      * Simple constructor.
      *
      * @param nodeBuilder the current node
-     * @param session the session used to retrieve subjects by UUID
+     * @param session the current JCR session
      */
     public FormRelatedSubjectsEditor(final NodeBuilder nodeBuilder, final Session session)
     {

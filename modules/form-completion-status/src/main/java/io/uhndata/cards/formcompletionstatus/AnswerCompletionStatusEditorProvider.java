@@ -19,6 +19,8 @@ package io.uhndata.cards.formcompletionstatus;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.jcr.Session;
+
 import org.apache.jackrabbit.oak.api.CommitFailedException;
 import org.apache.jackrabbit.oak.spi.commit.CommitInfo;
 import org.apache.jackrabbit.oak.spi.commit.Editor;
@@ -26,40 +28,33 @@ import org.apache.jackrabbit.oak.spi.commit.EditorProvider;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.FieldOption;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
-import org.osgi.service.component.annotations.ServiceScope;
+
+import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 
 /**
  * A {@link EditorProvider} returning {@link AnswerCompletionStatusEditor}.
  *
  * @version $Id$
  */
-@Component(name = "AnswerCompletionStatusEditorProvider", service = EditorProvider.class,
-    scope = ServiceScope.SINGLETON, immediate = true)
+@Component(immediate = true)
 public class AnswerCompletionStatusEditorProvider implements EditorProvider
 {
-    @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,
-        policyOption = ReferencePolicyOption.GREEDY)
-    private ResourceResolverFactory rrf;
+    @Reference
+    private ThreadResourceResolverProvider rrp;
 
     @Override
     public Editor getRootEditor(final NodeState before, final NodeState after, final NodeBuilder builder,
         final CommitInfo info)
         throws CommitFailedException
     {
-        if (this.rrf != null) {
-            final ResourceResolver myResolver = this.rrf.getThreadResourceResolver();
-            if (myResolver != null) {
-                // Each AnswerCompletionStatusEditor maintains a state, so a new instance must be returned each time
-                final List<NodeBuilder> tmpList = new ArrayList<>();
-                tmpList.add(builder);
-                return new AnswerCompletionStatusEditor(tmpList, null, myResolver);
-            }
+        ResourceResolver resolver = this.rrp.getThreadResourceResolver();
+        if (resolver != null) {
+            // Each AnswerCompletionStatusEditor maintains a state, so a new instance must be returned each time
+            final List<NodeBuilder> tmpList = new ArrayList<>();
+            tmpList.add(builder);
+            return new AnswerCompletionStatusEditor(tmpList, null, resolver.adaptTo(Session.class));
         }
         return null;
     }

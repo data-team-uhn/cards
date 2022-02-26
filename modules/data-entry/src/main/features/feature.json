@@ -69,7 +69,9 @@
   "configurations":{
     "org.apache.sling.jcr.repoinit.RepositoryInitializer~forms":{
       "service.ranking:Integer":150,
-      "scripts":["create path (cards:dataQuery) /query \n\n # Allow all users to query; the actual results will obey their access rights \n set ACL for everyone \n   allow  jcr:read  on /query \n end \n\n create path (cards:QuestionnairesHomepage) /Questionnaires \n create path (cards:FormsHomepage) /Forms \n create path (cards:SubjectsHomepage) /Subjects \n create path (cards:SubjectTypesHomepage) /SubjectTypes "]
+      "scripts":[
+        "create path (cards:dataQuery) /query \n\n # Allow all users to query; the actual results will obey their access rights \n set ACL for everyone \n   allow  jcr:read  on /query \n end \n\n create path (cards:QuestionnairesHomepage) /Questionnaires \n create path (cards:FormsHomepage) /Forms \n create path (cards:SubjectsHomepage) /Subjects \n create path (cards:SubjectTypesHomepage) /SubjectTypes "
+      ]
     },
     "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~computedAnswers":{
       "user.mapping":[

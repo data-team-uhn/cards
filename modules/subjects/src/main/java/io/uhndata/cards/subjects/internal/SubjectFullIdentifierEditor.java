@@ -16,13 +16,9 @@
  */
 package io.uhndata.cards.subjects.internal;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Stack;
 
-import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.Value;
 
 import org.apache.jackrabbit.oak.api.CommitFailedException;
 import org.apache.jackrabbit.oak.api.Type;
@@ -45,9 +41,7 @@ public class SubjectFullIdentifierEditor extends DefaultEditor
 
     private static final String PROP_FULLID_NAME = "fullIdentifier";
 
-    private static final String PROP_PARENTS = "parents";
-
-    private final Session session;
+    private final Stack<String> identifiers;
 
     // This holds the builder for the current node. The methods called for editing specific properties don't receive the
     // actual parent node of those properties, so we must manually keep track of the current node.
@@ -57,12 +51,16 @@ public class SubjectFullIdentifierEditor extends DefaultEditor
      * Simple constructor.
      *
      * @param nodeBuilder the current node
-     * @param session the session used to retrieve subjects by UUID
+     * @param ancestors a stack of subject identifiers encountered from the root to the current node, empty if no other
+     *            subjects have been encountered so far
      */
-    public SubjectFullIdentifierEditor(final NodeBuilder nodeBuilder, final Session session)
+    public SubjectFullIdentifierEditor(final NodeBuilder nodeBuilder, final Stack<String> ancestors)
     {
         this.currentNodeBuilder = nodeBuilder;
-        this.session = session;
+        this.identifiers = ancestors;
+        if (isSubject(nodeBuilder)) {
+            this.identifiers.push(nodeBuilder.getString("identifier"));
+        }
     }
 
     // When something changes in a node deep in the content tree, the editor is invoked starting with the root node,
@@ -73,13 +71,13 @@ public class SubjectFullIdentifierEditor extends DefaultEditor
     public Editor childNodeAdded(final String name, final NodeState after)
         throws CommitFailedException
     {
-        return new SubjectFullIdentifierEditor(this.currentNodeBuilder.getChildNode(name), this.session);
+        return new SubjectFullIdentifierEditor(this.currentNodeBuilder.getChildNode(name), this.identifiers);
     }
 
     @Override
     public Editor childNodeChanged(String name, NodeState before, NodeState after) throws CommitFailedException
     {
-        return new SubjectFullIdentifierEditor(this.currentNodeBuilder.getChildNode(name), this.session);
+        return new SubjectFullIdentifierEditor(this.currentNodeBuilder.getChildNode(name), this.identifiers);
     }
 
     @Override
@@ -93,6 +91,7 @@ public class SubjectFullIdentifierEditor extends DefaultEditor
                 LOGGER.warn("Unexpected exception while computing the full identifier of subject {}",
                     this.currentNodeBuilder.getString("jcr:uuid"));
             }
+            this.identifiers.pop();
         }
     }
 
@@ -104,27 +103,9 @@ public class SubjectFullIdentifierEditor extends DefaultEditor
      */
     private void computeFullIdentifier() throws RepositoryException
     {
-        final List<String> identifiers = new ArrayList<>();
-        Node subjectNode = this.session.getNodeByIdentifier(this.currentNodeBuilder.getString("jcr:uuid"));
-
-        // Iterate through all parents of this node
-        while (subjectNode != null) {
-            identifiers.add(subjectNode.getProperty("identifier").getString());
-            if (!subjectNode.hasProperty(PROP_PARENTS)) {
-                break;
-            }
-            Value parent;
-            if (subjectNode.getProperty(PROP_PARENTS).isMultiple()) {
-                parent = subjectNode.getProperty(PROP_PARENTS).getValues()[0];
-            } else {
-                parent = subjectNode.getProperty(PROP_PARENTS).getValue();
-            }
-            subjectNode = this.session.getNodeByIdentifier(parent.getString());
-        }
-
         // Write fullIdentifier to the JCR repo
         this.currentNodeBuilder.setProperty(PROP_FULLID_NAME,
-            identifiers.stream().reduce((result, parent) -> parent + " / " + result).get(), Type.STRING);
+            this.identifiers.stream().reduce((result, child) -> result + " / " + child).get(), Type.STRING);
     }
 
     /**

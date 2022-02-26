@@ -44,6 +44,8 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.utils.ThreadResourceResolverProvider;
+
 /**
  * Query the Torch server provided for patients with appointments in the coming few days (default: 3), and stores them
  * in JCR local storage. This will overwrite existing patients/appointments with updated information, if it is
@@ -81,6 +83,8 @@ public class ImportTask implements Runnable
     /** Provides access to resources. */
     private final ResourceResolverFactory resolverFactory;
 
+    private final ThreadResourceResolverProvider rrp;
+
     /**
      * @param resolverFactory A reference to a ResourceResolverFactory to use
      * @param authURL The URL for the Vault JWT authentication endpoint
@@ -90,12 +94,14 @@ public class ImportTask implements Runnable
      * @param clinicNames Pipe-delimited list of names of clinics to query
      * @param providerIDs Pipe-delimited list of names of providers to filter queries to
      */
-    @SuppressWarnings({"checkstyle:ParameterNumber"})
-    ImportTask(final ResourceResolverFactory resolverFactory, final String authURL, final String endpointURL,
+    @SuppressWarnings({ "checkstyle:ParameterNumber" })
+    ImportTask(final ResourceResolverFactory resolverFactory, final ThreadResourceResolverProvider rrp,
+        final String authURL, final String endpointURL,
         final int daysToQuery, final String vaultToken, final String[] clinicNames, final String[] providerIDs,
         final String vaultRole)
     {
         this.resolverFactory = resolverFactory;
+        this.rrp = rrp;
         this.authURL = authURL;
         this.endpointURL = endpointURL;
         this.daysToQuery = daysToQuery;
@@ -177,13 +183,16 @@ public class ImportTask implements Runnable
 
             // Create the storage object and store every patient/visit
             final JsonArray data = response.getJsonObject("data").getJsonArray("patientsByDateAndClinic");
-            final ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(
-                Map.of(ResourceResolverFactory.SUBSERVICE, "TorchImporter"));
-            final PatientLocalStorage storage = new PatientLocalStorage(resolver, startDate, endDate,
-                this.providerIDs);
+            try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(
+                Map.of(ResourceResolverFactory.SUBSERVICE, "TorchImporter"))) {
+                this.rrp.push(resolver);
 
-            data.forEach(storage::store);
-            resolver.close();
+                final PatientLocalStorage storage = new PatientLocalStorage(resolver, startDate, endDate,
+                    this.providerIDs);
+
+                data.forEach(storage::store);
+                this.rrp.pop();
+            }
         } catch (final Exception e) {
             LOGGER.error("Failed to query server: {}", e.getMessage(), e);
         }
