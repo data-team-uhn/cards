@@ -478,8 +478,8 @@ public class PatientLocalStorage
         updateForm(form, info, "/Questionnaires/Visit information", formMapping);
 
         // Also create some questions that need to be present for the VisitChangeListener, if they don't exist
-        ensureAnswerExists(form, "/Questionnaires/Visit information/surveys_complete", "cards:BooleanAnswer", false);
-        ensureAnswerExists(form, "/Questionnaires/Visit information/surveys_submitted", "cards:BooleanAnswer", false);
+        ensureAnswerExists(form, "/Questionnaires/Visit information/surveys_complete", "cards:BooleanAnswer", 0L);
+        ensureAnswerExists(form, "/Questionnaires/Visit information/surveys_submitted", "cards:BooleanAnswer", 0L);
     }
 
     /**
