@@ -45,9 +45,9 @@ public class ThreadResourceResolverProviderImpl implements ThreadResourceResolve
     @Override
     public ResourceResolver getThreadResourceResolver()
     {
-        Stack<ResourceResolver> currentThreadResolver = this.resolvers.get();
-        if (!currentThreadResolver.isEmpty()) {
-            return currentThreadResolver.peek();
+        Stack<ResourceResolver> currentThreadResolvers = this.resolvers.get();
+        if (!currentThreadResolvers.isEmpty()) {
+            return currentThreadResolvers.peek();
         } else if (this.rrf != null) {
             return this.rrf.getThreadResourceResolver();
         }
