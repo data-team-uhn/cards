@@ -182,7 +182,7 @@ let EditDialog = (props) => {
 
   return (
     <form action={data?.['@path']} method='POST' onSubmit={saveData} onChange={() => setLastSaveStatus(undefined) } key={id}>
-       <Dialog disablePortal id='editDialog' open={open} onClose={() => { setOpen(false); onClose && onClose();} } fullWidth maxWidth='md'>
+       <Dialog disablePortal id='editDialog' open={open} onClose={() => { setOpen(false); onCancel && onCancel();} } fullWidth maxWidth='md'>
           <DialogTitle>
           { dialogTitle() }
           </DialogTitle>
