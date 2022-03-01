@@ -188,7 +188,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             final Session session = resolver.adaptTo(Session.class);
 
             // Parse the request to build a list of filters
-            Map<FilterType, List<Filter>> filters = parseFiltersFromRequest(request);
+            final Map<FilterType, List<Filter>> filters = parseFiltersFromRequest(request);
 
             final long limit = getLongValueOrDefault(request.getParameter("limit"), 10);
             final long offset = getLongValueOrDefault(request.getParameter("offset"), 0);
@@ -320,7 +320,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      * @throws RepositoryException if accessing the repository fails
      */
     private String createQuery(final SlingHttpServletRequest request, Session session,
-        Map<FilterType, List<Filter>> filters) throws RepositoryException
+        final Map<FilterType, List<Filter>> filters) throws RepositoryException
     {
         // If we want this query to be fast, we need to use the exact nodetype requested.
         final String nodeType = getNodeType(request);
@@ -464,7 +464,8 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      * @return the query fragment listing all sub-sources except the main node type itself (the "join ..." part); empty
      *         if there are no filters for descendant nodes
      */
-    private String getQuerySources(final String nodeType, Map<FilterType, List<Filter>> filters, final Session session)
+    private String getQuerySources(final String nodeType,
+        final Map<FilterType, List<Filter>> filters, final Session session)
     {
         StringBuilder query = new StringBuilder("select distinct n.* from [").append(nodeType).append("] as n");
         final Map<String, String> questionnairesToFormSource = new HashMap<>();
@@ -479,21 +480,21 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                 .filter(filter -> QUESTIONNAIRE_IDENTIFIER.equals(filter.name))
                 .map(filter -> filter.value).distinct().count();
         long implicitQuestionnaireFilterCount = questionnairesToFormSource.size() - explicitQuestionnaireFilterCount;
-        boolean includeSubjectJoints = nodeType.equals(FormUtils.FORM_NODETYPE) && implicitQuestionnaireFilterCount > 0;
+        boolean includeSubjectJoins = nodeType.equals(FormUtils.FORM_NODETYPE) && implicitQuestionnaireFilterCount > 0;
 
         if (nodeType.equals(SUBJECT_IDENTIFIER)) {
             // Make joins per questionnaire/form, and per each question/answer in a form
             query.append(createSubjectJoins(questionnairesToFormSource, questionnairesToQuestions));
         } else {
             // If filters come from more than one questionnaire -> join forms query by the mutual subject
-            if (includeSubjectJoints) {
+            if (includeSubjectJoins) {
                 query = new StringBuilder("select distinct n.* from [cards:Subject] as s ");
             }
 
-            query.append(createFormJoins(questionnairesToFormSource, questionnairesToQuestions, includeSubjectJoints));
+            query.append(createFormJoins(questionnairesToFormSource, questionnairesToQuestions, includeSubjectJoins));
         }
 
-        if (includeSubjectJoints) {
+        if (includeSubjectJoins) {
             for (String questionnaire : questionnairesToFormSource.keySet()) {
                 final String source = questionnairesToFormSource.get(questionnaire);
                 if (!ENTITY_SELECTOR.equals(source)) {
@@ -595,13 +596,13 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      *
      * @param questionnairesToFormSource maps from a questionnaire's UUID to a form source identifier
      * @param questionnairesToFilters maps from a questionnaire's UUID to a list of answer filters that belong to it
-     * @param includeSubjectJoints if true indicates that special joint clauses has to be added to join questionnaires
+     * @param includeSubjectJoins if true indicates that special join clauses has to be added to join questionnaires
      *        by subject to facilitate filters for forms with from different questionnaires
      * @return the query fragment listing all sub-sources except the main node type itself (the "join ..." part); empty
      *         if there are no filters for descendant nodes
      */
     private String createFormJoins(Map<String, String> questionnairesToFormSource,
-        Map<String, List<Filter>> questionnairesToFilters, boolean includeSubjectJoints)
+        Map<String, List<Filter>> questionnairesToFilters, boolean includeSubjectJoins)
     {
         StringBuilder joins = new StringBuilder();
         for (String questionnaire : questionnairesToFormSource.keySet()) {
@@ -622,7 +623,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
                         formSource));
             }
 
-            if (includeSubjectJoints) {
+            if (includeSubjectJoins) {
                 joins.append(
                     String.format(
                         " inner join [cards:Form] as %s on s.[jcr:uuid] = %s.relatedSubjects",
@@ -631,7 +632,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             }
         }
 
-        if (includeSubjectJoints) {
+        if (includeSubjectJoins) {
             joins.append(" inner join [cards:Form] as n on s.[jcr:uuid] = n.relatedSubjects");
         }
 

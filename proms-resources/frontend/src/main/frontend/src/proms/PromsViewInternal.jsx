@@ -65,9 +65,7 @@ function PromsViewInternal (props) {
 
   let dateFormat = filtersJson.date.dateFormat;
   let today = DateQuestionUtilities.getTodayDate(dateFormat);
-  //today = DateQuestionUtilities.momentToString(today, filtersJson.date.type);
   let tomorrow = DateQuestionUtilities.getTomorrowDate(dateFormat);
-  //tomorrow = DateQuestionUtilities.momentToString(tomorrow, filtersJson.date.type);
 
   const tabFilter = {
     "Past" : {
