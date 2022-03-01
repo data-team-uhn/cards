@@ -31,7 +31,6 @@ import org.apache.jackrabbit.oak.spi.commit.DefaultEditor;
 import org.apache.jackrabbit.oak.spi.commit.Editor;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
-import org.apache.sling.api.resource.ResourceResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,9 +60,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
 
     private final NodeBuilder form;
 
-    // A ResourceResolver object is passed in during the initialization of this object. This ResourceResolver
-    // is later used for obtaining the constraints on the answers submitted to a question.
-    private final ResourceResolver currentResourceResolver;
+    private final Session session;
 
     // This holds a list of NodeBuilders with the first item corresponding to the root of the JCR tree
     // and the last item corresponding to the current node. By keeping this list, one is capable of
@@ -76,16 +73,16 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
      *
      * @param nodeBuilder a list of NodeBuilder objects starting from the root of the JCR tree and moving down towards
      *            the current node.
-     * @param resourceResolver a ResourceResolver object used to obtain answer constraints
      * @param form the form node found up the tree, if any; may be {@code null} if no form node has been encountered so
      *            far
+     * @param session the current JCR session
      */
     public AnswerCompletionStatusEditor(final List<NodeBuilder> nodeBuilder, final NodeBuilder form,
-        final ResourceResolver resourceResolver)
+        final Session session)
     {
         this.currentNodeBuilderPath = nodeBuilder;
         this.currentNodeBuilder = nodeBuilder.get(nodeBuilder.size() - 1);
-        this.currentResourceResolver = resourceResolver;
+        this.session = session;
         if (isForm(this.currentNodeBuilder)) {
             this.form = this.currentNodeBuilder;
         } else {
@@ -176,7 +173,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         }
         final List<NodeBuilder> tmpList = new ArrayList<>(this.currentNodeBuilderPath);
         tmpList.add(this.currentNodeBuilder.getChildNode(name));
-        return new AnswerCompletionStatusEditor(tmpList, this.form, this.currentResourceResolver);
+        return new AnswerCompletionStatusEditor(tmpList, this.form, this.session);
     }
 
     @Override
@@ -185,7 +182,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     {
         final List<NodeBuilder> tmpList = new ArrayList<>(this.currentNodeBuilderPath);
         tmpList.add(this.currentNodeBuilder.getChildNode(name));
-        return new AnswerCompletionStatusEditor(tmpList, this.form, this.currentResourceResolver);
+        return new AnswerCompletionStatusEditor(tmpList, this.form, this.session);
     }
 
     @Override
@@ -213,9 +210,8 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     {
         try {
             if (nb.hasProperty(PROP_QUESTION)) {
-                final Session resourceSession = this.currentResourceResolver.adaptTo(Session.class);
                 final String questionNodeReference = nb.getProperty(PROP_QUESTION).getValue(Type.REFERENCE);
-                final Node questionNode = resourceSession.getNodeByIdentifier(questionNodeReference);
+                final Node questionNode = this.session.getNodeByIdentifier(questionNodeReference);
                 return questionNode;
             }
         } catch (final RepositoryException ex) {
@@ -265,9 +261,8 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     }
 
     /**
-     * Checks if a NodeBuilder represents an empty Form and returns true
-     * if that is the case. Otherwise, this method returns false.
-     *
+     * Checks if a NodeBuilder represents an empty Form and returns true if that is the case. Otherwise, this method
+     * returns false.
      */
     private boolean isEmptyForm(NodeBuilder n)
     {
@@ -296,14 +291,14 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
             final String selectedChildName = childrenNames.next();
             final NodeBuilder selectedChild = this.currentNodeBuilder.getChildNode(selectedChildName);
             if (isSection(selectedChild)) {
-                final Session resourceSession = this.currentResourceResolver.adaptTo(Session.class);
-                if (!ConditionalSectionUtils.isConditionSatisfied(resourceSession, selectedChild, this.form)) {
+                if (!ConditionalSectionUtils.isConditionSatisfied(this.session, selectedChild, this.form)) {
                     continue;
                 }
             }
             // Is selectedChild - invalid? , incomplete?
             if (selectedChild.hasProperty(STATUS_FLAGS)) {
-                final Iterable<String> selectedProps = selectedChild.getProperty(STATUS_FLAGS).getValue(Type.STRINGS);
+                final Iterable<String> selectedProps =
+                    selectedChild.getProperty(STATUS_FLAGS).getValue(Type.STRINGS);
                 final Iterator<String> selectedPropsIter = selectedProps.iterator();
                 while (selectedPropsIter.hasNext()) {
                     final String thisStr = selectedPropsIter.next();

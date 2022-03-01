@@ -16,12 +16,9 @@
  */
 package io.uhndata.cards.subjects.internal;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Stack;
 
-import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 
 import org.apache.jackrabbit.oak.api.CommitFailedException;
 import org.apache.jackrabbit.oak.api.Type;
@@ -33,8 +30,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * An {@link Editor} that sets the {@code parent} property for every {@code cards:Subject}
- * or {@code cards:SubjectType} with the direct parent of that node.
+ * An {@link Editor} that sets the {@code parent} property for every {@code cards:Subject} or {@code cards:SubjectType}
+ * with the direct parent of that node.
  *
  * @version $Id$
  */
@@ -44,22 +41,26 @@ public class SubjectParentEditor extends DefaultEditor
 
     private static final String PROP_PARENTS = "parents";
 
-    private final Session session;
-
     // This holds the builder for the current node. The methods called for editing specific properties don't receive the
     // actual parent node of those properties, so we must manually keep track of the current node.
     private final NodeBuilder currentNodeBuilder;
+
+    private final Stack<String> ancestors;
 
     /**
      * Simple constructor.
      *
      * @param nodeBuilder the current node
-     * @param session the session used to retrieve subjects by UUID
+     * @param ancestors a stack of subject nodes encountered from the root to the current node, empty if no other
+     *            subjects have been encountered so far
      */
-    public SubjectParentEditor(final NodeBuilder nodeBuilder, final Session session)
+    public SubjectParentEditor(final NodeBuilder nodeBuilder, final Stack<String> ancestors)
     {
         this.currentNodeBuilder = nodeBuilder;
-        this.session = session;
+        this.ancestors = ancestors;
+        if (isSubject(nodeBuilder)) {
+            this.ancestors.push(nodeBuilder.getString("jcr:uuid"));
+        }
     }
 
     // When something changes in a node deep in the content tree, the editor is invoked starting with the root node,
@@ -70,19 +71,20 @@ public class SubjectParentEditor extends DefaultEditor
     public Editor childNodeAdded(final String name, final NodeState after)
         throws CommitFailedException
     {
-        return new SubjectParentEditor(this.currentNodeBuilder.getChildNode(name), this.session);
+        return new SubjectParentEditor(this.currentNodeBuilder.getChildNode(name), this.ancestors);
     }
 
     @Override
     public Editor childNodeChanged(String name, NodeState before, NodeState after) throws CommitFailedException
     {
-        return new SubjectParentEditor(this.currentNodeBuilder.getChildNode(name), this.session);
+        return new SubjectParentEditor(this.currentNodeBuilder.getChildNode(name), this.ancestors);
     }
 
     @Override
     public void leave(NodeState before, NodeState after) throws CommitFailedException
     {
         if (isSubject(this.currentNodeBuilder)) {
+            this.ancestors.pop();
             try {
                 computeParent();
             } catch (RepositoryException e) {
@@ -100,12 +102,8 @@ public class SubjectParentEditor extends DefaultEditor
      */
     private void computeParent() throws RepositoryException
     {
-        final List<String> identifiers = new ArrayList<>();
-        Node parentNode = this.session.getNodeByIdentifier(this.currentNodeBuilder.getString("jcr:uuid")).getParent();
-
-        // Iterate through all parents of this node
-        if (parentNode != null && parentNode.hasProperty("jcr:primaryType") && isSubject(parentNode)) {
-            this.currentNodeBuilder.setProperty(PROP_PARENTS, parentNode.getProperty("jcr:uuid").getString(),
+        if (!this.ancestors.isEmpty()) {
+            this.currentNodeBuilder.setProperty(PROP_PARENTS, this.ancestors.peek(),
                 Type.WEAKREFERENCE);
         } else {
             if (this.currentNodeBuilder.hasProperty(PROP_PARENTS)) {
@@ -126,17 +124,6 @@ public class SubjectParentEditor extends DefaultEditor
     }
 
     /**
-     * Checks if the given node is a Subject or SubjectType node.
-     *
-     * @param node the JCR Node to check
-     * @return {@code true} if the node is a Subject/SubjectType node, {@code false} otherwise
-     */
-    private boolean isSubject(Node node) throws RepositoryException
-    {
-        return "cards:Subject".equals(getNodeType(node)) || "cards:SubjectType".equals(getNodeType(node));
-    }
-
-    /**
      * Retrieves the primary node type of a node, as a String.
      *
      * @param node the node whose type to retrieve
@@ -145,16 +132,5 @@ public class SubjectParentEditor extends DefaultEditor
     private String getNodeType(NodeBuilder node)
     {
         return node.getProperty("jcr:primaryType").getValue(Type.STRING);
-    }
-
-    /**
-     * Retrieves the primary node type of a node, as a String.
-     *
-     * @param node the node whose type to retrieve
-     * @return a string
-     */
-    private String getNodeType(Node node) throws RepositoryException
-    {
-        return node.getProperty("jcr:primaryType").getString();
     }
 }

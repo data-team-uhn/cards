@@ -24,13 +24,12 @@ import org.apache.jackrabbit.oak.spi.commit.Editor;
 import org.apache.jackrabbit.oak.spi.commit.EditorProvider;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
-import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.FieldOption;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.osgi.service.component.annotations.ServiceScope;
+
+import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 
 /**
  * A {@link EditorProvider} returning {@link FormRelatedSubjectsEditor}.
@@ -40,19 +39,18 @@ import org.osgi.service.component.annotations.ServiceScope;
 @Component(service = EditorProvider.class, scope = ServiceScope.SINGLETON, immediate = true)
 public class FormRelatedSubjectsEditorProvider implements EditorProvider
 {
-    @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,
-        policyOption = ReferencePolicyOption.GREEDY)
-    private ResourceResolverFactory rrf;
+    @Reference
+    private ThreadResourceResolverProvider rrp;
 
     @Override
     public Editor getRootEditor(final NodeState before, final NodeState after, final NodeBuilder builder,
         final CommitInfo info)
         throws CommitFailedException
     {
-        if (this.rrf != null && this.rrf.getThreadResourceResolver() != null) {
-            Session session = this.rrf.getThreadResourceResolver().adaptTo(Session.class);
+        final ResourceResolver resolver = this.rrp.getThreadResourceResolver();
+        if (resolver != null) {
             // Each FormRelatedSubjectsEditor maintains a state, so a new instance must be returned each time
-            return new FormRelatedSubjectsEditor(builder, session);
+            return new FormRelatedSubjectsEditor(builder, resolver.adaptTo(Session.class));
         }
         return null;
     }

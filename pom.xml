@@ -501,7 +501,7 @@
             <exclude>**/target/**</exclude>
             <!-- Exclude frontend generated code -->
             <exclude>**/frontend/node/**</exclude>
-            <exclude>**/frontend/node_modules/**</exclude>
+            <exclude>**/node_modules/**</exclude>
             <exclude>**/frontend/dist/**</exclude>
             <exclude>**/webpack.config.js</exclude>
             <exclude>**/yarn.lock</exclude>

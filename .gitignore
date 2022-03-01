@@ -47,8 +47,8 @@ nbproject
 overlays
 
 # Node and friends
+node_modules
 **/src/main/frontend/node/
-**/src/main/frontend/node_modules/
 **/src/main/frontend/dist/
 **/aggregated-frontend/src/main/frontend/src/
 **/aggregated-frontend/src/main/frontend/webpack.config.js

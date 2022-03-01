@@ -47,6 +47,7 @@ import io.uhndata.cards.dataentry.api.FormUtils;
 import io.uhndata.cards.dataentry.api.QuestionnaireUtils;
 import io.uhndata.cards.dataentry.api.SubjectTypeUtils;
 import io.uhndata.cards.dataentry.api.SubjectUtils;
+import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 
 /**
  * Change listener looking for new or modified forms related to a Visit subject. Initially, when a new Visit Information
@@ -80,7 +81,10 @@ public class VisitChangeListener implements ResourceChangeListener
 
     /** Provides access to resources. */
     @Reference
-    private ResourceResolverFactory resolverFactory;
+    private volatile ResourceResolverFactory resolverFactory;
+
+    @Reference
+    private ThreadResourceResolverProvider rrp;
 
     @Reference
     private QuestionnaireUtils questionnaireUtils;
@@ -122,6 +126,7 @@ public class VisitChangeListener implements ResourceChangeListener
             if (!this.formUtils.isForm(form)) {
                 return;
             }
+            this.rrp.push(localResolver);
             final Node subject = this.formUtils.getSubject(form);
             final String subjectType = this.subjectTypeUtils.getLabel(this.subjectUtils.getType(subject));
             final Node questionnaire = this.formUtils.getQuestionnaire(form);
@@ -134,6 +139,7 @@ public class VisitChangeListener implements ResourceChangeListener
                 // Check if all forms for the current visit are complete.
                 handleVisitDataForm(subject, session);
             }
+            this.rrp.pop();
         } catch (final LoginException e) {
             LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
         } catch (final RepositoryException e) {

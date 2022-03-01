@@ -16,7 +16,7 @@
  */
 package io.uhndata.cards.subjects.internal;
 
-import javax.jcr.Session;
+import java.util.Stack;
 
 import org.apache.jackrabbit.oak.api.CommitFailedException;
 import org.apache.jackrabbit.oak.spi.commit.CommitInfo;
@@ -24,12 +24,7 @@ import org.apache.jackrabbit.oak.spi.commit.Editor;
 import org.apache.jackrabbit.oak.spi.commit.EditorProvider;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.FieldOption;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 /**
  * A {@link EditorProvider} returning {@link SubjectParentEditor}.
@@ -39,20 +34,12 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 @Component(immediate = true)
 public class SubjectParentEditorProvider implements EditorProvider
 {
-    @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,
-        policyOption = ReferencePolicyOption.GREEDY)
-    private ResourceResolverFactory rrf;
-
     @Override
     public Editor getRootEditor(final NodeState before, final NodeState after, final NodeBuilder builder,
         final CommitInfo info)
         throws CommitFailedException
     {
-        if (this.rrf != null && this.rrf.getThreadResourceResolver() != null) {
-            Session session = this.rrf.getThreadResourceResolver().adaptTo(Session.class);
-            // Each SubjectParentEditor maintains a state, so a new instance must be returned each time
-            return new SubjectParentEditor(builder, session);
-        }
-        return null;
+        // Each SubjectParentEditor maintains a state, so a new instance must be returned each time
+        return new SubjectParentEditor(builder, new Stack<>());
     }
 }

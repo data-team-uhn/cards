@@ -35,6 +35,8 @@ import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import io.uhndata.cards.utils.ThreadResourceResolverProvider;
+
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(
     resourceTypes = { "cards/SubjectsHomepage" },
@@ -44,6 +46,9 @@ public class ImportEndpoint extends SlingSafeMethodsServlet
 {
     @Reference
     private volatile ResourceResolverFactory resolverFactory;
+
+    @Reference
+    private ThreadResourceResolverProvider rrp;
 
     @Reference
     private volatile List<ImportConfig> configs;
@@ -74,9 +79,10 @@ public class ImportEndpoint extends SlingSafeMethodsServlet
         }
 
         // Load configuration from environment variables
-        final Runnable importJob = new ImportTask(this.resolverFactory, config.auth_url(), config.endpoint_url(),
-            config.days_to_query(), config.vault_token(), config.clinic_names(), config.provider_names(),
-            config.vault_role());
+        final Runnable importJob =
+            new ImportTask(this.resolverFactory, this.rrp, config.auth_url(), config.endpoint_url(),
+                config.days_to_query(), config.vault_token(), config.clinic_names(), config.provider_names(),
+                config.vault_role());
         final Thread thread = new Thread(importJob);
         thread.start();
         writeSuccess(response);

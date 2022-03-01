@@ -14,43 +14,57 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.uhndata.cards.subjects.internal;
+package io.uhndata.cards.utils.internal;
 
 import java.util.Stack;
 
-import org.apache.jackrabbit.oak.api.CommitFailedException;
-import org.apache.jackrabbit.oak.spi.commit.CommitInfo;
-import org.apache.jackrabbit.oak.spi.commit.Editor;
-import org.apache.jackrabbit.oak.spi.commit.EditorProvider;
-import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
-import org.apache.jackrabbit.oak.spi.state.NodeState;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.FieldOption;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
-import org.osgi.service.component.annotations.ServiceScope;
+
+import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 
 /**
- * A {@link EditorProvider} returning {@link SubjectFullIdentifierEditor}.
+ * Thread-inheritable implementation for {@link ThreadResourceResolverProvider}.
  *
  * @version $Id$
  */
-@Component(name = "SubjectFullIdentifierEditorProvider", service = EditorProvider.class,
-    scope = ServiceScope.SINGLETON, immediate = true)
-public class SubjectFullIdentifierEditorProvider implements EditorProvider
+@Component
+public class ThreadResourceResolverProviderImpl implements ThreadResourceResolverProvider
 {
     @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,
         policyOption = ReferencePolicyOption.GREEDY)
     private ResourceResolverFactory rrf;
 
+    private ThreadLocal<Stack<ResourceResolver>> resolvers = InheritableThreadLocal.withInitial(Stack::new);
+
     @Override
-    public Editor getRootEditor(final NodeState before, final NodeState after, final NodeBuilder builder,
-        final CommitInfo info)
-        throws CommitFailedException
+    public ResourceResolver getThreadResourceResolver()
     {
-        // Each SubjectFullIdentifierEditor maintains a state, so a new instance must be returned each time
-        return new SubjectFullIdentifierEditor(builder, new Stack<>());
+        Stack<ResourceResolver> currentThreadResolvers = this.resolvers.get();
+        if (!currentThreadResolvers.isEmpty()) {
+            return currentThreadResolvers.peek();
+        } else if (this.rrf != null) {
+            return this.rrf.getThreadResourceResolver();
+        }
+        return null;
+    }
+
+    @Override
+    public void push(ResourceResolver resolver)
+    {
+        this.resolvers.get().push(resolver);
+    }
+
+    @Override
+    public void pop()
+    {
+        if (!this.resolvers.get().isEmpty()) {
+            this.resolvers.get().pop();
+        }
     }
 }
