@@ -43,7 +43,7 @@ import AnswerComponentManager from "./AnswerComponentManager";
 // Sample usage:
 // (TODO)
 function FileQuestion(props) {
-  const { classes, existingAnswer, ...rest } = props;
+  const { classes, existingAnswer, pageActive, ...rest } = props;
   const { maxAnswers, minAnswers, namePattern } = { ...props.questionDefinition, ...props }
   let initialValues =
     // Check whether or not we have an initial value
@@ -347,6 +347,7 @@ function FileQuestion(props) {
         onDecidedOutputPath={setAnswerPath}
         valueType="path"
         isMultivalued={maxAnswers != 1}
+        pageActive={pageActive}
         {...rest}
         />
     </Question>);
