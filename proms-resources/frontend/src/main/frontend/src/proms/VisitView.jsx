@@ -84,6 +84,11 @@ function VisitView(props) {
       "format": "date:YYYY-MM-DD hh:mm"
     },
     {
+      "key": "status",
+      "label": "Status",
+      "format": "string"
+    },
+    {
       "key" : "status",
       "label" : "Survey completion",
       "format" : (row) => (
