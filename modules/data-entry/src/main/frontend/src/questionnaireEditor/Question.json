@@ -204,7 +204,6 @@
           "user": {
             "minAnswers": "long",
             "maxAnswers": "long",
-            "enableNotes": "boolean",
             "displayMode": {
               "input": {},
               "list": {
@@ -250,6 +249,7 @@
       "pedigree" : {
         "minAnswers": {"0":{}, "1":{}}
       }
-    }
+    },
+    "enableNotes": "boolean"
   }
 ]
