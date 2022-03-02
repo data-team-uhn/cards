@@ -223,7 +223,7 @@ public class PatientLocalStorage
         }
 
         // Return true if at least one provider matches
-        final JsonValue rawProvider = appointment.get("attending");
+        final JsonValue rawProvider = appointment.get("participants");
         if (rawProvider == null) {
             return false;
         }
@@ -373,7 +373,11 @@ public class PatientLocalStorage
 
             seenNodes.add(questionNode.getName());
             final Object newRawValue = safelyGetValue(mapping.get(questionNode.getName()), info);
-            answerNode.setProperty(PatientLocalStorage.VALUE_FIELD, toValue(newRawValue, valueFactory));
+            if (newRawValue instanceof Object[]) {
+                answerNode.setProperty(PatientLocalStorage.VALUE_FIELD, toValues((Object[]) newRawValue, valueFactory));
+            } else {
+                answerNode.setProperty(PatientLocalStorage.VALUE_FIELD, toValue(newRawValue, valueFactory));
+            }
         }
 
         for (final Map.Entry<String, JsonGetter> entry : mapping.entrySet()) {
@@ -408,6 +412,15 @@ public class PatientLocalStorage
             result = valueFactory.createValue((Calendar) rawValue);
         } else {
             result = valueFactory.createValue(String.valueOf(rawValue));
+        }
+        return result;
+    }
+
+    private Value[] toValues(final Object[] rawValue, final ValueFactory valueFactory)
+    {
+        Value[] result = new Value[rawValue.length];
+        for (int i = 0; i < rawValue.length; ++i) {
+            result[i] = toValue(rawValue[i], valueFactory);
         }
         return result;
     }
@@ -456,19 +469,27 @@ public class PatientLocalStorage
             "time@cards:DateAnswer", obj -> toCalendar(obj.getString("time"), "yyyy-MM-dd'T'HH:mm:ss"),
             "status", obj -> obj.getString("status"),
             "provider", obj -> {
-                final JsonObject nameObj = obj.getJsonObject("attending").getJsonObject("name");
-                if (nameObj == null) {
+                final JsonArray participants = obj.getJsonArray("participants");
+                if (participants == null || participants.isEmpty()) {
                     return "";
                 }
+                final List<String> providerNames = new LinkedList<>();
+                for (int i = 0; i < participants.size(); ++i) {
+                    JsonObject nameObj = participants.getJsonObject(i).getJsonObject("name");
+                    if (nameObj == null || nameObj == JsonValue.NULL) {
+                        continue;
+                    }
 
-                final List<String> fullName = new LinkedList<String>(
-                    PatientLocalStorage.mapJsonString(nameObj.getJsonArray("prefix")));
-                fullName.addAll(PatientLocalStorage.mapJsonString(nameObj.getJsonArray("given")));
-                if (nameObj.containsKey("family")) {
-                    fullName.add(nameObj.getString("family"));
+                    final List<String> fullName = new LinkedList<>(
+                        PatientLocalStorage.mapJsonString(nameObj.getJsonArray("prefix")));
+                    fullName.addAll(PatientLocalStorage.mapJsonString(nameObj.getJsonArray("given")));
+                    if (nameObj.containsKey("family")) {
+                        fullName.add(nameObj.getString("family"));
+                    }
+                    fullName.addAll(PatientLocalStorage.mapJsonString(nameObj.getJsonArray("suffix")));
+                    providerNames.add(String.join(" ", fullName));
                 }
-                fullName.addAll(PatientLocalStorage.mapJsonString(nameObj.getJsonArray("suffix")));
-                return String.join(" ", fullName);
+                return providerNames.toArray();
             },
             // We need to map the display name of the clinic given to a survey ID
             // The mappings are stored at /Proms/ClinicMapping/<location hashcCode>
