@@ -123,14 +123,16 @@ Answer.propTypes = {
   answerNodeType: PropTypes.string,
   valueType: PropTypes.string,
   isMultivalued: PropTypes.bool,
-  noteComponent: PropTypes.elementType
+  noteComponent: PropTypes.elementType,
+  pageActive: PropTypes.bool
 };
 
 Answer.defaultProps = {
   answerNodeType: "cards:TextAnswer",
   valueType: 'String',
   isMultivalued: false,
-  noteComponent: Note
+  noteComponent: Note,
+  pageActive: true
 };
 
 export default Answer;
