@@ -53,7 +53,7 @@ public final class SubmissionEventListener implements EventListener
         this.linkingSubjectType = listenerParams.get("linkingSubjectType");
     }
 
-    public long countVisitForms(String visitUUID, String excludeFormUUID)
+    private long countVisitForms(String visitUUID, String excludeFormUUID)
     {
         long count = 0;
         Iterator<Resource> results;
