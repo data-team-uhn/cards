@@ -395,6 +395,7 @@ function NumberQuestion(props) {
           existingAnswer={existingAnswer}
           answerNodeType={answerNodeType}
           valueType={valueType}
+          pageActive={pageActive}
           {...rest}
           />
         </>
@@ -418,6 +419,7 @@ function NumberQuestion(props) {
             existingAnswer={existingAnswer}
             answerNodeType={answerNodeType}
             valueType={valueType}
+            pageActive={pageActive}
             {...rest}
             />
           </>)

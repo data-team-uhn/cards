@@ -162,6 +162,7 @@ function PedigreeQuestion(props) {
         existingAnswer={existingAnswer}
         answerNodeType="cards:PedigreeAnswer"
         valueType="String"
+        pageActive={pageActive}
         {...rest}
       />
     </Question>);

@@ -158,6 +158,7 @@ function TimeQuestion(props) {
         existingAnswer={existingAnswer}
         answerNodeType="cards:TimeAnswer"
         valueType="Time"
+        pageActive={pageActive}
         {...rest}
         />
     </Question>);

@@ -173,6 +173,7 @@ function DateQuestionFull(props) {
         existingAnswer={existingAnswer}
         answerNodeType="cards:DateAnswer"
         valueType="Date"
+        pageActive={pageActive}
         {...rest}
         />
     </Question>);

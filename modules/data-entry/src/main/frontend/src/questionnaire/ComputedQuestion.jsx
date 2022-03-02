@@ -299,6 +299,7 @@ let ComputedQuestion = (props) => {
         existingAnswer={existingAnswer}
         answerNodeType={answerNodeType}
         valueType={answerType}
+        pageActive={pageActive}
         {...rest}
         />
     </Question>

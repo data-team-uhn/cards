@@ -28,7 +28,7 @@ import UnfoldLess from "@material-ui/icons/UnfoldLess";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
 function Note (props) {
-  const { answerPath, children, existingAnswer, classes, onAddSuggestion, onChangeNote, ...rest } = {...props};
+  const { answerPath, children, existingAnswer, classes, onAddSuggestion, onChangeNote, pageActive, ...rest } = {...props};
   let [ note, setNote ] = useState((existingAnswer?.[1]?.note));
   let [ visible, setVisible ] = useState(Boolean(note));
   let inputRef = useRef();
@@ -43,6 +43,11 @@ function Note (props) {
   }
 
   const noteIsEmpty = note == null || note == "";
+
+  // Render nothing but keep state if this page is inactive
+  if (!pageActive) {
+    return <></>;
+  }
 
   return (<React.Fragment>
     <div className = {classes.notesContainer}>
