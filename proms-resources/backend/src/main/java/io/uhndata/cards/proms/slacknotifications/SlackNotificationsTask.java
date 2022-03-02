@@ -121,7 +121,6 @@ public class SlackNotificationsTask implements Runnable
                 .add("text", msg)
                 .build();
             String slackResp = getPostResponse(slackUrl, slackApiReq.toString(), "");
-            LOGGER.warn("Performance update Slack response: {}", slackResp);
         } catch (IOException e) {
             LOGGER.warn("Failed to send performance update to Slack");
         }
@@ -207,7 +206,6 @@ public class SlackNotificationsTask implements Runnable
             if (slackNotificationString.length() == 0) {
                 slackNotificationString = "*ERROR*: Could not gather any performance statistics";
             }
-            LOGGER.warn("Sending Slack Notification: {}", slackNotificationString);
             postToSlack(SLACK_PERFORMANCE_URL, slackNotificationString);
 
         } catch (LoginException e) {
