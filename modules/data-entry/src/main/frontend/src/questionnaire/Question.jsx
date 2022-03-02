@@ -73,7 +73,7 @@ function Question (props) {
             :
             children
           }
-          { !isEdit && existingAnswer?.[1]?.note && pageActive &&
+          { pageActive && !isEdit && existingAnswer?.[1]?.note &&
             <div className={classes.notesContainer}>
               <Typography variant="subtitle1">Notes</Typography>
               {existingAnswer[1].note}
