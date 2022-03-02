@@ -20,10 +20,8 @@ package io.uhndata.cards;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import javax.jcr.Node;
@@ -75,7 +73,7 @@ public class FilterServlet extends SlingSafeMethodsServlet
 
     private static final String CONFIGURATION_NODE = "/apps/cards/config/CopyAnswers";
 
-    private final ThreadLocal<List<Node>> answersToCopy = ThreadLocal.withInitial(ArrayList::new);
+    private final ThreadLocal<Node> answersToCopy = ThreadLocal.withInitial(() -> null);
 
     @Override
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
@@ -87,9 +85,11 @@ public class FilterServlet extends SlingSafeMethodsServlet
         // get configs for additional answers
         final Resource allConfigurations = request.getResourceResolver().getResource(CONFIGURATION_NODE);
         if (allConfigurations != null) {
-            final Iterator<Resource> configurations = allConfigurations.getChildren().iterator();
-            while (configurations.hasNext()) {
-                this.answersToCopy.get().add(configurations.next().adaptTo(Node.class));
+            final String questionnaireName =
+                    request.getResourceResolver().getResource(questionnaire).getName();
+            final Resource configuration = allConfigurations.getChild(questionnaireName);
+            if (configuration != null) {
+                this.answersToCopy.set(configuration.adaptTo(Node.class));
             }
         }
 
@@ -275,18 +275,17 @@ public class FilterServlet extends SlingSafeMethodsServlet
             return;
         }
         try {
-            for (Node configNode : this.answersToCopy.get()) {
-                final PropertyIterator properties = configNode.getProperties();
-                while (properties.hasNext()) {
-                    final Property property = properties.nextProperty();
-                    if (property.getType() != PropertyType.REFERENCE) {
-                        continue;
-                    }
-                    final String path = property.getNode().getPath();
-                    if (!path.startsWith(questionnairePath)) {
-                        JsonObject question = resolver.resolve(path).adaptTo(JsonObject.class);
-                        builder.add(question.getString("@name"), question);
-                    }
+            final Node configNode = this.answersToCopy.get();
+            final PropertyIterator properties = configNode.getProperties();
+            while (properties.hasNext()) {
+                final Property property = properties.nextProperty();
+                if (property.getType() != PropertyType.REFERENCE) {
+                    continue;
+                }
+                final String path = property.getNode().getPath();
+                if (!path.startsWith(questionnairePath)) {
+                    JsonObject question = resolver.resolve(path).adaptTo(JsonObject.class);
+                    builder.add(question.getString("@name"), question);
                 }
             }
         } catch (RepositoryException e) {
