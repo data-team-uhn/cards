@@ -74,6 +74,14 @@ public final class PerformanceUtils
         return perfStat;
     }
 
+    /**
+     * Updates the value of a performance counter by incrementing it by a set amount.
+     *
+     * @param resolverFactory a ResourceResolverFactory that can be used for querying
+     *     the JCR as the SlackNotifications service user
+     * @param statName the name of the performance statistic to increment
+     * @param incrementValue the value to increment the performance statistic by
+     */
     public static void updatePerformanceCounter(final ResourceResolverFactory resolverFactory,
         final String statName, final long incrementValue)
     {
@@ -88,6 +96,20 @@ public final class PerformanceUtils
         }
     }
 
+    /**
+     * Gets a Map of the "today" and "total" values for a performance statistic and
+     * sets the previous read value of the performance statistic to the current read
+     * of the performance statistic's total value. This function should be used for
+     * the periodic generation of performance notifications as it ensures that the
+     * summation of the "today" values will always equal the "total" value for a
+     * given performance statistic even in cases such as when a Form is submitted
+     * at the exact same moment as the performance notification is generated. If
+     * the performance statistic cannot be found, null is returned.
+     *
+     * @param resolver a ResourceResolver for querying the /PerformanceStatistics/ JCR nodes
+     * @param statName the name of the performance statistic to obtain its "today" and "total" values
+     * @return the map of 'today' and 'total' values for the performance statistic or null
+     */
     public static Map<String, Long> getAndSetPreviousPerformanceStatistic(ResourceResolver resolver, String statName)
     {
         Map<String, Long> statsMap = getPerformanceStatistic(resolver, statName);
