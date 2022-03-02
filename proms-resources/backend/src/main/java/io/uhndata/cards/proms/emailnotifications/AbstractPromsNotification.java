@@ -48,7 +48,7 @@ abstract class AbstractPromsNotification
     private static final String CLINIC_SLING_PATH = "/Proms.html";
 
     /** Provides access to resources. */
-    private final ResourceResolverFactory resolverFactory;
+    protected final ResourceResolverFactory resolverFactory;
 
     private final TokenManager tokenManager;
 
@@ -62,13 +62,15 @@ abstract class AbstractPromsNotification
         this.mailService = mailService;
     }
 
-    public void sendNotification(final int daysInTheFuture, final String emailTemplateName,
+    @SuppressWarnings("checkstyle:ExecutableStatementCount")
+    public long sendNotification(final int daysInTheFuture, final String emailTemplateName,
         final String emailSubject)
     {
         final Calendar dateToQuery = Calendar.getInstance();
         dateToQuery.add(Calendar.DATE, daysInTheFuture);
         final Map<String, Object> parameters =
             Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, "EmailNotifications");
+        long emailsSent = 0;
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(parameters)) {
             Iterator<Resource> appointmentResults = AppointmentUtils.getAppointmentsForDay(resolver, dateToQuery);
             while (appointmentResults.hasNext()) {
@@ -116,6 +118,7 @@ abstract class AbstractPromsNotification
                 try {
                     EmailUtils.sendNotificationEmail(this.mailService, patientEmailAddress,
                         patientFullName, emailSubject, emailTextBody);
+                    emailsSent += 1;
                 } catch (MessagingException e) {
                     LOGGER.warn("Failed to send Initial Notification Email");
                 }
@@ -123,6 +126,7 @@ abstract class AbstractPromsNotification
         } catch (LoginException e) {
             LOGGER.warn("Failed to results.next().getPath()");
         }
+        return emailsSent;
     }
 
     private void atMidnight(final Calendar c)

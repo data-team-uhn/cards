@@ -108,6 +108,9 @@ public class PatientLocalStorage
     /** Version Manager for checking in or out nodes. */
     private VersionManager versionManager;
 
+    /** Count of appointments created. */
+    private long appointmentsCreated;
+
     /**
      * @param resolver A reference to a ResourceResolver
      * @param startDate The start of the range of dates for appointments to find from within the patient
@@ -121,6 +124,12 @@ public class PatientLocalStorage
         this.startDate = startDate;
         this.endDate = endDate;
         this.providerIDs = Arrays.asList(providerIDs);
+        this.appointmentsCreated = 0;
+    }
+
+    public long getCountAppointmentsCreated()
+    {
+        return this.appointmentsCreated;
     }
 
     /**
@@ -140,6 +149,7 @@ public class PatientLocalStorage
 
             // Update information about the visit ("appointment" is used interchangeably here)
             final JsonArray appointmentDetails = this.patientDetails.getJsonArray("appointments");
+            long appointmentsPendingCreation = 0;
             for (int i = 0; i < appointmentDetails.size(); i++) {
                 final JsonObject appointment = appointmentDetails.getJsonObject(i);
                 if (isAppointmentInTimeframe(appointment) && isAppointmentByAllowedProvider(appointment)) {
@@ -150,10 +160,12 @@ public class PatientLocalStorage
                         updatePatientInformationForm(patientInfo, this.patientDetails);
                     }
                     storeAppointment(appointment, patient);
+                    appointmentsPendingCreation += 1;
                 }
             }
 
             session.save();
+            this.appointmentsCreated += appointmentsPendingCreation;
 
             this.nodesToCheckin.forEach(node -> {
                 try {

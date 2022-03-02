@@ -127,6 +127,11 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
+      <groupId>io.uhndata.cards</groupId>
+      <artifactId>cards-performance-notifications</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.servlets.annotations</artifactId>
     </dependency>

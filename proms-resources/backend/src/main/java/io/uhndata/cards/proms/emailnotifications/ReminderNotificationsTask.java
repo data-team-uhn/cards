@@ -23,6 +23,7 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.commons.messaging.mail.MailService;
 
 import io.uhndata.cards.auth.token.TokenManager;
+import io.uhndata.cards.performancenotifications.PerformanceUtils;
 
 public class ReminderNotificationsTask extends AbstractPromsNotification implements Runnable
 {
@@ -38,6 +39,7 @@ public class ReminderNotificationsTask extends AbstractPromsNotification impleme
     @Override
     public void run()
     {
-        sendNotification(1, "24h.txt", PATIENT_NOTIFICATION_SUBJECT);
+        long emailsSent = sendNotification(1, "24h.txt", PATIENT_NOTIFICATION_SUBJECT);
+        PerformanceUtils.updatePerformanceCounter(this.resolverFactory, "ReminderEmailsSent", emailsSent);
     }
 }
