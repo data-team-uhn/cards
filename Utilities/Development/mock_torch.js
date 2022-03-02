@@ -82,7 +82,7 @@ const graphQlResponse = {
         appointments: [
           {
             location: ['6012-HC-Congenital Cardiac'],
-            status: 'upcoming',
+            status: 'planned',
             fhirID: 'AppointmentFhirID',
             attending: {
               name: {
