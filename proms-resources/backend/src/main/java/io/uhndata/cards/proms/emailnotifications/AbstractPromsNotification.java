@@ -100,17 +100,20 @@ abstract class AbstractPromsNotification
                 String patientFullName = AppointmentUtils.getPatientFullName(resolver, patientSubject);
                 Calendar tokenExpiryDate = AppointmentUtils.parseDate(appointmentDate.getValueMap().get("value", ""));
                 atMidnight(tokenExpiryDate);
-                String surveysLink = "https://" + CARDS_HOST_AND_PORT + CLINIC_SLING_PATH + "?auth_token="
-                    + this.tokenManager.create(
-                        "patient",
-                        tokenExpiryDate,
-                        Collections.singletonMap(
-                            "cards:sessionSubject",
-                            visitSubject.getPath()))
-                        .getToken();
+                final String token = this.tokenManager.create(
+                    "patient",
+                    tokenExpiryDate,
+                    Collections.singletonMap(
+                        "cards:sessionSubject",
+                        visitSubject.getPath()))
+                    .getToken();
+                String surveysLink = "https://" + CARDS_HOST_AND_PORT + CLINIC_SLING_PATH + "?auth_token=" + token;
+                String unsubscribeLink =
+                    "https://" + CARDS_HOST_AND_PORT + "/Proms.unsubscribe.html?auth_token=" + token;
                 // Send the Notification Email
                 Map<String, String> valuesMap = new HashMap<>();
                 valuesMap.put("surveysLink", surveysLink);
+                valuesMap.put("unsubscribeLink", unsubscribeLink);
                 String emailTextBody = EmailUtils.renderEmailTemplate(emailTextTemplate, valuesMap);
                 try {
                     EmailUtils.sendNotificationEmail(this.mailService, patientEmailAddress,

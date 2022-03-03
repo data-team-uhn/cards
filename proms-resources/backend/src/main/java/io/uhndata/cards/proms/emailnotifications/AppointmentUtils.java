@@ -135,21 +135,25 @@ public final class AppointmentUtils
      */
     public static String getPatientConsentedEmail(ResourceResolver resolver, Resource patientSubject)
     {
+        long patientEmailUnsubscribed = getQuestionAnswerForSubject(
+            resolver,
+            patientSubject,
+            "/Questionnaires/Patient information/email_unsubscribed",
+            "cards:BooleanAnswer",
+            0);
         long patientEmailOk = getQuestionAnswerForSubject(
             resolver,
             patientSubject,
             "/Questionnaires/Patient information/email_ok",
             "cards:BooleanAnswer",
-            0
-        );
+            0);
         String patientEmailAddress = getQuestionAnswerForSubject(
             resolver,
             patientSubject,
             "/Questionnaires/Patient information/email",
             TEXT_ANSWER,
-            ""
-        );
-        if (patientEmailOk == 1) {
+            "");
+        if (patientEmailUnsubscribed != 1 && patientEmailOk == 1) {
             if (EmailValidator.getInstance().isValid(patientEmailAddress)) {
                 return patientEmailAddress;
             }
