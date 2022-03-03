@@ -18,29 +18,6 @@
   under the License.
 */-->
 <sly data-sly-resource="${@selectors='header'}"/>
-    <script>
-      // Redirect to /login if the user is not logged in
-      // Since the default window.Sling.getSessionInfo() throws an async warning, we fetch it ourselves
-      var url = window.Sling.baseurl + "/system/sling/info.sessionInfo.json";
-      fetch(url)
-      .then(function(response) {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error();
-        }
-      })
-      .then(function(json) {
-        if (json.userID === 'anonymous') {
-          throw new Error();
-        }
-      })
-      .catch(function() {
-        // Provide the `resource` to redirect to after successful login
-        var relativeLocation = window.location.toString().substring(window.location.origin.length);
-        window.location = window.Sling.baseurl + "/login.html" + ((relativeLocation.length > 1) ? ("?resource=" + encodeURIComponent(relativeLocation)) : "");
-      });
-    </script>
     <div id="proms-container" data-sly-use.sessionAttributes="sessionAttributes.js" data-sly-attribute.data-has-session-subject="${sessionAttributes.hasSessionSubject}" style="min-height: calc(100vh - 16px);display: flex;flex-direction: column;justify-content: space-between;"></div>
     <sly data-sly-use.assets="/libs/cards/resources/assets">
       <script src="/libs/cards/resources/${assets['proms-homepage.index.js']}"></script>

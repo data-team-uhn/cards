@@ -41,7 +41,7 @@
                 "-/favicon.ico",
                 "-/libs",
                 "-/apps",
-                "-/system"
+                "-/system/sling/info"
             ]
         }
     }
