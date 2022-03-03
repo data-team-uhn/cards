@@ -419,6 +419,8 @@ public final class AppointmentUtils
         final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         final Resource visitTimeResult = resolver.getResource("/Questionnaires/Visit information/time");
         final String visitTimeUUID = visitTimeResult.getValueMap().get("jcr:uuid", "");
+        final String statusUUID =
+            resolver.getResource("/Questionnaires/Visit information/status").getValueMap().get("jcr:uuid", "");
         final Calendar lowerBoundDate = (Calendar) dateToQuery.clone();
         lowerBoundDate.set(Calendar.HOUR_OF_DAY, 0);
         lowerBoundDate.set(Calendar.MINUTE, 0);
@@ -431,12 +433,15 @@ public final class AppointmentUtils
             formatter.format(upperBoundDate.getTime()));
 
         final Iterator<Resource> results = resolver.findResources(
-            "SELECT d.* FROM [cards:DateAnswer] AS d INNER JOIN [cards:Form] AS f ON"
-            + " isdescendantnode(d, f) WHERE d.'question'='" + visitTimeUUID + "'"
-            + " AND d.'value' >= cast('" + formatter.format(lowerBoundDate.getTime()) + "' AS date)"
-            + " AND d.'value' < cast('" + formatter.format(upperBoundDate.getTime()) + "' AS date)",
-            "JCR-SQL2"
-        );
+            "SELECT d.* FROM [cards:DateAnswer] AS d "
+                + "  INNER JOIN [cards:Form] AS f ON isdescendantnode(d, f) "
+                + "  INNER JOIN [cards:TextAnswer] AS s ON isdescendantnode(s, f) "
+                + "WHERE d.'question'='" + visitTimeUUID + "' "
+                + "  AND d.'value' >= cast('" + formatter.format(lowerBoundDate.getTime()) + "' AS date)"
+                + "  AND d.'value' < cast('" + formatter.format(upperBoundDate.getTime()) + "' AS date)"
+                + "  AND s.'question' = '" + statusUUID + "' "
+                + "  AND s.'value' = 'planned'",
+            "JCR-SQL2");
         return results;
     }
 }
