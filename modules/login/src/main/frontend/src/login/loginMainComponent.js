@@ -53,7 +53,7 @@ class MainLoginContainer extends React.Component {
       <Paper className={`${classes.paper}  ${selfContained ? classes.selfContained : ''}`} elevation={0}>
         <Grid container direction="column" spacing={3} alignItems="center" alignContent="center">
           <Grid item>
-            <img src="/libs/cards/resources/logo_light_bg.png" alt="this.state.title" className={classes.logo}/>
+            <img src="/libs/cards/resources/logo_light_bg.png" alt="" className={classes.logo}/>
           </Grid>
           <Grid item>
           { this.state.signInShown ? <SignIn handleLogin={this.props.handleLogin} redirectOnLogin={this.props.redirectOnLogin}/> : <SignUpForm loginOnSuccess={true} handleLogin={this.props.handleLogin} /> }

@@ -79,7 +79,7 @@ function Unsubscribe (props) {
           alignContent="center"
         >
           <Grid item>
-            <img src="/libs/cards/resources/logo_light_bg.png" alt="this.state.title" className={classes.logo}/>
+            <img src="/libs/cards/resources/logo_light_bg.png" alt="" className={classes.logo}/>
           </Grid>
           <Grid item>
             { error && <Alert severity="error">
