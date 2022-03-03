@@ -59,7 +59,7 @@ const useStyles = color => makeStyles(theme => ({
 
 
 function PromsViewInternal (props) {
-  const { color, title, avatar, query, columns, questionnaireId, filters, className } = props;
+  const { color, title, avatar, query, columns, questionnairePath, filters, className } = props;
 
   const [ filtersJson, setFiltersJson ] = useState(filters);
 
@@ -116,7 +116,7 @@ function PromsViewInternal (props) {
         title={<Typography variant="overline" className={classes.promsViewTitle}>{title}</Typography>}
       /> }
       <Tabs value={activeTab} onChange={(event, value) => setActiveTab(value)}>
-        { tabs.map((value, index) => <Tab label={value}  key={"form-" + questionnaireId + index} />) }
+        { tabs.map((value, index) => <Tab label={value}  key={"form-" + questionnairePath + index} />) }
       </Tabs>
       <Divider />
       <CardContent>
@@ -124,7 +124,7 @@ function PromsViewInternal (props) {
           columns={columns}
           customUrl={`${query}${sortFilter}`}
           defaultLimit={10}
-          questionnaire={questionnaireId}
+          questionnaire={questionnairePath}
           entryType={"Form"}
           disableTopPagination={true}
           filters

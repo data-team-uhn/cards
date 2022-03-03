@@ -57,9 +57,8 @@ function PromsView(props) {
     return <CircularProgress/>;
   }
 
-  let generateFilters = () => {
-    let result = [];
-    result.surveys = {
+  let filters = {
+    surveys : {
       comparator: "=",
       name: "surveys",
       title: visitInfo?.surveys?.["text"],
@@ -67,8 +66,8 @@ function PromsView(props) {
       uuid: visitInfo?.surveys?.["jcr:uuid"],
       value: surveysId,
       hidden: true
-    };
-    result.submitted = {
+    },
+    submitted : {
       comparator: "=",
       name: "surveys_submitted",
       title: visitInfo?.surveys_submitted?.["text"],
@@ -76,8 +75,8 @@ function PromsView(props) {
       uuid: visitInfo?.surveys_submitted?.["jcr:uuid"],
       value: 1,
       hidden: true
-    };
-    result.date = {
+    },
+    date : {
       comparator: "=",
       name: "time",
       title: visitInfo?.time?.["text"],
@@ -86,9 +85,8 @@ function PromsView(props) {
       dateFormat: "yyyy-MM-dd",
       value: '__DATE_FILTER_PLACEHOLDER__',
       hidden: true
-    };
-    return result;
-  }
+    }
+  };
 
   return (
     <PromsViewInternal
@@ -96,9 +94,9 @@ function PromsView(props) {
       avatar={<Typography variant="caption">{acronym?.substring(0,4)}</Typography>}
       title={title}
       columns={columns}
-      questionnaireId={questionnairePath}
+      questionnairePath={questionnairePath}
       query={`/Forms.paginate?fieldname=questionnaire&fieldvalue=${encodeURIComponent(questionnaireId)}&orderBy=${visitInfo?.time?.["jcr:uuid"]}`}
-      filters={generateFilters()}
+      filters={filters}
     />
   );
 }
