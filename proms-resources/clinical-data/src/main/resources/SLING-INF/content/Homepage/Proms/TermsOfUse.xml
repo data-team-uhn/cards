@@ -21,7 +21,7 @@
     <name>TermsOfUse</name>
     <property>
         <name>title</name>
-        <value>ePRO Terms of Use</value>
+        <value>ePRO Terms of Use and Privacy Policy</value>
         <type>String</type>
     </property>
     <property>
