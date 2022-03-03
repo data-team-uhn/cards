@@ -73,7 +73,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ResponsiveDialog = forwardRef((props, ref) => {
-  const { title, width, children, withCloseButton, onClose, ...rest } = props;
+  const { title, width, children, withCloseButton, className, onClose, ...rest } = props;
 
   const classes = useStyles();
 
@@ -86,10 +86,15 @@ const ResponsiveDialog = forwardRef((props, ref) => {
     </IconButton>
     : null;
 
+  let classNames = [];
+  if (className) classNames.push(className);
+  if (withCloseButton) classNames.push(classes.withCloseButton);
+  classNames = classNames.length ? classNames.join(' ') : undefined;
+
   return (
     <Dialog
       ref={ref}
-      className={withCloseButton ? classes.withCloseButton : undefined}
+      className={classNames}
       maxWidth={width}
       fullWidth
       fullScreen={fullScreen}
