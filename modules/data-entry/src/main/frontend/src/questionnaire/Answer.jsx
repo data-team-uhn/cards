@@ -35,7 +35,7 @@ export const IS_DEFAULT_ANSWER_POS = 4;
 // Holds answers and automatically generates hidden inputs
 // for form submission
 function Answer (props) {
-  let { answers, answerMetadata, answerNodeType, existingAnswer, path, questionName, questionDefinition, valueType, isMultivalued, onChangeNote, noteComponent, noteProps, onAddedAnswerPath, onDecidedOutputPath, sectionAnswersState } = props;
+  let { answers, answerMetadata, answerNodeType, existingAnswer, pageActive, path, questionName, questionDefinition, valueType, isMultivalued, onChangeNote, noteComponent, noteProps, onAddedAnswerPath, onDecidedOutputPath, sectionAnswersState } = props;
   let { enableNotes } = { ...props, ...questionDefinition };
   let { onAddSuggestion } = { ...props, ...noteProps };
   let [ answerID ] = useState((existingAnswer && existingAnswer[0]) || uuidv4());
@@ -110,6 +110,7 @@ function Answer (props) {
           answerPath={answerPath}
           onChangeNote={onChangeNote}
           onAddSuggestion={onAddSuggestion}
+          pageActive={pageActive}
           {...noteProps}
           />
       }
@@ -122,14 +123,16 @@ Answer.propTypes = {
   answerNodeType: PropTypes.string,
   valueType: PropTypes.string,
   isMultivalued: PropTypes.bool,
-  noteComponent: PropTypes.elementType
+  noteComponent: PropTypes.elementType,
+  pageActive: PropTypes.bool
 };
 
 Answer.defaultProps = {
   answerNodeType: "cards:TextAnswer",
   valueType: 'String',
   isMultivalued: false,
-  noteComponent: Note
+  noteComponent: Note,
+  pageActive: true
 };
 
 export default Answer;

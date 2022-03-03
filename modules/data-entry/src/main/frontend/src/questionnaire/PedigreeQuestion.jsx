@@ -47,7 +47,7 @@ import PedigreeEditor from "../pedigree/pedigree";
 //      }}
 //    />
 function PedigreeQuestion(props) {
-  const { existingAnswer, classes, ...rest } = props;
+  const { existingAnswer, classes, pageActive, ...rest } = props;
   const [ expanded, setExpanded ] = useState(false);
   // default pedigreeData state variable to the pedigree saved in CARDS:
   const [ pedigreeData, setPedigree ] = useState(existingAnswer && existingAnswer.length > 1 && existingAnswer[1].value
@@ -120,37 +120,41 @@ function PedigreeQuestion(props) {
       currentAnswers={outputAnswers.length}
       {...props}
       >
-      <div className={classes.answerField}>
-      { pedigreeData.image ?
-        <Grid container direction="row" justify="flex-start" alignItems="flex-start" spacing={0}>
-          <Grid item>
-            <Tooltip title="Edit Pedigree">
-              <Link className={classes.thumbnailLink} onClick={() => {setExpanded(true);}}>
-                {image_div}
-              </Link>
-            </Tooltip>
-          </Grid>
-          <Grid item>
-            <DeleteButton
-              entryName={"pedigree"}
-              entryType={"Pedigree"}
-              shouldGoBack={false}
-              onComplete={() => {setPedigree({});}}
-            />
-          </Grid>
-        </Grid>
-        :
-        <Button variant="outlined" onClick={() => {setExpanded(true);}}>Draw</Button>
+      {
+        pageActive && <>
+          <div className={classes.answerField}>
+          { pedigreeData.image ?
+            <Grid container direction="row" justify="flex-start" alignItems="flex-start" spacing={0}>
+              <Grid item>
+                <Tooltip title="Edit Pedigree">
+                  <Link className={classes.thumbnailLink} onClick={() => {setExpanded(true);}}>
+                    {image_div}
+                  </Link>
+                </Tooltip>
+              </Grid>
+              <Grid item>
+                <DeleteButton
+                  entryName={"pedigree"}
+                  entryType={"Pedigree"}
+                  shouldGoBack={false}
+                  onComplete={() => {setPedigree({});}}
+                />
+              </Grid>
+            </Grid>
+            :
+            <Button variant="outlined" onClick={() => {setExpanded(true);}}>Draw</Button>
+          }
+          </div>
+          <Dialog fullScreen open={expanded}
+            onEntering={() => { openPedigree(); }}
+            onExit={() => { closePedigree(); }}
+            onClose={() => { setExpanded(false); }}>
+            <DialogContent>
+              <div id="pedigreeEditor"></div>
+            </DialogContent>
+          </Dialog>
+        </>
       }
-      </div>
-      <Dialog fullScreen open={expanded}
-        onEntering={() => { openPedigree(); }}
-        onExit={() => { closePedigree(); }}
-        onClose={() => { setExpanded(false); }}>
-        <DialogContent>
-          <div id="pedigreeEditor"></div>
-        </DialogContent>
-      </Dialog>
       <Answer
         answers={outputAnswers}
         answerMetadata={answerMetadata}
@@ -158,6 +162,7 @@ function PedigreeQuestion(props) {
         existingAnswer={existingAnswer}
         answerNodeType="cards:PedigreeAnswer"
         valueType="String"
+        pageActive={pageActive}
         {...rest}
       />
     </Question>);

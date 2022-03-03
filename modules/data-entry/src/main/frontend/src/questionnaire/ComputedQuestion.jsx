@@ -50,7 +50,7 @@ import { MakeRequest } from "../vocabQuery/util.jsx";
 //  expression="if (@{question_b} === 0) setError('Can not divide by 0'); return @{question_a}/@{question_b}"
 //  />
 let ComputedQuestion = (props) => {
-  const { existingAnswer, classes, questionDefinition, ...rest} = props;
+  const { existingAnswer, classes, pageActive, questionDefinition, ...rest} = props;
   const { text, expression, unitOfMeasurement, dataType, displayMode, dateFormat, yesLabel, noLabel, unknownLabel } = {...props.questionDefinition, ...props};
   const [error, changeError] = useState(false);
   const [errorMessage, changeErrorMessage] = useState(false);
@@ -275,19 +275,23 @@ let ComputedQuestion = (props) => {
       currentAnswers={typeof(displayValue) !== "undefined" && displayValue !== "" ? 1 : 0}
       {...props}
       >
-      {error && <Typography color='error'>{errorMessage}</Typography>}
-      { isFormatted ? <FormattedText>
-          {displayValue + (unitOfMeasurement ? (" " + unitOfMeasurement) : '')}
-        </FormattedText>
-      :
-      <TextField
-        type={fieldType}
-        dateFormat={(fieldType === "date" || fieldType === "time" && dateFormat) || null}
-        disabled={true}
-        className={classes.textField + " " + classes.answerField}
-        value={displayValue}
-        InputProps={muiInputProps}
-      />
+      {
+        pageActive && <>
+          {error && <Typography color='error'>{errorMessage}</Typography>}
+          { isFormatted ? <FormattedText>
+              {displayValue + (unitOfMeasurement ? (" " + unitOfMeasurement) : '')}
+            </FormattedText>
+          :
+          <TextField
+            type={fieldType}
+            dateFormat={(fieldType === "date" || fieldType === "time" && dateFormat) || null}
+            disabled={true}
+            className={classes.textField + " " + classes.answerField}
+            value={displayValue}
+            InputProps={muiInputProps}
+          />
+          }
+        </>
       }
       <Answer
         answers={answer}
@@ -295,6 +299,7 @@ let ComputedQuestion = (props) => {
         existingAnswer={existingAnswer}
         answerNodeType={answerNodeType}
         valueType={answerType}
+        pageActive={pageActive}
         {...rest}
         />
     </Question>

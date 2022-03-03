@@ -127,7 +127,7 @@ const useSliderStyles = makeStyles(theme => ({
 //    errorText="Please enter an age above 18, or select the <18 option"
 //    />
 function NumberQuestion(props) {
-  const { existingAnswer, errorText, classes, ...rest} = props;
+  const { existingAnswer, errorText, classes, pageActive, ...rest} = props;
   const { dataType,displayMode, minAnswers, minValue, maxValue, isRange,
     sliderStep, sliderMarkStep, sliderOrientation, minValueLabel, maxValueLabel }
     = {sliderOrientation: "horizontal", ...props.questionDefinition, ...props};
@@ -326,7 +326,7 @@ function NumberQuestion(props) {
       disableInstructions
       {...props}
       >
-      { (minMaxError || rangeError) && errorText &&
+      { pageActive && (minMaxError || rangeError) && errorText &&
         <Typography
           component="p"
           color="error"
@@ -336,7 +336,7 @@ function NumberQuestion(props) {
           { errorText }
         </Typography>
       }
-      { minMaxMessage &&
+      { pageActive && minMaxMessage &&
         <Typography
           component="p"
           color={minMaxError ? 'error' : 'textSecondary'}
@@ -347,7 +347,7 @@ function NumberQuestion(props) {
         </Typography>
       }
       { isRange ?
-        <>
+        pageActive && <>
         <AnswerInstructions
           minAnswers={Math.min(1, minAnswers)}
           maxAnswers={0}
@@ -363,7 +363,7 @@ function NumberQuestion(props) {
           { rangeErrorMessage }
           </Typography>
         }
-        { isSlider ?
+        { pageActive && (isSlider ?
             makeSlider({
               valueLabelDisplay: (isRangeSelected ? "on" : "off"),
               value: sliderValues,
@@ -388,20 +388,21 @@ function NumberQuestion(props) {
               inputProps={textFieldProps}
               InputProps={Object.assign({shrink: "true"}, muiInputProps)}
               />
-          </div>
+          </div>)
         }
         <Answer
           answers={answers}
           existingAnswer={existingAnswer}
           answerNodeType={answerNodeType}
           valueType={valueType}
+          pageActive={pageActive}
           {...rest}
           />
         </>
         :
         <>
         { isSlider ?
-          <>
+          (pageActive && <>
           <AnswerInstructions
             minAnswers={Math.min(1, minAnswers)}
             maxAnswers={0}
@@ -418,9 +419,10 @@ function NumberQuestion(props) {
             existingAnswer={existingAnswer}
             answerNodeType={answerNodeType}
             valueType={valueType}
+            pageActive={pageActive}
             {...rest}
             />
-          </>
+          </>)
           :
           <MultipleChoice
             answerNodeType={answerNodeType}
@@ -432,6 +434,7 @@ function NumberQuestion(props) {
             muiInputProps={muiInputProps}
             error={minMaxError}
             existingAnswer={existingAnswer}
+            pageActive={pageActive}
             {...rest}
             />
         }
