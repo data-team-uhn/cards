@@ -90,7 +90,7 @@ function VisitView(props) {
          <Link
            className={classes["status" + (!row.surveys_complete ? "Incomplete" : (!row.surveys_submitted ? "Unreviewed" : "Completed"))]}
            to={`/content.html${row.subject['@path']}`}>
-           { !row.surveys_complete ? "Incomplete" : (!row.surveys_submitted ? "Pending submission" : "Completed") }
+           { row.email_unsubscribed ? "Unsubscribed" : !row.surveys_complete ? "Incomplete" : (!row.surveys_submitted ? "Pending submission" : "Completed") }
          </Link>
       )
     }
