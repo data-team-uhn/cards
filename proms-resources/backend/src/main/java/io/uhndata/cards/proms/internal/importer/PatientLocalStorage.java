@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
@@ -365,14 +366,20 @@ public class PatientLocalStorage
         for (final Resource existingAnswer : form.getChildren()) {
             final Node answerNode = existingAnswer.adaptTo(Node.class);
             final Node questionNode = answerNode.getProperty(PatientLocalStorage.QUESTION_FIELD).getNode();
+            final String questionName = questionNode.getName();
 
             // Do nothing if we don't know how to update this question
-            if (!mapping.containsKey(questionNode.getName())) {
+            final JsonGetter matchingGetter = mapping.entrySet().stream()
+                .filter(entry -> StringUtils.equals(StringUtils.substringBefore(entry.getKey(), "@"),
+                    questionName))
+                .map(Entry::getValue)
+                .findFirst().orElse(null);
+            if (matchingGetter == null) {
                 continue;
             }
 
-            seenNodes.add(questionNode.getName());
-            final Object newRawValue = safelyGetValue(mapping.get(questionNode.getName()), info);
+            seenNodes.add(questionName);
+            final Object newRawValue = safelyGetValue(matchingGetter, info);
             if (newRawValue instanceof Object[]) {
                 answerNode.setProperty(PatientLocalStorage.VALUE_FIELD, toValues((Object[]) newRawValue, valueFactory));
             } else {
@@ -381,11 +388,11 @@ public class PatientLocalStorage
         }
 
         for (final Map.Entry<String, JsonGetter> entry : mapping.entrySet()) {
-            if (seenNodes.contains(entry.getKey())) {
+            final String questionName = StringUtils.substringBefore(entry.getKey(), "@");
+            if (seenNodes.contains(questionName)) {
                 continue;
             }
 
-            final String questionName = StringUtils.substringBefore(entry.getKey(), "@");
             final String answerType =
                 StringUtils.defaultIfEmpty(StringUtils.substringAfter(entry.getKey(), "@"), "cards:TextAnswer");
 
