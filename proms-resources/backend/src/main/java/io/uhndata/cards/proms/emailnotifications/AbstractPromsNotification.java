@@ -21,7 +21,6 @@ package io.uhndata.cards.proms.emailnotifications;
 
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -107,13 +106,11 @@ abstract class AbstractPromsNotification
                         "cards:sessionSubject",
                         visitSubject.getPath()))
                     .getToken();
-                String surveysLink = "https://" + CARDS_HOST_AND_PORT + CLINIC_SLING_PATH + "?auth_token=" + token;
-                String unsubscribeLink =
-                    "https://" + CARDS_HOST_AND_PORT + "/Proms.unsubscribe.html?auth_token=" + token;
                 // Send the Notification Email
-                Map<String, String> valuesMap = new HashMap<>();
-                valuesMap.put("surveysLink", surveysLink);
-                valuesMap.put("unsubscribeLink", unsubscribeLink);
+                Map<String, String> valuesMap = Map.of(
+                    "surveysLink", "https://" + CARDS_HOST_AND_PORT + CLINIC_SLING_PATH + "?auth_token=" + token,
+                    "unsubscribeLink",
+                    "https://" + CARDS_HOST_AND_PORT + "/Proms.unsubscribe.html?auth_token=" + token);
                 String emailTextBody = EmailUtils.renderEmailTemplate(emailTextTemplate, valuesMap);
                 try {
                     EmailUtils.sendNotificationEmail(this.mailService, patientEmailAddress,
