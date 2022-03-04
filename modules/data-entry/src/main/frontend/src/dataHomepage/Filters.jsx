@@ -61,6 +61,17 @@ function Filters(props) {
   const notesComparator = "notes contain";
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
+  
+  // Parse out the filters
+  let defaultFilters = [];
+  let defaultHiddenFilters = [];
+  try {
+    defaultFilters = JSON.parse(window.atob(filtersJsonString));
+    defaultHiddenFilters = defaultFilters.filter( filter => filter.hidden)
+                                         .map(filter => filter.uuid);
+  } catch (err) {
+    // Ignore silently malformed filters sent in the URL
+  }
 
   // Focus on inputs as they are flagged for focus
   const focusRef = useRef();
@@ -88,18 +99,10 @@ function Filters(props) {
       grabFilters();
     }
 
-    if (filtersJsonString && Object.keys(questionDefinitions).length > 0) {
-      // Parse out the filters
-      let newFilters = [];
-      try {
-        newFilters = JSON.parse(window.atob(filtersJsonString));
-      } catch (err) {
-        // Ignore silently malformed filters sent in the URL
-        return;
-      }
-      if (!Array.isArray(newFilters)) return;
-      onChangeFilters && onChangeFilters(newFilters);
-      let visibleFilters = newFilters.filter( (filter) => !filter.hidden);
+    if (defaultFilters.length > 0 && Object.keys(questionDefinitions).length > 0) {
+
+      onChangeFilters && onChangeFilters(defaultFilters);
+      let visibleFilters = defaultFilters.filter( (filter) => !filter.hidden);
       if (visibleFilters.length == 0) return;
       visibleFilters.forEach( (newFilter) => {
         getOutputChoices(newFilter.name);
@@ -156,7 +159,9 @@ function Filters(props) {
       let retFields = [];
       for (let [title, object] of Object.entries(sectionJson)) {
         // We only care about children that are cards:Questions or cards:Sections
-        if (object["jcr:primaryType"] == "cards:Question") {
+        if (object["jcr:primaryType"] == "cards:Question"
+          && object.displayMode != "hidden"
+          && !defaultHiddenFilters.includes(object["jcr:uuid"])) {
           // If this is an cards:Question, copy the entire thing over to our Json value
           retFields.push(path+title);
           // Also save the human-readable name, UUID, and data type
