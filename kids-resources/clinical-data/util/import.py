@@ -35,6 +35,9 @@ class RowTypes(enum.Enum):
     LIST = 8
     CALCULATED = 9
     DATETIME = 10
+    MATRIX_START = 11
+    MATRIX_END = 12
+    BOOLEAN = 13
 
 SECTION_TYPES = [RowTypes.SECTION, RowTypes.SECTION_RECURRENT, RowTypes.SECTION_CONDITIONAL]
 CONDITION_DEFINTIONS = ["if", "displayed if:", "show the field only if:", "show only if:", "show only if",
@@ -49,6 +52,7 @@ MAX_RANGE_DEFINITIONS = ["max:", "max"]
 TITLE_RANGE_DEFINITIONS = ["range:", "range"]
 REQUIRED_DEFINITION = ["required field"]
 SECTION_PREFIX = ["section: ", "tab : ", "tab: "]
+MATRIX_PREFIX = ["matrix: "]
 CONDITIONAL_USE_PREVIOUS = "previous_list"
 question_text_to_title_map = {}
 question_title_list = []
@@ -85,12 +89,16 @@ class Headers2:
     CONDITION_QUESTION = False
     MERGED_DEFINITIONS_OPTIONS = False
 
+class Headers2Details(Headers2):
+    INCLUDE_NAME_IN_DESCRIPTION = True
+
 class Headers3:
     QUESTION = "Field/Question "
     DEFINITION = "Variable values"
     CONDITIONS = "Second order variable"
     CONDITION_QUESTION = True
     MERGED_DEFINITIONS_OPTIONS = True
+    QUESTION_DEFINED_SECTIONS = True
 
 def partition_ignore_strings(input, splitter):
     ignore_map = {
@@ -296,14 +304,26 @@ def create_conditional(operand_a, operator, operand_b, title, question):
 
 def get_row_type(row):
     row_type = RowTypes.DEFAULT
+    if hasattr(Headers, "QUESTION_DEFINED_SECTIONS") and Headers.QUESTION_DEFINED_SECTIONS:
+        if any(prefix in row[Headers.QUESTION].lower() for prefix in MATRIX_PREFIX):
+            return RowTypes.MATRIX_START
     if row[Headers.DEFINITION]:
         variable = row[Headers.DEFINITION].lower()
-        if (("mm" in variable and ("yyyy" in variable or "yr" in variable)) or "date" in variable or "timestamp" in variable):
+        if (variable.startswith("matrix start")):
+            # Prioritize over all other types as matrix definitions can contain information that looks like other question types
+            row_type = RowTypes.MATRIX_START
+            row[Headers.DEFINITION] = row[Headers.DEFINITION][12:].strip()
+        elif ("matrix end" in variable):
+            # Prioritize over all other types as matrix definitions can contain information that looks like other question types
+            row_type = RowTypes.MATRIX_END
+        elif (("mm" in variable and ("yyyy" in variable or "yr" in variable)) or "date" in variable or "timestamp" in variable):
             row_type = RowTypes.DATE
         elif (("hh" in variable and "mm" in variable)):
             # Time must be checked after date, as datetimes should be parsed as dates
             row_type = RowTypes.TIME
-        elif ("\n" in variable or "radio" in variable or "boolean" in variable or '[]' in variable or (hasattr(Headers, "OPTIONS") and Headers.OPTIONS in row and "\n" in row[Headers.OPTIONS])):
+        elif ("boolean" in variable):
+            row_type = RowTypes.BOOLEAN
+        elif ("\n" in variable or "radio" in variable or '[]' in variable or (hasattr(Headers, "OPTIONS") and Headers.OPTIONS in row and "\n" in row[Headers.OPTIONS])):
             row_type = RowTypes.LIST
         elif ("numeric" in variable or "integer" in variable or "smallint" in variable):
             row_type = RowTypes.NUMBER
@@ -346,6 +366,9 @@ def clean_title(title):
     for prefix in SECTION_PREFIX:
         if prefix in title.lower():
             result = result[len(prefix):]
+    for prefix in MATRIX_PREFIX:
+        if prefix in title.lower():
+            result = result[len(prefix):]
     return result.strip().replace('/','')
 
 def clean_name(name):
@@ -378,17 +401,53 @@ def start_questionnaire(title):
     questionnaire['jcr:reference:requiredSubjectTypes'] = ["/SubjectTypes/Patient"]
     return questionnaire
 
-def start_section(questionnaire, section, row):
-    section = end_section(questionnaire, section)
-    section['jcr:primaryType'] = 'cards:Section'
-    section['label'] = clean_title(get_section_title(row))
-    return section
+def start_section(parents, row):
+    end_section(parents)
+    parents.append({
+        'jcr:primaryType': 'cards:Section',
+        'label': clean_title(get_section_title(row)),
+    })
 
-def end_section(questionnaire, section):
+def start_matrix(parents, row):
+    end_matrix(parents)
+
+    matrix = {
+        'jcr:primaryType': 'cards:Section',
+    }
+    definition = row[Headers.OPTIONS if hasattr(Headers, "OPTIONS") else Headers.DEFINITION].lower()
+    if definition.endswith("decimal"):
+        matrix['dataType'] = 'decimal'
+    elif definition.endswith("long"):
+        matrix['dataType'] = 'long'
+    elif definition.endswith("vocabulary"):
+        matrix['dataType'] = 'vocabulary'
+    else:
+        insert_list(row, matrix)
+    if row[Headers.QUESTION]:
+        matrix['label'] = clean_title(row[Headers.QUESTION])
+    else:
+        matrix['title'] = clean_title(get_section_title(row))
+    matrix['displayMode'] = 'matrix'
+    matrix['maxAnswers'] = 1
+    parents.append(matrix)
+
+def end_section(parents):
+    end_matrix(parents)
+    complete_section(parents)
+
+def end_matrix(parents):
+    if is_matrix(parents):
+        condition = parents[-1]['condition'] if 'condition' in parents[-1] else ''
+        title = complete_section(parents)
+        if len(condition) > 0:
+            process_conditions(parents[-1], condition, title)
+
+def complete_section(parents):
     global section_title_list
 
-    if len(section) > 0:
-        title = clean_name(section['label'])
+    if is_section(parents):
+        section = parents.pop()
+        title = clean_name(section['label'] if 'label' in section else section.pop('title'))
         if title in section_title_list:
             tag = 2
             while title + str(tag) in section_title_list:
@@ -396,8 +455,17 @@ def end_section(questionnaire, section):
             title = title + str(tag)
 
         section_title_list.append(title)
-        questionnaire[title] = dict.copy(section)
-    return {}
+        parents[-1][title] = section
+        return title
+
+def get_parent_section_title(section):
+    return
+
+def is_section(parents):
+    return len(parents) > 1 and 'cards:Section' == parents[-1]['jcr:primaryType']
+
+def is_matrix(parents):
+    return is_section(parents) and 'displayMode' in parents[-1] and 'matrix' == parents[-1]['displayMode']
 
 def insert_recurrent(parent, row):
     parent['recurrent'] = True
@@ -576,6 +644,9 @@ def insert_question(parent, row, question, row_type):
         for match in matching_incomplete:
             match[question_original_name]['operandA']['value'] = [question]
 
+    if hasattr(Headers, 'INCLUDE_NAME_IN_DESCRIPTION') and row[Headers.NAME]:
+        append_description(parent[question], row[Headers.NAME])
+
     question_text_to_title_map[text.lower()] = question
     question_title_list.append(question)
     insert_question_type(row, parent[question], row_type)
@@ -591,9 +662,11 @@ def insert_question_type(row, question, row_type):
         new_type = "decimal"
     elif row_type == RowTypes.TEXT:
         new_type = "text"
-    elif row_type == RowTypes.LIST:
+    elif row_type == RowTypes.LIST or row_type == RowTypes.BOOLEAN:
         new_type = "text"
         insert_list(row, question)
+        if row_type == row_type.BOOLEAN:
+            question['compact'] = True
     elif row_type == RowTypes.CALCULATED:
         new_type = "computed"
         if hasattr(Headers, "CONDITIONS") and row[Headers.CONDITIONS]:
@@ -666,16 +739,21 @@ def csv_to_json(title):
     section_title_list = []
     section_index = 0
 
-    questionnaire = start_questionnaire(title)
-    section = {}
+    parents = []
+    parents.append(start_questionnaire(title))
 
     with open(title + '.csv', encoding="utf-8-sig") as csvfile:
         reader = csv.DictReader(csvfile, dialect='excel')
         for row in reader:
             row_type = get_row_type(row)
             if (row_starts_section(row, row_type)):
-                section = start_section(questionnaire, section, row)
-                if (row_type == RowTypes.SECTION_CONDITIONAL or (hasattr(Headers, "CONDITIONS") and row[Headers.CONDITIONS] and any(prefix in row[Headers.CONDITIONS].lower() for prefix in CONDITION_DEFINTIONS))):
+                start_section(parents, row)
+                if (row_type == RowTypes.SECTION_CONDITIONAL
+                    or (hasattr(Headers, "CONDITIONS")
+                        and row[Headers.CONDITIONS]
+                        and any(prefix in row[Headers.CONDITIONS].lower() for prefix in CONDITION_DEFINTIONS)
+                        )
+                    ):
                     condition = row[Headers.CONDITIONS]
                     lower = condition.lower()
                     for starter in CONDITION_DEFINTIONS:
@@ -685,15 +763,25 @@ def csv_to_json(title):
                                 if splitter in stripped_condition:
                                     stripped_condition = stripped_condition.replace(splitter, " = ")
                             if any (separator in stripped_condition for separator in ["=", "<", ">", "<=", ">=", "<>"]) :
-                                prepare_conditional_string(stripped_condition, section)
+                                prepare_conditional_string(stripped_condition, parents[-1])
                     if (row_type == RowTypes.SECTION_CONDITIONAL):
                         continue
                 elif (row_type == RowTypes.SECTION_RECURRENT):
-                    insert_recurrent(section, row)
+                    insert_recurrent(parents[-1], row)
                     continue
                 elif (row_type == RowTypes.SECTION):
                     continue
-            parent = section if len(section) > 0 else questionnaire
+            if (row_type == RowTypes.MATRIX_START):
+                start_matrix(parents, row)
+                if (hasattr(Headers, "CONDITIONS")
+                        and row[Headers.CONDITIONS]
+                        and any(prefix in row[Headers.CONDITIONS].lower() for prefix in CONDITION_DEFINTIONS)
+                    ):
+                    parents[-1]['condition'] = conditional = row[Headers.CONDITIONS]
+                continue
+            elif (row_type == RowTypes.MATRIX_END):
+                end_matrix(parents)
+                continue
             question_title = clean_name(row[Headers.NAME if hasattr(Headers, "NAME") else Headers.QUESTION].strip().lower())
             # Optional debugging for skipped questions
             if (len(question_title) == 0):
@@ -712,7 +800,7 @@ def csv_to_json(title):
                 while question_title + str(tag) in question_title_list:
                     tag += 1
                 question_title = question_title + str(tag)
-            insert_question(parent, row, question_title, row_type)
+            insert_question(parents[-1], row, question_title, row_type)
             if question_title and question_title.endswith("_#"):
                 question_title = question_title[:len(question_title) - 2]
 
@@ -720,17 +808,17 @@ def csv_to_json(title):
             # TODO: Add to Headers?
             # Not used for new imports, kept in for compatibility with cardiac_rehab
             if 'Units' in row and row['Units'] != '':
-                parent[question_title]['unitOfMeasurement'] = row['Units']
+                parents[-1][question_title]['unitOfMeasurement'] = row['Units']
             if 'Min Value' in row and row['Min Value']:
-                parent[question_title]['minValue'] = float(row['Min Value'])
+                parents[-1][question_title]['minValue'] = float(row['Min Value'])
             if 'Max Value' in row and row['Max Value']:
-                parent[question_title]['maxValue'] = float(row['Max Value'])
+                parents[-1][question_title]['maxValue'] = float(row['Max Value'])
             if row[Headers.QUESTION].endswith("(single)"):
-                parent[question_title]['maxAnswers'] = 1
+                parents[-1][question_title]['maxAnswers'] = 1
             if 'Compact' in row and row['Compact'] != '':
                 value = row['Compact']
                 if value[0].lower() == "y":
-                    parent[question_title]['compact'] = True
+                    parents[-1][question_title]['compact'] = True
             # End unused section
 
             # Response Required should be the last conditional property.
@@ -738,17 +826,17 @@ def csv_to_json(title):
             if Headers.CONDITIONS in row and row[Headers.CONDITIONS]:
                 conditional = row[Headers.CONDITIONS]
                 if conditional[0].lower() == "y":
-                    insert_min_answers(parent[question_title], row)
-                parent = process_conditions(parent, conditional, question_title)
+                    insert_min_answers(parents[-1][question_title], row)
+                parents[-1] = process_conditions(parents[-1], conditional, question_title)
 
-            if row_type == RowTypes.LIST:
+            if row_type == RowTypes.LIST or row_type == RowTypes.BOOLEAN:
                 previous_list_title = question_title
 
-    end_section(questionnaire, section)
+    end_section(parents)
 
     # for q in questionnaires:
     with open(title + '.json', 'w') as jsonFile:
-        json.dump(questionnaire, jsonFile, indent='\t')
+        json.dump(parents[0], jsonFile, indent='\t')
     print('python3 cards/Utilities/JSON-to-XML/json_to_xml.py "' + title +'.json" > "' + title + '.xml";\\')
 
 # Specify the titles of each csv file and which set of column titles and options should be used
@@ -756,9 +844,9 @@ titles = [
     ['STS Database - Final', Headers1],
     ['PC4 Database - Finalv2', Headers1],
     ['PAC3 Database - Final', Headers1],
-    ['cnoc_qol', Headers2],
+    ['cnoc_qol', Headers2Details],
     ['cnoc_imaging', Headers2],
-    ['cnoc_assessments_6_21_age', Headers2],
+    ['cnoc_assessments_6_21_age', Headers2Details],
     ['cnoc_assessments_0_5_age', Headers2],
     ['cnoc_history', Headers2],
     ['IMPACT Database Excel', Headers1Impact],

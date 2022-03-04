@@ -1359,37 +1359,23 @@
 				</property>
 			</node>
 		</node>
-	</node>
-	<node>
-		<name>Co-Morbidities</name>
-		<primaryNodeType>cards:Section</primaryNodeType>
-		<property>
-			<name>label</name>
-			<value>Co-Morbidities</value>
-			<type>String</type>
-		</property>
 		<node>
-			<name>historyofcva</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
+			<name>Co-Morbidities</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
-				<name>text</name>
-				<value>History of CVA</value>
+				<name>displayMode</name>
+				<value>matrix</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>Co-Morbidities</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
 			</property>
 			<node>
 				<name>Yes</name>
@@ -1419,275 +1405,327 @@
 					<type>String</type>
 				</property>
 			</node>
-		</node>
-		<node>
-			<name>historyofneurologicbraininjurynotincludingcva</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>History of Neurologic brain injury not including CVA</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
 			<node>
-				<name>Yes</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>historyofcva</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Yes</value>
+					<name>text</name>
+					<value>History of CVA</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>Yes</value>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>Yes</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>No</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 			<node>
-				<name>No</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>historyofneurologicbraininjurynotincludingcva</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>No</value>
+					<name>text</name>
+					<value>History of Neurologic brain injury not including CVA</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>No</value>
-					<type>String</type>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
 				</property>
-			</node>
-		</node>
-		<node>
-			<name>historyofrenalfailuredialysisdependent</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>History of Renal Failure</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>dialysis dependent</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>Yes</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Yes</value>
+					<name>displayMode</name>
+					<value>list</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>Yes</value>
+					<name>dataType</name>
+					<value>text</value>
 					<type>String</type>
 				</property>
+				<node>
+					<name>Yes</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>No</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 			<node>
-				<name>No</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>historyofrenalfailuredialysisdependent</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>No</value>
+					<name>text</name>
+					<value>History of Renal Failure</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>No</value>
-					<type>String</type>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
 				</property>
-			</node>
-		</node>
-		<node>
-			<name>proteinlosingenteropathy</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Protein losing enteropathy</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>Yes</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Yes</value>
+					<name>description</name>
+					<value>dialysis dependent</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>Yes</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>No</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>No</value>
+					<name>displayMode</name>
+					<value>list</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>No</value>
+					<name>dataType</name>
+					<value>text</value>
 					<type>String</type>
 				</property>
-			</node>
-		</node>
-		<node>
-			<name>historyofcancerotherthanlocalskincancer</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>History of Cancer</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>other than local skin cancer</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>Yes</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Yes</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Yes</value>
-					<type>String</type>
-				</property>
+				<node>
+					<name>Yes</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>No</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 			<node>
-				<name>No</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>proteinlosingenteropathy</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>No</value>
+					<name>text</name>
+					<value>Protein losing enteropathy</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>No</value>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>Yes</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>No</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
-		</node>
-		<node>
-			<name>musculardystrophy</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Muscular Dystrophy</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
 			<node>
-				<name>Yes</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>historyofcancerotherthanlocalskincancer</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Yes</value>
+					<name>text</name>
+					<value>History of Cancer</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>Yes</value>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>other than local skin cancer</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>Yes</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>No</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 			<node>
-				<name>No</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>musculardystrophy</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>No</value>
+					<name>text</name>
+					<value>Muscular Dystrophy</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>No</value>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>Yes</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>No</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 		</node>
 	</node>
@@ -17560,27 +17598,22 @@
 			</property>
 		</node>
 		<node>
-			<name>sensorimotordeficit-rightside</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
+			<name>Defecits</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
-				<name>text</name>
-				<value>Sensorimotor deficit - Right side</value>
+				<name>displayMode</name>
+				<value>matrix</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>Defecits</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
 			</property>
 			<node>
 				<name>None0</name>
@@ -17638,85 +17671,405 @@
 					<type>String</type>
 				</property>
 			</node>
-		</node>
-		<node>
-			<name>sensorimotordeficit-leftside</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Sensorimotor deficit - Left side</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
 			<node>
-				<name>None0</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>sensorimotordeficit-rightside</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>None 0</value>
+					<name>text</name>
+					<value>Sensorimotor deficit - Right side</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>None 0</value>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>None0</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>None 0</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>None 0</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Mildbutnoimpactonfunction0.5</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Mild but no impact on function 0.5</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Mild but no impact on function 0.5</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Moderatewithsomefunctionallimitations1</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Moderate with some functional limitations 1</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Moderate with some functional limitations 1</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Severeorprofoundwithmissingfunction2</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Severe or profound with missing function 2</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Severe or profound with missing function 2</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 			<node>
-				<name>Mildbutnoimpactonfunction0.5</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>sensorimotordeficit-leftside</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Mild but no impact on function 0.5</value>
+					<name>text</name>
+					<value>Sensorimotor deficit - Left side</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>Mild but no impact on function 0.5</value>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>None0</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>None 0</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>None 0</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Mildbutnoimpactonfunction0.5</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Mild but no impact on function 0.5</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Mild but no impact on function 0.5</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Moderatewithsomefunctionallimitations1</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Moderate with some functional limitations 1</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Moderate with some functional limitations 1</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Severeorprofoundwithmissingfunction2</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Severe or profound with missing function 2</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Severe or profound with missing function 2</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 			<node>
-				<name>Moderatewithsomefunctionallimitations1</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>languagedeficit–production</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Moderate with some functional limitations 1</value>
+					<name>text</name>
+					<value>Language Deficit – production</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>Moderate with some functional limitations 1</value>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>None0</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>None 0</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>None 0</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Mildbutnoimpactonfunction0.5</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Mild but no impact on function 0.5</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Mild but no impact on function 0.5</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Moderatewithsomefunctionallimitations1</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Moderate with some functional limitations 1</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Moderate with some functional limitations 1</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Severeorprofoundwithmissingfunction2</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Severe or profound with missing function 2</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Severe or profound with missing function 2</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 			<node>
-				<name>Severeorprofoundwithmissingfunction2</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>languagedeficit-comprehension</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Severe or profound with missing function 2</value>
+					<name>text</name>
+					<value>Language Deficit - Comprehension</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>Severe or profound with missing function 2</value>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>None0</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>None 0</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>None 0</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Mildbutnoimpactonfunction0.5</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Mild but no impact on function 0.5</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Mild but no impact on function 0.5</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Moderatewithsomefunctionallimitations1</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Moderate with some functional limitations 1</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Moderate with some functional limitations 1</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Severeorprofoundwithmissingfunction2</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Severe or profound with missing function 2</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Severe or profound with missing function 2</value>
+						<type>String</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>cognitiveorbehavioraldeficit</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Cognitive or Behavioral Deficit</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>None0</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>None 0</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>None 0</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Mildbutnoimpactonfunction0.5</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Mild but no impact on function 0.5</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Mild but no impact on function 0.5</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Moderatewithsomefunctionallimitations1</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Moderate with some functional limitations 1</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Moderate with some functional limitations 1</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Severeorprofoundwithmissingfunction2</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Severe or profound with missing function 2</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Severe or profound with missing function 2</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 		</node>
 		<node>
@@ -17865,246 +18218,6 @@
 				<property>
 					<name>value</name>
 					<value>Difficulty with drinking, chewing, or swallowing</value>
-					<type>String</type>
-				</property>
-			</node>
-		</node>
-		<node>
-			<name>languagedeficit–production</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Language Deficit – production</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>None0</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>None 0</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>None 0</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Mildbutnoimpactonfunction0.5</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Mild but no impact on function 0.5</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Mild but no impact on function 0.5</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Moderatewithsomefunctionallimitations1</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Moderate with some functional limitations 1</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Moderate with some functional limitations 1</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Severeorprofoundwithmissingfunction2</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Severe or profound with missing function 2</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Severe or profound with missing function 2</value>
-					<type>String</type>
-				</property>
-			</node>
-		</node>
-		<node>
-			<name>languagedeficit-comprehension</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Language Deficit - Comprehension</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>None0</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>None 0</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>None 0</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Mildbutnoimpactonfunction0.5</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Mild but no impact on function 0.5</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Mild but no impact on function 0.5</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Moderatewithsomefunctionallimitations1</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Moderate with some functional limitations 1</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Moderate with some functional limitations 1</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Severeorprofoundwithmissingfunction2</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Severe or profound with missing function 2</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Severe or profound with missing function 2</value>
-					<type>String</type>
-				</property>
-			</node>
-		</node>
-		<node>
-			<name>cognitiveorbehavioraldeficit</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Cognitive or Behavioral Deficit</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>None0</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>None 0</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>None 0</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Mildbutnoimpactonfunction0.5</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Mild but no impact on function 0.5</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Mild but no impact on function 0.5</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Moderatewithsomefunctionallimitations1</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Moderate with some functional limitations 1</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Moderate with some functional limitations 1</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Severeorprofoundwithmissingfunction2</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Severe or profound with missing function 2</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Severe or profound with missing function 2</value>
 					<type>String</type>
 				</property>
 			</node>
