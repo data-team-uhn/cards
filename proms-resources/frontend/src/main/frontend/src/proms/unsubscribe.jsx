@@ -45,14 +45,17 @@ const useStyles = makeStyles(theme => ({
 
 function Unsubscribe (props) {
   // Current user and associated subject
-  const [ confirmed, setConfirmed ] = useState(false);
+  const [ confirmed, setConfirmed ] = useState(null);
   const [ error, setError ] = useState();
   const [ alreadyUnsubscribed, setAlreadyUnsubscribed ] = useState(false);
   const classes = useStyles();
-  let unsubscribe = () => {
-    fetch("/Proms.unsubscribe", {method: 'POST'})
+
+  let unsubscribe = (value) => {
+    let request_data = new FormData();
+    request_data.append("unsubscribe", value);
+    fetch("/Proms.unsubscribe", { method: 'POST', body: request_data })
       .then( (response) => response.ok ? response.json() : Promise.reject(response) )
-      .then( json => json.status == "success" ? setConfirmed(true) : Promise.reject(json.error))
+      .then( json => json.status == "success" ? (setConfirmed(json.unsubscribed), setAlreadyUnsubscribed(null)) : Promise.reject(json.error))
       .catch((response) => {
         let errMsg = "Unsubscribing failed";
         setError(errMsg + (response.status ? ` with error code ${response.status}: ${response.statusText}` : response));
@@ -99,10 +102,21 @@ function Unsubscribe (props) {
               </Alert>
             }
             { alreadyUnsubscribed ?
-              <Alert icon={false} severity="info">You are already unsubscribed.</Alert>
-              : confirmed ?
+              <>
+                <Alert icon={false} severity="info">You are already unsubscribed.</Alert>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  className={classes.submit}
+                  onClick={() => unsubscribe(0)}
+                  >
+                  Resubscribe
+                </Button>
+              </>
+              : confirmed !== null ?
               <Alert icon={false} severity="info">
-                You have been unsubscribed.
+                You have been {confirmed ? "unsubscribed" : "resubscribed"}.
               </Alert>
               :
               <><Typography>This will unsubscribe you from receiving all emails via DATA-PRO. If you wish to unsubscribe from all UHN communication, please contact your care team.</Typography>
@@ -111,7 +125,7 @@ function Unsubscribe (props) {
                 variant="contained"
                 color="primary"
                 className={classes.submit}
-                onClick={unsubscribe}
+                onClick={() => unsubscribe(1)}
                 >
                 Unsubscribe
               </Button>

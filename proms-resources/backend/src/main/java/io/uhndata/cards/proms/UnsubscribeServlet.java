@@ -32,6 +32,7 @@ import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 import javax.servlet.Servlet;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.LoginException;
@@ -139,12 +140,13 @@ public class UnsubscribeServlet extends SlingAllMethodsServlet
                 unsubscribeAnswer = patientInformationForm.addNode(UUID.randomUUID().toString(), "cards:BooleanAnswer");
                 unsubscribeAnswer.setProperty("question", unsubscribeQuestion);
             }
-            unsubscribeAnswer.setProperty(FormUtils.VALUE_PROPERTY, 1L);
+            final long value = Long.valueOf(StringUtils.defaultString(request.getParameter("unsubscribe"), "1"));
+            unsubscribeAnswer.setProperty(FormUtils.VALUE_PROPERTY, value);
             session.save();
             if (checkin) {
                 versionManager.checkin(patientInformationForm.getPath());
             }
-            writeSuccess(response, true);
+            writeSuccess(response, value == 1);
         } catch (final LoginException e) {
             LOGGER.error("Service authorization not granted: {}", e.getMessage());
         } catch (final RepositoryException e) {
