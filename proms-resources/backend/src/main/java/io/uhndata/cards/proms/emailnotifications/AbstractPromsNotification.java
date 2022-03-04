@@ -87,7 +87,8 @@ abstract class AbstractPromsNotification
                 if (patientSurveysComplete) {
                     continue;
                 }
-                String patientEmailAddress = AppointmentUtils.getPatientConsentedEmail(resolver, patientSubject);
+                String patientEmailAddress =
+                    AppointmentUtils.getPatientConsentedEmail(resolver, patientSubject, visitSubject);
                 if (patientEmailAddress == null) {
                     continue;
                 }
