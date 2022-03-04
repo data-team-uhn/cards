@@ -98,11 +98,11 @@ function Filters(props) {
         return;
       }
       if (!Array.isArray(newFilters)) return;
-      newFilters.forEach( (newFilter) => {
-        getOutputChoices(newFilter.name);
-      });
       onChangeFilters && onChangeFilters(newFilters);
       let visibleFilters = newFilters.filter( (filter) => !filter.hidden);
+      visibleFilters.forEach( (newFilter) => {
+        getOutputChoices(newFilter.name);
+      });
       if (visibleFilters.length == 0) return;
       setEditingFilters(visibleFilters);
       setActiveFilters(visibleFilters);
