@@ -350,7 +350,7 @@ function Filters(props) {
         {...toCheck, comparator: (toCheck.comparator == "=" ? "is empty" : "is not empty")}));
     newFilters = addCreatedDateTimezone(newFilters);
     setActiveFilters(newFilters);
-    onChangeFilters && onChangeFilters(newFilters);
+    onChangeFilters && onChangeFilters(newFilters.concat(defaultFilters));
     setDialogOpen(false);
   }
 
