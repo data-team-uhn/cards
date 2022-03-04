@@ -100,10 +100,10 @@ function Filters(props) {
       if (!Array.isArray(newFilters)) return;
       onChangeFilters && onChangeFilters(newFilters);
       let visibleFilters = newFilters.filter( (filter) => !filter.hidden);
+      if (visibleFilters.length == 0) return;
       visibleFilters.forEach( (newFilter) => {
         getOutputChoices(newFilter.name);
       });
-      if (visibleFilters.length == 0) return;
       setEditingFilters(visibleFilters);
       setActiveFilters(visibleFilters);
     }
@@ -118,18 +118,14 @@ function Filters(props) {
       // Setting the questionnaire prop will go through the filter servlet (FilterServlet.java)
       url = new URL(FILTER_URL, window.location.origin);
       url.searchParams.set("questionnaire", questionnaire);
-      fetchWithReLogin(globalLoginDisplay, url)
-        .then((response) => response.ok ? response.json() : Promise.reject(response))
-        .then(parseFilterData)
-        .catch(setError);
     } else {
       // Otherwise, we need a structured output -- go through all Questionnaires.deep.json instead
       url = new URL(ALL_QUESTIONNAIRES_URL, window.location.origin);
-      fetchWithReLogin(globalLoginDisplay, url)
+    }
+    fetchWithReLogin(globalLoginDisplay, url)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then(parseQuestionnaireData)
       .catch(setError);
-    }
   }
 
   // Parse the response from examining every questionnaire
@@ -139,13 +135,21 @@ function Filters(props) {
     // Each recursive list must have a string for its 0th option, which
     // is taken to be its title
     let newFilterableFields = ["Questionnaire", "Subject", "CreatedDate"];
-    // newFilterableUUIDs is a mapping from a string in newFilterableFields to a jcr:uuid
+    // Mapping from a string in newFilterableFields to a jcr:uuid
     let newFilterableUUIDs = {Questionnaire: "cards:Questionnaire", Subject: "cards:Subject", CreatedDate: "cards:CreatedDate"};
-    // newFilterableTitles is a mapping from a string in newFilterableFields to a human-readable title
+    // Mapping from a string in newFilterableFields to a human-readable title
     let newFilterableTitles = {Questionnaire: "Questionnaire", Subject: "Subject", CreatedDate: "Created Date"};
-    // newQuestionDefinitions is normally the straight input from FilterServlet.java
+    // Normally the straight input from FilterServlet.java
     // Instead, we need to reconstruct this client-side
-    let newQuestionDefinitions = {Questionnaire: {dataType: "questionnaire"}, Subject: {dataType: "subject"}}
+    let newQuestionDefinitions = {Questionnaire: {dataType: "questionnaire"}, Subject: {dataType: "subject"}, CreatedDate: "createddate"};
+
+    // If questionnaire is specified, no filtering by this field
+    if (questionnaire) {
+      newFilterableFields = ["Subject", "CreatedDate"];
+      newFilterableUUIDs = {Subject: "cards:Subject", CreatedDate: "cards:CreatedDate"};
+      newFilterableTitles = {Subject: "Subject", CreatedDate: "Created Date"};
+      newQuestionDefinitions = {Subject: {dataType: "subject"}, CreatedDate: "createddate"};
+    }
 
     // We'll need a helper recursive function to copy over data from sections/questions
     let parseSectionOrQuestionnaire = (sectionJson, path="") => {
@@ -178,42 +182,11 @@ function Filters(props) {
       newFilterableFields.push([thisQuestionnaire.title || title, ...parseSectionOrQuestionnaire(thisQuestionnaire, title+"/")]);
     }
 
-    newQuestionDefinitions["Subject"] = {
-      dataType: "subject"
-    };
-    newQuestionDefinitions["CreatedDate"] = {
-      dataType: "createddate"
-    };
-
     // We also need a filter over the subject
     setFilterableFields(newFilterableFields);
     setQuestionDefinitions(newQuestionDefinitions);
     setFilterableTitles(newFilterableTitles);
     setFilterableUUIDs(newFilterableUUIDs);
-  }
-
-  // Parse the response from our FilterServlet
-  let parseFilterData = (filterJson) => {
-    // Parse through, but keep a custom field for the subject
-    let fields = ["Subject", "CreatedDate"];
-    let uuids = {Subject: "cards:Subject", CreatedDate: "cards:CreatedDate"};
-    let titles = {Subject: "Subject", CreatedDate: "Created Date"};
-    for (let [questionName, question] of Object.entries(filterJson)) {
-      // For each question, save the name, data type, and answers (if necessary)
-      fields.push(questionName);
-      uuids[questionName] = question["jcr:uuid"];
-      titles[questionName] = question["text"];
-    }
-    filterJson["Subject"] = {
-      dataType: "subject"
-    };
-    filterJson["CreatedDate"] = {
-      dataType: "createddate"
-    };
-    setFilterableFields(fields);
-    setQuestionDefinitions(filterJson);
-    setFilterableTitles(titles);
-    setFilterableUUIDs(uuids);
   }
 
   let removeCreatedDateTimezone = (filters) => {
