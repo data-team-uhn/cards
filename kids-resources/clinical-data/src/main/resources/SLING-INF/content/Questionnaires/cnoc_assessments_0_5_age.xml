@@ -78,6 +78,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -382,6 +387,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -570,6 +580,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -762,6 +777,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -950,6 +970,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -1142,6 +1167,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -1330,6 +1360,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -1522,6 +1557,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -1710,6 +1750,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -1902,6 +1947,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -2090,6 +2140,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -2282,6 +2337,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -2472,6 +2532,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -2660,6 +2725,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -2921,6 +2991,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -3049,6 +3124,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -3355,6 +3435,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -3543,6 +3628,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -3735,6 +3825,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -3923,6 +4018,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -4115,6 +4215,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -4303,6 +4408,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -4495,6 +4605,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -4683,6 +4798,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -4875,6 +4995,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -5065,6 +5190,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -5231,6 +5361,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -5423,6 +5558,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -5613,6 +5753,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -5779,6 +5924,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -5971,6 +6121,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -6161,6 +6316,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -6327,6 +6487,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -6519,6 +6684,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -6707,6 +6877,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -6906,6 +7081,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -7212,6 +7392,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -7400,6 +7585,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -7592,6 +7782,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -7780,6 +7975,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -7972,6 +8172,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -8152,6 +8357,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -8344,6 +8554,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -8532,6 +8747,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -8724,6 +8944,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -8890,6 +9115,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -9080,6 +9310,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -9279,6 +9514,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -9529,6 +9769,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -9729,6 +9974,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -9919,6 +10169,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -10038,6 +10293,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -10230,6 +10490,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -10418,6 +10683,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -10610,6 +10880,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -10729,6 +11004,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -10869,6 +11149,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -11113,6 +11398,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -11448,6 +11738,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -11577,6 +11872,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -11710,6 +12010,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -11839,6 +12144,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -12174,6 +12484,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -12305,6 +12620,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -12434,6 +12754,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -12569,6 +12894,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -12875,6 +13205,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -12999,6 +13334,11 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<property>
 					<name>dataType</name>
 					<value>text</value>
 					<type>String</type>
@@ -13096,6 +13436,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -13222,6 +13567,11 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<property>
 					<name>dataType</name>
 					<value>text</value>
 					<type>String</type>
@@ -13319,6 +13669,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -13445,6 +13800,11 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<property>
 					<name>dataType</name>
 					<value>text</value>
 					<type>String</type>
@@ -13542,6 +13902,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -13663,6 +14028,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -13855,6 +14225,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -13979,6 +14354,11 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<property>
 					<name>dataType</name>
 					<value>text</value>
 					<type>String</type>
@@ -14076,6 +14456,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -14202,6 +14587,11 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<property>
 					<name>dataType</name>
 					<value>text</value>
 					<type>String</type>
@@ -14299,6 +14689,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -14491,6 +14886,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -14615,6 +15015,11 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<property>
 					<name>dataType</name>
 					<value>text</value>
 					<type>String</type>
@@ -14712,6 +15117,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -14838,6 +15248,11 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<property>
 					<name>dataType</name>
 					<value>text</value>
 					<type>String</type>
@@ -14935,6 +15350,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -15127,6 +15547,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -15251,6 +15676,11 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<property>
 					<name>dataType</name>
 					<value>text</value>
 					<type>String</type>
@@ -15348,6 +15778,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -15474,6 +15909,11 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<property>
 					<name>dataType</name>
 					<value>text</value>
 					<type>String</type>
@@ -15571,6 +16011,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -15763,6 +16208,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -15882,6 +16332,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -16008,6 +16463,11 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<property>
 					<name>dataType</name>
 					<value>text</value>
 					<type>String</type>
@@ -16105,6 +16565,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -16297,6 +16762,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -16421,6 +16891,11 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<property>
 					<name>dataType</name>
 					<value>text</value>
 					<type>String</type>
@@ -16518,6 +16993,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -16644,6 +17124,11 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<property>
 					<name>dataType</name>
 					<value>text</value>
 					<type>String</type>
@@ -16741,6 +17226,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -16867,6 +17357,11 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<property>
 					<name>dataType</name>
 					<value>text</value>
 					<type>String</type>
@@ -16964,6 +17459,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -17085,6 +17585,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -17211,6 +17716,11 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<property>
 					<name>dataType</name>
 					<value>text</value>
 					<type>String</type>
@@ -17308,6 +17818,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -17434,6 +17949,11 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<property>
 					<name>dataType</name>
 					<value>text</value>
 					<type>String</type>
@@ -17531,6 +18051,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -17655,6 +18180,11 @@
 					<name>displayMode</name>
 					<value>list</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 				<property>
 					<name>dataType</name>
@@ -17899,6 +18429,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -18205,6 +18740,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -18393,6 +18933,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -18585,6 +19130,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -18773,6 +19323,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -18965,6 +19520,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -19153,6 +19713,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -19345,6 +19910,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -19533,6 +20103,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -19781,6 +20356,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -19977,6 +20557,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -20165,6 +20750,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -20357,6 +20947,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -20545,6 +21140,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -20737,6 +21337,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -20925,6 +21530,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -21117,6 +21727,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -21305,6 +21920,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -21497,6 +22117,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -21685,6 +22310,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -21877,6 +22507,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -22065,6 +22700,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -22257,6 +22897,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -22445,6 +23090,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -22637,6 +23287,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -22827,6 +23482,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
@@ -23015,6 +23675,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -23543,6 +24208,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -25289,6 +25959,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>dataType</name>

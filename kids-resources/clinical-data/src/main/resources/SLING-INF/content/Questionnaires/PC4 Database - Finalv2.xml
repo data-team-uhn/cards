@@ -472,14 +472,19 @@
 			</node>
 		</node>
 		<node>
-			<name>racecaucasianSection</name>
+			<name>RaceSection</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>racecaucasian</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
+				<name>Race</name>
+				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
-					<name>text</name>
-					<value>Caucasian</value>
+					<name>displayMode</name>
+					<value>matrix</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>label</name>
+					<value>Race</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -488,13 +493,8 @@
 					<type>Long</type>
 				</property>
 				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
+					<name>condition</name>
+					<value>Displayed if: Race Documented = "Yes"</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -525,490 +525,317 @@
 						<type>String</type>
 					</property>
 				</node>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
 				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<name>racecaucasian</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>racedocumented</value>
-						</values>
+						<name>text</name>
+						<value>Caucasian</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
 					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
+						<name>displayMode</name>
+						<value>list</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>Yes</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
 							<value>Yes</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>raceblackSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>raceblack</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Black/ African American</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>Yes</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>No</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>No</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>No</value>
-						<type>String</type>
-					</property>
-				</node>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>racedocumented</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
 							<value>Yes</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>raceasianSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>raceasian</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Asian</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>Yes</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>No</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>No</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<name>raceblack</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>No</value>
+						<name>text</name>
+						<value>Black/ African American</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>No</value>
-						<type>String</type>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
 					</property>
-				</node>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>racedocumented</value>
-						</values>
+						<name>displayMode</name>
+						<value>list</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
 					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
+					<node>
+						<name>Yes</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
 							<value>Yes</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>racenativeamSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>racenativeam</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Native American/Alaskan</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>Yes</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>No</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>No</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>No</value>
-						<type>String</type>
-					</property>
-				</node>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>racedocumented</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
 							<value>Yes</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>racenativepiSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>racenativepi</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Pacific Islander/ Hawaiian</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>Yes</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>No</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>No</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<name>raceasian</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>No</value>
+						<name>text</name>
+						<value>Asian</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>No</value>
-						<type>String</type>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
 					</property>
-				</node>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>racedocumented</value>
-						</values>
+						<name>displayMode</name>
+						<value>list</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
 					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
+					<node>
+						<name>Yes</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
 							<value>Yes</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>raceotherSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>raceother</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Other</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>Yes</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Yes</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>No</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>No</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<name>racenativeam</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>No</value>
+						<name>text</name>
+						<value>Native American/Alaskan</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>No</value>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>displayMode</name>
+						<value>list</value>
 						<type>String</type>
 					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>Yes</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Yes</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Yes</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>No</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+					</node>
+				</node>
+				<node>
+					<name>racenativepi</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>text</name>
+						<value>Pacific Islander/ Hawaiian</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>displayMode</name>
+						<value>list</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>Yes</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Yes</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Yes</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>No</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+					</node>
+				</node>
+				<node>
+					<name>raceother</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>text</name>
+						<value>Other</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>displayMode</name>
+						<value>list</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>Yes</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Yes</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Yes</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>No</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+					</node>
 				</node>
 			</node>
 			<node>
@@ -43450,27 +43277,17 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 			</node>
 		</node>
 		<node>
-			<name>nitricoxide</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
+			<name>AgentMatrix</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
-				<name>text</name>
-				<value>Nitric oxide</value>
+				<name>displayMode</name>
+				<value>matrix</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
 			</property>
 			<node>
 				<name>Yes</name>
@@ -43514,269 +43331,335 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 					<type>String</type>
 				</property>
 			</node>
-		</node>
-		<node>
-			<name>otbronch</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Bronchoscopy</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
 			<node>
-				<name>Yes</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>nitricoxide</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Yes</value>
+					<name>text</name>
+					<value>Nitric oxide</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>Yes</value>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>Yes</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>No</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Unknown</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Unknown</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Unknown</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 			<node>
-				<name>No</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>otbronch</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>No</value>
+					<name>text</name>
+					<value>Bronchoscopy</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>No</value>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>Yes</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>No</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Unknown</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Unknown</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Unknown</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 			<node>
-				<name>Unknown</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>monitoretco2</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Unknown</value>
+					<name>text</name>
+					<value>End tidal CO2 monitoring</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>Unknown</value>
-					<type>String</type>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
 				</property>
-			</node>
-		</node>
-		<node>
-			<name>monitoretco2</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>End tidal CO2 monitoring</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>Yes</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Yes</value>
+					<name>displayMode</name>
+					<value>list</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>Yes</value>
+					<name>dataType</name>
+					<value>text</value>
 					<type>String</type>
 				</property>
-			</node>
-			<node>
-				<name>No</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>No</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>No</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Unknown</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Unknown</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Unknown</value>
-					<type>String</type>
-				</property>
-			</node>
-		</node>
-		<node>
-			<name>monitorsvo2cont</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Mixed venous saturation (SVo2) continous monitoring</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>Yes</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Yes</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Yes</value>
-					<type>String</type>
-				</property>
+				<node>
+					<name>Yes</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>No</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Unknown</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Unknown</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Unknown</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 			<node>
-				<name>No</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>monitorsvo2cont</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>No</value>
+					<name>text</name>
+					<value>Mixed venous saturation (SVo2) continous monitoring</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>No</value>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>Yes</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>No</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Unknown</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Unknown</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Unknown</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 			<node>
-				<name>Unknown</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>monitornirs</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Unknown</value>
+					<name>text</name>
+					<value>NIRS</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>Unknown</value>
-					<type>String</type>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
 				</property>
-			</node>
-		</node>
-		<node>
-			<name>monitornirs</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>NIRS</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>Yes</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Yes</value>
+					<name>displayMode</name>
+					<value>list</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>Yes</value>
+					<name>dataType</name>
+					<value>text</value>
 					<type>String</type>
 				</property>
-			</node>
-			<node>
-				<name>No</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>No</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>No</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Unknown</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Unknown</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Unknown</value>
-					<type>String</type>
-				</property>
+				<node>
+					<name>Yes</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>No</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Unknown</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Unknown</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Unknown</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 		</node>
 		<node>
@@ -47560,14 +47443,19 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 			<type>String</type>
 		</property>
 		<node>
-			<name>complcosvisSection</name>
+			<name>CriteriaSection</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>complcosvis</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
+				<name>Criteria</name>
+				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
-					<name>text</name>
-					<value><![CDATA[VIS >15]]></value>
+					<name>displayMode</name>
+					<value>matrix</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>label</name>
+					<value>Criteria</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -47576,13 +47464,8 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 					<type>Long</type>
 				</property>
 				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
+					<name>condition</name>
+					<value>Displayed if: Low cardiac output syndrome (LCOS) = "Yes"</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -47627,468 +47510,354 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 						<type>String</type>
 					</property>
 				</node>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
 				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<name>complcosvis</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>complcos2</value>
-						</values>
+						<name>text</name>
+						<value><![CDATA[VIS >15]]></value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
 					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
+						<name>displayMode</name>
+						<value>list</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>Yes</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
 							<value>Yes</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>complcostripleSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>complcostriple</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>VIS tripled in 48h to 10+</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>Yes</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>No</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>No</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>No</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>Unknown</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Unknown</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Unknown</value>
-						<type>String</type>
-					</property>
-				</node>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>complcos2</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
 							<value>Yes</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>complcosavoSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>complcosavo</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value><![CDATA[AVO2 difference >40%]]></value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>Yes</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>No</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>Unknown</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>No</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<name>complcostriple</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>No</value>
+						<name>text</name>
+						<value>VIS tripled in 48h to 10+</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>No</value>
-						<type>String</type>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
 					</property>
-				</node>
-				<node>
-					<name>Unknown</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>Unknown</value>
+						<name>displayMode</name>
+						<value>list</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>Unknown</value>
+						<name>dataType</name>
+						<value>text</value>
 						<type>String</type>
 					</property>
-				</node>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>complcos2</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
+					<node>
+						<name>Yes</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
 							<value>Yes</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>complcosnoteSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>complcosnote</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Physician note</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>Yes</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>No</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>No</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>No</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>Unknown</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Unknown</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Unknown</value>
-						<type>String</type>
-					</property>
-				</node>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>complcos2</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
 							<value>Yes</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>complcos2timingSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>complcos2timing</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Initial LCOS timing</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>Preop</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Preop</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Preop</value>
-						<type>String</type>
-					</property>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>No</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>Unknown</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>Postop</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<name>complcosavo</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>Postop</value>
+						<name>text</name>
+						<value><![CDATA[AVO2 difference >40%]]></value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>Postop</value>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>displayMode</name>
+						<value>list</value>
 						<type>String</type>
 					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>Yes</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Yes</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Yes</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>No</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>Unknown</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>N-A</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<name>complcosnote</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>N/A</value>
+						<name>text</name>
+						<value>Physician note</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>N/A</value>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>displayMode</name>
+						<value>list</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>notApplicable</name>
-						<value>True</value>
-						<type>Boolean</type>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
 					</property>
+					<node>
+						<name>Yes</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Yes</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Yes</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>No</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>Unknown</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>Unknown</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<name>complcos2timing</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>Unknown</value>
+						<name>text</name>
+						<value>Initial LCOS timing</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>Unknown</value>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>displayMode</name>
+						<value>list</value>
 						<type>String</type>
 					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>Preop</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Preop</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Preop</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>Postop</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Postop</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Postop</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>N-A</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>N/A</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>N/A</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>notApplicable</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>Unknown</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+					</node>
 				</node>
 			</node>
 			<node>
@@ -48454,14 +48223,19 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 			</node>
 		</node>
 		<node>
-			<name>complcospostvisSection</name>
+			<name>Criteria2Section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>complcospostvis</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
+				<name>Criteria2</name>
+				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
-					<name>text</name>
-					<value><![CDATA[VIS >15]]></value>
+					<name>displayMode</name>
+					<value>matrix</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>label</name>
+					<value>Criteria</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -48470,13 +48244,8 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 					<type>Long</type>
 				</property>
 				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
+					<name>condition</name>
+					<value>Displayed if: if pre op, Postop LCOS = "Yes"</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -48521,473 +48290,269 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 						<type>String</type>
 					</property>
 				</node>
-			</node>
-			<node>
-				<name>conditionalGroup</name>
-				<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
 				<node>
-					<name>condition0</name>
-					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<name>complcospostvis</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>comparator</name>
-						<value>=</value>
+						<name>text</name>
+						<value><![CDATA[VIS >15]]></value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>displayMode</name>
+						<value>list</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
 						<type>String</type>
 					</property>
 					<node>
-						<name>operandA</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<name>Yes</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
 						<property>
-							<name>value</name>
-							<values>
-								<value>if pre op</value>
-							</values>
+							<name>label</name>
+							<value>Yes</value>
 							<type>String</type>
 						</property>
 						<property>
-							<name>isReference</name>
-							<value>True</value>
-							<type>Boolean</type>
+							<name>value</name>
+							<value>Yes</value>
+							<type>String</type>
 						</property>
 					</node>
 					<node>
-						<name>operandB</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<name>No</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
 						<property>
-							<name>value</name>
-							<values>
-								<value>Yes</value>
-							</values>
+							<name>label</name>
+							<value>No</value>
 							<type>String</type>
 						</property>
 						<property>
-							<name>isReference</name>
-							<value>False</value>
-							<type>Boolean</type>
-						</property>
-					</node>
-				</node>
-				<node>
-					<name>condition1</name>
-					<primaryNodeType>cards:Conditional</primaryNodeType>
-					<property>
-						<name>comparator</name>
-						<value>=</value>
-						<type>String</type>
-					</property>
-					<node>
-						<name>operandA</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-						<property>
 							<name>value</name>
-							<values>
-								<value>postop lcos</value>
-							</values>
+							<value>No</value>
 							<type>String</type>
-						</property>
-						<property>
-							<name>isReference</name>
-							<value>True</value>
-							<type>Boolean</type>
 						</property>
 					</node>
 					<node>
-						<name>operandB</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<name>Unknown</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
 						<property>
-							<name>value</name>
-							<values>
-								<value>Yes</value>
-							</values>
+							<name>label</name>
+							<value>Unknown</value>
 							<type>String</type>
 						</property>
 						<property>
-							<name>isReference</name>
-							<value>False</value>
-							<type>Boolean</type>
-						</property>
-					</node>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>complcosposttripleSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>complcosposttriple</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>VIS tripled in 48h to 10+</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>Yes</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>No</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>No</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>No</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>Unknown</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Unknown</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Unknown</value>
-						<type>String</type>
-					</property>
-				</node>
-			</node>
-			<node>
-				<name>conditionalGroup</name>
-				<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
-				<node>
-					<name>condition0</name>
-					<primaryNodeType>cards:Conditional</primaryNodeType>
-					<property>
-						<name>comparator</name>
-						<value>=</value>
-						<type>String</type>
-					</property>
-					<node>
-						<name>operandA</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-						<property>
 							<name>value</name>
-							<values>
-								<value>if pre op</value>
-							</values>
+							<value>Unknown</value>
 							<type>String</type>
-						</property>
-						<property>
-							<name>isReference</name>
-							<value>True</value>
-							<type>Boolean</type>
-						</property>
-					</node>
-					<node>
-						<name>operandB</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-						<property>
-							<name>value</name>
-							<values>
-								<value>Yes</value>
-							</values>
-							<type>String</type>
-						</property>
-						<property>
-							<name>isReference</name>
-							<value>False</value>
-							<type>Boolean</type>
 						</property>
 					</node>
 				</node>
 				<node>
-					<name>condition1</name>
-					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<name>complcosposttriple</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>comparator</name>
-						<value>=</value>
+						<name>text</name>
+						<value>VIS tripled in 48h to 10+</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>displayMode</name>
+						<value>list</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
 						<type>String</type>
 					</property>
 					<node>
-						<name>operandA</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<name>Yes</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
 						<property>
-							<name>value</name>
-							<values>
-								<value>postop lcos</value>
-							</values>
+							<name>label</name>
+							<value>Yes</value>
 							<type>String</type>
 						</property>
 						<property>
-							<name>isReference</name>
-							<value>True</value>
-							<type>Boolean</type>
+							<name>value</name>
+							<value>Yes</value>
+							<type>String</type>
 						</property>
 					</node>
 					<node>
-						<name>operandB</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<name>No</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
 						<property>
-							<name>value</name>
-							<values>
-								<value>Yes</value>
-							</values>
+							<name>label</name>
+							<value>No</value>
 							<type>String</type>
 						</property>
 						<property>
-							<name>isReference</name>
-							<value>False</value>
-							<type>Boolean</type>
-						</property>
-					</node>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>complcospostavoSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>complcospostavo</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value><![CDATA[AVO2 difference >40%]]></value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>Yes</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>No</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>No</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>No</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>Unknown</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Unknown</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Unknown</value>
-						<type>String</type>
-					</property>
-				</node>
-			</node>
-			<node>
-				<name>conditionalGroup</name>
-				<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
-				<node>
-					<name>condition0</name>
-					<primaryNodeType>cards:Conditional</primaryNodeType>
-					<property>
-						<name>comparator</name>
-						<value>=</value>
-						<type>String</type>
-					</property>
-					<node>
-						<name>operandA</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-						<property>
 							<name>value</name>
-							<values>
-								<value>if pre op</value>
-							</values>
+							<value>No</value>
 							<type>String</type>
-						</property>
-						<property>
-							<name>isReference</name>
-							<value>True</value>
-							<type>Boolean</type>
 						</property>
 					</node>
 					<node>
-						<name>operandB</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<name>Unknown</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
 						<property>
-							<name>value</name>
-							<values>
-								<value>Yes</value>
-							</values>
+							<name>label</name>
+							<value>Unknown</value>
 							<type>String</type>
 						</property>
 						<property>
-							<name>isReference</name>
-							<value>False</value>
-							<type>Boolean</type>
+							<name>value</name>
+							<value>Unknown</value>
+							<type>String</type>
 						</property>
 					</node>
 				</node>
 				<node>
-					<name>condition1</name>
-					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<name>complcospostavo</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>comparator</name>
-						<value>=</value>
+						<name>text</name>
+						<value><![CDATA[AVO2 difference >40%]]></value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>displayMode</name>
+						<value>list</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
 						<type>String</type>
 					</property>
 					<node>
-						<name>operandA</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<name>Yes</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
 						<property>
-							<name>value</name>
-							<values>
-								<value>postop lcos</value>
-							</values>
+							<name>label</name>
+							<value>Yes</value>
 							<type>String</type>
 						</property>
 						<property>
-							<name>isReference</name>
-							<value>True</value>
-							<type>Boolean</type>
+							<name>value</name>
+							<value>Yes</value>
+							<type>String</type>
 						</property>
 					</node>
 					<node>
-						<name>operandB</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<name>No</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
 						<property>
-							<name>value</name>
-							<values>
-								<value>Yes</value>
-							</values>
+							<name>label</name>
+							<value>No</value>
 							<type>String</type>
 						</property>
 						<property>
-							<name>isReference</name>
-							<value>False</value>
-							<type>Boolean</type>
+							<name>value</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>Unknown</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Unknown</value>
+							<type>String</type>
 						</property>
 					</node>
 				</node>
-			</node>
-		</node>
-		<node>
-			<name>complcospostnoteSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>complcospostnote</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Physician note</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
 				<node>
-					<name>Yes</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<name>complcospostnote</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>Yes</value>
+						<name>text</name>
+						<value>Physician note</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>Yes</value>
-						<type>String</type>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
 					</property>
-				</node>
-				<node>
-					<name>No</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>No</value>
+						<name>displayMode</name>
+						<value>list</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>No</value>
+						<name>dataType</name>
+						<value>text</value>
 						<type>String</type>
 					</property>
-				</node>
-				<node>
-					<name>Unknown</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Unknown</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Unknown</value>
-						<type>String</type>
-					</property>
+					<node>
+						<name>Yes</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Yes</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Yes</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>No</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>Unknown</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+					</node>
 				</node>
 			</node>
 			<node>
@@ -49213,14 +48778,14 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 			</node>
 		</node>
 		<node>
-			<name>phtnnoxSection</name>
+			<name>PHTNMatrixSection</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>phtnnox</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
+				<name>PHTNMatrix</name>
+				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
-					<name>text</name>
-					<value>Inhaled NO</value>
+					<name>displayMode</name>
+					<value>matrix</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -49229,13 +48794,8 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 					<type>Long</type>
 				</property>
 				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
+					<name>condition</name>
+					<value>Displayed if: ICU level treatment for pulmonary hypertension = "Yes"</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -49280,227 +48840,203 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 						<type>String</type>
 					</property>
 				</node>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
 				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<name>phtnnox</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>phtntherapy</value>
-						</values>
+						<name>text</name>
+						<value>Inhaled NO</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
 					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
+						<name>displayMode</name>
+						<value>list</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>Yes</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
 							<value>Yes</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>phtnprostSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>phtnprost</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Prostacyclin</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>Yes</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>No</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>No</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>No</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>Unknown</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Unknown</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Unknown</value>
-						<type>String</type>
-					</property>
-				</node>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>phtntherapy</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
 							<value>Yes</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>phtnremodSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>phtnremod</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Remodulin</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>Yes</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>No</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>Unknown</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>No</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<name>phtnprost</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>No</value>
+						<name>text</name>
+						<value>Prostacyclin</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>No</value>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>displayMode</name>
+						<value>list</value>
 						<type>String</type>
 					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>Yes</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Yes</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Yes</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>No</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>Unknown</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>Unknown</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<name>phtnremod</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>Unknown</value>
+						<name>text</name>
+						<value>Remodulin</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>Unknown</value>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>displayMode</name>
+						<value>list</value>
 						<type>String</type>
 					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>Yes</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Yes</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Yes</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>No</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>Unknown</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+					</node>
 				</node>
 			</node>
 			<node>
@@ -50824,14 +50360,14 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 			</node>
 		</node>
 		<node>
-			<name>compchylochesttubemultSection</name>
+			<name>CompChyloMatrixSection</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>compchylochesttubemult</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
+				<name>CompChyloMatrix</name>
+				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
-					<name>text</name>
-					<value>Multiple chest tubes</value>
+					<name>displayMode</name>
+					<value>matrix</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -50840,13 +50376,8 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 					<type>Long</type>
 				</property>
 				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
+					<name>condition</name>
+					<value>Displayed if: Chylothorax requiring intervention = "Yes"</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -50891,560 +50422,401 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 						<type>String</type>
 					</property>
 				</node>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
 				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<name>compchylochesttubemult</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>compchylointv</value>
-						</values>
+						<name>text</name>
+						<value>Multiple chest tubes</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
 					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
+						<name>displayMode</name>
+						<value>list</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>Yes</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
 							<value>Yes</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>compchylodietSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>compchylodiet</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Change in diet</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>Yes</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>No</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>No</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>No</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>Unknown</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Unknown</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Unknown</value>
-						<type>String</type>
-					</property>
-				</node>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>compchylointv</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
 							<value>Yes</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>compchylonpoSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>compchylonpo</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>NPO</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>Yes</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>No</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>Unknown</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>No</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<name>compchylodiet</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>No</value>
+						<name>text</name>
+						<value>Change in diet</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>No</value>
-						<type>String</type>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
 					</property>
-				</node>
-				<node>
-					<name>Unknown</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>Unknown</value>
+						<name>displayMode</name>
+						<value>list</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>Unknown</value>
+						<name>dataType</name>
+						<value>text</value>
 						<type>String</type>
 					</property>
-				</node>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>compchylointv</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
+					<node>
+						<name>Yes</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
 							<value>Yes</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>compchylooctreotideSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>compchylooctreotide</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Octreotide infusion</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>Yes</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>No</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>No</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>No</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>Unknown</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Unknown</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Unknown</value>
-						<type>String</type>
-					</property>
-				</node>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>compchylointv</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
 							<value>Yes</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>compchylosildenafilSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>compchylosildenafil</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Siildenafil for chylothorax</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>Yes</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>No</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>Unknown</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>No</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<name>compchylonpo</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>No</value>
+						<name>text</name>
+						<value>NPO</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>No</value>
-						<type>String</type>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
 					</property>
-				</node>
-				<node>
-					<name>Unknown</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>Unknown</value>
+						<name>displayMode</name>
+						<value>list</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>Unknown</value>
+						<name>dataType</name>
+						<value>text</value>
 						<type>String</type>
 					</property>
-				</node>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>compchylointv</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
+					<node>
+						<name>Yes</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
 							<value>Yes</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>compchylootherSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>compchyloother</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Other treatment for chylothorax</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>Yes</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Yes</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>No</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>Unknown</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>No</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<name>compchylooctreotide</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>No</value>
+						<name>text</name>
+						<value>Octreotide infusion</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>No</value>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>displayMode</name>
+						<value>list</value>
 						<type>String</type>
 					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>Yes</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Yes</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Yes</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>No</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>Unknown</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>Unknown</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<name>compchylosildenafil</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>Unknown</value>
+						<name>text</name>
+						<value>Siildenafil for chylothorax</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>Unknown</value>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>displayMode</name>
+						<value>list</value>
 						<type>String</type>
 					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>Yes</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Yes</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Yes</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>No</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>Unknown</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+					</node>
+				</node>
+				<node>
+					<name>compchyloother</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
+					<property>
+						<name>text</name>
+						<value>Other treatment for chylothorax</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>displayMode</name>
+						<value>list</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>Yes</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Yes</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Yes</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>No</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>Unknown</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+					</node>
 				</node>
 			</node>
 			<node>
@@ -57751,14 +57123,14 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 			</node>
 		</node>
 		<node>
-			<name>rsphtnpreSection</name>
+			<name>RSMatrix1Section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>rsphtnpre</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
+				<name>RSMatrix1</name>
+				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
-					<name>text</name>
-					<value>Preop PHTN</value>
+					<name>displayMode</name>
+					<value>matrix</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -57767,13 +57139,8 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 					<type>Long</type>
 				</property>
 				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
+					<name>condition</name>
+					<value>Displayed if: Cardiovascular Surgery Immediately Before or During CICU Encounter = "Yes"</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -57818,599 +57185,321 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 						<type>String</type>
 					</property>
 				</node>
-			</node>
-			<node>
-				<name>condition1</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
 				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<name>rsphtnpre</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>cardiovascular surgery immediately before</value>
-						</values>
+						<name>text</name>
+						<value>Preop PHTN</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
 					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
+						<name>displayMode</name>
+						<value>list</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>Yes</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
 							<value>Yes</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-			<node>
-				<name>condition2</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>during cicu encounter</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
 							<value>Yes</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>rsplepreSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>rsplepre</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Preop PLE</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>Yes</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>No</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>Unknown</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>No</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<name>rsplepre</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>No</value>
+						<name>text</name>
+						<value>Preop PLE</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>No</value>
-						<type>String</type>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
 					</property>
-				</node>
-				<node>
-					<name>Unknown</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>Unknown</value>
+						<name>displayMode</name>
+						<value>list</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>Unknown</value>
+						<name>dataType</name>
+						<value>text</value>
 						<type>String</type>
 					</property>
-				</node>
-			</node>
-			<node>
-				<name>condition1</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>cardiovascular surgery immediately before</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
+					<node>
+						<name>Yes</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
 							<value>Yes</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-			<node>
-				<name>condition2</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>during cicu encounter</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
 							<value>Yes</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>rscldpreSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>rscldpre</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Preop chronic lung disease of prematurity</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>Yes</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>No</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>Unknown</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>No</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<name>rscldpre</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>No</value>
+						<name>text</name>
+						<value>Preop chronic lung disease of prematurity</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>No</value>
-						<type>String</type>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
 					</property>
-				</node>
-				<node>
-					<name>Unknown</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>Unknown</value>
+						<name>displayMode</name>
+						<value>list</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>Unknown</value>
+						<name>dataType</name>
+						<value>text</value>
 						<type>String</type>
 					</property>
-				</node>
-			</node>
-			<node>
-				<name>condition1</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>cardiovascular surgery immediately before</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
+					<node>
+						<name>Yes</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
 							<value>Yes</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-			<node>
-				<name>condition2</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>during cicu encounter</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
 							<value>Yes</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>rsarrhythmiapreSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>rsarrhythmiapre</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Preop Arrhythmia</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>Yes</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>No</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>Unknown</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>No</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<name>rsarrhythmiapre</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>No</value>
+						<name>text</name>
+						<value>Preop Arrhythmia</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>No</value>
-						<type>String</type>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
 					</property>
-				</node>
-				<node>
-					<name>Unknown</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>Unknown</value>
+						<name>displayMode</name>
+						<value>list</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>Unknown</value>
+						<name>dataType</name>
+						<value>text</value>
 						<type>String</type>
 					</property>
-				</node>
-			</node>
-			<node>
-				<name>condition1</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>cardiovascular surgery immediately before</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
+					<node>
+						<name>Yes</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
 							<value>Yes</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-			<node>
-				<name>condition2</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>during cicu encounter</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
 							<value>Yes</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>rscrpreknownSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>rscrpreknown</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Preop creatinine available</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>Yes</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>No</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>Unknown</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>No</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<name>rscrpreknown</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>No</value>
+						<name>text</name>
+						<value>Preop creatinine available</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>No</value>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
+					</property>
+					<property>
+						<name>displayMode</name>
+						<value>list</value>
 						<type>String</type>
 					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>Yes</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Yes</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Yes</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>No</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+					</node>
 				</node>
 			</node>
 			<node>
@@ -58566,14 +57655,14 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 			</node>
 		</node>
 		<node>
-			<name>rsecmopreSection</name>
+			<name>RSMatrix2Section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>rsecmopre</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
+				<name>RSMatrix2</name>
+				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
-					<name>text</name>
-					<value>Any ECMO prior to surgery</value>
+					<name>displayMode</name>
+					<value>matrix</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -58582,13 +57671,8 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 					<type>Long</type>
 				</property>
 				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
+					<name>condition</name>
+					<value>Displayed if: Cardiovascular Surgery Immediately Before or During CICU Encounter = "Yes"</value>
 					<type>String</type>
 				</property>
 				<node>
@@ -58633,613 +57717,335 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 						<type>String</type>
 					</property>
 				</node>
-			</node>
-			<node>
-				<name>condition1</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
 				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<name>rsecmopre</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>cardiovascular surgery immediately before</value>
-						</values>
+						<name>text</name>
+						<value>Any ECMO prior to surgery</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
 					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
+						<name>displayMode</name>
+						<value>list</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>dataType</name>
+						<value>text</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>Yes</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
 							<value>Yes</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-			<node>
-				<name>condition2</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>during cicu encounter</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
 							<value>Yes</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>rscprpreSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>rscprpre</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Any CPR prior to surgery</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>Yes</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>No</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>Unknown</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>No</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<name>rscprpre</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>No</value>
+						<name>text</name>
+						<value>Any CPR prior to surgery</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>No</value>
-						<type>String</type>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
 					</property>
-				</node>
-				<node>
-					<name>Unknown</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>Unknown</value>
+						<name>displayMode</name>
+						<value>list</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>Unknown</value>
+						<name>dataType</name>
+						<value>text</value>
 						<type>String</type>
 					</property>
-				</node>
-			</node>
-			<node>
-				<name>condition1</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>cardiovascular surgery immediately before</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
+					<node>
+						<name>Yes</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
 							<value>Yes</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-			<node>
-				<name>condition2</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>during cicu encounter</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
 							<value>Yes</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>rsviralresppreSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>rsviralresppre</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Preop viral respiratory infection</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>Yes</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>No</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>Unknown</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>No</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<name>rsviralresppre</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>No</value>
+						<name>text</name>
+						<value>Preop viral respiratory infection</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>No</value>
-						<type>String</type>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
 					</property>
-				</node>
-				<node>
-					<name>Unknown</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>Unknown</value>
+						<name>displayMode</name>
+						<value>list</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>Unknown</value>
+						<name>dataType</name>
+						<value>text</value>
 						<type>String</type>
 					</property>
-				</node>
-			</node>
-			<node>
-				<name>condition1</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>cardiovascular surgery immediately before</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
+					<node>
+						<name>Yes</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
 							<value>Yes</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-			<node>
-				<name>condition2</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>during cicu encounter</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
 							<value>Yes</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>rsarrestintraSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>rsarrestintra</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value><![CDATA[Arrest with CPR > 10 minutes during procedure]]></value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>Yes</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>No</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>Unknown</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>No</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<name>rsarrestintra</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>No</value>
+						<name>text</name>
+						<value><![CDATA[Arrest with CPR > 10 minutes during procedure]]></value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>No</value>
-						<type>String</type>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
 					</property>
-				</node>
-				<node>
-					<name>Unknown</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>Unknown</value>
+						<name>displayMode</name>
+						<value>list</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>Unknown</value>
+						<name>dataType</name>
+						<value>text</value>
 						<type>String</type>
 					</property>
-				</node>
-			</node>
-			<node>
-				<name>condition1</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>cardiovascular surgery immediately before</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
+					<node>
+						<name>Yes</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
 							<value>Yes</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-			<node>
-				<name>condition2</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>during cicu encounter</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
 							<value>Yes</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>rsopenchestSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>rsopenchest</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Left OR with open sternum</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>Yes</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>No</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>Unknown</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>No</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<name>rsopenchest</name>
+					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>No</value>
+						<name>text</name>
+						<value>Left OR with open sternum</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>No</value>
-						<type>String</type>
+						<name>maxAnswers</name>
+						<value>1</value>
+						<type>Long</type>
 					</property>
-				</node>
-				<node>
-					<name>Unknown</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
-						<name>label</name>
-						<value>Unknown</value>
+						<name>displayMode</name>
+						<value>list</value>
 						<type>String</type>
 					</property>
 					<property>
-						<name>value</name>
-						<value>Unknown</value>
+						<name>dataType</name>
+						<value>text</value>
 						<type>String</type>
 					</property>
+					<node>
+						<name>Yes</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Yes</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Yes</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>No</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>No</value>
+							<type>String</type>
+						</property>
+					</node>
+					<node>
+						<name>Unknown</name>
+						<primaryNodeType>cards:AnswerOption</primaryNodeType>
+						<property>
+							<name>label</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+						<property>
+							<name>value</name>
+							<value>Unknown</value>
+							<type>String</type>
+						</property>
+					</node>
 				</node>
 			</node>
 			<node>

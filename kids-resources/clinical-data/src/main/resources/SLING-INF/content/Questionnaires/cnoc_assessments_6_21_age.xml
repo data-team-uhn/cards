@@ -46,9 +46,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>abas_communication_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -98,6 +108,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>abas_communication_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -115,6 +130,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>abas_communication_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -136,9 +156,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>abas_community_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -188,6 +218,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>abas_community_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -205,6 +240,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>abas_community_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -226,9 +266,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>abas_complete_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -278,6 +328,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>abas_composite_standard_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -297,9 +352,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>abas_composite_sum_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -349,6 +414,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>abas_composite_sum_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -366,6 +436,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>abas_conceptual_standard_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -387,9 +462,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>abas_conceptual_sum_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -439,6 +524,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>abas_conceptual_sum_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -458,9 +548,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>abas_health_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -510,6 +610,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>abas_health_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -527,6 +632,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>abas_health_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -548,9 +658,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>abas_home_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -600,6 +720,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>abas_home_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -617,6 +742,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>abas_home_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -638,9 +768,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>abas_leisure_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -690,6 +830,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>abas_leisure_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -707,6 +852,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>abas_leisure_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -728,9 +878,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>abas_motor_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -780,6 +940,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>abas_motor_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -797,6 +962,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>abas_motor_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -818,6 +988,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>abas_other_incomplete_txt</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -835,6 +1010,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>abas_practical_standard_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -856,9 +1036,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>abas_practical_sum_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -908,6 +1098,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>abas_practical_sum_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -927,9 +1122,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>abas_preacademics_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -979,6 +1184,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>abas_preacademics_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -998,6 +1208,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>abas_preacademics_scaled_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -1015,6 +1230,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>abas_reason_incomplete_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -1111,9 +1331,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>abas_self_care_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -1163,6 +1393,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>abas_self_care_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -1180,6 +1415,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>abas_self_care_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -1201,9 +1441,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>abas_self_direction_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -1253,6 +1503,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>abas_self_direction_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -1270,6 +1525,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>abas_self_direction_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -1291,9 +1551,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>abas_social_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -1343,6 +1613,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>abas_social_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -1360,6 +1635,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>abas_social_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -1381,6 +1661,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>abas_social_standard_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -1400,9 +1685,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>abas_social_sum_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -1452,6 +1747,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>abas_social_sum_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -1469,6 +1769,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>abas_taker_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -1607,6 +1912,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>abas_taker_other_txt</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -1624,6 +1934,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>additional_tests_dt</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dateFormat</name>
@@ -1648,6 +1963,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>additional_tests_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -1688,9 +2008,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>assessment_mult_dates_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -1740,9 +2070,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_activities_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -1792,6 +2132,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_activities_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -1809,6 +2154,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>basc_activities_t_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -1830,9 +2180,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_adaptability_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -1882,6 +2242,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_adaptability_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -1899,6 +2264,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>basc_adaptability_t_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -1920,9 +2290,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_adaptive_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -1972,6 +2352,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_adaptive_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -1989,6 +2374,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>basc_adaptive_t_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -2010,9 +2400,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_aggression_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -2062,6 +2462,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_aggression_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -2079,6 +2484,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>basc_aggression_t_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -2100,9 +2510,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_anxiety_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -2152,6 +2572,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_anxiety_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -2169,6 +2594,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>basc_anxiety_t_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -2190,9 +2620,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_attention_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -2242,6 +2682,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_attention_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -2259,6 +2704,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>basc_attention_t_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -2280,9 +2730,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_atypicality_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -2332,6 +2792,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_atypicality_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -2349,6 +2814,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>basc_atypicality_t_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -2370,9 +2840,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_behavioral_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -2422,6 +2902,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_behavioral_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -2439,6 +2924,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>basc_behavioral_t_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -2460,9 +2950,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_communication_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -2512,6 +3012,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_communication_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -2529,6 +3034,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>basc_communication_t_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -2550,9 +3060,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_complete_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -2602,9 +3122,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_consistency_scale_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -2652,6 +3182,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>basc_consistency_scale_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -2720,9 +3255,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_depression_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -2772,6 +3317,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_depression_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -2789,6 +3339,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>basc_depression_t_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -2810,9 +3365,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_externalizing_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -2862,6 +3427,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_externalizing_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -2879,6 +3449,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>basc_externalizing_t_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -2900,9 +3475,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_f_index_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -2950,6 +3535,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>basc_f_index_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -3018,9 +3608,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_hyperactivity_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -3070,6 +3670,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_hyperactivity_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -3087,6 +3692,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>basc_hyperactivity_t_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -3108,9 +3718,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_internalizing_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -3160,6 +3780,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_internalizing_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -3177,6 +3802,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>basc_internalizing_t_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -3198,6 +3828,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_other_incomplete_txt</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -3215,6 +3850,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>basc_reason_incomplete_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -3325,9 +3965,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_response_pattern_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -3375,6 +4025,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>basc_response_pattern_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -3443,9 +4098,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_social_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -3495,6 +4160,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_social_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -3512,6 +4182,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>basc_social_t_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -3533,9 +4208,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_somatization_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -3585,6 +4270,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_somatization_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -3604,6 +4294,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_somatization_t_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -3621,6 +4316,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>basc_taker_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -3759,6 +4459,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_taker_other_txt</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -3778,9 +4483,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_withdrawl_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -3830,6 +4545,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>basc_withdrawl_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -3847,6 +4567,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>basc_withdrawl_t_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -3868,9 +4593,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>beery_complete_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -3920,6 +4655,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>beery_other_incomplete_txt</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -3937,6 +4677,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>beery_reason_incomplete_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -4047,9 +4792,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>brief2_bri_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -4099,6 +4854,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>brief2_bri_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -4116,6 +4876,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>brief2_bri_t_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -4137,9 +4902,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>brief2_complete_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -4189,9 +4964,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>brief2_cri_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -4241,6 +5026,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>brief2_cri_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -4258,6 +5048,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>brief2_cri_t_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -4279,9 +5074,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>brief2_emotional_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -4331,6 +5136,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>brief2_emotional_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -4348,6 +5158,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>brief2_emotional_t_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -4369,9 +5184,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>brief2_eri_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -4421,6 +5246,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>brief2_eri_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -4438,6 +5268,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>brief2_eri_t_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -4459,9 +5294,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>brief2_gec_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -4511,6 +5356,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>brief2_gec_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -4528,6 +5378,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>brief2_gec_t_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -4549,9 +5404,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>brief2_inconsistently_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -4599,6 +5464,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>brief2_inconsistently_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -4667,9 +5537,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>brief2_infrequency_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -4717,6 +5597,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>brief2_infrequency_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -4785,9 +5670,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>brief2_inhibit_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -4837,6 +5732,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>brief2_inhibit_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -4854,6 +5754,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>brief2_inhibit_t_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -4875,9 +5780,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>brief2_initiate_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -4927,6 +5842,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>brief2_initiate_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -4944,6 +5864,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>brief2_initiate_t_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -4965,9 +5890,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>brief2_memory_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -5017,6 +5952,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>brief2_memory_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -5034,6 +5974,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>brief2_memory_t_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -5055,9 +6000,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>brief2_negativity_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -5105,6 +6060,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>brief2_negativity_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -5173,9 +6133,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>brief2_organize_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -5225,6 +6195,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>brief2_organize_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -5242,6 +6217,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>brief2_organize_t_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -5263,6 +6243,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>brief2_other_incomplete_txt</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -5282,9 +6267,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>brief2_plan_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -5334,6 +6329,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>brief2_plan_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -5353,6 +6353,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>brief2_plan_t_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -5370,6 +6375,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>brief2_reason_incomplete_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -5480,9 +6490,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>brief2_self_monitor_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -5532,6 +6552,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>brief2_self_monitor_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -5549,6 +6574,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>brief2_self_monitor_t_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -5570,9 +6600,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>brief2_shift_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -5622,6 +6662,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>brief2_shift_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -5641,6 +6686,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>brief2_shift_t_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -5658,6 +6708,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>brief2_taker_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -5796,6 +6851,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>brief2_taker_other_txt</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -5815,9 +6875,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>brief2_task_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -5867,6 +6937,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>brief2_task_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -5884,6 +6959,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>brief2_task_t_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -5905,6 +6985,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>bsra3_readiness_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -5924,6 +7009,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>bsra3_readiness_scaled_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -5941,6 +7031,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>bsra3_version_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -5993,6 +7088,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>by_outside_provider_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -6052,6 +7152,11 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>calc_age_in_months_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -6076,6 +7181,11 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>calc_age_in_years_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -6096,7 +7206,7 @@
 		</property>
 		<property>
 			<name>description</name>
-			<value>select all that apply</value>
+			<value>select all that apply. condition_dx_e</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -6264,6 +7374,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>condition_dx_other_txt</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -6283,9 +7398,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt3_complete_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -6335,9 +7460,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt3_discriminability_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -6387,6 +7522,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt3_discriminability_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -6404,6 +7544,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>cvlt3_discriminability_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -6425,9 +7570,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt3_listb_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -6477,6 +7632,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt3_listb_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -6494,6 +7654,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>cvlt3_listb_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -6515,9 +7680,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt3_long_cr_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -6567,6 +7742,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt3_long_cr_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -6584,6 +7764,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>cvlt3_long_cr_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -6605,9 +7790,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt3_long_fr_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -6657,6 +7852,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt3_long_fr_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -6674,6 +7874,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>cvlt3_long_fr_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -6695,6 +7900,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt3_other_incomplete_txt</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -6712,6 +7922,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>cvlt3_reason_incomplete_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -6822,9 +8037,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt3_repetitions_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -6874,6 +8099,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt3_repetitions_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -6891,6 +8121,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>cvlt3_reptitions_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -6912,9 +8147,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt3_sematic_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -6964,6 +8209,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt3_sematic_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -6981,6 +8231,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>cvlt3_sematic_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -7002,9 +8257,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt3_serial_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -7054,6 +8319,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt3_serial_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -7071,6 +8341,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>cvlt3_serial_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -7092,9 +8367,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt3_short_cr_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -7144,6 +8429,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt3_short_cr_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -7161,6 +8451,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>cvlt3_short_cr_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -7182,9 +8477,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt3_short_fr_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -7234,6 +8539,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt3_short_fr_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -7251,6 +8561,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>cvlt3_short_fr_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -7272,9 +8587,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt3_slope_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -7324,6 +8649,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt3_slope_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -7341,6 +8671,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>cvlt3_slope_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -7362,9 +8697,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt3_total_intrusions_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -7414,6 +8759,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt3_total_intrusions_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -7431,6 +8781,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>cvlt3_total_intrusions_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -7452,9 +8807,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt3_trail2_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -7504,6 +8869,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt3_trail2_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -7521,6 +8891,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>cvlt3_trail2_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -7542,9 +8917,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt3_trail3_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -7594,6 +8979,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt3_trail3_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -7611,6 +9001,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>cvlt3_trail3_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -7632,9 +9027,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt3_trail4_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -7684,6 +9089,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt3_trail4_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -7701,6 +9111,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>cvlt3_trail4_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -7722,9 +9137,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt3_trails_total_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -7774,6 +9199,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt3_trails_total_scaled_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -7793,9 +9223,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt3_trial1_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -7845,6 +9285,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt3_trial1_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -7862,6 +9307,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>cvlt3_trial1_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -7883,9 +9333,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt3_trial5_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -7935,6 +9395,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt3_trial5_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -7952,6 +9417,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>cvlt3_trial5_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -7973,9 +9443,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt_complete_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -8025,9 +9505,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt_consistency_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -8077,6 +9567,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt_consistency_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -8094,6 +9589,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>cvlt_consistency_z_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -8115,9 +9615,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt_discriminability_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -8167,6 +9677,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt_discriminability_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -8184,6 +9699,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>cvlt_discriminability_z_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -8205,9 +9725,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt_fr_cr_total_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -8257,6 +9787,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt_fr_cr_total_z_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -8276,9 +9811,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt_listb_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -8328,6 +9873,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt_listb_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -8345,6 +9895,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>cvlt_listb_z_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -8366,9 +9921,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt_long_cr_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -8418,6 +9983,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt_long_cr_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -8435,6 +10005,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>cvlt_long_cr_z_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -8456,9 +10031,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt_long_fr_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -8508,6 +10093,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt_long_fr_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -8525,6 +10115,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>cvlt_long_fr_z_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -8546,6 +10141,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt_other_incomplete_txt</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -8565,9 +10165,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt_preservations_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -8617,6 +10227,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt_preservations_z_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -8634,6 +10249,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>cvlt_reason_incomplete_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -8744,9 +10364,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt_sematic_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -8796,6 +10426,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt_sematic_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -8813,6 +10448,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>cvlt_sematic_z_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -8834,9 +10474,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt_serial_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -8886,6 +10536,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt_serial_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -8903,6 +10558,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>cvlt_serial_z_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -8924,9 +10584,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt_short_cr_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -8976,6 +10646,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt_short_cr_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -8993,6 +10668,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>cvlt_short_cr_z_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -9014,9 +10694,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt_short_fr_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -9066,6 +10756,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt_short_fr_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -9083,6 +10778,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>cvlt_short_fr_z_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -9104,9 +10804,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt_slope_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -9156,6 +10866,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt_slope_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -9173,6 +10888,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>cvlt_slope_z_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -9194,6 +10914,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt_total_intrusions_e</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -9213,9 +10938,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt_total_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -9265,6 +11000,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt_total_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -9282,6 +11022,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>cvlt_total_repetitions_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -9303,9 +11048,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt_total_t_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -9355,6 +11110,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt_total_t_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -9372,6 +11132,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>cvlt_trail5_raw_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -9393,6 +11158,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt_trail5_z_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -9412,9 +11182,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt_trial1_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -9464,6 +11244,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt_trial1_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -9481,6 +11266,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>cvlt_trial1_z_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -9502,9 +11292,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>cvlt_trial5_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -9554,9 +11354,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dass21_anxiety_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -9606,6 +11416,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dass21_anxiety_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -9623,6 +11438,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>dass21_caregivers_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -9677,9 +11497,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dass21_complete_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -9729,9 +11559,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dass21_depression_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -9781,6 +11621,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dass21_depression_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -9800,6 +11645,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dass21_other_incomplete_txt</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -9817,6 +11667,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>dass21_reason_incomplete_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -9927,9 +11782,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dass21_stress_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -9979,6 +11844,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dass21_stress_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -9996,6 +11866,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>dass21_taker1_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -10134,6 +12009,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dass21_taker1_other_txt</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -10153,9 +12033,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dass21_taker2_anxiety_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -10205,6 +12095,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dass21_taker2_anxiety_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -10224,9 +12119,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dass21_taker2_complete_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -10276,9 +12181,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dass21_taker2_depression_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -10328,6 +12243,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dass21_taker2_depression_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -10345,6 +12265,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>dass21_taker2_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -10483,6 +12408,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dass21_taker2_other_incomplete_txt</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -10502,6 +12432,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dass21_taker2_other_txt</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -10519,6 +12454,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>dass21_taker2_reason_incomplete_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -10629,9 +12569,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dass21_taker2_stress_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -10681,6 +12631,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dass21_taker2_stress_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -10700,9 +12655,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dkefs_category_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -10752,6 +12717,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dkefs_category_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -10769,6 +12739,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>dkefs_category_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -10790,6 +12765,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dkefs_category_switch_correct_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -10807,6 +12787,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>dkefs_category_switch_correct_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -10828,6 +12813,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dkefs_category_switching_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -10845,6 +12835,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>dkefs_category_switching_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -10866,9 +12861,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dkefs_complete_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -10918,9 +12923,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dkefs_letter_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -10970,6 +12985,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dkefs_letter_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -10987,6 +13007,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>dkefs_letter_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -11008,6 +13033,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dkefs_other_incomplete_txt</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -11025,6 +13055,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>dkefs_reason_incomplete_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -11135,9 +13170,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dkefs_trails1_commissions_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -11187,6 +13232,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dkefs_trails1_commissions_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -11204,6 +13254,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>dkefs_trails1_commissions_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -11225,9 +13280,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dkefs_trails1_omissions_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -11277,6 +13342,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dkefs_trails1_omissions_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -11294,6 +13364,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>dkefs_trails1_omissions_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -11315,9 +13390,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dkefs_trails1_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -11367,6 +13452,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dkefs_trails1_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -11384,6 +13474,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>dkefs_trails1_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -11405,9 +13500,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dkefs_trails2_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -11457,6 +13562,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dkefs_trails2_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -11474,6 +13584,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>dkefs_trails2_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -11495,9 +13610,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dkefs_trails3_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -11547,6 +13672,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dkefs_trails3_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -11564,6 +13694,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>dkefs_trails3_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -11585,6 +13720,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dkefs_trails4_errors_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -11602,6 +13742,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>dkefs_trails4_errors_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -11623,9 +13768,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dkefs_trails4_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -11675,6 +13830,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dkefs_trails4_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -11692,6 +13852,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>dkefs_trails4_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -11713,9 +13878,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dkefs_trails5_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -11765,6 +13940,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dkefs_trails5_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -11782,6 +13962,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>dkefs_trails5_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -11803,9 +13988,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dkefs_verbal_complete_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -11853,6 +14048,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>dkefs_verbal_reason_incomplete_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -11963,6 +14163,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dkefs_verbal_reason_incomplete_other_txt</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -11983,7 +14188,7 @@
 		</property>
 		<property>
 			<name>description</name>
-			<value>Selecting Yes will hide duplicate questions between the two tabs</value>
+			<value>Selecting Yes will hide duplicate questions between the two tabs. duplicate_entry_e</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -12040,7 +14245,7 @@
 		</property>
 		<property>
 			<name>description</name>
-			<value>select all that apply</value>
+			<value>select all that apply. dx_devlp_delay_e</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -12138,6 +14343,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dx_devlp_delay_other_txt</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -12158,7 +14368,7 @@
 		</property>
 		<property>
 			<name>description</name>
-			<value>select all that apply</value>
+			<value>select all that apply. dx_disorder_emotion_e</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -12242,6 +14452,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dx_disorder_emotion_other_txt</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -12262,7 +14477,7 @@
 		</property>
 		<property>
 			<name>description</name>
-			<value>select all that apply</value>
+			<value>select all that apply. dx_disorder_learning_e</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -12360,6 +14575,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>dx_disorder_learning_other_txt</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -12379,9 +14599,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>gpeg_complete_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -12429,6 +14659,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>gpeg_dom_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -12483,15 +14718,53 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>gpeg_dom_hand_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
 		</property>
+		<node>
+			<name>0-No</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>label</name>
+				<value>0 - No</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>0 - No</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>1-Yes</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>label</name>
+				<value>1 - Yes</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>1 - Yes</value>
+				<type>String</type>
+			</property>
+		</node>
 	</node>
 	<node>
 		<name>gpeg_dom_raw_no</name>
@@ -12505,6 +14778,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>gpeg_dom_raw_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -12526,9 +14804,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>gpeg_non_dom_complete_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -12576,6 +14864,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>gpeg_non_dom_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -12630,6 +14923,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>gpeg_non_dom_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -12649,6 +14947,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>gpeg_other_incomplete_txt</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -12666,6 +14969,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>gpeg_reason_incomplete_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -12776,6 +15084,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>gpeg_reason_non_dom_incomplete_e</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
@@ -12884,6 +15197,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>gpeg_reason_non_dom_incomplete_other_txt</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -12901,6 +15219,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>head_dt</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dateFormat</name>
@@ -12932,6 +15255,11 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>head_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -12949,6 +15277,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>height_dt</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dateFormat</name>
@@ -12980,6 +15313,11 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>height_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -12997,6 +15335,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>lastupdateddate</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dateFormat</name>
@@ -13021,6 +15364,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>number_of_visits_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -13089,6 +15437,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>other_comments_txt</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -13108,9 +15461,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>other_lang_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -13161,7 +15524,7 @@
 		</property>
 		<property>
 			<name>description</name>
-			<value>Check all that apply</value>
+			<value>Check all that apply. outside_provider_assessments_e</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -13511,6 +15874,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>patientid</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -13531,7 +15899,7 @@
 		</property>
 		<property>
 			<name>description</name>
-			<value>Select all that apply</value>
+			<value>Select all that apply. reason_not_taken_e</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -13699,6 +16067,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>reason_not_taken_other_txt</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -13719,7 +16092,7 @@
 		</property>
 		<property>
 			<name>description</name>
-			<value>select all that apply</value>
+			<value>select all that apply. referral_services_e</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -13887,6 +16260,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>referral_services_other_txt</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -13906,9 +16284,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>srs2_awareness_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -13958,6 +16346,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>srs2_awareness_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -13975,6 +16368,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>srs2_awareness_t_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -13996,9 +16394,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>srs2_cognition_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -14048,6 +16456,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>srs2_cognition_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -14065,6 +16478,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>srs2_cognition_t_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -14086,9 +16504,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>srs2_communication_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -14138,6 +16566,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>srs2_communication_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -14155,6 +16588,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>srs2_communication_t_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -14176,9 +16614,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>srs2_complete_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -14228,9 +16676,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>srs2_motivation_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -14280,6 +16738,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>srs2_motivation_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -14297,6 +16760,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>srs2_motivation_t_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -14318,6 +16786,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>srs2_other_incomplete_txt</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -14335,6 +16808,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>srs2_reason_incomplete_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -14445,9 +16923,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>srs2_restricted_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -14497,6 +16985,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>srs2_restricted_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -14514,6 +17007,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>srs2_restricted_t_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -14535,9 +17033,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>srs2_rrb_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -14587,6 +17095,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>srs2_rrb_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -14604,6 +17117,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>srs2_rrb_t_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -14625,9 +17143,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>srs2_sci_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -14677,6 +17205,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>srs2_sci_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -14696,6 +17229,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>srs2_sci_t_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -14713,6 +17251,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>srs2_taker_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -14851,6 +17394,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>srs2_taker_other_txt</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -14870,9 +17418,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>srs2_total_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -14922,6 +17480,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>srs2_total_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -14941,6 +17504,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>srs2_total_t_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -14958,6 +17526,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>testing1_dt</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dateFormat</name>
@@ -14982,6 +17555,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>testing1_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -15344,6 +17922,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>testing2_dt</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dateFormat</name>
 			<value>DATE</value>
 			<type>String</type>
@@ -15366,6 +17949,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>testing2_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -15728,6 +18316,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>testing3_dt</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dateFormat</name>
 			<value>DATE</value>
 			<type>String</type>
@@ -15750,6 +18343,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>testing3_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -16112,6 +18710,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>test_lang_alt_e</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
@@ -16472,6 +19075,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>test_lang_e</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
@@ -16594,6 +19202,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>test_lang_other_txt</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -16611,6 +19224,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>test_translated_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -16978,6 +19596,11 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>user_entered_age_in_months_head_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -16999,6 +19622,11 @@
 		<property>
 			<name>unitOfMeasurement</name>
 			<value>months</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>user_entered_age_in_months_height_no</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -17026,6 +19654,11 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>user_entered_age_in_months_weight_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -17047,6 +19680,11 @@
 		<property>
 			<name>unitOfMeasurement</name>
 			<value>years</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>user_entered_age_in_years_head_no</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -17074,6 +19712,11 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>user_entered_age_in_years_height_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -17098,6 +19741,11 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>user_entered_age_in_years_weight_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -17117,9 +19765,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>vmi_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -17169,6 +19827,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>vmi_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -17186,6 +19849,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>vmi_standard_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -17207,9 +19875,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wais4_arithmetic_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -17259,6 +19937,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wais4_arithmetic_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -17276,6 +19959,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wais4_arithmetic_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -17297,9 +19985,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wais4_coding_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -17349,6 +20047,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wais4_coding_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -17366,6 +20069,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wais4_coding_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -17387,9 +20095,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wais4_complete_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -17439,9 +20157,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wais4_design_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -17491,6 +20219,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wais4_design_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -17508,6 +20241,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wais4_design_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -17529,9 +20267,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wais4_digit_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -17581,6 +20329,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wais4_digit_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -17598,6 +20351,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wais4_digit_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -17619,9 +20377,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wais4_info_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -17671,6 +20439,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wais4_info_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -17688,6 +20461,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wais4_info_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -17709,9 +20487,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wais4_iq_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -17761,6 +20549,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wais4_iq_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -17778,6 +20571,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wais4_iq_standard_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -17799,9 +20597,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wais4_matrix_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -17851,6 +20659,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wais4_matrix_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -17868,6 +20681,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wais4_matrix_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -17889,9 +20707,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wais4_memory_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -17941,6 +20769,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wais4_memory_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -17958,6 +20791,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wais4_memory_standard_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -17979,6 +20817,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wais4_other_incomplete_txt</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -17998,9 +20841,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wais4_perceptual_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -18050,6 +20903,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wais4_perceptual_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -18067,6 +20925,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wais4_perceptual_standard_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -18088,9 +20951,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wais4_processing_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -18140,6 +21013,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wais4_processing_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -18157,6 +21035,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wais4_processing_standard_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -18178,9 +21061,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wais4_puzzles_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -18230,6 +21123,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wais4_puzzles_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -18249,6 +21147,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wais4_puzzles_scaled_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -18266,6 +21169,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wais4_reason_incomplete_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -18376,9 +21284,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wais4_similarities_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -18428,6 +21346,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wais4_similarities_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -18445,6 +21368,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wais4_similarities_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -18466,9 +21394,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wais4_symbol_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -18518,6 +21456,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wais4_symbol_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -18535,6 +21478,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wais4_symbol_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -18556,9 +21504,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wais4_verbal_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -18608,6 +21566,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wais4_verbal_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -18625,6 +21588,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wais4_verbal_standard_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -18646,9 +21614,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wais4_vocab_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -18698,6 +21676,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wais4_vocab_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -18715,6 +21698,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wais4_vocab_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -18736,9 +21724,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wasi2_complete_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -18788,9 +21786,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wasi2_design_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -18840,6 +21848,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wasi2_design_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -18857,6 +21870,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wasi2_design_t_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -18878,9 +21896,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wasi2_iq_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -18930,6 +21958,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wasi2_iq_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -18947,6 +21980,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wasi2_iq_standard_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -18968,9 +22006,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wasi2_matrix_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -19020,6 +22068,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wasi2_matrix_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -19037,6 +22090,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wasi2_matrix_t_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -19058,6 +22116,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wasi2_other_incomplete_txt</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -19075,6 +22138,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wasi2_reason_incomplete_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -19185,9 +22253,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wasi2_reasoning_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -19237,6 +22315,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wasi2_reasoning_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -19254,6 +22337,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wasi2_reasoning_standard_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -19275,9 +22363,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wasi2_similarities_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -19327,6 +22425,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wasi2_similarities_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -19344,6 +22447,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wasi2_similarities_t_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -19365,9 +22473,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wasi2_verbal_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -19417,6 +22535,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wasi2_verbal_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -19434,6 +22557,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wasi2_verbal_standard_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -19455,9 +22583,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wasi2_vocab_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -19507,6 +22645,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wasi2_vocab_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -19526,6 +22669,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wasi2_vocab_t_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -19543,6 +22691,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>weight_dt</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dateFormat</name>
@@ -19574,6 +22727,11 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>weight_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -19593,9 +22751,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wiat3_complete_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -19645,9 +22813,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wiat3_numerical_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -19697,6 +22875,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wiat3_numerical_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -19714,6 +22897,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wiat3_numerical_standard_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -19735,6 +22923,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wiat3_other_incomplete_txt</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -19754,9 +22947,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wiat3_reading_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -19806,6 +23009,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wiat3_reading_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -19825,6 +23033,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wiat3_reading_standard_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -19842,6 +23055,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wiat3_reason_incomplete_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -19952,9 +23170,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wisc5_coding_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -20004,6 +23232,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wisc5_coding_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -20021,6 +23254,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wisc5_coding_standard_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -20042,9 +23280,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wisc5_complete_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -20094,9 +23342,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wisc5_design_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -20146,6 +23404,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wisc5_design_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -20163,6 +23426,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wisc5_design_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -20184,9 +23452,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wisc5_digit_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -20236,6 +23514,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wisc5_digit_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -20253,6 +23536,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wisc5_digit_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -20274,9 +23562,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wisc5_fluid_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -20326,6 +23624,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wisc5_fluid_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -20343,6 +23646,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wisc5_fluid_standard_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -20364,9 +23672,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wisc5_iq_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -20416,6 +23734,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wisc5_iq_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -20433,6 +23756,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wisc5_iq_standard_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -20454,9 +23782,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wisc5_matrix_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -20506,6 +23844,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wisc5_matrix_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -20525,9 +23868,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wisc5_memory_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -20577,6 +23930,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wisc5_memory_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -20594,6 +23952,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wisc5_memory_standard_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -20615,6 +23978,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wisc5_other_incomplete_txt</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -20634,9 +24002,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wisc5_picture_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -20686,6 +24064,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wisc5_picture_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -20703,6 +24086,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wisc5_picture_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -20724,9 +24112,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wisc5_puzzles_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -20776,6 +24174,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wisc5_puzzles_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -20795,6 +24198,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wisc5_puzzles_scaled_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -20812,6 +24220,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wisc5_reason_incomplete_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -20922,6 +24335,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wisc5_reasoning_scaled_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -20941,9 +24359,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wisc5_similarities_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -20993,6 +24421,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wisc5_similarities_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -21010,6 +24443,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wisc5_similarities_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -21031,9 +24469,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wisc5_speed_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -21083,6 +24531,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wisc5_speed_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -21100,6 +24553,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wisc5_speed_standard_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -21121,9 +24579,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wisc5_symbol_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -21173,6 +24641,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wisc5_symbol_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -21190,6 +24663,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wisc5_symbol_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -21211,9 +24689,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wisc5_verbal_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -21263,6 +24751,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wisc5_verbal_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -21280,6 +24773,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wisc5_verbal_standard_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -21301,9 +24799,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wisc5_visual_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -21353,6 +24861,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wisc5_visual_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -21370,6 +24883,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wisc5_visual_standard_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -21391,9 +24909,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wisc5_vocab_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -21443,6 +24971,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wisc5_vocab_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -21460,6 +24993,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wisc5_vocab_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -21481,9 +25019,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wisc5_weights_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -21533,6 +25081,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wisc5_weights_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -21550,6 +25103,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wisc5_weights_scaled_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -21571,9 +25129,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wj4_calc_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -21623,6 +25191,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wj4_calc_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -21640,6 +25213,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wj4_calc_standard_no</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -21661,9 +25239,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wj4_complete_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -21713,6 +25301,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wj4_other_incomplete_txt</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>text</value>
 			<type>String</type>
@@ -21730,6 +25323,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wj4_reason_incomplete_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
@@ -21840,9 +25438,19 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wj4_word_raw_b</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>displayMode</name>
 			<value>list</value>
 			<type>String</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>dataType</name>
@@ -21892,6 +25500,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wj4_word_raw_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -21911,6 +25524,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>wj4_word_standard_no</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>decimal</value>
 			<type>String</type>
@@ -21928,6 +25546,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>wppsi_format_e</value>
+			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
