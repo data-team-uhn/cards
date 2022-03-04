@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { Router, Route, Redirect, Switch } from "react-router-dom";
 import { Paper, Grid, Button, Typography, makeStyles } from '@material-ui/core';
@@ -47,9 +47,10 @@ function Unsubscribe (props) {
   // Current user and associated subject
   const [ confirmed, setConfirmed ] = useState(false);
   const [ error, setError ] = useState();
+  const [ alreadyUnsubscribed, setAlreadyUnsubscribed ] = useState(false);
   const classes = useStyles();
   let unsubscribe = () => {
-    fetch("/Proms.unsubscribe.html", {method: 'POST'})
+    fetch("/Proms.unsubscribe", {method: 'POST'})
       .then( (response) => response.ok ? response.json() : Promise.reject(response) )
       .then( json => json.status == "success" ? setConfirmed(true) : Promise.reject(json.error))
       .catch((response) => {
@@ -69,6 +70,16 @@ function Unsubscribe (props) {
     );
   }
 
+  useEffect(() => {
+    fetch("/Proms.unsubscribe", {method: 'GET'})
+      .then( (response) => response.ok ? response.json() : Promise.reject(response) )
+      .then( json => json.status == "success" ? setAlreadyUnsubscribed(json.unsubscribed) : Promise.reject(json.error))
+      .catch((response) => {
+        let errMsg = "Cannot unsubscribe: ";
+        setError(errMsg + (response.status ? response.statusText : response));
+      });
+  }, []);
+
   return <MuiThemeProvider theme={appTheme}>
       <Paper className={classes.paper} elevation={0}>
         <Grid
@@ -87,7 +98,9 @@ function Unsubscribe (props) {
                {error}
               </Alert>
             }
-            { confirmed ?
+            { alreadyUnsubscribed ?
+              <Alert icon={false} severity="info">You are already unsubscribed.</Alert>
+              : confirmed ?
               <Alert icon={false} severity="info">
                 You have been unsubscribed.
               </Alert>

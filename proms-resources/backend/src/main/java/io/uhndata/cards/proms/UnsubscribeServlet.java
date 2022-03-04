@@ -49,7 +49,7 @@ import io.uhndata.cards.dataentry.api.QuestionnaireUtils;
 
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(resourceTypes = { "cards/PromsHomepage" }, extensions = {
-    "unsubscribe" }, methods = { "POST" })
+    "unsubscribe" }, methods = { "GET", "POST" })
 public class UnsubscribeServlet extends SlingAllMethodsServlet
 {
     private static final long serialVersionUID = 552901093350213103L;
@@ -66,6 +66,43 @@ public class UnsubscribeServlet extends SlingAllMethodsServlet
 
     @Reference
     private QuestionnaireUtils questionnaireUtils;
+
+    @Override
+    public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
+        throws IOException
+    {
+        // This only works for a token-authenticated session; refuse requests if this is not the case
+        final String sessionSubjectIdentifier =
+            (String) this.resolverFactory.getThreadResourceResolver().getAttribute("cards:sessionSubject");
+        if (sessionSubjectIdentifier == null) {
+            writeError(response, SlingHttpServletResponse.SC_BAD_REQUEST, "Not a valid patient session");
+            return;
+        }
+        try (ResourceResolver rr = this.resolverFactory.getServiceResourceResolver(
+            Map.of(ResourceResolverFactory.SUBSERVICE, "unsubscribe"))) {
+            final Session session = rr.adaptTo(Session.class);
+            final Node visitSubject = session.getNodeByIdentifier(sessionSubjectIdentifier);
+            final Node patientInformationQuestionnaire = getPatientInformationQuestionnaire(session);
+            final Node patientInformationForm =
+                getPatientInformationForm(visitSubject, patientInformationQuestionnaire, session);
+            if (patientInformationForm == null) {
+                writeError(response, SlingHttpServletResponse.SC_NOT_FOUND, "Sorry, cannot find your profile");
+                return;
+            }
+
+            final Node unsubscribeQuestion =
+                this.questionnaireUtils.getQuestion(patientInformationQuestionnaire, UNSUBSCRIBE);
+            Node unsubscribeAnswer = this.formUtils.getAnswer(patientInformationForm, unsubscribeQuestion);
+            final boolean unsubscribed =
+                unsubscribeAnswer != null && unsubscribeAnswer.hasProperty(FormUtils.VALUE_PROPERTY)
+                    ? unsubscribeAnswer.getProperty(FormUtils.VALUE_PROPERTY).getLong() == 1 : false;
+            writeSuccess(response, unsubscribed);
+        } catch (final LoginException e) {
+            LOGGER.error("Service authorization not granted: {}", e.getMessage());
+        } catch (final RepositoryException e) {
+            LOGGER.warn("Exception validating patient authentication: {}", e.getMessage(), e);
+        }
+    }
 
     @Override
     public void doPost(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
@@ -107,7 +144,7 @@ public class UnsubscribeServlet extends SlingAllMethodsServlet
             if (checkin) {
                 versionManager.checkin(patientInformationForm.getPath());
             }
-            writeSuccess(response);
+            writeSuccess(response, true);
         } catch (final LoginException e) {
             LOGGER.error("Service authorization not granted: {}", e.getMessage());
         } catch (final RepositoryException e) {
@@ -136,7 +173,7 @@ public class UnsubscribeServlet extends SlingAllMethodsServlet
         return null;
     }
 
-    private void writeSuccess(final SlingHttpServletResponse response)
+    private void writeSuccess(final SlingHttpServletResponse response, final Boolean value)
         throws IOException, RepositoryException
     {
         response.setContentType("application/json;charset=UTF-8");
@@ -144,6 +181,9 @@ public class UnsubscribeServlet extends SlingAllMethodsServlet
         try (Writer out = response.getWriter()) {
             final JsonObjectBuilder result = Json.createObjectBuilder();
             result.add("status", "success");
+            if (value != null) {
+                result.add("unsubscribed", value);
+            }
             out.append(result.build().toString());
         }
     }
