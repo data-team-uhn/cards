@@ -137,21 +137,24 @@ function Filters(props) {
     // It is a list of either strings (for options) or recursive lists
     // Each recursive list must have a string for its 0th option, which
     // is taken to be its title
-    let newFilterableFields = ["Questionnaire", "Subject", "CreatedDate"];
+    let newFilterableFields = [];
+
     // Mapping from a string in newFilterableFields to a jcr:uuid
-    let newFilterableUUIDs = {Questionnaire: "cards:Questionnaire", Subject: "cards:Subject", CreatedDate: "cards:CreatedDate"};
+    let newFilterableUUIDs = {};
+
     // Mapping from a string in newFilterableFields to a human-readable title
-    let newFilterableTitles = {Questionnaire: "Questionnaire", Subject: "Subject", CreatedDate: "Created Date"};
+    let newFilterableTitles = {};
+
     // Normally the straight input from FilterServlet.java
     // Instead, we need to reconstruct this client-side
-    let newQuestionDefinitions = {Questionnaire: {dataType: "questionnaire"}, Subject: {dataType: "subject"}, CreatedDate: "createddate"};
+    let newQuestionDefinitions = {};
 
-    // If questionnaire is specified, no filtering by this field
-    if (questionnaire) {
-      newFilterableFields = ["Subject", "CreatedDate"];
-      newFilterableUUIDs = {Subject: "cards:Subject", CreatedDate: "cards:CreatedDate"};
-      newFilterableTitles = {Subject: "Subject", CreatedDate: "Created Date"};
-      newQuestionDefinitions = {Subject: {dataType: "subject"}, CreatedDate: "createddate"};
+    // If questionnaire is not specified, add filtering by special fields
+    if (!questionnaire) {
+      newFilterableFields = ["Questionnaire", "Subject", "CreatedDate"];
+      newFilterableUUIDs = {Questionnaire: "cards:Questionnaire", Subject: "cards:Subject", CreatedDate: "cards:CreatedDate"};
+      newFilterableTitles = {Questionnaire: "Questionnaire", Subject: "Subject", CreatedDate: "Created Date"};
+      newQuestionDefinitions = {Questionnaire: {dataType: "questionnaire"}, Subject: {dataType: "subject"}, CreatedDate: "createddate"};
     }
 
     // We'll need a helper recursive function to copy over data from sections/questions

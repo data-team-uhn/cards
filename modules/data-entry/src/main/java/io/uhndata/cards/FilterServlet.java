@@ -163,7 +163,7 @@ public class FilterServlet extends SlingSafeMethodsServlet
                     Resource questionResource = resolver.resolve(path);
                     JsonObject question = questionResource.adaptTo(JsonObject.class);
                     Resource questionnaire = getQuestionnaire(questionResource);
-                    String identifier = questionnaire.getValueMap().get("identifier", String.class);
+                    String identifier = questionnaire.getValueMap().get("jcr:uuid", String.class);
                     List<JsonObject> answers = result.getOrDefault(identifier, new LinkedList<>());
                     answers.add(question);
                     result.put(identifier, answers);

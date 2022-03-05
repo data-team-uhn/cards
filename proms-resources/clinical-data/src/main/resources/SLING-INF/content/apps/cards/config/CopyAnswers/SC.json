@@ -1,6 +1,7 @@
 {
   "jcr:primaryType": "nt:unstructured",
   "jcr:reference:time": "/Questionnaires/Visit information/time",
+  "jcr:reference:last_name": "/Questionnaires/Patient information/last_name",
   "jcr:reference:first_name": "/Questionnaires/Patient information/first_name",
-  "jcr:reference:last_name": "/Questionnaires/Patient information/last_name"
+  "jcr:reference:mrn": "/Questionnaires/Patient information/mrn"
 }

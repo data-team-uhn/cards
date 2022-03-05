@@ -4,7 +4,11 @@
   "jcr:reference:surveys_complete": "/Questionnaires/Visit information/surveys_complete",
   "jcr:reference:surveys_submitted": "/Questionnaires/Visit information/surveys_submitted",
   "jcr:reference:email_unsubscribed": "/Questionnaires/Patient information/email_unsubscribed",
-  "jcr:reference:mrn": "/Questionnaires/Patient information/mrn",
+  "jcr:reference:last_name": "/Questionnaires/Patient information/last_name",
   "jcr:reference:first_name": "/Questionnaires/Patient information/first_name",
-  "jcr:reference:last_name": "/Questionnaires/Patient information/last_name"
+  "jcr:reference:mrn": "/Questionnaires/Patient information/mrn",
+  "jcr:reference:audit_score": "/Questionnaires/AUDITC/audit_results/audit_score",
+  "jcr:reference:eq5d_score": "/Questionnaires/EQ5D/eq5d_results/eq5d_score",
+  "jcr:reference:gad7_score": "/Questionnaires/GAD7/gad7_results/gad7_score",
+  "jcr:reference:phq9_score": "/Questionnaires/PHQ9/phq9_results/phq9_score"
 }
