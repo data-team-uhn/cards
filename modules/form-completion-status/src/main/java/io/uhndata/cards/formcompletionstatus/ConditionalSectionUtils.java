@@ -117,6 +117,46 @@ public final class ConditionalSectionUtils
             }
         };
 
+    @SuppressWarnings("serial")
+    private static final Map<Integer, java.util.function.BiFunction<Object, Object, Boolean>> LTE_OPERATORS =
+        new HashMap<Integer, java.util.function.BiFunction<Object, Object, Boolean>>()
+        {
+            {
+                put(PropertyType.LONG, (a, b) -> toLong(a) <= toLong(b));
+                put(PropertyType.DOUBLE, (a, b) -> toDouble(a) <= toDouble(b));
+                put(PropertyType.DECIMAL, (a, b) -> {
+                    BigDecimal decimalA = toDecimal(a);
+                    BigDecimal decimalB = toDecimal(b);
+                    return decimalA != null && decimalB != null && decimalA.compareTo(decimalB) <= 0;
+                });
+                put(PropertyType.DATE, (a, b) -> {
+                    Calendar dateA = toDate(a);
+                    Calendar dateB = toDate(b);
+                    return dateA != null && dateB != null && (dateA.before(dateB) || dateA.equals(dateB));
+                });
+            }
+        };
+
+    @SuppressWarnings("serial")
+    private static final Map<Integer, java.util.function.BiFunction<Object, Object, Boolean>> GTE_OPERATORS =
+        new HashMap<Integer, java.util.function.BiFunction<Object, Object, Boolean>>()
+        {
+            {
+                put(PropertyType.LONG, (a, b) -> toLong(a) >= toLong(b));
+                put(PropertyType.DOUBLE, (a, b) -> toDouble(a) >= toDouble(b));
+                put(PropertyType.DECIMAL, (a, b) -> {
+                    BigDecimal decimalA = toDecimal(a);
+                    BigDecimal decimalB = toDecimal(b);
+                    return decimalA != null && decimalB != null && decimalA.compareTo(decimalB) >= 0;
+                });
+                put(PropertyType.DATE, (a, b) -> {
+                    Calendar dateA = toDate(a);
+                    Calendar dateB = toDate(b);
+                    return dateA != null && dateB != null && (dateA.after(dateB) || dateA.equals(dateB));
+                });
+            }
+        };
+
     /**
      * Hide the utility class constructor.
      */
@@ -282,19 +322,24 @@ public final class ConditionalSectionUtils
     private static boolean evalSectionCondition(final Object propA, final Object propB, final String operator)
         throws RepositoryException, ValueFormatException
     {
+        // If we can't evaluate it, default to false
+        boolean result = false;
         if ("=".equals(operator) || "<>".equals(operator)) {
             boolean testResult = evalSection(propA, propB, EQ_OPERATORS);
             if ("<>".equals(operator)) {
                 testResult = !testResult;
             }
-            return testResult;
+            result = testResult;
         } else if ("<".equals(operator)) {
-            return evalSection(propA, propB, LT_OPERATORS);
+            result = evalSection(propA, propB, LT_OPERATORS);
         } else if (">".equals(operator)) {
-            return evalSection(propA, propB, GT_OPERATORS);
+            result = evalSection(propA, propB, GT_OPERATORS);
+        } else if ("<=".equals(operator)) {
+            result = evalSection(propA, propB, LTE_OPERATORS);
+        } else if (">=".equals(operator)) {
+            result = evalSection(propA, propB, GTE_OPERATORS);
         }
-        // If we can't evaluate it, assume it to be false
-        return false;
+        return result;
     }
 
     /*
