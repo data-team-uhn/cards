@@ -32,7 +32,7 @@ function ToULink (props) {
       variant="caption"
       onClick={() => {setShowTou(true);}}
     >
-      Terms of Use
+      Terms of Use and Privacy Policy
     </Link>
     <ToUDialog
       open={showTou}

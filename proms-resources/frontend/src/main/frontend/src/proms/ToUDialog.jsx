@@ -33,6 +33,11 @@ import FormattedText from "../components/FormattedText.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog";
 
 const useStyles = makeStyles(theme => ({
+  touDialog : {
+    "& .MuiDialogTitle-root > .MuiTypography-root" : {
+      fontSize: "1.75rem",
+    }
+  },
   touText : {
     "& .wmde-markdown blockquote" : {
       borderLeft: "0 none",
@@ -127,6 +132,7 @@ function ToUDialog(props) {
       width="md"
       onClose={onClose}
       scroll={actionRequired? "body" : "paper"}
+      className={classes.touDialog}
     >
       { actionRequired &&
         <DialogContent>
