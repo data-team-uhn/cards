@@ -132,3 +132,6 @@
 
   // The display name to return to the user
   - displayName (String) mandatory
+
+  // If TRUE, the email_ok question in Patient Information is ignored
+  - ignoreEmailConsent (boolean)

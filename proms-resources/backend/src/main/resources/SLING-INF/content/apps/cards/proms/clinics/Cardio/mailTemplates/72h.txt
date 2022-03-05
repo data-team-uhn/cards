@@ -41,3 +41,5 @@ DATAPRO
 University Health Network
 
 Peter Munk Cardiac Centre
+
+Unsubscribe from further emails from DATAPRO: ${unsubscribeLink}

@@ -56,5 +56,10 @@
             <value>Adult Congenital Heart Disease clinic</value>
             <type>String</type>
         </property>
+        <property>
+            <name>ignoreEmailConsent</name>
+            <value>True</value>
+            <type>Boolean</type>
+        </property>
     </node>
 </node>

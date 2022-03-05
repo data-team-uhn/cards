@@ -131,25 +131,42 @@ public final class AppointmentUtils
      *
      * @param resolver a ResourceResolver that can be used to query the JCR
      * @param patientSubject the JCR Resource for the patient whose email we wish to obtain
+     * @param visitSubject the visit that we're sending emails for
      * @return the patient's email address or null
      */
-    public static String getPatientConsentedEmail(ResourceResolver resolver, Resource patientSubject)
+    public static String getPatientConsentedEmail(ResourceResolver resolver, Resource patientSubject,
+        Resource visitSubject)
     {
+        long patientEmailUnsubscribed = getQuestionAnswerForSubject(
+            resolver,
+            patientSubject,
+            "/Questionnaires/Patient information/email_unsubscribed",
+            "cards:BooleanAnswer",
+            0);
+        String visitLocation = getQuestionAnswerForSubject(resolver, visitSubject,
+            "/Questionnaires/Visit information/location", TEXT_ANSWER, "");
+
+        boolean ignoreEmailConsent = false;
+        Iterator<Resource> results = resolver.findResources(
+            "SELECT t.* FROM [cards:ClinicMapping] as t WHERE t.'displayName'='" + visitLocation + "'",
+            "JCR-SQL2");
+        if (results.hasNext()) {
+            ignoreEmailConsent = results.next().getValueMap().get("ignoreEmailConsent", Boolean.FALSE);
+        }
+
         long patientEmailOk = getQuestionAnswerForSubject(
             resolver,
             patientSubject,
             "/Questionnaires/Patient information/email_ok",
             "cards:BooleanAnswer",
-            0
-        );
+            0);
         String patientEmailAddress = getQuestionAnswerForSubject(
             resolver,
             patientSubject,
             "/Questionnaires/Patient information/email",
             TEXT_ANSWER,
-            ""
-        );
-        if (patientEmailOk == 1) {
+            "");
+        if (patientEmailUnsubscribed != 1 && (ignoreEmailConsent || patientEmailOk == 1)) {
             if (EmailValidator.getInstance().isValid(patientEmailAddress)) {
                 return patientEmailAddress;
             }

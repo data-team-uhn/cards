@@ -21,7 +21,6 @@ package io.uhndata.cards.proms.emailnotifications;
 
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -88,7 +87,8 @@ abstract class AbstractPromsNotification
                 if (patientSurveysComplete) {
                     continue;
                 }
-                String patientEmailAddress = AppointmentUtils.getPatientConsentedEmail(resolver, patientSubject);
+                String patientEmailAddress =
+                    AppointmentUtils.getPatientConsentedEmail(resolver, patientSubject, visitSubject);
                 if (patientEmailAddress == null) {
                     continue;
                 }
@@ -100,17 +100,18 @@ abstract class AbstractPromsNotification
                 String patientFullName = AppointmentUtils.getPatientFullName(resolver, patientSubject);
                 Calendar tokenExpiryDate = AppointmentUtils.parseDate(appointmentDate.getValueMap().get("value", ""));
                 atMidnight(tokenExpiryDate);
-                String surveysLink = "https://" + CARDS_HOST_AND_PORT + CLINIC_SLING_PATH + "?auth_token="
-                    + this.tokenManager.create(
-                        "patient",
-                        tokenExpiryDate,
-                        Collections.singletonMap(
-                            "cards:sessionSubject",
-                            visitSubject.getPath()))
-                        .getToken();
+                final String token = this.tokenManager.create(
+                    "patient",
+                    tokenExpiryDate,
+                    Collections.singletonMap(
+                        "cards:sessionSubject",
+                        visitSubject.getPath()))
+                    .getToken();
                 // Send the Notification Email
-                Map<String, String> valuesMap = new HashMap<>();
-                valuesMap.put("surveysLink", surveysLink);
+                Map<String, String> valuesMap = Map.of(
+                    "surveysLink", "https://" + CARDS_HOST_AND_PORT + CLINIC_SLING_PATH + "?auth_token=" + token,
+                    "unsubscribeLink",
+                    "https://" + CARDS_HOST_AND_PORT + "/Proms.unsubscribe.html?auth_token=" + token);
                 String emailTextBody = EmailUtils.renderEmailTemplate(emailTextTemplate, valuesMap);
                 try {
                     EmailUtils.sendNotificationEmail(this.mailService, patientEmailAddress,

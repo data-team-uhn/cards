@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
 import io.uhndata.cards.dataentry.api.FormUtils;
 import io.uhndata.cards.dataentry.api.QuestionnaireUtils;
 
-@Component(service = { Servlet.class })
+@Component(service = { Servlet.class }, property = { "sling.auth.requirements=-/Proms" })
 @SlingServletResourceTypes(resourceTypes = { "cards/PromsHomepage" }, extensions = {
     "validateCredentials" }, methods = { "POST" })
 public class ValidateCredentialsServlet extends SlingAllMethodsServlet
