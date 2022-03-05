@@ -67,6 +67,15 @@ function PromsView(props) {
       value: surveysId,
       hidden: true
     },
+    status : {
+      comparator: "<>",
+      name: "status",
+      title: visitInfo?.status?.["text"],
+      type: visitInfo?.status?.["dataType"],
+      uuid: visitInfo?.status?.["jcr:uuid"],
+      value: "cancelled",
+      hidden: true
+    },
     submitted : {
       comparator: "=",
       name: "surveys_submitted",
