@@ -84,20 +84,22 @@ const graphQlResponse = {
             location: ['6012-HC-Congenital Cardiac'],
             status: 'planned',
             fhirID: 'AppointmentFhirID',
-            attending: {
-              name: {
-                prefix: [
-                  'Dr.'
-                ],
-                given: [
-                  'Robert'
-                ],
-                family: 'Smith',
-                suffix: [
-                  'M.D.'
-                ]
+            participants: [
+              {
+                name: {
+                  prefix: [
+                    'Dr.'
+                  ],
+                  given: [
+                    'Robert'
+                  ],
+                  family: 'Smith',
+                  suffix: [
+                    'M.D.'
+                  ]
+                }
               }
-            },
+            ],
             time: {toJSON: getMockAppointmentTime}
           }
         ]
