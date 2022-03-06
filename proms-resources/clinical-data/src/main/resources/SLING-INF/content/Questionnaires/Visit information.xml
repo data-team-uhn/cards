@@ -169,13 +169,4 @@
 			<type>Long</type>
 		</property>
 	</node>
-	<node>
-		<name>location</name>
-		<primaryNodeType>cards:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>Location</value>
-			<type>String</type>
-		</property>
-	</node>
 </node>
