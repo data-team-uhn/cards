@@ -397,7 +397,7 @@ function Filters(props) {
       if (typeof path == "string") {
         // Straight strings are MenuItems
         return <MenuItem value={path} key={path} className={classes.categoryOption + (nested ? " " + classes.nestedSelectOption : "")}>{filterableTitles[path]}</MenuItem>
-      } else if (Array.isArray(path)) {
+      } else if (Array.isArray(path) && path.length > 1) {
         // Arrays represent Questionnaires of Sections
         // which we'll need to turn into opt groups
         return [<MenuItem className={classes.categoryHeader} disabled>{path[0]}</MenuItem>,
