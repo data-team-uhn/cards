@@ -243,7 +243,7 @@ def options_list(categorical_list):
 
 # Split the conditional_string entry into 3 parts: The first operand, the operator and the second operand.
 def partition_conditional_string(conditional_string):
-    match = regex.search('=|<>|<|>|>=|<=', conditional_string)
+    match = regex.search('<>|>=|<=|=|<|>', conditional_string)
     if not match:
         # No operator detected, return everything as a single operand
         print("Failed to parse conditional: " + conditional_string)
@@ -308,38 +308,7 @@ def get_row_type(row):
         if any(prefix in row[Headers.QUESTION].lower() for prefix in MATRIX_PREFIX):
             return RowTypes.MATRIX_START
     if row[Headers.DEFINITION]:
-        variable = row[Headers.DEFINITION].lower()
-        if (variable.startswith("matrix start")):
-            # Prioritize over all other types as matrix definitions can contain information that looks like other question types
-            row_type = RowTypes.MATRIX_START
-            row[Headers.DEFINITION] = row[Headers.DEFINITION][12:].strip()
-        elif ("matrix end" in variable):
-            # Prioritize over all other types as matrix definitions can contain information that looks like other question types
-            row_type = RowTypes.MATRIX_END
-        elif (("mm" in variable and ("yyyy" in variable or "yr" in variable)) or "date" in variable or "timestamp" in variable):
-            row_type = RowTypes.DATE
-        elif (("hh" in variable and "mm" in variable)):
-            # Time must be checked after date, as datetimes should be parsed as dates
-            row_type = RowTypes.TIME
-        elif ("boolean" in variable):
-            row_type = RowTypes.BOOLEAN
-        elif ("\n" in variable or "radio" in variable or '[]' in variable or (hasattr(Headers, "OPTIONS") and Headers.OPTIONS in row and "\n" in row[Headers.OPTIONS])):
-            row_type = RowTypes.LIST
-        elif ("numeric" in variable or "integer" in variable or "smallint" in variable):
-            row_type = RowTypes.NUMBER
-        elif ("text field" == variable or "text" == variable or "varchar" in variable):
-            row_type = RowTypes.TEXT
-        elif ("calculated" in variable):
-            row_type = RowTypes.CALCULATED
-        elif ("section" == variable):
-            row_type = RowTypes.SECTION
-        elif ("conditional" in variable):
-            row_type = RowTypes.SECTION_CONDITIONAL
-        elif ("recurrent" in variable):
-            row_type = RowTypes.SECTION_RECURRENT
-        else:
-            # print("Unexpected Variable Values \"{}\" found for question \"{}\"".format(row[Headers.DEFINITION],row.get("NAME", "N/A")))
-            pass
+        row_type = get_row_type_from_definition(row)
     elif row[Headers.QUESTION]:
         if (any(prefix in row[Headers.QUESTION].lower() for prefix in SECTION_PREFIX)):
             row_type = RowTypes.SECTION
@@ -353,6 +322,44 @@ def get_row_type(row):
             # Uncomment to check if any data is being lost
             # print("Skipped row {}".format(row))
             pass
+    return row_type
+
+def get_row_type_from_definition(row):
+    row_type = RowTypes.DEFAULT
+    variable = row[Headers.DEFINITION].lower()
+    if (variable.startswith("matrix start")):
+        # Prioritize over all other types as matrix definitions can contain information that looks like other question types
+        row_type = RowTypes.MATRIX_START
+        row[Headers.DEFINITION] = row[Headers.DEFINITION][12:].strip()
+    elif ("matrix end" in variable):
+        # Prioritize over all other types as matrix definitions can contain information that looks like other question types
+        row_type = RowTypes.MATRIX_END
+    elif (variable.startswith("calculated")):
+        # Prioritize over other question types as a calculated definition will include a second question type (eg. calculated numeric)
+        row_type = RowTypes.CALCULATED
+        row[Headers.DEFINITION] = row[Headers.DEFINITION][10:].strip()
+    elif (("mm" in variable and ("yyyy" in variable or "yr" in variable)) or "date" in variable or "timestamp" in variable):
+        row_type = RowTypes.DATE
+    elif (("hh" in variable and "mm" in variable)):
+        # Time must be checked after date, as datetimes should be parsed as dates
+        row_type = RowTypes.TIME
+    elif ("boolean" in variable):
+        row_type = RowTypes.BOOLEAN
+    elif ("\n" in variable or "radio" in variable or '[]' in variable or (hasattr(Headers, "OPTIONS") and Headers.OPTIONS in row and "\n" in row[Headers.OPTIONS])):
+        row_type = RowTypes.LIST
+    elif ("numeric" in variable or "integer" in variable or "smallint" in variable):
+        row_type = RowTypes.NUMBER
+    elif ("text field" == variable or "text" == variable or "varchar" in variable):
+        row_type = RowTypes.TEXT
+    elif ("section" == variable):
+        row_type = RowTypes.SECTION
+    elif ("conditional" in variable):
+        row_type = RowTypes.SECTION_CONDITIONAL
+    elif ("recurrent" in variable):
+        row_type = RowTypes.SECTION_RECURRENT
+    else:
+        # print("Unexpected Variable Values \"{}\" found for question \"{}\"".format(row[Headers.DEFINITION],row.get("NAME", "N/A")))
+        pass
     return row_type
 
 def clean_title(title):
@@ -477,7 +484,8 @@ def insert_date(question, row):
     question['dataType'] = "date"
 
 def process_conditions(parent, condition_text, question_title):
-    if '\n' in condition_text and not ":\n" in condition_text and not parent[question_title]["dataType"] == "computed":
+    is_computed = "entryMode" in parent[question_title] and parent[question_title]["entryMode"] == "computed"
+    if '\n' in condition_text and not ":\n" in condition_text and not is_computed:
         separated = split_ignore_strings(condition_text, ["\n"], 1)
         if len(separated) > 1:
             parent[question_title] = append_description(parent[question_title], separated[1])
@@ -652,10 +660,32 @@ def insert_question(parent, row, question, row_type):
     insert_question_type(row, parent[question], row_type)
 
 def insert_question_type(row, question, row_type):
+    new_type = row_type_to_question_type(row_type)
+
+    if row_type == RowTypes.DATE:
+        question['dateFormat'] = row[Headers.OPTIONS] if hasattr(Headers, "OPTIONS") and row[Headers.OPTIONS] else row[Headers.DEFINITION]
+        question['dateFormat'] = question['dateFormat'].replace("mm", "MM").replace("dd", "DD").replace("yr","yyyy")
+    elif row_type == RowTypes.LIST or row_type == RowTypes.BOOLEAN:
+        insert_list(row, question)
+        if row_type == row_type.BOOLEAN:
+            question['compact'] = True
+    elif row_type == RowTypes.CALCULATED:
+        # Change to datatype
+        new_type = row_type_to_question_type(get_row_type_from_definition(row))
+        question['entryMode'] = "computed"
+        if hasattr(Headers, "CONDITIONS") and row[Headers.CONDITIONS]:
+            question['expression'] = row[Headers.CONDITIONS]
+    elif row_type == RowTypes.DEFAULT:
+        if len(row[Headers.DEFINITION]) > 0:
+            question = append_description(question, row[Headers.DEFINITION])
+
+    if not "dataType" in question:
+        question['dataType'] = new_type
+
+def row_type_to_question_type(row_type):
     new_type = ""
     if row_type == RowTypes.DATE:
         new_type = "date"
-        question['dateFormat'] = row[Headers.OPTIONS] if hasattr(Headers, "OPTIONS") and row[Headers.OPTIONS] else row[Headers.DEFINITION]
     elif row_type == RowTypes.TIME:
         new_type = "time"
     elif row_type == RowTypes.NUMBER:
@@ -664,21 +694,9 @@ def insert_question_type(row, question, row_type):
         new_type = "text"
     elif row_type == RowTypes.LIST or row_type == RowTypes.BOOLEAN:
         new_type = "text"
-        insert_list(row, question)
-        if row_type == row_type.BOOLEAN:
-            question['compact'] = True
-    elif row_type == RowTypes.CALCULATED:
-        new_type = "computed"
-        if hasattr(Headers, "CONDITIONS") and row[Headers.CONDITIONS]:
-            question['expression'] = row[Headers.CONDITIONS]
     elif row_type == RowTypes.DEFAULT:
         new_type = "text"
-        if len(row[Headers.DEFINITION]) > 0:
-            question = append_description(question, row[Headers.DEFINITION])
-
-
-    if not "dataType" in question:
-        question['dataType'] = new_type
+    return new_type
 
 def insert_list(row, question):
     option_list = options_list(row[Headers.OPTIONS if hasattr(Headers, "OPTIONS") else Headers.DEFINITION])

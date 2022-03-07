@@ -5174,13 +5174,18 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>entryMode</name>
+			<value>computed</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>expression</name>
 			<value>return  @{user_entered_age_in_days_no} / 365</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>computed</value>
+			<value>decimal</value>
 			<type>String</type>
 		</property>
 	</node>
@@ -5831,7 +5836,7 @@
 		</property>
 		<property>
 			<name>dateFormat</name>
-			<value>dd/mm/yyyy hh:mm:ss</value>
+			<value>DD/MM/yyyy hh:MM:ss</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -5855,7 +5860,7 @@
 		</property>
 		<property>
 			<name>dateFormat</name>
-			<value>dd/mm/yyyy hh:mm:ss</value>
+			<value>DD/MM/yyyy hh:MM:ss</value>
 			<type>String</type>
 		</property>
 		<property>
