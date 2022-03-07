@@ -148,7 +148,8 @@ function Filters(props) {
     // We'll need a helper recursive function to copy over data from sections/questions
     let parseSectionOrQuestionnaire = (sectionJson, path="") => {
       let retFields = [];
-      for (let [title, object] of Object.entries(sectionJson)) {
+      Object.entries(sectionJson)
+            .map(([title, object]) => {
         // We only care about children that are cards:Questions or cards:Sections
         if (object["jcr:primaryType"] == "cards:Question") {
           // If this is an cards:Question, copy the entire thing over to our Json value
@@ -162,8 +163,7 @@ function Filters(props) {
           retFields.push(...parseSectionOrQuestionnaire(object, path+title+"/"));
         }
         // Otherwise, we don't care about this value
-      }
-
+      });
       return retFields;
     }
 
@@ -430,17 +430,20 @@ function Filters(props) {
         Filters:
       </Typography>
       {activeFilters.map( (activeFilter, index) => {
-        let label = activeFilter.title + " " + activeFilter.comparator +
-          // Include the label (if available) or value for this filter iff the comparator is not unary
-          (UNARY_COMPARATORS.includes(activeFilter.comparator) ? ""
-            : (" " + (activeFilter.label != undefined ? activeFilter.label : activeFilter.value)));
+        let label = activeFilter.label || activeFilter.value;
         label = (activeFilter.type === "createddate") ? label.split('T')[0] : label;
         return(
           <React.Fragment key={label}>
             <Chip
               key={label}
               size="small"
-              label={label}
+              label={<div>
+                       <div title={activeFilter.title} className={classes.filterChipLabel}>{activeFilter.title}</div>
+                       <div className={classes.filterChipLabel}>{activeFilter.comparator}</div>
+                       { !UNARY_COMPARATORS.includes(activeFilter.comparator) &&
+                         <div title={label} className={classes.filterChipLabel}>{label}</div>
+                       }
+                     </div>}
               disabled={disabled}
               variant="outlined"
               color="primary"
@@ -534,7 +537,7 @@ function Filters(props) {
                   </Grid>
                   {/* Look up whether or not the component can be loaded */}
                   {!isUnary &&
-                    <Grid item xs={isNotesContain ? 3 : (isContain ? 4 : 5)} className={index == editingFilters.length-1 ? classes.hidden : ""}>
+                    <Grid item xs={isNotesContain ? 3 : (isContain ? 4 : 5)} className={index == editingFilters.length-1 ? classes.hidden : classes.answerBox}>
                       {filterDatum.comparator ?
                           getCachedInput(filterDatum, index, (index !== editingFilters.length-1 && toFocus === index ? focusCallback : undefined))
                         : <TextField disabled className={classes.answerField}></TextField>
