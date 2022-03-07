@@ -39,6 +39,9 @@ public final class AppointmentUtils
     /** The primary node type for a Subject, an entity about which data is collected. */
     private static final String TEXT_ANSWER = "cards:TextAnswer";
 
+    /** The property name for the UUID of a JCR Node. */
+    private static final String JCR_UUID = "jcr:uuid";
+
     // Hide the utility class constructor
     private AppointmentUtils()
     {
@@ -76,7 +79,7 @@ public final class AppointmentUtils
     public static Resource getRelatedSubjectOfType(ResourceResolver resolver, Resource formResource,
         String subjectTypePath)
     {
-        final String subjectTypeUuid = resolver.getResource(subjectTypePath).getValueMap().get("jcr:uuid", "");
+        final String subjectTypeUuid = resolver.getResource(subjectTypePath).getValueMap().get(JCR_UUID, "");
         final String[] relatedSubjects = formResource.getValueMap().get("relatedSubjects", String[].class);
         for (int i = 0; i < relatedSubjects.length; i++) {
             Resource tmpSubject = getSubjectNode(resolver, relatedSubjects[i]);
@@ -106,8 +109,8 @@ public final class AppointmentUtils
     public static <T> T getQuestionAnswerForSubject(
         ResourceResolver resolver, Resource subject, String questionPath, String cardsDataType, T defaultValue)
     {
-        final String subjectUUID = subject.getValueMap().get("jcr:uuid", "");
-        final String questionUUID = resolver.getResource(questionPath).getValueMap().get("jcr:uuid", "");
+        final String subjectUUID = subject.getValueMap().get(JCR_UUID, "");
+        final String questionUUID = resolver.getResource(questionPath).getValueMap().get(JCR_UUID, "");
         if ("".equals(questionUUID)) {
             return defaultValue;
         }
@@ -435,9 +438,9 @@ public final class AppointmentUtils
     {
         final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         final Resource visitTimeResult = resolver.getResource("/Questionnaires/Visit information/time");
-        final String visitTimeUUID = visitTimeResult.getValueMap().get("jcr:uuid", "");
+        final String visitTimeUUID = visitTimeResult.getValueMap().get(JCR_UUID, "");
         final String statusUUID =
-            resolver.getResource("/Questionnaires/Visit information/status").getValueMap().get("jcr:uuid", "");
+            resolver.getResource("/Questionnaires/Visit information/status").getValueMap().get(JCR_UUID, "");
         final Calendar lowerBoundDate = (Calendar) dateToQuery.clone();
         lowerBoundDate.set(Calendar.HOUR_OF_DAY, 0);
         lowerBoundDate.set(Calendar.MINUTE, 0);
