@@ -53,6 +53,9 @@ const liveTableStyle = theme => ({
     answerField: {
         width: "100%",
     },
+    answerBox: {
+        paddingLeft: theme.spacing(2) + "px !important",
+    },
     categoryOption: {
         whiteSpace: "normal",
         padding: theme.spacing(0, 2),
@@ -78,7 +81,7 @@ const liveTableStyle = theme => ({
     },
     deleteButton: {
         width: "100%",
-        marginLeft: theme.spacing(2.5),
+        marginLeft: theme.spacing(2),
     },
     tableActions: {
         "& .MuiIconButton-root": {

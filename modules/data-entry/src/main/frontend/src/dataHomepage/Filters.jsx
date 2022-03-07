@@ -160,7 +160,8 @@ function Filters(props) {
     // We'll need a helper recursive function to copy over data from sections/questions
     let parseSectionOrQuestionnaire = (sectionJson, path="") => {
       let retFields = [];
-      for (let [title, object] of Object.entries(sectionJson)) {
+      Object.entries(sectionJson)
+            .map(([title, object]) => {
         // We only care about children that are cards:Questions or cards:Sections
         if (object["jcr:primaryType"] == "cards:Question"
           && object.displayMode != "hidden"
@@ -176,8 +177,7 @@ function Filters(props) {
           retFields.push(...parseSectionOrQuestionnaire(object, path+title+"/"));
         }
         // Otherwise, we don't care about this value
-      }
-
+      });
       return retFields;
     }
 
@@ -413,10 +413,12 @@ function Filters(props) {
         Filters:
       </Typography>
       {activeFilters.map( (activeFilter, index) => {
-        let label = activeFilter.title + " " + activeFilter.comparator +
+        let title = activeFilter.title.length > 20 ? activeFilter.title.substring(0, 20) + "..." : activeFilter.title;
+        let text = activeFilter.label != undefined ? activeFilter.label : activeFilter.value;
+        text = text.length > 20 ? text.substring(0, 20) + "..." : text;
+        let label = title + " " + activeFilter.comparator +
           // Include the label (if available) or value for this filter iff the comparator is not unary
-          (UNARY_COMPARATORS.includes(activeFilter.comparator) ? ""
-            : (" " + (activeFilter.label != undefined ? activeFilter.label : activeFilter.value)));
+          (UNARY_COMPARATORS.includes(activeFilter.comparator) ? "" : " " + (text));
         label = (activeFilter.type === "createddate") ? label.split('T')[0] : label;
         return(
           <React.Fragment key={label}>
@@ -517,7 +519,7 @@ function Filters(props) {
                   </Grid>
                   {/* Look up whether or not the component can be loaded */}
                   {!isUnary &&
-                    <Grid item xs={isNotesContain ? 3 : (isContain ? 4 : 5)} className={index == editingFilters.length-1 ? classes.hidden : ""}>
+                    <Grid item xs={isNotesContain ? 3 : (isContain ? 4 : 5)} className={index == editingFilters.length-1 ? classes.hidden : classes.answerBox}>
                       {filterDatum.comparator ?
                           getCachedInput(filterDatum, index, (index !== editingFilters.length-1 && toFocus === index ? focusCallback : undefined))
                         : <TextField disabled className={classes.answerField}></TextField>
