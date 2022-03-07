@@ -27,7 +27,7 @@
 	</property>
 	<property>
 		<name>description</name>
-		<value>LFS-273, LFS-275, LFS-484</value>
+		<value>LFS-273, LFS-275, LFS-484, CARDS-1683</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -756,6 +756,183 @@
 				<property>
 					<name>isReference</name>
 					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>test</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Confirm okay</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+		</node>
+	</node>
+
+	<node>
+		<name>string_ref_nine</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Long Value I, make it greater than or equal to 5</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>long</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>stringref_gte_stringref_details</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<node>
+			<name>condition</name>
+			<primaryNodeType>cards:Conditional</primaryNodeType>
+			<property>
+				<name>comparator</name>
+				<value><![CDATA[>=]]></value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
+			</property>
+			<node>
+				<name>operandA</name>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>string_ref_nine</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>operandB</name>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>5</value>
+					</values>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>False</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>test</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Confirm okay</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>string_ref_ten</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Long Value J, make it less than or equal to 5</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>long</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>stringref_lte_stringref_details</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<node>
+			<name>condition</name>
+			<primaryNodeType>cards:Conditional</primaryNodeType>
+			<property>
+				<name>comparator</name>
+				<value><![CDATA[<=]]></value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
+			</property>
+			<node>
+				<name>operandA</name>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>string_ref_ten</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>operandB</name>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>5</value>
+					</values>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>False</value>
 					<type>Boolean</type>
 				</property>
 			</node>

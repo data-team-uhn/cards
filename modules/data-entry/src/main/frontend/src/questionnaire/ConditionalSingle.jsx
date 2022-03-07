@@ -34,6 +34,8 @@ const OPERATIONS = {
   "=": (a, b) => (a == b),
   "<": (a, b) => (a < b),
   ">": (a, b) => (a > b),
+  "<=": (a, b) => (a <= b),
+  ">=": (a, b) => (a >= b),
   "<>": (a, b) => (a != b),
   "is empty": (a, b) => (EMPTY.indexOf(a) >= 0 || EMPTY.indexOf(b) >= 0),
   "is not empty": (a, b) => (EMPTY.indexOf(a) < 0 || EMPTY.indexOf(b) < 0)
