@@ -69,6 +69,7 @@ class Headers1:
     CONDITIONS = "Further Instructions"
     CONDITION_QUESTION = True
     MERGED_DEFINITIONS_OPTIONS = False
+    PAGINATE = True
 
 class Headers1Impact(Headers1):
     SECTION = "Section Name (Rearranged Variables in Non-Bold)"
@@ -88,6 +89,7 @@ class Headers2:
     CONDITIONS = "Constraints"
     CONDITION_QUESTION = False
     MERGED_DEFINITIONS_OPTIONS = False
+    PAGINATE = True
 
 class Headers2Details(Headers2):
     INCLUDE_NAME_IN_DESCRIPTION = True
@@ -99,6 +101,7 @@ class Headers3:
     CONDITION_QUESTION = True
     MERGED_DEFINITIONS_OPTIONS = True
     QUESTION_DEFINED_SECTIONS = True
+    PAGINATE = True
 
 def partition_ignore_strings(input, splitter):
     ignore_map = {
@@ -406,6 +409,7 @@ def start_questionnaire(title):
     questionnaire['jcr:primaryType'] = 'cards:Questionnaire'
     questionnaire['title'] = clean_title(title)
     questionnaire['jcr:reference:requiredSubjectTypes'] = ["/SubjectTypes/Patient"]
+    questionnaire['paginate'] = Headers.PAGINATE
     return questionnaire
 
 def start_section(parents, row):
