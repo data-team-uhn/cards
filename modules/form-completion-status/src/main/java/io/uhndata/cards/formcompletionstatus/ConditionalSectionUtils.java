@@ -132,7 +132,7 @@ public final class ConditionalSectionUtils
                 put(PropertyType.DATE, (a, b) -> {
                     Calendar dateA = toDate(a);
                     Calendar dateB = toDate(b);
-                    return dateA != null && dateB != null && (dateA.before(dateB) || dateA.equals(dateB));
+                    return dateA != null && dateB != null && !dateA.after(dateB);
                 });
             }
         };
@@ -152,7 +152,7 @@ public final class ConditionalSectionUtils
                 put(PropertyType.DATE, (a, b) -> {
                     Calendar dateA = toDate(a);
                     Calendar dateB = toDate(b);
-                    return dateA != null && dateB != null && (dateA.after(dateB) || dateA.equals(dateB));
+                    return dateA != null && dateB != null && !dateA.before(dateB);
                 });
             }
         };
