@@ -45,33 +45,33 @@ PROJECT_VERSION=$2
 featureFlagString=""
 if [[ "${CARDS_PROJECT}" == 'cards4care' ]]
 then
-  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4care/${CARDS_VERSION}/slingosgifeature"
+  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4care/${PROJECT_VERSION}/slingosgifeature"
 elif [[ "${CARDS_PROJECT}" == 'cards4kids' ]]
 then
-  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4kids/${CARDS_VERSION}/slingosgifeature"
+  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4kids/${PROJECT_VERSION}/slingosgifeature"
 elif [[ "${CARDS_PROJECT}" == 'cards4lfs' ]]
 then
-  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4lfs/${CARDS_VERSION}/slingosgifeature"
+  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4lfs/${PROJECT_VERSION}/slingosgifeature"
 elif [[ "${CARDS_PROJECT}" == 'cards4proms' ]]
 then
-  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4proms/${CARDS_VERSION}/slingosgifeature"
+  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4proms/${PROJECT_VERSION}/slingosgifeature"
 fi
 
 if [ ! -z $DEV ]
 then
-  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards/${CARDS_VERSION}/slingosgifeature/composum"
+  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards/${PROJECT_VERSION}/slingosgifeature/composum"
 fi
 
 if [ ! -z $DEMO ]
 then
-  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-modules-demo-banner/${CARDS_VERSION}/slingosgifeature,"
-  featureFlagString="${featureFlagString}mvn:io.uhndata.cards/cards-modules-upgrade-marker/${CARDS_VERSION}/slingosgifeature,"
-  featureFlagString="${featureFlagString}mvn:io.uhndata.cards/cards-dataentry/${CARDS_VERSION}/slingosgifeature/forms_demo"
+  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-modules-demo-banner/${PROJECT_VERSION}/slingosgifeature,"
+  featureFlagString="${featureFlagString}mvn:io.uhndata.cards/cards-modules-upgrade-marker/${PROJECT_VERSION}/slingosgifeature,"
+  featureFlagString="${featureFlagString}mvn:io.uhndata.cards/cards-dataentry/${PROJECT_VERSION}/slingosgifeature/forms_demo"
 fi
 
 if [ ! -z $ENABLE_TEST_FEATURES ]
 then
-  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-modules-test-forms/${CARDS_VERSION}/slingosgifeature"
+  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-modules-test-forms/${PROJECT_VERSION}/slingosgifeature"
 fi
 
 if [ ! -z $ADDITIONAL_SLING_FEATURES ]
@@ -92,27 +92,27 @@ do
     STORAGE=mongo
   elif [[ ${legacyRunMode} == 'dev' ]]
   then
-    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards/${CARDS_VERSION}/slingosgifeature/composum"
+    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards/${PROJECT_VERSION}/slingosgifeature/composum"
   elif [[ ${legacyRunMode} == 'cardiac_rehab' ]]
   then
-    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4care/${CARDS_VERSION}/slingosgifeature"
+    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4care/${PROJECT_VERSION}/slingosgifeature"
   elif [[ ${legacyRunMode} == 'kids' ]]
   then
-    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4kids/${CARDS_VERSION}/slingosgifeature"
+    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4kids/${PROJECT_VERSION}/slingosgifeature"
   elif [[ ${legacyRunMode} == 'lfs' ]]
   then
-    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4lfs/${CARDS_VERSION}/slingosgifeature"
+    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4lfs/${PROJECT_VERSION}/slingosgifeature"
   elif [[ ${legacyRunMode} == 'proms' ]]
   then
-    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4proms/${CARDS_VERSION}/slingosgifeature"
+    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4proms/${PROJECT_VERSION}/slingosgifeature"
   elif [[ ${legacyRunMode} == 'test' ]]
   then
-    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-modules-test-forms/${CARDS_VERSION}/slingosgifeature"
+    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-modules-test-forms/${PROJECT_VERSION}/slingosgifeature"
   elif [[ ${legacyRunMode} == 'demo' ]]
   then
-    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-modules-demo-banner/${CARDS_VERSION}/slingosgifeature,"
-    featureFlagString="${featureFlagString}mvn:io.uhndata.cards/cards-modules-upgrade-marker/${CARDS_VERSION}/slingosgifeature,"
-    featureFlagString="${featureFlagString}mvn:io.uhndata.cards/cards-dataentry/${CARDS_VERSION}/slingosgifeature/forms_demo"
+    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-modules-demo-banner/${PROJECT_VERSION}/slingosgifeature,"
+    featureFlagString="${featureFlagString}mvn:io.uhndata.cards/cards-modules-upgrade-marker/${PROJECT_VERSION}/slingosgifeature,"
+    featureFlagString="${featureFlagString}mvn:io.uhndata.cards/cards-dataentry/${PROJECT_VERSION}/slingosgifeature/forms_demo"
   elif [[ ${legacyRunMode} == 'permissions_open' ]]
   then
     PERMISSIONS="open"
@@ -162,13 +162,13 @@ fi
 #Should the SMTPS OSGi bundle be enabled?
 if [[ "$SMTPS_ENABLED" == "true" ]]
 then
-  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-email-notifications/${CARDS_VERSION}/slingosgifeature"
+  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-email-notifications/${PROJECT_VERSION}/slingosgifeature"
 fi
 
 #Should the SAML OSGi bundle be enabled?
 if [[ "$SAML_AUTH_ENABLED" == "true" ]]
 then
-  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-saml-support/${CARDS_VERSION}/slingosgifeature/base -C io.dropwizard.metrics:metrics-core:ALL -f mvn:io.uhndata.cards/cards-fetch-requires-saml-login/${CARDS_VERSION}/slingosgifeature"
+  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-saml-support/${PROJECT_VERSION}/slingosgifeature/base -C io.dropwizard.metrics:metrics-core:ALL -f mvn:io.uhndata.cards/cards-fetch-requires-saml-login/${PROJECT_VERSION}/slingosgifeature"
 fi
 
 if [[ "$SMTPS_LOCALHOST_PROXY" == "true" ]]
@@ -180,4 +180,4 @@ fi
 #Execute the volume_mounted_init.sh script if it is present
 [ -e /volume_mounted_init.sh ] && /volume_mounted_init.sh
 
-java -Djdk.xml.entityExpansionLimit=0 ${DEBUG:+ -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005} -jar org.apache.sling.feature.launcher.jar -p .cards-data -u "file://$(realpath ${HOME}/.m2/repository),https://nexus.phenotips.org/nexus/content/groups/public,https://repo.maven.apache.org/maven2,https://repository.apache.org/content/groups/snapshots" -f ./${PROJECT_ARTIFACTID}-${PROJECT_VERSION}-core_${STORAGE}_far.far${EXT_MONGO_VARIABLES}${SMTPS_VARIABLES} -f mvn:io.uhndata.cards/cards-dataentry/${CARDS_VERSION}/slingosgifeature/permissions_${PERMISSIONS}${featureFlagString}
+java -Djdk.xml.entityExpansionLimit=0 ${DEBUG:+ -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005} -jar org.apache.sling.feature.launcher.jar -p .cards-data -u "file://$(realpath ${HOME}/.m2/repository),https://nexus.phenotips.org/nexus/content/groups/public,https://repo.maven.apache.org/maven2,https://repository.apache.org/content/groups/snapshots" -f ./${PROJECT_ARTIFACTID}-${PROJECT_VERSION}-core_${STORAGE}_far.far${EXT_MONGO_VARIABLES}${SMTPS_VARIABLES} -f mvn:io.uhndata.cards/cards-dataentry/${PROJECT_VERSION}/slingosgifeature/permissions_${PERMISSIONS}${featureFlagString}

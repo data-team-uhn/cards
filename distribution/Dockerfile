@@ -44,9 +44,6 @@ RUN apk add \
   openjdk11-jre \
   tzdata
 
-# Specify the version
-ENV CARDS_VERSION=0.9-SNAPSHOT
-
 # Optional: enable remote debugging at port 5005
 ENV DEBUG=
 
