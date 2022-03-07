@@ -415,7 +415,7 @@ function Filters(props) {
       {activeFilters.map( (activeFilter, index) => {
         let title = activeFilter.title.length > 20 ? activeFilter.title.substring(0, 20) + "..." : activeFilter.title;
         let text = activeFilter.label != undefined ? activeFilter.label : activeFilter.value;
-        text = text.length > 20 ? text.substring(0, 20) + "..." : text;
+        text = text?.length > 20 ? text.substring(0, 20) + "..." : text;
         let label = title + " " + activeFilter.comparator +
           // Include the label (if available) or value for this filter iff the comparator is not unary
           (UNARY_COMPARATORS.includes(activeFilter.comparator) ? "" : " " + (text));
