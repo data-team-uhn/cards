@@ -58,6 +58,15 @@ const getMockAppointmentTime = () => {
   return "2022-02-20T10:00:00";
 };
 
+const getMockAppointmentStatus = () => {
+  for (let i = 0; i < process.argv.length; i++) {
+    if (process.argv[i].startsWith("--appointment-status=")) {
+      return process.argv[i].split("=")[1];
+    }
+  }
+  return "planned";
+};
+
 const graphQlResponse = {
   data: {
     patientsByDateAndClinic: [
@@ -82,7 +91,7 @@ const graphQlResponse = {
         appointments: [
           {
             location: ['6012-HC-Congenital Cardiac'],
-            status: 'planned',
+            status: {toJSON: getMockAppointmentStatus},
             fhirID: 'AppointmentFhirID',
             participants: [
               {
