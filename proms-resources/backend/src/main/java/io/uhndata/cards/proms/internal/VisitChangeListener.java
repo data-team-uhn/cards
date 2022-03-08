@@ -192,12 +192,12 @@ public class VisitChangeListener implements ResourceChangeListener
 
             // If case 1, record that this visit has no forms
             if (prunedQuestionnaireSetSize == baseQuestionnaireSetSize) {
-                changeVisitInformation(form, false, session, "has_surveys");
+                changeVisitInformation(form, "has_surveys", false, session);
             }
             return;
         } else {
             // Record that this visit has forms
-            changeVisitInformation(form, true, session, "has_surveys");
+            changeVisitInformation(form, "has_surveys", true, session);
 
             final List<String> createdForms = createForms(visit, questionnaireSetInfo, session);
             commitForms(createdForms, session);
@@ -241,7 +241,7 @@ public class VisitChangeListener implements ResourceChangeListener
         // The actual number of forms does not matter, since all the needed forms have been pre-created, and any still
         // incomplete form will cause the method to return early from the check above
         if (visitInformationForm != null) {
-            changeVisitInformation(visitInformationForm, true, session, "surveys_complete");
+            changeVisitInformation(visitInformationForm, "surveys_complete", true, session);
         }
     }
 
@@ -558,12 +558,12 @@ public class VisitChangeListener implements ResourceChangeListener
      * Will not update the visit information form if the question already has the desired answer.
      *
      * @param visitInformationForm the Visit Information form to save the value to, if needed
+     * @param questionPath the relative path from the visit information questionnaire to the question to be answered
      * @param value the value that answer should be set to
      * @param session a service session providing access to the repository
-     * @param questionPath the relative path from the visit information questionnaire to the question to be answered
      */
-    private void changeVisitInformation(final Node visitInformationForm, final boolean value, final Session session,
-        final String questionPath)
+    private void changeVisitInformation(final Node visitInformationForm, final String questionPath,
+        final boolean value, final Session session)
     {
         try {
             final Long newValue = value ? 1L : 0L;
