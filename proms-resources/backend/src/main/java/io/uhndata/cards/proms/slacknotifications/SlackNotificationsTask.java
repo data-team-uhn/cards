@@ -19,14 +19,7 @@
 
 package io.uhndata.cards.proms.slacknotifications;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,6 +32,7 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.httprequests.HttpRequests;
 import io.uhndata.cards.performancenotifications.PerformanceUtils;
 
 public class SlackNotificationsTask implements Runnable
@@ -74,53 +68,13 @@ public class SlackNotificationsTask implements Runnable
         return notificationLine;
     }
 
-    private static String readInputStream(InputStream stream) throws IOException
-    {
-        final BufferedReader br = new BufferedReader(new InputStreamReader(stream, "utf-8"));
-        String responseLine = null;
-        final StringBuilder retVal = new StringBuilder();
-        while ((responseLine = br.readLine()) != null) {
-            retVal.append(responseLine.trim());
-        }
-        return retVal.toString();
-    }
-
-    String getPostResponse(final String url, final String data, final String token) throws IOException
-    {
-        final URLConnection con = new URL(url).openConnection();
-        final HttpURLConnection http = (HttpURLConnection) con;
-
-        http.setRequestMethod("POST");
-        http.setRequestProperty("Content-Type", "application/json");
-        if (!"".equals(token)) {
-            http.setRequestProperty("Authorization", token);
-        }
-        http.setDoOutput(true);
-
-        // Write our POST data to the server
-        try (OutputStream os = con.getOutputStream()) {
-            final byte[] input = data.getBytes("utf-8");
-            os.write(input, 0, input.length);
-        } catch (IOException e) {
-            // If we can obtain a better error message from the POST result, log it
-            InputStream errorStream = http.getErrorStream();
-            if (errorStream != null) {
-                throw new IOException("Error during POST: " + SlackNotificationsTask.readInputStream(errorStream));
-            } else {
-                throw e;
-            }
-        }
-
-        return SlackNotificationsTask.readInputStream(con.getInputStream());
-    }
-
     private void postToSlack(String slackUrl, String msg)
     {
         try {
             JsonObject slackApiReq = Json.createObjectBuilder()
                 .add("text", msg)
                 .build();
-            String slackResp = getPostResponse(slackUrl, slackApiReq.toString(), "");
+            HttpRequests.getPostResponse(slackUrl, slackApiReq.toString(), "application/json");
         } catch (IOException e) {
             LOGGER.warn("Failed to send performance update to Slack");
         }

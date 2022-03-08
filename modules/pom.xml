@@ -61,5 +61,6 @@
     <module>uhn-saml</module>
     <module>fetch-requires-saml-login</module>
     <module>performance-notifications</module>
+    <module>http-requests</module>
   </modules>
 </project>

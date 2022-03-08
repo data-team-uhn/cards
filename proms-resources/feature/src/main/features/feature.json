@@ -56,6 +56,10 @@
     {
       "id":"${project.groupId}:cards-performance-notifications:${project.version}",
       "start-order":"25"
+    },
+    {
+      "id":"${project.groupId}:cards-http-requests:${project.version}",
+      "start-order":"25"
     }
   ],
   "configurations":{
