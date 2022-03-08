@@ -143,10 +143,16 @@ public abstract class AbstractAnswerCopyProcessor
     }
 
     abstract String getResourceName(Resource resource) throws RepositoryException;
+
     abstract Node getAnswer(Node form, Node question);
+
     abstract Node getSubject(Node source);
+
     abstract Node getQuestionnaire(Node form);
+
     abstract boolean isSubject(Node source);
+
     abstract Node getOwnerQuestionnaire(Node question);
+
     abstract Object getValue(Node answer);
 }
