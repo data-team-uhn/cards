@@ -32,6 +32,9 @@ const useStyles = color => makeStyles(theme => ({
        border: "2px solid " + color,
     },
   },
+  statusUnassigned : {
+    color: theme.palette.text.secondary,
+  },
   statusIncomplete : {
     color: theme.palette.error.main,
   },
@@ -88,9 +91,9 @@ function VisitView(props) {
       "label" : "Survey completion",
       "format" : (row) => (
          <Link
-           className={classes["status" + (!row.surveys_complete ? "Incomplete" : (!row.surveys_submitted ? "Unreviewed" : "Completed"))]}
+           className={classes["status" + (!row.has_surveys ? "Unassigned" : (!row.surveys_complete ? "Incomplete" : (!row.surveys_submitted ? "Unreviewed" : "Completed")))]}
            to={`/content.html${row.subject['@path']}`}>
-           { row.email_unsubscribed ? "Unsubscribed" : !row.surveys_complete ? "Incomplete" : (!row.surveys_submitted ? "Pending submission" : "Completed") }
+           { row.email_unsubscribed ? "Unsubscribed" : (!row.has_surveys ? "No surveys assigned" : (!row.surveys_complete ? "Incomplete" : (!row.surveys_submitted ? "Pending submission" : "Completed"))) }
          </Link>
       )
     }

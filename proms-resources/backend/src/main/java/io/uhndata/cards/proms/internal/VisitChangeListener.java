@@ -186,14 +186,19 @@ public class VisitChangeListener implements ResourceChangeListener
         pruneQuestionnaireSet(visit, visitInformation, questionnaireSetInfo);
 
         if (questionnaireSetInfo.size() < 1) {
+            // No questionnaires were created. This can be due to 2 situations:
+            // 1. There are no questionnaires that need to be filled out for this visit
+            // 2. All the questionnaires that need to be filled out already exist
+
+            // If case 1, record that this visit has no forms
             if (prunedQuestionnaireSetSize == baseQuestionnaireSetSize) {
-                // Visit does not need any forms due to other visits meeting frequency requirements:
-                // mark form as complete.
-                changeVisitComplete(form, true, session);
+                changeVisitInformation(form, false, session, "has_surveys");
             }
             return;
         } else {
-            changeVisitComplete(form, false, session);
+            // Record that this visit has forms
+            changeVisitInformation(form, true, session, "has_surveys");
+
             final List<String> createdForms = createForms(visit, questionnaireSetInfo, session);
             commitForms(createdForms, session);
         }
@@ -236,7 +241,7 @@ public class VisitChangeListener implements ResourceChangeListener
         // The actual number of forms does not matter, since all the needed forms have been pre-created, and any still
         // incomplete form will cause the method to return early from the check above
         if (visitInformationForm != null) {
-            changeVisitComplete(visitInformationForm, true, session);
+            changeVisitInformation(visitInformationForm, true, session, "surveys_complete");
         }
     }
 
@@ -549,29 +554,32 @@ public class VisitChangeListener implements ResourceChangeListener
     }
 
     /**
-     * Record a visit's completion status to it's visit information surveysComplete field.
+     * Record a boolean value to the visit information form for the specified question/answer.
+     * Will not update the visit information form if the question already has the desired answer.
      *
-     * @param visitInformationForm the Visit Information form to save the completion status to, if needed
-     * @param complete the value that completion status should be set to; {@code true} for complete, {@code false} for
-     *            incomplete
+     * @param visitInformationForm the Visit Information form to save the value to, if needed
+     * @param value the value that answer should be set to
      * @param session a service session providing access to the repository
+     * @param questionPath the relative path from the visit information questionnaire to the question to be answered
      */
-    private void changeVisitComplete(final Node visitInformationForm, final boolean complete, final Session session)
+    private void changeVisitInformation(final Node visitInformationForm, final boolean value, final Session session,
+        final String questionPath)
     {
         try {
-            final Long newValue = complete ? 1L : 0L;
+            final Long newValue = value ? 1L : 0L;
             final Node questionnaire = this.formUtils.getQuestionnaire(visitInformationForm);
-            final Node surveysCompleteQuestion = this.questionnaireUtils.getQuestion(questionnaire, "surveys_complete");
-            if (surveysCompleteQuestion == null) {
-                LOGGER.warn("Could not save visit completion status as surveys_complete could not be found");
+            final Node question = this.questionnaireUtils.getQuestion(questionnaire, questionPath);
+            if (question == null) {
+                LOGGER.warn("Could update visit information form as requested question could not be found: "
+                    + questionPath);
                 return;
             }
 
-            Node surveysCompletedAnswer =
-                this.formUtils.getAnswer(visitInformationForm, surveysCompleteQuestion);
+            Node answer =
+                this.formUtils.getAnswer(visitInformationForm, question);
             // Check if the value is already the correct one
-            if (surveysCompletedAnswer != null
-                && newValue.equals(this.formUtils.getValue(surveysCompletedAnswer))) {
+            if (answer != null
+                && newValue.equals(this.formUtils.getValue(answer))) {
                 // Form is already set to the right value, nothing else to do
                 return;
             }
@@ -589,14 +597,14 @@ public class VisitChangeListener implements ResourceChangeListener
                     // Checkout
                     versionManager.checkout(formPath);
 
-                    if (surveysCompletedAnswer == null) {
+                    if (answer == null) {
                         // No answer node yet, create one
-                        surveysCompletedAnswer =
+                        answer =
                             visitInformationForm.addNode(UUID.randomUUID().toString(), "cards:BooleanAnswer");
-                        surveysCompletedAnswer.setProperty(FormUtils.QUESTION_PROPERTY, surveysCompleteQuestion);
+                        answer.setProperty(FormUtils.QUESTION_PROPERTY, question);
                     }
                     // Set the new value
-                    surveysCompletedAnswer.setProperty("value", newValue);
+                    answer.setProperty("value", newValue);
                     session.save();
 
                     // Checkin
