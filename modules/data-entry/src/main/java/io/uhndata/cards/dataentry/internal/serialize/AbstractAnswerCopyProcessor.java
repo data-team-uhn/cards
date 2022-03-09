@@ -132,7 +132,7 @@ public abstract class AbstractAnswerCopyProcessor implements ResourceJsonProcess
             final String key = property.getName();
             try {
                 final Node question = property.getNode();
-                final Node answer = getNodeAnswer(node, question);
+                final Node answer = getAnswer(node, question);
                 if (answer != null && answer.hasProperty("value")) {
                     final Object value = this.formUtils.getValue(answer);
                     if (value instanceof Long) {
@@ -153,9 +153,9 @@ public abstract class AbstractAnswerCopyProcessor implements ResourceJsonProcess
         }
     }
 
-    private Node getNodeAnswer(final Node subject, final Node question)
+    private Node getAnswer(final Node source, final Node question)
     {
-        final Node targetForm = findForm(subject, question);
+        final Node targetForm = findForm(source, question);
         return this.formUtils.getAnswer(targetForm, question);
     }
 
