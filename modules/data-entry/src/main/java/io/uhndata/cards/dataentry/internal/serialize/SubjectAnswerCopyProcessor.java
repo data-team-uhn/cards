@@ -37,9 +37,10 @@ import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 
 /**
  * A processor that copies the values of certain answers from forms to the root of the subject JSON for easy access
- * from, for ex., the dashboard through the pagination servlet. The answers to copy are configured in
- * {@code /apps/cards/config/CopySubjectAnswers/[subject type]/} as properties with the desired name as the key, and a
- * references to a question as the value. The name of this processor is {@code answerCopy} and it is enabled by default.
+ * from, for example, the dashboard through the pagination servlet. The answers to copy are configured in
+ * {@code /apps/cards/config/CopyAnswers/SubjectTypes/[subject type path]/} as properties with the desired name as the
+ * key, and a references to a question as the value. Answers can be copied from a form belonging either to this subject,
+ * or one of its ancestors. The name of this processor is {@code answerCopy} and it is enabled by default.
  *
  * @version $Id$
  */
@@ -62,17 +63,21 @@ public class SubjectAnswerCopyProcessor extends AbstractAnswerCopyProcessor
     }
 
     @Override
-    protected String getConfigurationPath(final Resource resource) throws RepositoryException
+    protected String getConfigurationPath(final Resource resource)
     {
-        Deque<String> types = new LinkedList<>();
-        Node currentSubjectType = this.subjectUtils.getType(resource.adaptTo(Node.class));
-        while (this.subjectTypeUtils.isSubjectType(currentSubjectType)) {
-            types.push(this.subjectTypeUtils.getLabel(currentSubjectType));
-            currentSubjectType = currentSubjectType.getParent();
-        }
-        if (!types.isEmpty()) {
-            types.push("SubjectTypes");
-            return types.stream().reduce((result, child) -> result + "/" + child).get();
+        try {
+            final Deque<String> types = new LinkedList<>();
+            Node currentSubjectType = this.subjectUtils.getType(resource.adaptTo(Node.class));
+            while (this.subjectTypeUtils.isSubjectType(currentSubjectType)) {
+                types.push(this.subjectTypeUtils.getLabel(currentSubjectType));
+                currentSubjectType = currentSubjectType.getParent();
+            }
+            if (!types.isEmpty()) {
+                types.push("SubjectTypes");
+                return types.stream().reduce((result, child) -> result + "/" + child).get();
+            }
+        } catch (RepositoryException e) {
+            LOGGER.warn("Failed to compute configuration path for subject {}: {}", resource.getPath(), e.getMessage());
         }
         return null;
     }

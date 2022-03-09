@@ -43,9 +43,10 @@ import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 
 /**
  * Base class for processor that copies the values of certain answers from forms to the root of the resource JSON for
- * easy access from, for ex., the dashboard through the pagination servlet. The answers to copy are configured in
- * {@code /apps/cards/config/Copy<XXX>Answers/[questionnaire/subject type name]/} as properties with keys as names and a
- * references to a question as the value. The name of this processor is {@code answerCopy} and it is enabled by default.
+ * easy access from, for example, the dashboard through the pagination servlet. The answers to copy are configured in
+ * {@code /apps/cards/config/CopyAnswers/[resource type]/[questionnaire|subject type name]/} as properties with keys as
+ * names and a references to a question as the value. The name of this processor is {@code answerCopy} and it is enabled
+ * by default.
  *
  * @version $Id$
  */
@@ -159,7 +160,22 @@ public abstract class AbstractAnswerCopyProcessor implements ResourceJsonProcess
         return this.formUtils.getAnswer(targetForm, question);
     }
 
+    /**
+     * Find a form related to the target {@code source}, answering the target {@code question}.
+     *
+     * @param source the resource being serialized
+     * @param question a question whose answer needs to be copied
+     * @return a relevant form or {@code null}
+     */
     protected abstract Node findForm(Node source, Node question);
 
-    protected abstract String getConfigurationPath(Resource resource) throws RepositoryException;
+    /**
+     * Compute the relative path to the copy configuration that applies to the resource being serialized, excluding the
+     * base {@link #CONFIGURATION_PATH configuration path}.
+     *
+     * @param resource the resource being serialized
+     * @return a path relative to {@link #CONFIGURATION_PATH} where the configuration for the resource should be stored,
+     *         may be {@code null} if the resource is not supported
+     */
+    protected abstract String getConfigurationPath(Resource resource);
 }

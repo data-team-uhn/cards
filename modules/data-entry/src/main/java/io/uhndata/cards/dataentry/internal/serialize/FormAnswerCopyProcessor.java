@@ -33,11 +33,12 @@ import io.uhndata.cards.dataentry.api.SubjectUtils;
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 
 /**
- * A processor that copies the values of certain answers to the root of the JSON for easy access from, for example, the
- * dashboard through the pagination servlet. The answers to copy are configured in
- * {@code /apps/cards/config/CopyFormAnswers/[questionnaire name]/} as properties with the desired prop name as the key,
- * and a references to a question as the value. The name of this processor is {@code answerCopy} and it is enabled by
- * default.
+ * A processor that copies the values of certain answers to the root of the form JSON for easy access from, for example,
+ * the dashboard through the pagination servlet. The answers to copy are configured in
+ * {@code /apps/cards/config/CopyAnswers/Questionnaires/[questionnaire name]/} as properties with the desired prop name
+ * as the key, and a references to a question as the value. Questions can be copied either from the current form itself,
+ * or from another form belonging to the related subjects. The name of this processor is {@code answerCopy} and it is
+ * enabled by default.
  *
  * @version $Id$
  */
@@ -57,10 +58,15 @@ public class FormAnswerCopyProcessor extends AbstractAnswerCopyProcessor
     }
 
     @Override
-    protected String getConfigurationPath(final Resource resource) throws RepositoryException
+    protected String getConfigurationPath(final Resource resource)
     {
-        return "Questionnaires/"
-            + resource.getValueMap().get(FormUtils.QUESTIONNAIRE_PROPERTY, Property.class).getNode().getName();
+        try {
+            return "Questionnaires/"
+                + resource.getValueMap().get(FormUtils.QUESTIONNAIRE_PROPERTY, Property.class).getNode().getName();
+        } catch (RepositoryException e) {
+            LOGGER.warn("Failed to compute configuration path for form {}: {}", resource.getPath(), e.getMessage());
+        }
+        return null;
     }
 
     @Override
