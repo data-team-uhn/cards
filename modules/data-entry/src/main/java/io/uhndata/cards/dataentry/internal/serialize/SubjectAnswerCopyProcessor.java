@@ -46,14 +46,18 @@ import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
  */
 @Component(immediate = true, service = ResourceJsonProcessor.class,
     reference = {
-        @Reference(name = "formUtils", service = FormUtils.class, field = "formUtils"),
-        @Reference(name = "questionnaireUtils", service = QuestionnaireUtils.class, field = "questionnaireUtils"),
-        @Reference(name = "subjectUtils", service = SubjectUtils.class, field = "subjectUtils")
+        @Reference(name = "formUtils", service = FormUtils.class, field = "formUtils")
     })
 public class SubjectAnswerCopyProcessor extends AbstractAnswerCopyProcessor
 {
     @Reference
+    private SubjectUtils subjectUtils;
+
+    @Reference
     private SubjectTypeUtils subjectTypeUtils;
+
+    @Reference
+    private QuestionnaireUtils questionnaireUtils;
 
     @Override
     public boolean canProcess(final Resource resource)

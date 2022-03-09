@@ -37,8 +37,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.dataentry.api.FormUtils;
-import io.uhndata.cards.dataentry.api.QuestionnaireUtils;
-import io.uhndata.cards.dataentry.api.SubjectUtils;
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 
 /**
@@ -57,13 +55,7 @@ public abstract class AbstractAnswerCopyProcessor implements ResourceJsonProcess
     private static final String CONFIGURATION_PATH = "/apps/cards/config/CopyAnswers/";
 
     @Reference
-    protected QuestionnaireUtils questionnaireUtils;
-
-    @Reference
     protected FormUtils formUtils;
-
-    @Reference
-    protected SubjectUtils subjectUtils;
 
     private final ThreadLocal<Node> answersToCopy = ThreadLocal.withInitial(() -> null);
 
