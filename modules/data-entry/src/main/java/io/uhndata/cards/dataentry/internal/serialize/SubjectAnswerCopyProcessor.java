@@ -47,8 +47,6 @@ import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 @Component(immediate = true)
 public class SubjectAnswerCopyProcessor extends AbstractAnswerCopyProcessor implements ResourceJsonProcessor
 {
-    private static final String CONFIGURATION_NODE = "/apps/cards/config/CopySubjectAnswers";
-
     @Reference
     private QuestionnaireUtils questionnaireUtils;
 
@@ -86,7 +84,7 @@ public class SubjectAnswerCopyProcessor extends AbstractAnswerCopyProcessor impl
     @Override
     public void start(final Resource resource)
     {
-        startProcessor(resource, CONFIGURATION_NODE);
+        startProcessor(resource);
         ResourceJsonProcessor.super.start(resource);
     }
 

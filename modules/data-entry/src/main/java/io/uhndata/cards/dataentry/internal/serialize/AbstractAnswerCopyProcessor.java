@@ -47,25 +47,25 @@ import io.uhndata.cards.dataentry.api.FormUtils;
  */
 public abstract class AbstractAnswerCopyProcessor
 {
-    protected static final Logger LOGGER = LoggerFactory.getLogger(AbstractAnswerCopyProcessor.class);
+    private static final String CONFIGURATION_PATH = "/apps/cards/config/CopyAnswers/";
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAnswerCopyProcessor.class);
 
     protected final ThreadLocal<Node> answersToCopy = ThreadLocal.withInitial(() -> null);
 
-    protected void startProcessor(final Resource resource, String configurationPath)
+    protected void startProcessor(final Resource resource)
     {
-        final Resource allConfigurations = resource.getResourceResolver().getResource(configurationPath);
-        if (allConfigurations != null) {
-            try {
-                final String resourceName = getResourceName(resource);
-                if (resourceName != null) {
-                    final Resource configuration = allConfigurations.getChild(resourceName);
-                    if (configuration != null) {
-                        this.answersToCopy.set(configuration.adaptTo(Node.class));
-                    }
+        try {
+            final String resourceName = getResourceName(resource);
+            if (resourceName != null) {
+                final String path = CONFIGURATION_PATH.concat(resourceName);
+                final Resource configuration = resource.getResourceResolver().getResource(path).getChild(resourceName);
+                if (configuration != null) {
+                    this.answersToCopy.set(configuration.adaptTo(Node.class));
                 }
-            } catch (final RepositoryException e) {
-                LOGGER.warn("Cannot access configuration for AnswerCopyProcessor: {}", e.getMessage(), e);
             }
+        } catch (final Exception e) {
+            LOGGER.warn("Cannot access configuration for AnswerCopyProcessor: {}", e.getMessage(), e);
         }
     }
 
