@@ -30,35 +30,71 @@ import javax.jcr.RepositoryException;
 import javax.json.JsonObjectBuilder;
 
 import org.apache.sling.api.resource.Resource;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.dataentry.api.FormUtils;
+import io.uhndata.cards.dataentry.api.QuestionnaireUtils;
+import io.uhndata.cards.dataentry.api.SubjectUtils;
+import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 
 /**
- * Base class for processor that copies the values of certain answers from forms to the root of the resource JSON
- * for easy access from, for ex., the dashboard through the pagination servlet. The answers to copy are configured in
- * {@code /apps/cards/config/Copy<XXX>Answers/[questionnaire/subject type name]/} as properties with keys as names
- * and a references to a question as the value. The name of this processor is {@code answerCopy} and it is enabled by
- * default.
+ * Base class for processor that copies the values of certain answers from forms to the root of the resource JSON for
+ * easy access from, for ex., the dashboard through the pagination servlet. The answers to copy are configured in
+ * {@code /apps/cards/config/Copy<XXX>Answers/[questionnaire/subject type name]/} as properties with keys as names and a
+ * references to a question as the value. The name of this processor is {@code answerCopy} and it is enabled by default.
  *
  * @version $Id$
  */
-public abstract class AbstractAnswerCopyProcessor
+public abstract class AbstractAnswerCopyProcessor implements ResourceJsonProcessor
 {
-    private static final String CONFIGURATION_PATH = "/apps/cards/config/CopyAnswers/";
+    protected static final Logger LOGGER = LoggerFactory.getLogger(AbstractAnswerCopyProcessor.class);
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAnswerCopyProcessor.class);
+    private static final String CONFIGURATION_PATH = "/apps/cards/config/CopyAnswers/";
 
     protected final ThreadLocal<Node> answersToCopy = ThreadLocal.withInitial(() -> null);
 
-    protected void startProcessor(final Resource resource)
+    @Reference
+    protected QuestionnaireUtils questionnaireUtils;
+
+    @Reference
+    protected FormUtils formUtils;
+
+    @Reference
+    protected SubjectUtils subjectUtils;
+
+    @Override
+    public String getName()
+    {
+        return "answerCopy";
+    }
+
+    @Override
+    public int getPriority()
+    {
+        return 95;
+    }
+
+    @Override
+    public boolean isEnabledByDefault(final Resource resource)
+    {
+        return true;
+    }
+
+    @Override
+    public void end(final Resource resource)
+    {
+        this.answersToCopy.remove();
+    }
+
+    protected void startProcessor(final Resource resource, String resourceType)
     {
         try {
-            final String resourceName = getResourceName(resource);
+            final String resourceName = getResourceType(resource);
             if (resourceName != null) {
-                final String path = CONFIGURATION_PATH.concat(resourceName);
-                final Resource configuration = resource.getResourceResolver().getResource(path).getChild(resourceName);
+                final String path = CONFIGURATION_PATH.concat(resourceType).concat("/").concat(resourceName);
+                final Resource configuration = resource.getResourceResolver().getResource(path);
                 if (configuration != null) {
                     this.answersToCopy.set(configuration.adaptTo(Node.class));
                 }
@@ -82,7 +118,7 @@ public abstract class AbstractAnswerCopyProcessor
                 final Node question = property.getNode();
                 final Node answer = getNodeAnswer(node, question);
                 if (answer != null && answer.hasProperty("value")) {
-                    final Object value = getValue(answer);
+                    final Object value = this.formUtils.getValue(answer);
                     if (value instanceof Long) {
                         json.add(key, (Long) value);
                     } else if (value instanceof Double) {
@@ -104,55 +140,10 @@ public abstract class AbstractAnswerCopyProcessor
     private Node getNodeAnswer(final Node subject, final Node question)
     {
         final Node targetForm = findForm(subject, question);
-        return getAnswer(targetForm, question);
+        return this.formUtils.getAnswer(targetForm, question);
     }
 
-    private Node findForm(final Node source, final Node question)
-    {
-        Node targetQuestionnaire = getOwnerQuestionnaire(question);
-        if (targetQuestionnaire == null) {
-            return null;
-        }
-        try {
-            if (targetQuestionnaire.isSame(getQuestionnaire(source))) {
-                return source;
-            }
-            // If the questionnaire answered by the current form is not the target one,
-            // look for a related form answering that questionnaire belonging to the form's related subjects.
-            Node nextSubject = getSubject(source);
-            while (true) {
-                // We stop when we've reached the end of the subjects hierarchy
-                if (!isSubject(nextSubject)) {
-                    return null;
-                }
-                // Look for a form answering the right questionnaire
-                final PropertyIterator otherForms = nextSubject.getReferences(FormUtils.SUBJECT_PROPERTY);
-                while (otherForms.hasNext()) {
-                    final Node otherForm = otherForms.nextProperty().getParent();
-                    if (targetQuestionnaire.isSame(getQuestionnaire(otherForm))) {
-                        return otherForm;
-                    }
-                }
-                // Not found among the subject's forms, next look in the parent subject's forms
-                nextSubject = nextSubject.getParent();
-            }
-        } catch (RepositoryException e) {
-            LOGGER.warn("Failed to look for the right answer to copy: {}", e.getMessage(), e);
-        }
-        return null;
-    }
+    protected abstract Node findForm(Node source, Node question);
 
-    abstract String getResourceName(Resource resource) throws RepositoryException;
-
-    abstract Node getAnswer(Node form, Node question);
-
-    abstract Node getSubject(Node source);
-
-    abstract Node getQuestionnaire(Node form);
-
-    abstract boolean isSubject(Node source);
-
-    abstract Node getOwnerQuestionnaire(Node question);
-
-    abstract Object getValue(Node answer);
+    protected abstract String getResourceType(Resource resource) throws RepositoryException;
 }
