@@ -22,6 +22,7 @@ import java.util.function.Function;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
@@ -44,35 +45,14 @@ import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
  *
  * @version $Id$
  */
-@Component(immediate = true)
-public class FormAnswerCopyProcessor extends AbstractAnswerCopyProcessor implements ResourceJsonProcessor
+@Component(immediate = true, service = ResourceJsonProcessor.class,
+    reference = {
+        @Reference(name = "formUtils", service = FormUtils.class, field = "formUtils"),
+        @Reference(name = "questionnaireUtils", service = QuestionnaireUtils.class, field = "questionnaireUtils"),
+        @Reference(name = "subjectUtils", service = SubjectUtils.class, field = "subjectUtils")
+    })
+public class FormAnswerCopyProcessor extends AbstractAnswerCopyProcessor
 {
-    @Reference
-    private QuestionnaireUtils questionnaireUtils;
-
-    @Reference
-    private FormUtils formUtils;
-
-    @Reference
-    private SubjectUtils subjectUtils;
-
-    @Override
-    public String getName()
-    {
-        return "answerCopy";
-    }
-
-    @Override
-    public int getPriority()
-    {
-        return 95;
-    }
-
-    @Override
-    public boolean isEnabledByDefault(final Resource resource)
-    {
-        return true;
-    }
 
     @Override
     public boolean canProcess(final Resource resource)
@@ -84,8 +64,7 @@ public class FormAnswerCopyProcessor extends AbstractAnswerCopyProcessor impleme
     @Override
     public void start(final Resource resource)
     {
-        startProcessor(resource);
-        ResourceJsonProcessor.super.start(resource);
+        startProcessor(resource, "Questionnaires");
     }
 
     @Override
@@ -101,50 +80,44 @@ public class FormAnswerCopyProcessor extends AbstractAnswerCopyProcessor impleme
     }
 
     @Override
-    public void end(final Resource resource)
-    {
-        this.answersToCopy.remove();
-    }
-
-    @Override
-    String getResourceName(final Resource resource) throws RepositoryException
+    protected String getResourceType(final Resource resource) throws RepositoryException
     {
         return resource.getValueMap().get(FormUtils.QUESTIONNAIRE_PROPERTY, Property.class).getNode().getName();
     }
 
     @Override
-    Node getAnswer(Node form, Node question)
+    protected Node findForm(final Node source, final Node question)
     {
-        return this.formUtils.getAnswer(form, question);
-    }
-
-    @Override
-    Node getSubject(Node source)
-    {
-        return this.formUtils.getSubject(source);
-    }
-
-    @Override
-    Node getQuestionnaire(Node form)
-    {
-        return this.formUtils.getQuestionnaire(form);
-    }
-
-    @Override
-    boolean isSubject(Node source)
-    {
-        return this.subjectUtils.isSubject(source);
-    }
-
-    @Override
-    Node getOwnerQuestionnaire(Node question)
-    {
-        return this.questionnaireUtils.getOwnerQuestionnaire(question);
-    }
-
-    @Override
-    Object getValue(Node answer)
-    {
-        return this.formUtils.getValue(answer);
+        Node targetQuestionnaire = this.questionnaireUtils.getOwnerQuestionnaire(question);
+        if (targetQuestionnaire == null) {
+            return null;
+        }
+        try {
+            if (targetQuestionnaire.isSame(this.formUtils.getQuestionnaire(source))) {
+                return source;
+            }
+            // If the questionnaire answered by the current form is not the target one,
+            // look for a related form answering that questionnaire belonging to the form's related subjects.
+            Node nextSubject = this.formUtils.getSubject(source);
+            while (true) {
+                // We stop when we've reached the end of the subjects hierarchy
+                if (!this.subjectUtils.isSubject(nextSubject)) {
+                    return null;
+                }
+                // Look for a form answering the right questionnaire
+                final PropertyIterator otherForms = nextSubject.getReferences(FormUtils.SUBJECT_PROPERTY);
+                while (otherForms.hasNext()) {
+                    final Node otherForm = otherForms.nextProperty().getParent();
+                    if (targetQuestionnaire.isSame(this.formUtils.getQuestionnaire(otherForm))) {
+                        return otherForm;
+                    }
+                }
+                // Not found among the subject's forms, next look in the parent subject's forms
+                nextSubject = nextSubject.getParent();
+            }
+        } catch (RepositoryException e) {
+            LOGGER.warn("Failed to look for the right answer to copy: {}", e.getMessage(), e);
+        }
+        return null;
     }
 }
