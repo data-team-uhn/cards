@@ -71,17 +71,15 @@ public class FormAnswerCopyProcessor extends AbstractAnswerCopyProcessor
             return null;
         }
         try {
+            // If the question belongs to the current form's questionnaire, then the source itself is the target form
             if (targetQuestionnaire.isSame(this.formUtils.getQuestionnaire(source))) {
                 return source;
             }
             // If the questionnaire answered by the current form is not the target one,
             // look for a related form answering that questionnaire belonging to the form's related subjects.
             Node nextSubject = this.formUtils.getSubject(source);
-            while (true) {
-                // We stop when we've reached the end of the subjects hierarchy
-                if (!this.subjectUtils.isSubject(nextSubject)) {
-                    return null;
-                }
+            // We stop when we've reached the end of the subjects hierarchy
+            while (this.subjectUtils.isSubject(nextSubject)) {
                 // Look for a form answering the right questionnaire
                 final PropertyIterator otherForms = nextSubject.getReferences(FormUtils.SUBJECT_PROPERTY);
                 while (otherForms.hasNext()) {
