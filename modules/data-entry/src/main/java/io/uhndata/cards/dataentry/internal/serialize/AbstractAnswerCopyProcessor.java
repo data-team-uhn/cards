@@ -21,6 +21,7 @@ package io.uhndata.cards.dataentry.internal.serialize;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
+import java.util.function.Function;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
@@ -28,6 +29,7 @@ import javax.jcr.PropertyIterator;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonValue;
 
 import org.apache.sling.api.resource.Resource;
 import org.osgi.service.component.annotations.Reference;
@@ -53,8 +55,6 @@ public abstract class AbstractAnswerCopyProcessor implements ResourceJsonProcess
 
     private static final String CONFIGURATION_PATH = "/apps/cards/config/CopyAnswers/";
 
-    protected final ThreadLocal<Node> answersToCopy = ThreadLocal.withInitial(() -> null);
-
     @Reference
     protected QuestionnaireUtils questionnaireUtils;
 
@@ -63,6 +63,10 @@ public abstract class AbstractAnswerCopyProcessor implements ResourceJsonProcess
 
     @Reference
     protected SubjectUtils subjectUtils;
+
+    private final ThreadLocal<Node> answersToCopy = ThreadLocal.withInitial(() -> null);
+
+    private final ThreadLocal<String> rootResourcePath = ThreadLocal.withInitial(() -> null);
 
     @Override
     public String getName()
@@ -83,25 +87,37 @@ public abstract class AbstractAnswerCopyProcessor implements ResourceJsonProcess
     }
 
     @Override
-    public void end(final Resource resource)
-    {
-        this.answersToCopy.remove();
-    }
-
-    protected void startProcessor(final Resource resource, String resourceType)
+    public void start(final Resource resource)
     {
         try {
-            final String resourceName = getResourceType(resource);
-            if (resourceName != null) {
-                final String path = CONFIGURATION_PATH.concat(resourceType).concat("/").concat(resourceName);
-                final Resource configuration = resource.getResourceResolver().getResource(path);
-                if (configuration != null) {
-                    this.answersToCopy.set(configuration.adaptTo(Node.class));
-                }
+            final String path = CONFIGURATION_PATH.concat(getConfigurationPath(resource));
+            final Resource configuration = resource.getResourceResolver().getResource(path);
+            if (configuration != null) {
+                this.answersToCopy.set(configuration.adaptTo(Node.class));
+                this.rootResourcePath.set(resource.getPath());
             }
         } catch (final Exception e) {
             LOGGER.warn("Cannot access configuration for AnswerCopyProcessor: {}", e.getMessage(), e);
         }
+    }
+
+    @Override
+    public void leave(final Node node, final JsonObjectBuilder json, final Function<Node, JsonValue> serializeNode)
+    {
+        try {
+            if (node.getPath().equals(this.rootResourcePath.get())) {
+                copyAnswers(node, json);
+            }
+        } catch (final RepositoryException e) {
+            // Should not happen
+        }
+    }
+
+    @Override
+    public void end(final Resource resource)
+    {
+        this.answersToCopy.remove();
+        this.rootResourcePath.remove();
     }
 
     protected void copyAnswers(final Node node, final JsonObjectBuilder json) throws RepositoryException
@@ -145,5 +161,5 @@ public abstract class AbstractAnswerCopyProcessor implements ResourceJsonProcess
 
     protected abstract Node findForm(Node source, Node question);
 
-    protected abstract String getResourceType(Resource resource) throws RepositoryException;
+    protected abstract String getConfigurationPath(Resource resource) throws RepositoryException;
 }
