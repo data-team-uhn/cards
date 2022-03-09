@@ -857,6 +857,11 @@
 				<value>1</value>
 				<type>Long</type>
 			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
 		</node>
 		<node>
 			<name>phase2exit_dateSection</name>
