@@ -180,6 +180,13 @@ public class VisitChangeListener implements ResourceChangeListener
 
         if (prunedQuestionnaireSetSize < 1) {
             // Visit already has all needed forms: end early
+
+            // Ideally, has_surveys would already be set to true so this should not be needed.
+            // However, if the visit information form is edited via the browser editor and saved twice,
+            // `has_surveys` can be incorrectly deleted and may need to be set back to true.
+            if (baseQuestionnaireSetSize > 0) {
+                changeVisitInformation(form, "has_surveys", true, session);
+            }
             return;
         }
 
