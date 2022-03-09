@@ -120,7 +120,7 @@ public abstract class AbstractAnswerCopyProcessor implements ResourceJsonProcess
         this.rootResourcePath.remove();
     }
 
-    protected void copyAnswers(final Node node, final JsonObjectBuilder json) throws RepositoryException
+    private void copyAnswers(final Node node, final JsonObjectBuilder json) throws RepositoryException
     {
         final Node toCopy = this.answersToCopy.get();
         final PropertyIterator properties = toCopy.getProperties();
