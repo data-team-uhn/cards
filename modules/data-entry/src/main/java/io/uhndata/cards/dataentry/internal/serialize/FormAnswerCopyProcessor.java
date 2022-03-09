@@ -18,14 +18,10 @@
  */
 package io.uhndata.cards.dataentry.internal.serialize;
 
-import java.util.function.Function;
-
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonValue;
 
 import org.apache.sling.api.resource.Resource;
 import org.osgi.service.component.annotations.Component;
@@ -53,7 +49,6 @@ import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
     })
 public class FormAnswerCopyProcessor extends AbstractAnswerCopyProcessor
 {
-
     @Override
     public boolean canProcess(final Resource resource)
     {
@@ -62,27 +57,10 @@ public class FormAnswerCopyProcessor extends AbstractAnswerCopyProcessor
     }
 
     @Override
-    public void start(final Resource resource)
+    protected String getConfigurationPath(final Resource resource) throws RepositoryException
     {
-        startProcessor(resource, "Questionnaires");
-    }
-
-    @Override
-    public void leave(final Node node, final JsonObjectBuilder json, final Function<Node, JsonValue> serializeNode)
-    {
-        try {
-            if (this.answersToCopy.get() != null && node.isNodeType(FormUtils.FORM_NODETYPE)) {
-                copyAnswers(node, json);
-            }
-        } catch (final RepositoryException e) {
-            // Should not happen
-        }
-    }
-
-    @Override
-    protected String getResourceType(final Resource resource) throws RepositoryException
-    {
-        return resource.getValueMap().get(FormUtils.QUESTIONNAIRE_PROPERTY, Property.class).getNode().getName();
+        return "Questionnaires/"
+            + resource.getValueMap().get(FormUtils.QUESTIONNAIRE_PROPERTY, Property.class).getNode().getName();
     }
 
     @Override

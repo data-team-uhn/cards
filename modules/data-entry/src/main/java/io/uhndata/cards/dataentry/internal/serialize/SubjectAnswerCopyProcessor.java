@@ -20,13 +20,10 @@ package io.uhndata.cards.dataentry.internal.serialize;
 
 import java.util.Deque;
 import java.util.LinkedList;
-import java.util.function.Function;
 
 import javax.jcr.Node;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonValue;
 
 import org.apache.sling.api.resource.Resource;
 import org.osgi.service.component.annotations.Component;
@@ -65,25 +62,7 @@ public class SubjectAnswerCopyProcessor extends AbstractAnswerCopyProcessor
     }
 
     @Override
-    public void start(final Resource resource)
-    {
-        startProcessor(resource, "SubjectTypes");
-    }
-
-    @Override
-    public void leave(final Node node, final JsonObjectBuilder json, final Function<Node, JsonValue> serializeNode)
-    {
-        try {
-            if (this.answersToCopy.get() != null && node.isNodeType(SubjectUtils.SUBJECT_NODETYPE)) {
-                copyAnswers(node, json);
-            }
-        } catch (final RepositoryException e) {
-            // Should not happen
-        }
-    }
-
-    @Override
-    protected String getResourceType(final Resource resource) throws RepositoryException
+    protected String getConfigurationPath(final Resource resource) throws RepositoryException
     {
         Deque<String> types = new LinkedList<>();
         Node currentSubjectType = this.subjectUtils.getType(resource.adaptTo(Node.class));
@@ -92,6 +71,7 @@ public class SubjectAnswerCopyProcessor extends AbstractAnswerCopyProcessor
             currentSubjectType = currentSubjectType.getParent();
         }
         if (!types.isEmpty()) {
+            types.push("SubjectTypes");
             return types.stream().reduce((result, child) -> result + "/" + child).get();
         }
         return null;
