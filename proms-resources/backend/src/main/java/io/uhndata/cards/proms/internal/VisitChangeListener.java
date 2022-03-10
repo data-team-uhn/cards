@@ -438,7 +438,13 @@ public class VisitChangeListener implements ResourceChangeListener
                         sexAnswer.setProperty(FormUtils.QUESTION_PROPERTY, sexQuestion);
                         sexAnswer.setProperty(FormUtils.VALUE_PROPERTY, sex);
                         // Add in a second answer node with no value so that the form is not marked as complete
-                        final Node scoreAnswer = form.addNode(UUID.randomUUID().toString(), "cards:TextAnswer");
+                        final Node scoreAnswerSection = form.addNode(UUID.randomUUID().toString(),
+                            "cards:AnswerSection");
+                        final Node scoreSection = session.getNode("/Questionnaires/AUDITC/audit_results");
+                        scoreAnswerSection.setProperty(FormUtils.SECTION_PROPERTY, scoreSection);
+
+                        final Node scoreAnswer = scoreAnswerSection.addNode(UUID.randomUUID().toString(),
+                            "cards:LongAnswer");
                         final Node scoreQuestion = session.getNode("/Questionnaires/AUDITC/audit_results/audit_score");
                         scoreAnswer.setProperty(FormUtils.QUESTION_PROPERTY, scoreQuestion);
                     } catch (final RepositoryException e) {
