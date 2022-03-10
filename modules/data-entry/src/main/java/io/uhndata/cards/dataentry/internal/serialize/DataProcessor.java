@@ -40,15 +40,16 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
 
+import io.uhndata.cards.dataentry.api.QuestionnaireUtils;
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 
 /**
- * Serialize a subject along with its forms. The name of this processor is {@code data}.
+ * Serialize a subject or questionnaire along with its forms. The name of this processor is {@code data}.
  *
  * @version $Id$
  */
 @Component(immediate = true)
-public class DataSubjectProcessor implements ResourceJsonProcessor
+public class DataProcessor implements ResourceJsonProcessor
 {
     private ThreadLocal<ResourceResolver> resolver = new ThreadLocal<>();
 
@@ -100,23 +101,27 @@ public class DataSubjectProcessor implements ResourceJsonProcessor
     @Override
     public boolean canProcess(Resource resource)
     {
-        return resource.isResourceType("cards/Subject");
+        return resource.isResourceType("cards/Subject") || resource.isResourceType("cards/Questionnaire");
     }
 
     @Override
     public void leave(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
     {
         try {
-            // Only the original subject node will have its data appended
+            // Only the original subject or questionnaire node will have its data appended
             if (!node.getPath().equals(this.rootNode.get())) {
                 return;
             }
-            Iterator<Resource> forms = this.resolver.get().findResources(generateDataQuery(node), Query.JCR_SQL2);
-            final Map<String, JsonArrayBuilder> formsJsons = new HashMap<>();
 
+            boolean isQuestionnaire = node.isNodeType(QuestionnaireUtils.QUESTIONNAIRE_NODETYPE);
+            final String query = generateDataQuery(node, isQuestionnaire);
+            Iterator<Resource> forms = this.resolver.get().findResources(query, Query.JCR_SQL2);
+
+            final Map<String, JsonArrayBuilder> formsJsons = new HashMap<>();
             final ResourceResolver currentResolver = this.resolver.get();
             final String currentSelectors = this.selectors.get();
-            forms.forEachRemaining(f -> storeForm(currentResolver.resolve(f.getPath() + currentSelectors), formsJsons));
+            forms.forEachRemaining(f ->
+                storeForm(currentResolver.resolve(f.getPath() + currentSelectors), formsJsons, isQuestionnaire));
             // The data JSONs have been collected, add them to the subject's JSON
             formsJsons.forEach(json::add);
             final JsonObjectBuilder filtersJson = Json.createObjectBuilder();
@@ -129,11 +134,15 @@ public class DataSubjectProcessor implements ResourceJsonProcessor
         }
     }
 
-    private void storeForm(final Resource form, final Map<String, JsonArrayBuilder> formsJsons)
+    private void storeForm(final Resource form, final Map<String, JsonArrayBuilder> formsJsons,
+        final boolean isQuestionnaire)
     {
         try {
-            final Node questionnaire = form.adaptTo(Node.class).getProperty("questionnaire").getNode();
-            final String questionnaireTitle = questionnaire.getProperty("title").getString();
+            String questionnaireTitle = "data";
+            if (!isQuestionnaire) {
+                final Node questionnaire = form.adaptTo(Node.class).getProperty("questionnaire").getNode();
+                questionnaireTitle = questionnaire.getProperty("title").getString();
+            }
             final JsonArrayBuilder arrayForQuestionnaire =
                 formsJsons.computeIfAbsent(questionnaireTitle, k -> Json.createArrayBuilder());
             arrayForQuestionnaire.add(form.adaptTo(JsonObject.class));
@@ -142,10 +151,11 @@ public class DataSubjectProcessor implements ResourceJsonProcessor
         }
     }
 
-    private String generateDataQuery(final Node subject) throws RepositoryException
+    private String generateDataQuery(final Node entity, final boolean isQuestionnaire) throws RepositoryException
     {
-        final StringBuilder result =
-            new StringBuilder("select * from [cards:Form] as n where n.subject = '" + subject.getIdentifier() + "'");
+        final String entityFilter = isQuestionnaire ? "questionnaire" : "subject";
+        final StringBuilder result = new StringBuilder("select * from [cards:Form] as n where n." + entityFilter
+            + " = '" + entity.getIdentifier() + "'");
         this.filters.get().forEach((key, value) -> {
             switch (key) {
                 case "createdAfter":
@@ -173,6 +183,7 @@ public class DataSubjectProcessor implements ResourceJsonProcessor
                     break;
             }
         });
+        result.append(" order by n.'jcr:created' ASC");
         return result.toString();
     }
 }
