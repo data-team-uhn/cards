@@ -179,7 +179,7 @@ public class VisitChangeListener implements ResourceChangeListener
         final int prunedQuestionnaireSetSize = questionnaireSetInfo.size();
 
         if (prunedQuestionnaireSetSize < 1) {
-            // Visit already has all needed forms: end early
+            // Visit already has all forms in the questionnaire set: end early
 
             // Ideally, has_surveys would already be set to true so this should not be needed.
             // However, if the visit information form is edited via the browser editor and saved twice,
@@ -193,13 +193,22 @@ public class VisitChangeListener implements ResourceChangeListener
         pruneQuestionnaireSet(visit, visitInformation, questionnaireSetInfo);
 
         if (questionnaireSetInfo.size() < 1) {
-            // No questionnaires were created. This can be due to 2 situations:
-            // 1. There are no questionnaires that need to be filled out for this visit
-            // 2. All the questionnaires that need to be filled out already exist
+            // No questionnaires were created as all missing questionnaires from the questionnaire set
+            // have their frequencies met by other visits.
 
-            // If case 1, record that this visit has no forms
+            // This visit can either have:
+            // 1. No questionnaires
+            // 2. A subset of the questionnaires from the questionnaire set which were previously created
             if (prunedQuestionnaireSetSize == baseQuestionnaireSetSize) {
+                // If case 1, record that this visit has no forms
                 changeVisitInformation(form, "has_surveys", false, session);
+            } else {
+                // If case 2, record that this visit has forms
+
+                // Ideally, has_surveys would already be set to true so this should not be needed.
+                // However, if the visit information form is edited via the browser editor and saved twice,
+                // `has_surveys` can be incorrectly deleted and may need to be set back to true.
+                changeVisitInformation(form, "has_surveys", true, session);
             }
             return;
         } else {
