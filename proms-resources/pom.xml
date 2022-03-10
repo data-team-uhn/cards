@@ -35,6 +35,7 @@
     <module>clinical-data</module>
     <module>frontend</module>
     <module>backend</module>
+    <module>permissions</module>
     <module>feature</module>
   </modules>
 </project>
