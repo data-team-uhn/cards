@@ -83,7 +83,7 @@ public class SlackNotificationsTask implements Runnable
     @Override
     public void run()
     {
-        LOGGER.warn("Running SlackNotificationsTask");
+        LOGGER.debug("Running SlackNotificationsTask");
         try {
             Map<String, Object> params = new HashMap<>();
             params.put(ResourceResolverFactory.SUBSERVICE, "SlackNotifications");
