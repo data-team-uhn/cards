@@ -40,6 +40,6 @@ public class ReminderNotificationsTask extends AbstractPromsNotification impleme
     public void run()
     {
         long emailsSent = sendNotification(1, "24h.txt", PATIENT_NOTIFICATION_SUBJECT);
-        PerformanceUtils.updatePerformanceCounter(this.resolverFactory, "ReminderEmailsSent", emailsSent);
+        PerformanceUtils.increment(this.resolverFactory, "ReminderEmailsSent", emailsSent);
     }
 }

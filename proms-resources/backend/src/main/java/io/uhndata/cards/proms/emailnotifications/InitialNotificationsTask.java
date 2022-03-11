@@ -40,6 +40,6 @@ public class InitialNotificationsTask extends AbstractPromsNotification implemen
     public void run()
     {
         long emailsSent = sendNotification(3, "72h.txt", PATIENT_NOTIFICATION_SUBJECT);
-        PerformanceUtils.updatePerformanceCounter(this.resolverFactory, "InitialEmailsSent", emailsSent);
+        PerformanceUtils.increment(this.resolverFactory, "InitialEmailsSent", emailsSent);
     }
 }

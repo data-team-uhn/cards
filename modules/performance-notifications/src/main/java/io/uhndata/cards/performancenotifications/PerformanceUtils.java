@@ -82,7 +82,7 @@ public final class PerformanceUtils
      * @param statName the name of the performance statistic to increment
      * @param incrementValue the value to increment the performance statistic by
      */
-    public static void updatePerformanceCounter(final ResourceResolverFactory resolverFactory,
+    public static void increment(final ResourceResolverFactory resolverFactory,
         final String statName, final long incrementValue)
     {
         Map<String, Object> params = new HashMap<>();

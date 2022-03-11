@@ -112,7 +112,7 @@ public final class SubmissionEventListener implements EventListener
                 }
 
                 // Increment the performance counter
-                PerformanceUtils.updatePerformanceCounter(this.resolverFactory, "AppointmentSurveysSubmitted", 1);
+                PerformanceUtils.increment(this.resolverFactory, "AppointmentSurveysSubmitted", 1);
 
                 // Get the cards:Form node that this modified value property descends from
                 Resource modifiedFormNode = AppointmentUtils.getFormForAnswer(this.resolver, modifiedValueNode);
@@ -132,7 +132,7 @@ public final class SubmissionEventListener implements EventListener
                 long formsForAppointmentCount = countVisitForms(formRelatedSubjectUUID, modifiedFormNodeUUID);
 
                 // Increment the performance counter
-                PerformanceUtils.updatePerformanceCounter(this.resolverFactory,
+                PerformanceUtils.increment(this.resolverFactory,
                     "TotalSurveysSubmitted", formsForAppointmentCount);
             }
         } catch (Exception e) {

@@ -123,7 +123,7 @@ public class ImportTask implements Runnable
             importedAppointmentsCount += getUpcomingAppointments(token, this.daysToQuery, this.clinicNames[i]);
         }
         // Update the performance counter
-        PerformanceUtils.updatePerformanceCounter(this.resolverFactory,
+        PerformanceUtils.increment(this.resolverFactory,
             "ImportedAppointments", importedAppointmentsCount);
     }
 
