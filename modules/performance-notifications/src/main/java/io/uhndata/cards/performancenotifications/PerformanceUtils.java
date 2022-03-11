@@ -87,10 +87,8 @@ public final class PerformanceUtils
     {
         Map<String, Object> params = new HashMap<>();
         params.put(ResourceResolverFactory.SUBSERVICE, "PerformanceLogger");
-        try {
-            ResourceResolver resolver = resolverFactory.getServiceResourceResolver(params);
+        try (ResourceResolver resolver = resolverFactory.getServiceResourceResolver(params)) {
             increment(resolver, statName, incrementValue);
-            resolver.close();
         } catch (LoginException e) {
             return;
         }
