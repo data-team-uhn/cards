@@ -39,7 +39,6 @@ public final class SubmissionEventListener implements EventListener
 
     private ResourceResolverFactory resolverFactory;
     private ResourceResolver resolver;
-    private String submissionCounterName;
     private String submittedFlagUUID;
     private String linkingSubjectType;
 
@@ -48,7 +47,6 @@ public final class SubmissionEventListener implements EventListener
     {
         this.resolverFactory = resolverFactory;
         this.resolver = resolver;
-        this.submissionCounterName = listenerParams.get("submissionCounterName");
         this.submittedFlagUUID = listenerParams.get("submittedFlagUUID");
         this.linkingSubjectType = listenerParams.get("linkingSubjectType");
     }
