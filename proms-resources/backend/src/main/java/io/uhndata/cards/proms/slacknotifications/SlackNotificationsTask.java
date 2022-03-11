@@ -90,15 +90,15 @@ public class SlackNotificationsTask implements Runnable
             ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(params);
 
             Map<String, Long> initialEmailsSent =
-                PerformanceUtils.getAndSetPreviousPerformanceStatistic(resolver, "InitialEmailsSent");
+                PerformanceUtils.getAndReset(resolver, "InitialEmailsSent");
             Map<String, Long> reminderEmailsSent =
-                PerformanceUtils.getAndSetPreviousPerformanceStatistic(resolver, "ReminderEmailsSent");
+                PerformanceUtils.getAndReset(resolver, "ReminderEmailsSent");
             Map<String, Long> totalSurveysSubmitted =
-                PerformanceUtils.getAndSetPreviousPerformanceStatistic(resolver, "TotalSurveysSubmitted");
+                PerformanceUtils.getAndReset(resolver, "TotalSurveysSubmitted");
             Map<String, Long> appointmentSurveysSubmitted =
-                PerformanceUtils.getAndSetPreviousPerformanceStatistic(resolver, "AppointmentSurveysSubmitted");
+                PerformanceUtils.getAndReset(resolver, "AppointmentSurveysSubmitted");
             Map<String, Long> importedAppointments =
-                PerformanceUtils.getAndSetPreviousPerformanceStatistic(resolver, "ImportedAppointments");
+                PerformanceUtils.getAndReset(resolver, "ImportedAppointments");
 
             resolver.close();
 

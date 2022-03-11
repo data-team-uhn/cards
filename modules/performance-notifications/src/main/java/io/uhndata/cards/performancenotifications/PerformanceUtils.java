@@ -110,7 +110,7 @@ public final class PerformanceUtils
      * @param statName the name of the performance statistic to obtain its "today" and "total" values
      * @return the map of 'today' and 'total' values for the performance statistic or null
      */
-    public static Map<String, Long> getAndSetPreviousPerformanceStatistic(ResourceResolver resolver, String statName)
+    public static Map<String, Long> getAndReset(ResourceResolver resolver, String statName)
     {
         Map<String, Long> statsMap = getPerformanceStatistic(resolver, statName);
         if (statsMap == null) {
