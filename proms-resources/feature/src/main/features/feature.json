@@ -109,6 +109,7 @@
         "io.uhndata.cards.proms-backend:EmailNotifications=[sling-readall]",
         "io.uhndata.cards.proms-backend:UnsubmittedFormsRestriction=[sling-readall]",
         "io.uhndata.cards.proms-backend:TorchImporter=[proms-import-backend]",
+        "io.uhndata.cards.proms-backend:PerformanceLogger=[sling-performance-stats]",
         "io.uhndata.cards.proms-backend:SlackNotifications=[sling-performance-stats]"
       ]
     }

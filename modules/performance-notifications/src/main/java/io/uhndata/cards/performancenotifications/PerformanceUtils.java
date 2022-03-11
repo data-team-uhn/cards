@@ -78,7 +78,7 @@ public final class PerformanceUtils
      * Updates the value of a performance counter by incrementing it by a set amount.
      *
      * @param resolverFactory a ResourceResolverFactory that can be used for querying
-     *     the JCR as the SlackNotifications service user
+     *     the JCR as the PerformanceLogger service user
      * @param statName the name of the performance statistic to increment
      * @param incrementValue the value to increment the performance statistic by
      */
@@ -86,7 +86,7 @@ public final class PerformanceUtils
         final String statName, final long incrementValue)
     {
         Map<String, Object> params = new HashMap<>();
-        params.put(ResourceResolverFactory.SUBSERVICE, "SlackNotifications");
+        params.put(ResourceResolverFactory.SUBSERVICE, "PerformanceLogger");
         try {
             ResourceResolver resolver = resolverFactory.getServiceResourceResolver(params);
             incrementPerformanceStatistic(resolver, statName, incrementValue);
