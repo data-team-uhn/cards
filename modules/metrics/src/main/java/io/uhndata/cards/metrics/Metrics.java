@@ -78,7 +78,7 @@ public final class Metrics
      * Updates the value of a performance counter by incrementing it by a set amount.
      *
      * @param resolverFactory a ResourceResolverFactory that can be used for querying
-     *     the JCR as the PerformanceLogger service user
+     *     the JCR as the MetricLogger service user
      * @param statName the name of the performance statistic to increment
      * @param incrementValue the value to increment the performance statistic by
      */
@@ -86,7 +86,7 @@ public final class Metrics
         final String statName, final long incrementValue)
     {
         Map<String, Object> params = new HashMap<>();
-        params.put(ResourceResolverFactory.SUBSERVICE, "PerformanceLogger");
+        params.put(ResourceResolverFactory.SUBSERVICE, "MetricLogger");
         try (ResourceResolver resolver = resolverFactory.getServiceResourceResolver(params)) {
             increment(resolver, statName, incrementValue);
         } catch (LoginException e) {
@@ -104,7 +104,7 @@ public final class Metrics
      * at the exact same moment as the performance notification is generated. If
      * the performance statistic cannot be found, null is returned.
      *
-     * @param resolver a ResourceResolver for querying the /PerformanceStatistics/ JCR nodes
+     * @param resolver a ResourceResolver for querying the /Metrics/ JCR nodes
      * @param statName the name of the performance statistic to obtain its "today" and "total" values
      * @return the map of 'today' and 'total' values for the performance statistic or null
      */
