@@ -19,6 +19,8 @@ package io.uhndata.cards.internal;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.jcr.AccessDeniedException;
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -93,12 +95,14 @@ public class FormRelatedSubjectsEditor extends DefaultEditor
     }
 
     @Override
-    public void leave(NodeState before, NodeState after) throws CommitFailedException
+    public void leave(final NodeState before, final NodeState after) throws CommitFailedException
     {
         if (isForm(this.currentNodeBuilder)) {
             try {
                 setRelatedSubjects();
-            } catch (RepositoryException e) {
+            } catch (final AccessDeniedException | ItemNotFoundException e) {
+                // This is an "expected" exception, access to specific subjects may be denied to users
+            } catch (final RepositoryException e) {
                 // This is not a fatal error, the related subjects is not required for a functional application
                 LOGGER.warn("Unexpected exception while computing the related subjects of form {}",
                     this.currentNodeBuilder.getString("jcr:uuid"));
