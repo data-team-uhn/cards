@@ -433,10 +433,21 @@ public class VisitChangeListener implements ResourceChangeListener
                 final String sex = getPatientSex(visit);
                 if (sex != null) {
                     try {
-                        final Node answer = form.addNode(UUID.randomUUID().toString(), "cards:TextAnswer");
+                        final Node sexAnswer = form.addNode(UUID.randomUUID().toString(), "cards:TextAnswer");
                         final Node sexQuestion = session.getNode("/Questionnaires/AUDITC/sex");
-                        answer.setProperty(FormUtils.QUESTION_PROPERTY, sexQuestion);
-                        answer.setProperty(FormUtils.VALUE_PROPERTY, sex);
+                        sexAnswer.setProperty(FormUtils.QUESTION_PROPERTY, sexQuestion);
+                        sexAnswer.setProperty(FormUtils.VALUE_PROPERTY, sex);
+
+                        // Add in a second answer node with no value so that the form is not marked as complete
+                        final Node secondAnswerSection = form.addNode(UUID.randomUUID().toString(),
+                            "cards:AnswerSection");
+                        final Node secondSection = session.getNode("/Questionnaires/AUDITC/audit_survey");
+                        secondAnswerSection.setProperty(FormUtils.SECTION_PROPERTY, secondSection);
+
+                        final Node secondAnswer = secondAnswerSection.addNode(UUID.randomUUID().toString(),
+                            "cards:LongAnswer");
+                        final Node secondQuestion = session.getNode("/Questionnaires/AUDITC/audit_survey/audit_1");
+                        secondAnswer.setProperty(FormUtils.QUESTION_PROPERTY, secondQuestion);
                     } catch (final RepositoryException e) {
                         LOGGER.error("Failed to set sex: {}", e.getMessage(), e);
                     }
