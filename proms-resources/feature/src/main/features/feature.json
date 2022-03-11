@@ -54,7 +54,7 @@
       "start-order":"25"
     },
     {
-      "id":"${project.groupId}:cards-performance-notifications:${project.version}",
+      "id":"${project.groupId}:cards-metrics:${project.version}",
       "start-order":"25"
     },
     {
@@ -109,8 +109,8 @@
         "io.uhndata.cards.proms-backend:EmailNotifications=[sling-readall]",
         "io.uhndata.cards.proms-backend:UnsubmittedFormsRestriction=[sling-readall]",
         "io.uhndata.cards.proms-backend:TorchImporter=[proms-import-backend]",
-        "io.uhndata.cards.proms-backend:PerformanceLogger=[sling-performance-stats]",
-        "io.uhndata.cards.proms-backend:SlackNotifications=[sling-performance-stats]"
+        "io.uhndata.cards.proms-backend:PerformanceLogger=[cards-metrics]",
+        "io.uhndata.cards.proms-backend:SlackNotifications=[cards-metrics]"
       ]
     }
   }

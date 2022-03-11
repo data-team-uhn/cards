@@ -60,7 +60,7 @@
     <module>keycloakdemo-saml</module>
     <module>uhn-saml</module>
     <module>fetch-requires-saml-login</module>
-    <module>performance-notifications</module>
+    <module>metrics</module>
     <module>http-requests</module>
   </modules>
 </project>

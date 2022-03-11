@@ -30,7 +30,7 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.uhndata.cards.performancenotifications.PerformanceUtils;
+import io.uhndata.cards.metrics.Metrics;
 import io.uhndata.cards.proms.emailnotifications.AppointmentUtils;
 
 public final class SubmissionEventListener implements EventListener
@@ -112,7 +112,7 @@ public final class SubmissionEventListener implements EventListener
                 }
 
                 // Increment the performance counter
-                PerformanceUtils.increment(this.resolverFactory, "AppointmentSurveysSubmitted", 1);
+                Metrics.increment(this.resolverFactory, "AppointmentSurveysSubmitted", 1);
 
                 // Get the cards:Form node that this modified value property descends from
                 Resource modifiedFormNode = AppointmentUtils.getFormForAnswer(this.resolver, modifiedValueNode);
@@ -132,7 +132,7 @@ public final class SubmissionEventListener implements EventListener
                 long formsForAppointmentCount = countVisitForms(formRelatedSubjectUUID, modifiedFormNodeUUID);
 
                 // Increment the performance counter
-                PerformanceUtils.increment(this.resolverFactory,
+                Metrics.increment(this.resolverFactory,
                     "TotalSurveysSubmitted", formsForAppointmentCount);
             }
         } catch (Exception e) {

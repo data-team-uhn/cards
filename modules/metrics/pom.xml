@@ -26,9 +26,9 @@
     <version>0.9-SNAPSHOT</version>
   </parent>
 
-  <artifactId>cards-performance-notifications</artifactId>
+  <artifactId>cards-metrics</artifactId>
   <packaging>bundle</packaging>
-  <name>CARDS - Performance Notifications</name>
+  <name>CARDS - Metrics</name>
 
   <build>
     <plugins>

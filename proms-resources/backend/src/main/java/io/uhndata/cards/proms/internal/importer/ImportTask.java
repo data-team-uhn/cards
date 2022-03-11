@@ -44,7 +44,7 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.uhndata.cards.performancenotifications.PerformanceUtils;
+import io.uhndata.cards.metrics.Metrics;
 import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 
 /**
@@ -123,7 +123,7 @@ public class ImportTask implements Runnable
             importedAppointmentsCount += getUpcomingAppointments(token, this.daysToQuery, this.clinicNames[i]);
         }
         // Update the performance counter
-        PerformanceUtils.increment(this.resolverFactory,
+        Metrics.increment(this.resolverFactory,
             "ImportedAppointments", importedAppointmentsCount);
     }
 

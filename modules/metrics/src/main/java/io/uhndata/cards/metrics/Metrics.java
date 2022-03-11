@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package io.uhndata.cards.performancenotifications;
+package io.uhndata.cards.metrics;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,16 +32,16 @@ import org.apache.sling.api.resource.ValueMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public final class PerformanceUtils
+public final class Metrics
 {
     private static final String LABEL_TODAY = "today";
     private static final String LABEL_TOTAL = "total";
-    private static final String PERFORMANCE_STATISTICS_PATH = "/PerformanceStatistics/";
+    private static final String METRICS_PATH = "/Metrics/";
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PerformanceUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Metrics.class);
 
     // Hide the utility class constructor
-    private PerformanceUtils()
+    private Metrics()
     {
     }
 
@@ -56,8 +56,8 @@ public final class PerformanceUtils
     public static Map<String, Long> get(ResourceResolver resolver, String statName)
     {
         Map<String, Long> perfStat = new HashMap<String, Long>();
-        Resource statResourcePrevTotal = resolver.getResource(PERFORMANCE_STATISTICS_PATH + statName + "/prevTotal");
-        Resource statResourceTotal = resolver.getResource(PERFORMANCE_STATISTICS_PATH + statName + "/total");
+        Resource statResourcePrevTotal = resolver.getResource(METRICS_PATH + statName + "/prevTotal");
+        Resource statResourceTotal = resolver.getResource(METRICS_PATH + statName + "/total");
         if (statResourcePrevTotal == null || statResourceTotal == null) {
             return null;
         }
@@ -117,7 +117,7 @@ public final class PerformanceUtils
         long totalCount = statsMap.get(LABEL_TOTAL);
         try {
             Resource statResourcePrevTotal = resolver.getResource(
-                PERFORMANCE_STATISTICS_PATH + statName + "/prevTotal");
+                METRICS_PATH + statName + "/prevTotal");
             ModifiableValueMap statMapPrevTotal = statResourcePrevTotal.adaptTo(ModifiableValueMap.class);
             statMapPrevTotal.put("value", totalCount);
             resolver.commit();
@@ -130,7 +130,7 @@ public final class PerformanceUtils
     private static void increment(ResourceResolver resolver, String statName, long incrementBy)
     {
         try {
-            Resource statResourceTotal = resolver.getResource(PERFORMANCE_STATISTICS_PATH + statName + "/total");
+            Resource statResourceTotal = resolver.getResource(METRICS_PATH + statName + "/total");
             if (statResourceTotal == null) {
                 return;
             }

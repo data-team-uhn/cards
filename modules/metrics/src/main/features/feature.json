@@ -16,8 +16,8 @@
 // under the License.
 
 {
-  "title": "CARDS - Performance notification support",
-  "description": "Feature enabling support for performance notifications",
+  "title": "CARDS - Metrics support",
+  "description": "Feature enabling support for performance metrics recording",
   "bundles":[
     {
       "id":"org.apache.sling:org.apache.sling.api:2.23.6",

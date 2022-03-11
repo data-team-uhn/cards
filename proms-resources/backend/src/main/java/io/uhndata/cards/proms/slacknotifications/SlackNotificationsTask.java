@@ -33,7 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.httprequests.HttpRequests;
-import io.uhndata.cards.performancenotifications.PerformanceUtils;
+import io.uhndata.cards.metrics.Metrics;
 
 public class SlackNotificationsTask implements Runnable
 {
@@ -90,15 +90,15 @@ public class SlackNotificationsTask implements Runnable
             ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(params);
 
             Map<String, Long> initialEmailsSent =
-                PerformanceUtils.getAndReset(resolver, "InitialEmailsSent");
+                Metrics.getAndReset(resolver, "InitialEmailsSent");
             Map<String, Long> reminderEmailsSent =
-                PerformanceUtils.getAndReset(resolver, "ReminderEmailsSent");
+                Metrics.getAndReset(resolver, "ReminderEmailsSent");
             Map<String, Long> totalSurveysSubmitted =
-                PerformanceUtils.getAndReset(resolver, "TotalSurveysSubmitted");
+                Metrics.getAndReset(resolver, "TotalSurveysSubmitted");
             Map<String, Long> appointmentSurveysSubmitted =
-                PerformanceUtils.getAndReset(resolver, "AppointmentSurveysSubmitted");
+                Metrics.getAndReset(resolver, "AppointmentSurveysSubmitted");
             Map<String, Long> importedAppointments =
-                PerformanceUtils.getAndReset(resolver, "ImportedAppointments");
+                Metrics.getAndReset(resolver, "ImportedAppointments");
 
             resolver.close();
 

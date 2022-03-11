@@ -23,7 +23,7 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.commons.messaging.mail.MailService;
 
 import io.uhndata.cards.auth.token.TokenManager;
-import io.uhndata.cards.performancenotifications.PerformanceUtils;
+import io.uhndata.cards.metrics.Metrics;
 
 public class InitialNotificationsTask extends AbstractPromsNotification implements Runnable
 {
@@ -40,6 +40,6 @@ public class InitialNotificationsTask extends AbstractPromsNotification implemen
     public void run()
     {
         long emailsSent = sendNotification(3, "72h.txt", PATIENT_NOTIFICATION_SUBJECT);
-        PerformanceUtils.increment(this.resolverFactory, "InitialEmailsSent", emailsSent);
+        Metrics.increment(this.resolverFactory, "InitialEmailsSent", emailsSent);
     }
 }

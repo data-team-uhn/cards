@@ -24,12 +24,12 @@ set principal ACL for sling-readall
     allow   jcr:read    on /
 end
 
-# sling-performance-stats
-create service user sling-performance-stats with path system/sling
+# cards-metrics
+create service user cards-metrics with path system/sling
 
-set principal ACL for sling-performance-stats
-    allow    jcr:read    on /PerformanceStatistics/
-    allow    jcr:write   on /PerformanceStatistics/
+set principal ACL for cards-metrics
+    allow    jcr:read    on /Metrics/
+    allow    jcr:write   on /Metrics/
 end
 
 # sling-xss
