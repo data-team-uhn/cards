@@ -53,7 +53,7 @@ public final class PerformanceUtils
      * @param statName the name of the performance statistic to query
      * @return the map of 'today' and 'total' values for the performance statistic or null
      */
-    public static Map<String, Long> getPerformanceStatistic(ResourceResolver resolver, String statName)
+    public static Map<String, Long> get(ResourceResolver resolver, String statName)
     {
         Map<String, Long> perfStat = new HashMap<String, Long>();
         Resource statResourcePrevTotal = resolver.getResource(PERFORMANCE_STATISTICS_PATH + statName + "/prevTotal");
@@ -112,7 +112,7 @@ public final class PerformanceUtils
      */
     public static Map<String, Long> getAndReset(ResourceResolver resolver, String statName)
     {
-        Map<String, Long> statsMap = getPerformanceStatistic(resolver, statName);
+        Map<String, Long> statsMap = get(resolver, statName);
         if (statsMap == null) {
             return null;
         }
