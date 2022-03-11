@@ -89,7 +89,7 @@ public final class PerformanceUtils
         params.put(ResourceResolverFactory.SUBSERVICE, "PerformanceLogger");
         try {
             ResourceResolver resolver = resolverFactory.getServiceResourceResolver(params);
-            incrementPerformanceStatistic(resolver, statName, incrementValue);
+            increment(resolver, statName, incrementValue);
             resolver.close();
         } catch (LoginException e) {
             return;
@@ -129,7 +129,7 @@ public final class PerformanceUtils
         return statsMap;
     }
 
-    private static void incrementPerformanceStatistic(ResourceResolver resolver, String statName, long incrementBy)
+    private static void increment(ResourceResolver resolver, String statName, long incrementBy)
     {
         try {
             Resource statResourceTotal = resolver.getResource(PERFORMANCE_STATISTICS_PATH + statName + "/total");
