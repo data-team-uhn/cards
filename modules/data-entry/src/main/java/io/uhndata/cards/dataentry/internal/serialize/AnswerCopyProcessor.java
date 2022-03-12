@@ -23,6 +23,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.function.Function;
 
+import javax.jcr.AccessDeniedException;
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
@@ -200,7 +201,9 @@ public class AnswerCopyProcessor implements ResourceJsonProcessor
                 // Not found among the subject's forms, next look in the parent subject's forms
                 nextSubject = nextSubject.getParent();
             }
-        } catch (RepositoryException e) {
+        } catch (final AccessDeniedException e) {
+            // This is an "expected" exception, access to specific forms or questions may be denied to users
+        } catch (final RepositoryException e) {
             LOGGER.warn("Failed to look for the right answer to copy: {}", e.getMessage(), e);
         }
         return null;
