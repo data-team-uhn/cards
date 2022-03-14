@@ -52,6 +52,14 @@
     {
       "id":"${project.groupId}:cards-token-authentication:${project.version}",
       "start-order":"25"
+    },
+    {
+      "id":"${project.groupId}:cards-metrics:${project.version}",
+      "start-order":"25"
+    },
+    {
+      "id":"${project.groupId}:cards-http-requests:${project.version}",
+      "start-order":"25"
     }
   ],
   "configurations":{
@@ -73,7 +81,23 @@
         // Trusted users can only access forms submitted by their patients, and delete forms that they created
         "create group TrustedUsers \n\n set ACL for TrustedUsers \n   deny rep:write on /Subjects \n   allow jcr:removeChildNodes on /Forms \n     deny jcr:removeNode on /Forms restriction(rep:ntNames,cards:Form,cards:Subject) \n     allow jcr:removeNode on /Forms restriction(cards:createdBy) \n    deny jcr:all on /Forms restriction(cards:unsubmittedForms) \n end ",
         // Special handling of the 404 page button: patients go to the PROMS UI, all other users go to the dashboard
-        "create path (sling:Folder) /RedirectURL \n set ACL on /RedirectURL \n   deny jcr:read for everyone \n   allow jcr:read for patient \n end \n set properties on /RedirectURL \n   set RedirectURL to /Proms.html/Cardio \n   set RedirectLabel to \"Go to my surveys\" \n end "
+        "create path (sling:Folder) /RedirectURL \n set ACL on /RedirectURL \n   deny jcr:read for everyone \n   allow jcr:read for patient \n end \n set properties on /RedirectURL \n   set RedirectURL to /Proms.html/Cardio \n   set RedirectLabel to \"Go to my surveys\" \n end ",
+        // A /Metrics sling:Folder for storing performance info to be sent periodically via Slack
+        "create path (sling:Folder) /Metrics/InitialEmailsSent/prevTotal(nt:unstructured)",
+        "create path (sling:Folder) /Metrics/InitialEmailsSent/total(nt:unstructured mixin mix:atomicCounter)",
+        "create path (sling:Folder) /Metrics/ReminderEmailsSent/prevTotal(nt:unstructured)",
+        "create path (sling:Folder) /Metrics/ReminderEmailsSent/total(nt:unstructured mixin mix:atomicCounter)",
+        "create path (sling:Folder) /Metrics/TotalSurveysSubmitted/prevTotal(nt:unstructured)",
+        "create path (sling:Folder) /Metrics/TotalSurveysSubmitted/total(nt:unstructured mixin mix:atomicCounter)",
+        "create path (sling:Folder) /Metrics/AppointmentSurveysSubmitted/prevTotal(nt:unstructured)",
+        "create path (sling:Folder) /Metrics/AppointmentSurveysSubmitted/total(nt:unstructured mixin mix:atomicCounter)",
+        "create path (sling:Folder) /Metrics/ImportedAppointments/prevTotal(nt:unstructured)",
+        "create path (sling:Folder) /Metrics/ImportedAppointments/total(nt:unstructured mixin mix:atomicCounter)",
+        "set properties on /Metrics/InitialEmailsSent/prevTotal \n   default value{Long} to 0 \n end",
+        "set properties on /Metrics/ReminderEmailsSent/prevTotal \n   default value{Long} to 0 \n end",
+        "set properties on /Metrics/TotalSurveysSubmitted/prevTotal \n   default value{Long} to 0 \n end",
+        "set properties on /Metrics/AppointmentSurveysSubmitted/prevTotal \n   default value{Long} to 0 \n end",
+        "set properties on /Metrics/ImportedAppointments/prevTotal \n   default value{Long} to 0 \n end"
       ]
     },
     "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~proms":{
@@ -84,7 +108,9 @@
         "io.uhndata.cards.proms-backend:unsubscribe=[proms-patient-unsubscribe]",
         "io.uhndata.cards.proms-backend:EmailNotifications=[sling-readall]",
         "io.uhndata.cards.proms-backend:UnsubmittedFormsRestriction=[sling-readall]",
-        "io.uhndata.cards.proms-backend:TorchImporter=[proms-import-backend]"
+        "io.uhndata.cards.proms-backend:TorchImporter=[proms-import-backend]",
+        "io.uhndata.cards.proms-backend:MetricLogger=[cards-metrics]",
+        "io.uhndata.cards.proms-backend:SlackNotifications=[cards-metrics]"
       ]
     }
   }

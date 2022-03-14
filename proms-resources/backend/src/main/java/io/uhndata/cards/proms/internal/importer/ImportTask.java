@@ -44,6 +44,7 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.metrics.Metrics;
 import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 
 /**
@@ -116,10 +117,14 @@ public class ImportTask implements Runnable
     public void run()
     {
         final String token = loginWithJWT();
+        long importedAppointmentsCount = 0;
         // Iterate over every clinic name
         for (int i = 0; i < this.clinicNames.length; i++) {
-            getUpcomingAppointments(token, this.daysToQuery, this.clinicNames[i]);
+            importedAppointmentsCount += getUpcomingAppointments(token, this.daysToQuery, this.clinicNames[i]);
         }
+        // Update the performance counter
+        Metrics.increment(this.resolverFactory,
+            "ImportedAppointments", importedAppointmentsCount);
     }
 
     /**
@@ -157,13 +162,14 @@ public class ImportTask implements Runnable
      * @param daysToQuery the number of days to query
      * @param clinicName the clinic for which to retrieve appointments
      */
-    private void getUpcomingAppointments(final String authToken, final int daysToQuery, final String clinicName)
+    private long getUpcomingAppointments(final String authToken, final int daysToQuery, final String clinicName)
     {
         final String postRequestTemplate = "{\"query\": \"query{"
             + "patientsByDateAndClinic(location: \\\"" + clinicName + "\\\", start: \\\"%s\\\", end: \\\"%s\\\") {"
             + "fhirID name {given family} sex mrn ohip dob emailOk com {email{home work temp mobile}} "
             + "appointments {fhirID time status location participants {name {prefix given family suffix} eID}} }}\"}";
 
+        long importedAppointmentsCount = 0;
         final Calendar startDate = Calendar.getInstance();
         final Date today = new Date();
         startDate.setTime(today);
@@ -186,16 +192,17 @@ public class ImportTask implements Runnable
             try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(
                 Map.of(ResourceResolverFactory.SUBSERVICE, "TorchImporter"))) {
                 this.rrp.push(resolver);
-
                 final PatientLocalStorage storage = new PatientLocalStorage(resolver, startDate, endDate,
                     this.providerIDs);
 
                 data.forEach(storage::store);
+                importedAppointmentsCount += storage.getCountAppointmentsCreated();
                 this.rrp.pop();
             }
         } catch (final Exception e) {
             LOGGER.error("Failed to query server: {}", e.getMessage(), e);
         }
+        return importedAppointmentsCount;
     }
 
     /***
