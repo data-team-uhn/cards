@@ -92,10 +92,63 @@ const graphQlResponse = {
           {
             location: ['6012-HC-Congenital Cardiac'],
             status: {toJSON: getMockAppointmentStatus},
-            fhirID: 'AppointmentFhirID',
+            fhirID: 'AppointmentOneFhirID',
             participants: [
               {
                 role: 'ATND',
+                participant: {
+                  eID: 'SomeParticipantEID',
+                  fhirID: 'SomeParticipantFhirID',
+                  name: {
+                    prefix: [
+                      'Dr.'
+                    ],
+                    given: [
+                      'Robert'
+                    ],
+                    family: 'Smith',
+                    suffix: [
+                      'M.D.'
+                    ]
+                  }
+                }
+              }
+            ],
+            time: {toJSON: getMockAppointmentTime}
+          },
+          {
+            location: ['6012-HC-Congenital Cardiac'],
+            status: {toJSON: getMockAppointmentStatus},
+            fhirID: 'AppointmentTwoFhirID',
+            participants: [
+              {
+                role: 'ABCD',
+                participant: {
+                  eID: 'SomeParticipantEID',
+                  fhirID: 'SomeParticipantFhirID',
+                  name: {
+                    prefix: [
+                      'Dr.'
+                    ],
+                    given: [
+                      'Robert'
+                    ],
+                    family: 'Smith',
+                    suffix: [
+                      'M.D.'
+                    ]
+                  }
+                }
+              }
+            ],
+            time: {toJSON: getMockAppointmentTime}
+          },
+          {
+            location: ['6012-HC-Congenital Cardiac'],
+            status: {toJSON: getMockAppointmentStatus},
+            fhirID: 'AppointmentThreeFhirID',
+            participants: [
+              {
                 participant: {
                   eID: 'SomeParticipantEID',
                   fhirID: 'SomeParticipantFhirID',
