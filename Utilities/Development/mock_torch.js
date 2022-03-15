@@ -95,17 +95,22 @@ const graphQlResponse = {
             fhirID: 'AppointmentFhirID',
             participants: [
               {
-                name: {
-                  prefix: [
-                    'Dr.'
-                  ],
-                  given: [
-                    'Robert'
-                  ],
-                  family: 'Smith',
-                  suffix: [
-                    'M.D.'
-                  ]
+                role: 'ATND',
+                participant: {
+                  eID: 'SomeParticipantEID',
+                  fhirID: 'SomeParticipantFhirID',
+                  name: {
+                    prefix: [
+                      'Dr.'
+                    ],
+                    given: [
+                      'Robert'
+                    ],
+                    family: 'Smith',
+                    suffix: [
+                      'M.D.'
+                    ]
+                  }
                 }
               }
             ],
