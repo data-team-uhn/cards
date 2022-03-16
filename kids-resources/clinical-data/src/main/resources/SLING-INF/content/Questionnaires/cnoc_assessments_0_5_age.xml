@@ -25604,30 +25604,30 @@
 				<type>String</type>
 			</property>
 			<node>
-				<name>1-BASC-2</name>
+				<name>1</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>1 - BASC-2</value>
+					<value>BASC-2</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>1 - BASC-2</value>
+					<value>1</value>
 					<type>String</type>
 				</property>
 			</node>
 			<node>
-				<name>2-BASC-3</name>
+				<name>2</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>2 - BASC-3</value>
+					<value>BASC-3</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>2 - BASC-3</value>
+					<value>2</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -25760,30 +25760,30 @@
 				<type>String</type>
 			</property>
 			<node>
-				<name>1-Ages2.5to4.5</name>
+				<name>1</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>1 - Ages 2.5 to 4.5</value>
+					<value>Ages 2.5 to 4.5</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>1 - Ages 2.5 to 4.5</value>
+					<value>1</value>
 					<type>String</type>
 				</property>
 			</node>
 			<node>
-				<name>2-Ages4to18</name>
+				<name>2</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>2 - Ages 4 to 18</value>
+					<value>Ages 4 to 18</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>2 - Ages 4 to 18</value>
+					<value>2</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -26993,72 +26993,72 @@
 				<type>String</type>
 			</property>
 			<node>
-				<name>1-GlobalDelay</name>
+				<name>1</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>1 - Global Delay</value>
+					<value>Global Delay</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>1 - Global Delay</value>
+					<value>1</value>
 					<type>String</type>
 				</property>
 			</node>
 			<node>
-				<name>2-MotorDelay-Disorder</name>
+				<name>2</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>2 - Motor Delay/Disorder</value>
+					<value>Motor Delay/Disorder</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>2 - Motor Delay/Disorder</value>
+					<value>2</value>
 					<type>String</type>
 				</property>
 			</node>
 			<node>
-				<name>3-Speech-LanguageDelay-Disorder</name>
+				<name>3</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>3 - Speech/Language Delay/Disorder</value>
+					<value>Speech/Language Delay/Disorder</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>3 - Speech/Language Delay/Disorder</value>
+					<value>3</value>
 					<type>String</type>
 				</property>
 			</node>
 			<node>
-				<name>4-OTHER</name>
+				<name>4</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>4 - OTHER</value>
+					<value>OTHER</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>4 - OTHER</value>
+					<value>4</value>
 					<type>String</type>
 				</property>
 			</node>
 			<node>
-				<name>5-Unknown</name>
+				<name>5</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>5 - Unknown</value>
+					<value>Unknown</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>5 - Unknown</value>
+					<value>5</value>
 					<type>String</type>
 				</property>
 			</node>

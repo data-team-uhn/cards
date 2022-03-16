@@ -15097,11 +15097,6 @@ return Math.round(Math.abs((first - second) / (24 * 60 * 60 * 1000)))</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
 				<name>description</name>
 				<value>check all</value>
 				<type>String</type>
@@ -37663,11 +37658,6 @@ suite</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
 				<name>description</name>
 				<value>check all</value>
 				<type>String</type>
@@ -40841,11 +40831,6 @@ and/or "Or</value>
 				<name>text</name>
 				<value>Feeding/nutrition route(s) at encounter end</value>
 				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
 			</property>
 			<property>
 				<name>description</name>

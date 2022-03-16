@@ -50293,7 +50293,7 @@ valve (RETIRED)"]]></value>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Cardiac arrest (MI) during or following procedure (Perioperative/Periprocedural</value>
+					<value>Cardiac arrest (MI) during or following procedure (Perioperative/Periprocedural = Intraoperative/Intraprocedural and/or Postoperative/Postprocedural)</value>
 					<type>String</type>
 				</property>
 				<property>

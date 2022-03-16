@@ -398,7 +398,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>cm</value>
 				<type>String</type>
 			</property>
@@ -422,7 +422,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>kg</value>
 				<type>String</type>
 			</property>
@@ -446,7 +446,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>m2</value>
 				<type>String</type>
 			</property>
@@ -1383,34 +1383,6 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>Yes</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Yes</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Yes</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>No</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>No</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>No</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
 				<name>historyofcva</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
@@ -1969,7 +1941,7 @@
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -1987,13 +1959,8 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>\# days</value>
-				<type>String</type>
-			</property>
-			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -2332,13 +2299,8 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>\# of days</value>
-				<type>String</type>
-			</property>
-			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -2602,11 +2564,11 @@
 			</node>
 		</node>
 		<node>
-			<name>cardiacresynchronizationtherapycrtpriortoimplant</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
+			<name>Section1</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
-				<name>text</name>
-				<value>Cardiac resynchronization therapy (CRT) prior to implant</value>
+				<name>displayMode</name>
+				<value>matrix</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -2614,152 +2576,166 @@
 				<value>1</value>
 				<type>Long</type>
 			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
 			<node>
-				<name>Yes</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>cardiacresynchronizationtherapycrtpriortoimplant</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Yes</value>
+					<name>text</name>
+					<value>Cardiac resynchronization therapy (CRT) prior to implant</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>Yes</value>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>Yes</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>No</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 			<node>
-				<name>No</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>implantablecardioverterdefibrillatoricd</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>No</value>
+					<name>text</name>
+					<value>Implantable cardioverter defibrillator</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>No</value>
-					<type>String</type>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
 				</property>
-			</node>
-		</node>
-		<node>
-			<name>implantablecardioverterdefibrillatoricd</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Implantable cardioverter defibrillator</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>ICD</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>Yes</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Yes</value>
+					<name>description</name>
+					<value>ICD</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>Yes</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>No</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>No</value>
+					<name>displayMode</name>
+					<value>list</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>No</value>
+					<name>dataType</name>
+					<value>text</value>
 					<type>String</type>
 				</property>
-			</node>
-		</node>
-		<node>
-			<name>implantedcardiomems</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Implanted CardioMEMS</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>Yes</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Yes</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Yes</value>
-					<type>String</type>
-				</property>
+				<node>
+					<name>Yes</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>No</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 			<node>
-				<name>No</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>implantedcardiomems</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>No</value>
+					<name>text</name>
+					<value>Implanted CardioMEMS</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>No</value>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>Yes</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>No</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 		</node>
 	</node>
@@ -2932,7 +2908,7 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>mm</value>
 				<type>String</type>
 			</property>
@@ -3023,7 +2999,7 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>mmHg</value>
 				<type>String</type>
 			</property>
@@ -3114,7 +3090,7 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>mmHg</value>
 				<type>String</type>
 			</property>
@@ -3304,7 +3280,7 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>ml/kg/min</value>
 				<type>String</type>
 			</property>
@@ -3376,45 +3352,11 @@
 			<type>String</type>
 		</property>
 		<node>
-			<name>albuminrange1.0–8.0</name>
+			<name>crpcreactiveproteinrange0–300</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Albumin</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>minValue</name>
-				<value>1.0</value>
-				<type>Double</type>
-			</property>
-			<property>
-				<name>maxValue</name>
-				<value>8.0</value>
-				<type>Double</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>decimal</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>g/dL ND/NA</value>
-				<type>String</type>
-			</property>
-		</node>
-		<node>
-			<name>2.crpcreactiveproteinrange0–300</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>2. CRP</value>
+				<value>CRP</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -3424,7 +3366,7 @@
 			</property>
 			<property>
 				<name>description</name>
-				<value>C Reactive Protein. mg/dL ND/NA</value>
+				<value>C Reactive Protein</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -3442,13 +3384,18 @@
 				<value>decimal</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>g/dL ND/NA</value>
+				<type>String</type>
+			</property>
 		</node>
 		<node>
-			<name>3.totalbilirubinrange0.0-50</name>
+			<name>totalbilirubinrange0.0-50</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>3. Total Bilirubin</value>
+				<value>Total Bilirubin</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -3472,17 +3419,17 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value> mg/dL ND/NA </value>
+				<name>unitOfMeasurement</name>
+				<value>mg/dL ND/NA</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>4.sgot-astrange1–10000</name>
+			<name>sgot-astrange1–10000</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>4. SGOT/AST</value>
+				<value>SGOT/AST</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -3506,17 +3453,17 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value> u/L</value>
+				<name>unitOfMeasurement</name>
+				<value>u/L</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>5.sgpt-altrange1–10000</name>
+			<name>sgpt-altrange1–10000</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>5. SGPT/ALT</value>
+				<value>SGPT/ALT</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -3540,17 +3487,17 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value> u/L </value>
+				<name>unitOfMeasurement</name>
+				<value>u/L</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>6.bloodureanitrogenrange1–350</name>
+			<name>bloodureanitrogenrange1–350</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>6. Blood urea nitrogen</value>
+				<value>Blood urea nitrogen</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -3574,17 +3521,17 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>mg/dL</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>7.creatininerange0.1-16</name>
+			<name>creatininerange0.1-16</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>7. Creatinine</value>
+				<value>Creatinine</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -3608,17 +3555,17 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>mg/dL </value>
+				<name>unitOfMeasurement</name>
+				<value>mg/dL</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>8.ldhrange100-3000</name>
+			<name>ldhrange100-3000</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>8. LDH</value>
+				<value>LDH</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -3642,17 +3589,17 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>U/L </value>
+				<name>unitOfMeasurement</name>
+				<value>U/L</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>9.hemoglobinrange1.0–20</name>
+			<name>hemoglobinrange1.0–20</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>9. Hemoglobin</value>
+				<value>Hemoglobin</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -3676,17 +3623,17 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>g/dL </value>
+				<name>unitOfMeasurement</name>
+				<value>g/dL</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>10.plateletcountrange10–800</name>
+			<name>plateletcountrange10–800</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>10. Platelet Count</value>
+				<value>Platelet Count</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -3710,17 +3657,17 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>K/uL </value>
+				<name>unitOfMeasurement</name>
+				<value>K/uL</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>11.fibrinogenrange10–1000</name>
+			<name>fibrinogenrange10–1000</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>11. Fibrinogen</value>
+				<value>Fibrinogen</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -3744,17 +3691,17 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>mg/dL </value>
+				<name>unitOfMeasurement</name>
+				<value>mg/dL</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>12.bnpbrainnatriureticpeptiderange1–100</name>
+			<name>bnpbrainnatriureticpeptiderange1–100</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>12. BNP</value>
+				<value>BNP</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -3764,7 +3711,7 @@
 			</property>
 			<property>
 				<name>description</name>
-				<value>Brain natriuretic peptide. pg/ml </value>
+				<value>Brain natriuretic peptide</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -3782,13 +3729,18 @@
 				<value>decimal</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>pg/ml</value>
+				<type>String</type>
+			</property>
 		</node>
 		<node>
-			<name>13.ntprobrainnatriureticpeptidepro-bnprange1–300</name>
+			<name>ntprobrainnatriureticpeptidepro-bnprange1–300</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>13. NT pro brain natriuretic peptide Pro-BNP</value>
+				<value>NT pro brain natriuretic peptide Pro-BNP</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -3812,8 +3764,8 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value> pg/ml </value>
+				<name>unitOfMeasurement</name>
+				<value>pg/ml</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -3855,17 +3807,17 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value> U/mL </value>
+				<name>unitOfMeasurement</name>
+				<value>U/mL</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>15.pttrange10-220</name>
+			<name>pttrange10-220</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>15. PTT</value>
+				<value>PTT</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -3889,17 +3841,17 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>seconds </value>
+				<name>unitOfMeasurement</name>
+				<value>seconds</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>16.inrrange0.5–15</name>
+			<name>inrrange0.5–15</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>16. INR</value>
+				<value>INR</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -4521,7 +4473,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>mm</value>
 				<type>String</type>
 			</property>
@@ -4545,7 +4497,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>mm</value>
 				<type>String</type>
 			</property>
@@ -4739,11 +4691,11 @@
 			<type>String</type>
 		</property>
 		<node>
-			<name>mitralvalverepair-replacement</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
+			<name>Section2</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
-				<name>text</name>
-				<value>Mitral valve repair/replacement</value>
+				<name>displayMode</name>
+				<value>matrix</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -4751,84 +4703,268 @@
 				<value>1</value>
 				<type>Long</type>
 			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
 			<node>
-				<name>None</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>mitralvalverepair-replacement</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>None</value>
+					<name>text</name>
+					<value>Mitral valve repair/replacement</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>None</value>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>notApplicable</name>
-					<value>True</value>
-					<type>Boolean</type>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
 				</property>
+				<node>
+					<name>None</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>None</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>None</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>notApplicable</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>Repair</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Repair</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Repair</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Replacementwithtissuevalve</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Replacement with tissue valve</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Replacement with tissue valve</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Replacementwithmechanicalvalve</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Replacement with mechanical valve</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Replacement with mechanical valve</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 			<node>
-				<name>Repair</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>aorticvalverepair-replacement</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Repair</value>
+					<name>text</name>
+					<value>Aortic valve repair/replacement</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>Repair</value>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>None</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>None</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>None</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>notApplicable</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>Repair</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Repair</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Repair</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Replacementwithtissuevalve</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Replacement with tissue valve</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Replacement with tissue valve</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Replacementwithmechanicalvalve</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Replacement with mechanical valve</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Replacement with mechanical valve</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 			<node>
-				<name>Replacementwithtissuevalve</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>tricuspidvalverepair-replacement</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Replacement with tissue valve</value>
+					<name>text</name>
+					<value>Tricuspid valve repair/replacement</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>Replacement with tissue valve</value>
-					<type>String</type>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
 				</property>
-			</node>
-			<node>
-				<name>Replacementwithmechanicalvalve</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Replacement with mechanical valve</value>
+					<name>displayMode</name>
+					<value>list</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>Replacement with mechanical valve</value>
+					<name>dataType</name>
+					<value>text</value>
 					<type>String</type>
 				</property>
+				<node>
+					<name>None</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>None</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>None</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>notApplicable</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>Repair</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Repair</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Repair</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Replacementwithtissuevalve</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Replacement with tissue valve</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Replacement with tissue valve</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Replacementwithmechanicalvalve</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Replacement with mechanical valve</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Replacement with mechanical valve</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 		</node>
 		<node>
-			<name>aorticvalverepair-replacement</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
+			<name>Section3</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
-				<name>text</name>
-				<value>Aortic valve repair/replacement</value>
+				<name>displayMode</name>
+				<value>matrix</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -4836,265 +4972,109 @@
 				<value>1</value>
 				<type>Long</type>
 			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
 			<node>
-				<name>None</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>lv-lathrombectomy</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>None</value>
+					<name>text</name>
+					<value>LV/LA Thrombectomy</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>None</value>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>notApplicable</name>
-					<value>True</value>
-					<type>Boolean</type>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
 				</property>
+				<node>
+					<name>Yes</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>No</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 			<node>
-				<name>Repair</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>otherconcomitantprocedures</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Repair</value>
+					<name>text</name>
+					<value>Other concomitant procedures</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>Repair</value>
-					<type>String</type>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
 				</property>
-			</node>
-			<node>
-				<name>Replacementwithtissuevalve</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Replacement with tissue valve</value>
+					<name>displayMode</name>
+					<value>list</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>Replacement with tissue valve</value>
+					<name>dataType</name>
+					<value>text</value>
 					<type>String</type>
 				</property>
-			</node>
-			<node>
-				<name>Replacementwithmechanicalvalve</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Replacement with mechanical valve</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Replacement with mechanical valve</value>
-					<type>String</type>
-				</property>
-			</node>
-		</node>
-		<node>
-			<name>tricuspidvalverepair-replacement</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Tricuspid valve repair/replacement</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>None</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>None</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>None</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>notApplicable</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-			</node>
-			<node>
-				<name>Repair</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Repair</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Repair</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Replacementwithtissuevalve</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Replacement with tissue valve</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Replacement with tissue valve</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Replacementwithmechanicalvalve</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Replacement with mechanical valve</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Replacement with mechanical valve</value>
-					<type>String</type>
-				</property>
-			</node>
-		</node>
-		<node>
-			<name>lv-lathrombectomy</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>LV/LA Thrombectomy</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>Yes</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Yes</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Yes</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>No</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>No</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>No</value>
-					<type>String</type>
-				</property>
-			</node>
-		</node>
-		<node>
-			<name>otherconcomitantprocedures</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Other concomitant procedures</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>Yes</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Yes</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Yes</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>No</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>No</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>No</value>
-					<type>String</type>
-				</property>
+				<node>
+					<name>Yes</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>No</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 		</node>
 		<node>
@@ -6802,13 +6782,8 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>%</value>
-				<type>String</type>
-			</property>
-			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -6911,7 +6886,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>mmHG</value>
 				<type>String</type>
 			</property>
@@ -6987,7 +6962,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>mmHg</value>
 				<type>String</type>
 			</property>
@@ -7153,21 +7128,17 @@
 				</property>
 			</node>
 		</node>
-	</node>
-	<node>
-		<name>GLENNONLYINFORMATION</name>
-		<primaryNodeType>cards:Section</primaryNodeType>
-		<property>
-			<name>label</name>
-			<value>GLENN ONLY INFORMATION</value>
-			<type>String</type>
-		</property>
 		<node>
-			<name>isthereasupplentalshunttoincreasesaturation</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
+			<name>GLENNONLYINFORMATION</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
-				<name>text</name>
-				<value>IS there a supplental shunt to increase saturation</value>
+				<name>displayMode</name>
+				<value>matrix</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>GLENN ONLY INFORMATION</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -7175,260 +7146,265 @@
 				<value>1</value>
 				<type>Long</type>
 			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
 			<node>
-				<name>Yes</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>isthereasupplentalshunttoincreasesaturation</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Yes</value>
+					<name>text</name>
+					<value>IS there a supplental shunt to increase saturation</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>Yes</value>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>Yes</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>No</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 			<node>
-				<name>No</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>wasashuntcreatedduringvadimplantation</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>No</value>
+					<name>text</name>
+					<value>Was a shunt created during VAD implantation</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>No</value>
-					<type>String</type>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
 				</property>
-			</node>
-		</node>
-		<node>
-			<name>wasashuntcreatedduringvadimplantation</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Was a shunt created during VAD implantation</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>Yes</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Yes</value>
+					<name>displayMode</name>
+					<value>list</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>Yes</value>
+					<name>dataType</name>
+					<value>text</value>
 					<type>String</type>
 				</property>
-			</node>
-			<node>
-				<name>No</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>No</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>No</value>
-					<type>String</type>
-				</property>
-			</node>
-		</node>
-		<node>
-			<name>wasashuntclosedduringvadimplantation</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Was a shunt closed during VAD implantation</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>Yes</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Yes</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Yes</value>
-					<type>String</type>
-				</property>
+				<node>
+					<name>Yes</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>No</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 			<node>
-				<name>No</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>wasashuntclosedduringvadimplantation</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>No</value>
+					<name>text</name>
+					<value>Was a shunt closed during VAD implantation</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>No</value>
-					<type>String</type>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
 				</property>
-			</node>
-		</node>
-	</node>
-	<node>
-		<name>FONTANONLYINFORMATION</name>
-		<primaryNodeType>cards:Section</primaryNodeType>
-		<property>
-			<name>label</name>
-			<value>FONTAN ONLY INFORMATION</value>
-			<type>String</type>
-		</property>
-		<node>
-			<name>istherearighttoleftshunt?</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Is there a right to left shunt?</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>Yes</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Yes</value>
+					<name>displayMode</name>
+					<value>list</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>Yes</value>
+					<name>dataType</name>
+					<value>text</value>
 					<type>String</type>
 				</property>
+				<node>
+					<name>Yes</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>No</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 			<node>
-				<name>No</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>istherearighttoleftshunt?</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>No</value>
+					<name>text</name>
+					<value>Is there a right to left shunt?</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>No</value>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>Yes</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>No</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
-		</node>
-		<node>
-			<name>wasashuntclosedduringvadimplantation2</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Was a shunt closed during VAD implantation</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
 			<node>
-				<name>Yes</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>wasashuntclosedduringvadimplantation2</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Yes</value>
+					<name>text</name>
+					<value>Was a shunt closed during VAD implantation</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>Yes</value>
-					<type>String</type>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
 				</property>
-			</node>
-			<node>
-				<name>No</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>No</value>
+					<name>displayMode</name>
+					<value>list</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>No</value>
+					<name>dataType</name>
+					<value>text</value>
 					<type>String</type>
 				</property>
+				<node>
+					<name>Yes</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Yes</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>No</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>No</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 		</node>
 	</node>
@@ -8053,11 +8029,11 @@
 			</node>
 		</node>
 		<node>
-			<name>6.1dateoffirstpumpchange</name>
+			<name>dateoffirstpumpchange</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>6.1 Date of first pump change</value>
+				<value>Date of first pump change</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -8081,7 +8057,7 @@
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>HVAD/HM2/HM3/CENTRIMAG/PEDIMAG/ROTAFLOW/IMPELLA</value>
+				<value>HVAD / HM2 / HM3 / CENTRIMAG / PEDIMAG / ROTAFLOW / IMPELLA</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -8190,7 +8166,7 @@
 			</node>
 		</node>
 		<node>
-			<name>dateoffirstpumpchange</name>
+			<name>dateoffirstpumpchange2</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -8291,11 +8267,6 @@
 				<name>text</name>
 				<value>Type of change</value>
 				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
 			</property>
 			<property>
 				<name>description</name>
@@ -8450,8 +8421,8 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>\#days</value>
+				<name>unitOfMeasurement</name>
+				<value>#days</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -8467,11 +8438,6 @@
 				<name>text</name>
 				<value>At time of discharge nutrition provided by</value>
 				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
 			</property>
 			<property>
 				<name>description</name>
@@ -8820,20 +8786,25 @@
 			</node>
 		</node>
 		<node>
-			<name>lowertargetu-mlSection</name>
+			<name>lowertargetSection</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>lowertargetu-ml</name>
+				<name>lowertarget</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Lower target U/ml</value>
+					<value>Lower target</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>maxAnswers</name>
 					<value>1</value>
 					<type>Long</type>
+				</property>
+				<property>
+					<name>unitOfMeasurement</name>
+					<value>U/ml</value>
+					<type>String</type>
 				</property>
 				<property>
 					<name>dataType</name>
@@ -8884,20 +8855,25 @@
 			</node>
 		</node>
 		<node>
-			<name>uppertargetu-mlSection</name>
+			<name>uppertargetSection</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>uppertargetu-ml</name>
+				<name>uppertarget</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Upper target U/ml</value>
+					<value>Upper target</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>maxAnswers</name>
 					<value>1</value>
 					<type>Long</type>
+				</property>
+				<property>
+					<name>unitOfMeasurement</name>
+					<value>U/ml</value>
+					<type>String</type>
 				</property>
 				<property>
 					<name>dataType</name>
@@ -8948,20 +8924,25 @@
 			</node>
 		</node>
 		<node>
-			<name>lowertargetsecSection</name>
+			<name>lowertarget2Section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>lowertargetsec</name>
+				<name>lowertarget2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Lower target sec</value>
+					<value>Lower target</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>maxAnswers</name>
 					<value>1</value>
 					<type>Long</type>
+				</property>
+				<property>
+					<name>unitOfMeasurement</name>
+					<value>sec</value>
+					<type>String</type>
 				</property>
 				<property>
 					<name>dataType</name>
@@ -9012,20 +8993,25 @@
 			</node>
 		</node>
 		<node>
-			<name>uppertargetsecSection</name>
+			<name>uppertarget2Section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>uppertargetsec</name>
+				<name>uppertarget2</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Upper target sec</value>
+					<value>Upper target</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>maxAnswers</name>
 					<value>1</value>
 					<type>Long</type>
+				</property>
+				<property>
+					<name>unitOfMeasurement</name>
+					<value>sec</value>
+					<type>String</type>
 				</property>
 				<property>
 					<name>dataType</name>
@@ -9285,10 +9271,10 @@
 			</node>
 		</node>
 		<node>
-			<name>lowertargetu-ml2Section</name>
+			<name>lowertargetu-mlSection</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>lowertargetu-ml2</name>
+				<name>lowertargetu-ml</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
@@ -9301,6 +9287,11 @@
 					<type>Long</type>
 				</property>
 				<property>
+					<name>unitOfMeasurement</name>
+					<value>U/ml</value>
+					<type>String</type>
+				</property>
+				<property>
 					<name>dataType</name>
 					<value>text</value>
 					<type>String</type>
@@ -9349,10 +9340,10 @@
 			</node>
 		</node>
 		<node>
-			<name>uppertargetu-ml2Section</name>
+			<name>uppertargetu-mlSection</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>uppertargetu-ml2</name>
+				<name>uppertargetu-ml</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
@@ -9365,6 +9356,11 @@
 					<type>Long</type>
 				</property>
 				<property>
+					<name>unitOfMeasurement</name>
+					<value>U/ml</value>
+					<type>String</type>
+				</property>
+				<property>
 					<name>dataType</name>
 					<value>text</value>
 					<type>String</type>
@@ -9413,10 +9409,10 @@
 			</node>
 		</node>
 		<node>
-			<name>lowertargetsec2Section</name>
+			<name>lowertargetsecSection</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>lowertargetsec2</name>
+				<name>lowertargetsec</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
@@ -9427,6 +9423,11 @@
 					<name>maxAnswers</name>
 					<value>1</value>
 					<type>Long</type>
+				</property>
+				<property>
+					<name>unitOfMeasurement</name>
+					<value>sec</value>
+					<type>String</type>
 				</property>
 				<property>
 					<name>dataType</name>
@@ -9477,10 +9478,10 @@
 			</node>
 		</node>
 		<node>
-			<name>uppertargetsec2Section</name>
+			<name>uppertargetsecSection</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>uppertargetsec2</name>
+				<name>uppertargetsec</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
@@ -9491,6 +9492,11 @@
 					<name>maxAnswers</name>
 					<value>1</value>
 					<type>Long</type>
+				</property>
+				<property>
+					<name>unitOfMeasurement</name>
+					<value>sec</value>
+					<type>String</type>
 				</property>
 				<property>
 					<name>dataType</name>
@@ -9706,7 +9712,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>INR</value>
 				<type>String</type>
 			</property>
@@ -9717,17 +9723,22 @@
 			</property>
 		</node>
 		<node>
-			<name>lowertargetsec3</name>
+			<name>lowertarget3</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Lower target sec</value>
+				<value>Lower target</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
+			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>sec</value>
+				<type>String</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -9736,17 +9747,22 @@
 			</property>
 		</node>
 		<node>
-			<name>uppertargetsec3</name>
+			<name>uppertarget3</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Upper target sec</value>
+				<value>Upper target</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
+			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>sec</value>
+				<type>String</type>
 			</property>
 			<property>
 				<name>dataType</name>
@@ -9959,20 +9975,25 @@
 			</node>
 		</node>
 		<node>
-			<name>lowertargetsec4Section</name>
+			<name>lowertarget4Section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>lowertargetsec4</name>
+				<name>lowertarget4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Lower target sec</value>
+					<value>Lower target</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>maxAnswers</name>
 					<value>1</value>
 					<type>Long</type>
+				</property>
+				<property>
+					<name>unitOfMeasurement</name>
+					<value>sec</value>
+					<type>String</type>
 				</property>
 				<property>
 					<name>dataType</name>
@@ -10023,20 +10044,25 @@
 			</node>
 		</node>
 		<node>
-			<name>uppertargetsec4Section</name>
+			<name>uppertarget4Section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>uppertargetsec4</name>
+				<name>uppertarget4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Upper target sec</value>
+					<value>Upper target</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>maxAnswers</name>
 					<value>1</value>
 					<type>Long</type>
+				</property>
+				<property>
+					<name>unitOfMeasurement</name>
+					<value>sec</value>
+					<type>String</type>
 				</property>
 				<property>
 					<name>dataType</name>
@@ -10087,20 +10113,25 @@
 			</node>
 		</node>
 		<node>
-			<name>lowertargetsec5Section</name>
+			<name>lowertarget5Section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>lowertargetsec5</name>
+				<name>lowertarget5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Lower target sec</value>
+					<value>Lower target</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>maxAnswers</name>
 					<value>1</value>
 					<type>Long</type>
+				</property>
+				<property>
+					<name>unitOfMeasurement</name>
+					<value>sec</value>
+					<type>String</type>
 				</property>
 				<property>
 					<name>dataType</name>
@@ -10151,20 +10182,25 @@
 			</node>
 		</node>
 		<node>
-			<name>uppertargetsec5Section</name>
+			<name>uppertarget5Section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>uppertargetsec5</name>
+				<name>uppertarget5</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Upper target sec</value>
+					<value>Upper target</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>maxAnswers</name>
 					<value>1</value>
 					<type>Long</type>
+				</property>
+				<property>
+					<name>unitOfMeasurement</name>
+					<value>sec</value>
+					<type>String</type>
 				</property>
 				<property>
 					<name>dataType</name>
@@ -10367,20 +10403,25 @@
 			</node>
 		</node>
 		<node>
-			<name>lowertargetsec6Section</name>
+			<name>lowertarget6Section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>lowertargetsec6</name>
+				<name>lowertarget6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Lower target sec</value>
+					<value>Lower target</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>maxAnswers</name>
 					<value>1</value>
 					<type>Long</type>
+				</property>
+				<property>
+					<name>unitOfMeasurement</name>
+					<value>sec</value>
+					<type>String</type>
 				</property>
 				<property>
 					<name>dataType</name>
@@ -10431,20 +10472,25 @@
 			</node>
 		</node>
 		<node>
-			<name>uppertargetsec6Section</name>
+			<name>uppertarget6Section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>uppertargetsec6</name>
+				<name>uppertarget6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Upper target sec</value>
+					<value>Upper target</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>maxAnswers</name>
 					<value>1</value>
 					<type>Long</type>
+				</property>
+				<property>
+					<name>unitOfMeasurement</name>
+					<value>sec</value>
+					<type>String</type>
 				</property>
 				<property>
 					<name>dataType</name>
@@ -10495,20 +10541,25 @@
 			</node>
 		</node>
 		<node>
-			<name>lowertargetsec7Section</name>
+			<name>lowertarget7Section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>lowertargetsec7</name>
+				<name>lowertarget7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Lower target sec</value>
+					<value>Lower target</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>maxAnswers</name>
 					<value>1</value>
 					<type>Long</type>
+				</property>
+				<property>
+					<name>unitOfMeasurement</name>
+					<value>sec</value>
+					<type>String</type>
 				</property>
 				<property>
 					<name>dataType</name>
@@ -10559,20 +10610,25 @@
 			</node>
 		</node>
 		<node>
-			<name>uppertargetsec7Section</name>
+			<name>uppertarget7Section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>uppertargetsec7</name>
+				<name>uppertarget7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Upper target sec</value>
+					<value>Upper target</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>maxAnswers</name>
 					<value>1</value>
 					<type>Long</type>
+				</property>
+				<property>
+					<name>unitOfMeasurement</name>
+					<value>sec</value>
+					<type>String</type>
 				</property>
 				<property>
 					<name>dataType</name>
@@ -11035,7 +11091,7 @@
 			</property>
 		</node>
 		<node>
-			<name>targetvaluemethodandrange6</name>
+			<name>targetvaluemethodandrangelabtestname</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -11059,7 +11115,7 @@
 			</property>
 		</node>
 		<node>
-			<name>lowertarget</name>
+			<name>lowertarget8</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -11078,7 +11134,7 @@
 			</property>
 		</node>
 		<node>
-			<name>uppertarget</name>
+			<name>uppertarget8</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -12119,7 +12175,7 @@
 			<type>String</type>
 		</property>
 		<node>
-			<name>albuminrange1.0–8.02</name>
+			<name>albuminrange1.0–8.0</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -12147,17 +12203,17 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>g/dL ND/NA</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>2.crpcreactiveproteinrange0–3002</name>
+			<name>crpcreactiveproteinrange0–3002</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>2. CRP</value>
+				<value>CRP</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -12167,7 +12223,7 @@
 			</property>
 			<property>
 				<name>description</name>
-				<value>C Reactive Protein. mg/dL ND/NA</value>
+				<value>C Reactive Protein</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -12185,13 +12241,18 @@
 				<value>decimal</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>mg/dL ND/NA</value>
+				<type>String</type>
+			</property>
 		</node>
 		<node>
-			<name>3.totalbilirubinrange0.0-502</name>
+			<name>totalbilirubinrange0.0-502</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>3. Total Bilirubin</value>
+				<value>Total Bilirubin</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -12215,17 +12276,17 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value> mg/dL ND/NA</value>
+				<name>unitOfMeasurement</name>
+				<value>mg/dL ND/NA</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>4.sgot-astrange1–100002</name>
+			<name>sgot-astrange1–100002</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>4. SGOT/AST</value>
+				<value>SGOT/AST</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -12249,17 +12310,17 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value> u/L ND/NA</value>
+				<name>unitOfMeasurement</name>
+				<value>u/L ND/NA</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>5.sgpt-altrange1–100002</name>
+			<name>sgpt-altrange1–100002</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>5. SGPT/ALT</value>
+				<value>SGPT/ALT</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -12283,17 +12344,17 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value> u/L ND/NA</value>
+				<name>unitOfMeasurement</name>
+				<value>u/L ND/NA</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>6.bloodureanitrogenrange1–3502</name>
+			<name>bloodureanitrogenrange1–3502</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>6. Blood urea nitrogen</value>
+				<value>Blood urea nitrogen</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -12317,17 +12378,17 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>mg/dL ND/NA</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>7.creatininerange0.1-162</name>
+			<name>creatininerange0.1-162</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>7. Creatinine</value>
+				<value>Creatinine</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -12351,17 +12412,17 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>mg/dL ND/NA</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>8.ldhrange100-30002</name>
+			<name>ldhrange100-30002</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>8. LDH</value>
+				<value>LDH</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -12385,17 +12446,17 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>U/L ND/NA</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>9.hemoglobinrange1.0–202</name>
+			<name>hemoglobinrange1.0–202</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>9. Hemoglobin</value>
+				<value>Hemoglobin</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -12419,17 +12480,17 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>g/dL ND/NA</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>10.plateletcountrange10–8002</name>
+			<name>plateletcountrange10–8002</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>10. Platelet Count</value>
+				<value>Platelet Count</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -12453,17 +12514,17 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>K/uL ND/NA</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>11.fibrinogenrange10–10002</name>
+			<name>fibrinogenrange10–10002</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>11. Fibrinogen</value>
+				<value>Fibrinogen</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -12487,17 +12548,17 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>mg/dL ND/NA</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>12.bnpbrainnatriureticpeptiderange1–1002</name>
+			<name>bnpbrainnatriureticpeptiderange1–1002</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>12. BNP</value>
+				<value>BNP</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -12507,7 +12568,7 @@
 			</property>
 			<property>
 				<name>description</name>
-				<value>Brain natriuretic peptide. pg/ml ND/NA</value>
+				<value>Brain natriuretic peptide</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -12525,13 +12586,18 @@
 				<value>decimal</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>pg/ml ND/NA</value>
+				<type>String</type>
+			</property>
 		</node>
 		<node>
-			<name>13.ntprobrainnatriureticpeptidepro-bnprange1–3002</name>
+			<name>ntprobrainnatriureticpeptidepro-bnprange1–3002</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>13. NT pro brain natriuretic peptide Pro-BNP</value>
+				<value>NT pro brain natriuretic peptide Pro-BNP</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -12555,8 +12621,8 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value> pg/ml ND/NA</value>
+				<name>unitOfMeasurement</name>
+				<value>pg/ml ND/NA</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -12598,17 +12664,17 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value> U/mL ND/NA</value>
+				<name>unitOfMeasurement</name>
+				<value>U/mL ND/NA</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>15.pttrange10-2202</name>
+			<name>pttrange10-2202</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>15. PTT</value>
+				<value>PTT</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -12632,17 +12698,17 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>seconds ND/NA</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>16.inrrange0.5–152</name>
+			<name>inrrange0.5–152</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>16. INR</value>
+				<value>INR</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -12666,7 +12732,7 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>ND/NA</value>
 				<type>String</type>
 			</property>
@@ -12709,7 +12775,7 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>mmHg</value>
 				<type>String</type>
 			</property>
@@ -12728,7 +12794,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>mmHg</value>
 				<type>String</type>
 			</property>
@@ -12739,11 +12805,11 @@
 			</property>
 		</node>
 		<node>
-			<name>2.diastolicpressuresvad-lvadrange-100-0</name>
+			<name>diastolicpressuresvad-lvadrange-100-0</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>2. Diastolic Pressure SVAD/LVAD</value>
+				<value>Diastolic Pressure SVAD/LVAD</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -12767,17 +12833,17 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>mmHg</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>2.diastolicpressurervad</name>
+			<name>diastolicpressurervad</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>2. Diastolic Pressure RVAD</value>
+				<value>Diastolic Pressure RVAD</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -12786,7 +12852,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>BPM</value>
 				<type>String</type>
 			</property>
@@ -12825,7 +12891,7 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>BPM</value>
 				<type>String</type>
 			</property>
@@ -13226,7 +13292,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>ml</value>
 				<type>String</type>
 			</property>
@@ -13250,7 +13316,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>BPM</value>
 				<type>String</type>
 			</property>
@@ -13274,7 +13340,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>L/min</value>
 				<type>String</type>
 			</property>
@@ -13299,7 +13365,12 @@
 			</property>
 			<property>
 				<name>description</name>
-				<value>auto calculated. L/min/m2</value>
+				<value>auto calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>L/min/m2</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -13322,7 +13393,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>ml</value>
 				<type>String</type>
 			</property>
@@ -13346,7 +13417,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>BPM</value>
 				<type>String</type>
 			</property>
@@ -13370,7 +13441,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>L/min</value>
 				<type>String</type>
 			</property>
@@ -13395,7 +13466,12 @@
 			</property>
 			<property>
 				<name>description</name>
-				<value>auto calculated. L/min/m2</value>
+				<value>auto calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>L/min/m2</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -13410,7 +13486,7 @@
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>HVADHM2HM3CENTRIMAGPEDIMAGROTAFLOW DEVICE SETTINGS</value>
+			<value>HVAD  HM2  HM3  CENTRIMAG  PEDIMAG  ROTAFLOW DEVICE SETTINGS</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -13446,7 +13522,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>L/min</value>
 				<type>String</type>
 			</property>
@@ -13471,7 +13547,12 @@
 			</property>
 			<property>
 				<name>description</name>
-				<value>auto calculated. L/min/m2</value>
+				<value>auto calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>L/min/m2</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -13494,7 +13575,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>Watts</value>
 				<type>String</type>
 			</property>
@@ -13811,7 +13892,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>L/min</value>
 				<type>String</type>
 			</property>
@@ -13836,7 +13917,12 @@
 			</property>
 			<property>
 				<name>description</name>
-				<value>auto calculated. L/min/m2</value>
+				<value>auto calculated</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>L/min/m2</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -13859,7 +13945,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>Watts</value>
 				<type>String</type>
 			</property>
@@ -14190,7 +14276,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>mmHg</value>
 				<type>String</type>
 			</property>
@@ -14214,7 +14300,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>mA</value>
 				<type>String</type>
 			</property>
@@ -14238,7 +14324,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>L/min</value>
 				<type>String</type>
 			</property>
@@ -14286,7 +14372,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>mmHg</value>
 				<type>String</type>
 			</property>
@@ -14310,7 +14396,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>mA</value>
 				<type>String</type>
 			</property>
@@ -14334,7 +14420,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>L/min</value>
 				<type>String</type>
 			</property>
@@ -14759,25 +14845,15 @@
 				</property>
 			</node>
 		</node>
-		<node>
-			<name>pericardialfluidcollection</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>PERICARDIAL FLUID COLLECTION:</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-		</node>
+	</node>
+	<node>
+		<name>PERICARDIALFLUIDCOLLECTION</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>PERICARDIAL FLUID COLLECTION</value>
+			<type>String</type>
+		</property>
 		<node>
 			<name>methodofdrainage</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
@@ -14844,25 +14920,15 @@
 				</property>
 			</node>
 		</node>
-		<node>
-			<name>hemolysis</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>HEMOLYSIS:</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-		</node>
+	</node>
+	<node>
+		<name>HEMOLYSIS</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>HEMOLYSIS</value>
+			<type>String</type>
+		</property>
 		<node>
 			<name>hemolysiseventledto</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
@@ -14943,25 +15009,15 @@
 				</property>
 			</node>
 		</node>
-		<node>
-			<name>renaldysfunction</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>RENAL DYSFUNCTION:</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-		</node>
+	</node>
+	<node>
+		<name>RENALDYSFUNCTION</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>RENAL DYSFUNCTION</value>
+			<type>String</type>
+		</property>
 		<node>
 			<name>dialysisperformed</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
@@ -15028,8 +15084,8 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>\#days</value>
+				<name>unitOfMeasurement</name>
+				<value>#days</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -15104,8 +15160,8 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>\#days</value>
+				<name>unitOfMeasurement</name>
+				<value>#days</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -15114,25 +15170,15 @@
 				<type>String</type>
 			</property>
 		</node>
-		<node>
-			<name>rightheartfailure</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>RIGHT HEART FAILURE:</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-		</node>
+	</node>
+	<node>
+		<name>RIGHTHEARTFAILURE</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>RIGHT HEART FAILURE</value>
+			<type>String</type>
+		</property>
 		<node>
 			<name>criteriafordiagnosingrhf</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
@@ -15331,7 +15377,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>Elevated CVP number</value>
+							<value>Elevated CVP</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -15814,25 +15860,15 @@
 				</node>
 			</node>
 		</node>
-		<node>
-			<name>respiratoryillness</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>RESPIRATORY ILLNESS:</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-		</node>
+	</node>
+	<node>
+		<name>RESPIRATORYILLNESS</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>RESPIRATORY ILLNESS</value>
+			<type>String</type>
+		</property>
 		<node>
 			<name>covid-19infection</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
@@ -15885,25 +15921,15 @@
 				</property>
 			</node>
 		</node>
-		<node>
-			<name>majorbleeding</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>MAJOR BLEEDING:</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-		</node>
+	</node>
+	<node>
+		<name>MAJORBLEEDING</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>MAJOR BLEEDING</value>
+			<type>String</type>
+		</property>
 		<node>
 			<name>didbleedingresultintransfusionofprbc?</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
@@ -16258,7 +16284,7 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>g/dl</value>
 				<type>String</type>
 			</property>
@@ -16292,8 +16318,8 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>K/Ul </value>
+				<name>unitOfMeasurement</name>
+				<value>K/Ul</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -16326,13 +16352,13 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>%</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>fibrinogenrange10–1000</name>
+			<name>fibrinogenrange10–10003</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -16360,7 +16386,7 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>mg/dL</value>
 				<type>String</type>
 			</property>
@@ -16394,7 +16420,7 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>U/mL</value>
 				<type>String</type>
 			</property>
@@ -16428,8 +16454,8 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>seconds </value>
+				<name>unitOfMeasurement</name>
+				<value>seconds</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -16462,25 +16488,15 @@
 				<type>String</type>
 			</property>
 		</node>
-		<node>
-			<name>neurologicaldysfunction</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>NEUROLOGICAL DYSFUNCTION:</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-		</node>
+	</node>
+	<node>
+		<name>NEUROLOGICALDYSFUNCTION</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>NEUROLOGICAL DYSFUNCTION</value>
+			<type>String</type>
+		</property>
 		<node>
 			<name>symptomscheckallthatapply</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
@@ -16488,11 +16504,6 @@
 				<name>text</name>
 				<value>Symptoms</value>
 				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
 			</property>
 			<property>
 				<name>description</name>
@@ -16620,11 +16631,6 @@
 				<name>text</name>
 				<value>Factors present at time of event</value>
 				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
 			</property>
 			<property>
 				<name>description</name>
@@ -16771,11 +16777,6 @@
 				<name>text</name>
 				<value>Location of CNS event</value>
 				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
 			</property>
 			<property>
 				<name>description</name>
@@ -17252,7 +17253,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>K/uL</value>
 				<type>String</type>
 			</property>
@@ -17277,7 +17278,12 @@
 			</property>
 			<property>
 				<name>description</name>
-				<value>C Reactive Protein. mg/dL</value>
+				<value>C Reactive Protein</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>mg/dL</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -17315,7 +17321,7 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>g/dl</value>
 				<type>String</type>
 			</property>
@@ -17349,7 +17355,7 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>K/ul</value>
 				<type>String</type>
 			</property>
@@ -17368,7 +17374,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>%</value>
 				<type>String</type>
 			</property>
@@ -17379,7 +17385,7 @@
 			</property>
 		</node>
 		<node>
-			<name>fibrinogenrange10–10002</name>
+			<name>fibrinogenrange10–10004</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -17407,7 +17413,7 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>mg/dl</value>
 				<type>String</type>
 			</property>
@@ -17426,7 +17432,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>U/ml</value>
 				<type>String</type>
 			</property>
@@ -17450,7 +17456,7 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>description</name>
+				<name>unitOfMeasurement</name>
 				<value>Seconds</value>
 				<type>String</type>
 			</property>
@@ -17479,25 +17485,15 @@
 				<type>String</type>
 			</property>
 		</node>
-		<node>
-			<name>psompediatricstrokeoutcomesmeasureshortneuroexam</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>PSOM: PEDIATRIC STROKE OUTCOMES MEASURE SHORT NEURO EXAM</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-		</node>
+	</node>
+	<node>
+		<name>PSOMPEDIATRICSTROKEOUTCOMESMEASURESHORTNEUROEXAM</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>PSOM: PEDIATRIC STROKE OUTCOMES MEASURE SHORT NEURO EXAM</value>
+			<type>String</type>
+		</property>
 		<node>
 			<name>assessmenttype</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
@@ -17620,62 +17616,6 @@
 				<value>1</value>
 				<type>Long</type>
 			</property>
-			<node>
-				<name>None0</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>None 0</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>None 0</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Mildbutnoimpactonfunction0.5</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Mild but no impact on function 0.5</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Mild but no impact on function 0.5</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Moderatewithsomefunctionallimitations1</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Moderate with some functional limitations 1</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Moderate with some functional limitations 1</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Severeorprofoundwithmissingfunction2</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Severe or profound with missing function 2</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Severe or profound with missing function 2</value>
-					<type>String</type>
-				</property>
-			</node>
 			<node>
 				<name>sensorimotordeficit-rightside</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
@@ -18228,7 +18168,7 @@
 			</node>
 		</node>
 		<node>
-			<name>totalscore</name>
+			<name>totalscoreoutof10</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -18251,25 +18191,15 @@
 				<type>String</type>
 			</property>
 		</node>
-		<node>
-			<name>devicemalfunction</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>DEVICE MALFUNCTION:</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-		</node>
+	</node>
+	<node>
+		<name>DEVICEMALFUNCTION</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>DEVICE MALFUNCTION</value>
+			<type>String</type>
+		</property>
 		<node>
 			<name>malfunctiondate</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
