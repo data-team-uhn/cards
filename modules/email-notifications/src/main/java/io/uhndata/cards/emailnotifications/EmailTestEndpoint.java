@@ -61,6 +61,7 @@ public final class EmailTestEndpoint extends SlingSafeMethodsServlet
         final String fromName = request.getParameter("fromName");
         final String toEmail = request.getParameter("toEmail");
         final String toName = request.getParameter("toName");
+        final boolean isHtml = "true".equals(request.getParameter("isHtml"));
         if (fromEmail == null || fromName == null || toEmail == null || toName == null) {
             //Missing parameters
             response.setStatus(400);
@@ -69,13 +70,25 @@ public final class EmailTestEndpoint extends SlingSafeMethodsServlet
         }
 
         try {
-            MimeMessage message = this.mailService.getMessageBuilder()
-                .from(fromEmail, fromName)
-                .to(toEmail, toName)
-                .replyTo(fromEmail)
-                .subject(subject)
-                .text(text)
-                .build();
+            MimeMessage message;
+            if (isHtml) {
+                message = this.mailService.getMessageBuilder()
+                    .from(fromEmail, fromName)
+                    .to(toEmail, toName)
+                    .replyTo(fromEmail)
+                    .subject(subject)
+                    .text(text)
+                    .html("<html><head><title>Rich Text</title></head><body><p>" + text + "</p></body></html>")
+                    .build();
+            } else {
+                message = this.mailService.getMessageBuilder()
+                    .from(fromEmail, fromName)
+                    .to(toEmail, toName)
+                    .replyTo(fromEmail)
+                    .subject(subject)
+                    .text(text)
+                    .build();
+            }
 
             this.mailService.sendMessage(message);
             response.setStatus(200);

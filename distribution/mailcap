@@ -1,0 +1,3 @@
+text/html;; x-java-content-handler=com.sun.mail.handlers.text_html
+text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain
+multipart/*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed
