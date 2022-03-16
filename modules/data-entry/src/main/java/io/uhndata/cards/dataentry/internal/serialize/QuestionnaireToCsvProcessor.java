@@ -36,6 +36,8 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.sling.api.resource.Resource;
 import org.osgi.service.component.annotations.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.dataentry.internal.serialize.labels.ResourceCSVProcessor;
 
@@ -47,6 +49,8 @@ import io.uhndata.cards.dataentry.internal.serialize.labels.ResourceCSVProcessor
 @Component(service = ResourceCSVProcessor.class)
 public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(QuestionnaireToCsvProcessor.class);
+
     @Override
     public boolean canProcess(final Resource resource)
     {
@@ -75,7 +79,7 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
             CSVPrinter csvPrinter = new CSVPrinter(stringWriter, CSVFormat.DEFAULT);
 
             // CSV data strings aggregator where the key is Question uuid that maps to the list of
-            // answers strings to form scv
+            // corresponding answer strings to form scv
             final Map<String, List<String>> csvData = new LinkedHashMap<>();
             csvData.put("Patient ID", new ArrayList<>());
             csvData.put("Created", new ArrayList<>());
@@ -94,7 +98,7 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
                 processFormsToRows(questionnaire.getJsonArray("data"), csvData);
             }
 
-            // Generate CSV output String
+            // Generate CSV output string
             // Assemble by rows
             for (int i = 0; i < csvData.get("Patient ID").size(); i++) {
                 // iterate over the columns
@@ -112,8 +116,7 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
             csvPrinter.close();
             return result;
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOGGER.error("Error in CSV export of {} questionnaire", questionnaire.getString("@name"));
         }
         return null;
     }
