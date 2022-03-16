@@ -104,44 +104,44 @@
 			<type>String</type>
 		</property>
 		<node>
-			<name>1-MRI</name>
+			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
-				<value>1 - MRI</value>
+				<value>MRI</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>value</name>
-				<value>1 - MRI</value>
+				<value>1</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>2-Ultrasound</name>
+			<name>2</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
-				<value>2 - Ultrasound</value>
+				<value>Ultrasound</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>value</name>
-				<value>2 - Ultrasound</value>
+				<value>2</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>3-CT</name>
+			<name>3</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
-				<value>3 - CT</value>
+				<value>CT</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>value</name>
-				<value>3 - CT</value>
+				<value>3</value>
 				<type>String</type>
 			</property>
 		</node>

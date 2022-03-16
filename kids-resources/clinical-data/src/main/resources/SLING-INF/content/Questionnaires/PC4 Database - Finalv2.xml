@@ -41623,11 +41623,6 @@ Other", "Oncologic - Other", "Ortho - Other", "Transplant - Other", "Urology - O
 					<type>String</type>
 				</property>
 				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
 					<name>description</name>
 					<value>select all that apply</value>
 					<type>String</type>

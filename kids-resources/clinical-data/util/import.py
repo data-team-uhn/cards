@@ -44,13 +44,13 @@ CONDITION_DEFINTIONS = ["if", "displayed if:", "show the field only if:", "show 
     "show the field only if", "show field only if", "show this field only if", "show this field if", "show field if",
     "yes if", "show if", "show the field only if:", "show field only if"]
 CONDITION_SPLIT = [" = ", "selection was ", " was ", " selection is ", " response is ", " selections is ", " is "]
-MULTIPLE_DEFINITIONS = ["select all that apply", "select all", "allow for multiple", "check all"]
+MULTIPLE_DEFINITIONS = ["select all that apply", "select all", "allow for multiple", "check all", "(select all that apply)"]
 UNIT_DEFINITIONS = ["in "]
 OPTIONS_RANGE_DEFINITIONS = ["valid range:", "validrange:"]
 MIN_RANGE_DEFINITIONS = ["min:", "min"]
 MAX_RANGE_DEFINITIONS = ["max:", "max"]
 TITLE_RANGE_DEFINITIONS = ["range:", "range"]
-REQUIRED_DEFINITION = ["required field"]
+REQUIRED_DEFINITION = ["required field", "*Required.", "*Required"]
 SECTION_PREFIX = ["section: ", "tab : ", "tab: "]
 MATRIX_PREFIX = ["matrix: "]
 CONDITIONAL_USE_PREVIOUS = "previous_list"
@@ -95,13 +95,14 @@ class Headers2Details(Headers2):
     INCLUDE_NAME_IN_DESCRIPTION = True
 
 class Headers3:
-    QUESTION = "Field/Question "
+    QUESTION = "Field/Question"
     DEFINITION = "Variable values"
     CONDITIONS = "Second order variable"
     CONDITION_QUESTION = True
     MERGED_DEFINITIONS_OPTIONS = True
     QUESTION_DEFINED_SECTIONS = True
     PAGINATE = True
+    UNIT_DESCRIPTIONS = True
 
 def partition_ignore_strings(input, splitter):
     ignore_map = {
@@ -225,7 +226,7 @@ def insert_conditional(conditional_string, question, title):
         question.update(create_conditional(operand_a, operator, operand_b, 'condition' + title, question))
 
 # Adds a minAnswers property if 'MissingData' contains the keyword 'illegal'
-def insert_min_answers(question, row):
+def insert_min_answers(question):
     question.update({'minAnswers': 1})
 
 
@@ -352,6 +353,8 @@ def get_row_type_from_definition(row):
         row_type = RowTypes.LIST
     elif ("numeric" in variable or "integer" in variable or "smallint" in variable):
         row_type = RowTypes.NUMBER
+        if hasattr(Headers, "UNIT_DESCRIPTIONS") and Headers.UNIT_DESCRIPTIONS:
+            row[Headers.DEFINITION] = row[Headers.DEFINITION].replace('numeric', '').replace('integer', '').replace('smallint', '').strip()
     elif ("text field" == variable or "text" == variable or "varchar" in variable):
         row_type = RowTypes.TEXT
     elif ("section" == variable):
@@ -374,10 +377,10 @@ def clean_title(title):
     if multiple_types in result:
         result = result[:result.index(multiple_types)]
     for prefix in SECTION_PREFIX:
-        if prefix in title.lower():
+        if prefix in result.lower():
             result = result[len(prefix):]
     for prefix in MATRIX_PREFIX:
-        if prefix in title.lower():
+        if prefix in result.lower():
             result = result[len(prefix):]
     return result.strip().replace('/','')
 
@@ -681,7 +684,10 @@ def insert_question_type(row, question, row_type):
             question['expression'] = row[Headers.CONDITIONS]
     elif row_type == RowTypes.DEFAULT:
         if len(row[Headers.DEFINITION]) > 0:
-            question = append_description(question, row[Headers.DEFINITION])
+            if hasattr(Headers, "UNIT_DESCRIPTIONS") and Headers.UNIT_DESCRIPTIONS:
+                question['unitOfMeasurement'] = row[Headers.DEFINITION]
+            else:
+                question = append_description(question, row[Headers.DEFINITION])
 
     if not "dataType" in question:
         question['dataType'] = new_type
@@ -715,8 +721,8 @@ def insert_list(row, question):
         value = option
         if option.lower().strip() == "other":
             question.update({'displayMode': 'list+input'})
-        elif '=' in option:
-            options = option.split('=')
+        elif '=' in option or regex.match('^\d+\s-\s', option):
+            options = option.split('=' if '=' in option else '-', 1)
             label = options[1].strip()
             option_details = {
                 'jcr:primaryType': 'cards:AnswerOption',
@@ -826,6 +832,15 @@ def csv_to_json(title):
             if question_title and question_title.endswith("_#"):
                 question_title = question_title[:len(question_title) - 2]
 
+            for required_string in REQUIRED_DEFINITION:
+                if required_string in row[Headers.QUESTION]:
+                    insert_min_answers(parents[-1][question_title])
+                    parents[-1][question_title]['text'] = parents[-1][question_title]['text'].replace(required_string, '').strip()
+
+            for multiple_string in MULTIPLE_DEFINITIONS:
+                if multiple_string in row[Headers.QUESTION]:
+                    parents[-1][question_title].pop('maxAnswers', None)
+
 
             # TODO: Add to Headers?
             # Not used for new imports, kept in for compatibility with cardiac_rehab
@@ -848,7 +863,7 @@ def csv_to_json(title):
             if Headers.CONDITIONS in row and row[Headers.CONDITIONS]:
                 conditional = row[Headers.CONDITIONS]
                 if conditional[0].lower() == "y":
-                    insert_min_answers(parents[-1][question_title], row)
+                    insert_min_answers(parents[-1][question_title])
                 parents[-1] = process_conditions(parents[-1], conditional, question_title)
 
             if row_type == RowTypes.LIST or row_type == RowTypes.BOOLEAN:
