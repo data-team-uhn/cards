@@ -243,23 +243,40 @@ public class PatientLocalStorage
         if (rawProvider.getValueType() == ValueType.OBJECT) {
             // If we are returned a single object, it is a single provider
             final JsonObject provider = rawProvider.asJsonObject();
-            for (final String providerID : this.providerIDs) {
-                if (providerID.equals(provider.getString("eID"))) {
-                    return true;
-                }
+            if (isAllowedProvider(provider)) {
+                return true;
             }
         } else if (rawProvider.getValueType() == ValueType.ARRAY) {
             final JsonArray providers = rawProvider.asJsonArray();
             for (int i = 0; i < providers.size(); i++) {
-                for (final String providerID : this.providerIDs) {
-                    if (providerID.equals(providers.getJsonObject(i).getString("eID"))) {
-                        return true;
-                    }
+                if (isAllowedProvider(providers.getJsonObject(i))) {
+                    return true;
                 }
             }
-
         }
 
+        return false;
+    }
+
+    /***
+     * Returns whether or not the given provider is on our list of allowed providers.
+     *
+     * @param appointment JsonObject of a provider from the "providers" object within an appointment
+     * @return True if the provider is approved and is an attendee.
+     */
+    Boolean isAllowedProvider(final JsonObject provider)
+    {
+        // Check that the provider is an attendee
+        if (!"ATND".equals(provider.getString("role"))) {
+            return false;
+        }
+
+        // Check that the provider is in our approved list
+        for (final String providerID : this.providerIDs) {
+            if (providerID.equals(provider.getString("eID"))) {
+                return true;
+            }
+        }
         return false;
     }
 
