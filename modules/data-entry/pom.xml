@@ -46,7 +46,7 @@
             <Include-Resource>{maven-resources}</Include-Resource>
             <Sling-Nodetypes>SLING-INF/nodetypes/dataentry.cnd</Sling-Nodetypes>
             <Sling-Initial-Content>
-              SLING-INF/content/apps/cards/config/QuickSearch.json;path:=/apps/cards/config/QuickSearch;overwrite:=false,
+              SLING-INF/content/apps/cards/config/;path:=/apps/cards/config/;overwrite:=false,
               SLING-INF/content/libs/cards/dataQuery/;path:=/libs/cards/dataQuery/;overwriteProperties:=true;uninstall:=true,
               SLING-INF/content/libs/cards/Form/;path:=/libs/cards/Form/;overwriteProperties:=true;uninstall:=true,
               SLING-INF/content/libs/cards/Subject/;path:=/libs/cards/Subject/;overwriteProperties:=true;uninstall:=true,
