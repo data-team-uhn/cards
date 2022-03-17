@@ -39,7 +39,7 @@ public class InitialNotificationsTask extends AbstractPromsNotification implemen
     @Override
     public void run()
     {
-        long emailsSent = sendNotification(3, "72h.txt", PATIENT_NOTIFICATION_SUBJECT);
+        long emailsSent = sendNotification(3, "72h.txt", "72h.html", PATIENT_NOTIFICATION_SUBJECT);
         Metrics.increment(this.resolverFactory, "InitialEmailsSent", emailsSent);
     }
 }

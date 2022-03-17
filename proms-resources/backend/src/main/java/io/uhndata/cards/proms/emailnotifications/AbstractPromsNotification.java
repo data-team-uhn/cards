@@ -63,8 +63,8 @@ abstract class AbstractPromsNotification
     }
 
     @SuppressWarnings("checkstyle:ExecutableStatementCount")
-    public long sendNotification(final int daysInTheFuture, final String emailTemplateName,
-        final String emailSubject)
+    public long sendNotification(final int daysInTheFuture, final String emailTextTemplateName,
+        final String emailHtmlTemplateName, final String emailSubject)
     {
         final Calendar dateToQuery = Calendar.getInstance();
         dateToQuery.add(Calendar.DATE, daysInTheFuture);
@@ -95,8 +95,13 @@ abstract class AbstractPromsNotification
                     continue;
                 }
                 String emailTextTemplate =
-                    AppointmentUtils.getVisitEmailTemplate(resolver, visitSubject, emailTemplateName);
+                    AppointmentUtils.getVisitEmailTemplate(resolver, visitSubject, emailTextTemplateName);
                 if (emailTextTemplate == null) {
+                    continue;
+                }
+                String emailHtmlTemplate =
+                    AppointmentUtils.getVisitEmailTemplate(resolver, visitSubject, emailHtmlTemplateName);
+                if (emailHtmlTemplate == null) {
                     continue;
                 }
                 String patientFullName = AppointmentUtils.getPatientFullName(resolver, patientSubject);
@@ -115,9 +120,10 @@ abstract class AbstractPromsNotification
                     "unsubscribeLink",
                     "https://" + CARDS_HOST_AND_PORT + "/Proms.unsubscribe.html?auth_token=" + token);
                 String emailTextBody = EmailUtils.renderEmailTemplate(emailTextTemplate, valuesMap);
+                String emailHtmlBody = EmailUtils.renderEmailTemplate(emailHtmlTemplate, valuesMap);
                 try {
-                    EmailUtils.sendNotificationEmail(this.mailService, patientEmailAddress,
-                        patientFullName, emailSubject, emailTextBody);
+                    EmailUtils.sendNotificationHtmlEmail(this.mailService, patientEmailAddress,
+                        patientFullName, emailSubject, emailTextBody, emailHtmlBody);
                     emailsSent += 1;
                 } catch (MessagingException e) {
                     LOGGER.warn("Failed to send Initial Notification Email");

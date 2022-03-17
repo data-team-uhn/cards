@@ -51,7 +51,7 @@ public final class EmailUtils
     }
 
     /**
-     * Sends an email.
+     * Sends a simple plaintext email.
      *
      * @param mailService the MailService object which sends the email
      * @param toAddress the destination email address
@@ -68,6 +68,31 @@ public final class EmailUtils
             .replyTo(FROM_ADDRESS)
             .subject(emailSubject)
             .text(emailTextBody)
+            .build();
+
+        mailService.sendMessage(message);
+    }
+
+    /**
+     * Sends a rich-text HTML email with fallback to plaintext for legacy mail clients.
+     *
+     * @param mailService the MailService object which sends the email
+     * @param toAddress the destination email address
+     * @param toName the name of the email recipient
+     * @param emailSubject the subject line of the email
+     * @param emailTextBody the plaintext body of the email
+     * @param emailHtmlBody the rich-text HTML body of the email
+     */
+    public static void sendNotificationHtmlEmail(MailService mailService, String toAddress,
+        String toName, String emailSubject, String emailTextBody, String emailHtmlBody) throws MessagingException
+    {
+        MimeMessage message = mailService.getMessageBuilder()
+            .from(FROM_ADDRESS, FROM_NAME)
+            .to(toAddress, toName)
+            .replyTo(FROM_ADDRESS)
+            .subject(emailSubject)
+            .text(emailTextBody)
+            .html(emailHtmlBody)
             .build();
 
         mailService.sendMessage(message);
