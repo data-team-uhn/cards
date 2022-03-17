@@ -50,7 +50,7 @@
       "start-order":"25"
     },
     {
-      "id":"org.apache.thrift:libthrift:0.15.0",
+      "id":"org.apache.thrift:libthrift:0.13.0",
       "start-order":"25"
     },
     {
