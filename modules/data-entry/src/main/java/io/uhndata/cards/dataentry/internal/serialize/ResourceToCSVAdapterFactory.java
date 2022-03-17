@@ -39,7 +39,7 @@ import io.uhndata.cards.dataentry.internal.serialize.labels.ResourceCSVProcessor
 @Component(
     service = { AdapterFactory.class },
     property = { "adaptables=org.apache.sling.api.resource.Resource",
-        "adapters=io.uhndata.cards.dataentry.internal.serialize.CSVShell" })
+        "adapters=io.uhndata.cards.dataentry.internal.serialize.CSVString" })
 public class ResourceToCSVAdapterFactory implements AdapterFactory
 {
     /** A list of all available processors. */
@@ -59,7 +59,7 @@ public class ResourceToCSVAdapterFactory implements AdapterFactory
             .findFirst()
             .map(p -> p.serialize(resource))
             .orElse(resource.getPath());
-        CSVShell csv = new CSVShell(result);
+        CSVString csv = new CSVString(result);
         return type.cast(csv);
     }
 }

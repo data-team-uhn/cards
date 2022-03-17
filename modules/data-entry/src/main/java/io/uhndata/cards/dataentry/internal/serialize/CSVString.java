@@ -23,11 +23,11 @@ package io.uhndata.cards.dataentry.internal.serialize;
  *
  * @version $Id$
  */
-public class CSVShell
+public class CSVString
 {
     private String data;
 
-    public CSVShell(String info)
+    public CSVString(String info)
     {
         this.data = info;
     }

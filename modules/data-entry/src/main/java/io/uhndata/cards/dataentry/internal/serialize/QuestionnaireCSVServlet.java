@@ -49,7 +49,9 @@ public class QuestionnaireCSVServlet extends SlingAllMethodsServlet
         throws IOException
     {
         Resource questionnaire = request.getResource();
-        CSVShell csv = questionnaire.adaptTo(CSVShell.class);
+        final String csvPath = questionnaire.getPath() + ".data"
+            + questionnaire.getResourceMetadata().getResolutionPathInfo();
+        CSVString csv = questionnaire.getResourceResolver().resolve(csvPath).adaptTo(CSVString.class);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         response.addHeader("Content-disposition", "attachment; filename=" + questionnaire.getName()
             + "_" + dateFormat.format(new Date()) + ".csv");
