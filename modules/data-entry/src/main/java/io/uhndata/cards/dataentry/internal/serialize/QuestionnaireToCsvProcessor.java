@@ -37,6 +37,7 @@ import javax.json.JsonValue.ValueType;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
@@ -309,14 +310,22 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
         } else {
             if (ValueType.ARRAY.equals(value.getValueType())) {
                 return value.asJsonArray().stream()
-                    .map(v -> ValueType.STRING.equals(v.getValueType())
-                        ? ((JsonString) v).getString() : v.toString())
+                    .map(v -> getStringValue(v, nodeType))
                     .reduce((result, v) -> result + ";" + v).get();
-            } else if (ValueType.STRING.equals(value.getValueType())) {
-                return ((JsonString) value).getString();
             } else {
-                return value.toString();
+                return getStringValue(value, nodeType);
             }
+        }
+    }
+
+    private String getStringValue(final JsonValue value, final String nodeType)
+    {
+        if (ValueType.STRING.equals(value.getValueType())) {
+            return ((JsonString) value).getString();
+        } else if ("cards:VocabularyAnswer".equals(nodeType)) {
+            return StringUtils.substringAfterLast(((JsonString) value).getString(), "/");
+        } else {
+            return value.toString();
         }
     }
 
