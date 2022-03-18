@@ -309,8 +309,9 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
         } else {
             if (ValueType.ARRAY.equals(value.getValueType())) {
                 return value.asJsonArray().stream()
-                                          .map(v -> ((JsonString) v).getString())
-                                          .reduce((result, v) -> result + ";" + v).get();
+                    .map(v -> ValueType.STRING.equals(v.getValueType())
+                        ? ((JsonString) v).getString() : v.toString())
+                    .reduce((result, v) -> result + ";" + v).get();
             } else if (ValueType.STRING.equals(value.getValueType())) {
                 return ((JsonString) value).getString();
             } else {
