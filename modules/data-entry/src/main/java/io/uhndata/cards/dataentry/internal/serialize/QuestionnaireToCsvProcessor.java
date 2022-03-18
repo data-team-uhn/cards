@@ -291,7 +291,7 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
                 newLevel++;
             }
             // Record the occurrence of the recurrent section so next time we will generate a new line
-            recordOccurentSection(nodeJson, recurrentSections);
+            recordReccurentSection(nodeJson, recurrentSections);
             processFormSection(nodeJson, csvData, recurrentSections, newLevel);
         } else if (nodeType.startsWith("cards:") && nodeType.endsWith("Answer")) {
             final String uuid = nodeJson.getJsonObject("question").getString(UUID_PROP);
@@ -352,7 +352,7 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
      * @param answerSection section json object
      * @param recurrentSections list of already added recurrent sections
      */
-    private void recordOccurentSection(final JsonObject answerSection, List<String> recurrentSections)
+    private void recordReccurentSection(final JsonObject answerSection, List<String> recurrentSections)
     {
         if (answerSection.containsKey("section")) {
             final JsonObject section = answerSection.getJsonObject("section");
