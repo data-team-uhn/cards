@@ -167,7 +167,8 @@ public class ImportTask implements Runnable
         final String postRequestTemplate = "{\"query\": \"query{"
             + "patientsByDateAndClinic(location: \\\"" + clinicName + "\\\", start: \\\"%s\\\", end: \\\"%s\\\") {"
             + "fhirID name {given family} sex mrn ohip dob emailOk com {email{home work temp mobile}} "
-            + "appointments {fhirID time status location participants {name {prefix given family suffix} eID role}} }}\"}";
+            + "appointments {fhirID time status location "
+            + "participants {name {prefix given family suffix} eID role}} }}\"}";
 
         long importedAppointmentsCount = 0;
         final Calendar startDate = Calendar.getInstance();
