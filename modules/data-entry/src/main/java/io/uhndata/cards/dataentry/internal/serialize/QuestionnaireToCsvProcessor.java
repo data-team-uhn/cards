@@ -166,14 +166,14 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
     {
         final String nodeType = nodeJson.getString(PRIMARY_TYPE_PROP);
         if ("cards:Section".equals(nodeType)) {
-            final String displayMode = getDisplayMode("section", nodeJson);
+            final String displayMode = getDisplayMode(nodeJson);
             if (displayMode != null && !"default".equals(displayMode)) {
                 // Do not output summary, headers or footers sections
                 return;
             }
             processSectionToHeaderRow(nodeJson, csvData, columns);
         } else if ("cards:Question".equals(nodeType)) {
-            final String displayMode = getDisplayMode("question", nodeJson);
+            final String displayMode = getDisplayMode(nodeJson);
             if ("hidden".equals(displayMode)) {
                 return;
             }
@@ -328,16 +328,15 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
     }
 
     /**
-     * Retrieves the display mode specified for a section, if any.
+     * Retrieves the display mode specified for a question or section, if any.
      *
-     * @param element a kind of questionnaire element: question or section
-     * @param answerElementJson a JSON serialization of an answer or answer section
+     * @param elementJson a JSON serialization of a question or section
      * @return the display mode as String, e.g. hidden, default, header, footer, summary.
      */
-    private String getDisplayMode(final String element, final JsonObject answerElementJson)
+    private String getDisplayMode(final JsonObject elementJson)
     {
         try {
-            return ((JsonString) answerElementJson.getValue("/" + element + "/displayMode")).getString();
+            return (elementJson.getString("displayMode"));
         } catch (JsonException | NullPointerException ex) {
             // Not there, return
         }
