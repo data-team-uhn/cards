@@ -34,11 +34,10 @@ import org.osgi.service.component.annotations.Component;
 import io.uhndata.cards.serialize.CSVString;
 
 /**
- * Base class for adapting a Questionnaire and it's associated Form resources to a CSV-based format.
+ * Servlet that outputs all the Form data for a Questionnaire to a CSV.
  *
  * @version $Id$
  */
-
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(resourceTypes = { "cards/Questionnaire" }, extensions = { "csv" }, methods = { "GET"})
 public class QuestionnaireCSVServlet extends SlingAllMethodsServlet

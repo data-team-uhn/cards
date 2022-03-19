@@ -23,7 +23,7 @@ import org.apache.sling.api.resource.Resource;
 /**
  * A service that can help serialize a node to CSV text. Implementations of this interface will be invoked by
  * {@link io.uhndata.cards.dataentry.internal.serialize.ResourceToCSVAdapterFactory} when serializing a resource as
- * {@code CharSequence}. When serializing a resource, each enabled processors will be asked if they
+ * {@code CSVString}. When serializing a resource, each enabled processors will be asked if they
  * {@link #canProcess(Resource) can process} the resource, and the first one to answer {@code true} will have it's
  * {@link #serialize(Resource)} method invoked with the resource as a parameter.
  *

@@ -56,7 +56,9 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
     private static final Logger LOGGER = LoggerFactory.getLogger(QuestionnaireToCsvProcessor.class);
 
     private static final String CREATED_HEADER = "Created";
+
     private static final String PRIMARY_TYPE_PROP = "jcr:primaryType";
+
     private static final String UUID_PROP = "jcr:uuid";
 
     @Override
@@ -124,7 +126,7 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
         List<String> columns)
     {
         subjectTypesArray.stream().map(JsonValue::asJsonObject)
-                         .forEach(value -> processSubjectType(value, csvData, columns));
+            .forEach(value -> processSubjectType(value, csvData, columns));
     }
 
     private void processSubjectType(JsonObject subjectType, Map<String, Map<Integer, String>> csvData,
@@ -204,16 +206,16 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
 
         // As we collect csv data to the csvData we record recurrent sections we already added
         // to place e all subsequent on a new lines
-        List<String> recurrentSections = new ArrayList<String>();
+        List<String> recurrentSections = new ArrayList<>();
 
         processFormSection(form, csvData, recurrentSections, 0);
-        int level = csvData.values().stream().map(map -> map.keySet())
+        int level = csvData.values().stream().map(Map::keySet)
                                              .flatMap(Set::stream)
                                              .max(Comparator.comparing(Integer::valueOf))
                                              .get();
 
         // Assemble CSV by rows
-        for (int i = 0; i < level + 1; i++) {
+        for (int i = 0; i <= level; i++) {
             // iterate over the columns
             List<String> row = new ArrayList<>();
             for (String uuid : csvData.keySet()) {

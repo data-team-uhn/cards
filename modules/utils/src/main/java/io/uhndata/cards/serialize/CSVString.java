@@ -19,7 +19,7 @@
 package io.uhndata.cards.serialize;
 
 /**
- * Shell class for CSV adaptor.
+ * A simple wrapper around a String with CSV data.
  *
  * @version $Id$
  */
