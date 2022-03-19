@@ -32,7 +32,8 @@ public class CSVString
         this.data = info;
     }
 
-    public String getData()
+    @Override
+    public String toString()
     {
         return this.data;
     }
