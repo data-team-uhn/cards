@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.uhndata.cards.dataentry.internal.serialize;
+package io.uhndata.cards.serialize;
 
 import java.util.List;
 
@@ -28,7 +28,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 
-import io.uhndata.cards.dataentry.internal.serialize.labels.ResourceCSVProcessor;
+import io.uhndata.cards.serialize.spi.ResourceCSVProcessor;
 
 /**
  * AdapterFactory that converts Apache Sling resources to CSV format. This is just a shell, the actual serialization
@@ -39,7 +39,7 @@ import io.uhndata.cards.dataentry.internal.serialize.labels.ResourceCSVProcessor
 @Component(
     service = { AdapterFactory.class },
     property = { "adaptables=org.apache.sling.api.resource.Resource",
-        "adapters=io.uhndata.cards.dataentry.internal.serialize.CSVString" })
+        "adapters=io.uhndata.cards.serialize.CSVString" })
 public class ResourceToCSVAdapterFactory implements AdapterFactory
 {
     /** A list of all available processors. */

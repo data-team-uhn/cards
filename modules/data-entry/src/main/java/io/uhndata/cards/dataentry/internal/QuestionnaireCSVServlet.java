@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.uhndata.cards.dataentry.internal.serialize;
+package io.uhndata.cards.dataentry.internal;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -31,6 +31,7 @@ import org.apache.sling.api.servlets.SlingAllMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
 
+import io.uhndata.cards.serialize.CSVString;
 
 /**
  * Base class for adapting a Questionnaire and it's associated Form resources to a CSV-based format.

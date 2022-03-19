@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.uhndata.cards.dataentry.internal.serialize.labels;
+package io.uhndata.cards.serialize.spi;
 
 import org.apache.sling.api.resource.Resource;
 

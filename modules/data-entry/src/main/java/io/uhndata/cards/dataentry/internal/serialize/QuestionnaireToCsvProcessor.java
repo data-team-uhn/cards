@@ -43,7 +43,7 @@ import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.uhndata.cards.dataentry.internal.serialize.labels.ResourceCSVProcessor;
+import io.uhndata.cards.serialize.spi.ResourceCSVProcessor;
 
 /**
  * CSV serializer that can process Questionnaires.
