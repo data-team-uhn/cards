@@ -208,7 +208,7 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
         // to place e all subsequent on a new lines
         List<String> recurrentSections = new ArrayList<>();
 
-        processFormSection(form, csvData, recurrentSections, 0);
+        processFormSection(form, csvData, recurrentSections);
         int level = csvData.values().stream().map(Map::keySet)
                                              .flatMap(Set::stream)
                                              .max(Comparator.comparing(Integer::valueOf))
@@ -261,16 +261,15 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
      * @param answerSectionJson a JSON serialization of an answer section
      * @param csvData data aggregator
      * @param recurrentSections the list with recurrent sections
-     * @param level - the level of the recurrence in the recurrent sections
      */
     private void processFormSection(final JsonObject answSectionJson, Map<String, Map<Integer, String>> csvData,
-        List<String> recurrentSections, int level)
+        List<String> recurrentSections)
     {
         answSectionJson.values().stream()
                         .filter(value -> ValueType.OBJECT.equals(value.getValueType()))
                         .map(JsonValue::asJsonObject)
                         .filter(value -> value.containsKey(PRIMARY_TYPE_PROP))
-                        .forEach(value -> processFormElement(value, csvData, recurrentSections, level));
+            .forEach(value -> processFormElement(value, csvData, recurrentSections));
     }
 
     /**
@@ -279,26 +278,19 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
      * @param nodeJson a JSON serialization of an answer node
      * @param csvData data aggregator
      * @param recurrentSections list of already added recurrent sections
-     * @param level - the level of the recurrence in the recurrent sections
      */
     private void processFormElement(final JsonObject nodeJson, Map<String, Map<Integer, String>> csvData,
-            List<String> recurrentSections, int level)
+        List<String> recurrentSections)
     {
         final String nodeType = nodeJson.getString(PRIMARY_TYPE_PROP);
         if ("cards:AnswerSection".equals(nodeType)) {
-            // The level of recurrence to print recurrent sections on a new line
-            int newLevel = level;
-            final String uuid = nodeJson.getJsonObject("section").getString(UUID_PROP);
-            if (recurrentSections.contains(uuid)) {
-                newLevel++;
-            }
             // Record the occurrence of the recurrent section so next time we will generate a new line
             recordReccurentSection(nodeJson, recurrentSections);
-            processFormSection(nodeJson, csvData, recurrentSections, newLevel);
+            processFormSection(nodeJson, csvData, recurrentSections);
         } else if (nodeType.startsWith("cards:") && nodeType.endsWith("Answer")) {
             final String uuid = nodeJson.getJsonObject("question").getString(UUID_PROP);
             final Map<Integer, String> answerColumn = csvData.get(uuid);
-            answerColumn.put(level, getAnswerString(nodeJson, nodeType));
+            answerColumn.put(answerColumn.size(), getAnswerString(nodeJson, nodeType));
         }
     }
 
