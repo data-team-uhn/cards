@@ -166,11 +166,7 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
     {
         final String nodeType = nodeJson.getString(PRIMARY_TYPE_PROP);
         if ("cards:Section".equals(nodeType)) {
-            final String displayMode = getDisplayMode(nodeJson);
-            if (displayMode != null && !"default".equals(displayMode)) {
-                // Do not output summary, headers or footers sections
-                return;
-            }
+            getDisplayMode(nodeJson);
             processSectionToHeaderRow(nodeJson, csvData, columns);
         } else if ("cards:Question".equals(nodeType)) {
             final String displayMode = getDisplayMode(nodeJson);
