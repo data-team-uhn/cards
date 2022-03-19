@@ -290,6 +290,10 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
         } else if (nodeType.startsWith("cards:") && nodeType.endsWith("Answer")) {
             final String uuid = nodeJson.getJsonObject("question").getString(UUID_PROP);
             final Map<Integer, String> answerColumn = csvData.get(uuid);
+            if (answerColumn == null) {
+                // This is a skipped question, either hidden or in a non-data section
+                return;
+            }
             answerColumn.put(answerColumn.size(), getAnswerString(nodeJson, nodeType));
         }
     }
