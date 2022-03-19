@@ -138,7 +138,7 @@ public class DataProcessor implements ResourceJsonProcessor
         final boolean isQuestionnaire)
     {
         try {
-            String questionnaireTitle = "data";
+            String questionnaireTitle = "@data";
             if (!isQuestionnaire) {
                 final Node questionnaire = form.adaptTo(Node.class).getProperty("questionnaire").getNode();
                 questionnaireTitle = questionnaire.getProperty("title").getString();

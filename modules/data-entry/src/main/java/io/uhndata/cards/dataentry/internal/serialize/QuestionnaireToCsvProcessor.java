@@ -107,8 +107,8 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
             csvPrinter.printRecord((Object[]) columns.toArray(String[]::new));
 
             // Aggregate form answers to the csvData collector for the CSV output
-            if (questionnaire.containsKey("data")) {
-                processFormsToRows(questionnaire.getJsonArray("data"), csvData, csvPrinter);
+            if (questionnaire.containsKey("@data")) {
+                processFormsToRows(questionnaire.getJsonArray("@data"), csvData, csvPrinter);
             }
 
             final String result = stringWriter.toString();
