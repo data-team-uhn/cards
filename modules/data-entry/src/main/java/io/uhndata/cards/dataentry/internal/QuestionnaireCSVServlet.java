@@ -39,7 +39,7 @@ import io.uhndata.cards.serialize.CSVString;
  * @version $Id$
  */
 @Component(service = { Servlet.class })
-@SlingServletResourceTypes(resourceTypes = { "cards/Questionnaire" }, extensions = { "csv" }, methods = { "GET"})
+@SlingServletResourceTypes(resourceTypes = { "cards/Questionnaire" }, extensions = { "csv" }, methods = { "GET" })
 public class QuestionnaireCSVServlet extends SlingAllMethodsServlet
 {
     private static final long serialVersionUID = -677311295300436475L;
@@ -52,7 +52,7 @@ public class QuestionnaireCSVServlet extends SlingAllMethodsServlet
         final String csvPath = questionnaire.getPath() + ".data"
             + questionnaire.getResourceMetadata().getResolutionPathInfo();
         CSVString csv = questionnaire.getResourceResolver().resolve(csvPath).adaptTo(CSVString.class);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HHmm");
         response.addHeader("Content-disposition", "attachment; filename=" + questionnaire.getName()
             + "_" + dateFormat.format(new Date()) + ".csv");
         response.getWriter().write(csv.getData());
