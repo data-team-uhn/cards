@@ -19,7 +19,6 @@
 package io.uhndata.cards.dataentry.internal.serialize;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -85,8 +84,8 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
     private String processQuestionnaire(JsonObject questionnaire)
     {
         try {
-            final StringWriter stringWriter = new StringWriter();
-            CSVPrinter csvPrinter = new CSVPrinter(stringWriter, CSVFormat.DEFAULT);
+            final StringBuilder output = new StringBuilder();
+            final CSVPrinter csvPrinter = new CSVPrinter(output, CSVFormat.DEFAULT);
 
             // CSV data strings aggregator where the key is Question uuid that maps to the list of pairs
             // of corresponding answer strings to row number/level in the csv [ <uuid> : List<Pair<int, String>> ]
@@ -111,7 +110,7 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
                 processFormsToRows(questionnaire.getJsonArray("@data"), csvData, csvPrinter);
             }
 
-            final String result = stringWriter.toString();
+            final String result = output.toString();
 
             csvPrinter.flush();
             csvPrinter.close();
@@ -201,8 +200,8 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
         csvData.get(CREATED_HEADER).put(0, form.getString("jcr:created"));
 
         // As we collect csv data to the csvData we record recurrent sections we already added
-        // to place e all subsequent on a new lines
-        List<String> recurrentSections = new ArrayList<>();
+        // to place all subsequent on a new lines
+        final List<String> recurrentSections = new ArrayList<>();
 
         processFormSection(form, csvData, recurrentSections);
         final int levels = csvData.values().stream().map(Map::keySet)
