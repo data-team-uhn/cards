@@ -205,13 +205,13 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
         List<String> recurrentSections = new ArrayList<>();
 
         processFormSection(form, csvData, recurrentSections);
-        int level = csvData.values().stream().map(Map::keySet)
-                                             .flatMap(Set::stream)
-                                             .max(Comparator.comparing(Integer::valueOf))
-                                             .get();
+        final int levels = csvData.values().stream().map(Map::keySet)
+            .flatMap(Set::stream)
+            .max(Comparator.comparing(Integer::valueOf))
+            .get();
 
         // Assemble CSV by rows
-        for (int i = 0; i <= level; i++) {
+        for (int i = 0; i <= levels; i++) {
             // iterate over the columns
             List<String> row = new ArrayList<>();
             for (String uuid : csvData.keySet()) {
@@ -228,13 +228,12 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
             // print one row for the level i
             try {
                 csvPrinter.printRecord((Object[]) row.toArray(String[]::new));
-            } catch (IOException e) {
-                //
+            } catch (final IOException e) {
+                // Should not happen since we're printing to a string
             }
         }
 
-        //Empty csvData for future form
-        level = 0;
+        // Empty csvData for future form
         csvData.keySet().stream().forEach(key -> csvData.put(key, new HashMap<>()));
     }
 
@@ -301,14 +300,12 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
             return "";
         } else if ("cards:PedigreeAnswer".equals(nodeType)) {
             return "yes";
+        } else if (ValueType.ARRAY.equals(value.getValueType())) {
+            return value.asJsonArray().stream()
+                .map(v -> getStringValue(v, nodeType))
+                .reduce((result, v) -> result + ";" + v).get();
         } else {
-            if (ValueType.ARRAY.equals(value.getValueType())) {
-                return value.asJsonArray().stream()
-                    .map(v -> getStringValue(v, nodeType))
-                    .reduce((result, v) -> result + ";" + v).get();
-            } else {
-                return getStringValue(value, nodeType);
-            }
+            return getStringValue(value, nodeType);
         }
     }
 
