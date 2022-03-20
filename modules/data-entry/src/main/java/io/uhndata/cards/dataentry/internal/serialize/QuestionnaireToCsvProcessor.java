@@ -54,6 +54,8 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(QuestionnaireToCsvProcessor.class);
 
+    private static final String IDENTIFIER_HEADER = "Identifier";
+
     private static final String CREATED_HEADER = "Created";
 
     private static final String PRIMARY_TYPE_PROP = "jcr:primaryType";
@@ -91,7 +93,8 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
             // of corresponding answer strings to row number/level in the csv [ <uuid> : List<Pair<int, String>> ]
             final Map<String, Map<Integer, String>> csvData = new LinkedHashMap<>();
             // collect column headers explicitly as labels because csvData maps only questions uuids to answers
-            List<String> columns = new ArrayList<>();
+            final List<String> columns = new ArrayList<>();
+            columns.add(IDENTIFIER_HEADER);
 
             // Fetch the subject types expected to be for the questionnaire
             if (questionnaire.containsKey("requiredSubjectTypes")) {
@@ -211,18 +214,14 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
 
         // Assemble CSV by rows
         for (int i = 0; i <= levels; i++) {
-            // iterate over the columns
-            List<String> row = new ArrayList<>();
-            for (String uuid : csvData.keySet()) {
-                Map<Integer, String> answerList = csvData.get(uuid);
+            final List<String> row = new ArrayList<>();
+            // First add the form identifier
+            row.add(form.getString("@name"));
+            // Iterate over the columns; since this is a linked map, the order is always the same as in the header
+            for (final Map<Integer, String> answerList : csvData.values()) {
                 // Look for the answer with the level <i> in the list of pairs <level,Answer>
-                // If none found = we add ""
-                String answer = answerList.get(i);
-                if (answer == null) {
-                    answer = "";
-                }
-                row.add(answer);
-
+                // If none found, we add ""
+                row.add(StringUtils.defaultString(answerList.get(i)));
             }
             // print one row for the level i
             try {
@@ -233,7 +232,7 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
         }
 
         // Empty csvData for future form
-        csvData.keySet().stream().forEach(key -> csvData.put(key, new HashMap<>()));
+        csvData.values().forEach(Map::clear);
     }
 
     private void processFormsSubjects(JsonObject subjectJson, Map<String, Map<Integer, String>> csvData)
