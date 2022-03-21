@@ -146,22 +146,24 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
     private void getSubjectTypes(JsonArray subjectTypesArray, Map<String, Map<Integer, String>> csvData,
         List<String> columns)
     {
+        final List<JsonObject> subjectTypes = new ArrayList<>();
         subjectTypesArray.stream().map(JsonValue::asJsonObject)
-            .forEach(value -> processSubjectType(value, csvData, columns));
+            .forEach(value -> gatherSubjectTypes(value, subjectTypes));
+        subjectTypes.sort((t1, t2) -> t1.getInt("cards:defaultOrder") - t2.getInt("cards:defaultOrder"));
+        subjectTypes.forEach(subjectType -> {
+            columns.add(subjectType.getString("label").concat(" ID"));
+            csvData.put(subjectType.getString(UUID_PROP), new HashMap<>());
+        });
     }
 
-    private void processSubjectType(JsonObject subjectType, Map<String, Map<Integer, String>> csvData,
-        List<String> columns)
+    private void gatherSubjectTypes(final JsonObject subjectType, final List<JsonObject> result)
     {
-        columns.add(subjectType.getString("label").concat(" ID"));
-        csvData.put(subjectType.getString(UUID_PROP), new HashMap<>());
-        // Recursively collect all of the subjects in the hierarchy
-        subjectType.values().stream()
-            .filter(value -> ValueType.OBJECT.equals(value.getValueType()))
-            .map(JsonValue::asJsonObject)
-            .filter(value -> value.containsKey(PRIMARY_TYPE_PROP)
-                && "cards:SubjectType".equals(value.getString(PRIMARY_TYPE_PROP)))
-            .forEach(value -> processSubjectType(value, csvData, columns));
+        if (result.stream().noneMatch(s -> s.getString(UUID_PROP).equals(subjectType.getString(UUID_PROP)))) {
+            result.add(subjectType);
+            if (subjectType.containsKey("parents")) {
+                gatherSubjectTypes(subjectType.getJsonObject("parents"), result);
+            }
+        }
     }
 
     private void processSectionToHeaderRow(JsonObject questionnaire, Map<String, Map<Integer, String>> csvData,
