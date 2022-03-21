@@ -148,15 +148,15 @@
     <app.name>Clinical ARchive for Data Science</app.name>
     <platform.name>CARDS</platform.name>
     <slf4j.version>1.7.36</slf4j.version>
-    <jackrabbit.version>2.20.3</jackrabbit.version>
+    <jackrabbit.version>2.21.10</jackrabbit.version>
     <oak.version>1.42.0</oak.version>
     <sling.saml.version>0.2.6.cards.1</sling.saml.version>
 
     <!-- Versions to be replaced in the feature files -->
     <asm.version>9.2</asm.version>
-    <composum.nodes.version>4.0.1</composum.nodes.version>
-    <jackson.version>2.12.1</jackson.version>
-    <groovy.version>3.0.7</groovy.version>
+    <composum.nodes.version>4.1.0</composum.nodes.version>
+    <jackson.version>2.13.2</jackson.version>
+    <groovy.version>3.0.10</groovy.version>
 
     <enforcer.skip>false</enforcer.skip>
     <checkstyle.skip>false</checkstyle.skip>
@@ -223,7 +223,7 @@
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>
-        <version>1.2.10</version>
+        <version>1.2.11</version>
       </dependency>
       <!-- OSGI -->
       <dependency>

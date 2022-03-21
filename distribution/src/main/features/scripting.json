@@ -2,11 +2,11 @@
 {
     "bundles":[
         {
-            "id":"org.antlr:antlr4-runtime:4.9.1",
+            "id":"org.antlr:antlr4-runtime:4.9.3",
             "start-order":"20"
         },
         {
-            "id":"org.apache.servicemix.bundles:org.apache.servicemix.bundles.rhino:1.7.13_1",
+            "id":"org.apache.servicemix.bundles:org.apache.servicemix.bundles.rhino:1.7.14_2",
             "start-order":"20"
         },
         {
@@ -51,10 +51,6 @@
         },
         {
             "id":"org.apache.sling:org.apache.sling.scripting.sightly.js.provider:1.2.6",
-            "start-order":"20"
-        },
-        {
-            "id":"org.apache.sling:org.apache.sling.scripting.sightly.repl:1.0.10",
             "start-order":"20"
         },
         {
