@@ -267,7 +267,7 @@ public class PatientLocalStorage
     Boolean isAllowedProvider(final JsonObject provider)
     {
         // Check that the provider is an attendee
-        if (!"ATND".equals(provider.getString("role"))) {
+        if (provider.containsKey("role") && !"ATND".equals(provider.getString("role"))) {
             return false;
         }
 
