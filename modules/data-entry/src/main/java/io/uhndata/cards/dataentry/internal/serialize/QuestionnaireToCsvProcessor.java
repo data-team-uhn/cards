@@ -22,11 +22,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.jcr.query.Query;
 import javax.json.JsonArray;
 import javax.json.JsonException;
 import javax.json.JsonObject;
@@ -38,6 +40,8 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ValueMap;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,12 +82,12 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
         JsonObject result = resource.getResourceResolver().resolve(processedPath).adaptTo(JsonObject.class);
 
         if (result != null) {
-            return processQuestionnaire(result);
+            return processQuestionnaire(result, resource.getResourceResolver());
         }
         return null;
     }
 
-    private String processQuestionnaire(JsonObject questionnaire)
+    private String processQuestionnaire(final JsonObject questionnaire, final ResourceResolver resolver)
     {
         try {
             final StringBuilder output = new StringBuilder();
@@ -99,6 +103,9 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
             // Fetch the subject types expected to be for the questionnaire
             if (questionnaire.containsKey("requiredSubjectTypes")) {
                 getSubjectTypes(questionnaire.getJsonArray("requiredSubjectTypes"), csvData, columns);
+            } else {
+                // No specific subject types for this questionnaire, output all known subject types
+                getSubjectTypes(resolver, csvData, columns);
             }
             csvData.put(CREATED_HEADER, new HashMap<>());
             columns.add(CREATED_HEADER);
@@ -122,6 +129,18 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
             LOGGER.error("Error in CSV export of {} questionnaire", questionnaire.getString("@name"));
         }
         return null;
+    }
+
+    private void getSubjectTypes(final ResourceResolver resolver, final Map<String, Map<Integer, String>> csvData,
+        final List<String> columns)
+    {
+        final Iterator<Resource> subjectTypes = resolver.findResources(
+            "SELECT st.* FROM [cards:SubjectType] AS st ORDER BY st.[cards:defaultOrder] ASC", Query.JCR_SQL2);
+        while (subjectTypes.hasNext()) {
+            final ValueMap subjectTypeProperties = subjectTypes.next().getValueMap();
+            columns.add(subjectTypeProperties.get("label", String.class).concat(" ID"));
+            csvData.put(subjectTypeProperties.get(UUID_PROP, String.class), new HashMap<>());
+        }
     }
 
     private void getSubjectTypes(JsonArray subjectTypesArray, Map<String, Map<Integer, String>> csvData,
