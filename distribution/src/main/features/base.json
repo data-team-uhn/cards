@@ -1,4 +1,9 @@
 {
+    "execution-environment:JSON|false":{
+        "framework":{
+            "id":"org.apache.felix:org.apache.felix.framework:7.0.3"
+        }
+    },
     "bundles":[
         {
             "id":"commons-codec:commons-codec:1.15",
@@ -149,11 +154,11 @@
             "start-order":"5"
         },
         {
-            "id":"org.apache.felix:org.apache.felix.http.jetty:4.1.14",
+            "id":"org.apache.felix:org.apache.felix.http.jetty:4.2.0",
             "start-order":"5"
         },
         {
-            "id":"org.apache.felix:org.apache.felix.http.servlet-api:1.1.4",
+            "id":"org.apache.felix:org.apache.felix.http.servlet-api:1.2.0",
             "start-order":"5"
         },
         {
@@ -161,7 +166,7 @@
             "start-order":"5"
         },
         {
-            "id":"org.apache.felix:org.apache.felix.inventory:1.0.6",
+            "id":"org.apache.felix:org.apache.felix.inventory:1.1.0",
             "start-order":"5"
         },
         {
@@ -221,11 +226,11 @@
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.repoinit.parser:1.6.12",
+            "id":"org.apache.sling:org.apache.sling.repoinit.parser:1.6.14",
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.jcr.repoinit:1.1.36",
+            "id":"org.apache.sling:org.apache.sling.jcr.repoinit:1.1.38",
             "start-order":"20"
         }
     ],
@@ -271,6 +276,12 @@
             "org.apache.sling.commons.log.level":"info",
             "org.apache.sling.commons.log.file":"logs/request.log"
         },
+        "org.apache.sling.commons.scheduler.impl.QuartzScheduler":{
+            "allowedPoolNames":[
+                "oak",
+                "org-apache-sling-event"
+            ]
+        },
         "org.apache.jackrabbit.vault.packaging.impl.PackagingImpl":{
             "authIdsForRootInstallation":[
                 "sling-package-install"
@@ -296,6 +307,11 @@
                 "org.apache.sling.servlets.post"
             ],
             "whitelist.name":"sling"
+        },
+        "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~auth-core":{
+            "user.mapping":[
+                "org.apache.sling.auth.core=[sling-readall]"
+            ]
         },
         "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~i18n":{
             "user.mapping":[
