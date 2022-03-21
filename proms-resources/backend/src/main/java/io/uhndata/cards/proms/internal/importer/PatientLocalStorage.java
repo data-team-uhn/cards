@@ -273,7 +273,7 @@ public class PatientLocalStorage
 
         // Check that the provider is in our approved list
         for (final String providerID : this.providerIDs) {
-            if (providerID.equals(provider.getJsonObject("participant").getString("eID"))) {
+            if (providerID.equals(provider.getJsonObject("physician").getString("eID"))) {
                 return true;
             }
         }
@@ -511,7 +511,7 @@ public class PatientLocalStorage
                 }
                 final List<String> providerNames = new LinkedList<>();
                 for (int i = 0; i < participants.size(); ++i) {
-                    JsonObject participantObj = participants.getJsonObject(i).getJsonObject("participant");
+                    JsonObject participantObj = participants.getJsonObject(i).getJsonObject("physician");
                     JsonObject nameObj = participantObj.getJsonObject("name");
                     if (nameObj == null || nameObj == JsonValue.NULL) {
                         continue;

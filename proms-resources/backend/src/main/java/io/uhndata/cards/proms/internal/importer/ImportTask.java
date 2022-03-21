@@ -168,7 +168,7 @@ public class ImportTask implements Runnable
             + "patientsByDateAndClinic(location: \\\"" + clinicName + "\\\", start: \\\"%s\\\", end: \\\"%s\\\") {"
             + "fhirID name {given family} sex mrn ohip dob emailOk com {email{home work temp mobile}} "
             + "appointments {fhirID time status location "
-            + "participants {participant {name {prefix given family suffix} eID} role}} }}\"}";
+            + "participants {physician {name {prefix given family suffix} eID} role}} }}\"}";
 
         long importedAppointmentsCount = 0;
         final Calendar startDate = Calendar.getInstance();
