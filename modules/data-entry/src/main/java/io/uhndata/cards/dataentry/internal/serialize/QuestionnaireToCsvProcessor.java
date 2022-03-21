@@ -219,7 +219,7 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
     {
         // Collect information regarding the form subjects and subject parents
         if (form.containsKey("subject")) {
-            processFormsSubjects(form.getJsonObject("subject"), csvData);
+            processFormSubjects(form.getJsonObject("subject"), csvData);
         }
         csvData.get(CREATED_HEADER).put(0, form.getString("jcr:created"));
 
@@ -256,17 +256,14 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
         csvData.values().forEach(Map::clear);
     }
 
-    private void processFormsSubjects(JsonObject subjectJson, Map<String, Map<Integer, String>> csvData)
+    private void processFormSubjects(final JsonObject subjectJson, final Map<String, Map<Integer, String>> csvData)
     {
-        Map<Integer, String> subjectColumn = csvData.get(subjectJson.getJsonObject("type").getString(UUID_PROP));
+        final Map<Integer, String> subjectColumn = csvData.get(subjectJson.getJsonObject("type").getString(UUID_PROP));
         subjectColumn.put(0, subjectJson.getString("identifier"));
         // Recursively collect all of the subjects parents in the hierarchy
-        subjectJson.values().stream()
-            .filter(value -> ValueType.OBJECT.equals(value.getValueType()))
-            .map(JsonValue::asJsonObject)
-            .filter(value -> value.containsKey(PRIMARY_TYPE_PROP)
-                && "cards:Subject".equals(value.getString(PRIMARY_TYPE_PROP)))
-            .forEach(value -> processFormsSubjects(value, csvData));
+        if (subjectJson.containsKey("parents")) {
+            processFormSubjects(subjectJson.getJsonObject("parents"), csvData);
+        }
     }
 
     /**
