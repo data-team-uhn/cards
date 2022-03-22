@@ -42,13 +42,33 @@ mkdir /path/to/test/mail/directory
 
 5. Configure the desktop mail client
 
+5.1. Upon initial startup of _GNOME Evolution_, you will be prompted for
+configuration.
 ![Screenshot 001](screenshots/001.png)
+
+5.2. Skip restoring from a backup.
 ![Screenshot 002](screenshots/002.png)
+
+5.3. Create a fake user and do not look up mail server details based on
+the entered email address.
 ![Screenshot 003](screenshots/003.png)
+
+5.4. Set the _Server Type_ to _Local delivery_ and set the
+_Local Delivery File_ to your user file under
+`/path/to/test/mail/directory`.
 ![Screenshot 004](screenshots/004.png)
+
+5.5. Check for new messages every _one_ minute.
 ![Screenshot 005](screenshots/005.png)
+
+5.6. Configuration for sending emails from _GNOME Evolution_ is not
+required.
 ![Screenshot 006](screenshots/006.png)
+
+5.7. Verify account creation settings.
 ![Screenshot 007](screenshots/007.png)
+
+5.8. Finish.
 ![Screenshot 008](screenshots/008.png)
 
 6. Start CARDS with emailing enabled (such as in the `cards4proms` project):
