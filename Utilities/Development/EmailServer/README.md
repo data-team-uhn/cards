@@ -69,14 +69,14 @@ should see the new test message.
 Stopping
 --------
 
-- To stop the running `cards/postfix-docker` Docker container:
-  - Get its name
+To stop the running `cards/postfix-docker` Docker container:
+- Get its name
 ```bash
 $ docker ps
 CONTAINER ID        IMAGE                  COMMAND                  CREATED             STATUS              PORTS                                             NAMES
 491a142e92a4        cards/postfix-docker   "/bin/sh -c /docker_…"   14 minutes ago      Up 14 minutes       127.0.0.1:8025->25/tcp, 127.0.0.1:8465->465/tcp   goofy_kilby
 ```
-  - Then stop it
+- Then stop it
 ```bash
 $ docker stop goofy_kilby
 ```
