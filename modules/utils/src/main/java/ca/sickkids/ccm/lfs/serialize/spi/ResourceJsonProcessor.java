@@ -35,7 +35,7 @@ import ca.sickkids.ccm.lfs.serialize.ResourceToJsonAdapterFactory;
  * <p>
  * Each implementation has a {@link #getName() name} that can be used to enable or disable it. Selecting which modules
  * to use when serializing a resource is done through the resource's selectors. This can be accomplished by appending
- * them in the request URL for a resource, for example <tt>http://server.example/path/to/resource.deep.simple.json</tt>,
+ * them in the request URL for a resource, for example {@code http://server.example/path/to/resource.deep.simple.json},
  * or by appending them in the resource path when using {@code ResourceResolver#resolve}, for example
  * {@code resourceResolver.resolve("/path/to/resource.deep.simple")}. Some implementations are
  * {@link #isEnabledByDefault(Resource) enabled by default} for all, or just some resources, like the {@code properties}

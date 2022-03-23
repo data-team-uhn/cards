@@ -50,12 +50,11 @@ import ca.sickkids.ccm.lfs.serialize.spi.ResourceJsonProcessor;
  * of the serialization process is implemented by implementations of the {@link ResourceJsonProcessor} service. To
  * configure the serialization process, include serializer names in the resource selectors. This can be accomplished by
  * appending them in the request URL for a resource, for example
- * <tt>http://server.example/path/to/resource.deep.simple.json</tt>, or by appending them in the resource path when
- * using {@code resourceResolver.resolve}, for example
- * {@code resourceResolver.resolve("/path/to/resource.deep.simple")}. A few processors are
- * {@link ResourceJsonProcessor#isEnabledByDefault(Resource) enabled by default}, for example the {@code properties},
- * {@code identify}, and {@code dereference} processors; to disable them, use their name prefixed by {@code -} in the
- * selectors, e.g. {@code /path/to/resource.-dereference.json}.
+ * {@code http://server.example/path/to/resource.deep.simple.json}, or by appending them in the resource path when using
+ * {@code resourceResolver.resolve}, for example {@code resourceResolver.resolve("/path/to/resource.deep.simple")}. A
+ * few processors are {@link ResourceJsonProcessor#isEnabledByDefault(Resource) enabled by default}, for example the
+ * {@code properties}, {@code identify}, and {@code dereference} processors; to disable them, use their name prefixed by
+ * {@code -} in the selectors, e.g. {@code /path/to/resource.-dereference.json}.
  * <p>
  * This class uses ThreadLocal variables to maintain state, which means that nested invocations in the same thread are
  * not supported. If a processor needs to call {@code resource.adaptTo(JsonObject.class)}, it should do so in a new
