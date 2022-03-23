@@ -43,12 +43,12 @@ import org.osgi.service.component.annotations.Component;
 import ca.sickkids.ccm.lfs.serialize.spi.ResourceJsonProcessor;
 
 /**
- * Serialize a subject along with its forms. The name of this processor is {@code data}.
+ * Serialize a subject or questionnaire along with its forms. The name of this processor is {@code data}.
  *
  * @version $Id$
  */
 @Component(immediate = true)
-public class DataSubjectProcessor implements ResourceJsonProcessor
+public class DataProcessor implements ResourceJsonProcessor
 {
     private ThreadLocal<ResourceResolver> resolver = new ThreadLocal<>();
 
@@ -100,27 +100,30 @@ public class DataSubjectProcessor implements ResourceJsonProcessor
     @Override
     public boolean canProcess(Resource resource)
     {
-        return resource.isResourceType("lfs/Subject");
+        return resource.isResourceType("lfs/Subject") || resource.isResourceType("lfs/Questionnaire");
     }
 
     @Override
     public void leave(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
     {
         try {
-            // Only the original subject node will have its data appended
+            // Only the original subject or questionnaire node will have its data appended
             if (!node.getPath().equals(this.rootNode.get())) {
                 return;
             }
-            Iterator<Resource> forms = this.resolver.get().findResources(generateDataQuery(node), Query.JCR_SQL2);
-            final Map<String, JsonArrayBuilder> formsJsons = new HashMap<>();
 
+            boolean isQuestionnaire = node.isNodeType("lfs:Questionnaire");
+            final String query = generateDataQuery(node, isQuestionnaire);
+            Iterator<Resource> forms = this.resolver.get().findResources(query, Query.JCR_SQL2);
+
+            final Map<String, JsonArrayBuilder> formsJsons = new HashMap<>();
             // Since the adaptTo serialization process uses ThreadLocal variables, we need to serialize other resources
             // in a separate thread in order to not pollute the current state. We must extract the needed state from the
             // current ThreadLocals to be used in the sub-thread.
             final ResourceResolver currentResolver = this.resolver.get();
             final String currentSelectors = this.selectors.get();
-            final Thread serializer = new Thread(() -> forms
-                .forEachRemaining(f -> storeForm(currentResolver.resolve(f.getPath() + currentSelectors), formsJsons)));
+            final Thread serializer = new Thread(() -> forms.forEachRemaining(
+                f -> storeForm(currentResolver.resolve(f.getPath() + currentSelectors), formsJsons, isQuestionnaire)));
             serializer.start();
             // Wait for the serialization of forms to finish
             serializer.join();
@@ -136,11 +139,15 @@ public class DataSubjectProcessor implements ResourceJsonProcessor
         }
     }
 
-    private void storeForm(final Resource form, final Map<String, JsonArrayBuilder> formsJsons)
+    private void storeForm(final Resource form, final Map<String, JsonArrayBuilder> formsJsons,
+        final boolean isQuestionnaire)
     {
         try {
-            final Node questionnaire = form.adaptTo(Node.class).getProperty("questionnaire").getNode();
-            final String questionnaireTitle = questionnaire.getProperty("title").getString();
+            String questionnaireTitle = "@data";
+            if (!isQuestionnaire) {
+                final Node questionnaire = form.adaptTo(Node.class).getProperty("questionnaire").getNode();
+                questionnaireTitle = questionnaire.getProperty("title").getString();
+            }
             final JsonArrayBuilder arrayForQuestionnaire =
                 formsJsons.computeIfAbsent(questionnaireTitle, k -> Json.createArrayBuilder());
             arrayForQuestionnaire.add(form.adaptTo(JsonObject.class));
@@ -149,10 +156,11 @@ public class DataSubjectProcessor implements ResourceJsonProcessor
         }
     }
 
-    private String generateDataQuery(final Node subject) throws RepositoryException
+    private String generateDataQuery(final Node entity, final boolean isQuestionnaire) throws RepositoryException
     {
-        final StringBuilder result =
-            new StringBuilder("select * from [lfs:Form] as n where n.subject = '" + subject.getIdentifier() + "'");
+        final String entityFilter = isQuestionnaire ? "questionnaire" : "subject";
+        final StringBuilder result = new StringBuilder("select * from [lfs:Form] as n where n." + entityFilter
+            + " = '" + entity.getIdentifier() + "'");
         this.filters.get().forEach((key, value) -> {
             switch (key) {
                 case "createdAfter":
@@ -180,6 +188,7 @@ public class DataSubjectProcessor implements ResourceJsonProcessor
                     break;
             }
         });
+        result.append(" order by n.'jcr:created' ASC");
         return result.toString();
     }
 }
