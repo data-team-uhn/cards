@@ -223,11 +223,7 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
         }
         csvData.get(CREATED_HEADER).put(0, form.getString("jcr:created"));
 
-        // As we collect csv data to the csvData we record recurrent sections we already added
-        // to place all subsequent on a new lines
-        final List<String> recurrentSections = new ArrayList<>();
-
-        processFormSection(form, csvData, recurrentSections);
+        processFormSection(form, csvData);
         final int levels = csvData.values().stream().map(Map::keySet)
             .flatMap(Set::stream)
             .max(Comparator.comparing(Integer::valueOf))
@@ -271,16 +267,14 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
      *
      * @param answerSectionJson a JSON serialization of an answer section
      * @param csvData data aggregator
-     * @param recurrentSections the list with recurrent sections
      */
-    private void processFormSection(final JsonObject answSectionJson, Map<String, Map<Integer, String>> csvData,
-        List<String> recurrentSections)
+    private void processFormSection(final JsonObject answSectionJson, Map<String, Map<Integer, String>> csvData)
     {
         answSectionJson.values().stream()
             .filter(value -> ValueType.OBJECT.equals(value.getValueType()))
             .map(JsonValue::asJsonObject)
             .filter(value -> value.containsKey(PRIMARY_TYPE_PROP))
-            .forEach(value -> processFormElement(value, csvData, recurrentSections));
+            .forEach(value -> processFormElement(value, csvData));
     }
 
     /**
@@ -288,16 +282,13 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
      *
      * @param nodeJson a JSON serialization of an answer node
      * @param csvData data aggregator
-     * @param recurrentSections list of already added recurrent sections
      */
-    private void processFormElement(final JsonObject nodeJson, Map<String, Map<Integer, String>> csvData,
-        List<String> recurrentSections)
+    private void processFormElement(final JsonObject nodeJson, Map<String, Map<Integer, String>> csvData)
     {
         final String nodeType = nodeJson.getString(PRIMARY_TYPE_PROP);
         if ("lfs:AnswerSection".equals(nodeType)) {
             // Record the occurrence of the recurrent section so next time we will generate a new line
-            recordReccurentSection(nodeJson, recurrentSections);
-            processFormSection(nodeJson, csvData, recurrentSections);
+            processFormSection(nodeJson, csvData);
         } else if (nodeType.startsWith("lfs:") && nodeType.endsWith("Answer")) {
             final String uuid = nodeJson.getJsonObject("question").getString(UUID_PROP);
             final Map<Integer, String> answerColumn = csvData.get(uuid);
@@ -355,22 +346,5 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
             // Not there, return
         }
         return null;
-    }
-
-    /**
-     * Stores recurrent sections uuids in the recurrentSections list.
-     *
-     * @param answerSection section json object
-     * @param recurrentSections list of already added recurrent sections
-     */
-    private void recordReccurentSection(final JsonObject answerSection, List<String> recurrentSections)
-    {
-        if (answerSection.containsKey("section")) {
-            final JsonObject section = answerSection.getJsonObject("section");
-            Boolean isRecurrent = section.containsKey("recurrent") && section.getBoolean("recurrent");
-            if (isRecurrent) {
-                recurrentSections.add(section.getString(UUID_PROP));
-            }
-        }
     }
 }
