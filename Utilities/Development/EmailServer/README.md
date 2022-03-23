@@ -9,8 +9,8 @@ Building
 docker build -t cards/postfix-docker .
 ```
 
-Using
------
+Using (with `./start_cards.sh`)
+-------------------------------
 
 1. Generate a self-signed SSL certificate with:
 
@@ -100,3 +100,41 @@ CONTAINER ID        IMAGE                  COMMAND                  CREATED     
 ```bash
 $ docker stop goofy_kilby
 ```
+
+Using (with Docker Compose)
+---------------------------
+
+1. Clean up any previously used Docker Compose configuration
+
+```bash
+cd compose-cluster
+./cleanup.sh
+```
+
+2. Build a new Docker Compose YAML configuration
+
+```bash
+python3 generate_compose_yaml.py --dev_docker_image --oak_filesystem --cards_project cards4proms --server_address localhost:8080 --smtps --smtps_test_container --smtps_test_mail_path ~/path/to/mail/directory/
+```
+
+3. Build the Docker Compose configuration
+
+```bash
+docker-compose build
+```
+
+4. Start the Docker Compose configuration
+
+```bash
+docker-compose up -d
+```
+
+5. Configure your desktop mail client by following the instructions
+under _step 5_ of the _Using (with `./start_cards.sh`)_ section.
+
+6. Send a test email
+  - Visit `http://localhost:8080/` and login as `admin` : `admin`.
+  - Visit `http://localhost:8080/content.emailtest?fromEmail=datapro@uhn.ca&fromName=UHN%20DATAPRO&toEmail=test.user@fakemailhost&toName=Test%20User`
+
+7. After synchronizing the desktop mail client with the Mbox file, you
+should see the new test message.
