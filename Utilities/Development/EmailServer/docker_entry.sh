@@ -38,7 +38,7 @@ fi
 
 adduser --uid $HOST_UID --disabled-password --gecos "" $HOST_USER
 
-echo "@fakemailhost $HOST_USER" > /etc/postfix/virtual
+echo "/@.+/ $HOST_USER" > /etc/postfix/virtual
 postmap /etc/postfix/virtual
 
 # Create a blank mbox file for the $HOST_USER if no such file exists

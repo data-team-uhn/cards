@@ -62,4 +62,4 @@ recipient_delimiter = +
 inet_interfaces = all
 inet_protocols = all
 
-virtual_alias_maps = hash:/etc/postfix/virtual
+virtual_alias_maps = regexp:/etc/postfix/virtual
