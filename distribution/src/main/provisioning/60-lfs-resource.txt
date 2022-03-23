@@ -21,7 +21,7 @@
 [feature name=lfs-resources]
 
 [variables]
-    lfs.version=0.1-SNAPSHOT
+    lfs.version=0.8-SNAPSHOT
 
 [artifacts runModes=lfs]
     ca.sickkids.ccm.lfs/lfs-resources-clinical-data/${lfs.version}

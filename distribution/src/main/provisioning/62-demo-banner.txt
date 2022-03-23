@@ -21,7 +21,7 @@
 [feature name=lfs-demo-banner]
 
 [variables]
-    lfs.version=0.1-SNAPSHOT
+    lfs.version=0.8-SNAPSHOT
 
 [artifacts runModes=demo]
     ca.sickkids.ccm.lfs/lfs-modules-demo-banner/${lfs.version}

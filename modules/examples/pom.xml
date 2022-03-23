@@ -22,7 +22,7 @@
   <parent>
     <groupId>ca.sickkids.ccm.lfs</groupId>
     <artifactId>lfs-modules</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.8-SNAPSHOT</version>
   </parent>
 
   <artifactId>lfs-examples</artifactId>

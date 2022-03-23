@@ -21,7 +21,7 @@
 [feature name=lfs]
 
 [variables]
-    lfs.version=0.1-SNAPSHOT
+    lfs.version=0.8-SNAPSHOT
 
 [artifacts]
     # Customizes the page displayed during startup, before all the bundles are activated
