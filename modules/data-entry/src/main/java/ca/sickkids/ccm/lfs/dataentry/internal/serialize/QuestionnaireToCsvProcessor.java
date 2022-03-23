@@ -75,10 +75,10 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
     @Override
     public String serialize(Resource resource)
     {
-        // The proper serialization depends on "deep", "dereference" and "labels", but we may allow other JSON
+        // The proper serialization depends on "deep", "dereference", and "-labels", but we may allow other JSON
         // processors to be enabled/disabled to further customize the data, so we also append the original selectors
         final String processedPath = resource.getPath()
-            + resource.getResourceMetadata().getResolutionPathInfo() + ".deep.dereference.labels";
+            + resource.getResourceMetadata().getResolutionPathInfo() + ".deep.dereference.-labels";
         JsonObject result = resource.getResourceResolver().resolve(processedPath).adaptTo(JsonObject.class);
 
         if (result != null) {
@@ -311,7 +311,12 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
 
     private String getAnswerString(final JsonObject nodeJson, final String nodeType)
     {
-        final JsonValue value = nodeJson.get("value");
+        // If `labels` are enabled, grab the `displayedValue`
+        JsonValue value = nodeJson.get("displayedValue");
+        // In the absence of `displayedValue`, carry on with raw `value`
+        if (value == null) {
+            value = nodeJson.get("value");
+        }
         if (value == null) {
             return "";
         } else if ("lfs:PedigreeAnswer".equals(nodeType)) {
