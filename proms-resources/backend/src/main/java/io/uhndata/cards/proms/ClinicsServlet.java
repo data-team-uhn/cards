@@ -69,8 +69,11 @@ public class ClinicsServlet extends SlingAllMethodsServlet
         try {
             Configuration[] configs = this.configAdmin.listConfigurations(
                 "(service.factoryPid=" + IMPORT_FACTORY_PID + ")");
-            for (Configuration config : configs) {
-                this.insertNewClinic(config, newClinics);
+
+            if (configs != null) {
+                for (Configuration config : configs) {
+                    this.insertNewClinic(config, newClinics);
+                }
             }
         } catch (InvalidSyntaxException e) {
             // This can happen when the filter given to the listConfigurations call above is wrong

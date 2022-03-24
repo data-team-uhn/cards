@@ -3,6 +3,6 @@
   "displayName": "string",
   "sidebarLabel": "string",
   "surveyID": "string",
-  "emergencyContactEmail": "string",
+  "emergencyContact": "string",
   "//REQUIRED": ["clinicName", "displayName"]
 }

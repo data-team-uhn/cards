@@ -65,7 +65,7 @@ function Clinics(props) {
       "format": "string",
     },
     {
-      "key": "contact",
+      "key": "emergencyContact",
       "label": "Emergency Contact",
       "format": "string",
     },
@@ -73,6 +73,7 @@ function Clinics(props) {
 
   let dialogSuccess = () => {
     setNumNewEntries((old) => old + 1);
+    dialogClose();
   }
 
   let dialogClose = () => {
@@ -166,8 +167,8 @@ function OnboardNewClinicDialog(props) {
   }, [open]);
 
   let saveData = (event) => {
-    console.log("Testing saving data3");
     event.preventDefault();
+    setSaveInProgress(true);
 
     // Unlike normal submissions, we need to extract out fields that don't exist in a ClinicMapping node, and are
     // meant to be processed separately
@@ -186,31 +187,29 @@ function OnboardNewClinicDialog(props) {
     let newClinicName = requestData.get("clinicName");
     let surveyID = requestData.get("surveyID");
     let displayName = requestData.get("displayName");
+    let sidebarName = requestData.get("sidebarLabel");
     let idHash = hashCode(newClinicName);
 
     // TODO: If the idHash changes (i.e. clinicName changes) and we are editing a clinic, we need to delete the old one
     // and create a new one
+    requestData.append("jcr:primaryType", "cards:ClinicMapping");
     let newFetch = fetchWithReLogin(globalLoginDisplay, "/Proms/ClinicMapping/" + idHash,
       {
         method: 'POST',
         body: requestData
       });
 
-    let testSubmission =
+    console.log(isNewClinic);
 
-      console.log(isNewClinic);
     // There are a series of new things that need to eb added when creating a new clinic
     if (isNewClinic) {
-      // Since I'm using a lot of JSON.stringify() here, I'm going to cache our headers
-      let headers = {
-        Accept: "application/json",
-        "Content-type": "application/json"
-      }
+      let clinicRemap = new FormData();
+      clinicRemap.append(":newClinic", newClinicName);
 
       let sidebarBody = new FormData();
       sidebarBody.append("jcr:primaryType", "cards:Extension");
       sidebarBody.append("cards:extensionPointId", "cards/coreUI/sidebar/entry");
-      sidebarBody.append("cards:extensionName", idHash);
+      sidebarBody.append("cards:extensionName", sidebarName);
       sidebarBody.append("cards:targetURL", "/content.html/Dashboard/" + idHash);
       sidebarBody.append("cards:icon", "asset:proms-homepage.pmccIcon.js");
       sidebarBody.append("cards:defaultOrder", 10);
@@ -225,16 +224,16 @@ function OnboardNewClinicDialog(props) {
 
       let dashboardExtension = new FormData();
       dashboardExtension.append("jcr:primaryType", "cards:ExtensionPoint");
-      dashboardExtension.append("cards:extensionPointId", "proms /dashboard/pmcc");
+      dashboardExtension.append("cards:extensionPointId", `proms/dashboard/${idHash}`);
       dashboardExtension.append("cards:extensionPointName", `${displayName} questionnaires dashboard`);
       dashboardExtension.append("title", displayName);
       dashboardExtension.append("description", displayName);
-      dashboardExtension.append("surveys", "Cardio"); // TODO: Is this correct?
+      dashboardExtension.append("surveys", surveyID);
 
       let dashboardHomepage = new FormData();
       dashboardHomepage.append("jcr:primaryType", "cards:Extension");
-      dashboardHomepage.append("cards:extensionPointId", "proms/dashboard/pmcc");
-      dashboardHomepage.append("cards:extensionName", `${idHash} View`);
+      dashboardHomepage.append("cards:extensionPointId", `proms/dashboard/${idHash}`);
+      dashboardHomepage.append("cards:extensionName", `${displayName} View`);
       dashboardHomepage.append("cards:extensionRenderURL", "asset:proms-homepage.PromsView.js");
       dashboardHomepage.append("cards:defaultOrder", 5);
       dashboardHomepage.append("cards:data", `/Proms/${surveyID}`); // TODO: Double check this, not sure it's right
@@ -244,8 +243,7 @@ function OnboardNewClinicDialog(props) {
         .then(() => fetchWithReLogin(globalLoginDisplay, "/Proms/ClinicMapping.addNew",
           {
             method: 'POST',
-            headers: headers,
-            body: JSON.stringify({ ":newClinic": newClinicName })
+            body: clinicRemap
           }))
         // After updating the configurations, we need to create the sidebar entry
         .then(() => fetchWithReLogin(globalLoginDisplay, `/Extensions/Sidebar/${idHash}`,
@@ -257,23 +255,27 @@ function OnboardNewClinicDialog(props) {
         .then(() => fetchWithReLogin(globalLoginDisplay, `/Extensions/Views/${idHash}Dashboard`,
           {
             method: 'POST',
-            headers: headers,
             body: dashboardView
           }))
         // And the new extension point for the dashboard view
         .then(() => fetchWithReLogin(globalLoginDisplay, `/apps/cards/ExtensionPoints/DashboardViews${idHash}`,
           {
             method: 'POST',
-            headers: headers,
             body: dashboardExtension
           }))
         // And the new extension point for appointments of this clinic
         .then(() => fetchWithReLogin(globalLoginDisplay, `/Extensions/DashboardViews/${idHash}View`,
           {
             method: 'POST',
-            headers: headers,
             body: dashboardHomepage
-          }));
+          }))
+        .then(() => {
+          onSuccess && onSuccess();
+        })
+        .catch((response) => {setError(response.status + " " + response.statusText);})
+        .finally(() => {
+          setSaveInProgress(false);
+        });
     }
   }
 
