@@ -39,7 +39,7 @@ public class ReminderNotificationsTask extends AbstractPromsNotification impleme
     @Override
     public void run()
     {
-        long emailsSent = sendNotification(1, "24h.txt", PATIENT_NOTIFICATION_SUBJECT);
+        long emailsSent = sendNotification(1, "24h.txt", "24h.html", PATIENT_NOTIFICATION_SUBJECT);
         Metrics.increment(this.resolverFactory, "ReminderEmailsSent", emailsSent);
     }
 }

@@ -60,6 +60,25 @@ function handle_missing_sling_commons_crypto_fail() {
   exit -1
 }
 
+function handle_missing_mailcap_fail() {
+  echo -e "${TERMINAL_RED}********************************************************************************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*                                                                              *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*   The file ~/.mailcap is missing. Exiting.                                   *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*   You can create ~/.mailcap by running: cp distribution/mailcap ~/.mailcap   *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*                                                                              *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}********************************************************************************${TERMINAL_NOCOLOR}"
+  exit -1
+}
+
+function warn_different_mailcap() {
+  echo -e "${TERMINAL_YELLOW}********************************************************************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}*                                                                  *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}*    Warning: The file ~/.mailcap differs from what is expected.   *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}*    Sending emails may not work properly!                         *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}*                                                                  *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}********************************************************************${TERMINAL_NOCOLOR}"
+}
+
 function handle_cards_java_fail() {
   echo -e "${TERMINAL_RED}**********************************************$(print_length_of $BIND_PORT '*' 4)${TERMINAL_NOCOLOR}"
   echo -e "${TERMINAL_RED}*                                             $(print_length_of $BIND_PORT ' ' 3)*${TERMINAL_NOCOLOR}"
@@ -276,6 +295,11 @@ then
   then
     handle_missing_sling_commons_crypto_fail
   fi
+  if [ ! -e ~/.mailcap ]
+  then
+    handle_missing_mailcap_fail
+  fi
+  diff -q ~/.mailcap distribution/mailcap || warn_different_mailcap
 fi
 
 #Start CARDS in the background

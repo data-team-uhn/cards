@@ -57,6 +57,7 @@ COPY target/dependency/org.apache.sling.feature.launcher.jar .
 COPY target/${project.artifactId}-${project.version}-core_mongo_far.far .
 COPY target/${project.artifactId}-${project.version}-core_tar_far.far .
 COPY logback.xml ./.cards-data/
+COPY mailcap /root/.mailcap
 
 # This is where Sling stores its data
 # Make this a volume which can be persisted between different container versions
