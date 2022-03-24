@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-FROM debian:11
+FROM debian:11-slim
 
 RUN apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install postfix
