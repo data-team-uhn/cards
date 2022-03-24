@@ -53,7 +53,7 @@ const DATA_TO_NODE_TYPE = {
 // existingAnswer array of sub-question answers
 
 let QuestionMatrix = (props) => {
-  const { sectionDefinition, existingSectionAnswer, existingAnswers, path, isEdit, classes, ...rest} = props;
+  const { sectionDefinition, existingSectionAnswer, existingAnswers, path, isEdit, classes, pageActive, ...rest} = props;
   const { maxAnswers, minAnswers } = {...sectionDefinition, ...props};
 
   // Use existing existingAnswer, Otherwise, create a new UUID
@@ -200,6 +200,7 @@ let QuestionMatrix = (props) => {
       questionDefinition={newQuestionDefinition}
       existingAnswer={existingAnswerMock}
       currentAnswers={currentAnswers}
+      pageActive={pageActive}
       preventDefaultView
       {...props}
     >
@@ -258,7 +259,7 @@ let QuestionMatrix = (props) => {
       <input type="hidden" name={`${sectionAnswerPath}/jcr:primaryType`} value={"cards:AnswerSection"}></input>
       <input type="hidden" name={`${sectionAnswerPath}/section`} value={sectionDefinition['jcr:uuid']}></input>
       <input type="hidden" name={`${sectionAnswerPath}/section@TypeHint`} value="Reference"></input>
-      { subquestions.map(question => 
+      { subquestions.map(question =>
           <Answer
             key={question[1]["jcr:uuid"]}
             path={sectionAnswerPath}

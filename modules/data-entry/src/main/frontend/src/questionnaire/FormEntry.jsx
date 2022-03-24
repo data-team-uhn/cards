@@ -193,6 +193,7 @@ let displayMatrix = (sectionDefinition, path, existingAnswer, key, classes, page
         existingAnswers={existingAnswers}
         path={path}
         isEdit={isEdit}
+        pageActive={pageActive}
       />
     </Grid>
   );
