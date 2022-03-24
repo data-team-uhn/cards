@@ -449,7 +449,7 @@ let Section = (props) => {
   let [ doHighlight, setDoHighlight ] = useState(data.doHighlight);
 
   if (data.displayMode == "matrix") {
-    return <QuestionMatrix {...props} pageActive={true} />
+    return <QuestionMatrix {...props} />
   }
 
   let extractProperties = () => {
