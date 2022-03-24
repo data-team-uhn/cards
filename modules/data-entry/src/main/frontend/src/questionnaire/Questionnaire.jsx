@@ -449,7 +449,7 @@ let Section = (props) => {
   let [ doHighlight, setDoHighlight ] = useState(data.doHighlight);
 
   if (data.displayMode == "matrix") {
-    return <QuestionMatrix {...props} />
+    return <QuestionMatrix {...props} pageActive={true} />
   }
 
   let extractProperties = () => {
@@ -487,7 +487,7 @@ let Section = (props) => {
     setSectionData({});
     setSectionData(newData);
   }
-  
+
   return (
     <QuestionnaireItemCard
         avatar="view_stream"
