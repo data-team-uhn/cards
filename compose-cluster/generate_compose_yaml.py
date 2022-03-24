@@ -288,6 +288,7 @@ except FileExistsError:
   print("Warning: SLING directory exists - will leave unmodified.")
 
 yaml_obj['services']['cardsinitial']['volumes'] = ["./SLING:/opt/cards/.cards-data"]
+yaml_obj['services']['cardsinitial']['volumes'].append("./SSL_CONFIG/cards_certs/:/load_certs:ro")
 if args.dev_docker_image:
   yaml_obj['services']['cardsinitial']['volumes'].append("{}:/root/.m2:ro".format(os.path.join(os.environ['HOME'], '.m2')))
 
@@ -332,7 +333,6 @@ if args.smtps_localhost_proxy:
 if args.smtps_test_container:
   yaml_obj['services']['cardsinitial']['environment'].append("SMTPS_HOST=smtps_test_container")
   yaml_obj['services']['cardsinitial']['environment'].append("SMTPS_LOCAL_TEST_CONTAINER=true")
-  yaml_obj['services']['cardsinitial']['volumes'].append("./SSL_CONFIG/smtps_certificate.crt:/etc/cert/smtps_certificate.crt:ro")
 
 #Configure the NCR container (if enabled) - only one for now
 if ENABLE_NCR:
@@ -447,14 +447,14 @@ if args.smtps_test_container:
   yaml_obj['services']['smtps_test_container']['environment'].append("HOST_UID={}".format(os.getuid()))
   yaml_obj['services']['smtps_test_container']['environment'].append("HOST_GID={}".format(os.getgid()))
   yaml_obj['services']['smtps_test_container']['volumes'] = []
-  yaml_obj['services']['smtps_test_container']['volumes'].append("./SSL_CONFIG/smtps_certificate.crt:/HOSTPERM_cert.pem:ro")
+  yaml_obj['services']['smtps_test_container']['volumes'].append("./SSL_CONFIG/cards_certs/smtps_certificate.crt:/HOSTPERM_cert.pem:ro")
   yaml_obj['services']['smtps_test_container']['volumes'].append("./SSL_CONFIG/smtps_certificatekey.key:/HOSTPERM_certkey.pem:ro")
   yaml_obj['services']['smtps_test_container']['volumes'].append("{}:/var/spool/mail".format(args.smtps_test_mail_path))
   print("Generating a self-signed SSL certificate for smtps_test_container")
   smtps_key, smtps_cert = generateSelfSignedCert()
   with open("./SSL_CONFIG/smtps_certificatekey.key", 'w') as f_smtps_key:
     f_smtps_key.write(smtps_key)
-  with open("./SSL_CONFIG/smtps_certificate.crt", 'w') as f_smtps_cert:
+  with open("./SSL_CONFIG/cards_certs/smtps_certificate.crt", 'w') as f_smtps_cert:
     f_smtps_cert.write(smtps_cert)
 
 #Setup the internal network
