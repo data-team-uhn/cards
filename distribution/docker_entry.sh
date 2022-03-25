@@ -177,6 +177,20 @@ then
   SMTPS_VARIABLES="$SMTPS_VARIABLES -V emailnotifications.smtps.checkserveridentity=false"
 fi
 
+if [[ "$SMTPS_LOCAL_TEST_CONTAINER" == "true" ]]
+then
+  SMTPS_VARIABLES="$SMTPS_VARIABLES -V emailnotifications.smtps.checkserveridentity=false"
+  SMTPS_VARIABLES="$SMTPS_VARIABLES -V emailnotifications.smtps.host=smtps_test_container"
+  SMTPS_VARIABLES="$SMTPS_VARIABLES -V emailnotifications.smtps.port=465"
+fi
+
+#Load all the SSL certs under SSL_CONFIG/cards_certs into Java's trusted CA keystore
+for CERT_FILE in $(find /load_certs -type f -name "*.pem" -o -name "*.crt")
+do
+  echo "Adding $CERT_FILE to Java's trusted CA keystore"
+  keytool -import -trustcacerts -file $CERT_FILE -keystore /etc/ssl/certs/java/cacerts -keypass changeit -storepass changeit -noprompt
+done
+
 #Execute the volume_mounted_init.sh script if it is present
 [ -e /volume_mounted_init.sh ] && /volume_mounted_init.sh
 

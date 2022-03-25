@@ -24,6 +24,7 @@ import yaml
 import json
 import shutil
 import argparse
+from OpenSSL import crypto, SSL
 from CardsDockerTagProperty import CARDS_DOCKER_TAG
 
 argparser = argparse.ArgumentParser()
@@ -44,6 +45,8 @@ argparser.add_argument('--saml_idp_destination', help='URL to redirect to for SA
 argparser.add_argument('--server_address', help='Domain name (or Domain name:port) that the public will use for accessing this CARDS deployment')
 argparser.add_argument('--smtps', help='Enable SMTPS emailing functionality', action='store_true')
 argparser.add_argument('--smtps_localhost_proxy', help='Run an SSL termination proxy so that the CARDS container may connect to the host\'s SMTP server at localhost:25', action='store_true')
+argparser.add_argument('--smtps_test_container', help='Enable the mock SMTPS (cards/postfix-docker) container for viewing CARDS-sent emails.', action='store_true')
+argparser.add_argument('--smtps_test_mail_path', help='Host OS path where the email mbox file from smtps_test_container is stored')
 argparser.add_argument('--ssl_proxy', help='Protect this service with SSL/TLS (use https:// instead of http://)', action='store_true')
 argparser.add_argument('--sling_admin_port', help='The localhost TCP port which should be forwarded to cardsinitial:8080', type=int)
 argparser.add_argument('--subnet', help='Manually specify the subnet of IP addresses to be used by the containers in this docker-compose environment (eg. --subnet 172.99.0.0/16)')
@@ -69,6 +72,11 @@ if args.smtps_localhost_proxy:
     print("ERROR: A --subnet must be explicitly specified when using --smtps_localhost_proxy")
     sys.exit(-1)
 
+if args.smtps_test_container:
+  if not args.smtps_test_mail_path:
+    print("ERROR: A --smtps_test_mail_path must be specified when using --smtps_test_container")
+    sys.exit(-1)
+
 def getDockerHostIP(subnet):
   network_address = subnet.split('/')[0]
   network_address_octets = network_address.split('.')
@@ -81,6 +89,27 @@ def generateSmtpsProxyConfigFile(docker_host_ip):
   nginx_config = nginx_template.replace("${DOCKER_HOST_IP}", docker_host_ip)
   with open("smtps_localhost_proxy/nginx.conf", 'w') as f:
     f.write(nginx_config)
+
+def generateSelfSignedCert():
+  k = crypto.PKey()
+  k.generate_key(crypto.TYPE_RSA, 4096)
+  cert = crypto.X509()
+  cert.get_subject().C = "NT"
+  cert.get_subject().ST = "stateOrProvinceName"
+  cert.get_subject().L = "localityName"
+  cert.get_subject().O = "organizationName"
+  cert.get_subject().OU = "organizationUnitName"
+  cert.get_subject().CN = "commonName"
+  cert.get_subject().emailAddress = "emailAddress"
+  cert.set_serial_number(0)
+  cert.gmtime_adj_notBefore(0)
+  cert.gmtime_adj_notAfter(100*365*24*60*60)
+  cert.set_issuer(cert.get_subject())
+  cert.set_pubkey(k)
+  cert.sign(k, 'sha256')
+  pem_key = crypto.dump_privatekey(crypto.FILETYPE_PEM, k).decode('utf-8')
+  pem_cert = crypto.dump_certificate(crypto.FILETYPE_PEM, cert).decode('utf-8')
+  return pem_key, pem_cert
 
 OUTPUT_FILENAME = "docker-compose.yml"
 
@@ -259,6 +288,7 @@ except FileExistsError:
   print("Warning: SLING directory exists - will leave unmodified.")
 
 yaml_obj['services']['cardsinitial']['volumes'] = ["./SLING:/opt/cards/.cards-data"]
+yaml_obj['services']['cardsinitial']['volumes'].append("./SSL_CONFIG/cards_certs/:/load_certs:ro")
 if args.dev_docker_image:
   yaml_obj['services']['cardsinitial']['volumes'].append("{}:/root/.m2:ro".format(os.path.join(os.environ['HOME'], '.m2')))
 
@@ -299,6 +329,10 @@ if args.smtps_localhost_proxy:
   yaml_obj['services']['cardsinitial']['volumes'].append("./SSL_CONFIG/smtps_certificate.crt:/etc/cert/smtps_certificate.crt:ro")
   yaml_obj['services']['cardsinitial']['extra_hosts'] = {}
   yaml_obj['services']['cardsinitial']['extra_hosts']['smtps_localhost_proxy'] = getDockerHostIP(args.subnet)
+
+if args.smtps_test_container:
+  yaml_obj['services']['cardsinitial']['environment'].append("SMTPS_HOST=smtps_test_container")
+  yaml_obj['services']['cardsinitial']['environment'].append("SMTPS_LOCAL_TEST_CONTAINER=true")
 
 #Configure the NCR container (if enabled) - only one for now
 if ENABLE_NCR:
@@ -399,6 +433,29 @@ if args.smtps_localhost_proxy:
   yaml_obj['services']['smtps_localhost_proxy']['volumes'].append("./smtps_localhost_proxy/nginx.conf:/etc/nginx/nginx.conf:ro")
   yaml_obj['services']['smtps_localhost_proxy']['volumes'].append("./SSL_CONFIG/smtps_certificate.crt:/etc/cert/smtps_certificate.crt:ro")
   yaml_obj['services']['smtps_localhost_proxy']['volumes'].append("./SSL_CONFIG/smtps_certificatekey.key:/etc/cert/smtps_certificatekey.key:ro")
+
+#Configure the SMTPS test container (if enabled)
+if args.smtps_test_container:
+  print("Configuring service: smtps_test_container")
+  yaml_obj['services']['smtps_test_container'] = {}
+  yaml_obj['services']['smtps_test_container']['image'] = "cards/postfix-docker"
+  yaml_obj['services']['smtps_test_container']['networks'] = {}
+  yaml_obj['services']['smtps_test_container']['networks']['internalnetwork'] = {}
+  yaml_obj['services']['smtps_test_container']['networks']['internalnetwork']['aliases'] = ['smtps_test_container']
+  yaml_obj['services']['smtps_test_container']['environment'] = []
+  yaml_obj['services']['smtps_test_container']['environment'].append("HOST_USER={}".format(os.environ['USER']))
+  yaml_obj['services']['smtps_test_container']['environment'].append("HOST_UID={}".format(os.getuid()))
+  yaml_obj['services']['smtps_test_container']['environment'].append("HOST_GID={}".format(os.getgid()))
+  yaml_obj['services']['smtps_test_container']['volumes'] = []
+  yaml_obj['services']['smtps_test_container']['volumes'].append("./SSL_CONFIG/cards_certs/smtps_certificate.crt:/HOSTPERM_cert.pem:ro")
+  yaml_obj['services']['smtps_test_container']['volumes'].append("./SSL_CONFIG/smtps_certificatekey.key:/HOSTPERM_certkey.pem:ro")
+  yaml_obj['services']['smtps_test_container']['volumes'].append("{}:/var/spool/mail".format(args.smtps_test_mail_path))
+  print("Generating a self-signed SSL certificate for smtps_test_container")
+  smtps_key, smtps_cert = generateSelfSignedCert()
+  with open("./SSL_CONFIG/smtps_certificatekey.key", 'w') as f_smtps_key:
+    f_smtps_key.write(smtps_key)
+  with open("./SSL_CONFIG/cards_certs/smtps_certificate.crt", 'w') as f_smtps_cert:
+    f_smtps_cert.write(smtps_cert)
 
 #Setup the internal network
 print("Configuring the internal network")
