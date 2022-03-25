@@ -1,0 +1,1809 @@
+<?xml version="1.0"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<rdf:RDF xmlns="urn:absolute:#"
+     xml:base="urn:absolute:"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+    <owl:Ontology rdf:about="urn:absolute:"/>
+
+
+
+    <!--
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+
+
+
+    <!-- urn:absolute:#Airway_disease -->
+
+    <owl:Class rdf:about="urn:absolute:#Airway_disease">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Thoracic_and_Mediastinal_Disease"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Aortic_arch_hypoplasia -->
+
+    <owl:Class rdf:about="urn:absolute:#Aortic_arch_hypoplasia">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Thoracic_Arteries_and_Veins"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Aortic_dissection -->
+
+    <owl:Class rdf:about="urn:absolute:#Aortic_dissection">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Thoracic_Arteries_and_Veins"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Aortic_insufficiency -->
+
+    <owl:Class rdf:about="urn:absolute:#Aortic_insufficiency">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Left_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Aortic_insufficiency_and_aortic_stenosis -->
+
+    <owl:Class rdf:about="urn:absolute:#Aortic_insufficiency_and_aortic_stenosis">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Left_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Aortic_valve_atresia -->
+
+    <owl:Class rdf:about="urn:absolute:#Aortic_valve_atresia">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Left_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Arrhythmia -->
+
+    <owl:Class rdf:about="urn:absolute:#Arrhythmia">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Electrophysiologic"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Cardiac_tumor -->
+
+    <owl:Class rdf:about="urn:absolute:#Cardiac_tumor">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Miscellaneous"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Chylothorax -->
+
+    <owl:Class rdf:about="urn:absolute:#Chylothorax">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Thoracic_and_Mediastinal_Disease"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Coarctation_of_aorta -->
+
+    <owl:Class rdf:about="urn:absolute:#Coarctation_of_aorta">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Thoracic_Arteries_and_Veins"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Conduit_failure -->
+
+    <owl:Class rdf:about="urn:absolute:#Conduit_failure">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Right_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Congenitally_corrected_TGA -->
+
+    <owl:Class rdf:about="urn:absolute:#Congenitally_corrected_TGA">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Transposition_of_the_Great_Arteries"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Cor_Triatriatum -->
+
+    <owl:Class rdf:about="urn:absolute:#Cor_Triatriatum"/>
+
+
+
+    <!-- urn:absolute:#DCRV -->
+
+    <owl:Class rdf:about="urn:absolute:#DCRV">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Right_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#DOLV -->
+
+    <owl:Class rdf:about="urn:absolute:#DOLV"/>
+
+
+
+    <!-- urn:absolute:#DORV -->
+
+    <owl:Class rdf:about="urn:absolute:#DORV"/>
+
+
+
+    <!-- urn:absolute:#Dextrocardia -->
+
+    <owl:Class rdf:about="urn:absolute:#Dextrocardia">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Miscellaneous"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Diaphragm_paralysis -->
+
+    <owl:Class rdf:about="urn:absolute:#Diaphragm_paralysis">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Thoracic_and_Mediastinal_Disease"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Electrophysiologic -->
+
+    <owl:Class rdf:about="urn:absolute:#Electrophysiologic"/>
+
+
+
+    <!-- urn:absolute:#Empyema -->
+
+    <owl:Class rdf:about="urn:absolute:#Empyema">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Thoracic_and_Mediastinal_Disease"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Endocarditis -->
+
+    <owl:Class rdf:about="urn:absolute:#Endocarditis">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Miscellaneous"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Hypoplastic_LV -->
+
+    <owl:Class rdf:about="urn:absolute:#Hypoplastic_LV">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Miscellaneous"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Hypoplastic_RV -->
+
+    <owl:Class rdf:about="urn:absolute:#Hypoplastic_RV">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Miscellaneous"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Interrupted_aortic_arch -->
+
+    <owl:Class rdf:about="urn:absolute:#Interrupted_aortic_arch">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Thoracic_Arteries_and_Veins"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Interrupted_aortic_arch_and_VSD -->
+
+    <owl:Class rdf:about="urn:absolute:#Interrupted_aortic_arch_and_VSD">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Thoracic_Arteries_and_Veins"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#LV_to_aorta_tunnel -->
+
+    <owl:Class rdf:about="urn:absolute:#LV_to_aorta_tunnel">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Left_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Left_Heart_Lesions -->
+
+    <owl:Class rdf:about="urn:absolute:#Left_Heart_Lesions"/>
+
+
+
+    <!-- urn:absolute:#Levocardia -->
+
+    <owl:Class rdf:about="urn:absolute:#Levocardia">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Miscellaneous"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Meconium_aspiration -->
+
+    <owl:Class rdf:about="urn:absolute:#Meconium_aspiration">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Miscellaneous"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Mediastinal_disease -->
+
+    <owl:Class rdf:about="urn:absolute:#Mediastinal_disease">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Thoracic_and_Mediastinal_Disease"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Mediastinitis -->
+
+    <owl:Class rdf:about="urn:absolute:#Mediastinitis">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Miscellaneous"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Mesocardia -->
+
+    <owl:Class rdf:about="urn:absolute:#Mesocardia">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Miscellaneous"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Miscellaneous -->
+
+    <owl:Class rdf:about="urn:absolute:#Miscellaneous"/>
+
+
+
+    <!-- urn:absolute:#Mitral_regurgitation -->
+
+    <owl:Class rdf:about="urn:absolute:#Mitral_regurgitation">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Left_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Mitral_regurgitation_and_mitral_stenosis -->
+
+    <owl:Class rdf:about="urn:absolute:#Mitral_regurgitation_and_mitral_stenosis">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Left_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Mitral_stenosis -->
+
+    <owl:Class rdf:about="urn:absolute:#Mitral_stenosis">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Left_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Myocardial_infarction -->
+
+    <owl:Class rdf:about="urn:absolute:#Myocardial_infarction">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Miscellaneous"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Normal_heart -->
+
+    <owl:Class rdf:about="urn:absolute:#Normal_heart">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Miscellaneous"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Other -->
+
+    <owl:Class rdf:about="urn:absolute:#Other">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Miscellaneous"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#PFO -->
+
+    <owl:Class rdf:about="urn:absolute:#PFO">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Septal_Defects"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Patent_ductus_arteriosus -->
+
+    <owl:Class rdf:about="urn:absolute:#Patent_ductus_arteriosus">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Thoracic_Arteries_and_Veins"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pectus -->
+
+    <owl:Class rdf:about="urn:absolute:#Pectus">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Thoracic_and_Mediastinal_Disease"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pericardial_effusion -->
+
+    <owl:Class rdf:about="urn:absolute:#Pericardial_effusion">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Left_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pericarditis -->
+
+    <owl:Class rdf:about="urn:absolute:#Pericarditis">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Left_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Persistent_fetal_circulation -->
+
+    <owl:Class rdf:about="urn:absolute:#Persistent_fetal_circulation">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Miscellaneous"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pleural_effusion -->
+
+    <owl:Class rdf:about="urn:absolute:#Pleural_effusion">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Thoracic_and_Mediastinal_Disease"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pneumothorax -->
+
+    <owl:Class rdf:about="urn:absolute:#Pneumothorax">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Thoracic_and_Mediastinal_Disease"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Postoperative_bleeding -->
+
+    <owl:Class rdf:about="urn:absolute:#Postoperative_bleeding">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Miscellaneous"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Primary_pulmonary_hypertension -->
+
+    <owl:Class rdf:about="urn:absolute:#Primary_pulmonary_hypertension">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Miscellaneous"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Prosthetic_valve_failure -->
+
+    <owl:Class rdf:about="urn:absolute:#Prosthetic_valve_failure">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Miscellaneous"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pulmonary_AV_fistula -->
+
+    <owl:Class rdf:about="urn:absolute:#Pulmonary_AV_fistula">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Miscellaneous"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pulmonary_Venous_Anomalies -->
+
+    <owl:Class rdf:about="urn:absolute:#Pulmonary_Venous_Anomalies"/>
+
+
+
+    <!-- urn:absolute:#Pulmonary_Venous_Stenosis -->
+
+    <owl:Class rdf:about="urn:absolute:#Pulmonary_Venous_Stenosis"/>
+
+
+
+    <!-- urn:absolute:#Pulmonary_artery_sling -->
+
+    <owl:Class rdf:about="urn:absolute:#Pulmonary_artery_sling">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Thoracic_Arteries_and_Veins"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pulmonary_atresia -->
+
+    <owl:Class rdf:about="urn:absolute:#Pulmonary_atresia">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Right_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pulmonary_embolism -->
+
+    <owl:Class rdf:about="urn:absolute:#Pulmonary_embolism">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Miscellaneous"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pulmonary_insufficiency -->
+
+    <owl:Class rdf:about="urn:absolute:#Pulmonary_insufficiency">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Right_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pulmonary_insufficiency_and_pulmonary_stenosis -->
+
+    <owl:Class rdf:about="urn:absolute:#Pulmonary_insufficiency_and_pulmonary_stenosis">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Right_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pulmonary_vascular_obstructive_disease -->
+
+    <owl:Class rdf:about="urn:absolute:#Pulmonary_vascular_obstructive_disease">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Miscellaneous"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Rheumatic_heart_disease -->
+
+    <owl:Class rdf:about="urn:absolute:#Rheumatic_heart_disease">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Miscellaneous"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Right_Heart_Lesions -->
+
+    <owl:Class rdf:about="urn:absolute:#Right_Heart_Lesions"/>
+
+
+
+    <!-- urn:absolute:#Septal_Defects -->
+
+    <owl:Class rdf:about="urn:absolute:#Septal_Defects"/>
+
+
+
+    <!-- urn:absolute:#Shunt_failure -->
+
+    <owl:Class rdf:about="urn:absolute:#Shunt_failure"/>
+
+
+
+    <!-- urn:absolute:#Single_Ventricle -->
+
+    <owl:Class rdf:about="urn:absolute:#Single_Ventricle"/>
+
+
+
+    <!-- urn:absolute:#Sinus_of_Valsalva_aneurysm -->
+
+    <owl:Class rdf:about="urn:absolute:#Sinus_of_Valsalva_aneurysm">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Left_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Situs_inversusÿ -->
+
+    <owl:Class rdf:about="urn:absolute:#Situs_inversusÿ">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Miscellaneous"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Systemic_Venous_Anomalies -->
+
+    <owl:Class rdf:about="urn:absolute:#Systemic_Venous_Anomalies"/>
+
+
+
+    <!-- urn:absolute:#Systemic_venous_anomaly -->
+
+    <owl:Class rdf:about="urn:absolute:#Systemic_venous_anomaly">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Systemic_Venous_Anomalies"/>
+        <owl:disjointWith rdf:resource="urn:absolute:#Systemic_venous_obstruction"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Systemic_venous_obstruction -->
+
+    <owl:Class rdf:about="urn:absolute:#Systemic_venous_obstruction">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Systemic_Venous_Anomalies"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#TOF -->
+
+    <owl:Class rdf:about="urn:absolute:#TOF">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Right_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Thoracic_Arteries_and_Veins -->
+
+    <owl:Class rdf:about="urn:absolute:#Thoracic_Arteries_and_Veins"/>
+
+
+
+    <!-- urn:absolute:#Thoracic_and_Mediastinal_Disease -->
+
+    <owl:Class rdf:about="urn:absolute:#Thoracic_and_Mediastinal_Disease"/>
+
+
+
+    <!-- urn:absolute:#Tracheal_stenosis -->
+
+    <owl:Class rdf:about="urn:absolute:#Tracheal_stenosis">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Thoracic_and_Mediastinal_Disease"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Transposition_of_the_Great_Arteries -->
+
+    <owl:Class rdf:about="urn:absolute:#Transposition_of_the_Great_Arteries"/>
+
+
+
+    <!-- urn:absolute:#Tricuspid_regurgitation_and_tricuspid_stenosis -->
+
+    <owl:Class rdf:about="urn:absolute:#Tricuspid_regurgitation_and_tricuspid_stenosis">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Right_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Tricuspid_stenosis -->
+
+    <owl:Class rdf:about="urn:absolute:#Tricuspid_stenosis">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Right_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Truncal_valve_insufficiency -->
+
+    <owl:Class rdf:about="urn:absolute:#Truncal_valve_insufficiency">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Septal_Defects"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Truncus_arteriosus -->
+
+    <owl:Class rdf:about="urn:absolute:#Truncus_arteriosus">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Septal_Defects"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Truncus_arteriosus_and_Interrupted_aortic_arch -->
+
+    <owl:Class rdf:about="urn:absolute:#Truncus_arteriosus_and_Interrupted_aortic_arch">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Septal_Defects"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Vascular_ring -->
+
+    <owl:Class rdf:about="urn:absolute:#Vascular_ring">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Thoracic_Arteries_and_Veins"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#AP_window_(aortopulmonary_window) -->
+
+    <owl:Class rdf:about="urn:absolute:#AP_window_(aortopulmonary_window)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Septal_Defects"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#ASD:_Coronary_sinus -->
+
+    <owl:Class rdf:about="urn:absolute:#ASD:_Coronary_sinus">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Septal_Defects"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#ASD:_Secundum -->
+
+    <owl:Class rdf:about="urn:absolute:#ASD:_Secundum">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Septal_Defects"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#ASD:_Sinus_venosus -->
+
+    <owl:Class rdf:about="urn:absolute:#ASD:_Sinus_venosus">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Septal_Defects"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#ASD:_Common_atrium_(single_atrium) -->
+
+    <owl:Class rdf:about="urn:absolute:#ASD:_Common_atrium_(single_atrium)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Septal_Defects"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#AVC_(AVSD):_Complete_CAVSD -->
+
+    <owl:Class rdf:about="urn:absolute:#AVC_(AVSD):_Complete_CAVSD">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Septal_Defects"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#AVC_(AVSD):_Intermediate_(transitional) -->
+
+    <owl:Class rdf:about="urn:absolute:#AVC_(AVSD):_Intermediate_(transitional)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Septal_Defects"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#AVC_(AVSD):_Partial_(incomplete)_(PAVSD)_(ASD;_primum) -->
+
+    <owl:Class rdf:about="urn:absolute:#AVC_(AVSD):_Partial_(incomplete)_(PAVSD)_(ASD;_primum)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Septal_Defects"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Aneurysm:_Other -->
+
+    <owl:Class rdf:about="urn:absolute:#Aneurysm:_Other">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Miscellaneous"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Aneurysm:_Pulmonary_artery -->
+
+    <owl:Class rdf:about="urn:absolute:#Aneurysm:_Pulmonary_artery">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Miscellaneous"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Aneurysm:_Ventricular:_Left_(including_pseudoaneurysm) -->
+
+    <owl:Class rdf:about="urn:absolute:#Aneurysm:_Ventricular:_Left_(including_pseudoaneurysm)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Miscellaneous"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Aneurysm:_Ventricular:_Right_(including_pseudoaneurysm) -->
+
+    <owl:Class rdf:about="urn:absolute:#Aneurysm:_Ventricular:_Right_(including_pseudoaneurysm)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Miscellaneous"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Aortic_aneurysm_(including_pseudoaneurysm) -->
+
+    <owl:Class rdf:about="urn:absolute:#Aortic_aneurysm_(including_pseudoaneurysm)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Thoracic_Arteries_and_Veins"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Aortic_stenosis:_Subvalvar -->
+
+    <owl:Class rdf:about="urn:absolute:#Aortic_stenosis:_Subvalvar">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Left_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Aortic_stenosis:_Supravalvar -->
+
+    <owl:Class rdf:about="urn:absolute:#Aortic_stenosis:_Supravalvar">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Left_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Aortic_stenosis:_Valvar -->
+
+    <owl:Class rdf:about="urn:absolute:#Aortic_stenosis:_Valvar">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Left_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Aortic_valve:_Other -->
+
+    <owl:Class rdf:about="urn:absolute:#Aortic_valve:_Other">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Left_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Arrhythmia:_Atrial -->
+
+    <owl:Class rdf:about="urn:absolute:#Arrhythmia:_Atrial">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Electrophysiologic"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Arrhythmia:_Heart_block -->
+
+    <owl:Class rdf:about="urn:absolute:#Arrhythmia:_Heart_block">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Electrophysiologic"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Arrhythmia:_Junctional -->
+
+    <owl:Class rdf:about="urn:absolute:#Arrhythmia:_Junctional">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Electrophysiologic"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Arrhythmia:_Ventricular -->
+
+    <owl:Class rdf:about="urn:absolute:#Arrhythmia:_Ventricular">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Electrophysiologic"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Arrhythmia:_Heart_block:_Acquired -->
+
+    <owl:Class rdf:about="urn:absolute:#Arrhythmia:_Heart_block:_Acquired">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Electrophysiologic"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Arrhythmia:_Heart_block:_Congenital -->
+
+    <owl:Class rdf:about="urn:absolute:#Arrhythmia:_Heart_block:_Congenital">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Electrophysiologic"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Arrhythmia:_Pacemaker:_Indication_for_replacement -->
+
+    <owl:Class rdf:about="urn:absolute:#Arrhythmia:_Pacemaker:_Indication_for_replacement">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Electrophysiologic"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Atrial_Isomerism:_Left -->
+
+    <owl:Class rdf:about="urn:absolute:#Atrial_Isomerism:_Left">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Miscellaneous"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Atrial_Isomerism:_Right -->
+
+    <owl:Class rdf:about="urn:absolute:#Atrial_Isomerism:_Right">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Miscellaneous"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Cardiac:_Other -->
+
+    <owl:Class rdf:about="urn:absolute:#Cardiac:_Other">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Miscellaneous"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Cardiomyopathy:_End-stage_congenital_heart_disease -->
+
+    <owl:Class rdf:about="urn:absolute:#Cardiomyopathy:_End-stage_congenital_heart_disease">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Left_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Cardiomyopathy_(including_dilated;_restrictive;_and_hypertrophic) -->
+
+    <owl:Class rdf:about="urn:absolute:#Cardiomyopathy_(including_dilated;_restrictive;_and_hypertrophic)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Left_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Congenitally_corrected_TGA:_IVS -->
+
+    <owl:Class rdf:about="urn:absolute:#Congenitally_corrected_TGA:_IVS">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Transposition_of_the_Great_Arteries"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Congenitally_corrected_TGA:_IVS-LVOTO -->
+
+    <owl:Class rdf:about="urn:absolute:#Congenitally_corrected_TGA:_IVS-LVOTO">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Transposition_of_the_Great_Arteries"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Congenitally_corrected_TGA:_VSD -->
+
+    <owl:Class rdf:about="urn:absolute:#Congenitally_corrected_TGA:_VSD">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Transposition_of_the_Great_Arteries"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Congenitally_corrected_TGA:_VSD-LVOTO -->
+
+    <owl:Class rdf:about="urn:absolute:#Congenitally_corrected_TGA:_VSD-LVOTO">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Transposition_of_the_Great_Arteries"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Coronary_artery_anomaly:_Aneurysm -->
+
+    <owl:Class rdf:about="urn:absolute:#Coronary_artery_anomaly:_Aneurysm">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Thoracic_Arteries_and_Veins"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Coronary_artery_anomaly:_Fistula -->
+
+    <owl:Class rdf:about="urn:absolute:#Coronary_artery_anomaly:_Fistula">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Thoracic_Arteries_and_Veins"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Coronary_artery_anomaly:_Other -->
+
+    <owl:Class rdf:about="urn:absolute:#Coronary_artery_anomaly:_Other">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Thoracic_Arteries_and_Veins"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Coronary_artery_anomaly:_Anomalous_aortic_origin_of_coronary_artery_from_aorta_(AAOCA) -->
+
+    <owl:Class rdf:about="urn:absolute:#Coronary_artery_anomaly:_Anomalous_aortic_origin_of_coronary_artery_from_aorta_(AAOCA)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Thoracic_Arteries_and_Veins"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Coronary_artery_anomaly:_Anomalous_pulmonary_origin_(includes_ALCAPA) -->
+
+    <owl:Class rdf:about="urn:absolute:#Coronary_artery_anomaly:_Anomalous_pulmonary_origin_(includes_ALCAPA)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Thoracic_Arteries_and_Veins"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#DORV:_IVS -->
+
+    <owl:Class rdf:about="urn:absolute:#DORV:_IVS">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#DORV"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#DORV:_TGA_type -->
+
+    <owl:Class rdf:about="urn:absolute:#DORV:_TGA_type">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#DORV"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#DORV:_TOF_type -->
+
+    <owl:Class rdf:about="urn:absolute:#DORV:_TOF_type">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#DORV"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#DORV:_VSD_type -->
+
+    <owl:Class rdf:about="urn:absolute:#DORV:_VSD_type">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#DORV"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#DORV:_Remote_VSD_(uncommitted_VSD) -->
+
+    <owl:Class rdf:about="urn:absolute:#DORV:_Remote_VSD_(uncommitted_VSD)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#DORV"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#DORV_and_AVSD_(AV_Canal) -->
+
+    <owl:Class rdf:about="urn:absolute:#DORV_and_AVSD_(AV_Canal)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#DORV"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Diaphragm_disease:_Other -->
+
+    <owl:Class rdf:about="urn:absolute:#Diaphragm_disease:_Other">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Thoracic_and_Mediastinal_Disease"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Ebstein&apos;s_anomaly -->
+
+    <owl:Class rdf:about="urn:absolute:#Ebstein&apos;s_anomaly">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Right_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Esophageal_disease:_Benign -->
+
+    <owl:Class rdf:about="urn:absolute:#Esophageal_disease:_Benign">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Thoracic_and_Mediastinal_Disease"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Esophageal_disease:_Malignant -->
+
+    <owl:Class rdf:about="urn:absolute:#Esophageal_disease:_Malignant">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Thoracic_and_Mediastinal_Disease"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Hypoplastic_left_heart_syndrome_(HLHS) -->
+
+    <owl:Class rdf:about="urn:absolute:#Hypoplastic_left_heart_syndrome_(HLHS)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Left_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Interrupted_aortic_arch_and_AP_window_(aortopulmonary_window) -->
+
+    <owl:Class rdf:about="urn:absolute:#Interrupted_aortic_arch_and_AP_window_(aortopulmonary_window)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Thoracic_Arteries_and_Veins"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Lung_disease:_Benign -->
+
+    <owl:Class rdf:about="urn:absolute:#Lung_disease:_Benign">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Thoracic_and_Mediastinal_Disease"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Lung_disease:_Malignant -->
+
+    <owl:Class rdf:about="urn:absolute:#Lung_disease:_Malignant">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Thoracic_and_Mediastinal_Disease"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#MAPCA(s)_(major_aortopulmonary_collateral[s])_(without_PA-_VSD) -->
+
+    <owl:Class rdf:about="urn:absolute:#MAPCA(s)_(major_aortopulmonary_collateral[s])_(without_PA-_VSD)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Right_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Mediastinal_disease:_Benign -->
+
+    <owl:Class rdf:about="urn:absolute:#Mediastinal_disease:_Benign">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Thoracic_and_Mediastinal_Disease"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Mediastinal_disease:_Malignant -->
+
+    <owl:Class rdf:about="urn:absolute:#Mediastinal_disease:_Malignant">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Thoracic_and_Mediastinal_Disease"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Mitral_stenosis:_Subvalvar -->
+
+    <owl:Class rdf:about="urn:absolute:#Mitral_stenosis:_Subvalvar">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Left_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Mitral_stenosis:_Subvalvar-_Parachute -->
+
+    <owl:Class rdf:about="urn:absolute:#Mitral_stenosis:_Subvalvar-_Parachute">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Left_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Mitral_stenosis:_Supravalvar_mitral_ring -->
+
+    <owl:Class rdf:about="urn:absolute:#Mitral_stenosis:_Supravalvar_mitral_ring">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Left_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Mitral_stenosis:_Valvar -->
+
+    <owl:Class rdf:about="urn:absolute:#Mitral_stenosis:_Valvar">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Left_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Mitral_valve:_Other -->
+
+    <owl:Class rdf:about="urn:absolute:#Mitral_valve:_Other">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Left_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Partial_anomalous_pulmonary_venous_connection_(PAPVC) -->
+
+    <owl:Class rdf:about="urn:absolute:#Partial_anomalous_pulmonary_venous_connection_(PAPVC)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Pulmonary_Venous_Anomalies"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Partial_anomalous_pulmonary_venous_connection_(PAPVC):_scimitar -->
+
+    <owl:Class rdf:about="urn:absolute:#Partial_anomalous_pulmonary_venous_connection_(PAPVC):_scimitar">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Pulmonary_Venous_Anomalies"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pericardial_disease:_Other -->
+
+    <owl:Class rdf:about="urn:absolute:#Pericardial_disease:_Other">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Left_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Peripheral_vascular:_Other -->
+
+    <owl:Class rdf:about="urn:absolute:#Peripheral_vascular:_Other">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Miscellaneous"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pleural_disease:_Benign -->
+
+    <owl:Class rdf:about="urn:absolute:#Pleural_disease:_Benign">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Thoracic_and_Mediastinal_Disease"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pleural_disease:_Malignant -->
+
+    <owl:Class rdf:about="urn:absolute:#Pleural_disease:_Malignant">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Thoracic_and_Mediastinal_Disease"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pulmonary_artery:_Discontinuous -->
+
+    <owl:Class rdf:about="urn:absolute:#Pulmonary_artery:_Discontinuous">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Right_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pulmonary_artery_origin_from_ascending_aorta_(hemitruncus) -->
+
+    <owl:Class rdf:about="urn:absolute:#Pulmonary_artery_origin_from_ascending_aorta_(hemitruncus)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Septal_Defects"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pulmonary_artery_stenosis:_Branch:_Central_(within_the_hilar_bifurcation) -->
+
+    <owl:Class rdf:about="urn:absolute:#Pulmonary_artery_stenosis:_Branch:_Central_(within_the_hilar_bifurcation)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Right_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pulmonary_artery_stenosis:_Branch:_Peripheral_(at_or_beyond_the_hilar_bifurcation) -->
+
+    <owl:Class rdf:about="urn:absolute:#Pulmonary_artery_stenosis:_Branch:_Peripheral_(at_or_beyond_the_hilar_bifurcation)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Right_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pulmonary_artery_stenosis_(hypoplasia):_Main_(trunk) -->
+
+    <owl:Class rdf:about="urn:absolute:#Pulmonary_artery_stenosis_(hypoplasia):_Main_(trunk)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Right_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pulmonary_atresia:_IVS -->
+
+    <owl:Class rdf:about="urn:absolute:#Pulmonary_atresia:_IVS">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Right_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pulmonary_atresia:_VSD-MAPCA_(pseudotruncus) -->
+
+    <owl:Class rdf:about="urn:absolute:#Pulmonary_atresia:_VSD-MAPCA_(pseudotruncus)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Right_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pulmonary_atresia:_VSD_(Including_TOF-_PA) -->
+
+    <owl:Class rdf:about="urn:absolute:#Pulmonary_atresia:_VSD_(Including_TOF-_PA)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Right_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pulmonary_stenosis:_Subvalvar -->
+
+    <owl:Class rdf:about="urn:absolute:#Pulmonary_stenosis:_Subvalvar">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Right_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pulmonary_stenosis:_Valvar -->
+
+    <owl:Class rdf:about="urn:absolute:#Pulmonary_stenosis:_Valvar">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Right_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pulmonary_valve_disease:_Other -->
+
+    <owl:Class rdf:about="urn:absolute:#Pulmonary_valve_disease:_Other">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Right_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Pulmonary_vascular_obstructive_disease_(Eisenmenger&apos;s) -->
+
+    <owl:Class rdf:about="urn:absolute:#Pulmonary_vascular_obstructive_disease_(Eisenmenger&apos;s)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Miscellaneous"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Shone&apos;s_syndrome -->
+
+    <owl:Class rdf:about="urn:absolute:#Shone&apos;s_syndrome">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Left_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Single_Ventricle_and_Total_anomalous_pulmonary_venous_connection_(TAPVC) -->
+
+    <owl:Class rdf:about="urn:absolute:#Single_Ventricle_and_Total_anomalous_pulmonary_venous_connection_(TAPVC)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Single_Ventricle"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Single_ventricle:_DILV -->
+
+    <owl:Class rdf:about="urn:absolute:#Single_ventricle:_DILV">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Single_Ventricle"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Single_ventricle:_DIRV -->
+
+    <owl:Class rdf:about="urn:absolute:#Single_ventricle:_DIRV">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Single_Ventricle"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Single_ventricle:_Heterotaxia_syndrome -->
+
+    <owl:Class rdf:about="urn:absolute:#Single_ventricle:_Heterotaxia_syndrome">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Single_Ventricle"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Single_ventricle:_Mitral_atresia -->
+
+    <owl:Class rdf:about="urn:absolute:#Single_ventricle:_Mitral_atresia">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Single_Ventricle"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Single_ventricle:_Other -->
+
+    <owl:Class rdf:about="urn:absolute:#Single_ventricle:_Other">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Single_Ventricle"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Single_ventricle:_Tricuspid_atresia -->
+
+    <owl:Class rdf:about="urn:absolute:#Single_ventricle:_Tricuspid_atresia">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Single_Ventricle"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Single_ventricle:_Unbalanced_AV_canal -->
+
+    <owl:Class rdf:about="urn:absolute:#Single_ventricle:_Unbalanced_AV_canal">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Single_Ventricle"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Status_post_transplant:_Heart -->
+
+    <owl:Class rdf:about="urn:absolute:#Status_post_transplant:_Heart">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Miscellaneous"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Status_post_transplant:_Heart_and_lung -->
+
+    <owl:Class rdf:about="urn:absolute:#Status_post_transplant:_Heart_and_lung">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Miscellaneous"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Status_post_transplant:_Lung -->
+
+    <owl:Class rdf:about="urn:absolute:#Status_post_transplant:_Lung">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Miscellaneous"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#TGA:_IVS -->
+
+    <owl:Class rdf:about="urn:absolute:#TGA:_IVS">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Transposition_of_the_Great_Arteries"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#TGA:_IVS-LVOTO -->
+
+    <owl:Class rdf:about="urn:absolute:#TGA:_IVS-LVOTO">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Transposition_of_the_Great_Arteries"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#TGA:_VSD -->
+
+    <owl:Class rdf:about="urn:absolute:#TGA:_VSD">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Transposition_of_the_Great_Arteries"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#TGA:_VSD-LVOTO -->
+
+    <owl:Class rdf:about="urn:absolute:#TGA:_VSD-LVOTO">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Transposition_of_the_Great_Arteries"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#TOF:_Absent_pulmonary_valve -->
+
+    <owl:Class rdf:about="urn:absolute:#TOF:_Absent_pulmonary_valve">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Right_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#TOF:_Pulmonary_stenosis -->
+
+    <owl:Class rdf:about="urn:absolute:#TOF:_Pulmonary_stenosis">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Right_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#TOF:_AVC_(AVSD) -->
+
+    <owl:Class rdf:about="urn:absolute:#TOF:_AVC_(AVSD)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Right_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Thoracic_and/or_mediastinal:_Other -->
+
+    <owl:Class rdf:about="urn:absolute:#Thoracic_and/or_mediastinal:_Other">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Miscellaneous"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Total_anomalous_pulmonary_venous_connection_(TAPVC):_Type_1_(supracardiac) -->
+
+    <owl:Class rdf:about="urn:absolute:#Total_anomalous_pulmonary_venous_connection_(TAPVC):_Type_1_(supracardiac)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Pulmonary_Venous_Anomalies"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Total_anomalous_pulmonary_venous_connection_(TAPVC):_Type_2_(cardiac) -->
+
+    <owl:Class rdf:about="urn:absolute:#Total_anomalous_pulmonary_venous_connection_(TAPVC):_Type_2_(cardiac)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Pulmonary_Venous_Anomalies"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Total_anomalous_pulmonary_venous_connection_(TAPVC):_Type_3_(infracardiac) -->
+
+    <owl:Class rdf:about="urn:absolute:#Total_anomalous_pulmonary_venous_connection_(TAPVC):_Type_3_(infracardiac)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Pulmonary_Venous_Anomalies"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Total_anomalous_pulmonary_venous_connection_(TAPVC):_Type_4_(mixed) -->
+
+    <owl:Class rdf:about="urn:absolute:#Total_anomalous_pulmonary_venous_connection_(TAPVC):_Type_4_(mixed)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Pulmonary_Venous_Anomalies"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Tricuspid_regurgitation:_non-Ebstein&apos;s_related -->
+
+    <owl:Class rdf:about="urn:absolute:#Tricuspid_regurgitation:_non-Ebstein&apos;s_related">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Right_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#Tricuspid_valve_disease:_Other -->
+
+    <owl:Class rdf:about="urn:absolute:#Tricuspid_valve_disease:_Other">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Right_Heart_Lesions"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#VSD:_Multiple -->
+
+    <owl:Class rdf:about="urn:absolute:#VSD:_Multiple">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Septal_Defects"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#VSD:_Type:_Gerbode_type_(LV-RA_communication) -->
+
+    <owl:Class rdf:about="urn:absolute:#VSD:_Type:_Gerbode_type_(LV-RA_communication)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Septal_Defects"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#VSD:_Type_1_(Subarterial)_(Supracristal)_(Conal_septal_defect)_(Infundibular) -->
+
+    <owl:Class rdf:about="urn:absolute:#VSD:_Type_1_(Subarterial)_(Supracristal)_(Conal_septal_defect)_(Infundibular)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Septal_Defects"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#VSD:_Type_2_(Perimembranous)_(Paramembranous)_(Conoventricular) -->
+
+    <owl:Class rdf:about="urn:absolute:#VSD:_Type_2_(Perimembranous)_(Paramembranous)_(Conoventricular)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Septal_Defects"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#VSD:_Type_3_(Inlet)_(AV_canal_type) -->
+
+    <owl:Class rdf:about="urn:absolute:#VSD:_Type_3_(Inlet)_(AV_canal_type)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Septal_Defects"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#VSD:_Type_4_(Muscular) -->
+
+    <owl:Class rdf:about="urn:absolute:#VSD:_Type_4_(Muscular)">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Septal_Defects"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#VSD_+_Aortic_arch_hypoplasia -->
+
+    <owl:Class rdf:about="urn:absolute:#VSD_+_Aortic_arch_hypoplasia">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Thoracic_Arteries_and_Veins"/>
+    </owl:Class>
+
+
+
+    <!-- urn:absolute:#VSD_+_Coarctation_of_aorta -->
+
+    <owl:Class rdf:about="urn:absolute:#VSD_+_Coarctation_of_aorta">
+        <rdfs:subClassOf rdf:resource="urn:absolute:#Thoracic_Arteries_and_Veins"/>
+    </owl:Class>
+
+
+
+    <!--
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // General axioms
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="urn:absolute:#Airway_disease"/>
+            <rdf:Description rdf:about="urn:absolute:#Chylothorax"/>
+            <rdf:Description rdf:about="urn:absolute:#Diaphragm_paralysis"/>
+            <rdf:Description rdf:about="urn:absolute:#Empyema"/>
+            <rdf:Description rdf:about="urn:absolute:#Mediastinal_disease"/>
+            <rdf:Description rdf:about="urn:absolute:#Pectus"/>
+            <rdf:Description rdf:about="urn:absolute:#Pleural_effusion"/>
+            <rdf:Description rdf:about="urn:absolute:#Pneumothorax"/>
+            <rdf:Description rdf:about="urn:absolute:#Tracheal_stenosis"/>
+            <rdf:Description rdf:about="urn:absolute:#Diaphragm_disease:_Other"/>
+            <rdf:Description rdf:about="urn:absolute:#Esophageal_disease:_Benign"/>
+            <rdf:Description rdf:about="urn:absolute:#Esophageal_disease:_Malignant"/>
+            <rdf:Description rdf:about="urn:absolute:#Lung_disease:_Benign"/>
+            <rdf:Description rdf:about="urn:absolute:#Lung_disease:_Malignant"/>
+            <rdf:Description rdf:about="urn:absolute:#Mediastinal_disease:_Benign"/>
+            <rdf:Description rdf:about="urn:absolute:#Mediastinal_disease:_Malignant"/>
+            <rdf:Description rdf:about="urn:absolute:#Pleural_disease:_Benign"/>
+            <rdf:Description rdf:about="urn:absolute:#Pleural_disease:_Malignant"/>
+        </owl:members>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="urn:absolute:#Aortic_arch_hypoplasia"/>
+            <rdf:Description rdf:about="urn:absolute:#Aortic_dissection"/>
+            <rdf:Description rdf:about="urn:absolute:#Coarctation_of_aorta"/>
+            <rdf:Description rdf:about="urn:absolute:#Interrupted_aortic_arch"/>
+            <rdf:Description rdf:about="urn:absolute:#Interrupted_aortic_arch_and_VSD"/>
+            <rdf:Description rdf:about="urn:absolute:#Patent_ductus_arteriosus"/>
+            <rdf:Description rdf:about="urn:absolute:#Pulmonary_artery_sling"/>
+            <rdf:Description rdf:about="urn:absolute:#Vascular_ring"/>
+            <rdf:Description rdf:about="urn:absolute:#Aortic_aneurysm_(including_pseudoaneurysm)"/>
+            <rdf:Description rdf:about="urn:absolute:#Coronary_artery_anomaly:_Aneurysm"/>
+            <rdf:Description rdf:about="urn:absolute:#Coronary_artery_anomaly:_Fistula"/>
+            <rdf:Description rdf:about="urn:absolute:#Coronary_artery_anomaly:_Other"/>
+            <rdf:Description rdf:about="urn:absolute:#Coronary_artery_anomaly:_Anomalous_aortic_origin_of_coronary_artery_from_aorta_(AAOCA)"/>
+            <rdf:Description rdf:about="urn:absolute:#Coronary_artery_anomaly:_Anomalous_pulmonary_origin_(includes_ALCAPA)"/>
+            <rdf:Description rdf:about="urn:absolute:#Interrupted_aortic_arch_and_AP_window_(aortopulmonary_window)"/>
+            <rdf:Description rdf:about="urn:absolute:#VSD_+_Aortic_arch_hypoplasia"/>
+            <rdf:Description rdf:about="urn:absolute:#VSD_+_Coarctation_of_aorta"/>
+        </owl:members>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="urn:absolute:#Aortic_insufficiency"/>
+            <rdf:Description rdf:about="urn:absolute:#Aortic_insufficiency_and_aortic_stenosis"/>
+            <rdf:Description rdf:about="urn:absolute:#Aortic_valve_atresia"/>
+            <rdf:Description rdf:about="urn:absolute:#LV_to_aorta_tunnel"/>
+            <rdf:Description rdf:about="urn:absolute:#Mitral_regurgitation"/>
+            <rdf:Description rdf:about="urn:absolute:#Mitral_regurgitation_and_mitral_stenosis"/>
+            <rdf:Description rdf:about="urn:absolute:#Mitral_stenosis"/>
+            <rdf:Description rdf:about="urn:absolute:#Pericardial_effusion"/>
+            <rdf:Description rdf:about="urn:absolute:#Pericarditis"/>
+            <rdf:Description rdf:about="urn:absolute:#Sinus_of_Valsalva_aneurysm"/>
+            <rdf:Description rdf:about="urn:absolute:#Aortic_stenosis:_Subvalvar"/>
+            <rdf:Description rdf:about="urn:absolute:#Aortic_stenosis:_Supravalvar"/>
+            <rdf:Description rdf:about="urn:absolute:#Aortic_stenosis:_Valvar"/>
+            <rdf:Description rdf:about="urn:absolute:#Aortic_valve:_Other"/>
+            <rdf:Description rdf:about="urn:absolute:#Cardiomyopathy:_End-stage_congenital_heart_disease"/>
+            <rdf:Description rdf:about="urn:absolute:#Cardiomyopathy_(including_dilated;_restrictive;_and_hypertrophic)"/>
+            <rdf:Description rdf:about="urn:absolute:#Hypoplastic_left_heart_syndrome_(HLHS)"/>
+            <rdf:Description rdf:about="urn:absolute:#Mitral_stenosis:_Subvalvar"/>
+            <rdf:Description rdf:about="urn:absolute:#Mitral_stenosis:_Subvalvar-_Parachute"/>
+            <rdf:Description rdf:about="urn:absolute:#Mitral_stenosis:_Supravalvar_mitral_ring"/>
+            <rdf:Description rdf:about="urn:absolute:#Mitral_stenosis:_Valvar"/>
+            <rdf:Description rdf:about="urn:absolute:#Mitral_valve:_Other"/>
+            <rdf:Description rdf:about="urn:absolute:#Pericardial_disease:_Other"/>
+            <rdf:Description rdf:about="urn:absolute:#Shone&apos;s_syndrome"/>
+        </owl:members>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="urn:absolute:#Arrhythmia"/>
+            <rdf:Description rdf:about="urn:absolute:#Arrhythmia:_Atrial"/>
+            <rdf:Description rdf:about="urn:absolute:#Arrhythmia:_Heart_block"/>
+            <rdf:Description rdf:about="urn:absolute:#Arrhythmia:_Junctional"/>
+            <rdf:Description rdf:about="urn:absolute:#Arrhythmia:_Ventricular"/>
+            <rdf:Description rdf:about="urn:absolute:#Arrhythmia:_Heart_block:_Acquired"/>
+            <rdf:Description rdf:about="urn:absolute:#Arrhythmia:_Heart_block:_Congenital"/>
+            <rdf:Description rdf:about="urn:absolute:#Arrhythmia:_Pacemaker:_Indication_for_replacement"/>
+        </owl:members>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="urn:absolute:#Cardiac_tumor"/>
+            <rdf:Description rdf:about="urn:absolute:#Dextrocardia"/>
+            <rdf:Description rdf:about="urn:absolute:#Endocarditis"/>
+            <rdf:Description rdf:about="urn:absolute:#Hypoplastic_LV"/>
+            <rdf:Description rdf:about="urn:absolute:#Hypoplastic_RV"/>
+            <rdf:Description rdf:about="urn:absolute:#Levocardia"/>
+            <rdf:Description rdf:about="urn:absolute:#Meconium_aspiration"/>
+            <rdf:Description rdf:about="urn:absolute:#Mediastinitis"/>
+            <rdf:Description rdf:about="urn:absolute:#Mesocardia"/>
+            <rdf:Description rdf:about="urn:absolute:#Myocardial_infarction"/>
+            <rdf:Description rdf:about="urn:absolute:#Normal_heart"/>
+            <rdf:Description rdf:about="urn:absolute:#Other"/>
+            <rdf:Description rdf:about="urn:absolute:#Persistent_fetal_circulation"/>
+            <rdf:Description rdf:about="urn:absolute:#Postoperative_bleeding"/>
+            <rdf:Description rdf:about="urn:absolute:#Primary_pulmonary_hypertension"/>
+            <rdf:Description rdf:about="urn:absolute:#Prosthetic_valve_failure"/>
+            <rdf:Description rdf:about="urn:absolute:#Pulmonary_AV_fistula"/>
+            <rdf:Description rdf:about="urn:absolute:#Pulmonary_embolism"/>
+            <rdf:Description rdf:about="urn:absolute:#Pulmonary_vascular_obstructive_disease"/>
+            <rdf:Description rdf:about="urn:absolute:#Rheumatic_heart_disease"/>
+            <rdf:Description rdf:about="urn:absolute:#Situs_inversusÿ"/>
+            <rdf:Description rdf:about="urn:absolute:#Aneurysm:_Other"/>
+            <rdf:Description rdf:about="urn:absolute:#Aneurysm:_Pulmonary_artery"/>
+            <rdf:Description rdf:about="urn:absolute:#Aneurysm:_Ventricular:_Left_(including_pseudoaneurysm)"/>
+            <rdf:Description rdf:about="urn:absolute:#Aneurysm:_Ventricular:_Right_(including_pseudoaneurysm)"/>
+            <rdf:Description rdf:about="urn:absolute:#Atrial_Isomerism:_Left"/>
+            <rdf:Description rdf:about="urn:absolute:#Atrial_Isomerism:_Right"/>
+            <rdf:Description rdf:about="urn:absolute:#Cardiac:_Other"/>
+            <rdf:Description rdf:about="urn:absolute:#Peripheral_vascular:_Other"/>
+            <rdf:Description rdf:about="urn:absolute:#Pulmonary_vascular_obstructive_disease_(Eisenmenger&apos;s)"/>
+            <rdf:Description rdf:about="urn:absolute:#Status_post_transplant:_Heart"/>
+            <rdf:Description rdf:about="urn:absolute:#Status_post_transplant:_Heart_and_lung"/>
+            <rdf:Description rdf:about="urn:absolute:#Status_post_transplant:_Lung"/>
+            <rdf:Description rdf:about="urn:absolute:#Thoracic_and/or_mediastinal:_Other"/>
+        </owl:members>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="urn:absolute:#Congenitally_corrected_TGA"/>
+            <rdf:Description rdf:about="urn:absolute:#Congenitally_corrected_TGA:_IVS"/>
+            <rdf:Description rdf:about="urn:absolute:#Congenitally_corrected_TGA:_IVS-LVOTO"/>
+            <rdf:Description rdf:about="urn:absolute:#Congenitally_corrected_TGA:_VSD"/>
+            <rdf:Description rdf:about="urn:absolute:#Congenitally_corrected_TGA:_VSD-LVOTO"/>
+            <rdf:Description rdf:about="urn:absolute:#TGA:_IVS"/>
+            <rdf:Description rdf:about="urn:absolute:#TGA:_IVS-LVOTO"/>
+            <rdf:Description rdf:about="urn:absolute:#TGA:_VSD"/>
+            <rdf:Description rdf:about="urn:absolute:#TGA:_VSD-LVOTO"/>
+        </owl:members>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="urn:absolute:#Cor_Triatriatum"/>
+            <rdf:Description rdf:about="urn:absolute:#DOLV"/>
+            <rdf:Description rdf:about="urn:absolute:#DORV"/>
+            <rdf:Description rdf:about="urn:absolute:#Electrophysiologic"/>
+            <rdf:Description rdf:about="urn:absolute:#Left_Heart_Lesions"/>
+            <rdf:Description rdf:about="urn:absolute:#Miscellaneous"/>
+            <rdf:Description rdf:about="urn:absolute:#Pulmonary_Venous_Anomalies"/>
+            <rdf:Description rdf:about="urn:absolute:#Pulmonary_Venous_Stenosis"/>
+            <rdf:Description rdf:about="urn:absolute:#Right_Heart_Lesions"/>
+            <rdf:Description rdf:about="urn:absolute:#Septal_Defects"/>
+            <rdf:Description rdf:about="urn:absolute:#Shunt_failure"/>
+            <rdf:Description rdf:about="urn:absolute:#Single_Ventricle"/>
+            <rdf:Description rdf:about="urn:absolute:#Systemic_Venous_Anomalies"/>
+            <rdf:Description rdf:about="urn:absolute:#Thoracic_Arteries_and_Veins"/>
+            <rdf:Description rdf:about="urn:absolute:#Thoracic_and_Mediastinal_Disease"/>
+            <rdf:Description rdf:about="urn:absolute:#Transposition_of_the_Great_Arteries"/>
+        </owl:members>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="urn:absolute:#DCRV"/>
+            <rdf:Description rdf:about="urn:absolute:#Pulmonary_atresia"/>
+            <rdf:Description rdf:about="urn:absolute:#Pulmonary_insufficiency"/>
+            <rdf:Description rdf:about="urn:absolute:#Pulmonary_insufficiency_and_pulmonary_stenosis"/>
+            <rdf:Description rdf:about="urn:absolute:#TOF"/>
+            <rdf:Description rdf:about="urn:absolute:#Tricuspid_regurgitation_and_tricuspid_stenosis"/>
+            <rdf:Description rdf:about="urn:absolute:#Tricuspid_stenosis"/>
+            <rdf:Description rdf:about="urn:absolute:#Ebstein&apos;s_anomaly"/>
+            <rdf:Description rdf:about="urn:absolute:#MAPCA(s)_(major_aortopulmonary_collateral[s])_(without_PA-_VSD)"/>
+            <rdf:Description rdf:about="urn:absolute:#Pulmonary_artery:_Discontinuous"/>
+            <rdf:Description rdf:about="urn:absolute:#Pulmonary_artery_stenosis:_Branch:_Central_(within_the_hilar_bifurcation)"/>
+            <rdf:Description rdf:about="urn:absolute:#Pulmonary_artery_stenosis:_Branch:_Peripheral_(at_or_beyond_the_hilar_bifurcation)"/>
+            <rdf:Description rdf:about="urn:absolute:#Pulmonary_artery_stenosis_(hypoplasia):_Main_(trunk)"/>
+            <rdf:Description rdf:about="urn:absolute:#Pulmonary_atresia:_IVS"/>
+            <rdf:Description rdf:about="urn:absolute:#Pulmonary_atresia:_VSD-MAPCA_(pseudotruncus)"/>
+            <rdf:Description rdf:about="urn:absolute:#Pulmonary_atresia:_VSD_(Including_TOF-_PA)"/>
+            <rdf:Description rdf:about="urn:absolute:#Pulmonary_stenosis:_Subvalvar"/>
+            <rdf:Description rdf:about="urn:absolute:#Pulmonary_stenosis:_Valvar"/>
+            <rdf:Description rdf:about="urn:absolute:#Pulmonary_valve_disease:_Other"/>
+            <rdf:Description rdf:about="urn:absolute:#TOF:_Absent_pulmonary_valve"/>
+            <rdf:Description rdf:about="urn:absolute:#TOF:_Pulmonary_stenosis"/>
+            <rdf:Description rdf:about="urn:absolute:#TOF:_AVC_(AVSD)"/>
+            <rdf:Description rdf:about="urn:absolute:#Tricuspid_regurgitation:_non-Ebstein&apos;s_related"/>
+            <rdf:Description rdf:about="urn:absolute:#Tricuspid_valve_disease:_Other"/>
+        </owl:members>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="urn:absolute:#PFO"/>
+            <rdf:Description rdf:about="urn:absolute:#Truncal_valve_insufficiency"/>
+            <rdf:Description rdf:about="urn:absolute:#Truncus_arteriosus"/>
+            <rdf:Description rdf:about="urn:absolute:#Truncus_arteriosus_and_Interrupted_aortic_arch"/>
+            <rdf:Description rdf:about="urn:absolute:#AP_window_(aortopulmonary_window)"/>
+            <rdf:Description rdf:about="urn:absolute:#ASD:_Coronary_sinus"/>
+            <rdf:Description rdf:about="urn:absolute:#ASD:_Secundum"/>
+            <rdf:Description rdf:about="urn:absolute:#ASD:_Sinus_venosus"/>
+            <rdf:Description rdf:about="urn:absolute:#ASD:_Common_atrium_(single_atrium)"/>
+            <rdf:Description rdf:about="urn:absolute:#AVC_(AVSD):_Complete_CAVSD"/>
+            <rdf:Description rdf:about="urn:absolute:#AVC_(AVSD):_Intermediate_(transitional)"/>
+            <rdf:Description rdf:about="urn:absolute:#AVC_(AVSD):_Partial_(incomplete)_(PAVSD)_(ASD;_primum)"/>
+            <rdf:Description rdf:about="urn:absolute:#Pulmonary_artery_origin_from_ascending_aorta_(hemitruncus)"/>
+            <rdf:Description rdf:about="urn:absolute:#VSD:_Multiple"/>
+            <rdf:Description rdf:about="urn:absolute:#VSD:_Type:_Gerbode_type_(LV-RA_communication)"/>
+            <rdf:Description rdf:about="urn:absolute:#VSD:_Type_1_(Subarterial)_(Supracristal)_(Conal_septal_defect)_(Infundibular)"/>
+            <rdf:Description rdf:about="urn:absolute:#VSD:_Type_2_(Perimembranous)_(Paramembranous)_(Conoventricular)"/>
+            <rdf:Description rdf:about="urn:absolute:#VSD:_Type_3_(Inlet)_(AV_canal_type)"/>
+            <rdf:Description rdf:about="urn:absolute:#VSD:_Type_4_(Muscular)"/>
+        </owl:members>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="urn:absolute:#DORV:_IVS"/>
+            <rdf:Description rdf:about="urn:absolute:#DORV:_TGA_type"/>
+            <rdf:Description rdf:about="urn:absolute:#DORV:_TOF_type"/>
+            <rdf:Description rdf:about="urn:absolute:#DORV:_VSD_type"/>
+            <rdf:Description rdf:about="urn:absolute:#DORV:_Remote_VSD_(uncommitted_VSD)"/>
+            <rdf:Description rdf:about="urn:absolute:#DORV_and_AVSD_(AV_Canal)"/>
+        </owl:members>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="urn:absolute:#Partial_anomalous_pulmonary_venous_connection_(PAPVC)"/>
+            <rdf:Description rdf:about="urn:absolute:#Partial_anomalous_pulmonary_venous_connection_(PAPVC):_scimitar"/>
+            <rdf:Description rdf:about="urn:absolute:#Total_anomalous_pulmonary_venous_connection_(TAPVC):_Type_1_(supracardiac)"/>
+            <rdf:Description rdf:about="urn:absolute:#Total_anomalous_pulmonary_venous_connection_(TAPVC):_Type_2_(cardiac)"/>
+            <rdf:Description rdf:about="urn:absolute:#Total_anomalous_pulmonary_venous_connection_(TAPVC):_Type_3_(infracardiac)"/>
+            <rdf:Description rdf:about="urn:absolute:#Total_anomalous_pulmonary_venous_connection_(TAPVC):_Type_4_(mixed)"/>
+        </owl:members>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="urn:absolute:#Single_Ventricle_and_Total_anomalous_pulmonary_venous_connection_(TAPVC)"/>
+            <rdf:Description rdf:about="urn:absolute:#Single_ventricle:_DILV"/>
+            <rdf:Description rdf:about="urn:absolute:#Single_ventricle:_DIRV"/>
+            <rdf:Description rdf:about="urn:absolute:#Single_ventricle:_Heterotaxia_syndrome"/>
+            <rdf:Description rdf:about="urn:absolute:#Single_ventricle:_Mitral_atresia"/>
+            <rdf:Description rdf:about="urn:absolute:#Single_ventricle:_Other"/>
+            <rdf:Description rdf:about="urn:absolute:#Single_ventricle:_Tricuspid_atresia"/>
+            <rdf:Description rdf:about="urn:absolute:#Single_ventricle:_Unbalanced_AV_canal"/>
+        </owl:members>
+    </rdf:Description>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 4.5.9.2019-02-01T07:24:44Z) https://github.com/owlcs/owlapi -->
+

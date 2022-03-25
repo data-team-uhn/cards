@@ -46,30 +46,6 @@
 			<type>String</type>
 		</property>
 		<node>
-			<name>namefirstandlast</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Name</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>First and Last</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-		</node>
-		<node>
 			<name>dateoffirstdeviceimplantforthispatient</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
@@ -121,30 +97,6 @@
 			<value>Demographics</value>
 			<type>String</type>
 		</property>
-		<node>
-			<name>birthdate</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Birth Date</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>dateFormat</name>
-				<value>MM/DD/yyyy</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>date</value>
-				<type>String</type>
-			</property>
-		</node>
 		<node>
 			<name>consentstatus</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
@@ -333,58 +285,6 @@
 			</property>
 		</node>
 		<node>
-			<name>gender</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Gender</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>male</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>male</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>male</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>female</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>female</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>female</value>
-					<type>String</type>
-				</property>
-			</node>
-		</node>
-		<node>
 			<name>height</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
@@ -398,13 +298,13 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>cm</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>unitOfMeasurement</name>
+				<value>cm</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -413,7 +313,7 @@
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>weight</value>
+				<value>Weight</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -422,13 +322,13 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>kg</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>unitOfMeasurement</name>
+				<value>kg</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -446,13 +346,13 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>m2</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>unitOfMeasurement</name>
+				<value>m2</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -461,7 +361,7 @@
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>ethnicity</value>
+				<value>Ethnicity</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -630,30 +530,6 @@
 				</property>
 			</node>
 		</node>
-		<node>
-			<name>hospitaladmissiondate</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Hospital Admission Date</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>dateFormat</name>
-				<value>MM/DD/yyyy</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>date</value>
-				<type>String</type>
-			</property>
-		</node>
 	</node>
 	<node>
 		<name>Primarydiagnosis</name>
@@ -687,16 +563,16 @@
 				<type>String</type>
 			</property>
 			<node>
-				<name><![CDATA[CongenitalHeartDiseasecompleteitems10.1&10.2]]></name>
+				<name>CongenitalHeartDisease</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value><![CDATA[Congenital Heart Disease (complete items 10.1 & 10.2)]]></value>
+					<value>Congenital Heart Disease</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value><![CDATA[Congenital Heart Disease (complete items 10.1 & 10.2)]]></value>
+					<value>Congenital Heart Disease</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -758,107 +634,197 @@
 			</node>
 		</node>
 		<node>
-			<name>specifytypeofcongenitalheartdisease</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Specify type of congenital heart disease</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
+			<name>specifytypeofcongenitalheartdiseaseSection</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>UniventricularHeartDisease</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>specifytypeofcongenitalheartdisease</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Univentricular Heart Disease</value>
+					<name>text</name>
+					<value>Specify type of congenital heart disease</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>Univentricular Heart Disease</value>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>UniventricularHeartDisease</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Univentricular Heart Disease</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Univentricular Heart Disease</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>BiventricularHeartDisease</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Biventricular Heart Disease</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Biventricular Heart Disease</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 			<node>
-				<name>BiventricularHeartDisease</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>condition</name>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Biventricular Heart Disease</value>
+					<name>comparator</name>
+					<value>=</value>
 					<type>String</type>
 				</property>
-				<property>
-					<name>value</name>
-					<value>Biventricular Heart Disease</value>
-					<type>String</type>
-				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>primarycardiacdiagnosis</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>Congenital Heart Disease</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
 			</node>
 		</node>
 		<node>
-			<name>specifytypeofcirculation</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Specify type of circulation</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list+input</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
+			<name>specifytypeofcirculationSection</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>Systemicleftventricle</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>specifytypeofcirculation</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Systemic left ventricle</value>
+					<name>text</name>
+					<value>Specify type of circulation</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>Systemic left ventricle</value>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list+input</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>Systemicleftventricle</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Systemic left ventricle</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Systemic left ventricle</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Systemicrightventricle</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Systemic right ventricle</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Systemic right ventricle</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 			<node>
-				<name>Systemicrightventricle</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>condition</name>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Systemic right ventricle</value>
+					<name>comparator</name>
+					<value>=</value>
 					<type>String</type>
 				</property>
-				<property>
-					<name>value</name>
-					<value>Systemic right ventricle</value>
-					<type>String</type>
-				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>primarycardiacdiagnosis</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>Congenital Heart Disease</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
 			</node>
 		</node>
 	</node>
@@ -1382,6 +1348,34 @@
 				<value>1</value>
 				<type>Long</type>
 			</property>
+			<node>
+				<name>Yes</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Yes</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Yes</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>No</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>No</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>No</value>
+					<type>String</type>
+				</property>
+			</node>
 			<node>
 				<name>historyofcva</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
@@ -1944,6 +1938,11 @@
 				<value>decimal</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>days</value>
+				<type>String</type>
+			</property>
 		</node>
 		<node>
 			<name>numberofdaysfeverpresentin7dayspriortoimplant</name>
@@ -1961,6 +1960,11 @@
 			<property>
 				<name>dataType</name>
 				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>days</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -2303,6 +2307,11 @@
 				<value>decimal</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>days</value>
+				<type>String</type>
+			</property>
 		</node>
 		<node>
 			<name>vinotropetherapyagentsondayofimplantationcheckallthatapply</name>
@@ -2576,6 +2585,34 @@
 				<value>1</value>
 				<type>Long</type>
 			</property>
+			<node>
+				<name>Yes</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Yes</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Yes</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>No</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>No</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>No</value>
+					<type>String</type>
+				</property>
+			</node>
 			<node>
 				<name>cardiacresynchronizationtherapycrtpriortoimplant</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
@@ -2860,16 +2897,16 @@
 				</property>
 			</node>
 			<node>
-				<name>Notapplicable</name>
+				<name>NotApplicable</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Not applicable</value>
+					<value>Not Applicable</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Not applicable</value>
+					<value>Not Applicable</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2937,30 +2974,30 @@
 				<type>String</type>
 			</property>
 			<node>
-				<name>Notobtained</name>
+				<name>NotObtained</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Not obtained</value>
+					<value>Not Obtained</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Not obtained</value>
+					<value>Not Obtained</value>
 					<type>String</type>
 				</property>
 			</node>
 			<node>
-				<name>Notapplicable</name>
+				<name>NotApplicable</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Not applicable</value>
+					<value>Not Applicable</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Not applicable</value>
+					<value>Not Applicable</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -3042,16 +3079,16 @@
 				</property>
 			</node>
 			<node>
-				<name>Notapplicable</name>
+				<name>NotApplicable</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Not applicable</value>
+					<value>Not Applicable</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Not applicable</value>
+					<value>Not Applicable</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -3133,16 +3170,16 @@
 				</property>
 			</node>
 			<node>
-				<name>Notapplicable</name>
+				<name>NotApplicable</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Not applicable</value>
+					<value>Not Applicable</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Not applicable</value>
+					<value>Not Applicable</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -3323,16 +3360,16 @@
 				</property>
 			</node>
 			<node>
-				<name>Notapplicable</name>
+				<name>NotApplicable</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Not applicable</value>
+					<value>Not Applicable</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Not applicable</value>
+					<value>Not Applicable</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -4271,30 +4308,16 @@
 				</property>
 			</node>
 			<node>
-				<name>Hybrid-</name>
+				<name>Hybrid-Unoperated</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Hybrid /</value>
+					<value>Hybrid / Unoperated</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Hybrid /</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Unoperated</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Unoperated</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Unoperated</value>
+					<value>Hybrid / Unoperated</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -4473,13 +4496,13 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>mm</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>unitOfMeasurement</name>
+				<value>mm</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -4497,13 +4520,13 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>mm</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>unitOfMeasurement</name>
+				<value>mm</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -4703,6 +4726,67 @@
 				<value>1</value>
 				<type>Long</type>
 			</property>
+			<node>
+				<name>None</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>None</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>None</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>notApplicable</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>Repair</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Repair</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Repair</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Replacementwithtissuevalve</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Replacement with tissue valve</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Replacement with tissue valve</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Replacementwithmechanicalvalve</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Replacement with mechanical valve</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Replacement with mechanical valve</value>
+					<type>String</type>
+				</property>
+			</node>
 			<node>
 				<name>mitralvalverepair-replacement</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
@@ -4972,6 +5056,34 @@
 				<value>1</value>
 				<type>Long</type>
 			</property>
+			<node>
+				<name>Yes</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Yes</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Yes</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>No</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>No</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>No</value>
+					<type>String</type>
+				</property>
+			</node>
 			<node>
 				<name>lv-lathrombectomy</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
@@ -5844,16 +5956,16 @@
 				<type>String</type>
 			</property>
 			<node>
-				<name>EXCORspecifysizeinitemR-4.1</name>
+				<name>EXCORspecifysizebelow</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>EXCOR (specify size in item R-4.1)</value>
+					<value>EXCOR (specify size below)</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>EXCOR (specify size in item R-4.1)</value>
+					<value>EXCOR (specify size below)</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -5984,234 +6096,324 @@
 				</property>
 			</node>
 			<node>
-				<name>ImpellaspecifymodelinitemR-4.2</name>
+				<name>Impellaspecifymodelbelow</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Impella (specify model in item R-4.2)</value>
+					<value>Impella (specify model below)</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Impella (specify model in item R-4.2)</value>
+					<value>Impella (specify model below)</value>
 					<type>String</type>
 				</property>
 			</node>
 		</node>
 		<node>
-			<name>excorpediatricpumpsize2</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>EXCOR Pediatric Pump Size</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
+			<name>excorpediatricpumpsize2Section</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>10ml</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>excorpediatricpumpsize2</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>10ml</value>
+					<name>text</name>
+					<value>EXCOR Pediatric Pump Size</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>10ml</value>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>10ml</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>10ml</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>10ml</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>15ml</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>15ml</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>15ml</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>25ml</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>25ml</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>25ml</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>30ml</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>30ml</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>30ml</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>50ml</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>50ml</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>50ml</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>60ml</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>60ml</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>60ml</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 			<node>
-				<name>15ml</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>condition</name>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>15ml</value>
+					<name>comparator</name>
+					<value>=</value>
 					<type>String</type>
 				</property>
-				<property>
-					<name>value</name>
-					<value>15ml</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>25ml</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>25ml</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>25ml</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>30ml</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>30ml</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>30ml</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>50ml</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>50ml</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>50ml</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>60ml</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>60ml</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>60ml</value>
-					<type>String</type>
-				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>devicemodel2</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>EXCOR</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
 			</node>
 		</node>
 		<node>
-			<name>impellapumpmodel2</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Impella Pump Model</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
+			<name>impellapumpmodel2Section</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>Impella2.5</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>impellapumpmodel2</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Impella 2.5</value>
+					<name>text</name>
+					<value>Impella Pump Model</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>Impella 2.5</value>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>Impella2.5</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Impella 2.5</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Impella 2.5</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>ImpellaCP</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Impella CP</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Impella CP</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Impella5.0</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Impella 5.0</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Impella 5.0</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>ImpellaLD</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Impella LD</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Impella LD</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Impella5.5</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Impella 5.5</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Impella 5.5</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>ImpellaRP</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Impella RP</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Impella RP</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 			<node>
-				<name>ImpellaCP</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>condition</name>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Impella CP</value>
+					<name>comparator</name>
+					<value>=</value>
 					<type>String</type>
 				</property>
-				<property>
-					<name>value</name>
-					<value>Impella CP</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Impella5.0</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Impella 5.0</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Impella 5.0</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>ImpellaLD</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Impella LD</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Impella LD</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Impella5.5</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Impella 5.5</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Impella 5.5</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>ImpellaRP</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Impella RP</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Impella RP</value>
-					<type>String</type>
-				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>excorpediatricpumpsize2</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>Impella</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
 			</node>
 		</node>
 	</node>
@@ -6389,16 +6591,16 @@
 				<type>String</type>
 			</property>
 			<node>
-				<name>EXCORspecifysizeinitemS-4.1</name>
+				<name>EXCORspecifysizebelow</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>EXCOR (specify size in item S-4.1)</value>
+					<value>EXCOR (specify size below)</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>EXCOR (specify size in item S-4.1)</value>
+					<value>EXCOR (specify size below)</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -6529,234 +6731,324 @@
 				</property>
 			</node>
 			<node>
-				<name>ImpellaspecifymodelinitemS-4.2</name>
+				<name>Impellaspecifymodelbelow</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Impella (specify model in item S-4.2)</value>
+					<value>Impella (specify model below)</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Impella (specify model in item S-4.2)</value>
+					<value>Impella (specify model below)</value>
 					<type>String</type>
 				</property>
 			</node>
 		</node>
 		<node>
-			<name>excorpediatricpumpsize3</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>EXCOR Pediatric Pump Size</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
+			<name>excorpediatricpumpsize3Section</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>10ml</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>excorpediatricpumpsize3</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>10ml</value>
+					<name>text</name>
+					<value>EXCOR Pediatric Pump Size</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>10ml</value>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>10ml</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>10ml</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>10ml</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>15ml</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>15ml</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>15ml</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>25ml</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>25ml</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>25ml</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>30ml</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>30ml</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>30ml</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>50ml</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>50ml</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>50ml</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>60ml</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>60ml</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>60ml</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 			<node>
-				<name>15ml</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>condition</name>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>15ml</value>
+					<name>comparator</name>
+					<value>=</value>
 					<type>String</type>
 				</property>
-				<property>
-					<name>value</name>
-					<value>15ml</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>25ml</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>25ml</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>25ml</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>30ml</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>30ml</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>30ml</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>50ml</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>50ml</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>50ml</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>60ml</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>60ml</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>60ml</value>
-					<type>String</type>
-				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>devicemodel3</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>EXCOR</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
 			</node>
 		</node>
 		<node>
-			<name>impellapumpmodel3</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Impella Pump Model</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
+			<name>impellapumpmodel3Section</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>Impella2.5</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>impellapumpmodel3</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Impella 2.5</value>
+					<name>text</name>
+					<value>Impella Pump Model</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>Impella 2.5</value>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>Impella2.5</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Impella 2.5</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Impella 2.5</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>ImpellaCP</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Impella CP</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Impella CP</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Impella5.0</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Impella 5.0</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Impella 5.0</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>ImpellaLD</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Impella LD</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Impella LD</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Impella5.5</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Impella 5.5</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Impella 5.5</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>ImpellaRP</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Impella RP</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Impella RP</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 			<node>
-				<name>ImpellaCP</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>condition</name>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>Impella CP</value>
+					<name>comparator</name>
+					<value>=</value>
 					<type>String</type>
 				</property>
-				<property>
-					<name>value</name>
-					<value>Impella CP</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Impella5.0</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Impella 5.0</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Impella 5.0</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>ImpellaLD</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Impella LD</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Impella LD</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Impella5.5</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Impella 5.5</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Impella 5.5</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>ImpellaRP</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Impella RP</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Impella RP</value>
-					<type>String</type>
-				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>excorpediatricpumpsize3</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>Impella</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
 			</node>
 		</node>
 	</node>
@@ -6784,6 +7076,11 @@
 			<property>
 				<name>dataType</name>
 				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>%</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -6886,13 +7183,13 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>mmHG</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>unitOfMeasurement</name>
+				<value>mmHG</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -6962,13 +7259,13 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>mmHg</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>unitOfMeasurement</name>
+				<value>mmHg</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -7146,6 +7443,34 @@
 				<value>1</value>
 				<type>Long</type>
 			</property>
+			<node>
+				<name>Yes</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Yes</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Yes</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>No</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>No</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>No</value>
+					<type>String</type>
+				</property>
+			</node>
 			<node>
 				<name>isthereasupplentalshunttoincreasesaturation</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
@@ -8256,7 +8581,7 @@
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -8421,13 +8746,13 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>#days</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>unitOfMeasurement</name>
+				<value>days</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -8802,13 +9127,13 @@
 					<type>Long</type>
 				</property>
 				<property>
-					<name>unitOfMeasurement</name>
-					<value>U/ml</value>
+					<name>dataType</name>
+					<value>decimal</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>dataType</name>
-					<value>text</value>
+					<name>unitOfMeasurement</name>
+					<value>U/ml</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -8871,13 +9196,13 @@
 					<type>Long</type>
 				</property>
 				<property>
-					<name>unitOfMeasurement</name>
-					<value>U/ml</value>
+					<name>dataType</name>
+					<value>decimal</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>dataType</name>
-					<value>text</value>
+					<name>unitOfMeasurement</name>
+					<value>U/ml</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -8940,13 +9265,13 @@
 					<type>Long</type>
 				</property>
 				<property>
-					<name>unitOfMeasurement</name>
-					<value>sec</value>
+					<name>dataType</name>
+					<value>decimal</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>dataType</name>
-					<value>text</value>
+					<name>unitOfMeasurement</name>
+					<value>sec</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -9009,13 +9334,13 @@
 					<type>Long</type>
 				</property>
 				<property>
-					<name>unitOfMeasurement</name>
-					<value>sec</value>
+					<name>dataType</name>
+					<value>decimal</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>dataType</name>
-					<value>text</value>
+					<name>unitOfMeasurement</name>
+					<value>sec</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -9271,14 +9596,14 @@
 			</node>
 		</node>
 		<node>
-			<name>lowertargetu-mlSection</name>
+			<name>lowertarget3Section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>lowertargetu-ml</name>
+				<name>lowertarget3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Lower target U/ml</value>
+					<value>Lower target</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -9287,13 +9612,13 @@
 					<type>Long</type>
 				</property>
 				<property>
-					<name>unitOfMeasurement</name>
-					<value>U/ml</value>
+					<name>dataType</name>
+					<value>decimal</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>dataType</name>
-					<value>text</value>
+					<name>unitOfMeasurement</name>
+					<value>U/ml</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -9340,14 +9665,14 @@
 			</node>
 		</node>
 		<node>
-			<name>uppertargetu-mlSection</name>
+			<name>uppertarget3Section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>uppertargetu-ml</name>
+				<name>uppertarget3</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Upper target U/ml</value>
+					<value>Upper target</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -9356,13 +9681,13 @@
 					<type>Long</type>
 				</property>
 				<property>
-					<name>unitOfMeasurement</name>
-					<value>U/ml</value>
+					<name>dataType</name>
+					<value>decimal</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>dataType</name>
-					<value>text</value>
+					<name>unitOfMeasurement</name>
+					<value>U/ml</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -9409,29 +9734,29 @@
 			</node>
 		</node>
 		<node>
-			<name>lowertargetsecSection</name>
+			<name>lowertarget4Section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>lowertargetsec</name>
+				<name>lowertarget4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Lower target sec</value>
+					<value>Lower target</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>maxAnswers</name>
 					<value>1</value>
 					<type>Long</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>decimal</value>
+					<type>String</type>
 				</property>
 				<property>
 					<name>unitOfMeasurement</name>
 					<value>sec</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -9478,14 +9803,14 @@
 			</node>
 		</node>
 		<node>
-			<name>uppertargetsecSection</name>
+			<name>uppertarget4Section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>uppertargetsec</name>
+				<name>uppertarget4</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Upper target sec</value>
+					<value>Upper target</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -9494,13 +9819,13 @@
 					<type>Long</type>
 				</property>
 				<property>
-					<name>unitOfMeasurement</name>
-					<value>sec</value>
+					<name>dataType</name>
+					<value>decimal</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>dataType</name>
-					<value>text</value>
+					<name>unitOfMeasurement</name>
+					<value>sec</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -9712,18 +10037,18 @@
 				<type>Long</type>
 			</property>
 			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>unitOfMeasurement</name>
 				<value>INR</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
 		</node>
 		<node>
-			<name>lowertarget3</name>
+			<name>lowertarget5</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -9736,18 +10061,18 @@
 				<type>Long</type>
 			</property>
 			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>unitOfMeasurement</name>
 				<value>sec</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
 		</node>
 		<node>
-			<name>uppertarget3</name>
+			<name>uppertarget5</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -9760,13 +10085,13 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>sec</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>unitOfMeasurement</name>
+				<value>sec</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -9975,10 +10300,10 @@
 			</node>
 		</node>
 		<node>
-			<name>lowertarget4Section</name>
+			<name>lowertarget6Section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>lowertarget4</name>
+				<name>lowertarget6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
@@ -9991,13 +10316,13 @@
 					<type>Long</type>
 				</property>
 				<property>
-					<name>unitOfMeasurement</name>
-					<value>sec</value>
+					<name>dataType</name>
+					<value>decimal</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>dataType</name>
-					<value>text</value>
+					<name>unitOfMeasurement</name>
+					<value>sec</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -10044,10 +10369,10 @@
 			</node>
 		</node>
 		<node>
-			<name>uppertarget4Section</name>
+			<name>uppertarget6Section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>uppertarget4</name>
+				<name>uppertarget6</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
@@ -10060,13 +10385,13 @@
 					<type>Long</type>
 				</property>
 				<property>
-					<name>unitOfMeasurement</name>
-					<value>sec</value>
+					<name>dataType</name>
+					<value>decimal</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>dataType</name>
-					<value>text</value>
+					<name>unitOfMeasurement</name>
+					<value>sec</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -10113,10 +10438,10 @@
 			</node>
 		</node>
 		<node>
-			<name>lowertarget5Section</name>
+			<name>lowertarget7Section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>lowertarget5</name>
+				<name>lowertarget7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
@@ -10129,13 +10454,13 @@
 					<type>Long</type>
 				</property>
 				<property>
-					<name>unitOfMeasurement</name>
-					<value>sec</value>
+					<name>dataType</name>
+					<value>decimal</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>dataType</name>
-					<value>text</value>
+					<name>unitOfMeasurement</name>
+					<value>sec</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -10182,10 +10507,10 @@
 			</node>
 		</node>
 		<node>
-			<name>uppertarget5Section</name>
+			<name>uppertarget7Section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>uppertarget5</name>
+				<name>uppertarget7</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
@@ -10198,13 +10523,13 @@
 					<type>Long</type>
 				</property>
 				<property>
-					<name>unitOfMeasurement</name>
-					<value>sec</value>
+					<name>dataType</name>
+					<value>decimal</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>dataType</name>
-					<value>text</value>
+					<name>unitOfMeasurement</name>
+					<value>sec</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -10403,10 +10728,10 @@
 			</node>
 		</node>
 		<node>
-			<name>lowertarget6Section</name>
+			<name>lowertarget8Section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>lowertarget6</name>
+				<name>lowertarget8</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
@@ -10419,13 +10744,13 @@
 					<type>Long</type>
 				</property>
 				<property>
-					<name>unitOfMeasurement</name>
-					<value>sec</value>
+					<name>dataType</name>
+					<value>decimal</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>dataType</name>
-					<value>text</value>
+					<name>unitOfMeasurement</name>
+					<value>sec</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -10472,10 +10797,10 @@
 			</node>
 		</node>
 		<node>
-			<name>uppertarget6Section</name>
+			<name>uppertarget8Section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>uppertarget6</name>
+				<name>uppertarget8</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
@@ -10488,13 +10813,13 @@
 					<type>Long</type>
 				</property>
 				<property>
-					<name>unitOfMeasurement</name>
-					<value>sec</value>
+					<name>dataType</name>
+					<value>decimal</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>dataType</name>
-					<value>text</value>
+					<name>unitOfMeasurement</name>
+					<value>sec</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -10541,10 +10866,10 @@
 			</node>
 		</node>
 		<node>
-			<name>lowertarget7Section</name>
+			<name>lowertarget9Section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>lowertarget7</name>
+				<name>lowertarget9</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
@@ -10557,13 +10882,13 @@
 					<type>Long</type>
 				</property>
 				<property>
-					<name>unitOfMeasurement</name>
-					<value>sec</value>
+					<name>dataType</name>
+					<value>decimal</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>dataType</name>
-					<value>text</value>
+					<name>unitOfMeasurement</name>
+					<value>sec</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -10610,10 +10935,10 @@
 			</node>
 		</node>
 		<node>
-			<name>uppertarget7Section</name>
+			<name>uppertarget9Section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>uppertarget7</name>
+				<name>uppertarget9</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
@@ -10626,13 +10951,13 @@
 					<type>Long</type>
 				</property>
 				<property>
-					<name>unitOfMeasurement</name>
-					<value>sec</value>
+					<name>dataType</name>
+					<value>decimal</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>dataType</name>
-					<value>text</value>
+					<name>unitOfMeasurement</name>
+					<value>sec</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -11115,7 +11440,7 @@
 			</property>
 		</node>
 		<node>
-			<name>lowertarget8</name>
+			<name>lowertarget10</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -11134,7 +11459,7 @@
 			</property>
 		</node>
 		<node>
-			<name>uppertarget8</name>
+			<name>uppertarget10</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -12776,7 +13101,7 @@
 			</property>
 			<property>
 				<name>unitOfMeasurement</name>
-				<value>mmHg</value>
+				<value>vmmHg</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -12794,13 +13119,13 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>mmHg</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>unitOfMeasurement</name>
+				<value>mmHg</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -12852,13 +13177,13 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>BPM</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>unitOfMeasurement</name>
+				<value>BPM</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -13292,13 +13617,13 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>ml</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>unitOfMeasurement</name>
+				<value>ml</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -13316,13 +13641,13 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>BPM</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>unitOfMeasurement</name>
+				<value>BPM</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -13340,13 +13665,13 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>L/min</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>unitOfMeasurement</name>
+				<value>L/min</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -13369,13 +13694,13 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>L/min/m2</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>unitOfMeasurement</name>
+				<value>L/min/m2</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -13393,13 +13718,13 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>ml</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>unitOfMeasurement</name>
+				<value>ml</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -13417,13 +13742,13 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>BPM</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>unitOfMeasurement</name>
+				<value>BPM</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -13441,13 +13766,13 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>L/min</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>unitOfMeasurement</name>
+				<value>L/min</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -13470,13 +13795,13 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>L/min/m2</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>unitOfMeasurement</name>
+				<value>L/min/m2</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -13522,13 +13847,13 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>L/min</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>unitOfMeasurement</name>
+				<value>L/min</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -13551,13 +13876,13 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>L/min/m2</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>unitOfMeasurement</name>
+				<value>L/min/m2</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -13575,13 +13900,13 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>Watts</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>unitOfMeasurement</name>
+				<value>Watts</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -13789,7 +14114,7 @@
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -13892,13 +14217,13 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>L/min</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>unitOfMeasurement</name>
+				<value>L/min</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -13921,13 +14246,13 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>L/min/m2</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>unitOfMeasurement</name>
+				<value>L/min/m2</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -13945,13 +14270,13 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>Watts</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>unitOfMeasurement</name>
+				<value>Watts</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -14159,7 +14484,7 @@
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -14276,13 +14601,13 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>mmHg</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>unitOfMeasurement</name>
+				<value>mmHg</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -14300,13 +14625,13 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>mA</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>unitOfMeasurement</name>
+				<value>mA</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -14324,13 +14649,13 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>L/min</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>unitOfMeasurement</name>
+				<value>L/min</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -14372,13 +14697,13 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>mmHg</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>unitOfMeasurement</name>
+				<value>mmHg</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -14396,13 +14721,13 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>mA</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>unitOfMeasurement</name>
+				<value>mA</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -14420,13 +14745,13 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>L/min</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>unitOfMeasurement</name>
+				<value>L/min</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -14595,30 +14920,30 @@
 				</property>
 			</node>
 			<node>
-				<name>Medicationtherapyspecifyinitem3.1</name>
+				<name>Medicationtherapy</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Medication therapy (specify in item 3.1)</value>
+					<value>Medication therapy</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Medication therapy (specify in item 3.1)</value>
+					<value>Medication therapy</value>
 					<type>String</type>
 				</property>
 			</node>
 			<node>
-				<name>Surgicalinterventionspecifyinitem3.1</name>
+				<name>Surgicalintervention</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Surgical intervention (specify in item 3.1)</value>
+					<value>Surgical intervention</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Surgical intervention (specify in item 3.1)</value>
+					<value>Surgical intervention</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -14638,28 +14963,73 @@
 			</node>
 		</node>
 		<node>
-			<name>medications,surgicalinterventionorotherspecify</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Medications, Surgical intervention or other</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>specify</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
+			<name>medications,surgicalinterventionorotherspecifySection</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
+			<node>
+				<name>medications,surgicalinterventionorotherspecify</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Medications, Surgical intervention or other</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>specify</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>condition</name>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>treatment</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>Medication therapy" OR if previous_list = "Surgical intervention" OR if previous_list = "Other</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
 		</node>
 		<node>
 			<name>outcome</name>
@@ -15084,13 +15454,13 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>#days</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>unitOfMeasurement</name>
+				<value>days</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -15160,13 +15530,13 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>#days</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>unitOfMeasurement</name>
+				<value>days</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -15343,7 +15713,7 @@
 				</property>
 				<property>
 					<name>dataType</name>
-					<value>text</value>
+					<value>decimal</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -17253,13 +17623,13 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>K/uL</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>unitOfMeasurement</name>
+				<value>K/uL</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -17282,13 +17652,13 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>mg/dL</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>unitOfMeasurement</name>
+				<value>mg/dL</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -17365,7 +17735,7 @@
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>AT III[range: 0 – 150]</value>
+				<value>AT III</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -17374,13 +17744,23 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>%</value>
-				<type>String</type>
+				<name>minValue</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxValue</name>
+				<value>150</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>%</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -17432,13 +17812,13 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>U/ml</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>unitOfMeasurement</name>
+				<value>U/ml</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -17456,13 +17836,13 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>unitOfMeasurement</name>
-				<value>Seconds</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>unitOfMeasurement</name>
+				<value>Seconds</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -17616,6 +17996,62 @@
 				<value>1</value>
 				<type>Long</type>
 			</property>
+			<node>
+				<name>None0</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>None 0</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>None 0</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Mildbutnoimpactonfunction0.5</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Mild but no impact on function 0.5</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Mild but no impact on function 0.5</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Moderatewithsomefunctionallimitations1</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Moderate with some functional limitations 1</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Moderate with some functional limitations 1</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Severeorprofoundwithmissingfunction2</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Severe or profound with missing function 2</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Severe or profound with missing function 2</value>
+					<type>String</type>
+				</property>
+			</node>
 			<node>
 				<name>sensorimotordeficit-rightside</name>
 				<primaryNodeType>cards:Question</primaryNodeType>
@@ -18168,7 +18604,7 @@
 			</node>
 		</node>
 		<node>
-			<name>totalscoreoutof10</name>
+			<name>totalscoreoutof10range0-10</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
@@ -18186,8 +18622,18 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>minValue</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxValue</name>
+				<value>10</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -19146,16 +19592,16 @@
 				</property>
 			</node>
 			<node>
-				<name>support</name>
+				<name>Support</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>support</value>
+					<value>Support</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>support</value>
+					<value>Support</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -19315,30 +19761,16 @@
 				</property>
 			</node>
 			<node>
-				<name>InadequateCVsupport</name>
+				<name>InadequateCVsupportwithdeviceoperatingasintended-designed</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Inadequate CV support</value>
+					<value>Inadequate CV support (with device operating as intended/designed)</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Inadequate CV support</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>withdeviceoperatingasintended-designed</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>(with device operating as intended/designed)</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>(with device operating as intended/designed)</value>
+					<value>Inadequate CV support (with device operating as intended/designed)</value>
 					<type>String</type>
 				</property>
 			</node>

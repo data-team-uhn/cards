@@ -137,6 +137,22 @@ function message_hancestro_install_fail() {
   echo -e "${TERMINAL_RED}****************************${TERMINAL_NOCOLOR}"
 }
 
+function message_vocabulary_install_ok() {
+  echo -e "${TERMINAL_GREEN}**************************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}*                        *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}* Installed Vocabularies *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}*                        *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}**************************${TERMINAL_NOCOLOR}"
+}
+
+function message_vocabulary_install_fail() {
+  echo -e "${TERMINAL_RED}*****************************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*                           *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}* Vocabulary install failed *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*                           *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*****************************${TERMINAL_NOCOLOR}"
+}
+
 function message_started_cards() {
   echo -e "${TERMINAL_GREEN}**************************$(print_length_of $BIND_PORT '*' 4)${TERMINAL_NOCOLOR}"
   echo -e "${TERMINAL_GREEN}*                         $(print_length_of $BIND_PORT ' ' 3)*${TERMINAL_NOCOLOR}"
@@ -180,6 +196,7 @@ declare OAK_STORAGE="tar"
 # Permissions scheme: default is open, allow switching to something else
 declare PERMISSIONS="open"
 declare PERMISSIONS_EXPLICITLY_SET="false"
+RUNMODE_KIDS=false
 get_cards_version
 
 for ((i=0; i<${ARGS_LENGTH}; ++i));
@@ -212,6 +229,9 @@ do
         then
           PERMISSIONS="trusted"
         fi
+      elif [[ ${PROJECT} == 'cards4kids' ]]
+      then
+        RUNMODE_KIDS=true
       fi
     done
     ARGS[$i]=${ARGS[$i]#,}
@@ -366,6 +386,34 @@ then
     fi
   else
     message_bioportal_apikey_missing
+  fi
+fi
+
+if [[ $RUNMODE_KIDS = true ]]
+then
+  if [ -z $ADMIN_PASSWORD ]
+  then
+    ADMIN_PASSWORD="admin"
+  fi
+  VOCABULARIES=("DiagnosisMasterlist" "CathProcedureMasterlist" "CardiacSurgMasterlist" "VesselClosureMasterlist" "DeviceMasterlist")
+  KIDS_VOCABULARY_SUCCESS=true
+  for index in ${!VOCABULARIES[@]}; do
+    #Check if the vocabulary is already installed
+    curl -u admin:$ADMIN_PASSWORD --fail $CARDS_URL/Vocabularies/${VOCABULARIES[$index]}.json > /dev/null 2> /dev/null \
+      && VOCABULARY_INSTALLED=true || VOCABULARY_INSTALLED=false
+    if [ $VOCABULARY_INSTALLED = false ]
+    then
+      python3 Utilities/Administration/install_vocabulary.py --vocabulary_file ./kids-resources/clinical-data/src/main/vocabularies/${VOCABULARIES[$index]}.owl --vocabulary_name ${VOCABULARIES[$index]} --vocabulary_id ${VOCABULARIES[$index]} --vocabulary_version 1 \
+        || KIDS_VOCABULARY_SUCCESS=false
+    else
+      echo "${VOCABULARIES[$index]} already installed"
+    fi
+  done
+  if [[ $KIDS_VOCABULARY_SUCCESS = true ]]
+  then
+    message_vocabulary_install_ok
+  else
+    message_vocabulary_install_fail
   fi
 fi
 
