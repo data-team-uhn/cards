@@ -103,67 +103,51 @@
 			</property>
 		</node>
 		<node>
-			<name>ssnSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
+			<name>ssn</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>SSN</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{ssn} === "" ? 1 : 0</value>
+				<type>String</type>
+			</property>
 			<node>
-				<name>ssn</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
+				<name>computedboolean</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
-					<name>text</name>
-					<value>SSN</value>
+					<name>label</name>
+					<value>computed boolean</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
+					<name>value</name>
+					<value>computed boolean</value>
 					<type>String</type>
 				</property>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>ssnna</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>No</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
 			</node>
 		</node>
 		<node>
@@ -348,68 +332,23 @@
 			</node>
 		</node>
 		<node>
-			<name>zipcodeSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>zipcode</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Patient ZIP Code</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>zipcodena</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>No</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
+			<name>zipcode</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Patient ZIP Code</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
 		</node>
 		<node>
 			<name>zipcodena</name>
@@ -430,35 +369,31 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>expression</name>
+				<value>return @{zipcode} === "" ? 1 : 0</value>
+				<type>String</type>
+			</property>
 			<node>
-				<name>No</name>
+				<name>computedboolean</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>No</value>
+					<value>computed boolean</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>No</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Yes</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Yes</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Yes</value>
+					<value>computed boolean</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -2457,8 +2392,15 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>sourceVocabularies</name>
+				<values>
+					<value>DiagnosisMasterlist</value>
+				</values>
+				<type>String</type>
+			</property>
+			<property>
 				<name>dataType</name>
-				<value>decimal</value>
+				<value>vocabulary</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -2694,8 +2636,15 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>sourceVocabularies</name>
+					<values>
+						<value>CathProcedureMasterlist</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
 					<name>dataType</name>
-					<value>decimal</value>
+					<value>vocabulary</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -3238,8 +3187,15 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>sourceVocabularies</name>
+					<values>
+						<value>CardiacSurgMasterlist</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
 					<name>dataType</name>
-					<value>decimal</value>
+					<value>vocabulary</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -5987,8 +5943,15 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>Long</type>
 			</property>
 			<property>
+				<name>sourceVocabularies</name>
+				<values>
+					<value>DiagnosisMasterlist</value>
+				</values>
+				<type>String</type>
+			</property>
+			<property>
 				<name>dataType</name>
-				<value>decimal</value>
+				<value>vocabulary</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -6715,6 +6678,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>String</type>
 			</property>
 			<property>
+				<name>description</name>
+				<value>If "Yes" select all Pre-Procedure Medications that apply</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
@@ -6754,14 +6722,19 @@ New York Heart Association (NYHA) Functional Classification</value>
 			</node>
 		</node>
 		<node>
-			<name>PreProcMedMatrixSection</name>
+			<name>Pre-ProcedureMedicationsSection</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>PreProcMedMatrix</name>
+				<name>Pre-ProcedureMedications</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>displayMode</name>
 					<value>matrix</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>label</name>
+					<value>Pre-Procedure Medications</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -6807,7 +6780,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>text</name>
-						<value>Pre-Procedure Antiarrhythmics</value>
+						<value>Antiarrhythmics</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -6859,7 +6832,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>text</name>
-						<value>Pre-Procedure Anticoagulants</value>
+						<value>Anticoagulants</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -6911,7 +6884,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>text</name>
-						<value>Pre-Procedure Antihypertensives</value>
+						<value>Antihypertensives</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -6963,7 +6936,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>text</name>
-						<value>Pre-Procedure Antiplatelets</value>
+						<value>Antiplatelets</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -7015,7 +6988,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>text</name>
-						<value>Pre-Procedure Beta Blockers</value>
+						<value>Beta Blockers</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -7067,7 +7040,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>text</name>
-						<value>Pre-Procedure Diuretics</value>
+						<value>Diuretics</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -7119,7 +7092,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>text</name>
-						<value>Pre-Procedure Prostaglandins</value>
+						<value>Procedure Prostaglandins</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -7171,7 +7144,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>text</name>
-						<value>Pre-Procedure Vasodilators</value>
+						<value>Procedure Vasodilators</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -7233,7 +7206,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<property>
 						<name>value</name>
 						<values>
-							<value>preprocmed</value>
+							<value>pre-procedure medications</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -7262,11 +7235,16 @@ New York Heart Association (NYHA) Functional Classification</value>
 			</node>
 		</node>
 		<node>
-			<name>PreProcRythmsMatrix</name>
+			<name>Pre-ProcedureRhythms</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>displayMode</name>
 				<value>matrix</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>Pre-Procedure Rhythms</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -7307,7 +7285,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Pre-Procedure Rhythms - Sinus Rhythm</value>
+					<value>Sinus Rhythm</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -7359,7 +7337,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Pre-Procedure Rhythms - Atrial Ectopic Tachycardia</value>
+					<value>Atrial Ectopic Tachycardia</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -7416,7 +7394,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Pre-Procedure Rhythms - Supraventricular Tachycardia</value>
+					<value>Supraventricular Tachycardia</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -7473,7 +7451,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Pre-Procedure Rhythms - AFib/Flutter</value>
+					<value>AFib/Flutter</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -7525,7 +7503,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Pre-Procedure Rhythms - Junctional Rhythm</value>
+					<value>Junctional Rhythm</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -7577,7 +7555,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Pre-Procedure Rhythms - Idioventricular Rhythm</value>
+					<value>Idioventricular Rhythm</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -7629,7 +7607,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Pre-Procedure Rhythms - Second Degree AV Block</value>
+					<value>Second Degree AV Block</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -7681,7 +7659,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Pre-Procedure Rhythms - Third Degree AV Block</value>
+					<value>Third Degree AV Block</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -7733,7 +7711,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Pre-Procedure Rhythms - Paced</value>
+					<value>Paced</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -7783,7 +7761,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 		</node>
 	</node>
 	<node>
-		<name>PROCEDUREINFORMATION2</name>
+		<name>PROCEDUREINFORMATION</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
@@ -7791,11 +7769,16 @@ New York Heart Association (NYHA) Functional Classification</value>
 			<type>String</type>
 		</property>
 		<node>
-			<name>PROCEDUREINFORMATION</name>
+			<name>Procedure</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>displayMode</name>
 				<value>matrix</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>Procedure</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -7836,7 +7819,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Procedure - Diagnostic Cath</value>
+					<value>Diagnostic Cath</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -7888,7 +7871,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Procedure - Atrial Septal Defect (ASD) Closure</value>
+					<value>Atrial Septal Defect (ASD) Closure</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -7940,7 +7923,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Procedure - Aortic Coarctation Procedure</value>
+					<value>Aortic Coarctation Procedure</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -7992,7 +7975,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Procedure - Aortic Valvuloplasty</value>
+					<value>Aortic Valvuloplasty</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -8044,7 +8027,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Procedure - Pulmonary Valvuloplasty</value>
+					<value>Pulmonary Valvuloplasty</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -8096,7 +8079,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Procedure - PDA Closure</value>
+					<value>PDA Closure</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -8148,7 +8131,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Procedure - Proximal PA Stenting</value>
+					<value>Proximal PA Stenting</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -8200,7 +8183,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Procedure - Electrophysiology Cath</value>
+					<value>Electrophysiology Cath</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -8252,7 +8235,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Procedure - Electrophysiology Ablation Procedure</value>
+					<value>Electrophysiology Ablation Procedure</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -8304,7 +8287,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Procedure - Transcatheter Pulmonary Valve Replacement</value>
+					<value>Transcatheter Pulmonary Valve Replacement</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -8371,8 +8354,15 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>Long</type>
 			</property>
 			<property>
+				<name>sourceVocabularies</name>
+				<values>
+					<value>CathProcedureMasterlist</value>
+				</values>
+				<type>String</type>
+			</property>
+			<property>
 				<name>dataType</name>
-				<value>decimal</value>
+				<value>vocabulary</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -9189,14 +9179,19 @@ New York Heart Association (NYHA) Functional Classification</value>
 			</node>
 		</node>
 		<node>
-			<name>AirMngMatrixSection</name>
+			<name>AirwayManagementSection</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>AirMngMatrix</name>
+				<name>AirwayManagement</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>displayMode</name>
 					<value>matrix</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>label</name>
+					<value>Airway Management</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -9242,7 +9237,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>text</name>
-						<value>Airway Management - Laryngeal mask airway</value>
+						<value>Laryngeal mask airway</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -9294,7 +9289,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>text</name>
-						<value>Airway Management - Tracheostomy</value>
+						<value>Tracheostomy</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -9346,7 +9341,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>text</name>
-						<value>Airway Management - Bag mask ventilation</value>
+						<value>Bag mask ventilation</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -9398,7 +9393,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>text</name>
-						<value>Airway Management - CPAP</value>
+						<value>CPAP</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -9455,7 +9450,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>text</name>
-						<value>Airway Management - Elective Intubation</value>
+						<value>Elective Intubation</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -9507,7 +9502,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>text</name>
-						<value>Airway Management - Previously Intubated</value>
+						<value>Previously Intubated</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -10077,8 +10072,15 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
+					<name>sourceVocabularies</name>
+					<values>
+						<value>VesselClosureMasterlist</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
 					<name>dataType</name>
-					<value>decimal</value>
+					<value>vocabulary</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -10156,8 +10158,15 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>String</type>
 				</property>
 				<property>
+					<name>sourceVocabularies</name>
+					<values>
+						<value>VesselClosureMasterlist</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
 					<name>dataType</name>
-					<value>decimal</value>
+					<value>vocabulary</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -10741,8 +10750,15 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
+					<name>sourceVocabularies</name>
+					<values>
+						<value>VesselClosureMasterlist</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
 					<name>dataType</name>
-					<value>decimal</value>
+					<value>vocabulary</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -10820,8 +10836,15 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>String</type>
 				</property>
 				<property>
+					<name>sourceVocabularies</name>
+					<values>
+						<value>VesselClosureMasterlist</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
 					<name>dataType</name>
-					<value>decimal</value>
+					<value>vocabulary</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -15254,8 +15277,15 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>Long</type>
 			</property>
 			<property>
+				<name>sourceVocabularies</name>
+				<values>
+					<value>DeviceMasterlist</value>
+				</values>
+				<type>String</type>
+			</property>
+			<property>
 				<name>dataType</name>
-				<value>decimal</value>
+				<value>vocabulary</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -15288,8 +15318,15 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>Long</type>
 			</property>
 			<property>
+				<name>sourceVocabularies</name>
+				<values>
+					<value>DeviceMasterlist</value>
+				</values>
+				<type>String</type>
+			</property>
+			<property>
 				<name>dataType</name>
-				<value>decimal</value>
+				<value>vocabulary</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -16616,8 +16653,15 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>Long</type>
 			</property>
 			<property>
+				<name>sourceVocabularies</name>
+				<values>
+					<value>DeviceMasterlist</value>
+				</values>
+				<type>String</type>
+			</property>
+			<property>
 				<name>dataType</name>
-				<value>decimal</value>
+				<value>vocabulary</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -17804,8 +17848,15 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
+					<name>sourceVocabularies</name>
+					<values>
+						<value>DeviceMasterlist</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
 					<name>dataType</name>
-					<value>decimal</value>
+					<value>vocabulary</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -17973,8 +18024,15 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
+					<name>sourceVocabularies</name>
+					<values>
+						<value>DeviceMasterlist</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
 					<name>dataType</name>
-					<value>decimal</value>
+					<value>vocabulary</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -18863,8 +18921,15 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
+					<name>sourceVocabularies</name>
+					<values>
+						<value>DeviceMasterlist</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
 					<name>dataType</name>
-					<value>decimal</value>
+					<value>vocabulary</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -19032,8 +19097,15 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>Long</type>
 				</property>
 				<property>
+					<name>sourceVocabularies</name>
+					<values>
+						<value>DeviceMasterlist</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
 					<name>dataType</name>
-					<value>decimal</value>
+					<value>vocabulary</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -19930,8 +20002,15 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>Long</type>
 			</property>
 			<property>
+				<name>sourceVocabularies</name>
+				<values>
+					<value>DeviceMasterlist</value>
+				</values>
+				<type>String</type>
+			</property>
+			<property>
 				<name>dataType</name>
-				<value>decimal</value>
+				<value>vocabulary</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -21660,8 +21739,15 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>Long</type>
 			</property>
 			<property>
+				<name>sourceVocabularies</name>
+				<values>
+					<value>DeviceMasterlist</value>
+				</values>
+				<type>String</type>
+			</property>
+			<property>
 				<name>dataType</name>
-				<value>decimal</value>
+				<value>vocabulary</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -26463,8 +26549,15 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>Long</type>
 			</property>
 			<property>
+				<name>sourceVocabularies</name>
+				<values>
+					<value>DeviceMasterlist</value>
+				</values>
+				<type>String</type>
+			</property>
+			<property>
 				<name>dataType</name>
-				<value>decimal</value>
+				<value>vocabulary</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -26497,8 +26590,15 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>Long</type>
 			</property>
 			<property>
+				<name>sourceVocabularies</name>
+				<values>
+					<value>DeviceMasterlist</value>
+				</values>
+				<type>String</type>
+			</property>
+			<property>
 				<name>dataType</name>
-				<value>decimal</value>
+				<value>vocabulary</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -30330,8 +30430,15 @@ Other</value>
 				<type>Long</type>
 			</property>
 			<property>
+				<name>sourceVocabularies</name>
+				<values>
+					<value>DeviceMasterlist</value>
+				</values>
+				<type>String</type>
+			</property>
+			<property>
 				<name>dataType</name>
-				<value>decimal</value>
+				<value>vocabulary</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -30936,14 +31043,19 @@ Other</value>
 			</node>
 		</node>
 		<node>
-			<name>PostArrMatrixSection</name>
+			<name>ArrhythmiaSection</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>PostArrMatrix</name>
+				<name>Arrhythmia</name>
 				<primaryNodeType>cards:Section</primaryNodeType>
 				<property>
 					<name>displayMode</name>
 					<value>matrix</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>label</name>
+					<value>Arrhythmia</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -31041,7 +31153,7 @@ Other</value>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>text</name>
-						<value>Arrhythmia Spontaneously Resolved</value>
+						<value>Spontaneously Resolved</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -31093,7 +31205,7 @@ Other</value>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>text</name>
-						<value>Arrhythmia Requiring Antiarrhythmic Medication</value>
+						<value>Requiring Antiarrhythmic Medication</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -31145,7 +31257,7 @@ Other</value>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>text</name>
-						<value>Arrhythmia Requiring Cardioversion</value>
+						<value>Requiring Cardioversion</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -31197,7 +31309,7 @@ Other</value>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>text</name>
-						<value>Arrhythmia Requiring Temporary Pacemaker</value>
+						<value>Requiring Temporary Pacemaker</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -31249,7 +31361,7 @@ Other</value>
 					<primaryNodeType>cards:Question</primaryNodeType>
 					<property>
 						<name>text</name>
-						<value>Arrhythmia Requiring Permanent Pacemaker</value>
+						<value>Requiring Permanent Pacemaker</value>
 						<type>String</type>
 					</property>
 					<property>
@@ -33545,8 +33657,15 @@ Other</value>
 					<type>String</type>
 				</property>
 				<property>
+					<name>sourceVocabularies</name>
+					<values>
+						<value>EventsMasterlist</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
 					<name>dataType</name>
-					<value>decimal</value>
+					<value>vocabulary</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -35545,11 +35664,16 @@ Other</value>
 			</property>
 		</node>
 		<node>
-			<name>F_Method_Matrix</name>
+			<name>Follow-upStatusMethod</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
 			<property>
 				<name>displayMode</name>
 				<value>matrix</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>label</name>
+				<value>Follow-up Status Method</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -35590,7 +35714,7 @@ Other</value>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Follow-up Status Method - Office Visit</value>
+					<value>Office Visit</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -35642,7 +35766,7 @@ Other</value>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Follow-up Status Method - Medical Records</value>
+					<value>Medical Records</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -35694,7 +35818,7 @@ Other</value>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Follow-up Status Method - Letter from Medical Provider</value>
+					<value>Letter from Medical Provider</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -35746,7 +35870,7 @@ Other</value>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Follow-up Status Method - Phone call</value>
+					<value>Phone call</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -35798,7 +35922,7 @@ Other</value>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Follow-up Status Method - Social Security Death Master File</value>
+					<value>Social Security Death Master File</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -35850,7 +35974,7 @@ Other</value>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Follow-up Status Method - Hospitalized</value>
+					<value>Hospitalized</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -35902,7 +36026,7 @@ Other</value>
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Follow-up Status Method - Other</value>
+					<value>Other</value>
 					<type>String</type>
 				</property>
 				<property>

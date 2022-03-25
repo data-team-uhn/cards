@@ -38,6 +38,7 @@ class RowTypes(enum.Enum):
     MATRIX_START = 11
     MATRIX_END = 12
     BOOLEAN = 13
+    VOCABULARY = 14
 
 SECTION_TYPES = [RowTypes.SECTION, RowTypes.SECTION_RECURRENT, RowTypes.SECTION_CONDITIONAL]
 CONDITION_DEFINTIONS = ["if", "displayed if:", "show the field only if:", "show only if:", "show only if",
@@ -102,7 +103,6 @@ class Headers3:
     MERGED_DEFINITIONS_OPTIONS = True
     QUESTION_DEFINED_SECTIONS = True
     PAGINATE = True
-    UNIT_DESCRIPTIONS = True
 
 def partition_ignore_strings(input, splitter):
     ignore_map = {
@@ -353,10 +353,11 @@ def get_row_type_from_definition(row):
         row_type = RowTypes.LIST
     elif ("numeric" in variable or "integer" in variable or "smallint" in variable):
         row_type = RowTypes.NUMBER
-        if hasattr(Headers, "UNIT_DESCRIPTIONS") and Headers.UNIT_DESCRIPTIONS:
-            row[Headers.DEFINITION] = row[Headers.DEFINITION].replace('numeric', '').replace('integer', '').replace('smallint', '').strip()
     elif ("text field" == variable or "text" == variable or "varchar" in variable):
         row_type = RowTypes.TEXT
+    elif (variable.startswith("vocabulary")):
+        row_type = RowTypes.VOCABULARY
+        row[Headers.DEFINITION] = row[Headers.DEFINITION][10:].strip()
     elif ("section" == variable):
         row_type = RowTypes.SECTION
     elif ("conditional" in variable):
@@ -550,7 +551,8 @@ def process_split_conditions(parent, condition, question_title):
             value_range = re.split('-',stripped_condition)
             parent[question_title]["minValue"] = float(value_range[0]) if '.' in value_range[0] else int(value_range[0])
             parent[question_title]["maxValue"] = float(value_range[1]) if '.' in value_range[1] else int(value_range[1])
-            parent[question_title]["dataType"] = "decimal"
+            if parent[question_title]["dataType"] != "vocabulary":
+                parent[question_title]["dataType"] = "decimal"
             return parent
     for starter in MIN_RANGE_DEFINITIONS:
         if lower.startswith(starter) and lower.count(" ") == 1:
@@ -682,12 +684,11 @@ def insert_question_type(row, question, row_type):
         question['entryMode'] = "computed"
         if hasattr(Headers, "CONDITIONS") and row[Headers.CONDITIONS]:
             question['expression'] = row[Headers.CONDITIONS]
+    elif row_type == RowTypes.VOCABULARY:
+        question['sourceVocabularies'] = [row[Headers.DEFINITION]]
     elif row_type == RowTypes.DEFAULT:
         if len(row[Headers.DEFINITION]) > 0:
-            if hasattr(Headers, "UNIT_DESCRIPTIONS") and Headers.UNIT_DESCRIPTIONS:
-                question['unitOfMeasurement'] = row[Headers.DEFINITION]
-            else:
-                question = append_description(question, row[Headers.DEFINITION])
+            question = append_description(question, row[Headers.DEFINITION])
 
     if not "dataType" in question:
         question['dataType'] = new_type
@@ -704,6 +705,8 @@ def row_type_to_question_type(row_type):
         new_type = "text"
     elif row_type == RowTypes.LIST or row_type == RowTypes.BOOLEAN:
         new_type = "text"
+    elif row_type == RowTypes.VOCABULARY:
+        new_type = "vocabulary"
     elif row_type == RowTypes.DEFAULT:
         new_type = "text"
     return new_type
@@ -888,7 +891,8 @@ titles = [
     ['cnoc_history', Headers2],
     ['IMPACT Database Excel', Headers1Impact],
     ['NPC-QIC Database Excel', Headers1NPC_QIC],
-    ['ACTION', Headers3]
+    ['ACTION', Headers3],
+    ['Patient Information', Headers3],
 ]
 Headers = Headers1
 for title in titles:
