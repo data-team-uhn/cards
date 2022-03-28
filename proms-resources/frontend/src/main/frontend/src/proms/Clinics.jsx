@@ -190,93 +190,124 @@ function OnboardNewClinicDialog(props) {
     let sidebarName = requestData.get("sidebarLabel");
     let idHash = hashCode(newClinicName);
 
-    // TODO: If the idHash changes (i.e. clinicName changes) and we are editing a clinic, we need to delete the old one
-    // and create a new one
-    requestData.append("jcr:primaryType", "cards:ClinicMapping");
-    let newFetch = fetchWithReLogin(globalLoginDisplay, "/Proms/ClinicMapping/" + idHash,
-      {
-        method: 'POST',
-        body: requestData
+    let sanitizedName = displayName.replaceAll(/[\"']/g, "");
+    // Determine whether or not this sanitized URL already exists
+    let url = new URL("/query", window.location.origin);
+    let sqlquery = `SELECT * FROM [cards:ClinicMapping] as c WHERE c.'displayName' LIKE '${sanitizedName}%25'`;
+    url.searchParams.set("query", sqlquery);
+    fetchWithReLogin(globalLoginDisplay, url)
+      .then((response) => (response.ok ? response.json() : Promise.reject(response)))
+      .then((json) => {
+        if (json["returnedrows"] == 0 || (!json["rows"]?.find((clinic) => clinic["displayName"] == sanitizedName))) {
+          // this name is OK
+          return sanitizedName;
+        } else {
+          // Determine which number to use after the displayName
+          for (let i = 1; i < json["returnedrows"]; i++) {
+            let newName = sanitizedName + " " + i;
+            if (!json["rows"].find((clinic) => clinic["displayName"] == newName)) {
+              return newName;
+            }
+          }
+          console.log(sanitizedName + " " + json["returnedrows"] + 1);
+          return sanitizedName + " " + json["returnedrows"] + 1;
+        }
+      })
+      .then((uniqueDisplayName) => {
+        // TODO: If the idHash changes (i.e. clinicName changes) and we are editing a clinic, we need to should the old one
+        // and create a new one. This isn't currently necessary because we don't allow the user to edit clinics
+
+        // Create (or edit) the ClinicMapping node
+        let newMappingData = new FormData();
+        newMappingData.append("clinicName", newClinicName);
+        newMappingData.append("displayName", uniqueDisplayName);
+        newMappingData.append("surveyID", surveyID);
+        newMappingData.append("emergencyContact", requestData.get("emergencyContact"));
+        newMappingData.append("jcr:primaryType", "cards:ClinicMapping");
+        let newFetch = fetchWithReLogin(globalLoginDisplay, "/Proms/ClinicMapping/" + idHash,
+          {
+            method: 'POST',
+            body: newMappingData
+          });
+
+        // There are a series of new nodes that need to be created when creating a new clinic
+        if (isNewClinic) {
+          let clinicRemap = new FormData();
+          clinicRemap.append(":newClinic", newClinicName);
+
+          let sidebarBody = new FormData();
+          sidebarBody.append("jcr:primaryType", "cards:Extension");
+          sidebarBody.append("cards:extensionPointId", "cards/coreUI/sidebar/entry");
+          sidebarBody.append("cards:extensionName", sidebarName);
+          sidebarBody.append("cards:targetURL", "/content.html/Dashboard/" + idHash);
+          sidebarBody.append("cards:icon", "asset:proms-homepage.pmccIcon.js");
+          sidebarBody.append("cards:defaultOrder", 10);
+
+          let dashboardView = new FormData();
+          dashboardView.append("jcr:primaryType", "cards:Extension");
+          dashboardView.append("cards:extensionPointId", "cards/coreUI/view");
+          dashboardView.append("cards:extensionName", "Dashboard");
+          dashboardView.append("cards:extensionRenderURL", "asset:proms-homepage.PromsDashboard.js");
+          dashboardView.append("cards:targetURL", "/content.html/Dashboard");
+          dashboardView.append("cards:exactURLMatch", false);
+
+          let dashboardExtension = new FormData();
+          dashboardExtension.append("jcr:primaryType", "cards:ExtensionPoint");
+          dashboardExtension.append("cards:extensionPointId", `proms/dashboard/${idHash}`);
+          dashboardExtension.append("cards:extensionPointName", `${uniqueDisplayName} questionnaires dashboard`);
+          dashboardExtension.append("title", uniqueDisplayName);
+          dashboardExtension.append("description", uniqueDisplayName);
+          dashboardExtension.append("surveys", surveyID);
+
+          let dashboardHomepage = new FormData();
+          dashboardHomepage.append("jcr:primaryType", "cards:Extension");
+          dashboardHomepage.append("cards:extensionPointId", `proms/dashboard/${idHash}`);
+          dashboardHomepage.append("cards:extensionName", `${uniqueDisplayName} View`);
+          dashboardHomepage.append("cards:extensionRenderURL", "asset:proms-homepage.PromsView.js");
+          dashboardHomepage.append("cards:defaultOrder", 5);
+          dashboardHomepage.append("cards:data", `/Proms/${surveyID}`); // TODO: Double check this, not sure it's right
+
+          newFetch
+            // After updating the clinicMapping, we also need to update all running configurations with the new data
+            .then(() => fetchWithReLogin(globalLoginDisplay, "/Proms/ClinicMapping.addNew",
+              {
+                method: 'POST',
+                body: clinicRemap
+              }))
+            // After updating the configurations, we need to create the sidebar entry
+            .then(() => fetchWithReLogin(globalLoginDisplay, `/Extensions/Sidebar/${idHash}`,
+              {
+                method: 'POST',
+                body: sidebarBody
+              }))
+            // And the new dashboard view
+            .then(() => fetchWithReLogin(globalLoginDisplay, `/Extensions/Views/${idHash}Dashboard`,
+              {
+                method: 'POST',
+                body: dashboardView
+              }))
+            // And the new extension point for the dashboard view
+            .then(() => fetchWithReLogin(globalLoginDisplay, `/apps/cards/ExtensionPoints/DashboardViews${idHash}`,
+              {
+                method: 'POST',
+                body: dashboardExtension
+              }))
+            // And the new extension point for appointments of this clinic
+            .then(() => fetchWithReLogin(globalLoginDisplay, `/Extensions/DashboardViews/${idHash}View`,
+              {
+                method: 'POST',
+                body: dashboardHomepage
+              }))
+            .then(() => {
+              onSuccess && onSuccess();
+            });
+        }
+        return newFetch;
+      })
+      .catch((response) => {setError(response.status + " " + response.statusText);})
+      .finally(() => {
+        setSaveInProgress(false);
       });
-
-    console.log(isNewClinic);
-
-    // There are a series of new things that need to eb added when creating a new clinic
-    if (isNewClinic) {
-      let clinicRemap = new FormData();
-      clinicRemap.append(":newClinic", newClinicName);
-
-      let sidebarBody = new FormData();
-      sidebarBody.append("jcr:primaryType", "cards:Extension");
-      sidebarBody.append("cards:extensionPointId", "cards/coreUI/sidebar/entry");
-      sidebarBody.append("cards:extensionName", sidebarName);
-      sidebarBody.append("cards:targetURL", "/content.html/Dashboard/" + idHash);
-      sidebarBody.append("cards:icon", "asset:proms-homepage.pmccIcon.js");
-      sidebarBody.append("cards:defaultOrder", 10);
-
-      let dashboardView = new FormData();
-      dashboardView.append("jcr:primaryType", "cards:Extension");
-      dashboardView.append("cards:extensionPointId", "cards/coreUI/view");
-      dashboardView.append("cards:extensionName", "Dashboard");
-      dashboardView.append("cards:extensionRenderURL", "asset:proms-homepage.PromsDashboard.js");
-      dashboardView.append("cards:targetURL", "/content.html/Dashboard");
-      dashboardView.append("cards:exactURLMatch", false);
-
-      let dashboardExtension = new FormData();
-      dashboardExtension.append("jcr:primaryType", "cards:ExtensionPoint");
-      dashboardExtension.append("cards:extensionPointId", `proms/dashboard/${idHash}`);
-      dashboardExtension.append("cards:extensionPointName", `${displayName} questionnaires dashboard`);
-      dashboardExtension.append("title", displayName);
-      dashboardExtension.append("description", displayName);
-      dashboardExtension.append("surveys", surveyID);
-
-      let dashboardHomepage = new FormData();
-      dashboardHomepage.append("jcr:primaryType", "cards:Extension");
-      dashboardHomepage.append("cards:extensionPointId", `proms/dashboard/${idHash}`);
-      dashboardHomepage.append("cards:extensionName", `${displayName} View`);
-      dashboardHomepage.append("cards:extensionRenderURL", "asset:proms-homepage.PromsView.js");
-      dashboardHomepage.append("cards:defaultOrder", 5);
-      dashboardHomepage.append("cards:data", `/Proms/${surveyID}`); // TODO: Double check this, not sure it's right
-
-      newFetch
-        // After updating the clinicMapping, we also need to update all running configurations with the new data
-        .then(() => fetchWithReLogin(globalLoginDisplay, "/Proms/ClinicMapping.addNew",
-          {
-            method: 'POST',
-            body: clinicRemap
-          }))
-        // After updating the configurations, we need to create the sidebar entry
-        .then(() => fetchWithReLogin(globalLoginDisplay, `/Extensions/Sidebar/${idHash}`,
-          {
-            method: 'POST',
-            body: sidebarBody
-          }))
-        // And the new dashboard view
-        .then(() => fetchWithReLogin(globalLoginDisplay, `/Extensions/Views/${idHash}Dashboard`,
-          {
-            method: 'POST',
-            body: dashboardView
-          }))
-        // And the new extension point for the dashboard view
-        .then(() => fetchWithReLogin(globalLoginDisplay, `/apps/cards/ExtensionPoints/DashboardViews${idHash}`,
-          {
-            method: 'POST',
-            body: dashboardExtension
-          }))
-        // And the new extension point for appointments of this clinic
-        .then(() => fetchWithReLogin(globalLoginDisplay, `/Extensions/DashboardViews/${idHash}View`,
-          {
-            method: 'POST',
-            body: dashboardHomepage
-          }))
-        .then(() => {
-          onSuccess && onSuccess();
-        })
-        .catch((response) => {setError(response.status + " " + response.statusText);})
-        .finally(() => {
-          setSaveInProgress(false);
-        });
-    }
   }
 
   return (
