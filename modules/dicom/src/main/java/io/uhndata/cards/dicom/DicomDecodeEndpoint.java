@@ -30,6 +30,7 @@ import org.apache.sling.api.request.RequestParameter;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.dcm4che3.data.Attributes;
+import org.dcm4che3.data.Keyword;
 import org.dcm4che3.io.DicomInputStream;
 import org.dcm4che3.util.TagUtils;
 import org.osgi.service.component.annotations.Component;
@@ -67,9 +68,11 @@ public final class DicomDecodeEndpoint extends SlingAllMethodsServlet
         jsonGen.writeStartArray();
         for (int tag : tags) {
             String tagAddress = TagUtils.toString(tag);
+            String tagName = Keyword.valueOf(tag);
             String tagValue = attributes.getString(tag);
             jsonGen.writeStartObject();
             jsonGen.write("Tag Address", tagAddress);
+            jsonGen.write("Tag Name", tagName);
             jsonGen.write("Tag Value", tagValue);
             jsonGen.writeEnd();
         }
