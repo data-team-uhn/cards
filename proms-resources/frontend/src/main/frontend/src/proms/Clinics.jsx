@@ -210,7 +210,7 @@ function OnboardNewClinicDialog(props) {
             }
           }
           console.log(sanitizedName + " " + json["returnedrows"] + 1);
-          return sanitizedName + " " + json["returnedrows"] + 1;
+          return sanitizedName + " " + (json["returnedrows"] + 1);
         }
       })
       .then((uniqueDisplayName) => {
@@ -261,7 +261,7 @@ function OnboardNewClinicDialog(props) {
 
           let dashboardHomepage = new FormData();
           dashboardHomepage.append("jcr:primaryType", "cards:Extension");
-          dashboardHomepage.append("cards:extensionPointId", `proms/dashboard/${idHash}`);
+          dashboardHomepage.append("cards:extensionPointId", `proms/dashboard/${surveyID}`);
           dashboardHomepage.append("cards:extensionName", `${uniqueDisplayName} View`);
           dashboardHomepage.append("cards:extensionRenderURL", "asset:proms-homepage.PromsView.js");
           dashboardHomepage.append("cards:defaultOrder", 5);
