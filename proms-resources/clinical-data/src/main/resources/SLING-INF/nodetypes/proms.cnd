@@ -150,6 +150,7 @@
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/ClinicMappingFolder" mandatory autocreated protected
 
-  // Hardcode the resource supertype.
-  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
+  // Hardcode the resource supertype. ResourceHomepage is used to allow the children to be queried
+  // with the pagination servlet.
+  - sling:resourceSuperType (STRING) = "cards/ResourceHomepage" mandatory autocreated protected
 
