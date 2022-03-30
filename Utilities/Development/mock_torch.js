@@ -96,7 +96,7 @@ const graphQlResponse = {
             participants: [
               {
                 role: 'ATND',
-                participant: {
+                physician: {
                   eID: 'SomeParticipantEID',
                   fhirID: 'SomeParticipantFhirID',
                   name: {
@@ -123,7 +123,7 @@ const graphQlResponse = {
             participants: [
               {
                 role: 'ABCD',
-                participant: {
+                physician: {
                   eID: 'SomeParticipantEID',
                   fhirID: 'SomeParticipantFhirID',
                   name: {
@@ -149,7 +149,7 @@ const graphQlResponse = {
             fhirID: 'AppointmentThreeFhirID',
             participants: [
               {
-                participant: {
+                physician: {
                   eID: 'SomeParticipantEID',
                   fhirID: 'SomeParticipantFhirID',
                   name: {
