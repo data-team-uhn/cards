@@ -16,10 +16,14 @@
  */
 package io.uhndata.cards.dicom;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import org.apache.jackrabbit.oak.api.CommitFailedException;
 import org.apache.jackrabbit.oak.api.PropertyState;
@@ -97,6 +101,7 @@ public class DicomYamlAdditionEditor extends DefaultEditor
         return new DicomYamlAdditionEditor(tmpList);
     }
 
+    @SuppressWarnings("checkstyle:ExecutableStatementCount")
     @Override
     public void leave(NodeState before, NodeState after)
     {
@@ -110,18 +115,54 @@ public class DicomYamlAdditionEditor extends DefaultEditor
                 DicomInputStream dis = new DicomInputStream(uploadedDicomStream);
                 Attributes attributes = dis.readDataset();
                 int[] tags = attributes.tags();
+                int imageHeight = 0;
+                int imageWidth = 0;
+                int bitsPerPixel = 0;
+                byte[] pixelData = null;
                 for (int tag : tags) {
                     String tagAddress = TagUtils.toString(tag);
                     String tagName = Keyword.valueOf(tag);
                     String tagValue = attributes.getString(tag);
+                    if ("PixelData".equals(tagName)) {
+                        LOGGER.warn("Found the PixelData attribute!");
+                        //byte[] pixelData = attributes.getBytes(tag);
+                        pixelData = attributes.getBytes(tag);
+                        //LOGGER.warn("Read {} bytes of DICOM pixel data", pixelData.length);
+                    }
+                    if ("Rows".equals(tagName)) {
+                        LOGGER.warn("Found the Rows attribute!");
+                        imageHeight = attributes.getInt(tag, 0);
+                    }
+                    if ("Columns".equals(tagName)) {
+                        LOGGER.warn("Found the Columns attribute!");
+                        imageWidth = attributes.getInt(tag, 0);
+                    }
+                    if ("BitsAllocated".equals(tagName)) {
+                        LOGGER.warn("Found the BitsAllocated attribute!");
+                        bitsPerPixel = attributes.getInt(tag, 0);
+                    }
                     //LOGGER.warn("TAG ADDRESS = {}, TAG NAME = {}, TAG VALUE = {}", tagAddress, tagName, tagValue);
                     if (dicomMetadataString.length() > 0) {
                         dicomMetadataString += ", ";
                     }
                     dicomMetadataString += tagName + ": " + tagValue;
                 }
+                LOGGER.warn("Found an image with - height={}, width={}, bitsPerPixel={}, pixelDataLength={}",
+                    imageHeight,
+                    imageWidth,
+                    bitsPerPixel,
+                    pixelData.length
+                );
                 dis.close();
                 uploadedDicomStream.close();
+
+                BufferedImage img = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_USHORT_GRAY);
+                for (int i = 0; i < pixelData.length; i += 2) {
+                    int[] tmp = {pixelData[i]};
+                    img.getRaster().setPixel((i / 2) % imageWidth, (i / 2) / imageHeight, tmp);
+                }
+                ImageIO.write(img, "png", new File("/home/user/testdicom.png"));
+
             } catch (IOException e) {
                 LOGGER.warn("Failed to parse the DICOM metadata...");
             }
