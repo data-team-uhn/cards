@@ -55,13 +55,18 @@ function Clinics(props) {
       "format": "string",
     },
     {
-      "key": "surveyID",
-      "label": "Menu Entry",
+      "key": "sidebarLabel",
+      "label": "Sidebar Entry",
       "format": "string",
     },
     {
-      "key": "@name", // TODO: Needs to be the @name of the actual QuestionnaireSet
+      "key": "surveyID",
       "label": "Surveys",
+      "format": "string",
+    },
+    {
+      "key": "description",
+      "label": "Description",
       "format": "string",
     },
     {
@@ -224,6 +229,7 @@ function OnboardNewClinicDialog(props) {
         newMappingData.append("displayName", uniqueDisplayName);
         newMappingData.append("surveyID", surveyID);
         newMappingData.append("emergencyContact", requestData.get("emergencyContact"));
+        newMappingData.append("sidebarLabel", sidebarName);
         newMappingData.append("jcr:primaryType", "cards:ClinicMapping");
         let newFetch = fetchWithReLogin(globalLoginDisplay, "/Proms/ClinicMapping/" + idHash,
           {
