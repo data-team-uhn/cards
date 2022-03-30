@@ -2,7 +2,8 @@
   "clinicName": "string",
   "displayName": "string",
   "sidebarLabel": "string",
-  "surveyID": "string",
+  "surveyId": "string",
   "emergencyContact": "string",
-  "//REQUIRED": ["clinicName", "displayName"]
+  "description": "string",
+  "//REQUIRED": ["clinicName", "displayName", "sidebarLabel", "surveyId"]
 }

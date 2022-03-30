@@ -86,7 +86,7 @@ function Clinics(props) {
         <CardHeader
           title={
             <Button>
-              Statistics
+              Clinics
           </Button>
           }
           action={
@@ -185,9 +185,10 @@ function OnboardNewClinicDialog(props) {
 
     // If this clinic does not exist, we need to create a new path for it
     let newClinicName = requestData.get("clinicName");
-    let surveyID = requestData.get("surveyID");
+    let surveyID = requestData.get("surveyId");
     let displayName = requestData.get("displayName");
     let sidebarName = requestData.get("sidebarLabel");
+    let description = requestData.get("description");
     let idHash = hashCode(newClinicName);
 
     let sanitizedName = displayName.replaceAll(/[\"']/g, "");
@@ -256,7 +257,7 @@ function OnboardNewClinicDialog(props) {
           dashboardExtension.append("cards:extensionPointId", `proms/dashboard/${idHash}`);
           dashboardExtension.append("cards:extensionPointName", `${uniqueDisplayName} questionnaires dashboard`);
           dashboardExtension.append("title", uniqueDisplayName);
-          dashboardExtension.append("description", uniqueDisplayName);
+          dashboardExtension.append("description", description);
           dashboardExtension.append("surveys", surveyID);
 
           let dashboardHomepage = new FormData();
