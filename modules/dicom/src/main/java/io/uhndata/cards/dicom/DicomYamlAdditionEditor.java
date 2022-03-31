@@ -17,7 +17,7 @@
 package io.uhndata.cards.dicom;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -28,6 +28,7 @@ import javax.imageio.ImageIO;
 import org.apache.jackrabbit.oak.api.CommitFailedException;
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
+import org.apache.jackrabbit.oak.plugins.memory.ArrayBasedBlob;
 import org.apache.jackrabbit.oak.spi.commit.DefaultEditor;
 import org.apache.jackrabbit.oak.spi.commit.Editor;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
@@ -161,8 +162,13 @@ public class DicomYamlAdditionEditor extends DefaultEditor
                     int[] tmp = {pixelData[i]};
                     img.getRaster().setPixel((i / 2) % imageWidth, (i / 2) / imageHeight, tmp);
                 }
-                ImageIO.write(img, "png", new File("/home/user/testdicom.png"));
-
+                ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
+                ImageIO.write(img, "png", pngOutputStream);
+                byte[] pngBytes = pngOutputStream.toByteArray();
+                ArrayBasedBlob pngBlob = new ArrayBasedBlob(pngBytes);
+                NodeBuilder dicomAnswerNodeBuilder = this.currentNodeBuilderPath.get(
+                    this.currentNodeBuilderPath.size() - 3);
+                dicomAnswerNodeBuilder.setProperty("image", pngBlob);
             } catch (IOException e) {
                 LOGGER.warn("Failed to parse the DICOM metadata...");
             }
