@@ -62,12 +62,14 @@ function PromsView(props) {
     "inner join [cards:Form] as visitInformation on visitSubject.[jcr:uuid] = visitInformation.subject " +
       "inner join [cards:Answer] as visitDate on isdescendantnode(visitDate, visitInformation) " +
       "inner join [cards:Answer] as visitSurveys on isdescendantnode(visitSurveys, visitInformation) " +
+      "inner join [cards:Answer] as visitStatus on isdescendantnode(visitStatus, visitInformation) " +
       "inner join [cards:Answer] as patientSubmitted on isdescendantnode(patientSubmitted, visitInformation) " +
     "inner join [cards:Form] as dataForm on visitSubject.[jcr:uuid] = dataForm.subject " +
   "where " +
     `visitInformation.questionnaire = '${visitInfo?.["jcr:uuid"]}' ` +
       `and visitDate.question = '${visitInfo?.time?.["jcr:uuid"]}' and __DATE_FILTER_PLACEHOLDER__ ` +
       `and visitSurveys.question = '${visitInfo?.surveys?.["jcr:uuid"]}' and visitSurveys.value = '${surveysId}' ` +
+      `and visitStatus.question = '${visitInfo?.status?.["jcr:uuid"]}' and visitStatus.value <> 'cancelled' ` +
       `and patientSubmitted.question = '${visitInfo?.surveys_submitted?.["jcr:uuid"]}' and patientSubmitted.value = 1 ` +
     `and dataForm.questionnaire = '${questionnaireId}' ` +
   "order by visitDate.value __SORT_ORDER_PLACEHOLDER__"
