@@ -74,8 +74,8 @@
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/StatisticsHomepage" mandatory autocreated protected
 
-  // Hardcode the resource supertype: the StatisticsHomepage is a resource.
-  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
+  // Hardcode the resource supertype: the StatisticsHomepage is a resource homepage.
+  - sling:resourceSuperType (STRING) = "cards/ResourceHomepage" mandatory autocreated protected
 
   // Set a default title.
   - title (String) = "Statistics" mandatory autocreated
