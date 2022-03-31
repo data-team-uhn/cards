@@ -1859,7 +1859,7 @@
 				</property>
 				<property>
 					<name>condition</name>
-					<value>For Insurance Payors options, select all that apply; If Insurance Payors - None selection is "No" </value>
+					<value>For Insurance Payors options, select all options that apply; If Insurance Payors - None selection is "No" </value>
 					<type>String</type>
 				</property>
 				<node>
@@ -2399,6 +2399,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>vocabularyFilter</name>
+				<value>Value</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>vocabulary</value>
 				<type>String</type>
@@ -2640,6 +2645,11 @@
 					<values>
 						<value>CathProcedureMasterlist</value>
 					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>vocabularyFilter</name>
+					<value>Value</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -3191,6 +3201,11 @@
 					<values>
 						<value>CardiacSurgMasterlist</value>
 					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>vocabularyFilter</name>
+					<value>Value</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -5950,6 +5965,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>String</type>
 			</property>
 			<property>
+				<name>vocabularyFilter</name>
+				<value>Value</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>vocabulary</value>
 				<type>String</type>
@@ -8361,6 +8381,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>String</type>
 			</property>
 			<property>
+				<name>vocabularyFilter</name>
+				<value>Value</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>vocabulary</value>
 				<type>String</type>
@@ -10079,6 +10104,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>String</type>
 				</property>
 				<property>
+					<name>vocabularyFilter</name>
+					<value>Value</value>
+					<type>String</type>
+				</property>
+				<property>
 					<name>dataType</name>
 					<value>vocabulary</value>
 					<type>String</type>
@@ -10162,6 +10192,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<values>
 						<value>VesselClosureMasterlist</value>
 					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>vocabularyFilter</name>
+					<value>Value</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -10757,6 +10792,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>String</type>
 				</property>
 				<property>
+					<name>vocabularyFilter</name>
+					<value>Value</value>
+					<type>String</type>
+				</property>
+				<property>
 					<name>dataType</name>
 					<value>vocabulary</value>
 					<type>String</type>
@@ -10840,6 +10880,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<values>
 						<value>VesselClosureMasterlist</value>
 					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>vocabularyFilter</name>
+					<value>Value</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -15284,6 +15329,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>String</type>
 			</property>
 			<property>
+				<name>vocabularyFilter</name>
+				<value>Value</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>vocabulary</value>
 				<type>String</type>
@@ -15322,6 +15372,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<values>
 					<value>DeviceMasterlist</value>
 				</values>
+				<type>String</type>
+			</property>
+			<property>
+				<name>vocabularyFilter</name>
+				<value>Value</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -16660,6 +16715,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>String</type>
 			</property>
 			<property>
+				<name>vocabularyFilter</name>
+				<value>Value</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>vocabulary</value>
 				<type>String</type>
@@ -17855,6 +17915,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>String</type>
 				</property>
 				<property>
+					<name>vocabularyFilter</name>
+					<value>Value</value>
+					<type>String</type>
+				</property>
+				<property>
 					<name>dataType</name>
 					<value>vocabulary</value>
 					<type>String</type>
@@ -18028,6 +18093,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<values>
 						<value>DeviceMasterlist</value>
 					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>vocabularyFilter</name>
+					<value>Value</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -18928,6 +18998,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<type>String</type>
 				</property>
 				<property>
+					<name>vocabularyFilter</name>
+					<value>Value</value>
+					<type>String</type>
+				</property>
+				<property>
 					<name>dataType</name>
 					<value>vocabulary</value>
 					<type>String</type>
@@ -19101,6 +19176,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<values>
 						<value>DeviceMasterlist</value>
 					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>vocabularyFilter</name>
+					<value>Value</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -20006,6 +20086,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<values>
 					<value>DeviceMasterlist</value>
 				</values>
+				<type>String</type>
+			</property>
+			<property>
+				<name>vocabularyFilter</name>
+				<value>Value</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -21743,6 +21828,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<values>
 					<value>DeviceMasterlist</value>
 				</values>
+				<type>String</type>
+			</property>
+			<property>
+				<name>vocabularyFilter</name>
+				<value>Value</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -26556,6 +26646,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<type>String</type>
 			</property>
 			<property>
+				<name>vocabularyFilter</name>
+				<value>Value</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>vocabulary</value>
 				<type>String</type>
@@ -26594,6 +26689,11 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<values>
 					<value>DeviceMasterlist</value>
 				</values>
+				<type>String</type>
+			</property>
+			<property>
+				<name>vocabularyFilter</name>
+				<value>Value</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -30437,6 +30537,11 @@ Other</value>
 				<type>String</type>
 			</property>
 			<property>
+				<name>vocabularyFilter</name>
+				<value>Value</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>dataType</name>
 				<value>vocabulary</value>
 				<type>String</type>
@@ -33661,6 +33766,11 @@ Other</value>
 					<values>
 						<value>EventsMasterlist</value>
 					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>vocabularyFilter</name>
+					<value>Value</value>
 					<type>String</type>
 				</property>
 				<property>

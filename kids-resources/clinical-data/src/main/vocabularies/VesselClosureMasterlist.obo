@@ -1,0 +1,766 @@
+! Licensed to the Apache Software Foundation (ASF) under one
+! or more contributor license agreements.  See the NOTICE file
+! distributed with this work for additional information
+! regarding copyright ownership.  The ASF licenses this file
+! to you under the Apache License, Version 2.0 (the
+! "License"); you may not use this file except in compliance
+! with the License.  You may obtain a copy of the License at
+!
+! http://www.apache.org/licenses/LICENSE-2.0
+!
+! Unless required by applicable law or agreed to in writing,
+! software distributed under the License is distributed on an
+! "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+! KIND, either express or implied.  See the License for the
+! specific language governing permissions and limitations
+! under the License.
+
+format-version: 1.2
+
+[Term]
+id: Value
+name: Value
+
+[Term]
+id: Category
+name: Category
+
+[Term]
+id: Manufacturer
+name: Manufacturer
+is_a: Category
+
+[Term]
+id: StJudeMedical
+name: St.\WJude\WMedical
+is_a: Manufacturer
+
+[Term]
+id: DeviceDetails
+name: Device\WDetails
+is_a: Category
+
+[Term]
+id: Sealant
+name: Sealant
+is_a: DeviceDetails
+
+[Term]
+id: 49
+name: Angio-seal Evolution
+is_a: Value
+is_a: StJudeMedical
+is_a: Sealant
+
+[Term]
+id: 32
+name: Angio-Seal Millenium
+is_a: Value
+is_a: StJudeMedical
+is_a: Sealant
+
+[Term]
+id: 34
+name: Angio-Seal STS PLUS
+is_a: Value
+is_a: StJudeMedical
+is_a: Sealant
+
+[Term]
+id: 33
+name: Angio-Seal STS
+is_a: Value
+is_a: StJudeMedical
+is_a: Sealant
+
+[Term]
+id: 35
+name: Angio-Seal VIP
+is_a: Value
+is_a: StJudeMedical
+is_a: Sealant
+
+[Term]
+id: 31
+name: Angio-Seal
+is_a: Value
+is_a: StJudeMedical
+is_a: Sealant
+
+[Term]
+id: Angiolink
+name: Angiolink
+is_a: Manufacturer
+
+[Term]
+id: Staple
+name: Staple
+is_a: DeviceDetails
+
+[Term]
+id: 16
+name: Angiolink EVS
+is_a: Value
+is_a: Angiolink
+is_a: Staple
+
+[Term]
+id: ArstasisInc
+name: Arstasis\WInc
+is_a: Manufacturer
+
+[Term]
+id: 59
+name: Arstasis
+is_a: Value
+is_a: ArstasisInc
+is_a: Sealant
+
+[Term]
+id: BioLife
+name: BioLife
+is_a: Manufacturer
+
+[Term]
+id: Patch
+name: Patch
+is_a: DeviceDetails
+
+[Term]
+id: 56
+name: BioSeal Advanced
+is_a: Value
+is_a: BioLife
+is_a: Patch
+
+[Term]
+id: NotSpecified
+name: Not\WSpecified
+is_a: Manufacturer
+
+[Term]
+id: Other
+name: Other
+is_a: DeviceDetails
+
+[Term]
+id: 4
+name: Blinded - Device type unknown
+is_a: Value
+is_a: NotSpecified
+is_a: Other
+
+[Term]
+id: Cardiva
+name: Cardiva
+is_a: Manufacturer
+
+[Term]
+id: 17
+name: Boomerang ClosureWire
+is_a: Value
+is_a: Cardiva
+is_a: Other
+
+[Term]
+id: AdvancedMedicalSystems
+name: Advanced\WMedical\WSystems
+is_a: Manufacturer
+
+[Term]
+id: 73
+name: CalgaeSeal
+is_a: Value
+is_a: AdvancedMedicalSystems
+is_a: Patch
+
+[Term]
+id: 53
+name: Catalyst II
+is_a: Value
+is_a: Cardiva
+is_a: Other
+
+[Term]
+id: 54
+name: Catalyst III
+is_a: Value
+is_a: Cardiva
+is_a: Other
+
+[Term]
+id: 58
+name: Celox
+is_a: Value
+is_a: Cardiva
+is_a: Patch
+
+[Term]
+id: Vasorum
+name: Vasorum
+is_a: Manufacturer
+
+[Term]
+id: 76
+name: Celt ACD
+is_a: Value
+is_a: Vasorum
+is_a: Sealant
+
+[Term]
+id: VasorumLtd
+name: Vasorum\WLtd
+is_a: Manufacturer
+
+[Term]
+id: 77
+name: Celt ACD
+is_a: Value
+is_a: VasorumLtd
+is_a: Sealant
+
+[Term]
+id: AbbottLaboratories
+name: Abbott\WLaboratories
+is_a: Manufacturer
+
+[Term]
+id: 6
+name: Chito-Seal
+is_a: Value
+is_a: AbbottLaboratories
+is_a: Patch
+
+[Term]
+id: ScionCardioVascular
+name: Scion\WCardio-Vascular
+is_a: Manufacturer
+
+[Term]
+id: 30
+name: Clo-Sur PAD
+is_a: Value
+is_a: ScionCardioVascular
+is_a: Patch
+
+[Term]
+id: Suture
+name: Suture
+is_a: DeviceDetails
+
+[Term]
+id: 7
+name: Closer S
+is_a: Value
+is_a: AbbottLaboratories
+is_a: Suture
+
+[Term]
+id: VascularSolutions
+name: Vascular\WSolutions
+is_a: Manufacturer
+
+[Term]
+id: 45
+name: D-Stat Flowable-4000
+is_a: Value
+is_a: VascularSolutions
+is_a: Patch
+
+[Term]
+id: 44
+name: D-stat
+is_a: Value
+is_a: VascularSolutions
+is_a: Patch
+
+[Term]
+id: 46
+name: Duett Pro Sealing-2210
+is_a: Value
+is_a: VascularSolutions
+is_a: Sealant
+
+[Term]
+id: 47
+name: Duett Sealing Device
+is_a: Value
+is_a: VascularSolutions
+is_a: Sealant
+
+[Term]
+id: HemostasisLLC
+name: Hemostasis\WLLC
+is_a: Manufacturer
+
+[Term]
+id: 75
+name: ExcelArrest XT
+is_a: Value
+is_a: HemostasisLLC
+is_a: Patch
+
+[Term]
+id: JohnsonJohnson
+name: Johnson\W&\WJohnson
+is_a: Manufacturer
+
+[Term]
+id: 65
+name: Exoseal
+is_a: Value
+is_a: JohnsonJohnson
+is_a: Sealant
+
+[Term]
+id: MIR
+name: MIR
+is_a: Manufacturer
+
+[Term]
+id: 51
+name: Femoral Introducer Sheath and Hemostasis Device - FISH
+is_a: Value
+is_a: MIR
+is_a: Sealant
+
+[Term]
+id: FusionMedical
+name: Fusion\WMedical
+is_a: Manufacturer
+
+[Term]
+id: 24
+name: FloSeal Matrix
+is_a: Value
+is_a: FusionMedical
+is_a: Sealant
+
+[Term]
+id: MarinePoly
+name: Marine\WPoly.
+is_a: Manufacturer
+
+[Term]
+id: 60
+name: GlykoSL
+is_a: Value
+is_a: MarinePoly
+is_a: Patch
+
+[Term]
+id: Integra
+name: Integra
+is_a: Manufacturer
+
+[Term]
+id: 26
+name: Helistat
+is_a: Value
+is_a: Integra
+is_a: Patch
+
+[Term]
+id: HemConMedicalTechnologiesInc
+name: HemCon\WMedical\WTechnologies\WInc.
+is_a: Manufacturer
+
+[Term]
+id: 25
+name: Hemcon Bandage
+is_a: Value
+is_a: HemConMedicalTechnologiesInc
+is_a: Patch
+
+[Term]
+id: Manualcompression
+name: Manual\Wcompression
+is_a: DeviceDetails
+
+[Term]
+id: 1
+name: Manual Compression
+is_a: Value
+is_a: NotSpecified
+is_a: Manualcompression
+
+[Term]
+id: Mechanicalcompression
+name: Mechanical\Wcompression
+is_a: DeviceDetails
+
+[Term]
+id: 2
+name: Mechanical Compression
+is_a: Value
+is_a: NotSpecified
+is_a: Mechanicalcompression
+
+[Term]
+id: Access
+name: Access
+is_a: Manufacturer
+
+[Term]
+id: 71
+name: Mynx Ace
+is_a: Value
+is_a: Access
+is_a: Sealant
+
+[Term]
+id: 64
+name: Mynx Cadence
+is_a: Value
+is_a: Access
+is_a: Sealant
+
+[Term]
+id: 15
+name: Mynx
+is_a: Value
+is_a: Access
+is_a: Sealant
+
+[Term]
+id: 55
+name: Mynx-M5
+is_a: Value
+is_a: Access
+is_a: Sealant
+
+[Term]
+id: 66
+name: MynxGrip
+is_a: Value
+is_a: Access
+is_a: Sealant
+
+[Term]
+id: TZMedical
+name: TZ\WMedical
+is_a: Manufacturer
+
+[Term]
+id: 43
+name: Neptune Patch
+is_a: Value
+is_a: TZMedical
+is_a: Patch
+
+[Term]
+id: DatascopeCorp
+name: Datascope\WCorp.
+is_a: Manufacturer
+
+[Term]
+id: 18
+name: On-Site
+is_a: Value
+is_a: DatascopeCorp
+is_a: Sealant
+
+[Term]
+id: 8
+name: Perclose A-T
+is_a: Value
+is_a: AbbottLaboratories
+is_a: Suture
+
+[Term]
+id: 9
+name: Perclose ProGlide
+is_a: Value
+is_a: AbbottLaboratories
+is_a: Suture
+
+[Term]
+id: 5
+name: Place Holder - Device not in list
+is_a: Value
+is_a: NotSpecified
+is_a: Other
+
+[Term]
+id: SulzerSpineTech
+name: Sulzer\WSpine-Tech
+is_a: Manufacturer
+
+[Term]
+id: 41
+name: Proceed Sealant
+is_a: Value
+is_a: SulzerSpineTech
+is_a: Sealant
+
+[Term]
+id: 10
+name: Prostar XL 10 Suture
+is_a: Value
+is_a: AbbottLaboratories
+is_a: Suture
+
+[Term]
+id: 11
+name: Prostar XL 8 Suture
+is_a: Value
+is_a: AbbottLaboratories
+is_a: Suture
+
+[Term]
+id: ZMedica
+name: Z-Medica
+is_a: Manufacturer
+
+[Term]
+id: 57
+name: Quick Clot
+is_a: Value
+is_a: ZMedica
+is_a: Patch
+
+[Term]
+id: SUBQ
+name: SUB-Q
+is_a: Manufacturer
+
+[Term]
+id: 38
+name: QuickSeal ACS
+is_a: Value
+is_a: SUBQ
+is_a: Sealant
+
+[Term]
+id: 39
+name: QuickSeal SureShot
+is_a: Value
+is_a: SUBQ
+is_a: Sealant
+
+[Term]
+id: 40
+name: QuickSeal SureStat
+is_a: Value
+is_a: SUBQ
+is_a: Sealant
+
+[Term]
+id: 37
+name: QuickSeal
+is_a: Value
+is_a: SUBQ
+is_a: Sealant
+
+[Term]
+id: Possis
+name: Possis
+is_a: Manufacturer
+
+[Term]
+id: 29
+name: SafeSeal
+is_a: Value
+is_a: Possis
+is_a: Patch
+
+[Term]
+id: 72
+name: Sheath in place for staged procedure
+is_a: Value
+is_a: NotSpecified
+is_a: Other
+
+[Term]
+id: ChitogenInc
+name: Chitogen\WInc
+is_a: Manufacturer
+
+[Term]
+id: 74
+name: SoftSeal-STS Hemostatic Pad
+is_a: Value
+is_a: ChitogenInc
+is_a: Patch
+
+[Term]
+id: 50
+name: Starclose SE
+is_a: Value
+is_a: AbbottLaboratories
+is_a: Other
+
+[Term]
+id: 12
+name: Starclose Vascular Clo Sys
+is_a: Value
+is_a: AbbottLaboratories
+is_a: Other
+
+[Term]
+id: 36
+name: Stasyspatch
+is_a: Value
+is_a: StJudeMedical
+is_a: Sealant
+
+[Term]
+id: 69
+name: Statseal Advanced Powder
+is_a: Value
+is_a: BioLife
+is_a: Patch
+
+[Term]
+id: 70
+name: Statseal Advanced Powder
+is_a: Value
+is_a: BioLife
+is_a: Patch
+
+[Term]
+id: 3
+name: Surgical Closure Required
+is_a: Value
+is_a: NotSpecified
+is_a: Other
+
+[Term]
+id: Ethicon360
+name: Ethicon360
+is_a: Manufacturer
+
+[Term]
+id: 63
+name: SURGICEL- FIBRILLAR
+is_a: Value
+is_a: Ethicon360
+is_a: Patch
+
+[Term]
+id: 62
+name: SURGICEL- NU-KNIT
+is_a: Value
+is_a: Ethicon360
+is_a: Patch
+
+[Term]
+id: 61
+name: SURGICEL- ORIGINAL
+is_a: Value
+is_a: Ethicon360
+is_a: Patch
+
+[Term]
+id: Sutura
+name: Sutura
+is_a: Manufacturer
+
+[Term]
+id: 42
+name: Sutura Superstitch device
+is_a: Value
+is_a: Sutura
+is_a: Suture
+
+[Term]
+id: 28
+name: Syvek Patches
+is_a: Value
+is_a: MarinePoly
+is_a: Patch
+
+[Term]
+id: 14
+name: Techstar XL
+is_a: Value
+is_a: AbbottLaboratories
+is_a: Suture
+
+[Term]
+id: 13
+name: Techstar
+is_a: Value
+is_a: AbbottLaboratories
+is_a: Suture
+
+[Term]
+id: 52
+name: Thrombix Hemostasis Patch
+is_a: Value
+is_a: VascularSolutions
+is_a: Patch
+
+[Term]
+id: InterV
+name: InterV
+is_a: Manufacturer
+
+[Term]
+id: 27
+name: V+Pad
+is_a: Value
+is_a: InterV
+is_a: Patch
+
+[Term]
+id: 68
+name: Vascade Closure System
+is_a: Value
+is_a: Cardiva
+is_a: Sealant
+
+[Term]
+id: 67
+name: VASCADE‚Ñ¢ Closure System
+is_a: Value
+is_a: Cardiva
+is_a: Sealant
+
+[Term]
+id: 20
+name: Vasoseal Elite
+is_a: Value
+is_a: DatascopeCorp
+is_a: Sealant
+
+[Term]
+id: 21
+name: VasoSeal ES
+is_a: Value
+is_a: DatascopeCorp
+is_a: Sealant
+
+[Term]
+id: 22
+name: VasoSeal Low Profile
+is_a: Value
+is_a: DatascopeCorp
+is_a: Sealant
+
+[Term]
+id: 23
+name: VasoSeal VHD
+is_a: Value
+is_a: DatascopeCorp
+is_a: Sealant
+
+[Term]
+id: 19
+name: Vasoseal
+is_a: Value
+is_a: DatascopeCorp
+is_a: Sealant
+
+[Term]
+id: XsiteMedical
+name: X-site\WMedical
+is_a: Manufacturer
+
+[Term]
+id: 48
+name: X-Press
+is_a: Value
+is_a: XsiteMedical
+is_a: Suture
+

@@ -1,0 +1,1912 @@
+! Licensed to the Apache Software Foundation (ASF) under one
+! or more contributor license agreements.  See the NOTICE file
+! distributed with this work for additional information
+! regarding copyright ownership.  The ASF licenses this file
+! to you under the Apache License, Version 2.0 (the
+! "License"); you may not use this file except in compliance
+! with the License.  You may obtain a copy of the License at
+!
+! http://www.apache.org/licenses/LICENSE-2.0
+!
+! Unless required by applicable law or agreed to in writing,
+! software distributed under the License is distributed on an
+! "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+! KIND, either express or implied.  See the License for the
+! specific language governing permissions and limitations
+! under the License.
+
+format-version: 1.2
+
+[Term]
+id: Value
+name: Value
+
+[Term]
+id: Category
+name: Category
+
+[Term]
+id: SurgeryType
+name: Surgery\WType
+is_a: Category
+
+[Term]
+id: ASD
+name: ASD
+is_a: SurgeryType
+
+[Term]
+id: 10
+name: PFO: Primary closure
+is_a: Value
+is_a: ASD
+
+[Term]
+id: 20
+name: ASD Repair: Primary closure
+is_a: Value
+is_a: ASD
+
+[Term]
+id: 30
+name: ASD Repair: Patch
+is_a: Value
+is_a: ASD
+
+[Term]
+id: 40
+name: ASD Repair: Device
+is_a: Value
+is_a: ASD
+
+[Term]
+id: 2110
+name: ASD repair: Patch + PAPVC repair
+is_a: Value
+is_a: ASD
+
+[Term]
+id: 50
+name: ASD: Common atrium (single atrium) - Septation
+is_a: Value
+is_a: ASD
+
+[Term]
+id: 60
+name: ASD Creation/enlargement
+is_a: Value
+is_a: ASD
+
+[Term]
+id: 70
+name: ASD Partial closure
+is_a: Value
+is_a: ASD
+
+[Term]
+id: 80
+name: Atrial Septal fenestration
+is_a: Value
+is_a: ASD
+
+[Term]
+id: 85
+name: Atrial Fenestration closure
+is_a: Value
+is_a: ASD
+
+[Term]
+id: 1520
+name: ASD creation: Balloon septostomy (BAS) (Rashkind)
+is_a: Value
+is_a: ASD
+
+[Term]
+id: 1530
+name: ASD creation: Blade septostomy
+is_a: Value
+is_a: ASD
+
+[Term]
+id: VSD
+name: VSD
+is_a: SurgeryType
+
+[Term]
+id: 100
+name: VSD Repair: Primary closure
+is_a: Value
+is_a: VSD
+
+[Term]
+id: 110
+name: VSD Repair: Patch
+is_a: Value
+is_a: VSD
+
+[Term]
+id: 120
+name: VSD Repair: Device
+is_a: Value
+is_a: VSD
+
+[Term]
+id: 130
+name: VSD Repair: Multiple
+is_a: Value
+is_a: VSD
+
+[Term]
+id: 140
+name: VSD Creation/enlargement
+is_a: Value
+is_a: VSD
+
+[Term]
+id: 150
+name: Ventricular Septal fenestration
+is_a: Value
+is_a: VSD
+
+[Term]
+id: AVCanal
+name: AV\WCanal
+is_a: SurgeryType
+
+[Term]
+id: 170
+name: AVC (AVSD) repair: Complete (CAVSD)
+is_a: Value
+is_a: AVCanal
+
+[Term]
+id: 180
+name: AVC (AVSD) repair: Intermediate (Transitional)
+is_a: Value
+is_a: AVCanal
+
+[Term]
+id: 190
+name: AVC (AVSD) repair: Partial (Incomplete) (PAVSD)
+is_a: Value
+is_a: AVCanal
+
+[Term]
+id: 2300
+name: Valvuloplasty: Common atrioventricular valve
+is_a: Value
+is_a: AVCanal
+
+[Term]
+id: 2250
+name: Valvuloplasty converted to valve replacement in the
+same operation- Common atrioventricular valve
+is_a: Value
+is_a: AVCanal
+
+[Term]
+id: 2230
+name: Valve replacement: Common atrioventricular valve
+is_a: Value
+is_a: AVCanal
+
+[Term]
+id: APwindow
+name: AP\Wwindow
+is_a: SurgeryType
+
+[Term]
+id: 210
+name: AP window Repair
+is_a: Value
+is_a: APwindow
+
+[Term]
+id: 220
+name: Pulmonary artery origin from ascending aorta
+(hemitruncus) repair
+is_a: Value
+is_a: APwindow
+
+[Term]
+id: Truncusarteriosus
+name: Truncus\Warteriosus
+is_a: SurgeryType
+
+[Term]
+id: 230
+name: Truncus arteriosus repair
+is_a: Value
+is_a: Truncusarteriosus
+
+[Term]
+id: 240
+name: Valvuloplasty: Truncal valve
+is_a: Value
+is_a: Truncusarteriosus
+
+[Term]
+id: 2290
+name: Valvuloplasty converted to valve replacement in the
+same operation- Truncal valve
+is_a: Value
+is_a: Truncusarteriosus
+
+[Term]
+id: 250
+name: Valve replacement: Truncal valve
+is_a: Value
+is_a: Truncusarteriosus
+
+[Term]
+id: 2220
+name: Truncus + Interrupted aortic arch repair (IAA) repair
+is_a: Value
+is_a: Truncusarteriosus
+
+[Term]
+id: PartialAnomalousPulmonaryVenousConnectionPAPVC
+name: Partial\WAnomalous\WPulmonary\
+Venous\WConnection\W\(PAPVC\)
+is_a: SurgeryType
+
+[Term]
+id: 260
+name: PAPVC repair
+is_a: Value
+is_a: PartialAnomalousPulmonaryVenousConnectionPAPVC
+
+[Term]
+id: 270
+name: PAPVC repair: Scimitar
+is_a: Value
+is_a: PartialAnomalousPulmonaryVenousConnectionPAPVC
+
+[Term]
+id: PartialAnomalousPulmonaryVenousConnection
+name: Partial\WAnomalous\WPulmonary\WVenous\WConnection
+is_a: SurgeryType
+
+[Term]
+id: 2120
+name: PAPVC repair: Baffle redirection to left atrium with systemic vein translocation (Warden) (SVC sewn to
+right atrial appendage)
+is_a: Value
+is_a: PartialAnomalousPulmonaryVenousConnection
+
+[Term]
+id: TotalAnomalousPulmonaryVenousConnectionTAPVC
+name: Total\WAnomalous\WPulmonary\
+Venous\WConnection\W\(TAPVC\)
+is_a: SurgeryType
+
+[Term]
+id: 280
+name: TAPVC Repair
+is_a: Value
+is_a: TotalAnomalousPulmonaryVenousConnectionTAPVC
+
+[Term]
+id: 2200
+name: TAPVC repair and Shunt - systemic-to-pulmonary
+is_a: Value
+is_a: TotalAnomalousPulmonaryVenousConnectionTAPVC
+
+[Term]
+id: Cortriatriatum
+name: Cor\Wtriatriatum
+is_a: SurgeryType
+
+[Term]
+id: 290
+name: Cor triatriatum repair
+is_a: Value
+is_a: Cortriatriatum
+
+[Term]
+id: Pulmonaryvenousstenosis
+name: Pulmonary\Wvenous\Wstenosis
+is_a: SurgeryType
+
+[Term]
+id: 300
+name: Pulmonary venous stenosis Repair
+is_a: Value
+is_a: Pulmonaryvenousstenosis
+
+[Term]
+id: AnomalousSystemicVenousConnection
+name: Anomalous\WSystemic\WVenous\
+Connection
+is_a: SurgeryType
+
+[Term]
+id: 310
+name: Atrial baffle procedure (non-Mustard / non-Senning)
+is_a: Value
+is_a: AnomalousSystemicVenousConnection
+
+[Term]
+id: 330
+name: Anomalous systemic venous connection repair
+is_a: Value
+is_a: AnomalousSystemicVenousConnection
+
+[Term]
+id: Systemicvenousobstruction
+name: Systemic\Wvenous\Wobstruction
+is_a: SurgeryType
+
+[Term]
+id: 340
+name: Systemic venous stenosis Repair
+is_a: Value
+is_a: Systemicvenousobstruction
+
+[Term]
+id: TetralogyofFallotTOF
+name: Tetralogy\Wof\WFallot\W\(TOF\)
+is_a: SurgeryType
+
+[Term]
+id: 350
+name: TOF Repair: No ventriculotomy
+is_a: Value
+is_a: TetralogyofFallotTOF
+
+[Term]
+id: 360
+name: TOF Repair: Ventriculotomy (Nontransanular patch)
+is_a: Value
+is_a: TetralogyofFallotTOF
+
+[Term]
+id: 370
+name: TOF Repair: Ventriculotomy (Transanular patch)
+is_a: Value
+is_a: TetralogyofFallotTOF
+
+[Term]
+id: 380
+name: TOF Repair: RV-PA conduit
+is_a: Value
+is_a: TetralogyofFallotTOF
+
+[Term]
+id: 390
+name: TOF: AVC (AVSD) repair
+is_a: Value
+is_a: TetralogyofFallotTOF
+
+[Term]
+id: 400
+name: TOF: Absent pulmonary valve
+is_a: Value
+is_a: TetralogyofFallotTOF
+
+[Term]
+id: Pulmonaryatresia
+name: Pulmonary\Watresia
+is_a: SurgeryType
+
+[Term]
+id: 420
+name: VSD (including TOF/PA) repair
+is_a: Value
+is_a: Pulmonaryatresia
+
+[Term]
+id: 430
+name: VSD / MAPCA (pseudotruncus) repair
+is_a: Value
+is_a: Pulmonaryatresia
+
+[Term]
+id: 440
+name: Unifocalization MAPCA(s)
+is_a: Value
+is_a: Pulmonaryatresia
+
+[Term]
+id: 450
+name: Occlusion MAPCA(s)
+is_a: Value
+is_a: Pulmonaryatresia
+
+[Term]
+id: TricuspidValveDiseaseandEbsteinsAnomaly
+name: Tricuspid\WValve\WDisease\Wand\
+Ebstein’s\WAnomaly
+is_a: SurgeryType
+
+[Term]
+id: 460
+name: Valvuloplasty: Tricuspid
+is_a: Value
+is_a: TricuspidValveDiseaseandEbsteinsAnomaly
+
+[Term]
+id: 2280
+name: Valvuloplasty converted to valve replacement in the
+same operation: Tricuspid
+is_a: Value
+is_a: TricuspidValveDiseaseandEbsteinsAnomaly
+
+[Term]
+id: 465
+name: Ebstein's repair
+is_a: Value
+is_a: TricuspidValveDiseaseandEbsteinsAnomaly
+
+[Term]
+id: 470
+name: Valve replacement: Tricuspid (TVR)
+is_a: Value
+is_a: TricuspidValveDiseaseandEbsteinsAnomaly
+
+[Term]
+id: 480
+name: Valve closure: Tricuspid (exclusion - univentricular
+approach)
+is_a: Value
+is_a: TricuspidValveDiseaseandEbsteinsAnomaly
+
+[Term]
+id: 490
+name: Valve excision: Tricuspid (without replacement)
+is_a: Value
+is_a: TricuspidValveDiseaseandEbsteinsAnomaly
+
+[Term]
+id: 500
+name: Valve Surgery Other: Tricuspid
+is_a: Value
+is_a: TricuspidValveDiseaseandEbsteinsAnomaly
+
+[Term]
+id: RVOTObstructionIVSPulmonaryStenosis
+name: RVOT\WObstruction-\WIVS\WPulmonary\
+Stenosis
+is_a: SurgeryType
+
+[Term]
+id: 510
+name: RVOT procedure
+is_a: Value
+is_a: RVOTObstructionIVSPulmonaryStenosis
+
+[Term]
+id: 520
+name: 1 1/2 ventricular repair
+is_a: Value
+is_a: RVOTObstructionIVSPulmonaryStenosis
+
+[Term]
+id: 530
+name: Reconstruction (plasty): Main (trunk)
+is_a: Value
+is_a: RVOTObstructionIVSPulmonaryStenosis
+
+[Term]
+id: 540
+name: Reconstruction (plasty): Branch/Central (within the
+hilar bifurcation)
+is_a: Value
+is_a: RVOTObstructionIVSPulmonaryStenosis
+
+[Term]
+id: 550
+name: Reconstruction (plasty): Branch/Peripheral (at or
+beyond the hilar bifurcation)
+is_a: Value
+is_a: RVOTObstructionIVSPulmonaryStenosis
+
+[Term]
+id: 570
+name: DCRV repair
+is_a: Value
+is_a: RVOTObstructionIVSPulmonaryStenosis
+
+[Term]
+id: PulmonaryValveDisease
+name: Pulmonary\WValve\WDisease
+is_a: SurgeryType
+
+[Term]
+id: 590
+name: Valvuloplasty: Pulmonic
+is_a: Value
+is_a: PulmonaryValveDisease
+
+[Term]
+id: 2270
+name: Valvuloplasty converted to valve replacement in the
+same operation: Pulmonic
+is_a: Value
+is_a: PulmonaryValveDisease
+
+[Term]
+id: 600
+name: Valve replacement: Pulmonic (PVR)
+is_a: Value
+is_a: PulmonaryValveDisease
+
+[Term]
+id: 630
+name: Valve excision: Pulmonary (without replacement)
+is_a: Value
+is_a: PulmonaryValveDisease
+
+[Term]
+id: 640
+name: Valve closure: Semilunar
+is_a: Value
+is_a: PulmonaryValveDisease
+
+[Term]
+id: 650
+name: Valve surgery (Other): Pulmonic
+is_a: Value
+is_a: PulmonaryValveDisease
+
+[Term]
+id: Conduitoperations
+name: Conduit\Woperations
+is_a: SurgeryType
+
+[Term]
+id: 610
+name: Conduit placement: RV to PA
+is_a: Value
+is_a: Conduitoperations
+
+[Term]
+id: 620
+name: Conduit placement: LV to PA
+is_a: Value
+is_a: Conduitoperations
+
+[Term]
+id: 1774
+name: Conduit placement: Ventricle to aorta
+is_a: Value
+is_a: Conduitoperations
+
+[Term]
+id: 1772
+name: Conduit placement: Other
+is_a: Value
+is_a: Conduitoperations
+
+[Term]
+id: ConduitStenosisInsufficiency
+name: Conduit\WStenosis\W/\WInsufficiency
+is_a: SurgeryType
+
+[Term]
+id: 580
+name: Conduit reoperation
+is_a: Value
+is_a: ConduitStenosisInsufficiency
+
+[Term]
+id: AorticValveDisease
+name: Aortic\WValve\WDisease
+is_a: SurgeryType
+
+[Term]
+id: 660
+name: Valvuloplasty - Aortic
+is_a: Value
+is_a: AorticValveDisease
+
+[Term]
+id: 2240
+name: Valvuloplasty converted to valve replacement in the
+same operation: Aortic
+is_a: Value
+is_a: AorticValveDisease
+
+[Term]
+id: 2310
+name: Valvuloplasty converted to valve replacement in the
+same operation: Aortic – with Ross procedure
+is_a: Value
+is_a: AorticValveDisease
+
+[Term]
+id: 2320
+name: Valvuloplasty converted to valve replacement in the same operation: Aortic – with Ross-Konno procedure
+is_a: Value
+is_a: AorticValveDisease
+
+[Term]
+id: 670
+name: Valve replacement: Aortic (AVR)
+is_a: Value
+is_a: AorticValveDisease
+
+[Term]
+id: 680
+name: Valve replacement: Aortic (AVR) - Mechanical
+is_a: Value
+is_a: AorticValveDisease
+
+[Term]
+id: 690
+name: Valve replacement: Aortic (AVR) - Bioprosthetic
+is_a: Value
+is_a: AorticValveDisease
+
+[Term]
+id: 700
+name: Valve replacement: Aortic (AVR) - Homograft
+is_a: Value
+is_a: AorticValveDisease
+
+[Term]
+id: 715
+name: Aortic root replacement: Bioprosthetic
+is_a: Value
+is_a: AorticValveDisease
+
+[Term]
+id: 720
+name: Aortic root replacement: Mechanical
+is_a: Value
+is_a: AorticValveDisease
+
+[Term]
+id: 730
+name: Aortic root replacement: Homograft
+is_a: Value
+is_a: AorticValveDisease
+
+[Term]
+id: 735
+name: Aortic root replacement: Valve sparing
+is_a: Value
+is_a: AorticValveDisease
+
+[Term]
+id: 740
+name: Ross procedure
+is_a: Value
+is_a: AorticValveDisease
+
+[Term]
+id: 750
+name: Konno procedure
+is_a: Value
+is_a: AorticValveDisease
+
+[Term]
+id: 760
+name: Ross-Konno procedure
+is_a: Value
+is_a: AorticValveDisease
+
+[Term]
+id: 770
+name: Other annular enlargement procedure
+is_a: Value
+is_a: AorticValveDisease
+
+[Term]
+id: 780
+name: Aortic stenosis: Subvalvar - Repair
+is_a: Value
+is_a: AorticValveDisease
+
+[Term]
+id: 2100
+name: Aortic stenosis: Subvalvar - Repair with myectomy for
+IHSS
+is_a: Value
+is_a: AorticValveDisease
+
+[Term]
+id: 790
+name: Aortic stenosis: Supravalvar Repair
+is_a: Value
+is_a: AorticValveDisease
+
+[Term]
+id: 800
+name: Valve surgery (Other) - Aortic
+is_a: Value
+is_a: AorticValveDisease
+
+[Term]
+id: SinusofValsalvaAneurysm
+name: Sinus\Wof\WValsalva\WAneurysm
+is_a: SurgeryType
+
+[Term]
+id: 810
+name: Sinus of Valsalva Aneurysm repair
+is_a: Value
+is_a: SinusofValsalvaAneurysm
+
+[Term]
+id: LVtoaortatunnel
+name: LV\Wto\Waorta\Wtunnel
+is_a: SurgeryType
+
+[Term]
+id: 820
+name: LV to aorta tunnel repair
+is_a: Value
+is_a: LVtoaortatunnel
+
+[Term]
+id: MitralValveDisease
+name: Mitral\WValve\WDisease
+is_a: SurgeryType
+
+[Term]
+id: 830
+name: Valvuloplasty: Mitral
+is_a: Value
+is_a: MitralValveDisease
+
+[Term]
+id: 2260
+name: Valvuloplasty converted to valve replacement in the
+same operation- Mitral
+is_a: Value
+is_a: MitralValveDisease
+
+[Term]
+id: 840
+name: Mitral stenosis: Supravalvar mitral ring repair
+is_a: Value
+is_a: MitralValveDisease
+
+[Term]
+id: 850
+name: Valve replacement: Mitral (MVR)
+is_a: Value
+is_a: MitralValveDisease
+
+[Term]
+id: 860
+name: Valve surgery (Other): Mitral
+is_a: Value
+is_a: MitralValveDisease
+
+[Term]
+id: HypoplasticLeftHeart
+name: Hypoplastic\WLeft\WHeart
+is_a: SurgeryType
+
+[Term]
+id: 870
+name: Norwood procedure
+is_a: Value
+is_a: HypoplasticLeftHeart
+
+[Term]
+id: 880
+name: HLHS biventricular repair
+is_a: Value
+is_a: HypoplasticLeftHeart
+
+[Term]
+id: 2160
+name: Hybrid Approach (Stage 1): Application of RPA & LPA
+bands
+is_a: Value
+is_a: HypoplasticLeftHeart
+
+[Term]
+id: 2170
+name: Hybrid Approach (Stage 1): Stent placement in arterial
+duct (PDA)
+is_a: Value
+is_a: HypoplasticLeftHeart
+
+[Term]
+id: 2180
+name: Hybrid Approach (Stage 1): Stent placement in arterial duct (PDA) and application of RPA & LPA bands
+is_a: Value
+is_a: HypoplasticLeftHeart
+
+[Term]
+id: 2140
+name: Hybrid approach (Stage 2): Aortopulmonary amalgamation and Superior Cavopulmonary anastomosis(es) and PA Debanding and Aortic arch repair (Norwood [Stage 1] and Superior
+Cavopulmonary anastomosis(es) and PA Debanding)
+is_a: Value
+is_a: HypoplasticLeftHeart
+
+[Term]
+id: 2150
+name: Hybrid approach (Stage 2): Aortopulmonary amalgamation and Superior Cavopulmonary anastomosis(es) and PA Debanding and Without aortic
+arch repair
+is_a: Value
+is_a: HypoplasticLeftHeart
+
+[Term]
+id: Cardiomyopathy
+name: Cardiomyopathy
+is_a: SurgeryType
+
+[Term]
+id: 890
+name: Transplant: Heart
+is_a: Value
+is_a: Cardiomyopathy
+
+[Term]
+id: 900
+name: Transplant: Heart and lung
+is_a: Value
+is_a: Cardiomyopathy
+
+[Term]
+id: 910
+name: Partial left ventriculectomy (LV volume reduction
+surgery) (Batista)
+is_a: Value
+is_a: Cardiomyopathy
+
+[Term]
+id: PericardialDisease
+name: Pericardial\WDisease
+is_a: SurgeryType
+
+[Term]
+id: 920
+name: Pericardial drainage procedure
+is_a: Value
+is_a: PericardialDisease
+
+[Term]
+id: 930
+name: Pericardiectomy
+is_a: Value
+is_a: PericardialDisease
+
+[Term]
+id: 940
+name: Pericardial procedure: Other
+is_a: Value
+is_a: PericardialDisease
+
+[Term]
+id: SingleVentricle
+name: Single\WVentricle
+is_a: SurgeryType
+
+[Term]
+id: 950
+name: Fontan: Atrio-pulmonary connection
+is_a: Value
+is_a: SingleVentricle
+
+[Term]
+id: 960
+name: Fontan: Atrio-ventricular connection
+is_a: Value
+is_a: SingleVentricle
+
+[Term]
+id: 970
+name: Fontan: TCPC - Lateral tunnel Fenestrated
+is_a: Value
+is_a: SingleVentricle
+
+[Term]
+id: 980
+name: Fontan: TCPC- Lateral tunnel Nonfenestrated
+is_a: Value
+is_a: SingleVentricle
+
+[Term]
+id: 1000
+name: Fontan: TCPC- External conduit Fenestrated
+is_a: Value
+is_a: SingleVentricle
+
+[Term]
+id: 1010
+name: Fontan: TCPC- External conduit Nonfenestrated
+is_a: Value
+is_a: SingleVentricle
+
+[Term]
+id: 1025
+name: Fontan revision or conversion (Re-do Fontan)
+is_a: Value
+is_a: SingleVentricle
+
+[Term]
+id: 1030
+name: Fontan: Other
+is_a: Value
+is_a: SingleVentricle
+
+[Term]
+id: 2340
+name: Fontan and Atrioventricular valvuloplasty
+is_a: Value
+is_a: SingleVentricle
+
+[Term]
+id: 1035
+name: Ventricular septation
+is_a: Value
+is_a: SingleVentricle
+
+[Term]
+id: CongenitallycorrectedTGArepair
+name: Congenitally\Wcorrected\WTGA\Wrepair
+is_a: SurgeryType
+
+[Term]
+id: 1050
+name: Congenitally corrected TGA repair: Atrial switch and
+ASO (double switch)
+is_a: Value
+is_a: CongenitallycorrectedTGArepair
+
+[Term]
+id: 1060
+name: Congenitally corrected TGA repair: Atrial switch and
+Rastelli
+is_a: Value
+is_a: CongenitallycorrectedTGArepair
+
+[Term]
+id: 1070
+name: Congenitally corrected TGA repair: VSD closure
+is_a: Value
+is_a: CongenitallycorrectedTGArepair
+
+[Term]
+id: 1080
+name: Congenitally corrected TGA repair: VSD closure and LV
+to PA conduit
+is_a: Value
+is_a: CongenitallycorrectedTGArepair
+
+[Term]
+id: 1090
+name: Congenitally corrected TGA repair: Other
+is_a: Value
+is_a: CongenitallycorrectedTGArepair
+
+[Term]
+id: TranspositionoftheGreatArteries
+name: Transposition\Wof\Wthe\WGreat\
+Arteries
+is_a: SurgeryType
+
+[Term]
+id: 1110
+name: Arterial switch operation (ASO)
+is_a: Value
+is_a: TranspositionoftheGreatArteries
+
+[Term]
+id: 1120
+name: Arterial switch operation (ASO) and VSD repair
+is_a: Value
+is_a: TranspositionoftheGreatArteries
+
+[Term]
+id: 1123
+name: Arterial switch procedure and Aortic arch repair
+is_a: Value
+is_a: TranspositionoftheGreatArteries
+
+[Term]
+id: 1125
+name: Arterial switch procedure and VSD repair and Aortic
+arch repair
+is_a: Value
+is_a: TranspositionoftheGreatArteries
+
+[Term]
+id: 1130
+name: Senning
+is_a: Value
+is_a: TranspositionoftheGreatArteries
+
+[Term]
+id: 1140
+name: Mustard
+is_a: Value
+is_a: TranspositionoftheGreatArteries
+
+[Term]
+id: 1145
+name: Atrial baffle procedure: Mustard or Senning revision
+is_a: Value
+is_a: TranspositionoftheGreatArteries
+
+[Term]
+id: 1150
+name: Rastelli
+is_a: Value
+is_a: TranspositionoftheGreatArteries
+
+[Term]
+id: 1160
+name: REV
+is_a: Value
+is_a: TranspositionoftheGreatArteries
+
+[Term]
+id: 1170
+name: Aortic root translocation over left ventricle (Including
+Nikaidoh procedure)
+is_a: Value
+is_a: TranspositionoftheGreatArteries
+
+[Term]
+id: 2210
+name: TGA: Other procedures (Kawashima; LV-PA conduit;
+other)
+is_a: Value
+is_a: TranspositionoftheGreatArteries
+
+[Term]
+id: DORV
+name: DORV
+is_a: SurgeryType
+
+[Term]
+id: 1180
+name: DORV: Intraventricular tunnel repair
+is_a: Value
+is_a: DORV
+
+[Term]
+id: DOLV
+name: DOLV
+is_a: SurgeryType
+
+[Term]
+id: 1200
+name: DOLV repair
+is_a: Value
+is_a: DOLV
+
+[Term]
+id: CoarctationofAortaandAorticarchhypoplasia
+name: Coarctation\Wof\WAorta\Wand\WAortic\
+arch\Whypoplasia
+is_a: SurgeryType
+
+[Term]
+id: 1210
+name: Coarctation repair: End to end
+is_a: Value
+is_a: CoarctationofAortaandAorticarchhypoplasia
+
+[Term]
+id: 1220
+name: Coarctation repair: End to end - Extended
+is_a: Value
+is_a: CoarctationofAortaandAorticarchhypoplasia
+
+[Term]
+id: 1230
+name: Coarctation repair: Subclavian flap
+is_a: Value
+is_a: CoarctationofAortaandAorticarchhypoplasia
+
+[Term]
+id: 1240
+name: Coarctation repair: Patch aortoplasty
+is_a: Value
+is_a: CoarctationofAortaandAorticarchhypoplasia
+
+[Term]
+id: 1250
+name: Coarctation repair: Interposition graft
+is_a: Value
+is_a: CoarctationofAortaandAorticarchhypoplasia
+
+[Term]
+id: 1260
+name: Coarctation repair: Other
+is_a: Value
+is_a: CoarctationofAortaandAorticarchhypoplasia
+
+[Term]
+id: 1275
+name: Coarctation repair and VSD repair
+is_a: Value
+is_a: CoarctationofAortaandAorticarchhypoplasia
+
+[Term]
+id: 1280
+name: Aortic arch repair
+is_a: Value
+is_a: CoarctationofAortaandAorticarchhypoplasia
+
+[Term]
+id: 1285
+name: Aortic arch repair and VSD repair
+is_a: Value
+is_a: CoarctationofAortaandAorticarchhypoplasia
+
+[Term]
+id: CoronaryArteryAnomalies
+name: Coronary\WArtery\WAnomalies
+is_a: SurgeryType
+
+[Term]
+id: 1290
+name: Coronary artery fistula ligation
+is_a: Value
+is_a: CoronaryArteryAnomalies
+
+[Term]
+id: 1291
+name: Anomalous origin of coronary artery from pulmonary
+artery repair
+is_a: Value
+is_a: CoronaryArteryAnomalies
+
+[Term]
+id: 1300
+name: Coronary artery bypass
+is_a: Value
+is_a: CoronaryArteryAnomalies
+
+[Term]
+id: 1305
+name: Anomalous aortic origin of coronary artery from aorta
+(AAOCA) repair
+is_a: Value
+is_a: CoronaryArteryAnomalies
+
+[Term]
+id: 1310
+name: Coronary artery procedure: Other
+is_a: Value
+is_a: CoronaryArteryAnomalies
+
+[Term]
+id: InterruptedArch
+name: Interrupted\WArch
+is_a: SurgeryType
+
+[Term]
+id: 1320
+name: Interrupted aortic arch repair
+is_a: Value
+is_a: InterruptedArch
+
+[Term]
+id: PatentDuctusArteriosus
+name: Patent\WDuctus\WArteriosus
+is_a: SurgeryType
+
+[Term]
+id: 1330
+name: PDA closure: Surgical
+is_a: Value
+is_a: PatentDuctusArteriosus
+
+[Term]
+id: 1340
+name: PDA closure: Device
+is_a: Value
+is_a: PatentDuctusArteriosus
+
+[Term]
+id: VascularRingsandSlings
+name: Vascular\WRings\Wand\WSlings
+is_a: SurgeryType
+
+[Term]
+id: 1360
+name: Vascular ring repair
+is_a: Value
+is_a: VascularRingsandSlings
+
+[Term]
+id: 1365
+name: Aortopexy
+is_a: Value
+is_a: VascularRingsandSlings
+
+[Term]
+id: 1370
+name: Pulmonary artery sling repair
+is_a: Value
+is_a: VascularRingsandSlings
+
+[Term]
+id: AorticAneurysm
+name: Aortic\WAneurysm
+is_a: SurgeryType
+
+[Term]
+id: 1380
+name: Aortic aneurysm repair
+is_a: Value
+is_a: AorticAneurysm
+
+[Term]
+id: AorticDissection
+name: Aortic\WDissection
+is_a: SurgeryType
+
+[Term]
+id: 1390
+name: Aortic dissection repair
+is_a: Value
+is_a: AorticDissection
+
+[Term]
+id: LungDisease
+name: Lung\WDisease
+is_a: SurgeryType
+
+[Term]
+id: 1400
+name: Lung biopsy
+is_a: Value
+is_a: LungDisease
+
+[Term]
+id: 1410
+name: Lung(s) transplant
+is_a: Value
+is_a: LungDisease
+
+[Term]
+id: 1420
+name: Lung procedure: Other
+is_a: Value
+is_a: LungDisease
+
+[Term]
+id: PectusExcavatumCarinatum
+name: Pectus\WExcavatum-\WCarinatum
+is_a: SurgeryType
+
+[Term]
+id: 1430
+name: Pectus repair
+is_a: Value
+is_a: PectusExcavatumCarinatum
+
+[Term]
+id: TrachealStenosis
+name: Tracheal\WStenosis
+is_a: SurgeryType
+
+[Term]
+id: 1440
+name: Tracheal procedure
+is_a: Value
+is_a: TrachealStenosis
+
+[Term]
+id: Electrophysiological
+name: Electrophysiological
+is_a: SurgeryType
+
+[Term]
+id: 1450
+name: Pacemaker implantation: Permanent
+is_a: Value
+is_a: Electrophysiological
+
+[Term]
+id: 1460
+name: Pacemaker procedure
+is_a: Value
+is_a: Electrophysiological
+
+[Term]
+id: 2350
+name: Explantation of pacing system
+is_a: Value
+is_a: Electrophysiological
+
+[Term]
+id: 1470
+name: ICD (AICD) implantation
+is_a: Value
+is_a: Electrophysiological
+
+[Term]
+id: 1480
+name: ICD (AICD) ([automatic] implantable cardioverter
+defibrillator) procedure
+is_a: Value
+is_a: Electrophysiological
+
+[Term]
+id: 1490
+name: Arrhythmia surgery: Atrial - Surgical Ablation
+is_a: Value
+is_a: Electrophysiological
+
+[Term]
+id: 1500
+name: Arrhythmia surgery: Ventricular- Surgical Ablation
+is_a: Value
+is_a: Electrophysiological
+
+[Term]
+id: RFablation
+name: RF\Wablation
+is_a: SurgeryType
+
+[Term]
+id: 1570
+name: RF ablation
+is_a: Value
+is_a: RFablation
+
+[Term]
+id: InterventionalCardiologyProcedures
+name: Interventional\WCardiology\
+Procedures
+is_a: SurgeryType
+
+[Term]
+id: 2500
+name: Cardiovascular catheterization procedure: Diagnostic
+is_a: Value
+is_a: InterventionalCardiologyProcedures
+
+[Term]
+id: 2520
+name: Cardiovascular catheterization procedure: Diagnostic-
+Angiographic data obtained
+is_a: Value
+is_a: InterventionalCardiologyProcedures
+
+[Term]
+id: 2550
+name: Cardiovascular catheterization procedure: Diagnostic-
+Electrophysiology alteration
+is_a: Value
+is_a: InterventionalCardiologyProcedures
+
+[Term]
+id: 2540
+name: Cardiovascular catheterization procedure: Diagnostic-
+Hemodynamic alteration
+is_a: Value
+is_a: InterventionalCardiologyProcedures
+
+[Term]
+id: 2510
+name: Cardiovascular catheterization procedure: Diagnostic-
+Hemodynamic data obtained
+is_a: Value
+is_a: InterventionalCardiologyProcedures
+
+[Term]
+id: 2530
+name: Cardiovascular catheterization procedure: Diagnostic-
+Transluminal test occlusion
+is_a: Value
+is_a: InterventionalCardiologyProcedures
+
+[Term]
+id: 2410
+name: Cardiovascular catheterization procedure: Therapeutic
+is_a: Value
+is_a: InterventionalCardiologyProcedures
+
+[Term]
+id: 2670
+name: Cardiovascular catheterization procedure: Therapeutic-
+Adjunctive therapy
+is_a: Value
+is_a: InterventionalCardiologyProcedures
+
+[Term]
+id: 1540
+name: Cardiovascular catheterization procedure: Therapeutic-
+Balloon dilation
+is_a: Value
+is_a: InterventionalCardiologyProcedures
+
+[Term]
+id: 2590
+name: Cardiovascular catheterization procedure: Therapeutic-
+Balloon valvotomy
+is_a: Value
+is_a: InterventionalCardiologyProcedures
+
+[Term]
+id: 1580
+name: Cardiovascular catheterization procedure: Therapeutic-
+Coil implantation
+is_a: Value
+is_a: InterventionalCardiologyProcedures
+
+[Term]
+id: 1560
+name: Cardiovascular catheterization procedure: Therapeutic-
+Device implantation
+is_a: Value
+is_a: InterventionalCardiologyProcedures
+
+[Term]
+id: 2640
+name: Cardiovascular catheterization procedure: Therapeutic-
+Perforation (establishing interchamber and/or intervessel communication)
+is_a: Value
+is_a: InterventionalCardiologyProcedures
+
+[Term]
+id: 2580
+name: Cardiovascular catheterization procedure: Therapeutic-
+Septostomy
+is_a: Value
+is_a: InterventionalCardiologyProcedures
+
+[Term]
+id: 1550
+name: Cardiovascular catheterization procedure: Therapeutic-
+Stent insertion
+is_a: Value
+is_a: InterventionalCardiologyProcedures
+
+[Term]
+id: 2630
+name: Cardiovascular catheterization procedure: Therapeutic-
+Stent re-dilation
+is_a: Value
+is_a: InterventionalCardiologyProcedures
+
+[Term]
+id: 2650
+name: Cardiovascular catheterization procedure: Therapeutic-
+Transcatheter Fontan completion
+is_a: Value
+is_a: InterventionalCardiologyProcedures
+
+[Term]
+id: 2660
+name: Cardiovascular catheterization procedure: Therapeutic-
+Transcatheter implantation of valve
+is_a: Value
+is_a: InterventionalCardiologyProcedures
+
+[Term]
+id: 2680
+name: Cardiovascular electrophysiological catheterization
+procedure
+is_a: Value
+is_a: InterventionalCardiologyProcedures
+
+[Term]
+id: 2690
+name: Cardiovascular electrophysiological catheterization
+procedure: Therapeutic ablation
+is_a: Value
+is_a: InterventionalCardiologyProcedures
+
+[Term]
+id: PalliativeProcedures
+name: Palliative\WProcedures
+is_a: SurgeryType
+
+[Term]
+id: 1590
+name: Shunt: Systemic to pulmonary - Modified Blalock-
+Taussig Shunt (MBTS)
+is_a: Value
+is_a: PalliativeProcedures
+
+[Term]
+id: 1600
+name: Shunt: Systemic to pulmonary - Central (from aorta or
+to main pulmonary artery)
+is_a: Value
+is_a: PalliativeProcedures
+
+[Term]
+id: 1610
+name: Shunt: Systemic to pulmonary - Other
+is_a: Value
+is_a: PalliativeProcedures
+
+[Term]
+id: 1630
+name: Shunt: Ligation and takedown
+is_a: Value
+is_a: PalliativeProcedures
+
+[Term]
+id: 2095
+name: Shunt: Reoperation
+is_a: Value
+is_a: PalliativeProcedures
+
+[Term]
+id: 1640
+name: PA banding (PAB)
+is_a: Value
+is_a: PalliativeProcedures
+
+[Term]
+id: 1650
+name: PA debanding
+is_a: Value
+is_a: PalliativeProcedures
+
+[Term]
+id: 1660
+name: Damus-Kaye-Stansel procedure (DKS) - Creation of AP
+anastomosis without arch reconstruction
+is_a: Value
+is_a: PalliativeProcedures
+
+[Term]
+id: 1670
+name: Bidirectional cavopulmonary anastomosis (BDCPA)
+(bidirectional Glenn)
+is_a: Value
+is_a: PalliativeProcedures
+
+[Term]
+id: 1680
+name: Glenn (unidirectional cavopulmonary anastomosis)
+(unidirectional Glenn)
+is_a: Value
+is_a: PalliativeProcedures
+
+[Term]
+id: 1690
+name: Bilateral bidirectional cavopulmonary anastomosis
+(BBDCPA) (bilateral bidirectional Glenn)
+is_a: Value
+is_a: PalliativeProcedures
+
+[Term]
+id: 1700
+name: Hemifontan
+is_a: Value
+is_a: PalliativeProcedures
+
+[Term]
+id: 2330
+name: Superior cavopulmonary anastomosis(es) (Glenn or
+HemiFontan) and Atrioventricular valvuloplasty
+is_a: Value
+is_a: PalliativeProcedures
+
+[Term]
+id: 2130
+name: Superior Cavopulmonary anastomosis(es) and PA
+reconstruction
+is_a: Value
+is_a: PalliativeProcedures
+
+[Term]
+id: 1710
+name: Palliation: Other
+is_a: Value
+is_a: PalliativeProcedures
+
+[Term]
+id: MechanicalSupport
+name: Mechanical\WSupport
+is_a: SurgeryType
+
+[Term]
+id: 2360
+name: ECMO cannulation
+is_a: Value
+is_a: MechanicalSupport
+
+[Term]
+id: 2370
+name: ECMO decannulation
+is_a: Value
+is_a: MechanicalSupport
+
+[Term]
+id: 1910
+name: ECMO procedure
+is_a: Value
+is_a: MechanicalSupport
+
+[Term]
+id: 1900
+name: Intraaortic balloon pump (IABP) insertion
+is_a: Value
+is_a: MechanicalSupport
+
+[Term]
+id: 1920
+name: Right/left heart assist device procedure
+is_a: Value
+is_a: MechanicalSupport
+
+[Term]
+id: 2390
+name: VAD explantation
+is_a: Value
+is_a: MechanicalSupport
+
+[Term]
+id: 2380
+name: VAD implantation
+is_a: Value
+is_a: MechanicalSupport
+
+[Term]
+id: Anestheticprocedures
+name: Anesthetic\Wprocedures
+is_a: SurgeryType
+
+[Term]
+id: 2420
+name: Echocardiography procedure: Sedated
+transesophageal echocardiogram
+is_a: Value
+is_a: Anestheticprocedures
+
+[Term]
+id: 2430
+name: Echocardiography procedure: Sedated transthoracic
+echocardiogram
+is_a: Value
+is_a: Anestheticprocedures
+
+[Term]
+id: 2435
+name: Non-cardiovascular: Non-thoracic procedure on
+cardiac patient with cardiac anesthesia
+is_a: Value
+is_a: Anestheticprocedures
+
+[Term]
+id: 2440
+name: Radiology procedure on cardiac patient: Cardiac
+Computerized Axial Tomography (CT Scan)
+is_a: Value
+is_a: Anestheticprocedures
+
+[Term]
+id: 2450
+name: Radiology procedure on cardiac patient: Cardiac
+Magnetic Resonance Imaging (MRI)
+is_a: Value
+is_a: Anestheticprocedures
+
+[Term]
+id: 2460
+name: Radiology procedure on cardiac patient: Diagnostic
+radiology
+is_a: Value
+is_a: Anestheticprocedures
+
+[Term]
+id: 2470
+name: Radiology procedure on cardiac patient: Non-Cardiac Computerized Tomography (CT) on cardiac patient
+is_a: Value
+is_a: Anestheticprocedures
+
+[Term]
+id: 2480
+name: Radiology procedure on cardiac patient: Non-cardiac Magnetic Resonance Imaging (MRI) on cardiac patient
+is_a: Value
+is_a: Anestheticprocedures
+
+[Term]
+id: 2490
+name: Radiology procedure on cardiac patient: Therapeutic
+radiology
+is_a: Value
+is_a: Anestheticprocedures
+
+[Term]
+id: MiscellaneousProcedures
+name: Miscellaneous\WProcedures
+is_a: SurgeryType
+
+[Term]
+id: 1720
+name: Aneurysm: Ventricular - Right Repair
+is_a: Value
+is_a: MiscellaneousProcedures
+
+[Term]
+id: 1730
+name: Aneurysm: Ventricular - Left Repair
+is_a: Value
+is_a: MiscellaneousProcedures
+
+[Term]
+id: 1740
+name: Aneurysm: Pulmonary artery - Repair
+is_a: Value
+is_a: MiscellaneousProcedures
+
+[Term]
+id: 1760
+name: Cardiac tumor resection
+is_a: Value
+is_a: MiscellaneousProcedures
+
+[Term]
+id: 1780
+name: Pulmonary AV fistula repair/occlusion
+is_a: Value
+is_a: MiscellaneousProcedures
+
+[Term]
+id: 1790
+name: Ligation: Pulmonary artery
+is_a: Value
+is_a: MiscellaneousProcedures
+
+[Term]
+id: 1802
+name: Pulmonary embolectomy: Acute pulmonary embolus
+is_a: Value
+is_a: MiscellaneousProcedures
+
+[Term]
+id: 1804
+name: Pulmonary embolectomy: Chronic pulmonary embolus
+is_a: Value
+is_a: MiscellaneousProcedures
+
+[Term]
+id: 1810
+name: Pleural drainage procedure
+is_a: Value
+is_a: MiscellaneousProcedures
+
+[Term]
+id: 1820
+name: Pleural procedure: Other
+is_a: Value
+is_a: MiscellaneousProcedures
+
+[Term]
+id: 1830
+name: Ligation: Thoracic duct
+is_a: Value
+is_a: MiscellaneousProcedures
+
+[Term]
+id: 1840
+name: Decortication
+is_a: Value
+is_a: MiscellaneousProcedures
+
+[Term]
+id: 1850
+name: Esophageal procedure
+is_a: Value
+is_a: MiscellaneousProcedures
+
+[Term]
+id: 1860
+name: Mediastinal procedure
+is_a: Value
+is_a: MiscellaneousProcedures
+
+[Term]
+id: 1870
+name: Bronchoscopy
+is_a: Value
+is_a: MiscellaneousProcedures
+
+[Term]
+id: 1880
+name: Diaphragm plication
+is_a: Value
+is_a: MiscellaneousProcedures
+
+[Term]
+id: 1890
+name: Other
+is_a: Value
+is_a: MiscellaneousProcedures
+
+[Term]
+id: 1930
+name: VATS (video-assisted thoracoscopic surgery)
+is_a: Value
+is_a: MiscellaneousProcedures
+
+[Term]
+id: 1940
+name: Minimally invasive procedure
+is_a: Value
+is_a: MiscellaneousProcedures
+
+[Term]
+id: 1950
+name: Bypass for noncardiac lesion
+is_a: Value
+is_a: MiscellaneousProcedures
+
+[Term]
+id: 1960
+name: Delayed sternal closure
+is_a: Value
+is_a: MiscellaneousProcedures
+
+[Term]
+id: 1970
+name: Mediastinal exploration
+is_a: Value
+is_a: MiscellaneousProcedures
+
+[Term]
+id: 1980
+name: Sternotomy wound drainage
+is_a: Value
+is_a: MiscellaneousProcedures
+
+[Term]
+id: 1990
+name: Thoracotomy: Other
+is_a: Value
+is_a: MiscellaneousProcedures
+
+[Term]
+id: 2000
+name: Cardiotomy: Other
+is_a: Value
+is_a: MiscellaneousProcedures
+
+[Term]
+id: 2010
+name: Cardiac procedure: Other
+is_a: Value
+is_a: MiscellaneousProcedures
+
+[Term]
+id: 2020
+name: Thoracic and/or mediastinal procedure: Other
+is_a: Value
+is_a: MiscellaneousProcedures
+
+[Term]
+id: 2030
+name: Peripheral vascular procedure: Other
+is_a: Value
+is_a: MiscellaneousProcedures
+
+[Term]
+id: 2040
+name: Miscellaneous procedure: Other
+is_a: Value
+is_a: MiscellaneousProcedures
+
+[Term]
+id: 2050
+name: Organ procurement
+is_a: Value
+is_a: MiscellaneousProcedures
+
+[Term]
+id: 7777
+name: Other procedure
+is_a: Value
+is_a: MiscellaneousProcedures
+
+[Term]
+id: 8888
+name: Diagnostic Cardiovascular catheterization procedure
+is_a: Value
+is_a: MiscellaneousProcedures
+
+[Term]
+id: 9999
+name: Therapeutic Cardiovascular catheterization procedure
+is_a: Value
+is_a: MiscellaneousProcedures
+

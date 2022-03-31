@@ -685,7 +685,10 @@ def insert_question_type(row, question, row_type):
         if hasattr(Headers, "CONDITIONS") and row[Headers.CONDITIONS]:
             question['expression'] = row[Headers.CONDITIONS]
     elif row_type == RowTypes.VOCABULARY:
-        question['sourceVocabularies'] = [row[Headers.DEFINITION]]
+        split = row[Headers.DEFINITION].split(" ", 1)
+        question['sourceVocabularies'] = [split[0]]
+        if len(split) > 1:
+            question['vocabularyFilter'] = split[1].strip()
     elif row_type == RowTypes.DEFAULT:
         if len(row[Headers.DEFINITION]) > 0:
             question = append_description(question, row[Headers.DEFINITION])
