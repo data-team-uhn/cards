@@ -58,10 +58,12 @@ function VisitView(props) {
     "[cards:Form] as visitInformation " +
       "inner join [cards:Answer] as visitSurveys on isdescendantnode(visitSurveys, visitInformation) " +
       "inner join [cards:Answer] as visitDate on isdescendantnode(visitDate, visitInformation) " +
+      "inner join [cards:Answer] as visitStatus on isdescendantnode(visitStatus, visitInformation) " +
   "where " +
     `visitInformation.questionnaire = '${visitInfo?.["jcr:uuid"]}' ` +
       `and visitDate.question = '${visitInfo?.time?.["jcr:uuid"]}' and __DATE_FILTER_PLACEHOLDER__ ` +
       `and visitSurveys.question = '${visitInfo?.surveys?.["jcr:uuid"]}' and visitSurveys.value = '${surveysId}' ` +
+      `and visitStatus.question = '${visitInfo?.status?.["jcr:uuid"]}' and visitStatus.value <> 'cancelled' ` +
   "order by visitDate.value __SORT_ORDER_PLACEHOLDER__"
 )
 
