@@ -191,6 +191,11 @@
         "maxAnswers": "long",
         "namePattern": "string"
       },
+      "dicom": {
+        "minAnswers": "long",
+        "maxAnswers": "long",
+        "namePattern": "string"
+      },
       "vocabulary": {
         "sourceVocabularies": {
           "type": "list",
