@@ -43,6 +43,7 @@ import AnswerComponentManager from "./AnswerComponentManager";
 // Sample usage:
 // (TODO)
 function DicomQuestion(props) {
+  //console.log(props);
   const { classes, existingAnswer, pageActive, ...rest } = props;
   const { maxAnswers, minAnswers, namePattern } = { ...props.questionDefinition, ...props }
   let initialValues =
@@ -281,7 +282,31 @@ function DicomQuestion(props) {
 
   let hrefs = Array.of(existingAnswer?.[1]["value"]).flat();
   let defaultDisplayFormatter = function(label, idx) {
-    return <a href={fixFileURL(hrefs[idx], label)} target="_blank" rel="noopener" download>{label}</a>;
+    //return <a href={fixFileURL(hrefs[idx], label)} target="_blank" rel="noopener" download>{label}</a>;
+    //return <img alt="DICOM Preview" src={fixFileURL(hrefs[idx], label).split('/').slice(0, -1).join('/') + '/image'}/>;
+    return ( uploadedFiles && Object.values(uploadedFiles).length > 0 && <ul className={classes.answerField + " " + classes.fileResourceAnswerList}>
+      {Object.keys(uploadedFiles).map((filepath, idx) =>
+        <li key={idx}>
+          <div>
+            <img alt="DICOM Preview" src={fixFileURL(uploadedFiles[filepath], filepath).split('/').slice(0, -1).join('/') + '/image'}/>
+            <p>{existingAnswer && existingAnswer[1].yamlvalue}</p>
+          </div>
+          { namePattern &&
+            <span>
+              {varNames.map((name, nameIdx) => (
+                <TextField
+                  label={name}
+                  value={existingAnswer && existingAnswer[1].yamlvalue}
+                  className={classes.fileDetail + " " + classes.fileResourceAnswerInput}
+                  key={nameIdx}
+                  readOnly
+                />
+              ))}
+            </span>
+          }
+        </li>
+      )}
+    </ul>)
   }
 
   return (
@@ -309,9 +334,7 @@ function DicomQuestion(props) {
               <li key={idx}>
                 <div>
                   <span>DICOM </span>
-                  <Link href={fixFileURL(uploadedFiles[filepath], filepath)} target="_blank" rel="noopener" download>
-                    {filepath}
-                  </Link>:
+                  <img alt="DICOM Preview" src={fixFileURL(uploadedFiles[filepath], filepath).split('/').slice(0, -1).join('/') + '/image'}/>;
                   <IconButton
                     onClick={() => {deletePath(idx)}}
                     className={classes.deleteButton + " " + classes.fileResourceDeleteButton}
@@ -320,13 +343,14 @@ function DicomQuestion(props) {
                   >
                     <Delete color="action" className={classes.deleteIcon}/>
                   </IconButton>
+                  <p>{existingAnswer && existingAnswer[1].yamlvalue}</p>
                 </div>
                 { namePattern &&
                   <span>
                     {varNames.map((name, nameIdx) => (
                       <TextField
                         label={name}
-                        value={knownAnswers?.[filepath]?.[nameIdx]}
+                        value={existingAnswer && existingAnswer[1].yamlvalue}
                         className={classes.fileDetail + " " + classes.fileResourceAnswerInput}
                         key={nameIdx}
                         readOnly
