@@ -23,7 +23,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.function.Function;
 
-import javax.jcr.AccessDeniedException;
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
