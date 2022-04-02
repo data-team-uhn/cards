@@ -148,8 +148,7 @@ function Filters(props) {
     // We'll need a helper recursive function to copy over data from sections/questions
     let parseSectionOrQuestionnaire = (sectionJson, path="") => {
       let retFields = [];
-      Object.entries(sectionJson)
-            .map(([title, object]) => {
+      Object.entries(sectionJson).map(([title, object]) => {
         // We only care about children that are cards:Questions or cards:Sections
         if (object["jcr:primaryType"] == "cards:Question") {
           // If this is an cards:Question, copy the entire thing over to our Json value
