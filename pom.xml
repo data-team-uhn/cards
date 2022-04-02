@@ -116,19 +116,6 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
-    <repository>
-      <id>dcm4che</id>
-      <name>DCM4CHE</name>
-      <url>https://maven.dcm4che.org/</url>
-      <releases>
-        <enabled>true</enabled>
-        <checksumPolicy>fail</checksumPolicy>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-        <checksumPolicy>fail</checksumPolicy>
-      </snapshots>
-    </repository>
   </repositories>
   <pluginRepositories>
     <pluginRepository>
