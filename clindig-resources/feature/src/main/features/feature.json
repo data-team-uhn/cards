@@ -22,6 +22,14 @@
       "start-order":"25"
     },
     {
+      "id":"org.dcm4che:dcm4che-core:5.26.0",
+      "start-order":"25"
+    },
+    {
+      "id":"${project.groupId}:cards-dicom-support:${project.version}",
+      "start-order":"25"
+    },
+    {
       "id":"${project.groupId}:clindig-resources-clinical-data:${project.version}",
       "start-order":"26"
     }
