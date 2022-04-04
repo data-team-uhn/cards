@@ -17,7 +17,7 @@
 //  under the License.
 //
 import React, { useCallback, useRef, useState, useContext, useEffect } from "react";
-import { Chip, Typography, Button, Dialog, CircularProgress, IconButton } from "@material-ui/core";
+import { Chip, Typography, Button, Dialog, CircularProgress, IconButton, Tooltip } from "@material-ui/core";
 import { DialogActions, DialogContent, DialogTitle, Grid, Select, MenuItem, TextField, withStyles } from "@material-ui/core";
 import Add from "@material-ui/icons/Add";
 import CloseIcon from '@material-ui/icons/Close';
@@ -429,19 +429,19 @@ function Filters(props) {
         Filters:
       </Typography>
       { activeFilters.map( (activeFilter, index) => {
-        let label = activeFilter.label || activeFilter.value;
-        label = (activeFilter.type === "createddate") ? label.split('T')[0] : label;
+        let filterValue = activeFilter.label || activeFilter.value;
+        filterValue = (activeFilter.type === "createddate") ? filterValue.split('T')[0] : filterValue;
         return(
             <Chip
-              key={label}
+              key={`${activeFilter.title}-${index}`}
               size="small"
-              label={<div>
-                       <div title={activeFilter.title} className={classes.filterChipLabel}>{activeFilter.title}</div>
-                       <div className={classes.filterChipLabel}>{activeFilter.comparator}</div>
+              label={<>
+                       <Tooltip title={activeFilter.title}><span>{activeFilter.title}</span></Tooltip>
+                       <span>{activeFilter.comparator}</span>
                        { !UNARY_COMPARATORS.includes(activeFilter.comparator) &&
-                         <div title={label} className={classes.filterChipLabel}>{label}</div>
+                         <Tooltip title={filterValue}><span>{filterValue}</span></Tooltip>
                        }
-                     </div>}
+                     </>}
               disabled={disabled}
               variant="outlined"
               color="primary"

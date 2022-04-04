@@ -42,14 +42,14 @@ const liveTableStyle = theme => ({
         marginRight: theme.spacing(0.5),
         marginTop: theme.spacing(0.5),
         marginBottom: theme.spacing(0.5),
+        "& .MuiChip-label > span": {
+            maxWidth: "15em",
+            textOverflow: "ellipsis",
+            overflow: "hidden",
+            float: "left",
+            padding: theme.spacing(0.25),
+        },
     },
-    filterChipLabel: {
-        maxWidth: "15em",
-        textOverflow: "ellipsis",
-        overflow: "hidden",
-        float: "left",
-        padding: theme.spacing(0.25)
-     },
     saveButton: {
         position: 'absolute',
         right: theme.spacing(2)
