@@ -279,7 +279,9 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
     private void processFormSubjects(final JsonObject subjectJson, final Map<String, Map<Integer, String>> csvData)
     {
         final Map<Integer, String> subjectColumn = csvData.get(subjectJson.getJsonObject("type").getString(UUID_PROP));
-        subjectColumn.put(0, subjectJson.getString("identifier"));
+        if (subjectColumn != null) {
+            subjectColumn.put(0, subjectJson.getString("identifier"));
+        }
         // Recursively collect all of the subjects parents in the hierarchy
         if (subjectJson.containsKey("parents")) {
             processFormSubjects(subjectJson.getJsonObject("parents"), csvData);
@@ -320,7 +322,6 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
             // Add Section node to the tree
             TreeGraph<String> sectionTreeNode = new TreeGraph(nodeName, null, null, newLevel);
             formGraph.addChild(sectionTreeNode);
-            // Record the occurrence of the recurrent section so next time we will generate a new line
             processFormSection(nodeJson, csvData, sectionTreeNode);
         } else if (nodeType.startsWith("cards:") && nodeType.endsWith("Answer")) {
             final String uuid = nodeJson.getJsonObject("question").getString(UUID_PROP);
