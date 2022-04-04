@@ -428,11 +428,10 @@ function Filters(props) {
       <Typography display="inline" className={classes.filterLabel}>
         Filters:
       </Typography>
-      {activeFilters.map( (activeFilter, index) => {
+      { activeFilters.map( (activeFilter, index) => {
         let label = activeFilter.label || activeFilter.value;
         label = (activeFilter.type === "createddate") ? label.split('T')[0] : label;
         return(
-          <React.Fragment key={label}>
             <Chip
               key={label}
               size="small"
@@ -459,7 +458,6 @@ function Filters(props) {
               }}
               className={classes.filterChips}
               />
-          </React.Fragment>
           );
         })
       }
