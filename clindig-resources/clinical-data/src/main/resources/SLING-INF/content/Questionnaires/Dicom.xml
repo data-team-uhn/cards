@@ -60,5 +60,10 @@
 			<value>1</value>
 			<type>Long</type>
 		</property>
+		<property>
+			<name>enableNotes</name>
+			<value>true</value>
+			<type>Boolean</type>
+		</property>
 	</node>
 </node>

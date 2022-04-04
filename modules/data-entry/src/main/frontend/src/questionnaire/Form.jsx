@@ -164,6 +164,15 @@ function Form (props) {
       .catch(handleFetchError);
   };
 
+  let fetchDataForExternal = () => {
+    return new Promise((resolve, reject) => {
+      fetchWithReLogin(globalLoginDisplay, formURL + '.deep.json')
+        .then((response) => response.ok ? response.json() : Promise.reject(response))
+        .then((jsonData) => resolve(jsonData))
+        .catch(() => reject());
+      });
+  };
+
   // Callback method for the `fetchData` method, invoked when the data successfully arrived from the server.
   let handleResponse = (json) => {
     setData(json);
@@ -514,6 +523,7 @@ function Form (props) {
                     isEdit={isEdit}
                     isSummary={isSummary}
                     contentOffset={{top: formContentOffsetTop, bottom: formContentOffsetBottom}}
+                    formFetchData={fetchDataForExternal}
                   />
                 })
             }

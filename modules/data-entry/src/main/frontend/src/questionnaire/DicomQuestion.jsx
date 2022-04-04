@@ -124,6 +124,21 @@ function DicomQuestion(props) {
         })
         .finally(() => {
           setUploadInProgress(false);
+          console.log("Re-fetching the page...");
+          console.log(props.formFetchData);
+          //props.formFetchData && props.formFetchData();
+          if (props.formFetchData) {
+            props.formFetchData()
+            .then((jsonData) => {
+              console.log("Did an external fetch...OK!");
+              console.log(jsonData);
+              console.log("Trying: " + answerPath.slice(2));
+              console.log(jsonData[answerPath.slice(2)]);
+              console.log("Note value is: " + jsonData[answerPath.slice(2)].note);
+              //TODO: Actually set this value into the <Note> component
+            })
+            .catch(() => console.log("FAILED TO DO props.formFetchData"))
+          }
         });
     } else {
       setError("Could not save form to prepare for DICOM upload");

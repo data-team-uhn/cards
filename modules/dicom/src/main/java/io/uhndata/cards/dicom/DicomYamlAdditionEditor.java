@@ -178,7 +178,7 @@ public class DicomYamlAdditionEditor extends DefaultEditor
             NodeBuilder dicomAnswerNodeBuilder = this.currentNodeBuilderPath.get(
                 this.currentNodeBuilderPath.size() - 3);
             //LOGGER.warn("dicomAnswerNodeBuilder = {}", dicomAnswerNodeBuilder);
-            dicomAnswerNodeBuilder.setProperty("yamlvalue", dicomMetadataString);
+            dicomAnswerNodeBuilder.setProperty("note", dicomMetadataString);
         }
     }
 
