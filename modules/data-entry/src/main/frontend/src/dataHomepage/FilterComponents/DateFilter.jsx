@@ -56,12 +56,12 @@ const DateFilter = forwardRef((props, ref) => {
     <TextField
       id="date"
       type={textFieldType}
-      className={classes.textField}
+      className={classes.answerField}
       InputLabelProps={{
         shrink: true,
       }}
       InputProps={{
-        className: classes.textField
+        className: classes.answerField
       }}
       defaultValue={defaultValue}
       onChange={(event) => {onChangeInput(event.target.value)}}

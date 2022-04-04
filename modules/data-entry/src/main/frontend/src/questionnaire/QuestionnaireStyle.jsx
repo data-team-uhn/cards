@@ -84,7 +84,7 @@ const questionnaireStyle = theme => ({
     },
     answerField: {
         position: 'relative',
-        maxWidth: theme.spacing(30),
+        width: "100%",
     },
     nestedInput: {
         minWidth: "218px !important",

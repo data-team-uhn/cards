@@ -536,7 +536,7 @@ function Filters(props) {
                   </Grid>
                   {/* Look up whether or not the component can be loaded */}
                   {!isUnary &&
-                    <Grid item xs={isNotesContain ? 3 : (isContain ? 4 : 5)} className={index == editingFilters.length-1 ? classes.hidden : classes.answerBox}>
+                    <Grid item xs={isNotesContain ? 3 : (isContain ? 4 : 5)} className={index == editingFilters.length-1 ? classes.hidden : ""}>
                       {filterDatum.comparator ?
                           getCachedInput(filterDatum, index, (index !== editingFilters.length-1 && toFocus === index ? focusCallback : undefined))
                         : <TextField disabled className={classes.answerField}></TextField>
