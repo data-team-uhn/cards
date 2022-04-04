@@ -51,12 +51,12 @@ const TextFilter = forwardRef((props, ref) => {
 
   return (
     <TextField
-      className={classes.textField}
+      className={classes.answerField}
       InputLabelProps={{
       shrink: true,
       }}
       InputProps={{
-      className: classes.textFilterField
+      className: classes.answerField
       }}
       defaultValue={defaultValue}
       onChange={(event) => {
