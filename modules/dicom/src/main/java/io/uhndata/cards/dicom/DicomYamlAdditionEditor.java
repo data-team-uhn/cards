@@ -159,7 +159,10 @@ public class DicomYamlAdditionEditor extends DefaultEditor
 
                 BufferedImage img = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_USHORT_GRAY);
                 for (int i = 0; i < pixelData.length; i += 2) {
-                    int[] tmp = {pixelData[i]};
+                    short thisPixel = (short) (((pixelData[i] & 255) << 8) | (pixelData[i + 1] & 255));
+                    //int[] tmp = {((pixelData[i] << 8) | pixelData[i + 1]) / 65535};
+                    int[] tmp = {thisPixel};
+                    //tmp[0] = tmp[0] + 32768;
                     img.getRaster().setPixel((i / 2) % imageWidth, (i / 2) / imageHeight, tmp);
                 }
                 ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
