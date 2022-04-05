@@ -56,9 +56,9 @@ function VisitView(props) {
 "select distinct visitInformation.* " +
   "from " +
     "[cards:Form] as visitInformation " +
-      "inner join [cards:Answer] as visitSurveys on isdescendantnode(visitSurveys, visitInformation) " +
-      "inner join [cards:Answer] as visitDate on isdescendantnode(visitDate, visitInformation) " +
-      "inner join [cards:Answer] as visitStatus on isdescendantnode(visitStatus, visitInformation) " +
+      "inner join [cards:TextAnswer] as visitSurveys on isdescendantnode(visitSurveys, visitInformation) " +
+      "inner join [cards:DateAnswer] as visitDate on isdescendantnode(visitDate, visitInformation) " +
+      "inner join [cards:TextAnswer] as visitStatus on isdescendantnode(visitStatus, visitInformation) " +
   "where " +
     `visitInformation.questionnaire = '${visitInfo?.["jcr:uuid"]}' ` +
       `and visitDate.question = '${visitInfo?.time?.["jcr:uuid"]}' and __DATE_FILTER_PLACEHOLDER__ ` +
