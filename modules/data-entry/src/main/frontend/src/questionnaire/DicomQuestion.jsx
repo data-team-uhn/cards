@@ -65,6 +65,7 @@ function DicomQuestion(props) {
   let [ error, setError ] = useState();
   let [ uploadInProgress, setUploadInProgress ] = useState(false);
   let [ answerPath, setAnswerPath ] = useState(existingAnswer);
+  let [ dicomMetadataNote, setDicomMetadataNote ] = useState();
 
   // The answers to give to our <Answers /> object
   let [ answers, setAnswers ] = useState(initialValues);
@@ -77,6 +78,44 @@ function DicomQuestion(props) {
   let allowResave = reader['/AllowResave'];
   let outURL = reader["/URL"] + "/" + answerPath;
   const globalLoginDisplay = useContext(GlobalLoginContext);
+
+  let getDicomTagName = (tag) => {
+    let group = tag.substring(1,5);
+    let element = tag.substring(5,9);
+    let tagIndex = ("(" + group + "," + element + ")").toUpperCase();
+    if (tagIndex in DICOM_TAG_DICT) {
+      return DICOM_TAG_DICT[tagIndex].name;
+    } else {
+      return undefined;
+    }
+  }
+
+  let getDicomTagDataFormat = (tag) => {
+    let group = tag.substring(1,5);
+    let element = tag.substring(5,9);
+    let tagIndex = ("(" + group + "," + element + ")").toUpperCase();
+    if (tagIndex in DICOM_TAG_DICT) {
+      return DICOM_TAG_DICT[tagIndex].vr;
+    } else {
+      return undefined;
+    }
+  }
+
+  // TODO: Support more VR types
+  let getDicomTagValue = (dicomObj, tag) => {
+    //let tagObj = dicomObj.elements[tag];
+    //console.log("Working with this tagObj...");
+    //console.log(tagObj);
+    if (getDicomTagDataFormat(tag) === "US") {
+      return dicomObj.uint16(tag);
+    } else {
+      return dicomObj.string(tag);
+    }
+  }
+
+  let isASCII = (str) => {
+    return /^[\x00-\x7F]*$/.test(str);
+  }
 
   // Add files to the pending state
   let addFiles = (files) => {
@@ -178,8 +217,34 @@ function DicomQuestion(props) {
       .then((arrayBuf) => {
         let dicomU8 = new Uint8Array(arrayBuf);
         let dcmObject = dicomParser.parseDicom(dicomU8);
-        console.log(dcmObject);
-        console.log(DICOM_TAG_DICT);
+        //console.log(dcmObject);
+        //console.log(DICOM_TAG_DICT);
+        // Build a DICOM metadata string
+        let dicomMetadataStr = "";
+        for (let dcmtag in dcmObject.elements) {
+          let tagName = getDicomTagName(dcmtag);
+          if (typeof(tagName) != "string") {
+            continue;
+          }
+          let tagValue = getDicomTagValue(dcmObject, dcmtag);
+          /*
+          let tagValue = dcmObject.string(dcmtag);
+          if (typeof(tagValue) != "string") {
+            continue;
+          }
+          if (!isASCII(tagValue)) {
+            continue;
+          }
+          */
+          let kvString = tagName + ": " + tagValue;
+          //console.log(kvString);
+          dicomMetadataStr += kvString;
+          dicomMetadataStr += "\n"
+        }
+        console.log(dicomMetadataStr);
+        console.log("will need to be added to");
+        console.log(existingAnswer);
+        setDicomMetadataNote(dicomMetadataStr);
       })
     return fetchWithReLogin(globalLoginDisplay, outURL, {
       method: "POST",
@@ -307,6 +372,9 @@ function DicomQuestion(props) {
         valueType="path"
         isMultivalued={maxAnswers != 1}
         pageActive={pageActive}
+        noteProps={{
+          externalNote: dicomMetadataNote
+        }}
         {...rest}
         />
     </Question>);
