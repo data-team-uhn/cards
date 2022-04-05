@@ -21,6 +21,8 @@ import React, { useContext, useState } from "react";
 import { Grid, IconButton, LinearProgress, Link, TextField, Typography, withStyles } from "@material-ui/core";
 import Delete from "@material-ui/icons/Delete";
 
+import dicomParser from "dicom-parser";
+
 import PropTypes from "prop-types";
 
 import Answer from "./Answer";
@@ -170,6 +172,12 @@ function DicomQuestion(props) {
     data.append('jcr:primaryType', 'cards:DicomAnswer');
     data.append('question', props.questionDefinition['jcr:uuid']);
     data.append('question@TypeHint', "Reference");
+    file.arrayBuffer()
+      .then((arrayBuf) => {
+        let dicomU8 = new Uint8Array(arrayBuf);
+        let dcmObject = dicomParser.parseDicom(dicomU8);
+        console.log(dcmObject);
+      })
     return fetchWithReLogin(globalLoginDisplay, outURL, {
       method: "POST",
       body: data
