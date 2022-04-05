@@ -690,6 +690,21 @@
   - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
 
 //-----------------------------------------------------------------------------
+// DICOM resource answers
+[cards:DicomAnswer] > cards:Answer
+  // The value holds the YAML encoded DICOM metadata
+  - value (string)
+
+  // The DICOM file is in a child nt:file resource
+  + * (nt:file) = nt:file
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/DicomAnswer" mandatory autocreated protected
+
+  // Hardcode the resource supertype.
+  - sling:resourceSuperType (STRING) = "cards/Answer" mandatory autocreated protected
+
+//-----------------------------------------------------------------------------
 // Resource paths, stored as strings.
 [cards:ResourceAnswer] > cards:Answer
   - value (string)
@@ -702,6 +717,7 @@
 
 
 //-----------------------------------------------------------------------------
+
 
 // Section object, which can contain multiple other answers and nested subsections.
 // The node structure of a form should reflect the structure of a questionnaire, with AnswerSection nodes corresponding to each Section node in the questionnaire.
