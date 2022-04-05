@@ -35,6 +35,8 @@ import QuestionnaireStyle from "./QuestionnaireStyle";
 
 import AnswerComponentManager from "./AnswerComponentManager";
 
+import DICOM_TAG_DICT from "./dicomDataDictionary";
+
 // Component that renders a dicom upload question.
 // Filepaths are placed in a series of <input type="hidden"> tags for
 // submission.
@@ -177,6 +179,7 @@ function DicomQuestion(props) {
         let dicomU8 = new Uint8Array(arrayBuf);
         let dcmObject = dicomParser.parseDicom(dicomU8);
         console.log(dcmObject);
+        console.log(DICOM_TAG_DICT);
       })
     return fetchWithReLogin(globalLoginDisplay, outURL, {
       method: "POST",
