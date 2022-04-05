@@ -28,7 +28,7 @@ import UnfoldLess from "@material-ui/icons/UnfoldLess";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
 function Note (props) {
-  const { answerPath, children, existingAnswer, classes, onAddSuggestion, onChangeNote, pageActive, ...rest } = {...props};
+  const { answerPath, children, existingAnswer, classes, onAddSuggestion, onChangeNote, pageActive, externalNote, ...rest } = {...props};
   let [ note, setNote ] = useState((existingAnswer?.[1]?.note));
   let [ visible, setVisible ] = useState(Boolean(note));
   let inputRef = useRef();
@@ -42,7 +42,7 @@ function Note (props) {
     inputRef.current && inputRef.current.focus();
   }
 
-  const noteIsEmpty = note == null || note == "";
+  const noteIsEmpty = (note == null || note == "") && (!externalNote);
 
   // Render nothing but keep state if this page is inactive
   if (!pageActive) {
@@ -76,7 +76,7 @@ function Note (props) {
       <Grid container spacing={2}>
         <Grid item xs={6}>
           <TextField
-            value = {note}
+            value = {note || externalNote}
             onChange = {changeNote}
             variant = "outlined"
             multiline
