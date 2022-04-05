@@ -264,15 +264,10 @@ function OnboardNewClinicDialog(props) {
           dashboardExtension.append("cards:extensionPointName", `${uniqueDisplayName} questionnaires dashboard`);
           dashboardExtension.append("title", uniqueDisplayName);
           dashboardExtension.append("description", description);
-          dashboardExtension.append("surveys", surveyID);
+          dashboardExtension.append("surveys", idHash);
 
-          let dashboardHomepage = new FormData();
-          dashboardHomepage.append("jcr:primaryType", "cards:Extension");
-          dashboardHomepage.append("cards:extensionPointId", `proms/dashboard/${surveyID}`);
-          dashboardHomepage.append("cards:extensionName", `${uniqueDisplayName} View`);
-          dashboardHomepage.append("cards:extensionRenderURL", "asset:proms-homepage.PromsView.js");
-          dashboardHomepage.append("cards:defaultOrder", 5);
-          dashboardHomepage.append("cards:data", `/Proms/${surveyID}`); // TODO: Double check this, not sure it's right
+          let dashboardFolder = new FormData();
+          dashboardExtension.append("jcr:primaryType", "sling:Folder");
 
           newFetch
             // After updating the clinicMapping, we also need to update all running configurations with the new data
@@ -299,12 +294,52 @@ function OnboardNewClinicDialog(props) {
                 method: 'POST',
                 body: dashboardExtension
               }))
-            // And the new extension point for appointments of this clinic
+
+          // Finally, we need to determine each survey identified by the given surveyID, and see what Questionnaires
+          // they point to
+
+            // New folder to hold views for this clinic
             .then(() => fetchWithReLogin(globalLoginDisplay, `/Extensions/DashboardViews/${idHash}View`,
               {
                 method: 'POST',
-                body: dashboardHomepage
+                body: dashboardFolder
               }))
+            .then (() => fetchWithReLogin(globalLoginDisplay, `/Proms/${surveyID}.deep.json`))
+            .then((response) => response.ok ? response.json() : Promise.reject(response))
+            .then((json) => {
+              let questionnaires = Object.values(json)
+                // Filter to questionnaires
+                .filter((entry) => {
+                  return entry["questionnaire"];
+                });
+
+              // Construct a new extensionpoint for each one
+              let returnedFetch = null;
+              for (let i = 0; i < questionnaires.length; i++) {
+                let questionnaireRef = questionnaires[i];
+                let dashboardView = new FormData();
+                dashboardView.append("jcr:primaryType", "cards:Extension");
+                dashboardView.append("cards:extensionPointId", `proms/dashboard/${idHash}`);
+                dashboardView.append("cards:extensionName", questionnaireRef["questionnaire"]["title"] + " View");
+                dashboardView.append("cards:extensionRenderURL", "asset:proms-homepage.PromsView.js");
+                dashboardView.append("cards:defaultOrder", i);
+                dashboardView.append("cards:data", questionnaireRef["@path"]);
+
+                let newFetch = fetchWithReLogin(globalLoginDisplay, `/Extensions/DashboardViews/${idHash}View/${questionnaireRef["questionnaire"]["title"]}`,
+                {
+                  method: 'POST',
+                  body: dashboardView
+                });
+
+                if (returnedFetch == null) {
+                  returnedFetch = newFetch;
+                } else {
+                  returnedFetch.then(() => newFetch);
+                }
+              }
+
+              return returnedFetch;
+            })
             .then(() => {
               onSuccess && onSuccess();
             });
