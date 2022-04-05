@@ -1,0 +1,318 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one
+//  or more contributor license agreements.  See the NOTICE file
+//  distributed with this work for additional information
+//  regarding copyright ownership.  The ASF licenses this file
+//  to you under the Apache License, Version 2.0 (the
+//  "License"); you may not use this file except in compliance
+//  with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing,
+//  software distributed under the License is distributed on an
+//  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+//  KIND, either express or implied.  See the License for the
+//  specific language governing permissions and limitations
+//  under the License.
+//
+
+import React, { useContext, useState } from "react";
+import { Grid, IconButton, LinearProgress, Link, TextField, Typography, withStyles } from "@material-ui/core";
+import Delete from "@material-ui/icons/Delete";
+
+import PropTypes from "prop-types";
+
+import Answer from "./Answer";
+import DragAndDrop from "../components/dragAndDrop";
+import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+import { useFormReaderContext } from "./FormContext";
+import { useFormUpdateWriterContext } from "./FormUpdateContext";
+import Question from "./Question";
+import QuestionnaireStyle from "./QuestionnaireStyle";
+
+import AnswerComponentManager from "./AnswerComponentManager";
+
+// Component that renders a dicom upload question.
+// Filepaths are placed in a series of <input type="hidden"> tags for
+// submission.
+//
+//
+// Sample usage:
+// (TODO)
+function DicomQuestion(props) {
+  const { classes, existingAnswer, pageActive, ...rest } = props;
+  // Enforce maxAnswers 1 for the time being
+  const maxAnswers = 1;
+
+  let initialValues =
+    // Check whether or not we have an initial value
+    (!existingAnswer || existingAnswer[1].value === undefined) ? [] :
+    // The value can either be a single value or an array of values; force it into a dictionary
+    Array.of(existingAnswer[1].value).flat()
+    // Finally, split it into a series of [value, label]s
+    .map((element) => [/.+\/(.+?)$/.exec(element)?.[1], element]);
+  let initialDict = {};
+  initialValues.forEach((value) => {
+    initialDict[value[0]] = value[1];
+  });
+
+  let [ uploadedFiles, setUploadedFiles ] = useState(initialDict);
+  let [ error, setError ] = useState();
+  let [ uploadInProgress, setUploadInProgress ] = useState(false);
+  let [ answerPath, setAnswerPath ] = useState(existingAnswer);
+
+  // The answers to give to our <Answers /> object
+  let [ answers, setAnswers ] = useState(initialValues);
+  let writer = useFormUpdateWriterContext();
+  let reader = useFormReaderContext();
+  let saveForm = reader['/Save'];
+  let disableUploads = !!reader['/DisableUploads'];
+  // Since adding new entries doesn't trigger the form's onChange, we need to force
+  // the form to allow saving after we finish updating
+  let allowResave = reader['/AllowResave'];
+  let outURL = reader["/URL"] + "/" + answerPath;
+  const globalLoginDisplay = useContext(GlobalLoginContext);
+
+  // Add files to the pending state
+  let addFiles = (files) => {
+    upload(files);
+  }
+
+  // Event handler for selecting files
+  let upload = (files) => {
+    // Don't do anything if the context provider says uploads are disabled
+    if (disableUploads) {
+      return;
+    }
+    // TODO - handle possible logged out situation here - open a login popup
+    setUploadInProgress(true);
+    setError("");
+
+    let savePromise = saveForm();
+    if (savePromise) {
+      // When this function returns, the "files selected" event is cleared, along with the files list. Make a copy to preserve the data.
+      let filesCopy = [];
+      for (let i = 0 ; i < files.length; ++i) {
+        filesCopy.push(files.item(i));
+      }
+      savePromise.then(() => uploadAllFiles(filesCopy))
+        .catch( (err) => {
+          console.log(err);
+          setError(err.ToString());
+          setUploadInProgress(false);
+        })
+        .finally(() => {
+          setUploadInProgress(false);
+        });
+    } else {
+      setError("Could not save form to prepare for DICOM upload");
+    }
+  };
+
+  // Find the icon and load them
+  let uploadAllFiles = (selectedFiles) => {
+    let uploadedFileNames = Object.keys(uploadedFiles || {});
+    let indicesToUpload = [];
+    let fileNamesDiscarded = [];
+
+    if (maxAnswers > 0) {
+      // Prioritize re-uploading what has already been uploaded
+      for (let i = 0; i < selectedFiles.length && indicesToUpload.length < maxAnswers; ++i) {
+        if (uploadedFileNames.includes(selectedFiles[i]['name'])) {
+          indicesToUpload.push(i);
+        }
+      }
+      let reUploadCount = indicesToUpload.length;
+      let maxNewUploads = maxAnswers - uploadedFileNames.length;
+      // Remove existing selection if only one file is permitted
+      if (maxAnswers == 1) {
+        uploadedFileNames.forEach((filename, idx) => idx != indicesToUpload[0] && deletePath(idx));
+        maxNewUploads = maxAnswers;
+      }
+
+      // See if there's any room for uploading any new files
+      for (let i = 0; i < selectedFiles.length; ++i) {
+        if (!indicesToUpload.includes(i)) {
+          if ((indicesToUpload.length - reUploadCount) < maxNewUploads) {
+            indicesToUpload.push(i);
+          } else {
+            fileNamesDiscarded.push(selectedFiles[i]['name']);
+          }
+        }
+      }
+
+      // If there is a limit to how many files can be uploaded and a larger number of files was selected,
+      // inform the user which files did not get uploaded
+      if (indicesToUpload.length < selectedFiles.length) {
+        let errorText = "At most " + maxAnswers + " file" + (maxAnswers > 1 ? "s" : "") + " can be uploaded to this question. ";
+        errorText += "Not uploaded from your selection: " + fileNamesDiscarded.join(", ");
+        setError(errorText);
+      }
+    }
+
+    const promises = [];
+    for (let i = 0; i < selectedFiles.length; i++) {
+      if (maxAnswers == 0 || indicesToUpload.includes(i)) {
+        promises.push(uploadSingleFile(selectedFiles[i]));
+      }
+    }
+
+    return Promise.all(promises);
+  };
+
+  let uploadSingleFile = (file) => {
+    // TODO: Handle duplicate filenames
+    // NB: A lot of the info here is duplicated from Answer. Is a fix possible?
+    // Also NB: Since we save before this, we're guaranteed to have the parent created
+    let data = new FormData();
+    data.append(file['name'], file);
+    data.append('jcr:primaryType', 'cards:DicomAnswer');
+    data.append('question', props.questionDefinition['jcr:uuid']);
+    data.append('question@TypeHint', "Reference");
+    return fetchWithReLogin(globalLoginDisplay, outURL, {
+      method: "POST",
+      body: data
+    }).then((response) =>
+      response.ok ? response.text() : Promise.reject(response)
+    ).then((response) => {
+      // Determine what the output filename is, and save it
+      let uploadFinder = /Content (?:created|modified) (.+)<\/title>/;
+      let match = response.match(uploadFinder);
+      let fileURL = match[1] + "/" + file["name"];
+      if (maxAnswers != 1) {
+        // Guard against duplicates
+        if (!(file["name"] in uploadedFiles)) {
+          setUploadedFiles((old) => {
+            return {...old, [file["name"]]: fileURL};
+          });
+          setAnswers((old) => {
+            let newAnswers = old.slice();
+            newAnswers.push([file["name"], fileURL]);
+            return newAnswers;
+          });
+        }
+      } else {
+        // Change the new values
+        setUploadedFiles({[file["name"]]: fileURL});
+        setAnswers([[file["name"], fileURL]]);
+      }
+      allowResave();
+    }).catch((errorObj) => {
+      // Is the user logged out? Or did something else happen?
+      console.log(errorObj);
+      setError(String(errorObj));
+    });
+  };
+
+  // Delete an answer by its index
+  let deletePath = (index) => {
+    setError("");
+    // Rather than waiting to delete, we'll just delete it immediately
+    let data = new FormData();
+    data.append(':operation', 'delete');
+    fetchWithReLogin(globalLoginDisplay, fixFileURL(uploadedFiles[answers[index][0]], answers[index][0]), {
+      method: "POST",
+      body: data
+      });
+    setUploadedFiles((old) => {
+      let newUploadedFiles = {...old};
+      delete newUploadedFiles[answers[index][0]];
+      return newUploadedFiles;
+    })
+    setAnswers((old) => {
+      let newAnswers = old.slice();
+      newAnswers.splice(index, 1);
+      return newAnswers;
+    });
+    allowResave();
+  }
+
+  let fixFileURL = (path, name) => {
+    return path.slice(0, path.lastIndexOf(name)) + encodeURIComponent(name);
+  }
+
+  let hrefs = Array.of(existingAnswer?.[1]["value"]).flat();
+  let defaultDisplayFormatter = function(label, idx) {
+    return ( uploadedFiles && Object.values(uploadedFiles).length > 0 && <ul className={classes.answerField + " " + classes.fileResourceAnswerList}>
+      {Object.keys(uploadedFiles).map((filepath, idx) =>
+        <li key={idx}>
+          <a href={fixFileURL(hrefs[idx], label)} target="_blank" rel="noopener" download>{label}</a>
+          <div>
+            <img alt="DICOM Preview" src={fixFileURL(uploadedFiles[filepath], filepath).split('/').slice(0, -1).join('/') + '/image'}/>
+          </div>
+        </li>
+      )}
+    </ul>)
+  }
+
+  return (
+    <Question
+      answerLabel="dicom"
+      currentAnswers={Object.keys(uploadedFiles || {}).length}
+      defaultDisplayFormatter={defaultDisplayFormatter}
+      {...props}
+      >
+      {
+        pageActive && <>
+          { uploadInProgress && (
+            <Grid item className={classes.root}>
+              <LinearProgress color="primary" />
+            </Grid>
+          ) }
+          <DragAndDrop
+            handleDrop={addFiles}
+            multifile={maxAnswers != 1}
+            error={error}
+            disabled={disableUploads}
+            />
+          { uploadedFiles && Object.values(uploadedFiles).length > 0 && <ul className={classes.answerField + " " + classes.fileResourceAnswerList}>
+            {Object.keys(uploadedFiles).map((filepath, idx) =>
+              <li key={idx}>
+                <div>
+                  <img alt="DICOM Preview" src={fixFileURL(uploadedFiles[filepath], filepath).split('/').slice(0, -1).join('/') + '/image'}/>;
+                  <IconButton
+                    onClick={() => {deletePath(idx)}}
+                    className={classes.deleteButton + " " + classes.fileResourceDeleteButton}
+                    color="secondary"
+                    title="Delete"
+                  >
+                    <Delete color="action" className={classes.deleteIcon}/>
+                  </IconButton>
+                </div>
+              </li>
+            )}
+          </ul>}
+        </>
+      }
+      {/* Enforce enableNotes: true in the questionDefinition passed to the answer component
+          to ensure the notes are rendered in all modes */}
+      <Answer
+        answers={answers}
+        questionDefinition={{...props.questionDefinition, enableNotes: true}}
+        existingAnswer={existingAnswer}
+        answerNodeType="cards:DicomAnswer"
+        onDecidedOutputPath={setAnswerPath}
+        valueType="path"
+        isMultivalued={maxAnswers != 1}
+        pageActive={pageActive}
+        {...rest}
+        />
+    </Question>);
+}
+
+DicomQuestion.propTypes = {
+  classes: PropTypes.object.isRequired,
+  questionDefinition: PropTypes.shape({
+    text: PropTypes.string.isRequired,
+  }).isRequired,
+};
+
+const StyledDicomQuestion = withStyles(QuestionnaireStyle)(DicomQuestion)
+export default StyledDicomQuestion;
+
+AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
+  if (questionDefinition.dataType === "dicom") {
+    return [StyledDicomQuestion, 50];
+  }
+});
