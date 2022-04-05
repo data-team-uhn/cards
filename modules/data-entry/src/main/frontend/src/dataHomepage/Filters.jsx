@@ -17,7 +17,7 @@
 //  under the License.
 //
 import React, { useCallback, useRef, useState, useContext, useEffect } from "react";
-import { Chip, Typography, Button, Dialog, CircularProgress, IconButton } from "@material-ui/core";
+import { Chip, Typography, Button, Dialog, CircularProgress, IconButton, Tooltip } from "@material-ui/core";
 import { DialogActions, DialogContent, DialogTitle, Grid, Select, MenuItem, TextField, withStyles } from "@material-ui/core";
 import Add from "@material-ui/icons/Add";
 import CloseIcon from '@material-ui/icons/Close';
@@ -148,7 +148,7 @@ function Filters(props) {
     // We'll need a helper recursive function to copy over data from sections/questions
     let parseSectionOrQuestionnaire = (sectionJson, path="") => {
       let retFields = [];
-      for (let [title, object] of Object.entries(sectionJson)) {
+      Object.entries(sectionJson).map(([title, object]) => {
         // We only care about children that are cards:Questions or cards:Sections
         if (object["jcr:primaryType"] == "cards:Question") {
           // If this is an cards:Question, copy the entire thing over to our Json value
@@ -162,8 +162,7 @@ function Filters(props) {
           retFields.push(...parseSectionOrQuestionnaire(object, path+title+"/"));
         }
         // Otherwise, we don't care about this value
-      }
-
+      });
       return retFields;
     }
 
@@ -429,18 +428,20 @@ function Filters(props) {
       <Typography display="inline" className={classes.filterLabel}>
         Filters:
       </Typography>
-      {activeFilters.map( (activeFilter, index) => {
-        let label = activeFilter.title + " " + activeFilter.comparator +
-          // Include the label (if available) or value for this filter iff the comparator is not unary
-          (UNARY_COMPARATORS.includes(activeFilter.comparator) ? ""
-            : (" " + (activeFilter.label != undefined ? activeFilter.label : activeFilter.value)));
-        label = (activeFilter.type === "createddate") ? label.split('T')[0] : label;
+      { activeFilters.map( (activeFilter, index) => {
+        let filterValue = activeFilter.label || activeFilter.value;
+        filterValue = (activeFilter.type === "createddate") ? filterValue.split('T')[0] : filterValue;
         return(
-          <React.Fragment key={label}>
             <Chip
-              key={label}
+              key={`${activeFilter.title}-${index}`}
               size="small"
-              label={label}
+              label={<>
+                       <Tooltip title={activeFilter.title}><span>{activeFilter.title}</span></Tooltip>
+                       <span>{activeFilter.comparator}</span>
+                       { !UNARY_COMPARATORS.includes(activeFilter.comparator) &&
+                         <Tooltip title={filterValue}><span>{filterValue}</span></Tooltip>
+                       }
+                     </>}
               disabled={disabled}
               variant="outlined"
               color="primary"
@@ -457,7 +458,6 @@ function Filters(props) {
               }}
               className={classes.filterChips}
               />
-          </React.Fragment>
           );
         })
       }

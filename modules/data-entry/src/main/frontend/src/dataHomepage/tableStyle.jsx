@@ -42,8 +42,12 @@ const liveTableStyle = theme => ({
         marginRight: theme.spacing(0.5),
         marginTop: theme.spacing(0.5),
         marginBottom: theme.spacing(0.5),
-        '& >span': {
-            margin: theme.spacing(0.5),
+        "& .MuiChip-label > span": {
+            maxWidth: "15em",
+            textOverflow: "ellipsis",
+            overflow: "hidden",
+            float: "left",
+            padding: theme.spacing(0.25),
         },
     },
     saveButton: {
@@ -78,7 +82,6 @@ const liveTableStyle = theme => ({
     },
     deleteButton: {
         width: "100%",
-        marginLeft: theme.spacing(2.5),
     },
     tableActions: {
         "& .MuiIconButton-root": {

@@ -84,6 +84,7 @@ const questionnaireStyle = theme => ({
     },
     answerField: {
         position: 'relative',
+        width: "100%",
     },
     nestedInput: {
         minWidth: "218px !important",
@@ -96,9 +97,6 @@ const questionnaireStyle = theme => ({
     },
     noteTextField: {
         width: "100%",
-    },
-    textFilterField: {
-        minWidth: "100% !important",
     },
     optionsList: {
         padding: theme.spacing(0),

@@ -42,13 +42,13 @@ const NumericFilter = forwardRef((props, ref) => {
   const { classes, defaultValue, onChangeInput, questionDefinition, ...rest } = props;
   return (
     <TextField
-      className={classes.textField}
+      className={classes.answerField}
       inputProps={{
         decimalScale: questionDefinition["dataType"] === "long" ? 0 : undefined
       }}
       InputProps={{
         inputComponent: NumberFormatCustom, // Used to override a TextField's type
-        className: classes.textField
+        className: classes.answerField
       }}
       defaultValue={defaultValue}
       onChange={(event) => {onChangeInput(event.target.value)}}
