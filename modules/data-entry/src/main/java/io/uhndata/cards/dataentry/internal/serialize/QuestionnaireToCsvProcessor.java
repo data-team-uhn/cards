@@ -224,29 +224,13 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
         csvData.get(CREATED_HEADER).put(0, form.getString("jcr:created"));
 
         // Set the root graph node
-        TreeGraph<String> formGraph = new TreeGraph<String>("root", null, null, 0);
+        TreeGraph<String> formGraph = new TreeGraph<String>("root", null, null, 0, false, true);
 
         processFormSection(form, csvData, formGraph);
         Map<String, TreeGraph> result = new LinkedHashMap<String, TreeGraph>();
         formGraph.dfsRecursive(result);
 
-        // Fill in csvData from the tree
-        int rowNumber = 0;
-        int depth = formGraph.getLevel();
-        for (final String name : result.keySet()) {
-            TreeGraph node = result.get(name);
-            int newDepth = node.getLevel();
-            if (newDepth < depth) {
-                rowNumber++;
-            }
-            depth = newDepth;
-            final Map<Integer, String> answerColumn = csvData.get(node.getQuestionId());
-            if (answerColumn == null) {
-                // This is a skipped question, either hidden or in a non-data section
-                continue;
-            }
-            answerColumn.put(rowNumber, (String) node.getData());
-        }
+        fillCSVData(formGraph, result, csvData);
 
         final int levels = csvData.values().stream().map(Map::keySet)
             .flatMap(Set::stream)
@@ -276,6 +260,50 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
         csvData.values().forEach(Map::clear);
     }
 
+    @SuppressWarnings("checkstyle:CyclomaticComplexity")
+    private void fillCSVData(TreeGraph<String> formGraph, Map<String, TreeGraph> result,
+        Map<String, Map<Integer, String>> csvData)
+    {
+        // Fill in csvData from the tree
+        int rowNumber = 0;
+        Boolean isRecurring = false;
+        Boolean isSameSection = false;
+        Boolean isCurrentlyReccurentSection = false;
+        String sectionId = formGraph.getUuid();
+        int depth = formGraph.getLevel();
+        for (final String name : result.keySet()) {
+            TreeGraph node = result.get(name);
+
+            if (node.isSection()) {
+                isRecurring = node.isRecurrentSection();
+                isSameSection = sectionId == node.getUuid();
+            }
+
+            int newDepth = node.getLevel();
+
+            Boolean isNewRowPartOne = (newDepth == depth - 1) && (isRecurring && isCurrentlyReccurentSection)
+                && isSameSection;
+            Boolean isNewRowPartTwo = (newDepth < depth - 1) && (isRecurring && isCurrentlyReccurentSection);
+
+            if (isNewRowPartOne || isNewRowPartTwo) {
+                rowNumber++;
+            }
+
+            depth = newDepth;
+            isCurrentlyReccurentSection = isRecurring;
+            if (node.isSection()) {
+                sectionId = node.getUuid();
+            }
+
+            final Map<Integer, String> answerColumn = csvData.get(node.getUuid());
+            if (answerColumn == null) {
+                // This is a skipped question, either hidden or in a non-data section
+                continue;
+            }
+            answerColumn.put(rowNumber, (String) node.getData());
+        }
+    }
+
     private void processFormSubjects(final JsonObject subjectJson, final Map<String, Map<Integer, String>> csvData)
     {
         final Map<Integer, String> subjectColumn = csvData.get(subjectJson.getJsonObject("type").getString(UUID_PROP));
@@ -301,7 +329,10 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
         answSectionJson.values().stream()
             .filter(value -> ValueType.OBJECT.equals(value.getValueType()))
             .map(JsonValue::asJsonObject)
-            .filter(value -> value.containsKey(PRIMARY_TYPE_PROP))
+            .filter(value -> value.containsKey(PRIMARY_TYPE_PROP)
+                && ("cards:AnswerSection".equals(value.getString(PRIMARY_TYPE_PROP))
+                    || value.getString(PRIMARY_TYPE_PROP).startsWith("cards:")
+                        && value.getString(PRIMARY_TYPE_PROP).endsWith("Answer")))
             .forEach(value -> processFormElement(value, csvData, formGraph));
     }
 
@@ -319,15 +350,17 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
         final String nodeName = nodeJson.getString("@name");
         final String nodeType = nodeJson.getString(PRIMARY_TYPE_PROP);
         if ("cards:AnswerSection".equals(nodeType)) {
+            Boolean isRecurrent = nodeJson.getJsonObject("section").getBoolean("recurrent");
+            final String uuid = nodeJson.getJsonObject("section").getString(UUID_PROP);
             // Add Section node to the tree
-            TreeGraph<String> sectionTreeNode = new TreeGraph(nodeName, null, null, newLevel);
+            TreeGraph<String> sectionTreeNode = new TreeGraph(nodeName, uuid, null, newLevel, isRecurrent, true);
             formGraph.addChild(sectionTreeNode);
             processFormSection(nodeJson, csvData, sectionTreeNode);
         } else if (nodeType.startsWith("cards:") && nodeType.endsWith("Answer")) {
             final String uuid = nodeJson.getJsonObject("question").getString(UUID_PROP);
             String answer = getAnswerString(nodeJson, nodeType);
             // Add Answer child to the tree
-            formGraph.addChild(nodeName, uuid, answer, newLevel);
+            formGraph.addChild(nodeName, uuid, answer, newLevel, false, false);
         }
     }
 

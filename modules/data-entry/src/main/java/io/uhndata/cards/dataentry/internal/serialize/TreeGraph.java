@@ -26,37 +26,35 @@ public class TreeGraph<T>
 {
     private T data;
     private String id;
-    private String questionId;
+    private String uuid;
     private int level;
     private List<TreeGraph> children = new ArrayList<>();
     private TreeGraph parent;
+    private Boolean isSection = false;
+    private Boolean isRecurrentSection = false;
 
-    public TreeGraph(String id, String questionId, T data, int level)
+    public TreeGraph(String id, String uuid, T data, int level, Boolean isRecurrentSection, Boolean isSection)
     {
+        // The unique ID of the node, in our case we use node {@name} attribute
         this.id = id;
-        this.questionId = questionId;
+        // Node's Section or question uuid
+        this.uuid = uuid;
+        // Answer data string to be printed in CSV
         this.data = data;
+        // Depth level of the node in the tree
         this.level = level;
+        this.isRecurrentSection = isRecurrentSection;
+        this.isSection = isSection;
     }
 
-    public void setId(String id)
+    public String getUuid()
     {
-        this.id = id;
-    }
-
-    public String getQuestionId()
-    {
-        return this.questionId;
+        return this.uuid;
     }
 
     public String getId()
     {
         return this.id;
-    }
-
-    public void setLevel(int level)
-    {
-        this.level = level;
     }
 
     public int getLevel()
@@ -70,9 +68,9 @@ public class TreeGraph<T>
         this.children.add(child);
     }
 
-    public void addChild(String id, String questionId, T data, int level)
+    public void addChild(String id, String questionId, T data, int level, Boolean isRecurrentSection, Boolean isSection)
     {
-        TreeGraph<T> newChild = new TreeGraph<>(id, questionId, data, level);
+        TreeGraph<T> newChild = new TreeGraph<>(id, questionId, data, level, isRecurrentSection, isSection);
         this.addChild(newChild);
     }
 
@@ -86,9 +84,14 @@ public class TreeGraph<T>
         return this.data;
     }
 
-    public void setData(T data)
+    public Boolean isRecurrentSection()
     {
-        this.data = data;
+        return this.isRecurrentSection;
+    }
+
+    public Boolean isSection()
+    {
+        return this.isSection;
     }
 
     private void setParent(TreeGraph parent)
@@ -96,16 +99,7 @@ public class TreeGraph<T>
         this.parent = parent;
     }
 
-    public TreeGraph getParent()
-    {
-        return this.parent;
-    }
-
-    public boolean hasChildren()
-    {
-        return this.children.size() > 0;
-    }
-
+    @SuppressWarnings({"checkstyle:CyclomaticComplexity", "checkstyle:NPathComplexity"})
     public void dfsRecursive(Map<String, TreeGraph> result)
     {
         if (this.getId() != null) {
@@ -115,14 +109,22 @@ public class TreeGraph<T>
         // First add answers only
         for (Object child : this.getChildren()) {
             TreeGraph newChild = (TreeGraph) child;
-            if (!result.containsKey(newChild.getId()) && !newChild.hasChildren()) {
+            if (!result.containsKey(newChild.getId()) && !newChild.isSection()) {
                 newChild.dfsRecursive(result);
             }
         }
-        // Then add sections
+        // Then add non-recurrent sections
         for (Object child : this.getChildren()) {
             TreeGraph newChild = (TreeGraph) child;
-            if (!result.containsKey(newChild.getId()) && newChild.hasChildren()) {
+            if (!result.containsKey(newChild.getId()) && newChild.isSection()
+                    && !newChild.isRecurrentSection()) {
+                newChild.dfsRecursive(result);
+            }
+        }
+        // Then add recurrent sections
+        for (Object child : this.getChildren()) {
+            TreeGraph newChild = (TreeGraph) child;
+            if (!result.containsKey(newChild.getId()) && newChild.isRecurrentSection()) {
                 newChild.dfsRecursive(result);
             }
         }
