@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 
 import { Button, Collapse, Grid, TextField, Tooltip } from "@mui/material";
@@ -34,14 +34,8 @@ function Note (props) {
   let [ visible, setVisible ] = useState(fullSize || Boolean(note) || Boolean(externalNote));
   let inputRef = useRef();
 
-  let changeNote = (event) => {
-    onChangeNote && onChangeNote(event.target.value);
-    setNote(event.target.value);
-  }
 
-  let focusInput = () => {
-    inputRef.current && inputRef.current.focus();
-  }
+  useEffect(() => onChangeNote && onChangeNote(note), [note]);
 
   const noteIsEmpty = (note == null || note == "") && (!externalNote);
 
@@ -72,13 +66,13 @@ function Note (props) {
     </div>
     <Collapse
       in = {visible}
-      onEntered = {focusInput}
+      onEntered = {() => inputRef?.current?.focus()}
       >
       <Grid container spacing={2}>
         <Grid item xs={fullSize ? 12 : 6}>
           <TextField
             value = {note || externalNote}
-            onChange = {changeNote}
+            onChange = {(event) => setNote(event?.target?.value)}
             variant = "outlined"
             multiline
             rows = {fullSize ? 16 : 4}
