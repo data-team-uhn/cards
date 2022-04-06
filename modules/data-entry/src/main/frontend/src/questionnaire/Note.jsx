@@ -36,9 +36,9 @@ function Note (props) {
 
   // This allows setting the note contents programatically via the `value` prop
   useEffect(() => {
-    if (value) {
+    if (typeof(value) != "undefined") {
       setNote(value);
-      setVisible(true);
+      setVisible(!!value);
     }
   }, [value]);
 
