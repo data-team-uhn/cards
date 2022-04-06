@@ -28,9 +28,9 @@ import UnfoldLess from "@material-ui/icons/UnfoldLess";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
 function Note (props) {
-  const { answerPath, children, existingAnswer, classes, onAddSuggestion, onChangeNote, pageActive, externalNote, ...rest } = {...props};
+  const { answerPath, children, existingAnswer, classes, onAddSuggestion, onChangeNote, pageActive, fullSize, placeholder, externalNote, ...rest } = {...props};
   let [ note, setNote ] = useState((existingAnswer?.[1]?.note));
-  let [ visible, setVisible ] = useState(Boolean(note));
+  let [ visible, setVisible ] = useState(fullSize || Boolean(note) || Boolean(externalNote));
   let inputRef = useRef();
 
   let changeNote = (event) => {
@@ -74,23 +74,23 @@ function Note (props) {
       onEntered = {focusInput}
       >
       <Grid container spacing={2}>
-        <Grid item xs={6}>
+        <Grid item xs={fullSize ? 12 : 6}>
           <TextField
             value = {note || externalNote}
             onChange = {changeNote}
             variant = "outlined"
             multiline
-            rows = "4"
+            rows = {fullSize ? 16 : 4}
             className = {classes.noteSection}
             InputProps = {{
               className: classes.noteTextField
             }}
-            placeholder = "Please place any additional notes here."
+            placeholder = {placeholder || "Please place any additional notes here."}
             inputRef = {inputRef}
             {...rest}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={fullSize ? 12 : 6}>
             {children}
           </Grid>
         </Grid>
