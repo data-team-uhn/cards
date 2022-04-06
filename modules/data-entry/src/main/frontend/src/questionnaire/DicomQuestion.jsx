@@ -302,18 +302,26 @@ function DicomQuestion(props) {
     allowResave();
   }
 
+  let thumbnailStyle = {
+    maxWidth: "400px",
+    maxHeight: "400px",
+  };
+
   let fixFileURL = (path, name) => {
     return path.slice(0, path.lastIndexOf(name)) + encodeURIComponent(name);
   }
 
   let hrefs = Array.of(existingAnswer?.[1]["value"]).flat();
+
   let defaultDisplayFormatter = function(label, idx) {
     return ( uploadedFiles && Object.values(uploadedFiles).length > 0 && <ul className={classes.answerField + " " + classes.fileResourceAnswerList}>
       {Object.keys(uploadedFiles).map((filepath, idx) =>
         <li key={idx}>
-          <a href={fixFileURL(hrefs[idx], label)} target="_blank" rel="noopener" download>{label}</a>
+          <Link href={fixFileURL(hrefs[idx], filepath)} target="_blank" rel="noopener" download>{filepath}</Link>
           <div>
-            <img alt="DICOM Preview" src={fixFileURL(uploadedFiles[filepath], filepath).split('/').slice(0, -1).join('/') + '/image'}/>
+            { /* FIXME: Temporary placeholder image for testing the layout*/ }
+            <img style={thumbnailStyle} alt="DICOM Preview" src="https://upload.wikimedia.org/wikipedia/en/thumb/c/ce/Pacs1.jpg/200px-Pacs1.jpg" />
+            { /*{fixFileURL(uploadedFiles[filepath], filepath).split('/').slice(0, -1).join('/') + '/image'}/> */}
           </div>
         </li>
       )}
@@ -343,16 +351,19 @@ function DicomQuestion(props) {
           { uploadedFiles && Object.values(uploadedFiles).length > 0 && <ul className={classes.answerField + " " + classes.fileResourceAnswerList}>
             {Object.keys(uploadedFiles).map((filepath, idx) =>
               <li key={idx}>
+                <Link href={fixFileURL(uploadedFiles[filepath], filepath)} target="_blank" rel="noopener" download>{filepath}</Link>
+                <IconButton
+                  onClick={() => {deletePath(idx)}}
+                  className={classes.deleteButton + " " + classes.fileResourceDeleteButton}
+                  color="secondary"
+                  title="Delete"
+                >
+                  <Delete color="action" className={classes.deleteIcon}/>
+                </IconButton>
                 <div>
-                  <img alt="DICOM Preview" src={fixFileURL(uploadedFiles[filepath], filepath).split('/').slice(0, -1).join('/') + '/image'}/>;
-                  <IconButton
-                    onClick={() => {deletePath(idx)}}
-                    className={classes.deleteButton + " " + classes.fileResourceDeleteButton}
-                    color="secondary"
-                    title="Delete"
-                  >
-                    <Delete color="action" className={classes.deleteIcon}/>
-                  </IconButton>
+                  { /* FIXME: Temporary placeholder image for testing the layout*/ }
+                  <img style={thumbnailStyle} alt="DICOM Preview" src="https://upload.wikimedia.org/wikipedia/en/thumb/c/ce/Pacs1.jpg/200px-Pacs1.jpg" />
+                  { /* {fixFileURL(uploadedFiles[filepath], filepath).split('/').slice(0, -1).join('/') + '/image'}/> */ }
                 </div>
               </li>
             )}
