@@ -97,7 +97,7 @@ function Note (props) {
     </Collapse>
     {noteIsEmpty ?
       <input type="hidden" name={`${answerPath}/note@Delete`} value="0" />
-      : <input type="hidden" name={`${answerPath}/note`} value={note} />}
+      : <input type="hidden" name={`${answerPath}/note`} value={note || externalNote} />}
   </React.Fragment>);
 }
 
