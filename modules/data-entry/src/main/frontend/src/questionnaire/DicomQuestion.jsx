@@ -71,7 +71,7 @@ function DicomQuestion(props) {
   let [ uploadInProgress, setUploadInProgress ] = useState(false);
   let [ answerPath, setAnswerPath ] = useState(existingAnswer);
   let [ dicomMetadataNote, setDicomMetadataNote ] = useState();
-  let [ dicomImagePreviewURL, setDicomImagePreviewURL ] = useState();
+  let [ dicomImagePreviewURL, setDicomImagePreviewURL ] = useState(existingAnswer?.[1].image);
 
   // The answers to give to our <Answers /> object
   let [ answers, setAnswers ] = useState(initialValues);
@@ -412,6 +412,7 @@ function DicomQuestion(props) {
           to ensure the notes are rendered in all modes */}
       <Answer
         answers={answers}
+        answerMetadata={{image : dicomImagePreviewURL}}
         questionDefinition={{...props.questionDefinition, enableNotes: true}}
         existingAnswer={existingAnswer}
         answerNodeType="cards:DicomAnswer"
