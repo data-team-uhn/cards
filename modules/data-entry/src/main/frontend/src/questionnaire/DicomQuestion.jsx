@@ -205,22 +205,14 @@ function DicomQuestion(props) {
   };
 
   let uploadSingleFile = (file) => {
-    // TODO: Handle duplicate filenames
-    // NB: A lot of the info here is duplicated from Answer. Is a fix possible?
-    // Also NB: Since we save before this, we're guaranteed to have the parent created
-    let data = new FormData();
-    data.append(file['name'], file);
-    data.append('jcr:primaryType', 'cards:DicomAnswer');
-    data.append('question', props.questionDefinition['jcr:uuid']);
-    data.append('question@TypeHint', "Reference");
+    // First parse the metadata locally
     file.arrayBuffer()
       .then((arrayBuf) => {
         let dicomU8 = new Uint8Array(arrayBuf);
         let dcmObject = dicomParser.parseDicom(dicomU8);
         //console.log(dcmObject);
-        //console.log(DICOM_TAG_DICT);
-        // Build a DICOM metadata string
-        let dicomMetadataStr = "";
+        // Build a DICOM metadata
+        let dicomMetadata = [];
         for (let dcmtag in dcmObject.elements) {
           let tagName = getDicomTagName(dcmtag);
           if (typeof(tagName) != "string") {
@@ -236,16 +228,22 @@ function DicomQuestion(props) {
             continue;
           }
           */
-          let kvString = tagName + ": " + tagValue;
-          //console.log(kvString);
-          dicomMetadataStr += kvString;
-          dicomMetadataStr += "\n"
+          dicomMetadata.push(tagName + ": " + tagValue);
         }
-        console.log(dicomMetadataStr);
-        console.log("will need to be added to");
-        console.log(existingAnswer);
-        setDicomMetadataNote(dicomMetadataStr);
-      })
+        setDicomMetadataNote(dicomMetadata.join("\n"));
+      });
+
+    // Then upload the file
+
+    // TODO: Handle duplicate filenames
+    // NB: A lot of the info here is duplicated from Answer. Is a fix possible?
+    // Also NB: Since we save before this, we're guaranteed to have the parent created
+    let data = new FormData();
+    data.append(file['name'], file);
+    data.append('jcr:primaryType', 'cards:DicomAnswer');
+    data.append('question', props.questionDefinition['jcr:uuid']);
+    data.append('question@TypeHint', "Reference");
+
     return fetchWithReLogin(globalLoginDisplay, outURL, {
       method: "POST",
       body: data
