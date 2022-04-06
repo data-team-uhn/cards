@@ -282,6 +282,8 @@ function DicomQuestion(props) {
   // Delete an answer by its index
   let deletePath = (index) => {
     setError("");
+    // Clear the note
+    setDicomMetadataNote("");
     // Rather than waiting to delete, we'll just delete it immediately
     let data = new FormData();
     data.append(':operation', 'delete');
