@@ -18,8 +18,7 @@
 //
 
 import React, { useContext, useState } from "react";
-import { Grid, IconButton, LinearProgress, Link, TextField, Typography, withStyles } from "@material-ui/core";
-import Delete from "@material-ui/icons/Delete";
+import { Grid, LinearProgress, Link, TextField, Typography, withStyles } from "@material-ui/core";
 
 import dicomParser from "dicom-parser";
 
@@ -32,6 +31,7 @@ import { useFormReaderContext } from "./FormContext";
 import { useFormUpdateWriterContext } from "./FormUpdateContext";
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
+import DeleteButton from "../dataHomepage/DeleteButton";
 
 import AnswerComponentManager from "./AnswerComponentManager";
 
@@ -354,14 +354,12 @@ function DicomQuestion(props) {
             {Object.keys(uploadedFiles).map((filepath, idx) =>
               <li key={idx}>
                 <Link href={fixFileURL(uploadedFiles[filepath], filepath)} target="_blank" rel="noopener" download>{filepath}</Link>
-                <IconButton
-                  onClick={() => {deletePath(idx)}}
-                  className={classes.deleteButton + " " + classes.fileResourceDeleteButton}
-                  color="secondary"
-                  title="Delete"
-                >
-                  <Delete color="action" className={classes.deleteIcon}/>
-                </IconButton>
+                <DeleteButton
+                  entryName={filepath}
+                  entryType={"Dicom file"}
+                  shouldGoBack={false}
+                  onComplete={() => deletePath(idx)}
+                />
                 <div>
                   { /* FIXME: Temporary placeholder image for testing the layout*/ }
                   <img style={thumbnailStyle} alt="DICOM Preview" src="https://upload.wikimedia.org/wikipedia/en/thumb/c/ce/Pacs1.jpg/200px-Pacs1.jpg" />
