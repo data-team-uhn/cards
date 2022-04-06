@@ -59,6 +59,9 @@
   //  An optional configuration describing the columns of the livetable that lists the forms corresponding to this questionnaire
   - view (string)
 
+  //  Optional summary questions to be displayed after completing a QuestionnaireSet
+  + * (cards:Question) = cards:Question
+
 //-----------------------------------------------------------------------------
 // QuestionnaireSet: a sequence of questionnaires to be filled out
 [cards:QuestionnaireSet] > sling:Folder, mix:referenceable, mix:versionable

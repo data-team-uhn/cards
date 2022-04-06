@@ -262,13 +262,19 @@ function QuestionnaireSet(props) {
     let data = {};
     Object.values(json || {})
       .filter(value => value['jcr:primaryType'] == 'cards:QuestionnaireRef')
-      .forEach(value => { data[value.questionnaire['@name']] = {
-        'title': value.questionnaire?.title || value.questionnaire?.['@name'],
-        '@path': value.questionnaire?.['@path'],
-        '@name': value.questionnaire?.['@name'],
-        'hasInterpretation': hasInterpretation(value.questionnaire),
-        'estimate': value.estimate
-       }});
+      .forEach(value => {
+        let addons = Object.values(value).filter(filterValue =>
+            filterValue['jcr:primaryType'] == 'cards:Question' || filterValue['jcr:primaryType'] == 'cards:Section');
+        data[value.questionnaire['@name']] = {
+          'title': value.questionnaire?.title || value.questionnaire?.['@name'],
+          '@path': value.questionnaire?.['@path'],
+          '@name': value.questionnaire?.['@name'],
+          'hasInterpretation': hasInterpretation(value.questionnaire)
+            || addons.filter(filterValue => hasInterpretation(filterValue)).length > 0,
+          'estimate': value.estimate,
+          'questionnaireAddons': addons
+        }
+       });
     setQuestionnaires(data);
 
     let qids = Object.values(json || {})
@@ -539,6 +545,7 @@ function QuestionnaireSet(props) {
           id={crtFormId}
           mode="edit"
           disableHeader
+          questionnaireAddons={nextQuestionnaire?.questionnaireAddons}
           doneIcon={nextQuestionnaire ? <NextStepIcon /> : <DoneIcon />}
           doneLabel={nextQuestionnaire ? `Continue to ${nextQuestionnaire?.title}` : "Review"}
           onDone={nextQuestionnaire ? launchNextForm : nextStep}
@@ -562,6 +569,7 @@ function QuestionnaireSet(props) {
             id={subjectData?.[q]?.['@name']}
             disableHeader
             disableButton
+            questionnaireAddons={questionnaires?.[q]?.questionnaireAddons}
             contentOffset={contentOffset || 0}
           />
         </Grid>
@@ -605,14 +613,18 @@ your symptoms. Please see below for a summary of your scores and suggested actio
       <Grid container direction="column" spacing={3}>
       { (questionnaireIds || []).map((q, i) => (
         <Grid item>
-        <Form
-          key={q+"Summary"}
-          id={subjectData?.[q]?.['@name']}
-          mode="summary"
-          disableHeader
-          disableButton
-          contentOffset={contentOffset || 0}
-        />
+        {
+          questionnaires?.[q]?.hasInterpretation ? <Form
+              key={q+"Summary"}
+              id={subjectData?.[q]?.['@name']}
+              mode="summary"
+              questionnaireAddons={questionnaires?.[q]?.questionnaireAddons}
+              disableHeader
+              disableButton
+              contentOffset={contentOffset || 0}
+            />
+            :<></>
+        }
         </Grid>
       ))}
       </Grid>
