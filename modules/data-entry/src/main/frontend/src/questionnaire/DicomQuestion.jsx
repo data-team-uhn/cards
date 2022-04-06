@@ -382,6 +382,8 @@ function DicomQuestion(props) {
         isMultivalued={maxAnswers != 1}
         pageActive={pageActive}
         noteProps={{
+          fullSize: true,
+          placeholder: "Dicom metadata",
           externalNote: dicomMetadataNote
         }}
         {...rest}
