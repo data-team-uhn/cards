@@ -86,7 +86,7 @@ function Note (props) {
             InputProps = {{
               className: classes.noteTextField
             }}
-            placeholder = {placeholder || "Please place any additional notes here."}
+            placeholder = {placeholder}
             inputRef = {inputRef}
             {...rest}
             />
@@ -101,5 +101,25 @@ function Note (props) {
       : <input type="hidden" name={`${answerPath}/note`} value={note} />}
   </React.Fragment>);
 }
+
+Note.propTypes = {
+  answerPath: PropTypes.string,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ]),
+  existingAnswer: PropTypes.array,
+  classes: PropTypes.object.isRequired,
+  onAddSuggestion: PropTypes.func,
+  onChangeNote: PropTypes.func,
+  pageActive: PropTypes.bool,
+  fullSize: PropTypes.bool,
+  placeholder: PropTypes.string,
+  value: PropTypes.string,
+};
+
+Note.defaultProps = {
+  placeholder: "Please place any additional notes here.",
+};
 
 export default withStyles(QuestionnaireStyle)(Note);
