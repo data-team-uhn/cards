@@ -90,7 +90,7 @@ function Answer (props) {
           })}
           {
             answerMetadata &&
-              Array.from(answerMetadata.entries()).map(([key, value], index) => {
+              Object.entries(answerMetadata).map(([key, value], index) => {
                 return (
                   <input
                     type="hidden"
