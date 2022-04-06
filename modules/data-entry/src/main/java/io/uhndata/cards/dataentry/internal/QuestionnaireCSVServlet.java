@@ -55,6 +55,7 @@ public class QuestionnaireCSVServlet extends SlingAllMethodsServlet
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HHmm");
         response.addHeader("Content-disposition", "attachment; filename=" + questionnaire.getName()
             + "_" + dateFormat.format(new Date()) + ".csv");
+        response.setCharacterEncoding("UTF-8");
         response.getWriter().write(csv.toString());
     }
 }
