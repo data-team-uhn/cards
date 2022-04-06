@@ -20,7 +20,12 @@
 import React, { useContext, useState } from "react";
 import { Grid, LinearProgress, Link, TextField, Typography, withStyles } from "@material-ui/core";
 
+import cornerstone from "cornerstone-core";
+import cornerstoneWADOImageLoader from "cornerstone-wado-image-loader";
 import dicomParser from "dicom-parser";
+
+cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
+cornerstoneWADOImageLoader.external.dicomParser = dicomParser;
 
 import PropTypes from "prop-types";
 
@@ -66,6 +71,7 @@ function DicomQuestion(props) {
   let [ uploadInProgress, setUploadInProgress ] = useState(false);
   let [ answerPath, setAnswerPath ] = useState(existingAnswer);
   let [ dicomMetadataNote, setDicomMetadataNote ] = useState();
+  let [ dicomImagePreviewURL, setDicomImagePreviewURL ] = useState();
 
   // The answers to give to our <Answers /> object
   let [ answers, setAnswers ] = useState(initialValues);
@@ -205,7 +211,38 @@ function DicomQuestion(props) {
   };
 
   let uploadSingleFile = (file) => {
-    // First parse the metadata locally
+    // First, display the image
+    let dicomPointer = cornerstoneWADOImageLoader.wadouri.fileManager.add(file);
+    cornerstone.loadImage(dicomPointer)
+      .then((dicomImage) => {
+        //console.log("Loaded the DICOM image with cornerstoneWADOImageLoader...OKAY!");
+        //console.log(dicomImage);
+        let dicomImagePixels = dicomImage.getPixelData();
+        let dicomMinPix = dicomImage.minPixelValue;
+        let dicomMaxPix = dicomImage.maxPixelValue;
+        let dicomCanvas = document.createElement("canvas");
+        dicomCanvas.width = dicomImage.width;
+        dicomCanvas.height = dicomImage.height;
+        let dicomCtx = dicomCanvas.getContext('2d');
+        let canvasImageData = dicomCtx.getImageData(0, 0, dicomCanvas.width, dicomCanvas.height);
+
+        // Normalize the data so that all pixels are between 0 and 255
+        for (let i = 0; i < canvasImageData.data.length; i+=4) {
+          let thisPixVal = 0;
+          if ((dicomMaxPix - dicomMinPix) !== 0) {
+            thisPixVal = Math.floor(255 * ((dicomImagePixels[i/4] - dicomMinPix) / (dicomMaxPix - dicomMinPix)));
+          }
+          canvasImageData.data[i] = thisPixVal;
+          canvasImageData.data[i+1] = thisPixVal;
+          canvasImageData.data[i+2] = thisPixVal;
+          canvasImageData.data[i+3] = 255;
+        }
+        dicomCtx.putImageData(canvasImageData, 0, 0);
+        //console.log(dicomCanvas.toDataURL());
+        setDicomImagePreviewURL(dicomCanvas.toDataURL());
+        //console.log(dicomCanvas);
+      })
+    // ... Parse the metadata locally
     file.arrayBuffer()
       .then((arrayBuf) => {
         let dicomU8 = new Uint8Array(arrayBuf);
@@ -322,7 +359,8 @@ function DicomQuestion(props) {
           <Link href={fixFileURL(hrefs[idx], filepath)} target="_blank" rel="noopener" download>{filepath}</Link>
           <div>
             { /* FIXME: Temporary placeholder image for testing the layout*/ }
-            <img style={thumbnailStyle} alt="DICOM Preview" src="https://upload.wikimedia.org/wikipedia/en/thumb/c/ce/Pacs1.jpg/200px-Pacs1.jpg" />
+            {/* <img style={thumbnailStyle} alt="DICOM Preview" src="https://upload.wikimedia.org/wikipedia/en/thumb/c/ce/Pacs1.jpg/200px-Pacs1.jpg" /> */}
+            {dicomImagePreviewURL && <img style={thumbnailStyle} alt="DICOM Preview" src={dicomImagePreviewURL} />}
             { /*{fixFileURL(uploadedFiles[filepath], filepath).split('/').slice(0, -1).join('/') + '/image'}/> */}
           </div>
         </li>
@@ -362,7 +400,7 @@ function DicomQuestion(props) {
                 />
                 <div>
                   { /* FIXME: Temporary placeholder image for testing the layout*/ }
-                  <img style={thumbnailStyle} alt="DICOM Preview" src="https://upload.wikimedia.org/wikipedia/en/thumb/c/ce/Pacs1.jpg/200px-Pacs1.jpg" />
+                  {dicomImagePreviewURL && <img style={thumbnailStyle} alt="DICOM Preview" src={dicomImagePreviewURL} />}
                   { /* {fixFileURL(uploadedFiles[filepath], filepath).split('/').slice(0, -1).join('/') + '/image'}/> */ }
                 </div>
               </li>
