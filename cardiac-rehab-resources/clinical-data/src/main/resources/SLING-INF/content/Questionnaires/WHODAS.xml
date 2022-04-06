@@ -182,6 +182,34 @@
 				</property>
 			</node>
 		</node>
+		<node>
+			<name>whodas_date</name>
+			<property>
+				<name>dataType</name>
+				<value>date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>input</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>Date</value>
+				<type>String</type>
+			</property>
+		</node>
 	</node>
 	<node>
 		<name>Difficultyinpast30days</name>
