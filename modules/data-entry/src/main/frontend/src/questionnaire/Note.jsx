@@ -29,15 +29,22 @@ import UnfoldLess from "@mui/icons-material/UnfoldLess";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
 function Note (props) {
-  const { answerPath, children, existingAnswer, classes, onAddSuggestion, onChangeNote, pageActive, fullSize, placeholder, externalNote, ...rest } = {...props};
+  const { answerPath, children, existingAnswer, classes, onAddSuggestion, onChangeNote, pageActive, fullSize, placeholder, value, ...rest } = {...props};
   let [ note, setNote ] = useState((existingAnswer?.[1]?.note));
-  let [ visible, setVisible ] = useState(fullSize || Boolean(note) || Boolean(externalNote));
+  let [ visible, setVisible ] = useState(Boolean(note));
   let inputRef = useRef();
 
+  // This allows setting the note contents programatically via the `value` prop
+  useEffect(() => {
+    if (value) {
+      setNote(value);
+      setVisible(true);
+    }
+  }, [value]);
 
   useEffect(() => onChangeNote && onChangeNote(note), [note]);
 
-  const noteIsEmpty = (note == null || note == "") && (!externalNote);
+  const noteIsEmpty = (note == null || note == "");
 
   // Render nothing but keep state if this page is inactive
   if (!pageActive) {
@@ -71,7 +78,7 @@ function Note (props) {
       <Grid container spacing={2}>
         <Grid item xs={fullSize ? 12 : 6}>
           <TextField
-            value = {note || externalNote}
+            value = {note}
             onChange = {(event) => setNote(event?.target?.value)}
             variant = "outlined"
             multiline
@@ -92,7 +99,7 @@ function Note (props) {
     </Collapse>
     {noteIsEmpty ?
       <input type="hidden" name={`${answerPath}/note@Delete`} value="0" />
-      : <input type="hidden" name={`${answerPath}/note`} value={note || externalNote} />}
+      : <input type="hidden" name={`${answerPath}/note`} value={note} />}
   </React.Fragment>);
 }
 
