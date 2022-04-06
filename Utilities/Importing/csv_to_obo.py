@@ -60,11 +60,19 @@ ID_COLUMN = sys.argv[2]
 NAME_COLUMN = sys.argv[3]
 PARENT_COLUMNS = sys.argv[4:] if len(sys.argv) > 4 else []
 
-created_parents = []
+duplicate_names = []
+created_parents = {}
 created_terms = []
 
+prev_id = 0
+
+def get_negative_id():
+    global prev_id
+    prev_id += 1
+    return "_{}".format(prev_id)
+
 def clean_id(id_str):
-    return re.sub(r"[^a-zA-Z_\d]+", '', id_str)
+    return re.sub(r"[^a-zA-Z_\d\\_.]+", '', id_str)
 
 def clean_name(name):
     result = name
@@ -91,24 +99,47 @@ def write_term(oboFile, term_id, term_name, parents):
     if term_id in created_terms:
         print("Skipping duplicate term with ID '{}', NAME '{}'".format(term_id, term_name))
 
+    name = term_name
+    name_is_duplicate = name in duplicate_names
+
     if parents is not None:
         for parent in parents:
-            parent_id = clean_id(parent["value"])
-            if not parent_id in created_parents:
-                write_term(oboFile, parent_id, clean_name(parent["value"]), parent["parents"] if "parents" in parent else None)
-                created_parents.append(parent_id)
+            parent_name = clean_name(parent["value"])
+            if (name_is_duplicate):
+                name += " ({})".format(parent_name)
+            if not parent_name in created_parents:
+                parent_id = get_negative_id()
+                write_term(oboFile, parent_id, parent_name, parent["parents"] if "parents" in parent else None)
+                created_parents[parent_name] = parent_id
+
+
 
     oboFile.write("""[Term]
 id: {}
 name: {}
-""".format(term_id, term_name))
+""".format(term_id, name))
 
+    comments = []
     if parents is not None:
         for parent in parents:
-            oboFile.write("is_a: {}\n".format(clean_id(parent["value"])))
+            oboFile.write("is_a: {}\n".format(created_parents[clean_name(parent["value"])]))
+            comments.append(parent["value"])
+
+    if len(comments) > 0:
+        oboFile.write("def: {}\n".format(", ".join(comments)))
 
     oboFile.write("\n")
     created_terms.append(term_id)
+
+with open(TITLE + '.csv', encoding="utf-8-sig") as csvfile:
+    reader = csv.DictReader(csvfile, dialect='excel')
+    names = []
+    for row in reader:
+        term_name = row[NAME_COLUMN]
+        if term_name in names:
+            duplicate_names.append(term_name)
+        else:
+            names.append(term_name)
 
 with open(TITLE + '.csv', encoding="utf-8-sig") as csvfile:
     reader = csv.DictReader(csvfile, dialect='excel')
@@ -117,14 +148,13 @@ with open(TITLE + '.csv', encoding="utf-8-sig") as csvfile:
         for row in reader:
             term_id = row[ID_COLUMN]
             term_name = row[NAME_COLUMN]
-            term_parents = [{"value": "Value"}]
+            term_parents = []
             for parent_column in PARENT_COLUMNS:
                 if len(row[parent_column]) > 0:
                     term_parents.append({
                         "value": row[parent_column],
                         "parents": [{
-                            "value": parent_column,
-                            "parents": [{"value": "Category"}]
+                            "value": parent_column
                         }]
                     })
             write_term(oboFile, term_id, term_name, term_parents)

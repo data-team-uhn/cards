@@ -2413,17 +2413,6 @@
 				<value>9999</value>
 				<type>Long</type>
 			</property>
-			<node>
-				<name>vocabularyFilters</name>
-				<primaryNodeType>cards:VocabularyFilterGroup</primaryNodeType>
-				<property>
-					<name>DiagnosisMasterlist</name>
-					<values>
-						<value>Value</value>
-					</values>
-					<type>String</type>
-				</property>
-			</node>
 		</node>
 		<node>
 			<name>priorcath</name>
@@ -2668,17 +2657,6 @@
 					<value>9999</value>
 					<type>Long</type>
 				</property>
-				<node>
-					<name>vocabularyFilters</name>
-					<primaryNodeType>cards:VocabularyFilterGroup</primaryNodeType>
-					<property>
-						<name>CathProcedureMasterlist</name>
-						<values>
-							<value>Value</value>
-						</values>
-						<type>String</type>
-					</property>
-				</node>
 			</node>
 			<node>
 				<name>condition</name>
@@ -3230,17 +3208,6 @@
 					<value>9999</value>
 					<type>Long</type>
 				</property>
-				<node>
-					<name>vocabularyFilters</name>
-					<primaryNodeType>cards:VocabularyFilterGroup</primaryNodeType>
-					<property>
-						<name>CardiacSurgMasterlist</name>
-						<values>
-							<value>Value</value>
-						</values>
-						<type>String</type>
-					</property>
-				</node>
 			</node>
 			<node>
 				<name>condition</name>
@@ -6002,17 +5969,6 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<value>9999.0</value>
 				<type>Double</type>
 			</property>
-			<node>
-				<name>vocabularyFilters</name>
-				<primaryNodeType>cards:VocabularyFilterGroup</primaryNodeType>
-				<property>
-					<name>DiagnosisMasterlist</name>
-					<values>
-						<value>Value</value>
-					</values>
-					<type>String</type>
-				</property>
-			</node>
 		</node>
 		<node>
 			<name>height</name>
@@ -8424,17 +8380,6 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<value>9999</value>
 				<type>Long</type>
 			</property>
-			<node>
-				<name>vocabularyFilters</name>
-				<primaryNodeType>cards:VocabularyFilterGroup</primaryNodeType>
-				<property>
-					<name>CathProcedureMasterlist</name>
-					<values>
-						<value>Value</value>
-					</values>
-					<type>String</type>
-				</property>
-			</node>
 		</node>
 		<node>
 			<name>hospstatus</name>
@@ -10148,17 +10093,6 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<value>999</value>
 					<type>Long</type>
 				</property>
-				<node>
-					<name>vocabularyFilters</name>
-					<primaryNodeType>cards:VocabularyFilterGroup</primaryNodeType>
-					<property>
-						<name>VesselClosureMasterlist</name>
-						<values>
-							<value>Value</value>
-						</values>
-						<type>String</type>
-					</property>
-				</node>
 			</node>
 			<node>
 				<name>condition</name>
@@ -10245,17 +10179,6 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<value>999</value>
 					<type>Long</type>
 				</property>
-				<node>
-					<name>vocabularyFilters</name>
-					<primaryNodeType>cards:VocabularyFilterGroup</primaryNodeType>
-					<property>
-						<name>VesselClosureMasterlist</name>
-						<values>
-							<value>Value</value>
-						</values>
-						<type>String</type>
-					</property>
-				</node>
 			</node>
 			<node>
 				<name>condition</name>
@@ -10848,17 +10771,6 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<value>999</value>
 					<type>Long</type>
 				</property>
-				<node>
-					<name>vocabularyFilters</name>
-					<primaryNodeType>cards:VocabularyFilterGroup</primaryNodeType>
-					<property>
-						<name>VesselClosureMasterlist</name>
-						<values>
-							<value>Value</value>
-						</values>
-						<type>String</type>
-					</property>
-				</node>
 			</node>
 			<node>
 				<name>condition</name>
@@ -10945,17 +10857,6 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<value>999</value>
 					<type>Long</type>
 				</property>
-				<node>
-					<name>vocabularyFilters</name>
-					<primaryNodeType>cards:VocabularyFilterGroup</primaryNodeType>
-					<property>
-						<name>VesselClosureMasterlist</name>
-						<values>
-							<value>Value</value>
-						</values>
-						<type>String</type>
-					</property>
-				</node>
 			</node>
 			<node>
 				<name>condition</name>
@@ -15402,17 +15303,6 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<value>9999</value>
 				<type>Long</type>
 			</property>
-			<node>
-				<name>vocabularyFilters</name>
-				<primaryNodeType>cards:VocabularyFilterGroup</primaryNodeType>
-				<property>
-					<name>DeviceMasterlist</name>
-					<values>
-						<value>Value</value>
-					</values>
-					<type>String</type>
-				</property>
-			</node>
 		</node>
 		<node>
 			<name>asddefectcounterassn</name>
@@ -15454,17 +15344,6 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<value>999</value>
 				<type>Long</type>
 			</property>
-			<node>
-				<name>vocabularyFilters</name>
-				<primaryNodeType>cards:VocabularyFilterGroup</primaryNodeType>
-				<property>
-					<name>DeviceMasterlist</name>
-					<values>
-						<value>Value</value>
-					</values>
-					<type>String</type>
-				</property>
-			</node>
 		</node>
 		<node>
 			<name>asddevoutcome</name>
@@ -16800,17 +16679,6 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<value>9999</value>
 				<type>Long</type>
 			</property>
-			<node>
-				<name>vocabularyFilters</name>
-				<primaryNodeType>cards:VocabularyFilterGroup</primaryNodeType>
-				<property>
-					<name>DeviceMasterlist</name>
-					<values>
-						<value>Value</value>
-					</values>
-					<type>String</type>
-				</property>
-			</node>
 		</node>
 		<node>
 			<name>coarcdevtype</name>
@@ -18001,17 +17869,6 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<value>9999</value>
 					<type>Long</type>
 				</property>
-				<node>
-					<name>vocabularyFilters</name>
-					<primaryNodeType>cards:VocabularyFilterGroup</primaryNodeType>
-					<property>
-						<name>DeviceMasterlist</name>
-						<values>
-							<value>Value</value>
-						</values>
-						<type>String</type>
-					</property>
-				</node>
 			</node>
 			<node>
 				<name>conditionalGroup</name>
@@ -18188,17 +18045,6 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<value>9999</value>
 					<type>Long</type>
 				</property>
-				<node>
-					<name>vocabularyFilters</name>
-					<primaryNodeType>cards:VocabularyFilterGroup</primaryNodeType>
-					<property>
-						<name>DeviceMasterlist</name>
-						<values>
-							<value>Value</value>
-						</values>
-						<type>String</type>
-					</property>
-				</node>
 			</node>
 			<node>
 				<name>condition</name>
@@ -19096,17 +18942,6 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<value>9999</value>
 					<type>Long</type>
 				</property>
-				<node>
-					<name>vocabularyFilters</name>
-					<primaryNodeType>cards:VocabularyFilterGroup</primaryNodeType>
-					<property>
-						<name>DeviceMasterlist</name>
-						<values>
-							<value>Value</value>
-						</values>
-						<type>String</type>
-					</property>
-				</node>
 			</node>
 			<node>
 				<name>conditionalGroup</name>
@@ -19283,17 +19118,6 @@ New York Heart Association (NYHA) Functional Classification</value>
 					<value>9999</value>
 					<type>Long</type>
 				</property>
-				<node>
-					<name>vocabularyFilters</name>
-					<primaryNodeType>cards:VocabularyFilterGroup</primaryNodeType>
-					<property>
-						<name>DeviceMasterlist</name>
-						<values>
-							<value>Value</value>
-						</values>
-						<type>String</type>
-					</property>
-				</node>
 			</node>
 			<node>
 				<name>condition</name>
@@ -20204,17 +20028,6 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<value>999</value>
 				<type>Long</type>
 			</property>
-			<node>
-				<name>vocabularyFilters</name>
-				<primaryNodeType>cards:VocabularyFilterGroup</primaryNodeType>
-				<property>
-					<name>DeviceMasterlist</name>
-					<values>
-						<value>Value</value>
-					</values>
-					<type>String</type>
-				</property>
-			</node>
 		</node>
 		<node>
 			<name>pdadevoutcome</name>
@@ -21952,17 +21765,6 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<value>9999</value>
 				<type>Long</type>
 			</property>
-			<node>
-				<name>vocabularyFilters</name>
-				<primaryNodeType>cards:VocabularyFilterGroup</primaryNodeType>
-				<property>
-					<name>DeviceMasterlist</name>
-					<values>
-						<value>Value</value>
-					</values>
-					<type>String</type>
-				</property>
-			</node>
 		</node>
 		<node>
 			<name>pasdefectcounterassn</name>
@@ -26773,17 +26575,6 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<value>9999</value>
 				<type>Long</type>
 			</property>
-			<node>
-				<name>vocabularyFilters</name>
-				<primaryNodeType>cards:VocabularyFilterGroup</primaryNodeType>
-				<property>
-					<name>DeviceMasterlist</name>
-					<values>
-						<value>Value</value>
-					</values>
-					<type>String</type>
-				</property>
-			</node>
 		</node>
 		<node>
 			<name>eptargetcounterassn</name>
@@ -26825,17 +26616,6 @@ New York Heart Association (NYHA) Functional Classification</value>
 				<value>999</value>
 				<type>Long</type>
 			</property>
-			<node>
-				<name>vocabularyFilters</name>
-				<primaryNodeType>cards:VocabularyFilterGroup</primaryNodeType>
-				<property>
-					<name>DeviceMasterlist</name>
-					<values>
-						<value>Value</value>
-					</values>
-					<type>String</type>
-				</property>
-			</node>
 		</node>
 		<node>
 			<name>eptargetseconds</name>
@@ -30676,17 +30456,6 @@ Other</value>
 				<value>9999</value>
 				<type>Long</type>
 			</property>
-			<node>
-				<name>vocabularyFilters</name>
-				<primaryNodeType>cards:VocabularyFilterGroup</primaryNodeType>
-				<property>
-					<name>DeviceMasterlist</name>
-					<values>
-						<value>Value</value>
-					</values>
-					<type>String</type>
-				</property>
-			</node>
 		</node>
 		<node>
 			<name>tpvrdeviceoutcome</name>
@@ -33909,17 +33678,6 @@ Other</value>
 					<value>9999</value>
 					<type>Long</type>
 				</property>
-				<node>
-					<name>vocabularyFilters</name>
-					<primaryNodeType>cards:VocabularyFilterGroup</primaryNodeType>
-					<property>
-						<name>EventsMasterlist</name>
-						<values>
-							<value>Value</value>
-						</values>
-						<type>String</type>
-					</property>
-				</node>
 			</node>
 			<node>
 				<name>condition</name>

@@ -18,1194 +18,1234 @@
 format-version: 1.2
 
 [Term]
-id: Value
-name: Value
-
-[Term]
-id: Category
-name: Category
-
-[Term]
-id: DiagnosisType
+id: _2
 name: Diagnosis\WType
-is_a: Category
 
 [Term]
-id: SeptalDefects
+id: _1
 name: Septal\WDefects
-is_a: DiagnosisType
+is_a: _2
+def: Diagnosis Type
 
 [Term]
 id: 10
 name: PFO
-is_a: Value
-is_a: SeptalDefects
+is_a: _1
+def: Septal Defects
 
 [Term]
 id: 20
 name: ASD: Secundum
-is_a: Value
-is_a: SeptalDefects
+is_a: _1
+def: Septal Defects
 
 [Term]
 id: 30
 name: ASD: Sinus venosus
-is_a: Value
-is_a: SeptalDefects
+is_a: _1
+def: Septal Defects
 
 [Term]
 id: 40
 name: ASD: Coronary sinus
-is_a: Value
-is_a: SeptalDefects
+is_a: _1
+def: Septal Defects
 
 [Term]
 id: 50
 name: ASD: Common atrium (single atrium)
-is_a: Value
-is_a: SeptalDefects
+is_a: _1
+def: Septal Defects
 
 [Term]
 id: 71
 name: VSD: Type 1 (Subarterial) (Supracristal) (Conal septal defect)
 (Infundibular)
-is_a: Value
-is_a: SeptalDefects
+is_a: _1
+def: Septal Defects
 
 [Term]
 id: 73
 name: VSD: Type 2 (Perimembranous) (Paramembranous)
 (Conoventricular)
-is_a: Value
-is_a: SeptalDefects
+is_a: _1
+def: Septal Defects
 
 [Term]
 id: 75
 name: VSD: Type 3 (Inlet) (AV canal type)
-is_a: Value
-is_a: SeptalDefects
+is_a: _1
+def: Septal Defects
 
 [Term]
 id: 77
 name: VSD: Type 4 (Muscular)
-is_a: Value
-is_a: SeptalDefects
+is_a: _1
+def: Septal Defects
 
 [Term]
 id: 79
 name: VSD: Type: Gerbode type (LV-RA communication)
-is_a: Value
-is_a: SeptalDefects
+is_a: _1
+def: Septal Defects
 
 [Term]
 id: 80
 name: VSD: Multiple
-is_a: Value
-is_a: SeptalDefects
+is_a: _1
+def: Septal Defects
 
 [Term]
 id: 100
 name: AVC (AVSD): Complete CAVSD
-is_a: Value
-is_a: SeptalDefects
+is_a: _1
+def: Septal Defects
 
 [Term]
 id: 110
 name: AVC (AVSD): Intermediate (transitional)
-is_a: Value
-is_a: SeptalDefects
+is_a: _1
+def: Septal Defects
 
 [Term]
 id: 120
 name: AVC (AVSD): Partial (incomplete) (PAVSD) (ASD; primum)
-is_a: Value
-is_a: SeptalDefects
+is_a: _1
+def: Septal Defects
 
 [Term]
 id: 140
 name: AP window (aortopulmonary window)
-is_a: Value
-is_a: SeptalDefects
+is_a: _1
+def: Septal Defects
 
 [Term]
 id: 150
 name: Pulmonary artery origin from ascending aorta
 (hemitruncus)
-is_a: Value
-is_a: SeptalDefects
+is_a: _1
+def: Septal Defects
 
 [Term]
 id: 160
 name: Truncus arteriosus
-is_a: Value
-is_a: SeptalDefects
+is_a: _1
+def: Septal Defects
 
 [Term]
 id: 170
 name: Truncal valve insufficiency
-is_a: Value
-is_a: SeptalDefects
+is_a: _1
+def: Septal Defects
 
 [Term]
 id: 2010
 name: Truncus arteriosus and Interrupted aortic arch
-is_a: Value
-is_a: SeptalDefects
+is_a: _1
+def: Septal Defects
 
 [Term]
-id: PulmonaryVenousAnomalies
+id: _3
 name: Pulmonary\WVenous\
 Anomalies
-is_a: DiagnosisType
+is_a: _2
+def: Diagnosis Type
 
 [Term]
 id: 180
 name: Partial anomalous pulmonary venous connection (PAPVC)
-is_a: Value
-is_a: PulmonaryVenousAnomalies
+is_a: _3
+def: Pulmonary Venous
+Anomalies
 
 [Term]
 id: 190
 name: Partial anomalous pulmonary venous connection (PAPVC):
 scimitar
-is_a: Value
-is_a: PulmonaryVenousAnomalies
+is_a: _3
+def: Pulmonary Venous
+Anomalies
 
 [Term]
 id: 200
 name: Total anomalous pulmonary venous connection (TAPVC):
 Type 1 (supracardiac)
-is_a: Value
-is_a: PulmonaryVenousAnomalies
+is_a: _3
+def: Pulmonary Venous
+Anomalies
 
 [Term]
 id: 210
 name: Total anomalous pulmonary venous connection (TAPVC):
 Type 2 (cardiac)
-is_a: Value
-is_a: PulmonaryVenousAnomalies
+is_a: _3
+def: Pulmonary Venous
+Anomalies
 
 [Term]
 id: 220
 name: Total anomalous pulmonary venous connection (TAPVC):
 Type 3 (infracardiac)
-is_a: Value
-is_a: PulmonaryVenousAnomalies
+is_a: _3
+def: Pulmonary Venous
+Anomalies
 
 [Term]
 id: 230
 name: Total anomalous pulmonary venous connection (TAPVC):
 Type 4 (mixed)
-is_a: Value
-is_a: PulmonaryVenousAnomalies
+is_a: _3
+def: Pulmonary Venous
+Anomalies
 
 [Term]
-id: CorTriatriatum
+id: _4
 name: Cor\WTriatriatum
-is_a: DiagnosisType
+is_a: _2
+def: Diagnosis Type
 
 [Term]
 id: 250
 name: Cor triatriatum
-is_a: Value
-is_a: CorTriatriatum
+is_a: _4
+def: Cor Triatriatum
 
 [Term]
-id: PulmonaryVenousStenosis
+id: _5
 name: Pulmonary\WVenous\WStenosis
-is_a: DiagnosisType
+is_a: _2
+def: Diagnosis Type
 
 [Term]
 id: 260
 name: Pulmonary venous stenosis
-is_a: Value
-is_a: PulmonaryVenousStenosis
+is_a: _5
+def: Pulmonary Venous Stenosis
 
 [Term]
-id: SystemicVenousAnomalies
+id: _6
 name: Systemic\WVenous\WAnomalies
-is_a: DiagnosisType
+is_a: _2
+def: Diagnosis Type
 
 [Term]
 id: 270
 name: Systemic venous anomaly
-is_a: Value
-is_a: SystemicVenousAnomalies
+is_a: _6
+def: Systemic Venous Anomalies
 
 [Term]
 id: 280
 name: Systemic venous obstruction
-is_a: Value
-is_a: SystemicVenousAnomalies
+is_a: _6
+def: Systemic Venous Anomalies
 
 [Term]
-id: RightHeartLesions
+id: _7
 name: Right\WHeart\WLesions
-is_a: DiagnosisType
+is_a: _2
+def: Diagnosis Type
 
 [Term]
 id: 290
 name: TOF
-is_a: Value
-is_a: RightHeartLesions
+is_a: _7
+def: Right Heart Lesions
 
 [Term]
 id: 2140
 name: TOF: Pulmonary stenosis
-is_a: Value
-is_a: RightHeartLesions
+is_a: _7
+def: Right Heart Lesions
 
 [Term]
 id: 300
 name: TOF: AVC (AVSD)
-is_a: Value
-is_a: RightHeartLesions
+is_a: _7
+def: Right Heart Lesions
 
 [Term]
 id: 310
 name: TOF: Absent pulmonary valve
-is_a: Value
-is_a: RightHeartLesions
+is_a: _7
+def: Right Heart Lesions
 
 [Term]
 id: 320
 name: Pulmonary atresia
-is_a: Value
-is_a: RightHeartLesions
+is_a: _7
+def: Right Heart Lesions
 
 [Term]
 id: 330
 name: Pulmonary atresia: IVS
-is_a: Value
-is_a: RightHeartLesions
+is_a: _7
+def: Right Heart Lesions
 
 [Term]
 id: 340
 name: Pulmonary atresia: VSD (Including TOF- PA)
-is_a: Value
-is_a: RightHeartLesions
+is_a: _7
+def: Right Heart Lesions
 
 [Term]
 id: 350
 name: Pulmonary atresia: VSD-MAPCA (pseudotruncus)
-is_a: Value
-is_a: RightHeartLesions
+is_a: _7
+def: Right Heart Lesions
 
 [Term]
 id: 360
 name: MAPCA(s) (major aortopulmonary collateral[s]) (without PA-
 VSD)
-is_a: Value
-is_a: RightHeartLesions
+is_a: _7
+def: Right Heart Lesions
 
 [Term]
 id: 370
 name: Ebstein's anomaly
-is_a: Value
-is_a: RightHeartLesions
+is_a: _7
+def: Right Heart Lesions
 
 [Term]
 id: 380
 name: Tricuspid regurgitation: non-Ebstein's related
-is_a: Value
-is_a: RightHeartLesions
+is_a: _7
+def: Right Heart Lesions
 
 [Term]
 id: 390
 name: Tricuspid stenosis
-is_a: Value
-is_a: RightHeartLesions
+is_a: _7
+def: Right Heart Lesions
 
 [Term]
 id: 400
 name: Tricuspid regurgitation and tricuspid stenosis
-is_a: Value
-is_a: RightHeartLesions
+is_a: _7
+def: Right Heart Lesions
 
 [Term]
 id: 410
 name: Tricuspid valve disease: Other
-is_a: Value
-is_a: RightHeartLesions
+is_a: _7
+def: Right Heart Lesions
 
 [Term]
 id: 420
 name: Pulmonary stenosis: Valvar
-is_a: Value
-is_a: RightHeartLesions
+is_a: _7
+def: Right Heart Lesions
 
 [Term]
 id: 430
 name: Pulmonary artery stenosis (hypoplasia): Main (trunk)
-is_a: Value
-is_a: RightHeartLesions
+is_a: _7
+def: Right Heart Lesions
 
 [Term]
 id: 440
 name: Pulmonary artery stenosis: Branch: Central (within the hilar
 bifurcation)
-is_a: Value
-is_a: RightHeartLesions
+is_a: _7
+def: Right Heart Lesions
 
 [Term]
 id: 450
 name: Pulmonary artery stenosis: Branch: Peripheral (at or beyond
 the hilar bifurcation)
-is_a: Value
-is_a: RightHeartLesions
+is_a: _7
+def: Right Heart Lesions
 
 [Term]
 id: 470
 name: Pulmonary artery: Discontinuous
-is_a: Value
-is_a: RightHeartLesions
+is_a: _7
+def: Right Heart Lesions
 
 [Term]
 id: 490
 name: Pulmonary stenosis: Subvalvar
-is_a: Value
-is_a: RightHeartLesions
+is_a: _7
+def: Right Heart Lesions
 
 [Term]
 id: 500
 name: DCRV
-is_a: Value
-is_a: RightHeartLesions
+is_a: _7
+def: Right Heart Lesions
 
 [Term]
 id: 510
 name: Pulmonary valve disease: Other
-is_a: Value
-is_a: RightHeartLesions
+is_a: _7
+def: Right Heart Lesions
 
 [Term]
 id: 530
 name: Pulmonary insufficiency
-is_a: Value
-is_a: RightHeartLesions
+is_a: _7
+def: Right Heart Lesions
 
 [Term]
 id: 540
 name: Pulmonary insufficiency and pulmonary stenosis
-is_a: Value
-is_a: RightHeartLesions
+is_a: _7
+def: Right Heart Lesions
 
 [Term]
-id: Shuntfailure
+id: _8
 name: Shunt\Wfailure
-is_a: DiagnosisType
+is_a: _2
+def: Diagnosis Type
 
 [Term]
 id: 2130
 name: Shunt failure
-is_a: Value
-is_a: Shuntfailure
+is_a: _8
+def: Shunt failure
 
 [Term]
 id: 520
 name: Conduit failure
-is_a: Value
-is_a: RightHeartLesions
+is_a: _7
+def: Right Heart Lesions
 
 [Term]
-id: LeftHeartLesions
+id: _9
 name: Left\WHeart\WLesions
-is_a: DiagnosisType
+is_a: _2
+def: Diagnosis Type
 
 [Term]
 id: 550
 name: Aortic stenosis: Subvalvar
-is_a: Value
-is_a: LeftHeartLesions
+is_a: _9
+def: Left Heart Lesions
 
 [Term]
 id: 560
 name: Aortic stenosis: Valvar
-is_a: Value
-is_a: LeftHeartLesions
+is_a: _9
+def: Left Heart Lesions
 
 [Term]
 id: 570
 name: Aortic stenosis: Supravalvar
-is_a: Value
-is_a: LeftHeartLesions
+is_a: _9
+def: Left Heart Lesions
 
 [Term]
 id: 590
 name: Aortic valve atresia
-is_a: Value
-is_a: LeftHeartLesions
+is_a: _9
+def: Left Heart Lesions
 
 [Term]
 id: 600
 name: Aortic insufficiency
-is_a: Value
-is_a: LeftHeartLesions
+is_a: _9
+def: Left Heart Lesions
 
 [Term]
 id: 610
 name: Aortic insufficiency and aortic stenosis
-is_a: Value
-is_a: LeftHeartLesions
+is_a: _9
+def: Left Heart Lesions
 
 [Term]
 id: 620
 name: Aortic valve: Other
-is_a: Value
-is_a: LeftHeartLesions
+is_a: _9
+def: Left Heart Lesions
 
 [Term]
 id: 630
 name: Sinus of Valsalva aneurysm
-is_a: Value
-is_a: LeftHeartLesions
+is_a: _9
+def: Left Heart Lesions
 
 [Term]
 id: 640
 name: LV to aorta tunnel
-is_a: Value
-is_a: LeftHeartLesions
+is_a: _9
+def: Left Heart Lesions
 
 [Term]
 id: 650
 name: Mitral stenosis: Supravalvar mitral ring
-is_a: Value
-is_a: LeftHeartLesions
+is_a: _9
+def: Left Heart Lesions
 
 [Term]
 id: 660
 name: Mitral stenosis: Valvar
-is_a: Value
-is_a: LeftHeartLesions
+is_a: _9
+def: Left Heart Lesions
 
 [Term]
 id: 670
 name: Mitral stenosis: Subvalvar
-is_a: Value
-is_a: LeftHeartLesions
+is_a: _9
+def: Left Heart Lesions
 
 [Term]
 id: 680
 name: Mitral stenosis: Subvalvar- Parachute
-is_a: Value
-is_a: LeftHeartLesions
+is_a: _9
+def: Left Heart Lesions
 
 [Term]
 id: 695
 name: Mitral stenosis
-is_a: Value
-is_a: LeftHeartLesions
+is_a: _9
+def: Left Heart Lesions
 
 [Term]
 id: 700
 name: Mitral regurgitation and mitral stenosis
-is_a: Value
-is_a: LeftHeartLesions
+is_a: _9
+def: Left Heart Lesions
 
 [Term]
 id: 710
 name: Mitral regurgitation
-is_a: Value
-is_a: LeftHeartLesions
+is_a: _9
+def: Left Heart Lesions
 
 [Term]
 id: 720
 name: Mitral valve: Other
-is_a: Value
-is_a: LeftHeartLesions
+is_a: _9
+def: Left Heart Lesions
 
 [Term]
 id: 730
 name: Hypoplastic left heart syndrome (HLHS)
-is_a: Value
-is_a: LeftHeartLesions
+is_a: _9
+def: Left Heart Lesions
 
 [Term]
 id: 2080
 name: Shone's syndrome
-is_a: Value
-is_a: LeftHeartLesions
+is_a: _9
+def: Left Heart Lesions
 
 [Term]
 id: 740
 name: Cardiomyopathy (including dilated; restrictive; and
 hypertrophic)
-is_a: Value
-is_a: LeftHeartLesions
+is_a: _9
+def: Left Heart Lesions
 
 [Term]
 id: 750
 name: Cardiomyopathy: End-stage congenital heart disease
-is_a: Value
-is_a: LeftHeartLesions
+is_a: _9
+def: Left Heart Lesions
 
 [Term]
 id: 760
 name: Pericardial effusion
-is_a: Value
-is_a: LeftHeartLesions
+is_a: _9
+def: Left Heart Lesions
 
 [Term]
 id: 770
 name: Pericarditis
-is_a: Value
-is_a: LeftHeartLesions
+is_a: _9
+def: Left Heart Lesions
 
 [Term]
 id: 780
 name: Pericardial disease: Other
-is_a: Value
-is_a: LeftHeartLesions
+is_a: _9
+def: Left Heart Lesions
 
 [Term]
-id: SingleVentricle
+id: _10
 name: Single\WVentricle
-is_a: DiagnosisType
+is_a: _2
+def: Diagnosis Type
 
 [Term]
 id: 790
 name: Single ventricle: DILV
-is_a: Value
-is_a: SingleVentricle
+is_a: _10
+def: Single Ventricle
 
 [Term]
 id: 800
 name: Single ventricle: DIRV
-is_a: Value
-is_a: SingleVentricle
+is_a: _10
+def: Single Ventricle
 
 [Term]
 id: 810
 name: Single ventricle: Mitral atresia
-is_a: Value
-is_a: SingleVentricle
+is_a: _10
+def: Single Ventricle
 
 [Term]
 id: 820
 name: Single ventricle: Tricuspid atresia
-is_a: Value
-is_a: SingleVentricle
+is_a: _10
+def: Single Ventricle
 
 [Term]
 id: 830
 name: Single ventricle: Unbalanced AV canal
-is_a: Value
-is_a: SingleVentricle
+is_a: _10
+def: Single Ventricle
 
 [Term]
 id: 840
 name: Single ventricle: Heterotaxia syndrome
-is_a: Value
-is_a: SingleVentricle
+is_a: _10
+def: Single Ventricle
 
 [Term]
 id: 850
 name: Single ventricle: Other
-is_a: Value
-is_a: SingleVentricle
+is_a: _10
+def: Single Ventricle
 
 [Term]
 id: 851
 name: Single Ventricle and Total anomalous pulmonary venous
 connection (TAPVC)
-is_a: Value
-is_a: SingleVentricle
+is_a: _10
+def: Single Ventricle
 
 [Term]
-id: TranspositionoftheGreatArteries
+id: _11
 name: Transposition\Wof\Wthe\WGreat\
 Arteries
-is_a: DiagnosisType
+is_a: _2
+def: Diagnosis Type
 
 [Term]
 id: 870
 name: Congenitally corrected TGA
-is_a: Value
-is_a: TranspositionoftheGreatArteries
+is_a: _11
+def: Transposition of the Great
+Arteries
 
 [Term]
 id: 872
 name: Congenitally corrected TGA: IVS
-is_a: Value
-is_a: TranspositionoftheGreatArteries
+is_a: _11
+def: Transposition of the Great
+Arteries
 
 [Term]
 id: 874
 name: Congenitally corrected TGA: IVS-LVOTO
-is_a: Value
-is_a: TranspositionoftheGreatArteries
+is_a: _11
+def: Transposition of the Great
+Arteries
 
 [Term]
 id: 876
 name: Congenitally corrected TGA: VSD
-is_a: Value
-is_a: TranspositionoftheGreatArteries
+is_a: _11
+def: Transposition of the Great
+Arteries
 
 [Term]
 id: 878
 name: Congenitally corrected TGA: VSD-LVOTO
-is_a: Value
-is_a: TranspositionoftheGreatArteries
+is_a: _11
+def: Transposition of the Great
+Arteries
 
 [Term]
 id: 880
 name: TGA: IVS
-is_a: Value
-is_a: TranspositionoftheGreatArteries
+is_a: _11
+def: Transposition of the Great
+Arteries
 
 [Term]
 id: 890
 name: TGA: IVS-LVOTO
-is_a: Value
-is_a: TranspositionoftheGreatArteries
+is_a: _11
+def: Transposition of the Great
+Arteries
 
 [Term]
 id: 900
 name: TGA: VSD
-is_a: Value
-is_a: TranspositionoftheGreatArteries
+is_a: _11
+def: Transposition of the Great
+Arteries
 
 [Term]
 id: 910
 name: TGA: VSD-LVOTO
-is_a: Value
-is_a: TranspositionoftheGreatArteries
+is_a: _11
+def: Transposition of the Great
+Arteries
 
 [Term]
-id: DORV
+id: _12
 name: DORV
-is_a: DiagnosisType
+is_a: _2
+def: Diagnosis Type
 
 [Term]
 id: 930
 name: DORV: VSD type
-is_a: Value
-is_a: DORV
+is_a: _12
+def: DORV
 
 [Term]
 id: 940
 name: DORV: TOF type
-is_a: Value
-is_a: DORV
+is_a: _12
+def: DORV
 
 [Term]
 id: 950
 name: DORV: TGA type
-is_a: Value
-is_a: DORV
+is_a: _12
+def: DORV
 
 [Term]
 id: 960
 name: DORV: Remote VSD (uncommitted VSD)
-is_a: Value
-is_a: DORV
+is_a: _12
+def: DORV
 
 [Term]
 id: 2030
 name: DORV and AVSD (AV Canal)
-is_a: Value
-is_a: DORV
+is_a: _12
+def: DORV
 
 [Term]
 id: 975
 name: DORV: IVS
-is_a: Value
-is_a: DORV
+is_a: _12
+def: DORV
 
 [Term]
-id: DOLV
+id: _13
 name: DOLV
-is_a: DiagnosisType
+is_a: _2
+def: Diagnosis Type
 
 [Term]
 id: 980
 name: DOLV
-is_a: Value
-is_a: DOLV
+is_a: _13
+def: DOLV
 
 [Term]
-id: ThoracicArteriesandVeins
+id: _14
 name: Thoracic\WArteries\Wand\WVeins
-is_a: DiagnosisType
+is_a: _2
+def: Diagnosis Type
 
 [Term]
 id: 990
 name: Coarctation of aorta
-is_a: Value
-is_a: ThoracicArteriesandVeins
+is_a: _14
+def: Thoracic Arteries and Veins
 
 [Term]
 id: 1000
 name: Aortic arch hypoplasia
-is_a: Value
-is_a: ThoracicArteriesandVeins
+is_a: _14
+def: Thoracic Arteries and Veins
 
 [Term]
 id: 92
 name: VSD + Aortic arch hypoplasia
-is_a: Value
-is_a: ThoracicArteriesandVeins
+is_a: _14
+def: Thoracic Arteries and Veins
 
 [Term]
 id: 94
 name: VSD + Coarctation of aorta
-is_a: Value
-is_a: ThoracicArteriesandVeins
+is_a: _14
+def: Thoracic Arteries and Veins
 
 [Term]
 id: 1010
 name: Coronary artery anomaly: Anomalous aortic origin of
 coronary artery from aorta (AAOCA)
-is_a: Value
-is_a: ThoracicArteriesandVeins
+is_a: _14
+def: Thoracic Arteries and Veins
 
 [Term]
 id: 1020
 name: Coronary artery anomaly: Anomalous pulmonary origin
 (includes ALCAPA)
-is_a: Value
-is_a: ThoracicArteriesandVeins
+is_a: _14
+def: Thoracic Arteries and Veins
 
 [Term]
 id: 1030
 name: Coronary artery anomaly: Fistula
-is_a: Value
-is_a: ThoracicArteriesandVeins
+is_a: _14
+def: Thoracic Arteries and Veins
 
 [Term]
 id: 1040
 name: Coronary artery anomaly: Aneurysm
-is_a: Value
-is_a: ThoracicArteriesandVeins
+is_a: _14
+def: Thoracic Arteries and Veins
 
 [Term]
 id: 1050
 name: Coronary artery anomaly: Other
-is_a: Value
-is_a: ThoracicArteriesandVeins
+is_a: _14
+def: Thoracic Arteries and Veins
 
 [Term]
 id: 1070
 name: Interrupted aortic arch
-is_a: Value
-is_a: ThoracicArteriesandVeins
+is_a: _14
+def: Thoracic Arteries and Veins
 
 [Term]
 id: 2020
 name: Interrupted aortic arch and VSD
-is_a: Value
-is_a: ThoracicArteriesandVeins
+is_a: _14
+def: Thoracic Arteries and Veins
 
 [Term]
 id: 2000
 name: Interrupted aortic arch and AP window (aortopulmonary
 window)
-is_a: Value
-is_a: ThoracicArteriesandVeins
+is_a: _14
+def: Thoracic Arteries and Veins
 
 [Term]
 id: 1080
 name: Patent ductus arteriosus
-is_a: Value
-is_a: ThoracicArteriesandVeins
+is_a: _14
+def: Thoracic Arteries and Veins
 
 [Term]
 id: 1090
 name: Vascular ring
-is_a: Value
-is_a: ThoracicArteriesandVeins
+is_a: _14
+def: Thoracic Arteries and Veins
 
 [Term]
 id: 1100
 name: Pulmonary artery sling
-is_a: Value
-is_a: ThoracicArteriesandVeins
+is_a: _14
+def: Thoracic Arteries and Veins
 
 [Term]
 id: 1110
 name: Aortic aneurysm (including pseudoaneurysm)
-is_a: Value
-is_a: ThoracicArteriesandVeins
+is_a: _14
+def: Thoracic Arteries and Veins
 
 [Term]
 id: 1120
 name: Aortic dissection
-is_a: Value
-is_a: ThoracicArteriesandVeins
+is_a: _14
+def: Thoracic Arteries and Veins
 
 [Term]
-id: ThoracicandMediastinalDisease
+id: _15
 name: Thoracic\Wand\WMediastinal\
 Disease
-is_a: DiagnosisType
+is_a: _2
+def: Diagnosis Type
 
 [Term]
 id: 1130
 name: Lung disease: Benign
-is_a: Value
-is_a: ThoracicandMediastinalDisease
+is_a: _15
+def: Thoracic and Mediastinal
+Disease
 
 [Term]
 id: 1140
 name: Lung disease: Malignant
-is_a: Value
-is_a: ThoracicandMediastinalDisease
+is_a: _15
+def: Thoracic and Mediastinal
+Disease
 
 [Term]
 id: 1150
 name: Pectus
-is_a: Value
-is_a: ThoracicandMediastinalDisease
+is_a: _15
+def: Thoracic and Mediastinal
+Disease
 
 [Term]
 id: 1160
 name: Tracheal stenosis
-is_a: Value
-is_a: ThoracicandMediastinalDisease
+is_a: _15
+def: Thoracic and Mediastinal
+Disease
 
 [Term]
 id: 1170
 name: Airway disease
-is_a: Value
-is_a: ThoracicandMediastinalDisease
+is_a: _15
+def: Thoracic and Mediastinal
+Disease
 
 [Term]
 id: 1430
 name: Pleural disease: Benign
-is_a: Value
-is_a: ThoracicandMediastinalDisease
+is_a: _15
+def: Thoracic and Mediastinal
+Disease
 
 [Term]
 id: 1440
 name: Pleural disease: Malignant
-is_a: Value
-is_a: ThoracicandMediastinalDisease
+is_a: _15
+def: Thoracic and Mediastinal
+Disease
 
 [Term]
 id: 1450
 name: Pneumothorax
-is_a: Value
-is_a: ThoracicandMediastinalDisease
+is_a: _15
+def: Thoracic and Mediastinal
+Disease
 
 [Term]
 id: 1460
 name: Pleural effusion
-is_a: Value
-is_a: ThoracicandMediastinalDisease
+is_a: _15
+def: Thoracic and Mediastinal
+Disease
 
 [Term]
 id: 1470
 name: Chylothorax
-is_a: Value
-is_a: ThoracicandMediastinalDisease
+is_a: _15
+def: Thoracic and Mediastinal
+Disease
 
 [Term]
 id: 1480
 name: Empyema
-is_a: Value
-is_a: ThoracicandMediastinalDisease
+is_a: _15
+def: Thoracic and Mediastinal
+Disease
 
 [Term]
 id: 1490
 name: Esophageal disease: Benign
-is_a: Value
-is_a: ThoracicandMediastinalDisease
+is_a: _15
+def: Thoracic and Mediastinal
+Disease
 
 [Term]
 id: 1500
 name: Esophageal disease: Malignant
-is_a: Value
-is_a: ThoracicandMediastinalDisease
+is_a: _15
+def: Thoracic and Mediastinal
+Disease
 
 [Term]
 id: 1505
 name: Mediastinal disease
-is_a: Value
-is_a: ThoracicandMediastinalDisease
+is_a: _15
+def: Thoracic and Mediastinal
+Disease
 
 [Term]
 id: 1510
 name: Mediastinal disease: Benign
-is_a: Value
-is_a: ThoracicandMediastinalDisease
+is_a: _15
+def: Thoracic and Mediastinal
+Disease
 
 [Term]
 id: 1520
 name: Mediastinal disease: Malignant
-is_a: Value
-is_a: ThoracicandMediastinalDisease
+is_a: _15
+def: Thoracic and Mediastinal
+Disease
 
 [Term]
 id: 1540
 name: Diaphragm paralysis
-is_a: Value
-is_a: ThoracicandMediastinalDisease
+is_a: _15
+def: Thoracic and Mediastinal
+Disease
 
 [Term]
 id: 1550
 name: Diaphragm disease: Other
-is_a: Value
-is_a: ThoracicandMediastinalDisease
+is_a: _15
+def: Thoracic and Mediastinal
+Disease
 
 [Term]
-id: Electrophysiologic
+id: _16
 name: Electrophysiologic
-is_a: DiagnosisType
+is_a: _2
+def: Diagnosis Type
 
 [Term]
 id: 1180
 name: Arrhythmia
-is_a: Value
-is_a: Electrophysiologic
+is_a: _16
+def: Electrophysiologic
 
 [Term]
 id: 2040
 name: Arrhythmia: Atrial
-is_a: Value
-is_a: Electrophysiologic
+is_a: _16
+def: Electrophysiologic
 
 [Term]
 id: 2050
 name: Arrhythmia: Junctional
-is_a: Value
-is_a: Electrophysiologic
+is_a: _16
+def: Electrophysiologic
 
 [Term]
 id: 2060
 name: Arrhythmia: Ventricular
-is_a: Value
-is_a: Electrophysiologic
+is_a: _16
+def: Electrophysiologic
 
 [Term]
 id: 1185
 name: Arrhythmia: Heart block
-is_a: Value
-is_a: Electrophysiologic
+is_a: _16
+def: Electrophysiologic
 
 [Term]
 id: 1190
 name: Arrhythmia: Heart block: Acquired
-is_a: Value
-is_a: Electrophysiologic
+is_a: _16
+def: Electrophysiologic
 
 [Term]
 id: 1200
 name: Arrhythmia: Heart block: Congenital
-is_a: Value
-is_a: Electrophysiologic
+is_a: _16
+def: Electrophysiologic
 
 [Term]
 id: 1220
 name: Arrhythmia: Pacemaker: Indication for replacement
-is_a: Value
-is_a: Electrophysiologic
+is_a: _16
+def: Electrophysiologic
 
 [Term]
-id: Miscellaneous
+id: _17
 name: Miscellaneous
-is_a: DiagnosisType
+is_a: _2
+def: Diagnosis Type
 
 [Term]
 id: 1230
 name: Atrial Isomerism: Left
-is_a: Value
-is_a: Miscellaneous
+is_a: _17
+def: Miscellaneous
 
 [Term]
 id: 1240
 name: Atrial Isomerism: Right
-is_a: Value
-is_a: Miscellaneous
+is_a: _17
+def: Miscellaneous
 
 [Term]
 id: 2090
 name: Dextrocardia
-is_a: Value
-is_a: Miscellaneous
+is_a: _17
+def: Miscellaneous
 
 [Term]
 id: 2100
 name: Levocardia
-is_a: Value
-is_a: Miscellaneous
+is_a: _17
+def: Miscellaneous
 
 [Term]
 id: 2110
 name: Mesocardia
-is_a: Value
-is_a: Miscellaneous
+is_a: _17
+def: Miscellaneous
 
 [Term]
 id: 2120
 name: Situs inversusÿ
-is_a: Value
-is_a: Miscellaneous
+is_a: _17
+def: Miscellaneous
 
 [Term]
 id: 1250
 name: Aneurysm: Ventricular: Right (including pseudoaneurysm)
-is_a: Value
-is_a: Miscellaneous
+is_a: _17
+def: Miscellaneous
 
 [Term]
 id: 1260
 name: Aneurysm: Ventricular: Left (including pseudoaneurysm)
-is_a: Value
-is_a: Miscellaneous
+is_a: _17
+def: Miscellaneous
 
 [Term]
 id: 1270
 name: Aneurysm: Pulmonary artery
-is_a: Value
-is_a: Miscellaneous
+is_a: _17
+def: Miscellaneous
 
 [Term]
 id: 1280
 name: Aneurysm: Other
-is_a: Value
-is_a: Miscellaneous
+is_a: _17
+def: Miscellaneous
 
 [Term]
 id: 1290
 name: Hypoplastic RV
-is_a: Value
-is_a: Miscellaneous
+is_a: _17
+def: Miscellaneous
 
 [Term]
 id: 1300
 name: Hypoplastic LV
-is_a: Value
-is_a: Miscellaneous
+is_a: _17
+def: Miscellaneous
 
 [Term]
 id: 2070
 name: Postoperative bleeding
-is_a: Value
-is_a: Miscellaneous
+is_a: _17
+def: Miscellaneous
 
 [Term]
 id: 1310
 name: Mediastinitis
-is_a: Value
-is_a: Miscellaneous
+is_a: _17
+def: Miscellaneous
 
 [Term]
 id: 1320
 name: Endocarditis
-is_a: Value
-is_a: Miscellaneous
+is_a: _17
+def: Miscellaneous
 
 [Term]
 id: 1325
 name: Rheumatic heart disease
-is_a: Value
-is_a: Miscellaneous
+is_a: _17
+def: Miscellaneous
 
 [Term]
 id: 1330
 name: Prosthetic valve failure
-is_a: Value
-is_a: Miscellaneous
+is_a: _17
+def: Miscellaneous
 
 [Term]
 id: 1340
 name: Myocardial infarction
-is_a: Value
-is_a: Miscellaneous
+is_a: _17
+def: Miscellaneous
 
 [Term]
 id: 1350
 name: Cardiac tumor
-is_a: Value
-is_a: Miscellaneous
+is_a: _17
+def: Miscellaneous
 
 [Term]
 id: 1360
 name: Pulmonary AV fistula
-is_a: Value
-is_a: Miscellaneous
+is_a: _17
+def: Miscellaneous
 
 [Term]
 id: 1370
 name: Pulmonary embolism
-is_a: Value
-is_a: Miscellaneous
+is_a: _17
+def: Miscellaneous
 
 [Term]
 id: 1385
 name: Pulmonary vascular obstructive disease
-is_a: Value
-is_a: Miscellaneous
+is_a: _17
+def: Miscellaneous
 
 [Term]
 id: 1390
 name: Pulmonary vascular obstructive disease (Eisenmenger's)
-is_a: Value
-is_a: Miscellaneous
+is_a: _17
+def: Miscellaneous
 
 [Term]
 id: 1400
 name: Primary pulmonary hypertension
-is_a: Value
-is_a: Miscellaneous
+is_a: _17
+def: Miscellaneous
 
 [Term]
 id: 1410
 name: Persistent fetal circulation
-is_a: Value
-is_a: Miscellaneous
+is_a: _17
+def: Miscellaneous
 
 [Term]
 id: 1420
 name: Meconium aspiration
-is_a: Value
-is_a: Miscellaneous
+is_a: _17
+def: Miscellaneous
 
 [Term]
 id: 1560
 name: Cardiac: Other
-is_a: Value
-is_a: Miscellaneous
+is_a: _17
+def: Miscellaneous
 
 [Term]
 id: 1570
 name: Thoracic and/or mediastinal: Other
-is_a: Value
-is_a: Miscellaneous
+is_a: _17
+def: Miscellaneous
 
 [Term]
 id: 1580
 name: Peripheral vascular: Other
-is_a: Value
-is_a: Miscellaneous
+is_a: _17
+def: Miscellaneous
 
 [Term]
 id: 1590
 name: Status post transplant: Heart
-is_a: Value
-is_a: Miscellaneous
+is_a: _17
+def: Miscellaneous
 
 [Term]
 id: 1600
 name: Status post transplant: Lung
-is_a: Value
-is_a: Miscellaneous
+is_a: _17
+def: Miscellaneous
 
 [Term]
 id: 1610
 name: Status post transplant: Heart and lung
-is_a: Value
-is_a: Miscellaneous
+is_a: _17
+def: Miscellaneous
 
 [Term]
 id: 7000
 name: Normal heart
-is_a: Value
-is_a: Miscellaneous
+is_a: _17
+def: Miscellaneous
 
 [Term]
 id: 7777
 name: Other
-is_a: Value
-is_a: Miscellaneous
+is_a: _17
+def: Miscellaneous
 
