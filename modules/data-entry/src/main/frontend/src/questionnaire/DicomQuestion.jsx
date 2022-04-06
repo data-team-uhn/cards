@@ -210,8 +210,8 @@ function DicomQuestion(props) {
     return Promise.all(promises);
   };
 
-  let uploadSingleFile = (file) => {
-    // First, display the image
+  let processDicomFile = (file) => {
+    // Extract and display the image
     let dicomPointer = cornerstoneWADOImageLoader.wadouri.fileManager.add(file);
     cornerstone.loadImage(dicomPointer)
       .then((dicomImage) => {
@@ -242,7 +242,7 @@ function DicomQuestion(props) {
         setDicomImagePreviewURL(dicomCanvas.toDataURL());
         //console.log(dicomCanvas);
       })
-    // ... Parse the metadata locally
+    // Parse the metadata locally and populate the Notes
     file.arrayBuffer()
       .then((arrayBuf) => {
         let dicomU8 = new Uint8Array(arrayBuf);
@@ -269,7 +269,11 @@ function DicomQuestion(props) {
         }
         setDicomMetadataNote(dicomMetadata.join("\n"));
       });
+  }
 
+  let uploadSingleFile = (file) => {
+    // First, process the dicom to pull out the image and the metadata
+    processDicomFile(file);
     // Then upload the file
 
     // TODO: Handle duplicate filenames
