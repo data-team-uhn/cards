@@ -384,7 +384,7 @@ function DicomQuestion(props) {
         noteProps={{
           fullSize: true,
           placeholder: "Dicom metadata",
-          externalNote: dicomMetadataNote
+          value: dicomMetadataNote
         }}
         {...rest}
         />
