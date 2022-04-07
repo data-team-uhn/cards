@@ -47,7 +47,10 @@ function DicomQuestion(props) {
   let [ dicomImagePreviewURL, setDicomImagePreviewURL ] = useState();
 
   let fetchDicomFile = () => {
-    let dicomFilePath = existingAnswer?.[1].value;
+    let dicomFilePath = existingAnswer?.[1]
+        .value?.split("/")
+        .map(s => encodeURIComponent(s))
+        .join("/");
     if (dicomFilePath) {
       // Don't cache DICOM images as they may change on the back-end
       cornerstoneWADOImageLoader.wadouri.dataSetCacheManager.purge();
