@@ -102,7 +102,18 @@ function Answer (props) {
           }
         </React.Fragment>)
       :
+        <>
         <input type="hidden" name={`${answerPath}/value@Delete`} value="0"></input>
+        { Object.entries(answerMetadata || {}).map(([key, value], index) => (
+            <input
+              type="hidden"
+              name={`${answerPath}/${key}@Delete`}
+              key={value === undefined ? index + (answers ? answers.length : 0) : value}
+              value={0}
+            />
+          ))
+        }
+        </>
       }
       {enableNotes &&
         <NoteComponent
