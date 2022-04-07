@@ -78,7 +78,7 @@ function PedigreeQuestion(props) {
   }
 
   let [ outputAnswers, setOutputAnswers ] = useState(pedigreeJSON ? [["value", pedigreeJSON]] : []);
-  let answerMetadata = pedigreeSVG ? {image:  pedigreeSVG} : undefined;
+  let answerMetadata = {image:  pedigreeSVG};
 
   useEffect(() => {
     setOutputAnswers(pedigreeJSON ? [["value", pedigreeJSON]] : []);
