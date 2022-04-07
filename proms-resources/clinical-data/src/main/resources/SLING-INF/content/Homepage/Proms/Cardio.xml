@@ -180,8 +180,8 @@
                 <value>computed</value>
                 <type>String</type>
             </property>
-          </node>
-          <node>
+        </node>
+        <node>
               <name>summary_score</name>
               <primaryNodeType>cards:Question</primaryNodeType>
               <property>
