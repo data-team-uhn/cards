@@ -57,25 +57,11 @@ function DicomQuestion(props) {
     if (dicomFilePath) {
       // Don't cache DICOM images as they may change on the back-end
       cornerstoneWADOImageLoader.wadouri.dataSetCacheManager.purge();
-      //console.log(cornerstone);
-      //console.log(cornerstoneWADOImageLoader);
-      //cornerstone.imageCache.purgeCache();
-      //console.log(cornerstone.imageCache);
       cornerstone.loadImage("wadouri:" + dicomFilePath)
         .then((dicomImage) => {
-          console.log("Sucessfully loaded the DICOM image from the back-end");
-          //console.log(dicomImage);
           setDicomImagePreviewURL(dicomImageToDataURL(dicomImage));
         })
     }
-    //console.log(cornerstoneWADOImageLoader);
-    /*
-    let dicomPointer = cornerstoneWADOImageLoader.wadouri.fileManager.add(file);
-    cornerstone.loadImage(dicomPointer)
-      .then((dicomImage) => {
-        setDicomImagePreviewURL(dicomImageToDataURL(dicomImage));
-      })
-    */
   }
 
   // Load the DICOM image preview, only once, upon initialization
