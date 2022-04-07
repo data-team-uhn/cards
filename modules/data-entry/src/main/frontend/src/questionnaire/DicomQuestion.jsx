@@ -86,37 +86,37 @@ function DicomQuestion(props) {
     return /^[\x00-\x7F]*$/.test(str);
   }
 
+  let dicomImageToDataURL = (dicomImage) => {
+    let dicomImagePixels = dicomImage.getPixelData();
+    let dicomMinPix = dicomImage.minPixelValue;
+    let dicomMaxPix = dicomImage.maxPixelValue;
+    let dicomCanvas = document.createElement("canvas");
+    dicomCanvas.width = dicomImage.width;
+    dicomCanvas.height = dicomImage.height;
+    let dicomCtx = dicomCanvas.getContext('2d');
+    let canvasImageData = dicomCtx.getImageData(0, 0, dicomCanvas.width, dicomCanvas.height);
+
+    // Normalize the data so that all pixels are between 0 and 255
+    for (let i = 0; i < canvasImageData.data.length; i+=4) {
+      let thisPixVal = 0;
+      if ((dicomMaxPix - dicomMinPix) !== 0) {
+        thisPixVal = Math.floor(255 * ((dicomImagePixels[i/4] - dicomMinPix) / (dicomMaxPix - dicomMinPix)));
+      }
+      canvasImageData.data[i] = thisPixVal;
+      canvasImageData.data[i+1] = thisPixVal;
+      canvasImageData.data[i+2] = thisPixVal;
+      canvasImageData.data[i+3] = 255;
+    }
+    dicomCtx.putImageData(canvasImageData, 0, 0);
+    return dicomCanvas.toDataURL();
+  }
+
   let processDicomFile = (file) => {
     // Extract and display the image
     let dicomPointer = cornerstoneWADOImageLoader.wadouri.fileManager.add(file);
     cornerstone.loadImage(dicomPointer)
       .then((dicomImage) => {
-        //console.log("Loaded the DICOM image with cornerstoneWADOImageLoader...OKAY!");
-        //console.log(dicomImage);
-        let dicomImagePixels = dicomImage.getPixelData();
-        let dicomMinPix = dicomImage.minPixelValue;
-        let dicomMaxPix = dicomImage.maxPixelValue;
-        let dicomCanvas = document.createElement("canvas");
-        dicomCanvas.width = dicomImage.width;
-        dicomCanvas.height = dicomImage.height;
-        let dicomCtx = dicomCanvas.getContext('2d');
-        let canvasImageData = dicomCtx.getImageData(0, 0, dicomCanvas.width, dicomCanvas.height);
-
-        // Normalize the data so that all pixels are between 0 and 255
-        for (let i = 0; i < canvasImageData.data.length; i+=4) {
-          let thisPixVal = 0;
-          if ((dicomMaxPix - dicomMinPix) !== 0) {
-            thisPixVal = Math.floor(255 * ((dicomImagePixels[i/4] - dicomMinPix) / (dicomMaxPix - dicomMinPix)));
-          }
-          canvasImageData.data[i] = thisPixVal;
-          canvasImageData.data[i+1] = thisPixVal;
-          canvasImageData.data[i+2] = thisPixVal;
-          canvasImageData.data[i+3] = 255;
-        }
-        dicomCtx.putImageData(canvasImageData, 0, 0);
-        //console.log(dicomCanvas.toDataURL());
-        setDicomImagePreviewURL(dicomCanvas.toDataURL());
-        //console.log(dicomCanvas);
+        setDicomImagePreviewURL(dicomImageToDataURL(dicomImage));
       })
     // Parse the metadata locally and populate the Notes
     file.arrayBuffer()
