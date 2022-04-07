@@ -44,16 +44,10 @@ function DicomQuestion(props) {
   const { existingAnswer, questionDefinition, ...rest } = props;
 
   let [ dicomMetadataNote, setDicomMetadataNote ] = useState();
-  // TODO: We will no longer store the image in the `image` property of the answer node
-  // Instead, load it from the file directly
-  // `existingAnswer?.[1].value` holds the URL of the file (which might need to be escaped
-  // (see the fixFileURL method in FileQuestion)
-  // If there's a file, fetch it from the backend and generate dicomImagePreviewURL from it
-  let [ dicomImagePreviewURL, setDicomImagePreviewURL ] = useState(existingAnswer?.[1].image);
+  let [ dicomImagePreviewURL, setDicomImagePreviewURL ] = useState();
 
   let fetchDicomFile = () => {
     let dicomFilePath = existingAnswer?.[1].value;
-    console.log("Fetching the DICOM file from: " + dicomFilePath);
     if (dicomFilePath) {
       // Don't cache DICOM images as they may change on the back-end
       cornerstoneWADOImageLoader.wadouri.dataSetCacheManager.purge();
@@ -65,9 +59,7 @@ function DicomQuestion(props) {
   }
 
   // Load the DICOM image preview, only once, upon initialization
-  useEffect(() => {
-    fetchDicomFile();
-  }, []);
+  useEffect(() => fetchDicomFile(), []);
 
   let getDicomTagInfo = (tag) => {
     let group = tag.substring(1,5);
