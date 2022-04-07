@@ -44,6 +44,11 @@ function DicomQuestion(props) {
   const { existingAnswer, questionDefinition, ...rest } = props;
 
   let [ dicomMetadataNote, setDicomMetadataNote ] = useState();
+  // TODO: We will no longer store the image in the `image` property of the answer node
+  // Instead, load it from the file directly
+  // `existingAnswer?.[1].value` holds the URL of the file (which might need to be escaped
+  // (see the fixFileURL method in FileQuestion)
+  // If there's a file, fetch it from the backend and generate dicomImagePreviewURL from it
   let [ dicomImagePreviewURL, setDicomImagePreviewURL ] = useState(existingAnswer?.[1].image);
 
   let getDicomTagName = (tag) => {
@@ -155,6 +160,7 @@ function DicomQuestion(props) {
   )
 
   // Render a customized FileQuestion
+  // TODO: remove the `answerMetadata` so the image is no longer stored in the `image` property of the answer node
   return (
     <FileQuestion
       questionDefinition={{...questionDefinition, maxAnswers: 1, enableNotes: true}}
