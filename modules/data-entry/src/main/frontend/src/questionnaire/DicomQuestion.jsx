@@ -51,26 +51,23 @@ function DicomQuestion(props) {
   // If there's a file, fetch it from the backend and generate dicomImagePreviewURL from it
   let [ dicomImagePreviewURL, setDicomImagePreviewURL ] = useState(existingAnswer?.[1].image);
 
-  let getDicomTagName = (tag) => {
+  let getDicomTagInfo = (tag) => {
     let group = tag.substring(1,5);
     let element = tag.substring(5,9);
     let tagIndex = ("(" + group + "," + element + ")").toUpperCase();
     if (tagIndex in DICOM_TAG_DICT) {
-      return DICOM_TAG_DICT[tagIndex].name;
+      return DICOM_TAG_DICT[tagIndex];
     } else {
       return undefined;
     }
   }
 
+  let getDicomTagName = (tag) => {
+    return getDicomTagInfo(tag)?.name;
+  }
+
   let getDicomTagDataFormat = (tag) => {
-    let group = tag.substring(1,5);
-    let element = tag.substring(5,9);
-    let tagIndex = ("(" + group + "," + element + ")").toUpperCase();
-    if (tagIndex in DICOM_TAG_DICT) {
-      return DICOM_TAG_DICT[tagIndex].vr;
-    } else {
-      return undefined;
-    }
+    return getDicomTagInfo(tag)?.vr;
   }
 
   // TODO: Support more VR types
