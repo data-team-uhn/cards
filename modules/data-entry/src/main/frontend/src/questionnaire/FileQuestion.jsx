@@ -291,7 +291,7 @@ function FileQuestion(props) {
     return (
       <div>
         <Link href={fixFileURL(hrefs[idx], label)} target="_blank" rel="noopener" download>{label}</Link>
-        { previewRenderer && previewRenderer(label, idx, hrefs[idx]) }
+        { previewRenderer && previewRenderer(fixFileURL(hrefs[idx], label), label, idx) }
       </div>
     );
   }
@@ -326,7 +326,7 @@ function FileQuestion(props) {
                   shouldGoBack={false}
                   onComplete={() => deletePath(idx)}
                 />
-                { previewRenderer && previewRenderer(filepath, idx, uploadedFiles[filepath]) }
+                { previewRenderer && previewRenderer(fixFileURL(uploadedFiles[filepath], filepath), filepath, idx) }
                 { namePattern &&
                   <span>
                     {varNames.map((name, nameIdx) => (
