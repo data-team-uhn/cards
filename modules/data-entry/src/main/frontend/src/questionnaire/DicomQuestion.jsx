@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { withStyles } from "@material-ui/core";
 
 import cornerstone from "cornerstone-core";
@@ -50,6 +50,38 @@ function DicomQuestion(props) {
   // (see the fixFileURL method in FileQuestion)
   // If there's a file, fetch it from the backend and generate dicomImagePreviewURL from it
   let [ dicomImagePreviewURL, setDicomImagePreviewURL ] = useState(existingAnswer?.[1].image);
+
+  let fetchDicomFile = () => {
+    let dicomFilePath = existingAnswer?.[1].value;
+    console.log("Fetching the DICOM file from: " + dicomFilePath);
+    if (dicomFilePath) {
+      // Don't cache DICOM images as they may change on the back-end
+      cornerstoneWADOImageLoader.wadouri.dataSetCacheManager.purge();
+      //console.log(cornerstone);
+      //console.log(cornerstoneWADOImageLoader);
+      //cornerstone.imageCache.purgeCache();
+      //console.log(cornerstone.imageCache);
+      cornerstone.loadImage("wadouri:" + dicomFilePath)
+        .then((dicomImage) => {
+          console.log("Sucessfully loaded the DICOM image from the back-end");
+          //console.log(dicomImage);
+          setDicomImagePreviewURL(dicomImageToDataURL(dicomImage));
+        })
+    }
+    //console.log(cornerstoneWADOImageLoader);
+    /*
+    let dicomPointer = cornerstoneWADOImageLoader.wadouri.fileManager.add(file);
+    cornerstone.loadImage(dicomPointer)
+      .then((dicomImage) => {
+        setDicomImagePreviewURL(dicomImageToDataURL(dicomImage));
+      })
+    */
+  }
+
+  // Load the DICOM image preview, only once, upon initialization
+  useEffect(() => {
+    fetchDicomFile();
+  }, []);
 
   let getDicomTagInfo = (tag) => {
     let group = tag.substring(1,5);
@@ -157,7 +189,6 @@ function DicomQuestion(props) {
   )
 
   // Render a customized FileQuestion
-  // TODO: remove the `answerMetadata` so the image is no longer stored in the `image` property of the answer node
   return (
     <FileQuestion
       questionDefinition={{...questionDefinition, maxAnswers: 1, enableNotes: true}}
@@ -169,7 +200,6 @@ function DicomQuestion(props) {
         setDicomImagePreviewURL(undefined);
       }}
       previewRenderer={previewRenderer}
-      answerMetadata={{image : dicomImagePreviewURL}}
       answerNodeType="cards:DicomAnswer"
       noteProps={{
         fullSize: true,
