@@ -192,10 +192,14 @@ function OnboardNewClinicDialog(props) {
         method: 'POST',
         body: requestData
       })
-      .then(() => {
-        onSuccess && onSuccess();
+      .then((response) => {
+        if (response.ok) {
+          onSuccess && onSuccess();
+        } else {
+          return response.json().then((result) => {throw result.error});
+        }
       })
-      .catch((response) => {setError(response.status + " " + response.statusText);})
+      .catch((errorText) => {setError("Error: " + errorText);})
       .finally(() => {
         setSaveInProgress(false);
       });

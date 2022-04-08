@@ -113,6 +113,8 @@ public class ClinicsServlet extends SlingAllMethodsServlet
             this.returnError(response, e.getMessage());
         } catch (NoSuchSurveyException e) {
             this.returnError(response, e.getMessage());
+        } catch (NullPointerException e) {
+            this.returnError(response, e.getMessage());
         }
 
         // Grab the configuration to edit
@@ -210,7 +212,7 @@ public class ClinicsServlet extends SlingAllMethodsServlet
     {
         LOGGER.error(reason);
         try {
-            response.setStatus(SlingHttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.setStatus(SlingHttpServletResponse.SC_BAD_REQUEST);
             Writer out = response.getWriter();
             JsonGenerator generator = Json.createGenerator(out);
             generator.writeStartObject();
