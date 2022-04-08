@@ -403,7 +403,7 @@ then
       && VOCABULARY_INSTALLED=true || VOCABULARY_INSTALLED=false
     if [ $VOCABULARY_INSTALLED = false ]
     then
-      python3 Utilities/Administration/install_vocabulary.py --vocabulary_file ./kids-resources/clinical-data/src/main/vocabularies/${VOCABULARIES[$index]}.owl --vocabulary_name ${VOCABULARIES[$index]} --vocabulary_id ${VOCABULARIES[$index]} --vocabulary_version 1 \
+      python3 Utilities/Administration/install_vocabulary.py --vocabulary_file ./kids-resources/clinical-data/src/main/vocabularies/${VOCABULARIES[$index]}.obo --vocabulary_name ${VOCABULARIES[$index]} --vocabulary_id ${VOCABULARIES[$index]} --vocabulary_version 1.0.0 \
         || KIDS_VOCABULARY_SUCCESS=false
     else
       echo "${VOCABULARIES[$index]} already installed"

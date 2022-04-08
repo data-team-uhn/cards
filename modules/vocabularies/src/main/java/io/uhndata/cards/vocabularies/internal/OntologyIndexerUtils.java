@@ -71,7 +71,7 @@ public final class OntologyIndexerUtils
             try {
                 vocabularyTermNode = vocabularyNode.get()
                                          .addNode("./" + term.getId()
-                                         .replaceAll("[^A-Za-z0-9_\\.]", ""), "cards:VocabularyTerm");
+                                         .replaceAll("[^A-Za-z0-9_\\.-]", ""), "cards:VocabularyTerm");
             } catch (ItemExistsException e) {
                 // Sometimes terms appear twice; we'll just update the existing node
                 vocabularyTermNode = vocabularyNode.get().getNode(term.getId());

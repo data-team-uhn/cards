@@ -1859,7 +1859,7 @@
 				</property>
 				<property>
 					<name>condition</name>
-					<value>For Insurance Payors options, select all that apply; If Insurance Payors - None selection is "No" </value>
+					<value>For Insurance Payors options, select all options that apply; If Insurance Payors - None selection is "No" </value>
 					<type>String</type>
 				</property>
 				<node>
