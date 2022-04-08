@@ -84,6 +84,15 @@ public class ClinicsServlet extends SlingAllMethodsServlet
     @Reference
     private ConfigurationAdmin configAdmin;
 
+    // Custom exception for us to handle
+    public class NoSuchSurveyException extends Exception
+    {
+        public NoSuchSurveyException(String errorMessage)
+        {
+            super(errorMessage);
+        }
+    }
+
     @Override
     public void doPost(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
         throws IOException
@@ -101,6 +110,8 @@ public class ClinicsServlet extends SlingAllMethodsServlet
             this.createDashboardViews(resolver);
             session.save();
         } catch (RepositoryException e) {
+            this.returnError(response, e.getMessage());
+        } catch (NoSuchSurveyException e) {
             this.returnError(response, e.getMessage());
         }
 
@@ -154,7 +165,6 @@ public class ClinicsServlet extends SlingAllMethodsServlet
     {
         // Pre-sanitize the name
         String sanitizedName = displayName.replaceAll("[\"'\\[\\]\\(\\)\\\\]", "");
-        LOGGER.error(displayName + " becomes " + sanitizedName);
 
         // Query for similar names
         String query = "SELECT * FROM [cards:ClinicMapping] as c WHERE c.'displayName' LIKE '"
@@ -167,14 +177,11 @@ public class ClinicsServlet extends SlingAllMethodsServlet
         Pattern numberRegex = Pattern.compile(sanitizedName + " ([\\d]+)");
         while (results.hasNext()) {
             String name = results.next().adaptTo(Node.class).getProperty("displayName").getString();
-            LOGGER.error("Found: " + name);
 
             Matcher match = numberRegex.matcher(name);
             if (match.find()) {
-                LOGGER.error("Adding int");
                 foundNames.add(Integer.parseInt(match.group(1)));
             } else if (sanitizedName.equals(name)) {
-                LOGGER.error("No number is no longer valid");
                 noNumberValid = false;
             }
         }
@@ -296,7 +303,7 @@ public class ClinicsServlet extends SlingAllMethodsServlet
      * @param resolver Resource resolver to use
      */
     private void createDashboardViews(final ResourceResolver resolver)
-        throws RepositoryException, PersistenceException
+        throws RepositoryException, PersistenceException, NoSuchSurveyException
     {
         // First, create the folder to hold the dashboard views
         final Resource dashboardViewFolder = resolver.getResource("/Extensions/DashboardViews/");
@@ -305,6 +312,10 @@ public class ClinicsServlet extends SlingAllMethodsServlet
 
         // Create a bunch of survey views, one per clinic ID given
         final Resource surveys = resolver.getResource("/Proms/" + this.surveyID.get());
+        if (surveys == null) {
+            // This call is malformed: the survey ID given does not exist
+            throw new NoSuchSurveyException(this.surveyID.get() + " is not an existing survey ID.");
+        }
         int i = 0;
         for (final Resource questionnaireRef : surveys.getChildren()) {
             // First, we need to grab the surveys under that resource
