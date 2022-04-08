@@ -83,20 +83,32 @@ function DicomQuestion(props) {
     return getDicomTagInfo(tag)?.vr;
   }
 
-  // TODO: Support more VR types
-  let getDicomTagValue = (dicomObj, tag) => {
-    //let tagObj = dicomObj.elements[tag];
-    //console.log("Working with this tagObj...");
-    //console.log(tagObj);
-    if (getDicomTagDataFormat(tag) === "US") {
-      return dicomObj.uint16(tag);
-    } else {
-      return dicomObj.string(tag);
+  let getDicomRawHexData = (dicomObj, tag) => {
+    let dataLength = dicomObj.elements[tag].length;
+    let dataOffset = dicomObj.elements[tag].dataOffset;
+    let truncateData = Boolean(dicomObj.elements[tag].length > 8);
+    if (truncateData) {
+      dataLength = 8;
     }
+    let hex = "0x" + Array.from(dicomObj.byteArray.slice(dataOffset, dataOffset + dataLength))
+      .map(x => x.toString(16).padStart(2, '0'))
+      .join('');
+    if (truncateData) {
+      hex += "...";
+    }
+    return hex;
   }
 
-  let isASCII = (str) => {
-    return /^[\x00-\x7F]*$/.test(str);
+  let getDicomTagValue = (dicomObj, tag) => {
+    if (getDicomTagDataFormat(tag) === "US") {
+      return dicomObj.uint16(tag);
+    } else if (getDicomTagDataFormat(tag) === "UL") {
+      return dicomObj.uint32(tag);
+    } else if (["CS", "UI", "DA", "TM", "LO", "PN", "SH", "DS", "IS", "AE"].indexOf(getDicomTagDataFormat(tag)) >= 0) {
+      return dicomObj.string(tag);
+    } else {
+      return getDicomRawHexData(dicomObj, tag);
+    }
   }
 
   let dicomImageToDataURL = (dicomImage) => {
@@ -136,8 +148,7 @@ function DicomQuestion(props) {
       .then((arrayBuf) => {
         let dicomU8 = new Uint8Array(arrayBuf);
         let dcmObject = dicomParser.parseDicom(dicomU8);
-        //console.log(dcmObject);
-        // Build a DICOM metadata
+        // Build a list of DICOM metadata keys --> values
         let dicomMetadata = [];
         for (let dcmtag in dcmObject.elements) {
           let tagName = getDicomTagName(dcmtag);
@@ -145,15 +156,6 @@ function DicomQuestion(props) {
             continue;
           }
           let tagValue = getDicomTagValue(dcmObject, dcmtag);
-          /*
-          let tagValue = dcmObject.string(dcmtag);
-          if (typeof(tagValue) != "string") {
-            continue;
-          }
-          if (!isASCII(tagValue)) {
-            continue;
-          }
-          */
           dicomMetadata.push(tagName + ": " + tagValue);
         }
         setDicomMetadataNote(dicomMetadata.join("\n"));
