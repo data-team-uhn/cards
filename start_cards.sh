@@ -51,13 +51,13 @@ function print_length_of() {
   done
 }
 
-function handle_missing_sling_commons_crypto_fail() {
-  echo -e "${TERMINAL_RED}**********************************************************************************${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_RED}*                                                                                *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_RED}*   The SLING_COMMONS_CRYPTO_PASSWORD enviroment variable is missing. Exiting.   *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_RED}*                                                                                *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_RED}**********************************************************************************${TERMINAL_NOCOLOR}"
-  exit -1
+function handle_missing_sling_commons_crypto_warning() {
+  echo -e "${TERMINAL_YELLOW}*************************************************************************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}*                                                                       *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}*   The SLING_COMMONS_CRYPTO_PASSWORD enviroment variable is missing.   *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}*   Using the default value of 'password'.                              *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}*                                                                       *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}*************************************************************************${TERMINAL_NOCOLOR}"
 }
 
 function handle_missing_mailcap_fail() {
@@ -293,7 +293,8 @@ if [ $SMTPS_ENABLED = true ]
 then
   if [ -z $SLING_COMMONS_CRYPTO_PASSWORD ]
   then
-    handle_missing_sling_commons_crypto_fail
+    handle_missing_sling_commons_crypto_warning
+    export SLING_COMMONS_CRYPTO_PASSWORD=password
   fi
   if [ ! -e ~/.mailcap ]
   then
