@@ -18,836 +18,836 @@
 format-version: 1.2
 
 [Term]
-id: _2
+id: -2
 name: Procedure\WType
 
 [Term]
-id: _1
+id: -1
 name: Adjunctive\Wtherapy
-is_a: _2
+is_a: -2
 def: Procedure Type
 
 [Term]
 id: 5
 name: Adenosine
-is_a: _1
+is_a: -1
 def: Adjunctive therapy
 
 [Term]
 id: 10
 name: Beta blockade
-is_a: _1
+is_a: -1
 def: Adjunctive therapy
 
 [Term]
 id: 15
 name: Rapid pacing
-is_a: _1
+is_a: -1
 def: Adjunctive therapy
 
 [Term]
 id: 20
 name: Rapid pacing: Endocardial
-is_a: _1
+is_a: -1
 def: Adjunctive therapy
 
 [Term]
 id: 25
 name: Rapid pacing: Epicardial
-is_a: _1
+is_a: -1
 def: Adjunctive therapy
 
 [Term]
-id: _3
+id: -3
 name: Balloon\Wdilation
-is_a: _2
+is_a: -2
 def: Procedure Type
 
 [Term]
 id: 30
 name: Conduit: Sano modification (RV to PA valveless conduit) (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 35
 name: Conduit: Sano modification-with valve (RV to PA valved
 conduit) (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 40
 name: Conduit: LA to LV (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 45
 name: Conduit: LV to aorta (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 50
 name: Conduit: LV to PA (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 55
 name: Conduit: Other (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 60
 name: Conduit: RA to PA (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 65
 name: Conduit: RA to PA-pulmonary trunk (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 70
 name: Conduit: RA to RV (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 75
 name: Conduit: RV to aorta (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 80
 name: Conduit: RV to PA (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 85
 name: Conduit: Shunt - systemic-to-pulmonary (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 90
 name: Intracardiac/septum: Atrial baffle S/P atrial switch (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 95
 name: Intracardiac/septum: Atrial septum (Static balloon dilation
 [without pullback])
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 100
 name: Intracardiac/septum: Fontan Baffle (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 105
 name: Intracardiac/septum: Fontan fenestration (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 110
 name: Intracardiac/septum: Ventricular septum (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 115
 name: Pulmonary artery: Central (Proximal left and/or proximal right pulmonary artery including the pulmonary artery
 bifurcation) (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 120
 name: Pulmonary artery: Main (Trunk) (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 125
 name: Pulmonary artery: Peripheral (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 130
 name: Pulmonary artery: Proximal (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 135
 name: Pulmonary vein: Left (Left pulmonary vein [LPV]) (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 140
 name: Pulmonary vein: Left lower (Left lower pulmonary vein
 [LLPV]) (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 145
 name: Pulmonary vein: Left upper (Left upper pulmonary vein
 [LUPV]) (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 150
 name: Pulmonary vein: Lingula (Lingular pulmonary vein) (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 155
 name: Pulmonary vein: Pulmonary venous confluence (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 160
 name: Pulmonary vein: Pulmonary venous confluence with left
 atrium (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 165
 name: Pulmonary vein: Right (Right pulmonary vein [RPV]) (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 170
 name: Pulmonary vein: Right lower (Right lower pulmonary vein
 [RLPV]) (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 175
 name: Pulmonary vein: Right middle (Right middle pulmonary vein
 [RMPV]) (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 180
 name: Pulmonary vein: Right upper (Right upper pulmonary vein
 [RUPV]) (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 185
 name: Systemic artery: Aorta (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 190
 name: Systemic artery: Systemic artery other than aorta (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 195
 name: Systemic vein: Caval vein (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 200
 name: Systemic vein: Non-Caval vein (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
-id: _4
+id: -4
 name: Balloon\Wvalvotomy
-is_a: _2
+is_a: -2
 def: Procedure Type
 
 [Term]
 id: 205
 name: Aortic valve
-is_a: _4
+is_a: -4
 def: Balloon valvotomy
 
 [Term]
 id: 210
 name: Mitral valve
-is_a: _4
+is_a: -4
 def: Balloon valvotomy
 
 [Term]
 id: 215
 name: Pulmonic valve
-is_a: _4
+is_a: -4
 def: Balloon valvotomy
 
 [Term]
 id: 220
 name: Tricuspid valve
-is_a: _4
+is_a: -4
 def: Balloon valvotomy
 
 [Term]
-id: _5
+id: -5
 name: Biopsy
-is_a: _2
+is_a: -2
 def: Procedure Type
 
 [Term]
 id: 225
 name: RV not S/P heart transplant
-is_a: _5
+is_a: -5
 def: Biopsy
 
 [Term]
 id: 230
 name: RV post heart transplant
-is_a: _5
+is_a: -5
 def: Biopsy
 
 [Term]
 id: 235
 name: Site not RV
-is_a: _5
+is_a: -5
 def: Biopsy
 
 [Term]
-id: _6
+id: -6
 name: Coil\Wimplantation
-is_a: _2
+is_a: -2
 def: Procedure Type
 
 [Term]
 id: 240
 name: Atrial septal defect (ASD) (Coil\Wimplantation)
-is_a: _6
+is_a: -6
 def: Coil implantation
 
 [Term]
 id: 245
 name: Conduit: Sano modification (RV to PA valveless conduit) (Coil\Wimplantation)
-is_a: _6
+is_a: -6
 def: Coil implantation
 
 [Term]
 id: 250
 name: Conduit: Sano modification-with valve (RV to PA valved
 conduit) (Coil\Wimplantation)
-is_a: _6
+is_a: -6
 def: Coil implantation
 
 [Term]
 id: 255
 name: Conduit: LA to LV (Coil\Wimplantation)
-is_a: _6
+is_a: -6
 def: Coil implantation
 
 [Term]
 id: 260
 name: Conduit: LV to aorta (Coil\Wimplantation)
-is_a: _6
+is_a: -6
 def: Coil implantation
 
 [Term]
 id: 265
 name: Conduit: LV to PA (Coil\Wimplantation)
-is_a: _6
+is_a: -6
 def: Coil implantation
 
 [Term]
 id: 270
 name: Conduit: Other (Coil\Wimplantation)
-is_a: _6
+is_a: -6
 def: Coil implantation
 
 [Term]
 id: 275
 name: Conduit: RA to PA (Coil\Wimplantation)
-is_a: _6
+is_a: -6
 def: Coil implantation
 
 [Term]
 id: 280
 name: Conduit: RA to PA-pulmonary trunk (Coil\Wimplantation)
-is_a: _6
+is_a: -6
 def: Coil implantation
 
 [Term]
 id: 285
 name: Conduit: RA to RV (Coil\Wimplantation)
-is_a: _6
+is_a: -6
 def: Coil implantation
 
 [Term]
 id: 290
 name: Conduit: RV to aorta (Coil\Wimplantation)
-is_a: _6
+is_a: -6
 def: Coil implantation
 
 [Term]
 id: 295
 name: Conduit: RV to PA (Coil\Wimplantation)
-is_a: _6
+is_a: -6
 def: Coil implantation
 
 [Term]
 id: 300
 name: Conduit: Shunt - systemic-to-pulmonary (Coil\Wimplantation)
-is_a: _6
+is_a: -6
 def: Coil implantation
 
 [Term]
 id: 305
 name: Coronary artery fistula (Coil\Wimplantation)
-is_a: _6
+is_a: -6
 def: Coil implantation
 
 [Term]
 id: 310
 name: Fontan fenestration (Coil\Wimplantation)
-is_a: _6
+is_a: -6
 def: Coil implantation
 
 [Term]
 id: 315
 name: Intracardiac baffle leak (Coil\Wimplantation)
-is_a: _6
+is_a: -6
 def: Coil implantation
 
 [Term]
 id: 320
 name: Patent ductus arteriosus (PDA) (Coil\Wimplantation)
-is_a: _6
+is_a: -6
 def: Coil implantation
 
 [Term]
 id: 325
 name: Perivalvar leak (Coil\Wimplantation)
-is_a: _6
+is_a: -6
 def: Coil implantation
 
 [Term]
 id: 330
 name: Pulmonary arteriovenous malformation (Coil\Wimplantation)
-is_a: _6
+is_a: -6
 def: Coil implantation
 
 [Term]
 id: 335
 name: Systemic arteriovenous malformation (Coil\Wimplantation)
-is_a: _6
+is_a: -6
 def: Coil implantation
 
 [Term]
 id: 340
 name: Systemic artery to pulmonary artery collateral (Coil\Wimplantation)
-is_a: _6
+is_a: -6
 def: Coil implantation
 
 [Term]
 id: 345
 name: Systemic artery: Aorta (Coil\Wimplantation)
-is_a: _6
+is_a: -6
 def: Coil implantation
 
 [Term]
 id: 350
 name: Systemic artery: Systemic artery other than aorta (Coil\Wimplantation)
-is_a: _6
+is_a: -6
 def: Coil implantation
 
 [Term]
 id: 355
 name: Systemic vein to pulmonary vein collateral (Coil\Wimplantation)
-is_a: _6
+is_a: -6
 def: Coil implantation
 
 [Term]
 id: 360
 name: Systemic vein: Caval vein (Coil\Wimplantation)
-is_a: _6
+is_a: -6
 def: Coil implantation
 
 [Term]
 id: 365
 name: Systemic vein: Non-caval vein
-is_a: _6
+is_a: -6
 def: Coil implantation
 
 [Term]
-id: _7
+id: -7
 name: Data
-is_a: _2
+is_a: -2
 def: Procedure Type
 
 [Term]
 id: 367
 name: Hemodynamic data obtained
-is_a: _7
+is_a: -7
 def: Data
 
 [Term]
 id: 368
 name: Angiographic data obtained
-is_a: _7
+is_a: -7
 def: Data
 
 [Term]
-id: _8
+id: -8
 name: Device\Wimplantation
-is_a: _2
+is_a: -2
 def: Procedure Type
 
 [Term]
 id: 370
 name: Aortopulmonary window (AP window)
-is_a: _8
+is_a: -8
 def: Device implantation
 
 [Term]
 id: 375
 name: Atrial septal defect (ASD) (Device\Wimplantation)
-is_a: _8
+is_a: -8
 def: Device implantation
 
 [Term]
 id: 380
 name: Conduit: Sano modification (RV to PA valveless conduit) (Device\Wimplantation)
-is_a: _8
+is_a: -8
 def: Device implantation
 
 [Term]
 id: 385
 name: Conduit: Sano modification-with valve (RV to PA valved
 conduit) (Device\Wimplantation)
-is_a: _8
+is_a: -8
 def: Device implantation
 
 [Term]
 id: 390
 name: Conduit: LA to LV (Device\Wimplantation)
-is_a: _8
+is_a: -8
 def: Device implantation
 
 [Term]
 id: 395
 name: Conduit: LV to aorta (Device\Wimplantation)
-is_a: _8
+is_a: -8
 def: Device implantation
 
 [Term]
 id: 400
 name: Conduit: LV to PA (Device\Wimplantation)
-is_a: _8
+is_a: -8
 def: Device implantation
 
 [Term]
 id: 405
 name: Conduit: Other (Device\Wimplantation)
-is_a: _8
+is_a: -8
 def: Device implantation
 
 [Term]
 id: 410
 name: Conduit: RA to PA (Device\Wimplantation)
-is_a: _8
+is_a: -8
 def: Device implantation
 
 [Term]
 id: 415
 name: Conduit: RA to PA-pulmonary trunk (Device\Wimplantation)
-is_a: _8
+is_a: -8
 def: Device implantation
 
 [Term]
 id: 420
 name: Conduit: RA to RV (Device\Wimplantation)
-is_a: _8
+is_a: -8
 def: Device implantation
 
 [Term]
 id: 425
 name: Conduit: RV to aorta (Device\Wimplantation)
-is_a: _8
+is_a: -8
 def: Device implantation
 
 [Term]
 id: 430
 name: Conduit: RV to PA (Device\Wimplantation)
-is_a: _8
+is_a: -8
 def: Device implantation
 
 [Term]
 id: 435
 name: Conduit: Shunt - systemic-to-pulmonary (Device\Wimplantation)
-is_a: _8
+is_a: -8
 def: Device implantation
 
 [Term]
 id: 440
 name: Coronary artery fistula (Device\Wimplantation)
-is_a: _8
+is_a: -8
 def: Device implantation
 
 [Term]
 id: 445
 name: Fontan fenestration (Device\Wimplantation)
-is_a: _8
+is_a: -8
 def: Device implantation
 
 [Term]
 id: 450
 name: Intracardiac baffle leak (Device\Wimplantation)
-is_a: _8
+is_a: -8
 def: Device implantation
 
 [Term]
 id: 455
 name: Patent ductus arteriosus (PDA) (Device\Wimplantation)
-is_a: _8
+is_a: -8
 def: Device implantation
 
 [Term]
 id: 460
 name: Patent Foramen Ovale (PFO)
-is_a: _8
+is_a: -8
 def: Device implantation
 
 [Term]
 id: 465
 name: Perivalvar leak (Device\Wimplantation)
-is_a: _8
+is_a: -8
 def: Device implantation
 
 [Term]
 id: 470
 name: Pulmonary arteriovenous malformation (Device\Wimplantation)
-is_a: _8
+is_a: -8
 def: Device implantation
 
 [Term]
 id: 475
 name: Pulmonary artery
-is_a: _8
+is_a: -8
 def: Device implantation
 
 [Term]
 id: 480
 name: Systemic arteriovenous malformation (Device\Wimplantation)
-is_a: _8
+is_a: -8
 def: Device implantation
 
 [Term]
 id: 485
 name: Systemic artery to pulmonary artery collateral (Device\Wimplantation)
-is_a: _8
+is_a: -8
 def: Device implantation
 
 [Term]
 id: 490
 name: Systemic artery: Aorta (Device\Wimplantation)
-is_a: _8
+is_a: -8
 def: Device implantation
 
 [Term]
 id: 495
 name: Systemic artery: Systemic artery other than aorta (Device\Wimplantation)
-is_a: _8
+is_a: -8
 def: Device implantation
 
 [Term]
 id: 500
 name: Systemic vein to pulmonary vein collateral (Device\Wimplantation)
-is_a: _8
+is_a: -8
 def: Device implantation
 
 [Term]
 id: 505
 name: Systemic vein: Caval vein (Device\Wimplantation)
-is_a: _8
+is_a: -8
 def: Device implantation
 
 [Term]
 id: 510
 name: Systemic vein: Caval vein (Superior vena cava - Right)
-is_a: _8
+is_a: -8
 def: Device implantation
 
 [Term]
 id: 515
 name: Systemic vein: Non-Caval vein (Device\Wimplantation)
-is_a: _8
+is_a: -8
 def: Device implantation
 
 [Term]
 id: 520
 name: Ventricular septal defect (VSD)
-is_a: _8
+is_a: -8
 def: Device implantation
 
 [Term]
-id: _9
+id: -9
 name: Electrophysiology\Walteration
-is_a: _2
+is_a: -2
 def: Procedure Type
 
 [Term]
 id: 525
 name: Atrial stimulation
-is_a: _9
+is_a: -9
 def: Electrophysiology alteration
 
 [Term]
 id: 530
 name: Ventricular stimulation
-is_a: _9
+is_a: -9
 def: Electrophysiology alteration
 
 [Term]
-id: _10
+id: -10
 name: Hemodynamic\Walteration
-is_a: _2
+is_a: -2
 def: Procedure Type
 
 [Term]
 id: 531
 name: Oxygen/nitric test
-is_a: _10
+is_a: -10
 def: Hemodynamic alteration
 
 [Term]
 id: 532
 name: Inotropy test
-is_a: _10
+is_a: -10
 def: Hemodynamic alteration
 
 [Term]
 id: 533
 name: Fuild bolus challenge
-is_a: _10
+is_a: -10
 def: Hemodynamic alteration
 
 [Term]
-id: _11
+id: -11
 name: Other\Winvasive\
 procedures/interventional\Wtechniques
-is_a: _2
+is_a: -2
 def: Procedure Type
 
 [Term]
 id: 535
 name: Pericardiocentesis - elective
-is_a: _11
+is_a: -11
 def: Other invasive
 procedures/interventional techniques
 
 [Term]
-id: _12
+id: -12
 name: Other\Winvasive\Wprocedures/interventional\
 techniques
-is_a: _2
+is_a: -2
 def: Procedure Type
 
 [Term]
 id: 540
 name: Pericardiocentesis - emergent
-is_a: _12
+is_a: -12
 def: Other invasive procedures/interventional
 techniques
 
 [Term]
 id: 545
 name: Pleuracentesis - elective
-is_a: _12
+is_a: -12
 def: Other invasive procedures/interventional
 techniques
 
 [Term]
 id: 550
 name: Pleuracentesis - emergent
-is_a: _12
+is_a: -12
 def: Other invasive procedures/interventional
 techniques
 
 [Term]
 id: 555
 name: Snare foreign body
-is_a: _12
+is_a: -12
 def: Other invasive procedures/interventional
 techniques
 
 [Term]
-id: _13
+id: -13
 name: Perforation\W\(establishing\Winterchamber\Wand/or\Wintervessel\
 communication\)
-is_a: _2
+is_a: -2
 def: Procedure Type
 
 [Term]
 id: 560
 name: Atretic aortic valve
-is_a: _13
+is_a: -13
 def: Perforation (establishing interchamber and/or intervessel
 communication)
 
 [Term]
 id: 565
 name: Atretic pulmonary valve
-is_a: _13
+is_a: -13
 def: Perforation (establishing interchamber and/or intervessel
 communication)
 
 [Term]
 id: 570
 name: Atrial septum
-is_a: _13
+is_a: -13
 def: Perforation (establishing interchamber and/or intervessel
 communication)
 
 [Term]
-id: _14
+id: -14
 name: Perforation\W\(establishing\
 interchamber\Wand/or\Wintervessel\Wcommunication\)
-is_a: _2
+is_a: -2
 def: Procedure Type
 
 [Term]
 id: 575
 name: Conduit: Sano modification (RV to PA valveless conduit) (Perforation\W\(establishing\
 interchamber\Wand/or\Wintervessel\Wcommunication\))
-is_a: _14
+is_a: -14
 def: Perforation (establishing
 interchamber and/or intervessel communication)
 
 [Term]
 id: 580
 name: Conduit: Sano modification-with valve (RV to PA valved conduit)
-is_a: _14
+is_a: -14
 def: Perforation (establishing
 interchamber and/or intervessel communication)
 
@@ -855,7 +855,7 @@ interchamber and/or intervessel communication)
 id: 585
 name: Conduit: LA to LV (Perforation\W\(establishing\
 interchamber\Wand/or\Wintervessel\Wcommunication\))
-is_a: _14
+is_a: -14
 def: Perforation (establishing
 interchamber and/or intervessel communication)
 
@@ -863,7 +863,7 @@ interchamber and/or intervessel communication)
 id: 590
 name: Conduit: LV to aorta (Perforation\W\(establishing\Winterchamber\Wand/or\Wintervessel\
 communication\))
-is_a: _13
+is_a: -13
 def: Perforation (establishing interchamber and/or intervessel
 communication)
 
@@ -871,7 +871,7 @@ communication)
 id: 595
 name: Conduit: LV to PA (Perforation\W\(establishing\Winterchamber\Wand/or\Wintervessel\
 communication\))
-is_a: _13
+is_a: -13
 def: Perforation (establishing interchamber and/or intervessel
 communication)
 
@@ -879,7 +879,7 @@ communication)
 id: 600
 name: Conduit: Other (Perforation\W\(establishing\
 interchamber\Wand/or\Wintervessel\Wcommunication\))
-is_a: _14
+is_a: -14
 def: Perforation (establishing
 interchamber and/or intervessel communication)
 
@@ -887,7 +887,7 @@ interchamber and/or intervessel communication)
 id: 605
 name: Conduit: RA to PA (Perforation\W\(establishing\Winterchamber\Wand/or\Wintervessel\
 communication\))
-is_a: _13
+is_a: -13
 def: Perforation (establishing interchamber and/or intervessel
 communication)
 
@@ -895,7 +895,7 @@ communication)
 id: 610
 name: Conduit: RA to PA-pulmonary trunk (Perforation\W\(establishing\Winterchamber\Wand/or\Wintervessel\
 communication\))
-is_a: _13
+is_a: -13
 def: Perforation (establishing interchamber and/or intervessel
 communication)
 
@@ -903,7 +903,7 @@ communication)
 id: 615
 name: Conduit: RA to RV (Perforation\W\(establishing\Winterchamber\Wand/or\Wintervessel\
 communication\))
-is_a: _13
+is_a: -13
 def: Perforation (establishing interchamber and/or intervessel
 communication)
 
@@ -911,7 +911,7 @@ communication)
 id: 620
 name: Conduit: RV to aorta (Perforation\W\(establishing\Winterchamber\Wand/or\Wintervessel\
 communication\))
-is_a: _13
+is_a: -13
 def: Perforation (establishing interchamber and/or intervessel
 communication)
 
@@ -919,7 +919,7 @@ communication)
 id: 625
 name: Conduit: RV to PA (Perforation\W\(establishing\Winterchamber\Wand/or\Wintervessel\
 communication\))
-is_a: _13
+is_a: -13
 def: Perforation (establishing interchamber and/or intervessel
 communication)
 
@@ -927,14 +927,14 @@ communication)
 id: 630
 name: Conduit: Shunt - systemic-to-pulmonary (Perforation\W\(establishing\Winterchamber\Wand/or\Wintervessel\
 communication\))
-is_a: _13
+is_a: -13
 def: Perforation (establishing interchamber and/or intervessel
 communication)
 
 [Term]
 id: 635
 name: Fontan Baffle
-is_a: _13
+is_a: -13
 def: Perforation (establishing interchamber and/or intervessel
 communication)
 
@@ -942,7 +942,7 @@ communication)
 id: 640
 name: Systemic artery: Aorta (Perforation\W\(establishing\Winterchamber\Wand/or\Wintervessel\
 communication\))
-is_a: _13
+is_a: -13
 def: Perforation (establishing interchamber and/or intervessel
 communication)
 
@@ -950,7 +950,7 @@ communication)
 id: 645
 name: Systemic artery: Systemic artery other than aorta (Perforation\W\(establishing\Winterchamber\Wand/or\Wintervessel\
 communication\))
-is_a: _13
+is_a: -13
 def: Perforation (establishing interchamber and/or intervessel
 communication)
 
@@ -958,7 +958,7 @@ communication)
 id: 650
 name: Systemic vein: Caval vein (Perforation\W\(establishing\
 interchamber\Wand/or\Wintervessel\Wcommunication\))
-is_a: _14
+is_a: -14
 def: Perforation (establishing
 interchamber and/or intervessel communication)
 
@@ -966,992 +966,992 @@ interchamber and/or intervessel communication)
 id: 655
 name: Systemic vein: Non-Caval vein (Perforation\W\(establishing\
 interchamber\Wand/or\Wintervessel\Wcommunication\))
-is_a: _14
+is_a: -14
 def: Perforation (establishing
 interchamber and/or intervessel communication)
 
 [Term]
 id: 660
 name: Ventricular septum
-is_a: _14
+is_a: -14
 def: Perforation (establishing
 interchamber and/or intervessel communication)
 
 [Term]
-id: _15
+id: -15
 name: Septostomy
-is_a: _2
+is_a: -2
 def: Procedure Type
 
 [Term]
 id: 665
 name: Balloon atrial septostomy by pullback (Rashkind) (BAS)
-is_a: _15
+is_a: -15
 def: Septostomy
 
 [Term]
 id: 670
 name: Blade atrial septostomy
-is_a: _15
+is_a: -15
 def: Septostomy
 
 [Term]
-id: _16
+id: -16
 name: Stent\Winsertion
-is_a: _2
+is_a: -2
 def: Procedure Type
 
 [Term]
 id: 675
 name: Conduit: Sano modification (RV to PA valveless conduit) (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 680
 name: Conduit: Sano modification-with valve (RV to PA valved
 conduit) (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 685
 name: Conduit: LA to LV (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 690
 name: Conduit: LV to aorta (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 695
 name: Conduit: LV to PA (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 700
 name: Conduit: Other (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 705
 name: Conduit: RA to PA (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 710
 name: Conduit: RA to PA-pulmonary trunk (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 715
 name: Conduit: RA to RV (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 720
 name: Conduit: RV to aorta (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 725
 name: Conduit: RV to PA (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 730
 name: Conduit: Shunt - systemic-to-pulmonary (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 735
 name: Intracardiac/septum: Atrial baffle S/P atrial switch (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 740
 name: Intracardiac/septum: Atrial septum (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 745
 name: Intracardiac/septum: Fontan Baffle (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 750
 name: Intracardiac/septum: Fontan fenestration (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 755
 name: Intracardiac/septum: Ventricular septum (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 760
 name: PDA (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 765
 name: Pulmonary artery: Central (Proximal left and/or proximal right pulmonary artery including the pulmonary artery
 bifurcation) (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 770
 name: Pulmonary artery: Main (Trunk) (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 775
 name: Pulmonary artery: Peripheral (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 780
 name: Pulmonary artery: Proximal (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 785
 name: Pulmonary vein: Left (Left pulmonary vein [LPV]) (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 790
 name: Pulmonary vein: Left lower (Left lower pulmonary vein
 [LLPV]) (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 795
 name: Pulmonary vein: Left upper (Left upper pulmonary vein
 [LUPV]) (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 800
 name: Pulmonary vein: Lingula (Lingular pulmonary vein) (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 805
 name: Pulmonary vein: Pulmonary venous confluence (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 810
 name: Pulmonary vein: Pulmonary venous confluence with left
 atrium (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 815
 name: Pulmonary vein: Right (Right pulmonary vein [RPV]) (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 820
 name: Pulmonary vein: Right lower (Right lower pulmonary vein
 [RLPV]) (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 825
 name: Pulmonary vein: Right middle (Right middle pulmonary vein
 [RMPV]) (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 830
 name: Pulmonary vein: Right upper (Right upper pulmonary vein
 [RUPV]) (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 835
 name: Systemic artery: Aorta (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 840
 name: Systemic artery: Systemic artery other than aorta (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 845
 name: Systemic vein: Caval vein (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 850
 name: Systemic vein: Non-Caval vein (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
-id: _17
+id: -17
 name: Stent\Wre-dilation
-is_a: _2
+is_a: -2
 def: Procedure Type
 
 [Term]
 id: 855
 name: Conduit: Sano modification (RV to PA valveless conduit) (Stent\Wre-dilation)
-is_a: _17
+is_a: -17
 def: Stent re-dilation
 
 [Term]
 id: 860
 name: Conduit: Sano modification-with valve (RV to PA valved
 conduit) (Stent\Wre-dilation)
-is_a: _17
+is_a: -17
 def: Stent re-dilation
 
 [Term]
 id: 865
 name: Conduit: LA to LV (Stent\Wre-dilation)
-is_a: _17
+is_a: -17
 def: Stent re-dilation
 
 [Term]
 id: 870
 name: Conduit: LV to aorta (Stent\Wre-dilation)
-is_a: _17
+is_a: -17
 def: Stent re-dilation
 
 [Term]
 id: 875
 name: Conduit: LV to PA (Stent\Wre-dilation)
-is_a: _17
+is_a: -17
 def: Stent re-dilation
 
 [Term]
 id: 880
 name: Conduit: Other (Stent\Wre-dilation)
-is_a: _17
+is_a: -17
 def: Stent re-dilation
 
 [Term]
 id: 885
 name: Conduit: RA to PA (Stent\Wre-dilation)
-is_a: _17
+is_a: -17
 def: Stent re-dilation
 
 [Term]
 id: 890
 name: Conduit: RA to PA-pulmonary trunk (Stent\Wre-dilation)
-is_a: _17
+is_a: -17
 def: Stent re-dilation
 
 [Term]
 id: 895
 name: Conduit: RA to RV (Stent\Wre-dilation)
-is_a: _17
+is_a: -17
 def: Stent re-dilation
 
 [Term]
 id: 900
 name: Conduit: RV to aorta (Stent\Wre-dilation)
-is_a: _17
+is_a: -17
 def: Stent re-dilation
 
 [Term]
 id: 905
 name: Conduit: RV to PA (Stent\Wre-dilation)
-is_a: _17
+is_a: -17
 def: Stent re-dilation
 
 [Term]
 id: 910
 name: Conduit: Shunt - systemic-to-pulmonary (Stent\Wre-dilation)
-is_a: _17
+is_a: -17
 def: Stent re-dilation
 
 [Term]
 id: 915
 name: Intracardiac/septum: Atrial baffle S/P atrial switch (Stent\Wre-dilation)
-is_a: _17
+is_a: -17
 def: Stent re-dilation
 
 [Term]
 id: 920
 name: Intracardiac/septum: Atrial septum (Stent\Wre-dilation)
-is_a: _17
+is_a: -17
 def: Stent re-dilation
 
 [Term]
 id: 925
 name: Intracardiac/septum: Fontan Baffle (Stent\Wre-dilation)
-is_a: _17
+is_a: -17
 def: Stent re-dilation
 
 [Term]
 id: 930
 name: Intracardiac/septum: Fontan fenestration (Stent\Wre-dilation)
-is_a: _17
+is_a: -17
 def: Stent re-dilation
 
 [Term]
 id: 935
 name: Intracardiac/septum: Ventricular septum (Stent\Wre-dilation)
-is_a: _17
+is_a: -17
 def: Stent re-dilation
 
 [Term]
 id: 940
 name: PDA (Stent\Wre-dilation)
-is_a: _17
+is_a: -17
 def: Stent re-dilation
 
 [Term]
 id: 945
 name: Pulmonary artery: Central (Proximal left and/or proximal right pulmonary artery including the pulmonary artery
 bifurcation) (Stent\Wre-dilation)
-is_a: _17
+is_a: -17
 def: Stent re-dilation
 
 [Term]
 id: 950
 name: Pulmonary artery: Main (Trunk) (Stent\Wre-dilation)
-is_a: _17
+is_a: -17
 def: Stent re-dilation
 
 [Term]
 id: 955
 name: Pulmonary artery: Peripheral (Stent\Wre-dilation)
-is_a: _17
+is_a: -17
 def: Stent re-dilation
 
 [Term]
 id: 960
 name: Pulmonary artery: Proximal (Stent\Wre-dilation)
-is_a: _17
+is_a: -17
 def: Stent re-dilation
 
 [Term]
 id: 965
 name: Pulmonary vein: Left (Left pulmonary vein [LPV]) (Stent\Wre-dilation)
-is_a: _17
+is_a: -17
 def: Stent re-dilation
 
 [Term]
 id: 970
 name: Pulmonary vein: Left lower (Left lower pulmonary vein
 [LLPV]) (Stent\Wre-dilation)
-is_a: _17
+is_a: -17
 def: Stent re-dilation
 
 [Term]
 id: 975
 name: Pulmonary vein: Left upper (Left upper pulmonary vein
 [LUPV]) (Stent\Wre-dilation)
-is_a: _17
+is_a: -17
 def: Stent re-dilation
 
 [Term]
 id: 980
 name: Pulmonary vein: Lingula (Lingular pulmonary vein) (Stent\Wre-dilation)
-is_a: _17
+is_a: -17
 def: Stent re-dilation
 
 [Term]
 id: 985
 name: Pulmonary vein: Pulmonary venous confluence (Stent\Wre-dilation)
-is_a: _17
+is_a: -17
 def: Stent re-dilation
 
 [Term]
 id: 990
 name: Pulmonary vein: Pulmonary venous confluence with left
 atrium (Stent\Wre-dilation)
-is_a: _17
+is_a: -17
 def: Stent re-dilation
 
 [Term]
 id: 995
 name: Pulmonary vein: Right (Right pulmonary vein [RPV]) (Stent\Wre-dilation)
-is_a: _17
+is_a: -17
 def: Stent re-dilation
 
 [Term]
 id: 1000
 name: Pulmonary vein: Right lower (Right lower pulmonary vein
 [RLPV]) (Stent\Wre-dilation)
-is_a: _17
+is_a: -17
 def: Stent re-dilation
 
 [Term]
 id: 1005
 name: Pulmonary vein: Right middle (Right middle pulmonary vein
 [RMPV]) (Stent\Wre-dilation)
-is_a: _17
+is_a: -17
 def: Stent re-dilation
 
 [Term]
 id: 1010
 name: Pulmonary vein: Right upper (Right upper pulmonary vein
 [RUPV]) (Stent\Wre-dilation)
-is_a: _17
+is_a: -17
 def: Stent re-dilation
 
 [Term]
 id: 1015
 name: Systemic artery: Aorta (Stent\Wre-dilation)
-is_a: _17
+is_a: -17
 def: Stent re-dilation
 
 [Term]
 id: 1020
 name: Systemic artery: Systemic artery other than aorta (Stent\Wre-dilation)
-is_a: _17
+is_a: -17
 def: Stent re-dilation
 
 [Term]
 id: 1025
 name: Systemic vein: Caval vein (Stent\Wre-dilation)
-is_a: _17
+is_a: -17
 def: Stent re-dilation
 
 [Term]
 id: 1030
 name: Systemic vein: Non-Caval vein (Stent\Wre-dilation)
-is_a: _17
+is_a: -17
 def: Stent re-dilation
 
 [Term]
-id: _18
+id: -18
 name: Transcatheter\WFontan\
 completion
-is_a: _2
+is_a: -2
 def: Procedure Type
 
 [Term]
 id: 1035
 name: Completion of total cavopulmonary connection (TCPC)
 using transcatheter covered stent
-is_a: _18
+is_a: -18
 def: Transcatheter Fontan
 completion
 
 [Term]
-id: _19
+id: -19
 name: Transcatheter\Wimplantation\Wof\
 valve
-is_a: _2
+is_a: -2
 def: Procedure Type
 
 [Term]
 id: 1040
 name: Not systemic or pulmonary outflow
-is_a: _19
+is_a: -19
 def: Transcatheter implantation of
 valve
 
 [Term]
 id: 1045
 name: Pulmonary outflow position
-is_a: _19
+is_a: -19
 def: Transcatheter implantation of
 valve
 
 [Term]
 id: 1050
 name: Systemic outflow position
-is_a: _19
+is_a: -19
 def: Transcatheter implantation of
 valve
 
 [Term]
-id: _20
+id: -20
 name: Transluminal\Wtest\Wocclusion
-is_a: _2
+is_a: -2
 def: Procedure Type
 
 [Term]
 id: 1055
 name: Conduit: Sano modification (RV to PA valveless conduit) (Transluminal\Wtest\Wocclusion)
-is_a: _20
+is_a: -20
 def: Transluminal test occlusion
 
 [Term]
 id: 1060
 name: Conduit: Sano modification-with valve (RV to PA valved
 conduit) (Transluminal\Wtest\Wocclusion)
-is_a: _20
+is_a: -20
 def: Transluminal test occlusion
 
 [Term]
 id: 1065
 name: Conduit: LA to LV (Transluminal\Wtest\Wocclusion)
-is_a: _20
+is_a: -20
 def: Transluminal test occlusion
 
 [Term]
 id: 1070
 name: Conduit: LV to aorta (Transluminal\Wtest\Wocclusion)
-is_a: _20
+is_a: -20
 def: Transluminal test occlusion
 
 [Term]
 id: 1075
 name: Conduit: LV to PA (Transluminal\Wtest\Wocclusion)
-is_a: _20
+is_a: -20
 def: Transluminal test occlusion
 
 [Term]
 id: 1080
 name: Conduit: Other (Transluminal\Wtest\Wocclusion)
-is_a: _20
+is_a: -20
 def: Transluminal test occlusion
 
 [Term]
 id: 1085
 name: Conduit: RA to PA (Transluminal\Wtest\Wocclusion)
-is_a: _20
+is_a: -20
 def: Transluminal test occlusion
 
 [Term]
 id: 1090
 name: Conduit: RA to RV (Transluminal\Wtest\Wocclusion)
-is_a: _20
+is_a: -20
 def: Transluminal test occlusion
 
 [Term]
 id: 1095
 name: Conduit: RV to aorta (Transluminal\Wtest\Wocclusion)
-is_a: _20
+is_a: -20
 def: Transluminal test occlusion
 
 [Term]
 id: 1100
 name: Conduit: RV to PA (Transluminal\Wtest\Wocclusion)
-is_a: _20
+is_a: -20
 def: Transluminal test occlusion
 
 [Term]
 id: 1105
 name: Conduit: Shunt - systemic-to-pulmonary (Transluminal\Wtest\Wocclusion)
-is_a: _20
+is_a: -20
 def: Transluminal test occlusion
 
 [Term]
 id: 1110
 name: Fontan fenestration (Transluminal\Wtest\Wocclusion)
-is_a: _20
+is_a: -20
 def: Transluminal test occlusion
 
 [Term]
 id: 1115
 name: Interatrial communication
-is_a: _20
+is_a: -20
 def: Transluminal test occlusion
 
 [Term]
 id: 1120
 name: Systemic artery: Aorta (Transluminal\Wtest\Wocclusion)
-is_a: _20
+is_a: -20
 def: Transluminal test occlusion
 
 [Term]
 id: 1125
 name: Systemic artery: Systemic artery other than aorta (Transluminal\Wtest\Wocclusion)
-is_a: _20
+is_a: -20
 def: Transluminal test occlusion
 
 [Term]
 id: 1130
 name: Systemic vein: Caval vein (Transluminal\Wtest\Wocclusion)
-is_a: _20
+is_a: -20
 def: Transluminal test occlusion
 
 [Term]
 id: 1135
 name: Systemic vein: Non-Caval vein (Transluminal\Wtest\Wocclusion)
-is_a: _20
+is_a: -20
 def: Transluminal test occlusion
 
 [Term]
-id: _21
+id: -21
 name: Hybrid\WApproach\W\"Stage\W1\"
-is_a: _2
+is_a: -2
 def: Procedure Type
 
 [Term]
 id: 1140
 name: Application of RPA & LPA bands
-is_a: _21
+is_a: -21
 def: Hybrid Approach "Stage 1"
 
 [Term]
 id: 1145
 name: Stent placement in arterial duct (PDA)
-is_a: _21
+is_a: -21
 def: Hybrid Approach "Stage 1"
 
 [Term]
 id: 1150
 name: Stent placement in arterial duct (PDA) + application of RPA
 & LPA bands
-is_a: _21
+is_a: -21
 def: Hybrid Approach "Stage 1"
 
 [Term]
-id: _22
+id: -22
 name: Hybrid\Wapproach\W\"Stage\W2\"
-is_a: _2
+is_a: -2
 def: Procedure Type
 
 [Term]
 id: 1155
 name: Aortopulmonary amalgamation + Superior Cavopulmonary anastomosis(es) + PA Debanding + Aortic arch repair (Norwood [Stage 1] + Superior Cavopulmonary
 anastomosis(es) + PA Debanding)
-is_a: _22
+is_a: -22
 def: Hybrid approach "Stage 2"
 
 [Term]
 id: 1160
 name: Aortopulmonary amalgamation + Superior Cavopulmonary anastomosis(es) + PA Debanding + Without aortic arch
 repair
-is_a: _22
+is_a: -22
 def: Hybrid approach "Stage 2"
 
 [Term]
-id: _23
+id: -23
 name: Hybrid\WApproach
-is_a: _2
+is_a: -2
 def: Procedure Type
 
 [Term]
 id: 1165
 name: Transcardiac balloon dilation
-is_a: _23
+is_a: -23
 def: Hybrid Approach
 
 [Term]
 id: 1170
 name: Transcardiac transcatheter device placement
-is_a: _23
+is_a: -23
 def: Hybrid Approach
 
 [Term]
 id: 1175
 name: Systemic vein (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 1180
 name: Systemic vein, Caval vein, Superior vena cava (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 1185
 name: Pulmonary artery, Peripheral, Lobar (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 1190
 name: Pulmonary artery, Peripheral, Lobar, Left lingula PA
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 1195
 name: Pulmonary artery, Peripheral, Lobar, Left lower PA
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 1200
 name: Pulmonary artery, Peripheral, Lobar, Left upper PA
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 1205
 name: Pulmonary artery, Peripheral, Lobar, Right lower PA
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 1210
 name: Pulmonary artery, Peripheral, Lobar, Right middle PA
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 1215
 name: Pulmonary artery, Peripheral, Lobar, Right upper PA
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 1220
 name: Pulmonary artery, Peripheral, Sublobar = Segmental (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 1225
 name: Pulmonary artery, Peripheral, Sublobar = Segmental, Left (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 1230
 name: Pulmonary artery, Peripheral, Sublobar = Segmental, Right (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 1235
 name: Pulmonary artery, Proximal, Left (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 1240
 name: Pulmonary artery, Proximal, Right (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 1245
 name: Systemic artery, Aorta, Abdominal aorta, Coarctation (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 1250
 name: Systemic artery, Aorta, Abdominal aorta, Native (Primary)
 coarctation (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 1255
 name: Systemic artery, Aorta, Abdominal aorta, Recurrent
 coarctation (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 1260
 name: Systemic artery, Aorta, Thoracic aorta, Ascending aorta (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 1265
 name: Systemic artery, Aorta, Thoracic aorta, Coarctation, Native
 (Primary) coarctation (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 1270
 name: Systemic artery, Aorta, Thoracic aorta, Coarctation,
 Recurrent coarctation (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 1275
 name: Systemic artery, Aorta, Thoracic aorta, Descending thoracic
 aorta (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 1280
 name: Systemic artery, Aorta, Thoracic aorta, Transverse arch (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 1285
 name: Systemic artery, Systemic artery other than aorta, Coronary
 artery (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 1290
 name: Systemic artery, Systemic artery other than aorta, Femoral
 artery (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 1295
 name: Systemic artery, Systemic artery other than aorta, Iliac
 artery (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 1300
 name: Systemic artery, Systemic artery other than aorta,
 Innominate artery
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 1305
 name: Systemic artery, Systemic artery other than aorta, Renal
 artery (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 1310
 name: Systemic artery, Systemic artery other than aorta,
 Subclavian artery (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 1315
 name: Systemic vein, Non-Caval vein, Femoral vein (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 1320
 name: Systemic vein, Non-Caval vein, Iliac vein (Balloon\Wdilation)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 1325
 name: Systemic vein, Non-Caval vein, Innominate
 (Brachiocephalic)
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 1330
 name: Systemic vein, Non-Caval vein, Subclavian vein
-is_a: _3
+is_a: -3
 def: Balloon dilation
 
 [Term]
 id: 1335
 name: Coil implantation
-is_a: _6
+is_a: -6
 def: Coil implantation
 
 [Term]
 id: 1340
 name: Systemic artery (Coil\Wimplantation)
-is_a: _6
+is_a: -6
 def: Coil implantation
 
 [Term]
 id: 1345
 name: Systemic vein (Coil\Wimplantation)
-is_a: _6
+is_a: -6
 def: Coil implantation
 
 [Term]
-id: _24
+id: -24
 name: Diagnostic
-is_a: _2
+is_a: -2
 def: Procedure Type
 
 [Term]
 id: 1350
 name: Transluminal test occlusion
-is_a: _24
+is_a: -24
 def: Diagnostic
 
 [Term]
 id: 1355
 name: Conduit
-is_a: _8
+is_a: -8
 def: Device implantation
 
 [Term]
 id: 1360
 name: Systemic artery (Device\Wimplantation)
-is_a: _8
+is_a: -8
 def: Device implantation
 
 [Term]
 id: 1365
 name: Systemic vein (Device\Wimplantation)
-is_a: _8
+is_a: -8
 def: Device implantation
 
 [Term]
 id: 1370
 name: Systemic vein, Caval vein, Inferior vena cava (Device\Wimplantation)
-is_a: _8
+is_a: -8
 def: Device implantation
 
 [Term]
 id: 1375
 name: Systemic vein, Caval vein, Superior vena cava (Device\Wimplantation)
-is_a: _8
+is_a: -8
 def: Device implantation
 
 [Term]
-id: _25
+id: -25
 name: Intravascular\Wforeign\Wbody\
 removal
-is_a: _2
+is_a: -2
 def: Procedure Type
 
 [Term]
 id: 1380
 name: Intravascular foreign body removal
-is_a: _25
+is_a: -25
 def: Intravascular foreign body
 removal
 
 [Term]
 id: 1385
 name: Perforation (establishing interchamber and/or intervessel communication)
-is_a: _13
+is_a: -13
 def: Perforation (establishing interchamber and/or intervessel
 communication)
 
@@ -1959,28 +1959,28 @@ communication)
 id: 1390
 name: Systemic artery (Perforation\W\(establishing\Winterchamber\Wand/or\Wintervessel\
 communication\))
-is_a: _13
+is_a: -13
 def: Perforation (establishing interchamber and/or intervessel
 communication)
 
 [Term]
 id: 1395
 name: Systemic artery, Systemic artery other than aorta, Femoral artery
-is_a: _13
+is_a: -13
 def: Perforation (establishing interchamber and/or intervessel
 communication)
 
 [Term]
-id: _26
+id: -26
 name: Cardiovascular\Wcatheterization\Wprocedure\,\WTherapeutic\,\WPerforation\W\(establishing\Winterchamber\Wand/or\Wintervessel\
 communication\)
-is_a: _2
+is_a: -2
 def: Procedure Type
 
 [Term]
 id: 1400
 name: Systemic artery, Systemic artery other than aorta, Iliac artery
-is_a: _26
+is_a: -26
 def: Cardiovascular catheterization procedure, Therapeutic, Perforation (establishing interchamber and/or intervessel
 communication)
 
@@ -1988,39 +1988,39 @@ communication)
 id: 1405
 name: Systemic vein (Perforation\W\(establishing\Winterchamber\Wand/or\Wintervessel\
 communication\))
-is_a: _13
+is_a: -13
 def: Perforation (establishing interchamber and/or intervessel
 communication)
 
 [Term]
-id: _27
+id: -27
 name: Perforation\W\(establishing\Winterchamber\Wand/or\Wintervessel\Wcommunication\)\,\WSystemic\Wvein\,\WCaval\Wvein\,\WInferior\Wvena\Wcava
-is_a: _2
+is_a: -2
 def: Procedure Type
 
 [Term]
 id: 1410
 name: Systemic vein, Caval vein, Inferior vena cava (Perforation\W\(establishing\Winterchamber\Wand/or\Wintervessel\Wcommunication\)\,\WSystemic\Wvein\,\WCaval\Wvein\,\WInferior\Wvena\Wcava)
-is_a: _27
+is_a: -27
 def: Perforation (establishing interchamber and/or intervessel communication), Systemic vein, Caval vein, Inferior vena cava
 
 [Term]
-id: _28
+id: -28
 name: Perforation\W\(establishing\Winterchamber\Wand/or\Wintervessel\Wcommunication\)\,\WSystemic\Wvein\,\WCaval\Wvein\,\WSuperior\Wvena\Wcava
-is_a: _2
+is_a: -2
 def: Procedure Type
 
 [Term]
 id: 1415
 name: Systemic vein, Caval vein, Superior vena cava (Perforation\W\(establishing\Winterchamber\Wand/or\Wintervessel\Wcommunication\)\,\WSystemic\Wvein\,\WCaval\Wvein\,\WSuperior\Wvena\Wcava)
-is_a: _28
+is_a: -28
 def: Perforation (establishing interchamber and/or intervessel communication), Systemic vein, Caval vein, Superior vena cava
 
 [Term]
 id: 1420
 name: Systemic vein, Non-Caval vein, Femoral vein (Perforation\W\(establishing\
 interchamber\Wand/or\Wintervessel\Wcommunication\))
-is_a: _14
+is_a: -14
 def: Perforation (establishing
 interchamber and/or intervessel communication)
 
@@ -2028,200 +2028,200 @@ interchamber and/or intervessel communication)
 id: 1425
 name: Systemic vein, Non-Caval vein, Iliac vein (Perforation\W\(establishing\Winterchamber\Wand/or\Wintervessel\
 communication\))
-is_a: _13
+is_a: -13
 def: Perforation (establishing interchamber and/or intervessel
 communication)
 
 [Term]
 id: 1430
 name: Septostomy
-is_a: _15
+is_a: -15
 def: Septostomy
 
 [Term]
 id: 1435
 name: Pulmonary artery, Peripheral, Lobar (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 1440
 name: Pulmonary artery, Peripheral, Lobar, Left
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 1445
 name: Pulmonary artery, Peripheral, Lobar, Right
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 1450
 name: Pulmonary artery, Peripheral, Sublobar = Segmental (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 1455
 name: Pulmonary artery, Peripheral, Sublobar = Segmental, Left (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 1460
 name: Pulmonary artery, Peripheral, Sublobar = Segmental, Right (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 1465
 name: Pulmonary artery, Proximal, Left (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 1470
 name: Pulmonary artery, Proximal, Right (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 1475
 name: Systemic vein, Caval vein, Superior vena cava (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 1480
 name: Systemic artery, Aorta, Abdominal aorta
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 1485
 name: Systemic artery, Aorta, Abdominal aorta, Coarctation (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 1490
 name: Systemic artery, Aorta, Abdominal aorta, Native (Primary)
 coarctation (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 1495
 name: Systemic artery, Aorta, Abdominal aorta, Recurrent
 coarctation (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 1500
 name: Systemic artery, Aorta, Thoracic aorta
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 1505
 name: Systemic artery, Aorta, Thoracic aorta, Ascending aorta (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 1510
 name: Systemic artery, Aorta, Thoracic aorta, Coarctation, Native
 (Primary) coarctation (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 1515
 name: Systemic artery, Aorta, Thoracic aorta, Coarctation,
 Recurrent coarctation (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 1520
 name: Systemic artery, Aorta, Thoracic aorta, Descending thoracic
 aorta (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 1525
 name: Systemic artery, Aorta, Thoracic aorta, Transverse arch (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 1530
 name: Systemic artery, Aorta, Thoracoabdominal aorta
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 1535
 name: Systemic artery, Systemic artery other than aorta, Coronary
 artery (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 1540
 name: Systemic artery, Systemic artery other than aorta, Femoral
 artery (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 1545
 name: Systemic artery, Systemic artery other than aorta, Iliac
 artery (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 1550
 name: Systemic artery, Systemic artery other than aorta, Renal
 artery (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 1555
 name: Systemic artery, Systemic artery other than aorta,
 Subclavian artery (Stent\Winsertion)
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 1560
 name: Systemic artery, Systemic artery other than aorta, Systemic
 pulmonary vessel connection
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 1565
 name: Transcatheter implantation of valve
-is_a: _16
+is_a: -16
 def: Stent insertion
 
 [Term]
 id: 1570
 name: pulmonary ventricular inflow position
-is_a: _19
+is_a: -19
 def: Transcatheter implantation of
 valve
 
 [Term]
 id: 1575
 name: Systemic ventricular inflow position
-is_a: _19
+is_a: -19
 def: Transcatheter implantation of
 valve
 

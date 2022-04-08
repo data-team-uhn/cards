@@ -69,10 +69,10 @@ prev_id = 0
 def get_negative_id():
     global prev_id
     prev_id += 1
-    return "_{}".format(prev_id)
+    return "-{}".format(prev_id)
 
 def clean_id(id_str):
-    return re.sub(r"[^a-zA-Z_\d\\_.]+", '', id_str)
+    return re.sub(r"[^a-zA-Z_\d\\_.-]+", '', id_str)
 
 def clean_name(name):
     result = name
