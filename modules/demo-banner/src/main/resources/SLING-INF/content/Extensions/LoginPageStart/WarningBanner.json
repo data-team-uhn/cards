@@ -1,0 +1,6 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/loginPageStart",
+  "cards:extensionName": "Demo Warning Banner",
+  "cards:extensionRenderURL": "asset:cards-demo-banner.demoBanner.js"
+}

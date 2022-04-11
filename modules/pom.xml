@@ -62,5 +62,6 @@
     <module>fetch-requires-saml-login</module>
     <module>metrics</module>
     <module>http-requests</module>
+    <module>page-start-header</module>
   </modules>
 </project>
