@@ -436,6 +436,7 @@ const questionnaireStyle = theme => ({
         color: theme.palette.primary.light,
     },
     notesContainer: {
+        whiteSpace: "pre-wrap",
         padding: theme.spacing(3, 0, 1)
     },
     toggleNotesButton: {

@@ -40,6 +40,7 @@ import TextQuestion from "./TextQuestion";
 import ComputedQuestion from "./ComputedQuestion";
 import VocabularyQuestion from "./VocabularyQuestion";
 import FileQuestion from "./FileQuestion";
+import DicomQuestion from "./DicomQuestion";
 
 import FormattedText from "../components/FormattedText";
 

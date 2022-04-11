@@ -18,8 +18,7 @@
 //
 
 import React, { useContext, useState } from "react";
-import { Grid, IconButton, LinearProgress, Link, TextField, Typography, withStyles } from "@material-ui/core";
-import Delete from "@material-ui/icons/Delete";
+import { Grid, LinearProgress, Link, TextField, Typography, withStyles } from "@material-ui/core";
 
 import PropTypes from "prop-types";
 
@@ -30,6 +29,8 @@ import { useFormReaderContext } from "./FormContext";
 import { useFormUpdateWriterContext } from "./FormUpdateContext";
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
+
+import DeleteButton from "../dataHomepage/DeleteButton";
 
 import AnswerComponentManager from "./AnswerComponentManager";
 
@@ -45,6 +46,7 @@ import AnswerComponentManager from "./AnswerComponentManager";
 function FileQuestion(props) {
   const { classes, existingAnswer, pageActive, ...rest } = props;
   const { maxAnswers, minAnswers, namePattern } = { ...props.questionDefinition, ...props }
+  const { onBeforeUpload, onAfterUpload, onDelete, previewRenderer, answerNodeType } = props;
   let initialValues =
     // Check whether or not we have an initial value
     (!existingAnswer || existingAnswer[1].value === undefined) ? [] :
@@ -209,6 +211,7 @@ function FileQuestion(props) {
       })
     }
 
+    onBeforeUpload && onBeforeUpload(file);
     // TODO: Handle duplicate filenames
     // NB: A lot of the info here is duplicated from Answer. Is a fix possible?
     // Also NB: Since we save before this, we're guaranteed to have the parent created
@@ -245,6 +248,7 @@ function FileQuestion(props) {
         setAnswers([[file["name"], fileURL]]);
       }
       allowResave();
+      onAfterUpload && onAfterUpload(file);
     }).catch((errorObj) => {
       // Is the user logged out? Or did something else happen?
       console.log(errorObj);
@@ -254,6 +258,7 @@ function FileQuestion(props) {
 
   // Delete an answer by its index
   let deletePath = (index) => {
+    onDelete && onDelete(index);
     setError("");
     // Rather than waiting to delete, we'll just delete it immediately
     let data = new FormData();
@@ -281,7 +286,12 @@ function FileQuestion(props) {
 
   let hrefs = Array.of(existingAnswer?.[1]["value"]).flat();
   let defaultDisplayFormatter = function(label, idx) {
-    return <a href={fixFileURL(hrefs[idx], label)} target="_blank" rel="noopener" download>{label}</a>;
+    return (
+      <div>
+        <Link href={fixFileURL(hrefs[idx], label)} target="_blank" rel="noopener" download>{label}</Link>
+        { previewRenderer && previewRenderer(fixFileURL(hrefs[idx], label), label, idx) }
+      </div>
+    );
   }
 
   return (
@@ -307,20 +317,14 @@ function FileQuestion(props) {
           { uploadedFiles && Object.values(uploadedFiles).length > 0 && <ul className={classes.answerField + " " + classes.fileResourceAnswerList}>
             {Object.keys(uploadedFiles).map((filepath, idx) =>
               <li key={idx}>
-                <div>
-                  <span>File </span>
-                  <Link href={fixFileURL(uploadedFiles[filepath], filepath)} target="_blank" rel="noopener" download>
-                    {filepath}
-                  </Link>:
-                  <IconButton
-                    onClick={() => {deletePath(idx)}}
-                    className={classes.deleteButton + " " + classes.fileResourceDeleteButton}
-                    color="secondary"
-                    title="Delete"
-                  >
-                    <Delete color="action" className={classes.deleteIcon}/>
-                  </IconButton>
-                </div>
+                <Link href={fixFileURL(uploadedFiles[filepath], filepath)} target="_blank" rel="noopener" download>{filepath}</Link>
+                <DeleteButton
+                  entryName={filepath}
+                  entryType={"file"}
+                  shouldGoBack={false}
+                  onComplete={() => deletePath(idx)}
+                />
+                { previewRenderer && previewRenderer(fixFileURL(uploadedFiles[filepath], filepath), filepath, idx) }
                 { namePattern &&
                   <span>
                     {varNames.map((name, nameIdx) => (
@@ -343,7 +347,7 @@ function FileQuestion(props) {
         answers={answers}
         questionDefinition={props.questionDefinition}
         existingAnswer={existingAnswer}
-        answerNodeType="cards:FileAnswer"
+        answerNodeType={ answerNodeType || "cards:FileAnswer" }
         onDecidedOutputPath={setAnswerPath}
         valueType="path"
         isMultivalued={maxAnswers != 1}

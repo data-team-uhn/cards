@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 
 import { Button, Collapse, Grid, TextField, Tooltip, withStyles } from "@material-ui/core";
@@ -28,21 +28,22 @@ import UnfoldLess from "@material-ui/icons/UnfoldLess";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
 function Note (props) {
-  const { answerPath, children, existingAnswer, classes, onAddSuggestion, onChangeNote, pageActive, ...rest } = {...props};
+  const { answerPath, children, existingAnswer, classes, onAddSuggestion, onChangeNote, pageActive, fullSize, placeholder, value, ...rest } = {...props};
   let [ note, setNote ] = useState((existingAnswer?.[1]?.note));
   let [ visible, setVisible ] = useState(Boolean(note));
   let inputRef = useRef();
 
-  let changeNote = (event) => {
-    onChangeNote && onChangeNote(event.target.value);
-    setNote(event.target.value);
-  }
+  // This allows setting the note contents programatically via the `value` prop
+  useEffect(() => {
+    if (typeof(value) != "undefined") {
+      setNote(value);
+      setVisible(!!value);
+    }
+  }, [value]);
 
-  let focusInput = () => {
-    inputRef.current && inputRef.current.focus();
-  }
+  useEffect(() => onChangeNote && onChangeNote(note), [note]);
 
-  const noteIsEmpty = note == null || note == "";
+  const noteIsEmpty = (note == null || note == "");
 
   // Render nothing but keep state if this page is inactive
   if (!pageActive) {
@@ -71,26 +72,26 @@ function Note (props) {
     </div>
     <Collapse
       in = {visible}
-      onEntered = {focusInput}
+      onEntered = {() => inputRef?.current?.focus()}
       >
       <Grid container spacing={2}>
-        <Grid item xs={6}>
+        <Grid item xs={fullSize ? 12 : 6}>
           <TextField
             value = {note}
-            onChange = {changeNote}
+            onChange = {(event) => setNote(event?.target?.value)}
             variant = "outlined"
             multiline
-            rows = "4"
+            rows = {fullSize ? 16 : 4}
             className = {classes.noteSection}
             InputProps = {{
               className: classes.noteTextField
             }}
-            placeholder = "Please place any additional notes here."
+            placeholder = {placeholder}
             inputRef = {inputRef}
             {...rest}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={fullSize ? 12 : 6}>
             {children}
           </Grid>
         </Grid>
@@ -100,5 +101,25 @@ function Note (props) {
       : <input type="hidden" name={`${answerPath}/note`} value={note} />}
   </React.Fragment>);
 }
+
+Note.propTypes = {
+  answerPath: PropTypes.string,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ]),
+  existingAnswer: PropTypes.array,
+  classes: PropTypes.object.isRequired,
+  onAddSuggestion: PropTypes.func,
+  onChangeNote: PropTypes.func,
+  pageActive: PropTypes.bool,
+  fullSize: PropTypes.bool,
+  placeholder: PropTypes.string,
+  value: PropTypes.string,
+};
+
+Note.defaultProps = {
+  placeholder: "Please place any additional notes here.",
+};
 
 export default withStyles(QuestionnaireStyle)(Note);
