@@ -59,18 +59,6 @@
 			<value>1</value>
 			<type>Long</type>
 		</property>
-    <property>
-      <name>dataType</name>
-      <value>vocabulary</value>
-      <type>String</type>
-    </property>
-    <property>
-      <name>sourceVocabularies</name>
-      <values>
-        <value>HANCESTRO</value>
-      </values>
-      <type>String</type>
-    </property>
 	</node>
 	<node>
 		<name>medicationLabel</name>
@@ -85,15 +73,5 @@
 			<value>1</value>
 			<type>Long</type>
 		</property>
-    <property>
-      <name>dataType</name>
-      <value>computed</value>
-      <type>String</type>
-    </property>
-    <property>
-      <name>expression</name>
-      <value>return @{codemedicationIDID}</value>
-      <type>String</type>
-    </property>
 	</node>
 </node>
