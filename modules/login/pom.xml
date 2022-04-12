@@ -52,7 +52,10 @@
             <Include-Resource>{maven-resources}</Include-Resource>
             <Sling-Nodetypes>SLING-INF/nodetypes/login.cnd</Sling-Nodetypes>
             <!-- Initial content to be loaded on bundle installation -->
-            <Sling-Initial-Content>SLING-INF/content/libs/cards/login/;overwrite:=true;path:=/libs/cards/login/,SLING-INF/content/apps/cards/ExtensionPoints/;overwrite:=true;path:=/apps/cards/ExtensionPoints/</Sling-Initial-Content>
+            <Sling-Initial-Content>
+              SLING-INF/content/libs/cards/login/;overwrite:=true;path:=/libs/cards/login/,
+              SLING-INF/content/apps/cards/ExtensionPoints/;overwrite:=true;path:=/apps/cards/ExtensionPoints/
+            </Sling-Initial-Content>
           </instructions>
         </configuration>
       </plugin>
