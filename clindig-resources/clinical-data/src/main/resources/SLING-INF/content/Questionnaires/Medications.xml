@@ -45,6 +45,11 @@
 			<value>1</value>
 			<type>Long</type>
 		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
 	</node>
 	<node>
 		<name>medicationID</name>
@@ -59,6 +64,11 @@
 			<value>1</value>
 			<type>Long</type>
 		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
 	</node>
 	<node>
 		<name>medicationLabel</name>
@@ -70,6 +80,11 @@
 		</property>
 		<property>
 			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
 		</property>

@@ -45,6 +45,11 @@
 			<value>1</value>
 			<type>Long</type>
 		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
 	</node>
 	<node>
 		<name>info</name>
@@ -56,6 +61,11 @@
 		</property>
 		<property>
 			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
 		</property>
@@ -73,6 +83,11 @@
 			<value>1</value>
 			<type>Long</type>
 		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
 	</node>
 	<node>
 		<name>race</name>
@@ -84,6 +99,11 @@
 		</property>
 		<property>
 			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
 		</property>
@@ -101,6 +121,11 @@
 			<value>1</value>
 			<type>Long</type>
 		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
 	</node>
 	<node>
 		<name>dob</name>
@@ -112,6 +137,11 @@
 		</property>
 		<property>
 			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
 		</property>
@@ -140,6 +170,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
 			<name>dataType</name>
 			<value>date</value>
 			<type>String</type>
@@ -160,6 +195,11 @@
 		</property>
 		<property>
 			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
 		</property>

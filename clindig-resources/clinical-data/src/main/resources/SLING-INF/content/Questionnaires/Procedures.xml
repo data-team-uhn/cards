@@ -45,6 +45,11 @@
 			<value>1</value>
 			<type>Long</type>
 		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
 	</node>
 	<node>
 		<name>procedureType</name>
@@ -56,6 +61,11 @@
 		</property>
 		<property>
 			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
 		</property>
@@ -73,6 +83,11 @@
 			<value>1</value>
 			<type>Long</type>
 		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
 	</node>
 	<node>
 		<name>codeLabel</name>
@@ -84,6 +99,11 @@
 		</property>
 		<property>
 			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
 		</property>
@@ -101,6 +121,11 @@
 			<value>1</value>
 			<type>Long</type>
 		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
 	</node>
 	<node>
 		<name>bodySiteLabel</name>
@@ -112,6 +137,11 @@
 		</property>
 		<property>
 			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
 		</property>
