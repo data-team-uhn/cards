@@ -35,6 +35,7 @@ import QuestionnaireStyle from "./QuestionnaireStyle";
 import AnswerComponentManager from "./AnswerComponentManager";
 
 import DICOM_TAG_DICT from "./dicomDataDictionary";
+import DICOM_REDACTED_TAGS from "./dicomRedactedTags";
 
 // Component that renders a dicom upload question.
 // Filepaths are placed in a series of <input type="hidden"> tags for
@@ -63,6 +64,13 @@ function DicomQuestion(props) {
 
   // Load the DICOM image preview, only once, upon initialization
   useEffect(() => fetchDicomFile(), []);
+
+  let isRedactedTag = (tag) => {
+    let group = tag.substring(1,5);
+    let element = tag.substring(5,9);
+    let tagIndex = ("(" + group + "," + element + ")").toUpperCase();
+    return Boolean(DICOM_REDACTED_TAGS.indexOf(tagIndex) >= 0);
+  }
 
   let getDicomTagInfo = (tag) => {
     let group = tag.substring(1,5);
@@ -155,7 +163,7 @@ function DicomQuestion(props) {
           if (typeof(tagName) != "string") {
             continue;
           }
-          let tagValue = getDicomTagValue(dcmObject, dcmtag);
+          let tagValue = isRedactedTag(dcmtag) ? "***REDACTED***" : getDicomTagValue(dcmObject, dcmtag);
           dicomMetadata.push(tagName + ": " + tagValue);
         }
         setDicomMetadataNote(dicomMetadata.join("\n"));
