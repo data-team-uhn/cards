@@ -129,16 +129,23 @@ function DicomQuestion(props) {
     let dicomCtx = dicomCanvas.getContext('2d');
     let canvasImageData = dicomCtx.getImageData(0, 0, dicomCanvas.width, dicomCanvas.height);
 
-    // Normalize the data so that all pixels are between 0 and 255
-    for (let i = 0; i < canvasImageData.data.length; i+=4) {
-      let thisPixVal = 0;
-      if ((dicomMaxPix - dicomMinPix) !== 0) {
-        thisPixVal = Math.floor(255 * ((dicomImagePixels[i/4] - dicomMinPix) / (dicomMaxPix - dicomMinPix)));
+    if (dicomImage.color) {
+      // If the DICOM image is colored, simply copy the RGBA pixel values
+      for (let i = 0; i < canvasImageData.data.length; i++) {
+        canvasImageData.data[i] = dicomImagePixels[i];
       }
-      canvasImageData.data[i] = thisPixVal;
-      canvasImageData.data[i+1] = thisPixVal;
-      canvasImageData.data[i+2] = thisPixVal;
-      canvasImageData.data[i+3] = 255;
+    } else {
+      // Normalize the data so that all pixels are between 0 and 255
+      for (let i = 0; i < canvasImageData.data.length; i+=4) {
+        let thisPixVal = 0;
+        if ((dicomMaxPix - dicomMinPix) !== 0) {
+          thisPixVal = Math.floor(255 * ((dicomImagePixels[i/4] - dicomMinPix) / (dicomMaxPix - dicomMinPix)));
+        }
+        canvasImageData.data[i] = thisPixVal;
+        canvasImageData.data[i+1] = thisPixVal;
+        canvasImageData.data[i+2] = thisPixVal;
+        canvasImageData.data[i+3] = 255;
+      }
     }
     dicomCtx.putImageData(canvasImageData, 0, 0);
     return dicomCanvas.toDataURL();
