@@ -12,7 +12,8 @@ module.exports = {
     [module_name + 'PromsDashboard']: './src/proms/PromsDashboard.jsx',
     [module_name + 'PromsView']: './src/proms/PromsView.jsx',
     [module_name + 'VisitView']: './src/proms/VisitView.jsx',
-    [module_name + 'pmccIcon']: '@material-ui/icons/Favorite.js'
+    [module_name + 'pmccIcon']: '@material-ui/icons/Favorite.js',
+    [module_name + 'PromsLandingPageDialog']: './src/proms/PromsLandingPageDialog.jsx'
   },
   plugins: [
     new CleanWebpackPlugin(),
