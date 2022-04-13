@@ -45,6 +45,11 @@
 			<value>1</value>
 			<type>Long</type>
 		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
 	</node>
 	<node>
 		<name>conditionType</name>
@@ -56,6 +61,11 @@
 		</property>
 		<property>
 			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
 		</property>
@@ -73,6 +83,11 @@
 			<value>1</value>
 			<type>Long</type>
 		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
 	</node>
 	<node>
 		<name>codeLabel</name>
@@ -87,6 +102,11 @@
 			<value>1</value>
 			<type>Long</type>
 		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
 	</node>
 	<node>
 		<name>dod</name>
@@ -98,6 +118,11 @@
 		</property>
 		<property>
 			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
 		</property>
