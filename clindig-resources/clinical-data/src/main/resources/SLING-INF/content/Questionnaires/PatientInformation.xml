@@ -33,25 +33,6 @@
 		<type>Reference</type>
 	</property>
 	<node>
-		<name>id</name>
-		<primaryNodeType>cards:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>ID</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>minAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-	</node>
-	<node>
 		<name>info</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
