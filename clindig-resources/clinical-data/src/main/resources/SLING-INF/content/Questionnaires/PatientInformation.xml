@@ -34,7 +34,7 @@
 	</property>
 	<property>
 		<name>maxPerSubject</name>
-		<value>5</value>
+		<value>1</value>
 		<type>Long</type>
 	</property>
 	<node>
