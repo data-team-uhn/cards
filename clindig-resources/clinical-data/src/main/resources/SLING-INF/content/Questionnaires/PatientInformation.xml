@@ -32,6 +32,11 @@
 		</values>
 		<type>Reference</type>
 	</property>
+	<property>
+		<name>maxPerSubject</name>
+		<value>5</value>
+		<type>Long</type>
+	</property>
 	<node>
 		<name>info</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
