@@ -35,26 +35,11 @@ export const IS_DEFAULT_ANSWER_POS = 4;
 // Holds answers and automatically generates hidden inputs
 // for form submission
 function Answer (props) {
-  let { answers, answerMetadata, answerNodeType, existingAnswer, pageActive, path, questionName, questionDefinition, valueType, isMultivalued, onChangeNote, noteComponent, noteProps, onAddedAnswerPath, onDecidedOutputPath, sectionAnswersState } = props;
+  let { answers, answerMetadata, answerNodeType, existingAnswer, pageActive, path, questionName, questionDefinition, valueType, isMultivalued, onChangeNote, noteComponent, noteProps, onAddedAnswerPath, onDecidedOutputPath } = props;
   let { enableNotes } = { ...props, ...questionDefinition };
   let { onAddSuggestion } = { ...props, ...noteProps };
   let [ answerID ] = useState((existingAnswer && existingAnswer[0]) || uuidv4());
   let answerPath = path + "/" + answerID;
-
-  useEffect(() => {
-    if (sectionAnswersState !== undefined) {
-      let idHistory = [];
-      if (questionName in sectionAnswersState) {
-        idHistory = sectionAnswersState[questionName];
-      }
-      if (idHistory.indexOf(answerPath) < 0)
-      {
-        idHistory.push(answerPath);
-        sectionAnswersState[questionName] = idHistory;
-        onAddedAnswerPath(sectionAnswersState);
-      }
-    }
-  });
 
   // Update any listeners what our final output path will be
   useEffect(() => {
