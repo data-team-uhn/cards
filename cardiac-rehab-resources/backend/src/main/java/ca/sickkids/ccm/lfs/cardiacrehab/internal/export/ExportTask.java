@@ -216,7 +216,7 @@ public class ExportTask implements Runnable
             String query = String.format(
                 "SELECT subject.* FROM [lfs:Form] AS form INNER JOIN [lfs:Subject] AS subject"
                     + " ON form.'subject'=subject.[jcr:uuid]"
-                    + " WHERE form.[jcr:lastModified] >= '%s' AND NOT CONTAINS(form.[statusFlags], 'INCOMPLETE')",
+                    + " WHERE form.[jcr:lastModified] >= '%s' AND NOT form.[statusFlags] = 'INCOMPLETE'",
                 requestDateString
             );
 
@@ -244,7 +244,7 @@ public class ExportTask implements Runnable
                     + " ON form.'subject'=subject.[jcr:uuid]"
                     + " WHERE form.[jcr:lastModified] >= '%s'"
                     + " AND form.[jcr:lastModified] < '%s'"
-                    + " AND NOT CONTAINS(form.[statusFlags], 'INCOMPLETE')",
+                    + " AND NOT form.[statusFlags] = 'INCOMPLETE'",
                 requestDateStringLower, requestDateStringUpper
             );
 

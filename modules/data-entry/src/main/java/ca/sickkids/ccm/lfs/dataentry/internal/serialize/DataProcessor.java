@@ -173,10 +173,10 @@ public class DataProcessor implements ResourceJsonProcessor
                     result.append(" and n.[jcr:createdBy] = '").append(value).append('\'');
                     break;
                 case "status":
-                    result.append(" and contains(n.[statusFlags], '").append(value).append("')");
+                    result.append(" and n.[statusFlags] = '").append(value).append('\'');
                     break;
                 case "statusNot":
-                    result.append(" and not contains(n.[statusFlags], '").append(value).append("')");
+                    result.append(" and not n.[statusFlags] = '").append(value).append('\'');
                     break;
                 case "modifiedAfter":
                     result.append(" and n.[jcr:lastModified] >= '").append(value).append('\'');
