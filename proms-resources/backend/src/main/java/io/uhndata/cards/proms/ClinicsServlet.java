@@ -166,7 +166,7 @@ public class ClinicsServlet extends SlingAllMethodsServlet
         throws RepositoryException
     {
         // Pre-sanitize the name
-        String sanitizedName = displayName.replaceAll("[\"'\\[\\]\\(\\)\\\\]", "");
+        String sanitizedName = displayName.replaceAll("'", "''");
 
         // Query for similar names
         String query = "SELECT * FROM [cards:ClinicMapping] as c WHERE c.'displayName' LIKE '"
@@ -176,30 +176,30 @@ public class ClinicsServlet extends SlingAllMethodsServlet
         // Determine what names currently exist
         Set<Integer> foundNames = new HashSet<>();
         boolean noNumberValid = true;
-        Pattern numberRegex = Pattern.compile(sanitizedName + " ([\\d]+)");
+        Pattern numberRegex = Pattern.compile(displayName + " ([\\d]+)");
         while (results.hasNext()) {
             String name = results.next().adaptTo(Node.class).getProperty("displayName").getString();
 
             Matcher match = numberRegex.matcher(name);
             if (match.find()) {
                 foundNames.add(Integer.parseInt(match.group(1)));
-            } else if (sanitizedName.equals(name)) {
+            } else if (displayName.equals(name)) {
                 noNumberValid = false;
             }
         }
 
         // Determine if we can use the display name as-is
         if (noNumberValid) {
-            return sanitizedName;
+            return displayName;
         }
 
         // Find the first number i that works if we stick it after the display name
         for (int i = 1; i < foundNames.size(); i++) {
             if (!foundNames.contains(i)) {
-                return sanitizedName + " " + String.valueOf(i);
+                return displayName + " " + String.valueOf(i);
             }
         }
-        return sanitizedName + " " + String.valueOf(foundNames.size() + 1);
+        return displayName + " " + String.valueOf(foundNames.size() + 1);
     }
 
     /**
