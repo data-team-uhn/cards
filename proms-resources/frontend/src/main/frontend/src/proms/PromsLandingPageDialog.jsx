@@ -27,16 +27,40 @@ import {
   Paper,
   Tooltip,
   Typography,
-  withStyles
+  makeStyles
 } from '@material-ui/core';
 
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { appTheme } from "../themePalette.jsx";
-import styles from "../styling/styles";
+
+const useStyles = makeStyles(theme => ({
+  paper: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 0,
+    height: '100%',
+  },
+  logo : {
+    maxWidth: "200px",
+    marginBottom: theme.spacing(6),
+  },
+  button : {
+    textTransform: "none",
+    minWidth: "250px",
+    padding: theme.spacing(3, 1),
+    fontWeight: 400,
+  },
+  appInfo : {
+    marginTop: theme.spacing(6),
+  }
+}));
 
 function PromsLandingPageDialog(props) {
 
-  const { classes } = props;
+  const classes = useStyles();
+
   const [ isOpen, setIsOpen ] = useState(true);
 
   return (
@@ -46,46 +70,41 @@ function PromsLandingPageDialog(props) {
     >
       <MuiThemeProvider theme={appTheme}>
         <Paper
-          className={`${classes.paper}`}
+          className={classes.paper}
           elevation={0}
-          style={{
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: '100%'
-          }}
         >
-          <Grid container direction="column" spacing={3} alignItems="center" alignContent="center">
+          <Grid container direction="column" spacing={4} alignItems="center" alignContent="center">
             <Grid item>
               <img src="/libs/cards/resources/logo_light_bg.png" alt="" className={classes.logo} />
             </Grid>
             <Grid item>
-              <Grid container spacing={1} direction="row" justify="center" alignItems="center" wrap="nowrap">
+              <Typography variant="h6">Sign in as a:</Typography>
+            </Grid>
+            <Grid item>
+              <Grid container spacing={4} direction="row" justify="center" alignItems="center">
                 <Grid item>
                   <Button
                     fullWidth
                     variant="contained"
                     color="primary"
-                    className={classes.main}
+                    className={classes.button}
                     onClick={() => {
                       window.location = "/Proms";
                     }}
                    >
-                    <Typography>I am a</Typography>
-                    <Typography style={{fontWeight: 'bold'}}>Patient</Typography>
+                    <Typography variant="h6">Patient</Typography>
                   </Button>
                 </Grid>
                 <Grid item>
                   <Button
                     fullWidth
                     variant="contained"
-                    color="primary"
-                    className={classes.main}
+                    className={classes.button}
                     onClick={() => {
                       setIsOpen(false);
                     }}
                    >
-                    <Typography>I am a</Typography>
-                    <Typography style={{fontWeight: 'bold'}}>Healthcare Provider</Typography>
+                    <Typography variant="h6">Health Care Provider</Typography>
                   </Button>
                 </Grid>
               </Grid>
@@ -107,6 +126,4 @@ function PromsLandingPageDialog(props) {
   );
 }
 
-const StyledPromsLandingPageDialog = withStyles(styles)(PromsLandingPageDialog);
-
-export default StyledPromsLandingPageDialog;
+export default PromsLandingPageDialog;
