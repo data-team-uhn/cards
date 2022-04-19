@@ -1,6 +1,6 @@
 {
     "name": "cards-page-start-header",
-    "version": "0.1.0",
+    "version": "0.9-SNAPSHOT",
     "description": "React component that loads and displays page headers from a UI ExtensionPoint",
     "author": "UHN DATA",
     "license": "Apache-2.0",
@@ -23,8 +23,7 @@
   "dependencies": {
     "@material-ui/core": "4.11.2",
     "@material-ui/icons": "4.11.2",
-    "react": "16.14.0",
-    "moment": "2.29.1"
+    "react": "16.14.0"
   },
   "devDependencies": {
     "@babel/core": "7.12.10",
