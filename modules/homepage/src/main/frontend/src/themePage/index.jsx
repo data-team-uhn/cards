@@ -28,7 +28,7 @@ import { Redirect, Router, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import Navbar from "./Navbars/Navbar";
 import Page from "./Page";
-import PageStart from "./PageStart/PageStart";
+import PageStart from "../PageStart";
 import IndexStyle from "./indexStyle.jsx";
 import DialogueLoginContainer, { GlobalLoginContext } from "../login/loginDialogue.js";
 

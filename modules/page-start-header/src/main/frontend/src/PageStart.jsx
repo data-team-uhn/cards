@@ -18,7 +18,7 @@
 //
 
 import React, { useEffect, useState } from "react";
-import { loadExtensions } from "../../uiextension/extensionManager";
+import { loadExtensions } from "./uiextension/extensionManager";
 
 export default function PageStart(props) {
 
@@ -31,8 +31,11 @@ export default function PageStart(props) {
   const [ extensionData, setExtensionData ] = useState(null);
   const [ isInitialized, setIsInitialized ] = useState(false);
   const [ pageStartHeight, setPageStartHeight ] = useState(0);
+
+  const extensionsName = props.extensionsName || "PageStart";
+
   useEffect(() => {
-    props.setTotalHeight(pageStartHeight);
+    props.setTotalHeight && props.setTotalHeight(pageStartHeight);
   });
 
   useEffect(() => {
@@ -57,7 +60,7 @@ export default function PageStart(props) {
   };
 
   if (!isInitialized) {
-    loadExtensions("PageStart")
+    loadExtensions(extensionsName)
       .then((resp) => {
         if (resp.length > 0) {
           setExtensionData(resp);

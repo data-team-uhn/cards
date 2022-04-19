@@ -19,5 +19,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import MainLoginComponent from './loginMainComponent';
+import PageStart from '../PageStart';
 
-ReactDOM.render(<MainLoginComponent selfContained redirectOnLogin={true} />, document.getElementById('main-login-container'));
+ReactDOM.render(
+  <React.Fragment>
+    <PageStart
+      extensionsName="LoginPageStart"
+    />
+    <MainLoginComponent selfContained redirectOnLogin={true} />
+  </React.Fragment>,
+  document.getElementById('main-login-container')
+);
