@@ -57,7 +57,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function PromsLandingPageDialog(props) {
+function PromsLandingPage(props) {
 
   const classes = useStyles();
 
@@ -128,4 +128,4 @@ function PromsLandingPageDialog(props) {
   );
 }
 
-export default PromsLandingPageDialog;
+export default PromsLandingPage;

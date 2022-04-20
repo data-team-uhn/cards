@@ -6,14 +6,14 @@ module_name = require("./package.json").name + ".";
 module.exports = {
   mode: 'development',
   entry: {
+    [module_name + 'PromsLandingPage']: './src/proms/PromsLandingPage.jsx',
     [module_name + 'index']: './src/proms/index.jsx',
     [module_name + 'unsubscribe']: './src/proms/unsubscribe.jsx',
     [module_name + 'ToULink']: './src/proms/ToULink.jsx'
     [module_name + 'PromsDashboard']: './src/proms/PromsDashboard.jsx',
     [module_name + 'PromsView']: './src/proms/PromsView.jsx',
     [module_name + 'VisitView']: './src/proms/VisitView.jsx',
-    [module_name + 'pmccIcon']: '@material-ui/icons/Favorite.js',
-    [module_name + 'PromsLandingPageDialog']: './src/proms/PromsLandingPageDialog.jsx'
+    [module_name + 'pmccIcon']: '@material-ui/icons/Favorite.js'
   },
   plugins: [
     new CleanWebpackPlugin(),
