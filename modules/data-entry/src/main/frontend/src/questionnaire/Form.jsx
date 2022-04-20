@@ -75,7 +75,7 @@ import ResourceHeader from "./ResourceHeader.jsx";
  */
 function Form (props) {
   let { classes, id, contentOffset } = props;
-  let { mode, className, disableHeader, disableButton, doneButtonStyle, doneIcon, doneLabel, onDone } = props;
+  let { mode, className, disableHeader, disableButton, doneButtonStyle, doneIcon, doneLabel, onDone, questionnaireAddons } = props;
   // This holds the full form JSON, once it is received from the server
   let [ data, setData ] = useState();
   // Error message set when fetching the data from the server fails
@@ -166,6 +166,13 @@ function Form (props) {
 
   // Callback method for the `fetchData` method, invoked when the data successfully arrived from the server.
   let handleResponse = (json) => {
+    if (questionnaireAddons != null && json?.['questionnaire']) {
+      questionnaireAddons.forEach(element => {
+        if (element['@name']) {
+          json.questionnaire[element['@name']] = element;
+        }
+      });
+    }
     setData(json);
     setPaginationEnabled(!!json?.['questionnaire']?.['paginate'] && isEdit);
     if (isEdit) {
