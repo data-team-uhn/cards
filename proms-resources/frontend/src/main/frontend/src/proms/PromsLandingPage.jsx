@@ -38,21 +38,21 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center',
     height: '100%',
   },
   logo : {
     maxWidth: "200px",
-    marginBottom: theme.spacing(6),
+    marginBottom: theme.spacing(5),
+    marginTop: theme.spacing(9.5),
   },
   button : {
     textTransform: "none",
     minWidth: "250px",
-    padding: theme.spacing(3, 1),
-    fontWeight: 400,
+    padding: theme.spacing(2, 1),
   },
   appInfo : {
-    marginTop: theme.spacing(6),
+    paddingTop: theme.spacing(.5),
+    marginTop: theme.spacing(5),
   }
 }));
 
@@ -71,15 +71,15 @@ function PromsLandingPage(props) {
     >
       <MuiThemeProvider theme={appTheme}>
         <DialogContent className={classes.paper}>
-          <Grid container direction="column" spacing={4} alignItems="center" alignContent="center">
+          <Grid container direction="column" spacing={2} alignItems="center" alignContent="center">
             <Grid item>
               <img src="/libs/cards/resources/logo_light_bg.png" alt="" className={classes.logo} />
             </Grid>
             <Grid item>
-              <Typography variant="h6">Sign in as a:</Typography>
+              <Typography variant="h6">I am a...</Typography>
             </Grid>
             <Grid item>
-              <Grid container spacing={4} direction="row" justify="center" alignItems="center">
+              <Grid container spacing={3} direction="column" justify="center" alignItems="center">
                 <Grid item>
                   <Button
                     fullWidth
