@@ -46,6 +46,7 @@
               SLING-INF/content/Extensions/Sidebar/;path:=/Extensions/Sidebar/;overwrite:=true,
               SLING-INF/content/Extensions/Footer;path:=/Extensions/Footer;overwrite:=true,
               SLING-INF/content/Extensions/LoginPageStart;path:=/Extensions/LoginPageStart;overwrite:=true,
+              SLING-INF/content/Extensions/PrintHeader;path:=/Extensions/PrintHeader;overwrite:=true,
             </Sling-Initial-Content>
           </instructions>
         </configuration>
