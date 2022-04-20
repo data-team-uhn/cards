@@ -44,6 +44,7 @@ import * as jdfp from "moment-jdateformatparser";
 import Form from "../questionnaire/Form.jsx";
 import PromsHeader from "./Header.jsx";
 import DateQuestionUtilities from "../questionnaire/DateQuestionUtilities";
+import { ENTRY_TYPES } from "../questionnaire/FormEntry.jsx"
 
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
@@ -263,14 +264,12 @@ function QuestionnaireSet(props) {
     Object.values(json || {})
       .filter(value => value['jcr:primaryType'] == 'cards:QuestionnaireRef')
       .forEach(value => {
-        let addons = Object.values(value).filter(filterValue =>
-            filterValue['jcr:primaryType'] == 'cards:Question' || filterValue['jcr:primaryType'] == 'cards:Section');
+        let addons = Object.values(value).filter(filterValue => ENTRY_TYPES.includes(filterValue['jcr:primaryType']));
         data[value.questionnaire['@name']] = {
           'title': value.questionnaire?.title || value.questionnaire?.['@name'],
           '@path': value.questionnaire?.['@path'],
           '@name': value.questionnaire?.['@name'],
-          'hasInterpretation': hasInterpretation(value.questionnaire)
-            || addons.filter(filterValue => hasInterpretation(filterValue)).length > 0,
+          'hasInterpretation': hasInterpretation(value.questionnaire) || addons.some(hasInterpretation),
           'estimate': value.estimate,
           'questionnaireAddons': addons
         }
