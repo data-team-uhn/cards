@@ -23,8 +23,8 @@ import {
   Breadcrumbs,
   Button,
   Dialog,
+  DialogContent,
   Grid,
-  Paper,
   Tooltip,
   Typography,
   makeStyles
@@ -39,7 +39,6 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 0,
     height: '100%',
   },
   logo : {
@@ -71,10 +70,7 @@ function PromsLandingPage(props) {
       open={isOpen}
     >
       <MuiThemeProvider theme={appTheme}>
-        <Paper
-          className={classes.paper}
-          elevation={0}
-        >
+        <DialogContent className={classes.paper}>
           <Grid container direction="column" spacing={4} alignItems="center" alignContent="center">
             <Grid item>
               <img src="/libs/cards/resources/logo_light_bg.png" alt="" className={classes.logo} />
@@ -122,7 +118,7 @@ function PromsLandingPage(props) {
               </Breadcrumbs>
             </Grid>
           </Grid>
-        </Paper>
+        </DialogContent>
       </MuiThemeProvider>
     </Dialog>
   );
