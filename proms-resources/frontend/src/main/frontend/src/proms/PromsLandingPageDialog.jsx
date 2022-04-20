@@ -63,6 +63,8 @@ function PromsLandingPageDialog(props) {
 
   const [ isOpen, setIsOpen ] = useState(true);
 
+  const appInfo = document.querySelector('meta[name="title"]').content;
+
   return (
     <Dialog
       fullScreen
@@ -111,7 +113,7 @@ function PromsLandingPageDialog(props) {
             </Grid>
             <Grid item>
               <Breadcrumbs separator="by" className={classes.appInfo}>
-                <Typography variant="subtitle2">DATA-PRO</Typography>
+                <Typography variant="subtitle2">{appInfo}</Typography>
                 <Tooltip title="DATA Team @ UHN">
                   <a href="https://uhndata.io/" target="_blank">
                     <img src="/libs/cards/resources/data-logo_light_bg.png" width="80" alt="DATA" />
