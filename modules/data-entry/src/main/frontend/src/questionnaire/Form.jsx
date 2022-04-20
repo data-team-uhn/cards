@@ -367,6 +367,7 @@ function Form (props) {
                       <PrintButton
                          variant="text"
                          resourcePath={formURL}
+                         resourceData={data}
                          breadcrumb={getTextHierarchy(data?.subject, true)}
                          date={moment(data['jcr:created']).format("MMM Do YYYY")}
                          onClose={() => { setActionsMenu(null); }}

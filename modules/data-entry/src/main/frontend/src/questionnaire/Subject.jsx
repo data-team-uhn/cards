@@ -357,6 +357,7 @@ function SubjectHeader(props) {
             <div className={classes.actionsMenu}>
                <PrintButton
                  resourcePath={path}
+                 resourceData={subject?.data}
                  breadcrumb={pageTitle}
                  date={moment(subject?.data['jcr:created']).format("MMM Do YYYY")}
                />

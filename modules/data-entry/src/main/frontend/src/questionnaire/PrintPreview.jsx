@@ -44,7 +44,15 @@ import { useTheme } from '@material-ui/core/styles';
 
 import FormattedText from "../components/FormattedText.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+import { loadExtensions } from "../uiextension/extensionManager";
 import { useReactToPrint } from 'react-to-print';
+
+async function getHeaderExtensions(name) {
+  return loadExtensions("PrintHeader")
+    .then(extensions => extensions.slice()
+      .sort((a, b) => a["cards:defaultOrder"] - b["cards:defaultOrder"])
+    )
+}
 
 // Component that renders a form in a format/style ready for printing.
 // Internally, it queries and renders the markdown (.md) export of the form.
@@ -108,7 +116,9 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function PrintPreview(props) {
-  const { open, resourcePath, title, breadcrumb, date, subtitle, disablePreview, fullScreen, onClose, ...rest } = props;
+  const { open, resourcePath, resourceData, title, breadcrumb, date, subtitle, disablePreview, fullScreen, onClose, ...rest } = props;
+
+  const [ headerExtensions, setHeaderExtensions ] = useState()
 
   const [ content, setContent ] = useState();
   const [ error, setError ] = useState();
@@ -141,7 +151,22 @@ function PrintPreview(props) {
     }
   }, [content]);
 
+  useEffect(() => {
+    getHeaderExtensions()
+      .then(extensions => setHeaderExtensions(extensions || []))
+      .catch(err => {
+        console.log("Something went wrong loading the print header extensions", err);
+        setHeaderExtensions([]);
+      })
+  }, [])
+
   let header = (
+    !headerExtensions ? <div className={classes.header}><CircularProgress /></div>
+    : headerExtensions.length ? <>{ headerExtensions.map((extension, index) => {
+            let Extension = extension["cards:extensionRender"];
+            return <Extension key={`extension-${index}`} resourceData={resourceData} />;
+          })}</>
+    :
     (breadcrumb || date) ?
       <div className={classes.header}>
         <Typography variant="overline" color="textSecondary">{breadcrumb}</Typography>
@@ -213,6 +238,7 @@ function PrintPreview(props) {
 
 PrintPreview.propTypes = {
   resourcePath: PropTypes.string.isRequired,
+  resourceData: PropTypes.object,
   open: PropTypes.bool,
   disablePreview: PropTypes.bool,
   fullScreen: PropTypes.bool,
