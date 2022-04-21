@@ -17,11 +17,12 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import {
   Breadcrumbs,
   Button,
+  CircularProgress,
   Dialog,
   DialogContent,
   Grid,
@@ -45,6 +46,16 @@ const useStyles = makeStyles(theme => ({
     marginBottom: theme.spacing(5),
     marginTop: theme.spacing(9.5),
   },
+  buttonContainer: {
+    position: "relative",
+    "& .MuiCircularProgress-root" : {
+       position: 'absolute',
+       top: '50%',
+       left: '50%',
+       marginTop: '-12px',
+       marginLeft: '-12px',
+    },
+  },
   button : {
     textTransform: "none",
     minWidth: "250px",
@@ -61,8 +72,18 @@ function PromsLandingPage(props) {
   const classes = useStyles();
 
   const [ isOpen, setIsOpen ] = useState(true);
+  const [ loadingPatientLogin, setLoadingPatientLogin ] = useState(false);
+  const [ loadingHCPLogin, setLoadingHCPLogin ] = useState(false);
 
   const appInfo = document.querySelector('meta[name="title"]').content;
+
+  const USER_TYPE_PARAM = "usertype";
+  const USER_TYPE_HCP = "hcp";
+
+  useEffect(() => {
+    let userType = (new URLSearchParams(window.location.search || ""))?.get(USER_TYPE_PARAM);
+    setIsOpen(!(userType == USER_TYPE_HCP));
+  }, [window.location]);
 
   return (
     <Dialog
@@ -80,30 +101,39 @@ function PromsLandingPage(props) {
             </Grid>
             <Grid item>
               <Grid container spacing={3} direction="column" justify="center" alignItems="center">
-                <Grid item>
+                <Grid item className={classes.buttonContainer}>
                   <Button
                     fullWidth
                     variant="contained"
                     color="primary"
+                    disabled={loadingPatientLogin}
                     className={classes.button}
                     onClick={() => {
+                      setLoadingPatientLogin(true);
                       window.location = "/Proms";
                     }}
                    >
                     <Typography variant="h6">Patient</Typography>
                   </Button>
+                  {loadingPatientLogin && <CircularProgress size={24} />}
                 </Grid>
-                <Grid item>
+                <Grid item className={classes.buttonContainer}>
                   <Button
                     fullWidth
                     variant="contained"
+                    disabled={loadingHCPLogin}
                     className={classes.button}
                     onClick={() => {
-                      setIsOpen(false);
+                      setLoadingHCPLogin(true);
+                      let query = new URLSearchParams(window.location?.search || "");
+                      query.delete(USER_TYPE_PARAM);
+                      query.append(USER_TYPE_PARAM, USER_TYPE_HCP);
+                      window.location.search = query;
                     }}
                    >
                     <Typography variant="h6">Health Care Provider</Typography>
                   </Button>
+                  {loadingHCPLogin && <CircularProgress size={24} />}
                 </Grid>
               </Grid>
             </Grid>
