@@ -275,7 +275,7 @@ public class ClinicsServlet extends SlingAllMethodsServlet
             "cards:extensionPointName", this.displayName.get() + " questionnaires dashboard",
             "title", this.displayName.get(),
             ClinicsServlet.DESCRIPTION_FIELD, this.description.get(),
-            "surveys", this.idHash.get()
+            "surveys", this.surveyID.get()
             ));
     }
 
