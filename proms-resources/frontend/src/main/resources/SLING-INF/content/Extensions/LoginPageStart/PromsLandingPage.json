@@ -1,0 +1,6 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/loginPageStart",
+  "cards:extensionName": "PROMs Landing Page",
+  "cards:extensionRenderURL": "asset:proms-homepage.PromsLandingPage.js"
+}
