@@ -156,7 +156,6 @@ function OnboardNewClinicDialog(props) {
 
   let saveData = (event) => {
     event.preventDefault();
-    setSaveInProgress(true);
 
     // Unlike normal submissions, we need to extract out fields that don't exist in a ClinicMapping node, and are
     // meant to be processed separately
@@ -173,6 +172,7 @@ function OnboardNewClinicDialog(props) {
 
     // Add this new clinic mapping
     let url = new URL("/Proms/ClinicMapping", window.location.origin);
+    setSaveInProgress(true);
     fetchWithReLogin(globalLoginDisplay, url,
       {
         method: 'POST',
