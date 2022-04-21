@@ -104,7 +104,6 @@ public class ClinicsServlet extends SlingAllMethodsServlet
             this.displayName.set(getUniqueDisplayName(resolver, this.displayName.get()));
             this.createClinicMapping(resolver);
             this.createSidebar(resolver);
-            this.createDashboardView(resolver);
             this.createDashboardExtension(resolver);
             this.createDashboardViews(resolver);
             session.save();
@@ -258,24 +257,6 @@ public class ClinicsServlet extends SlingAllMethodsServlet
             "cards:targetURL", "/content.html/Dashboard/" + this.idHash.get(),
             "cards:icon", "asset:proms-homepage.clinicIcon.js",
             "cards:defaultOrder", 10,
-            ClinicsServlet.PRIMARY_TYPE_FIELD, "cards:Extension"));
-    }
-
-    /**
-     * Create a dashboard view for the new clinic.
-     *
-     * @param resolver Resource resolver to use
-     */
-    private void createDashboardView(final ResourceResolver resolver)
-        throws RepositoryException, PersistenceException
-    {
-        final Resource parentResource = resolver.getResource("/Extensions/Views");
-        resolver.create(parentResource, this.idHash.get() + "Dashboard", Map.of(
-            "cards:extensionPointId", "cards/coreUI/view",
-            "cards:extensionName", "Dashboard",
-            "cards:extensionRenderURL", "asset:proms-homepage.PromsDashboard.js",
-            "cards:targetURL", "/content.html/Dashboard",
-            "cards:exactURLMatch", false,
             ClinicsServlet.PRIMARY_TYPE_FIELD, "cards:Extension"));
     }
 
