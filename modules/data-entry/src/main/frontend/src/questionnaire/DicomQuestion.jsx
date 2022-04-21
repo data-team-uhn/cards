@@ -209,6 +209,7 @@ function DicomQuestion(props) {
         onClose={() => {
           setErrorDialogText();
           setAdvancedErrorDialogText();
+          setShowAdvancedErrorHelp();
         }}
       >
         <DialogTitle disableTypography>
