@@ -186,7 +186,7 @@ function OnboardNewClinicDialog(props) {
     }
 
     // Add this new clinic mapping
-    let url = new URL("/Proms/ClinicMapping.addNew", window.location.origin);
+    let url = new URL("/Proms/ClinicMapping", window.location.origin);
     fetchWithReLogin(globalLoginDisplay, url,
       {
         method: 'POST',

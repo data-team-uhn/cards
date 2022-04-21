@@ -53,8 +53,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Component(service = { Servlet.class })
-@SlingServletResourceTypes(resourceTypes = { "cards/ClinicMappingFolder" }, extensions = {
-    "addNew" }, methods = { "POST" })
+@SlingServletResourceTypes(resourceTypes = { "cards/ClinicMappingFolder" }, methods = { "POST" })
 public class ClinicsServlet extends SlingAllMethodsServlet
 {
     private static final long serialVersionUID = -5555906093850253193L;
@@ -257,7 +256,7 @@ public class ClinicsServlet extends SlingAllMethodsServlet
             "cards:extensionPointId", "cards/coreUI/sidebar/entry",
             "cards:extensionName", this.sidebarLabel.get(),
             "cards:targetURL", "/content.html/Dashboard/" + this.idHash.get(),
-            "cards:icon", "asset:proms-homepage.pmccIcon.js",
+            "cards:icon", "asset:proms-homepage.clinicIcon.js",
             "cards:defaultOrder", 10,
             ClinicsServlet.PRIMARY_TYPE_FIELD, "cards:Extension"));
     }

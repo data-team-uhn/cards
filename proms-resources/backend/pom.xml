@@ -163,6 +163,6 @@
     <groupId>org.osgi</groupId>
       <artifactId>org.osgi.framework</artifactId>
       <version>1.9.0</version>
-  </dependency>
+    </dependency>
   </dependencies>
 </project>
