@@ -29,7 +29,7 @@ import {
   Typography
 } from "@material-ui/core";
 
-import Fields from "../questionnaireEditor/Fields.jsx";
+import Fields, { formatString } from "../questionnaireEditor/Fields.jsx";
 import LiveTable from "../dataHomepage/LiveTable.jsx";
 import NewItemButton from "../components/NewItemButton.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog.jsx";
@@ -41,38 +41,24 @@ function Clinics(props) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isNewClinic, setIsNewClinic] = useState(false);
 
-  let columns = [
-    {
-      "key": "clinicName",
-      "label": "ID",
-      "format": "string",
-    },
-    {
-      "key": "displayName",
-      "label": "Name",
-      "format": "string",
-    },
-    {
-      "key": "sidebarLabel",
-      "label": "Sidebar Entry",
-      "format": "string",
-    },
-    {
-      "key": "surveyID",
-      "label": "Surveys",
-      "format": "string",
-    },
-    {
-      "key": "description",
-      "label": "Description",
-      "format": "string",
-    },
-    {
-      "key": "emergencyContact",
-      "label": "Emergency Contact",
-      "format": "string",
-    },
-  ]
+  let clinicsSpecs = require('./Clinics.json');
+
+  let formattedNames = {
+    "clinicName": "ID",
+    "displayName": "Name",
+    "sidebarLabel": "Sidebar Entry",
+    "surveyId": "Surveys",
+    "emergencyContact": "Emergency Contact"
+  }
+
+  let columns = Object.keys(clinicsSpecs).filter((stat) => !Array.isArray(clinicsSpecs[stat]))
+    .map((stat) => {
+      return {
+        key: stat,
+        label: (stat in formattedNames) ? formattedNames[stat] : formatString(stat),
+        format: clinicsSpecs[stat]
+      };
+    });
 
   let dialogSuccess = () => {
     // Since a dialog success changes the sidebar, we should reload everything
