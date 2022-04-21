@@ -47,19 +47,14 @@ function Clinics(props) {
     "clinicName": "ID",
     "displayName": "Name",
     "sidebarLabel": "Sidebar Entry",
-    "surveyId": "Surveys",
+    "survey": "Surveys",
     "emergencyContact": "Emergency Contact"
-  }
-
-  // SurveyID is capitalized SurveyId in the frontend Fields component, but we need to remap it for here
-  let formattedKeys = {
-    "surveyId": "surveyID"
   }
 
   let columns = Object.keys(clinicsSpecs).filter((stat) => !Array.isArray(clinicsSpecs[stat]))
     .map((stat) => {
       return {
-        key: (stat in formattedKeys) ? formattedKeys[stat] : stat,
+        key: stat,
         label: (stat in formattedNames) ? formattedNames[stat] : formatString(stat),
         format: clinicsSpecs[stat]
       };

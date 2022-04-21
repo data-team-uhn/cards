@@ -146,7 +146,7 @@ public class ClinicsServlet extends SlingAllMethodsServlet
         this.clinicName.set(request.getParameter("clinicName"));
         this.displayName.set(request.getParameter("displayName"));
         this.sidebarLabel.set(request.getParameter("sidebarLabel"));
-        this.surveyID.set(request.getParameter("surveyId"));
+        this.surveyID.set(request.getParameter("survey"));
         this.emergencyContact.set(request.getParameter("emergencyContact"));
         this.description.set(request.getParameter("description"));
         this.idHash.set(Integer.toString(this.clinicName.get().hashCode()));
@@ -236,7 +236,7 @@ public class ClinicsServlet extends SlingAllMethodsServlet
             "clinicName", this.clinicName.get(),
             "displayName", this.displayName.get(),
             "sidebarLabel", this.sidebarLabel.get(),
-            "surveyID", this.surveyID.get(),
+            "survey", this.surveyID.get(),
             "emergencyContact", this.emergencyContact.get(),
             ClinicsServlet.DESCRIPTION_FIELD, this.description.get(),
             ClinicsServlet.PRIMARY_TYPE_FIELD, "cards:ClinicMapping"));

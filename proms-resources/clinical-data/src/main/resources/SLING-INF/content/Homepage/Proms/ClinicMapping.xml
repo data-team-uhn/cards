@@ -34,7 +34,7 @@
             <type>String</type>
         </property>
         <property>
-            <name>surveyID</name>
+            <name>survey</name>
             <value>Mood</value>
             <type>String</type>
         </property>
@@ -53,7 +53,7 @@
             <type>String</type>
         </property>
         <property>
-            <name>surveyID</name>
+            <name>survey</name>
             <value>Cardio</value>
             <type>String</type>
         </property>
