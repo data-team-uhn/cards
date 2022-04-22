@@ -129,7 +129,7 @@ function PromsDashboard(props) {
       .then((json) => {
         setTitle(json.displayName || json.clinicName || clinicId);
         setDescription(json.description || "");
-        setSurveysId(json.surveyID);
+        setSurveysId(json.survey);
       })
   }, [clinicId])
 
