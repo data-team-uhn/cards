@@ -1,8 +1,0 @@
-{
-  "jcr:primaryType": "cards:Extension",
-  "cards:extensionPointId": "proms/dashboard/pmcc",
-  "cards:extensionName": "AUDITC View",
-  "cards:extensionRenderURL": "asset:proms-homepage.PromsView.js",
-  "cards:defaultOrder": 4,
-  "cards:data": "/Proms/Cardio/Step4"
-}
