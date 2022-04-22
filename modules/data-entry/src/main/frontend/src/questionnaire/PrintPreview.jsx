@@ -161,8 +161,7 @@ function PrintPreview(props) {
   }, [])
 
   let header = (
-    !headerExtensions ? <div className={classes.header}><CircularProgress /></div>
-    : headerExtensions.length ? <>{ headerExtensions.map((extension, index) => {
+    headerExtensions?.length ? <>{ headerExtensions.map((extension, index) => {
             let Extension = extension["cards:extensionRender"];
             return <Extension key={`extension-${index}`} resourceData={resourceData} />;
           })}</>
