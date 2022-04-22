@@ -56,7 +56,7 @@ import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
  *
  */
 function PrintButton(props) {
-  const { resourcePath, title, date, breadcrumb, onOpen, onClose, size, variant, label, buttonClass, disablePreview, fullScreen, disableShortcut } = props;
+  const { resourcePath, resourceData, title, date, breadcrumb, onOpen, onClose, size, variant, label, buttonClass, disablePreview, fullScreen, disableShortcut } = props;
 
   const [ open, setOpen ] = useState(false);
 
@@ -98,6 +98,7 @@ function PrintButton(props) {
       fullScreen={fullScreen}
       title={title}
       resourcePath={resourcePath}
+      resourceData={resourceData}
       date={date}
       breadcrumb={breadcrumb}
       onClose={onCloseView}
@@ -124,6 +125,7 @@ PrintButton.propTypes = {
   variant: PropTypes.oneOf(["icon", "text", "extended"]), // "extended" means both icon and text
   title: PropTypes.string,
   resourcePath: PropTypes.string.isRequired,
+  resourceData: PropTypes.object,
   buttonText: PropTypes.string,
   buttonClass: PropTypes.string,
   breadcrumb: PropTypes.string,

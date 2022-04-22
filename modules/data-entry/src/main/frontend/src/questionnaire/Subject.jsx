@@ -357,6 +357,7 @@ function SubjectHeader(props) {
             <div className={classes.actionsMenu}>
                <PrintButton
                  resourcePath={path}
+                 resourceData={subject?.data}
                  breadcrumb={pageTitle}
                  date={moment(subject?.data['jcr:created']).format("MMM Do YYYY")}
                />
@@ -459,6 +460,7 @@ function SubjectMemberInternal (props) {
   let action = <>
                  <PrintButton
                    resourcePath={path}
+                   resourceData={data}
                    breadcrumb={getTextHierarchy(data, true)}
                    date={moment(data['jcr:created']).format("MMM Do YYYY")}
                    buttonClass={classes.childSubjectHeaderButton}

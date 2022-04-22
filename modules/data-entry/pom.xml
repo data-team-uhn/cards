@@ -52,6 +52,7 @@
               SLING-INF/content/libs/cards/Subject/;path:=/libs/cards/Subject/;overwrite:=true,
               SLING-INF/content/libs/cards/Questionnaire/;path:=/libs/cards/Questionnaire/;overwrite:=true,
               SLING-INF/content/oak%3Aindex/;path:=/oak:index/;overwrite:=true,
+              SLING-INF/content/apps/cards/ExtensionPoints/;path:=/apps/cards/ExtensionPoints/;overwrite:=true,
               SLING-INF/content/Extensions/AdminDashboard/;path:=/Extensions/AdminDashboard/;overwrite:=true,
               SLING-INF/content/Extensions/DashboardMenuItems/;path:=/Extensions/DashboardMenuItems/;overwrite:=true,
               SLING-INF/content/Extensions/DashboardViews/;path:=/Extensions/DashboardViews/;overwrite:=true,
