@@ -111,6 +111,21 @@ def generateSelfSignedCert():
   pem_cert = crypto.dump_certificate(crypto.FILETYPE_PEM, cert).decode('utf-8')
   return pem_key, pem_cert
 
+def getCardsProjectLogoPath(project_name):
+  logoPathMap = {}
+  logoPathMap['cards4care'] = "cardiac-rehab-resources/clinical-data/src/main/media/SLING-INF/content/libs/cards/resources/logo_light_bg.png"
+  logoPathMap['cards4kids'] = "kids-resources/clinical-data/src/main/media/SLING-INF/content/libs/cards/resources/logo_light_bg.png"
+  logoPathMap['cards4lfs'] = "lfs-resources/clinical-data/src/main/media/SLING-INF/content/libs/cards/resources/logo_light_bg.png"
+  logoPathMap['cards4proms'] = "proms-resources/clinical-data/src/main/media/SLING-INF/content/libs/cards/resources/logo_light_bg.png"
+
+  #Default logo if CARDS project is not specified
+  projectLogoPath = "modules/homepage/src/main/media/SLING-INF/content/libs/cards/resources/logo_light_bg.png"
+
+  if project_name in logoPathMap:
+    projectLogoPath = logoPathMap[project_name]
+
+  return "../" + projectLogoPath
+
 OUTPUT_FILENAME = "docker-compose.yml"
 
 yaml_obj = {}
@@ -388,6 +403,9 @@ yaml_obj['services']['proxy']['networks']['internalnetwork']['aliases'] = ['prox
 yaml_obj['services']['proxy']['depends_on'] = ['cardsinitial']
 if ENABLE_NCR:
   yaml_obj['services']['proxy']['depends_on'].append('neuralcr')
+
+#Add the appropriate CARDS logo (eg. DATAPRO, Cards4CaRe, etc...) for the selected project
+shutil.copyfile(getCardsProjectLogoPath(args.cards_project), "./proxy/proxyerror/logo.png")
 
 if SSL_PROXY:
   if args.saml:

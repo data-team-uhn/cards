@@ -32,6 +32,9 @@ rm mongos/mongo-router.conf
 echo "Removing proxy/000-default.conf"
 rm proxy/000-default.conf
 
+echo "Removing proxy/proxyerror/logo.png"
+rm proxy/proxyerror/logo.png
+
 echo "Removing smtps_localhost_proxy/nginx.conf"
 rm smtps_localhost_proxy/nginx.conf
 
