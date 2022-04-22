@@ -19,6 +19,12 @@
 
 <node>
     <name>ClinicMapping</name>
+    <primaryNodeType>cards:ClinicMappingFolder</primaryNodeType>
+    <property>
+        <name>childNodeType</name>
+        <value>cards:ClinicMapping</value>
+        <type>String</type>
+    </property>
     <node>
         <name>481110456</name>
         <primaryNodeType>cards:ClinicMapping</primaryNodeType>
@@ -28,7 +34,7 @@
             <type>String</type>
         </property>
         <property>
-            <name>surveyID</name>
+            <name>survey</name>
             <value>Mood</value>
             <type>String</type>
         </property>
@@ -47,7 +53,7 @@
             <type>String</type>
         </property>
         <property>
-            <name>surveyID</name>
+            <name>survey</name>
             <value>Cardio</value>
             <type>String</type>
         </property>
@@ -60,6 +66,16 @@
             <name>ignoreEmailConsent</name>
             <value>True</value>
             <type>Boolean</type>
+        </property>
+        <property>
+            <name>description</name>
+            <value>Peter Munk Cardiac Centre</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>sidebarLabel</name>
+            <value>PMCC - ACHD</value>
+            <type>String</type>
         </property>
     </node>
 </node>

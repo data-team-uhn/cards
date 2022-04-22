@@ -662,7 +662,7 @@ public class PatientLocalStorage
                 try {
                     final SurveyInfo thisSurvey = new SurveyInfo();
                     final Node thisNode = mapping.adaptTo(Node.class);
-                    thisSurvey.setSurveyID(thisNode.getProperty("surveyID").getString());
+                    thisSurvey.setSurveyID(thisNode.getProperty("survey").getString());
                     thisSurvey.setDisplayName(thisNode.getProperty("displayName").getString());
                     results.add(thisSurvey);
                 } catch (final RepositoryException e) {

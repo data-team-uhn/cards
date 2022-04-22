@@ -42,6 +42,7 @@
             <Sling-Nodetypes>SLING-INF/nodetypes/proms.cnd</Sling-Nodetypes>
             <Include-Resource>{maven-resources},src/main/media</Include-Resource>
             <Sling-Initial-Content>
+              SLING-INF/content/Extensions/;path:=/Extensions;overwrite:=false,
               SLING-INF/content/Homepage/;path:=/;overwrite:=true,
               SLING-INF/content/Questionnaires/;path:=/Questionnaires/;overwrite:=true;checkin:=true,
               SLING-INF/content/libs/cards/resources/;path:=/libs/cards/resources/;overwrite:=true,

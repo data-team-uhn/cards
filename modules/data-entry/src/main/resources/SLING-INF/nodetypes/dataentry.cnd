@@ -462,8 +462,8 @@
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/QuestionnairesHomepage" mandatory autocreated protected
 
-  // Hardcode the resource supertype: the QuestionnairesHomepage is a resource.
-  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
+  // Hardcode the resource supertype: the QuestionnairesHomepage is a resource homepage.
+  - sling:resourceSuperType (STRING) = "cards/ResourceHomepage" mandatory autocreated protected
 
   // Set a default title.
   - title (String) = "Questionnaires" mandatory autocreated
@@ -755,8 +755,8 @@
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/FormsHomepage" mandatory autocreated protected
 
-  // Hardcode the resource supertype: the FormsHomepage is a resource.
-  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
+  // Hardcode the resource supertype: the FormsHomepage is a resource homepage.
+  - sling:resourceSuperType (STRING) = "cards/ResourceHomepage" mandatory autocreated protected
 
   // Set a default title.
   - title (String) = "Data" mandatory autocreated
@@ -818,8 +818,8 @@
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/SubjectsHomepage" mandatory autocreated protected
 
-  // Hardcode the resource supertype: the SubjectsHomepage is a resource.
-  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
+  // Hardcode the resource supertype: the SubjectsHomepage is a resource homepage.
+  - sling:resourceSuperType (STRING) = "cards/ResourceHomepage" mandatory autocreated protected
 
   // Set a default title.
   - title (String) = "Subjects" mandatory autocreated
@@ -868,8 +868,8 @@
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/SubjectTypesHomepage" mandatory autocreated protected
 
-  // Hardcode the resource supertype: the SubjectTypesHomepage is a resource.
-  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
+  // Hardcode the resource supertype: the SubjectTypesHomepage is a resource homepage.
+  - sling:resourceSuperType (STRING) = "cards/ResourceHomepage" mandatory autocreated protected
 
   // Set a default title.
   - title (String) = "Subject Types" mandatory autocreated

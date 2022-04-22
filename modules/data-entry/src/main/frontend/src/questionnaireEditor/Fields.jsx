@@ -35,6 +35,10 @@ import FormattedText from "../components/FormattedText.jsx";
 import ReferenceInput from "./ReferenceInput";
 import { FieldsProvider } from "./FieldsContext.jsx";
 
+export function formatString(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1).replace( /([A-Z])/g, " $1" ).toLowerCase();
+}
+
 let Fields = (props) => {
   let { data, JSON, edit, classes, ...rest } = props;
 
@@ -58,10 +62,6 @@ let Fields = (props) => {
           />
     );
   };
-
-  let formatString = (str) => {
-    return str.charAt(0).toUpperCase() + str.slice(1).replace( /([A-Z])/g, " $1" ).toLowerCase();
-  }
 
   let displayStaticField = (key, value) => {
     return (<React.Fragment key={key}>

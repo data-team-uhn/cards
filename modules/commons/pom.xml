@@ -46,6 +46,7 @@
             <!-- Initial content to be loaded on bundle installation -->
             <Sling-Initial-Content>
               SLING-INF/content/libs/cards/Resource/;path:=/libs/cards/Resource/;overwrite:=true,
+              SLING-INF/content/libs/cards/ResourceHomepage/;path:=/libs/cards/ResourceHomepage/;overwrite:=true,
               SLING-INF/content/libs/sling/servlet/errorhandler/;path:=/libs/sling/servlet/errorhandler/;overwrite:=true,
               SLING-INF/content/ROOT/;path:=/;overwrite:=true
             </Sling-Initial-Content>
