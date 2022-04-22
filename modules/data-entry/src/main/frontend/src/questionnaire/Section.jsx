@@ -98,6 +98,7 @@ function Section(props) {
   const [ selectedUUID, setSelectedUUID ] = useState();
   const [ uuid ] = useState(uuidv4());  // To keep our IDs separate from any other sections
   const [ removableAnswers, setRemovableAnswers ] = useState({[ID_STATE_KEY]: 1});
+
   // Determine if we have any conditionals in our definition that would cause us to be hidden
   const conditionIsMet = ConditionalComponentManager.evaluateCondition(
     sectionDefinition,
@@ -132,6 +133,18 @@ function Section(props) {
   }
 
   const sectionEntries = Object.entries(sectionDefinition).filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']));
+
+  function calculateDeletion() {
+    let delList = [];
+    let keySet = Object.keys(removableAnswers);
+    for (let i = 0; i < keySet.length; i++) {
+      let key = keySet[i];
+      for (let j = 0; j < removableAnswers[key].length-1; j++) {
+        delList.push(removableAnswers[key][j]);
+      }
+    }
+    return delList;
+  }
 
   const collapseClasses = [];
   collapseClasses.push(classes[displayMode + 'Section']);
@@ -263,7 +276,6 @@ function Section(props) {
                           newAnswers[ID_STATE_KEY] = newAnswers[ID_STATE_KEY] + 1;
                           setRemovableAnswers(newAnswers);
                         }}>
-                      >
                       </FormEntry>)
                   }
                 </Grid>
@@ -272,6 +284,9 @@ function Section(props) {
           </div>
           })
         }
+        {!isRecurrent && calculateDeletion().map((delPath) =>
+          <input type="hidden" name={`${delPath}@Delete`} value="0" key={delPath}></input>
+        )}
         {isEdit && isRecurrent &&
         <Grid item className="addSectionContainer">
           <Button
@@ -319,7 +334,7 @@ function Section(props) {
       </DialogActions>
     </Dialog>
     </React.Fragment>
-    , [conditionIsMet, instanceLabels, labelsToHide, dialogOpen, pageActive]);
+    , [conditionIsMet, instanceLabels, labelsToHide, dialogOpen, removableAnswers[ID_STATE_KEY], pageActive]);
 }
 
 Section.propTypes = {
