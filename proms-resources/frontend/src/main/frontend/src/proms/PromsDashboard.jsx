@@ -188,7 +188,7 @@ function PromsDashboard(props) {
         {/* Survey views */}
         { surveys?.map((s, index) => (
             <Grid item lg={12} xl={6} key={`view-survey-${clinicId}-${s["@name"]}`} className={classes.dashboardEntry}>
-              <PromsView data={s["@path"]} color={getColor(index + 1)} visitInfo={visitInfo} surveysId={surveysId} />
+              <PromsView data={s} color={getColor(index + 1)} visitInfo={visitInfo} surveysId={surveysId} />
             </Grid>
           ))
         }
@@ -196,7 +196,7 @@ function PromsDashboard(props) {
         {
           dashboardExtensions.map((extension, index) => {
             let Extension = extension["cards:extensionRender"];
-            return <Grid item lg={12} xl={6} key={"extension-" + index} className={classes.dashboardEntry}>
+            return <Grid item lg={12} xl={6} key={`extension-${clinicId}-${index}`} className={classes.dashboardEntry}>
               <Extension data={extension["cards:data"]} color={getColor(index)} visitInfo={visitInfo} surveysId={surveysId} />
             </Grid>
           })
