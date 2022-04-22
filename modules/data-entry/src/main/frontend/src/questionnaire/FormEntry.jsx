@@ -58,7 +58,7 @@ export const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES).concat(INFO_TYPE
  * @param {Object} classes style classes
  * @returns a React component that renders the question
  */
-let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, onAddedAnswerPath, onChange, pageActive, isEdit, isSummary, instanceId) => {
+let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, onAddedAnswerPath, sectionAnswersState, onChange, pageActive, isEdit, isSummary, instanceId) => {
   const [ doHighlight, setDoHighlight ] = useState();
   const [ anchor, setAnchor ] = useState();
 
@@ -115,6 +115,7 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, o
         onChange={onChange}
         onAddedAnswerPath={onAddedAnswerPath}
         pageActive={pageActive}
+        sectionAnswersState={sectionAnswersState}
         isEdit={isEdit}
         instanceId={instanceId || ''}
         />
@@ -190,12 +191,12 @@ let displayInformation = (infoDefinition, key, classes, pageActive, isEdit) => {
  * @returns a React component that renders the section
  */
  export default function FormEntry(props) {
-  let { classes, entryDefinition, path, depth, existingAnswers, keyProp, onAddedAnswerPath, onChange, visibleCallback, pageActive, isEdit, isSummary, instanceId, contentOffset} = props;
+  let { classes, entryDefinition, path, depth, existingAnswers, keyProp, onAddedAnswerPath, sectionAnswersState, onChange, visibleCallback, pageActive, isEdit, isSummary, instanceId, contentOffset} = props;
   // TODO: As before, I'm writing something that's basically an if statement
   // this should instead be via a componentManager
   if (QUESTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
     if (visibleCallback) visibleCallback(true);
-    return displayQuestion(entryDefinition, path, existingAnswers, keyProp, classes, onAddedAnswerPath, onChange, pageActive, isEdit, isSummary, instanceId);
+    return displayQuestion(entryDefinition, path, existingAnswers, keyProp, classes, onAddedAnswerPath, sectionAnswersState, onChange, pageActive, isEdit, isSummary, instanceId);
   } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
     return displaySection(entryDefinition, path, depth, existingAnswers, keyProp, onChange, visibleCallback, pageActive, isEdit, isSummary, instanceId, contentOffset);
   } else if (INFO_TYPES.includes(entryDefinition["jcr:primaryType"])) {

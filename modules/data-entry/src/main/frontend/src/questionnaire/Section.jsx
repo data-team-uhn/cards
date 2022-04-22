@@ -36,6 +36,8 @@ import ConditionalSingle from "./ConditionalSingle";
 import FormattedText from "../components/FormattedText.jsx";
 import { v4 as uuidv4 } from 'uuid';
 
+const ID_STATE_KEY = ":AccessCount";
+
 // The heading levels that @material-ui supports
 const MAX_HEADING_LEVEL = 6;
 const MIN_HEADING_LEVEL = 4;
@@ -95,7 +97,7 @@ function Section(props) {
   const [ dialogOpen, setDialogOpen ] = useState(false);
   const [ selectedUUID, setSelectedUUID ] = useState();
   const [ uuid ] = useState(uuidv4());  // To keep our IDs separate from any other sections
-
+  const [ removableAnswers, setRemovableAnswers ] = useState({[ID_STATE_KEY]: 1});
   // Determine if we have any conditionals in our definition that would cause us to be hidden
   const conditionIsMet = ConditionalComponentManager.evaluateCondition(
     sectionDefinition,
@@ -256,6 +258,11 @@ function Section(props) {
                         isSummary={isSummary}
                         contentOffset={contentOffset}
                         pageActive={pageActive}
+                        sectionAnswersState={removableAnswers}
+                        onAddedAnswerPath={(newAnswers) => {
+                          newAnswers[ID_STATE_KEY] = newAnswers[ID_STATE_KEY] + 1;
+                          setRemovableAnswers(newAnswers);
+                        }}>
                       >
                       </FormEntry>)
                   }
