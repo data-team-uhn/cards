@@ -21,7 +21,8 @@ RUN apt-get update
 RUN apt-get -y install \
 	apache2 \
 	nodejs \
-	node-fetch
+	node-fetch \
+	node-mustache
 
 RUN a2enmod proxy
 RUN a2enmod proxy_http
@@ -31,6 +32,7 @@ RUN a2enmod ssl
 COPY 000-default.conf /etc/apache2/sites-enabled/000-default.conf
 COPY proxyerror /var/www/html/proxyerror
 COPY http_proxy.js /http_proxy.js
+COPY render_503_page.js /render_503_page.js
 
 COPY startup.sh /startup.sh
 RUN chmod +x /startup.sh

@@ -18,10 +18,11 @@
 -->
 <html>
   <head>
-    <title>CARDS is down</title>
+    <title>{{CARDS_APP_NAME}} is down</title>
   </head>
   <body>
-    <h1>CARDS is down</h1>
     <img src="/proxyerror/logo.png"/>
+    <p>{{CARDS_APP_NAME}} is down for maintenance.</p>
+    <p>We apoligize for any inconvenience this may cause.</p>
   </body>
 </html>

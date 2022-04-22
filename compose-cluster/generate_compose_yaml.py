@@ -126,6 +126,18 @@ def getCardsProjectLogoPath(project_name):
 
   return "../" + projectLogoPath
 
+def getCardsApplicationName(project_name):
+  projectApplicationNameMap = {}
+  projectApplicationNameMap['cards4care'] = "Cards 4 CaRe"
+  projectApplicationNameMap['cards4kids'] = "WilliamsDB"
+  projectApplicationNameMap['cards4lfs'] = "LFS Data Core"
+  projectApplicationNameMap['cards4proms'] = "DATA-PRO"
+
+  if project_name in projectApplicationNameMap:
+    return projectApplicationNameMap[project_name]
+  else:
+    return "CARDS"
+
 OUTPUT_FILENAME = "docker-compose.yml"
 
 yaml_obj = {}
@@ -407,6 +419,10 @@ if ENABLE_NCR:
 #Add the appropriate CARDS logo (eg. DATAPRO, Cards4CaRe, etc...) for the selected project
 shutil.copyfile(getCardsProjectLogoPath(args.cards_project), "./proxy/proxyerror/logo.png")
 
+#Specify the Application Name of the CARDS project to the proxy
+yaml_obj['services']['proxy']['environment'] = []
+yaml_obj['services']['proxy']['environment'].append("CARDS_APP_NAME={}".format(getCardsApplicationName(args.cards_project)))
+
 if SSL_PROXY:
   if args.saml:
     shutil.copyfile("proxy/https_saml_000-default.conf", "proxy/000-default.conf")
@@ -424,8 +440,6 @@ else:
     shutil.copyfile("proxy/http_000-default.conf", "proxy/000-default.conf")
 
 if args.saml:
-  yaml_obj['services']['proxy']['environment'] = []
-
   if args.saml_idp_destination:
     idp_url = args.saml_idp_destination
   else:
