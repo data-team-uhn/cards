@@ -95,6 +95,7 @@ public class ClinicsServlet extends SlingAllMethodsServlet
             this.displayName.set(getUniqueDisplayName(resolver, this.displayName.get()));
             this.createClinicMapping(resolver);
             this.createSidebar(resolver);
+            this.createDashboardExtension(resolver);
             session.save();
         } catch (RepositoryException e) {
             this.returnError(response, e.getMessage());
@@ -245,6 +246,22 @@ public class ClinicsServlet extends SlingAllMethodsServlet
             "cards:icon", "asset:proms-homepage.clinicIcon.js",
             "cards:defaultOrder", 10,
             ClinicsServlet.PRIMARY_TYPE_FIELD, "cards:Extension"));
+    }
+
+    /**
+     * Create a dashboard extension for the new clinic.
+     *
+     * @param resolver Resource resolver to use
+     */
+    private void createDashboardExtension(final ResourceResolver resolver)
+        throws RepositoryException, PersistenceException
+    {
+        final Resource parentResource = resolver.getResource("/apps/cards/ExtensionPoints");
+        resolver.create(parentResource, "DashboardViews" + this.idHash.get(), Map.of(
+            ClinicsServlet.PRIMARY_TYPE_FIELD, "cards:ExtensionPoint",
+            "cards:extensionPointId", "proms/dashboard/" + this.idHash.get(),
+            "cards:extensionPointName", this.displayName.get() + " questionnaires dashboard"
+            ));
     }
 
     /**
