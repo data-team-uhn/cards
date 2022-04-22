@@ -48,7 +48,6 @@
               SLING-INF/content/libs/cards/resources/;path:=/libs/cards/resources/;overwrite:=true,
               SLING-INF/content/libs/cards/conf/;path:=/libs/cards/conf/;overwrite:=true,
               SLING-INF/content/apps/cards/config/CopyAnswers/Questionnaires/;path:=/apps/cards/config/CopyAnswers/Questionnaires/;overwrite:=true,
-              SLING-INF/content/apps/cards/config/CopyAnswers/SubjectTypes/;path:=/apps/cards/config/CopyAnswers/SubjectTypes/;overwrite:=true,
               SLING-INF/content/apps/cards/config/CopyAnswers/SubjectTypes/Patient/;path:=/apps/cards/config/CopyAnswers/SubjectTypes/Patient/;overwrite:=true,
               SLING-INF/content/Statistics/;path:=/Statistics/;overwrite:=false,
             </Sling-Initial-Content>
