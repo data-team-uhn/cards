@@ -29,7 +29,7 @@ RUN a2enmod headers
 RUN a2enmod ssl
 
 COPY 000-default.conf /etc/apache2/sites-enabled/000-default.conf
-
+COPY proxyerror /var/www/html/proxyerror
 COPY http_proxy.js /http_proxy.js
 
 COPY startup.sh /startup.sh
