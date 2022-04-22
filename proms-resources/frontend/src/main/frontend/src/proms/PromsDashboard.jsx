@@ -35,6 +35,9 @@ import {
 
 import { useTheme } from '@material-ui/core/styles';
 
+import PromsView from "./PromsView";
+import VisitView from "./VisitView";
+
 async function getDashboardExtensions(name) {
   return loadExtensions("DashboardViews" + name)
     .then(extensions => extensions.slice()
@@ -85,12 +88,14 @@ const useStyles = makeStyles(theme => ({
 // Component that renders the proms dashboard, with one LiveTable per questionnaire.
 // Each LiveTable contains all forms that use the given questionnaire.
 function PromsDashboard(props) {
-  let [ name, setName ] = useState();
+  let [ clinicId, setClinicId ] = useState();
   let [ title, setTitle ] = useState();
   let [ description, setDescription ] = useState();
   let [ surveysId, setSurveysId ] = useState("");
+  let [ surveys, setSurveys ] = useState();
   let [ dashboardExtensions, setDashboardExtensions ] = useState([]);
-  let [ loading, setLoading ] = useState(true);
+  let [ defaultsLoading, setDefaultsLoading ] = useState(true);
+  let [ extensionsLoading, setExtensionsLoading ] = useState(true);
   let [ visitInfo, setVisitInfo ] = useState();
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
@@ -98,7 +103,7 @@ function PromsDashboard(props) {
 
   // If there's an extra path segment, we use it to obtain the extension point
   // Otherwise default to "DashboardViews" (main dashboard)
-  useEffect(() => setName(location.pathname.split("/Dashboard/")?.[1] || ""), [location]);
+  useEffect(() => setClinicId(location.pathname.split("/Dashboard/")?.[1] || ""), [location]);
 
   // At startup, load the visit information questionnaire to pass it to all extensions
   useEffect(() => {
@@ -107,26 +112,43 @@ function PromsDashboard(props) {
       .then((json) => setVisitInfo(json));
   }, []);
 
-  // Also load all extensions
+  // Load the extensions, if any
   useEffect(() => {
-    if (!name) return;
-    getDashboardExtensions(name)
+    if (!clinicId) return;
+    getDashboardExtensions(clinicId)
       .then(extensions => setDashboardExtensions(extensions))
       .catch(err => console.log("Something went wrong loading the proms dashboard", err))
-      .finally(() => setLoading(false));
-  }, [name])
+      .finally(() => setExtensionsLoading(false));
+  }, [clinicId])
 
-  // And the extension point definition to obtain its name
+  // Also load the clinic configuration...
   useEffect(() => {
-    if (!name) return;
-    fetchWithReLogin(globalLoginDisplay, `/apps/cards/ExtensionPoints/DashboardViews${name}.json`)
+    if (!clinicId) return;
+    fetchWithReLogin(globalLoginDisplay, `/Proms/ClinicMapping/${clinicId}.deep.json`)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
-        setTitle(json?.title || json?.["cards:extensionPointName"] || name);
-        setDescription(json?.description || "")
-        setSurveysId(json?.surveys || "");
-      });
-  }, [name]);
+        setTitle(json.displayName || json.clinicName || clinicId);
+        setDescription(json.description || "");
+        setSurveysId(json.survey);
+      })
+  }, [clinicId])
+
+  // ... and the surveys configured for the clinic
+  useEffect(() => {
+    if (!surveysId) {
+      // if we have a clinic but no surveys, nothing more to load
+      setDefaultsLoading(!!!clinicId);
+      return;
+    }
+    fetchWithReLogin(globalLoginDisplay, `/Proms/${surveysId}.deep.json`)
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((json) => setSurveys(
+        Object.values(json || {})
+          .filter(e => e["jcr:primaryType"] == "cards:QuestionnaireRef")
+          .sort((a, b) => a.order - b.order)
+      ))
+      .finally(() => setDefaultsLoading(false));
+  }, [surveysId]);
 
   const classes = useStyles();
 
@@ -148,7 +170,7 @@ function PromsDashboard(props) {
   const theme = useTheme();
   const appbarExpanded = useMediaQuery(theme.breakpoints.up('md'));
 
-  if (loading || !visitInfo) {
+  if (defaultsLoading || extensionsLoading || !visitInfo) {
     return (
       <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
     );
@@ -159,10 +181,22 @@ function PromsDashboard(props) {
       <Typography variant="h4" className={classes.dashboardTitle + (appbarExpanded ? ' ' + classes.withMargin : '')}>{title}</Typography>
       { description && <Typography variant="overline">{description}</Typography>}
       <Grid container spacing={4} className={classes.dashboardContainer}>
+        {/* Appointments view */}
+        <Grid item lg={12} xl={6} key={`view-appointments-${clinicId}`} className={classes.dashboardEntry}>
+          <VisitView color={getColor(0)} visitInfo={visitInfo} surveysId={surveysId} />
+        </Grid>
+        {/* Survey views */}
+        { surveys?.map((s, index) => (
+            <Grid item lg={12} xl={6} key={`view-survey-${clinicId}-${s["@name"]}`} className={classes.dashboardEntry}>
+              <PromsView data={s} color={getColor(index + 1)} visitInfo={visitInfo} surveysId={surveysId} />
+            </Grid>
+          ))
+        }
+        {/* Extensions */}
         {
           dashboardExtensions.map((extension, index) => {
             let Extension = extension["cards:extensionRender"];
-            return <Grid item lg={12} xl={6} key={"extension-" + index} className={classes.dashboardEntry}>
+            return <Grid item lg={12} xl={6} key={`extension-${clinicId}-${index}`} className={classes.dashboardEntry}>
               <Extension data={extension["cards:data"]} color={getColor(index)} visitInfo={visitInfo} surveysId={surveysId} />
             </Grid>
           })

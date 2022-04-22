@@ -39,17 +39,13 @@ function PromsView(props) {
 
   // At startup, load questionnaire
   useEffect(() => {
-    if (data && !columns) {
-      fetchWithReLogin(globalLoginDisplay, data + ".deep.json")
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => {
-        setColumns(JSON.parse(json["view"] || "[]"));
-        setQuestionnaireId(json.questionnaire?.["jcr:uuid"] || "");
-        setTitle(json.questionnaire?.["title"]);
-        setAcronym(json.questionnaire?.["@name"]);
-      });
+    if (data) {
+        setColumns(JSON.parse(data["view"] || "[]"));
+        setQuestionnaireId(data.questionnaire?.["jcr:uuid"] || "");
+        setTitle(data.questionnaire?.["title"]);
+        setAcronym(data.questionnaire?.["@name"]);
     }
-  }, [data]);
+  }, [data["@path"]]);
 
   if (!questionnaireId || !visitInfo) {
     return <CircularProgress/>;
@@ -84,6 +80,7 @@ function PromsView(props) {
       query={query}
       dateField="visitDate"
       questionnaireId={questionnaireId}
+      key={data?.["@path"]}
     />
   );
 }

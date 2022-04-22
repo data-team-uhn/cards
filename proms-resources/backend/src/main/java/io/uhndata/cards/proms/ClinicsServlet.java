@@ -83,15 +83,6 @@ public class ClinicsServlet extends SlingAllMethodsServlet
     @Reference
     private ConfigurationAdmin configAdmin;
 
-    // Custom exception for us to handle
-    public class NoSuchSurveyException extends Exception
-    {
-        public NoSuchSurveyException(String errorMessage)
-        {
-            super(errorMessage);
-        }
-    }
-
     @Override
     public void doPost(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
         throws IOException
@@ -105,11 +96,8 @@ public class ClinicsServlet extends SlingAllMethodsServlet
             this.createClinicMapping(resolver);
             this.createSidebar(resolver);
             this.createDashboardExtension(resolver);
-            this.createDashboardViews(resolver);
             session.save();
         } catch (RepositoryException e) {
-            this.returnError(response, e.getMessage());
-        } catch (NoSuchSurveyException e) {
             this.returnError(response, e.getMessage());
         } catch (NullPointerException e) {
             this.returnError(response, e.getMessage());
@@ -272,48 +260,8 @@ public class ClinicsServlet extends SlingAllMethodsServlet
         resolver.create(parentResource, "DashboardViews" + this.idHash.get(), Map.of(
             ClinicsServlet.PRIMARY_TYPE_FIELD, "cards:ExtensionPoint",
             "cards:extensionPointId", "proms/dashboard/" + this.idHash.get(),
-            "cards:extensionPointName", this.displayName.get() + " questionnaires dashboard",
-            "title", this.displayName.get(),
-            ClinicsServlet.DESCRIPTION_FIELD, this.description.get(),
-            "surveys", this.surveyID.get()
+            "cards:extensionPointName", this.displayName.get() + " questionnaires dashboard"
             ));
-    }
-
-    /**
-     * Create a dashboard view for each questionnaire in the survey set specified by the user.
-     *
-     * @param resolver Resource resolver to use
-     */
-    private void createDashboardViews(final ResourceResolver resolver)
-        throws RepositoryException, PersistenceException, NoSuchSurveyException
-    {
-        // First, create the folder to hold the dashboard views
-        final Resource dashboardViewFolder = resolver.getResource("/Extensions/DashboardViews/");
-        Resource folder = resolver.create(dashboardViewFolder, this.idHash.get() + "View", Map.of(
-            ClinicsServlet.PRIMARY_TYPE_FIELD, "sling:Folder"));
-
-        // Create a bunch of survey views, one per clinic ID given
-        final Resource surveys = resolver.getResource("/Proms/" + this.surveyID.get());
-        if (surveys == null) {
-            // This call is malformed: the survey ID given does not exist
-            throw new NoSuchSurveyException(this.surveyID.get() + " is not an existing survey ID.");
-        }
-        int i = 0;
-        for (final Resource questionnaireRef : surveys.getChildren()) {
-            // First, we need to grab the surveys under that resource
-            final Node questionnaireNode = questionnaireRef.adaptTo(Node.class)
-                .getProperty("questionnaire").getNode();
-
-            // Then, we need to grab the revelant details and make a new View
-            resolver.create(folder, questionnaireNode.getProperty("title").getString(), Map.of(
-                ClinicsServlet.PRIMARY_TYPE_FIELD, "cards:Extension",
-                "cards:extensionPointId", "proms/dashboard/" + this.idHash.get(),
-                "cards:extensionName", questionnaireNode.getProperty("title").getString() + " View",
-                "cards:extensionRenderURL", "asset:proms-homepage.PromsView.js",
-                "cards:defaultOrder", i++,
-                "cards:data", questionnaireRef.getPath()
-                ));
-        }
     }
 
     /**
