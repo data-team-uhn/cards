@@ -45,11 +45,11 @@ function PrintHeader (props) {
   const classes = useStyles();
 
   const hasData = (
-    resourceData.last_name ||
-    resourceData.first_name ||
-    resourceData.date_of_birth ||
-    resourceData.mrn ||
-    resourceData.time
+    resourceData?.last_name ||
+    resourceData?.first_name ||
+    resourceData?.date_of_birth ||
+    resourceData?.mrn ||
+    resourceData?.time
   );
 
   return (
