@@ -118,7 +118,7 @@ const useStyles = makeStyles(theme => ({
 function PrintPreview(props) {
   const { open, resourcePath, resourceData, title, breadcrumb, date, subtitle, disablePreview, fullScreen, onClose, ...rest } = props;
 
-  const [ headerExtensions, setHeaderExtensions ] = useState()
+  const [ headerExtensions, setHeaderExtensions ] = useState();
 
   const [ content, setContent ] = useState();
   const [ error, setError ] = useState();
