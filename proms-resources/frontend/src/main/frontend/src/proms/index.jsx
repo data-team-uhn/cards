@@ -37,17 +37,6 @@ function PromsHomepage (props) {
     setSubject(p.subject);
   }
 
-  if (!("hasSessionSubject" in document.getElementById("proms-container").dataset)) {
-    return (
-      <ErrorPage
-        title="Invalid access"
-        message="This page can only be accessed by opening an invitation to fill in a survey"
-        buttonLink="/content.html/Questionnaires/User"
-        buttonLabel="Go to the dashboard"
-      />
-    );
-  }
-
   if (!subject) {
     return (<>
       <PatientIdentification onSuccess={onPatientIdentified} />
