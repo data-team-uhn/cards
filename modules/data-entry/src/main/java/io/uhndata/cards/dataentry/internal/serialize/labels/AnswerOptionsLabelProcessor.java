@@ -64,6 +64,9 @@ public class AnswerOptionsLabelProcessor extends SimpleAnswerLabelProcessor impl
     private boolean hasAnswerOption(final Node question)
     {
         try {
+            if (question == null) {
+                return false;
+            }
             NodeIterator childNodes = question.getNodes();
             if (childNodes.getSize() <= 0) {
                 return false;
