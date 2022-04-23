@@ -113,7 +113,7 @@ function PromsLandingPage(props) {
                       window.location.search = query;
                     }}
                    >
-                    <Typography variant="h6">Health Care Provider</Typography>
+                    <Typography variant="h6">Healthcare Provider</Typography>
                   </Button>
                 </Grid>
               </Grid>
