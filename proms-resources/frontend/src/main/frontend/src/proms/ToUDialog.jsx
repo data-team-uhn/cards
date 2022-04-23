@@ -84,15 +84,30 @@ function ToUDialog(props) {
   const [ error, setError ] = useState();
 
   const classes = useStyles();
+
+  const fetchTouAccepted = () => {
+    fetch("/Proms.termsOfUse")
+      .then( response => response.ok ? response.json() : Promise.reject(response) )
+      .then( json => json.status == "success" ? json[TOU_ACCEPTED_VARNAME] : Promise.reject(json.error) )
+      .then( setTouAcceptedVersion )
+      .catch((response) => {
+        let errMsg = "Retrieving Terms of Use version failed";
+        setError(errMsg + (response.status ? ` with error code ${response.status}: ${response.statusText}` : response));
+      });
+  }
+
   useEffect(() => {
     if (!touAcceptedVersion) {
-      fetch("/Proms.termsOfUse")
-        .then( response => response.ok ? response.json() : Promise.reject(response) )
-        .then( json => json.status == "success" ? json[TOU_ACCEPTED_VARNAME] : Promise.reject(json.error) )
-        .then( setTouAcceptedVersion )
-        .catch( setError )
+      fetchTouAccepted();
     }
   }, [touAcceptedVersion])
+
+  useEffect(() => {
+    if (open && error) {
+      setError(null);
+      fetchTouAccepted();
+    }
+  }), [open]
 
   useEffect(() => {
     fetch("/Proms/TermsOfUse.json")
@@ -152,7 +167,7 @@ function ToUDialog(props) {
       { error ?
         <Alert severity="error">
           <AlertTitle>An error occurred</AlertTitle>
-          {error}
+          {error ? error : null}
         </Alert>
         :
         <FormattedText>{tou?.text}</FormattedText>

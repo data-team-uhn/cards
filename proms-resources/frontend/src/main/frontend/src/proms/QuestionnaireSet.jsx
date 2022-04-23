@@ -435,6 +435,7 @@ function QuestionnaireSet(props) {
   const greet = (name) => {
     let hourOfDay = (new Date()).getHours();
     let timeOfDay = hourOfDay < 12 ? "morning" : hourOfDay < 18 ? "afternoon" : "evening";
+    // TODO: Remove comma with tokenless authentication
     return `Good ${timeOfDay}, ${name}`;
   }
 
@@ -456,6 +457,7 @@ function QuestionnaireSet(props) {
   }
 
   let appointmentAlert = () => {
+    // TODO: Remove with tokenless authentication
     const time = appointmentDate();
     let location = getVisitInformation("location");
     let provider = getVisitInformation("provider");
@@ -486,7 +488,7 @@ function QuestionnaireSet(props) {
     let result = "";
     const date = getVisitDate();
     if (date != null) {
-      // Tokens expire 2 hours after the visit
+      // If the visit date could be retrieved, this is an emailed token and will expire 2 hours after the visit
       date.add(2, 'hours');
 
       // Get the date difference in the format: X days, Y hours and Z minutes,
@@ -503,6 +505,9 @@ function QuestionnaireSet(props) {
       if (diffStrings.length > 0) {
         result = " This survey link will expire in " + diffStrings.join(", ") + result + ".";
       }
+    } else {
+      // Visit date could not be retrieved, this token will expire 1 hour from creation.
+      result = " This session will expire in 1 hour."
     }
 
     return result;

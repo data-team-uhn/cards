@@ -22,6 +22,7 @@ import { v4 as uuidv4 } from 'uuid';
 import {
   Button,
   Dialog,
+  DialogActions,
   DialogContent,
   DialogTitle,
   FormControl,
@@ -35,6 +36,7 @@ import {
   makeStyles
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
+import MaterialTable from "material-table";
 
 import ToUDialog from "./ToUDialog.jsx";
 
@@ -102,7 +104,7 @@ const useStyles = makeStyles(theme => ({
 // This just makes sure that the correct person accessed the application.
 function PatientIdentification(props) {
   // Callback for reporting successful authentication
-  const { onSuccess } = props;
+  const { onSuccess, theme } = props;
 
   // The values entered by the user
   const [ dob, setDob ] = useState();
@@ -116,11 +118,14 @@ function PatientIdentification(props) {
   // and will be returned back to the rest of the PROMS UI through the onSuccess callback
   const [ patientDetails, setPatientDetails ] = useState();
   const [ visit, setVisit ] = useState();
+  // Returned from the server after partial validation of the authentication.
+  const [ visitList, setVisitList ] = useState([]);
+  // Visit list page size
+  const [ pageSize, setPageSize ] = useState(5);
   // Whether the patient user has accepted the latest version of the Terms of Use
   const [ touAccepted, setTouAccepted ] = useState(false);
   // Whether the Terms of Use dialog can be displayed after patient identification
   const [ showTou, setShowTou ] = useState(false);
-  // Info about each patient is stored in a Patient information form
 
   const [ mrnHelperOpen, setMrnHelperOpen ] = useState(false);
 
@@ -138,13 +143,19 @@ function PatientIdentification(props) {
     requestData.append("date_of_birth", dob);
     requestData.append("mrn", mrn);
     requestData.append("health_card", hc);
+    if (visit) {
+      requestData.append("visit", visit);
+    }
     fetch("/Proms.validateCredentials", {
       "method": "POST",
       "body": requestData
       })
       .then((response) => response.json())
       .then((json) => {
-        if (json.status != "success") {
+        if(json.status == "needsVisit") {
+          setVisitList(json.visits);
+          return;
+        } else if (json.status != "success") {
           return Promise.reject(json.error);
         }
         setPatientDetails(json.patientInformation);
@@ -166,6 +177,11 @@ function PatientIdentification(props) {
     setError("");
     setPatientDetails(null);
     setVisit(null);
+    identify();
+  }
+
+  const onVisitSelected = () => {
+    setVisitList([]);
     identify();
   }
 
@@ -212,6 +228,42 @@ function PatientIdentification(props) {
         </Typography>
         <img src="/libs/cards/resources/mrn_helper_2.png" alt="MRN location within the Patient Portal side bar" className={classes.mrnHelperImage} />
       </DialogContent>
+    </Dialog>
+    <Dialog open={visitList.length > 0}>
+      <DialogTitle>
+        Please select an upcoming visit
+      </DialogTitle>
+      <DialogContent>
+        <MaterialTable
+          title="Select an upcoming visit"
+          columns={[{title: "Clinic", field: "survey"}]}
+          data={visitList}
+          options={{
+            header: false,
+            toolbar: false,
+            addRowPosition: 'first',
+            pageSize: pageSize,
+            // rowStyle: rowData => ({
+            //   /* It doesn't seem possible to alter the className from here */
+            //   backgroundColor: (visit === rowData["subject"]) ? theme.palette.grey["200"] : theme.palette.background.default
+            // })
+          }}
+          onRowClick={(event, rowData) => {
+            setVisit(rowData["subject"]);
+          }}
+          onChangeRowsPerPage={setPageSize}
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={onVisitSelected}
+          disabled={visit == null}
+          >
+            Submit
+        </Button>
+      </DialogActions>
     </Dialog>
     <form className={classes.form} onSubmit={onSubmit} >
       <Grid container direction="column" spacing={4} alignItems="center" justify="center">
@@ -278,9 +330,9 @@ function PatientIdentification(props) {
               Submit
             </Button>
           </Grid>
+          <Input id="j_visitSelection" name="j_visitSelection" autoComplete="off" style={{display: "none"}} value={visit || ""}/>
        </Grid>
     </form>
   </>)
 }
-
 export default PatientIdentification;
