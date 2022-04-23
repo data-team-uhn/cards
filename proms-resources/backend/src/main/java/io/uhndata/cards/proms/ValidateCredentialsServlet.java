@@ -366,7 +366,7 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
         // Verify visit hasn't been cancelled
         Node visitStatusQuestion = this.questionnaireUtils.getQuestion(visitQuestionnaire, "status");
         Node statusAnswer = this.formUtils.getAnswer(visitInformationForm, visitStatusQuestion);
-        if (!statusAnswer.hasProperty(VALUE) || !"planned".equals(statusAnswer.getProperty(VALUE).getString())) {
+        if (!statusAnswer.hasProperty(VALUE) || "cancelled".equals(statusAnswer.getProperty(VALUE).getString())) {
             result = false;
         }
 
