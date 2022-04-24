@@ -435,8 +435,7 @@ function QuestionnaireSet(props) {
   const greet = (name) => {
     let hourOfDay = (new Date()).getHours();
     let timeOfDay = hourOfDay < 12 ? "morning" : hourOfDay < 18 ? "afternoon" : "evening";
-    // TODO: Remove comma with tokenless authentication
-    return `Good ${timeOfDay}, ${name}`;
+    return `Good ${timeOfDay}` + (name ? `, ${name}` : '');
   }
 
   const getVisitInformation = (questionName) => {

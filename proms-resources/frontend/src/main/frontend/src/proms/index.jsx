@@ -33,8 +33,8 @@ function PromsHomepage (props) {
   const [ subject, setSubject ] = useState();
 
   let onPatientIdentified = (p) => {
-    setUsername(`${p.first_name || ""} ${p.last_name || ""}`);
-    setSubject(p.subject);
+    setUsername(`${p?.first_name || ""} ${p?.last_name || ""}`.trim());
+    setSubject(p?.subject);
   }
 
   if (!subject) {
