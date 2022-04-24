@@ -19,9 +19,11 @@
 import React, { useState } from "react";
 import {
   AppBar,
+  Breadcrumbs,
   Collapse,
   Fade,
   LinearProgress,
+  Link,
   Toolbar,
   Typography,
   makeStyles,
@@ -96,7 +98,10 @@ function PromsHeader (props) {
               <Typography variant="overline" color="textPrimary">{ title }</Typography>
             }
           </div>
-          <span className={classes.greeting}>{ greeting }</span>
+          <Breadcrumbs separator = "·">
+            {greeting && <span className={classes.greeting}>{ greeting }</span>}
+            <Link href="/system/sling/logout">Sign out</Link>
+          </Breadcrumbs>
         </Toolbar>
       </Collapse>
       { subtitle && <Collapse in={scrollTrigger}>{subtitleBar}</Collapse> }

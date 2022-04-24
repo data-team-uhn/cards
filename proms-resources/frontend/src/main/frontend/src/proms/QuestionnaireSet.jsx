@@ -630,10 +630,12 @@ your symptoms. Please see below for a summary of your scores and suggested actio
         }
         </Grid>
       ))}
-      </Grid>
+      </Grid>,
+      <Fab variant="extended" color="primary" onClick={() => window.location = "/system/sling/logout"}>Close</Fab>
     ] : [
       <Typography variant="h4">Thank you for your submission</Typography>,
-      disclaimer
+      disclaimer,
+      <Fab variant="extended" color="primary" onClick={() => window.location = "/system/sling/logout"}>Close</Fab>
     ];
 
   let loadingScreen = [ <CircularProgress /> ];
