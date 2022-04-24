@@ -150,13 +150,11 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
             response.addCookie(cookie);
 
             writeSuccess(response, visitSubjectPath, visitSubject, session);
-        } else if (validVisitForms.size() > 1) {
-            // Patient has multiple possible visits: Send back to the client to select
+        } else {
+            // Patient has zero or multiple possible visits: Send back to the client to continue
             Node visitQuestionnaire = getVisitInformationQuestionnaire(session);
             Node visitLocationQuestion = this.questionnaireUtils.getQuestion(visitQuestionnaire, "location");
             writeVisitSelection(response, validVisitForms, visitLocationQuestion);
-        } else {
-            writeInvalidCredentialsError(response);
         }
     }
 
