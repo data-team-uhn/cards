@@ -236,7 +236,7 @@ function PatientIdentification(props) {
       <DialogContent>
         <MaterialTable
           title="Select an upcoming visit"
-          columns={[{title: "Clinic", field: "survey"}]}
+          columns={[{title: "Clinic", field: "location"}]}
           data={visitList}
           options={{
             header: false,

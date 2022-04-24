@@ -153,8 +153,8 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
         } else if (validVisitForms.size() > 1) {
             // Patient has multiple possible visits: Send back to the client to select
             Node visitQuestionnaire = getVisitInformationQuestionnaire(session);
-            Node visitSurveysQuestion = this.questionnaireUtils.getQuestion(visitQuestionnaire, "surveys");
-            writeVisitSelection(response, validVisitForms, visitSurveysQuestion);
+            Node visitLocationQuestion = this.questionnaireUtils.getQuestion(visitQuestionnaire, "location");
+            writeVisitSelection(response, validVisitForms, visitLocationQuestion);
         } else {
             writeInvalidCredentialsError(response);
         }
@@ -433,7 +433,7 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
     }
 
     private void writeVisitSelection(final SlingHttpServletResponse response, final List<Node> visits,
-        final Node visitSurveysQuestion)
+        final Node visitLocationQuestion)
         throws IOException, RepositoryException
     {
         response.setContentType("application/json;charset=UTF-8");
@@ -445,8 +445,8 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
             for (final Node visit : visits) {
                 final JsonObjectBuilder visitJson = Json.createObjectBuilder();
                 visitJson.add("subject", visit.getProperty("subject").getNode().getPath());
-                visitJson.add("survey",
-                    this.formUtils.getAnswer(visit, visitSurveysQuestion).getProperty("value").getString());
+                visitJson.add("location",
+                    this.formUtils.getAnswer(visit, visitLocationQuestion).getProperty("value").getString());
                 visitsArray.add(visitJson);
             }
             result.add("visits", visitsArray);
