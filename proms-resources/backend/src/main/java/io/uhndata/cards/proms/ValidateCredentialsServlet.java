@@ -370,6 +370,13 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
             result = false;
         }
 
+        // Verify visit surveys haven't been submitted
+        Node visitSubmittedQuestion = this.questionnaireUtils.getQuestion(visitQuestionnaire, "surveys_submitted");
+        Node submittedAnswer = this.formUtils.getAnswer(visitInformationForm, visitSubmittedQuestion);
+        if (submittedAnswer.hasProperty(VALUE) && 1 == submittedAnswer.getProperty(VALUE).getLong()) {
+            result = false;
+        }
+
         return result;
     }
 
