@@ -531,7 +531,7 @@ function QuestionnaireSet(props) {
         <ListItemText
           primary={questionnaires[q]?.title}
           secondary={!isFormComplete(q) && (displayEstimate(q)
-            + (subjectData?.[q]?.["jcr:lastModifiedBy"] === "patient" ? " (in progress)" : ""))}
+            + (["patient", "guest-patient"].includes(subjectData?.[q]?.["jcr:lastModifiedBy"]) ? " (in progress)" : ""))}
         />
       </ListItem>
     ))}

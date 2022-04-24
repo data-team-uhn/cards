@@ -136,7 +136,7 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
             Calendar tokenExpiryDate = Calendar.getInstance();
             tokenExpiryDate.add(Calendar.HOUR_OF_DAY, 1);
             final String token = this.tokenManager.create(
-                "patient",
+                "guest-patient",
                 tokenExpiryDate,
                 Collections.singletonMap("cards:sessionSubject", visitSubjectPath))
                 .getToken();
