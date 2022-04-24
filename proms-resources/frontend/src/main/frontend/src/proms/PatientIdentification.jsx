@@ -31,12 +31,14 @@ import {
   IconButton,
   Input,
   InputLabel,
+  List,
+  ListItem,
   Link,
   Typography,
   makeStyles
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import MaterialTable from "material-table";
+import AppointmentIcon from '@material-ui/icons/Event';
 
 import ToUDialog from "./ToUDialog.jsx";
 
@@ -61,6 +63,9 @@ const useStyles = makeStyles(theme => ({
       "@media (max-width: 400px)" : {
         fontSize: "x-small",
       }
+    },
+    "& .MuiLink-root" : {
+      marginLeft: "1ex",
     }
   },
   formFields : {
@@ -98,6 +103,12 @@ const useStyles = makeStyles(theme => ({
   mrnHelperLink: {
     cursor: 'pointer',
   },
+  appointmentEntry: {
+    "& .MuiButton-label" : {
+      justifyContent: "flex-start",
+      textTransform: "none",
+    },
+  }
 }));
 
 // The patient is already authenticated via the token.
@@ -119,7 +130,7 @@ function PatientIdentification(props) {
   const [ patientDetails, setPatientDetails ] = useState();
   const [ visit, setVisit ] = useState();
   // Returned from the server after partial validation of the authentication.
-  const [ visitList, setVisitList ] = useState([]);
+  const [ visitList, setVisitList ] = useState();
   // Visit list page size
   const [ pageSize, setPageSize ] = useState(5);
   // Whether the patient user has accepted the latest version of the Terms of Use
@@ -180,10 +191,11 @@ function PatientIdentification(props) {
     identify();
   }
 
-  const onVisitSelected = () => {
-    setVisitList([]);
+  useEffect(() => {
+    if (!visit) return;
+    setVisitList(null);
     identify();
-  }
+  }, [visit]);
 
   // When the visit is successfully obtained and the latest version of Terms of Use accepted, pass it along with the identification data
   // to the parent component
@@ -211,6 +223,9 @@ function PatientIdentification(props) {
         setVisit(null);
       }}
     />
+
+    {/* MRN hint dialog*/}
+
     <Dialog onClose={() => {setMrnHelperOpen(false)}} open={mrnHelperOpen}>
       <DialogTitle>
         Where can I find my MRN?
@@ -229,47 +244,21 @@ function PatientIdentification(props) {
         <img src="/libs/cards/resources/mrn_helper_2.png" alt="MRN location within the Patient Portal side bar" className={classes.mrnHelperImage} />
       </DialogContent>
     </Dialog>
-    <Dialog open={visitList.length > 0}>
-      <DialogTitle>
-        Please select an upcoming visit
-      </DialogTitle>
-      <DialogContent>
-        <MaterialTable
-          title="Select an upcoming visit"
-          columns={[{title: "Clinic", field: "location"}]}
-          data={visitList}
-          options={{
-            header: false,
-            toolbar: false,
-            addRowPosition: 'first',
-            pageSize: pageSize,
-            // rowStyle: rowData => ({
-            //   /* It doesn't seem possible to alter the className from here */
-            //   backgroundColor: (visit === rowData["subject"]) ? theme.palette.grey["200"] : theme.palette.background.default
-            // })
-          }}
-          onRowClick={(event, rowData) => {
-            setVisit(rowData["subject"]);
-          }}
-          onChangeRowsPerPage={setPageSize}
-        />
-      </DialogContent>
-      <DialogActions>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={onVisitSelected}
-          disabled={visit == null}
-          >
-            Submit
-        </Button>
-      </DialogActions>
-    </Dialog>
+
+    {/* Patient identification form */}
+
     <form className={classes.form} onSubmit={onSubmit} >
       <Grid container direction="column" spacing={4} alignItems="center" justify="center">
          <Grid item xs={12}>
            <img src="/libs/cards/resources/logo_light_bg.png" className={classes.logo} alt="logo" />
          </Grid>
+
+         {/* If we haven't authenticated and retrieved the visit list for this patient yet,
+             display the identification form */}
+
+         { !visitList ?
+
+         <>
          <Grid item xs={12} className={classes.description}>
            <Typography variant="h6">
              Welcome to {appName}
@@ -289,7 +278,7 @@ function PatientIdentification(props) {
             { error ?
               <Typography color="error">{error}</Typography>
               :
-              <Typography variant="h6">Enter the following information for identification</Typography>
+              <Typography>Enter the following information for identification</Typography>
             }
             </div>
             <InputLabel htmlFor="j_dob" shrink={true} className={classes.dateLabel}>Date of birth</InputLabel>
@@ -327,10 +316,67 @@ function PatientIdentification(props) {
               color="primary"
               className={classes.submit}
               >
-              Submit
+              Continue
             </Button>
           </Grid>
           <Input id="j_visitSelection" name="j_visitSelection" autoComplete="off" style={{display: "none"}} value={visit || ""}/>
+          </>
+
+          :
+
+          <>
+
+          {/* If we retrieved the visit list and there's more than one option, display the options for the patient */}
+
+          { visitList.length > 1 ?
+            <>
+            <Grid item className={classes.description}>
+              <Typography>Please select the one of the Clinics where your upcoming appointments will take place, to fill out pre-appointment surveys to continue.</Typography>
+            </Grid>
+            <Grid item>
+              <List>{ visitList.map((v,i) =>
+                <ListItem className={classes.appointmentEntry} key={`appointmentEntry-${i}`}>
+                  <Button
+                    fullWidth
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => setVisit(v.subject)}
+                    startIcon={<AppointmentIcon />}
+                  >
+                    { v.location }
+                  </Button>
+                </ListItem>
+              )}</List>
+            </Grid>
+            <Grid item className={classes.description}>
+              <Typography variant="body2" color="textSecondary">
+                If you prefer not to proceed with filling out your surveys at this time, you can
+                <Link href="/system/sling/logout">close this page</Link>.
+              </Typography>
+            </Grid>
+            </>
+
+            :
+
+            <>
+            {/* Otherwise inform the user there are no known upcoming appointments that need survery responses */}
+            <Grid item className={classes.description}>
+              <Typography variant="h6" color="textSecondary">
+                We could not find any upcoming appointments that require survey responses.
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Button
+                color="primary"
+                variant="contained" onClick={() => window.location = "/system/sling/logout"}
+                >
+                Close
+              </Button>
+            </Grid>
+            </>
+          }
+          </>
+        }
        </Grid>
     </form>
   </>)
