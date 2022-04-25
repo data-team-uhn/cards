@@ -149,7 +149,7 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
             cookie.setHttpOnly(true);
             response.addCookie(cookie);
 
-            writeSuccess(response, visitSubjectPath, visitSubject, session);
+            writeSuccess(response, visitSubjectPath, visitSubject, session, false);
         } else {
             // Patient has zero or multiple possible visits: Send back to the client to continue
             Node visitQuestionnaire = getVisitInformationQuestionnaire(session);
@@ -178,7 +178,7 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
             return;
         }
 
-        writeSuccess(response, sessionSubjectIdentifier, visitSubject, session);
+        writeSuccess(response, sessionSubjectIdentifier, visitSubject, session, true);
     }
 
     private Node findMatchingPatientInformation(final SlingHttpServletRequest request, final Session session,
@@ -402,24 +402,26 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
     }
 
     private void writeSuccess(final SlingHttpServletResponse response, final String sessionSubjectIdentifier,
-        final Node visitSubject, final Session session)
+        final Node visitSubject, final Session session, final boolean includePatientInformation)
         throws IOException, RepositoryException
     {
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(SlingHttpServletResponse.SC_OK);
         final Node patientInformationQuestionnaire = getPatientInformationQuestionnaire(session);
 
-        final Node form = getPatientInformationForm(visitSubject, patientInformationQuestionnaire, session);
         try (Writer out = response.getWriter()) {
             final JsonObjectBuilder result = Json.createObjectBuilder();
             result.add("status", "success");
             result.add("sessionSubject", sessionSubjectIdentifier);
             final JsonObjectBuilder patientInformation = Json.createObjectBuilder();
-            for (final var name : List.of("first_name", "last_name")) {
-                final Object value = this.formUtils.getValue(this.formUtils.getAnswer(form,
-                    this.questionnaireUtils.getQuestion(patientInformationQuestionnaire, name)));
-                patientInformation.add(name,
-                    value == null ? JsonValue.NULL : Json.createValue(String.valueOf(value)));
+            if (includePatientInformation) {
+                final Node form = getPatientInformationForm(visitSubject, patientInformationQuestionnaire, session);
+                for (final var name : List.of("first_name", "last_name")) {
+                    final Object value = this.formUtils.getValue(this.formUtils.getAnswer(form,
+                        this.questionnaireUtils.getQuestion(patientInformationQuestionnaire, name)));
+                    patientInformation.add(name,
+                        value == null ? JsonValue.NULL : Json.createValue(String.valueOf(value)));
+                }
             }
             result.add("patientInformation", patientInformation.build());
             out.append(result.build().toString());
