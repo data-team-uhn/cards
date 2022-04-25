@@ -22,6 +22,7 @@ import { v4 as uuidv4 } from 'uuid';
 import {
   Button,
   Dialog,
+  DialogActions,
   DialogContent,
   DialogTitle,
   FormControl,
@@ -30,11 +31,14 @@ import {
   IconButton,
   Input,
   InputLabel,
+  List,
+  ListItem,
   Link,
   Typography,
   makeStyles
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
+import AppointmentIcon from '@material-ui/icons/Event';
 
 import ToUDialog from "./ToUDialog.jsx";
 
@@ -59,7 +63,7 @@ const useStyles = makeStyles(theme => ({
       "@media (max-width: 400px)" : {
         fontSize: "x-small",
       }
-    }
+    },
   },
   formFields : {
     marginTop: 0,
@@ -96,13 +100,19 @@ const useStyles = makeStyles(theme => ({
   mrnHelperLink: {
     cursor: 'pointer',
   },
+  appointmentEntry: {
+    "& .MuiButton-label" : {
+      justifyContent: "flex-start",
+      textTransform: "none",
+    },
+  }
 }));
 
 // The patient is already authenticated via the token.
 // This just makes sure that the correct person accessed the application.
 function PatientIdentification(props) {
   // Callback for reporting successful authentication
-  const { onSuccess } = props;
+  const { onSuccess, theme } = props;
 
   // The values entered by the user
   const [ dob, setDob ] = useState();
@@ -116,11 +126,14 @@ function PatientIdentification(props) {
   // and will be returned back to the rest of the PROMS UI through the onSuccess callback
   const [ patientDetails, setPatientDetails ] = useState();
   const [ visit, setVisit ] = useState();
+  // Returned from the server after partial validation of the authentication.
+  const [ visitList, setVisitList ] = useState();
+  // Visit list page size
+  const [ pageSize, setPageSize ] = useState(5);
   // Whether the patient user has accepted the latest version of the Terms of Use
   const [ touAccepted, setTouAccepted ] = useState(false);
   // Whether the Terms of Use dialog can be displayed after patient identification
   const [ showTou, setShowTou ] = useState(false);
-  // Info about each patient is stored in a Patient information form
 
   const [ mrnHelperOpen, setMrnHelperOpen ] = useState(false);
 
@@ -138,13 +151,19 @@ function PatientIdentification(props) {
     requestData.append("date_of_birth", dob);
     requestData.append("mrn", mrn);
     requestData.append("health_card", hc);
+    if (visit) {
+      requestData.append("visit", visit);
+    }
     fetch("/Proms.validateCredentials", {
       "method": "POST",
       "body": requestData
       })
       .then((response) => response.json())
       .then((json) => {
-        if (json.status != "success") {
+        if(json.status == "needsVisit") {
+          setVisitList(json.visits);
+          return;
+        } else if (json.status != "success") {
           return Promise.reject(json.error);
         }
         setPatientDetails(json.patientInformation);
@@ -168,6 +187,14 @@ function PatientIdentification(props) {
     setVisit(null);
     identify();
   }
+
+  useEffect(() => {
+    if (!visit || !visitList) return;
+    // When the user selects a visit from the visit list, clear the list and
+    // send the selected visit back to obtain a token
+    setVisitList(null);
+    identify();
+  }, [visit,visitList]);
 
   // When the visit is successfully obtained and the latest version of Terms of Use accepted, pass it along with the identification data
   // to the parent component
@@ -195,6 +222,9 @@ function PatientIdentification(props) {
         setVisit(null);
       }}
     />
+
+    {/* MRN hint dialog*/}
+
     <Dialog onClose={() => {setMrnHelperOpen(false)}} open={mrnHelperOpen}>
       <DialogTitle>
         Where can I find my MRN?
@@ -213,11 +243,21 @@ function PatientIdentification(props) {
         <img src="/libs/cards/resources/mrn_helper_2.png" alt="MRN location within the Patient Portal side bar" className={classes.mrnHelperImage} />
       </DialogContent>
     </Dialog>
+
+    {/* Patient identification form */}
+
     <form className={classes.form} onSubmit={onSubmit} >
       <Grid container direction="column" spacing={4} alignItems="center" justify="center">
          <Grid item xs={12}>
            <img src="/libs/cards/resources/logo_light_bg.png" className={classes.logo} alt="logo" />
          </Grid>
+
+         {/* If we haven't authenticated and retrieved the visit list for this patient yet,
+             display the identification form */}
+
+         { !visitList ?
+
+         <>
          <Grid item xs={12} className={classes.description}>
            <Typography variant="h6">
              Welcome to {appName}
@@ -237,7 +277,7 @@ function PatientIdentification(props) {
             { error ?
               <Typography color="error">{error}</Typography>
               :
-              <Typography variant="h6">Enter the following information for identification</Typography>
+              <Typography>Enter the following information for identification</Typography>
             }
             </div>
             <InputLabel htmlFor="j_dob" shrink={true} className={classes.dateLabel}>Date of birth</InputLabel>
@@ -275,12 +315,68 @@ function PatientIdentification(props) {
               color="primary"
               className={classes.submit}
               >
-              Submit
+              Continue
             </Button>
           </Grid>
+          <Input id="j_visitSelection" name="j_visitSelection" autoComplete="off" style={{display: "none"}} value={visit || ""}/>
+          </>
+
+          :
+
+          <>
+
+          {/* If we retrieved the visit list and there's more than one option, display the options for the patient */}
+
+          { visitList.length > 1 ?
+            <>
+            <Grid item className={classes.description}>
+              <Typography>To fill out pre-appointment surveys, please select one of the clinics where your upcoming appointments will take place.</Typography>
+            </Grid>
+            <Grid item>
+              <List>{ visitList.map((v,i) =>
+                <ListItem className={classes.appointmentEntry} key={`appointmentEntry-${i}`}>
+                  <Button
+                    fullWidth
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => setVisit(v.subject)}
+                    startIcon={<AppointmentIcon />}
+                  >
+                    { v.location }
+                  </Button>
+                </ListItem>
+              )}</List>
+            </Grid>
+            <Grid item className={classes.description}>
+              <Typography variant="body2" color="textSecondary">
+                If you prefer not to proceed with filling out your surveys at this time, you can <Link href="/system/sling/logout">close this page</Link>.
+              </Typography>
+            </Grid>
+            </>
+
+            :
+
+            <>
+            {/* Otherwise inform the user there are no known upcoming appointments that need survery responses */}
+            <Grid item className={classes.description}>
+              <Typography variant="h6" color="textSecondary">
+                We could not find any upcoming appointments that require survey responses.
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Button
+                color="primary"
+                variant="contained" onClick={() => window.location = "/system/sling/logout"}
+                >
+                Close
+              </Button>
+            </Grid>
+            </>
+          }
+          </>
+        }
        </Grid>
     </form>
   </>)
 }
-
 export default PatientIdentification;

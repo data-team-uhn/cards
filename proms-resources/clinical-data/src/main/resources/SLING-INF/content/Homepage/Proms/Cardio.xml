@@ -370,8 +370,8 @@
                     "Your Score: " + score
                     + "\n\n" +
                     (
-                      "male" === @{sex:-""}.toLowerCase() ? maleText
-                        : "female" === @{sex:-""}.toLowerCase() ? femaleText
+                      "male" === @{audit_sex:-""}.toLowerCase() ? maleText
+                        : "female" === @{audit_sex:-""}.toLowerCase() ? femaleText
                           : "If you are a man:\n\n" + maleText + "\n\n If you are a woman:\n\n" + femaleText
                     )
                   )

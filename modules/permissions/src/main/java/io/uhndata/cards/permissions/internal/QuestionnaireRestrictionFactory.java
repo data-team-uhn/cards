@@ -18,10 +18,20 @@
  */
 package io.uhndata.cards.permissions.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.jcr.Session;
+
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.security.authorization.restriction.RestrictionPattern;
+import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.FieldOption;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import io.uhndata.cards.permissions.spi.RestrictionFactory;
 
@@ -36,10 +46,25 @@ public class QuestionnaireRestrictionFactory implements RestrictionFactory
     /** @see #getName */
     public static final String NAME = "cards:questionnaire";
 
+    @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,
+        policyOption = ReferencePolicyOption.GREEDY)
+    private ResourceResolverFactory rrf;
+
     @Override
-    public RestrictionPattern forValue(PropertyState value)
+    public RestrictionPattern forValue(final PropertyState value)
     {
-        return new QuestionnaireRestrictionPattern(value.getValue(Type.STRING));
+        Session session = null;
+        if (this.rrf != null && this.rrf.getThreadResourceResolver() != null) {
+            session = this.rrf.getThreadResourceResolver().adaptTo(Session.class);
+        }
+
+        // Sling repoinit parser does not currently allow spaces in a restriction value
+        // Since '*' is allowed, but not actually expected literally in a path, use it as a placeholder for space
+        // Replace it in the values sent to the matcher
+        final List<String> processedValues = new ArrayList<>();
+        value.getValue(Type.STRINGS).forEach(rawValue -> processedValues.add(rawValue.replace('*', ' ')));
+
+        return new QuestionnaireRestrictionPattern(processedValues, session);
     }
 
     @Override
@@ -51,8 +76,7 @@ public class QuestionnaireRestrictionFactory implements RestrictionFactory
     @Override
     public Type<?> getType()
     {
-        // FIXME This should be Type.REFERENCE, but the current method of testing this restriction only works with
-        // strings
-        return Type.STRING;
+        // FIXME This should be Type.REFERENCES, but there is no easy way to specify a path instead of a raw UUID
+        return Type.STRINGS;
     }
 }

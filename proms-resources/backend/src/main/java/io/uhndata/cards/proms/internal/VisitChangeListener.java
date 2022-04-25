@@ -455,7 +455,7 @@ public class VisitChangeListener implements ResourceChangeListener
                 if (sex != null) {
                     try {
                         final Node sexAnswer = form.addNode(UUID.randomUUID().toString(), "cards:TextAnswer");
-                        final Node sexQuestion = session.getNode("/Questionnaires/AUDITC/sex");
+                        final Node sexQuestion = session.getNode("/Questionnaires/AUDITC/audit_sex");
                         sexAnswer.setProperty(FormUtils.QUESTION_PROPERTY, sexQuestion);
                         sexAnswer.setProperty(FormUtils.VALUE_PROPERTY, sex);
 

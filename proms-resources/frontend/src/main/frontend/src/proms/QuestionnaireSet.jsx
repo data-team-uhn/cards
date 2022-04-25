@@ -435,7 +435,7 @@ function QuestionnaireSet(props) {
   const greet = (name) => {
     let hourOfDay = (new Date()).getHours();
     let timeOfDay = hourOfDay < 12 ? "morning" : hourOfDay < 18 ? "afternoon" : "evening";
-    return `Good ${timeOfDay}, ${name}`;
+    return `Good ${timeOfDay}` + (name ? `, ${name}` : '');
   }
 
   const getVisitInformation = (questionName) => {
@@ -486,7 +486,7 @@ function QuestionnaireSet(props) {
     let result = "";
     const date = getVisitDate();
     if (date != null) {
-      // Tokens expire 2 hours after the visit
+      // If the visit date could be retrieved, this is an emailed token and will expire 2 hours after the visit
       date.add(2, 'hours');
 
       // Get the date difference in the format: X days, Y hours and Z minutes,
@@ -503,6 +503,9 @@ function QuestionnaireSet(props) {
       if (diffStrings.length > 0) {
         result = " This survey link will expire in " + diffStrings.join(", ") + result + ".";
       }
+    } else {
+      // Visit date could not be retrieved, this token will expire 1 hour from creation.
+      result = " This session will expire in 1 hour."
     }
 
     return result;
@@ -527,7 +530,7 @@ function QuestionnaireSet(props) {
         <ListItemText
           primary={questionnaires[q]?.title}
           secondary={!isFormComplete(q) && (displayEstimate(q)
-            + (subjectData?.[q]?.["jcr:lastModifiedBy"] === "patient" ? " (in progress)" : ""))}
+            + (["patient", "guest-patient"].includes(subjectData?.[q]?.["jcr:lastModifiedBy"]) ? " (in progress)" : ""))}
         />
       </ListItem>
     ))}
@@ -626,10 +629,12 @@ your symptoms. Please see below for a summary of your scores and suggested actio
         }
         </Grid>
       ))}
-      </Grid>
+      </Grid>,
+      <Fab variant="extended" color="primary" onClick={() => window.location = "/system/sling/logout"}>Close</Fab>
     ] : [
       <Typography variant="h4">Thank you for your submission</Typography>,
-      disclaimer
+      disclaimer,
+      <Fab variant="extended" color="primary" onClick={() => window.location = "/system/sling/logout"}>Close</Fab>
     ];
 
   let loadingScreen = [ <CircularProgress /> ];

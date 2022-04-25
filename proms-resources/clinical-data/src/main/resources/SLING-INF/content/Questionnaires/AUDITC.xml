@@ -128,7 +128,7 @@ disorder. AUDIT-C has been validated in mental health and primary care clinics.
 		</node>
 	</node>
 	<node>
-		<name>sex</name>
+		<name>audit_sex</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
