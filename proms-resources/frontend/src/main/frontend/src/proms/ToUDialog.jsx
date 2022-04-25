@@ -167,7 +167,7 @@ function ToUDialog(props) {
       { error ?
         <Alert severity="error">
           <AlertTitle>An error occurred</AlertTitle>
-          {error ? error : null}
+          {error}
         </Alert>
         :
         <FormattedText>{tou?.text}</FormattedText>
