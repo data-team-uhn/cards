@@ -456,7 +456,6 @@ function QuestionnaireSet(props) {
   }
 
   let appointmentAlert = () => {
-    // TODO: Remove with tokenless authentication
     const time = appointmentDate();
     let location = getVisitInformation("location");
     let provider = getVisitInformation("provider");
