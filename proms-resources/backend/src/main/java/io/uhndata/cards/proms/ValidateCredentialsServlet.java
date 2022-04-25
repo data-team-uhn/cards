@@ -341,6 +341,7 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
         return null;
     }
 
+    @SuppressWarnings({"checkstyle:CyclomaticComplexity", "checkstyle:NPathComplexity"})
     private boolean isVisitUpcoming(final Session session, Node visitInformationForm) throws RepositoryException
     {
         Node visitQuestionnaire = getVisitInformationQuestionnaire(session);
@@ -361,10 +362,13 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
             result = false;
         }
 
-        // Verify visit hasn't been cancelled
+        // Verify visit hasn't been cancelled or entered in error
         Node visitStatusQuestion = this.questionnaireUtils.getQuestion(visitQuestionnaire, "status");
         Node statusAnswer = this.formUtils.getAnswer(visitInformationForm, visitStatusQuestion);
-        if (!statusAnswer.hasProperty(VALUE) || "cancelled".equals(statusAnswer.getProperty(VALUE).getString())) {
+        if (!statusAnswer.hasProperty(VALUE)
+            || "cancelled".equals(statusAnswer.getProperty(VALUE).getString())
+            || "entered-in-error".equals(statusAnswer.getProperty(VALUE).getString()))
+        {
             result = false;
         }
 
