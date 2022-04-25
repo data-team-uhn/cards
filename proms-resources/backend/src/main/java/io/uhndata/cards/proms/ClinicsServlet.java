@@ -37,6 +37,8 @@ import javax.json.Json;
 import javax.json.stream.JsonGenerator;
 import javax.servlet.Servlet;
 
+import org.apache.jackrabbit.api.JackrabbitSession;
+import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.PersistenceException;
@@ -94,6 +96,7 @@ public class ClinicsServlet extends SlingAllMethodsServlet
             final Session session = resolver.adaptTo(Session.class);
             this.displayName.set(getUniqueDisplayName(resolver, this.displayName.get()));
             this.createClinicMapping(resolver);
+            this.createGroup(resolver);
             this.createSidebar(resolver);
             this.createDashboardExtension(resolver);
             session.save();
@@ -228,6 +231,17 @@ public class ClinicsServlet extends SlingAllMethodsServlet
             "emergencyContact", this.emergencyContact.get(),
             ClinicsServlet.DESCRIPTION_FIELD, this.description.get(),
             ClinicsServlet.PRIMARY_TYPE_FIELD, "cards:ClinicMapping"));
+    }
+
+    private void createGroup(final ResourceResolver resolver) throws RepositoryException
+    {
+        final Session session = resolver.adaptTo(Session.class);
+        if (!(session instanceof JackrabbitSession)) {
+            return;
+        }
+        JackrabbitSession jsession = (JackrabbitSession) session;
+        UserManager um = jsession.getUserManager();
+        um.createGroup(this.idHash.get());
     }
 
     /**
