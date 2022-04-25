@@ -192,10 +192,12 @@ function PatientIdentification(props) {
   }
 
   useEffect(() => {
-    if (!visit) return;
+    if (!visit || !visitList) return;
+    // When the user selects a visit from the visit list, clear the list and
+    // send the selected visit back to obtain a token
     setVisitList(null);
     identify();
-  }, [visit]);
+  }, [visit,visitList]);
 
   // When the visit is successfully obtained and the latest version of Terms of Use accepted, pass it along with the identification data
   // to the parent component
