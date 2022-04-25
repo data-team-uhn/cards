@@ -460,7 +460,8 @@ public final class AppointmentUtils
                 + "  AND d.'value' >= cast('" + formatter.format(lowerBoundDate.getTime()) + "' AS date)"
                 + "  AND d.'value' < cast('" + formatter.format(upperBoundDate.getTime()) + "' AS date)"
                 + "  AND s.'question' = '" + statusUUID + "' "
-                + "  AND s.'value' = 'planned'",
+                + "  AND s.'value' <> 'cancelled'"
+                + "  AND s.'value' <> 'entered-in-error'",
             "JCR-SQL2");
         return results;
     }
