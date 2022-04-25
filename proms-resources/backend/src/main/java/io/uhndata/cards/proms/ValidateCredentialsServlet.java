@@ -147,6 +147,9 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
             final String cookiePath = (ctxPath == null || ctxPath.length() == 0) ? "/" : ctxPath;
             cookie.setPath(cookiePath);
             cookie.setHttpOnly(true);
+            // Cookie should expire in 1 hour when the token expires.
+            // setMaxAge expects seconds, so 60 seconds * 60 minutes in 1 hour, or 3600 seconds
+            cookie.setMaxAge(3600);
             response.addCookie(cookie);
 
             writeSuccess(response, visitSubjectPath, visitSubject, session, false);
