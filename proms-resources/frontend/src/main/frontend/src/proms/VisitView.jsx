@@ -63,7 +63,7 @@ function VisitView(props) {
     `visitInformation.questionnaire = '${visitInfo?.["jcr:uuid"]}' ` +
       `and visitDate.question = '${visitInfo?.time?.["jcr:uuid"]}' and __DATE_FILTER_PLACEHOLDER__ ` +
       `and visitSurveys.question = '${visitInfo?.surveys?.["jcr:uuid"]}' and visitSurveys.value = '${surveysId}' ` +
-      `and visitStatus.question = '${visitInfo?.status?.["jcr:uuid"]}' and visitStatus.value <> 'cancelled' ` +
+      `and visitStatus.question = '${visitInfo?.status?.["jcr:uuid"]}' and visitStatus.value <> 'cancelled' and visitStatus.value <> 'entered-in-error' ` +
   "order by visitDate.value __SORT_ORDER_PLACEHOLDER__"
 )
 
