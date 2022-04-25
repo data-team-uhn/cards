@@ -18,6 +18,9 @@
  */
 package io.uhndata.cards.permissions.internal;
 
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Tree;
@@ -31,41 +34,48 @@ import org.apache.jackrabbit.oak.spi.security.authorization.restriction.Restrict
  */
 public class QuestionnaireRestrictionPattern implements RestrictionPattern
 {
-    private final String targetQuestionnaire;
+    private final Session session;
+
+    private final Iterable<String> targetQuestionnaires;
 
     /**
      * Constructor which receives the configured restriction.
      *
-     * @param value the identifier (UUID) of a specific questionnaire
+     * @param values paths to specific questionnaires for which the rule applies
+     * @param session current session, needed for dereferencing the current node's questionnaire
      */
-    public QuestionnaireRestrictionPattern(String value)
+    public QuestionnaireRestrictionPattern(final Iterable<String> values, final Session session)
     {
-        this.targetQuestionnaire = value;
+        this.targetQuestionnaires = values;
+        this.session = session;
     }
 
     @Override
     public boolean matches(final Tree tree, final PropertyState property)
     {
         // This restriction only applies to Forms and their descendant items.
-        // If this is not a Form node, look for one among its ancestors.
-        Tree formTree = tree;
-        while (!formTree.getProperty("jcr:primaryType").getValue(Type.STRING).equals("cards:Form")
-            && !formTree.isRoot()) {
-            formTree = formTree.getParent();
-        }
-        if (formTree.isRoot()) {
-            // Not a Form node, this restriction doesn't apply
+        // If this is not a Form node, we do not care.
+        if (!tree.hasProperty("sling:resourceType")
+            || !tree.getProperty("sling:resourceType").getValue(Type.STRING).equals("cards/Form")) {
             return false;
         }
-        // Check if the form's questionnaire is the same as the one specified in the restriction
-        boolean result =
-            StringUtils.equals(formTree.getProperty("questionnaire").getValue(Type.REFERENCE),
-                this.targetQuestionnaire);
-        return result;
+        try {
+            // Check if the question for this answer is one of the ones specified in the restriction
+            final String questionnairePath =
+                this.session.getNodeByIdentifier(tree.getProperty("questionnaire").getValue(Type.REFERENCE)).getPath();
+            for (final String targetQuestionnaire : this.targetQuestionnaires) {
+                if (StringUtils.equals(targetQuestionnaire, questionnairePath)) {
+                    return true;
+                }
+            }
+        } catch (final RepositoryException e) {
+            // Should not happen
+        }
+        return false;
     }
 
     @Override
-    public boolean matches(String path)
+    public boolean matches(final String path)
     {
         // This method doesn't seem to be called, the one above is used instead
         return false;
