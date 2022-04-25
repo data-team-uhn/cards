@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Button, Collapse, Dialog, DialogActions, DialogTitle, Grid, IconButton, Tooltip, Typography, withStyles } from "@material-ui/core";
 import Add from "@material-ui/icons/Add";
@@ -98,11 +98,30 @@ function Section(props) {
   const [ selectedUUID, setSelectedUUID ] = useState();
   const [ uuid ] = useState(uuidv4());  // To keep our IDs separate from any other sections
   const [ removableAnswers, setRemovableAnswers ] = useState({[ID_STATE_KEY]: 1});
+  const [ answersToDelete, setAnswersToDelete ] = useState([]);
 
   // Determine if we have any conditionals in our definition that would cause us to be hidden
   const conditionIsMet = ConditionalComponentManager.evaluateCondition(
     sectionDefinition,
     formContext);
+
+  // When the section no longer meets its condition, mark all previous answers as deletable.
+  useEffect(() => {
+    if (!conditionIsMet) {
+      let delList = [];
+      let keySet = Object.keys(removableAnswers);
+      for (let i = 0; i < keySet.length; i++) {
+        let key = keySet[i];
+        for (let j = 0; j < removableAnswers[key].length; j++) {
+          delList.push(removableAnswers[key][j]);
+        }
+      }
+      // Append the new list of answers to delete to the previous one
+      setAnswersToDelete((oldValue) => oldValue.concat(delList));
+      // Reset the list of existing answers
+      setRemovableAnswers({[ID_STATE_KEY]: 1});
+    }
+  }, [conditionIsMet])
 
   // Determine if the section is flagged as incomplete
   const isFlagged = (existingAnswer?.[0]?.[1]?.statusFlags?.length > 0);
@@ -133,18 +152,6 @@ function Section(props) {
   }
 
   const sectionEntries = Object.entries(sectionDefinition).filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']));
-
-  function calculateDeletion() {
-    let delList = [];
-    let keySet = Object.keys(removableAnswers);
-    for (let i = 0; i < keySet.length; i++) {
-      let key = keySet[i];
-      for (let j = 0; j < removableAnswers[key].length-1; j++) {
-        delList.push(removableAnswers[key][j]);
-      }
-    }
-    return delList;
-  }
 
   const collapseClasses = [];
   collapseClasses.push(classes[displayMode + 'Section']);
@@ -279,7 +286,7 @@ function Section(props) {
                       </FormEntry>)
                   }
                   {
-                    calculateDeletion().map((delPath) =>
+                    answersToDelete.map((delPath) =>
                       <input type="hidden" name={`${delPath}@Delete`} value="0" key={delPath}></input>
                   )}
                 </Grid>
