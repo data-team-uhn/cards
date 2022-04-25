@@ -134,7 +134,7 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
 
             // Generate token
             Calendar tokenExpiryDate = Calendar.getInstance();
-            tokenExpiryDate.add(Calendar.HOUR_OF_DAY, 1);
+            tokenExpiryDate.add(Calendar.MINUTE, 2);
             final String token = this.tokenManager.create(
                 "guest-patient",
                 tokenExpiryDate,
@@ -149,7 +149,7 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
             cookie.setHttpOnly(true);
             // Cookie should expire in 1 hour when the token expires.
             // setMaxAge expects seconds, so 60 seconds * 60 minutes in 1 hour, or 3600 seconds
-            cookie.setMaxAge(3600);
+            cookie.setMaxAge(120);
             response.addCookie(cookie);
 
             writeSuccess(response, visitSubjectPath, visitSubject, session, false);
