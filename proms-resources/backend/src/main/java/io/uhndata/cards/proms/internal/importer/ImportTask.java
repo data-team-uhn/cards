@@ -165,7 +165,8 @@ public class ImportTask implements Runnable
     private long getUpcomingAppointments(final String authToken, final int daysToQuery, final String clinicName)
     {
         final String postRequestTemplate = "{\"query\": \"query{"
-            + "patientsByDateAndClinic(location: \\\"" + clinicName + "\\\", start: \\\"%s\\\", end: \\\"%s\\\") {"
+            + "patientsByDateAndClinic(location: \\\"" + clinicName
+            + "\\\", start: \\\"%s\\\", end: \\\"%s\\\", session: \\\"cards-nightlyImport-%s\\\") {"
             + "fhirID name {given family} sex mrn ohip dob emailOk com {email{home work temp mobile}} "
             + "appointments {fhirID time status location "
             + "participants {physician {name {prefix given family suffix} eID} role}} }}\"}";
@@ -178,7 +179,7 @@ public class ImportTask implements Runnable
         endDate.add(Calendar.DATE, daysToQuery);
         final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         final String postRequest = String.format(postRequestTemplate, formatter.format(startDate.getTime()),
-            formatter.format(endDate.getTime()));
+            formatter.format(endDate.getTime()), formatter.format(new Date()));
 
         // Query the torch server
         try {
