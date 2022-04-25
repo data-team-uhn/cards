@@ -333,7 +333,7 @@ function PatientIdentification(props) {
           { visitList.length > 1 ?
             <>
             <Grid item className={classes.description}>
-              <Typography>Please select the one of the Clinics where your upcoming appointments will take place, to fill out pre-appointment surveys to continue.</Typography>
+              <Typography>To fill out pre-appointment surveys, please select one of the clinics where your upcoming appointments will take place.</Typography>
             </Grid>
             <Grid item>
               <List>{ visitList.map((v,i) =>
@@ -352,8 +352,7 @@ function PatientIdentification(props) {
             </Grid>
             <Grid item className={classes.description}>
               <Typography variant="body2" color="textSecondary">
-                If you prefer not to proceed with filling out your surveys at this time, you can
-                <Link href="/system/sling/logout">close this page</Link>.
+                If you prefer not to proceed with filling out your surveys at this time, you can <Link href="/system/sling/logout">close this page</Link>.
               </Typography>
             </Grid>
             </>
