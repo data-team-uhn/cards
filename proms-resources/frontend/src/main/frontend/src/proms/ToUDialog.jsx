@@ -97,17 +97,17 @@ function ToUDialog(props) {
   }
 
   useEffect(() => {
-    if (!touAcceptedVersion) {
+    if (actionRequired && !touAcceptedVersion) {
       fetchTouAccepted();
     }
-  }, [touAcceptedVersion])
+  }, [actionRequired, touAcceptedVersion])
 
   useEffect(() => {
-    if (open && error) {
+    if (actionRequired && open && error) {
       setError(null);
       fetchTouAccepted();
     }
-  }), [open]
+  }), [actionRequired, open]
 
   useEffect(() => {
     fetch("/Proms/TermsOfUse.json")
@@ -116,7 +116,7 @@ function ToUDialog(props) {
       .catch( err => setError("Loading the Terms of Use failed, please try again later") );
   }, []);
 
-  if ((!tou || !touAcceptedVersion) && !error) {
+  if ((!tou || actionRequired && !touAcceptedVersion) && !error) {
     return null;
   }
 
