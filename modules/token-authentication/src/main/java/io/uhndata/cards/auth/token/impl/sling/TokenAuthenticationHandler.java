@@ -19,7 +19,10 @@
 package io.uhndata.cards.auth.token.impl.sling;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
+import java.util.Calendar;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -37,6 +40,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import io.uhndata.cards.auth.token.TokenManager;
+import io.uhndata.cards.auth.token.impl.CardsTokenImpl;
 
 /**
  * Implements the Sling part of token authentication, reading authentication data from the request and passing the
@@ -115,14 +119,34 @@ public class TokenAuthenticationHandler extends DefaultAuthenticationFeedbackHan
         final Cookie cookie = new Cookie(TOKEN_COOKIE_NAME, credentials.getToken());
         final String ctxPath = request.getContextPath();
         final String cookiePath = (ctxPath == null || ctxPath.length() == 0) ? "/" : ctxPath;
+        final Calendar cookieExpiration = getTokenExpirationDate(credentials.getToken());
         cookie.setPath(cookiePath);
         cookie.setHttpOnly(true);
+        if (cookieExpiration != null) {
+            cookie.setMaxAge((int) ChronoUnit.SECONDS.between(Instant.now(), cookieExpiration.toInstant()));
+        }
         response.addCookie(cookie);
 
         // True means that the request is complete, no further processing needed;
         // False means that we just validated the authentication, let the request be processed as usual by the rest of
         // the platform
         return false;
+    }
+
+    /**
+     * Given a login token, determine its expiration date by examining the identified cards:Token object.
+     *
+     * @param loginToken the login token to parse
+     * @return a {@code Calendar} object representing the time that the cookie will expire, or {@code null} otherwise
+     */
+    private Calendar getTokenExpirationDate(final String loginToken)
+    {
+        final TokenInfo token = this.tokenManager.parse(loginToken);
+        if (token == null || !(token instanceof CardsTokenImpl)) {
+            return null;
+        }
+        final CardsTokenImpl cardsToken = (CardsTokenImpl) token;
+        return cardsToken.getExpirationTime();
     }
 
     @Override

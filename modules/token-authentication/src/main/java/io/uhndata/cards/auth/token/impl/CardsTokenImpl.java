@@ -130,7 +130,7 @@ public class CardsTokenImpl implements TokenInfo
         this.tokenTree = null;
         this.loginToken = token;
         this.userId = userId;
-        this.expirationTime = getExpirationTime();
+        this.expirationTime = parseExpirationTime();
         this.validationKey = getValidationKey();
 
         final Map<String, String> storedAttributes = new HashMap<>();
@@ -167,7 +167,7 @@ public class CardsTokenImpl implements TokenInfo
         this.tokenTree = tokenTree;
         this.loginToken = token;
         this.userId = userId;
-        this.expirationTime = getExpirationTime();
+        this.expirationTime = parseExpirationTime();
         this.validationKey = getValidationKey();
 
         Map<String, String> storedAttributes = new HashMap<>();
@@ -289,7 +289,7 @@ public class CardsTokenImpl implements TokenInfo
      *
      * @return the expiration date, or {@code null} if there's no expiration date set or accessing it fails
      */
-    private Calendar getExpirationTime()
+    private Calendar parseExpirationTime()
     {
         if (this.tokenNode != null) {
             try {
@@ -303,6 +303,16 @@ public class CardsTokenImpl implements TokenInfo
             return ISO8601.parse(this.tokenTree.getProperty(TOKEN_ATTRIBUTE_EXPIRY).getValue(Type.DATE));
         }
         return null;
+    }
+
+    /**
+     * Obtain the expiration time from this token.
+     *
+     * @return the expiration date, or {@code null} if there's no expiration date set
+     */
+    public Calendar getExpirationTime()
+    {
+        return this.expirationTime;
     }
 
     /**
