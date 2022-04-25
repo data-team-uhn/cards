@@ -24,19 +24,12 @@ import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Calendar;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.authentication.token.TokenCredentials;
 import org.apache.jackrabbit.oak.spi.security.authentication.token.TokenInfo;
-import org.apache.sling.api.resource.LoginException;
-import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.auth.core.AuthConstants;
 import org.apache.sling.auth.core.AuthUtil;
 import org.apache.sling.auth.core.spi.AuthenticationHandler;
@@ -44,12 +37,7 @@ import org.apache.sling.auth.core.spi.AuthenticationInfo;
 import org.apache.sling.auth.core.spi.DefaultAuthenticationFeedbackHandler;
 import org.apache.sling.jcr.resource.api.JcrResourceConstants;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.FieldOption;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.auth.token.TokenManager;
 import io.uhndata.cards.auth.token.impl.CardsTokenImpl;
@@ -66,18 +54,11 @@ import io.uhndata.cards.auth.token.impl.CardsTokenImpl;
     "sling.auth.requirements=-/Expired" })
 public class TokenAuthenticationHandler extends DefaultAuthenticationFeedbackHandler implements AuthenticationHandler
 {
-    /** Default log. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(TokenAuthenticationHandler.class);
-
     /** The name of the request parameter that may hold a login token. */
     private static final String TOKEN_REQUEST_PARAMETER = "auth_token";
 
     /** The name of the cookie that may hold a login token. */
     private static final String TOKEN_COOKIE_NAME = "cards_auth_token";
-
-    @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,
-        policyOption = ReferencePolicyOption.GREEDY)
-    private ResourceResolverFactory rrf;
 
     @Reference
     private TokenManager tokenManager;
@@ -160,20 +141,12 @@ public class TokenAuthenticationHandler extends DefaultAuthenticationFeedbackHan
      */
     private Calendar getTokenExpirationDate(final String loginToken)
     {
-        // The login token has the format <nodeUUID> or <nodeUUID>-<secretKey>
-        // Extract the node UUID
-        // The secret key does not need to be used/validated now, so just ignore it
-        final String nodeId = StringUtils.substringBefore(loginToken, CardsTokenImpl.TOKEN_DELIMITER);
-        try (ResourceResolver srr = this.rrf.getServiceResourceResolver(null)) {
-            final Node tokenNode = srr.adaptTo(Session.class).getNodeByIdentifier(nodeId);
-            return tokenNode.getProperty("cards:token.exp").getDate();
-        } catch (RepositoryException e) {
-            LOGGER.error("Cannot access token {}", loginToken);
-        } catch (LoginException e) {
-            LOGGER.error("Service access not granted: {}", e.getMessage());
+        final TokenInfo token = this.tokenManager.parse(loginToken);
+        if (token == null || !(token instanceof CardsTokenImpl)) {
+            return null;
         }
-
-        return null;
+        final CardsTokenImpl cardsToken = (CardsTokenImpl) token;
+        return cardsToken.getExpirationTime();
     }
 
     @Override
