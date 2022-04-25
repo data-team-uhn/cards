@@ -64,9 +64,6 @@ const useStyles = makeStyles(theme => ({
         fontSize: "x-small",
       }
     },
-    "& .MuiLink-root" : {
-      marginLeft: "1ex",
-    }
   },
   formFields : {
     marginTop: 0,
