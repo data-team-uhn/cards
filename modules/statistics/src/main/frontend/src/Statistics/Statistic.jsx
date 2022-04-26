@@ -32,7 +32,7 @@ import { deepPurple, indigo } from '@material-ui/core/colors';
 
 import { useHistory } from 'react-router-dom';
 
-import moment from "moment";
+import { DateTime } from "luxon";
 import palette from "google-palette";
 import {
    BarChart, Bar, CartesianGrid, Line, LineChart, Label, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis
@@ -87,7 +87,7 @@ function Statistic(props) {
     });
     // Reformat to a human readable format
     rechartsData = rechartsData.map((field) => {
-      field["x"] = DateQuestionUtilities.amendMoment(field["x"], dateFormat).format(moment.HTML5_FMT.DATE);
+      field["x"] = DateTime.fromISO(field["x"]).toFormat("yyyy-MM-dd");
       return field;
     })
   } else {

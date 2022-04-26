@@ -25,7 +25,7 @@
 import React, { useState } from "react";
 import { Select, MenuItem,  makeStyles } from "@material-ui/core";
 import PropTypes from "prop-types";
-import moment from "moment";
+import { Info } from "luxon";
 
 const DropdownDate = {
   year: 'year',
@@ -78,9 +78,9 @@ const useStyles = makeStyles(theme => ({
  * React-based date picker. Select date from Day, Month and Year dropdowns.
  * Code adapted & optimized from https://github.com/ssxv/react-dropdown-date
  *
- * @param {string} startDate optional, if not provided 1900-01-01 is startDate, 'yyyy-mm-dd' format only
- * @param {string} endDate optional, if not provided current date is endDate, 'yyyy-mm-dd' format only
- * @param {string} selectedDate optional, if not provided default values will be displayed, 'yyyy-mm-dd' format only
+ * @param {string} startDate optional, if not provided 1900-01-01 is startDate, 'yyyy-MM-dd' format only
+ * @param {string} endDate optional, if not provided current date is endDate, 'yyyy-MM-dd' format only
+ * @param {string} selectedDate optional, if not provided default values will be displayed, 'yyyy-MM-dd' format only
  * @param {array} order optional, Order of the dropdowns
  * @param {func} onDateChange optional, Callback on day, month or year change
  * @param {bool} yearReverse optional, If true, the year dropdown is ordered in time reverse order
@@ -135,7 +135,7 @@ function DropdownsDatePicker(props) {
     for (let i = start; i <= end; i++) {
       monthOptions.push(
         <MenuItem key={i} value={i}>
-          {monthShort ? moment().month(i).format("MMM") : moment().month(i).format("MMMM")}
+          {monthShort ? Info.months('short')[i] : Info.months()[i]}
         </MenuItem>
       );
     }
@@ -241,7 +241,7 @@ function DropdownsDatePicker(props) {
             if (selected < 0 ) {
               return <div className={classes.placeholder}>Month</div>;
             }
-            return monthShort ? moment().month(selected).format("MMM") : moment().month(selected).format("MMMM");
+            return monthShort ? Info.months('short')[selected] : Info.months()[selected];
         }}
       >
         {generateMonthOptions()}

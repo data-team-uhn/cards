@@ -42,7 +42,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import GetApp from '@material-ui/icons/GetApp';
 import MaterialTable from "material-table";
 import { v4 as uuidv4 } from 'uuid';
-import moment from "moment";
+import { DateTime } from "luxon";
 import DragAndDrop from "./components/dragAndDrop.jsx";
 import { escapeJQL } from "./escape.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
@@ -934,7 +934,7 @@ export default function VariantFilesContainer() {
                 whiteSpace: 'nowrap',
               },
               render: rowData => <Link href={rowData["@path"]}>
-                                  {moment(rowData['jcr:created']).format("YYYY-MM-DD")}
+                                  {DateTime.fromISO(rowData['jcr:created']).toFormat("yyyy-MM-dd")}
                                 </Link> },
             { title: 'Uploaded By',
               cellStyle: {

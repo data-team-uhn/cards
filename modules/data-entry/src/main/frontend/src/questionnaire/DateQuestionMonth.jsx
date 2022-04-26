@@ -21,8 +21,6 @@ import React, { useState } from "react";
 
 import { TextField, Typography, withStyles } from "@material-ui/core";
 
-import * as jdfp from "moment-jdateformatparser";
-
 import Answer from "./Answer";
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
@@ -38,8 +36,8 @@ import DateQuestionUtilities from "./DateQuestionUtilities";
 // text: the question to be displayed
 // type: "timestamp" for a single date or "interval" for two dates
 // dateFormat: A string specifying a date format, including month but not date, as detected by DateQuestionUtilities
-// lowerLimit: lower date limit (inclusive) given as an object or string parsable by moment()
-// upperLimit: upper date limit (inclusive) given as an object or string parsable by moment()
+// lowerLimit: lower date limit (inclusive) given as an object or string parsable by luxon
+// upperLimit: upper date limit (inclusive) given as an object or string parsable by luxon
 // Other options are passed to the <question> widget
 //
 // Sample usage:
@@ -132,23 +130,7 @@ function DateQuestionMonth(props) {
   }
 
   let amendMomentFromString = (value, dateFormat) => {
-    return DateQuestionUtilities.amendMoment(typeof value === "string" ? displayMonthToMomentString(value) : value, dateFormat);
-  }
-
-  let displayMonthToMomentString = (value) => {
-    let monthIndex = dateFormat.indexOf('MM');
-    if (!strictInputRegExp.test(value)) {
-      // Input has a single digit month. Prepend month with 0 to ensure Moment can handle the date
-      value = [value.slice(0, monthIndex), "0", value.slice(monthIndex)].join('');
-    }
-
-    // Make sure month and year are ordered correctly for parsing via Moment
-    if (monthIndex === 0) {
-      // Moment requires year before month.
-      let yearIndex = dateFormat.indexOf('y');
-      value = [value.slice(yearIndex, yearIndex + 4), '-', value.slice(0, 2)].join('');
-    }
-    return value.replace('/', '-') + '-01'
+    return DateQuestionUtilities.amendMoment(value, dateFormat, dateFormat);
   }
 
   let getSlingDate = (isEnd) => {
@@ -157,7 +139,7 @@ function DateQuestionMonth(props) {
       dateString = "";
     }
     if (dateString.length > 0) {
-      dateString = amendMomentFromString(dateString, dateFormat).formatWithJDF(DateQuestionUtilities.slingDateFormat);
+      dateString = amendMomentFromString(dateString, dateFormat).toFormat(DateQuestionUtilities.slingDateFormat);
     }
     return dateString;
   }

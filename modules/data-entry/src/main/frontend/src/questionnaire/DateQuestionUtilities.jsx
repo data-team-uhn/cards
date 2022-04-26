@@ -18,13 +18,13 @@
 //
 
 import PropTypes from "prop-types";
-import moment from "moment";
+import { DateTime } from "luxon";
 
 export default class DateQuestionUtilities {
 
   static TIMESTAMP_TYPE = "timestamp";
   static INTERVAL_TYPE = "interval";
-  static slingDateFormat = "yyyy-MM-DDTHH:mm:ss";
+  static slingDateFormat = "yyyy-MM-dd\'T\'HH:mm:ss";
 
   static YEAR_DATE_TYPE = "year";
   static MONTH_DATE_TYPE = "month";
@@ -33,10 +33,10 @@ export default class DateQuestionUtilities {
   static DEFAULT_DATE_TYPE = this.FULL_DATE_TYPE;
 
   static yearTag = "yyyy";
-  static monthTag = "mm";
+  static monthTag = "MM";
   static dayTag = "dd";
-  static hourTag = "hh";
-  static minuteTag = "ss";
+  static hourTag = "HH";
+  static minuteTag = "mm";
 
   static PROP_TYPES = {
     classes: PropTypes.object.isRequired,
@@ -51,10 +51,10 @@ export default class DateQuestionUtilities {
 
   static getDateType(dateFormat) {
     if (typeof(dateFormat) === "string") {
-      const year = dateFormat.toLowerCase().includes(this.yearTag);
-      const month = dateFormat.toLowerCase().includes(this.monthTag);
-      const day = dateFormat.toLowerCase().includes(this.dayTag);
-      const time = dateFormat.toLowerCase().includes(this.hourTag) || dateFormat.toLowerCase().includes(this.minuteTag) ;
+      const year = dateFormat.includes(this.yearTag);
+      const month = dateFormat.includes(this.monthTag);
+      const day = dateFormat.includes(this.dayTag);
+      const time = dateFormat.includes(this.hourTag) || dateFormat.includes(this.minuteTag);
 
       if (time) return this.DATETIME_TYPE;
       if (day) return this.FULL_DATE_TYPE;
@@ -87,7 +87,7 @@ export default class DateQuestionUtilities {
 
   // Truncates fields in the given moment object or date string
   // according to the given format string
-  static amendMoment(date, format) {
+  static amendMoment(date, format, fromFormat) {
     if (!date) {
       return null;
     }
@@ -97,7 +97,10 @@ export default class DateQuestionUtilities {
 
     let new_date = date;
     if (typeof new_date === "string") {
-      new_date = moment(new_date);
+      new_date = fromFormat ? DateTime.fromFormat(new_date, fromFormat) : DateTime.fromISO(new_date);
+    }
+    if (!new_date.isValid) {
+      return null;
     }
 
     // Determine the coarsest measure to truncate the input to
@@ -122,9 +125,8 @@ export default class DateQuestionUtilities {
   }
 
   static momentToString(date, textFieldType) {
-    return (!date || !date.isValid()) ? "" :
-    textFieldType === "date" ? date.format(moment.HTML5_FMT.DATE) :
-    date.format(moment.HTML5_FMT.DATETIME_LOCAL);
+    return (!date || !date.isValid) ? "" :
+    textFieldType === "date" ? date.toFormat("yyyy-MM-dd") : date.toFormat("yyyy-MM-dd\'T\'HH:mm");
   }
 
   // Convert a moment string to a month display
@@ -165,8 +167,7 @@ export default class DateQuestionUtilities {
     if (dateType === this.MONTH_DATE_TYPE) {
       return this.momentStringToDisplayMonth(
         dateFormat,
-        !date.isValid() ? "" :
-        date.format(moment.HTML5_FMT.MONTH)
+        !date || !date.isValid ? "" : date.toFormat("yyyy-MM")
         );
     } else {
       return date.format(dateFormat);
@@ -174,6 +175,9 @@ export default class DateQuestionUtilities {
   }
 
   static stripTimeZone(dateString) {
+    if (!dateString) {
+      return dateString;
+    }
     // Remove the time zone (eg. "-05:00") from the end of a sling provided date string
     return dateString.replace(/[-+][0-9]{2}:[0-9]{2}$/gm, '');
   }

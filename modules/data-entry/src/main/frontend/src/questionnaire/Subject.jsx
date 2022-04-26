@@ -20,7 +20,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Link, useLocation, withRouter } from 'react-router-dom';
 import PropTypes from "prop-types";
-import moment from "moment";
+import { DateTime } from "luxon";
 
 import FormattedText from "../components/FormattedText";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
@@ -359,7 +359,7 @@ function SubjectHeader(props) {
                  resourcePath={path}
                  resourceData={subject?.data}
                  breadcrumb={pageTitle}
-                 date={moment(subject?.data['jcr:created']).format("MMM Do YYYY")}
+                 date={DateTime.fromISO(subject?.data['jcr:created']).toLocaleString(DateTime.DATE_MED)}
                />
                <DeleteButton
                  entryPath={path}
@@ -385,7 +385,7 @@ function SubjectHeader(props) {
         <Typography
           variant="overline"
           color="textSecondary" >
-            Entered by {subject.data['jcr:createdBy']} on {moment(subject.data['jcr:created']).format("dddd, MMMM Do YYYY")}
+            Entered by {subject.data['jcr:createdBy']} on {DateTime.fromISO(subject.data['jcr:created']).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}
         </Typography>
         : ""
       }
@@ -462,7 +462,7 @@ function SubjectMemberInternal (props) {
                    resourcePath={path}
                    resourceData={data}
                    breadcrumb={getTextHierarchy(data, true)}
-                   date={moment(data['jcr:created']).format("MMM Do YYYY")}
+                   date={DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED)}
                    buttonClass={classes.childSubjectHeaderButton}
                    disableShortcut
                  />
@@ -526,7 +526,7 @@ function SubjectMemberInternal (props) {
                       whiteSpace: 'nowrap',
                     },
                     render: rowData => <Link to={"/content.html" + rowData["@path"]}>
-                                         {moment(rowData['jcr:created']).format("YYYY-MM-DD")}
+                                         {DateTime.fromISO(rowData['jcr:created']).toFormat("yyyy-MM-dd")}
                                        </Link> },
                   { title: 'Status',
                     cellStyle: {

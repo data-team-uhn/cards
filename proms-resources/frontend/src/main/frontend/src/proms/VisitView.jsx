@@ -86,7 +86,7 @@ function VisitView(props) {
     {
       "key": "time",
       "label": "Visit time",
-      "format": "date:YYYY-MM-DD hh:mm"
+      "format": "date:yyyy-MM-dd HH:mm"
     },
     {
       "key" : "status",
