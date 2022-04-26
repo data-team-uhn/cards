@@ -353,14 +353,14 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
         // Verify surveys set
         Node visitSurveysQuestion = this.questionnaireUtils.getQuestion(visitQuestionnaire, "surveys");
         Node surveysAnswer = this.formUtils.getAnswer(visitInformationForm, visitSurveysQuestion);
-        if (!surveysAnswer.hasProperty(VALUE)) {
+        if (surveyAnswer == null || !surveysAnswer.hasProperty(VALUE)) {
             result = false;
         }
 
         // Verify visit is upcoming
         Node visitTimeQuestion = this.questionnaireUtils.getQuestion(visitQuestionnaire, "time");
         Node timeAnswer = this.formUtils.getAnswer(visitInformationForm, visitTimeQuestion);
-        if (!timeAnswer.hasProperty(VALUE)
+        if (timeAnswer == null || !timeAnswer.hasProperty(VALUE)
             || !Calendar.getInstance().before(timeAnswer.getProperty(VALUE).getDate())) {
             result = false;
         }
@@ -368,7 +368,7 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
         // Verify visit hasn't been cancelled or entered in error
         Node visitStatusQuestion = this.questionnaireUtils.getQuestion(visitQuestionnaire, "status");
         Node statusAnswer = this.formUtils.getAnswer(visitInformationForm, visitStatusQuestion);
-        if (!statusAnswer.hasProperty(VALUE)
+        if (statusAnswer == null || !statusAnswer.hasProperty(VALUE)
             || "cancelled".equals(statusAnswer.getProperty(VALUE).getString())
             || "entered-in-error".equals(statusAnswer.getProperty(VALUE).getString()))
         {
@@ -378,14 +378,16 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
         // Verify visit has surveys
         Node visitHasSurveysQuestion = this.questionnaireUtils.getQuestion(visitQuestionnaire, "has_surveys");
         Node hasSurveysAnswer = this.formUtils.getAnswer(visitInformationForm, visitHasSurveysQuestion);
-        if (!hasSurveysAnswer.hasProperty(VALUE) || 0 == hasSurveysAnswer.getProperty(VALUE).getLong()) {
+        if (hasSurveysAnswer == null || !hasSurveysAnswer.hasProperty(VALUE)
+            || 0 == hasSurveysAnswer.getProperty(VALUE).getLong()) {
             result = false;
         }
 
         // Verify visit surveys haven't been submitted
         Node visitSubmittedQuestion = this.questionnaireUtils.getQuestion(visitQuestionnaire, "surveys_submitted");
         Node submittedAnswer = this.formUtils.getAnswer(visitInformationForm, visitSubmittedQuestion);
-        if (submittedAnswer.hasProperty(VALUE) && 1 == submittedAnswer.getProperty(VALUE).getLong()) {
+        if (submittedAnswer != null && submittedAnswer.hasProperty(VALUE)
+            && 1 == submittedAnswer.getProperty(VALUE).getLong()) {
             result = false;
         }
 
@@ -466,8 +468,10 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
             for (final Node visit : visits) {
                 final JsonObjectBuilder visitJson = Json.createObjectBuilder();
                 visitJson.add("subject", visit.getProperty("subject").getNode().getPath());
-                visitJson.add("location",
-                    this.formUtils.getAnswer(visit, visitLocationQuestion).getProperty("value").getString());
+                Node visitLocationAnswer = this.formUtils.getAnswer(visit, visitLocationQuestion);
+                if (visitLocationAnswer != null && visitLocationAnswer.hasProperty(VALUE)) {
+                    visitJson.add("location", visitLocationAnswer.getProperty("value").getString());
+                }
                 visitsArray.add(visitJson);
             }
             result.add("visits", visitsArray);
