@@ -104,7 +104,7 @@ let ComputedQuestion = (props) => {
         newDisplayedValue = DateQuestionUtilities.formatDateAnswer(dateFormat, DateQuestionUtilities.stripTimeZone(newDisplayedValue));
       } else if (dateType === DateQuestionUtilities.DATETIME_TYPE || dateType === DateQuestionUtilities.FULL_DATE_TYPE) {
         newDisplayedValue = typeof(newDisplayedValue) === "string" && newDisplayedValue.length > 0
-          ? DateQuestionUtilities.momentToString(DateQuestionUtilities.amendMoment(DateQuestionUtilities.stripTimeZone(newDisplayedValue || ""), dateFormat), dateType)
+          ? DateQuestionUtilities.ToString(DateQuestionUtilities.toPrecision(DateQuestionUtilities.stripTimeZone(newDisplayedValue || ""), dateFormat), dateType)
           : "";
       }
     } else if (dataType === "vocabulary") {

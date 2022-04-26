@@ -87,12 +87,12 @@ export default class DateQuestionUtilities {
 
   // Truncates fields in the given moment object or date string
   // according to the given format string
-  static amendMoment(date, format, fromFormat) {
+  static toPrecision(date, toFormat, fromFormat) {
     if (!date) {
       return null;
     }
-    if (!format) {
-      format = this.slingDateFormat;
+    if (!toFormat) {
+      toFormat = this.slingDateFormat;
     }
 
     let new_date = date;
@@ -114,9 +114,9 @@ export default class DateQuestionUtilities {
     };
     let truncateTo;
     // Both 'd' and 'D' should truncate to month
-    format = format.replaceAll("D","d");
+    toFormat = toFormat.replaceAll("D","d");
     for (let [formatSpecifier, targetPrecision] of Object.entries(truncate)) {
-      if (format.indexOf(formatSpecifier) < 0) {
+      if (toFormat.indexOf(formatSpecifier) < 0) {
         truncateTo = targetPrecision;
       }
     }
@@ -124,13 +124,13 @@ export default class DateQuestionUtilities {
     return(new_date.startOf(truncateTo));
   }
 
-  static momentToString(date, textFieldType) {
+  static ToString(date, textFieldType) {
     return (!date || !date.isValid) ? "" :
     textFieldType === "date" ? date.toFormat("yyyy-MM-dd") : date.toFormat("yyyy-MM-dd\'T\'HH:mm");
   }
 
   // Convert a moment string to a month display
-  static momentStringToDisplayMonth(dateFormat, value) {
+  static dateStringToDisplayMonth(dateFormat, value) {
     // Switch month and year if required as Moment returns a fixed order
     let monthIndex = dateFormat.indexOf('MM');
     if (monthIndex === 0) {
@@ -163,9 +163,9 @@ export default class DateQuestionUtilities {
     }
     // Quick fix for moment using a different date specifier than Java
     dateFormat = dateFormat.replaceAll('d', "D");
-    let date = this.amendMoment(value, dateFormat);
+    let date = this.toPrecision(value, dateFormat);
     if (dateType === this.MONTH_DATE_TYPE) {
-      return this.momentStringToDisplayMonth(
+      return this.dateStringToDisplayMonth(
         dateFormat,
         !date || !date.isValid ? "" : date.toFormat("yyyy-MM")
         );
@@ -190,8 +190,8 @@ export default class DateQuestionUtilities {
     // Compute the displayed difference
     let result = {long:""}
     if (startDateInput && endDateInput) {
-      let startDate = this.amendMoment(startDateInput, "yyyy-MM-dd");
-      let endDate = this.amendMoment(endDateInput, "yyyy-MM-dd");
+      let startDate = this.toPrecision(startDateInput, "yyyy-MM-dd");
+      let endDate = this.toPrecision(endDateInput, "yyyy-MM-dd");
 
       let diff = [];
       let longDiff = [];

@@ -60,8 +60,8 @@ function DateQuestionMonth(props) {
   const [ displayedEndDate, setDisplayedEndDate ] = useState(DateQuestionUtilities.formatDateAnswer(
     dateFormat,
     DateQuestionUtilities.stripTimeZone(typeof(startValues) === "object" ? startValues[1] : "")));
-  const upperLimitMoment = DateQuestionUtilities.amendMoment(upperLimit);
-  const lowerLimitMoment = DateQuestionUtilities.amendMoment(lowerLimit);
+  const upperLimitMoment = DateQuestionUtilities.toPrecision(upperLimit);
+  const lowerLimitMoment = DateQuestionUtilities.toPrecision(lowerLimit);
 
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("Invalid date");
@@ -76,7 +76,7 @@ function DateQuestionMonth(props) {
 
   let onBlur = (value, isEnd) => {
     if (validateMonthString(value)) {
-      let startDate = isEnd ? amendMomentFromString(displayedDate, dateFormat) : null;
+      let startDate = isEnd ? toPrecisionFromString(displayedDate, dateFormat) : null;
       let parsedDate = DateQuestionUtilities.formatDateAnswer(dateFormat, boundDate(value, startDate));
       setDate(value.length === 0 ? value : parsedDate, isEnd);
       if (!isEnd) {
@@ -114,7 +114,7 @@ function DateQuestionMonth(props) {
   // Check that the given date is within the upper/lower limit (if specified),
   // and also after an optional startDate
   let boundDate = (date, startDate = null) => {
-    date = amendMomentFromString(date, dateFormat);
+    date = toPrecisionFromString(date, dateFormat);
     if (upperLimitMoment && upperLimitMoment < date) {
       date = upperLimitMoment;
     }
@@ -129,8 +129,8 @@ function DateQuestionMonth(props) {
     return(date);
   }
 
-  let amendMomentFromString = (value, dateFormat) => {
-    return DateQuestionUtilities.amendMoment(value, dateFormat, dateFormat);
+  let toPrecisionFromString = (value, dateFormat) => {
+    return DateQuestionUtilities.toPrecision(value, dateFormat, dateFormat);
   }
 
   let getSlingDate = (isEnd) => {
@@ -139,7 +139,7 @@ function DateQuestionMonth(props) {
       dateString = "";
     }
     if (dateString.length > 0) {
-      dateString = amendMomentFromString(dateString, dateFormat).toFormat(DateQuestionUtilities.slingDateFormat);
+      dateString = toPrecisionFromString(dateString, dateFormat).toFormat(DateQuestionUtilities.slingDateFormat);
     }
     return dateString;
   }

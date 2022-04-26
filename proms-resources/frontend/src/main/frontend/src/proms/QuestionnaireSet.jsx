@@ -445,7 +445,7 @@ function QuestionnaireSet(props) {
 
   const getVisitDate = () => {
     let dateAnswer = getVisitInformation("time");
-    return DateQuestionUtilities.amendMoment(DateQuestionUtilities.stripTimeZone(dateAnswer));
+    return DateQuestionUtilities.toPrecision(DateQuestionUtilities.stripTimeZone(dateAnswer));
   }
 
   const appointmentDate = () => {
