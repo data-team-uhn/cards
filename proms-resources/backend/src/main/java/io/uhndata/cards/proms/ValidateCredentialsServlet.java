@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
@@ -344,54 +345,65 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
         return null;
     }
 
-    @SuppressWarnings({"checkstyle:CyclomaticComplexity", "checkstyle:NPathComplexity"})
+    @SuppressWarnings({ "checkstyle:CyclomaticComplexity", "checkstyle:NPathComplexity" })
     private boolean isVisitUpcoming(final Session session, Node visitInformationForm) throws RepositoryException
     {
         Node visitQuestionnaire = getVisitInformationQuestionnaire(session);
-        boolean result = true;
+        Map<String, Predicate<Property>> tests = Map.of(
+            // Verify surveys set
+            "surveys", p -> true,
 
-        // Verify surveys set
-        Node visitSurveysQuestion = this.questionnaireUtils.getQuestion(visitQuestionnaire, "surveys");
-        Node surveysAnswer = this.formUtils.getAnswer(visitInformationForm, visitSurveysQuestion);
-        if (surveyAnswer == null || !surveysAnswer.hasProperty(VALUE)) {
-            result = false;
-        }
+            // Verify visit is upcoming
+            "time", p -> {
+                try {
+                    return Calendar.getInstance().before(p.getDate());
+                } catch (RepositoryException e) {
+                    return false;
+                }
+            },
 
-        // Verify visit is upcoming
-        Node visitTimeQuestion = this.questionnaireUtils.getQuestion(visitQuestionnaire, "time");
-        Node timeAnswer = this.formUtils.getAnswer(visitInformationForm, visitTimeQuestion);
-        if (timeAnswer == null || !timeAnswer.hasProperty(VALUE)
-            || !Calendar.getInstance().before(timeAnswer.getProperty(VALUE).getDate())) {
-            result = false;
-        }
+            // Verify visit hasn't been cancelled or entered in error
+            "status", p -> {
+                try {
+                    return !("cancelled".equals(p.getString())
+                        || "entered-in-error".equals(p.getString()));
+                } catch (RepositoryException e) {
+                    return false;
+                }
+            },
 
-        // Verify visit hasn't been cancelled or entered in error
-        Node visitStatusQuestion = this.questionnaireUtils.getQuestion(visitQuestionnaire, "status");
-        Node statusAnswer = this.formUtils.getAnswer(visitInformationForm, visitStatusQuestion);
-        if (statusAnswer == null || !statusAnswer.hasProperty(VALUE)
-            || "cancelled".equals(statusAnswer.getProperty(VALUE).getString())
-            || "entered-in-error".equals(statusAnswer.getProperty(VALUE).getString()))
-        {
-            result = false;
-        }
+            // Verify visit has surveys
+            "has_surveys", p -> {
+                try {
+                    return 0 != p.getLong();
+                } catch (RepositoryException e) {
+                    return false;
+                }
+            },
 
-        // Verify visit has surveys
-        Node visitHasSurveysQuestion = this.questionnaireUtils.getQuestion(visitQuestionnaire, "has_surveys");
-        Node hasSurveysAnswer = this.formUtils.getAnswer(visitInformationForm, visitHasSurveysQuestion);
-        if (hasSurveysAnswer == null || !hasSurveysAnswer.hasProperty(VALUE)
-            || 0 == hasSurveysAnswer.getProperty(VALUE).getLong()) {
-            result = false;
-        }
+            // Verify visit surveys haven't been submitted
+            "!surveys_submitted", p -> {
+                try {
+                    return 1 != p.getLong();
+                } catch (RepositoryException e) {
+                    return false;
+                }
+            });
 
-        // Verify visit surveys haven't been submitted
-        Node visitSubmittedQuestion = this.questionnaireUtils.getQuestion(visitQuestionnaire, "surveys_submitted");
-        Node submittedAnswer = this.formUtils.getAnswer(visitInformationForm, visitSubmittedQuestion);
-        if (submittedAnswer != null && submittedAnswer.hasProperty(VALUE)
-            && 1 == submittedAnswer.getProperty(VALUE).getLong()) {
-            result = false;
-        }
-
-        return result;
+        return tests.entrySet().stream().allMatch(e -> {
+            boolean mustBePresent = !StringUtils.startsWith(e.getKey(), "!");
+            Node question =
+                this.questionnaireUtils.getQuestion(visitQuestionnaire, StringUtils.removeStart(e.getKey(), "!"));
+            Node answer = this.formUtils.getAnswer(visitInformationForm, question);
+            try {
+                if (!mustBePresent && (answer == null || !answer.hasProperty(VALUE))) {
+                    return true;
+                }
+                return (answer != null && answer.hasProperty(VALUE) && e.getValue().test(answer.getProperty(VALUE)));
+            } catch (RepositoryException e1) {
+                return false;
+            }
+        });
     }
 
     private Node getPatientInformationForm(final Node visitSubject, final Node patientInformationQuestionnaire,
