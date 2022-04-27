@@ -337,7 +337,7 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
             Node form = reference.getParent();
 
             if (this.formUtils.isForm(form)
-                && this.formUtils.getQuestionnaireIdentifier(form) == visitQuestionnaire.getIdentifier()) {
+                && visitQuestionnaire.getIdentifier().equals(this.formUtils.getQuestionnaireIdentifier(form))) {
                 return form;
             }
         }
