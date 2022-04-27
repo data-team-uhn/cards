@@ -527,9 +527,10 @@ function Form (props) {
             }
           </FormUpdateProvider>
         </FormProvider>
-        {/* If the form is in edit mode, padding from the pagination is used to space out the save button, even with
-            pagination disabled. In view modes, there is no save button, so hide the pagination completely*/}
-        <Grid item xs={12} className={isEdit ? classes.formFooter : classes.hiddenFooter} id="cards-resource-footer">
+        {/* FormPagination must be called regardless of whether it is paginationEnabled is true or false,
+            because it is what populates the contents of the form.
+            However, it should only be displayed to the user in edit mode when paginationEnabled is true. */}
+        <Grid item xs={12} className={paginationEnabled ? classes.formFooter : classes.hiddenFooter} id="cards-resource-footer">
           <FormPagination
               saveInProgress={saveInProgress}
               lastSaveStatus={lastSaveStatus}
