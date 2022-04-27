@@ -175,11 +175,8 @@ export default class DateQuestionUtilities {
   }
 
   static stripTimeZone(dateString) {
-    if (!dateString) {
-      return dateString;
-    }
     // Remove the time zone (eg. "-05:00") from the end of a sling provided date string
-    return dateString.replace(/[-+][0-9]{2}:[0-9]{2}$/gm, '');
+    return dateString?.replace(/[-+][0-9]{2}:[0-9]{2}$/gm, '');
   }
 
   static isAnswerComplete(answers, type) {
