@@ -57,6 +57,25 @@
 		</property>
 	</node>
 	<node>
+		<name>clinic</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Clinic</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>hidden</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+	</node>
+	<node>
 		<name>surveys_complete</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
