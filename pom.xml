@@ -401,6 +401,12 @@
         <artifactId>maven-checkstyle-plugin</artifactId>
       </plugin>
 
+      <!-- Run SpotBugs on Java code-->
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+      </plugin>
+
       <!-- Validate HTL files -->
       <plugin>
         <groupId>org.apache.sling</groupId>
@@ -616,6 +622,28 @@
                   <sourceDirectory>src/test/java/</sourceDirectory>
                 </sourceDirectories>
               </configuration>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>com.github.spotbugs</groupId>
+          <artifactId>spotbugs-maven-plugin</artifactId>
+          <version>4.6.0.0</version>
+          <dependencies>
+            <!-- overwrite dependency on spotbugs if you want to specify the version of spotbugs -->
+            <dependency>
+              <groupId>com.github.spotbugs</groupId>
+              <artifactId>spotbugs</artifactId>
+              <version>4.6.0</version>
+            </dependency>
+          </dependencies>
+          <executions>
+            <execution>
+              <id>spotbugs</id>
+              <goals>
+                <goal>check</goal>
+              </goals>
             </execution>
           </executions>
         </plugin>
