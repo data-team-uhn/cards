@@ -68,6 +68,9 @@ const useStyles = makeStyles(theme => ({
       zoom: 1.2,
     }
   },
+  collapsed : {
+    display: "none",
+  },
 }));
 
 function PromsHeader (props) {
@@ -89,6 +92,7 @@ function PromsHeader (props) {
     : <></>;
 
   return (
+    <>
     <AppBar position="sticky" className={classes.appbar}>
       <Collapse in={!subtitle || !(scrollTrigger)}>
         <Toolbar variant="dense" className={classes.toolbar}>
@@ -106,8 +110,13 @@ function PromsHeader (props) {
       </Collapse>
       { subtitle && <Collapse in={scrollTrigger}>{subtitleBar}</Collapse> }
       <LinearProgress variant="determinate" value={progress} />
-      { subtitle && <Fade in={!scrollTrigger} className={classes.fullSize + ' ' + classes.toolbar}>{subtitleBar}</Fade> }
+      { subtitle && <Fade in={!scrollTrigger} className={(scrollTrigger ? classes.collapsed : '') + ' ' + classes.fullSize + ' ' + classes.toolbar}>{subtitleBar}</Fade> }
     </AppBar>
+    {/* We render another copy of the full size subtitle to maintain the same content height when the first one
+        disappears and thus prevent the subtitle from "jumping" between full size and compact when scrollTrigger
+        becomes true. */}
+    { subtitle && scrollTrigger && <div className={classes.fullSize + ' ' + classes.toolbar}>{subtitleBar}</div> }
+    </>
   );
 }
 
