@@ -26,11 +26,14 @@ const style = theme => ({
     zIndex: 100,
     "& .MuiCircularProgress-root" : {
       position: 'absolute',
-      top: 0,
-      left: 0,
+      top: "50%",
+      left: "50%",
+      marginTop: "-28px",
+      marginLeft: "-28px",
     },
     "& .MuiFab-extended + .MuiCircularProgress-root" : {
-      margin: theme.spacing(1, 1.5),
+      marginTop: "-16px",
+      marginLeft: "-16px",
     },
     "& .MuiFab-extended .MuiSvgIcon-root" : {
       marginRight: theme.spacing(1),
