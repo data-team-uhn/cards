@@ -229,7 +229,7 @@ function QuestionnaireSet(props) {
         if (!questionnaires) {
           setSubjectData(json);
           setVisitInformation(json[visitInformationFormTitle]?.[0] || {});
-          setId(Object.values(json[visitInformationFormTitle]?.[0]).find(o => o?.question?.text == "Surveys")?.value);
+          setId(Object.values(json[visitInformationFormTitle]?.[0]).find(o => o?.question?.text == "Clinic")?.value);
           return;
         }
         selectDataForQuestionnaireSet(json, questionnaires, questionnaireSetIds);

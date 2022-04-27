@@ -29,7 +29,7 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js"
 import PromsViewInternal from "./PromsViewInternal.jsx";
 
 function PromsView(props) {
-  const { data, surveysId, color, visitInfo } = props;
+  const { data, clinicId, color, visitInfo } = props;
 
   const [ columns, setColumns ] = useState();
   const [ questionnaireId, setQuestionnaireId ] = useState();
@@ -58,14 +58,14 @@ function PromsView(props) {
     "[cards:Subject] as visitSubject " +
     "inner join [cards:Form] as visitInformation on visitSubject.[jcr:uuid] = visitInformation.subject " +
       "inner join [cards:DateAnswer] as visitDate on isdescendantnode(visitDate, visitInformation) " +
-      "inner join [cards:TextAnswer] as visitSurveys on isdescendantnode(visitSurveys, visitInformation) " +
+      "inner join [cards:TextAnswer] as visitClinic on isdescendantnode(visitClinic, visitInformation) " +
       "inner join [cards:TextAnswer] as visitStatus on isdescendantnode(visitStatus, visitInformation) " +
       "inner join [cards:BooleanAnswer] as patientSubmitted on isdescendantnode(patientSubmitted, visitInformation) " +
     "inner join [cards:Form] as dataForm on visitSubject.[jcr:uuid] = dataForm.subject " +
   "where " +
     `visitInformation.questionnaire = '${visitInfo?.["jcr:uuid"]}' ` +
       `and visitDate.question = '${visitInfo?.time?.["jcr:uuid"]}' and __DATE_FILTER_PLACEHOLDER__ ` +
-      `and visitSurveys.question = '${visitInfo?.surveys?.["jcr:uuid"]}' and visitSurveys.value = '${surveysId}' ` +
+      `and visitClinic.question = '${visitInfo?.clinic?.["jcr:uuid"]}' and visitClinic.value = '${clinicId}' ` +
       `and visitStatus.question = '${visitInfo?.status?.["jcr:uuid"]}' and visitStatus.value <> 'cancelled' and visitStatus.value <> 'entered-in-error' ` +
       `and patientSubmitted.question = '${visitInfo?.surveys_submitted?.["jcr:uuid"]}' and patientSubmitted.value = 1 ` +
     `and dataForm.questionnaire = '${questionnaireId}' ` +

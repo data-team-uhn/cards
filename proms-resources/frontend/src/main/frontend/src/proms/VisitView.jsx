@@ -46,7 +46,7 @@ const useStyles = color => makeStyles(theme => ({
 
 
 function VisitView(props) {
-  const { surveysId, color, visitInfo } = props;
+  const { clinicId, color, visitInfo } = props;
 
   const classes = useStyles(color)();
 
@@ -54,13 +54,13 @@ function VisitView(props) {
 "select distinct visitInformation.* " +
   "from " +
     "[cards:Form] as visitInformation " +
-      "inner join [cards:TextAnswer] as visitSurveys on isdescendantnode(visitSurveys, visitInformation) " +
+      "inner join [cards:TextAnswer] as visitClinic on isdescendantnode(visitClinics, visitInformation) " +
       "inner join [cards:DateAnswer] as visitDate on isdescendantnode(visitDate, visitInformation) " +
       "inner join [cards:TextAnswer] as visitStatus on isdescendantnode(visitStatus, visitInformation) " +
   "where " +
     `visitInformation.questionnaire = '${visitInfo?.["jcr:uuid"]}' ` +
       `and visitDate.question = '${visitInfo?.time?.["jcr:uuid"]}' and __DATE_FILTER_PLACEHOLDER__ ` +
-      `and visitSurveys.question = '${visitInfo?.surveys?.["jcr:uuid"]}' and visitSurveys.value = '${surveysId}' ` +
+      `and visitClinic.question = '${visitInfo?.clinic?.["jcr:uuid"]}' and visitClinic.value = '${clinicId}' ` +
       `and visitStatus.question = '${visitInfo?.status?.["jcr:uuid"]}' and visitStatus.value <> 'cancelled' and visitStatus.value <> 'entered-in-error' ` +
   "order by visitDate.value __SORT_ORDER_PLACEHOLDER__"
 )
