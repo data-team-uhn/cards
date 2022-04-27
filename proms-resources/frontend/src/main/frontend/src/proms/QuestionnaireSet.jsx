@@ -86,13 +86,6 @@ const useStyles = makeStyles(theme => ({
     justify: "space-between",
     flexWrap: "nowrap",
   },
-  reviewFab : {
-    margin: theme.spacing(1),
-    position: "fixed",
-    bottom: theme.spacing(2),
-    right: theme.spacing(4),
-    zIndex: 100,
-  }
 }));
 
 function QuestionnaireSet(props) {
@@ -587,9 +580,7 @@ function QuestionnaireSet(props) {
       </Grid>
       ))}
     </Grid>,
-    <div className={classes.reviewFab}>
-      <Fab variant="extended" color="primary" onClick={() => {onSubmit()}}>Submit my answers</Fab>
-    </div>
+    <Fab variant="extended" color="primary" onClick={() => {onSubmit()}}>Submit my answers</Fab>
   ];
 
   // Are there any response interpretations to display to the patient?
