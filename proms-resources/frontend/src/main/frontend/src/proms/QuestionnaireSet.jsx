@@ -562,7 +562,7 @@ function QuestionnaireSet(props) {
     <Grid container direction="column" spacing={8}>
       {(questionnaireIds || []).map((q, i) => (
       <Grid item key={q+"Review"}>
-      <Grid container spacing={4}>
+      <Grid container direction="column" spacing={4}>
         <Grid item>
           <Typography variant="h5">{questionnaires[q].title || questionnaires[q]["@name"]}</Typography>
         </Grid>
