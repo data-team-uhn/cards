@@ -6,7 +6,7 @@
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.discovery.base:2.0.10",
+            "id":"org.apache.sling:org.apache.sling.discovery.base:2.0.12",
             "start-order":"20"
         },
         {

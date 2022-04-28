@@ -153,8 +153,8 @@
     <sling.saml.version>0.2.6.cards.1</sling.saml.version>
 
     <!-- Versions to be replaced in the feature files -->
-    <asm.version>9.2</asm.version>
-    <composum.nodes.version>4.1.0</composum.nodes.version>
+    <asm.version>9.3</asm.version>
+    <composum.nodes.version>4.1.1</composum.nodes.version>
     <jackson.version>2.13.2</jackson.version>
     <groovy.version>3.0.10</groovy.version>
 
@@ -322,7 +322,7 @@
       <dependency>
         <groupId>org.apache.sling</groupId>
         <artifactId>org.apache.sling.api</artifactId>
-        <version>2.24.0</version>
+        <version>2.25.0</version>
       </dependency>
       <dependency>
         <groupId>org.apache.sling</groupId>
