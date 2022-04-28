@@ -450,7 +450,7 @@ function QuestionnaireSet(props) {
 
   const appointmentDate = () => {
     let date = getVisitDate();
-    return !date.isValid ? "" : date.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY);
+    return !date?.isValid ? "" : date.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY);
   }
 
   let appointmentAlert = () => {
@@ -469,7 +469,7 @@ function QuestionnaireSet(props) {
   }
 
   const diffString = (division, result, diffs) => {
-    let diff = diffs[division];
+    let diff = Math.floor(diffs[division]);
     if (diff > 0) {
       result.push(diff + " " + (diff == 1 && division[division.length - 1] == "s"
         ? division.substring(0, division.length -1)
@@ -480,7 +480,7 @@ function QuestionnaireSet(props) {
   const expiryDate = () => {
     let result = "";
     const date = getVisitDate();
-    if (date && date.isValid) {
+    if (date?.isValid) {
       // If the visit date could be retrieved, this is an emailed token and will expire 2 hours after the visit
       date.plus({hours: 2});
 
