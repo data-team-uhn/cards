@@ -175,7 +175,7 @@ const graphQlResponse = {
   }
 };
 
-webApp.post('*', (req, res) => {
+webApp.post('(.*)', (req, res) => {
   console.log("GraphQL QUERY => " + req.body);
   console.log("");
   console.log("RESPONSE <= " + JSON.stringify(graphQlResponse));
