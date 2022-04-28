@@ -262,9 +262,6 @@ function DropdownsDatePicker(props) {
             if (selected < 0 ) {
               return <div className={classes.placeholder}>Day</div>;
             }
-            if (selected < 10 ) {
-              return "0" + selected;
-            }
             return selected;
         }}
       >
