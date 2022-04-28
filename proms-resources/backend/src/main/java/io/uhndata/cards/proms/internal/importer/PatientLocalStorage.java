@@ -111,6 +111,9 @@ public class PatientLocalStorage
     /** Count of appointments created. */
     private long appointmentsCreated;
 
+    /** Dates to check. */
+    private final List<Calendar> datesToQuery;
+
     /**
      * @param resolver A reference to a ResourceResolver
      * @param startDate The start of the range of dates for appointments to find from within the patient
@@ -118,13 +121,14 @@ public class PatientLocalStorage
      * @param providerIDs List of providers to query. If empty, all providers' appointments are used
      */
     PatientLocalStorage(final ResourceResolver resolver, final Calendar startDate, final Calendar endDate,
-        final String[] providerIDs)
+        final String[] providerIDs, final List<Calendar> datesToQuery)
     {
         this.resolver = resolver;
         this.startDate = startDate;
         this.endDate = endDate;
         this.providerIDs = Arrays.asList(providerIDs);
         this.appointmentsCreated = 0;
+        this.datesToQuery = datesToQuery;
     }
 
     public long getCountAppointmentsCreated()
@@ -213,10 +217,34 @@ public class PatientLocalStorage
             final Date thisDate = new SimpleDateFormat("yyyy-MM-dd").parse(appointment.getString("time"));
             final Calendar thisCalendar = Calendar.getInstance();
             thisCalendar.setTime(thisDate);
+            if (this.datesToQuery.size() > 0 && !listContainsDate(this.datesToQuery, thisCalendar)) {
+                return false;
+            }
+
             return thisCalendar.after(this.startDate) && thisCalendar.before(this.endDate);
         } catch (final ParseException e) {
             LOGGER.error("Could not parse date for appointment {}: {}",
                 appointment.getString(PatientLocalStorage.FHIR_FIELD), e.getMessage(), e);
+        }
+        return false;
+    }
+
+    /**
+     * Returns True if the given list contains the given date.
+     *
+     * @param dates List of Calendar objects
+     * @param toCheck Calendar object to check is contained within the above list
+     * @return True if the list of Calendar objects contains an object with the same date as toCheck,
+     *      or False otherwise
+     */
+    Boolean listContainsDate(final List<Calendar> dates, Calendar toCheck)
+    {
+        for (Calendar date : this.datesToQuery) {
+            if (date.get(Calendar.YEAR) == toCheck.get(Calendar.YEAR)
+                && date.get(Calendar.MONTH) == toCheck.get(Calendar.MONTH)
+                && date.get(Calendar.DATE) == toCheck.get(Calendar.DATE)) {
+                return true;
+            }
         }
         return false;
     }

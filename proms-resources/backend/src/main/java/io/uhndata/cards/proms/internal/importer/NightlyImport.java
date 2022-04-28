@@ -79,7 +79,8 @@ public class NightlyImport
                 newConfig.getConfig().vault_token(),
                 newConfig.getConfig().clinic_names(),
                 newConfig.getConfig().provider_names(),
-                newConfig.getConfig().vault_role());
+                newConfig.getConfig().vault_role(),
+                newConfig.getConfig().dates_to_query());
         try {
             if (importJob != null) {
                 this.scheduler.schedule(importJob, options);

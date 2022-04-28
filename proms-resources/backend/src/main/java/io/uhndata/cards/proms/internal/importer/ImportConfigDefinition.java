@@ -45,6 +45,9 @@ public @interface ImportConfigDefinition
     /** Vault role to login to. */
     String VAULT_ROLE = "prom_role";
 
+    /** Vault role to login to. */
+    String DATES_TO_QUERY = "dates_to_query";
+
     @AttributeDefinition(name = "Name", description = "Configuration name")
     String name();
 
@@ -76,4 +79,9 @@ public @interface ImportConfigDefinition
         description = "Name of the role to login to Vault with. If not given, skip the Vault login process.",
         required = false)
     String vault_role();
+
+    @AttributeDefinition(name = "Dates to query",
+        description = "Dates to query, which limits the dates that will be queried.",
+        required = false)
+    String[] dates_to_query();
 }
