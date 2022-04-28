@@ -38,7 +38,7 @@ To specify a different URL, use `-Dsling.url=https://cards.server:8443/system/co
 
 `./start_cards.sh -p PORT` to run at a different port
 
-`./start_cards.sh -P PROJECT1,PROJECT2` to run a specific project. Currently supported projects are: `cards4lfs`, `cards4kids`, `cards4care`, `cards4proms`.
+`./start_cards.sh -P PROJECT1,PROJECT2` to run a specific project. Currently supported projects are: `lfs`, `kids`, `care`, `proms`.
 
 `./start_cards.sh --permissions SCHEME` to run with a different permission scheme. Currently supported schemes are:
 - `open`, the default, where all registered users can create, view and edit all records
