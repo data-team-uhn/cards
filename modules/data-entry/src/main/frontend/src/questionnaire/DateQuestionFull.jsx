@@ -156,12 +156,12 @@ function DateQuestionFull(props) {
       {
         pageActive && <>
           {error && <Typography color='error'>{errorMessage}</Typography>}
-          {getTextField(false, DateQuestionUtilities.ToString(startDate, textFieldType))}
+          {getTextField(false, DateQuestionUtilities.dateToFormattedString(startDate, textFieldType))}
           { /* If this is an interval, allow the user to select a second date */
           type === DateQuestionUtilities.INTERVAL_TYPE &&
           <React.Fragment>
             <span className={classes.mdash}>&mdash;</span>
-            {getTextField(true, DateQuestionUtilities.ToString(endDate, textFieldType))}
+            {getTextField(true, DateQuestionUtilities.dateToFormattedString(endDate, textFieldType))}
           </React.Fragment>
           }
         </>

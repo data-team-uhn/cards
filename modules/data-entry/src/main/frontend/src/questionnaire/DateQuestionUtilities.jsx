@@ -124,7 +124,7 @@ export default class DateQuestionUtilities {
     return(new_date.startOf(truncateTo));
   }
 
-  static ToString(date, textFieldType) {
+  static dateToFormattedString(date, textFieldType) {
     return (!date || !date.isValid) ? "" :
     textFieldType === "date" ? date.toFormat("yyyy-MM-dd") : date.toFormat("yyyy-MM-dd\'T\'HH:mm");
   }
