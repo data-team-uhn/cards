@@ -44,6 +44,7 @@ import * as jdfp from "moment-jdateformatparser";
 import Form from "../questionnaire/Form.jsx";
 import PromsHeader from "./Header.jsx";
 import DateQuestionUtilities from "../questionnaire/DateQuestionUtilities";
+import FormattedText from "../components/FormattedText.jsx";
 import { ENTRY_TYPES } from "../questionnaire/FormEntry.jsx"
 
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
@@ -58,6 +59,9 @@ const useStyles = makeStyles(theme => ({
     },
     "& #cards-resource-footer .MuiMobileStepper-progress" : {
       width: "100%",
+    },
+    "& .wmde-markdown .anchor" : {
+      display: "none",
     },
   },
   screen : {
@@ -109,6 +113,8 @@ function QuestionnaireSet(props) {
   // use a simple counter to mark that new data arrived.
   // setSubjectDataLoadCount must be called every time setSubjectData is called!
   const [ subjectDataLoadCount, setSubjectDataLoadCount] = useState(0);
+  // Previews of the data entered for each survey
+  const [ previews, setPreviews ] = useState({});
 
   // Visit information form
   const [ visitInformation, setVisitInformation ] = useState();
@@ -184,6 +190,7 @@ function QuestionnaireSet(props) {
     if (!questionnaireIds || crtStep < questionnaireIds.length) return;
     setEndReached(true);
     loadExistingData();
+    loadPreviews();
   }, [crtStep]);
 
   // Determine if all surveys have been filled out
@@ -294,6 +301,22 @@ function QuestionnaireSet(props) {
     setSubjectData(data);
     setSubjectDataLoadCount((counter) => counter+1);
   };
+
+  // Load the markdown serialization of the survey responses to display at the review step
+  let loadPreviews = () => {
+    (questionnaireIds || []).forEach(q => {
+      let formId = subjectData?.[q]?.["@name"];
+      // Fetch the markdown serialization of the forms
+      fetchWithReLogin(globalLoginDisplay, `/Forms/${formId}.md`)
+        .then(response => response.ok ? response.text() : Promise.reject(response))
+        .then(text => setPreviews( oldPreviews => {
+          let newPreviews = Object.assign({}, oldPreviews);
+          newPreviews[formId] = text;
+          return newPreviews;
+        }))
+        .catch(error => setError(`Loading the survey response preview for ${formId} failed with error code ${response.status}: ${response.statusText}`));
+    })
+  }
 
   // Find out if a questionnaire has an interpretation for the patient, i.e. a "summary" section
   let hasInterpretation = (json) => {
@@ -555,18 +578,10 @@ function QuestionnaireSet(props) {
     <Grid container direction="column" spacing={8}>
       {(questionnaireIds || []).map((q, i) => (
       <Grid item key={q+"Review"}>
-      <Grid container direction="column" spacing={4}>
+      { previews?.[subjectData?.[q]?.["@name"]] ?
+        <Grid container direction="column" spacing={4}>
         <Grid item>
-          <Typography variant="h5">{questionnaires[q].title || questionnaires[q]["@name"]}</Typography>
-        </Grid>
-        <Grid item>
-          <Form
-            id={subjectData?.[q]?.['@name']}
-            disableHeader
-            disableButton
-            questionnaireAddons={questionnaires?.[q]?.questionnaireAddons}
-            contentOffset={contentOffset || 0}
-          />
+          <FormattedText>{ previews?.[subjectData?.[q]?.["@name"]] }</FormattedText>
         </Grid>
         <Grid item>
           <Button
@@ -576,7 +591,10 @@ function QuestionnaireSet(props) {
               Update this survey
           </Button>
         </Grid>
-      </Grid>
+        </Grid>
+        :
+        <CircularProgress />
+      }
       </Grid>
       ))}
     </Grid>,

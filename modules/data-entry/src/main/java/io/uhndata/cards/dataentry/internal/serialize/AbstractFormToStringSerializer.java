@@ -186,7 +186,7 @@ public abstract class AbstractFormToStringSerializer
     private void processAnswer(final JsonObject answerJson, final String nodeType, final StringBuilder result)
     {
         final String displayMode = getDisplayMode("question", answerJson);
-        if ("hidden".equals(displayMode)) {
+        if ("hidden".equals(displayMode) || "summary".equals(displayMode)) {
             return;
         }
 
