@@ -40,6 +40,11 @@ To specify a different URL, use `-Dsling.url=https://cards.server:8443/system/co
 
 `./start_cards.sh -P PROJECT1,PROJECT2` to run a specific project. Currently supported projects are: `cards4lfs`, `cards4kids`, `cards4care`, `cards4proms`.
 
+`./start_cards.sh --permissions SCHEME` to run with a different permission scheme. Currently supported schemes are:
+- `open`, the default, where all registered users can create, view and edit all records
+- `trusted`, where only users explicitly added to the `TrustedUsers` group can access records
+- `ownership`, where all users can create new records, but only the creator of a record can view and edit it
+
 `./start_cards.sh --dev` to include the content browser (Composum), accessible at `http://localhost:8080/bin/browser.html`
 
 `./start_cards.sh --test` to include the test questionnaires
