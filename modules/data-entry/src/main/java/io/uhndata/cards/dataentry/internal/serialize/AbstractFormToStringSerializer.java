@@ -193,7 +193,7 @@ public abstract class AbstractFormToStringSerializer
         final JsonValue value = answerJson.get("displayedValue");
         final String note = answerJson.containsKey("note") ? answerJson.getString("note") : null;
 
-        final String questionText = answerJson.getJsonObject("question").getString("text");
+        final String questionText = getQuestionText(answerJson);
         final boolean questionHasText = StringUtils.isNotBlank(questionText);
         if (questionHasText) {
             formatQuestion(questionText, result);
@@ -239,6 +239,23 @@ public abstract class AbstractFormToStringSerializer
     {
         try {
             return ((JsonString) answerElementJson.getValue("/" + element + "/displayMode")).getString();
+        } catch (JsonException | NullPointerException ex) {
+            // Not there, return
+        }
+        return null;
+    }
+
+    /**
+     * Retrieves the text of a question, if any. If the question cannot be accessed or doesn't have a text,
+     * {@code null} is returned.
+     *
+     * @param answerJson a JSON serialization of an answer
+     * @return the question text, or {@code null}
+     */
+    private String getQuestionText(final JsonObject answerJson)
+    {
+        try {
+            return answerJson.getJsonObject("question").getString("text");
         } catch (JsonException | NullPointerException ex) {
             // Not there, return
         }
