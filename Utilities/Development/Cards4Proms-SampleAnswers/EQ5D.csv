@@ -1,0 +1,2 @@
+Patient ID	Visit ID	eq5d_1	eq5d_2	eq5d_3	eq5d_4	eq5d_5	eq5d_6
+{{PATIENT_IDENTIFIER}}	{{VISIT_IDENTIFIER}}	2	2	1	1	2	50
