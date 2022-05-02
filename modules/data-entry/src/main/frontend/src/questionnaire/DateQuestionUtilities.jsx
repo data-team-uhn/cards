@@ -85,7 +85,7 @@ export default class DateQuestionUtilities {
     return result;
   }
 
-  // Truncates fields in the given moment object or date string
+  // Truncates fields in the given DateTime object or date string
   // according to the given format string
   static toPrecision(date, toFormat, fromFormat) {
     if (!date) {
@@ -125,7 +125,7 @@ export default class DateQuestionUtilities {
   }
 
   static dateToFormattedString(date, textFieldType) {
-    return (!date || !date.isValid) ? "" :
+    return (!date?.isValid) ? "" :
     textFieldType === "date" ? date.toFormat("yyyy-MM-dd") : date.toFormat("yyyy-MM-dd\'T\'HH:mm");
   }
 
@@ -167,7 +167,7 @@ export default class DateQuestionUtilities {
     if (dateType === this.MONTH_DATE_TYPE) {
       return this.dateStringToDisplayMonth(
         dateFormat,
-        !date || !date.isValid ? "" : date.toFormat("yyyy-MM")
+        !date?.isValid ? "" : date.toFormat("yyyy-MM")
         );
     } else {
       return date.format(dateFormat);
