@@ -78,7 +78,7 @@ public class ImportTask implements Runnable
     /** URL for the Torch server endpoint. */
     private final String endpointURL;
 
-    /** Vault role name for use when logging in with the JWT. */
+    /** List of dates to filter appointments by. May be empty if no date filtering is applied. */
     private final List<Calendar> queryDates;
 
     /** JWT token for querying the endpoint. */
@@ -98,9 +98,9 @@ public class ImportTask implements Runnable
      * @param endpointURL The URL for the Torch server endpoint
      * @param daysToQuery Number of days to query
      * @param vaultToken JWT token for querying the endpoint
-     * @param clinicNames Pipe-delimited list of names of clinics to query
-     * @param providerIDs Pipe-delimited list of names of providers to filter queries to
-     * @param queryDates Pipe-delimited list of dates to restrict queries to, if any
+     * @param clinicNames list of names of clinics to query
+     * @param providerIDs list of names of providers to filter queries to
+     * @param queryDates list of dates to restrict queries to, if any
      */
     @SuppressWarnings({ "checkstyle:ParameterNumber" })
     ImportTask(final ResourceResolverFactory resolverFactory, final ThreadResourceResolverProvider rrp,
@@ -115,16 +115,15 @@ public class ImportTask implements Runnable
         this.daysToQuery = daysToQuery;
         this.vaultToken = vaultToken;
         this.clinicNames = clinicNames;
-        // Fixate the query dates
+        // Parse the query dates
         this.queryDates = new LinkedList<Calendar>();
         final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         for (int i = 0; i < queryDates.length; i++) {
-            this.queryDates.add(Calendar.getInstance());
-            try
-            {
-                this.queryDates.get(i).setTime(formatter.parse(queryDates[i]));
-            } catch (ParseException e)
-            {
+            try {
+                final Calendar date = Calendar.getInstance();
+                date.setTime(formatter.parse(queryDates[i]));
+                this.queryDates.add(date);
+            } catch (ParseException e) {
                 LOGGER.error("Query date invalid: {}", e.getMessage(), e);
                 this.queryDates.set(i, null);
             }

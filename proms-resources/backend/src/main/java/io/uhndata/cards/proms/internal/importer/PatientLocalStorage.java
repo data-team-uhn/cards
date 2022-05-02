@@ -292,7 +292,7 @@ public class PatientLocalStorage
      * @param appointment JsonObject of a provider from the "providers" object within an appointment
      * @return True if the provider is approved and is an attendee.
      */
-    Boolean isAllowedProvider(final JsonObject provider)
+    private boolean isAllowedProvider(final JsonObject provider)
     {
         // Check that the provider is an attendee
         if (provider.containsKey("role") && !"ATND".equals(provider.getString("role"))) {
