@@ -76,4 +76,9 @@ public @interface ImportConfigDefinition
         description = "Name of the role to login to Vault with. If not given, skip the Vault login process.",
         required = false)
     String vault_role();
+
+    @AttributeDefinition(name = "Dates to query",
+        description = "If set, only appointments for these dates will be imported. Must be in the format yyyy-mm-dd.",
+        required = false)
+    String[] dates_to_query();
 }

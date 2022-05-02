@@ -28,9 +28,12 @@ import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import javax.json.Json;
@@ -75,6 +78,9 @@ public class ImportTask implements Runnable
     /** URL for the Torch server endpoint. */
     private final String endpointURL;
 
+    /** List of dates to filter appointments by. May be empty if no date filtering is applied. */
+    private final List<Calendar> queryDates;
+
     /** JWT token for querying the endpoint. */
     private final String vaultToken;
 
@@ -92,14 +98,15 @@ public class ImportTask implements Runnable
      * @param endpointURL The URL for the Torch server endpoint
      * @param daysToQuery Number of days to query
      * @param vaultToken JWT token for querying the endpoint
-     * @param clinicNames Pipe-delimited list of names of clinics to query
-     * @param providerIDs Pipe-delimited list of names of providers to filter queries to
+     * @param clinicNames list of names of clinics to query
+     * @param providerIDs list of names of providers to filter queries to
+     * @param queryDates list of dates to restrict queries to, if any
      */
     @SuppressWarnings({ "checkstyle:ParameterNumber" })
     ImportTask(final ResourceResolverFactory resolverFactory, final ThreadResourceResolverProvider rrp,
         final String authURL, final String endpointURL,
         final int daysToQuery, final String vaultToken, final String[] clinicNames, final String[] providerIDs,
-        final String vaultRole)
+        final String vaultRole, final String[] queryDates)
     {
         this.resolverFactory = resolverFactory;
         this.rrp = rrp;
@@ -108,6 +115,19 @@ public class ImportTask implements Runnable
         this.daysToQuery = daysToQuery;
         this.vaultToken = vaultToken;
         this.clinicNames = clinicNames;
+        // Parse the query dates
+        this.queryDates = new LinkedList<Calendar>();
+        final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        for (int i = 0; i < queryDates.length; i++) {
+            try {
+                final Calendar date = Calendar.getInstance();
+                date.setTime(formatter.parse(queryDates[i]));
+                this.queryDates.add(date);
+            } catch (ParseException e) {
+                LOGGER.error("Query date invalid: {}", e.getMessage(), e);
+                this.queryDates.set(i, null);
+            }
+        }
         // If we have no provider IDs, we want an empty list instead of a list of length 1 with an empty string
         this.providerIDs = StringUtils.isAllBlank(providerIDs) ? new String[0] : providerIDs;
         this.vaultRole = vaultRole;
@@ -195,7 +215,7 @@ public class ImportTask implements Runnable
                 Map.of(ResourceResolverFactory.SUBSERVICE, "TorchImporter"))) {
                 this.rrp.push(resolver);
                 final PatientLocalStorage storage = new PatientLocalStorage(resolver, startDate, endDate,
-                    this.providerIDs);
+                    this.providerIDs, this.queryDates);
 
                 data.forEach(storage::store);
                 importedAppointmentsCount += storage.getCountAppointmentsCreated();
