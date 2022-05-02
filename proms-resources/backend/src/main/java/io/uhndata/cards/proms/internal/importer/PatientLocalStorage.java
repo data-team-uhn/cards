@@ -99,8 +99,11 @@ public class PatientLocalStorage
     /** End date of appointments to store. */
     private final Calendar endDate;
 
-    /** Pipe-delimited list of providers to query. If empty, all providers' appointments are used. */
+    /** List of providers to query. If empty, all providers' appointments are used. */
     private final List<String> providerIDs;
+
+    /** List of allowed provider roles, such that providerIDs must be the given role. Optionally set. */
+    private final List<String> providerRoles;
 
     /** Set of nodes that must be checked in at the end of this function. */
     private Set<String> nodesToCheckin;
@@ -121,12 +124,13 @@ public class PatientLocalStorage
      * @param providerIDs List of providers to query. If empty, all providers' appointments are used
      */
     PatientLocalStorage(final ResourceResolver resolver, final Calendar startDate, final Calendar endDate,
-        final String[] providerIDs, final List<Calendar> datesToQuery)
+        final String[] providerIDs, final String[] providerRoles, final List<Calendar> datesToQuery)
     {
         this.resolver = resolver;
         this.startDate = startDate;
         this.endDate = endDate;
         this.providerIDs = Arrays.asList(providerIDs);
+        this.providerRoles = Arrays.asList(providerRoles);
         this.appointmentsCreated = 0;
         this.datesToQuery = datesToQuery;
     }
@@ -294,9 +298,24 @@ public class PatientLocalStorage
      */
     private boolean isAllowedProvider(final JsonObject provider)
     {
-        // Check that the provider is an attendee
-        if (provider.containsKey("role") && !"ATND".equals(provider.getString("role"))) {
-            return false;
+        // Check that the provider is an allowed role
+        if (this.providerRoles.size() > 0) {
+            if (provider.containsKey("role")) {
+                Boolean isAllowedRole = false;
+                for (final String allowedRole : this.providerRoles) {
+                    if (provider.getString("role") == allowedRole) {
+                        isAllowedRole = true;
+                        break;
+                    }
+                }
+
+                if (!isAllowedRole) {
+                    return false;
+                }
+            } else {
+                // At least one provider role needed and this doesn't have any: reject
+                return false;
+            }
         }
 
         // Check that the provider is in our approved list

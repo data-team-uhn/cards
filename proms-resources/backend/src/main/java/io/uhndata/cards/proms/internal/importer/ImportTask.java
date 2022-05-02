@@ -75,6 +75,9 @@ public class ImportTask implements Runnable
     /** List of providers to query. If empty, all providers' appointments are used. */
     private final String[] providerIDs;
 
+    /** List of allowed provider roles, such that providerIDs must be the given role. Optionally set. */
+    private final String[] providerRoles;
+
     /** URL for the Torch server endpoint. */
     private final String endpointURL;
 
@@ -106,7 +109,7 @@ public class ImportTask implements Runnable
     ImportTask(final ResourceResolverFactory resolverFactory, final ThreadResourceResolverProvider rrp,
         final String authURL, final String endpointURL,
         final int daysToQuery, final String vaultToken, final String[] clinicNames, final String[] providerIDs,
-        final String vaultRole, final String[] queryDates)
+        final String[] providerRoles, final String vaultRole, final String[] queryDates)
     {
         this.resolverFactory = resolverFactory;
         this.rrp = rrp;
@@ -125,11 +128,11 @@ public class ImportTask implements Runnable
                 this.queryDates.add(date);
             } catch (ParseException e) {
                 LOGGER.error("Query date invalid: {}", e.getMessage(), e);
-                this.queryDates.set(i, null);
             }
         }
-        // If we have no provider IDs, we want an empty list instead of a list of length 1 with an empty string
+        // If we have no provider IDs/roles, we want an empty list instead of a list of length 1 with an empty string
         this.providerIDs = StringUtils.isAllBlank(providerIDs) ? new String[0] : providerIDs;
+        this.providerRoles = StringUtils.isAllBlank(providerRoles) ? new String[0] : providerRoles;
         this.vaultRole = vaultRole;
     }
 
@@ -215,7 +218,7 @@ public class ImportTask implements Runnable
                 Map.of(ResourceResolverFactory.SUBSERVICE, "TorchImporter"))) {
                 this.rrp.push(resolver);
                 final PatientLocalStorage storage = new PatientLocalStorage(resolver, startDate, endDate,
-                    this.providerIDs, this.queryDates);
+                    this.providerIDs, this.providerRoles, this.queryDates);
 
                 data.forEach(storage::store);
                 importedAppointmentsCount += storage.getCountAppointmentsCreated();

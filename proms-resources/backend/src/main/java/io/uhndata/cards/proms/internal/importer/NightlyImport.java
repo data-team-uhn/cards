@@ -79,6 +79,7 @@ public class NightlyImport
                 newConfig.getConfig().vault_token(),
                 newConfig.getConfig().clinic_names(),
                 newConfig.getConfig().provider_names(),
+                newConfig.getConfig().allowed_roles(),
                 newConfig.getConfig().vault_role(),
                 newConfig.getConfig().dates_to_query());
         try {

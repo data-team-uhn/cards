@@ -45,6 +45,9 @@ public @interface ImportConfigDefinition
     /** Vault role to login to. */
     String VAULT_ROLE = "prom_role";
 
+    /** Allowed provider roles. */
+    String PROVIDER_ROLE = "ATND";
+
     @AttributeDefinition(name = "Name", description = "Configuration name")
     String name();
 
@@ -71,6 +74,12 @@ public @interface ImportConfigDefinition
     @AttributeDefinition(name = "Provider names",
         description = "List of names of providers to query. If empty, all providers will be fetched.", required = false)
     String[] provider_names();
+
+    @AttributeDefinition(name = "Allowed provider roles",
+        description = "If set along with the provider names attribute, only take appointments if the provider is"
+            + " one of the given roles. The most useful role to filter by is ATND for an attending physician.",
+        required = false)
+    String[] allowed_roles() default PROVIDER_ROLE;
 
     @AttributeDefinition(name = "Vault role name",
         description = "Name of the role to login to Vault with. If not given, skip the Vault login process.",
