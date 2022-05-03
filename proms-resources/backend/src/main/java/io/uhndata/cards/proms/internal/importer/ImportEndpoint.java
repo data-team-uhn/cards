@@ -82,7 +82,7 @@ public class ImportEndpoint extends SlingSafeMethodsServlet
         final Runnable importJob =
             new ImportTask(this.resolverFactory, this.rrp, config.auth_url(), config.endpoint_url(),
                 config.days_to_query(), config.vault_token(), config.clinic_names(), config.provider_names(),
-                config.vault_role(), config.dates_to_query());
+                config.allowed_roles(), config.vault_role(), config.dates_to_query());
         final Thread thread = new Thread(importJob);
         thread.start();
         writeSuccess(response);
