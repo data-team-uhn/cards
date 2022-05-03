@@ -22,9 +22,57 @@
     <primaryNodeType>cards:QuestionnaireSet</primaryNodeType>
     <property>
         <name>name</name>
-        <value>Mood pre-appointment questionnaires</value>
+        <value>CMH pre-appointment questionnaires</value>
         <type>String</type>
     </property>
+    <node>
+        <name>Step1</name>
+        <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
+        <property>
+            <name>questionnaire</name>
+            <value>/Questionnaires/SF12</value>
+            <type>Reference</type>
+        </property>
+        <property>
+            <name>estimate</name>
+            <value>5</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>frequency</name>
+            <value>4</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>order</name>
+            <value>1</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>view</name>
+            <value>
+[
+    {
+      "key": "last_name",
+      "label": "Last name",
+      "format": "string"
+    },
+    {
+      "key": "first_name",
+      "label": "First name",
+      "format": "string"
+    },
+    {
+      "key": "time",
+      "label": "Visit time",
+      "format": "date:YYYY-MM-DD hh:mm",
+      "link" : "dashboard+path"
+    }
+]
+            </value>
+            <type>String</type>
+        </property>
+    </node>
     <node>
         <name>Step2</name>
         <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
@@ -47,6 +95,42 @@
             <name>order</name>
             <value>2</value>
             <type>Long</type>
+        </property>
+        <property>
+            <name>view</name>
+            <value>
+[
+    {
+      "key": "last_name",
+      "label": "Last name",
+      "format": "string"
+    },
+    {
+      "key": "first_name",
+      "label": "First name",
+      "format": "string"
+    },
+    {
+      "key": "time",
+      "label": "Visit time",
+      "format": "date:YYYY-MM-DD hh:mm",
+      "link" : "dashboard+path"
+    },
+    {
+      "key": "score",
+      "label": "Score",
+      "format": "string",
+      "link" : "dashboard+path"
+    },
+    {
+      "key": "risk",
+      "label": "Self-harm risk",
+      "format": "string",
+      "link" : "dashboard+path"
+    }
+]
+            </value>
+            <type>String</type>
         </property>
         <node>
             <name>summary_risk_assessment</name>
@@ -150,6 +234,36 @@
             <value>3</value>
             <type>Long</type>
         </property>
+        <property>
+            <name>view</name>
+            <value>
+[
+    {
+      "key": "last_name",
+      "label": "Last name",
+      "format": "string"
+    },
+    {
+      "key": "first_name",
+      "label": "First name",
+      "format": "string"
+    },
+    {
+      "key": "time",
+      "label": "Visit time",
+      "format": "date:YYYY-MM-DD hh:mm",
+      "link" : "dashboard+path"
+    },
+    {
+      "key": "score",
+      "label": "Score",
+      "format": "string",
+      "link" : "dashboard+path"
+    }
+]
+            </value>
+            <type>String</type>
+        </property>
         <node>
             <name>summary_score</name>
             <primaryNodeType>cards:Question</primaryNodeType>
@@ -206,6 +320,36 @@
             <name>order</name>
             <value>4</value>
             <type>Long</type>
+        </property>
+        <property>
+            <name>view</name>
+            <value>
+[
+    {
+      "key": "last_name",
+      "label": "Last name",
+      "format": "string"
+    },
+    {
+      "key": "first_name",
+      "label": "First name",
+      "format": "string"
+    },
+    {
+      "key": "time",
+      "label": "Visit time",
+      "format": "date:YYYY-MM-DD hh:mm",
+      "link" : "dashboard+path"
+    },
+    {
+      "key": "score",
+      "label": "Score",
+      "format": "string",
+      "link" : "dashboard+path"
+    }
+]
+            </value>
+            <type>String</type>
         </property>
         <node>
             <name>summary_score</name>
