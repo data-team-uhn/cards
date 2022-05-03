@@ -637,16 +637,73 @@ const questionnaireStyle = theme => ({
       flexBasis: "100%",
       paddingLeft: theme.spacing(4)
     },
-    matrixTableCell: {
-      fontWeight: "bold"
+    questionMatrixView: {
+      width: "auto",
+      "& th, td" : {
+        border: "none",
+        padding: theme.spacing(1, 1, 1, 0),
+        verticalAlign: "baseline",
+      },
+      "& td" : {
+        fontSize: "1rem",
+        fontWeight: "300 !important",
+        padding: theme.spacing(1),
+      },
     },
-    matrixViewTableCell: {
-      border: "none",
-      padding: theme.spacing(1),
-      verticalAlign: "baseline"
+    questionMatrixControls: {
+      "& .MuiTableHead-root th": {
+        fontWeight: "bold",
+      },
+      "& .MuiTableBody-root th": {
+        paddingLeft: 0,
+      },
+      "& .MuiTableBody-root tr:last-child .MuiTableCell-root": {
+        border: "0 none",
+      },
     },
-    matrixTable: {
-      width: "auto"
+    questionMatrixHorizontal: {
+      "& .MuiFormControlLabel-root" : {
+        margin: "0 !important",
+      },
+      "& .MuiFormControlLabel-label": {
+        display: "none",
+      },
+    },
+    questionMatrixVertical: {
+      display: "block",
+      "& .MuiTableBody-root, .MuiTableRow-root, .MuiTableCell-root" : {
+        display: "block",
+        width: "100%",
+      },
+      "& td": {
+        padding: theme.spacing(1, 0),
+      },
+    },
+    questionMatrixStackedAnswer : {
+      "&:not(:first-child) th" : {
+        paddingTop: theme.spacing(3),
+      },
+      "& td" : {
+        padding: 0,
+      },
+      "&:not(:last-child) td" : {
+        paddingBottom: theme.spacing(3),
+        borderBottom: "1px solid " + theme.palette.divider,
+      }
+    },
+    questionMatrixFullEntry : {
+      "& th" : {
+        paggingBottom: theme.spacing(3),
+      },
+      "& th, td:not(:last-child)": {
+        border: "0 none",
+      },
+      "&:not(:last-child) td:last-child" : {
+        paddingBottom: theme.spacing(4),
+      },
+      "&:not(:first-child) th": {
+        paddingTop: theme.spacing(4),
+      },
     },
 });
 

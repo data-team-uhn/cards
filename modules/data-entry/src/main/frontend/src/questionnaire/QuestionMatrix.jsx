@@ -21,7 +21,8 @@ import React, { useState, useEffect } from "react";
 import PropTypes from 'prop-types';
 
 import { Table, TableHead, TableBody, TableRow, TableCell } from "@material-ui/core";
-import { Checkbox, Radio, RadioGroup, Typography, withStyles } from "@material-ui/core";
+import { Checkbox, Radio, FormControlLabel, Typography, withStyles } from "@material-ui/core";
+import { useMediaQuery } from "@material-ui/core";
 
 import Answer, {LABEL_POS, VALUE_POS, DESC_POS, IS_DEFAULT_OPTION_POS, IS_DEFAULT_ANSWER_POS} from "./Answer";
 import AnswerInstructions from "./AnswerInstructions";
@@ -61,6 +62,8 @@ let QuestionMatrix = (props) => {
   const ControlElement = isRadio ? Radio : Checkbox;
   const valueType = sectionDefinition.dataType.charAt(0).toUpperCase() + sectionDefinition.dataType.slice(1);
   const [sectionAnswerPath, setSectionAnswerPath ] = useState(path + "/" + ( existingSectionAnswer ? existingSectionAnswer[0] : uuidv4()));
+
+  const enableVerticalLayout = useMediaQuery('(max-width:600px)');
 
   useEffect(() => {
     if (existingSectionAnswer) {
@@ -169,91 +172,114 @@ let QuestionMatrix = (props) => {
     setSelectionElementStates(getSelectionElementStates(newSelection));
   }
 
+  // Adapt the section / answerSection info to pass to the Question component
+
   let existingAnswerMock = [sectionAnswerPath, {displayedValue: existingAnswers, statusFlags: existingSectionAnswer ? existingSectionAnswer[1].statusFlags : null}];
-  let newQuestionDefinition = { ...sectionDefinition, text: sectionDefinition.label};
+  let questionMatrixDefinition = { ...sectionDefinition, text: sectionDefinition.label};
   let currentAnswers = subquestions.reduce((min, item) => {return Math.min(min, selection[item[0]]?.length || 0);}, minAnswers);
 
-  let generateViewMode = () => {
-    return (
-      <TableBody>
-        { existingAnswers.map((subquestion, idx) => (subquestion[1].displayedValue || subquestion[1].statusFlags?.length > 0) &&
-          <TableRow key={subquestion[0] + idx}>
-            <TableCell className={classes.matrixViewTableCell}>
-              <Typography variant="subtitle1" color={ subquestion[1].statusFlags?.length > 0 ? 'error' : 'inherit'}>{subquestion[1].question.text}:</Typography>
-              { subquestion[1].question.description &&
-                <FormattedText variant="caption" display="block" color="textSecondary">
-                  {subquestion[1].question.description}
-                </FormattedText>
-              }
-            </TableCell>
-            <TableCell className={classes.matrixViewTableCell}>
-              {Array.of(subquestion[1].displayedValue).flat().join(", ")}
-            </TableCell>
+
+  // Helper methods for rendering a responsive layout
+
+  let renderTableHead = () => {
+    return ((!isEdit || enableVerticalLayout) ? null :
+      <TableHead>
+        <TableRow>
+        { [["",""]].concat(defaults).map( (option, index) => (
+          <TableCell key={index} align="center" component="th">
+            {option[LABEL_POS]}
+          </TableCell>
+        ) ) }
+        </TableRow>
+      </TableHead>
+    )
+  };
+
+  let renderEditMode = () => {
+    return (<>
+      { selection && subquestions.map( (question, i) => (
+          <TableRow key={question[0] + i} className={enableVerticalLayout ? classes.questionMatrixFullEntry : ''}>
+            { renderQuestion(question[1]) }
+            { defaults.map( (option, index) => (
+              <TableCell
+                key={"o-" + question[0] + i + index}
+                align={enableVerticalLayout ? "left" :  "center"}
+              >
+                <FormControlLabel
+                  control={ renderControlElement(question[0], option) }
+                  label={option[LABEL_POS]}
+                />
+              </TableCell>
+            )) }
           </TableRow>
-        )}
-      </TableBody>
+        )
+      )}
+    </>);
+  }
+
+  let renderViewMode = () => {
+    return (<>
+      { existingAnswers.map((answer, idx) => (answer[1].displayedValue || answer[1].statusFlags?.length > 0) && (
+        <TableRow key={answer[0] + idx} className={enableVerticalLayout ? classes.questionMatrixStackedAnswer : ''}>
+          { renderQuestion(answer[1].question, answer[1].statusFlags) }
+          { !enableVerticalLayout && <TableCell>—</TableCell> }
+          { renderAnswer(answer[1], (enableVerticalLayout ? '-' : '')) }
+        </TableRow>
+      ))}
+    </>);
+  };
+
+  let renderQuestion = (question, flags) => {
+    return (
+      <TableCell component="th" >
+        <Typography color={ flags?.length > 0 ? 'error' : 'inherit'}>{question.text}</Typography>
+        { question.description &&
+          <FormattedText variant="caption" display="block" color="textSecondary">
+            { question.description }
+          </FormattedText>
+        }
+      </TableCell>
+    );
+  };
+
+  let renderControlElement = (question, option) => {
+    return (
+      <ControlElement
+        checked={selectionElementStates[question + option[VALUE_POS]]}
+        value={option[VALUE_POS]}
+        name={"answer-" + sectionAnswerPath + question}
+        onChange={(event) => {selectOption(question, option, event);}}
+        className={classes.checkbox}
+      />
+    )
+  }
+
+  let renderAnswer = (answer, emptyMarker) => {
+    return (
+      <TableCell>
+      { Array.of(answer.displayedValue).flat().join(", ") || emptyMarker || '' }
+      </TableCell>
     );
   }
 
   return (
     <Question
-      questionDefinition={newQuestionDefinition}
+      questionDefinition={questionMatrixDefinition}
       existingAnswer={existingAnswerMock}
       currentAnswers={currentAnswers}
       pageActive={pageActive}
       preventDefaultView
       {...props}
     >
-      <Table className={!isEdit ? classes.matrixTable : ''} >
-        { !isEdit && generateViewMode() }
-        { isEdit &&
-          <TableHead>
-            <TableRow>
-              { [["",""]].concat(defaults).map( (option, index) => (
-                <TableCell
-                  key={index}
-                  align={index > 0 ? "center" : "left"}
-                  className={classes.matrixTableCell}
-                >
-                  {option[LABEL_POS]}
-                </TableCell>
-              ) ) }
-            </TableRow>
-          </TableHead>
-        }
-        { isEdit && <TableBody>
-          { selection && subquestions.map( (question, i) => (
-            <TableRow key={question[0] + i}>
-              { [["",""]].concat(defaults).map( (option, index) => (
-                <TableCell
-                  key={question[0] + i + index}
-                  align={index > 0 ? "center" : "left"}
-                >
-                  { index == 0
-                    ?
-                    <>
-                    <Typography>{question[1].text}</Typography>
-                    { question[1].description &&
-                      <FormattedText variant="caption" display="block" color="textSecondary">
-                        {question[1].description}
-                      </FormattedText>
-                    }
-                    </>
-                    :
-                    <ControlElement
-                      checked={selectionElementStates[question[0] + option[VALUE_POS]]}
-                      value={option[VALUE_POS]}
-                      name={"answer-" + sectionAnswerPath + question[0]}
-                      onChange={(event) => {selectOption(question[0], option, event);}}
-                      className={classes.checkbox}
-                    />
-                  }
-                </TableCell>
-              )) }
-            </TableRow>
-          )) }
+      <Table className={
+        classes["questionMatrix" + (isEdit ? "Controls" : "View")]
+        + ' ' +
+        classes["questionMatrix" + (enableVerticalLayout ? "Vertical" : "Horizontal")]
+      } >
+        { renderTableHead() }
+        <TableBody>
+          { isEdit ? renderEditMode() :  renderViewMode() }
         </TableBody>
-        }
       </Table>
       { isEdit && <>
       <input type="hidden" name={`${sectionAnswerPath}/jcr:primaryType`} value={"cards:AnswerSection"}></input>

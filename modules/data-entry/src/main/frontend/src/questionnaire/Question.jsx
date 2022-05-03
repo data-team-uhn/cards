@@ -31,7 +31,7 @@ import FormattedText from "../components/FormattedText.jsx";
 function Question (props) {
   let { classes, children, questionDefinition, existingAnswer, answers, isEdit, pageActive, preventDefaultView, defaultDisplayFormatter } = props;
   let { compact } = { ...questionDefinition };
-  let { text, label, description, disableInstructions } = { ...questionDefinition, ...props }
+  let { text, description, disableInstructions } = { ...questionDefinition, ...props }
 
   const [ doHighlight, setDoHighlight ] = useState();
   const [ anchor, setAnchor ] = useState();
@@ -77,7 +77,7 @@ function Question (props) {
         // Note that we need to preserve the hierarchy in which we place children
         // so that pageActive changing does not cause children to lose state
         pageActive && <CardHeader
-          title={text || label}
+          title={text}
           titleTypographyProps={{ variant: 'h6' }}
           subheader={<FormattedText variant="caption">{description}</FormattedText>}
           subheaderTypographyProps={{ component: "div" }}
