@@ -241,7 +241,7 @@ public class ClinicsServlet extends SlingAllMethodsServlet
         }
         JackrabbitSession jsession = (JackrabbitSession) session;
         UserManager um = jsession.getUserManager();
-        um.createGroup(this.idHash.get());
+        um.createGroup(this.clinicName.get());
     }
 
     /**
