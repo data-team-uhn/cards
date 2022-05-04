@@ -83,9 +83,9 @@
       <artifactId>javax.servlet-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.amazonaws</groupId>
-      <artifactId>aws-java-sdk-osgi</artifactId>
-      <version>1.11.924</version>
+      <groupId>io.uhndata.cards</groupId>
+      <artifactId>cards-http-requests</artifactId>
+      <version>${project.version}</version>
     </dependency>
   </dependencies>
 </project>
