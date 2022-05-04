@@ -19,6 +19,7 @@
 
 package io.uhndata.cards.webhookbackup;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
@@ -36,13 +37,7 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.amazonaws.AmazonServiceException;
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import io.uhndata.cards.httprequests.HttpRequests;
 
 public class WebhookBackupTask implements Runnable
 {
@@ -293,6 +288,7 @@ public class WebhookBackupTask implements Runnable
     private void output(SubjectContents input, String filename)
     {
         LOGGER.warn("WebhookBackupTask: output --> {}", input.getData());
+        /*
         final String s3EndpointUrl = System.getenv("S3_ENDPOINT_URL");
         final String s3EndpointRegion = System.getenv("S3_ENDPOINT_REGION");
         final String s3BucketName = System.getenv("S3_BUCKET_NAME");
@@ -311,6 +307,14 @@ public class WebhookBackupTask implements Runnable
             LOGGER.info("Exported {} to {}", input.getUrl(), filename);
         } catch (AmazonServiceException e) {
             LOGGER.error("Failed to perform the nightly export", e.getMessage(), e);
+        }
+        */
+        final String backupWebhookUrl = System.getenv("BACKUP_WEBHOOK_URL");
+        LOGGER.warn("Backing up to {}...", backupWebhookUrl + "/" + filename);
+        try {
+            HttpRequests.getPostResponse(backupWebhookUrl + "/" + filename, input.getData(), "application/json");
+        } catch (IOException e) {
+            LOGGER.warn("Backup failed due to {}", e);
         }
     }
 }
