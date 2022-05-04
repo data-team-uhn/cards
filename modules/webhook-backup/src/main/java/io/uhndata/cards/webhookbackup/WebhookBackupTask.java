@@ -259,7 +259,7 @@ public class WebhookBackupTask implements Runnable
 
     private SubjectContents getSubjectContents(String path, String requestDateString)
     {
-        String subjectDataUrl = String.format("%s.data.deep.bare.-labels.-identify.relativeDates"
+        String subjectDataUrl = String.format("%s.data.deep.-labels.-identify"
             + ".dataFilter:modifiedAfter=%s.dataFilter:statusNot=INCOMPLETE", path, requestDateString);
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
             Resource subjectData = resolver.resolve(subjectDataUrl);
@@ -273,7 +273,7 @@ public class WebhookBackupTask implements Runnable
     private SubjectContents getSubjectContentsBounded(String path, String requestDateStringLower,
         String requestDateStringUpper)
     {
-        String subjectDataUrl = String.format("%s.data.deep.bare.-labels.-identify.relativeDates"
+        String subjectDataUrl = String.format("%s.data.deep.-labels.-identify"
             + ".dataFilter:modifiedAfter=%s.dataFilter:modifiedBefore=%s.dataFilter:statusNot=INCOMPLETE",
             path, requestDateStringLower, requestDateStringUpper);
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
