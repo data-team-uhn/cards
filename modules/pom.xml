@@ -63,5 +63,6 @@
     <module>metrics</module>
     <module>http-requests</module>
     <module>page-start-header</module>
+    <module>webhook-backup</module>
   </modules>
 </project>
