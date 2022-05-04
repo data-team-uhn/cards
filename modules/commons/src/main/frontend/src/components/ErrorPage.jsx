@@ -57,7 +57,7 @@ export default function ErrorPage(props) {
           alignContent="center"
         >
           <Grid item>
-            <img src="/libs/cards/resources/logo_light_bg.png" alt="" className={classes.logo}/>
+            <img src={document.querySelector('meta[name="logoLight"]').content} alt="" className={classes.logo}/>
           </Grid>
           <Grid item>
             {errorCode && <Typography variant="h1" color={errorCodeColor || "primary"}>

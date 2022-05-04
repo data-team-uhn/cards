@@ -81,7 +81,7 @@ function PromsLandingPage(props) {
         <DialogContent className={classes.paper}>
           <Grid container direction="column" spacing={2} alignItems="center" alignContent="center">
             <Grid item>
-              <img src="/libs/cards/resources/logo_light_bg.png" alt="" className={classes.logo} />
+              <img src={document.querySelector('meta[name="logoLight"]').content} alt="" className={classes.logo} />
             </Grid>
             <Grid item>
               <Typography variant="h6">I am a...</Typography>
@@ -123,7 +123,7 @@ function PromsLandingPage(props) {
                 <Typography variant="subtitle2">{appInfo}</Typography>
                 <Tooltip title="DATA Team @ UHN">
                   <a href="https://uhndata.io/" target="_blank">
-                    <img src="/libs/cards/resources/data-logo_light_bg.png" width="80" alt="DATA" />
+                    <img src="/libs/cards/resources/media/default/data-logo_light_bg.png" width="80" alt="DATA" />
                   </a>
                 </Tooltip>
               </Breadcrumbs>

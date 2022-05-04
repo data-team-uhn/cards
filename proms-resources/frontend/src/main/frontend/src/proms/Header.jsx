@@ -97,7 +97,7 @@ function PromsHeader (props) {
       <Collapse in={!subtitle || !(scrollTrigger)}>
         <Toolbar variant="dense" className={classes.toolbar}>
           <div className={classes.titleLine}>
-            <img src="/libs/cards/resources/logo_light_bg.png" alt="logo" className={classes.logo} />
+            <img src={document.querySelector('meta[name="logoLight"]').content} alt="logo" className={classes.logo} />
             { title &&
               <Typography variant="overline" color="textPrimary">{ title }</Typography>
             }
