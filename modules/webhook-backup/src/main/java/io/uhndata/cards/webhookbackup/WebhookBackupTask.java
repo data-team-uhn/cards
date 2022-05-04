@@ -288,27 +288,6 @@ public class WebhookBackupTask implements Runnable
     private void output(SubjectContents input, String filename)
     {
         LOGGER.warn("WebhookBackupTask: output --> {}", input.getData());
-        /*
-        final String s3EndpointUrl = System.getenv("S3_ENDPOINT_URL");
-        final String s3EndpointRegion = System.getenv("S3_ENDPOINT_REGION");
-        final String s3BucketName = System.getenv("S3_BUCKET_NAME");
-        final String awsKey = System.getenv("AWS_KEY");
-        final String awsSecret = System.getenv("AWS_SECRET");
-        final EndpointConfiguration endpointConfig =
-            new EndpointConfiguration(s3EndpointUrl, s3EndpointRegion);
-        final AWSCredentials credentials = new BasicAWSCredentials(awsKey, awsSecret);
-        final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
-            .withEndpointConfiguration(endpointConfig)
-            .withPathStyleAccessEnabled(true)
-            .withCredentials(new AWSStaticCredentialsProvider(credentials))
-            .build();
-        try {
-            s3.putObject(s3BucketName, filename, input.getData());
-            LOGGER.info("Exported {} to {}", input.getUrl(), filename);
-        } catch (AmazonServiceException e) {
-            LOGGER.error("Failed to perform the nightly export", e.getMessage(), e);
-        }
-        */
         final String backupWebhookUrl = System.getenv("BACKUP_WEBHOOK_URL");
         LOGGER.warn("Backing up to {}...", backupWebhookUrl + "/" + filename);
         try {
