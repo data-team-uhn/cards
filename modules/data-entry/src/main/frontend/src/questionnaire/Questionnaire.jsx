@@ -41,7 +41,7 @@ import PreviewIcon from '@material-ui/icons/FindInPage';
 import DeleteButton from "../dataHomepage/DeleteButton";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import { blue } from '@material-ui/core/colors';
-import { ENTRY_TYPES, QUESTION_TYPES, SECTION_TYPES, INFO_TYPES } from "./FormEntry";
+import { ENTRY_TYPES } from "./FormEntry";
 import Fields from "../questionnaireEditor/Fields";
 import CreationMenu from "../questionnaireEditor/CreationMenu";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
