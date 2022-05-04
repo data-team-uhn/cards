@@ -49,7 +49,7 @@ let QuestionnaireItemCard = (props) => {
     data,
     onActionDone,
     doHighlight,
-    parentDisplayMode,
+    model,
     classes
   } = props;
   let [ editDialogOpen, setEditDialogOpen ] = useState(false);
@@ -109,7 +109,7 @@ let QuestionnaireItemCard = (props) => {
                               targetExists={true}
                               data={data}
                               type={type}
-                              parentDisplayMode={parentDisplayMode}
+                              model={model}
                               isOpen={editDialogOpen}
                               onClose={() => { setEditDialogOpen(false); fetchData(); }}
                               onCancel={() => { setEditDialogOpen(false); }}

@@ -237,7 +237,7 @@ export default withStyles(QuestionnaireStyle)(Questionnaire);
 
 
 let QuestionnaireItemSet = (props) => {
-  let { children, onActionDone, data, classes } = props;
+  let { children, models, onActionDone, data, classes } = props;
 
   return (
     <Grid container direction="column" spacing={4} wrap="nowrap">
@@ -249,8 +249,7 @@ let QuestionnaireItemSet = (props) => {
                     EntryType => <Grid item key={key}>
                                    <EntryType
                                      data={value}
-                                     type={_stripCardsNamespace(value['jcr:primaryType'])}
-                                     parentDisplayMode={data.displayMode}
+                                     model={models?.[_stripCardsNamespace(value['jcr:primaryType'])]}
                                      onActionDone={onActionDone}
                                      classes={classes}
                                    />
@@ -264,6 +263,7 @@ let QuestionnaireItemSet = (props) => {
 }
 
 QuestionnaireItemSet.propTypes = {
+  models: PropTypes.object,
   onActionDone: PropTypes.func,
   data: PropTypes.object
 };
@@ -271,7 +271,7 @@ QuestionnaireItemSet.propTypes = {
 
 // Details about an information block displayed in a questionnaire
 let Information = (props) => {
-  let { onActionDone, data, classes } = props;
+  let { onActionDone, data, model, classes } = props;
   let [ infoData, setInfoData ] = useState(data);
   let [ doHighlight, setDoHighlight ] = useState(data.doHighlight);
 
@@ -293,29 +293,32 @@ let Information = (props) => {
         classes={classes}
         onActionDone={reloadData}
         doHighlight={doHighlight}
+        model={model}
     >
-      <Fields data={infoData} JSON={require('../questionnaireEditor/Information.json')[0]} edit={false} />
+      <Fields data={infoData} JSON={require(`../questionnaireEditor/${model}`)[0]} edit={false} />
     </QuestionnaireItemCard>
   );
 };
 
 Information.propTypes = {
+  model: PropTypes.string,
   onActionDone: PropTypes.func,
   data: PropTypes.object.isRequired
+};
+
+Information.defaultProps = {
+  model: "Information.json"
 };
 
 
 // Details about a particular question in a questionnaire.
 // Not to be confused with the public Question component responsible for rendering questions inside a Form.
 let Question = (props) => {
-  let { onActionDone, data, parentDisplayMode, classes } = props;
+  let { onActionDone, data, model, classes } = props;
   let [ questionData, setQuestionData ] = useState(data);
   let [ doHighlight, setDoHighlight ] = useState(data.doHighlight);
-  let answers = Object.values(questionData).filter(value => value['jcr:primaryType'] == 'cards:AnswerOption')
-                      .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder));
-  let json = parentDisplayMode === "matrix"
-             ? require('../questionnaireEditor/QuestionMatrix.json')[0]
-             : require('../questionnaireEditor/Question.json')[0];
+
+  let json = require(`../questionnaireEditor/${model}`)[0];
 
   let reloadData = (newData) => {
     if (newData) {
@@ -326,19 +329,6 @@ let Question = (props) => {
     }
   }
 
-  let displayAnswers = () => {
-    return (
-        <Grid container key={questionData['jcr:uuid']} alignItems='flex-start' spacing={2}>
-          <Grid item key="label" xs={4}>
-            <Typography variant="subtitle2">Answer options:</Typography>
-          </Grid>
-          <Grid item key="values" xs={8}>
-            { answers.map(item => <Typography key={item['jcr:uuid']}>{(item.label || item.value) + (item.label ? (" (" + item.value + ")") : "")}</Typography>) }
-          </Grid>
-        </Grid>
-    );
-  };
-
   return (
     <QuestionnaireItemCard
         avatar=""
@@ -348,121 +338,36 @@ let Question = (props) => {
         classes={classes}
         onActionDone={reloadData}
         doHighlight={doHighlight}
-        parentDisplayMode={parentDisplayMode}
+        model={model}
     >
       <Fields data={questionData} JSON={json} edit={false} />
-      { parentDisplayMode != "matrix" && answers.length > 0 && displayAnswers() }
+      <AnswerOptionList data={questionData} modelDefinition={json} />
     </QuestionnaireItemCard>
   );
 };
 
 Question.propTypes = {
+  model: PropTypes.string,
   closeData: PropTypes.func,
   data: PropTypes.object.isRequired
 };
 
-let QuestionMatrix = (props) => {
-  let { onActionDone, data, type, classes } = props;
-  let [ sectionData, setSectionData ] = useState(data);
-  let [ doHighlight, setDoHighlight ] = useState(data.doHighlight);
-  let answers = Object.values(data).filter(value => value['jcr:primaryType'] == 'cards:AnswerOption')
-                      .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder));
-
-  let extractPropertiesFromJson = (json, p) => {
-    Object.keys(json).filter( key => {return (key != 'label') && !!sectionData[key]} )
-                        .map( key => { p.push({
-                                         name: key,
-                                         label: key.charAt(0).toUpperCase() + key.slice(1).replace( /([A-Z])/g, " $1" ).toLowerCase(),
-                                         value: sectionData[key] + "",
-                                         type: json[key]
-                                       });
-                                     });
-  }
-
-  let extractProperties = () => {
-    let p = Array();
-    let spec = require('../questionnaireEditor/Section.json');
-    extractPropertiesFromJson(spec[0], p);
-    extractPropertiesFromJson(spec[0].displayMode.matrix, p);
-    return p;
-  }
-
-  let reloadData = (newData) => {
-    if (newData) {
-      setSectionData(newData);
-      setDoHighlight(true);
-    } else {
-      onActionDone();
-    }
-  }
-
-  let onCreate = (newData) => {
-    setSectionData({});
-    setSectionData(newData);
-  }
-
-  let displayAnswers = () => {
-    return (
-        <Grid container key={sectionData['jcr:uuid']} alignItems='flex-start' spacing={2}>
-          <Grid item key="label" xs={4}>
-            <Typography variant="subtitle2">Answer options:</Typography>
-          </Grid>
-          <Grid item key="values" xs={8}>
-            { answers.map(item => <Typography key={item['jcr:uuid']}>{(item.label || item.value) + (item.label ? (" (" + item.value + ")") : "")}</Typography>) }
-          </Grid>
-        </Grid>
-    );
-  };
-
-  return (
-    <QuestionnaireItemCard
-        avatar="view_stream"
-        avatarColor="orange"
-        type={type}
-        data={sectionData}
-        classes={classes}
-        doHighlight={doHighlight}
-        action={
-            <CreationMenu
-              data={sectionData}
-              onClose={onCreate}
-              menuItems={["Question"]}
-            />
-        }
-        onActionDone={reloadData}
-    >
-      <QuestionnaireItemSet
-        data={sectionData}
-        classes={classes}
-        onActionDone={onActionDone}
-      >
-         <FieldsGrid fields={extractProperties()} classes={classes}/>
-         { answers.length > 0 && displayAnswers() }
-      </QuestionnaireItemSet>
-    </QuestionnaireItemCard>
-  );
+Question.defaultProps = {
+  model: "Question.json"
 };
 
+
 let Section = (props) => {
-  let { onActionDone, data, type, classes } = props;
+  let { onActionDone, data, model, classes } = props;
   let [ sectionData, setSectionData ] = useState(data);
   let [ doHighlight, setDoHighlight ] = useState(data.doHighlight);
 
-  if (data.displayMode == "matrix") {
-    return <QuestionMatrix {...props} />
-  }
+  let spec = require(`../questionnaireEditor/${model}`)[0];
+  let childModels = spec?.displayMode[sectionData?.displayMode]?.["//CHILDREN"];
+  let menuItems = Object.keys(childModels || {});
 
-  let extractProperties = () => {
+  let extractConditions = () => {
     let p = Array();
-    let spec = require('../questionnaireEditor/Section.json');
-    Object.keys(spec[0]).filter( key => {return (key != 'label') && !!sectionData[key]} )
-                        .map( key => { p.push({
-                                         name: key,
-                                         label: key.charAt(0).toUpperCase() + key.slice(1).replace( /([A-Z])/g, " $1" ).toLowerCase(),
-                                         value: sectionData[key] + "",
-                                         type: spec[0][key]
-                                       });
-                                     });
     // Find conditionals
     Object.entries(sectionData).filter(([key, value]) => (value['jcr:primaryType'] == 'cards:Conditional'))
                                .map(([key, value]) => { p.push({
@@ -492,7 +397,7 @@ let Section = (props) => {
     <QuestionnaireItemCard
         avatar="view_stream"
         avatarColor="orange"
-        type={type}
+        type="Section"
         data={sectionData}
         classes={classes}
         doHighlight={doHighlight}
@@ -500,24 +405,33 @@ let Section = (props) => {
             <CreationMenu
               data={sectionData}
               onClose={onCreate}
-              menuItems={ QUESTIONNAIRE_ITEM_NAMES }
+              menuItems={ menuItems || QUESTIONNAIRE_ITEM_NAMES }
             />
         }
         onActionDone={reloadData}
+        model={model}
     >
+      <FieldsGrid fields={extractConditions()} classes={classes}/>
+      <Fields data={sectionData} JSON={spec} edit={false} />
+      <AnswerOptionList data={sectionData} modelDefinition={spec} />
       <QuestionnaireItemSet
         data={sectionData}
         classes={classes}
         onActionDone={onActionDone}
+        models={childModels}
       >
-         <FieldsGrid fields={extractProperties()} classes={classes}/>
       </QuestionnaireItemSet>
     </QuestionnaireItemCard>
   );
 };
 
 Section.propTypes = {
+  model: PropTypes.string,
   data: PropTypes.object.isRequired
+};
+
+Section.defaultProps = {
+  model: "Section.json"
 };
 
 let FieldsGrid = (props) => {
@@ -539,5 +453,40 @@ let FieldsGrid = (props) => {
         ))}
       </TableBody>
     </Table>
+  );
+}
+
+let AnswerOptionList = (props) => {
+  let { data, modelDefinition } = props;
+
+  let hasAnswerOptions = (key, value) => {
+    if (key == 'answerOptions') return true;
+    return (
+      typeof(data[key] != undefined) &&
+      typeof(value) == "object" &&
+      typeof(value[data[key]]) == "object" &&
+      Object.entries(value[data[key]]).some(([k, v]) => hasAnswerOptions(k, v))
+    )
+  };
+
+  let answerOptions = Object.values(data ||{}).filter(value => value['jcr:primaryType'] == 'cards:AnswerOption')
+                      .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder));
+
+  // Does this questionnaire entry have answerOptions enabled?
+  let enabled = Object.entries(modelDefinition || {}).some(([key, value]) => hasAnswerOptions(key, value));
+
+  if (!enabled || !(answerOptions?.length)) {
+    return null;
+  }
+
+  return (
+    <Grid container key={data['jcr:uuid']} alignItems='flex-start' spacing={2}>
+      <Grid item key="label" xs={4}>
+        <Typography variant="subtitle2">Answer options:</Typography>
+      </Grid>
+      <Grid item key="values" xs={8}>
+        { answerOptions.map(item => <Typography key={item['jcr:uuid']}>{(item.label || item.value) + (item.label ? (" (" + item.value + ")") : "")}</Typography>) }
+      </Grid>
+    </Grid>
   );
 }

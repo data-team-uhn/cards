@@ -37,7 +37,7 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js"
 // Dialog for editing or creating questions or sections
 
 let EditDialog = (props) => {
-  const { data, type, targetExists, isOpen, onClose, onCancel, id, parentDisplayMode } = props;
+  const { data, type, targetExists, isOpen, onClose, onCancel, id, model } = props;
   let [ targetId, setTargetId ] = useState('');
   let [ dialogData, setDialogData ] = useState(targetExists ? data : {});
   // Marks that a save operation is in progress
@@ -53,10 +53,7 @@ let EditDialog = (props) => {
   let [ error, setError ] = useState('');
   let [ variableNameError, setVariableNameError ] = useState('');
 
-  const isMatrixQuestion = type === "Question" && (parentDisplayMode === "matrix" || data.displayMode === "matrix");
-  let entitySpecsFilename = isMatrixQuestion ? "QuestionMatrix" : type;
-  
-  let json = require(`./${entitySpecsFilename}.json`);
+  let json = require(`./${model}`);
 
   let saveButtonRef = React.useRef();
   const globalLoginDisplay = useContext(GlobalLoginContext);

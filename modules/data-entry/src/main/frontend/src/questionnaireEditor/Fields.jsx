@@ -88,7 +88,7 @@ let Fields = (props) => {
     </React.Fragment>);
   };
 
-  // Note that we remove the //REQUIRED field, which just indicates which fields are mandatory
+  // Note that we remove the meta fields, starting with `//`, such as `//REQUIRED which indicates which fields are mandatory
   return <FieldsProvider>
       {
         edit ?

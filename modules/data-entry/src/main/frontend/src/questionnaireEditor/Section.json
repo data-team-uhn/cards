@@ -11,6 +11,7 @@
       "footer" : {},
       "summary" : {},
       "matrix" : {
+        "//CHILDREN" : {"Question" : "QuestionMatrixEntry.json"},
         "minAnswers": "long",
         "maxAnswers": "long",
         "dataType": {
