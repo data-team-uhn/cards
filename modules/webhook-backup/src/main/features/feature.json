@@ -18,10 +18,6 @@
 {
   "bundles":[
     {
-      "id":"com.amazonaws:aws-java-sdk-osgi:1.11.924",
-      "start-order":"25"
-    },
-    {
       "id":"com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:2.6.7",
       "start-order":"25"
     },
@@ -63,6 +59,10 @@
     },
     {
       "id":"${project.groupId}:cards-patient-subject-type:${project.version}",
+      "start-order":"25"
+    },
+    {
+      "id":"${project.groupId}:cards-http-requests:${project.version}",
       "start-order":"25"
     },
     {
