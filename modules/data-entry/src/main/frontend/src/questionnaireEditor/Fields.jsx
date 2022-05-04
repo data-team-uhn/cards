@@ -105,7 +105,6 @@ Fields.propTypes = {
   data: PropTypes.object.isRequired,
   JSON: PropTypes.object.isRequired,
   edit: PropTypes.bool.isRequired,
-  isMatrix: PropTypes.bool,
   onChange: PropTypes.func
 };
 

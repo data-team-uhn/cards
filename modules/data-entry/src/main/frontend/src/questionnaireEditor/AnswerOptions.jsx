@@ -105,7 +105,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 let AnswerOptions = (props) => {
-  const { objectKey, value, data, isMatrix, path, saveButtonRef } = props;
+  const { objectKey, value, data, path, saveButtonRef } = props;
   const classes = useStyles();
   let [ options, setOptions ] = useState(extractSortedOptions(data));
   let [ deletedOptions, setDeletedOptions ] = useState([]);
@@ -152,7 +152,7 @@ let AnswerOptions = (props) => {
       data : notApplicableOption,
       setter : setNotApplicableOption,
       label: "notApplicable",
-      defaultOrder: isMatrix ? 99999 : 0,
+      defaultOrder: 0,
       isDuplicate: isNADuplicate,
       duplicateSetter: setIsNADuplicate
     },
@@ -378,7 +378,7 @@ let AnswerOptions = (props) => {
       { deletedOptions.map((value, index) =>
         <input type='hidden' name={`${value['@path']}@Delete`} value="0" key={value['@path']} />
       )}
-      { !isMatrix && generateSpecialOptions(0) }
+      { generateSpecialOptions(0) }
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="droppable">
           {(provided, snapshot) => (
@@ -475,7 +475,7 @@ let AnswerOptions = (props) => {
         })}
         multiline
         />
-      { isMatrix ? generateSpecialOptions(0) : generateSpecialOptions(1) }
+      { generateSpecialOptions(1) }
       <Popover
         disableBackdropClick
         disableEscapeKeyDown

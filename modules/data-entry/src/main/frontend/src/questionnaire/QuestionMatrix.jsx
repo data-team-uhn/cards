@@ -83,8 +83,9 @@ let QuestionMatrix = (props) => {
     // Only extract the labels, internal values and description from the node
     .map(value => [value.label || value.value, value.value, true, value.description, value.isDefault]);
 
-  // Locate an option value referring to the "none of the above", if it exists
+  // Locate the options marked as "not applicable" or "none of the above", if they exist
   const naOption = Object.values(sectionDefinition).find((value) => value['notApplicable'])?.["value"];
+  const noneOption = Object.values(sectionDefinition).find((value) => value['noneOfTheAbove'])?.["value"];
 
   let initialSelection = {};
   existingAnswers?.filter(answer => answer[1]["displayedValue"])
@@ -136,8 +137,8 @@ let QuestionMatrix = (props) => {
 
     let getNewSelection = (id, option, checked) => {
       let newSelection = selection;
-      // Selecting a radio button or naOption option will select only that option
-      if (isRadio || naOption == option[VALUE_POS]) {
+      // Selecting a radio button or naOption/noneOption option will select only that option
+      if (isRadio || naOption == option[VALUE_POS] || noneOption == option[VALUE_POS]) {
         newSelection[id] = [[option[LABEL_POS], option[VALUE_POS]]];
         return newSelection;
       }
@@ -160,8 +161,8 @@ let QuestionMatrix = (props) => {
         return newSelection;
       }
 
-      // unselect naOption
-      newSelection[id] = answer.filter(item => !naOption || item[VALUE_POS] != naOption);
+      // unselect naOption/noneOption
+      newSelection[id] = answer.filter(item => (!naOption || item[VALUE_POS] != naOption) && (!noneOption || item[VALUE_POS] != noneOption));
       newSelection[id].push([option[LABEL_POS], option[VALUE_POS]]);
       return newSelection;
     }
