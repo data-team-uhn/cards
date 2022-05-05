@@ -131,10 +131,6 @@ const questionnaireStyle = theme => ({
         margin: theme.spacing(-3,0,1),
         padding: theme.spacing(1, 0),
     },
-    answerMatrixInstructions: {
-        margin: theme.spacing(-0.5,0,1),
-        padding: theme.spacing(1, 0),
-    },
     thumbnail: {
         border: "1px solid " + theme.palette.divider,
     },

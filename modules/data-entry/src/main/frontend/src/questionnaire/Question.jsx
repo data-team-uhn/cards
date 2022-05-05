@@ -29,7 +29,7 @@ import FormattedText from "../components/FormattedText.jsx";
 
 // GUI for displaying answers
 function Question (props) {
-  let { classes, children, questionDefinition, existingAnswer, answers, isEdit, pageActive, preventDefaultView, defaultDisplayFormatter } = props;
+  let { classes, children, questionDefinition, existingAnswer, isEdit, pageActive, preventDefaultView, defaultDisplayFormatter } = props;
   let { compact } = { ...questionDefinition };
   let { text, description, disableInstructions } = { ...questionDefinition, ...props }
 
