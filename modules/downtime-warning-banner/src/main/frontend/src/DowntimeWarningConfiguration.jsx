@@ -63,7 +63,7 @@ function DowntimeWarningConfiguration() {
   const dateFormat = "yyyy-MM-dd hh:mm";
 
   // Fetch saved admin config settings
-  let getQuickSearchSettings = () => {
+  let getDowntimeWarningSettings = () => {
     fetch('/apps/cards/config/DowntimeWarning.deep.json')
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
@@ -129,7 +129,7 @@ function DowntimeWarningConfiguration() {
   }
 
   if (!fetched) {
-    getQuickSearchSettings();
+    getDowntimeWarningSettings();
   }
 
   return (

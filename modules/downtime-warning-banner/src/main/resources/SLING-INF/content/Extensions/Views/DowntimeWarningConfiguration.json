@@ -3,5 +3,5 @@
   "cards:extensionPointId": "cards/coreUI/view",
   "cards:extensionName": "Downtime Warning Configuration",
   "cards:targetURL": "/content.html/admin/DowntimeWarningConfiguration",
-  "cards:extensionRenderURL": "asset:cards-homepage.DowntimeWarningConfiguration.js"
+  "cards:extensionRenderURL": "asset:cards-downtime-warning-banner.DowntimeWarningConfiguration.js"
 }

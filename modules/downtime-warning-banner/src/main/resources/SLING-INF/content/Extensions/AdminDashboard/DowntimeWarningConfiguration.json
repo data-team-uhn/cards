@@ -3,7 +3,7 @@
   "cards:extensionPointId": "cards/coreUI/admindashboard/entry",
   "cards:extensionName": "Downtime Warning Widget",
   "cards:targetURL": "/content.html/admin/DowntimeWarningConfiguration",
-  "cards:icon": "asset:cards-homepage.DowntimeWarningConfigurationIcon.js",
+  "cards:icon": "asset:cards-downtime-warning-banner.DowntimeWarningConfigurationIcon.js",
   "cards:hint": "Configure the downtime warning banner",
   "cards:defaultOrder": 202
 }
