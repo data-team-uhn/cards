@@ -44,7 +44,9 @@
           <instructions>
             <Sling-Initial-Content>
               SLING-INF/content/Extensions/PageStart/;path:=/Extensions/PageStart/;overwrite:=true,
-              SLING-INF/content/Extensions/LoginPageStart/;path:=/Extensions/LoginPageStart/;overwrite:=true
+              SLING-INF/content/Extensions/LoginPageStart/;path:=/Extensions/LoginPageStart/;overwrite:=true,
+              SLING-INF/content/Extensions/AdminDashboard/;path:=/Extensions/AdminDashboard/;overwrite:=true,
+              SLING-INF/content/Extensions/Views/;path:=/Extensions/Views/;overwrite:=true,
             </Sling-Initial-Content>
           </instructions>
         </configuration>
