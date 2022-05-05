@@ -364,7 +364,7 @@ let Section = (props) => {
 
   let spec = require(`../questionnaireEditor/${model}`)[0];
   let childModels = spec?.displayMode[sectionData?.displayMode]?.["//CHILDREN"];
-  let menuItems = Object.keys(childModels || {});
+  let menuItems = childModels && Object.keys(childModels);
 
   let extractConditions = () => {
     let p = Array();
@@ -406,6 +406,7 @@ let Section = (props) => {
               data={sectionData}
               onClose={onCreate}
               menuItems={ menuItems || QUESTIONNAIRE_ITEM_NAMES }
+              models={childModels}
             />
         }
         onActionDone={reloadData}

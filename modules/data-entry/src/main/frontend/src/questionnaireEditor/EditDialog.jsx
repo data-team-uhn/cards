@@ -53,7 +53,7 @@ let EditDialog = (props) => {
   let [ error, setError ] = useState('');
   let [ variableNameError, setVariableNameError ] = useState('');
 
-  let json = require(`./${model}`);
+  let json = model ? require(`./${model}`) : require(`./${type}.json`);
 
   let saveButtonRef = React.useRef();
   const globalLoginDisplay = useContext(GlobalLoginContext);
