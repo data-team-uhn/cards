@@ -20,7 +20,7 @@
 package io.uhndata.cards.webhookbackup;
 
 import java.io.IOException;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.HashSet;
@@ -47,8 +47,8 @@ public class WebhookBackupTask implements Runnable
     /** Provides access to resources. */
     private final ResourceResolverFactory resolverFactory;
     private final String exportRunMode;
-    private final LocalDate exportLowerBound;
-    private final LocalDate exportUpperBound;
+    private final LocalDateTime exportLowerBound;
+    private final LocalDateTime exportUpperBound;
 
     WebhookBackupTask(final ResourceResolverFactory resolverFactory, final String exportRunMode)
     {
@@ -59,7 +59,7 @@ public class WebhookBackupTask implements Runnable
     }
 
     WebhookBackupTask(final ResourceResolverFactory resolverFactory, final String exportRunMode,
-        final LocalDate exportLowerBound, final LocalDate exportUpperBound)
+        final LocalDateTime exportLowerBound, final LocalDateTime exportUpperBound)
     {
         this.resolverFactory = resolverFactory;
         this.exportRunMode = exportRunMode;
@@ -79,13 +79,19 @@ public class WebhookBackupTask implements Runnable
         }
     }
 
-    public void doManualExport(LocalDate lower, LocalDate upper)
+    public void doManualExport(LocalDateTime lower, LocalDateTime upper)
     {
         LOGGER.info("Executing ManualExport");
-        String fileDateString = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        String fileDateString = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        /*
         String requestDateStringLower = lower.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         String requestDateStringUpper = (upper != null)
             ? upper.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+            : null;
+        */
+        String requestDateStringLower = lower.toString();
+        String requestDateStringUpper = (upper != null)
+            ? upper.toString()
             : null;
 
         Set<SubjectIdentifier> changedSubjects = (upper != null)
@@ -109,7 +115,7 @@ public class WebhookBackupTask implements Runnable
     public void doNightlyExport()
     {
         LOGGER.info("Executing NightlyExport");
-        LocalDate today = LocalDate.now();
+        LocalDateTime today = LocalDateTime.now();
         String fileDateString = today.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         String requestDateString = today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
