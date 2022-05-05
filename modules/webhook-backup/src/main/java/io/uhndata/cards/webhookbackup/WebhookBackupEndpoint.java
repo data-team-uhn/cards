@@ -20,8 +20,7 @@ package io.uhndata.cards.webhookbackup;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 
 import javax.servlet.Servlet;
@@ -33,6 +32,8 @@ import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(
@@ -40,6 +41,8 @@ import org.osgi.service.component.annotations.Reference;
     selectors = { "webhookbackup" })
 public class WebhookBackupEndpoint extends SlingSafeMethodsServlet
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(WebhookBackupEndpoint.class);
+
     @Reference
     private ResourceResolverFactory resolverFactory;
 
@@ -57,8 +60,8 @@ public class WebhookBackupEndpoint extends SlingSafeMethodsServlet
             return;
         }
 
-        final LocalDate dateLowerBound = this.strToDate(request.getParameter("dateLowerBound"));
-        final LocalDate dateUpperBound = this.strToDate(request.getParameter("dateUpperBound"));
+        final LocalDateTime dateLowerBound = this.strToDate(request.getParameter("dateLowerBound"));
+        final LocalDateTime dateUpperBound = this.strToDate(request.getParameter("dateUpperBound"));
         final String exportRunMode = (dateLowerBound != null && dateUpperBound != null)
             ? "manualBetween"
             : (dateLowerBound != null && dateUpperBound == null) ? "manualAfter" : "manualToday";
@@ -71,14 +74,17 @@ public class WebhookBackupEndpoint extends SlingSafeMethodsServlet
         out.write("Webhook Backup S3 export started");
     }
 
-    private LocalDate strToDate(final String date)
+    private LocalDateTime strToDate(final String date)
     {
+        LOGGER.warn("strToDate attempting to parse: {}", date);
         if (date == null) {
             return null;
         }
         try {
-            return LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            //return LocalDateTime.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            return LocalDateTime.parse(date);
         } catch (DateTimeParseException e) {
+            LOGGER.warn("strToDate failed to parse {} due to {}", date, e);
             return null;
         }
     }
