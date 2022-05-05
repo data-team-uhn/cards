@@ -900,3 +900,28 @@
   // Whether to show the total number of results.
   // Can be set to 'false' in case of performance issues.
   - showTotalRows (BOOLEAN) = 'true'
+
+//-----------------------------------------------------------------------------
+// The configuration for the scheduled maintenance downtime warning banner.
+[cards:DowntimeWarningConfiguration] > sling:Folder
+  // Attributes:
+
+  // We can use this in a query.
+  query
+
+  // Properties:
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/DowntimeWarningConfiguration" mandatory autocreated protected
+
+  // Hardcode the resource supertype: this is a resource.
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
+
+  // Start date of the scheduled maintenance.
+  - fromDate (date)
+
+  // Start date of the scheduled maintenance.
+  - toDate (date)
+
+  // Whether to show the warning banner.
+  - enabled (BOOLEAN) = 'false'

@@ -14,6 +14,8 @@ module.exports = {
     [module_name + 'QuickSearchResults']: './src/themePage/QuickSearchResults.jsx',
     [module_name + 'QuickSearchConfigurationIcon']: '@material-ui/icons/Pageview.js',
     [module_name + 'QuickSearchConfiguration']: './src/themePage/QuickSearchConfiguration',
+    [module_name + 'DowntimeWarningConfigurationIcon']: '@material-ui/icons/Announcement.js',
+    [module_name + 'DowntimeWarningConfiguration']: './src/themePage/DowntimeWarningConfiguration',
   },
   plugins: [
     new CleanWebpackPlugin(),
