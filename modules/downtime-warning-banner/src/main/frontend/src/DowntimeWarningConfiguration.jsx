@@ -32,7 +32,7 @@ import {
     makeStyles
 } from '@material-ui/core';
 
-import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle";
+import QuestionnaireStyle from "./questionnaire/QuestionnaireStyle";
 
 const useStyles = makeStyles(theme => ({
   textField: {

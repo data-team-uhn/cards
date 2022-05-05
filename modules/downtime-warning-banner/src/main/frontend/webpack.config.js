@@ -6,7 +6,9 @@ module_name = require("./package.json").name + ".";
 module.exports = {
   mode: 'development',
   entry: {
-    [module_name + 'downtimeBanner']: './src/downtimeBanner.jsx'
+    [module_name + 'downtimeBanner']: './src/downtimeBanner.jsx',
+    [module_name + 'DowntimeWarningConfigurationIcon']: '@material-ui/icons/Announcement.js',
+    [module_name + 'DowntimeWarningConfiguration']: './src/DowntimeWarningConfiguration',
   },
   plugins: [
     new CleanWebpackPlugin(),
