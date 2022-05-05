@@ -28,6 +28,8 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 
 import org.apache.sling.api.resource.LoginException;
@@ -87,6 +89,11 @@ public class WebhookBackupTask implements Runnable
         String requestDateStringUpper = (upper != null)
             ? upper.toString()
             : null;
+
+        Set<String> subjectList = getUuidNameList("cards:Subject");
+        Set<String> formList = getUuidNameList("cards:Form");
+        sendStringSet(subjectList, "subjectList");
+        sendStringSet(formList, "formList");
 
         Set<SubjectIdentifier> changedSubjects = (upper != null)
             ? this.getChangedSubjectsBounded(requestDateStringLower, requestDateStringUpper)
@@ -257,9 +264,27 @@ public class WebhookBackupTask implements Runnable
         return Collections.emptySet();
     }
 
+    private Set<String> getUuidNameList(String cardsType)
+    {
+        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
+            Set<String> uuidNames = new HashSet<>();
+            String query = "SELECT * FROM [" + cardsType + "] as n order by n.'jcr:created'";
+            Iterator<Resource> results = resolver.findResources(query, "JCR-SQL2");
+            while (results.hasNext()) {
+                Resource resource = results.next();
+                String uuidName = resource.getName();
+                uuidNames.add(uuidName);
+            }
+            return uuidNames;
+        } catch (LoginException e) {
+            LOGGER.warn("Get service session failure: {}", e.getMessage(), e);
+        }
+        return Collections.emptySet();
+    }
+
     private SubjectContents getSubjectContents(String path, String requestDateString)
     {
-        String subjectDataUrl = String.format("%s.data.deep.-labels.-identify"
+        String subjectDataUrl = String.format("%s.data.deep.-labels"
             + ".dataFilter:modifiedAfter=%s.dataFilter:statusNot=INCOMPLETE", path, requestDateString);
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
             Resource subjectData = resolver.resolve(subjectDataUrl);
@@ -273,7 +298,7 @@ public class WebhookBackupTask implements Runnable
     private SubjectContents getSubjectContentsBounded(String path, String requestDateStringLower,
         String requestDateStringUpper)
     {
-        String subjectDataUrl = String.format("%s.data.deep.-labels.-identify"
+        String subjectDataUrl = String.format("%s.data.deep.-labels"
             + ".dataFilter:modifiedAfter=%s.dataFilter:modifiedBefore=%s.dataFilter:statusNot=INCOMPLETE",
             path, requestDateStringLower, requestDateStringUpper);
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
@@ -282,6 +307,25 @@ public class WebhookBackupTask implements Runnable
         } catch (LoginException e) {
             LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
             return null;
+        }
+    }
+
+    private void sendStringSet(Set<String> set, String pathname)
+    {
+        final String backupWebhookUrl = System.getenv("BACKUP_WEBHOOK_URL");
+        JsonArrayBuilder jsonSetBuilder = Json.createArrayBuilder();
+        Iterator<String> setIterator = set.iterator();
+        while (setIterator.hasNext()) {
+            jsonSetBuilder.add(setIterator.next());
+        }
+        try {
+            HttpRequests.getPostResponse(
+                backupWebhookUrl + "/" + pathname,
+                jsonSetBuilder.build().toString(),
+                "application/json"
+            );
+        } catch (IOException e) {
+            LOGGER.warn("IOException while in sendStringSet: {}", e);
         }
     }
 
