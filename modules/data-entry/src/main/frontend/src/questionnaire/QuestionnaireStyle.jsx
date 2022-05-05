@@ -653,6 +653,7 @@ const questionnaireStyle = theme => ({
     questionMatrixControls: {
       "& .MuiTableHead-root th": {
         fontWeight: "bold",
+        paddingTop: 0,
       },
       "& .MuiTableBody-root th": {
         paddingLeft: 0,
