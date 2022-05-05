@@ -363,7 +363,25 @@ let Section = (props) => {
   let [ doHighlight, setDoHighlight ] = useState(data.doHighlight);
 
   let spec = require(`../questionnaireEditor/${model}`)[0];
-  let childModels = spec?.displayMode[sectionData?.displayMode]?.["//CHILDREN"];
+
+  let childModels = null;
+
+  let findChildrenSpec = (key, value) => {
+    if (key == '//CHILDREN') {
+      childModels = value;
+      return true;
+    }
+    return (
+      typeof(sectionData[key] != undefined) &&
+      typeof(value) == "object" &&
+      typeof(value[sectionData[key]]) == "object" &&
+      Object.entries(value[sectionData[key]]).find(([k, v]) => findChildrenSpec(k, v))
+    )
+  };
+
+  // Does this section have a different list of accepted child items?
+  Object.entries(spec || {}).find(([key, value]) => findChildrenSpec(key, value));
+
   let menuItems = childModels && Object.keys(childModels);
 
   let extractConditions = () => {
