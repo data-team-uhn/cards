@@ -238,25 +238,26 @@ export default withStyles(QuestionnaireStyle)(Questionnaire);
 
 
 let QuestionnaireItemSet = (props) => {
-  let { children, models, onActionDone, data, classes } = props;
+  let { children, entryTypes, models, onActionDone, data, classes } = props;
 
   return (
     <Grid container direction="column" spacing={4} wrap="nowrap">
       {children}
       {
         data ?
-        Object.entries(data).filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
+        Object.entries(data)
+            .filter(([key, value]) => (entryTypes || ENTRY_TYPES).includes(value['jcr:primaryType']))
             .map(([key, value]) => (
-                    EntryType => <Grid item key={key}>
-                                   <EntryType
-                                     data={value}
-                                     model={models?.[_stripCardsNamespace(value['jcr:primaryType'])]}
-                                     onActionDone={onActionDone}
-                                     classes={classes}
-                                   />
-                                 </Grid>
-                  )(eval(_stripCardsNamespace(value['jcr:primaryType'])))
-                )
+                EntryType => <Grid item key={key}>
+                               <EntryType
+                                 data={value}
+                                 model={models?.[_stripCardsNamespace(value['jcr:primaryType'])]}
+                                 onActionDone={onActionDone}
+                                 classes={classes}
+                               />
+                             </Grid>
+                 )(eval(_stripCardsNamespace(value['jcr:primaryType'])))
+            )
         : <Grid item><Grid container justifyContent="center"><Grid item><CircularProgress/></Grid></Grid></Grid>
       }
     </Grid>
@@ -271,112 +272,89 @@ QuestionnaireItemSet.propTypes = {
 
 
 // Details about an information block displayed in a questionnaire
-let Information = (props) => {
-  let { onActionDone, data, model, classes } = props;
-  let [ infoData, setInfoData ] = useState(data);
-  let [ doHighlight, setDoHighlight ] = useState(data.doHighlight);
-
-  let reloadData = (newData) => {
-    if (newData) {
-      setInfoData(newData);
-      setDoHighlight(true);
-    } else {
-      onActionDone();
-    }
-  }
-  return (
-    <QuestionnaireItemCard
-        avatar="info"
-        title=" "
-        avatarColor={blue[600]}
-        type="Information"
-        data={infoData}
-        classes={classes}
-        onActionDone={reloadData}
-        doHighlight={doHighlight}
-        model={model}
-    >
-      <Fields data={infoData} JSON={require(`../questionnaireEditor/${model}`)[0]} edit={false} />
-    </QuestionnaireItemCard>
-  );
-};
+let Information = (props) => <QuestionnaireEntry {...props} />;
 
 Information.propTypes = {
-  model: PropTypes.string,
   onActionDone: PropTypes.func,
-  data: PropTypes.object.isRequired
+  data: PropTypes.object.isRequired,
+  type: PropTypes.string.isRequired,
+  title: PropTypes.string,
+  avatar: PropTypes.string,
+  avatarColor: PropTypes.string,
+  model: PropTypes.string.isRequired
 };
 
 Information.defaultProps = {
+  type: "Information",
+  title: " ",
+  avatar: "info",
+  avatarColor: blue[600],
   model: "Information.json"
 };
 
 
 // Details about a particular question in a questionnaire.
 // Not to be confused with the public Question component responsible for rendering questions inside a Form.
-let Question = (props) => {
-  let { onActionDone, data, model, classes } = props;
-  let [ questionData, setQuestionData ] = useState(data);
-  let [ doHighlight, setDoHighlight ] = useState(data.doHighlight);
-
-  let json = require(`../questionnaireEditor/${model}`)[0];
-
-  let reloadData = (newData) => {
-    if (newData) {
-      setQuestionData(newData);
-      setDoHighlight(true);
-    } else {
-      onActionDone();
-    }
-  }
-
-  return (
-    <QuestionnaireItemCard
-        avatar=""
-        avatarColor="purple"
-        type="Question"
-        data={questionData}
-        classes={classes}
-        onActionDone={reloadData}
-        doHighlight={doHighlight}
-        model={model}
-    >
-      <Fields data={questionData} JSON={json} edit={false} />
-      <AnswerOptionList data={questionData} modelDefinition={json} />
-    </QuestionnaireItemCard>
-  );
-};
+let Question = (props) => <QuestionnaireEntry {...props} />;
 
 Question.propTypes = {
-  model: PropTypes.string,
-  closeData: PropTypes.func,
-  data: PropTypes.object.isRequired
+  onActionDone: PropTypes.func,
+  data: PropTypes.object.isRequired,
+  type: PropTypes.string.isRequired,
+  avatar: PropTypes.string,
+  avatarColor: PropTypes.string,
+  model: PropTypes.string.isRequired
 };
 
 Question.defaultProps = {
+  type: "Question",
+  avatarColor: "purple",
   model: "Question.json"
 };
 
+// Details about a particular section in a questionnaire.
+// Not to be confused with the public Section component responsible for rendering sections inside a Form.
+let Section = (props) => <QuestionnaireEntry {...props} />;
 
-let Section = (props) => {
-  let { onActionDone, data, model, classes } = props;
-  let [ sectionData, setSectionData ] = useState(data);
+Section.propTypes = {
+  onActionDone: PropTypes.func,
+  data: PropTypes.object.isRequired,
+  type: PropTypes.string.isRequired,
+  avatar: PropTypes.string,
+  avatarColor: PropTypes.string,
+  model: PropTypes.string.isRequired
+};
+
+Section.defaultProps = {
+  type: "Section",
+  avatar: "view_stream",
+  avatarColor: "orange",
+  model: "Section.json"
+};
+
+
+// Generic QuestionnaireEntry component that can be adapted to any entry type via props
+
+let QuestionnaireEntry = (props) => {
+  let { onActionDone, data, type, title, avatar, avatarColor, model, classes } = props;
+  let [ entryData, setEntryData ] = useState(data);
   let [ doHighlight, setDoHighlight ] = useState(data.doHighlight);
 
   let spec = require(`../questionnaireEditor/${model}`)[0];
 
   let childModels = null;
 
+  // There may be `//CHILDREN` overrides for some definitions for this entry, find them and record them
   let findChildrenSpec = (key, value) => {
     if (key == '//CHILDREN') {
       childModels = value;
       return true;
     }
     return (
-      typeof(sectionData[key] != undefined) &&
+      typeof(entryData[key] != undefined) &&
       typeof(value) == "object" &&
-      typeof(value[sectionData[key]]) == "object" &&
-      Object.entries(value[sectionData[key]]).find(([k, v]) => findChildrenSpec(k, v))
+      typeof(value[entryData[key]]) == "object" &&
+      Object.entries(value[entryData[key]]).find(([k, v]) => findChildrenSpec(k, v))
     )
   };
 
@@ -400,7 +378,7 @@ let Section = (props) => {
 
   let reloadData = (newData) => {
     if (newData) {
-      setSectionData(newData);
+      setEntryData(newData);
       setDoHighlight(true);
     } else {
       onActionDone();
@@ -408,50 +386,54 @@ let Section = (props) => {
   }
 
   let onCreate = (newData) => {
-    setSectionData({});
-    setSectionData(newData);
+    setEntryData({});
+    setEntryData(newData);
   }
 
   return (
     <QuestionnaireItemCard
-        avatar="view_stream"
-        avatarColor="orange"
-        type="Section"
-        data={sectionData}
+        title={title}
+        avatar={avatar}
+        avatarColor={avatarColor}
+        type={type}
+        data={entryData}
         classes={classes}
         doHighlight={doHighlight}
         action={
+            menuItems ?
             <CreationMenu
-              data={sectionData}
+              data={entryData}
               onClose={onCreate}
-              menuItems={ menuItems || QUESTIONNAIRE_ITEM_NAMES }
+              menuItems={menuItems}
               models={childModels}
             />
+            : undefined
         }
         onActionDone={reloadData}
         model={model}
     >
-      <FieldsGrid fields={extractConditions()} classes={classes}/>
-      <Fields data={sectionData} JSON={spec} edit={false} />
-      <AnswerOptionList data={sectionData} modelDefinition={spec} />
-      <QuestionnaireItemSet
-        data={sectionData}
-        classes={classes}
-        onActionDone={onActionDone}
-        models={childModels}
-      >
-      </QuestionnaireItemSet>
+      <Fields data={entryData} JSON={spec} edit={false} />
+      <AnswerOptionList data={entryData} modelDefinition={spec} />
+      { menuItems &&
+        <QuestionnaireItemSet
+          data={entryData}
+          classes={classes}
+          onActionDone={onActionDone}
+          models={childModels}
+          entryTypes={menuItems.map(t => `cards:${t}`)}
+        />
+      }
     </QuestionnaireItemCard>
   );
 };
 
-Section.propTypes = {
-  model: PropTypes.string,
-  data: PropTypes.object.isRequired
-};
-
-Section.defaultProps = {
-  model: "Section.json"
+QuestionnaireEntry.propTypes = {
+  onActionDone: PropTypes.func,
+  data: PropTypes.object.isRequired,
+  type: PropTypes.string.isRequired,
+  avatar: PropTypes.string,
+  avatarColor: PropTypes.string,
+  model: PropTypes.string.isRequired
 };
 
 let FieldsGrid = (props) => {
