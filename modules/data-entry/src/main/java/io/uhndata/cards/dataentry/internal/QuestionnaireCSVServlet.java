@@ -27,7 +27,7 @@ import javax.servlet.Servlet;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.servlets.SlingAllMethodsServlet;
+import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
 
@@ -40,7 +40,7 @@ import io.uhndata.cards.serialize.CSVString;
  */
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(resourceTypes = { "cards/Questionnaire" }, extensions = { "csv" }, methods = { "GET" })
-public class QuestionnaireCSVServlet extends SlingAllMethodsServlet
+public class QuestionnaireCSVServlet extends SlingSafeMethodsServlet
 {
     private static final long serialVersionUID = -677311295300436475L;
 
