@@ -41,7 +41,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Sling-Initial-Content>SLING-INF/content/SubjectTypes/Patient/;path:=/SubjectTypes/Patient/;overwrite:=true</Sling-Initial-Content>
+            <Sling-Initial-Content>SLING-INF/content/SubjectTypes/Patient/Visit.json;path:=/SubjectTypes/Patient/Visit;overwrite:=true</Sling-Initial-Content>
           </instructions>
         </configuration>
       </plugin>

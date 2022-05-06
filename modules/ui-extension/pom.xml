@@ -46,9 +46,9 @@
             <Include-Resource>{maven-resources}</Include-Resource>
             <!-- Initial content to be loaded on bundle installation -->
             <Sling-Initial-Content>
-              SLING-INF/content/libs/cards/Extension/;path:=/libs/cards/Extension/;overwrite:=true,
-              SLING-INF/content/libs/cards/ExtensionPoint/;path:=/libs/cards/ExtensionPoint/;overwrite:=true,
-              SLING-INF/content/libs/cards/ExtensionPointFinder/;path:=/libs/cards/ExtensionPointFinder/;overwrite:=true
+              SLING-INF/content/libs/cards/Extension/;path:=/libs/cards/Extension/;overwriteProperties:=true;uninstall:=true,
+              SLING-INF/content/libs/cards/ExtensionPoint/;path:=/libs/cards/ExtensionPoint/;overwriteProperties:=true;uninstall:=true,
+              SLING-INF/content/libs/cards/ExtensionPointFinder/;path:=/libs/cards/ExtensionPointFinder/;overwriteProperties:=true;uninstall:=true,
             </Sling-Initial-Content>
             <Sling-Nodetypes>SLING-INF/nodetypes/extension.cnd</Sling-Nodetypes>
           </instructions>

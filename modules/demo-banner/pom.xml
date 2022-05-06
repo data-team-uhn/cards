@@ -43,8 +43,8 @@
         <configuration>
           <instructions>
             <Sling-Initial-Content>
-              SLING-INF/content/Extensions/PageStart/;path:=/Extensions/PageStart/;overwrite:=true,
-              SLING-INF/content/Extensions/LoginPageStart/;path:=/Extensions/LoginPageStart/;overwrite:=true
+              SLING-INF/content/Extensions/PageStart/;path:=/Extensions/PageStart/;overwriteProperties:=true;uninstall:=true,
+              SLING-INF/content/Extensions/LoginPageStart/;path:=/Extensions/LoginPageStart/;overwriteProperties:=true;uninstall:=true,
             </Sling-Initial-Content>
           </instructions>
         </configuration>

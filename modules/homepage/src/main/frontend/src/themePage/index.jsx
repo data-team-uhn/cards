@@ -37,7 +37,7 @@ class Main extends React.Component {
     super(props);
 
     this.state = {
-      image: "/libs/cards/resources/background.jpg",
+      image: document.querySelector('meta[name="sidebarBackground"]').content,
       color: "blue",
       hasImage: true,
       fixedClasses: "dropdown show",
@@ -150,7 +150,7 @@ class Main extends React.Component {
           <Suspense fallback={<div>Loading...</div>}>
             <Sidebar
               contentOffset={this.state.contentOffset}
-              logoImage={"/libs/cards/resources/logo.png"}
+              logoImage={document.querySelector('meta[name="logoDark"]').content}
               image={this.state.image}
               handleDrawerToggle={this.handleDrawerToggle}
               open={this.state.mobileOpen}

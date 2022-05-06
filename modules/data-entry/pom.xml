@@ -47,17 +47,13 @@
             <Sling-Nodetypes>SLING-INF/nodetypes/dataentry.cnd</Sling-Nodetypes>
             <Sling-Initial-Content>
               SLING-INF/content/apps/cards/config/;path:=/apps/cards/config/;overwrite:=false,
-              SLING-INF/content/libs/cards/dataQuery/;path:=/libs/cards/dataQuery/;overwrite:=true,
-              SLING-INF/content/libs/cards/Form/;path:=/libs/cards/Form/;overwrite:=true,
-              SLING-INF/content/libs/cards/Subject/;path:=/libs/cards/Subject/;overwrite:=true,
-              SLING-INF/content/libs/cards/Questionnaire/;path:=/libs/cards/Questionnaire/;overwrite:=true,
-              SLING-INF/content/oak%3Aindex/;path:=/oak:index/;overwrite:=true,
-              SLING-INF/content/apps/cards/ExtensionPoints/;path:=/apps/cards/ExtensionPoints/;overwrite:=true,
-              SLING-INF/content/Extensions/AdminDashboard/;path:=/Extensions/AdminDashboard/;overwrite:=true,
-              SLING-INF/content/Extensions/DashboardMenuItems/;path:=/Extensions/DashboardMenuItems/;overwrite:=true,
-              SLING-INF/content/Extensions/DashboardViews/;path:=/Extensions/DashboardViews/;overwrite:=true,
-              SLING-INF/content/Extensions/Sidebar/;path:=/Extensions/Sidebar/;overwrite:=true,
-              SLING-INF/content/Extensions/Views/;path:=/Extensions/Views/;overwrite:=true
+              SLING-INF/content/libs/cards/dataQuery/;path:=/libs/cards/dataQuery/;overwriteProperties:=true;uninstall:=true,
+              SLING-INF/content/libs/cards/Form/;path:=/libs/cards/Form/;overwriteProperties:=true;uninstall:=true,
+              SLING-INF/content/libs/cards/Subject/;path:=/libs/cards/Subject/;overwriteProperties:=true;uninstall:=true,
+              SLING-INF/content/libs/cards/Questionnaire/;path:=/libs/cards/Questionnaire/;overwriteProperties:=true;uninstall:=true,
+              SLING-INF/content/oak%3Aindex/;path:=/oak:index/;overwriteProperties:=true;uninstall:=true,
+              SLING-INF/content/apps/cards/ExtensionPoints/;path:=/apps/cards/ExtensionPoints/;overwriteProperties:=true;uninstall:=true,
+              SLING-INF/content/Extensions/;path:=/Extensions/;overwriteProperties:=true;uninstall:=true,
             </Sling-Initial-Content>
           </instructions>
         </configuration>

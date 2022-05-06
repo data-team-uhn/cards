@@ -45,10 +45,10 @@
           <instructions>
             <!-- Initial content to be loaded on bundle installation -->
             <Sling-Initial-Content>
-              SLING-INF/content/libs/cards/Resource/;path:=/libs/cards/Resource/;overwrite:=true,
-              SLING-INF/content/libs/cards/ResourceHomepage/;path:=/libs/cards/ResourceHomepage/;overwrite:=true,
-              SLING-INF/content/libs/sling/servlet/errorhandler/;path:=/libs/sling/servlet/errorhandler/;overwrite:=true,
-              SLING-INF/content/ROOT/;path:=/;overwrite:=true
+              SLING-INF/content/libs/cards/Resource/;path:=/libs/cards/Resource/;overwriteProperties:=true;uninstall:=true,
+              SLING-INF/content/libs/cards/ResourceHomepage/;path:=/libs/cards/ResourceHomepage/;overwriteProperties:=true;uninstall:=true,
+              SLING-INF/content/libs/sling/servlet/errorhandler/;path:=/libs/sling/servlet/errorhandler/;overwriteProperties:=true;uninstall:=true,
+              SLING-INF/content/ROOT/;path:=/;overwriteProperties:=true,
             </Sling-Initial-Content>
           </instructions>
         </configuration>

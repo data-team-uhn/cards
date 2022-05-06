@@ -147,16 +147,16 @@
     <cards.version>${project.version}</cards.version>
     <app.name>Clinical ARchive for Data Science</app.name>
     <platform.name>CARDS</platform.name>
-    <slf4j.version>1.7.32</slf4j.version>
-    <jackrabbit.version>2.20.3</jackrabbit.version>
-    <oak.version>1.40.0</oak.version>
+    <slf4j.version>1.7.36</slf4j.version>
+    <jackrabbit.version>2.21.10</jackrabbit.version>
+    <oak.version>1.42.0</oak.version>
     <sling.saml.version>0.2.6.cards.1</sling.saml.version>
 
     <!-- Versions to be replaced in the feature files -->
-    <asm.version>9.2</asm.version>
-    <composum.nodes.version>2.6.6</composum.nodes.version>
-    <jackson.version>2.12.1</jackson.version>
-    <groovy.version>3.0.7</groovy.version>
+    <asm.version>9.3</asm.version>
+    <composum.nodes.version>4.1.1</composum.nodes.version>
+    <jackson.version>2.13.2</jackson.version>
+    <groovy.version>3.0.10</groovy.version>
 
     <enforcer.skip>false</enforcer.skip>
     <checkstyle.skip>false</checkstyle.skip>
@@ -177,7 +177,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.11</version>
+        <version>3.12.0</version>
       </dependency>
       <dependency>
         <groupId>commons-io</groupId>
@@ -187,7 +187,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-text</artifactId>
-        <version>1.6</version>
+        <version>1.9</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
@@ -202,7 +202,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-csv</artifactId>
-        <version>1.6</version>
+        <version>1.9.0</version>
       </dependency>
       <!-- Everybody logs -->
       <dependency>
@@ -223,7 +223,7 @@
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>
-        <version>1.2.3</version>
+        <version>1.2.11</version>
       </dependency>
       <!-- OSGI -->
       <dependency>
@@ -244,12 +244,12 @@
       <dependency>
         <groupId>org.osgi</groupId>
         <artifactId>org.osgi.service.event</artifactId>
-        <version>1.4.0</version>
+        <version>1.4.1</version>
       </dependency>
       <dependency>
         <groupId>org.osgi</groupId>
         <artifactId>org.osgi.service.metatype.annotations</artifactId>
-        <version>1.4.0</version>
+        <version>1.4.1</version>
       </dependency>
       <dependency>
         <groupId>org.osgi</groupId>
@@ -322,33 +322,33 @@
       <dependency>
         <groupId>org.apache.sling</groupId>
         <artifactId>org.apache.sling.api</artifactId>
-        <version>2.18.4</version>
+        <version>2.25.0</version>
       </dependency>
       <dependency>
         <groupId>org.apache.sling</groupId>
         <artifactId>org.apache.sling.servlets.annotations</artifactId>
-        <version>1.2.4</version>
+        <version>1.2.6</version>
       </dependency>
       <dependency>
         <groupId>org.apache.sling</groupId>
         <artifactId>org.apache.sling.servlets.post</artifactId>
-        <version>2.3.26</version>
+        <version>2.5.0</version>
       </dependency>
       <dependency>
         <groupId>org.apache.sling</groupId>
         <artifactId>org.apache.sling.scripting.sightly.runtime</artifactId>
-        <version>1.1.0-1.4.0</version>
+        <version>1.2.6-1.4.0</version>
       </dependency>
       <dependency>
         <groupId>org.apache.sling</groupId>
         <artifactId>org.apache.sling.commons.scheduler</artifactId>
-        <version>2.7.2</version>
+        <version>2.7.12</version>
       </dependency>
       <!-- TEST -->
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
-        <version>4.13.1</version>
+        <version>4.13.2</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -360,7 +360,7 @@
       <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
-        <version>29.0-jre</version>
+        <version>31.0.1-jre</version>
       </dependency>
       <dependency>
         <groupId>com.google.code.findbugs</groupId>
@@ -381,7 +381,7 @@
       <extension>
         <groupId>org.apache.maven.wagon</groupId>
         <artifactId>wagon-webdav-jackrabbit</artifactId>
-        <version>3.2.0</version>
+        <version>3.5.1</version>
       </extension>
     </extensions>
     <plugins>
@@ -433,7 +433,7 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.8.4</version>
+        <version>0.8.7</version>
         <executions>
           <execution>
             <id>jacoco-prepare</id>
@@ -571,7 +571,7 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
           <!-- Lock down plugin version for build reproducibility -->
-          <version>1.4.1</version>
+          <version>3.0.0</version>
         </plugin>
         <!-- Apply checkstyle rules and fail the build in case of errors. The checkstyle config
              files are taken from the build-tools JAR module.-->
@@ -579,7 +579,7 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
           <!-- Lock down plugin version for build reproducibility -->
-          <version>3.1.0</version>
+          <version>3.1.2</version>
           <dependencies>
             <dependency>
               <groupId>com.puppycrawl.tools</groupId>
@@ -624,7 +624,7 @@
         <plugin>
           <groupId>org.apache.sling</groupId>
           <artifactId>htl-maven-plugin</artifactId>
-          <version>1.2.2-1.4.0</version>
+          <version>2.0.4-1.4.0</version>
           <executions>
             <execution>
               <id>validate-htl</id>
@@ -642,14 +642,14 @@
         <plugin>
           <groupId>org.apache.sling</groupId>
           <artifactId>slingfeature-maven-plugin</artifactId>
-          <version>1.5.16</version>
+          <version>1.6.0</version>
           <extensions>true</extensions>
           <configuration>
             <replacePropertyVariables>asm.version,jackrabbit.version,groovy.version,oak.version,sling.saml.version,slf4j.version,composum.nodes.version,jackson.version,cards.version</replacePropertyVariables>
             <framework>
               <groupId>org.apache.felix</groupId>
               <artifactId>org.apache.felix.framework</artifactId>
-              <version>6.0.3</version>
+              <version>7.0.3</version>
             </framework>
           </configuration>
           <executions>
@@ -667,13 +667,13 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
           <!-- Lock down plugin version for build reproducibility -->
-          <version>3.1.0</version>
+          <version>3.2.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-remote-resources-plugin</artifactId>
           <!-- Lock down plugin version for build reproducibility -->
-          <version>1.5</version>
+          <version>1.7.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -713,13 +713,13 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
           <!-- Lock down plugin version for build reproducibility -->
-          <version>3.0.1</version>
+          <version>3.2.1</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-plugin-plugin</artifactId>
           <!-- Lock down plugin version for build reproducibility -->
-          <version>3.5.2</version>
+          <version>3.6.4</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -731,7 +731,7 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
           <!-- Lock down plugin version for build reproducibility -->
-          <version>3.8.0</version>
+          <version>3.9.0</version>
           <!-- Java 11 is required -->
           <configuration>
             <source>11</source>
@@ -742,7 +742,7 @@
         <plugin>
           <groupId>com.github.eirslett</groupId>
           <artifactId>frontend-maven-plugin</artifactId>
-          <version>1.7.6</version>
+          <version>1.12.1</version>
           <executions>
             <!-- Installs NodeJS and Yarn locally -->
             <execution>
@@ -771,8 +771,8 @@
             </execution>
           </executions>
           <configuration>
-            <nodeVersion>v14.15.0</nodeVersion>
-            <yarnVersion>v1.22.10</yarnVersion>
+            <nodeVersion>v16.14.0</nodeVersion>
+            <yarnVersion>v1.22.17</yarnVersion>
             <workingDirectory>src/main/frontend</workingDirectory>
           </configuration>
         </plugin>
@@ -780,7 +780,7 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <!-- Lock down plugin version for build reproducibility -->
-          <version>2.22.0</version>
+          <version>2.22.2</version>
           <!-- Rule is to put tests in *Test classes -->
           <configuration>
             <includes>
@@ -794,13 +794,13 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
           <!-- Lock down plugin version for build reproducibility -->
-          <version>3.1.0</version>
+          <version>3.2.2</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
           <!-- Lock down plugin version for build reproducibility -->
-          <version>3.1.0</version>
+          <version>3.3.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -826,7 +826,7 @@
             <dependency>
               <groupId>org.apache.maven.wagon</groupId>
               <artifactId>wagon-webdav-jackrabbit</artifactId>
-              <version>3.2.0</version>
+              <version>3.5.1</version>
             </dependency>
           </dependencies>
         </plugin>
@@ -834,19 +834,19 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-project-info-reports-plugin</artifactId>
           <!-- Lock down plugin version for build reproducibility -->
-          <version>3.0.0</version>
+          <version>3.2.1</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-gpg-plugin</artifactId>
           <!-- Lock down plugin version for build reproducibility -->
-          <version>1.6</version>
+          <version>3.0.1</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
           <!-- Lock down plugin version for build reproducibility -->
-          <version>2.10.4</version>
+          <version>3.3.2</version>
           <configuration>
             <!-- Always exclude the internal package since it's not user-public -->
             <excludePackageNames>*.internal.*</excludePackageNames>
@@ -858,13 +858,13 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
           <!-- Lock down plugin version for build reproducibility -->
-          <version>3.7.1</version>
+          <version>3.10.0</version>
           <!-- Site Plugin doesn't automatically pull the Apache Wagon implementation -->
           <dependencies>
             <dependency>
               <groupId>org.apache.maven.wagon</groupId>
               <artifactId>wagon-webdav-jackrabbit</artifactId>
-              <version>3.2.0</version>
+              <version>3.5.1</version>
             </dependency>
           </dependencies>
         </plugin>
@@ -872,18 +872,18 @@
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>exec-maven-plugin</artifactId>
           <!-- Lock down plugin version for build reproducibility -->
-          <version>1.6.0</version>
+          <version>3.0.0</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>build-helper-maven-plugin</artifactId>
           <!-- Lock down plugin version for build reproducibility -->
-          <version>3.0.0</version>
+          <version>3.3.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-bundle-plugin</artifactId>
-          <version>4.2.0</version>
+          <version>5.1.4</version>
         </plugin>
         <!-- Update the version that CardsDockerTagProperty.py uses for the generated compose file. -->
         <!-- This is explicitly invoked during release:prepare -->
@@ -911,7 +911,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-scm-plugin</artifactId>
-          <version>1.11.2</version>
+          <version>1.12.2</version>
           <inherited>false</inherited>
           <executions>
             <execution>

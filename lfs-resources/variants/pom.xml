@@ -38,9 +38,8 @@
         <configuration>
           <instructions>
             <Sling-Initial-Content>
-              SLING-INF/content/Questionnaires/;path:=/Questionnaires/;overwrite:=true;checkin:=true,
-              SLING-INF/content/Extensions/Views/;path:=/Extensions/Views/;overwrite:=true,
-              SLING-INF/content/Extensions/Sidebar/;path:=/Extensions/Sidebar/;overwrite:=true
+              SLING-INF/content/Questionnaires/;path:=/Questionnaires/;overwriteProperties:=true;uninstall:=true;checkin:=true,
+              SLING-INF/content/Extensions/;path:=/Extensions/;overwriteProperties:=true;uninstall:=true,
             </Sling-Initial-Content>
           </instructions>
         </configuration>

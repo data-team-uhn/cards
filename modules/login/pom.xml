@@ -54,7 +54,7 @@
             <!-- Initial content to be loaded on bundle installation -->
             <Sling-Initial-Content>
               SLING-INF/content/libs/cards/login/;overwrite:=true;path:=/libs/cards/login/,
-              SLING-INF/content/apps/cards/ExtensionPoints/;overwrite:=true;path:=/apps/cards/ExtensionPoints/
+              SLING-INF/content/apps/cards/ExtensionPoints/;path:=/apps/cards/ExtensionPoints/;overwriteProperties:=true;uninstall:=true,
             </Sling-Initial-Content>
           </instructions>
         </configuration>

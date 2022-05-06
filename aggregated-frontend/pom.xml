@@ -69,7 +69,7 @@
         <configuration>
           <instructions>
             <Include-Resource>src/main/frontend/dist/,{maven-resources}</Include-Resource>
-            <Sling-Initial-Content>SLING-INF/content/libs/cards/resources/;path:=/libs/cards/resources/;overwrite:=true</Sling-Initial-Content>
+            <Sling-Initial-Content>SLING-INF/content/libs/cards/resources/;path:=/libs/cards/resources/;overwriteProperties:=true;uninstall:=true</Sling-Initial-Content>
           </instructions>
         </configuration>
       </plugin>

@@ -39,7 +39,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Sling-Initial-Content>SLING-INF/content/Questionnaires/;path:=/Questionnaires/;overwrite:=true;checkin:=true</Sling-Initial-Content>
+            <Sling-Initial-Content>SLING-INF/content/Questionnaires/;path:=/Questionnaires/;overwriteProperties:=true;uninstall:=true;checkin:=true</Sling-Initial-Content>
           </instructions>
         </configuration>
       </plugin>

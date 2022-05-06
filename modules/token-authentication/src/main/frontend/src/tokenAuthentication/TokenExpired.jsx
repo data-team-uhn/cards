@@ -59,7 +59,7 @@ export default function TokenExpired() {
           className={classes.notFoundContainer}
         >
           <Grid item>
-            <img src="/libs/cards/resources/logo_light_bg.png" alt="" className={classes.logo}/>
+            <img src={document.querySelector('meta[name="logoLight"]').content} alt="" className={classes.logo}/>
           </Grid>
           <Grid item>
             <Typography variant="h1" color="primary" gutterBottom>

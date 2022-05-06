@@ -33,7 +33,7 @@
       "start-order":"25"
     },
     {
-      "id":"jakarta.activation:jakarta.activation-api:2.0.1",
+      "id":"jakarta.activation:jakarta.activation-api:2.1.0",
       "start-order":"25"
     },
     {
@@ -41,7 +41,7 @@
       "start-order":"25"
     },
     {
-      "id":"org.apache.commons:commons-text:1.6",
+      "id":"org.apache.commons:commons-text:1.9",
       "start-order":"25"
     },
     {
@@ -53,7 +53,7 @@
       "start-order":"25"
     },
     {
-      "id":"org.apache.sling:org.apache.sling.api:2.23.6",
+      "id":"org.apache.sling:org.apache.sling.api:2.25.0",
       "start-order":"25"
     },
     {

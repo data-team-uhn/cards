@@ -236,11 +236,11 @@ function PatientIdentification(props) {
         <Typography paragraph>
           1. Check the top right-hand corner of your Patient Itinerary.
         </Typography>
-        <img src="/libs/cards/resources/mrn_helper_1.png" alt="MRN location within the Appointment Itinerary" className={classes.mrnHelperImage} />
+        <img src="/libs/cards/resources/media/proms/mrn_helper_1.png" alt="MRN location within the Appointment Itinerary" className={classes.mrnHelperImage} />
         <Typography paragraph>
           2. Check your account page on the myUHN PatientPortal.
         </Typography>
-        <img src="/libs/cards/resources/mrn_helper_2.png" alt="MRN location within the Patient Portal side bar" className={classes.mrnHelperImage} />
+        <img src="/libs/cards/resources/media/proms/mrn_helper_2.png" alt="MRN location within the Patient Portal side bar" className={classes.mrnHelperImage} />
       </DialogContent>
     </Dialog>
 
@@ -249,7 +249,7 @@ function PatientIdentification(props) {
     <form className={classes.form} onSubmit={onSubmit} >
       <Grid container direction="column" spacing={4} alignItems="center" justify="center">
          <Grid item xs={12}>
-           <img src="/libs/cards/resources/logo_light_bg.png" className={classes.logo} alt="logo" />
+           <img src={document.querySelector('meta[name="logoLight"]').content} className={classes.logo} alt="logo" />
          </Grid>
 
          {/* If we haven't authenticated and retrieved the visit list for this patient yet,

@@ -61,13 +61,13 @@
     <dependency>
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.scripting.jsp.taglib</artifactId>
-      <version>2.0.6</version>
+      <version>2.4.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.jcr.base</artifactId>
-      <version>2.2.2</version>
+      <version>3.1.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>

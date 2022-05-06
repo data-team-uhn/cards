@@ -42,14 +42,19 @@
             <Sling-Nodetypes>SLING-INF/nodetypes/proms.cnd</Sling-Nodetypes>
             <Include-Resource>{maven-resources},src/main/media</Include-Resource>
             <Sling-Initial-Content>
-              SLING-INF/content/Extensions/;path:=/Extensions;overwrite:=false,
-              SLING-INF/content/Homepage/;path:=/;overwrite:=true,
-              SLING-INF/content/Questionnaires/;path:=/Questionnaires/;overwrite:=true;checkin:=true,
-              SLING-INF/content/libs/cards/resources/;path:=/libs/cards/resources/;overwrite:=true,
-              SLING-INF/content/libs/cards/conf/;path:=/libs/cards/conf/;overwrite:=true,
-              SLING-INF/content/apps/cards/config/CopyAnswers/Questionnaires/;path:=/apps/cards/config/CopyAnswers/Questionnaires/;overwrite:=true,
-              SLING-INF/content/apps/cards/config/CopyAnswers/SubjectTypes/Patient/;path:=/apps/cards/config/CopyAnswers/SubjectTypes/Patient/;overwrite:=true,
-              SLING-INF/content/Statistics/;path:=/Statistics/;overwrite:=false,
+              SLING-INF/content/Extensions/;path:=/Extensions;overwriteProperties:=true;uninstall:=true,
+              SLING-INF/content/Homepage/Proms.json;path:=/Proms;overwrite:=true,
+              SLING-INF/content/Homepage/Proms/Cardio.xml;path:=/Proms/Cardio;overwrite:=true,
+              SLING-INF/content/Homepage/Proms/Mood.xml;path:=/Proms/Mood;overwrite:=true,
+              SLING-INF/content/Homepage/Proms/ClinicMapping.xml;path:=/Proms/ClinicMapping;overwrite:=true,
+              SLING-INF/content/Homepage/Proms/TermsOfUse.xml;path:=/Proms/TermsOfUse;overwrite:=true,
+              SLING-INF/content/Questionnaires/;path:=/Questionnaires/;overwriteProperties:=true;uninstall:=true;checkin:=true,
+              SLING-INF/content/libs/cards/resources/media/proms/;path:=/libs/cards/resources/media/proms/;overwrite:=true;uninstall:=true,
+              SLING-INF/content/libs/cards/conf/Media.json;path:=/libs/cards/conf/Media;overwriteProperties:=true,
+              SLING-INF/content/libs/cards/conf/AppName.json;path:=/libs/cards/conf/AppName;overwrite:=true,
+              SLING-INF/content/libs/cards/conf/ThemeColor.json;path:=/libs/cards/conf/ThemeColor;overwrite:=true,
+              SLING-INF/content/apps/cards/config/CopyAnswers;path:=/apps/cards/config/CopyAnswers;overwriteProperties:=true;uninstall:=true,
+              SLING-INF/content/Statistics/;path:=/Statistics/;overwrite:=false;overwriteProperties:=true;uninstall:=true,
             </Sling-Initial-Content>
           </instructions>
         </configuration>

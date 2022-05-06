@@ -41,10 +41,12 @@
           <instructions>
             <Include-Resource>{maven-resources},src/main/media</Include-Resource>
             <Sling-Initial-Content>
-              SLING-INF/content/libs/cards/conf/;path:=/libs/cards/conf/;overwrite:=true,
-              SLING-INF/content/libs/cards/resources/;path:=/libs/cards/resources/;overwrite:=true,
-              SLING-INF/content/Questionnaires/;path:=/Questionnaires/;overwrite:=true;checkin:=true,
-              SLING-INF/content/Statistics/;path:=/Statistics/;overwrite:=false,
+              SLING-INF/content/libs/cards/conf/AppName.json;path:=/libs/cards/conf/AppName;overwrite:=true,
+              SLING-INF/content/libs/cards/conf/ThemeColor.json;path:=/libs/cards/conf/ThemeColor;overwrite:=true,
+              SLING-INF/content/libs/cards/resources/media/lfs/;path:=/libs/cards/resources/media/lfs/;overwrite:=true;uninstall:=true,
+              SLING-INF/content/libs/cards/conf/Media.json;path:=/libs/cards/conf/Media;overwriteProperties:=true,
+              SLING-INF/content/Questionnaires/;path:=/Questionnaires/;overwriteProperties:=true;uninstall:=true;checkin:=true,
+              SLING-INF/content/Statistics/;path:=/Statistics/;overwrite:=false;uninstall:=true,
             </Sling-Initial-Content>
           </instructions>
         </configuration>

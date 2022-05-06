@@ -35,6 +35,11 @@
     <sly data-sly-use.config="/libs/cards/conf/ThemeColor">
       <meta name="themeColor" content="${config['ThemeColor']}">
     </sly>
+    <sly data-sly-use.config="/libs/cards/conf/Media">
+      <sly data-sly-repeat="${config.valueMap.entrySet.iterator}">
+        <meta name="${item.key}" content="${item.value}">
+      </sly>
+    </sly>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&amp;display=swap" class="next-head"/>
     <style>

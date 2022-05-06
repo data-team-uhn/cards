@@ -98,7 +98,7 @@
             "start-order":"15"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.jcr.base:3.1.6",
+            "id":"org.apache.sling:org.apache.sling.jcr.base:3.1.10",
             "start-order":"15"
         },
         {
@@ -122,7 +122,7 @@
             "start-order":"16"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.jcr.resource:3.0.22",
+            "id":"org.apache.sling:org.apache.sling.jcr.resource:3.2.0",
             "start-order":"20"
         },
         {
@@ -130,11 +130,11 @@
             "start-order":"20"
         },
         {
-            "id":"org.apache.jackrabbit.vault:org.apache.jackrabbit.vault:3.5.0",
+            "id":"org.apache.jackrabbit.vault:org.apache.jackrabbit.vault:3.6.0",
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.jcr.contentloader:2.4.0",
+            "id":"org.apache.sling:org.apache.sling.jcr.contentloader:2.5.2",
             "start-order":"20"
         },
         {
@@ -142,7 +142,7 @@
             "start-order":"20"
         },
         {
-            "id":"org.apache.sling:org.apache.sling.jcr.jackrabbit.usermanager:2.2.14",
+            "id":"org.apache.sling:org.apache.sling.jcr.jackrabbit.usermanager:2.2.20",
             "start-order":"20"
         }
     ],
@@ -207,6 +207,9 @@
                 "org.apache.jackrabbit.oak.security.user.UserAuthenticationFactoryImpl",
                 "org.apache.jackrabbit.oak.spi.security.authorization.principalbased.impl.PrincipalBasedAuthorizationConfiguration"
             ]
+         },
+        "org.apache.sling.jackrabbit.usermanager.impl.resource.AuthorizableResourceProvider":{
+            "resources.for.nested.properties":true
          }
     }
 }
