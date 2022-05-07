@@ -379,11 +379,17 @@ let QuestionnaireEntry = (props) => {
   }
 
   let reloadData = (newData) => {
+    // There's new data to load, display and highlight it:
     if (newData) {
       setEntryData(newData);
       setDoHighlight(true);
     } else {
-      onActionDone();
+      // Try to reload the data from the server
+      // If it fails, pass it up to the parent
+      fetch(`${data["@path"]}.deep.json`)
+        .then(response => response.ok ? response.json() : Promise.reject(response))
+        .then(json => reloadData(json))
+        .catch(() => onActionDone());
     }
   }
 
@@ -424,7 +430,7 @@ let QuestionnaireEntry = (props) => {
         <QuestionnaireItemSet
           data={entryData}
           classes={classes}
-          onActionDone={onActionDone}
+          onActionDone={reloadData}
           models={childModels}
           entryTypes={menuItems.map(t => `cards:${t}`)}
         />
