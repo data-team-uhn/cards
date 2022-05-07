@@ -42,6 +42,7 @@ let QuestionnaireItemCard = (props) => {
     avatarColor,
     type,
     title,
+    titleField,
     action,
     disableEdit,
     disableDelete,
@@ -82,7 +83,8 @@ let QuestionnaireItemCard = (props) => {
         avatar={avatar}
         avatarColor={avatarColor}
         type={type}
-        label={title || data.label || data.text}
+        id={data["@name"]}
+        label={title || data[titleField] || ''}
         plain={plain}
         action={
           <div>

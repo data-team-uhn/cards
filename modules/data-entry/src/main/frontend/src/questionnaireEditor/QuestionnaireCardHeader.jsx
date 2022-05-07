@@ -22,6 +22,7 @@ import PropTypes from 'prop-types';
 import {
   Avatar,
   Icon,
+  Chip,
   CardHeader,
   Typography
 } from "@mui/material";
@@ -39,7 +40,7 @@ let QuestionnaireCardHeader = (props) => {
         }
         title={
           <div>
-            {!!!props.plain && <Typography variant="overline">{props.type}</Typography>}
+            {!!!props.plain && <><Typography variant="overline">{props.type}</Typography> : <Chip label={props.id} size="small" color="primary" variant="outlined"/></>}
             <Typography variant="h6">{props.label}</Typography>
           </div>
         }

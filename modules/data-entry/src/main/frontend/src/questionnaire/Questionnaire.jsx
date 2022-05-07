@@ -278,7 +278,6 @@ Information.propTypes = {
   onActionDone: PropTypes.func,
   data: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired,
-  title: PropTypes.string,
   avatar: PropTypes.string,
   avatarColor: PropTypes.string,
   model: PropTypes.string.isRequired
@@ -286,7 +285,6 @@ Information.propTypes = {
 
 Information.defaultProps = {
   type: "Information",
-  title: " ",
   avatar: "info",
   avatarColor: blue[600],
   model: "Information.json"
@@ -303,12 +301,14 @@ Question.propTypes = {
   type: PropTypes.string.isRequired,
   avatar: PropTypes.string,
   avatarColor: PropTypes.string,
+  titleField: PropTypes.string,
   model: PropTypes.string.isRequired
 };
 
 Question.defaultProps = {
   type: "Question",
   avatarColor: "purple",
+  titleField: "text",
   model: "Question.json"
 };
 
@@ -322,6 +322,7 @@ Section.propTypes = {
   type: PropTypes.string.isRequired,
   avatar: PropTypes.string,
   avatarColor: PropTypes.string,
+  titleField: PropTypes.string,
   model: PropTypes.string.isRequired
 };
 
@@ -329,6 +330,7 @@ Section.defaultProps = {
   type: "Section",
   avatar: "view_stream",
   avatarColor: "orange",
+  titleField: "label",
   model: "Section.json"
 };
 
@@ -336,7 +338,7 @@ Section.defaultProps = {
 // Generic QuestionnaireEntry component that can be adapted to any entry type via props
 
 let QuestionnaireEntry = (props) => {
-  let { onActionDone, data, type, title, avatar, avatarColor, model, classes } = props;
+  let { onActionDone, data, type, titleField, avatar, avatarColor, model, classes } = props;
   let [ entryData, setEntryData ] = useState(data);
   let [ doHighlight, setDoHighlight ] = useState(data.doHighlight);
 
@@ -390,9 +392,13 @@ let QuestionnaireEntry = (props) => {
     setEntryData(newData);
   }
 
+  // If a `titleField` is provided, exclude that field when displaying the entry fields
+  let viewSpec = Object.assign({}, spec);
+  delete viewSpec[titleField];
+
   return (
     <QuestionnaireItemCard
-        title={title}
+        titleField={titleField}
         avatar={avatar}
         avatarColor={avatarColor}
         type={type}
@@ -412,7 +418,7 @@ let QuestionnaireEntry = (props) => {
         onActionDone={reloadData}
         model={model}
     >
-      <Fields data={entryData} JSON={spec} edit={false} />
+      <Fields data={entryData} JSON={viewSpec} edit={false} />
       <AnswerOptionList data={entryData} modelDefinition={spec} />
       { menuItems &&
         <QuestionnaireItemSet
@@ -433,6 +439,7 @@ QuestionnaireEntry.propTypes = {
   type: PropTypes.string.isRequired,
   avatar: PropTypes.string,
   avatarColor: PropTypes.string,
+  titleField: PropTypes.string,
   model: PropTypes.string.isRequired
 };
 
