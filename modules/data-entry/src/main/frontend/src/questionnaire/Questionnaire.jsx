@@ -385,7 +385,7 @@ let QuestionnaireEntry = (props) => {
     }
   }
 
-  let onCreate = (newData) => {
+  let onCreated = (newData) => {
     setEntryData({});
     setEntryData(newData);
   }
@@ -400,10 +400,10 @@ let QuestionnaireEntry = (props) => {
         classes={classes}
         doHighlight={doHighlight}
         action={
-            menuItems ?
+            menuItems?.length > 0 ?
             <CreationMenu
               data={entryData}
-              onClose={onCreate}
+              onCreated={onCreated}
               menuItems={menuItems}
               models={childModels}
             />

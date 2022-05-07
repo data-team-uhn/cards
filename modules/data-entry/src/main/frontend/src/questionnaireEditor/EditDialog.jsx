@@ -36,7 +36,7 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js"
 // Dialog for editing or creating questions or sections
 
 let EditDialog = (props) => {
-  const { data, type, targetExists, isOpen, onClose, onCancel, id, model } = props;
+  const { data, type, targetExists, isOpen, onSaved, onCancel, id, model } = props;
   let [ targetId, setTargetId ] = useState('');
   let [ dialogData, setDialogData ] = useState(targetExists ? data : {});
   // Marks that a save operation is in progress
@@ -76,7 +76,7 @@ let EditDialog = (props) => {
           if (response.ok) {
             setSaveInProgress(false);
             setOpen(false);
-            onClose && onClose();
+            onSaved && onSaved();
           } else {
             handleError(response);
           }
@@ -108,7 +108,7 @@ let EditDialog = (props) => {
                 newData[targetId] = item;
                 setSaveInProgress(false);
                 setOpen(false);
-                onClose && onClose(newData);
+                onSaved && onSaved(newData);
               })
               .catch(handleError);
           } else {
@@ -232,7 +232,7 @@ EditDialog.propTypes = {
   type: PropTypes.string.isRequired,
   targetExists: PropTypes.bool.isRequired,
   isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func,
+  onSaved: PropTypes.func,
   onCancel: PropTypes.func
 };
 
