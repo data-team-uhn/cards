@@ -29,6 +29,7 @@ import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
 import AnswerOptions from "./AnswerOptions";
 import BooleanInput from "./BooleanInput";
 import CodeInput from "./CodeInput";
+import ConditionalValueInput from "./ConditionalValueInput";
 import ListInput from "./ListInput";
 import NumberInput from "./NumberInput";
 import ObjectInput from "./ObjectInput";

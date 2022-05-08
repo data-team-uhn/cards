@@ -1,0 +1,14 @@
+[
+  {
+    "operandA" : "conditionalValue",
+    "comparator" : {
+      "=" : {},
+      "<>" : {},
+      "<" : {},
+      "<=" : {},
+      ">" : {},
+      ">=" : {}
+    },
+    "operandB" : "conditionalValue"
+  }
+]

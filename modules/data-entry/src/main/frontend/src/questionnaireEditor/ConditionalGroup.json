@@ -1,0 +1,9 @@
+[
+  {
+    "//CHILDREN" : {
+      "Conditional" : "Conditional.json",
+      "ConditionalGroup" : "ConditionalGroup.json"
+    },
+    "requireAll": "boolean"
+  }
+]

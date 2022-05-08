@@ -238,26 +238,101 @@ export default withStyles(QuestionnaireStyle)(Questionnaire);
 
 
 let QuestionnaireItemSet = (props) => {
-  let { children, entryTypes, models, onActionDone, data, classes } = props;
+  let { children, models, onActionDone, data, classes } = props;
+
+  let prioritaryModels = {};
+  let prioritaryEntryTypes = null;
+  let generalModels = {};
+  let generalEntryTypes = ENTRY_TYPES;
+
+  let getEntryTypes = entryModels => Object.keys(entryModels || {}).map(e => `cards:${e}`);
+
+  if (models) {
+    // Is defaultOrder specified for some entry types? Pull those into a flat "priority" list
+    // to display them first, in the order specified by their `defaultOrder`
+    // Example:
+    // {
+    //   a: "a.json",
+    //   group1 : {entries: {b: "b,json", c: "c.json"}},
+    //   group2 : {entries: {d: "d,json", e: "e.json"}, defaultOrder: 5},
+    //   f: "f.json",
+    //   group3 : {entries: {g: "g,json", h: "h.json"}, defaultOrder: 1}
+    // }
+    // => {g: "g.json", h: "h,json", h: "h.json", e: "e.json"}
+    Object.values(models || {})
+      // Filter in groups with entries and with defaultOrder specified
+      .filter(v => typeof(v) == "object" && typeof(v?.entries) != "undefined" && typeof(v?.defaultOrder) != "undefined")
+      // Sort by the specified order
+      .sort((a, b) => a.defaultOrder - b.defaultOrder)
+      // Record the sorted entries into the priority list
+      .forEach(v => prioritaryModels = {...prioritaryModels, ...v.entries});
+
+    // If there are any entries with defaultOrder, we update the priorityEntryTypes
+    if (prioritaryModels != {}) {
+      prioritaryEntryTypes = getEntryTypes(prioritaryModels);
+    }
+
+    // Get entry types without a defaultOrder specified, in the order they appear in the configuration
+    // Dive inside groups to get the `entries`
+    // Example:
+    // {
+    //   a: "a.json",
+    //   group1 : {entries: {b: "b,json", c: "c.json"}},
+    //   group2 : {entries: {d: "d,json", e: "e.json"}, defaultOrder: 5},
+    //   f: "f.json",
+    //   group3 : {entries: {g: "g,json", h: "h.json"}, defaultOrder: 1}
+    // }
+    // => {a: "a.json", b: "b,json", c: "c.json", f: "f.json"}
+    Object.entries(models).forEach(([k,v]) => {
+      if ( typeof(v) == "object" && typeof(v?.entries) != "undefined" && typeof(v?.defaultOrder) == "undefined") {
+        // Flatten groups with `entries` but without `defaultOrder` (the ones with defaultOrder are already in the "priority" list)
+        generalModels = {...generalModels, ...v.entries}
+      } else {
+        // also record groups without metadata
+        generalModels[k] = v;
+      }
+    });
+    // If there are any entries without defaultOrder, we update the generalEntryTypes
+    // Otherwise the original list is kept, i.e. ENTRY_TYPES
+    if (generalModels != {}) {
+       generalEntryTypes = getEntryTypes(generalModels);
+    }
+  }
+
+  let listEntries = (typeModels, types) => (
+    <>
+    { Object.entries(data)
+      .filter(([key, value]) => types?.includes(value['jcr:primaryType']))
+      .map(([key, value]) => (
+        EntryType => <Grid item key={key}>
+                       <EntryType
+                         data={value}
+                         model={typeModels?.[_stripCardsNamespace(value['jcr:primaryType'])]}
+                         onActionDone={onActionDone}
+                         classes={classes}
+                       />
+                     </Grid>
+        )(eval(_stripCardsNamespace(value['jcr:primaryType'])))
+      )
+    }
+    </>
+  )
+
+  // There is no data to display, do not render an empty container
+  if ( !!!children &&
+       !Object.values(data).some(v => [...(generalEntryTypes ||[]), ...(prioritaryEntryTypes || [])].includes(v['jcr:primaryType'])) ) {
+    return null;
+  }
 
   return (
     <Grid container direction="column" spacing={4} wrap="nowrap">
       {children}
       {
         data ?
-        Object.entries(data)
-            .filter(([key, value]) => (entryTypes || ENTRY_TYPES).includes(value['jcr:primaryType']))
-            .map(([key, value]) => (
-                EntryType => <Grid item key={key}>
-                               <EntryType
-                                 data={value}
-                                 model={models?.[_stripCardsNamespace(value['jcr:primaryType'])]}
-                                 onActionDone={onActionDone}
-                                 classes={classes}
-                               />
-                             </Grid>
-                 )(eval(_stripCardsNamespace(value['jcr:primaryType'])))
-            )
+        <>
+        { prioritaryEntryTypes && listEntries(prioritaryModels, prioritaryEntryTypes) }
+        { listEntries(generalModels, generalEntryTypes) }
+        </>
         : <Grid item><Grid container justifyContent="center"><Grid item><CircularProgress/></Grid></Grid></Grid>
       }
     </Grid>
@@ -335,6 +410,42 @@ Section.defaultProps = {
 };
 
 
+// Details about a simple condition for desplaying a section
+let Conditional = (props) => <QuestionnaireEntry {...props} />;
+
+Conditional.propTypes = {
+  onActionDone: PropTypes.func,
+  data: PropTypes.object.isRequired,
+  type: PropTypes.string.isRequired,
+  avatar: PropTypes.string,
+  avatarColor: PropTypes.string,
+  model: PropTypes.string.isRequired
+};
+
+Conditional.defaultProps = {
+  type: "Conditional",
+  avatarColor: "cadetblue",
+  model: "Conditional.json"
+};
+
+// Details about a group pf conditions for desplaying a section
+let ConditionalGroup = (props) => <QuestionnaireEntry {...props} />;
+
+ConditionalGroup.propTypes = {
+  onActionDone: PropTypes.func,
+  data: PropTypes.object.isRequired,
+  type: PropTypes.string.isRequired,
+  avatar: PropTypes.string,
+  avatarColor: PropTypes.string,
+  model: PropTypes.string.isRequired
+};
+
+ConditionalGroup.defaultProps = {
+  type: "ConditionalGroup",
+  avatarColor: "navy",
+  model: "ConditionalGroup.json"
+};
+
 // Generic QuestionnaireEntry component that can be adapted to any entry type via props
 
 let QuestionnaireEntry = (props) => {
@@ -344,7 +455,8 @@ let QuestionnaireEntry = (props) => {
 
   let spec = require(`../questionnaireEditor/${model}`)[0];
 
-  let childModels = null;
+  // If this entry type has any children by default, they should be specified in the `//CHILDREN` field
+  let childModels = spec["//CHILDREN"];
 
   // There may be `//CHILDREN` overrides for some definitions for this entry, find them and record them
   let findChildrenSpec = (key, value) => {
@@ -361,21 +473,27 @@ let QuestionnaireEntry = (props) => {
   };
 
   // Does this section have a different list of accepted child items?
-  Object.entries(spec || {}).find(([key, value]) => findChildrenSpec(key, value));
+  Object.entries(spec || {})
+    // ignore the default `//CHILDREN` specification
+    .filter(([key, value]) => key != "//CHILDREN")
+    // look for overrides deeper
+    .find(([key, value]) => findChildrenSpec(key, value));
 
-  let menuItems = childModels && Object.keys(childModels);
+  // Add the child types to the menu
+  let menuItems = childModels && Object.keys(childModels).filter(k => typeof(childModels[k]) != "object");
 
-  let extractConditions = () => {
-    let p = Array();
-    // Find conditionals
-    Object.entries(sectionData).filter(([key, value]) => (value['jcr:primaryType'] == 'cards:Conditional'))
-                               .map(([key, value]) => { p.push({
-                                                          name: key + sectionData["@name"],
-                                                          label: "Condition",
-                                                          value : value?.operandA?.value.join(', ') + " " + value?.comparator + " " + value?.operandB?.value.join(', ')
-                                                        });
-                                                      });
-    return p;
+  // Some child entries may be configured to have a maximum number of entries
+  // (for example, only one conditional or conditional group per section)
+  // Exclude from the creation menu any entries corresponding to child types
+  // for which maximum of that type has been reached
+  if (childModels) {
+    Object.values(childModels)
+      .filter(v => {
+        if (typeof(v) != "object" || typeof(v?.entries) != "object") return false;
+        let entryTypes = Object.keys(v.entries).map(e => `cards:${e}`);
+        return (Object.values(data).filter(e => entryTypes?.includes(e['jcr:primaryType'])).length < v?.max);
+      })
+      .forEach(v => menuItems.push(...Object.keys(v.entries)));
   }
 
   let reloadData = (newData) => {
@@ -426,13 +544,12 @@ let QuestionnaireEntry = (props) => {
     >
       <Fields data={entryData} JSON={viewSpec} edit={false} />
       <AnswerOptionList data={entryData} modelDefinition={spec} />
-      { menuItems &&
+      { childModels &&
         <QuestionnaireItemSet
           data={entryData}
           classes={classes}
           onActionDone={reloadData}
           models={childModels}
-          entryTypes={menuItems.map(t => `cards:${t}`)}
         />
       }
     </QuestionnaireItemCard>
