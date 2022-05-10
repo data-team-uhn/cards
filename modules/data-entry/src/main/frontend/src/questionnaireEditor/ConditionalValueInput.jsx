@@ -17,13 +17,19 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import {
   Grid,
   IconButton,
+  FormControl,
+  InputLabel,
+  ListItemText,
+  MenuItem,
+  Select,
   TextField,
   Tooltip,
+  Typography,
   makeStyles
 } from "@material-ui/core";
 
@@ -43,6 +49,9 @@ const useStyles = makeStyles(theme => ({
       textTransform: "none",
     },
   },
+  variableOption: {
+    whiteSpace: "normal",
+  },
   valueEntry: {
     border: "1px solid " + theme.palette.divider,
     borderRadius: theme.spacing(.5, 3, 3, .5),
@@ -51,6 +60,9 @@ const useStyles = makeStyles(theme => ({
       display: "flex",
       paddingLeft: theme.spacing(1.5),
       alignItems: "center",
+    },
+    "& .MuiListItemText-root" : {
+      margin: "0 !important",
     },
   },
   valueActions: {
@@ -65,8 +77,11 @@ let ConditionalValueInput = (props) => {
   let [ isReference, setReference ] = useState(data[objectKey] ? data[objectKey].isReference : (objectKey == 'operandA'));
   let [ tempValue, setTempValue ] = useState(''); // Holds new, non-committed values
   let [ isDuplicate, setDuplicate ] = useState(false);
+  let [ variables, setVariables ] = useState();
+  let [ error, setError ] = useState();
 
   let path = (data?.['@path'] || props.path) + `/${objectKey}`;
+  let parentQuestionnaire = /(\/Questionnaires\/([^.\/]+))(.)*/.exec(path)[1];
 
   const classes = useStyles();
 
@@ -110,6 +125,67 @@ let ConditionalValueInput = (props) => {
     return false;
   }
 
+  let handleChange = (event) => {
+    setTempValue(event.target.value);
+    validateEntry(event.target.value);
+  }
+
+  let handleValueSelected = (event) => {
+    handleValue(event.target.value);
+  }
+
+  useEffect(() => {
+    if (isReference && !variables) {
+      fetch(`${parentQuestionnaire}.deep.json`)
+        .then((response) => response.ok ? response.json() : Promise.reject(response))
+        .then(loadVariableNames)
+        .catch(() => {
+           setError("Cannot load variable names");
+           setVariables([]);
+        })
+    }
+  }, [isReference]);
+
+  let loadVariableNames = (json) => {
+    let vars = [];
+    findQuestions(json, vars);
+    setVariables(vars);
+  }
+
+  let findQuestions = (json, result) =>  {
+    Object.entries(json || {}).forEach(([k,e]) => {
+      if (e?.['jcr:primaryType'] == "cards:Question") {
+        result.push({name: e['@name'], text: e['text']});
+      } else if (typeof(e) == 'object') {
+        findQuestions(e, result);
+      }
+    })
+  }
+
+  // Input for adding a new value
+  let textField = (label, params) => (
+    <TextField
+        {...params}
+        fullWidth
+        value={tempValue}
+        error={isDuplicate}
+        label={label}
+        helperText={isDuplicate ? 'Duplicated entry' : 'Press ENTER to add a new line'}
+        onChange={handleChange}
+        onBlur={handleValueSelected}
+        inputProps={Object.assign({
+          onKeyDown: (event) => {
+            if (event.key == 'Enter') {
+              // We need to stop the event so that it doesn't trigger a form submission
+              event.preventDefault();
+              event.stopPropagation();
+              handleValue(event.target.value);
+            }
+          }
+        })}
+      />
+  );
+
   return (
     <EditorInput name={objectKey}>
 
@@ -127,13 +203,16 @@ let ConditionalValueInput = (props) => {
       {/* List the entered values */}
       { values?.map((value, index) =>
         <Grid container
+          key={`${value}-${index}`}
           direction="row"
           justify="space-between"
           alignItems="stretch"
           className={classes.valueEntry}
           key={value}
         >
-          <Grid item xs={9}>{value}</Grid>
+          <Grid item xs={9}>
+            <ListItemText primary={value} secondary={isReference && variables?.find(v => v.name == value)?.text} />
+          </Grid>
           <Grid item xs={3} className={classes.valueActions}>
             <Tooltip title="Delete entry">
               <IconButton onClick={() => deleteValue(index)}><CloseIcon/></IconButton>
@@ -142,28 +221,34 @@ let ConditionalValueInput = (props) => {
         </Grid>
       )}
 
-      {/* Input for adding a new value */}
-      {/* To do: if "variable" is selected, render a dropdown or autocomplete with available variable names */}
-      <TextField
-        fullWidth
-        value={tempValue}
-        error={isDuplicate}
-        label={isReference ? "Enter the name of a variable from this questionnaire" : "Enter a value"}
-        helperText={isDuplicate ? 'Duplicated entry' : 'Press ENTER to add a new line'}
-        onChange={(event) => { setTempValue(event.target.value); validateEntry(event.target.value); }}
-        onBlur={(event) => { handleValue(event.target.value); }}
-        inputProps={Object.assign({
-          onKeyDown: (event) => {
-            if (event.key == 'Enter') {
-              // We need to stop the event so that it doesn't trigger a form submission
-              event.preventDefault();
-              event.stopPropagation();
-              handleValue(event.target.value);
+      {/* Display a dropdown for variable names or a simple input for values */}
+      { isReference && !error ?
+        <FormControl fullWidth>
+          <InputLabel id={`label-${path}`}>Select the name of a variable from this questionnaire</InputLabel>
+          <Select
+            labelId={`label-${path}`}
+            id={path}
+            value={tempValue}
+            label="Select the name of a variable from this questionnaire"
+            onChange={handleValueSelected}
+          >
+            { variables?.filter(v => !values.includes(v.name))
+                .map(v => <MenuItem value={v.name} key={`option-${v.name}`} className={classes.variableOption}>
+                <ListItemText primary={v.name} secondary={v.text} />
+              </MenuItem>)
             }
-          }
-        })}
-      />
-
+          </Select>
+        </FormControl>
+        :
+        ( isReference && error ?
+          <>
+            <Typography color="error">{error}</Typography>
+            { textField("Enter the name of a variable from this questionnaire") }
+          </>
+          :
+          textField("Enter a value")
+        )
+      }
 
       {/* Metadata to sent to the server */}
       { values ?
@@ -196,9 +281,49 @@ QuestionComponentManager.registerQuestionComponent((definition) => {
 
 // View mode component
 let ConditionalValue = (props) => {
-   let { objectKey, data } = props;
+  let { objectKey, data } = props;
+  let [ variables, setVariables ] = useState();
+
+  let parentQuestionnaire = /(\/Questionnaires\/([^.\/]+))(.)*/.exec(data['@path'])[1];
+
+  useEffect(() => {
+    if (data?.[objectKey]?.isReference && !variables) {
+      fetch(`${parentQuestionnaire}.deep.json`)
+        .then((response) => response.ok ? response.json() : Promise.reject(response))
+        .then(loadVariableNames)
+        .catch(() => {
+           setVariables([]);
+        })
+    }
+  }, []);
+
+  let loadVariableNames = (json) => {
+    let vars = [];
+    findQuestions(json, vars);
+    setVariables(vars);
+  }
+
+  let findQuestions = (json, result) =>  {
+    Object.entries(json || {}).forEach(([k,e]) => {
+      if (e?.['jcr:primaryType'] == "cards:Question") {
+        result.push({name: e['@name'], text: e['text']});
+      } else if (typeof(e) == 'object') {
+        findQuestions(e, result);
+      }
+    })
+  }
+
    return (
-     data?.[objectKey]?.value?.length > 0 ? data[objectKey].value.map( v => <div>{v} {data?.[objectKey]?.isReference ? " (variable name)" : ""}</div>) : null
+     data?.[objectKey]?.value?.length > 0
+     ? data[objectKey].value.map(value => (
+       <ListItemText
+         style={{marginTop: 0}}
+         key={value}
+         primary={value}
+         secondary={data?.[objectKey]?.isReference && variables?.find(v => v.name == value)?.text}
+       />
+     ))
+     : null
    );
 }
 
