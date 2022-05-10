@@ -162,11 +162,6 @@ public class VisitChangeListener implements ResourceChangeListener
     {
         final VisitInformation visitInformation = new VisitInformation(questionnaire, form);
 
-        // Fill in the displayedValue of the clinics question, if necessary
-        if (!"".equals(visitInformation.clinicDisplayName)) {
-            changeVisitInformationDisplayValue(form, "clinic", visitInformation.getClinicDisplayName(), session);
-        }
-
         // Only continue with the surveys update if we have the requirements
         if (!visitInformation.hasRequiredInformation()) {
             return;
@@ -389,7 +384,7 @@ public class VisitChangeListener implements ResourceChangeListener
                     visitDate = (Calendar) this.formUtils
                         .getValue(this.formUtils.getAnswer(form, visitInformation.getVisitDateQuestion()));
                     visitQuestionnaireSet = (String) this.formUtils
-                        .getValue(this.formUtils.getAnswer(form, visitInformation.getQuestionnaireSetQuestion()));
+                        .getValue(this.formUtils.getAnswer(form, visitInformation.getClinicQuestion()));
                 } else {
                     questionnaires.merge(questionnaire.getIdentifier(), !isFormIncomplete(form), Boolean::logicalOr);
                 }
@@ -397,7 +392,7 @@ public class VisitChangeListener implements ResourceChangeListener
         }
 
         // Ignore forms for different clinics, or forms without a clinic
-        if (visitQuestionnaireSet == null || visitInformation.getQuestionnaireSet() != visitQuestionnaireSet) {
+        if (visitQuestionnaireSet == null || visitInformation.getClinicPath() != visitQuestionnaireSet) {
             return;
         } else {
             removeQuestionnairesFromVisit(visitInformation, visitDate, questionnaires, questionnaireSetInfo);
@@ -656,108 +651,6 @@ public class VisitChangeListener implements ResourceChangeListener
     }
 
     /**
-     * Record a DisplayedValue value to the visit information form for the specified question/answer.
-     * Will not update the visit information form if the question already has the desired answer.
-     *
-     * @param visitInformationForm the Visit Information form to save the value to, if needed
-     * @param questionPath the relative path from the visit information questionnaire to the question to be answered
-     * @param value the value that answer should be set to
-     * @param session a service session providing access to the repository
-     */
-    private void changeVisitInformationDisplayValue(final Node visitInformationForm, final String questionPath,
-        final String displayValue, final Session session)
-    {
-        try {
-            final Node questionnaire = this.formUtils.getQuestionnaire(visitInformationForm);
-            final Node question = this.questionnaireUtils.getQuestion(questionnaire, questionPath);
-            if (question == null) {
-                LOGGER.warn("Could not update visit information form as requested question could not be found: "
-                    + questionPath);
-                return;
-            }
-
-            Node answer = this.formUtils.getAnswer(visitInformationForm, question);
-
-            // If the answer is null, we cannot fill in its display value
-            if (answer == null) {
-                return;
-            }
-
-            final Object answerValObj = this.formUtils.getValue(answer);
-            String answerVal = "";
-            if (answerValObj.getClass().isArray()) {
-                Object[] answerValArr = (Object[]) answerValObj;
-                if (answerValArr.length > 1) {
-                    if (displayValue.equals((String) answerValArr[0])) {
-                        // We don't actually need to do anything if the displayValues already match
-                        return;
-                    }
-                    answerVal = (String) answerValArr[1];
-                } else {
-                    answerVal = (String) answerValArr[0];
-                }
-            } else {
-                answerVal = (String) answerValObj;
-            }
-            final String[] newValue = new String[] {displayValue, answerVal};
-
-            createAnswer(visitInformationForm, session, answer, question, newValue, "cards:TextAnswer");
-        } catch (final RepositoryException e) {
-            LOGGER.error("Failed to obtain version manager or questionnaire data: {}", e.getMessage(), e);
-        }
-    }
-
-    /***
-     * Create an answer node for the given question, or edit it if it exists.
-     * <p>
-     * Note: Since this is called in reaction to another thread saving and checking in the form, it is possible to
-     * enter a race condition where the checkin from the other thread happens between our checkout and our save, so we
-     * have to try this operation a few times.
-     * </p>
-     *
-     * @param visitInformationForm the Visit Information form to save the value to, if needed
-     * @param session a service session providing access to the repository
-     * @param existingAnswer A node for the answer node, or null if a new one should be created
-     * @param question The node this question is answering
-     * @param answerVal the value that answer should be set to
-     * @param answerType the jcr:primaryType of the answer
-     */
-    void createAnswer(final Node visitInformationForm, final Session session, Node existingAnswer, Node question,
-        String[] answerVal, String answerType)
-        throws RepositoryException
-    {
-        final VersionManager versionManager = session.getWorkspace().getVersionManager();
-        final String formPath = visitInformationForm.getPath();
-        Node answer = existingAnswer;
-
-        // Try a few times to get around the race condition
-        for (int i = 0; i < 3; ++i) {
-            try {
-                // Checkout
-                versionManager.checkout(formPath);
-
-                if (answer == null) {
-                    // No answer node yet, create one
-                    answer =
-                        visitInformationForm.addNode(UUID.randomUUID().toString(), answerType);
-                    answer.setProperty(FormUtils.QUESTION_PROPERTY, question);
-                }
-                // Set the new value
-                answer.setProperty("value", answerVal);
-                session.save();
-
-                // Checkin
-                versionManager.checkin(formPath);
-                // All done, exit the try-loop
-                return;
-            } catch (final RepositoryException e) {
-                LOGGER.info("Failed to checkin form {}, trying again", formPath);
-            }
-        }
-        LOGGER.error("Failed to checkin form {} after multiple attempts", formPath);
-    }
-
-    /**
      * Check if a questionnaire is the {@code Visit Information} questionnaire.
      *
      * @param questionnaire the questionnaire to check
@@ -810,10 +703,11 @@ public class VisitChangeListener implements ResourceChangeListener
 
         private final String questionnaireSet;
 
-        private final String clinicDisplayName;
+        private final String clinicPath;
 
         VisitInformation(final Node questionnaire, final Node form) throws RepositoryException
         {
+            Session session = questionnaire.getSession();
             this.questionnaire = questionnaire;
             this.visitDateQuestion = questionnaire.getNode("time");
             this.visitDate = (Calendar) VisitChangeListener.this.formUtils
@@ -824,19 +718,21 @@ public class VisitChangeListener implements ResourceChangeListener
                 VisitChangeListener.this.questionnaireUtils.getQuestion(questionnaire, "clinic");
             final String questionnaireSetName = (String) VisitChangeListener.this.formUtils
                 .getValue(VisitChangeListener.this.formUtils.getAnswer(form, this.questionnaireSetQuestion));
-            this.questionnaireSet =
-                questionnaire.getSession().nodeExists("/Proms/" + questionnaireSetName) ? questionnaireSetName : null;
             final Object[] clinicAnswerObj = (Object[]) VisitChangeListener.this.formUtils
                 .getValue(VisitChangeListener.this.formUtils.getAnswer(form, this.clinicQuestion));
             final String[] clinicAnswer = Arrays.copyOf(clinicAnswerObj, clinicAnswerObj.length, String[].class);
             if (clinicAnswer.length > 0) {
                 final String clinicName = clinicAnswer.length > 1 ? clinicAnswer[1] : clinicAnswer[0];
-                this.clinicDisplayName = questionnaire.getSession().nodeExists(clinicName)
-                    ? questionnaire.getSession().getNode(clinicName).getProperty("clinicName").getString() : "";
-            } else {
-                this.clinicDisplayName = "";
+                final Node clinicNode = session.nodeExists(clinicName) ? session.getNode(clinicName) : null;
+                if (clinicNode != null) {
+                    this.questionnaireSet = session.nodeExists("/Proms/" + clinicNode.getProperty("survey").getString())
+                        ? questionnaireSetName : null;
+                    this.clinicPath = clinicNode.getPath();
+                    return;
+                }
             }
-
+            this.questionnaireSet = null;
+            this.clinicPath = "";
         }
 
         public boolean hasRequiredInformation()
@@ -869,14 +765,14 @@ public class VisitChangeListener implements ResourceChangeListener
             return this.questionnaireSetQuestion;
         }
 
-        public String getClinicDisplayName()
-        {
-            return this.clinicDisplayName;
-        }
-
         public Node getClinicQuestion()
         {
             return this.clinicQuestion;
+        }
+
+        public String getClinicPath()
+        {
+            return this.clinicPath;
         }
     }
 
