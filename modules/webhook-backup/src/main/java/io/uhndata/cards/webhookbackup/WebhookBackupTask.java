@@ -25,7 +25,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Objects;
 import java.util.Set;
 
 import javax.json.Json;
@@ -106,8 +105,7 @@ public class WebhookBackupTask implements Runnable
         }
 
         // Iterate through all Subject nodes that were changed within the given timeframe and back them up
-        Set<String> changedSubjectList = getChangedNodesBounded("cards:Subject",
-            requestDateStringLower, requestDateStringUpper);
+        Set<String> changedSubjectList = getChangedSubjectsBounded(requestDateStringLower, requestDateStringUpper);
         for (String subjectPath : changedSubjectList) {
             String subjectData = getSubjectAsJson(subjectPath);
             this.output(subjectData, "/SubjectBackup" + subjectPath);
@@ -120,154 +118,17 @@ public class WebhookBackupTask implements Runnable
         LocalDateTime today = LocalDateTime.now();
         String fileDateString = today.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         String requestDateString = today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-
-        Set<SubjectIdentifier> changedSubjects = this.getChangedSubjects(requestDateString);
-
-        for (SubjectIdentifier identifier : changedSubjects) {
-            SubjectContents subjectContents = getSubjectContents(identifier.getPath(), requestDateString);
-            if (subjectContents != null) {
-                String filename = String.format(
-                    "%s_formData_%s.json",
-                    cleanString(identifier.getParticipantId()),
-                    fileDateString);
-                this.output(subjectContents, filename);
-            }
-        }
-    }
-
-    private String cleanString(String input)
-    {
-        return input.replaceAll("[^A-Za-z0-9]", "");
-    }
-
-    private static final class SubjectIdentifier
-    {
-        private String path;
-
-        private String participantId;
-
-        SubjectIdentifier(String path, String participantId)
-        {
-            this.path = path;
-            this.participantId = participantId;
-        }
-
-        public String getPath()
-        {
-            return this.path;
-        }
-
-        public String getParticipantId()
-        {
-            return this.participantId;
-        }
-
-        @Override
-        public int hashCode()
-        {
-            return Objects.hashCode(this.path.hashCode()) + Objects.hashCode(this.participantId.hashCode());
-        }
-
-        @Override
-        public boolean equals(Object obj)
-        {
-            if (this == obj) {
-                return true;
-            }
-            if (obj == null || this.getClass() != obj.getClass()) {
-                return false;
-            }
-            SubjectIdentifier other = (SubjectIdentifier) obj;
-            return Objects.equals(this.path, other.getPath())
-                && Objects.equals(this.participantId, other.getParticipantId());
-        }
-
-        @Override
-        public String toString()
-        {
-            return String.format("{path:\"%s\",participantId:\"%s\"}", this.path, this.participantId);
-        }
-    }
-
-    private static final class SubjectContents
-    {
-        private String data;
-
-        private String url;
-
-        SubjectContents(String data, String url)
-        {
-            this.data = data;
-            this.url = url;
-        }
-
-        public String getData()
-        {
-            return this.data;
-        }
-
-        public String getUrl()
-        {
-            return this.url;
-        }
-    }
-
-    private Set<SubjectIdentifier> getChangedSubjects(String requestDateString)
-    {
-        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
-            Set<SubjectIdentifier> subjects = new HashSet<>();
-            String query = String.format(
-                "SELECT subject.* FROM [cards:Form] AS form INNER JOIN [cards:Subject] AS subject"
-                    + " ON form.'subject'=subject.[jcr:uuid]"
-                    + " WHERE form.[jcr:lastModified] >= '%s' AND NOT form.[statusFlags] = 'INCOMPLETE'",
-                requestDateString
-            );
-
-            Iterator<Resource> results = resolver.findResources(query, "JCR-SQL2");
-            while (results.hasNext()) {
-                Resource subject = results.next();
-                String path = subject.getPath();
-                String participantId = subject.getValueMap().get("identifier", String.class);
-                subjects.add(new SubjectIdentifier(path, participantId));
-            }
-            return subjects;
-        } catch (LoginException e) {
-            LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
-        }
-        return Collections.emptySet();
-    }
-
-    private Set<SubjectIdentifier> getChangedSubjectsBounded(String requestDateStringLower,
-        String requestDateStringUpper)
-    {
-        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
-            Set<SubjectIdentifier> subjects = new HashSet<>();
-            String query = String.format(
-                "SELECT subject.* FROM [cards:Form] AS form INNER JOIN [cards:Subject] AS subject"
-                    + " ON form.'subject'=subject.[jcr:uuid]"
-                    + " WHERE form.[jcr:lastModified] >= '%s'"
-                    + " AND form.[jcr:lastModified] < '%s'"
-                    + " AND NOT form.[statusFlags] = 'INCOMPLETE'",
-                requestDateStringLower, requestDateStringUpper
-            );
-
-            Iterator<Resource> results = resolver.findResources(query, "JCR-SQL2");
-            while (results.hasNext()) {
-                Resource subject = results.next();
-                String path = subject.getPath();
-                String participantId = subject.getValueMap().get("identifier", String.class);
-                subjects.add(new SubjectIdentifier(path, participantId));
-            }
-            return subjects;
-        } catch (LoginException e) {
-            LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
-        }
-        return Collections.emptySet();
+        // TODO: Implement me
     }
 
     private Set<String> getChangedFormsBounded(String requestDateStringLower, String requestDateStringUpper)
     {
         return getChangedNodesBounded("cards:Form", requestDateStringLower, requestDateStringUpper);
+    }
+
+    private Set<String> getChangedSubjectsBounded(String requestDateStringLower, String requestDateStringUpper)
+    {
+        return getChangedNodesBounded("cards:Subject", requestDateStringLower, requestDateStringUpper);
     }
 
     private Set<String> getChangedNodesBounded(String cardsType,
@@ -312,34 +173,6 @@ public class WebhookBackupTask implements Runnable
         return Collections.emptySet();
     }
 
-    private SubjectContents getSubjectContents(String path, String requestDateString)
-    {
-        String subjectDataUrl = String.format("%s.data.deep.-labels"
-            + ".dataFilter:modifiedAfter=%s.dataFilter:statusNot=INCOMPLETE", path, requestDateString);
-        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
-            Resource subjectData = resolver.resolve(subjectDataUrl);
-            return new SubjectContents(subjectData.adaptTo(JsonObject.class).toString(), subjectDataUrl);
-        } catch (LoginException e) {
-            LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
-            return null;
-        }
-    }
-
-    private SubjectContents getSubjectContentsBounded(String path, String requestDateStringLower,
-        String requestDateStringUpper)
-    {
-        String subjectDataUrl = String.format("%s.data.deep.-labels"
-            + ".dataFilter:modifiedAfter=%s.dataFilter:modifiedBefore=%s.dataFilter:statusNot=INCOMPLETE",
-            path, requestDateStringLower, requestDateStringUpper);
-        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
-            Resource subjectData = resolver.resolve(subjectDataUrl);
-            return new SubjectContents(subjectData.adaptTo(JsonObject.class).toString(), subjectDataUrl);
-        } catch (LoginException e) {
-            LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
-            return null;
-        }
-    }
-
     private String getFormAsJson(String formPath)
     {
         String formDataUrl = String.format("%s.data.deep", formPath);
@@ -379,16 +212,6 @@ public class WebhookBackupTask implements Runnable
             );
         } catch (IOException e) {
             LOGGER.warn("IOException while in sendStringSet: {}", e);
-        }
-    }
-
-    private void output(SubjectContents input, String filename)
-    {
-        final String backupWebhookUrl = System.getenv("BACKUP_WEBHOOK_URL");
-        try {
-            HttpRequests.getPostResponse(backupWebhookUrl + "/DataBackup", input.getData(), "application/json");
-        } catch (IOException e) {
-            LOGGER.warn("Backup failed due to {}", e);
         }
     }
 
