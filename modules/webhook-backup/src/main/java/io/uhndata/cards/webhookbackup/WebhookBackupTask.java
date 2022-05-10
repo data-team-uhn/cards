@@ -92,8 +92,25 @@ public class WebhookBackupTask implements Runnable
 
         Set<String> subjectList = getUuidNameList("cards:Subject");
         Set<String> formList = getUuidNameList("cards:Form");
-        sendStringSet(subjectList, "subjectList");
-        sendStringSet(formList, "formList");
+        sendStringSet(subjectList, "SubjectListBackup");
+        sendStringSet(formList, "FormListBackup");
+        Set<String> changedFormList = getChangedFormsBounded(requestDateStringLower, requestDateStringUpper);
+        LOGGER.warn("Changed Forms are: {}", changedFormList);
+        // TODO: Then iterate through all the changes Forms and back them up
+        for (String formPath : changedFormList) {
+            // Get a serialized version of this Form
+            String formData = getFormAsJson(formPath);
+            //LOGGER.warn("{} --> {}", formPath, formData);
+            this.output(formData, "/FormBackup" + formPath);
+        }
+
+        Set<String> changedSubjectList = getChangedNodesBounded("cards:Subject",
+            requestDateStringLower, requestDateStringUpper);
+
+        for (String subjectPath : changedSubjectList) {
+            String subjectData = getSubjectAsJson(subjectPath);
+            this.output(subjectData, "/SubjectBackup" + subjectPath);
+        }
 
         Set<SubjectIdentifier> changedSubjects = (upper != null)
             ? this.getChangedSubjectsBounded(requestDateStringLower, requestDateStringUpper)
@@ -264,6 +281,35 @@ public class WebhookBackupTask implements Runnable
         return Collections.emptySet();
     }
 
+    private Set<String> getChangedFormsBounded(String requestDateStringLower, String requestDateStringUpper)
+    {
+        return getChangedNodesBounded("cards:Form", requestDateStringLower, requestDateStringUpper);
+    }
+
+    private Set<String> getChangedNodesBounded(String cardsType,
+        String requestDateStringLower, String requestDateStringUpper)
+    {
+        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
+            Set<String> changedForms = new HashSet<>();
+            String query = String.format(
+                "SELECT * FROM [" + cardsType + "] AS form"
+                    + " WHERE form.[jcr:lastModified] >= '%s'"
+                    + " AND form.[jcr:lastModified] < '%s'",
+                requestDateStringLower, requestDateStringUpper
+            );
+            Iterator<Resource> results = resolver.findResources(query, "JCR-SQL2");
+            while (results.hasNext()) {
+                Resource form = results.next();
+                String formPath = form.getPath();
+                changedForms.add(formPath);
+            }
+            return changedForms;
+        } catch (LoginException e) {
+            LOGGER.warn("LoginException in getFormsChangedBounded: {}", e);
+        }
+        return Collections.emptySet();
+    }
+
     private Set<String> getUuidNameList(String cardsType)
     {
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
@@ -272,7 +318,8 @@ public class WebhookBackupTask implements Runnable
             Iterator<Resource> results = resolver.findResources(query, "JCR-SQL2");
             while (results.hasNext()) {
                 Resource resource = results.next();
-                String uuidName = resource.getName();
+                //String uuidName = resource.getName();
+                String uuidName = resource.getPath();
                 uuidNames.add(uuidName);
             }
             return uuidNames;
@@ -310,6 +357,29 @@ public class WebhookBackupTask implements Runnable
         }
     }
 
+    private String getFormAsJson(String formPath)
+    {
+        String formDataUrl = String.format("%s.data.deep", formPath);
+        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
+            Resource formData = resolver.resolve(formDataUrl);
+            return formData.adaptTo(JsonObject.class).toString();
+        } catch (LoginException e) {
+            LOGGER.warn("LoginException in getFormAsJson: {}", e);
+            return null;
+        }
+    }
+
+    private String getSubjectAsJson(String subjectPath)
+    {
+        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
+            Resource subjectData = resolver.resolve(subjectPath);
+            return subjectData.adaptTo(JsonObject.class).toString();
+        } catch (LoginException e) {
+            LOGGER.warn("LoginException in getFormAsJson: {}", e);
+            return null;
+        }
+    }
+
     private void sendStringSet(Set<String> set, String pathname)
     {
         final String backupWebhookUrl = System.getenv("BACKUP_WEBHOOK_URL");
@@ -331,11 +401,24 @@ public class WebhookBackupTask implements Runnable
 
     private void output(SubjectContents input, String filename)
     {
-        LOGGER.warn("WebhookBackupTask: output --> {}", input.getData());
+        //LOGGER.warn("WebhookBackupTask: output --> {}", input.getData());
         final String backupWebhookUrl = System.getenv("BACKUP_WEBHOOK_URL");
         LOGGER.warn("Backing up to {}...", backupWebhookUrl + "/" + filename);
         try {
-            HttpRequests.getPostResponse(backupWebhookUrl + "/" + filename, input.getData(), "application/json");
+            HttpRequests.getPostResponse(backupWebhookUrl + "/DataBackup", input.getData(), "application/json");
+        } catch (IOException e) {
+            LOGGER.warn("Backup failed due to {}", e);
+        }
+    }
+
+    private void output(String input, String filename)
+    {
+        //LOGGER.warn("WebhookBackupTask: output --> {}", input.getData());
+        final String backupWebhookUrl = System.getenv("BACKUP_WEBHOOK_URL");
+        //LOGGER.warn("Backing up to {}...", backupWebhookUrl + "/FormBackup" + filename);
+        LOGGER.warn("Backing up to {}...", backupWebhookUrl + filename);
+        try {
+            HttpRequests.getPostResponse(backupWebhookUrl + filename, input, "application/json");
         } catch (IOException e) {
             LOGGER.warn("Backup failed due to {}", e);
         }
