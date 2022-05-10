@@ -62,7 +62,6 @@ class MainLoginContainer extends React.Component {
             <Grid item>
               <Button
                 fullWidth
-                color="default"
                 className={classes.main}
                 onClick={this.handleSwap}
                >

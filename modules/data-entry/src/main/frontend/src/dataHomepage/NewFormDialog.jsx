@@ -399,7 +399,6 @@ function NewFormDialog(props) {
           }
           <Button
             variant="contained"
-            color="default"
             onClick={goBack}
             >
             { (progress == PROGRESS_SELECT_QUESTIONNAIRE || presetPath) ?

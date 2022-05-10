@@ -221,7 +221,6 @@ function Section(props) {
                       <Tooltip title="Delete section" aria-label="Delete section" >
                         <IconButton
                           autoFocus={focus && (idx == instanceLabels.length - 1)}
-                          color="default"
                           className={classes.entryActionIcon}
                           onClick={() => {
                             setDialogOpen(true);
@@ -234,7 +233,6 @@ function Section(props) {
                     {pageActive !== true  &&
                       <Tooltip title="Expand section" aria-label="Expand section" >
                         <IconButton
-                          color="default"
                           className={classes.entryActionIcon}
                           onClick={() => {
                             setLabelsToHide((toHide) => ({...toHide, [uuid]: !hiddenSection}));
@@ -300,7 +298,6 @@ function Section(props) {
           <Button
             size="small"
             variant="contained"
-            color="default"
             className={classes.addSectionButton}
             onClick={() => {
               setInstanceLabels((oldLabels) => [...oldLabels, uuidv4()]);

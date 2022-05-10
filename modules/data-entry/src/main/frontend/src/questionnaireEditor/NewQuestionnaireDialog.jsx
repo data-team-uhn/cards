@@ -126,7 +126,6 @@ function NewQuestionnaireDialog(props) {
           </Button>
           <Button
             variant="contained"
-            color="default"
             onClick={() => { setOpen(false); }}
             >
             {'Cancel'}

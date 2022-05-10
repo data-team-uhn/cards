@@ -130,7 +130,6 @@ function UserDashboard(props) {
         <DialogActions>
           <Button
             variant="contained"
-            color="default"
             onClick={onClose}
             >
             Cancel

@@ -127,12 +127,12 @@ function UserInputAssistant (props) {
           </CardContent>
           <CardActions>
           { actionLabel && onAction &&
-            <Button color="default" onClick={onAction}>{actionLabel}</Button>
+            <Button onClick={onAction}>{actionLabel}</Button>
           }
           { onIgnore ?
-            <Button color="default" onClick={() => {setEnabled(false); onIgnore();}}>Ignore for now</Button>
+            <Button onClick={() => {setEnabled(false); onIgnore();}}>Ignore for now</Button>
             :
-            <Button color="default" onClick={() => {setEnabled(false)}}>Got it!</Button>
+            <Button onClick={() => {setEnabled(false)}}>Got it!</Button>
           }
           </CardActions>
         </Card>

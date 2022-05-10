@@ -572,7 +572,6 @@ function Filters(props) {
           </Button>
           <Button
             variant="contained"
-            color="default"
             onClick={closeDialog}
             >
             {'Cancel'}

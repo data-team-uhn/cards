@@ -277,8 +277,7 @@ function VocabularyTree(props) {
                   className={classes.browseAction} >
               Done
           </Button>
-          <Button color="default"
-                  onClick={onCancel}
+          <Button onClick={onCancel}
                   variant="contained"
                   className={classes.browseAction} >
             Cancel

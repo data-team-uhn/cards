@@ -209,7 +209,6 @@ function OnboardNewClinicDialog(props) {
           <Button
             onClick={onClose}
             variant="contained"
-            color="default"
           >
             Cancel
           </Button>
