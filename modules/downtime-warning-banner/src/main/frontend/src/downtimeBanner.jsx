@@ -21,17 +21,30 @@ import React, { useState, useEffect } from "react";
 
 import {
   AppBar,
-  withStyles,
+  Avatar,
   Grid,
   Toolbar,
-  Typography
+  Typography,
+  withStyles,
 } from '@material-ui/core';
 
-import SettingsIcon from '@material-ui/icons/Settings';
+import BuildIcon from '@material-ui/icons/Build';
+
+import { MuiThemeProvider } from '@material-ui/core/styles';
+import { appTheme } from "./themePalette.jsx";
 
 const appbarStyle = theme => ({
   root: {
-    backgroundColor: theme.palette.warning.main
+    backgroundColor: theme.palette.info.main,
+    "& .MuiAvatar-root" : {
+      backgroundColor: theme.palette.background.paper,
+      color: theme.palette.info.main
+    },
+    "& b": {
+      backgroundColor: theme.palette.action.selected,
+      padding: "2px 4px",
+      borderRadius: "2px",
+    }
   }
 });
 
@@ -74,18 +87,20 @@ export default function DowntimeWarning(props) {
   }
 
   return (
+    <MuiThemeProvider theme={appTheme}>
     <StyledAppBar position="fixed" style={props.style} ref={props.onRender}>
       <Toolbar>
       {error && <Typography color='error'>{errorText}</Typography>}
-      <Grid container spacing={1} direction="row" justify="center" alignItems="center" wrap="nowrap">
-        <Grid item><SettingsIcon/></Grid>
+      <Grid container spacing={1} direction="row" alignItems="center" wrap="nowrap">
+        <Grid item><Avatar><BuildIcon/></Avatar></Grid>
         <Grid item>
-        <Typography variant="subtitle2">
-          {appName} will be down for maintenance from <b>{fromDate}</b> to <b>{toDate}</b>. <br/> We appologize for the inconvenience this may cause.
+        <Typography variant="body2">
+          {appName} will be down for maintenance from <b>{fromDate}</b> to <b>{toDate}</b>. We appologize for the inconvenience this may cause.
         </Typography>
         </Grid>
       </Grid>
       </Toolbar>
     </StyledAppBar>
+    </MuiThemeProvider>
   );
 }
