@@ -9,7 +9,7 @@ module.exports = {
     [module_name + 'PromsLandingPage']: './src/proms/PromsLandingPage.jsx',
     [module_name + 'index']: './src/proms/index.jsx',
     [module_name + 'unsubscribe']: './src/proms/unsubscribe.jsx',
-    [module_name + 'ToULink']: './src/proms/ToULink.jsx'
+    [module_name + 'ToULink']: './src/proms/ToULink.jsx',
     [module_name + 'PromsDashboard']: './src/proms/PromsDashboard.jsx',
     [module_name + 'PromsView']: './src/proms/PromsView.jsx',
     [module_name + 'VisitView']: './src/proms/VisitView.jsx',
