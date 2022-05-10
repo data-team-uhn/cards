@@ -95,12 +95,9 @@ public class WebhookBackupTask implements Runnable
         sendStringSet(subjectList, "SubjectListBackup");
         sendStringSet(formList, "FormListBackup");
         Set<String> changedFormList = getChangedFormsBounded(requestDateStringLower, requestDateStringUpper);
-        LOGGER.warn("Changed Forms are: {}", changedFormList);
-        // TODO: Then iterate through all the changes Forms and back them up
+        // Iterate through all the changed Forms and back them up
         for (String formPath : changedFormList) {
-            // Get a serialized version of this Form
             String formData = getFormAsJson(formPath);
-            //LOGGER.warn("{} --> {}", formPath, formData);
             this.output(formData, "/FormBackup" + formPath);
         }
 
@@ -318,7 +315,6 @@ public class WebhookBackupTask implements Runnable
             Iterator<Resource> results = resolver.findResources(query, "JCR-SQL2");
             while (results.hasNext()) {
                 Resource resource = results.next();
-                //String uuidName = resource.getName();
                 String uuidName = resource.getPath();
                 uuidNames.add(uuidName);
             }
@@ -401,9 +397,7 @@ public class WebhookBackupTask implements Runnable
 
     private void output(SubjectContents input, String filename)
     {
-        //LOGGER.warn("WebhookBackupTask: output --> {}", input.getData());
         final String backupWebhookUrl = System.getenv("BACKUP_WEBHOOK_URL");
-        LOGGER.warn("Backing up to {}...", backupWebhookUrl + "/" + filename);
         try {
             HttpRequests.getPostResponse(backupWebhookUrl + "/DataBackup", input.getData(), "application/json");
         } catch (IOException e) {
@@ -413,10 +407,7 @@ public class WebhookBackupTask implements Runnable
 
     private void output(String input, String filename)
     {
-        //LOGGER.warn("WebhookBackupTask: output --> {}", input.getData());
         final String backupWebhookUrl = System.getenv("BACKUP_WEBHOOK_URL");
-        //LOGGER.warn("Backing up to {}...", backupWebhookUrl + "/FormBackup" + filename);
-        LOGGER.warn("Backing up to {}...", backupWebhookUrl + filename);
         try {
             HttpRequests.getPostResponse(backupWebhookUrl + filename, input, "application/json");
         } catch (IOException e) {
