@@ -55,7 +55,7 @@ function DowntimeWarningConfiguration() {
 
   // Status tracking values of fetching/posting the data from/to the server
   const [ error, setError ] = useState();
-  const [ onSuccess, setOnSuccess ] = useState(false);
+  const [ isSaved, setIsSaved ] = useState(false);
   const [ fetched, setFetched ] = useState(false);
 
   const dateFormat = "yyyy-MM-dd hh:mm";
@@ -105,7 +105,7 @@ function DowntimeWarningConfiguration() {
           throw Error(response.statusText);
         }
 
-        setOnSuccess(true);
+        setIsSaved(true);
       })
       .catch(error => {
         console.log(error);
@@ -114,13 +114,13 @@ function DowntimeWarningConfiguration() {
 
   let updateFromDate  = (event) => {
     event.preventDefault();
-    setOnSuccess(false);
+    setIsSaved(false);
     setFromDate(event.target.value);
   }
 
   let updateToDate  = (event) => {
     event.preventDefault();
-    setOnSuccess(false);
+    setIsSaved(false);
     setToDate(event.target.value);
     // Determine the end date is earlier than the start date
     setIsInvalidDateRange(fromDate && event.target.value && new Date(event.target.value).valueOf() < new Date(fromDate).valueOf());
@@ -145,7 +145,7 @@ function DowntimeWarningConfiguration() {
                 control={
                   <Checkbox
                     checked={enabled}
-                    onChange={(event) => { event.preventDefault(); setOnSuccess(false); setEnabled(event.target.checked); }}
+                    onChange={(event) => { event.preventDefault(); setIsSaved(false); setEnabled(event.target.checked); }}
                     name="enabled"
                   />
                 }
@@ -187,7 +187,7 @@ function DowntimeWarningConfiguration() {
                 size="small"
                 className={classes.saveButton}
               >
-                { !onSuccess ? "Save" : "Saved" }
+                { isSaved ? "Saved" : "Save" }
               </Button>
             </ListItem>
           </List>
