@@ -124,14 +124,12 @@ const cleanupForm = (formObject) => {
       continue;
     }
     if (formObject[key]["sling:resourceSuperType"] === "cards/Answer") {
-      //continue;
       let fullPath = formObject[key]["@path"];
       cleanForm["responses"][fullPath] = simplifyAnswerProperties(formObject[key]);
       cleanForm["responses"][fullPath]["question"] = formObject[key]["question"]["@path"];
     }
     if (formObject[key]["sling:resourceType"] === "cards/AnswerSection") {
       let sectionResponses = flattenAnswerSection(formObject[key]);
-      //cleanForm["responses"][fullPath] = sectionResponses;
       for (let i = 0; i < sectionResponses.length; i++) {
         let response = sectionResponses[i];
         let fullPath = response["@path"];
@@ -184,9 +182,6 @@ webApp.post("/FormListBackup", (req, res) => {
 webApp.post("/FormBackup/Forms/:formName*", (req, res) => {
   let formName = req.params['formName'];
   let formFileName = path.basename(formName);
-  //console.log("---BEGIN /Forms/" + formName + " ---");
-  //console.log(cleanupForm(req.body));
-  //console.log("---END /Forms/" + formName + " ---");
   if (validateFormFileName(formFileName)) {
     fs.writeFileSync(
       "JsonBackups/Forms/" + formFileName + ".json",
@@ -204,9 +199,6 @@ webApp.post("/FormBackup/Forms/:formName*", (req, res) => {
 webApp.post("/SubjectBackup/Subjects/:subjectName*", (req, res) => {
   let subjectName = req.params['subjectName'];
   let subjectFileName = path.basename(subjectName);
-  //console.log("---BEGIN /Forms/" + formName + " ---");
-  //console.log(cleanupForm(req.body));
-  //console.log("---END /Forms/" + formName + " ---");
   if (validateFormFileName(subjectFileName)) {
     fs.writeFileSync(
       "JsonBackups/Subjects/" + subjectFileName + ".json",
@@ -222,12 +214,7 @@ webApp.post("/SubjectBackup/Subjects/:subjectName*", (req, res) => {
 });
 
 // TODO: We will be able to get rid of this soon
-//var requestCounter = 0;
 webApp.post("/DataBackup", (req, res) => {
-  //fs.writeFileSync("JsonBackups/DataBackup_" + requestCounter.toString() + ".json", JSON.stringify(req.body, null, "\t"));
-  //requestCounter += 1;
-  //console.log(req.body);
-  //console.log("");
   res.json({"success": true});
 });
 
