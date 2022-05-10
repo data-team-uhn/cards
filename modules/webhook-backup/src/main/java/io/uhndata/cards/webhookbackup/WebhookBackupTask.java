@@ -90,40 +90,27 @@ public class WebhookBackupTask implements Runnable
             ? upper.toString()
             : null;
 
-        Set<String> subjectList = getUuidNameList("cards:Subject");
-        Set<String> formList = getUuidNameList("cards:Form");
+        // Get lists of the paths to all cards:Subject and cards:Form JCR nodes
+        Set<String> subjectList = getUuidPathList("cards:Subject");
+        Set<String> formList = getUuidPathList("cards:Form");
+
+        // Send these lists over to the backup server
         sendStringSet(subjectList, "SubjectListBackup");
         sendStringSet(formList, "FormListBackup");
+
+        // Iterate through all Form nodes that were changed within the given timeframe and back them up
         Set<String> changedFormList = getChangedFormsBounded(requestDateStringLower, requestDateStringUpper);
-        // Iterate through all the changed Forms and back them up
         for (String formPath : changedFormList) {
             String formData = getFormAsJson(formPath);
             this.output(formData, "/FormBackup" + formPath);
         }
 
+        // Iterate through all Subject nodes that were changed within the given timeframe and back them up
         Set<String> changedSubjectList = getChangedNodesBounded("cards:Subject",
             requestDateStringLower, requestDateStringUpper);
-
         for (String subjectPath : changedSubjectList) {
             String subjectData = getSubjectAsJson(subjectPath);
             this.output(subjectData, "/SubjectBackup" + subjectPath);
-        }
-
-        Set<SubjectIdentifier> changedSubjects = (upper != null)
-            ? this.getChangedSubjectsBounded(requestDateStringLower, requestDateStringUpper)
-            : this.getChangedSubjects(requestDateStringLower);
-
-        for (SubjectIdentifier identifier : changedSubjects) {
-            SubjectContents subjectContents = (upper != null)
-                ? getSubjectContentsBounded(identifier.getPath(), requestDateStringLower, requestDateStringUpper)
-                : getSubjectContents(identifier.getPath(), requestDateStringLower);
-            if (subjectContents != null) {
-                String filename = String.format(
-                    "%s_formData_%s.json",
-                    cleanString(identifier.getParticipantId()),
-                    fileDateString);
-                this.output(subjectContents, filename);
-            }
         }
     }
 
@@ -307,18 +294,18 @@ public class WebhookBackupTask implements Runnable
         return Collections.emptySet();
     }
 
-    private Set<String> getUuidNameList(String cardsType)
+    private Set<String> getUuidPathList(String cardsType)
     {
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
-            Set<String> uuidNames = new HashSet<>();
+            Set<String> uuidPaths = new HashSet<>();
             String query = "SELECT * FROM [" + cardsType + "] as n order by n.'jcr:created'";
             Iterator<Resource> results = resolver.findResources(query, "JCR-SQL2");
             while (results.hasNext()) {
                 Resource resource = results.next();
-                String uuidName = resource.getPath();
-                uuidNames.add(uuidName);
+                String uuidPath = resource.getPath();
+                uuidPaths.add(uuidPath);
             }
-            return uuidNames;
+            return uuidPaths;
         } catch (LoginException e) {
             LOGGER.warn("Get service session failure: {}", e.getMessage(), e);
         }

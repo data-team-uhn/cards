@@ -213,11 +213,6 @@ webApp.post("/SubjectBackup/Subjects/:subjectName*", (req, res) => {
   res.json({"success": true});
 });
 
-// TODO: We will be able to get rid of this soon
-webApp.post("/DataBackup", (req, res) => {
-  res.json({"success": true});
-});
-
 webServer.listen(LISTEN_PORT, LISTEN_HOST, (err) => {
   if (err) {
     console.log("Backup Recorder server failed to start");
