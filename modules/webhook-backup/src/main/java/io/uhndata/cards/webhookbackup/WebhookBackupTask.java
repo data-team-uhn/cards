@@ -22,7 +22,6 @@ package io.uhndata.cards.webhookbackup;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -89,27 +88,41 @@ public class WebhookBackupTask implements Runnable
             ? upper.toString()
             : null;
 
+        // Notify that we are now beginning the backup
+        // TODO
+        LOGGER.info("Backup started for jcr:lastModified >= {} && jcr:lastModified < {}", lower, upper);
+
+        // TODO: If any of the below fail, notify the admins of the error and quit this method
+
         // Get lists of the paths to all cards:Subject and cards:Form JCR nodes
-        Set<String> subjectList = getUuidPathList("cards:Subject");
-        Set<String> formList = getUuidPathList("cards:Form");
+        try {
+            Set<String> subjectList = getUuidPathList("cards:Subject");
+            Set<String> formList = getUuidPathList("cards:Form");
 
-        // Send these lists over to the backup server
-        sendStringSet(subjectList, "SubjectListBackup");
-        sendStringSet(formList, "FormListBackup");
+            // Send these lists over to the backup server
+            sendStringSet(subjectList, "SubjectListBackup");
+            sendStringSet(formList, "FormListBackup");
 
-        // Iterate through all Form nodes that were changed within the given timeframe and back them up
-        Set<String> changedFormList = getChangedFormsBounded(requestDateStringLower, requestDateStringUpper);
-        for (String formPath : changedFormList) {
-            String formData = getFormAsJson(formPath);
-            this.output(formData, "/FormBackup" + formPath);
+            // Iterate through all Form nodes that were changed within the given timeframe and back them up
+            Set<String> changedFormList = getChangedFormsBounded(requestDateStringLower, requestDateStringUpper);
+            for (String formPath : changedFormList) {
+                String formData = getFormAsJson(formPath);
+                this.output(formData, "/FormBackup" + formPath);
+            }
+
+            // Iterate through all Subject nodes that were changed within the given timeframe and back them up
+            Set<String> changedSubjectList = getChangedSubjectsBounded(requestDateStringLower, requestDateStringUpper);
+            for (String subjectPath : changedSubjectList) {
+                String subjectData = getSubjectAsJson(subjectPath);
+                this.output(subjectData, "/SubjectBackup" + subjectPath);
+            }
+        } catch (IOException e) {
+            LOGGER.info("Backup failed for jcr:lastModified >= {} && jcr:lastModified < {}", lower, upper);
+            return;
         }
-
-        // Iterate through all Subject nodes that were changed within the given timeframe and back them up
-        Set<String> changedSubjectList = getChangedSubjectsBounded(requestDateStringLower, requestDateStringUpper);
-        for (String subjectPath : changedSubjectList) {
-            String subjectData = getSubjectAsJson(subjectPath);
-            this.output(subjectData, "/SubjectBackup" + subjectPath);
-        }
+        // Notify that the backup has finished
+        // TODO
+        LOGGER.info("Backup finished for jcr:lastModified >= {} && jcr:lastModified < {}", lower, upper);
     }
 
     /*
@@ -132,17 +145,19 @@ public class WebhookBackupTask implements Runnable
     }
 
     private Set<String> getChangedFormsBounded(String requestDateStringLower, String requestDateStringUpper)
+        throws IOException
     {
         return getChangedNodesBounded("cards:Form", requestDateStringLower, requestDateStringUpper);
     }
 
     private Set<String> getChangedSubjectsBounded(String requestDateStringLower, String requestDateStringUpper)
+        throws IOException
     {
         return getChangedNodesBounded("cards:Subject", requestDateStringLower, requestDateStringUpper);
     }
 
     private Set<String> getChangedNodesBounded(String cardsType,
-        String requestDateStringLower, String requestDateStringUpper)
+        String requestDateStringLower, String requestDateStringUpper) throws IOException
     {
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
             Set<String> changedForms = new HashSet<>();
@@ -161,11 +176,11 @@ public class WebhookBackupTask implements Runnable
             return changedForms;
         } catch (LoginException e) {
             LOGGER.warn("LoginException in getFormsChangedBounded: {}", e);
+            throw new IOException("LoginException in getFormsChangedBounded");
         }
-        return Collections.emptySet();
     }
 
-    private Set<String> getUuidPathList(String cardsType)
+    private Set<String> getUuidPathList(String cardsType) throws IOException
     {
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
             Set<String> uuidPaths = new HashSet<>();
@@ -179,11 +194,11 @@ public class WebhookBackupTask implements Runnable
             return uuidPaths;
         } catch (LoginException e) {
             LOGGER.warn("Get service session failure: {}", e.getMessage(), e);
+            throw new IOException("LoginException in getUuidPathList");
         }
-        return Collections.emptySet();
     }
 
-    private String getFormAsJson(String formPath)
+    private String getFormAsJson(String formPath) throws IOException
     {
         String formDataUrl = String.format("%s.data.deep", formPath);
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
@@ -191,22 +206,22 @@ public class WebhookBackupTask implements Runnable
             return formData.adaptTo(JsonObject.class).toString();
         } catch (LoginException e) {
             LOGGER.warn("LoginException in getFormAsJson: {}", e);
-            return null;
+            throw new IOException("getFormAsJson LoginException");
         }
     }
 
-    private String getSubjectAsJson(String subjectPath)
+    private String getSubjectAsJson(String subjectPath) throws IOException
     {
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
             Resource subjectData = resolver.resolve(subjectPath);
             return subjectData.adaptTo(JsonObject.class).toString();
         } catch (LoginException e) {
             LOGGER.warn("LoginException in getFormAsJson: {}", e);
-            return null;
+            throw new IOException("getSubjectAsJson LoginException");
         }
     }
 
-    private void sendStringSet(Set<String> set, String pathname)
+    private void sendStringSet(Set<String> set, String pathname) throws IOException
     {
         final String backupWebhookUrl = System.getenv("BACKUP_WEBHOOK_URL");
         JsonArrayBuilder jsonSetBuilder = Json.createArrayBuilder();
@@ -214,24 +229,16 @@ public class WebhookBackupTask implements Runnable
         while (setIterator.hasNext()) {
             jsonSetBuilder.add(setIterator.next());
         }
-        try {
-            HttpRequests.getPostResponse(
-                backupWebhookUrl + "/" + pathname,
-                jsonSetBuilder.build().toString(),
-                "application/json"
-            );
-        } catch (IOException e) {
-            LOGGER.warn("IOException while in sendStringSet: {}", e);
-        }
+        HttpRequests.getPostResponse(
+            backupWebhookUrl + "/" + pathname,
+            jsonSetBuilder.build().toString(),
+            "application/json"
+        );
     }
 
-    private void output(String input, String filename)
+    private void output(String input, String filename) throws IOException
     {
         final String backupWebhookUrl = System.getenv("BACKUP_WEBHOOK_URL");
-        try {
-            HttpRequests.getPostResponse(backupWebhookUrl + filename, input, "application/json");
-        } catch (IOException e) {
-            LOGGER.warn("Backup failed due to {}", e);
-        }
+        HttpRequests.getPostResponse(backupWebhookUrl + filename, input, "application/json");
     }
 }
