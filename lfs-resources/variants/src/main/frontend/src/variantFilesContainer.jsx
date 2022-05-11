@@ -38,7 +38,8 @@ import {
   Typography,
 } from "@material-ui/core";
 import makeStyles from '@material-ui/styles/makeStyles';
-import { Alert, AlertTitle } from '@material-ui/lab';
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 import BackupIcon from '@material-ui/icons/Backup';
 import CloseIcon from '@material-ui/icons/Close';
 import GetApp from '@material-ui/icons/GetApp';
