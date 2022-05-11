@@ -19,6 +19,8 @@
 
 import React, { useState } from "react";
 
+import { styled } from '@mui/material/styles';
+
 import {
   InputAdornment,
   Slider,
@@ -39,21 +41,21 @@ import MultipleChoice from "./MultipleChoice";
 
 import AnswerComponentManager from "./AnswerComponentManager";
 
-/** Conversion between the `dataType` setting in the question definition and the corresponding primary node type of the `Answer` node for that question. */
-const DATA_TO_NODE_TYPE = {
-  "long": "cards:LongAnswer",
-  "double": "cards:DoubleAnswer",
-  "decimal": "cards:DecimalAnswer",
-};
-/** Conversion between the `dataType` setting in the question definition and the corresponding value type for storing the value in the `Answer` node. */
-const DATA_TO_VALUE_TYPE = {
-  "long": "Long",
-  "double": "Double",
-  "decimal": "Decimal",
+const PREFIX = 'StyledNumberQuestion';
+
+const classes = {
+  verticalSliderContainer: `${PREFIX}-verticalSliderContainer`,
+  horizontalSliderContainer: `${PREFIX}-horizontalSliderContainer`
 };
 
-const useSliderStyles = makeStyles(theme => ({
-  verticalSliderContainer: {
+const Root = styled(
+  'umberFormat\r\n      {...other}\r\n      getInputRef={inputRef}\r\n      onValueChange={values ='
+)((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.verticalSliderContainer}`]: {
     display: "flex",
     flexDirection: "column-reverse",
     alignItems: "center",
@@ -75,7 +77,8 @@ const useSliderStyles = makeStyles(theme => ({
       },
     },
   },
-  horizontalSliderContainer: {
+
+  [`& .${classes.horizontalSliderContainer}`]: {
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
@@ -90,7 +93,66 @@ const useSliderStyles = makeStyles(theme => ({
       maxWidth: "700px",
       marginTop: theme.spacing(2.5),
     },
+  }
+}));
+
+/** Conversion between the `dataType` setting in the question definition and the corresponding primary node type of the `Answer` node for that question. */
+const DATA_TO_NODE_TYPE = {
+  "long": "cards:LongAnswer",
+  "double": "cards:DoubleAnswer",
+  "decimal": "cards:DecimalAnswer",
+};
+/** Conversion between the `dataType` setting in the question definition and the corresponding value type for storing the value in the `Answer` node. */
+const DATA_TO_VALUE_TYPE = {
+  "long": "Long",
+  "double": "Double",
+  "decimal": "Decimal",
+};
+
+const useSliderStyles = makeStyles((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.verticalSliderContainer}`]: {
+    display: "flex",
+    flexDirection: "column-reverse",
+    alignItems: "center",
+    width: "fit-content",
+    "& > .MuiTypography-root:first-child" : {
+      marginTop: theme.spacing(1.5),
+    },
+    "& > .MuiTypography-root:last-child" : {
+      marginBottom: theme.spacing(1.5),
+    },
+    "& .MuiSlider-root" : {
+      marginLeft: theme.spacing(4),
+      marginRight: theme.spacing(4),
+      "& .MuiSlider-valueLabel" : {
+        transform: "rotate(-90deg) translate3d(-7px, -14px, 0) !important",
+        "& > span > span" : {
+          transform: "rotate(135deg)",
+        },
+      },
+    },
   },
+
+  [`& .${classes.horizontalSliderContainer}`]: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    "& > .MuiTypography-root:first-child" : {
+      marginRight: theme.spacing(1.5),
+      textAlign: "right",
+    },
+    "& > .MuiTypography-root:last-child" : {
+      marginLeft: theme.spacing(1.5),
+    },
+    "& .MuiSlider-root" : {
+      maxWidth: "700px",
+      marginTop: theme.spacing(2.5),
+    },
+  }
 }));
 
 // Component that renders a multiple choice question, with optional number input.
@@ -127,7 +189,7 @@ const useSliderStyles = makeStyles(theme => ({
 //    errorText="Please enter an age above 18, or select the <18 option"
 //    />
 function NumberQuestion(props) {
-  const { existingAnswer, errorText, classes, pageActive, ...rest} = props;
+  const { existingAnswer, errorText,  pageActive, ...rest} = props;
   const { dataType,displayMode, minAnswers, minValue, maxValue, isRange,
     sliderStep, sliderMarkStep, sliderOrientation, minValueLabel, maxValueLabel }
     = {sliderOrientation: "horizontal", ...props.questionDefinition, ...props};
@@ -493,7 +555,7 @@ NumberQuestion.defaultProps = {
   errorText: "",
 };
 
-const StyledNumberQuestion = withStyles(QuestionnaireStyle)(NumberQuestion)
+const StyledNumberQuestion = NumberQuestion
 export default StyledNumberQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {

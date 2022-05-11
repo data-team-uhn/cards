@@ -18,12 +18,30 @@
 //
 
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, styled } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import {
   Grid,
   Typography
 } from "@material-ui/core";
+
+const PREFIX = 'EditorInput';
+
+const classes = {
+  labelContainer: `${PREFIX}-labelContainer`
+};
+
+const StyledGrid = styled(Grid)((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.labelContainer}`]: {
+    /* Match the input padding so the text of the label would appear aligned with the text of the input */
+    /* To do: switch to a vertical layout in the future to avoid most alignment issues  */
+    paddingTop: theme.spacing(1.75) + "px !important",
+  }
+}));
 
 export function formatIdentifier(key) {
   return key.charAt(0).toUpperCase() + key.slice(1).replace( /([A-Z])/g, " $1" ).toLowerCase();
@@ -32,27 +50,31 @@ export function formatIdentifier(key) {
 let EditorInput = (props) => {
   let { children, name } = props;
   
-  const classes = makeStyles((theme) => ({
-    labelContainer: {
+  const classes = makeStyles((
+    {
+      theme
+    }
+  ) => ({
+    [`& .${classes.labelContainer}`]: {
       /* Match the input padding so the text of the label would appear aligned with the text of the input */
       /* To do: switch to a vertical layout in the future to avoid most alignment issues  */
       paddingTop: theme.spacing(1.75) + "px !important",
-    },
+    }
   }))();
 
   return (
-  <Grid item>
-    <Grid container alignItems="flex-start" spacing={2}>
-      <Grid item xs={4} className={classes.labelContainer}>
-        <Typography variant="subtitle2">
-          {formatIdentifier(name?.concat(':')) || ''}
-        </Typography>
+    <StyledGrid item>
+      <Grid container alignItems="flex-start" spacing={2}>
+        <Grid item xs={4} className={classes.labelContainer}>
+          <Typography variant="subtitle2">
+            {formatIdentifier(name?.concat(':')) || ''}
+          </Typography>
+        </Grid>
+        <Grid item xs={8}>
+          {children}
+        </Grid>
       </Grid>
-      <Grid item xs={8}>
-        {children}
-      </Grid>
-    </Grid>
-  </Grid>
+    </StyledGrid>
   );
 }
 

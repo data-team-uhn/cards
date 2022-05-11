@@ -19,12 +19,24 @@
 import React, { useEffect, useState } from 'react';
 
 import { Fab, Grid, Paper, Typography, makeStyles } from '@material-ui/core';
-import { MuiThemeProvider } from '@material-ui/core/styles';
+import { MuiThemeProvider, styled } from '@material-ui/core/styles';
 import NavigationIcon from '@material-ui/icons/Navigation';
 import { appTheme } from "../themePalette.jsx";
 
-const useStyles = makeStyles(theme => ({
-  paper: {
+const PREFIX = 'ErrorPage';
+
+const classes = {
+  paper: `${PREFIX}-paper`,
+  logo: `${PREFIX}-logo`,
+  extendedIcon: `${PREFIX}-extendedIcon`
+};
+
+const StyledMuiThemeProvider = styled(MuiThemeProvider)((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.paper}`]: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -34,20 +46,22 @@ const useStyles = makeStyles(theme => ({
       textAlign: "center",
     },
   },
-  logo: {
+
+  [`& .${classes.logo}`]: {
     maxWidth: "240px",
   },
-  extendedIcon: {
+
+  [`& .${classes.extendedIcon}`]: {
     marginRight: theme.spacing(1),
-  },
+  }
 }));
 
 export default function ErrorPage(props) {
   const { errorCode, errorCodeColor, title, titleColor, message, buttonLink, buttonLabel } = props;
-  const classes = useStyles();
+
 
   return (
-    <MuiThemeProvider theme={appTheme}>
+    <StyledMuiThemeProvider theme={appTheme}>
       <Paper className={classes.paper} elevation={0}>
         <Grid
           container
@@ -84,6 +98,6 @@ export default function ErrorPage(props) {
           }
         </Grid>
       </Paper>
-    </MuiThemeProvider>
+    </StyledMuiThemeProvider>
   );
 }

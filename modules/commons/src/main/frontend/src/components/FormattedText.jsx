@@ -18,24 +18,35 @@
 //
 
 import React from 'react';
+import { styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import { Typography, withStyles, makeStyles } from "@material-ui/core";
 import MDEditor from '@uiw/react-md-editor';
 
-const useStyles = makeStyles(theme => ({
-  markdown: {
+const PREFIX = 'FormattedText';
+
+const classes = {
+  markdown: `${PREFIX}-markdown`
+};
+
+const StyledTypography = styled(Typography)((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.markdown}`]: {
       fontSize: "inherit",
   }
 }));
 
 let FormattedText = (props) => {
   let { children, ...typographyProps } = props;
-  const mdClasses = useStyles();
+
 
   return (
-    <Typography component="div" {...typographyProps} >
+    <StyledTypography component="div" {...typographyProps} >
       <MDEditor.Markdown classes={mdClasses} className={mdClasses.markdown} source={children} />
-    </Typography>
+    </StyledTypography>
   );
 }
 

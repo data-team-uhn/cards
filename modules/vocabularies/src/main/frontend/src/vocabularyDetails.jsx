@@ -19,6 +19,8 @@
 
 import React, { useRef, useState } from "react";
 
+import { styled } from '@mui/material/styles';
+
 import {
   Button,
   Dialog,
@@ -37,38 +39,57 @@ import CloseIcon from "@material-ui/icons/Close";
 import VocabularyAction from "./vocabularyAction";
 import VocabularyBrowser from "./vocabQuery/VocabularyBrowser.jsx";
 
-const Phase = require("./phaseCodes.json");
+const PREFIX = 'vocabularyDetails';
 
-const useStyles = makeStyles(theme => ({
-  about: {
+const classes = {
+  about: `${PREFIX}-about`,
+  button: `${PREFIX}-button`,
+  closeButton: `${PREFIX}-closeButton`,
+  dialogTitle: `${PREFIX}-dialogTitle`,
+  browseAction: `${PREFIX}-browseAction`
+};
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled('div')((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.about}`]: {
     background: "#007bff",
     "&:hover": {
       background: "#2361b8"
     }
   },
-  button: {
+
+  [`& .${classes.button}`]: {
     margin: theme.spacing(1),
     textTransform: "none",
     color: "white",
     borderRadius: 3,
     border: 0
   },
-  closeButton: {
+
+  [`& .${classes.closeButton}`]: {
     position: "absolute",
     right: theme.spacing(1),
     top: theme.spacing(1),
     marginLeft: theme.spacing(5),
     color: theme.palette.grey[500],
   },
-  dialogTitle: {
+
+  [`& .${classes.dialogTitle}`]: {
     marginRight: theme.spacing(5)
   },
-  browseAction: {
+
+  [`& .${classes.browseAction}`]: {
     margin: theme.spacing(1),
     textTransform: "none",
     marginRight: "auto"
-  },
+  }
 }));
+
+const Phase = require("./phaseCodes.json");
 
 
 export default function VocabularyDetails(props) {
@@ -83,14 +104,14 @@ export default function VocabularyDetails(props) {
   let infoboxRef = useRef();
   let browserRef = useRef();
 
-  const classes = useStyles();
+
 
   let closeBrowser = (event) => {
     setBrowserOpened(false);
   };
 
-  return(
-    <React.Fragment>
+  return (
+    <Root>
 
       <Tooltip title="About this vocabulary" TransitionComponent={Zoom}>
         <Button onClick={handleOpen} variant="contained" className={classes.button + " " + classes.about} >About</Button>
@@ -131,6 +152,6 @@ export default function VocabularyDetails(props) {
           onCloseBrowser={closeBrowser}
         />
       }
-    </React.Fragment>
-    );
+    </Root>
+  );
 }

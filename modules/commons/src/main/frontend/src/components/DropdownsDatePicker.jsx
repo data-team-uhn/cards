@@ -23,9 +23,61 @@
 //
 
 import React, { useState } from "react";
+import { styled } from '@mui/material/styles';
 import { Select, MenuItem,  makeStyles } from "@material-ui/core";
 import PropTypes from "prop-types";
 import moment from "moment";
+
+const PREFIX = 'DropdownsDatePicker';
+
+const classes = {
+  container: `${PREFIX}-container`,
+  stretch: `${PREFIX}-stretch`,
+  withShortMonth: `${PREFIX}-withShortMonth`,
+  emptyOption: `${PREFIX}-emptyOption`,
+  placeholder: `${PREFIX}-placeholder`
+};
+
+const Root = styled('div')((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.container}`]: {
+    overflow: "hidden",
+    "& > *:not(:first-child)" : {
+      paddingLeft: theme.spacing(2),
+    },
+    "& .MuiSelect-root" : {
+      paddingLeft: theme.spacing(2),
+      marginLeft: theme.spacing(-2),
+    }
+  },
+
+  [`& .${classes.stretch}`]: {
+    "& > *" : {
+      minWidth: "25%",
+    },
+    "& > .dropdowndate-month" : {
+      minWidth: "50%",
+    }
+  },
+
+  [`& .${classes.withShortMonth}`]: {
+    "& > *" : {
+      minWidth: "33.33% !important"
+    }
+  },
+
+  [`& .${classes.emptyOption}`]: {
+    opacity: "50%",
+    padding: theme.spacing(2),
+  },
+
+  [`&.${classes.placeholder}`]: {
+    opacity: "50%"
+  }
+}));
 
 const DropdownDate = {
   year: 'year',
@@ -39,39 +91,6 @@ const getDaysInMonth = (year, month) => {
   month = +(month) + 1;
   return new Date(year, month, 0).getDate();
 };
-
-const useStyles = makeStyles(theme => ({
-  container : {
-    overflow: "hidden",
-    "& > *:not(:first-child)" : {
-      paddingLeft: theme.spacing(2),
-    },
-    "& .MuiSelect-root" : {
-      paddingLeft: theme.spacing(2),
-      marginLeft: theme.spacing(-2),
-    }
-  },
-  stretch: {
-    "& > *" : {
-      minWidth: "25%",
-    },
-    "& > .dropdowndate-month" : {
-      minWidth: "50%",
-    }
-  },
-  withShortMonth : {
-    "& > *" : {
-      minWidth: "33.33% !important"
-    }
-  },
-  emptyOption : {
-    opacity: "50%",
-    padding: theme.spacing(2),
-  },
-  placeholder : {
-    opacity: "50%"
-  },
-}));
 
 
 /**
@@ -94,7 +113,7 @@ const useStyles = makeStyles(theme => ({
 
 function DropdownsDatePicker(props) {
   const { startDate, endDate, selectedDate, order, onDateChange, yearReverse, disabled, monthShort, formatDate, autoFocus, fullWidth, ...rest } = props;
-  const classes = useStyles();
+
 
   const sDate = new Date(startDate);
   const eDate = endDate ? new Date(endDate) : new Date();
@@ -218,14 +237,14 @@ function DropdownsDatePicker(props) {
         autoFocus={autoFocus && order.indexOf("year") == 0}
         renderValue={(selected) => {
             if (selected < 0 ) {
-              return <div className={classes.placeholder}>Year</div>;
+              return <Root className={classes.placeholder}>Year</Root>;
             }
             return selected;
         }}
       >
         {generateYearOptions()}
       </Select>
-    )
+    );
   }
 
   let renderMonth = () => {

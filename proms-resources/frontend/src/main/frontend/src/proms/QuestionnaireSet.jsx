@@ -17,6 +17,7 @@
 //  under the License.
 //
 import React, { useState, useEffect, useContext }  from 'react';
+import { styled } from '@mui/material/styles';
 import { v4 as uuidv4 } from 'uuid';
 
 import {
@@ -49,8 +50,23 @@ import { ENTRY_TYPES } from "../questionnaire/FormEntry.jsx"
 
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
-const useStyles = makeStyles(theme => ({
-  mainContainer: {
+const PREFIX = 'QuestionnaireSet';
+
+const classes = {
+  mainContainer: `${PREFIX}-mainContainer`,
+  screen: `${PREFIX}-screen`,
+  stepIndicator: `${PREFIX}-stepIndicator`,
+  incompleteIndicator: `${PREFIX}-incompleteIndicator`,
+  doneIndicator: `${PREFIX}-doneIndicator`,
+  survey: `${PREFIX}-survey`
+};
+
+const StyledPaper = styled(Paper)((
+  {
+    theme
+  }
+) => ({
+  [`&.${classes.mainContainer}`]: {
     margin: theme.spacing(2),
     "& #cards-resource-footer > .MuiMobileStepper-root" : {
       bottom: theme.spacing(3),
@@ -64,7 +80,8 @@ const useStyles = makeStyles(theme => ({
       display: "none",
     },
   },
-  screen : {
+
+  [`& .${classes.screen}`]: {
     alignItems: "center",
     margin: "auto",
     maxWidth: "780px",
@@ -72,24 +89,28 @@ const useStyles = makeStyles(theme => ({
       textAlign: "center",
     }
   },
-  stepIndicator : {
+
+  [`& .${classes.stepIndicator}`]: {
     border: "1px solid " + theme.palette.text.secondary,
     background: "transparent",
     color: theme.palette.text.secondary,
   },
-  incompleteIndicator : {
+
+  [`& .${classes.incompleteIndicator}`]: {
     border: "1px solid " + theme.palette.secondary.main,
     background: "transparent",
     color: theme.palette.secondary.main,
   },
-  doneIndicator : {
+
+  [`& .${classes.doneIndicator}`]: {
     background: theme.palette.success.main,
   },
-  survey : {
+
+  [`& .${classes.survey}`]: {
     alignItems: "stretch",
     justify: "space-between",
     flexWrap: "nowrap",
-  },
+  }
 }));
 
 function QuestionnaireSet(props) {
@@ -140,7 +161,7 @@ function QuestionnaireSet(props) {
   // Screen layout props
   const [ screenType, setScreenType ] = useState();
 
-  const classes = useStyles();
+
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -689,14 +710,14 @@ your symptoms. Please see below for a summary of your scores and suggested actio
 function QuestionnaireSetScreen (props) {
   let { children, ...rest } = props;
 
-  const classes = useStyles();
+
 
   return (
-  <Paper elevation={0} className={classes.mainContainer}>
-    <Grid container direction="column" spacing={4} {...rest}>
-      {Array.from(children || []).filter(c => c).map((c, i) => <Grid item key={i+"MainItem"} xs={12}>{c}</Grid>)}
-    </Grid>
-  </Paper>
+    <StyledPaper elevation={0} className={classes.mainContainer}>
+      <Grid container direction="column" spacing={4} {...rest}>
+        {Array.from(children || []).filter(c => c).map((c, i) => <Grid item key={i+"MainItem"} xs={12}>{c}</Grid>)}
+      </Grid>
+    </StyledPaper>
   );
 }
 

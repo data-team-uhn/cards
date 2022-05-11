@@ -17,6 +17,7 @@
 //  under the License.
 //
 import React, { useState } from "react";
+import { styled } from '@mui/material/styles';
 import {
   AppBar,
   Breadcrumbs,
@@ -30,8 +31,25 @@ import {
   useScrollTrigger,
 } from "@material-ui/core";
 
-const useStyles = makeStyles(theme => ({
-  appbar : {
+const PREFIX = 'PromsHeader';
+
+const classes = {
+  appbar: `${PREFIX}-appbar`,
+  toolbar: `${PREFIX}-toolbar`,
+  titleLine: `${PREFIX}-titleLine`,
+  logo: `${PREFIX}-logo`,
+  greeting: `${PREFIX}-greeting`,
+  fullSize: `${PREFIX}-fullSize`,
+  collapsed: `${PREFIX}-collapsed`
+};
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled('div')((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.appbar}`]: {
     margin: theme.spacing(-1, -1, 4),
     padding: theme.spacing(0, 1),
     boxSizing: "content-box",
@@ -39,44 +57,50 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.text.primary,
     boxShadow: "none",
   },
-  toolbar : {
+
+  [`& .${classes.toolbar}`]: {
     display: "flex",
     justifyContent: "space-between",
     background: theme.palette.background.paper,
     paddingTop: theme.spacing(1),
     paddingBottom: theme.spacing(1),
   },
-  titleLine : {
+
+  [`& .${classes.titleLine}`]: {
     display: "flex",
     alignItems: "center",
   },
-  logo : {
+
+  [`& .${classes.logo}`]: {
     maxHeight: theme.spacing(6),
     marginRight: theme.spacing(2),
     "@media (max-width: 400px)" : {
       maxHeight: theme.spacing(4),
     }
   },
-  greeting: {
+
+  [`& .${classes.greeting}`]: {
     "@media (max-width: 600px)" : {
       display: "none",
     },
   },
-  fullSize : {
+
+  [`& .${classes.fullSize}`]: {
     paddingTop: theme.spacing(5),
     "&.MuiToolbar-root > .MuiTypography-root" : {
       zoom: 1.2,
     }
   },
-  collapsed : {
+
+  [`& .${classes.collapsed}`]: {
     display: "none",
-  },
+  }
 }));
 
 function PromsHeader (props) {
   const { title, greeting, progress, subtitle, step } = props;
 
-  const classes = useStyles();
+
 
   const scrollTrigger = useScrollTrigger({
     target: window,
@@ -89,7 +113,7 @@ function PromsHeader (props) {
       <Typography variant="h6" color="textPrimary">{ subtitle }</Typography>
       { step }
     </Toolbar>
-    : <></>;
+    : <Root></Root>;
 
   return (
     <>

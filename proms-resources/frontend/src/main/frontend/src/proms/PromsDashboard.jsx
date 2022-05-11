@@ -33,31 +33,40 @@ import {
   makeStyles,
 } from "@material-ui/core";
 
-import { useTheme } from '@material-ui/core/styles';
+import { useTheme, styled } from '@material-ui/core/styles';
 
 import PromsView from "./PromsView";
 import VisitView from "./VisitView";
 
-async function getDashboardExtensions(name) {
-  return loadExtensions("DashboardViews" + name)
-    .then(extensions => extensions.slice()
-      .sort((a, b) => a["cards:defaultOrder"] - b["cards:defaultOrder"])
-    )
-  // To do: also load the default dashboard if the extension point is invalid
-}
+const PREFIX = 'PromsDashboard';
 
-const useStyles = makeStyles(theme => ({
-  dashboardTitle: {
+const classes = {
+  dashboardTitle: `${PREFIX}-dashboardTitle`,
+  withMargin: `${PREFIX}-withMargin`,
+  dashboardContainer: `${PREFIX}-dashboardContainer`,
+  dashboardEntry: `${PREFIX}-dashboardEntry`
+};
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled('div')((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.dashboardTitle}`]: {
     marginTop: theme.spacing(-4),
     marginRight: theme.spacing(4),
   },
-  withMargin: {
+
+  [`& .${classes.withMargin}`]: {
     marginRight: "320px",
   },
-  dashboardContainer: {
+
+  [`& .${classes.dashboardContainer}`]: {
     marginTop: theme.spacing(2),
   },
-  dashboardEntry: {
+
+  [`& .${classes.dashboardEntry}`]: {
     "& > *": {
       height: "100%",
     },
@@ -82,8 +91,16 @@ const useStyles = makeStyles(theme => ({
     "& .MuiCardContent-root": {
       padding: theme.spacing(3, 0, 1, 0),
     },
-  },
+  }
 }));
+
+async function getDashboardExtensions(name) {
+  return loadExtensions("DashboardViews" + name)
+    .then(extensions => extensions.slice()
+      .sort((a, b) => a["cards:defaultOrder"] - b["cards:defaultOrder"])
+    )
+  // To do: also load the default dashboard if the extension point is invalid
+}
 
 // Component that renders the proms dashboard, with one LiveTable per questionnaire.
 // Each LiveTable contains all forms that use the given questionnaire.
@@ -150,7 +167,7 @@ function PromsDashboard(props) {
       .finally(() => setDefaultsLoading(false));
   }, [surveysId]);
 
-  const classes = useStyles();
+
 
   // Colors assigned to the dashboard widgets
   // If we have more widgets than colors, start reusing golors from the top
@@ -177,7 +194,7 @@ function PromsDashboard(props) {
   }
 
   return (
-    <>
+    (<Root>
       <Typography variant="h4" className={classes.dashboardTitle + (appbarExpanded ? ' ' + classes.withMargin : '')}>{title}</Typography>
       { description && <Typography variant="overline">{description}</Typography>}
       <Grid container spacing={4} className={classes.dashboardContainer}>
@@ -202,7 +219,7 @@ function PromsDashboard(props) {
           })
         }
       </Grid>
-    </>
+    </Root>)
   );
 }
 

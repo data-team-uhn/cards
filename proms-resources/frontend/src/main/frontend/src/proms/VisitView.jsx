@@ -18,6 +18,8 @@
 //
 import React, { useState, useEffect, useContext } from "react";
 
+import { styled } from '@mui/material/styles';
+
 import {
   makeStyles,
 } from "@material-ui/core";
@@ -26,31 +28,51 @@ import EventIcon from '@material-ui/icons/Event';
 
 import PromsViewInternal from "./PromsViewInternal.jsx";
 
-const useStyles = color => makeStyles(theme => ({
-  visitView : {
+const PREFIX = 'VisitView';
+
+const classes = {
+  visitView: `${PREFIX}-visitView`,
+  statusUnassigned: `${PREFIX}-statusUnassigned`,
+  statusIncomplete: `${PREFIX}-statusIncomplete`,
+  statusUnreviewed: `${PREFIX}-statusUnreviewed`,
+  statusCompleted: `${PREFIX}-statusCompleted`
+};
+
+const StyledPromsViewInternal
+ = styled(PromsViewInternal
+)((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.visitView}`]: {
     "&.MuiCard-root" : {
        border: "2px solid " + color,
     },
   },
-  statusUnassigned : {
+
+  [`& .${classes.statusUnassigned}`]: {
     color: theme.palette.text.secondary,
   },
-  statusIncomplete : {
+
+  [`& .${classes.statusIncomplete}`]: {
     color: theme.palette.error.main,
   },
-  statusUnreviewed : {
+
+  [`& .${classes.statusUnreviewed}`]: {
     color: theme.palette.warning.main,
   },
-  statusCompleted : {
+
+  [`& .${classes.statusCompleted}`]: {
     color: theme.palette.success.main,
-  },
+  }
 }));
 
 
 function VisitView(props) {
   const { surveysId, color, visitInfo } = props;
 
-  const classes = useStyles(color)();
+
 
   let query = (
 "select distinct visitInformation.* " +

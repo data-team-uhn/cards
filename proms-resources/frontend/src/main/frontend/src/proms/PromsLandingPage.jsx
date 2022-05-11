@@ -30,27 +30,43 @@ import {
   makeStyles
 } from '@material-ui/core';
 
-import { MuiThemeProvider } from '@material-ui/core/styles';
+import { MuiThemeProvider, styled } from '@material-ui/core/styles';
 import { appTheme } from "../themePalette.jsx";
 
-const useStyles = makeStyles(theme => ({
-  paper: {
+const PREFIX = 'PromsLandingPage';
+
+const classes = {
+  paper: `${PREFIX}-paper`,
+  logo: `${PREFIX}-logo`,
+  button: `${PREFIX}-button`,
+  appInfo: `${PREFIX}-appInfo`
+};
+
+const StyledDialog = styled(Dialog)((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.paper}`]: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     height: '100%',
   },
-  logo : {
+
+  [`& .${classes.logo}`]: {
     maxWidth: "200px",
     marginBottom: theme.spacing(5),
     marginTop: theme.spacing(9.5),
   },
-  button : {
+
+  [`& .${classes.button}`]: {
     textTransform: "none",
     minWidth: "250px",
     padding: theme.spacing(2, 1),
   },
-  appInfo : {
+
+  [`& .${classes.appInfo}`]: {
     paddingTop: theme.spacing(.5),
     marginTop: theme.spacing(5),
   }
@@ -58,7 +74,7 @@ const useStyles = makeStyles(theme => ({
 
 function PromsLandingPage(props) {
 
-  const classes = useStyles();
+
 
   const [ isOpen, setIsOpen ] = useState(true);
 
@@ -73,7 +89,7 @@ function PromsLandingPage(props) {
   }, [window.location]);
 
   return (
-    <Dialog
+    <StyledDialog
       fullScreen
       open={isOpen}
     >
@@ -131,7 +147,7 @@ function PromsLandingPage(props) {
           </Grid>
         </DialogContent>
       </MuiThemeProvider>
-    </Dialog>
+    </StyledDialog>
   );
 }
 

@@ -17,6 +17,7 @@
 //  under the License.
 //
 import React, { useState, useEffect } from "react";
+import { styled } from '@mui/material/styles';
 import {
   Toolbar,
   Typography,
@@ -25,6 +26,27 @@ import {
 
 import { loadExtensions } from "../uiextension/extensionManager";
 
+const PREFIX = 'PromsFooter';
+
+const classes = {
+  footer: `${PREFIX}-footer`
+};
+
+const StyledToolbar = styled(Toolbar)((
+  {
+    theme
+  }
+) => ({
+  [`&.${classes.footer}`]: {
+    color: theme.palette.text.secondary,
+    justifyContent: "center",
+    minHeight: theme.spacing(2),
+    "& > *" : {
+      margin: theme.spacing(0, 2),
+    },
+  }
+}));
+
 async function getFooterExtensions() {
   return loadExtensions("Footer")
     .then(extensions => extensions.slice()
@@ -32,21 +54,10 @@ async function getFooterExtensions() {
     )
 }
 
-const useStyles = makeStyles(theme => ({
-  footer : {
-    color: theme.palette.text.secondary,
-    justifyContent: "center",
-    minHeight: theme.spacing(2),
-    "& > *" : {
-      margin: theme.spacing(0, 2),
-    },
-  },
-}));
-
 function PromsFooter (props) {
   let [ footerExtensions, setFooterExtensions ] = useState([]);
 
-  const classes = useStyles();
+
 
   useEffect(() => {
     getFooterExtensions()
@@ -55,14 +66,14 @@ function PromsFooter (props) {
   }, [])
 
   return (
-    <Toolbar className={classes.footer}>
+    <StyledToolbar className={classes.footer}>
     {
       footerExtensions.map((extension, index) => {
         let Extension = extension["cards:extensionRender"];
         return <Typography variant="caption" key={index}><Extension /></Typography>
       })
     }
-    </Toolbar>
+    </StyledToolbar>
   );
 }
 

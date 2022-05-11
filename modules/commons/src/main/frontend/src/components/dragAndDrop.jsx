@@ -19,11 +19,24 @@
 
 import React, { useRef, useEffect, useState } from "react";
 
+import { styled } from '@mui/material/styles';
+
 import { IconButton, Typography, makeStyles } from "@material-ui/core";
 import AttachFile from '@material-ui/icons/AttachFile';
 
-const useStyles = makeStyles(theme => ({
-  active: {
+const PREFIX = 'dragAndDrop';
+
+const classes = {
+  active: `${PREFIX}-active`,
+  dropzone: `${PREFIX}-dropzone`
+};
+
+const Root = styled('div')((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.active}`]: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -39,7 +52,8 @@ const useStyles = makeStyles(theme => ({
     borderRadius: theme.spacing(1),
     cursor: "pointer"
   },
-  dropzone: {
+
+  [`& .${classes.dropzone}`]: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -52,7 +66,7 @@ const useStyles = makeStyles(theme => ({
     textAlign: "center",
     borderRadius: theme.spacing(1),
     cursor: "pointer"
-  },
+  }
 }));
 
 export default function DragAndDrop(props) {
@@ -60,7 +74,7 @@ export default function DragAndDrop(props) {
   const [drag, setDrag] = useState(false);
   const [dragCounter, setDragCounter] = useState(0);
 
-  const classes = useStyles();
+
 
   const dropRef = useRef();
   const inputRef = useRef();
@@ -124,7 +138,7 @@ export default function DragAndDrop(props) {
   });
 
   return (
-    <div style={{display: 'inline-block', position: 'relative', opacity: disabled ? 0.5 : 1}}
+    <Root style={{display: 'inline-block', position: 'relative', opacity: disabled ? 0.5 : 1}}
        onClick={handleClick.bind(this)}
        ref={dropRef}
     >
@@ -147,6 +161,6 @@ export default function DragAndDrop(props) {
           { error && <Typography color='error'>{error}</Typography> }
           { !error && <Typography>Drag & drop or browse files for upload</Typography> }
       </div>
-    </div>
-  )
+    </Root>
+  );
 }

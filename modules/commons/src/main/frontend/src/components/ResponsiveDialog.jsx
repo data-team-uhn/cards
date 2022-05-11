@@ -29,53 +29,37 @@ import {
 } from "@material-ui/core";
 
 import CloseIcon from '@material-ui/icons/Close';
-import { useTheme } from '@material-ui/core/styles';
+import { useTheme, styled } from '@material-ui/core/styles';
 
-// Component that renders the Dialog containers that expand to full screen once
-// the screen becomes more narrow than the specified width
-//
-// Optional props:
-// title: String specifying the title of the dialog
-// withCloseButton: Boolean specifying whether the dialog should have a Close button (x)
-//   at the top-right corner
-// width: the default size of the dialog, and the screen size that makes it go
-//   fullScreen. One of xs, sm, md, lg, xl. Defaults to sm.
-// children: the dialog contents
-// onClose: Callback for closing the dialog
-//
-// Sample usage:
-//<ResponsiveDialog
-//  title="Select a subject"
-//  withCloseButton
-//  open={open}
-//  onClose={selectSubject}
-//  >
-//  <DialogContent dividers>
-//    {...}
-//  </DialogContent>
-//  <DialogActions>
-//    {...}
-//  </DialogActions>
-//</ResponsiveDialog>
-//
+const PREFIX = 'ResponsiveDialog';
 
-const useStyles = makeStyles(theme => ({
-  withCloseButton: {
+const classes = {
+  withCloseButton: `${PREFIX}-withCloseButton`,
+  closeButton: `${PREFIX}-closeButton`
+};
+
+const StyledDialog = styled(Dialog)((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.withCloseButton}`]: {
     "& .MuiDialogTitle-root" : {
       paddingRight: theme.spacing(5),
     }
   },
-  closeButton: {
+
+  [`& .${classes.closeButton}`]: {
     position: 'absolute',
     right: theme.spacing(1),
     top: theme.spacing(1),
-  },
+  }
 }));
 
 const ResponsiveDialog = forwardRef((props, ref) => {
   const { title, width, children, withCloseButton, className, onClose, ...rest } = props;
 
-  const classes = useStyles();
+
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down(width));
@@ -92,7 +76,7 @@ const ResponsiveDialog = forwardRef((props, ref) => {
   classNames = classNames.length ? classNames.join(' ') : undefined;
 
   return (
-    <Dialog
+    <StyledDialog
       ref={ref}
       className={classNames}
       maxWidth={width}
@@ -103,7 +87,7 @@ const ResponsiveDialog = forwardRef((props, ref) => {
     >
       { title && <DialogTitle>{title}{closeButton}</DialogTitle>}
       { children }
-    </Dialog>
+    </StyledDialog>
   );
 })
 

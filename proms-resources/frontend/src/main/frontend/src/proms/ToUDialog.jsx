@@ -18,6 +18,7 @@
 //
 
 import React, { useState, useEffect } from "react";
+import { styled } from '@mui/material/styles';
 import PropTypes from "prop-types";
 
 import {
@@ -32,20 +33,35 @@ import { Alert, AlertTitle } from "@material-ui/lab";
 import FormattedText from "../components/FormattedText.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog";
 
-const useStyles = makeStyles(theme => ({
-  touDialog : {
+const PREFIX = 'ToUDialog';
+
+const classes = {
+  touDialog: `${PREFIX}-touDialog`,
+  touText: `${PREFIX}-touText`,
+  reviewButton: `${PREFIX}-reviewButton`
+};
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled('div')((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.touDialog}`]: {
     "& .MuiDialogTitle-root > .MuiTypography-root" : {
       fontSize: "1.75rem",
     }
   },
-  touText : {
+
+  [`& .${classes.touText}`]: {
     "& .wmde-markdown blockquote" : {
       borderLeft: "0 none",
       color: "inherit",
       fontStyle: "italic",
     }
   },
-  reviewButton : {
+
+  [`& .${classes.reviewButton}`]: {
     marginRight: "auto",
   }
 }));
@@ -83,7 +99,7 @@ function ToUDialog(props) {
   const [ tou, setTou ] = useState();
   const [ error, setError ] = useState();
 
-  const classes = useStyles();
+
 
   const fetchTouAccepted = () => {
     fetch("/Proms.termsOfUse")
@@ -140,75 +156,77 @@ function ToUDialog(props) {
       });
   }
 
-  return (<>
-    <ResponsiveDialog
-      title={tou?.title}
-      open={open && (touAcceptedVersion !== tou?.version || !actionRequired)}
-      width="md"
-      onClose={onClose}
-      scroll={actionRequired? "body" : "paper"}
-      className={classes.touDialog}
-    >
-      { actionRequired &&
-        <DialogContent>
-          { touAcceptedVersion != "none" ?
-            <Alert severity="warning">
-              <AlertTitle>The Terms of Use have been updated</AlertTitle>
-              Please review and accept the new Terms of Use to continue.
-            </Alert>
-            :
-            <Alert icon={false} severity="info">
-              Please read the Terms of Use and click Accept at the bottom to continue.
-            </Alert>
-          }
-        </DialogContent>
-      }
-      <DialogContent dividers={!actionRequired} className={classes.touText}>
-      { error ?
-        <Alert severity="error">
-          <AlertTitle>An error occurred</AlertTitle>
-          {error}
-        </Alert>
-        :
-        <FormattedText>{tou?.text}</FormattedText>
-      }
-      </DialogContent>
-      <DialogActions>
-      { actionRequired && !error ?
-        <>
-          <Button color="primary" onClick={() => saveTouAccepted(tou.version)} variant="contained">
-            Accept
-          </Button>
-          <Button onClick={() => setShowConfirmationTou(true)} variant="contained" >
-            Decline
-          </Button>
-        </>
-        :
-        <Button color="primary" onClick={onClose} variant="contained">
-          Close
-        </Button>
-      }
-      </DialogActions>
-    </ResponsiveDialog>
-    { actionRequired &&
-      <ResponsiveDialog open={showConfirmationTou} title="Action required">
-        <DialogContent>
-          You can only fill out your pre-appointment surveys online after accepting the DATA PRO Terms of Use.
+  return (
+    (<Root>
+      <ResponsiveDialog
+        title={tou?.title}
+        open={open && (touAcceptedVersion !== tou?.version || !actionRequired)}
+        width="md"
+        onClose={onClose}
+        scroll={actionRequired? "body" : "paper"}
+        className={classes.touDialog}
+      >
+        { actionRequired &&
+          <DialogContent>
+            { touAcceptedVersion != "none" ?
+              <Alert severity="warning">
+                <AlertTitle>The Terms of Use have been updated</AlertTitle>
+                Please review and accept the new Terms of Use to continue.
+              </Alert>
+              :
+              <Alert icon={false} severity="info">
+                Please read the Terms of Use and click Accept at the bottom to continue.
+              </Alert>
+            }
+          </DialogContent>
+        }
+        <DialogContent dividers={!actionRequired} className={classes.touText}>
+        { error ?
+          <Alert severity="error">
+            <AlertTitle>An error occurred</AlertTitle>
+            {error}
+          </Alert>
+          :
+          <FormattedText>{tou?.text}</FormattedText>
+        }
         </DialogContent>
         <DialogActions>
-          <Button color="secondary" onClick={() => setShowConfirmationTou(false)} variant="contained" className={classes.reviewButton}>
-            Review Terms
+        { actionRequired && !error ?
+          <>
+            <Button color="primary" onClick={() => saveTouAccepted(tou.version)} variant="contained">
+              Accept
+            </Button>
+            <Button onClick={() => setShowConfirmationTou(true)} variant="contained" >
+              Decline
+            </Button>
+          </>
+          :
+          <Button color="primary" onClick={onClose} variant="contained">
+            Close
           </Button>
-          <Button color="primary" onClick={() => saveTouAccepted(tou?.version)} variant="contained" >
-            Accept
-          </Button>
-          <Button onClick={() => {setShowConfirmationTou(false); onDecline && onDecline()}} variant="contained" >
-            Decline
-          </Button>
+        }
         </DialogActions>
       </ResponsiveDialog>
-    }
-  </>);
+      { actionRequired &&
+        <ResponsiveDialog open={showConfirmationTou} title="Action required">
+          <DialogContent>
+            You can only fill out your pre-appointment surveys online after accepting the DATA PRO Terms of Use.
+          </DialogContent>
+          <DialogActions>
+            <Button color="secondary" onClick={() => setShowConfirmationTou(false)} variant="contained" className={classes.reviewButton}>
+              Review Terms
+            </Button>
+            <Button color="primary" onClick={() => saveTouAccepted(tou?.version)} variant="contained" >
+              Accept
+            </Button>
+            <Button onClick={() => {setShowConfirmationTou(false); onDecline && onDecline()}} variant="contained" >
+              Decline
+            </Button>
+          </DialogActions>
+        </ResponsiveDialog>
+      }
+    </Root>)
+  );
 }
 
 ToUDialog.propTypes = {

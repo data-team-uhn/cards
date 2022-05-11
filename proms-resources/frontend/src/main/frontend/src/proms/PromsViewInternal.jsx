@@ -18,6 +18,8 @@
 //
 import React, { useState } from "react";
 
+import { styled } from '@mui/material/styles';
+
 import LiveTable from "../dataHomepage/LiveTable.jsx";
 
 import {
@@ -33,8 +35,20 @@ import {
 } from "@material-ui/core";
 
 
-const useStyles = color => makeStyles(theme => ({
-  promsView : {
+const PREFIX = 'PromsViewInternal';
+
+const classes = {
+  promsView: `${PREFIX}-promsView`,
+  promsViewAvatar: `${PREFIX}-promsViewAvatar`,
+  promsViewTitle: `${PREFIX}-promsViewTitle`
+};
+
+const StyledCard = styled(Card)((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.promsView}`]: {
     border: "1px solid " + theme.palette.divider,
     "& .MuiTab-root": {
       paddingBottom: theme.spacing(1),
@@ -48,13 +62,15 @@ const useStyles = color => makeStyles(theme => ({
       background: color,
     },
   },
-  promsViewAvatar: {
+
+  [`& .${classes.promsViewAvatar}`]: {
     background: color,
   },
-  promsViewTitle: {
+
+  [`& .${classes.promsViewTitle}`]: {
     fontWeight: "600",
     fontSize: "90%",
-  },
+  }
 }));
 
 
@@ -96,10 +112,10 @@ function PromsViewInternal (props) {
   let finalQuery = query.replaceAll("__DATE_FILTER_PLACEHOLDER__", tabFilter[tabs[activeTab]].dateFilter)
                         .replaceAll("__SORT_ORDER_PLACEHOLDER__", tabFilter[tabs[activeTab]].order);
 
-  const classes = useStyles(color)();
+
 
   return (
-    <Card className={classes.promsView + (className ? ` ${className}` : '')}>
+    <StyledCard className={classes.promsView + (className ? ` ${className}` : '')}>
       { title && <CardHeader
         disableTypography
         avatar={<Avatar className={classes.promsViewAvatar}>{avatar}</Avatar>}
@@ -119,7 +135,7 @@ function PromsViewInternal (props) {
           disableTopPagination={true}
         />
       </CardContent>
-    </Card>
+    </StyledCard>
   );
 }
 

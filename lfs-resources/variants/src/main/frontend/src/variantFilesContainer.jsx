@@ -19,6 +19,8 @@
 
 import React, { useContext, useState } from "react";
 
+import { styled } from '@mui/material/styles';
+
 import {
   Box,
   Button,
@@ -47,59 +49,94 @@ import DragAndDrop from "./components/dragAndDrop.jsx";
 import { escapeJQL } from "./escape.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
-const useStyles = makeStyles(theme => ({
-  root: {
+const PREFIX = 'variantFilesContainer';
+
+const classes = {
+  root: `${PREFIX}-root`,
+  fileinput: `${PREFIX}-fileinput`,
+  buttonIcon: `${PREFIX}-buttonIcon`,
+  fileList: `${PREFIX}-fileList`,
+  fileFormSection: `${PREFIX}-fileFormSection`,
+  fileDetail: `${PREFIX}-fileDetail`,
+  fileProgress: `${PREFIX}-fileProgress`,
+  dragAndDropContainer: `${PREFIX}-dragAndDropContainer`,
+  dragAndDrop: `${PREFIX}-dragAndDrop`,
+  dialogTitle: `${PREFIX}-dialogTitle`,
+  dialogContent: `${PREFIX}-dialogContent`,
+  closeButton: `${PREFIX}-closeButton`,
+  variantFileCard: `${PREFIX}-variantFileCard`
+};
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled('div')((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.root}`]: {
     flexGrow: 1,
   },
-  fileinput: {
+
+  [`& .${classes.fileinput}`]: {
     display: 'none',
   },
-  buttonIcon: {
+
+  [`& .${classes.buttonIcon}`]: {
     verticalAlign: 'middle',
     paddingRight: theme.spacing(1)
   },
-  fileList: {
+
+  [`& .${classes.fileList}`]: {
     "& .MuiGrid-item" : {
       paddingLeft: theme.spacing(4),
     }
   },
-  fileFormSection : {
+
+  [`& .${classes.fileFormSection}`]: {
     display: "flex",
     alignItems: "center",
     flexWrap: "wrap",
   },
-  fileDetail: {
+
+  [`& .${classes.fileDetail}`]: {
     marginRight: theme.spacing(1),
     marginTop: theme.spacing(1)
   },
-  fileProgress: {
+
+  [`& .${classes.fileProgress}`]: {
     maxWidth: "750px",
   },
-  dragAndDropContainer: {
+
+  [`& .${classes.dragAndDropContainer}`]: {
     margin: theme.spacing(3, 0),
     "& .MuiAlert-root": {
       boxSizing: "border-box",
       height: "100%",
     },
   },
-  dragAndDrop: {
+
+  [`& .${classes.dragAndDrop}`]: {
     "& > div" : {
       width: "100%",
     },
   },
-  dialogTitle: {
+
+  [`& .${classes.dialogTitle}`]: {
     marginRight: theme.spacing(5)
   },
-  dialogContent: {
+
+  [`& .${classes.dialogContent}`]: {
     minWidth: "500px"
   },
-  closeButton: {
+
+  [`& .${classes.closeButton}`]: {
       position: 'absolute',
       right: theme.spacing(1),
       top: theme.spacing(1),
       color: theme.palette.grey[500]
   },
-  variantFileCard: {
+
+  [`& .${classes.variantFileCard}`]: {
     "& .MuiCardHeader-root" : {
       padding: theme.spacing(1, 3, 0, 3),
     },
@@ -114,7 +151,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function VariantFilesContainer() {
-  const classes = useStyles();
+
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -778,187 +815,187 @@ export default function VariantFilesContainer() {
   let uploadAllComplete = !selectedFiles.some((file) => !file.sent);
 
   return (
-  <React.Fragment>
-    <Typography variant="h2">Variants Upload</Typography>
-      <form method="POST"
-            encType="multipart/form-data"
-            onSubmit={upload}
-            key="file-upload"
-            id="variantForm">
-        <Grid container direction="row-reverse" justify="flex-end" spacing={3} alignItems="stretch" className={classes.dragAndDropContainer}>
-          <Grid item xs={12} lg={6}>
-            <Alert severity="info">
-              <AlertTitle>Expected file name format:</AlertTitle>
-              <div>Patient_Tumor.csv (e.g. AB12345_1.csv)</div>
-              <div>Patient_Tumor_TumorRegion.csv (e.g. AB12345_1_a.csv)</div>
-            </Alert>
-          </Grid>
-          <Grid item xs={12} lg={6}>
-          { uploadInProgress && (
-              <Grid item className={classes.root}>
-                <LinearProgress color="primary" />
-              </Grid>
-            ) }
+    <Root>
+      <Typography variant="h2">Variants Upload</Typography>
+        <form method="POST"
+              encType="multipart/form-data"
+              onSubmit={upload}
+              key="file-upload"
+              id="variantForm">
+          <Grid container direction="row-reverse" justify="flex-end" spacing={3} alignItems="stretch" className={classes.dragAndDropContainer}>
+            <Grid item xs={12} lg={6}>
+              <Alert severity="info">
+                <AlertTitle>Expected file name format:</AlertTitle>
+                <div>Patient_Tumor.csv (e.g. AB12345_1.csv)</div>
+                <div>Patient_Tumor_TumorRegion.csv (e.g. AB12345_1_a.csv)</div>
+              </Alert>
+            </Grid>
+            <Grid item xs={12} lg={6}>
+            { uploadInProgress && (
+                <Grid item className={classes.root}>
+                  <LinearProgress color="primary" />
+                </Grid>
+              ) }
 
-            <div className={classes.dragAndDrop}>
-              <DragAndDrop
-                accept={".csv"}
-                multifile={true}
-                handleDrop={onDrop}
-                error={error}
-              />
-            </div>
+              <div className={classes.dragAndDrop}>
+                <DragAndDrop
+                  accept={".csv"}
+                  multifile={true}
+                  handleDrop={onDrop}
+                  error={error}
+                />
+              </div>
 
-            <input type="hidden" name="*@TypeHint" value="nt:file" />
+              <input type="hidden" name="*@TypeHint" value="nt:file" />
+            </Grid>
           </Grid>
+        </form>
+
+        { selectedFiles && selectedFiles.length > 0 && <Grid container direction="column" spacing={4} className={classes.fileList}>
+          { selectedFiles.map( (file, i) => {
+              const upprogress = uploadProgress ? uploadProgress[file.name] : null;
+              let subjectPath = file.subject.path?.replace("/Subjects", "Subjects");
+              let tumorPath = file.tumor.path && `${subjectPath}/${file.tumor.path.replace(new RegExp(".+/"), "")}`;
+              let regionPath = file.region.path && `${tumorPath}/${file.region.path?.replace(new RegExp(".+/"), "")}`;
+              let isDataValid = subjectPath && tumorPath;
+
+              return (
+                <Grid item key={file.name}>
+                  <Typography variant="h6">{file.name}</Typography>
+                  { upprogress && upprogress.state != "error" &&
+                    <Box display="flex" alignItems="center" className={classes.fileProgress}>
+                      <Box width="100%" mr={1}>
+                        <LinearProgress variant="determinate" value={upprogress.percentage} />
+                      </Box>
+                      <Box minWidth={35}>
+                        <Typography variant="body2" color="textSecondary">{upprogress.percentage + "%"}</Typography>
+                      </Box>
+                    </Box>
+                  }
+                  { upprogress && upprogress.state == "error" && <Typography color='error'>Error uploading file</Typography> }
+                  { uploadProgress && uploadProgress[file.name] && uploadProgress[file.name].state === "done" ?
+                    <Typography variant="overline" component="div">
+                      {patientSubjectLabel} <Link href={subjectPath} target="_blank"> {file.subject.id} </Link> /&nbsp;
+                      {tumorSubjectLabel} <Link href={tumorPath} target="_blank"> {file.tumor.id} </Link>
+                      { file?.region?.path && <> / {regionSubjectLabel} <Link href={regionPath} target="_blank"> {file.region.id} </Link> </> }
+                      { file.formPath && <> : <Link href={file.formPath} target="_blank">{somaticVariantsTitle}</Link> </>}
+                    </Typography>
+                  : <div className={classes.fileFormSection}>
+                    <TextField
+                      label={patientSubjectLabel}
+                      value={file.subject.id}
+                      onChange={(event) => setSubject(event.target.value, file.name)}
+                      className={classes.fileDetail}
+                      required
+                      error={!subjectPath}
+                      helperText="Required"
+                    />
+                    <TextField
+                      label={tumorSubjectLabel}
+                      value={file.tumor.id}
+                      onChange={(event) => setTumor(event.target.value, file.name)}
+                      className={classes.fileDetail}
+                      required
+                      error={!tumorPath}
+                      helperText="Required"
+                    />
+                    <TextField
+                      label={regionSubjectLabel}
+                      value={file?.region?.id}
+                      onChange={(event) => setRegion(event.target.value, file.name)}
+                      className={classes.fileDetail}
+                      helperText="Optional"
+                    />
+                    <label htmlFor="contained-button-file">
+                      <Button variant={selectedFiles?.length > 1 ? "outlined" : "contained"} color="primary" disabled={!isDataValid || file.uploading} onClick={() => uploadSingleFile(file, true)}>
+                        <span><BackupIcon className={classes.buttonIcon}/>
+                          {file.uploading ? 'Uploading' : 'Upload'}
+                        </span>
+                      </Button>
+                    </label>
+                    </div>
+                  }
+                  {(!file.sameFiles || file.sameFiles.length == 0)
+                    ?
+                      <Typography variant="caption" component="p">There are no versions of this file.</Typography>
+                    :
+                      <Link
+                        variant="caption"
+                        underline="none"
+                        href="#"
+                        onClick={() => {
+                          setShowVersionsDialog(true);
+                          setFileSelected(file);
+                        }}>
+                          There {file.sameFiles.length == 1 ? "is one other version " : <>are {file.sameFiles.length} other versions </>}
+                          of this file
+                        </Link>
+                  }
+                </Grid>
+            ) } ) }
+        { showUploadAllButton ?
+        <Grid item>
+        <Button type="submit" variant="contained" color="primary" disabled={showUploadDisabled} form="variantForm">
+          <span><BackupIcon className={classes.buttonIcon}/>
+            {uploadAllComplete ? 'Uploaded' :
+             uploadInProgress ? 'Uploading' : 'Upload all'}
+          </span>
+        </Button>
         </Grid>
-      </form>
-
-      { selectedFiles && selectedFiles.length > 0 && <Grid container direction="column" spacing={4} className={classes.fileList}>
-        { selectedFiles.map( (file, i) => {
-            const upprogress = uploadProgress ? uploadProgress[file.name] : null;
-            let subjectPath = file.subject.path?.replace("/Subjects", "Subjects");
-            let tumorPath = file.tumor.path && `${subjectPath}/${file.tumor.path.replace(new RegExp(".+/"), "")}`;
-            let regionPath = file.region.path && `${tumorPath}/${file.region.path?.replace(new RegExp(".+/"), "")}`;
-            let isDataValid = subjectPath && tumorPath;
-
-            return (
-              <Grid item key={file.name}>
-                <Typography variant="h6">{file.name}</Typography>
-                { upprogress && upprogress.state != "error" &&
-                  <Box display="flex" alignItems="center" className={classes.fileProgress}>
-                    <Box width="100%" mr={1}>
-                      <LinearProgress variant="determinate" value={upprogress.percentage} />
-                    </Box>
-                    <Box minWidth={35}>
-                      <Typography variant="body2" color="textSecondary">{upprogress.percentage + "%"}</Typography>
-                    </Box>
-                  </Box>
-                }
-                { upprogress && upprogress.state == "error" && <Typography color='error'>Error uploading file</Typography> }
-                { uploadProgress && uploadProgress[file.name] && uploadProgress[file.name].state === "done" ?
-                  <Typography variant="overline" component="div">
-                    {patientSubjectLabel} <Link href={subjectPath} target="_blank"> {file.subject.id} </Link> /&nbsp;
-                    {tumorSubjectLabel} <Link href={tumorPath} target="_blank"> {file.tumor.id} </Link>
-                    { file?.region?.path && <> / {regionSubjectLabel} <Link href={regionPath} target="_blank"> {file.region.id} </Link> </> }
-                    { file.formPath && <> : <Link href={file.formPath} target="_blank">{somaticVariantsTitle}</Link> </>}
-                  </Typography>
-                : <div className={classes.fileFormSection}>
-                  <TextField
-                    label={patientSubjectLabel}
-                    value={file.subject.id}
-                    onChange={(event) => setSubject(event.target.value, file.name)}
-                    className={classes.fileDetail}
-                    required
-                    error={!subjectPath}
-                    helperText="Required"
-                  />
-                  <TextField
-                    label={tumorSubjectLabel}
-                    value={file.tumor.id}
-                    onChange={(event) => setTumor(event.target.value, file.name)}
-                    className={classes.fileDetail}
-                    required
-                    error={!tumorPath}
-                    helperText="Required"
-                  />
-                  <TextField
-                    label={regionSubjectLabel}
-                    value={file?.region?.id}
-                    onChange={(event) => setRegion(event.target.value, file.name)}
-                    className={classes.fileDetail}
-                    helperText="Optional"
-                  />
-                  <label htmlFor="contained-button-file">
-                    <Button variant={selectedFiles?.length > 1 ? "outlined" : "contained"} color="primary" disabled={!isDataValid || file.uploading} onClick={() => uploadSingleFile(file, true)}>
-                      <span><BackupIcon className={classes.buttonIcon}/>
-                        {file.uploading ? 'Uploading' : 'Upload'}
-                      </span>
-                    </Button>
-                  </label>
-                  </div>
-                }
-                {(!file.sameFiles || file.sameFiles.length == 0)
-                  ?
-                    <Typography variant="caption" component="p">There are no versions of this file.</Typography>
-                  :
-                    <Link
-                      variant="caption"
-                      underline="none"
-                      href="#"
-                      onClick={() => {
-                        setShowVersionsDialog(true);
-                        setFileSelected(file);
-                      }}>
-                        There {file.sameFiles.length == 1 ? "is one other version " : <>are {file.sameFiles.length} other versions </>}
-                        of this file
-                      </Link>
-                }
-              </Grid>
-          ) } ) }
-      { showUploadAllButton ?
-      <Grid item>
-      <Button type="submit" variant="contained" color="primary" disabled={showUploadDisabled} form="variantForm">
-        <span><BackupIcon className={classes.buttonIcon}/>
-          {uploadAllComplete ? 'Uploaded' :
-           uploadInProgress ? 'Uploading' : 'Upload all'}
-        </span>
-      </Button>
-      </Grid>
-      : <></>}
-    </Grid>}
-    <Dialog open={showVersionsDialog} onClose={() => setShowVersionsDialog(false)}>
-      <DialogTitle>
-        <span className={classes.dialogTitle}>Versions of {fileSelected?.name}</span>
-        <IconButton onClick={() => setShowVersionsDialog(false)} className={classes.closeButton} size="large">
-          <CloseIcon />
-        </IconButton>
-      </DialogTitle>
-      <DialogContent className={classes.dialogContent}>
-        <MaterialTable
-          data={fileSelected?.sameFiles}
-          style={{ boxShadow : 'none' }}
-          options={{
-            toolbar: false,
-            rowStyle: {
-              verticalAlign: 'top',
-            }
-          }}
-          title={""}
-          columns={[
-            { title: 'Created',
-              cellStyle: {
-                paddingLeft: 0,
-                fontWeight: "bold",
-                width: '1%',
-                whiteSpace: 'nowrap',
-              },
-              render: rowData => <Link href={rowData["@path"]}>
-                                  {moment(rowData['jcr:created']).format("YYYY-MM-DD")}
-                                </Link> },
-            { title: 'Uploaded By',
-              cellStyle: {
-                width: '50%',
-                whiteSpace: 'pre-wrap',
-                paddingBottom: "8px",
-              },
-              render: rowData => rowData["jcr:createdBy"] },
-            { title: 'Actions',
-              cellStyle: {
-                padding: '0',
-                width: '20px',
-                textAlign: 'end'
-              },
-              sorting: false,
-              render: rowData => <Tooltip title={"Download"}>
-                                  <IconButton size="large">
-                                    <Link underline="none" color="inherit" href={rowData["@path"]} download><GetApp /></Link>
-                                  </IconButton>
-                                </Tooltip> },
-          ]}
-          />
-      </DialogContent>
-    </Dialog>
-  </React.Fragment>
+        : <></>}
+      </Grid>}
+      <Dialog open={showVersionsDialog} onClose={() => setShowVersionsDialog(false)}>
+        <DialogTitle>
+          <span className={classes.dialogTitle}>Versions of {fileSelected?.name}</span>
+          <IconButton onClick={() => setShowVersionsDialog(false)} className={classes.closeButton} size="large">
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent className={classes.dialogContent}>
+          <MaterialTable
+            data={fileSelected?.sameFiles}
+            style={{ boxShadow : 'none' }}
+            options={{
+              toolbar: false,
+              rowStyle: {
+                verticalAlign: 'top',
+              }
+            }}
+            title={""}
+            columns={[
+              { title: 'Created',
+                cellStyle: {
+                  paddingLeft: 0,
+                  fontWeight: "bold",
+                  width: '1%',
+                  whiteSpace: 'nowrap',
+                },
+                render: rowData => <Link href={rowData["@path"]}>
+                                    {moment(rowData['jcr:created']).format("YYYY-MM-DD")}
+                                  </Link> },
+              { title: 'Uploaded By',
+                cellStyle: {
+                  width: '50%',
+                  whiteSpace: 'pre-wrap',
+                  paddingBottom: "8px",
+                },
+                render: rowData => rowData["jcr:createdBy"] },
+              { title: 'Actions',
+                cellStyle: {
+                  padding: '0',
+                  width: '20px',
+                  textAlign: 'end'
+                },
+                sorting: false,
+                render: rowData => <Tooltip title={"Download"}>
+                                    <IconButton size="large">
+                                      <Link underline="none" color="inherit" href={rowData["@path"]} download><GetApp /></Link>
+                                    </IconButton>
+                                  </Tooltip> },
+            ]}
+            />
+        </DialogContent>
+      </Dialog>
+    </Root>
   );
 }

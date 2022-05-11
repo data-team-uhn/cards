@@ -19,6 +19,8 @@
 
 import React, { useState, useContext } from "react";
 
+import { styled } from '@mui/material/styles';
+
 import {
   Button,
   Dialog,
@@ -34,14 +36,31 @@ import {
 
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
-const Phase = require("./phaseCodes.json");
+const PREFIX = 'vocabularyAction';
 
-const useStyles = makeStyles(theme => ({
-  vocabularyAction: {
+const classes = {
+  vocabularyAction: `${PREFIX}-vocabularyAction`,
+  buttonProgress: `${PREFIX}-buttonProgress`,
+  install: `${PREFIX}-install`,
+  uninstall: `${PREFIX}-uninstall`,
+  installingColor: `${PREFIX}-installingColor`,
+  uninstallingColor: `${PREFIX}-uninstallingColor`,
+  update: `${PREFIX}-update`,
+  wrapper: `${PREFIX}-wrapper`
+};
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled('div')((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.vocabularyAction}`]: {
     margin: theme.spacing(1),
     textTransform: "none"
   },
-  buttonProgress: {
+
+  [`& .${classes.buttonProgress}`]: {
     top: "50%",
     left: "50%",
     position: "absolute",
@@ -49,42 +68,50 @@ const useStyles = makeStyles(theme => ({
     marginLeft: -12,
     textTransform: "none"
   },
-  install: {
+
+  [`& .${classes.install}`]: {
     background: theme.palette.success.main,
     color: theme.palette.success.contrastText,
     "&:hover": {
       background: theme.palette.success.dark
     }
   },
-  uninstall: {
+
+  [`& .${classes.uninstall}`]: {
     background: theme.palette.error.main,
     color: theme.palette.error.contrastText,
     "&:hover": {
       background: theme.palette.error.dark
     }
   },
-  installingColor: {
+
+  [`& .${classes.installingColor}`]: {
     color: theme.palette.success.main
   },
-  uninstallingColor: {
+
+  [`& .${classes.uninstallingColor}`]: {
     color: theme.palette.error.main
   },
-  update: {
+
+  [`& .${classes.update}`]: {
     background: theme.palette.warning.main,
     color: theme.palette.warning.contrastText,
     "&:hover": {
       background: theme.palette.warning.dark
     }
   },
-  wrapper: {
+
+  [`& .${classes.wrapper}`]: {
     position: "relative",
     display: "inline-block"
   }
 }));
 
+const Phase = require("./phaseCodes.json");
+
 export default function VocabularyAction(props) {
   const { install, uninstall, phase, vocabulary, exit } = props;
-  const classes = useStyles();
+
   const [displayPopup, setDisplayPopup] = React.useState(false);
   const [linkedQuestions, setLinkedQuestions] = useState([]);
   const [questionnaires, setQuestionnaires] = useState([]);
@@ -155,8 +182,8 @@ export default function VocabularyAction(props) {
       return vocQuestions;
   }
 
-  return(
-    <React.Fragment>
+  return (
+    <Root>
     {(phase == Phase["Not Installed"]) && (
       <Tooltip title="Install this vocabulary">
         <Button onClick={install} variant="contained" className={classes.vocabularyAction + " " + classes.install}>Install</Button>
@@ -229,6 +256,6 @@ export default function VocabularyAction(props) {
       </DialogActions>
 
     </Dialog>
-    </React.Fragment>
+    </Root>
   );
 }

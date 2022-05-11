@@ -31,9 +31,43 @@ import {
   makeStyles
 } from "@material-ui/core";
 
+import { styled } from '@mui/material/styles';
+
 import React, {useEffect, useContext} from "react";
 import SettingsIcon from '@material-ui/icons/Settings';
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
+
+const PREFIX = 'bioportalApiKey';
+
+const classes = {
+  dialogTitle: `${PREFIX}-dialogTitle`,
+  vocabularyAction: `${PREFIX}-vocabularyAction`,
+  noKeyInfo: `${PREFIX}-noKeyInfo`,
+  settingIcon: `${PREFIX}-settingIcon`
+};
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled('div')((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.dialogTitle}`]: {
+    marginRight: theme.spacing(5)
+  },
+
+  [`& .${classes.vocabularyAction}`]: {
+    margin: theme.spacing(1)
+  },
+
+  [`& .${classes.noKeyInfo}`]: {
+    padding: theme.spacing(1, 0)
+  },
+
+  [`& .${classes.settingIcon}`]: {
+    marginTop: theme.spacing(-0.5)
+  }
+}));
 
 const APIKEY_SERVLET_URL = "/Vocabularies.bioportalApiKey";
 
@@ -54,25 +88,10 @@ fetchWithReLogin(globalLoginDisplay, APIKEY_SERVLET_URL)
   .catch(errorHandler);
 }
 
-const useStyles = makeStyles(theme => ({
-  dialogTitle: {
-    marginRight: theme.spacing(5)
-  },
-  vocabularyAction: {
-    margin: theme.spacing(1)
-  },
-  noKeyInfo: {
-    padding: theme.spacing(1, 0)
-  },
-  settingIcon: {
-    marginTop: theme.spacing(-0.5)
-  }
-}));
-
 export function BioPortalApiKey(props) {
   const { bioPortalApiKey, updateKey } = props;
   const globalLoginDisplay = useContext(GlobalLoginContext);
-  const classes = useStyles();
+
 
   /* User input api key */
   const [customApiKey, setCustomApiKey] = React.useState('');
@@ -121,8 +140,8 @@ export function BioPortalApiKey(props) {
     );
   }
 
-  return(
-    <React.Fragment>
+  return (
+    <Root>
       <Grid item>
         <Typography variant="h6">
           Find on <a href="https://bioportal.bioontology.org/" target="_blank">BioPortal</a>
@@ -171,6 +190,6 @@ export function BioPortalApiKey(props) {
             <Button variant="contained" className={classes.vocabularyAction} onClick={() => {setDisplayPopup(false)}}>Cancel</Button>
           </DialogActions>
       </Dialog>
-    </React.Fragment>
+    </Root>
   );
 }

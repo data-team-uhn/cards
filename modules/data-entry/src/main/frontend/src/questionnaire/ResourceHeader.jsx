@@ -18,6 +18,7 @@
 //
 
 import React from "react";
+import { styled } from '@mui/material/styles';
 import PropTypes from "prop-types";
 
 import {
@@ -33,37 +34,54 @@ import { grey } from '@material-ui/core/colors';
 
 import { GRID_SPACE_UNIT } from "./QuestionnaireStyle";
 
-const useStyles = makeStyles(theme => ({
-    resourceHeader: {
-      position: "sticky",
-      top: 0,
-      paddingBottom: "0 !important",
-      margin: theme.spacing(2*GRID_SPACE_UNIT, GRID_SPACE_UNIT, 0),
-      backgroundColor: grey[100],
-      zIndex: "1010",
-      "& .MuiBreadcrumbs-root" : {
-        width: "fit-content",
-      },
-      "& .MuiBreadcrumbs-li" : {
-        color: theme.palette.text.primary,
-      },
+const PREFIX = 'ResourceHeader';
+
+const classes = {
+  resourceHeader: `${PREFIX}-resourceHeader`,
+  breadcrumbAction: `${PREFIX}-breadcrumbAction`,
+  headerSeparator: `${PREFIX}-headerSeparator`,
+  resourceTitle: `${PREFIX}-resourceTitle`
+};
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled('div')((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.resourceHeader}`]: {
+    position: "sticky",
+    top: 0,
+    paddingBottom: "0 !important",
+    margin: theme.spacing(2*GRID_SPACE_UNIT, GRID_SPACE_UNIT, 0),
+    backgroundColor: grey[100],
+    zIndex: "1010",
+    "& .MuiBreadcrumbs-root" : {
+      width: "fit-content",
     },
-    breadcrumbAction: {
-      margin: theme.spacing(-1.25, 0),
+    "& .MuiBreadcrumbs-li" : {
+      color: theme.palette.text.primary,
     },
-    headerSeparator: {
-      visibility: "hidden",
-      border: "0 none",
-      height: theme.spacing(2),
-      margin: 0,
-    },
-    resourceTitle: {
-      backgroundColor: grey[100],
-      margin: theme.spacing(0, GRID_SPACE_UNIT, GRID_SPACE_UNIT),
-      paddingTop: "0 !important",
-      zIndex: 2,
-    }
-}))
+  },
+
+  [`& .${classes.breadcrumbAction}`]: {
+    margin: theme.spacing(-1.25, 0),
+  },
+
+  [`& .${classes.headerSeparator}`]: {
+    visibility: "hidden",
+    border: "0 none",
+    height: theme.spacing(2),
+    margin: 0,
+  },
+
+  [`& .${classes.resourceTitle}`]: {
+    backgroundColor: grey[100],
+    margin: theme.spacing(0, GRID_SPACE_UNIT, GRID_SPACE_UNIT),
+    paddingTop: "0 !important",
+    zIndex: 2,
+  }
+}));
 
 /**
  * Component that displays the header of a resource (e.g. a form, a subject, a questionnaire)
@@ -104,7 +122,7 @@ const useStyles = makeStyles(theme => ({
 function ResourceHeader (props) {
   let { title, breadcrumbs, separator, action, children } = props;
 
-  const classes = useStyles();
+
 
   const fullBreadcrumbTrigger = useScrollTrigger({
     target: window,
@@ -113,38 +131,38 @@ function ResourceHeader (props) {
   });
 
   return (
-    <>
-    <Grid item xs={12} className={classes.resourceHeader} style={{top: props.contentOffset}} id="cards-resource-header">
-      <Grid container direction="row" justify="space-between" alignItems="center" wrap="nowrap">
-        <Grid item>
-          <Breadcrumbs separator={separator}>
-            {Array.from(breadcrumbs || []).map(item => <Typography variant="overline" key={item}>{item}</Typography>)}
-            <Collapse in={fullBreadcrumbTrigger}>
-              <Typography variant="subtitle2">{title}</Typography>
-            </Collapse>
-          </Breadcrumbs>
+    (<Root>
+      <Grid item xs={12} className={classes.resourceHeader} style={{top: props.contentOffset}} id="cards-resource-header">
+        <Grid container direction="row" justify="space-between" alignItems="center" wrap="nowrap">
+          <Grid item>
+            <Breadcrumbs separator={separator}>
+              {Array.from(breadcrumbs || []).map(item => <Typography variant="overline" key={item}>{item}</Typography>)}
+              <Collapse in={fullBreadcrumbTrigger}>
+                <Typography variant="subtitle2">{title}</Typography>
+              </Collapse>
+            </Breadcrumbs>
+          </Grid>
+          <Collapse in={!!action &&  fullBreadcrumbTrigger} component={Grid} item>
+            { fullBreadcrumbTrigger && <div className={classes.breadcrumbAction}>{action}</div> }
+          </Collapse>
         </Grid>
-        <Collapse in={!!action &&  fullBreadcrumbTrigger} component={Grid} item>
-          { fullBreadcrumbTrigger && <div className={classes.breadcrumbAction}>{action}</div> }
+        <Collapse in={fullBreadcrumbTrigger}>
+          <hr className={classes.headerSeparator} />
         </Collapse>
       </Grid>
-      <Collapse in={fullBreadcrumbTrigger}>
-        <hr className={classes.headerSeparator} />
-      </Collapse>
-    </Grid>
-    <Collapse in={!(fullBreadcrumbTrigger)}
-      component={Grid} item xs={12} className={classes.resourceTitle}>
-        <Grid container direction="row" justify="space-between" alignItems="center">
-          <Grid item>
-            <Typography component="h2" variant="h4">{title}</Typography>
+      <Collapse in={!(fullBreadcrumbTrigger)}
+        component={Grid} item xs={12} className={classes.resourceTitle}>
+          <Grid container direction="row" justify="space-between" alignItems="center">
+            <Grid item>
+              <Typography component="h2" variant="h4">{title}</Typography>
+            </Grid>
+            {action && !fullBreadcrumbTrigger && <Grid item>{action}</Grid>}
           </Grid>
-          {action && !fullBreadcrumbTrigger && <Grid item>{action}</Grid>}
-        </Grid>
-        {children}
-    </Collapse>
-    </>
-  )
-};
+          {children}
+      </Collapse>
+    </Root>)
+  );
+}
 
 ResourceHeader.propTypes = {
   title: PropTypes.string.isRequired,

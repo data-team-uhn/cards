@@ -19,6 +19,8 @@
 
 import React, { useState, useContext } from "react";
 
+import { styled } from '@mui/material/styles';
+
 import {
   Button,
   CircularProgress,
@@ -31,48 +33,69 @@ import {
 
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
-const Status = require("./statusCodes.json");
+const PREFIX = 'owlInstaller';
 
-const useStyles = makeStyles(theme => ({
-  buttonProgress: {
+const classes = {
+  buttonProgress: `${PREFIX}-buttonProgress`,
+  install: `${PREFIX}-install`,
+  failed: `${PREFIX}-failed`,
+  installingColor: `${PREFIX}-installingColor`,
+  uninstallingColor: `${PREFIX}-uninstallingColor`,
+  update: `${PREFIX}-update`
+};
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled('div')((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.buttonProgress}`]: {
     top: "50%",
     left: "50%",
     position: "absolute",
     marginTop: -12,
     marginLeft: -12
   },
-  install: {
+
+  [`& .${classes.install}`]: {
     background: theme.palette.success.main,
     color: theme.palette.success.contrastText,
     "&:hover": {
       background: theme.palette.success.dark
     }
   },
-  failed: {
+
+  [`& .${classes.failed}`]: {
     background: theme.palette.error.main,
     color: theme.palette.error.contrastText,
     "&:hover": {
       background: theme.palette.error.dark
     }
   },
-  installingColor: {
+
+  [`& .${classes.installingColor}`]: {
     color: theme.palette.success.main
   },
-  uninstallingColor: {
+
+  [`& .${classes.uninstallingColor}`]: {
     color: theme.palette.error.main
   },
-  update: {
+
+  [`& .${classes.update}`]: {
     background: theme.palette.warning.main,
     color: theme.palette.warning.contrastText,
     "&:hover": {
       background: theme.palette.warning.dark
     }
-  },
+  }
 }));
+
+const Status = require("./statusCodes.json");
 
 export default function OwlInstaller(props) {
 
-  const classes = useStyles();
+
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
   let [ phase, setPhase ] = useState("install");
@@ -108,8 +131,8 @@ export default function OwlInstaller(props) {
     .catch((err) => { setPhase("failed") });
   }
 
-  return(
-    <React.Fragment>
+  return (
+    <Root>
       <Grid item>
         <Typography variant="h6">
           Install from local file
@@ -225,6 +248,6 @@ export default function OwlInstaller(props) {
         </Grid>
       </form>
       </Grid>
-    </React.Fragment>
+    </Root>
   );
 }

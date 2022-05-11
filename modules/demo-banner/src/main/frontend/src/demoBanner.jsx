@@ -19,6 +19,8 @@
 
 import React from "react";
 
+import { styled } from '@mui/material/styles';
+
 import {
   AppBar,
   withStyles,
@@ -29,17 +31,27 @@ import {
 
 import WarningIcon from '@material-ui/icons/Warning';
 
-const appbarStyle = theme => ({
-  root: {
+const PREFIX = 'demoBanner';
+
+const classes = {
+  root: `${PREFIX}-root`
+};
+
+const StyledStyledAppBar = styled(StyledAppBar)((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.root}`]: {
     backgroundColor: theme.palette.warning.main
   }
-});
+}));
 
 export default function DemoBanner(props) {
-  const StyledAppBar = withStyles(appbarStyle)(AppBar);
+  const StyledAppBar = AppBar;
 
   return (
-    <StyledAppBar position="fixed" style={props.style} ref={props.onRender}>
+    <StyledStyledAppBar position="fixed" style={props.style} ref={props.onRender}>
       <Toolbar>
       <Grid container spacing={1} direction="row" justify="center" alignItems="center" wrap="nowrap">
         <Grid item><WarningIcon/></Grid>
@@ -53,6 +65,6 @@ export default function DemoBanner(props) {
         </Grid>
       </Grid>
       </Toolbar>
-    </StyledAppBar>
+    </StyledStyledAppBar>
   );
 }

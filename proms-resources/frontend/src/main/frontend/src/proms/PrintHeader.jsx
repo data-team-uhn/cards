@@ -17,14 +17,25 @@
 //  under the License.
 //
 import React, { useState } from "react";
+import { styled } from '@mui/material/styles';
 import {
   Typography,
   makeStyles,
 } from "@material-ui/core";
 import { DateTime } from "luxon";
 
-const useStyles = makeStyles(theme => ({
-  container : {
+const PREFIX = 'PrintHeader';
+
+const classes = {
+  container: `${PREFIX}-container`
+};
+
+const Root = styled('div')((
+  {
+    theme
+  }
+) => ({
+  [`&.${classes.container}`]: {
     display: "flex",
     justifyContent: "space-between",
     borderBottom: "1px solid " + theme.palette.divider,
@@ -36,13 +47,13 @@ const useStyles = makeStyles(theme => ({
     "& > *:last-child .MuiTypography-root" : {
       textAlign: "right",
     }
-  },
+  }
 }));
 
 function PrintHeader (props) {
   const { resourceData } = props;
 
-  const classes = useStyles();
+
 
   const hasData = (
     resourceData?.last_name ||
@@ -52,20 +63,18 @@ function PrintHeader (props) {
     resourceData?.time
   );
 
-  return (
-    hasData ?
-    <div className={classes.container}>
-      <div>
-        {(resourceData.last_name || resourceData.first_name) && <Typography variant="overline">{[resourceData.last_name || '-', resourceData.first_name || '-'].join(", ")}</Typography>}
-        {resourceData.date_of_birth && <Typography variant="overline">DOB: {DateTime.fromISO(resourceData.date_of_birth).toLocaleString(DateTime.DATE_MED)}</Typography>}
-      </div>
-      <div>
-        {resourceData.mrn && <Typography variant="overline">MRN: {resourceData.mrn}</Typography>}
-        {resourceData.time && <Typography variant="overline">Appt: {DateTime.fromISO(resourceData.time).toLocaleString(DateTime.DATETIME_MED)}</Typography>}
-      </div>
+  return hasData ?
+  <Root className={classes.container}>
+    <div>
+      {(resourceData.last_name || resourceData.first_name) && <Typography variant="overline">{[resourceData.last_name || '-', resourceData.first_name || '-'].join(", ")}</Typography>}
+      {resourceData.date_of_birth && <Typography variant="overline">DOB: {DateTime.fromISO(resourceData.date_of_birth).toLocaleString(DateTime.DATE_MED)}</Typography>}
     </div>
-    : null
-  );
+    <div>
+      {resourceData.mrn && <Typography variant="overline">MRN: {resourceData.mrn}</Typography>}
+      {resourceData.time && <Typography variant="overline">Appt: {DateTime.fromISO(resourceData.time).toLocaleString(DateTime.DATETIME_MED)}</Typography>}
+    </div>
+  </Root>
+  : null;
 }
 
 export default PrintHeader;

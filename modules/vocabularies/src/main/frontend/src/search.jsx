@@ -19,6 +19,8 @@
 
 import React, { useContext } from "react";
 
+import { styled } from '@mui/material/styles';
+
 import {
   Button,
   CircularProgress,
@@ -36,6 +38,32 @@ import CloseIcon from "@material-ui/icons/Close";
 import fetchBioPortalApiKey from "./bioportalApiKey";
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
+const PREFIX = 'search';
+
+const classes = {
+  searchAdornmentWrapper: `${PREFIX}-searchAdornmentWrapper`,
+  searchProgress: `${PREFIX}-searchProgress`
+};
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled('div')((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.searchAdornmentWrapper}`]: {
+    marginRight: theme.spacing(-1),
+    position: 'relative',
+  },
+
+  [`& .${classes.searchProgress}`]: {
+    position: 'absolute',
+    top: theme.spacing(0.5),
+    left: theme.spacing(0.5),
+    zIndex: 1,
+  }
+}));
+
 const vocabLinks = require('./vocabularyLinks.json');
 
 function extractList(data) {
@@ -50,25 +78,12 @@ function extractList(data) {
   return acronymList;
 }
 
-const useStyles = makeStyles(theme => ({
-  searchAdornmentWrapper: {
-    marginRight: theme.spacing(-1),
-    position: 'relative',
-  },
-  searchProgress: {
-    position: 'absolute',
-    top: theme.spacing(0.5),
-    left: theme.spacing(0.5),
-    zIndex: 1,
-  },
-}));
-
 export default function Search(props) {
   const [error, setError] = React.useState(false);
   const [keywords, setKeywords] = React.useState("");
   const [lastSearch, setLastSearch] = React.useState("");
   const [loading, setLoading] = React.useState(false);
-  const classes = useStyles();
+
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -128,8 +143,8 @@ export default function Search(props) {
     }
   }
 
-  return(
-    <React.Fragment>
+  return (
+    <Root>
       <Grid item>
         <TextField
           fullWidth
@@ -158,6 +173,6 @@ export default function Search(props) {
           variant="outlined"
         />
       </Grid>
-    </React.Fragment>
+    </Root>
   );
 }

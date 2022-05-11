@@ -22,13 +22,24 @@ import { Router, Route, Redirect, Switch } from "react-router-dom";
 import { Paper, Grid, Button, Typography, makeStyles } from '@material-ui/core';
 import { Alert, AlertTitle } from "@material-ui/lab";
 import { createBrowserHistory } from "history";
-import { MuiThemeProvider } from '@material-ui/core/styles';
+import { MuiThemeProvider, styled } from '@material-ui/core/styles';
 import { appTheme } from "../themePalette.jsx";
 import PromsFooter from "./Footer.jsx";
 import ErrorPage from "../components/ErrorPage.jsx";
 
-const useStyles = makeStyles(theme => ({
-  paper: {
+const PREFIX = 'Unsubscribe';
+
+const classes = {
+  paper: `${PREFIX}-paper`,
+  logo: `${PREFIX}-logo`
+};
+
+const StyledUnsubscribe = styled(Unsubscribe)((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.paper}`]: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -38,9 +49,10 @@ const useStyles = makeStyles(theme => ({
       textAlign: "center",
     },
   },
-  logo: {
+
+  [`& .${classes.logo}`]: {
     maxWidth: "240px",
-  },
+  }
 }));
 
 function Unsubscribe (props) {
@@ -48,7 +60,7 @@ function Unsubscribe (props) {
   const [ confirmed, setConfirmed ] = useState(null);
   const [ error, setError ] = useState();
   const [ alreadyUnsubscribed, setAlreadyUnsubscribed ] = useState(false);
-  const classes = useStyles();
+
 
   let unsubscribe = (value) => {
     let request_data = new FormData();
@@ -138,7 +150,7 @@ function Unsubscribe (props) {
 }
 
 ReactDOM.render(
-  <Unsubscribe />,
+  <StyledUnsubscribe />,
   document.querySelector('#proms-unsubscribe-container')
 );
 

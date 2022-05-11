@@ -18,6 +18,7 @@
 //
 
 import React, { useEffect, useState } from "react";
+import { styled } from '@mui/material/styles';
 import PropTypes from "prop-types";
 import {
   Button,
@@ -49,6 +50,75 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 import ComposedIcon from "../components/ComposedIcon.jsx";
 
+const PREFIX = 'AnswerOptions';
+
+const classes = {
+  answerOption: `${PREFIX}-answerOption`,
+  answerOptionReadonly: `${PREFIX}-answerOptionReadonly`,
+  answerOptionActions: `${PREFIX}-answerOptionActions`,
+  newOptionInput: `${PREFIX}-newOptionInput`,
+  answerOptionSwitch: `${PREFIX}-answerOptionSwitch`,
+  optionsDragIndicator: `${PREFIX}-optionsDragIndicator`,
+  descriptionPopover: `${PREFIX}-descriptionPopover`
+};
+
+const StyledEditorInput = styled(EditorInput)((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.answerOption}`]: {
+    border: "1px solid " + theme.palette.divider,
+    background: theme.palette.background.paper,
+    borderRadius: theme.spacing(.5, 3, 3, .5),
+    margin: theme.spacing(1, 0),
+    "& > .MuiGrid-item" : {
+      display: "flex",
+    },
+    "& .MuiFormControl-root" : {
+      paddingTop: theme.spacing(1),
+      width: "100%",
+    },
+    "& .MuiInputBase-input" : {
+      paddingRight: theme.spacing(1),
+      paddingLeft: theme.spacing(1),
+    },
+  },
+
+  [`& .${classes.answerOptionReadonly}`]: {
+    "& .MuiInput-underline:before" : {
+      borderBottom: "0 none !important",
+    },
+    "& .MuiInput-underline:after" : {
+      borderBottom: "0 none !important",
+    }
+  },
+
+  [`& .${classes.answerOptionActions}`]: {
+    justifyContent: "flex-end",
+  },
+
+  [`& .${classes.newOptionInput}`]: {
+    marginBottom: theme.spacing(2),
+  },
+
+  [`& .${classes.answerOptionSwitch}`]: {
+    margin: theme.spacing(0.5),
+  },
+
+  [`& .${classes.optionsDragIndicator}`]: {
+    padding: theme.spacing(1.5, 0.5),
+    borderRadius: theme.spacing(0.5),
+  },
+
+  [`& .${classes.descriptionPopover}`]: {
+    "& .MuiCardActions-root" : {
+      justifyContent: "flex-end",
+      padding: theme.spacing(1,2),
+    },
+  }
+}));
+
 let extractSortedOptions = (data) => {
   return Object.values(data).filter(value => value['jcr:primaryType'] == 'cards:AnswerOption'
                                              && !value.notApplicable
@@ -57,56 +127,9 @@ let extractSortedOptions = (data) => {
                             .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder));
 }
 
-const useStyles = makeStyles(theme => ({
-    answerOption: {
-      border: "1px solid " + theme.palette.divider,
-      background: theme.palette.background.paper,
-      borderRadius: theme.spacing(.5, 3, 3, .5),
-      margin: theme.spacing(1, 0),
-      "& > .MuiGrid-item" : {
-        display: "flex",
-      },
-      "& .MuiFormControl-root" : {
-        paddingTop: theme.spacing(1),
-        width: "100%",
-      },
-      "& .MuiInputBase-input" : {
-        paddingRight: theme.spacing(1),
-        paddingLeft: theme.spacing(1),
-      },
-    },
-    answerOptionReadonly: {
-      "& .MuiInput-underline:before" : {
-        borderBottom: "0 none !important",
-      },
-      "& .MuiInput-underline:after" : {
-        borderBottom: "0 none !important",
-      }
-    },
-    answerOptionActions : {
-      justifyContent: "flex-end",
-    },
-    newOptionInput: {
-      marginBottom: theme.spacing(2),
-    },
-    answerOptionSwitch: {
-      margin: theme.spacing(0.5),
-    },
-    optionsDragIndicator: {
-      padding: theme.spacing(1.5, 0.5),
-      borderRadius: theme.spacing(0.5),
-    },
-    descriptionPopover: {
-      "& .MuiCardActions-root" : {
-        justifyContent: "flex-end",
-        padding: theme.spacing(1,2),
-      },
-    },
-}));
-
 let AnswerOptions = (props) => {
   const { objectKey, value, data, path, saveButtonRef } = props;
-  const classes = useStyles();
+
   let [ options, setOptions ] = useState(extractSortedOptions(data));
   let [ deletedOptions, setDeletedOptions ] = useState([]);
   let [ tempValue, setTempValue ] = useState(''); // Holds new, non-committed answer options
@@ -361,7 +384,7 @@ let AnswerOptions = (props) => {
   }
 
   return (
-    <EditorInput name={objectKey}>
+    <StyledEditorInput name={objectKey}>
       { deletedOptions.map((value, index) =>
         <input type='hidden' name={`${value['@path']}@Delete`} value="0" key={value['@path']} />
       )}
@@ -491,8 +514,8 @@ let AnswerOptions = (props) => {
           </CardActions>
         </Card>
       </Popover>
-    </EditorInput>
-  )
+    </StyledEditorInput>
+  );
 }
 
 AnswerOptions.propTypes = {

@@ -19,6 +19,8 @@
 
 import React, { useEffect, useContext } from "react";
 
+import { styled } from '@mui/material/styles';
+
 import {
   Dialog,
   DialogContent,
@@ -35,20 +37,33 @@ import VocabularyDetails from "./vocabularyDetails"
 import VocabularyAction from "./vocabularyAction"
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
-const vocabLinks = require('./vocabularyLinks.json');
-const Phase = require("./phaseCodes.json");
+const PREFIX = 'vocabularyActions';
 
-const useStyles = makeStyles(theme => ({
-  closeButton: {
+const classes = {
+  closeButton: `${PREFIX}-closeButton`,
+  title: `${PREFIX}-title`
+};
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled('div')((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.closeButton}`]: {
     position: 'absolute',
     right: theme.spacing(1),
     top: theme.spacing(1),
     color: theme.palette.grey[500]
   },
-  title: {
+
+  [`& .${classes.title}`]: {
     marginRight: theme.spacing(5)
   }
 }));
+
+const vocabLinks = require('./vocabularyLinks.json');
+const Phase = require("./phaseCodes.json");
 
 /*
   This function keeps track of the state of the current vocabulary. It also keeps track of any error messages needed to be displayed.
@@ -63,7 +78,7 @@ export default function VocabularyActions(props) {
 
   const [phase, setPhase] = React.useState(initPhase);
 
-  const classes = useStyles();
+
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -129,37 +144,37 @@ export default function VocabularyActions(props) {
   }
   React.useEffect(() => {props.addSetter(setPhase);},[0]);
 
-  return(
-      <React.Fragment>
-        <VocabularyAction
-          install={install}
-          uninstall={uninstall}
-          phase={phase}
-          vocabulary={vocabulary}
-        />
-        <VocabularyDetails
-          install={install}
-          uninstall={uninstall}
-          phase={phase}
-          vocabulary={vocabulary}
-          type={props.type}
-        />
-        <Dialog open={error} onClose={handleClose}>
+  return (
+    <Root>
+      <VocabularyAction
+        install={install}
+        uninstall={uninstall}
+        phase={phase}
+        vocabulary={vocabulary}
+      />
+      <VocabularyDetails
+        install={install}
+        uninstall={uninstall}
+        phase={phase}
+        vocabulary={vocabulary}
+        type={props.type}
+      />
+      <Dialog open={error} onClose={handleClose}>
 
-          <DialogTitle>
-            <Typography variant="h6" color="error" className={classes.title}>Failed to {action}</Typography>
-            <IconButton onClick={handleClose} className={classes.closeButton} size="large">
-              <CloseIcon />
-            </IconButton>
-          </DialogTitle>
+        <DialogTitle>
+          <Typography variant="h6" color="error" className={classes.title}>Failed to {action}</Typography>
+          <IconButton onClick={handleClose} className={classes.closeButton} size="large">
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
 
-          <DialogContent dividers>
-            <Typography variant="h6">{vocabulary.name}</Typography>
-            <Typography variant="subtitle2" gutterBottom>Version: {vocabulary.version}</Typography>
-            <Typography paragraph color="error">{errorMessage}</Typography>
-          </DialogContent>
+        <DialogContent dividers>
+          <Typography variant="h6">{vocabulary.name}</Typography>
+          <Typography variant="subtitle2" gutterBottom>Version: {vocabulary.version}</Typography>
+          <Typography paragraph color="error">{errorMessage}</Typography>
+        </DialogContent>
 
-        </Dialog>
-      </React.Fragment>
+      </Dialog>
+    </Root>
   );
 }

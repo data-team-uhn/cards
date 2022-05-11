@@ -20,14 +20,26 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import { Fab, Grid, Paper, Typography, makeStyles } from '@material-ui/core';
-import { MuiThemeProvider } from '@material-ui/core/styles';
+import { MuiThemeProvider, styled } from '@material-ui/core/styles';
 import NavigationIcon from '@material-ui/icons/Navigation';
 import { lightBlue } from '@material-ui/core/colors';
 import { appTheme } from "../themePalette.jsx";
 import { useHistory } from 'react-router-dom';
 
-const useStyles = makeStyles(theme => ({
-  paper: {
+const PREFIX = 'TokenExpired';
+
+const classes = {
+  paper: `${PREFIX}-paper`,
+  logo: `${PREFIX}-logo`,
+  extendedIcon: `${PREFIX}-extendedIcon`
+};
+
+const StyledTokenExpired = styled(TokenExpired)((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.paper}`]: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -36,16 +48,18 @@ const useStyles = makeStyles(theme => ({
       textAlign: "center",
     },
   },
-  logo: {
+
+  [`& .${classes.logo}`]: {
     maxWidth: "240px",
   },
-  extendedIcon: {
+
+  [`& .${classes.extendedIcon}`]: {
     marginRight: theme.spacing(1),
-  },
+  }
 }));
 
 export default function TokenExpired() {
-  const classes = useStyles();
+
 
   return (
     <MuiThemeProvider theme={appTheme}>
@@ -72,4 +86,4 @@ export default function TokenExpired() {
   );
 }
 
-ReactDOM.render(<TokenExpired />, document.getElementById('token-expired-container'));
+ReactDOM.render(<StyledTokenExpired />, document.getElementById('token-expired-container'));

@@ -40,50 +40,28 @@ import {
   useMediaQuery
 } from "@material-ui/core";
 
-import { useTheme } from '@material-ui/core/styles';
+import { useTheme, styled } from '@material-ui/core/styles';
 
 import FormattedText from "../components/FormattedText.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import { loadExtensions } from "../uiextension/extensionManager";
 import { useReactToPrint } from 'react-to-print';
 
-async function getHeaderExtensions(name) {
-  return loadExtensions("PrintHeader")
-    .then(extensions => extensions.slice()
-      .sort((a, b) => a["cards:defaultOrder"] - b["cards:defaultOrder"])
-    )
-}
+const PREFIX = 'PrintPreview';
 
-// Component that renders a form in a format/style ready for printing.
-// Internally, it queries and renders the markdown (.md) export of the form.
-//
-// Required props:
-// resourcePath: String specifying the path of the form to print
-//
-// Optional props:
-// title: String specifying the title to associate with the rendered content.
-//   Note: the .md export doesn't generate a title.
-// breadcrumb: String displayed in small fonts above the title, providing some context for the printed resource.
-//   Example usage: the formatted identifier of the subject for this resource.
-// date: String displayed with breadcrumb in the header above the title, providing the time context for the printed resource
-// subtitle: String displayed in small fonts under the title, expected to be a relevant date or description 
-// fullScreen: Boolean specifying if the preview is full screen or displayed as a modal
-// onClose: Callback for closing the dialog
-//
-// Any other props are forwarded to the <Dialog> component used to display the preview.
-//
-// Sample usage:
-//<PrintPreview
-//  resourcePath="/Forms/UUID-1235"
-//  title="..."
-//  open={open}
-//  fullScreen
-//  onClose={() => {...}}
-//  />
-//
+const classes = {
+  printPreview: `${PREFIX}-printPreview`,
+  header: `${PREFIX}-header`,
+  printTarget: `${PREFIX}-printTarget`
+};
 
-const useStyles = makeStyles(theme => ({
-  printPreview : {
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled('div')((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.printPreview}`]: {
     "& .wmde-markdown h1, .wmde-markdown h2" : {
       borderBottom: "0 none",
     },
@@ -94,13 +72,15 @@ const useStyles = makeStyles(theme => ({
       padding: theme.spacing(2),
     },
   },
-  header : {
+
+  [`& .${classes.header}`]: {
     display: "flex",
     justifyContent: "space-between",
     borderBottom: "1px solid " + theme.palette.divider,
     marginBottom: theme.spacing(3),
   },
-  printTarget : {
+
+  [`& .${classes.printTarget}`]: {
     display: "none",
     "@media print" : {
       display: "block",
@@ -112,8 +92,15 @@ const useStyles = makeStyles(theme => ({
         breakBefore: "page",
       }
     }
-  },
+  }
 }));
+
+async function getHeaderExtensions(name) {
+  return loadExtensions("PrintHeader")
+    .then(extensions => extensions.slice()
+      .sort((a, b) => a["cards:defaultOrder"] - b["cards:defaultOrder"])
+    )
+}
 
 function PrintPreview(props) {
   const { open, resourcePath, resourceData, title, breadcrumb, date, subtitle, disablePreview, fullScreen, onClose, ...rest } = props;
@@ -123,7 +110,7 @@ function PrintPreview(props) {
   const [ content, setContent ] = useState();
   const [ error, setError ] = useState();
 
-  const classes = useStyles();
+
 
   const width = "sm";
   const theme = useTheme();
@@ -161,10 +148,10 @@ function PrintPreview(props) {
   }, [])
 
   let header = (
-    headerExtensions?.length ? <>{ headerExtensions.map((extension, index) => {
-            let Extension = extension["cards:extensionRender"];
-            return <Extension key={`extension-${index}`} resourceData={resourceData} />;
-          })}</>
+    headerExtensions?.length ? <Root>{ headerExtensions.map((extension, index) => {
+              let Extension = extension["cards:extensionRender"];
+              return <Extension key={`extension-${index}`} resourceData={resourceData} />;
+            })}</Root>
     :
     (breadcrumb || date) ?
       <div className={classes.header}>
