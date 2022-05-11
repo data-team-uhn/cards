@@ -33,7 +33,8 @@ import {
   Typography,
 } from '@material-ui/core';
 import makeStyles from '@material-ui/styles/makeStyles';
-import { Alert, AlertTitle } from '@material-ui/lab';
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 import NextStepIcon from '@material-ui/icons/ChevronRight';
 import DoneIcon from '@material-ui/icons/Done';
 import WarningIcon from '@material-ui/icons/Warning';

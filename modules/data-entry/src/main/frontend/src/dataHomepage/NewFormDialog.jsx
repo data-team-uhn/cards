@@ -24,7 +24,7 @@ import { Button, DialogActions, DialogContent, Typography } from "@material-ui/c
 import withStyles from '@material-ui/styles/withStyles';
 import AddIcon from "@material-ui/icons/Add";
 import MaterialTable from "material-table";
-import Alert from '@material-ui/lab/Alert';
+import Alert from '@mui/material/Alert';
 
 import SubjectSelectorList, { NewSubjectDialog, parseToArray } from "../questionnaire/SubjectSelector.jsx";
 import NewItemButton from "../components/NewItemButton.jsx";

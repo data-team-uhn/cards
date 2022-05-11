@@ -36,7 +36,7 @@ import {
 import withStyles from '@material-ui/styles/withStyles';
 import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import MaterialTable from "material-table";
-import Alert from '@material-ui/lab/Alert';
+import Alert from '@mui/material/Alert';
 
 import { escapeJQL } from "../escape.jsx";
 import { getHierarchy, getSubjectIdFromPath } from "./Subject.jsx";

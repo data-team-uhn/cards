@@ -24,7 +24,8 @@ import { Button, DialogActions, DialogContent } from "@material-ui/core";
 
 import makeStyles from '@material-ui/styles/makeStyles';
 
-import { Alert, AlertTitle } from "@material-ui/lab";
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 
 import FormattedText from "../components/FormattedText.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog";
