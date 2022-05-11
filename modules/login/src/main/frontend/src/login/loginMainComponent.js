@@ -22,7 +22,7 @@ import SignIn from './loginForm';
 
 import { Breadcrumbs, Button, Grid, Paper, Tooltip, Typography } from '@material-ui/core';
 import withStyles from '@material-ui/styles/withStyles';
-import { MuiThemeProvider, StyledEngineProvider } from '@material-ui/core/styles';
+import { ThemeProvider, StyledEngineProvider } from '@material-ui/core/styles';
 import { appTheme } from "../themePalette.jsx";
 
 import styles from "../styling/styles";
@@ -51,7 +51,7 @@ class MainLoginContainer extends React.Component {
 
     return (
       <StyledEngineProvider injectFirst>
-        <MuiThemeProvider theme={appTheme}>
+        <ThemeProvider theme={appTheme}>
         <Paper className={`${classes.paper}  ${selfContained ? classes.selfContained : ''}`} elevation={0}>
           <Grid container direction="column" spacing={3} alignItems="center" alignContent="center">
             <Grid item>
@@ -85,7 +85,7 @@ class MainLoginContainer extends React.Component {
             }
           </Grid>
         </Paper>
-        </MuiThemeProvider>
+        </ThemeProvider>
       </StyledEngineProvider>
     );
   }

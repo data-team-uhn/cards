@@ -24,7 +24,7 @@ import makeStyles from '@material-ui/styles/makeStyles';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import { createBrowserHistory } from "history";
-import { MuiThemeProvider, StyledEngineProvider } from '@material-ui/core/styles';
+import { ThemeProvider, StyledEngineProvider } from '@material-ui/core/styles';
 import { appTheme } from "../themePalette.jsx";
 import PromsFooter from "./Footer.jsx";
 import ErrorPage from "../components/ErrorPage.jsx";
@@ -87,7 +87,7 @@ function Unsubscribe (props) {
 
   return (
     <StyledEngineProvider injectFirst>
-      <MuiThemeProvider theme={appTheme}>
+      <ThemeProvider theme={appTheme}>
           <Paper className={classes.paper} elevation={0}>
             <Grid
               container
@@ -138,7 +138,7 @@ function Unsubscribe (props) {
               </Grid>
             </Grid>
           </Paper>
-        </MuiThemeProvider>
+        </ThemeProvider>
     </StyledEngineProvider>
   );
 }

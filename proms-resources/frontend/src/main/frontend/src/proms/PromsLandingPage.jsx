@@ -23,7 +23,7 @@ import { Breadcrumbs, Button, Dialog, DialogContent, Grid, Tooltip, Typography }
 
 import makeStyles from '@material-ui/styles/makeStyles';
 
-import { MuiThemeProvider, StyledEngineProvider } from '@material-ui/core/styles';
+import { ThemeProvider, StyledEngineProvider } from '@material-ui/core/styles';
 import { appTheme } from "../themePalette.jsx";
 
 const useStyles = makeStyles(theme => ({
@@ -71,7 +71,7 @@ function PromsLandingPage(props) {
       open={isOpen}
     >
       <StyledEngineProvider injectFirst>
-        <MuiThemeProvider theme={appTheme}>
+        <ThemeProvider theme={appTheme}>
           <DialogContent className={classes.paper}>
             <Grid container direction="column" spacing={2} alignItems="center" alignContent="center">
               <Grid item>
@@ -135,8 +135,9 @@ function PromsLandingPage(props) {
             </Grid>
           </Grid>
         </DialogContent>
-      </MuiThemeProvider>
-    </Dialog>
+      </ThemeProvider>
+    </StyledEngineProvider>
+  </Dialog>
   );
 }
 
