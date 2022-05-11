@@ -49,12 +49,13 @@ public final class HttpRequests
         return retVal.toString();
     }
 
-    public static HttpResponse doHttpPost(final String url, final String data, final String contentType)
+    public static HttpResponse doHttpPost(final String url, final String data, final String contentType,
+        final String payloadEncoding)
         throws IOException
     {
         CloseableHttpClient client = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(url);
-        StringEntity entity = new StringEntity(data, "UTF-8");
+        StringEntity entity = new StringEntity(data, payloadEncoding);
         httpPost.setEntity(entity);
         httpPost.setHeader("Content-type", contentType);
         CloseableHttpResponse response = client.execute(httpPost);
@@ -68,10 +69,23 @@ public final class HttpRequests
         return httpResponse;
     }
 
+    public static HttpResponse doHttpPost(final String url, final String data, final String contentType)
+        throws IOException
+    {
+        return doHttpPost(url, data, contentType, "UTF-8");
+    }
+
     public static String getPostResponse(final String url, final String data, final String contentType)
         throws IOException
     {
         HttpResponse httpResponse = doHttpPost(url, data, contentType);
+        return httpResponse.getResponsePayload();
+    }
+
+    public static String getPostResponse(final String url, final String data, final String contentType,
+        final String payloadEncoding) throws IOException
+    {
+        HttpResponse httpResponse = doHttpPost(url, data, contentType, payloadEncoding);
         return httpResponse.getResponsePayload();
     }
 }
