@@ -74,15 +74,16 @@ public class WebhookBackupTask implements Runnable
         if ("nightly".equals(this.exportRunMode) || "manualToday".equals(this.exportRunMode)) {
             doNightlyExport();
         } else if ("manualAfter".equals(this.exportRunMode)) {
+            LOGGER.info("Executing Manual Data Export");
             doManualExport(this.exportLowerBound, null);
         } else if ("manualBetween".equals(this.exportRunMode)) {
+            LOGGER.info("Executing Manual Data Export");
             doManualExport(this.exportLowerBound, this.exportUpperBound);
         }
     }
 
     public void doManualExport(LocalDateTime lower, LocalDateTime upper)
     {
-        LOGGER.info("Executing ManualExport");
         String requestDateStringLower = lower.toString();
         String requestDateStringUpper = (upper != null)
             ? upper.toString()
@@ -115,9 +116,8 @@ public class WebhookBackupTask implements Runnable
     {
         LOGGER.info("Executing NightlyExport");
         LocalDateTime today = LocalDateTime.now();
-        String fileDateString = today.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         String requestDateString = today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        // TODO: Implement me
+        LOGGER.warn("NightlyExport for {}", requestDateString);
     }
 
     private Set<String> getChangedFormsBounded(String requestDateStringLower, String requestDateStringUpper)
