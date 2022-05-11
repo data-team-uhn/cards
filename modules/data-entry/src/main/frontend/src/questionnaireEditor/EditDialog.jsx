@@ -162,7 +162,7 @@ let EditDialog = (props) => {
             value={targetId}
             onChange={(event)=> { setTargetId(event.target.value); setVariableNameError(''); }}
             onBlur={(event)=> { checkVariableName(event.target.value?.trim()); }}
-            error={variableNameError}
+            error={!!variableNameError}
             helperText={variableNameError}
             required
             multiline
@@ -208,7 +208,7 @@ let EditDialog = (props) => {
               type='submit'
               variant='contained'
               color='primary'
-              disabled={saveInProgress || variableNameError}
+              disabled={saveInProgress || !!variableNameError}
             >
               {saveInProgress ? 'Saving' :
               lastSaveStatus === true ? 'Saved' :
