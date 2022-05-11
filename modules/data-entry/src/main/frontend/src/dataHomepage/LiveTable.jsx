@@ -352,8 +352,8 @@ function LiveTable(props) {
       count={paginationData.totalIsApproximate ? -1 : paginationData.total}
       rowsPerPage={paginationData.limit}
       page={paginationData.page}
-      onChangePage={handleChangePage}
-      onChangeRowsPerPage={handleChangeRowsPerPage}
+      onPageChange={handleChangePage}
+      onRowsPerPageChange={handleChangeRowsPerPage}
       labelDisplayedRows={({from, to, count}) =>
           `${from}-${to} of ${paginationData.totalIsApproximate ? `more than ${paginationData.total}` : count}`
       }
