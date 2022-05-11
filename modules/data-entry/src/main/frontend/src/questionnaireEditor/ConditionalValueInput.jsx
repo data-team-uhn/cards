@@ -140,7 +140,7 @@ let ConditionalValueInput = (props) => {
         .then((response) => response.ok ? response.json() : Promise.reject(response))
         .then(loadVariableNames)
         .catch(() => {
-           setError("Cannot load variable names");
+           setError("Cannot load question identifiers");
            setVariables([]);
         })
     }
@@ -196,7 +196,7 @@ let ConditionalValueInput = (props) => {
         exclusive
         onChange={(event, newSetting) => setReference(JSON.parse(newSetting))}>
       >
-        <ToggleButton value="true">Variable name</ToggleButton>
+        <ToggleButton value="true">Question id</ToggleButton>
         <ToggleButton value="false">Value</ToggleButton>
       </ToggleButtonGroup>
 
@@ -224,12 +224,12 @@ let ConditionalValueInput = (props) => {
       {/* Display a dropdown for variable names or a simple input for values */}
       { isReference && !error ?
         <FormControl fullWidth>
-          <InputLabel id={`label-${path}`}>Select the name of a variable from this questionnaire</InputLabel>
+          <InputLabel id={`label-${path}`}>Select the id of a question from this questionnaire</InputLabel>
           <Select
             labelId={`label-${path}`}
             id={path}
             value={tempValue}
-            label="Select the name of a variable from this questionnaire"
+            label="Select the id of a question from this questionnaire"
             onChange={handleValueSelected}
           >
             { variables?.filter(v => !values.includes(v.name))
@@ -243,7 +243,7 @@ let ConditionalValueInput = (props) => {
         ( isReference && error ?
           <>
             <Typography color="error">{error}</Typography>
-            { textField("Enter the name of a variable from this questionnaire") }
+            { textField("Enter the id of a question from this questionnaire") }
           </>
           :
           textField("Enter a value")

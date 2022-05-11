@@ -152,7 +152,7 @@ let EditDialog = (props) => {
   let targetIdField = () => {
     return (
       <Grid container alignItems='baseline' spacing={2} direction="row">
-        <Grid item xs={4}><Typography variant="subtitle2">{type === 'Question' ? 'Variable name:' : `${type} identifier` }</Typography></Grid>
+        <Grid item xs={4}><Typography variant="subtitle2">{`${type} id` }</Typography></Grid>
         <Grid item xs={8}>{
           targetExists ?
           <Typography>{data["@name"]}</Typography> :
