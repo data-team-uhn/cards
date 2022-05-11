@@ -139,7 +139,7 @@ public class WebhookBackupTask implements Runnable
             String query = String.format(
                 "SELECT * FROM [" + cardsType + "] AS form"
                     + " WHERE form.[jcr:lastModified] >= '%s'"
-                    + " AND form.[jcr:lastModified] < '%s'",
+                    + ((requestDateStringUpper != null) ? " AND form.[jcr:lastModified] < '%s'" : ""),
                 requestDateStringLower, requestDateStringUpper
             );
             Iterator<Resource> results = resolver.findResources(query, "JCR-SQL2");
