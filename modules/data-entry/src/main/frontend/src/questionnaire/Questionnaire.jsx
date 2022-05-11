@@ -132,13 +132,13 @@ let Questionnaire = (props) => {
       <div className={classes.actionsMenu}>
         { isEdit ?
           <Tooltip title="Preview" onClick={() => history.push(questionnaireUrl)}>
-            <IconButton>
+            <IconButton size="large">
               <PreviewIcon />
             </IconButton>
           </Tooltip>
           :
           <Tooltip title="Edit" onClick={() => history.push(questionnaireUrl + ".edit")}>
-            <IconButton color="primary">
+            <IconButton color="primary" size="large">
               <EditIcon />
             </IconButton>
           </Tooltip>

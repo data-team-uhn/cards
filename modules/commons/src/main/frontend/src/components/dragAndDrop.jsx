@@ -141,7 +141,7 @@ export default function DragAndDrop(props) {
         disabled={disabled}
       />
       <div className={drag ? classes.active : classes.dropzone} >
-          <IconButton color="primary" component="span">
+          <IconButton color="primary" component="span" size="large">
             <AttachFile />
           </IconButton>
           { error && <Typography color='error'>{error}</Typography> }

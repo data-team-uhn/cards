@@ -96,7 +96,7 @@ function InfoBox(props) {
                   </Link>
                 }
                 action={
-                  <IconButton aria-label="close" onClick={onClose}>
+                  <IconButton aria-label="close" onClick={onClose} size="large">
                     <CloseIcon />
                   </IconButton>
                 }

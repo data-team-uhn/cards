@@ -128,7 +128,7 @@ export function BioPortalApiKey(props) {
           Find on <a href="https://bioportal.bioontology.org/" target="_blank">BioPortal</a>
           { bioPortalApiKey &&
             <Tooltip title="Change BioPortal API key">
-              <IconButton onClick={() => {setDisplayPopup(true)}} className={classes.settingIcon}>
+              <IconButton onClick={() => {setDisplayPopup(true)}} className={classes.settingIcon} size="large">
                 <SettingsIcon/>
               </IconButton>
             </Tooltip>

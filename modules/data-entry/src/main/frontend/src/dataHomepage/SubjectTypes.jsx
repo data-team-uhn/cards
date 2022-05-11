@@ -42,7 +42,7 @@ function EditSubjectTypeButton(props) {
   const { onClick } = props;
   return(
     <Tooltip title={"Edit Subject Type"}>
-      <IconButton onClick={onClick}>
+      <IconButton onClick={onClick} size="large">
         <EditIcon />
       </IconButton>
     </Tooltip>

@@ -87,7 +87,7 @@ let QuestionnaireItemCard = (props) => {
           <div>
             {action}
             {!disableEdit &&
-            <IconButton onClick={() => { setEditDialogOpen(true); }}>
+            <IconButton onClick={() => { setEditDialogOpen(true); }} size="large">
               <EditIcon />
             </IconButton>
             }

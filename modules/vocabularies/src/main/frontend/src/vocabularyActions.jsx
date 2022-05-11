@@ -148,7 +148,7 @@ export default function VocabularyActions(props) {
 
           <DialogTitle>
             <Typography variant="h6" color="error" className={classes.title}>Failed to {action}</Typography>
-            <IconButton onClick={handleClose} className={classes.closeButton}>
+            <IconButton onClick={handleClose} className={classes.closeButton} size="large">
               <CloseIcon />
             </IconButton>
           </DialogTitle>

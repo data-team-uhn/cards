@@ -398,19 +398,19 @@ function Form (props) {
             <div className={classes.actionsMenu}>
                 {isEdit ?
                   <Tooltip title="Save and view" onClick={onClose}>
-                    <IconButton color="primary">
+                    <IconButton color="primary" size="large">
                       <DoneIcon />
                     </IconButton>
                   </Tooltip>
                   :
                   <Tooltip title="Edit">
-                    <IconButton color="primary" onClick={onEdit}>
+                    <IconButton color="primary" onClick={onEdit} size="large">
                       <EditIcon />
                     </IconButton>
                   </Tooltip>
                 }
                 <Tooltip title="More actions" onClick={(event) => {setActionsMenu(event.currentTarget)}}>
-                  <IconButton>
+                  <IconButton size="large">
                     <MoreIcon fontSize="small" />
                   </IconButton>
                 </Tooltip>
@@ -560,7 +560,7 @@ function Form (props) {
       <Dialog open={errorDialogDisplayed} onClose={closeErrorDialog}>
         <DialogTitle>
           <Typography variant="h6" color="error" className={classes.dialogTitle}>Failed to save</Typography>
-          <IconButton onClick={closeErrorDialog} className={classes.closeButton}>
+          <IconButton onClick={closeErrorDialog} className={classes.closeButton} size="large">
             <CloseIcon />
           </IconButton>
         </DialogTitle>

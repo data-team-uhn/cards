@@ -162,7 +162,7 @@ function DeleteButton(props) {
       <Dialog open={errorOpen} onClose={closeError}>
         <DialogTitle>
           <Typography variant="h6" color="error" className={classes.dialogTitle}>Error</Typography>
-          <IconButton onClick={closeError} className={classes.closeButton}>
+          <IconButton onClick={closeError} className={classes.closeButton} size="large">
             <Close />
           </IconButton>
         </DialogTitle>

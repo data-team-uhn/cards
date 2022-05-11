@@ -609,6 +609,7 @@ function ResponseChild(props) {
                 className={classes.deleteButton}
                 color="secondary"
                 title="Delete"
+                size="large"
               >
                 <Close color="action" className={classes.deleteIcon}/>
               </IconButton>

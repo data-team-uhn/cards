@@ -910,7 +910,7 @@ export default function VariantFilesContainer() {
     <Dialog open={showVersionsDialog} onClose={() => setShowVersionsDialog(false)}>
       <DialogTitle>
         <span className={classes.dialogTitle}>Versions of {fileSelected?.name}</span>
-        <IconButton onClick={() => setShowVersionsDialog(false)} className={classes.closeButton}>
+        <IconButton onClick={() => setShowVersionsDialog(false)} className={classes.closeButton} size="large">
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -951,7 +951,7 @@ export default function VariantFilesContainer() {
               },
               sorting: false,
               render: rowData => <Tooltip title={"Download"}>
-                                  <IconButton>
+                                  <IconButton size="large">
                                     <Link underline="none" color="inherit" href={rowData["@path"]} download><GetApp /></Link>
                                   </IconButton>
                                 </Tooltip> },

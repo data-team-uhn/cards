@@ -142,7 +142,7 @@ export default function Search(props) {
                               </IconButton>
                             }
                             <div className={classes.searchAdornmentWrapper}>
-                              <IconButton onClick={keywords === "" ? reset: search}>
+                              <IconButton onClick={keywords === "" ? reset: search} size="large">
                                 <SearchIcon/>
                               </IconButton>
                               {loading && <CircularProgress className={classes.searchProgress} />}

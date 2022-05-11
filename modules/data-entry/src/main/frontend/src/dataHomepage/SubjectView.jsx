@@ -144,7 +144,7 @@ function SubjectView(props) {
           !expanded &&
           <Tooltip title="Expand">
             <Link to={"/content.html/Subjects#" + new URLSearchParams({"subjects:activeTab" : subjectTypes?.[activeTab]?.['@name'] || "", "subjects:filters" : filtersJsonString || ""}).toString()}>
-              <IconButton>
+              <IconButton size="large">
                 <LaunchIcon/>
               </IconButton>
             </Link>

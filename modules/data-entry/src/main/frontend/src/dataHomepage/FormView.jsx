@@ -135,7 +135,7 @@ function FormView(props) {
           !expanded &&
           <Tooltip title="Expand">
             <Link to={"/content.html/Forms#" + new URLSearchParams({"forms:activeTab" : tabs?.[activeTab] || "", "forms:filters" : filtersJsonString || ""}).toString()}>
-              <IconButton>
+              <IconButton size="large">
                 <LaunchIcon/>
               </IconButton>
             </Link>

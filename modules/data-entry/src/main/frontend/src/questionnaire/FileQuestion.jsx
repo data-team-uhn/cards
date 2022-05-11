@@ -317,6 +317,7 @@ function FileQuestion(props) {
                     className={classes.deleteButton + " " + classes.fileResourceDeleteButton}
                     color="secondary"
                     title="Delete"
+                    size="large"
                   >
                     <Delete color="action" className={classes.deleteIcon}/>
                   </IconButton>

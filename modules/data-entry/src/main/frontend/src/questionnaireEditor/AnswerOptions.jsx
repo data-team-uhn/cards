@@ -251,6 +251,7 @@ let AnswerOptions = (props) => {
     return (
       <Tooltip title={!item.description ? "Add a description" : "Edit description"}>
         <IconButton
+          size="large"
           onClick={(event) => {
                                 setDescriptionAnchorEl(event.currentTarget);
                                 setDescriptionIndex(index);
@@ -390,7 +391,7 @@ let AnswerOptions = (props) => {
                     >
                       <Grid item xs={1}>
                         <Tooltip title="Drag to reorder">
-                          <IconButton {...provided.dragHandleProps} className={classes.optionsDragIndicator}>
+                          <IconButton  size="large" {...provided.dragHandleProps} className={classes.optionsDragIndicator}>
                             <DragIndicatorIcon />
                           </IconButton>
                         </Tooltip>
@@ -426,7 +427,7 @@ let AnswerOptions = (props) => {
                       <Grid item xs={3} className={classes.answerOptionActions}>
                         {generateDescriptionIcon(value, index, false)}
                         <Tooltip title="Delete option">
-                          <IconButton onClick={() => { deleteOption(index); }} className={classes.answerOptionButton}>
+                          <IconButton size="large" onClick={() => { deleteOption(index); }} className={classes.answerOptionButton}>
                             <CloseIcon/>
                           </IconButton>
                         </Tooltip>

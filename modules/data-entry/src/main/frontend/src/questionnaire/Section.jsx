@@ -226,6 +226,7 @@ function Section(props) {
                             setDialogOpen(true);
                             setSelectedUUID(uuid);
                           }}
+                          size="large"
                           >
                           <Delete fontSize="small" />
                         </IconButton>
@@ -237,6 +238,7 @@ function Section(props) {
                           onClick={() => {
                             setLabelsToHide((toHide) => ({...toHide, [uuid]: !hiddenSection}));
                           }}
+                          size="large"
                           >
                           {hiddenSection ?
                             <UnfoldMore fontSize="small" />

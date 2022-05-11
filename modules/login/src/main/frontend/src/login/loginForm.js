@@ -208,6 +208,7 @@ class SignIn extends React.Component {
                         <InputAdornment position="end">
                           <Tooltip title={this.state.passwordIsMasked ? "Mask Password" : "Show Password"}>
                             <IconButton
+                              size="large"
                               aria-label="Toggle password visibility"
                               onClick={this.togglePasswordMask}
                             >

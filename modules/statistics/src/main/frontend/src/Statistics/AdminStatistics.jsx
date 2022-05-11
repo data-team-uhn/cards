@@ -77,7 +77,7 @@ function EditStatisticButton(props) {
   const { onClick } = props;
   return(
     <Tooltip title={"Edit Statistic"}>
-      <IconButton onClick={onClick}>
+      <IconButton onClick={onClick} size="large">
         <EditIcon />
       </IconButton>
     </Tooltip>

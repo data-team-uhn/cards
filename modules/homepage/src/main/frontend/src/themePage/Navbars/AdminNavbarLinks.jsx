@@ -126,6 +126,7 @@ function HeaderLinks (props) {
             className={classes.buttonLink + " " + classes.logout + " " + expand || classes.linkText}
             onClick={() => setPopperOpen((open) => !open)}
             ref={avatarRef}
+            size="large"
             >
             <Avatar className={classes[color]}>{initials}</Avatar>
           </IconButton>

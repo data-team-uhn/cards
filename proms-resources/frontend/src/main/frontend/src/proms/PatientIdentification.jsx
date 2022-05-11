@@ -228,7 +228,7 @@ function PatientIdentification(props) {
     <Dialog onClose={() => {setMrnHelperOpen(false)}} open={mrnHelperOpen}>
       <DialogTitle>
         Where can I find my MRN?
-        <IconButton onClick={() => setMrnHelperOpen(false)} className={classes.closeButton}>
+        <IconButton onClick={() => setMrnHelperOpen(false)} className={classes.closeButton} size="large">
           <CloseIcon />
         </IconButton>
       </DialogTitle>

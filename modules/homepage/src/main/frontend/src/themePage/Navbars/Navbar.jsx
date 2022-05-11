@@ -39,6 +39,7 @@ function Header({ ...props }) {
         {/* While the screen is too narrow, display the mini sidebar control */}
         <Hidden mdUp implementation="css">
           <IconButton
+            size="large"
             color="inherit"
             aria-label="open drawer"
             onClick={props.handleDrawerToggle}

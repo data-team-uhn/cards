@@ -261,7 +261,7 @@ class SignUpForm extends React.Component {
         <Dialog open={this.state.errorOpen} onClose={() => this.setState({errorOpen: false})}>
           <DialogTitle>
             <Typography variant="h6" color="error" className={classes.errorDialogTitle}>Error</Typography>
-            <IconButton onClick={() => this.setState({errorOpen: false})} className={classes.errorCloseButton}>
+            <IconButton size="large" onClick={() => this.setState({errorOpen: false})} className={classes.errorCloseButton}>
               <Close />
             </IconButton>
           </DialogTitle>

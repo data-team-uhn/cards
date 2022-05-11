@@ -33,7 +33,7 @@ function EditButton(props) {
   return(
     <Link to={(admin ? "/content.html/admin" : "/content.html") + entryPath + ".edit"}>
       <Tooltip title={entryType ? "Edit " + entryType : "Edit"}>
-        <IconButton className={buttonClass}>
+        <IconButton className={buttonClass} size="large">
           <EditIcon />
         </IconButton>
       </Tooltip>

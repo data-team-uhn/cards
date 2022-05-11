@@ -81,7 +81,7 @@ const ResponsiveDialog = forwardRef((props, ref) => {
   const fullScreen = useMediaQuery(theme.breakpoints.down(width));
 
   let closeButton = withCloseButton ?
-    <IconButton aria-label="close" className={classes.closeButton} onClick={onClose}>
+    <IconButton aria-label="close" className={classes.closeButton} onClick={onClose} size="large">
       <CloseIcon />
     </IconButton>
     : null;
