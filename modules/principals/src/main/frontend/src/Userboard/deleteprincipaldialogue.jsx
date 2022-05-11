@@ -49,7 +49,7 @@ class DeletePrincipalDialogue extends React.Component {
                 open={this.props.isOpen}
                 onClose={() => this.props.handleClose()}
             >
-                <DialogTitle disableTypography>
+                <DialogTitle>
                   <Typography variant="h6">Delete {this.props.name}</Typography>
                 </DialogTitle>
                 <DialogContent>

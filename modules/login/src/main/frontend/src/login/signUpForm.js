@@ -259,7 +259,7 @@ class SignUpForm extends React.Component {
     return (
       <React.Fragment>
         <Dialog open={this.state.errorOpen} onClose={() => this.setState({errorOpen: false})}>
-          <DialogTitle disableTypography>
+          <DialogTitle>
             <Typography variant="h6" color="error" className={classes.errorDialogTitle}>Error</Typography>
             <IconButton onClick={() => this.setState({errorOpen: false})} className={classes.errorCloseButton}>
               <Close />

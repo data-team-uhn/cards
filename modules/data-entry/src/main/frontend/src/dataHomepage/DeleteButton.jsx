@@ -160,7 +160,7 @@ function DeleteButton(props) {
   return (
     <React.Fragment>
       <Dialog open={errorOpen} onClose={closeError}>
-        <DialogTitle disableTypography>
+        <DialogTitle>
           <Typography variant="h6" color="error" className={classes.dialogTitle}>Error</Typography>
           <IconButton onClick={closeError} className={classes.closeButton}>
             <Close />
@@ -171,7 +171,7 @@ function DeleteButton(props) {
         </DialogContent>
       </Dialog>
       <Dialog open={open} onClose={closeDialog}>
-        <DialogTitle disableTypography>
+        <DialogTitle>
         <Typography variant="h6">Delete {entryLabel ? entryLabel.concat(' ') : ''}{entryName}{deleteRecursive ? " and dependent items": null }</Typography>
         </DialogTitle>
         <DialogContent>

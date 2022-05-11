@@ -558,7 +558,7 @@ function Form (props) {
         }
       </Grid>
       <Dialog open={errorDialogDisplayed} onClose={closeErrorDialog}>
-        <DialogTitle disableTypography>
+        <DialogTitle>
           <Typography variant="h6" color="error" className={classes.dialogTitle}>Failed to save</Typography>
           <IconButton onClick={closeErrorDialog} className={classes.closeButton}>
             <CloseIcon />
