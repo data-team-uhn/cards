@@ -46,7 +46,7 @@ import io.uhndata.cards.auth.token.impl.CardsTokenImpl;
  * Implements the Sling part of token authentication, reading authentication data from the request and passing the
  * extracted credentials to Oak for checking.
  *
- * @version $Id$
+ * @version $Id: b512a3d276855a957b9d48bc381d74067a50fc37 $
  */
 @Component(service = AuthenticationHandler.class, immediate = true, property = {
     AuthenticationHandler.TYPE_PROPERTY + "=" + HttpServletRequest.FORM_AUTH,

@@ -20,7 +20,7 @@ import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import { Router, Route, Redirect, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
-import { MuiThemeProvider } from '@material-ui/core/styles';
+import { MuiThemeProvider, StyledEngineProvider } from '@material-ui/core/styles';
 import { appTheme } from "../themePalette.jsx";
 import QuestionnaireSet from "./QuestionnaireSet.jsx";
 import PatientIdentification from "./PatientIdentification.jsx";
@@ -53,14 +53,16 @@ function PromsHomepage (props) {
 const hist = createBrowserHistory();
 hist.listen(({action, location}) => window.dispatchEvent(new Event("beforeunload")));
 ReactDOM.render(
-  <MuiThemeProvider theme={appTheme}>
-  <Router history={hist}>
-    <Switch>
-      <Route path="/Proms.html/" component={PromsHomepage} />
-      <Redirect from="/Proms" to="/Proms.html/"/>
-    </Switch>
-  </Router>
-  </MuiThemeProvider>,
+  <StyledEngineProvider injectFirst>
+    <MuiThemeProvider theme={appTheme}>
+    <Router history={hist}>
+      <Switch>
+        <Route path="/Proms.html/" component={PromsHomepage} />
+        <Redirect from="/Proms" to="/Proms.html/"/>
+      </Switch>
+    </Router>
+    </MuiThemeProvider>
+  </StyledEngineProvider>,
   document.querySelector('#proms-container')
 );
 

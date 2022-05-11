@@ -19,7 +19,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { Fab, Grid, Paper, Typography } from '@material-ui/core';
-import { MuiThemeProvider } from '@material-ui/core/styles';
+import { MuiThemeProvider, StyledEngineProvider } from '@material-ui/core/styles';
 
 import makeStyles from '@material-ui/styles/makeStyles';
 
@@ -50,6 +50,7 @@ export default function ErrorPage(props) {
   const classes = useStyles();
 
   return (
+  <StyledEngineProvider injectFirst>
     <MuiThemeProvider theme={appTheme}>
       <Paper className={classes.paper} elevation={0}>
         <Grid
@@ -88,5 +89,6 @@ export default function ErrorPage(props) {
         </Grid>
       </Paper>
     </MuiThemeProvider>
+  </StyledEngineProvider>
   );
 }
