@@ -98,7 +98,6 @@ const ResponsiveDialog = forwardRef((props, ref) => {
       maxWidth={width}
       fullWidth
       fullScreen={fullScreen}
-      disableBackdropClick
       onClose={onClose}
       {...rest}
     >

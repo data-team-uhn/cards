@@ -463,7 +463,6 @@ let AnswerOptions = (props) => {
         />
       { generateSpecialOptions(1) }
       <Popover
-        disableBackdropClick
         disableEscapeKeyDown
         open={Boolean(descriptionAnchorEl)}
         anchorEl={descriptionAnchorEl}
