@@ -40,7 +40,7 @@ const StyledGrid = styled(Grid)((
   [`& .${classes.labelContainer}`]: {
     /* Match the input padding so the text of the label would appear aligned with the text of the input */
     /* To do: switch to a vertical layout in the future to avoid most alignment issues  */
-    paddingTop: theme.spacing(1.75) + "px !important",
+    paddingTop: theme.spacing(1.75) + " !important",
   }
 }));
 
@@ -59,7 +59,7 @@ let EditorInput = (props) => {
     [`& .${classes.labelContainer}`]: {
       /* Match the input padding so the text of the label would appear aligned with the text of the input */
       /* To do: switch to a vertical layout in the future to avoid most alignment issues  */
-      paddingTop: theme.spacing(1.75) + "px !important",
+      paddingTop: theme.spacing(1.75) + " !important",
     }
   }))();
 
