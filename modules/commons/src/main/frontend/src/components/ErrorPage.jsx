@@ -20,7 +20,7 @@ import React, { useEffect, useState } from 'react';
 
 import { Fab, Grid, Paper, Typography } from '@material-ui/core';
 import makeStyles from '@material-ui/styles/makeStyles';
-import { MuiThemeProvider, StyledEngineProvider, styled } from '@material-ui/core/styles';
+import { ThemeProvider, StyledEngineProvider, styled } from '@material-ui/core/styles';
 import NavigationIcon from '@material-ui/icons/Navigation';
 import { appTheme } from "../themePalette.jsx";
 
