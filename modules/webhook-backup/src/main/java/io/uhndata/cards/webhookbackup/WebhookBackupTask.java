@@ -90,10 +90,8 @@ public class WebhookBackupTask implements Runnable
             : null;
 
         // Notify that we are now beginning the backup
-        // TODO
         LOGGER.info("Backup started for jcr:lastModified >= {} && jcr:lastModified < {}", lower, upper);
-
-        // TODO: If any of the below fail, notify the admins of the error and quit this method
+        postToSlack(generateBackupStatus(lower, upper, "started", ":large_yellow_circle:"));
 
         // Get lists of the paths to all cards:Subject and cards:Form JCR nodes
         try {
@@ -119,11 +117,12 @@ public class WebhookBackupTask implements Runnable
             }
         } catch (IOException e) {
             LOGGER.info("Backup failed for jcr:lastModified >= {} && jcr:lastModified < {}", lower, upper);
+            postToSlack(generateBackupStatus(lower, upper, "failed", ":red_circle:"));
             return;
         }
         // Notify that the backup has finished
-        // TODO
         LOGGER.info("Backup finished for jcr:lastModified >= {} && jcr:lastModified < {}", lower, upper);
+        postToSlack(generateBackupStatus(lower, upper, "finished", ":large_green_circle:"));
     }
 
     /*
@@ -247,5 +246,33 @@ public class WebhookBackupTask implements Runnable
         if (webhookResp.getStatusCode() < 200 || webhookResp.getStatusCode() > 299) {
             throw new IOException("Backup server responded with a non-ok status code");
         }
+    }
+
+    private void postToSlack(String msg)
+    {
+        final String slackNotificationsUrl = System.getenv("SLACK_NOTIFICATIONS_URL");
+        try {
+            JsonObject slackApiReq = Json.createObjectBuilder()
+                .add("text", msg)
+                .build();
+            HttpRequests.getPostResponse(slackNotificationsUrl, slackApiReq.toString(), "application/json");
+        } catch (IOException e) {
+            LOGGER.warn("Failed to send webhook backup notification to Slack");
+        }
+    }
+
+    private String generateBackupStatus(LocalDateTime lower, LocalDateTime upper, String status, String emojii)
+    {
+        String taskUpdateMessage = emojii + " Backup " + status + " for data modified ";
+        if (upper == null) {
+            taskUpdateMessage += "after " + lower.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
+        } else {
+            taskUpdateMessage += "between ";
+            taskUpdateMessage += lower.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
+            taskUpdateMessage += " and ";
+            taskUpdateMessage += upper.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
+        }
+        taskUpdateMessage += ". " + emojii;
+        return taskUpdateMessage;
     }
 }
