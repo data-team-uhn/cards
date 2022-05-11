@@ -71,14 +71,7 @@ public final class HttpRequests
     public static String getPostResponse(final String url, final String data, final String contentType)
         throws IOException
     {
-        CloseableHttpClient client = HttpClients.createDefault();
-        HttpPost httpPost = new HttpPost(url);
-        StringEntity entity = new StringEntity(data, "UTF-8");
-        httpPost.setEntity(entity);
-        httpPost.setHeader("Content-type", contentType);
-        CloseableHttpResponse response = client.execute(httpPost);
-        String responseString = readInputStream(response.getEntity().getContent());
-        client.close();
-        return responseString;
+        HttpResponse httpResponse = doHttpPost(url, data, contentType);
+        return httpResponse.getResponsePayload();
     }
 }
