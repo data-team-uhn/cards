@@ -17,7 +17,7 @@
 
 import React from "react";
 import { withRouter } from "react-router-dom";
-import { withStyles } from "@material-ui/core/styles";
+import withStyles from '@material-ui/styles/withStyles';
 
 import { Avatar, Button, Link, Card, CardHeader, CardContent, Grid, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
 

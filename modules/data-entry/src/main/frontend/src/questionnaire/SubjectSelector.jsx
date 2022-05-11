@@ -21,7 +21,19 @@ import React, { useRef, useEffect, useState, useContext } from "react";
 import { useHistory } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
-import { Avatar, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, ListItem, ListItemAvatar, TextField, withStyles } from "@material-ui/core";
+import {
+  Avatar,
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  ListItem,
+  ListItemAvatar,
+  TextField,
+} from "@material-ui/core";
+import withStyles from '@material-ui/styles/withStyles';
 import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import MaterialTable from "material-table";
 import Alert from '@material-ui/lab/Alert';
@@ -1009,7 +1021,7 @@ function SubjectSelectorList(props) {
       />
     </React.Fragment>
   )
-};
+}
 
 const StyledSubjectSelectorList = withStyles(QuestionnaireStyle, {withTheme: true})(SubjectSelectorList)
 

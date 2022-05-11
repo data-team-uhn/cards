@@ -18,7 +18,8 @@
 //
 
 import React, { useContext, useState } from "react";
-import { Grid, IconButton, LinearProgress, Link, TextField, Typography, withStyles } from "@material-ui/core";
+import { Grid, IconButton, LinearProgress, Link, TextField, Typography } from "@material-ui/core";
+import withStyles from '@material-ui/styles/withStyles';
 import Delete from "@material-ui/icons/Delete";
 
 import PropTypes from "prop-types";

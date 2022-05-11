@@ -20,7 +20,17 @@ import classNames from "classnames";
 import React, { useRef, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
-import { withStyles, ClickAwayListener, Grow, IconButton, Input, InputAdornment, InputLabel, FormControl, Typography } from "@material-ui/core"
+import {
+  ClickAwayListener,
+  Grow,
+  IconButton,
+  Input,
+  InputAdornment,
+  InputLabel,
+  FormControl,
+  Typography,
+} from "@material-ui/core";
+import withStyles from '@material-ui/styles/withStyles';
 import { Divider, LinearProgress, MenuItem, MenuList, Paper, Popper } from "@material-ui/core";
 
 import Search from "@material-ui/icons/Search";

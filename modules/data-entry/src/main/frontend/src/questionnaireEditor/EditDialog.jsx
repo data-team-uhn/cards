@@ -28,7 +28,6 @@ import {
   Grid,
   TextField,
   Typography,
-  withStyles
 } from "@material-ui/core";
 
 import Fields from './Fields'

@@ -17,11 +17,13 @@
 //  under the License.
 //
 import React, { useState, useEffect } from "react";
+
 import {
   Toolbar,
   Typography,
-  makeStyles,
 } from "@material-ui/core";
+
+import makeStyles from '@material-ui/styles/makeStyles';
 
 import { loadExtensions } from "../uiextension/extensionManager";
 

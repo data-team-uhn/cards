@@ -23,10 +23,12 @@ import {
   InputAdornment,
   Slider,
   TextField,
-  Typography,
-  makeStyles,
-  withStyles
+  Typography
 } from "@material-ui/core";
+
+import makeStyles from '@material-ui/styles/makeStyles';
+import withStyles from '@material-ui/styles/withStyles';
+
 import NumberFormat from 'react-number-format';
 
 import PropTypes from "prop-types";

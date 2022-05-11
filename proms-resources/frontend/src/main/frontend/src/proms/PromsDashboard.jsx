@@ -25,13 +25,9 @@ import MaterialTable from "material-table";
 import { loadExtensions } from "../uiextension/extensionManager";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
-import {
-  CircularProgress,
-  Grid,
-  Typography,
-  useMediaQuery,
-  makeStyles,
-} from "@material-ui/core";
+import { CircularProgress, Grid, Typography, useMediaQuery } from "@material-ui/core";
+
+import makeStyles from '@material-ui/styles/makeStyles';
 
 import { useTheme } from '@material-ui/core/styles';
 

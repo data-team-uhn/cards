@@ -17,6 +17,8 @@
 //  under the License.
 //
 
+import React, {useEffect, useContext} from "react";
+
 import {
   Button,
   Grid,
@@ -28,10 +30,9 @@ import {
   TextField,
   Tooltip,
   Typography,
-  makeStyles
 } from "@material-ui/core";
 
-import React, {useEffect, useContext} from "react";
+import makeStyles from '@material-ui/styles/makeStyles';
 import SettingsIcon from '@material-ui/icons/Settings';
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 

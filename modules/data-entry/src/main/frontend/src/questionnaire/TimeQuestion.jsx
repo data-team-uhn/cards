@@ -19,7 +19,9 @@
 
 import React, { useState } from "react";
 
-import { TextField, Typography, withStyles } from "@material-ui/core";
+import { TextField, Typography } from "@material-ui/core";
+
+import withStyles from '@material-ui/styles/withStyles';
 
 import PropTypes from "prop-types";
 

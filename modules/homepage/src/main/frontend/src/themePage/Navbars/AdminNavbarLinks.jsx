@@ -26,8 +26,8 @@ import {
   Popper,
   Snackbar,
   Tooltip,
-  withStyles
 } from "@material-ui/core";
+import withStyles from '@material-ui/styles/withStyles';
 import CloseIcon from '@material-ui/icons/Close';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';

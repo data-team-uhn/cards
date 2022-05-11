@@ -20,7 +20,9 @@
 import React, { useState, useRef } from "react";
 import PropTypes from "prop-types";
 
-import { CircularProgress, Link, Tooltip, withStyles, Typography } from "@material-ui/core";
+import { CircularProgress, Link, Tooltip, Typography } from "@material-ui/core";
+
+import withStyles from '@material-ui/styles/withStyles';
 
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import Note from "./Note.jsx";

@@ -23,12 +23,12 @@ import {
   Button,
   CircularProgress,
   Grid,
-  makeStyles,
   TextField,
   Tooltip,
   Typography
 } from "@material-ui/core";
 
+import makeStyles from '@material-ui/styles/makeStyles';
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
 const Status = require("./statusCodes.json");

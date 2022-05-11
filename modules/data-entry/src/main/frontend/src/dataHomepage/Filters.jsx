@@ -18,7 +18,16 @@
 //
 import React, { useCallback, useRef, useState, useContext, useEffect } from "react";
 import { Chip, Typography, Button, Dialog, CircularProgress, IconButton, Tooltip } from "@material-ui/core";
-import { DialogActions, DialogContent, DialogTitle, Grid, Select, MenuItem, TextField, withStyles } from "@material-ui/core";
+import {
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Grid,
+  Select,
+  MenuItem,
+  TextField,
+} from "@material-ui/core";
+import withStyles from '@material-ui/styles/withStyles';
 import Add from "@material-ui/icons/Add";
 import CloseIcon from '@material-ui/icons/Close';
 

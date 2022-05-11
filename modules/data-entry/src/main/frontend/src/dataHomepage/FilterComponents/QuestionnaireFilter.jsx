@@ -18,7 +18,8 @@
 //
 
 import React, { forwardRef, useState } from "react";
-import { Select, MenuItem, Card, CardHeader, CardContent, withStyles } from "@material-ui/core";
+import { Select, MenuItem, Card, CardHeader, CardContent } from "@material-ui/core";
+import withStyles from '@material-ui/styles/withStyles';
 import ErrorIcon from "@material-ui/icons/Error";
 import PropTypes from "prop-types";
 

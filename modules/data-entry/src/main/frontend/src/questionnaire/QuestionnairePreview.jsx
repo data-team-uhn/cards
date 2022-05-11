@@ -21,12 +21,9 @@ import React, { useEffect, useState, useContext } from "react";
 import { useHistory } from 'react-router-dom';
 import PropTypes from "prop-types";
 
-import {
-  CircularProgress,
-  Grid,
-  Typography,
-  withStyles
-} from "@material-ui/core";
+import { CircularProgress, Grid, Typography } from "@material-ui/core";
+
+import withStyles from '@material-ui/styles/withStyles';
 
 import CloseIcon from "@material-ui/icons/Close";
 
@@ -126,6 +123,6 @@ function QuestionnairePreview (props) {
       />
     }
   </>);
-};
+}
 
 export default withStyles(QuestionnaireStyle)(QuestionnairePreview);

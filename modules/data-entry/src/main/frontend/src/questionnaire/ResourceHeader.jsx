@@ -20,14 +20,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import {
-  Breadcrumbs,
-  Collapse,
-  Grid,
-  Typography,
-  useScrollTrigger,
-  makeStyles,
-} from "@material-ui/core";
+import { Breadcrumbs, Collapse, Grid, Typography, useScrollTrigger } from "@material-ui/core";
+
+import makeStyles from '@material-ui/styles/makeStyles';
 
 import { grey } from '@material-ui/core/colors';
 

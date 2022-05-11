@@ -36,8 +36,8 @@ import {
   Popover,
   Tooltip,
   Typography,
-  withStyles
 } from "@material-ui/core";
+import withStyles from '@material-ui/styles/withStyles';
 import CloseIcon from "@material-ui/icons/Close";
 import EditIcon from '@material-ui/icons/Edit';
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
@@ -574,6 +574,6 @@ function Form (props) {
       </Dialog>
     </form>
   );
-};
+}
 
 export default withStyles(QuestionnaireStyle)(withRouter(Form));

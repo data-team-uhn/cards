@@ -20,7 +20,9 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
-import { Typography, withStyles } from "@material-ui/core";
+import { Typography } from "@material-ui/core";
+
+import withStyles from '@material-ui/styles/withStyles';
 
 import QuestionnaireStyle from "./QuestionnaireStyle";
 

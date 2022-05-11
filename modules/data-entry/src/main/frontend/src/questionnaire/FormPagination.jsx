@@ -19,12 +19,9 @@
 
 import React, { useState, useEffect } from "react";
 
-import {
-  Button,
-  MobileStepper,
-  withStyles,
-  useMediaQuery
-} from "@material-ui/core";
+import { Button, MobileStepper, useMediaQuery } from "@material-ui/core";
+
+import withStyles from '@material-ui/styles/withStyles';
 
 import { useTheme } from '@material-ui/core/styles';
 import PropTypes from "prop-types";
@@ -222,7 +219,7 @@ function FormPagination (props) {
       saveButton
     : null
   );
-};
+}
 
 FormPagination.propTypes = {
   enableSave: PropTypes.bool,

@@ -23,7 +23,7 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import { appTheme } from "../themePalette.jsx";
 import Sidebar from "./Sidebar/sidebar"
 import { getRoutes } from '../routes';
-import { withStyles } from '@material-ui/core';
+import withStyles from '@material-ui/styles/withStyles';
 import { Redirect, Router, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import Navbar from "./Navbars/Navbar";

@@ -26,11 +26,14 @@ import {
   DialogContent,
   DialogTitle,
   CircularProgress,
-  List, ListItem, ListItemText,
-  makeStyles,
+  List,
+  ListItem,
+  ListItemText,
   Typography,
-  Tooltip
+  Tooltip,
 } from "@material-ui/core";
+
+import makeStyles from '@material-ui/styles/makeStyles';
 
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 

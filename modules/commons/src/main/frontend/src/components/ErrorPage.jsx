@@ -18,8 +18,11 @@
 //
 import React, { useEffect, useState } from 'react';
 
-import { Fab, Grid, Paper, Typography, makeStyles } from '@material-ui/core';
+import { Fab, Grid, Paper, Typography } from '@material-ui/core';
 import { MuiThemeProvider } from '@material-ui/core/styles';
+
+import makeStyles from '@material-ui/styles/makeStyles';
+
 import NavigationIcon from '@material-ui/icons/Navigation';
 import { appTheme } from "../themePalette.jsx";
 

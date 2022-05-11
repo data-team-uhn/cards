@@ -19,7 +19,20 @@
 
 import React, { useState, useEffect } from 'react';
 
-import { Checkbox, FormControlLabel, IconButton, List, ListItem, MenuItem, Radio, RadioGroup, Select, TextField, Typography, withStyles } from "@material-ui/core";
+import {
+  Checkbox,
+  FormControlLabel,
+  IconButton,
+  List,
+  ListItem,
+  MenuItem,
+  Radio,
+  RadioGroup,
+  Select,
+  TextField,
+  Typography,
+} from "@material-ui/core";
+import withStyles from '@material-ui/styles/withStyles';
 import Close from "@material-ui/icons/Close";
 import PropTypes from 'prop-types';
 
@@ -33,23 +46,23 @@ import FormattedText from "../components/FormattedText.jsx";
 // Sentinel value used for the user-controlled input
 const GHOST_SENTINEL = "custom-input";
 
- /**
-  * Component that displays a Multiple Choice question.
-  *
-  * @param {Object} existingAnswer form data that may include answers already submitted for this component
-  * @param {bool} input if true, display a free-text single-line input after the predefined options; at most one of "input" or "textbox" may be true
-  * @param {bool} textbox if true, display a free-text multi-line input after the predefined options; at most one of "input" or "textbox" may be true
-  * @param {Component} customInput if true, display this after the predefined options; do not define this and input/textbox
-  * @param {Object} customInputProps additional props to be given to the customInput element provided
-  * @param {func} onUpdate Callback for when an input value is changed or an option is added, receives as argument the new value of the changed option
-  * @param {func} onChange Callback for when an option is removed, receives as argument the value of the removed option
-  * @param {Object} additionalInputProps additional props to be set on the input element
-  * @param {Object} muiInputProps additional props to be forwarded to the MUI input element
-  * @param {Object} naValue if provided, any answer with this value will de-select all other selected options, and will be unselected if any other option is selected
-  * @param {Object} noneOfTheAboveValue if provided, any answer with this value will de-select all other pre-defined options, and will be unselected if any other option is selected
-  * @param {bool} pageActive if true, this page will render graphical components. Otherwise, it will skip rendering (to save on performance)
-  * @param {bool} error indicates if the current selection is in a state of error
-  */
+/**
+ * Component that displays a Multiple Choice question.
+ *
+ * @param {Object} existingAnswer form data that may include answers already submitted for this component
+ * @param {bool} input if true, display a free-text single-line input after the predefined options; at most one of "input" or "textbox" may be true
+ * @param {bool} textbox if true, display a free-text multi-line input after the predefined options; at most one of "input" or "textbox" may be true
+ * @param {Component} customInput if true, display this after the predefined options; do not define this and input/textbox
+ * @param {Object} customInputProps additional props to be given to the customInput element provided
+ * @param {func} onUpdate Callback for when an input value is changed or an option is added, receives as argument the new value of the changed option
+ * @param {func} onChange Callback for when an option is removed, receives as argument the value of the removed option
+ * @param {Object} additionalInputProps additional props to be set on the input element
+ * @param {Object} muiInputProps additional props to be forwarded to the MUI input element
+ * @param {Object} naValue if provided, any answer with this value will de-select all other selected options, and will be unselected if any other option is selected
+ * @param {Object} noneOfTheAboveValue if provided, any answer with this value will de-select all other pre-defined options, and will be unselected if any other option is selected
+ * @param {bool} pageActive if true, this page will render graphical components. Otherwise, it will skip rendering (to save on performance)
+ * @param {bool} error indicates if the current selection is in a state of error
+ */
 function MultipleChoice(props) {
   let { classes, customInput, customInputProps, existingAnswer, input, textbox, onUpdate, onChange, additionalInputProps, muiInputProps, naValue, noneOfTheAboveValue, error, questionName, ...rest } = props;
   let { maxAnswers, minAnswers, displayMode, enableSeparatorDetection } = {...props.questionDefinition, ...props};

@@ -19,17 +19,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-    Button,
-    FormControl,
-    Grid,
-    IconButton,
-    Input,
-    InputAdornment,
-    InputLabel,
-    Tooltip,
-    Typography,
-    withStyles
+  Button,
+  FormControl,
+  Grid,
+  IconButton,
+  Input,
+  InputAdornment,
+  InputLabel,
+  Tooltip,
+  Typography,
 } from '@material-ui/core';
+import withStyles from '@material-ui/styles/withStyles';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import styles from "../styling/styles";

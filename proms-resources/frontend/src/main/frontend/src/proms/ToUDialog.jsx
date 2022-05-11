@@ -20,12 +20,9 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
-import {
-  Button,
-  DialogActions,
-  DialogContent,
-  makeStyles
-} from "@material-ui/core";
+import { Button, DialogActions, DialogContent } from "@material-ui/core";
+
+import makeStyles from '@material-ui/styles/makeStyles';
 
 import { Alert, AlertTitle } from "@material-ui/lab";
 

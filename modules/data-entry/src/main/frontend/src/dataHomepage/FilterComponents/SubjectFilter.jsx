@@ -18,7 +18,8 @@
 //
 
 import React, { forwardRef, useState } from "react";
-import { Avatar, InputAdornment, ListItemAvatar, ListItemText, Tooltip, withStyles } from "@material-ui/core";
+import { Avatar, InputAdornment, ListItemAvatar, ListItemText, Tooltip } from "@material-ui/core";
+import withStyles from '@material-ui/styles/withStyles';
 import ErrorIcon from "@material-ui/icons/Error";
 import PropTypes from "prop-types";
 

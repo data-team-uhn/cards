@@ -20,7 +20,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { Card, CardHeader, CardContent, List, ListItem, Typography, withStyles } from "@material-ui/core";
+import { Card, CardHeader, CardContent, List, ListItem, Typography } from "@material-ui/core";
+
+import withStyles from '@material-ui/styles/withStyles';
 
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import AnswerInstructions from "./AnswerInstructions";

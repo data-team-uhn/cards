@@ -19,13 +19,7 @@
 
 import React, { useEffect, useState } from "react";
 
-import {
-  Grid,
-  IconButton,
-  Typography,
-  Tooltip,
-  withStyles
-} from "@material-ui/core";
+import { Grid, IconButton, Typography, Tooltip } from "@material-ui/core";
 
 import { useTheme } from '@material-ui/core/styles';
 import MaterialTable from "material-table";

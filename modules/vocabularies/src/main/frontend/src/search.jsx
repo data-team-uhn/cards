@@ -27,8 +27,9 @@ import {
   InputAdornment,
   LinearProgress,
   TextField,
-  makeStyles
 } from "@material-ui/core";
+
+import makeStyles from '@material-ui/styles/makeStyles';
 
 import SearchIcon from "@material-ui/icons/Search";
 import CloseIcon from "@material-ui/icons/Close";

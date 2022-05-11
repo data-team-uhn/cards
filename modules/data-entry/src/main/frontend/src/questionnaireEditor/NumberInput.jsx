@@ -19,12 +19,9 @@
 
 import React, { useState } from "react";
 import PropTypes from 'prop-types';
-import {
-  Grid,
-  TextField,
-  Typography,
-  withStyles
-} from "@material-ui/core";
+import { Grid, TextField, Typography } from "@material-ui/core";
+
+import withStyles from '@material-ui/styles/withStyles';
 
 import EditorInput from "./EditorInput";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle";

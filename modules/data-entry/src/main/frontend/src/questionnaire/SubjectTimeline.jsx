@@ -39,10 +39,9 @@ import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import { displayQuestion } from "./Subject.jsx";
 import { ENTRY_TYPES, QUESTION_TYPES, SECTION_TYPES } from "./FormEntry.jsx"
 
-import {
-  Typography,
-  withStyles,
-} from "@material-ui/core";
+import { Typography } from "@material-ui/core";
+
+import withStyles from '@material-ui/styles/withStyles';
 
 const NUM_QUESTIONS = 2;
 const STRIPPING_REGEX = [/^date of +/i, / +date$/i]

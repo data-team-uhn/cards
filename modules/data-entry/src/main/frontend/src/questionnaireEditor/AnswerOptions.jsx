@@ -33,8 +33,9 @@ import {
   Switch,
   TextField,
   Tooltip,
-  makeStyles
 } from "@material-ui/core";
+
+import makeStyles from '@material-ui/styles/makeStyles';
 
 import EditorInput from "./EditorInput";
 import QuestionComponentManager from "./QuestionComponentManager";

@@ -21,11 +21,12 @@ import React from "react";
 
 import {
   AppBar,
-  withStyles,
   Grid,
   Toolbar,
   Typography
 } from '@material-ui/core';
+
+import withStyles from '@material-ui/styles/withStyles';
 
 import WarningIcon from '@material-ui/icons/Warning';
 

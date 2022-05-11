@@ -30,8 +30,8 @@ import {
   ClickAwayListener,
   Fade,
   Popper,
-  withStyles
 } from "@material-ui/core";
+import withStyles from '@material-ui/styles/withStyles';
 import EmojiObjectsIcon from "@material-ui/icons/EmojiObjects";
 import WarningIcon from "@material-ui/icons/Warning";
 

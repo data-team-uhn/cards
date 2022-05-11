@@ -20,17 +20,10 @@ import React, { useState } from "react";
 
 import LiveTable from "../dataHomepage/LiveTable.jsx";
 
-import {
-  Avatar,
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  Tab,
-  Tabs,
-  Typography,
-  makeStyles,
-} from "@material-ui/core";
+import { Avatar, Card, CardContent, CardHeader, Divider, Tab, Tabs, Typography } from "@material-ui/core";
+
+
+import makeStyles from '@material-ui/styles/makeStyles';
 
 
 const useStyles = color => makeStyles(theme => ({

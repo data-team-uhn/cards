@@ -24,10 +24,10 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
-  makeStyles,
-  Typography,
-  withStyles
+  Typography
 } from "@material-ui/core";
+
+import makeStyles from '@material-ui/styles/makeStyles';
 
 import CloseIcon from "@material-ui/icons/Close";
 

@@ -19,21 +19,21 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
-import { 
-  Button, 
-  Card, 
+import {
+  Button,
+  Card,
   CardContent,
   CardHeader,
-  Dialog, 
-  DialogActions, 
-  DialogContent, 
+  Dialog,
+  DialogActions,
+  DialogContent,
   DialogTitle,
   Grid,
   IconButton,
   Tooltip,
   Typography,
-  withStyles,
 } from "@material-ui/core";
+import withStyles from '@material-ui/styles/withStyles';
 import statisticsStyle from "./statisticsStyle.jsx";
 import NewItemButton from "../components/NewItemButton.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog.jsx";

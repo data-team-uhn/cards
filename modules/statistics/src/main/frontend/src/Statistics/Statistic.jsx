@@ -17,15 +17,8 @@
 //  under the License.
 //
 import React, { useState } from "react";
-import {
-  Avatar,
-  Card,
-  CardContent,
-  CardHeader,
-  Grid,
-  Typography,
-  withStyles
-} from "@material-ui/core";
+import { Avatar, Card, CardContent, CardHeader, Grid, Typography } from "@material-ui/core";
+import withStyles from '@material-ui/styles/withStyles';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import LineChartIcon from '@material-ui/icons/ShowChart';
 import { deepPurple, indigo } from '@material-ui/core/colors';

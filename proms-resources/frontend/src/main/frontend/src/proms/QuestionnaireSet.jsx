@@ -31,8 +31,8 @@ import {
   ListItemAvatar,
   Paper,
   Typography,
-  makeStyles
 } from '@material-ui/core';
+import makeStyles from '@material-ui/styles/makeStyles';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import NextStepIcon from '@material-ui/icons/ChevronRight';
 import DoneIcon from '@material-ui/icons/Done';
