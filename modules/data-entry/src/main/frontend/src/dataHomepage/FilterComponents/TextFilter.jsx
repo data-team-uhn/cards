@@ -18,7 +18,8 @@
 //
 
 import React, { forwardRef, useState } from "react";
-import { TextField,  withStyles } from "@material-ui/core";
+import { TextField } from "@material-ui/core";
+import withStyles from '@material-ui/styles/withStyles';
 import PropTypes from "prop-types";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";

@@ -21,7 +21,8 @@ import { withRouter, useHistory } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from "@material-ui/core";
-import { Tooltip, Typography, withStyles } from "@material-ui/core";
+import { Tooltip, Typography } from "@material-ui/core";
+import withStyles from '@material-ui/styles/withStyles';
 import { Delete, Close } from "@material-ui/icons";
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";

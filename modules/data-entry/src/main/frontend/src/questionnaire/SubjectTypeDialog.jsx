@@ -17,7 +17,22 @@
 
 import React, { useState } from "react";
 
-import { Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, InputLabel, MenuItem, TextField, Typography, Select, FormHelperText, withStyles } from "@material-ui/core";
+import {
+  Button,
+  Grid,
+  Dialog,
+  DialogTitle,
+  DialogActions,
+  DialogContent,
+  InputLabel,
+  MenuItem,
+  TextField,
+  Typography,
+  Select,
+  FormHelperText,
+} from "@material-ui/core";
+
+import withStyles from '@material-ui/styles/withStyles';
 
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 

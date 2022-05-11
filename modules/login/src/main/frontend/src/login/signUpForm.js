@@ -18,16 +18,16 @@
 //
 import React from 'react';
 import {
-    Button,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    IconButton,
-    TextField,
-    Tooltip,
-    Typography,
-    withStyles
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  IconButton,
+  TextField,
+  Tooltip,
+  Typography,
 } from '@material-ui/core';
+import withStyles from '@material-ui/styles/withStyles';
 import { Close } from "@material-ui/icons";
 import { Formik } from "formik";
 import * as Yup from "yup";

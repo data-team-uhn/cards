@@ -21,15 +21,10 @@ import React, { useEffect, useContext } from "react";
 
 import { styled } from '@mui/material/styles';
 
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  makeStyles,
-  Typography,
-  withStyles
-} from "@material-ui/core";
+import { Dialog, DialogContent, DialogTitle, IconButton, Typography } from "@material-ui/core";
+
+import makeStyles from '@material-ui/styles/makeStyles';
+import withStyles from '@material-ui/styles/withStyles';
 
 import CloseIcon from "@material-ui/icons/Close";
 

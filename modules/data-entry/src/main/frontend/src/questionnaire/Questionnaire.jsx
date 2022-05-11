@@ -31,8 +31,9 @@ import {
   TableRow,
   Tooltip,
   Typography,
-  withStyles
 } from "@material-ui/core";
+
+import withStyles from '@material-ui/styles/withStyles';
 
 import moment from "moment";
 

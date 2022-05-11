@@ -19,7 +19,8 @@
 import React, { useState, useEffect } from "react";
 import LiveTable from "./LiveTable.jsx";
 
-import { Button, Card, CardContent, CardHeader, IconButton, Tooltip, withStyles } from "@material-ui/core";
+import { Button, Card, CardContent, CardHeader, IconButton, Tooltip } from "@material-ui/core";
+import withStyles from '@material-ui/styles/withStyles';
 import { Link } from 'react-router-dom';
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import SubjectTypeDialog from "../questionnaire/SubjectTypeDialog.jsx";

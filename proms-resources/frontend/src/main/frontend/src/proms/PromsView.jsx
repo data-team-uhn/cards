@@ -18,11 +18,9 @@
 //
 import React, { useState, useEffect, useContext } from "react";
 
-import {
-  CircularProgress,
-  Typography,
-  makeStyles,
-} from "@material-ui/core";
+import { CircularProgress, Typography } from "@material-ui/core";
+
+import makeStyles from '@material-ui/styles/makeStyles';
 
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import PromsViewInternal from "./PromsViewInternal.jsx";

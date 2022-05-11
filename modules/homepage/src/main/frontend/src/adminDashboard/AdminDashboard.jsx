@@ -31,10 +31,11 @@ import {
   List,
   ListItem,
   ListItemIcon,
-  ListItemText, 
+  ListItemText,
   Typography,
-  withStyles
 } from "@material-ui/core";
+
+import withStyles from '@material-ui/styles/withStyles';
 
 // function to get the routes for the admin dashboard, also used in the navbar
 async function getAdminRoutes() {

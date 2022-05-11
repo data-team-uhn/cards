@@ -19,7 +19,22 @@
 import React from "react";
 import classNames from "classnames";
 import PropTypes from "prop-types";
-import { withStyles, Avatar, Button, Card, CardActions, CardContent, CardHeader, ClickAwayListener, Grow, IconButton, Link, Popper, Tooltip, Typography } from "@material-ui/core";
+import {
+  Avatar,
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  ClickAwayListener,
+  Grow,
+  IconButton,
+  Link,
+  Popper,
+  Tooltip,
+  Typography,
+} from "@material-ui/core";
+import withStyles from '@material-ui/styles/withStyles';
 import CloseIcon from '@material-ui/icons/Close';
 
 import QueryStyle from "./queryStyle.jsx";

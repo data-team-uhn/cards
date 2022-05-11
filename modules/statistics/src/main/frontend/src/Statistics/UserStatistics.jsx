@@ -18,11 +18,8 @@
 //
 
 import React, { useContext, useState } from "react";
-import {
-  Grid,
-  withStyles,
-  Typography
-} from "@material-ui/core";
+import { Grid, Typography } from "@material-ui/core";
+import withStyles from '@material-ui/styles/withStyles';
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import statisticsStyle from "./statisticsStyle.jsx";
 import Statistic from "./Statistic.jsx";

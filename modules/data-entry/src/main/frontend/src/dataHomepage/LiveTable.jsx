@@ -19,7 +19,18 @@
 
 import React, { useState, useEffect, useContext } from "react";
 import { Paper, Table, TableHead, TableBody, TableRow, TableCell, TablePagination } from "@material-ui/core";
-import { Card, CardHeader, CardContent, CardActions, Chip, IconButton, Typography, Button, LinearProgress, withStyles } from "@material-ui/core";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardActions,
+  Chip,
+  IconButton,
+  Typography,
+  Button,
+  LinearProgress,
+} from "@material-ui/core";
+import withStyles from '@material-ui/styles/withStyles';
 import { Link } from 'react-router-dom';
 import moment from "moment";
 

@@ -21,14 +21,9 @@ import React, { useState } from "react";
 
 import { styled } from '@mui/material/styles';
 
-import {
-  InputAdornment,
-  Slider,
-  TextField,
-  Typography,
-  makeStyles,
-  withStyles
-} from "@material-ui/core";
+import { InputAdornment, Slider, TextField, Typography } from "@material-ui/core";
+import makeStyles from '@material-ui/styles/makeStyles';
+import withStyles from '@material-ui/styles/withStyles';
 import NumberFormat from 'react-number-format';
 
 import PropTypes from "prop-types";

@@ -17,7 +17,7 @@
 
 import React from "react";
 
-import { withStyles } from "@material-ui/core/styles";
+import withStyles from '@material-ui/styles/withStyles';
 import userboardStyle from '../userboardStyle.jsx';
 
 import { Avatar, Button, Dialog, DialogTitle, DialogActions, DialogContent, Grid } from "@material-ui/core";

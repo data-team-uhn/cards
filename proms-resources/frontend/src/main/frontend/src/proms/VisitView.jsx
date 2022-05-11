@@ -20,9 +20,7 @@ import React, { useState, useEffect, useContext } from "react";
 
 import { styled } from '@mui/material/styles';
 
-import {
-  makeStyles,
-} from "@material-ui/core";
+import makeStyles from '@material-ui/styles/makeStyles';
 import { Link } from 'react-router-dom';
 import EventIcon from '@material-ui/icons/Event';
 

@@ -19,7 +19,8 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
 
-import { IconButton, Tooltip, withStyles } from "@material-ui/core";
+import { IconButton, Tooltip } from "@material-ui/core";
+import withStyles from '@material-ui/styles/withStyles';
 import EditIcon from "@material-ui/icons/Edit";
 import { Link } from 'react-router-dom';
 

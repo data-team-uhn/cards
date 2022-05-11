@@ -21,7 +21,8 @@ import React, { useState, useContext } from "react";
 import { withRouter } from "react-router-dom";
 
 import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, ListItemText, MenuItem, ListItemAvatar, Avatar }  from "@material-ui/core";
-import { MenuList, Paper, Popper, withStyles } from "@material-ui/core";
+import { MenuList, Paper, Popper } from "@material-ui/core";
+import withStyles from '@material-ui/styles/withStyles';
 import { Link } from "react-router-dom";
 import { getEntityIdentifier } from "./themePage/EntityIdentifier.jsx";
 import DescriptionIcon from "@material-ui/icons/Description";

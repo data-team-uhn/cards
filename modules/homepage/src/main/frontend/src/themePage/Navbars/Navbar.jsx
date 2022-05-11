@@ -12,8 +12,7 @@
 import React from "react";
 import classNames from "classnames";
 import PropTypes from "prop-types";
-// @material-ui/core components
-import { withStyles } from "@material-ui/core";
+import withStyles from '@material-ui/styles/withStyles';
 import { AppBar, Button, Toolbar, IconButton, Hidden } from "@material-ui/core";
 // @material-ui/icons
 import Menu from "@material-ui/icons/Menu";

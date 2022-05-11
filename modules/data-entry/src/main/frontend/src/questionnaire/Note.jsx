@@ -20,7 +20,8 @@
 import React, { useState, useRef } from "react";
 import PropTypes from "prop-types";
 
-import { Button, Collapse, Grid, TextField, Tooltip, withStyles } from "@material-ui/core";
+import { Button, Collapse, Grid, TextField, Tooltip } from "@material-ui/core";
+import withStyles from '@material-ui/styles/withStyles';
 import AddIcon from "@material-ui/icons/Add";
 import UnfoldMore from "@material-ui/icons/UnfoldMore";
 import UnfoldLess from "@material-ui/icons/UnfoldLess";

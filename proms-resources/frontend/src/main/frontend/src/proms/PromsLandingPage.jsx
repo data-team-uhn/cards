@@ -19,16 +19,9 @@
 
 import React, { useState, useEffect } from "react";
 
-import {
-  Breadcrumbs,
-  Button,
-  Dialog,
-  DialogContent,
-  Grid,
-  Tooltip,
-  Typography,
-  makeStyles
-} from '@material-ui/core';
+import { Breadcrumbs, Button, Dialog, DialogContent, Grid, Tooltip, Typography } from '@material-ui/core';
+
+import makeStyles from '@material-ui/styles/makeStyles';
 
 import { MuiThemeProvider, styled } from '@material-ui/core/styles';
 import { appTheme } from "../themePalette.jsx";

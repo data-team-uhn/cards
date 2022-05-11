@@ -21,13 +21,9 @@ import React from "react";
 
 import { styled } from '@mui/material/styles';
 
-import {
-  AppBar,
-  withStyles,
-  Grid,
-  Toolbar,
-  Typography
-} from '@material-ui/core';
+import { AppBar, Grid, Toolbar, Typography } from '@material-ui/core';
+
+import withStyles from '@material-ui/styles/withStyles';
 
 import WarningIcon from '@material-ui/icons/Warning';
 

@@ -19,7 +19,9 @@
 
 import React, { useContext, useEffect, useState } from "react";
 import PropTypes, { object } from 'prop-types';
-import { Input, MenuItem, Select, Typography, withStyles } from "@material-ui/core";
+import { Input, MenuItem, Select, Typography } from "@material-ui/core";
+
+import withStyles from '@material-ui/styles/withStyles';
 
 import EditorInput from "./EditorInput";
 import LiveTableStyle from "../dataHomepage/tableStyle.jsx";
@@ -182,7 +184,7 @@ let ReferenceInput = (props) => {
         .then((json) => {
           let nodePath = json["rows"]?.[0]?.["@path"];
           nodePath || Promise.reject("Invalid reference: " + field);
-          return fetch(new URL(nodePath.match(/(\/Questionnaires\/.+?)\//)[1] + ".json", window.location.origin))
+          return fetch(new URL(nodePath.match(/(\/Questionnaires\/.+?)\//)[1] + ".json", window.location.origin));
         })
     }
     fetchRequest

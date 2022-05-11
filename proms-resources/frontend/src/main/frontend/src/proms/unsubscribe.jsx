@@ -19,7 +19,8 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { Router, Route, Redirect, Switch } from "react-router-dom";
-import { Paper, Grid, Button, Typography, makeStyles } from '@material-ui/core';
+import { Paper, Grid, Button, Typography } from '@material-ui/core';
+import makeStyles from '@material-ui/styles/makeStyles';
 import { Alert, AlertTitle } from "@material-ui/lab";
 import { createBrowserHistory } from "history";
 import { MuiThemeProvider, styled } from '@material-ui/core/styles';

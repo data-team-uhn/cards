@@ -18,7 +18,8 @@
 //
 
 import React from 'react';
-import { makeStyles, styled } from '@material-ui/core/styles';
+import { styled } from '@material-ui/core/styles';
+import makeStyles from '@material-ui/styles/makeStyles';
 import PropTypes from 'prop-types';
 import {
   Grid,

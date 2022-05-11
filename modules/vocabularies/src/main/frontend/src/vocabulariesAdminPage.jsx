@@ -17,15 +17,9 @@
 //  under the License.
 //
 
-import {
-  Button,
-  Dialog,
-  DialogContent,
-  Grid,
-  TextField,
-  Typography,
-  makeStyles
-} from "@material-ui/core";
+import { Button, Dialog, DialogContent, Grid, TextField, Typography } from "@material-ui/core";
+
+import makeStyles from '@material-ui/styles/makeStyles';
 
 import React, {useEffect} from "react";
 

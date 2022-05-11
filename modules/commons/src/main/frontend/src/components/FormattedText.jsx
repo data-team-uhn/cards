@@ -20,7 +20,9 @@
 import React from 'react';
 import { styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';
-import { Typography, withStyles, makeStyles } from "@material-ui/core";
+import { Typography } from "@material-ui/core";
+import withStyles from '@material-ui/styles/withStyles';
+import makeStyles from '@material-ui/styles/makeStyles';
 import MDEditor from '@uiw/react-md-editor';
 
 const PREFIX = 'FormattedText';

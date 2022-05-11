@@ -19,7 +19,18 @@
 import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
 
-import { Avatar, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography, withStyles } from "@material-ui/core";
+import {
+  Avatar,
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+  Typography,
+} from "@material-ui/core";
+import withStyles from '@material-ui/styles/withStyles';
 import AddIcon from "@material-ui/icons/Add";
 import { v4 as uuidv4 } from 'uuid';
 import NewItemButton from "../components/NewItemButton.jsx";

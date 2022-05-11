@@ -19,7 +19,9 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { TextField, withStyles } from "@material-ui/core";
+import { TextField } from "@material-ui/core";
+
+import withStyles from '@material-ui/styles/withStyles';
 
 import EditorInput from "./EditorInput";
 import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';

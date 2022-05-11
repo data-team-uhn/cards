@@ -19,7 +19,9 @@
 
 import React, { useEffect, useState } from "react";
 
-import { Button, Dialog, DialogContent, Grid, Link, Tooltip, withStyles } from "@material-ui/core";
+import { Button, Dialog, DialogContent, Grid, Link, Tooltip } from "@material-ui/core";
+
+import withStyles from '@material-ui/styles/withStyles';
 
 import PropTypes from "prop-types";
 

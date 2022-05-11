@@ -13,8 +13,7 @@ import React, { useState, useEffect } from "react";
 import classNames from "classnames";
 import PropTypes from "prop-types";
 import { NavLink } from "react-router-dom";
-// @material-ui/core components
-import { withStyles } from "@material-ui/core";
+import withStyles from '@material-ui/styles/withStyles';
 import { loadExtensions } from "../../uiextension/extensionManager";
 import { Drawer, Hidden, List, ListItem, ListItemText } from "@material-ui/core";
 

@@ -19,7 +19,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { Fab, Grid, Paper, Typography, makeStyles } from '@material-ui/core';
+import { Fab, Grid, Paper, Typography } from '@material-ui/core';
+import makeStyles from '@material-ui/styles/makeStyles';
 import { MuiThemeProvider, styled } from '@material-ui/core/styles';
 import NavigationIcon from '@material-ui/icons/Navigation';
 import { lightBlue } from '@material-ui/core/colors';

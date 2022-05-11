@@ -27,9 +27,10 @@ import {
   Link,
   Toolbar,
   Typography,
-  makeStyles,
   useScrollTrigger,
 } from "@material-ui/core";
+
+import makeStyles from '@material-ui/styles/makeStyles';
 
 const PREFIX = 'PromsHeader';
 

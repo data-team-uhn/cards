@@ -34,8 +34,8 @@ import {
   Tabs,
   Tooltip,
   Typography,
-  withStyles
 } from "@material-ui/core";
+import withStyles from '@material-ui/styles/withStyles';
 import { Link } from 'react-router-dom';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import LaunchIcon from '@material-ui/icons/Launch';

@@ -36,9 +36,10 @@ import {
   DialogContent,
   DialogTitle,
   Typography,
-  makeStyles,
-  useMediaQuery
+  useMediaQuery,
 } from "@material-ui/core";
+
+import makeStyles from '@material-ui/styles/makeStyles';
 
 import { useTheme, styled } from '@material-ui/core/styles';
 

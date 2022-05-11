@@ -41,8 +41,8 @@ import {
   Tab,
   Tabs,
   Typography,
-  withStyles,
 } from "@material-ui/core";
+import withStyles from '@material-ui/styles/withStyles';
 import FileIcon from "@material-ui/icons/InsertDriveFile";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 import EditButton from "../dataHomepage/EditButton.jsx";
@@ -579,7 +579,7 @@ function SubjectMemberInternal (props) {
       }
     </>
   );
-};
+}
 
 let SubjectMember = withRouter(SubjectMemberInternal);
 
@@ -731,7 +731,7 @@ export function displayQuestion(entryDefinition, data, key, classes) {
     );
   }
   else return null;
-};
+}
 
 // Handle questions and sections differently
 export function handleDisplay(entryDefinition, data, key, handleDisplayQuestion) {

@@ -20,7 +20,8 @@ import React from 'react';
 import SignUpForm from './signUpForm';
 import SignIn from './loginForm';
 
-import { Breadcrumbs, Button, Grid, Paper, Tooltip, Typography, withStyles } from '@material-ui/core';
+import { Breadcrumbs, Button, Grid, Paper, Tooltip, Typography } from '@material-ui/core';
+import withStyles from '@material-ui/styles/withStyles';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { appTheme } from "../themePalette.jsx";
 

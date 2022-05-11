@@ -19,7 +19,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
-import { withStyles } from "@material-ui/core";
+import withStyles from '@material-ui/styles/withStyles';
 import { Button, CircularProgress, IconButton, Tooltip, Typography } from '@material-ui/core';
 
 import Info from "@material-ui/icons/Info";

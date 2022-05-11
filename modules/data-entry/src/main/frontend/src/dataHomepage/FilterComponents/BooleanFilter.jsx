@@ -18,7 +18,8 @@
 //
 
 import React, { forwardRef, useState } from "react";
-import { Select, MenuItem,  withStyles } from "@material-ui/core";
+import { Select, MenuItem } from "@material-ui/core";
+import withStyles from '@material-ui/styles/withStyles';
 import PropTypes from "prop-types";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";

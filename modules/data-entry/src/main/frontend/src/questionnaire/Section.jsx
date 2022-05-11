@@ -19,7 +19,18 @@
 
 import React, { useCallback, useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Button, Collapse, Dialog, DialogActions, DialogTitle, Grid, IconButton, Tooltip, Typography, withStyles } from "@material-ui/core";
+import {
+  Button,
+  Collapse,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  Grid,
+  IconButton,
+  Tooltip,
+  Typography,
+} from "@material-ui/core";
+import withStyles from '@material-ui/styles/withStyles';
 import Add from "@material-ui/icons/Add";
 import Delete from '@material-ui/icons/Delete';
 import UnfoldLess from '@material-ui/icons/UnfoldLess';

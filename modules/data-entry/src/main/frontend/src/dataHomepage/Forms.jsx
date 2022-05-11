@@ -20,7 +20,8 @@ import React, { useEffect, useState } from "react";
 import Form from "../questionnaire/Form.jsx";
 import { getHierarchy } from "../questionnaire/Subject.jsx";
 
-import { Grid, Typography, withStyles } from "@material-ui/core";
+import { Grid, Typography } from "@material-ui/core";
+import withStyles from '@material-ui/styles/withStyles';
 import questionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import FormView from "./FormView.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
