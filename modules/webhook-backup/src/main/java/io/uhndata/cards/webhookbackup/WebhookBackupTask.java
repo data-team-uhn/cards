@@ -112,12 +112,23 @@ public class WebhookBackupTask implements Runnable
         }
     }
 
+    /*
+     * This should be scheduled to run late at night (eg. 00:00 or 00:30 or 01:30, etc...)
+     * and backup all Forms and Subjects that were jcr:lastModified on the previous day.
+     * For example, if this job runs on 2022-05-11 at 00:30, it will backup all Forms
+     * and Subjects that were jcr:lastModified any time after and including 2022-05-10T00:00:00
+     * but before 2022-05-11T00:00:00. Similarly on 2022-05-12 at 00:30, this job will back up
+     * all data jcr:lastModified within [2022-05-11T00:00:00, 2022-05-12T00:00:00)
+     */
     public void doNightlyExport()
     {
         LOGGER.info("Executing NightlyExport");
-        LocalDateTime today = LocalDateTime.now();
-        String requestDateString = today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        LOGGER.warn("NightlyExport for {}", requestDateString);
+        LocalDateTime startOfToday = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime startOfYesterday = startOfToday.minusDays(1);
+        String requestStartString = startOfYesterday.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
+        String requestEndString = startOfToday.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
+        LOGGER.warn("Exporting data modified between [{}, {})", requestStartString, requestEndString);
+        doManualExport(startOfYesterday, startOfToday);
     }
 
     private Set<String> getChangedFormsBounded(String requestDateStringLower, String requestDateStringUpper)
