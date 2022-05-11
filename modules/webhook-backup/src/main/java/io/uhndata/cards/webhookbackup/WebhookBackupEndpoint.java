@@ -60,8 +60,8 @@ public class WebhookBackupEndpoint extends SlingSafeMethodsServlet
             return;
         }
 
-        final LocalDateTime dateLowerBound = this.strToDate(request.getParameter("dateLowerBound"));
-        final LocalDateTime dateUpperBound = this.strToDate(request.getParameter("dateUpperBound"));
+        final LocalDateTime dateLowerBound = this.strToDateTime(request.getParameter("dateLowerBound"));
+        final LocalDateTime dateUpperBound = this.strToDateTime(request.getParameter("dateUpperBound"));
         final String exportRunMode = (dateLowerBound != null && dateUpperBound != null)
             ? "manualBetween"
             : (dateLowerBound != null && dateUpperBound == null) ? "manualAfter" : "manualToday";
@@ -74,17 +74,16 @@ public class WebhookBackupEndpoint extends SlingSafeMethodsServlet
         out.write("Webhook Backup S3 export started");
     }
 
-    private LocalDateTime strToDate(final String date)
+    private LocalDateTime strToDateTime(final String date)
     {
-        LOGGER.warn("strToDate attempting to parse: {}", date);
+        LOGGER.warn("strToDateTime attempting to parse: {}", date);
         if (date == null) {
             return null;
         }
         try {
-            //return LocalDateTime.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             return LocalDateTime.parse(date);
         } catch (DateTimeParseException e) {
-            LOGGER.warn("strToDate failed to parse {} due to {}", date, e);
+            LOGGER.warn("strToDateTime failed to parse {} due to {}", date, e);
             return null;
         }
     }
