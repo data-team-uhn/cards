@@ -42,7 +42,7 @@ import {
         position: "fixed"
       },
       // At small size and lower, switch to being on the opposite side of the screen
-      [theme.breakpoints.down("sm")]: {
+      [theme.breakpoints.down('md')]: {
         width: drawerWidth,
         ...boxShadow,
         position: "fixed",
@@ -363,7 +363,7 @@ import {
       backgroundColor: theme.palette.success.main
     },
     buttonLink: {
-      [theme.breakpoints.down("sm")]: {
+      [theme.breakpoints.down('md')]: {
         display: "flex",
         margin: "10px 15px 0",
         width: "-webkit-fill-available",

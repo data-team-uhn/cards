@@ -60,7 +60,7 @@ function FormPagination (props) {
   let pagesArray = [];
 
   const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
   useEffect(() => {
     setPagesCallback(null);
