@@ -38,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.httprequests.HttpRequests;
+import io.uhndata.cards.httprequests.HttpResponse;
 
 public class WebhookBackupTask implements Runnable
 {
@@ -229,16 +230,22 @@ public class WebhookBackupTask implements Runnable
         while (setIterator.hasNext()) {
             jsonSetBuilder.add(setIterator.next());
         }
-        HttpRequests.getPostResponse(
+        HttpResponse webhookResp = HttpRequests.doHttpPost(
             backupWebhookUrl + "/" + pathname,
             jsonSetBuilder.build().toString(),
             "application/json"
         );
+        if (webhookResp.getStatusCode() < 200 || webhookResp.getStatusCode() > 299) {
+            throw new IOException("Backup server responded with a non-ok status code");
+        }
     }
 
     private void output(String input, String filename) throws IOException
     {
         final String backupWebhookUrl = System.getenv("BACKUP_WEBHOOK_URL");
-        HttpRequests.getPostResponse(backupWebhookUrl + filename, input, "application/json");
+        HttpResponse webhookResp = HttpRequests.doHttpPost(backupWebhookUrl + filename, input, "application/json");
+        if (webhookResp.getStatusCode() < 200 || webhookResp.getStatusCode() > 299) {
+            throw new IOException("Backup server responded with a non-ok status code");
+        }
     }
 }
