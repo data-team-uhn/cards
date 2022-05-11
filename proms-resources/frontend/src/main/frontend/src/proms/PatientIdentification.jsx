@@ -324,6 +324,7 @@ function PatientIdentification(props) {
                       variant="caption"
                       onClick={() => {setMrnHelperOpen(true)}}
                       className={classes.mrnHelperLink}
+                      underline="hover"
                       >
                       Where can I find my MRN?
                       </Link>
@@ -380,7 +381,7 @@ function PatientIdentification(props) {
               </Grid>
               <Grid item className={classes.description}>
                 <Typography variant="body2" color="textSecondary">
-                  If you prefer not to proceed with filling out your surveys at this time, you can <Link href="/system/sling/logout">close this page</Link>.
+                  If you prefer not to proceed with filling out your surveys at this time, you can <Link href="/system/sling/logout" underline="hover">close this page</Link>.
                 </Typography>
               </Grid>
               </>

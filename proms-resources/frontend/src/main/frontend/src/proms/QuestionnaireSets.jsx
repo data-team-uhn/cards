@@ -62,7 +62,7 @@ function QuestionnaireSets(props) {
       <List>
         <ListItem key="title"><Typography variant="h6">Surveys</Typography></ListItem>
         { surveys.map((s, i) => (
-          <ListItem key={i}><Link to={`/Proms.html/${s['@name']}`}>{s.name}</Link></ListItem>
+          <ListItem key={i}><Link to={`/Proms.html/${s['@name']}`} underline="hover">{s.name}</Link></ListItem>
         ))}
       </List>
     );

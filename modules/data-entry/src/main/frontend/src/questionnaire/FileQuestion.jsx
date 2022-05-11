@@ -309,7 +309,7 @@ function FileQuestion(props) {
               <li key={idx}>
                 <div>
                   <span>File </span>
-                  <Link href={fixFileURL(uploadedFiles[filepath], filepath)} target="_blank" rel="noopener" download>
+                  <Link href={fixFileURL(uploadedFiles[filepath], filepath)} target="_blank" rel="noopener" download underline="hover">
                     {filepath}
                   </Link>:
                   <IconButton

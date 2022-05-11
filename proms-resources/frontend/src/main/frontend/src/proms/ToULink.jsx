@@ -31,6 +31,7 @@ function ToULink (props) {
       color="inherit"
       variant="caption"
       onClick={() => {setShowTou(true);}}
+      underline="hover"
     >
       Terms of Use and Privacy Policy
     </Link>

@@ -63,7 +63,7 @@ function createTableCell(node) {
     try {
       let questionnairePath = /^(.*\/Questionnaires\/[^\/]+)/.exec(path)[0];
       let link = `/content.html/admin${questionnairePath}#${path}`;
-      return <Link to={link}>{label}</Link>
+      return <Link to={link} underline="hover">{label}</Link>
     } catch {
       return label;
     }

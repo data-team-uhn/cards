@@ -31,7 +31,7 @@ import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 function EditButton(props) {
   const { entryPath, entryType, buttonClass, admin } = props;
   return(
-    <Link to={(admin ? "/content.html/admin" : "/content.html") + entryPath + ".edit"}>
+    <Link to={(admin ? "/content.html/admin" : "/content.html") + entryPath + ".edit"} underline="hover">
       <Tooltip title={entryType ? "Edit " + entryType : "Edit"}>
         <IconButton className={buttonClass} size="large">
           <EditIcon />

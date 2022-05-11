@@ -71,6 +71,7 @@ function ParsedNoteSection (props) {
           <Link
             onClick={addSuggestion}
             component="button"
+            underline="hover"
             >
             {/* Create a div purely to hold a ref for the above Tooltip */}
             <span className={classes.NCRTooltip}>

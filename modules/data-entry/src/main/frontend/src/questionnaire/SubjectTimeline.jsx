@@ -72,7 +72,7 @@ function DateAnswerDisplay(classes, questionData, index, length, rootLevel) {
 
   return <div key={index} className={divClasses.join(",")}>
     <Typography variant="h6" component="h1">
-      {questionTitle} (<Link href={`/content.html${formPath}#${questionData.questionPath}`}>{formTitle}</Link>)
+      {questionTitle} (<Link href={`/content.html${formPath}#${questionData.questionPath}`} underline="hover">{formTitle}</Link>)
     </Typography>
     {questionData.followup}
   </div>

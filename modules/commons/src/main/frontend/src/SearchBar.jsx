@@ -272,7 +272,7 @@ function SearchBar(props) {
                   { !results[0]?.disabled && showAllResultsLink &&
                   <Link to={"/content.html/QuickSearchResults?query=" + encodeURIComponent(search)
                               + allowedResourceTypes.map(i => `&allowedResourceTypes=${encodeURIComponent(i)}`).join('')}
-                          className={classes.root}>
+                          className={classes.root} underline="hover">
                     <MenuItem
                       className={classes.dropdownItem}
                       onClick={() => setPopperOpen(false)}
