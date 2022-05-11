@@ -83,7 +83,6 @@ public class WebhookBackupTask implements Runnable
     public void doManualExport(LocalDateTime lower, LocalDateTime upper)
     {
         LOGGER.info("Executing ManualExport");
-        String fileDateString = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         String requestDateStringLower = lower.toString();
         String requestDateStringUpper = (upper != null)
             ? upper.toString()
