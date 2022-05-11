@@ -838,10 +838,10 @@ export default function VariantFilesContainer() {
                 { upprogress && upprogress.state == "error" && <Typography color='error'>Error uploading file</Typography> }
                 { uploadProgress && uploadProgress[file.name] && uploadProgress[file.name].state === "done" ?
                   <Typography variant="overline" component="div">
-                    {patientSubjectLabel} <Link href={subjectPath} target="_blank"> {file.subject.id} </Link> /&nbsp;
-                    {tumorSubjectLabel} <Link href={tumorPath} target="_blank"> {file.tumor.id} </Link>
-                    { file?.region?.path && <> / {regionSubjectLabel} <Link href={regionPath} target="_blank"> {file.region.id} </Link> </> }
-                    { file.formPath && <> : <Link href={file.formPath} target="_blank">{somaticVariantsTitle}</Link> </>}
+                    {patientSubjectLabel} <Link href={subjectPath} target="_blank" underline="hover"> {file.subject.id} </Link> /&nbsp;
+                    {tumorSubjectLabel} <Link href={tumorPath} target="_blank" underline="hover"> {file.tumor.id} </Link>
+                    { file?.region?.path && <> / {regionSubjectLabel} <Link href={regionPath} target="_blank" underline="hover"> {file.region.id} </Link> </> }
+                    { file.formPath && <> : <Link href={file.formPath} target="_blank" underline="hover">{somaticVariantsTitle}</Link> </>}
                   </Typography>
                 : <div className={classes.fileFormSection}>
                   <TextField
@@ -933,7 +933,7 @@ export default function VariantFilesContainer() {
                 width: '1%',
                 whiteSpace: 'nowrap',
               },
-              render: rowData => <Link href={rowData["@path"]}>
+              render: rowData => <Link href={rowData["@path"]} underline="hover">
                                   {moment(rowData['jcr:created']).format("YYYY-MM-DD")}
                                 </Link> },
             { title: 'Uploaded By',

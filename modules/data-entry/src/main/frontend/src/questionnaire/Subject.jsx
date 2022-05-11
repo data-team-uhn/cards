@@ -98,7 +98,7 @@ export function getTextHierarchy (node, withType = false) {
 // Recursive function to get the list of ancestors as an array
 export function getHierarchyAsList (node, includeHomepage) {
   let props = defaultCreator(node);
-  let parent = <>{node.type.label} <Link {...props}>{node.identifier}</Link></>;
+  let parent = <>{node.type.label} <Link {...props} underline="hover">{node.identifier}</Link></>;
   if (node["parents"]) {
     let ancestors = getHierarchyAsList(node["parents"]);
     ancestors.push(parent);
@@ -112,7 +112,7 @@ export function getHierarchyAsList (node, includeHomepage) {
 
 export function getHomepageLink (subjectNode) {
   let props = defaultCreator({"@path": `/Subjects#subjects:activeTab=${subjectNode?.type?.["@name"]}`});
-  return (<Link {...props}>{subjectNode?.type?.subjectListLabel || "Subjects"}</Link>);
+  return (<Link {...props} underline="hover">{subjectNode?.type?.subjectListLabel || "Subjects"}</Link>);
 }
 
 /**
@@ -492,7 +492,7 @@ function SubjectMemberInternal (props) {
             <Grid item xs={false}>{avatar}</Grid>
             <Grid item>
               <Typography variant="h5">
-                 <Link to={"/content.html" + path}>{title}</Link>
+                 <Link to={"/content.html" + path} underline="hover">{title}</Link>
                  {action}
               </Typography>
             </Grid>
@@ -525,7 +525,7 @@ function SubjectMemberInternal (props) {
                       width: '1%',
                       whiteSpace: 'nowrap',
                     },
-                    render: rowData => <Link to={"/content.html" + rowData["@path"]}>
+                    render: rowData => <Link to={"/content.html" + rowData["@path"]} underline="hover">
                                          {moment(rowData['jcr:created']).format("YYYY-MM-DD")}
                                        </Link> },
                   { title: 'Status',

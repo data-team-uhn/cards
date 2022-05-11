@@ -204,15 +204,15 @@ function LiveTable(props) {
       if (column.link === 'path') {
         content = (<a href={entry["@path"]}>{content}</a>);
       } else if (column.link === 'dashboard+path') {
-        content = (<Link to={pathPrefix + entry["@path"]}>{content}</Link>);
+        content = (<Link to={pathPrefix + entry["@path"]} underline="hover">{content}</Link>);
       } else if (column.link === 'value') {
         content = (<a href={content}>{content}</a>);
       } else if (column.link === 'dashboard+value') {
-        content = (<Link to={pathPrefix + content}>{content}</Link>);
+        content = (<Link to={pathPrefix + content} underline="hover">{content}</Link>);
       } else if (column.link.startsWith('field:')) {
         content = (<a href={getNestedValue(entry, column.link.substring('field:'.length))}>{content}</a>);
       } else if (column.link.startsWith('dashboard+field:')) {
-        content = (<Link to={pathPrefix + getNestedValue(entry, column.link.substring('dashboard+field:'.length))}>{content}</Link>);
+        content = (<Link to={pathPrefix + getNestedValue(entry, column.link.substring('dashboard+field:'.length))} underline="hover">{content}</Link>);
       }
     }
 
