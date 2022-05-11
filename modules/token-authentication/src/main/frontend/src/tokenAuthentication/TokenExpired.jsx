@@ -21,7 +21,7 @@ import ReactDOM from 'react-dom';
 
 import { Fab, Grid, Paper, Typography } from '@material-ui/core';
 import makeStyles from '@material-ui/styles/makeStyles';
-import { MuiThemeProvider, styled } from '@material-ui/core/styles';
+import { MuiThemeProvider, StyledEngineProvider, styled } from '@material-ui/core/styles';
 import NavigationIcon from '@material-ui/icons/Navigation';
 import { lightBlue } from '@material-ui/core/colors';
 import { appTheme } from "../themePalette.jsx";
@@ -63,27 +63,29 @@ export default function TokenExpired() {
 
 
   return (
-    <MuiThemeProvider theme={appTheme}>
-      <Paper className={`${classes.paper}`} elevation={0}>
-        <Grid
-          container
-          direction="column"
-          spacing={7}
-          alignItems="center"
-          alignContent="center"
-          className={classes.notFoundContainer}
-        >
-          <Grid item>
-            <img src={document.querySelector('meta[name="logoLight"]').content} alt="" className={classes.logo}/>
+    <StyledEngineProvider injectFirst>
+      <MuiThemeProvider theme={appTheme}>
+        <Paper className={`${classes.paper}`} elevation={0}>
+          <Grid
+            container
+            direction="column"
+            spacing={7}
+            alignItems="center"
+            alignContent="center"
+            className={classes.notFoundContainer}
+          >
+            <Grid item>
+              <img src={document.querySelector('meta[name="logoLight"]').content} alt="" className={classes.logo}/>
+            </Grid>
+            <Grid item>
+              <Typography variant="h1" color="primary" gutterBottom>
+                This link is no longer valid, please close the page.
+              </Typography>
+            </Grid>
           </Grid>
-          <Grid item>
-            <Typography variant="h1" color="primary" gutterBottom>
-              This link is no longer valid, please close the page.
-            </Typography>
-          </Grid>
-        </Grid>
-      </Paper>
-    </MuiThemeProvider>
+        </Paper>
+      </MuiThemeProvider>
+    </StyledEngineProvider>
   );
 }
 

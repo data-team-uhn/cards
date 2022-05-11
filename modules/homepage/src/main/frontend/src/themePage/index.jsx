@@ -19,7 +19,7 @@
 import PropTypes from 'prop-types';
 import React, { Suspense } from "react";
 import ReactDOM from "react-dom";
-import { MuiThemeProvider } from '@material-ui/core/styles';
+import { MuiThemeProvider, StyledEngineProvider } from '@material-ui/core/styles';
 import { appTheme } from "../themePalette.jsx";
 import Sidebar from "./Sidebar/sidebar"
 import { getRoutes } from '../routes';
@@ -103,76 +103,78 @@ class Main extends React.Component {
     const { classes, ...rest } = this.props;
 
     return (
-      <MuiThemeProvider theme={appTheme}>
-      <React.Fragment>
-      <GlobalLoginContext.Provider
-        value={{
-          dialogOpen: (loginHandlerFcn, discardOnFailure) => {
-            let handler = ((success) => {
-              success && this.setState({
-                loginDialogOpen: false
+      <StyledEngineProvider injectFirst>
+        <MuiThemeProvider theme={appTheme}>
+        <React.Fragment>
+        <GlobalLoginContext.Provider
+          value={{
+            dialogOpen: (loginHandlerFcn, discardOnFailure) => {
+              let handler = ((success) => {
+                success && this.setState({
+                  loginDialogOpen: false
+                });
+                success && loginHandlerFcn();
               });
-              success && loginHandlerFcn();
-            });
-            (!this.state.loginDialogOpen) && this.setState({
-              loginDialogOpen: true
-            });
-            let shouldAddHandler = (!discardOnFailure) || (this.state.loginHandlers.length < 1);
-            shouldAddHandler && this.setState({
-              loginHandlers: this.state.loginHandlers.concat(handler)
-            });
-          },
-          getDialogOpenStatus: () => {
-            return this.state.loginDialogOpen;
-          }
-        }}
-      >
-        <PageStart
-          setTotalHeight={(th) => {
-              if (this.state.contentOffset != th) {
-                this.setState({contentOffset: th});
-              }
-            }
-          }
-        />
-        <DialogueLoginContainer
-          isOpen={this.state.loginDialogOpen}
-          handleLogin={(success) => {
-            if (success) {
-              for (let i = 0; i < this.state.loginHandlers.length; i++) {
-                this.state.loginHandlers[i](success);
-              }
-              this.setState({loginHandlers: []});
+              (!this.state.loginDialogOpen) && this.setState({
+                loginDialogOpen: true
+              });
+              let shouldAddHandler = (!discardOnFailure) || (this.state.loginHandlers.length < 1);
+              shouldAddHandler && this.setState({
+                loginHandlers: this.state.loginHandlers.concat(handler)
+              });
+            },
+            getDialogOpenStatus: () => {
+              return this.state.loginDialogOpen;
             }
           }}
-        />
-        <div className={classes.wrapper} style={ { position: 'relative', top: this.state.contentOffset + 'px' } }>
-          <Suspense fallback={<div>Loading...</div>}>
-            <Sidebar
-              contentOffset={this.state.contentOffset}
-              logoImage={document.querySelector('meta[name="logoDark"]').content}
-              image={this.state.image}
-              handleDrawerToggle={this.handleDrawerToggle}
-              open={this.state.mobileOpen}
-              color={ this.state.color }
-              {...rest}
-            />
-            <div className={classes.mainPanel} ref={this.mainPanel} id="main-panel">
-              <div className={classes.content}>
-                <div className={classes.container}>{this.switchRoutes(this.state.routes)}</div>
-              </div>
-              <Navbar
-                routes={ this.state.routes }
+        >
+          <PageStart
+            setTotalHeight={(th) => {
+                if (this.state.contentOffset != th) {
+                  this.setState({contentOffset: th});
+                }
+              }
+            }
+          />
+          <DialogueLoginContainer
+            isOpen={this.state.loginDialogOpen}
+            handleLogin={(success) => {
+              if (success) {
+                for (let i = 0; i < this.state.loginHandlers.length; i++) {
+                  this.state.loginHandlers[i](success);
+                }
+                this.setState({loginHandlers: []});
+              }
+            }}
+          />
+          <div className={classes.wrapper} style={ { position: 'relative', top: this.state.contentOffset + 'px' } }>
+            <Suspense fallback={<div>Loading...</div>}>
+              <Sidebar
+                contentOffset={this.state.contentOffset}
+                logoImage={document.querySelector('meta[name="logoDark"]').content}
+                image={this.state.image}
                 handleDrawerToggle={this.handleDrawerToggle}
+                open={this.state.mobileOpen}
                 color={ this.state.color }
                 {...rest}
               />
-            </div>
-          </Suspense>
-        </div>
-      </GlobalLoginContext.Provider>
-      </React.Fragment>
-      </MuiThemeProvider>
+              <div className={classes.mainPanel} ref={this.mainPanel} id="main-panel">
+                <div className={classes.content}>
+                  <div className={classes.container}>{this.switchRoutes(this.state.routes)}</div>
+                </div>
+                <Navbar
+                  routes={ this.state.routes }
+                  handleDrawerToggle={this.handleDrawerToggle}
+                  color={ this.state.color }
+                  {...rest}
+                />
+              </div>
+            </Suspense>
+          </div>
+        </GlobalLoginContext.Provider>
+        </React.Fragment>
+        </MuiThemeProvider>
+      </StyledEngineProvider>
     );
   }
 }

@@ -24,7 +24,7 @@ import makeStyles from '@material-ui/styles/makeStyles';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import { createBrowserHistory } from "history";
-import { MuiThemeProvider, styled } from '@material-ui/core/styles';
+import { MuiThemeProvider, StyledEngineProvider, styled } from '@material-ui/core/styles';
 import { appTheme } from "../themePalette.jsx";
 import PromsFooter from "./Footer.jsx";
 import ErrorPage from "../components/ErrorPage.jsx";
@@ -97,58 +97,62 @@ function Unsubscribe (props) {
       });
   }, []);
 
-  return <MuiThemeProvider theme={appTheme}>
-      <Paper className={classes.paper} elevation={0}>
-        <Grid
-          container
-          direction="column"
-          spacing={7}
-          alignItems="center"
-          alignContent="center"
-        >
-          <Grid item>
-            <img src={document.querySelector('meta[name="logoLight"]').content} alt="" className={classes.logo}/>
-          </Grid>
-          <Grid item>
-            { error && <Alert severity="error">
-              <AlertTitle>An error occurred</AlertTitle>
-               {error}
-              </Alert>
-            }
-            { alreadyUnsubscribed ?
-              <>
-                <Alert icon={false} severity="info">You are already unsubscribed.</Alert>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  className={classes.submit}
-                  onClick={() => unsubscribe(0)}
-                  >
-                  Resubscribe
-                </Button>
-              </>
-              : confirmed !== null ?
-              <Alert icon={false} severity="info">
-                You have been {confirmed ? "unsubscribed" : "resubscribed"}.
-              </Alert>
-              :
-              <><Typography>This will unsubscribe you from receiving all emails via DATA-PRO. If you wish to unsubscribe from all UHN communication, please contact your care team.</Typography>
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-                onClick={() => unsubscribe(1)}
-                >
-                Unsubscribe
-              </Button>
-              </>
-            }
-          </Grid>
-        </Grid>
-      </Paper>
-    </MuiThemeProvider>
+  return (
+    <StyledEngineProvider injectFirst>
+      <MuiThemeProvider theme={appTheme}>
+          <Paper className={classes.paper} elevation={0}>
+            <Grid
+              container
+              direction="column"
+              spacing={7}
+              alignItems="center"
+              alignContent="center"
+            >
+              <Grid item>
+                <img src={document.querySelector('meta[name="logoLight"]').content} alt="" className={classes.logo}/>
+              </Grid>
+              <Grid item>
+                { error && <Alert severity="error">
+                  <AlertTitle>An error occurred</AlertTitle>
+                   {error}
+                  </Alert>
+                }
+                { alreadyUnsubscribed ?
+                  <>
+                    <Alert icon={false} severity="info">You are already unsubscribed.</Alert>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      color="primary"
+                      className={classes.submit}
+                      onClick={() => unsubscribe(0)}
+                      >
+                      Resubscribe
+                    </Button>
+                  </>
+                  : confirmed !== null ?
+                  <Alert icon={false} severity="info">
+                    You have been {confirmed ? "unsubscribed" : "resubscribed"}.
+                  </Alert>
+                  :
+                  <><Typography>This will unsubscribe you from receiving all emails via DATA-PRO. If you wish to unsubscribe from all UHN communication, please contact your care team.</Typography>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    className={classes.submit}
+                    onClick={() => unsubscribe(1)}
+                    >
+                    Unsubscribe
+                  </Button>
+                  </>
+                }
+              </Grid>
+            </Grid>
+          </Paper>
+        </MuiThemeProvider>
+    </StyledEngineProvider>
+  );
 }
 
 ReactDOM.render(
