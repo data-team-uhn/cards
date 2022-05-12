@@ -128,6 +128,7 @@ function PatientIdentification(props) {
   const [ visit, setVisit ] = useState();
   // Returned from the server after partial validation of the authentication.
   const [ visitList, setVisitList ] = useState();
+  const [ visitListShown, setVisitListShown ] = useState(false);
   // Visit list page size
   const [ pageSize, setPageSize ] = useState(5);
   // Whether the patient user has accepted the latest version of the Terms of Use
@@ -162,12 +163,12 @@ function PatientIdentification(props) {
       .then((json) => {
         if(json.status == "needsVisit") {
           setVisitList(json.visits);
-          return;
         } else if (json.status != "success") {
           return Promise.reject(json.error);
+        } else {
+          setPatientDetails(json.patientInformation);
+          setVisit(json.sessionSubject);
         }
-        setPatientDetails(json.patientInformation);
-        setVisit(json.sessionSubject);
         setShowTou(true);
       })
       .catch((error) => {
@@ -193,14 +194,22 @@ function PatientIdentification(props) {
     // When the user selects a visit from the visit list, clear the list and
     // send the selected visit back to obtain a token
     setVisitList(null);
+    setVisitListShown(false);
     identify();
   }, [visit,visitList]);
+
+  // After the user has accepted the TOU, if they need to select from a list of visits present said
+  useEffect(() => {
+    if (!visitListShown && touAccepted && visitList && visitList.length > 1 ) {
+      setVisitListShown(true);
+    }
+  }, [visitList, touAccepted]);
 
   // When the visit is successfully obtained and the latest version of Terms of Use accepted, pass it along with the identification data
   // to the parent component
   useEffect(() => {
-    visit && touAccepted && onSuccess && onSuccess(Object.assign({subject: visit}, patientDetails));
-  }, [visit, touAccepted]);
+    visit && touAccepted && patientDetails && onSuccess && onSuccess(Object.assign({subject: visit}, patientDetails));
+  }, [visit, touAccepted, patientDetails]);
 
   // -----------------------------------------------------------------------------------------------------
   // Rendering
@@ -255,7 +264,7 @@ function PatientIdentification(props) {
          {/* If we haven't authenticated and retrieved the visit list for this patient yet,
              display the identification form */}
 
-         { !visitList ?
+         { !visitListShown ?
 
          <>
          <Grid item xs={12} className={classes.description}>
@@ -327,7 +336,7 @@ function PatientIdentification(props) {
 
           {/* If we retrieved the visit list and there's more than one option, display the options for the patient */}
 
-          { visitList.length > 1 ?
+          { visitListShown ?
             <>
             <Grid item className={classes.description}>
               <Typography>To fill out pre-appointment surveys, please select one of the clinics where your upcoming appointments will take place.</Typography>

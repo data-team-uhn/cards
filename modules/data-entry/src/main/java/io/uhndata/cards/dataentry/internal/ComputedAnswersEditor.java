@@ -438,7 +438,7 @@ public class ComputedAnswersEditor extends DefaultEditor
             } else if (questionId != null) {
                 Node questionNode = ComputedAnswersEditor.this.questionnaireUtils.getQuestion(questionId);
                 try {
-                    if (questionNode.hasProperty("entryMode")
+                    if (questionNode != null && questionNode.hasProperty("entryMode")
                         && "computed".equals(questionNode.getProperty("entryMode").getString())) {
                         this.inComputedAnswer = true;
                         this.currentAnswer = questionId;
