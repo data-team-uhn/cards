@@ -23,7 +23,6 @@ import {
   Avatar,
   Icon,
   CardHeader,
-  Typography
 } from "@mui/material";
 
 let QuestionnaireCardHeader = (props) => {
@@ -38,7 +37,6 @@ let QuestionnaireCardHeader = (props) => {
             : null
         }
         title={props.type && props.id && <>{props.type} : {props.id}</>}
-        subheader={<Typography variant="h6">{props.label}</Typography>}
         action={props.action}
       >
       </CardHeader>

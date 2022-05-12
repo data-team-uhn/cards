@@ -24,8 +24,11 @@ import {
   Card,
   CardContent,
   IconButton,
-  Tooltip
+  Tooltip,
+  Typography,
 } from "@mui/material";
+
+import makeStyles from '@mui/styles/makeStyles';
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from '@mui/icons-material/Edit';
@@ -33,6 +36,22 @@ import EditIcon from '@mui/icons-material/Edit';
 import EditDialog from "./EditDialog";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 import QuestionnaireCardHeader from "./QuestionnaireCardHeader";
+
+const useStyles = makeStyles(theme => ({
+  root : {
+   "& > .MuiCardHeader-root": {
+     paddingBottom: 0,
+   },
+   "& > .MuiCardContent-root": {
+     paddingTop: 0,
+   },
+  },
+  title: {
+    "& + *" : {
+      paddingTop: theme.spacing(4),
+    },
+  },
+}));
 
 // General class or Sections and Questions
 
@@ -69,14 +88,20 @@ let QuestionnaireItemCard = (props) => {
     }
   }, [itemRef]);
 
+  const styles = useStyles();
+
+  let cardClasses = [styles.root];
+  if (highlight) {
+    cardClasses.push(classes.focusedQuestionnaireItem);
+  }
+
   return (
-    <Card variant="outlined" ref={highlight ? itemRef : undefined} className={highlight ? classes.focusedQuestionnaireItem : ''}>
+    <Card variant="outlined" ref={highlight ? itemRef : undefined} className={cardClasses.join(" ")}>
       <QuestionnaireCardHeader
         avatar={avatar}
         avatarColor={avatarColor}
         type={type}
         id={data["@name"]}
-        label={title || data[titleField] || ''}
         plain={plain}
         action={
           <div>
@@ -100,6 +125,7 @@ let QuestionnaireItemCard = (props) => {
         }
       />
       <CardContent className={classes.questionnaireItemContent + (!!!plain ? " avatarCardContent" : '')}>
+        <Typography className={styles.title} variant="h6">{title || data[titleField] || ''}</Typography>
         {children}
         { editDialogOpen && <EditDialog
                               targetExists={true}

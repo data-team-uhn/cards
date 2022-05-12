@@ -540,14 +540,16 @@ let QuestionnaireEntry = (props) => {
         model={model}
         {...rest}
     >
-      <Fields data={entryData} JSON={viewSpec} edit={false} />
-      { childModels &&
+      { childModels ?
         <QuestionnaireItemSet
           data={entryData}
           classes={classes}
           onActionDone={reloadData}
           models={childModels}
-        />
+        >
+          <Grid item><Fields data={entryData} JSON={viewSpec} edit={false} /></Grid>
+        </QuestionnaireItemSet>
+        : <Fields data={entryData} JSON={viewSpec} edit={false} />
       }
     </QuestionnaireItemCard>
   );
