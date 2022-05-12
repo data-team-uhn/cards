@@ -74,6 +74,72 @@ def createSubjectInJcr(path, subjectTypePath, identifier):
   if resp.status_code != 201:
     raise Exception("Failed to create Subject in JCR")
 
+def createFormInJcr(path, questionnairePath, subjectPath):
+  params = {}
+  params['jcr:primaryType'] = (None, 'cards:Form')
+  params['questionnaire'] = (None, questionnairePath)
+  params['questionnaire@TypeHint'] = (None, 'Reference')
+  params['subject'] = (None, subjectPath)
+  params['subject@TypeHint'] = (None, 'Reference')
+  resp = requests.post(CARDS_URL + path, auth=('admin', ADMIN_PASSWORD), files=params)
+  if resp.status_code != 201:
+    raise Exception("Failed to create Form node in JCR")
+
+def createAnswerSectionInJcr(path, questionnaireSectionPath):
+  params = {}
+  params['jcr:primaryType'] = (None, 'cards:AnswerSection')
+  params['section'] = (None, getJcrUuid(questionnaireSectionPath))
+  params['section@TypeHint'] = (None, 'Reference')
+  resp = requests.post(CARDS_URL + path, auth=('admin', ADMIN_PASSWORD), files=params)
+  if resp.status_code not in range(200, 300):
+    raise Exception("Failed to create AnswerSection node in JCR")
+
+def createIntermediateAnswerSectionsInJcr(answerNodePath, questionNodePath):
+  # answerNodePath follows a format of /Forms/<FORM NODE>/<ZERO OR MORE SECTION NODES>/<ANSWER NODE>
+  # questionNodePath follows a format of /Questionnaires/<QUESTION NODE>/<ZERO OR MORE SECTION NODES>/<QUESTION NODE>
+  formNode = answerNodePath.split('/')[2]
+  questionnaireNode = questionNodePath.split('/')[2]
+  nodesAfterForm = answerNodePath.split('/')[2:]
+  nodesAfterQuestionnaire = questionNodePath.split('/')[2:]
+  formSectionNodes = nodesAfterForm[1:-1]
+  questionnaireSectionNodes = nodesAfterQuestionnaire[1:-1]
+  if len(formSectionNodes) != len(questionnaireSectionNodes):
+    raise Exception("Form section doesn't have a matching Questionnaire section")
+  for i in range(len(formSectionNodes)):
+    thisSectionFPath = '/'.join(['', 'Forms', formNode] + formSectionNodes[0:i+1])
+    thisSectionQPath = '/'.join(['', 'Questionnaires', questionnaireNode] + questionnaireSectionNodes[0:i+1])
+    print("Creating answer section at {} for question section {}".format(thisSectionFPath, thisSectionQPath))
+    createAnswerSectionInJcr(thisSectionFPath, thisSectionQPath)
+
+CARDS_TYPE_TO_SLING_TYPE_HINT = {}
+CARDS_TYPE_TO_SLING_TYPE_HINT['cards:BooleanAnswer'] = "long"
+CARDS_TYPE_TO_SLING_TYPE_HINT['cards:TextAnswer'] = "string"
+CARDS_TYPE_TO_SLING_TYPE_HINT['cards:LongAnswer'] = "long"
+CARDS_TYPE_TO_SLING_TYPE_HINT['cards:DoubleAnswer'] = "double"
+CARDS_TYPE_TO_SLING_TYPE_HINT['cards:DecimalAnswer'] = "decimal"
+CARDS_TYPE_TO_SLING_TYPE_HINT['cards:DateAnswer'] = "date"
+CARDS_TYPE_TO_SLING_TYPE_HINT['cards:TimeAnswer'] = "string"
+CARDS_TYPE_TO_SLING_TYPE_HINT['cards:PedigreeAnswer'] = "string"
+CARDS_TYPE_TO_SLING_TYPE_HINT['cards:VocabularyAnswer'] = "string"
+CARDS_TYPE_TO_SLING_TYPE_HINT['cards:ChromosomeAnswer'] = "string"
+CARDS_TYPE_TO_SLING_TYPE_HINT['cards:FileAnswer'] = "string" # TODO Properly handle FileAnswers
+
+def createAnswerInJcr(answerNodePath, questionNodePath, primaryType, value):
+  params = []
+  params.append(('jcr:primaryType', (None, primaryType)))
+  params.append(('question', (None, getJcrUuid(questionNodePath))))
+  params.append(('question@TypeHint', (None, 'Reference')))
+  if type(value) is list:
+    for item in value:
+      params.append(('value', (None, str(item))))
+    params.append(('value@TypeHint', (None, CARDS_TYPE_TO_SLING_TYPE_HINT[primaryType] + "[]")))
+  else:
+    params.append(('value', (None, str(value))))
+    params.append(('value@TypeHint', (None, CARDS_TYPE_TO_SLING_TYPE_HINT[primaryType])))
+  resp = requests.post(CARDS_URL + answerNodePath, auth=('admin', ADMIN_PASSWORD), files=tuple(params))
+  if resp.status_code != 201:
+    raise Exception("Failed to create Answer node in JCR")
+
 # Sort SUBJECT_LIST so that parents are created before children
 SUBJECT_LIST = sorted(SUBJECT_LIST, key=lambda x: x.count('/'))
 
@@ -87,3 +153,12 @@ for subjectPath in SUBJECT_LIST:
 for formPath in FORM_LIST:
   form = getForm(formPath)
   print("Creating Form (subject={}, questionnaire={}) at: {}".format(form["subject"], form["questionnaire"], formPath))
+  createFormInJcr(formPath, form["questionnaire"], form["subject"])
+  # For all the responses to this Form...
+  for responsePath in form["responses"]:
+    # ...first create all (if any) of the intermediate AnswerSection nodes
+    associatedQuestion = form["responses"][responsePath]["question"]
+    dataType = form["responses"][responsePath]["jcr:primaryType"]
+    dataValue = form["responses"][responsePath]["value"]
+    createIntermediateAnswerSectionsInJcr(responsePath, associatedQuestion)
+    createAnswerInJcr(responsePath, associatedQuestion, dataType, dataValue)
