@@ -145,6 +145,7 @@ const cleanupSubject = (subjectObject) => {
   let cleanSubject = {};
   cleanSubject["type"] = subjectObject["type"]["@path"];
   cleanSubject["@path"] = subjectObject["@path"];
+  cleanSubject["identifier"] = subjectObject["identifier"];
   return cleanSubject;
 };
 
