@@ -20,7 +20,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { TextField, Typography } from "@mui/material";
+import { TextField } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
 
@@ -68,8 +68,8 @@ let TextValue = (props) => {
 
   return (
     Array.isArray(data[objectKey]) ?
-      data[objectKey].map(item => <Typography key={item}>{`${item}`}</Typography>)
-    : <Typography>{`${data[objectKey]}`}</Typography>
+      data[objectKey].map(item => <div>{item}</div>)
+    : <div>{data[objectKey]}</div>
   );
 };
 
