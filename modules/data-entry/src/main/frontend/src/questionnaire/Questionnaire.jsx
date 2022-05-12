@@ -330,6 +330,7 @@ let QuestionnaireContents = (props) => <QuestionnaireEntry {...props} />;
 QuestionnaireContents.propTypes = {
   onActionDone: PropTypes.func,
   onFieldsChanged: PropTypes.func,
+  disableCollapse: PropTypes.bool,
   data: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired,
   avatar: PropTypes.string,
@@ -338,6 +339,7 @@ QuestionnaireContents.propTypes = {
 };
 
 QuestionnaireContents.defaultProps = {
+  disableCollapse: false,
   type: "Questionnaire",
   avatar: "assignment",
   avatarColor: "slategray",
@@ -547,7 +549,7 @@ let QuestionnaireEntry = (props) => {
           onActionDone={reloadData}
           models={childModels}
         >
-          <Grid item><Fields data={entryData} JSON={viewSpec} edit={false} /></Grid>
+          <Grid item className="cards-questionnaire-entry-props"><Fields data={entryData} JSON={viewSpec} edit={false} /></Grid>
         </QuestionnaireItemSet>
         : <Fields data={entryData} JSON={viewSpec} edit={false} />
       }
@@ -558,6 +560,7 @@ let QuestionnaireEntry = (props) => {
 QuestionnaireEntry.propTypes = {
   onActionDone: PropTypes.func,
   onFieldsChanged: PropTypes.func,
+  disableCollapse: PropTypes.bool,
   data: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired,
   avatar: PropTypes.string,
@@ -565,4 +568,8 @@ QuestionnaireEntry.propTypes = {
   title: PropTypes.string,
   titleField: PropTypes.string,
   model: PropTypes.string.isRequired
+};
+
+QuestionnaireEntry.defaultProps = {
+  disableCollapse: true,
 };

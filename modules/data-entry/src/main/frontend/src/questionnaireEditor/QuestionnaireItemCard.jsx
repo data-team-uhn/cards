@@ -32,6 +32,8 @@ import makeStyles from '@mui/styles/makeStyles';
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from '@mui/icons-material/Edit';
+import ExpandIcon from '@mui/icons-material/UnfoldMore';
+import CollapseIcon from '@mui/icons-material/UnfoldLess';
 
 import EditDialog from "./EditDialog";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
@@ -51,6 +53,11 @@ const useStyles = makeStyles(theme => ({
       paddingTop: theme.spacing(4),
     },
   },
+  collapsed: {
+    "& .cards-questionnaire-entry-props": {
+      display: "none",
+    }
+  }
 }));
 
 // General class or Sections and Questions
@@ -66,6 +73,7 @@ let QuestionnaireItemCard = (props) => {
     action,
     disableEdit,
     disableDelete,
+    disableCollapse,
     plain,
     data,
     onActionDone,
@@ -74,6 +82,7 @@ let QuestionnaireItemCard = (props) => {
     classes
   } = props;
   let [ editDialogOpen, setEditDialogOpen ] = useState(false);
+  let [ isCollapsed, setCollapsed ] = useState(false);
   const highlight = doHighlight || window.location?.hash?.substr(1) == data["@path"];
 
   const itemRef = useRef();
@@ -91,6 +100,9 @@ let QuestionnaireItemCard = (props) => {
   const styles = useStyles();
 
   let cardClasses = [styles.root];
+  if (isCollapsed) {
+    cardClasses.push(styles.collapsed);
+  }
   if (highlight) {
     cardClasses.push(classes.focusedQuestionnaireItem);
   }
@@ -120,6 +132,13 @@ let QuestionnaireItemCard = (props) => {
                entryType={type}
                onComplete={onActionDone}
             />
+            }
+            {!disableCollapse &&
+            <Tooltip title={isCollapsed? "Expanded view" : "Collapsed view"}>
+              <IconButton onClick={() => setCollapsed(!isCollapsed)} disabled={!!!children} size="large">
+                { isCollapsed ? <ExpandIcon /> : <CollapseIcon /> }
+              </IconButton>
+            </Tooltip>
             }
           </div>
         }

@@ -79,7 +79,7 @@ let Fields = (props) => {
     if (!hasValueToDisplay(key, value)) return '';
 
     return (<React.Fragment key={key}>
-      <Grid container alignItems='flex-start' spacing={2} direction="row">
+      <Grid container alignItems='flex-start' spacing={2} direction="row" className="cards-questionnaire-entry-props">
         <Grid item xs={4}>
           <Typography variant="subtitle2">{formatString(key)}:</Typography>
         </Grid>
