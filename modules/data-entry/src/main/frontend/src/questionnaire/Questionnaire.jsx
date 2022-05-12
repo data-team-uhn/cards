@@ -61,7 +61,6 @@ let Questionnaire = (props) => {
   let [ data, setData ] = useState();
   let [ questionnaireTitle, setQuestionnaireTitle ] = useState()
   let [ error, setError ] = useState();
-  let [ doHighlight, setDoHighlight ] = useState(false);
   let baseUrl = /((.*)\/Questionnaires)\/([^.]+)/.exec(location.pathname)[1];
   let questionnaireUrl = `${baseUrl}/${id}`;
   let isEdit = window.location.pathname.endsWith(".edit");
@@ -81,23 +80,8 @@ let Questionnaire = (props) => {
       .catch(handleError);
   };
 
-  let reloadData = (newData) => {
-    if (newData) {
-      setData(newData);
-      setDoHighlight(true);
-    } else {
-      setData({});
-      fetchData();
-    }
-  }
-
   if (!data) {
     fetchData();
-  }
-
-  let onCreated = (newData) => {
-    setData({});
-    setData(newData);
   }
 
   useEffect(() => {
@@ -174,51 +158,34 @@ let Questionnaire = (props) => {
   );
 
   return (
-    <>
-      { error &&
-        <Typography variant="h2" color="error">
-          Error obtaining questionnaire info: {error.status} {error.statusText}
-        </Typography>
-      }
-      { !isEdit
-        ? <Grid container direction="column" spacing={4} wrap="nowrap">
-            {questionnaireHeader}
-            <Grid item>
+    error ?
+      <Typography variant="h2" color="error">
+        Error obtaining questionnaire info: {error.status} {error.statusText}
+      </Typography>
+    :
+      ( data?.["jcr:primaryType"] == "cards:Questionnaire" &&
+        <Grid container direction="column" spacing={4} wrap="nowrap">
+          { questionnaireHeader }
+          <Grid item>
+            { !isEdit ?
               <QuestionnairePreview
                 data={data}
                 title={questionnaireTitle}
                 contentOffset={props.contentOffset}
               />
-            </Grid>
+            :
+              <QuestionnaireContents
+                disableDelete
+                data={data}
+                classes={classes}
+                onFieldsChanged={(newData) => newData?.title && setQuestionnaireTitle(newData.title)}
+                onActionDone={()=>{}}
+                menuProps={{isMainAction: true}}
+              />
+            }
           </Grid>
-      :
-      <QuestionnaireItemSet
-        data={data}
-        classes={classes}
-        onActionDone={() => reloadData()}
-      >
-        {questionnaireHeader}
-        { data?.["jcr:primaryType"] == "cards:Questionnaire" && <Grid item>
-          <QuestionnaireProperties
-            plain
-            disableDelete
-            data={data}
-            classes={classes}
-            onFieldsChanged={(newData) => newData?.title && setQuestionnaireTitle(newData.title)}
-            onActionDone={reloadData}
-          />
-        </Grid>}
-        { data &&
-          <CreationMenu
-            isMainAction={true}
-            data={data}
-            menuItems={QUESTIONNAIRE_ITEM_NAMES}
-            onCreated={onCreated}
-          />
-        }
-      </QuestionnaireItemSet>
-      }
-    </>
+        </Grid>
+      )
   );
 };
 
@@ -357,19 +324,23 @@ QuestionnaireItemSet.propTypes = {
   data: PropTypes.object
 };
 
-// Questionnaire properties
-let QuestionnaireProperties = (props) => <QuestionnaireEntry {...props} />;
+// Questionnaire contents: properties + entries
+let QuestionnaireContents = (props) => <QuestionnaireEntry {...props} />;
 
-QuestionnaireProperties.propTypes = {
+QuestionnaireContents.propTypes = {
   onActionDone: PropTypes.func,
   onFieldsChanged: PropTypes.func,
   data: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired,
+  avatar: PropTypes.string,
+  avatarColor: PropTypes.string,
   model: PropTypes.string.isRequired
 };
 
-QuestionnaireProperties.defaultProps = {
+QuestionnaireContents.defaultProps = {
   type: "Questionnaire",
+  avatar: "assignment",
+  avatarColor: "slategray",
   model: "Questionnaire.json"
 };
 
@@ -476,7 +447,7 @@ ConditionalGroup.defaultProps = {
 // Generic QuestionnaireEntry component that can be adapted to any entry type via props
 
 let QuestionnaireEntry = (props) => {
-  let { onActionDone, onFieldsChanged, data, titleField, model, classes, ...rest } = props;
+  let { onActionDone, onFieldsChanged, data, titleField, model, classes, menuProps, ...rest } = props;
   let [ entryData, setEntryData ] = useState(data);
   let [ doHighlight, setDoHighlight ] = useState(data.doHighlight);
 
@@ -561,6 +532,7 @@ let QuestionnaireEntry = (props) => {
               onCreated={onCreated}
               menuItems={menuItems}
               models={childModels}
+              {...menuProps}
             />
             : undefined
         }
