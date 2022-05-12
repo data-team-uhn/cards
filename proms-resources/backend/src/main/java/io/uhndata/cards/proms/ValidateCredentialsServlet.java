@@ -58,13 +58,15 @@ import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.auth.token.TokenManager;
 import io.uhndata.cards.dataentry.api.FormUtils;
+import io.uhndata.cards.dataentry.api.QuestionnaireUtils;
 import io.uhndata.cards.dataentry.api.SubjectTypeUtils;
 import io.uhndata.cards.dataentry.api.SubjectUtils;
-import io.uhndata.cards.dataentry.api.QuestionnaireUtils;
 
 @Component(service = { Servlet.class }, property = { "sling.auth.requirements=-/Proms" })
 @SlingServletResourceTypes(resourceTypes = { "cards/PromsHomepage" }, extensions = {
     "validateCredentials" }, methods = { "POST" })
+
+@SuppressWarnings("checkstyle:ClassFanOutComplexity")
 public class ValidateCredentialsServlet extends SlingAllMethodsServlet
 {
     private static final long serialVersionUID = 1223548547434563162L;
@@ -114,7 +116,8 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
             // Check if the current token is a temporary terms of use token.
             // If so, discard this token as it should only be used for checking the patients terms of use version
             if (sessionSubjectIdentifier != null
-                && "Patient".equals(subjectTypeUtils.getLabel(subjectUtils.getType(subjectUtils.getSubject(sessionSubjectIdentifier))))) {
+                && "Patient".equals(this.subjectTypeUtils.getLabel(this.subjectUtils.getType(
+                    this.subjectUtils.getSubject(sessionSubjectIdentifier))))) {
                 // By default, existing auth tokens are recreated by TokenAuthenticationHandler.
                 // Reset the response to clear the old terms of use token
                 response.reset();
