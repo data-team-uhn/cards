@@ -253,6 +253,10 @@ public class WebhookBackupTask implements Runnable
     private void postToSlack(String msg)
     {
         final String slackNotificationsUrl = System.getenv("SLACK_NOTIFICATIONS_URL");
+        if (slackNotificationsUrl == null) {
+            LOGGER.warn("SLACK_NOTIFICATIONS_URL environment variable is not defined. Skipping Slack notification.");
+            return;
+        }
         try {
             JsonObject slackApiReq = Json.createObjectBuilder()
                 .add("text", msg)
