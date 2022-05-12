@@ -41,6 +41,8 @@ import QuestionnaireCardHeader from "./QuestionnaireCardHeader";
 
 const useStyles = makeStyles(theme => ({
   root : {
+    border: "0 none",
+    background: theme.palette.action.hover,
    "& > .MuiCardHeader-root": {
      paddingBottom: 0,
    },
