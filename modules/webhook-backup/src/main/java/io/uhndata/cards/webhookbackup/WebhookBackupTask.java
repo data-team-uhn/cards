@@ -42,6 +42,8 @@ import io.uhndata.cards.httprequests.HttpResponse;
 
 public class WebhookBackupTask implements Runnable
 {
+    private static final String DATE_TIME_JCR_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+
     /** Default log. */
     private static final Logger LOGGER = LoggerFactory.getLogger(WebhookBackupTask.class);
 
@@ -138,8 +140,8 @@ public class WebhookBackupTask implements Runnable
         LOGGER.info("Executing NightlyExport");
         LocalDateTime startOfToday = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0);
         LocalDateTime startOfYesterday = startOfToday.minusDays(1);
-        String requestStartString = startOfYesterday.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
-        String requestEndString = startOfToday.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
+        String requestStartString = startOfYesterday.format(DateTimeFormatter.ofPattern(DATE_TIME_JCR_FORMAT));
+        String requestEndString = startOfToday.format(DateTimeFormatter.ofPattern(DATE_TIME_JCR_FORMAT));
         LOGGER.warn("Exporting data modified between [{}, {})", requestStartString, requestEndString);
         doManualExport(startOfYesterday, startOfToday);
     }
@@ -265,12 +267,12 @@ public class WebhookBackupTask implements Runnable
     {
         String taskUpdateMessage = emojii + " Backup " + status + " for data modified ";
         if (upper == null) {
-            taskUpdateMessage += "after " + lower.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
+            taskUpdateMessage += "after " + lower.format(DateTimeFormatter.ofPattern(DATE_TIME_JCR_FORMAT));
         } else {
             taskUpdateMessage += "between ";
-            taskUpdateMessage += lower.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
+            taskUpdateMessage += lower.format(DateTimeFormatter.ofPattern(DATE_TIME_JCR_FORMAT));
             taskUpdateMessage += " and ";
-            taskUpdateMessage += upper.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
+            taskUpdateMessage += upper.format(DateTimeFormatter.ofPattern(DATE_TIME_JCR_FORMAT));
         }
         taskUpdateMessage += ". " + emojii;
         return taskUpdateMessage;
