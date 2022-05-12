@@ -23,6 +23,7 @@
 import os
 import sys
 import json
+import requests
 
 if len(sys.argv) < 4:
   print("Usage: python3 restore_json_backup.py BACKUP_DIRECTORY FORM_LIST_FILE SUBJECT_LIST_FILE")
@@ -31,6 +32,14 @@ if len(sys.argv) < 4:
 BACKUP_DIRECTORY = sys.argv[1]
 FORM_LIST_FILE = sys.argv[2]
 SUBJECT_LIST_FILE = sys.argv[3]
+
+CARDS_URL = "http://localhost:8080"
+if "CARDS_URL" in os.environ:
+  CARDS_URL = os.environ["CARDS_URL"].rstrip('/')
+
+ADMIN_PASSWORD = "admin"
+if "ADMIN_PASSWORD" in os.environ:
+  ADMIN_PASSWORD = os.environ["ADMIN_PASSWORD"]
 
 with open(FORM_LIST_FILE, 'r') as f:
   FORM_LIST = json.loads(f.read())
@@ -51,6 +60,20 @@ def getForm(formPath):
     formData = json.loads(f.read())
   return formData
 
+def getJcrUuid(nodePath):
+  resp = requests.get(CARDS_URL + nodePath + '.json', auth=('admin', ADMIN_PASSWORD))
+  return resp.json()['jcr:uuid']
+
+def createSubjectInJcr(path, subjectTypePath, identifier):
+  params = {}
+  params['jcr:primaryType'] = (None, 'cards:Subject')
+  params['identifier'] = (None, identifier)
+  params['type'] = (None, getJcrUuid(subjectTypePath))
+  params['type@TypeHint'] = (None, 'Reference')
+  resp = requests.post(CARDS_URL + path, auth=('admin', ADMIN_PASSWORD), files=params)
+  if resp.status_code != 201:
+    raise Exception("Failed to create Subject in JCR")
+
 # Sort SUBJECT_LIST so that parents are created before children
 SUBJECT_LIST = sorted(SUBJECT_LIST, key=lambda x: x.count('/'))
 
@@ -58,6 +81,7 @@ SUBJECT_LIST = sorted(SUBJECT_LIST, key=lambda x: x.count('/'))
 for subjectPath in SUBJECT_LIST:
   subject = getSubject(subjectPath)
   print("Creating Subject (type={}) at: {}".format(subject["type"], subjectPath))
+  createSubjectInJcr(subjectPath, subject["type"], subject["identifier"])
 
 # After the Subjects have been restored, we can begin to restore the Forms
 for formPath in FORM_LIST:
