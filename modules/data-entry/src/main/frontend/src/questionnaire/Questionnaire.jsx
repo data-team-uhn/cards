@@ -41,7 +41,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import PreviewIcon from '@mui/icons-material/FindInPage';
 import DeleteButton from "../dataHomepage/DeleteButton";
 import QuestionnaireStyle from "./QuestionnaireStyle";
-import { blue } from '@mui/material/colors';
+import { blue, blueGrey, cyan, deepPurple, indigo, orange } from '@mui/material/colors';
 import { ENTRY_TYPES } from "./FormEntry";
 import Fields from "../questionnaireEditor/Fields";
 import CreationMenu from "../questionnaireEditor/CreationMenu";
@@ -342,7 +342,7 @@ QuestionnaireContents.defaultProps = {
   disableCollapse: false,
   type: "Questionnaire",
   avatar: "assignment",
-  avatarColor: "slategray",
+  avatarColor: blueGrey[700],
   model: "Questionnaire.json"
 };
 
@@ -382,7 +382,7 @@ Question.propTypes = {
 
 Question.defaultProps = {
   type: "Question",
-  avatarColor: "purple",
+  avatarColor: deepPurple[700],
   titleField: "text",
   model: "Question.json"
 };
@@ -404,7 +404,7 @@ Section.propTypes = {
 Section.defaultProps = {
   type: "Section",
   avatar: "view_stream",
-  avatarColor: "orange",
+  avatarColor: orange[800],
   titleField: "label",
   model: "Section.json"
 };
@@ -424,7 +424,7 @@ Conditional.propTypes = {
 
 Conditional.defaultProps = {
   type: "Conditional",
-  avatarColor: "cadetblue",
+  avatarColor: cyan[800],
   model: "Conditional.json"
 };
 
@@ -442,7 +442,7 @@ ConditionalGroup.propTypes = {
 
 ConditionalGroup.defaultProps = {
   type: "ConditionalGroup",
-  avatarColor: "navy",
+  avatarColor: indigo[800],
   model: "ConditionalGroup.json"
 };
 
