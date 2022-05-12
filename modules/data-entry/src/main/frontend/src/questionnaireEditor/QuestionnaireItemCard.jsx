@@ -39,6 +39,8 @@ import EditDialog from "./EditDialog";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 import QuestionnaireCardHeader from "./QuestionnaireCardHeader";
 
+import { camelCaseToWords }  from "./Fields";
+
 const useStyles = makeStyles(theme => ({
   root : {
     border: "0 none",
@@ -109,19 +111,21 @@ let QuestionnaireItemCard = (props) => {
     cardClasses.push(classes.focusedQuestionnaireItem);
   }
 
+  let formattedType = camelCaseToWords(type);
+
   return (
     <Card variant="outlined" ref={highlight ? itemRef : undefined} className={cardClasses.join(" ")}>
       <QuestionnaireCardHeader
         avatar={avatar}
         avatarColor={avatarColor}
-        type={type}
+        type={formattedType}
         id={data["@name"]}
         plain={plain}
         action={
           <div>
             {action}
             {!disableEdit &&
-            <Tooltip title={`Edit ${type.toLowerCase()} properties`}>
+            <Tooltip title={`Edit ${formattedType.toLowerCase()} properties`}>
               <IconButton onClick={() => { setEditDialogOpen(true); }} size="large">
                 <EditIcon />
               </IconButton>
@@ -131,7 +135,7 @@ let QuestionnaireItemCard = (props) => {
             <DeleteButton
                entryPath={data["@path"]}
                entryName={title || data[titleField] || data["@name"]}
-               entryType={type}
+               entryType={formattedType.toLowerCase()}
                onComplete={onActionDone}
             />
             }

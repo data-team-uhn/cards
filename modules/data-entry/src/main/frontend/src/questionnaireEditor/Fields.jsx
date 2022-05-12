@@ -38,7 +38,7 @@ import MarkdownTextField from "./MarkdownTextField";
 import ReferenceInput from "./ReferenceInput";
 import { FieldsProvider } from "./FieldsContext.jsx";
 
-export function formatString(str) {
+export function camelCaseToWords(str) {
   return str.charAt(0).toUpperCase() + str.slice(1).replace( /([A-Z])/g, " $1" ).toLowerCase();
 }
 
@@ -81,7 +81,7 @@ let Fields = (props) => {
     return (<React.Fragment key={key}>
       <Grid container alignItems='flex-start' spacing={2} direction="row" className="cards-questionnaire-entry-props">
         <Grid item xs={4}>
-          <Typography variant="subtitle2">{formatString(key)}:</Typography>
+          <Typography variant="subtitle2">{camelCaseToWords(key)}:</Typography>
         </Grid>
         <Grid item xs={8}>
           <ValueDisplay key={key} objectKey={key} value={value} data={data} />

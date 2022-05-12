@@ -25,13 +25,11 @@ import {
   Typography
 } from "@mui/material";
 
-export function formatIdentifier(key) {
-  return key.charAt(0).toUpperCase() + key.slice(1).replace( /([A-Z])/g, " $1" ).toLowerCase();
-}
+import { camelCaseToWords } from "./Fields";
 
 let EditorInput = (props) => {
   let { children, name } = props;
-  
+
   const classes = makeStyles((theme) => ({
     labelContainer: {
       /* Match the input padding so the text of the label would appear aligned with the text of the input */
@@ -45,7 +43,7 @@ let EditorInput = (props) => {
     <Grid container alignItems="flex-start" spacing={2}>
       <Grid item xs={4} className={classes.labelContainer}>
         <Typography variant="subtitle2">
-          {formatIdentifier(name?.concat(':')) || ''}
+          {camelCaseToWords(name?.concat(':')) || ''}
         </Typography>
       </Grid>
       <Grid item xs={8}>

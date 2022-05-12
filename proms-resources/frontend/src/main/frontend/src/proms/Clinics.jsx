@@ -34,7 +34,7 @@ import LiveTable from "../dataHomepage/LiveTable.jsx";
 import NewItemButton from "../components/NewItemButton.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
-import { formatIdentifier } from "../questionnaireEditor/EditorInput.jsx";
+import { camelCaseToWords } from "../questionnaireEditor/Fields.jsx";
 
 function Clinics(props) {
   const [currentClinicName, setCurrentClinicName] = useState("");
@@ -165,7 +165,7 @@ function OnboardNewClinicDialog(props) {
     let mandatoryFields = clinicsSpecs["//REQUIRED"];
     for (const fieldName of mandatoryFields) {
       if ((!requestData.has(fieldName)) || requestData.get(fieldName) == "") {
-        setError(`The ${formatIdentifier(fieldName)} field is mandatory`);
+        setError(`The ${camelCaseToWords(fieldName)} field is mandatory`);
         return;
       }
     }
