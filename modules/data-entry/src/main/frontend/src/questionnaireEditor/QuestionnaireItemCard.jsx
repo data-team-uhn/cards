@@ -88,7 +88,7 @@ let QuestionnaireItemCard = (props) => {
             {!disableDelete &&
             <DeleteButton
                entryPath={data["@path"]}
-               entryName={title || data.label || data.text || data["@name"]}
+               entryName={title || data[titleField] || data["@name"]}
                entryType={type}
                onComplete={onActionDone}
             />
