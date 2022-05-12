@@ -541,7 +541,6 @@ let QuestionnaireEntry = (props) => {
         {...rest}
     >
       <Fields data={entryData} JSON={viewSpec} edit={false} />
-      <AnswerOptionList data={entryData} modelDefinition={spec} />
       { childModels &&
         <QuestionnaireItemSet
           data={entryData}
@@ -565,38 +564,3 @@ QuestionnaireEntry.propTypes = {
   titleField: PropTypes.string,
   model: PropTypes.string.isRequired
 };
-
-let AnswerOptionList = (props) => {
-  let { data, modelDefinition } = props;
-
-  let hasAnswerOptions = (key, value) => {
-    if (key == 'answerOptions') return true;
-    return (
-      typeof(data[key] != undefined) &&
-      typeof(value) == "object" &&
-      typeof(value[data[key]]) == "object" &&
-      Object.entries(value[data[key]]).some(([k, v]) => hasAnswerOptions(k, v))
-    )
-  };
-
-  let answerOptions = Object.values(data ||{}).filter(value => value['jcr:primaryType'] == 'cards:AnswerOption')
-                      .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder));
-
-  // Does this questionnaire entry have answerOptions enabled?
-  let enabled = Object.entries(modelDefinition || {}).some(([key, value]) => hasAnswerOptions(key, value));
-
-  if (!enabled || !(answerOptions?.length)) {
-    return null;
-  }
-
-  return (
-    <Grid container key={data['jcr:uuid']} alignItems='flex-start' spacing={2}>
-      <Grid item key="label" xs={4}>
-        <Typography variant="subtitle2">Answer options:</Typography>
-      </Grid>
-      <Grid item key="values" xs={8}>
-        { answerOptions.map(item => <Typography key={item['jcr:uuid']}>{(item.label || item.value) + (item.label ? (" (" + item.value + ")") : "")}</Typography>) }
-      </Grid>
-    </Grid>
-  );
-}

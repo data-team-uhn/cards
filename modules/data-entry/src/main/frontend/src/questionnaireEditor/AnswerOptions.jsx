@@ -39,6 +39,7 @@ import makeStyles from '@mui/styles/makeStyles';
 
 import EditorInput from "./EditorInput";
 import QuestionComponentManager from "./QuestionComponentManager";
+import ValueComponentManager from "./ValueComponentManager";
 import MarkdownText from "./MarkdownText";
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
@@ -526,7 +527,23 @@ AnswerOptions.propTypes = {
 export default AnswerOptions;
 
 QuestionComponentManager.registerQuestionComponent((definition) => {
-  if (["numberOptions", "textOptions"].includes(definition)) {
+  if (["numberOptions", "textOptions"].includes(definition?.type)) {
     return [AnswerOptions, 50];
+  }
+});
+
+// View mode for answer options
+let AnswerOptionList = (props) => {
+  let { data } = props;
+  let answerOptions = Object.values(data ||{}).filter(value => value['jcr:primaryType'] == 'cards:AnswerOption')
+                      .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder));
+  return (
+    answerOptions.map(item => <div key={item['jcr:uuid']}>{(item.label || item.value) + (item.label ? (" (" + item.value + ")") : "")}</div>)
+  );
+}
+
+ValueComponentManager.registerValueComponent((definition) => {
+  if (["numberOptions", "textOptions"].includes(definition?.type)) {
+    return [AnswerOptionList, 50];
   }
 });

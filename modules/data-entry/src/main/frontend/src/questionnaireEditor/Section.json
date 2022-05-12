@@ -29,16 +29,28 @@
         "maxAnswers": "long",
         "dataType": {
           "text": {
-            "answerOptions" : "textOptions"
+            "answerOptions" : {
+              "type": "textOptions",
+              "childrenType": "cards:AnswerOption"
+            }
           },
           "long": {
-            "answerOptions" : "numberOptions"
+            "answerOptions" : {
+              "type": "numberOptions",
+              "childrenType": "cards:AnswerOption"
+            }
           },
           "decimal": {
-            "answerOptions" : "numberOptions"
+            "answerOptions" : {
+              "type": "numberOptions",
+              "childrenType": "cards:AnswerOption"
+            }
           },
           "vocabulary": {
-            "answerOptions" : "textOptions",
+            "answerOptions" : {
+              "type": "textOptions",
+              "childrenType": "cards:AnswerOption"
+            },
             "sourceVocabularies": {
               "type": "list",
               "primaryType": "cards:Vocabulary",

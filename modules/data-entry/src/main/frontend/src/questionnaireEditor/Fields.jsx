@@ -66,8 +66,18 @@ let Fields = (props) => {
     );
   };
 
+  let hasValueToDisplay = (key, spec) => {
+    return (
+      typeof(data[key]) != "undefined" ||
+      spec?.childrenType && Object.values(data).some(c => c["jcr:primaryType"] == spec.childrenType)
+    );
+  }
+
   let displayStaticField = (key, value) => {
     const ValueDisplay = ValueComponentManager.getValueComponent(value);
+
+    if (!hasValueToDisplay(key, value)) return '';
+
     return (<React.Fragment key={key}>
       <Grid container alignItems='flex-start' spacing={2} direction="row">
         <Grid item xs={4}>
@@ -80,7 +90,7 @@ let Fields = (props) => {
       {
         typeof(value) == "object" && typeof(value[data[key]]) == "object"?
         Object.entries(value[data[key]]).filter(([k, _]) => !k.startsWith("//"))
-                                        .map(([k, v]) => (typeof(data[k]) != 'undefined' ? displayStaticField(k, v) : ''))
+                                        .map(([k, v]) => displayStaticField(k, v))
         : ""
       }
     </React.Fragment>);
@@ -89,12 +99,8 @@ let Fields = (props) => {
   // Note that we remove the meta fields, starting with `//`, such as `//REQUIRED which indicates which fields are mandatory
   return <FieldsProvider>
       {
-        edit ?
           Object.entries(JSON).filter(([key, _]) => !key.startsWith("//"))
-                              .map(([key, value]) => displayEditField(key, value))
-        :
-          Object.entries(JSON).filter(([key, _]) => !key.startsWith("//"))
-                              .map(([key, value]) => (typeof(data[key]) != 'undefined' ? displayStaticField(key, value) : ''))
+                              .map(([key, value]) => edit ? displayEditField(key, value) : displayStaticField(key, value))
       }
     </FieldsProvider>;
 }
