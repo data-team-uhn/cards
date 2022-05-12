@@ -59,6 +59,7 @@ export const QUESTIONNAIRE_ITEM_NAMES = ENTRY_TYPES.map(type => _stripCardsNames
 let Questionnaire = (props) => {
   let { id, classes } = props;
   let [ data, setData ] = useState();
+  let [ questionnaireTitle, setQuestionnaireTitle ] = useState()
   let [ error, setError ] = useState();
   let [ doHighlight, setDoHighlight ] = useState(false);
   let baseUrl = /((.*)\/Questionnaires)\/([^.]+)/.exec(location.pathname)[1];
@@ -99,7 +100,10 @@ let Questionnaire = (props) => {
     setData(newData);
   }
 
-  let questionnaireTitle = data ? data['title'] : decodeURI(id);
+  useEffect(() => {
+    setQuestionnaireTitle(data?.title || decodeURI(id));
+  }, [data?.title]);
+
   useEffect(() => {
     pageNameWriter(questionnaireTitle);
   }, [questionnaireTitle]);
@@ -195,26 +199,14 @@ let Questionnaire = (props) => {
       >
         {questionnaireHeader}
         { data?.["jcr:primaryType"] == "cards:Questionnaire" && <Grid item>
-          <QuestionnaireItemCard
+          <QuestionnaireProperties
             plain
-            type="Questionnaire"
-            title="Questionnaire properties"
             disableDelete
             data={data}
             classes={classes}
+            onFieldsChanged={(newData) => newData?.title && setQuestionnaireTitle(newData.title)}
             onActionDone={reloadData}
-            doHighlight={doHighlight}
-          >
-              <FieldsGrid
-                classes={classes}
-                fields= {Array(
-                          {name: "description", label: "Description", value : data.description, type: "markdown"},
-                          {name: "maxPerType", label: "Maximum forms of this type per subject", value : (data.maxPerSubject > 0 ? data.maxPerSubject : 'Unlimited')},
-                          {name: "paginate", label: "Paginate", value : data.paginate, value : (data.paginate ? "Yes" : "No")},
-                          {name: "subjectTypes", label: "Subject types", value: data.requiredSubjectTypes?.label || data.requiredSubjectTypes?.map(t => t.label).join(', ') || 'Any'},
-                        )}
-              />
-          </QuestionnaireItemCard>
+          />
         </Grid>}
         { data &&
           <CreationMenu
@@ -365,6 +357,21 @@ QuestionnaireItemSet.propTypes = {
   data: PropTypes.object
 };
 
+// Questionnaire properties
+let QuestionnaireProperties = (props) => <QuestionnaireEntry {...props} />;
+
+QuestionnaireProperties.propTypes = {
+  onActionDone: PropTypes.func,
+  onFieldsChanged: PropTypes.func,
+  data: PropTypes.object.isRequired,
+  type: PropTypes.string.isRequired,
+  model: PropTypes.string.isRequired
+};
+
+QuestionnaireProperties.defaultProps = {
+  type: "Questionnaire",
+  model: "Questionnaire.json"
+};
 
 // Details about an information block displayed in a questionnaire
 let Information = (props) => <QuestionnaireEntry {...props} />;
@@ -469,7 +476,7 @@ ConditionalGroup.defaultProps = {
 // Generic QuestionnaireEntry component that can be adapted to any entry type via props
 
 let QuestionnaireEntry = (props) => {
-  let { onActionDone, data, type, titleField, avatar, avatarColor, model, classes } = props;
+  let { onActionDone, onFieldsChanged, data, titleField, model, classes, ...rest } = props;
   let [ entryData, setEntryData ] = useState(data);
   let [ doHighlight, setDoHighlight ] = useState(data.doHighlight);
 
@@ -521,6 +528,7 @@ let QuestionnaireEntry = (props) => {
     if (newData) {
       setEntryData(newData);
       setDoHighlight(true);
+      onFieldsChanged && onFieldsChanged(newData);
     } else {
       // Try to reload the data from the server
       // If it fails, pass it up to the parent
@@ -543,9 +551,6 @@ let QuestionnaireEntry = (props) => {
   return (
     <QuestionnaireItemCard
         titleField={titleField}
-        avatar={avatar}
-        avatarColor={avatarColor}
-        type={type}
         data={entryData}
         classes={classes}
         doHighlight={doHighlight}
@@ -561,6 +566,7 @@ let QuestionnaireEntry = (props) => {
         }
         onActionDone={reloadData}
         model={model}
+        {...rest}
     >
       <Fields data={entryData} JSON={viewSpec} edit={false} />
       <AnswerOptionList data={entryData} modelDefinition={spec} />
@@ -578,35 +584,15 @@ let QuestionnaireEntry = (props) => {
 
 QuestionnaireEntry.propTypes = {
   onActionDone: PropTypes.func,
+  onFieldsChanged: PropTypes.func,
   data: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired,
   avatar: PropTypes.string,
   avatarColor: PropTypes.string,
+  title: PropTypes.string,
   titleField: PropTypes.string,
   model: PropTypes.string.isRequired
 };
-
-let FieldsGrid = (props) => {
-  return (
-    <Table aria-label="simple table">
-      <TableBody>
-        {props.fields?.map((row) => (
-          <TableRow key={row.name}>
-            <TableCell component="th" scope="row">{row.label}:</TableCell>
-            <TableCell align="left">
-              { row.type === "markdown"
-                ?
-                <FormattedText>{row.value}</FormattedText>
-                :
-                row.value
-              }
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  );
-}
 
 let AnswerOptionList = (props) => {
   let { data, modelDefinition } = props;
