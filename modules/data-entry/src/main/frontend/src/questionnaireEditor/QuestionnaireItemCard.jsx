@@ -23,7 +23,8 @@ import PropTypes from 'prop-types';
 import {
   Card,
   CardContent,
-  IconButton
+  IconButton,
+  Tooltip
 } from "@mui/material";
 
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -81,9 +82,11 @@ let QuestionnaireItemCard = (props) => {
           <div>
             {action}
             {!disableEdit &&
-            <IconButton onClick={() => { setEditDialogOpen(true); }} size="large">
-              <EditIcon />
-            </IconButton>
+            <Tooltip title={`Edit ${type.toLowerCase()} properties`}>
+              <IconButton onClick={() => { setEditDialogOpen(true); }} size="large">
+                <EditIcon />
+              </IconButton>
+            </Tooltip>
             }
             {!disableDelete &&
             <DeleteButton
