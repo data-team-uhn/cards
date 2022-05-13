@@ -204,7 +204,7 @@ public class PatientLocalStorage
             final Resource visit = getOrCreateSubject(appointment.getString(PatientLocalStorage.FHIR_FIELD)
                 + "-" + surveyInfo.getSurveyID(), "/SubjectTypes/Patient/Visit/", patient);
             final Resource visitInfo = getOrCreateForm(visit, "/Questionnaires/Visit information");
-            updateVisitInformationForm(visitInfo, appointment, surveyInfo.getSurveyID(), surveyInfo.getDisplayName(),
+            updateVisitInformationForm(visitInfo, appointment, surveyInfo.getDisplayName(),
                 surveyInfo.getClinicHash());
         }
     }
@@ -541,11 +541,10 @@ public class PatientLocalStorage
      *
      * @param form The Visit Information form to update
      * @param info The JsonObject representing a visit returned from Torch
-     * @param surveyID A string representing the internally mapped survey ID for the location of this visit
      * @param locationName A string representing the display name of the location for this visit
      */
-    void updateVisitInformationForm(final Resource form, final JsonObject info, final String surveyID,
-        final String locationName, final String clinicHash)
+    void updateVisitInformationForm(final Resource form, final JsonObject info, final String locationName,
+        final String clinicHash)
         throws RepositoryException, PersistenceException
     {
         final Map<String, JsonGetter> formMapping = Map.of(
@@ -576,9 +575,6 @@ public class PatientLocalStorage
                 }
                 return providerNames.toArray();
             },
-            // We need to map the display name of the clinic given to a survey ID
-            // The mappings are stored at /Proms/ClinicMapping/<location hashcCode>
-            "surveys", obj -> surveyID,
             "location", obj -> locationName,
             "clinic", obj -> clinicHash);
 
@@ -664,21 +660,9 @@ public class PatientLocalStorage
      */
     class SurveyInfo
     {
-        private String surveyID;
-
         private String displayName;
 
         private String clinicHash;
-
-        public void setSurveyID(final String id)
-        {
-            this.surveyID = id;
-        }
-
-        public String getSurveyID()
-        {
-            return this.surveyID;
-        }
 
         public void setDisplayName(final String name)
         {
@@ -723,7 +707,6 @@ public class PatientLocalStorage
                 try {
                     final SurveyInfo thisSurvey = new SurveyInfo();
                     final Node thisNode = mapping.adaptTo(Node.class);
-                    thisSurvey.setSurveyID(thisNode.getProperty("survey").getString());
                     thisSurvey.setDisplayName(thisNode.getProperty("displayName").getString());
                     thisSurvey.setClinicHash(String.valueOf(clinic.hashCode()));
                     results.add(thisSurvey);

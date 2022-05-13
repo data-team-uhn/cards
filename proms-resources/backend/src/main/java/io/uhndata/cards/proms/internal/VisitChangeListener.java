@@ -712,12 +712,8 @@ public class VisitChangeListener implements ResourceChangeListener
             this.visitDateQuestion = questionnaire.getNode("time");
             this.visitDate = (Calendar) VisitChangeListener.this.formUtils
                 .getValue(VisitChangeListener.this.formUtils.getAnswer(form, this.visitDateQuestion));
-            this.questionnaireSetQuestion =
-                VisitChangeListener.this.questionnaireUtils.getQuestion(questionnaire, "surveys");
             this.clinicQuestion =
                 VisitChangeListener.this.questionnaireUtils.getQuestion(questionnaire, "clinic");
-            final String questionnaireSetName = (String) VisitChangeListener.this.formUtils
-                .getValue(VisitChangeListener.this.formUtils.getAnswer(form, this.questionnaireSetQuestion));
             final Object[] clinicAnswerObj = (Object[]) VisitChangeListener.this.formUtils
                 .getValue(VisitChangeListener.this.formUtils.getAnswer(form, this.clinicQuestion));
             final String[] clinicAnswer = Arrays.copyOf(clinicAnswerObj, clinicAnswerObj.length, String[].class);
@@ -726,7 +722,7 @@ public class VisitChangeListener implements ResourceChangeListener
                 final Node clinicNode = session.nodeExists(clinicName) ? session.getNode(clinicName) : null;
                 if (clinicNode != null) {
                     this.questionnaireSet = session.nodeExists("/Proms/" + clinicNode.getProperty("survey").getString())
-                        ? questionnaireSetName : null;
+                        ? clinicNode.getProperty("survey").getString() : null;
                     this.clinicPath = clinicNode.getPath();
                     return;
                 }
@@ -758,11 +754,6 @@ public class VisitChangeListener implements ResourceChangeListener
         public String getQuestionnaireSet()
         {
             return this.questionnaireSet;
-        }
-
-        public Node getQuestionnaireSetQuestion()
-        {
-            return this.questionnaireSetQuestion;
         }
 
         public Node getClinicQuestion()
