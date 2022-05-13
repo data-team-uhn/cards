@@ -58,7 +58,8 @@ public class ComputedAnswersEditorProvider implements EditorProvider
     public Editor getRootEditor(NodeState before, NodeState after, NodeBuilder builder, CommitInfo info)
         throws CommitFailedException
     {
-        if (this.rrf != null) {
+        String computedAnswersDisabled = System.getenv("COMPUTED_ANSWERS_DISABLED");
+        if (this.rrf != null && !("true".equals(computedAnswersDisabled))) {
             // Each ComputedEditor maintains a state, so a new instance must be returned each time
             return new ComputedAnswersEditor(builder, this.rrf,
                 this.questionnaireUtils, this.formUtils, this.expressionUtils);
