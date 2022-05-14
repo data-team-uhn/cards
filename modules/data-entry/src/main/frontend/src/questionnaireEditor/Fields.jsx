@@ -43,7 +43,7 @@ export function camelCaseToWords(str) {
 }
 
 let Fields = (props) => {
-  let { data, JSON, edit, classes, ...rest } = props;
+  let { data, JSON, edit, classes, condensed, ...rest } = props;
 
   /**
    * Method responsible for displaying a question from the questionnaire
@@ -79,11 +79,11 @@ let Fields = (props) => {
     if (!hasValueToDisplay(key, value)) return '';
 
     return (<React.Fragment key={key}>
-      <Grid container alignItems='flex-start' spacing={2} direction="row" className="cards-questionnaire-entry-props">
-        <Grid item xs={4}>
+      <Grid container alignItems='flex-start' spacing={2} direction="row">
+        <Grid item xs={condensed ? "auto" : 4}>
           <Typography variant="subtitle2">{camelCaseToWords(key)}:</Typography>
         </Grid>
-        <Grid item xs={8}>
+        <Grid item xs={condensed ? "auto" : 8}>
           <ValueDisplay key={key} objectKey={key} value={value} data={data} />
         </Grid>
       </Grid>
@@ -109,6 +109,7 @@ Fields.propTypes = {
   data: PropTypes.object.isRequired,
   JSON: PropTypes.object.isRequired,
   edit: PropTypes.bool.isRequired,
+  condensed: PropTypes.bool,
   onChange: PropTypes.func
 };
 

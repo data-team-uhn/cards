@@ -21,9 +21,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import { withRouter } from "react-router-dom";
 import PropTypes from 'prop-types';
 import {
+  Avatar,
   Card,
   CardContent,
+  CardHeader,
+  Icon,
   IconButton,
+  Popover,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -34,10 +38,10 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from '@mui/icons-material/Edit';
 import ExpandIcon from '@mui/icons-material/UnfoldMore';
 import CollapseIcon from '@mui/icons-material/UnfoldLess';
+import MoreIcon from '@mui/icons-material/MoreHoriz';
 
 import EditDialog from "./EditDialog";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
-import QuestionnaireCardHeader from "./QuestionnaireCardHeader";
 
 import { camelCaseToWords }  from "./Fields";
 
@@ -51,6 +55,9 @@ const useStyles = makeStyles(theme => ({
    "& > .MuiCardContent-root": {
      paddingTop: 0,
    },
+   "& .MuiCardHeader-content .MuiIconButton-root": {
+     display: "none",
+   },
   },
   title: {
     "& + *" : {
@@ -60,6 +67,14 @@ const useStyles = makeStyles(theme => ({
   collapsed: {
     "& .cards-questionnaire-entry-props": {
       display: "none",
+    },
+    "& .MuiCardHeader-content .MuiIconButton-root": {
+     display: "inline-flex",
+    }
+  },
+  moreInfo: {
+    "& h6": {
+      whiteSpace: "nowrap",
     }
   }
 }));
@@ -74,6 +89,7 @@ let QuestionnaireItemCard = (props) => {
     type,
     title,
     titleField,
+    moreInfo,
     action,
     disableEdit,
     disableDelete,
@@ -87,6 +103,7 @@ let QuestionnaireItemCard = (props) => {
   } = props;
   let [ editDialogOpen, setEditDialogOpen ] = useState(false);
   let [ isCollapsed, setCollapsed ] = useState(false);
+  let [ moreInfoAnchor, setMoreInfoAnchor ] = useState(null);
   const highlight = doHighlight || window.location?.hash?.substr(1) == data["@path"];
 
   const itemRef = useRef();
@@ -115,12 +132,43 @@ let QuestionnaireItemCard = (props) => {
 
   return (
     <Card variant="outlined" ref={highlight ? itemRef : undefined} className={cardClasses.join(" ")}>
-      <QuestionnaireCardHeader
-        avatar={avatar}
-        avatarColor={avatarColor}
-        type={formattedType}
-        id={data["@name"]}
-        plain={plain}
+      <CardHeader
+        avatar={!plain && (avatar || type) ?
+          <Avatar style={{backgroundColor: avatarColor || "black"}}>
+            { avatar ? <Icon>{avatar}</Icon> : type?.charAt(0) }
+          </Avatar>
+          : null
+        }
+        title={
+          <>
+            { type && data["@name"] && <>{type} : {data["@name"]}</>}
+            { moreInfo &&
+              <Tooltip title="Properties">
+                <IconButton onClick={(event) => setMoreInfoAnchor(event.currentTarget)} size="large">
+                  <MoreIcon />
+                </IconButton>
+              </Tooltip>
+            }
+            { moreInfo && moreInfoAnchor &&
+              <Popover
+               className={styles.moreInfo}
+               open={Boolean(moreInfoAnchor)}
+               anchorEl={moreInfoAnchor}
+               onClose={() => setMoreInfoAnchor(null)}
+               anchorOrigin={{
+                 vertical: 'bottom',
+                 horizontal: 'left',
+               }}
+               transformOrigin={{
+                 vertical: 'top',
+                 horizontal: 'left',
+               }}
+             >
+               <Card><CardContent>{moreInfo}</CardContent></Card>
+              </Popover>
+            }
+          </>
+        }
         action={
           <div>
             {action}

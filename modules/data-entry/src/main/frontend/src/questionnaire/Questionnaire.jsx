@@ -521,9 +521,13 @@ let QuestionnaireEntry = (props) => {
   let viewSpec = Object.assign({}, spec);
   delete viewSpec[titleField];
 
+  let renderFields = (options) => <Fields data={entryData} JSON={viewSpec} edit={false} {...options} />;
+  let FIELDS_CLASS_NAME = "cards-questionnaire-entry-props";
+
   return (
     <QuestionnaireItemCard
         titleField={titleField}
+        moreInfo={renderFields({condensed: true})}
         data={entryData}
         classes={classes}
         doHighlight={doHighlight}
@@ -549,9 +553,9 @@ let QuestionnaireEntry = (props) => {
           onActionDone={reloadData}
           models={childModels}
         >
-          <Grid item className="cards-questionnaire-entry-props"><Fields data={entryData} JSON={viewSpec} edit={false} /></Grid>
+          <Grid item className={FIELDS_CLASS_NAME}>{renderFields()}</Grid>
         </QuestionnaireItemSet>
-        : <Fields data={entryData} JSON={viewSpec} edit={false} />
+        : <div className={FIELDS_CLASS_NAME}>{renderFields()}</div>
       }
     </QuestionnaireItemCard>
   );
