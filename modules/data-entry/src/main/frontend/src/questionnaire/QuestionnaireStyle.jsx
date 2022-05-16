@@ -650,6 +650,7 @@ const questionnaireStyle = theme => ({
       "& .MuiTableHead-root th": {
         fontWeight: "bold",
         paddingTop: 0,
+        verticalAlign: "top",
       },
       "& .MuiTableBody-root th": {
         paddingLeft: 0,
