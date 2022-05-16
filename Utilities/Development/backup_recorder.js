@@ -21,11 +21,19 @@ const LISTEN_PORT = 8000;
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const process = require('process');
 const bodyParser = require('body-parser');
 const express = require('express');
 const webApp = express();
 webApp.use(bodyParser.json({type: 'application/json', limit: '10mb'}));
 const webServer = require('http').createServer(webApp);
+
+if (process.argv.length < 3) {
+  console.error("Please specify a backup directory location.");
+  console.error("Exiting.");
+  process.exit(1);
+}
+const BACKUP_DIRECTORY = process.argv[2];
 
 const sha256sum = (data) => {
   let h = crypto.Hash('sha256');
@@ -77,7 +85,7 @@ const simplifyAnswerProperties = (answer) => {
         simplifiedAnswer["fileDataSha256"] = fileAnswerHash;
 
         // Store the data in the blobs directory
-        fs.writeFileSync("JsonBackups/blobs/" + fileAnswerHash + ".blob", fileAnswerData);
+        fs.writeFileSync(BACKUP_DIRECTORY + "/blobs/" + fileAnswerHash + ".blob", fileAnswerData);
       }
     }
   }
@@ -165,7 +173,7 @@ const validateFormFileName = (formFileName) => {
 webApp.post("/SubjectListBackup", (req, res) => {
   let timestamp = new Date().toISOString();
   fs.writeFileSync(
-    "JsonBackups/SubjectListBackup_" + timestamp + ".json",
+    BACKUP_DIRECTORY + "/SubjectListBackup_" + timestamp + ".json",
     JSON.stringify(req.body, null, "\t")
   );
   res.json({"success": true});
@@ -174,7 +182,7 @@ webApp.post("/SubjectListBackup", (req, res) => {
 webApp.post("/FormListBackup", (req, res) => {
   let timestamp = new Date().toISOString();
   fs.writeFileSync(
-    "JsonBackups/FormListBackup_" + timestamp + ".json",
+    BACKUP_DIRECTORY + "/FormListBackup_" + timestamp + ".json",
     JSON.stringify(req.body, null, "\t")
   );
   res.json({"success": true})
@@ -185,14 +193,15 @@ webApp.post("/FormBackup/Forms/:formName*", (req, res) => {
   let formFileName = path.basename(formName);
   if (validateFormFileName(formFileName)) {
     fs.writeFileSync(
-      "JsonBackups/Forms/" + formFileName + ".json",
+      BACKUP_DIRECTORY + "/Forms/" + formFileName + ".json",
       JSON.stringify(
         cleanupForm(req.body),
         null,
         "\t"
       )
     );
-    console.log("Backed up /Forms/" + formName + " TO JsonBackups/Forms/" + formFileName + ".json");
+    console.log("Backed up /Forms/" + formName
+      + " TO " + BACKUP_DIRECTORY + "/Forms/" + formFileName + ".json");
   }
   res.json({"success": true});
 });
@@ -202,24 +211,49 @@ webApp.post("/SubjectBackup/Subjects/:subjectName*", (req, res) => {
   let subjectFileName = path.basename(subjectName);
   if (validateFormFileName(subjectFileName)) {
     fs.writeFileSync(
-      "JsonBackups/Subjects/" + subjectFileName + ".json",
+      BACKUP_DIRECTORY + "/Subjects/" + subjectFileName + ".json",
       JSON.stringify(
         cleanupSubject(req.body),
         null,
         "\t"
       )
     );
-    console.log("Backed up /Subjects/" + subjectName + " TO JsonBackups/Subjects/" + subjectFileName + ".json");
+    console.log("Backed up /Subjects/" + subjectName + " TO " + BACKUP_DIRECTORY + "/Subjects/" + subjectFileName + ".json");
   }
   res.json({"success": true});
 });
 
+
+// Create the backup directories on the file system if they do not already exist
+if (!fs.existsSync(BACKUP_DIRECTORY)) {
+  console.log("Backup directory: " + BACKUP_DIRECTORY + " does not exist...creating it...");
+  fs.mkdirSync(BACKUP_DIRECTORY);
+}
+
+if (!fs.existsSync(BACKUP_DIRECTORY + "/blobs")) {
+  console.log("Backup directory: " + BACKUP_DIRECTORY + "/blobs does not exist...creating it...");
+  fs.mkdirSync(BACKUP_DIRECTORY + "/blobs");
+}
+
+if (!fs.existsSync(BACKUP_DIRECTORY + "/Forms")) {
+  console.log("Backup directory: " + BACKUP_DIRECTORY + "/Forms does not exist...creating it...");
+  fs.mkdirSync(BACKUP_DIRECTORY + "/Forms");
+}
+
+if (!fs.existsSync(BACKUP_DIRECTORY + "/Subjects")) {
+  console.log("Backup directory: " + BACKUP_DIRECTORY + "/Subjects does not exist...creating it...");
+  fs.mkdirSync(BACKUP_DIRECTORY + "/Subjects");
+}
+
+// Listen for web server connections
 webServer.listen(LISTEN_PORT, LISTEN_HOST, (err) => {
   if (err) {
     console.log("Backup Recorder server failed to start");
   } else {
     console.log("Backup Recorder server listening on port " + LISTEN_PORT);
-    console.log("=============================================");
+    console.log("Backups will be saved to " + BACKUP_DIRECTORY);
+    console.log("")
+    console.log("===");
     console.log("");
   }
 });
