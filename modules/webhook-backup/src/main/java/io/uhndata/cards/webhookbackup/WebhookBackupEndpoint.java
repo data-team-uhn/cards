@@ -71,7 +71,7 @@ public class WebhookBackupEndpoint extends SlingSafeMethodsServlet
             : new WebhookBackupTask(this.resolverFactory, exportRunMode, dateLowerBound, dateUpperBound);
         final Thread thread = new Thread(exportJob);
         thread.start();
-        out.write("Webhook Backup S3 export started");
+        out.write("Webhook Backup export started");
     }
 
     private LocalDateTime strToDateTime(final String date)
