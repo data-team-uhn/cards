@@ -137,17 +137,17 @@ let QuestionMatrix = (props) => {
 
     let getNewSelection = (id, option, checked) => {
       let newSelection = selection;
-      // Selecting a radio button or naOption/noneOption option will select only that option
-      if (isRadio || naOption == option[VALUE_POS] || noneOption == option[VALUE_POS]) {
-        newSelection[id] = [[option[LABEL_POS], option[VALUE_POS]]];
-        return newSelection;
-      }
-
       let answer = newSelection[id] || [];
 
       // If the element was already checked, remove it instead
       if (checked) {
         newSelection[id] = answer.filter(item => {return !(String(item[VALUE_POS]) === String(option[VALUE_POS]))});
+        return newSelection;
+      }
+
+      // Selecting a radio button or naOption/noneOption option will select only that option
+      if (isRadio || naOption == option[VALUE_POS] || noneOption == option[VALUE_POS]) {
+        newSelection[id] = [[option[LABEL_POS], option[VALUE_POS]]];
         return newSelection;
       }
 
