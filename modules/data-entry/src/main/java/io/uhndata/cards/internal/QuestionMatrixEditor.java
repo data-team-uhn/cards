@@ -188,6 +188,10 @@ public class QuestionMatrixEditor extends DefaultEditor
             Boolean notApplicable = source.getProperty("notApplicable").getValue(Type.BOOLEAN);
             newNode.setProperty("notApplicable", notApplicable, Type.BOOLEAN);
         }
+        if (source.hasProperty("noneOfTheAbove")) {
+            Boolean noneOfTheAbove = source.getProperty("noneOfTheAbove").getValue(Type.BOOLEAN);
+            newNode.setProperty("noneOfTheAbove", noneOfTheAbove, Type.BOOLEAN);
+        }
     }
 
     /**
