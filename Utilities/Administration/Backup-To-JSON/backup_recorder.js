@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const LISTEN_HOST = '0.0.0.0';
+const LISTEN_HOST = '127.0.0.1';
 const LISTEN_PORT = 8000;
 
 const fs = require('fs');
