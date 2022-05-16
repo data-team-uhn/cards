@@ -189,6 +189,11 @@ let QuestionMatrix = (props) => {
         { [["",""]].concat(defaults).map( (option, index) => (
           <TableCell key={index} align="center" component="th">
             {option[LABEL_POS]}
+            {option[DESC_POS] &&
+              <FormattedText variant="caption" color="textSecondary">
+                {option[DESC_POS]}
+              </FormattedText>
+            }
           </TableCell>
         ) ) }
         </TableRow>
@@ -210,6 +215,11 @@ let QuestionMatrix = (props) => {
                   control={ renderControlElement(question[0], option) }
                   label={option[LABEL_POS]}
                 />
+                { option[DESC_POS] &&
+                  <FormattedText className={classes.selectionDescription} variant="caption" color="textSecondary">
+                    {option[DESC_POS]}
+                  </FormattedText>
+                }
               </TableCell>
             )) }
           </TableRow>

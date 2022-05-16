@@ -662,7 +662,7 @@ const questionnaireStyle = theme => ({
       "& .MuiFormControlLabel-root" : {
         margin: "0 !important",
       },
-      "& .MuiFormControlLabel-label": {
+      "& .MuiFormControlLabel-label, .MuiFormControlLabel-root + .MuiTypography-root": {
         display: "none",
       },
     },
