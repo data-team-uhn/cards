@@ -29,7 +29,7 @@ const webApp = express();
 webApp.use(bodyParser.text({type: '*/*'}));
 const webServer = require('http').createServer(webApp);
 
-webApp.post('*', (req, res) => {
+webApp.post(/.*/, (req, res) => {
   console.log("Slack API Request => " + req.body);
   console.log("");
   res.json({"success": true});
