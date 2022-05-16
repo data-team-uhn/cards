@@ -9,7 +9,7 @@ nodejs backup_recorder.js /path/to/backup/directory
 ```
 
 2. Ensure that CARDS has been started with the `BACKUP_WEBHOOK_URL`
-environment variable set to `http://localhost:8000`.
+environment variable set to `http://localhost:8012`.
 
 3. After some Forms and Subjects have been created in CARDS, backup all
 Forms and Subjects to JSON by (after logging into CARDS as `admin`)

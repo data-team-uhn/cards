@@ -16,7 +16,7 @@
 // under the License.
 
 const LISTEN_HOST = '127.0.0.1';
-const LISTEN_PORT = 8000;
+const LISTEN_PORT = 8012;
 
 const fs = require('fs');
 const path = require('path');
