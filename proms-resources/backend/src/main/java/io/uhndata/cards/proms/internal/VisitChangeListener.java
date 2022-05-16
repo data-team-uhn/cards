@@ -697,8 +697,6 @@ public class VisitChangeListener implements ResourceChangeListener
 
         private final Node visitDateQuestion;
 
-        private final Node questionnaireSetQuestion;
-
         private final Node clinicQuestion;
 
         private final String questionnaireSet;

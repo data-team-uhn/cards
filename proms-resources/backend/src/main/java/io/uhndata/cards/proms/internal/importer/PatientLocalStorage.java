@@ -664,6 +664,13 @@ public class PatientLocalStorage
 
         private String clinicHash;
 
+        private String surveyID;
+
+        public void setSurveyName(final String id)
+        {
+            this.surveyID = id;
+        }
+
         public void setDisplayName(final String name)
         {
             this.displayName = name;
@@ -682,6 +689,11 @@ public class PatientLocalStorage
         public String getClinicHash()
         {
             return this.clinicHash;
+        }
+
+        public String getSurveyID()
+        {
+            return this.surveyID;
         }
     }
 
@@ -707,6 +719,7 @@ public class PatientLocalStorage
                 try {
                     final SurveyInfo thisSurvey = new SurveyInfo();
                     final Node thisNode = mapping.adaptTo(Node.class);
+                    thisSurvey.setSurveyName(thisNode.getProperty("survey").getString());
                     thisSurvey.setDisplayName(thisNode.getProperty("displayName").getString());
                     thisSurvey.setClinicHash(String.valueOf(clinic.hashCode()));
                     results.add(thisSurvey);
