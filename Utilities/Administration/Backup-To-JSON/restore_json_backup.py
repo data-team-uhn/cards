@@ -124,7 +124,7 @@ CARDS_TYPE_TO_SLING_TYPE_HINT['cards:VocabularyAnswer'] = "string"
 CARDS_TYPE_TO_SLING_TYPE_HINT['cards:ChromosomeAnswer'] = "string"
 CARDS_TYPE_TO_SLING_TYPE_HINT['cards:FileAnswer'] = "string" # TODO Properly handle FileAnswers
 
-def createAnswerInJcr(answerNodePath, questionNodePath, primaryType, value):
+def createAnswerInJcr(answerNodePath, questionNodePath, primaryType, value, note=None):
   params = []
   params.append(('jcr:primaryType', (None, primaryType)))
   params.append(('question', (None, getJcrUuid(questionNodePath))))
@@ -136,6 +136,8 @@ def createAnswerInJcr(answerNodePath, questionNodePath, primaryType, value):
   else:
     params.append(('value', (None, str(value))))
     params.append(('value@TypeHint', (None, CARDS_TYPE_TO_SLING_TYPE_HINT[primaryType])))
+  if note is not None:
+    params.append(('note', (None, str(note))))
   resp = requests.post(CARDS_URL + answerNodePath, auth=('admin', ADMIN_PASSWORD), files=tuple(params))
   if resp.status_code != 201:
     raise Exception("Failed to create Answer node in JCR")
@@ -160,5 +162,8 @@ for formPath in FORM_LIST:
     associatedQuestion = form["responses"][responsePath]["question"]
     dataType = form["responses"][responsePath]["jcr:primaryType"]
     dataValue = form["responses"][responsePath]["value"]
+    noteValue = None
+    if "note" in form["responses"][responsePath]:
+      noteValue = form["responses"][responsePath]["note"]
     createIntermediateAnswerSectionsInJcr(responsePath, associatedQuestion)
-    createAnswerInJcr(responsePath, associatedQuestion, dataType, dataValue)
+    createAnswerInJcr(responsePath, associatedQuestion, dataType, dataValue, noteValue)
