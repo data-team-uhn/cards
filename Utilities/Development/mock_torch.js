@@ -58,6 +58,15 @@ const getMockAppointmentTime = () => {
   return "2022-02-20T10:00:00";
 };
 
+const getMockAppointmentLocation = () => {
+  for (let i = 0; i < process.argv.length; i++) {
+    if (process.argv[i].startsWith("--appointment-location=")) {
+      return process.argv[i].split("=")[1];
+    }
+  }
+  return '6012-HC-Congenital Cardiac';
+}
+
 const getMockAppointmentStatus = () => {
   for (let i = 0; i < process.argv.length; i++) {
     if (process.argv[i].startsWith("--appointment-status=")) {
@@ -90,7 +99,7 @@ const graphQlResponse = {
         },
         appointments: [
           {
-            location: ['6012-HC-Congenital Cardiac'],
+            location: [getMockAppointmentLocation()],
             status: {toJSON: getMockAppointmentStatus},
             fhirID: 'AppointmentOneFhirID',
             participants: [
@@ -117,7 +126,7 @@ const graphQlResponse = {
             time: {toJSON: getMockAppointmentTime}
           },
           {
-            location: ['6012-HC-Congenital Cardiac'],
+            location: [getMockAppointmentLocation()],
             status: {toJSON: getMockAppointmentStatus},
             fhirID: 'AppointmentTwoFhirID',
             participants: [
@@ -144,7 +153,7 @@ const graphQlResponse = {
             time: {toJSON: getMockAppointmentTime}
           },
           {
-            location: ['6012-HC-Congenital Cardiac'],
+            location: [getMockAppointmentLocation()],
             status: {toJSON: getMockAppointmentStatus},
             fhirID: 'AppointmentThreeFhirID',
             participants: [
@@ -175,7 +184,7 @@ const graphQlResponse = {
   }
 };
 
-webApp.post('*', (req, res) => {
+webApp.post('(.*)', (req, res) => {
   console.log("GraphQL QUERY => " + req.body);
   console.log("");
   console.log("RESPONSE <= " + JSON.stringify(graphQlResponse));
