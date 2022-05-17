@@ -119,7 +119,7 @@ function PrintPreview(props) {
 
   let globalLoginDisplay = useContext(GlobalLoginContext);
 
-  const ref = useRef();
+  const ref = useRef<HTMLDivElement>(null);
 
   const handlePrint = useReactToPrint({
     content: () => ref.current,
