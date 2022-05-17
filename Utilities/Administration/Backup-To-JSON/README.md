@@ -21,6 +21,12 @@ pointing your browser to
 Forms / Subjects Restore
 ========================
 
+#### Warning
+
+The `restore_json_backup.py` script assumes that the data to be loaded
+is trusted. Loading untrusted, maliciously-formed JSON backup data could
+cause arbitrary files to be uploaded to CARDS.
+
 To restore Forms and Subjects into a fresh CARDS instance:
 
 1. Ensure that CARDS has been started with the `COMPUTED_ANSWERS_DISABLED`
