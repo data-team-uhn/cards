@@ -285,13 +285,13 @@ let ComputedQuestion = (props) => {
             </FormattedText>
           :
           <TextField
+            variant="standard"
             type={fieldType}
             dateFormat={(fieldType === "date" || fieldType === "time" && dateFormat) || null}
             disabled={true}
             className={classes.textField + " " + classes.answerField}
             value={displayValue}
-            InputProps={muiInputProps}
-          />
+            InputProps={muiInputProps} />
           }
         </>
       }
@@ -305,7 +305,7 @@ let ComputedQuestion = (props) => {
         {...rest}
         />
     </Question>
-  )
+  );
 }
 
 ComputedQuestion.propTypes = {

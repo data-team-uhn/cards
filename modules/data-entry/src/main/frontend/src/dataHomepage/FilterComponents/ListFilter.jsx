@@ -60,6 +60,7 @@ const ListFilter = forwardRef((props, ref) => {
 
   return (
     <Select
+      variant="standard"
       value={selection}
       onChange={(event) => {
         let value = event.target.value;
@@ -68,8 +69,7 @@ const ListFilter = forwardRef((props, ref) => {
       }}
       className={classes.answerField}
       ref={ref}
-      {...rest}
-      >
+      {...rest}>
       {options.map((value) => (
         <MenuItem value={value} key={value}>{valueToLabel[value]}</MenuItem>
       ))

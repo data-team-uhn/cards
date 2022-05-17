@@ -150,15 +150,15 @@ function SubjectTypeDialog(props) {
           </Grid>
           <Grid item xs={8}>
             <TextField
-                fullWidth
-                value={label}
-                id="label"
-                name="label"
-                onChange={(event) => { setLabel(event.target.value); validateLabel(event.target.value); }}
-                autoFocus
-                error={isDuplicateLabel}
-                helperText={isDuplicateLabel ? "This label already exists" : "Required*"}
-            />
+              variant="standard"
+              fullWidth
+              value={label}
+              id="label"
+              name="label"
+              onChange={(event) => { setLabel(event.target.value); validateLabel(event.target.value); }}
+              autoFocus
+              error={isDuplicateLabel}
+              helperText={isDuplicateLabel ? "This label already exists" : "Required*"} />
           </Grid>
           { (isEdit || subjectTypes && subjectTypes.length > 0) &&
             <>
@@ -167,13 +167,13 @@ function SubjectTypeDialog(props) {
               </Grid>
               <Grid item xs={8}>
                 <Select
+                  variant="standard"
                   disabled={isEdit && currentSubjectType.instanceCount != undefined && currentSubjectType.instanceCount > 0}
                   labelId="parent"
                   label="optional"
                   value={parentSubject}
                   onChange={(event) => { setParentSubject(event.target.value); setError(""); }}
-                  displayEmpty
-                >
+                  displayEmpty>
                   <MenuItem key="none" value="/SubjectTypes">
                     <em>None</em>
                   </MenuItem>
@@ -193,23 +193,23 @@ function SubjectTypeDialog(props) {
           </Grid>
           <Grid item xs={8}>
             <TextField
+              variant="standard"
               fullWidth
               type="number"
               inputProps={{min: 0}}
               value={order}
-              onChange={(event) => { setOrder(event.target.value); setError(""); }}
-            />
+              onChange={(event) => { setOrder(event.target.value); setError(""); }} />
           </Grid>
           <Grid item xs={4}>
             <Typography>Subject list label</Typography>
           </Grid>
           <Grid item xs={8}>
             <TextField
+              variant="standard"
               fullWidth
               type="text"
               value={subjectListLabel}
-              onChange={(event) => { setSubjectListLabel(event.target.value); setError(""); }}
-            />
+              onChange={(event) => { setSubjectListLabel(event.target.value); setError(""); }} />
           </Grid>
         </Grid>
         {error && <Typography color='error'>{error}</Typography>}

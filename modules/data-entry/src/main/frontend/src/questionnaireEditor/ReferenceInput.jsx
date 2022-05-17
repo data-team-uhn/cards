@@ -267,16 +267,16 @@ let ReferenceInput = (props) => {
       <input type="hidden" name={objectKey + "@TypeHint"} value='Reference' />
       {hiddenInput}
       <Select
+        variant="standard"
         id={objectKey}
         value={curValue || []}
         onChange={(event) => {changeCurValue(event.target.value);}}
         input={<Input id={objectKey} />}
-        renderValue={(value) => titleMap[value]}
-      >
+        renderValue={(value) => titleMap[value]}>
         {getReactComponentFromFields(options)}
       </Select>
     </EditorInput>
-  )
+  );
 }
 
 ReferenceInput.propTypes = {

@@ -109,6 +109,7 @@ function NewQuestionnaireDialog(props) {
         <DialogContent>
         {error && <Typography color='error'>{error}</Typography>}
           <TextField
+            variant="standard"
             autoFocus
             inputProps={{
               onKeyDown: (event) => {
@@ -122,8 +123,7 @@ function NewQuestionnaireDialog(props) {
               handleChangeTitle(event.target.value);
             }}
             error={duplicateTitle}
-            helperText={duplicateTitle ? "A questionnaire with this name already exists" : " "}
-          >  
+            helperText={duplicateTitle ? "A questionnaire with this name already exists" : " "}>  
           </TextField>
         </DialogContent>
          <DialogActions>
@@ -149,7 +149,7 @@ function NewQuestionnaireDialog(props) {
            inProgress={!open && isFetching}
       />
     </React.Fragment>
-  )
+  );
 }
 
 export default withStyles(QuestionnaireStyle)(withRouter(NewQuestionnaireDialog));

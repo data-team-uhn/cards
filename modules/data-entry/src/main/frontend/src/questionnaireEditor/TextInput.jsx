@@ -33,9 +33,15 @@ let TextInput = (props) => {
 
   return (
     <EditorInput name={objectKey}>
-      <TextField name={objectKey} id={objectKey} defaultValue={typeof(data[objectKey]) != 'undefined' ? data[objectKey] : ''} required={objectKey.includes('text')} fullWidth/>
+      <TextField
+        variant="standard"
+        name={objectKey}
+        id={objectKey}
+        defaultValue={typeof(data[objectKey]) != 'undefined' ? data[objectKey] : ''}
+        required={objectKey.includes('text')}
+        fullWidth />
     </EditorInput>
-  )
+  );
 }
 
 TextInput.propTypes = {

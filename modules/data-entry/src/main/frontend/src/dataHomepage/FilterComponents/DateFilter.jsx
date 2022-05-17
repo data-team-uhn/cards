@@ -55,6 +55,7 @@ const DateFilter = forwardRef((props, ref) => {
 
   return (
     <TextField
+      variant="standard"
       id="date"
       type={textFieldType}
       className={classes.answerField}
@@ -67,9 +68,8 @@ const DateFilter = forwardRef((props, ref) => {
       defaultValue={defaultValue}
       onChange={(event) => {onChangeInput(event.target.value)}}
       inputRef={ref}
-      {...rest}
-      />
-  )
+      {...rest} />
+  );
 });
 
 DateFilter.propTypes = {

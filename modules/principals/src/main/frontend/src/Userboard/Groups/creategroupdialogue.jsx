@@ -75,12 +75,12 @@ class CreateGroupDialogue extends React.Component {
                     <Grid container>
                         <Grid item>
                             <TextField
+                                variant="standard"
                                 id="name"
                                 name="name"
                                 label="Name"
                                 onChange={(event) => { this.setState({ newName: event.target.value, error: "" }); }}
-                                autoFocus
-                            />
+                                autoFocus />
                         </Grid>
                     </Grid>
                     {this.state.error && <Typography color='error'>{this.state.error}</Typography>}

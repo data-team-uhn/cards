@@ -52,6 +52,7 @@ const TextFilter = forwardRef((props, ref) => {
 
   return (
     <TextField
+      variant="standard"
       className={classes.answerField}
       InputLabelProps={{
       shrink: true,
@@ -67,8 +68,7 @@ const TextFilter = forwardRef((props, ref) => {
       value={input}
       inputRef={ref}
       placeholder="empty"
-      {...rest}
-      />
+      {...rest} />
   );
 });
 

@@ -132,6 +132,7 @@ function TimeQuestion(props) {
         pageActive && <>
           {error && <Typography color='error'>{errorMessage}</Typography>}
           <TextField
+            variant="standard"
             /* time input is hh:mm or hh:mm:ss only */
             type={Time.timeQuestionFieldType(dateFormat)}
             className={classes.textField + " " + classes.answerField}
@@ -149,9 +150,7 @@ function TimeQuestion(props) {
               checkError(event.target.value);
               changeTime(event.target.value);
             }}
-
-            value={selectedTime}
-          />
+            value={selectedTime} />
         </>
       }
       <Answer
@@ -163,7 +162,8 @@ function TimeQuestion(props) {
         pageActive={pageActive}
         {...rest}
         />
-    </Question>);
+    </Question>
+  );
 }
 
 TimeQuestion.propTypes = {

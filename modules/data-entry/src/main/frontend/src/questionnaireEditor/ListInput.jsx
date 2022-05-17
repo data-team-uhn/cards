@@ -93,6 +93,7 @@
          value.length == 0 && <input type="hidden" name={objectKey + "@Delete"} value="" />
        }
        <Select
+         variant="standard"
          id={objectKey}
          multiple
          value={value}
@@ -104,8 +105,7 @@
                <Chip key={val+index} label={val[type.displayProperty]}/>
              ))}
            </div>
-         )}
-       >
+         )}>
        {options.map((name, index) => (
          <MenuItem key={name + index} value={name}>
            <Typography>{name[type.displayProperty]}</Typography>
@@ -113,7 +113,7 @@
        ))}
      </Select>
    </EditorInput>
-   )
+   );
  }
 
  ListInput.propTypes = {

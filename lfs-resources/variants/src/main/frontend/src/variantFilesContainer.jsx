@@ -883,30 +883,30 @@ export default function VariantFilesContainer() {
                     </Typography>
                   : <div className={classes.fileFormSection}>
                     <TextField
+                      variant="standard"
                       label={patientSubjectLabel}
                       value={file.subject.id}
                       onChange={(event) => setSubject(event.target.value, file.name)}
                       className={classes.fileDetail}
                       required
                       error={!subjectPath}
-                      helperText="Required"
-                    />
+                      helperText="Required" />
                     <TextField
+                      variant="standard"
                       label={tumorSubjectLabel}
                       value={file.tumor.id}
                       onChange={(event) => setTumor(event.target.value, file.name)}
                       className={classes.fileDetail}
                       required
                       error={!tumorPath}
-                      helperText="Required"
-                    />
+                      helperText="Required" />
                     <TextField
+                      variant="standard"
                       label={regionSubjectLabel}
                       value={file?.region?.id}
                       onChange={(event) => setRegion(event.target.value, file.name)}
                       className={classes.fileDetail}
-                      helperText="Optional"
-                    />
+                      helperText="Optional" />
                     <label htmlFor="contained-button-file">
                       <Button variant={selectedFiles?.length > 1 ? "outlined" : "contained"} color="primary" disabled={!isDataValid || file.uploading} onClick={() => uploadSingleFile(file, true)}>
                         <span><BackupIcon className={classes.buttonIcon}/>
@@ -933,7 +933,7 @@ export default function VariantFilesContainer() {
                         </Link>
                   }
                 </Grid>
-            ) } ) }
+              ); } ) }
         { showUploadAllButton ?
         <Grid item>
         <Button type="submit" variant="contained" color="primary" disabled={showUploadDisabled} form="variantForm">

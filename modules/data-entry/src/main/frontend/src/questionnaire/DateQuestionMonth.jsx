@@ -174,6 +174,7 @@ function DateQuestionMonth(props) {
   let getTextField = (isEnd, value) => {
     return (
       <TextField
+        variant="standard"
         type="text"
         className={classes.textField + isEnd ? "" : (" " + classes.answerField)}
         InputLabelProps={{
@@ -189,9 +190,8 @@ function DateQuestionMonth(props) {
         onChange={(event) => setDate(event.target.value, isEnd)}
         onBlur={() => onBlur(value, isEnd)}
         placeholder={dateFormat.toLowerCase()}
-        value={value}
-      />
-    )
+        value={value} />
+    );
   }
 
   return (
