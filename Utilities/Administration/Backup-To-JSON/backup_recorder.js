@@ -79,11 +79,12 @@ const simplifyAnswerProperties = (answer) => {
   }
   if (answer["jcr:primaryType"] === "cards:FileAnswer") {
     // Extract the file contents
+    simplifiedAnswer["fileDataSha256"] = {};
     for (let key in answer) {
       if (isNtFile(answer[key])) {
         let fileAnswerData = getFileDataBuffer(answer[key]["jcr:content"]["jcr:data"]);
         let fileAnswerHash = sha256sum(fileAnswerData);
-        simplifiedAnswer["fileDataSha256"] = fileAnswerHash;
+        simplifiedAnswer["fileDataSha256"][key] = fileAnswerHash;
 
         // Store the data in the blobs directory
         fs.writeFileSync(BACKUP_DIRECTORY + "/blobs/" + fileAnswerHash + ".blob", fileAnswerData);
