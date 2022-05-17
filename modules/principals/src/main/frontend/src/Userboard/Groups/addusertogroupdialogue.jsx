@@ -94,9 +94,10 @@ class AddUserToGroupDialogue extends React.Component {
             <Dialog
                 maxWidth="sm"
                 open={this.props.isOpen}
-                onEntering={() => this.handleEntering()}
                 onClose={() => this.handleExit()}
-            >
+                TransitionProps={{
+                    onEntering: () => this.handleEntering()
+                }}>
                 <DialogTitle>
                     Add Users to the {this.props.name} group
                 </DialogTitle>
