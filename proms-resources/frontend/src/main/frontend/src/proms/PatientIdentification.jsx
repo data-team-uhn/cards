@@ -284,7 +284,7 @@ function PatientIdentification(props) {
             <DropdownsDatePicker id="j_dob" name="j_dob" formatDate onDateChange={setDob} autoFocus fullWidth/>
             <Grid container direction="row" alignItems="flex-end" spacing={3} wrap="nowrap" justify="space-between" className={classes.identifierContainer}>
               <Grid item>
-                <FormControl margin="normal" fullWidth>
+                <FormControl variant="standard" margin="normal" fullWidth>
                   <InputLabel htmlFor="j_mrn" shrink={true}>MRN</InputLabel>
                   <Input id="j_mrn" name="j_mrn" autoComplete="off" type="number" placeholder="1234567" className={classes.mrnInput} onChange={event => setMrn(event.target.value)}/>
                   <FormHelperText id="mrn_helper">
@@ -302,7 +302,7 @@ function PatientIdentification(props) {
               </Grid>
               <Grid item className={classes.identifierDivider}>or</Grid>
               <Grid item>
-                <FormControl margin="normal" fullWidth>
+                <FormControl variant="standard" margin="normal" fullWidth>
                   <InputLabel htmlFor="j_hc" shrink={true}>Health card number</InputLabel>
                   <Input id="j_hc" name="j_hc" autoComplete="off" placeholder="2345 678 901 XY" onChange={event => setHc(sanitizeHC(event.target.value))}/>
                  </FormControl>

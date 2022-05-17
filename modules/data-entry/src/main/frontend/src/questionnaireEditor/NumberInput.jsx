@@ -40,6 +40,7 @@ let NumberInput = (props) => {
   return (
     <EditorInput name={objectKey}>
       <TextField
+        variant="standard"
         fullWidth
         name={objectKey || ''}
         id={objectKey || ''}
@@ -53,11 +54,10 @@ let NumberInput = (props) => {
           inputProps: { 
             min: defaultValue 
           }
-        }}
-      />
+        }} />
       <input type="hidden" name={objectKey + "@TypeHint"} value={type} />
     </EditorInput>
-  )
+  );
 }
 
 NumberInput.propTypes = {

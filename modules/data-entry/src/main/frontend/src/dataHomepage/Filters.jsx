@@ -431,7 +431,7 @@ function Filters(props) {
     })
   }
 
-  return(
+  return (
     <div className={classes.filterContainer}>
       {/* Place the stuff in one row on the top */}
       <Typography display="inline" className={classes.filterLabel}>
@@ -508,11 +508,12 @@ function Filters(props) {
               let isUnary = filterDatum.comparator && UNARY_COMPARATORS.includes(filterDatum.comparator);
               let isNotesContain = filterDatum.comparator && (filterDatum.comparator === notesComparator);
               let isContain = filterDatum.comparator && (filterDatum.comparator.includes(TEXT_COMPARATORS));
-              return(
+              return (
                 <React.Fragment key={index}>
                   {/* Select the field to filter */}
                   <Grid item xs={5}>
                     <Select
+                      variant="standard"
                       value={(filterDatum.name || "")}
                       onChange={(event) => {handleChangeFilter(index, event);}}
                       MenuProps={{
@@ -520,8 +521,7 @@ function Filters(props) {
                       }}
                       className={classes.answerField}
                       autoFocus={(index === editingFilters.length-1 && toFocus === index)}
-                      displayEmpty
-                      >
+                      displayEmpty>
                         <MenuItem value="" disabled>
                           <span className={classes.selectPlaceholder}>Add new filter...</span>
                         </MenuItem>
@@ -531,9 +531,9 @@ function Filters(props) {
                   {/* Depending on whether or not the comparator chosen is unary, the size can change */}
                   <Grid item xs={isUnary ? 6 : (isNotesContain ? 3 : (isContain ? 2 : 1))} className={index == editingFilters.length-1 ? classes.hidden : ""}>
                     <Select
+                      variant="standard"
                       value={filterDatum.comparator || ""}
-                      onChange={(event) => {handleChangeComparator(index, event.target.value);}}
-                      >
+                      onChange={(event) => {handleChangeComparator(index, event.target.value);}}>
                       {(filterComparators[filterDatum.name]?.map( (name) => {
                         return(
                             <MenuItem value={name} key={name}>{name}</MenuItem>
@@ -546,7 +546,7 @@ function Filters(props) {
                     <Grid item xs={isNotesContain ? 3 : (isContain ? 4 : 5)} className={index == editingFilters.length-1 ? classes.hidden : ""}>
                       {filterDatum.comparator ?
                           getCachedInput(filterDatum, index, (index !== editingFilters.length-1 && toFocus === index ? focusCallback : undefined))
-                        : <TextField disabled className={classes.answerField}></TextField>
+                        : <TextField variant="standard" disabled className={classes.answerField}></TextField>
                       }
                     </Grid>}
                   {/* Deletion button */}

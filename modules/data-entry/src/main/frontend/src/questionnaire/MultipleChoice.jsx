@@ -368,6 +368,7 @@ function MultipleChoice(props) {
             />
         :
           <TextField
+            variant="standard"
             helperText={maxAnswers !== 1 && "Press ENTER to add a new option"}
             className={classes.textField + (isRadio ? (' ' + classes.nestedInput) : '')}
             onChange={ghostUpdateEvent}
@@ -389,8 +390,7 @@ function MultipleChoice(props) {
             value={ghostName}
             multiline={textbox}
             InputProps={muiInputProps}
-            inputRef={ref => {inputEl = ref}}
-            />
+            inputRef={ref => {inputEl = ref}} />
       }
       { maxAnswers !== 1 && separatorDetectionEnabled &&
         <UserInputAssistant
@@ -435,6 +435,7 @@ function MultipleChoice(props) {
           pageActive && <>
             {instructions}
             <Select
+              variant="standard"
               value={selection?.[0]?.[0] || ''}
               className={classes.textField + ' ' + classes.answerField}
               onChange={(event) => {
@@ -455,7 +456,7 @@ function MultipleChoice(props) {
           {...rest}
           />
       </React.Fragment>
-    )
+    );
   } else if (isBare) {
     return(
       <React.Fragment>

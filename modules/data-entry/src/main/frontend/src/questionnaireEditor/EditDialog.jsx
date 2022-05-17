@@ -155,6 +155,7 @@ let EditDialog = (props) => {
           targetExists ?
           <Typography>{data["@name"]}</Typography> :
           <TextField
+            variant="standard"
             name=''
             value={targetId}
             onChange={(event)=> { setTargetId(event.target.value); setVariableNameError(''); }}
@@ -162,11 +163,10 @@ let EditDialog = (props) => {
             error={variableNameError}
             helperText={variableNameError}
             multiline
-            fullWidth
-          />
+            fullWidth />
         }</Grid>
       </Grid>
-    )
+    );
   }
 
   let checkVariableName = (newValue) => {

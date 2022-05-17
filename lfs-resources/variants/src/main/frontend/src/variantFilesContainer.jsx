@@ -846,6 +846,7 @@ export default function VariantFilesContainer() {
                   </Typography>
                 : <div className={classes.fileFormSection}>
                   <TextField
+                    variant="standard"
                     label={patientSubjectLabel}
                     value={file.subject.id}
                     onChange={(event) => setSubject(event.target.value, file.name)}
@@ -855,6 +856,7 @@ export default function VariantFilesContainer() {
                     helperText="Required"
                   />
                   <TextField
+                    variant="standard"
                     label={tumorSubjectLabel}
                     value={file.tumor.id}
                     onChange={(event) => setTumor(event.target.value, file.name)}
@@ -864,6 +866,7 @@ export default function VariantFilesContainer() {
                     helperText="Required"
                   />
                   <TextField
+                    variant="standard"
                     label={regionSubjectLabel}
                     value={file?.region?.id}
                     onChange={(event) => setRegion(event.target.value, file.name)}

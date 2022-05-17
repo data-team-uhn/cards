@@ -65,6 +65,7 @@ class FormFields extends React.Component {
       >
         { requireOldPassword &&
           <TextField
+            variant="standard"
             id="oldPwd"
             name="oldPwd"
             helperText={touched.oldPwd ? errors.oldPwd : ""}
@@ -75,10 +76,10 @@ class FormFields extends React.Component {
             value={oldPwd || ""}
             onChange={change.bind(null, "oldPwd")}
             className={classes.form}
-            required
-          />
+            required />
         }
         <TextField
+          variant="standard"
           id="newPwd"
           name="newPwd"
           helperText={touched.newPwd ? errors.newPwd : ""}
@@ -89,9 +90,9 @@ class FormFields extends React.Component {
           value={newPwd || ""}
           onChange={change.bind(null, "newPwd")}
           className={classes.form}
-          required
-        />
+          required />
         <TextField
+          variant="standard"
           id="newPwdConfirm"
           name="newPwdConfirm"
           helperText={touched.newPwdConfirm ? errors.newPwdConfirm : ""}
@@ -102,8 +103,7 @@ class FormFields extends React.Component {
           value={newPwdConfirm || ""}
           onChange={change.bind(null, "newPwdConfirm")}
           className={classes.form}
-          required
-        />
+          required />
         <Button variant="contained" size="small" className={classes.formAction} onClick={handleReset}>Close</Button>
         { !isValid ?
           // Render hover over and button

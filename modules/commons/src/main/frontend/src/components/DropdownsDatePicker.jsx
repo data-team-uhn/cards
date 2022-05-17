@@ -214,6 +214,7 @@ function DropdownsDatePicker(props) {
   let renderYear = () => {
     return (
       <Select
+        variant="standard"
         key="year"
         onChange={handleYearChange}
         value={selectedYear}
@@ -225,8 +226,7 @@ function DropdownsDatePicker(props) {
               return <div className={classes.placeholder}>Year</div>;
             }
             return selected;
-        }}
-      >
+        }}>
         {generateYearOptions()}
       </Select>
     )
@@ -235,6 +235,7 @@ function DropdownsDatePicker(props) {
   let renderMonth = () => {
     return (
       <Select
+        variant="standard"
         key="month"
         onChange={handleMonthChange}
         value={selectedMonth}
@@ -246,16 +247,16 @@ function DropdownsDatePicker(props) {
               return <div className={classes.placeholder}>Month</div>;
             }
             return monthShort ? moment().month(selected).format("MMM") : moment().month(selected).format("MMMM");
-        }}
-      >
+        }}>
         {generateMonthOptions()}
       </Select>
-    )
+    );
   }
 
   let renderDay = () => {
     return (
       <Select
+        variant="standard"
         key="day"
         value={selectedDay}
         onChange={handleDayChange}
@@ -270,11 +271,10 @@ function DropdownsDatePicker(props) {
               return "0" + selected;
             }
             return selected;
-        }}
-      >
+        }}>
         {generateDayOptions()}
       </Select>
-    )
+    );
   }
 
   const renderParts = {
