@@ -23,7 +23,7 @@ import {
   Button,
   Menu,
   MenuItem
-} from "@material-ui/core";
+} from "@mui/material";
 
 import EditDialog from "./EditDialog";
 import NewItemButton from "../components/NewItemButton";

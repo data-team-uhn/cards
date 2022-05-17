@@ -19,9 +19,9 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
 
-import { IconButton, Tooltip } from "@material-ui/core";
-import withStyles from '@material-ui/styles/withStyles';
-import EditIcon from "@material-ui/icons/Edit";
+import { IconButton, Tooltip } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import EditIcon from "@mui/icons-material/Edit";
 import { Link } from 'react-router-dom';
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";

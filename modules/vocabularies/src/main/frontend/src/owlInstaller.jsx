@@ -21,9 +21,9 @@ import React, { useState, useContext } from "react";
 
 import { styled } from '@mui/material/styles';
 
-import { Button, CircularProgress, Grid, TextField, Tooltip, Typography } from "@material-ui/core";
+import { Button, CircularProgress, Grid, TextField, Tooltip, Typography } from "@mui/material";
 
-import makeStyles from '@material-ui/styles/makeStyles';
+import makeStyles from '@mui/styles/makeStyles';
 
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 

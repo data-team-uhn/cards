@@ -25,11 +25,11 @@ import MaterialTable from "material-table";
 import { loadExtensions } from "../uiextension/extensionManager";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
-import { CircularProgress, Grid, Typography, useMediaQuery } from "@material-ui/core";
+import { CircularProgress, Grid, Typography, useMediaQuery } from "@mui/material";
 
-import makeStyles from '@material-ui/styles/makeStyles';
+import makeStyles from '@mui/styles/makeStyles';
 
-import { useTheme, styled } from '@material-ui/core/styles';
+import { useTheme, styled } from '@mui/material/styles';
 
 import PromsView from "./PromsView";
 import VisitView from "./VisitView";

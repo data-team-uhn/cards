@@ -28,9 +28,9 @@ import {
   Grid,
   TextField,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 
-import withStyles from '@material-ui/styles/withStyles';
+import withStyles from '@mui/styles/withStyles';
 
 import Fields from './Fields'
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";

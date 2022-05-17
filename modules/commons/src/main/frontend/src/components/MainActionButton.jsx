@@ -17,9 +17,9 @@
 
 import React from "react";
 import PropTypes from "prop-types";
-import { CircularProgress, Fab, Tooltip } from "@material-ui/core";
+import { CircularProgress, Fab, Tooltip } from "@mui/material";
 
-import withStyles from '@material-ui/styles/withStyles';
+import withStyles from '@mui/styles/withStyles';
 
 import style from './style.jsx';
 

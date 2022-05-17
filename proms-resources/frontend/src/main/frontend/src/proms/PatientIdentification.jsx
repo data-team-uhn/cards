@@ -36,10 +36,10 @@ import {
   ListItem,
   Link,
   Typography,
-} from '@material-ui/core';
-import makeStyles from '@material-ui/styles/makeStyles';
-import CloseIcon from '@material-ui/icons/Close';
-import AppointmentIcon from '@material-ui/icons/Event';
+} from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import CloseIcon from '@mui/icons-material/Close';
+import AppointmentIcon from '@mui/icons-material/Event';
 
 import ToUDialog from "./ToUDialog.jsx";
 

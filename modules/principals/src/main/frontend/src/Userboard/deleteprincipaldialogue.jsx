@@ -16,9 +16,9 @@
 */
 
 import React from "react";
-import { Button, Dialog, DialogTitle, DialogActions, DialogContent, Typography } from "@material-ui/core";
+import { Button, Dialog, DialogTitle, DialogActions, DialogContent, Typography } from "@mui/material";
 
-import withStyles from '@material-ui/styles/withStyles';
+import withStyles from '@mui/styles/withStyles';
 
 import userboardStyle from './userboardStyle.jsx';
 

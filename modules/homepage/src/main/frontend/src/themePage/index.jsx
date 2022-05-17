@@ -19,11 +19,11 @@
 import PropTypes from 'prop-types';
 import React, { Suspense } from "react";
 import ReactDOM from "react-dom";
-import { ThemeProvider, StyledEngineProvider } from '@material-ui/core/styles';
+import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { appTheme } from "../themePalette.jsx";
 import Sidebar from "./Sidebar/sidebar"
 import { getRoutes } from '../routes';
-import withStyles from '@material-ui/styles/withStyles';
+import withStyles from '@mui/styles/withStyles';
 import { Redirect, Router, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import Navbar from "./Navbars/Navbar";

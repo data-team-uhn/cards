@@ -18,9 +18,9 @@
 //
 import React, { useState, useEffect } from "react";
 import { styled } from '@mui/material/styles';
-import { Toolbar, Typography } from "@material-ui/core";
+import { Toolbar, Typography } from "@mui/material";
 
-import makeStyles from '@material-ui/styles/makeStyles';
+import makeStyles from '@mui/styles/makeStyles';
 
 import { loadExtensions } from "../uiextension/extensionManager";
 

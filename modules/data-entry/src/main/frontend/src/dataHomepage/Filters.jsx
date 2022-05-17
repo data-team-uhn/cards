@@ -17,7 +17,7 @@
 //  under the License.
 //
 import React, { useCallback, useRef, useState, useContext, useEffect } from "react";
-import { Chip, Typography, Button, Dialog, CircularProgress, IconButton, Tooltip } from "@material-ui/core";
+import { Chip, Typography, Button, Dialog, CircularProgress, IconButton, Tooltip } from "@mui/material";
 import {
   DialogActions,
   DialogContent,
@@ -26,10 +26,10 @@ import {
   Select,
   MenuItem,
   TextField,
-} from "@material-ui/core";
-import withStyles from '@material-ui/styles/withStyles';
-import Add from "@material-ui/icons/Add";
-import CloseIcon from '@material-ui/icons/Close';
+} from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import Add from "@mui/icons-material/Add";
+import CloseIcon from '@mui/icons-material/Close';
 
 import LiveTableStyle from "./tableStyle.jsx";
 import FilterComponentManager from "./FilterComponents/FilterComponentManager.jsx";

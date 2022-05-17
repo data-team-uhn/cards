@@ -17,10 +17,10 @@
 
 import React from "react";
 
-import withStyles from '@material-ui/styles/withStyles';
+import withStyles from '@mui/styles/withStyles';
 import userboardStyle from '../userboardStyle.jsx';
 
-import { Avatar, Button, Dialog, DialogTitle, DialogActions, DialogContent, Grid } from "@material-ui/core";
+import { Avatar, Button, Dialog, DialogTitle, DialogActions, DialogContent, Grid } from "@mui/material";
 
 import MaterialTable from 'material-table';
 

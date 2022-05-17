@@ -29,12 +29,12 @@ import {
   InputAdornment,
   LinearProgress,
   TextField,
-} from "@material-ui/core";
+} from "@mui/material";
 
-import makeStyles from '@material-ui/styles/makeStyles';
+import makeStyles from '@mui/styles/makeStyles';
 
-import SearchIcon from "@material-ui/icons/Search";
-import CloseIcon from "@material-ui/icons/Close";
+import SearchIcon from "@mui/icons-material/Search";
+import CloseIcon from "@mui/icons-material/Close";
 
 import fetchBioPortalApiKey from "./bioportalApiKey";
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";

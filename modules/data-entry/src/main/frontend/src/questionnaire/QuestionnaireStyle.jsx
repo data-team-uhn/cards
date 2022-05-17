@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import { orange, grey } from '@material-ui/core/colors';
+import { orange, grey } from '@mui/material/colors';
 
 // Props used in grid containers for displaying Form entries
 export const FORM_ENTRY_CONTAINER_PROPS = {

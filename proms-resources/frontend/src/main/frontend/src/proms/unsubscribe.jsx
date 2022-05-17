@@ -19,12 +19,12 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { Router, Route, Redirect, Switch } from "react-router-dom";
-import { Paper, Grid, Button, Typography } from '@material-ui/core';
-import makeStyles from '@material-ui/styles/makeStyles';
+import { Paper, Grid, Button, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import { createBrowserHistory } from "history";
-import { ThemeProvider, StyledEngineProvider, styled } from '@material-ui/core/styles';
+import { ThemeProvider, StyledEngineProvider, styled } from '@mui/material/styles';
 import { appTheme } from "../themePalette.jsx";
 import PromsFooter from "./Footer.jsx";
 import ErrorPage from "../components/ErrorPage.jsx";

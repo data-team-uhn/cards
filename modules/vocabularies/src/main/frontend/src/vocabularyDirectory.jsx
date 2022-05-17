@@ -24,7 +24,7 @@ import {
   Grid,
   LinearProgress,
   Typography
-} from "@material-ui/core";
+} from "@mui/material";
 
 import VocabularyTable from "./vocabularyTable";
 

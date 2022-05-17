@@ -12,10 +12,10 @@
 import React from "react";
 import classNames from "classnames";
 import PropTypes from "prop-types";
-import withStyles from '@material-ui/styles/withStyles';
-import { AppBar, Button, Toolbar, IconButton, Hidden } from "@material-ui/core";
-// @material-ui/icons
-import Menu from "@material-ui/icons/Menu";
+import withStyles from '@mui/styles/withStyles';
+import { AppBar, Button, Toolbar, IconButton, Hidden } from "@mui/material";
+// @mui/icons-material
+import Menu from "@mui/icons-material/Menu";
 // core components
 import AdminNavbarLinks from "./AdminNavbarLinks.jsx";
 

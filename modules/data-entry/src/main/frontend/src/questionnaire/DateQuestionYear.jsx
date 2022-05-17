@@ -19,7 +19,7 @@
 
 import React from "react";
 
-import withStyles from '@material-ui/styles/withStyles';
+import withStyles from '@mui/styles/withStyles';
 
 import NumberQuestion from "./NumberQuestion";
 import QuestionnaireStyle from "./QuestionnaireStyle";

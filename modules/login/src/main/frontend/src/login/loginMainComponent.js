@@ -20,9 +20,9 @@ import React from 'react';
 import SignUpForm from './signUpForm';
 import SignIn from './loginForm';
 
-import { Breadcrumbs, Button, Grid, Paper, Tooltip, Typography } from '@material-ui/core';
-import withStyles from '@material-ui/styles/withStyles';
-import { ThemeProvider, StyledEngineProvider } from '@material-ui/core/styles';
+import { Breadcrumbs, Button, Grid, Paper, Tooltip, Typography } from '@mui/material';
+import withStyles from '@mui/styles/withStyles';
+import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { appTheme } from "../themePalette.jsx";
 
 import styles from "../styling/styles";

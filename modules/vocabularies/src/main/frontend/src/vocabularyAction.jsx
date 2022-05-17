@@ -33,9 +33,9 @@ import {
   ListItemText,
   Typography,
   Tooltip,
-} from "@material-ui/core";
+} from "@mui/material";
 
-import makeStyles from '@material-ui/styles/makeStyles';
+import makeStyles from '@mui/styles/makeStyles';
 
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 

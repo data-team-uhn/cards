@@ -28,10 +28,10 @@ import {
   InputLabel,
   Tooltip,
   Typography,
-} from '@material-ui/core';
-import withStyles from '@material-ui/styles/withStyles';
-import VisibilityIcon from '@material-ui/icons/Visibility';
-import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
+} from '@mui/material';
+import withStyles from '@mui/styles/withStyles';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import styles from "../styling/styles";
 
 class SignIn extends React.Component {

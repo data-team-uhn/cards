@@ -28,14 +28,14 @@ import {
   TextField,
   Tooltip,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 
-import makeStyles from '@material-ui/styles/makeStyles';
+import makeStyles from '@mui/styles/makeStyles';
 
 import { styled } from '@mui/material/styles';
 
 import React, {useEffect, useContext} from "react";
-import SettingsIcon from '@material-ui/icons/Settings';
+import SettingsIcon from '@mui/icons-material/Settings';
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
 const PREFIX = 'bioportalApiKey';

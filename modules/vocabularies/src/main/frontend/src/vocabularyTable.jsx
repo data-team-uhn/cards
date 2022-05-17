@@ -19,11 +19,11 @@
 
 import React, { useEffect, useState } from "react";
 
-import { Grid, IconButton, Typography, Tooltip } from "@material-ui/core";
+import { Grid, IconButton, Typography, Tooltip } from "@mui/material";
 
-import withStyles from '@material-ui/styles/withStyles';
+import withStyles from '@mui/styles/withStyles';
 
-import { useTheme } from '@material-ui/core/styles';
+import { useTheme } from '@mui/material/styles';
 import MaterialTable from "material-table";
 import VocabularyActions from "./vocabularyActions"
 import Search from "./search";

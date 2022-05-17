@@ -34,19 +34,19 @@ import {
   Switch,
   TextField,
   Tooltip,
-} from "@material-ui/core";
+} from "@mui/material";
 
-import makeStyles from '@material-ui/styles/makeStyles';
+import makeStyles from '@mui/styles/makeStyles';
 
 import EditorInput from "./EditorInput";
 import QuestionComponentManager from "./QuestionComponentManager";
 import MarkdownText from "./MarkdownText";
-import CloseIcon from '@material-ui/icons/Close';
-import AddIcon from '@material-ui/icons/Add';
-import EditIcon from '@material-ui/icons/Edit';
-import NotesIcon from '@material-ui/icons/Notes';
+import CloseIcon from '@mui/icons-material/Close';
+import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
+import NotesIcon from '@mui/icons-material/Notes';
 import { stringToHash } from "../escape.jsx";
-import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 import ComposedIcon from "../components/ComposedIcon.jsx";

@@ -19,9 +19,9 @@
 
  import React from 'react';
  import PropTypes from 'prop-types';
- import { Chip, Input, MenuItem, Select, Typography } from "@material-ui/core";
+ import { Chip, Input, MenuItem, Select, Typography } from "@mui/material";
 
- import withStyles from '@material-ui/styles/withStyles';
+ import withStyles from '@mui/styles/withStyles';
 
  import EditorInput from "./EditorInput";
  import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';

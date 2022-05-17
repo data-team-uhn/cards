@@ -18,8 +18,8 @@
 //
 import React, { useState } from "react";
 import { styled } from '@mui/material/styles';
-import { Typography } from "@material-ui/core";
-import makeStyles from '@material-ui/styles/makeStyles';
+import { Typography } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { DateTime } from "luxon";
 
 const PREFIX = 'PrintHeader';

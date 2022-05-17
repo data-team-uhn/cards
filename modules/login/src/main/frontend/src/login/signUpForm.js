@@ -26,9 +26,9 @@ import {
   TextField,
   Tooltip,
   Typography,
-} from '@material-ui/core';
-import withStyles from '@material-ui/styles/withStyles';
-import { Close } from "@material-ui/icons";
+} from '@mui/material';
+import withStyles from '@mui/styles/withStyles';
+import { Close } from "@mui/icons-material";
 import { Formik } from "formik";
 import * as Yup from "yup";
 

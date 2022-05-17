@@ -21,12 +21,12 @@ import React, { useEffect, useContext } from "react";
 
 import { styled } from '@mui/material/styles';
 
-import { Dialog, DialogContent, DialogTitle, IconButton, Typography } from "@material-ui/core";
+import { Dialog, DialogContent, DialogTitle, IconButton, Typography } from "@mui/material";
 
-import makeStyles from '@material-ui/styles/makeStyles';
-import withStyles from '@material-ui/styles/withStyles';
+import makeStyles from '@mui/styles/makeStyles';
+import withStyles from '@mui/styles/withStyles';
 
-import CloseIcon from "@material-ui/icons/Close";
+import CloseIcon from "@mui/icons-material/Close";
 
 import VocabularyDetails from "./vocabularyDetails"
 import VocabularyAction from "./vocabularyAction"

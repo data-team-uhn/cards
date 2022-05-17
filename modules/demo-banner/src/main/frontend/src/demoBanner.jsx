@@ -21,11 +21,11 @@ import React from "react";
 
 import { styled } from '@mui/material/styles';
 
-import { AppBar, Grid, Toolbar, Typography } from '@material-ui/core';
+import { AppBar, Grid, Toolbar, Typography } from '@mui/material';
 
-import withStyles from '@material-ui/styles/withStyles';
+import withStyles from '@mui/styles/withStyles';
 
-import WarningIcon from '@material-ui/icons/Warning';
+import WarningIcon from '@mui/icons-material/Warning';
 
 const PREFIX = 'demoBanner';
 

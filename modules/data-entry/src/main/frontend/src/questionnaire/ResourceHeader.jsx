@@ -21,11 +21,11 @@ import React from "react";
 import { styled } from '@mui/material/styles';
 import PropTypes from "prop-types";
 
-import { Breadcrumbs, Collapse, Grid, Typography, useScrollTrigger } from "@material-ui/core";
+import { Breadcrumbs, Collapse, Grid, Typography, useScrollTrigger } from "@mui/material";
 
-import makeStyles from '@material-ui/styles/makeStyles';
+import makeStyles from '@mui/styles/makeStyles';
 
-import { grey } from '@material-ui/core/colors';
+import { grey } from '@mui/material/colors';
 
 import { GRID_SPACE_UNIT } from "./QuestionnaireStyle";
 

@@ -30,10 +30,10 @@ import {
   ClickAwayListener,
   Fade,
   Popper,
-} from "@material-ui/core";
-import withStyles from '@material-ui/styles/withStyles';
-import EmojiObjectsIcon from "@material-ui/icons/EmojiObjects";
-import WarningIcon from "@material-ui/icons/Warning";
+} from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import EmojiObjectsIcon from "@mui/icons-material/EmojiObjects";
+import WarningIcon from "@mui/icons-material/Warning";
 
 import style from "./style.jsx";
 

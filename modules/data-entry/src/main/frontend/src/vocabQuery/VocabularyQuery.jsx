@@ -29,12 +29,12 @@ import {
   InputLabel,
   FormControl,
   Typography,
-} from "@material-ui/core";
-import withStyles from '@material-ui/styles/withStyles';
-import { Divider, LinearProgress, MenuItem, MenuList, Paper, Popper } from "@material-ui/core";
+} from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import { Divider, LinearProgress, MenuItem, MenuList, Paper, Popper } from "@mui/material";
 
-import Search from "@material-ui/icons/Search";
-import Info from "@material-ui/icons/Info";
+import Search from "@mui/icons-material/Search";
+import Info from "@mui/icons-material/Info";
 
 import VocabularyBrowser from "./VocabularyBrowser.jsx";
 import { REST_URL, MakeRequest } from "./util.jsx";

@@ -32,15 +32,15 @@ import {
   IconButton,
   Tooltip,
   Typography,
-} from "@material-ui/core";
-import withStyles from '@material-ui/styles/withStyles';
+} from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
 import statisticsStyle from "./statisticsStyle.jsx";
 import NewItemButton from "../components/NewItemButton.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog.jsx";
 import LiveTable from "../dataHomepage/LiveTable.jsx";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 import Fields from "../questionnaireEditor/Fields.jsx";
-import EditIcon from "@material-ui/icons/Edit";
+import EditIcon from "@mui/icons-material/Edit";
 import { formatIdentifier } from "../questionnaireEditor/EditorInput.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 

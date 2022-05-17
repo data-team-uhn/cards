@@ -24,7 +24,7 @@ import {
   Icon,
   CardHeader,
   Typography
-} from "@material-ui/core";
+} from "@mui/material";
 
 let QuestionnaireCardHeader = (props) => {
   return (

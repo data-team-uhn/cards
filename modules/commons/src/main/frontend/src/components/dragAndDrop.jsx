@@ -21,9 +21,9 @@ import React, { useRef, useEffect, useState } from "react";
 
 import { styled } from '@mui/material/styles';
 
-import { IconButton, Typography } from "@material-ui/core";
-import makeStyles from '@material-ui/styles/makeStyles';
-import AttachFile from '@material-ui/icons/AttachFile';
+import { IconButton, Typography } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import AttachFile from '@mui/icons-material/AttachFile';
 
 const PREFIX = 'dragAndDrop';
 

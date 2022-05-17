@@ -20,9 +20,9 @@ import React, { useState, useEffect, useContext } from "react";
 
 import { styled } from '@mui/material/styles';
 
-import makeStyles from '@material-ui/styles/makeStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import { Link } from 'react-router-dom';
-import EventIcon from '@material-ui/icons/Event';
+import EventIcon from '@mui/icons-material/Event';
 
 import PromsViewInternal from "./PromsViewInternal.jsx";
 

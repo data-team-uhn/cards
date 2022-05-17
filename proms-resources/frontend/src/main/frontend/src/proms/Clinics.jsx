@@ -27,7 +27,7 @@ import {
   DialogTitle,
   Grid,
   Typography
-} from "@material-ui/core";
+} from "@mui/material";
 
 import Fields, { formatString } from "../questionnaireEditor/Fields.jsx";
 import LiveTable from "../dataHomepage/LiveTable.jsx";

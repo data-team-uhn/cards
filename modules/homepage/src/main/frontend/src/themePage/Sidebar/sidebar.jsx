@@ -13,9 +13,9 @@ import React, { useState, useEffect } from "react";
 import classNames from "classnames";
 import PropTypes from "prop-types";
 import { NavLink } from "react-router-dom";
-import withStyles from '@material-ui/styles/withStyles';
+import withStyles from '@mui/styles/withStyles';
 import { loadExtensions } from "../../uiextension/extensionManager";
-import { Drawer, Hidden, List, ListItem, ListItemText } from "@material-ui/core";
+import { Drawer, Hidden, List, ListItem, ListItemText } from "@mui/material";
 
 import AdminNavbarLinks from "../Navbars/AdminNavbarLinks.jsx";
 import sidebarStyle from "./sidebarStyle.jsx";

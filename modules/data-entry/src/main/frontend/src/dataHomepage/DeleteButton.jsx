@@ -20,10 +20,10 @@ import React, { useState, useContext } from "react";
 import { withRouter, useHistory } from "react-router-dom";
 import PropTypes from "prop-types";
 
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from "@material-ui/core";
-import { Tooltip, Typography } from "@material-ui/core";
-import withStyles from '@material-ui/styles/withStyles';
-import { Delete, Close } from "@material-ui/icons";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from "@mui/material";
+import { Tooltip, Typography } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import { Delete, Close } from "@mui/icons-material";
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";

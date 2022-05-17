@@ -7,12 +7,12 @@ module.exports = {
   mode: 'development',
   entry: {
     [module_name + 'themeindex']: './src/themePage/index.jsx',
-    [module_name + 'modelOrganismsIcon']: '@material-ui/icons/Pets.js',
-    [module_name + 'variantsIcon']: '@material-ui/icons/Subtitles.js',
-    [module_name + 'adminIcon']: '@material-ui/icons/Settings.js',
+    [module_name + 'modelOrganismsIcon']: '@mui/icons-material/Pets.js',
+    [module_name + 'variantsIcon']: '@mui/icons-material/Subtitles.js',
+    [module_name + 'adminIcon']: '@mui/icons-material/Settings.js',
     [module_name + 'adminDashboard']: './src/adminDashboard/AdminDashboard.jsx',
     [module_name + 'QuickSearchResults']: './src/themePage/QuickSearchResults.jsx',
-    [module_name + 'QuickSearchConfigurationIcon']: '@material-ui/icons/Pageview.js',
+    [module_name + 'QuickSearchConfigurationIcon']: '@mui/icons-material/Pageview.js',
     [module_name + 'QuickSearchConfiguration']: './src/themePage/QuickSearchConfiguration',
   },
   plugins: [

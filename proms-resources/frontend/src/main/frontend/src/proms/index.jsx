@@ -20,7 +20,7 @@ import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import { Router, Route, Redirect, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
-import { ThemeProvider, StyledEngineProvider } from '@material-ui/core/styles';
+import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { appTheme } from "../themePalette.jsx";
 import QuestionnaireSet from "./QuestionnaireSet.jsx";
 import PatientIdentification from "./PatientIdentification.jsx";

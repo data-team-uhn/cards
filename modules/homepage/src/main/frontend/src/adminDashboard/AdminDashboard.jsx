@@ -33,9 +33,9 @@ import {
   ListItemIcon,
   ListItemText,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 
-import withStyles from '@material-ui/styles/withStyles';
+import withStyles from '@mui/styles/withStyles';
 
 // function to get the routes for the admin dashboard, also used in the navbar
 async function getAdminRoutes() {

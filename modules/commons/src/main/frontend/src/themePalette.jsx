@@ -17,7 +17,7 @@
 //  under the License.
 //
 import React from 'react';
-import { createTheme, adaptV4Theme } from '@material-ui/core/styles';
+import { createTheme, adaptV4Theme } from '@mui/material/styles';
 
 const appTheme = createTheme(adaptV4Theme({
   palette: {

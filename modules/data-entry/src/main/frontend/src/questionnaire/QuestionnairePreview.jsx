@@ -21,11 +21,11 @@ import React, { useEffect, useState, useContext } from "react";
 import { useHistory } from 'react-router-dom';
 import PropTypes from "prop-types";
 
-import { CircularProgress, Grid, Typography } from "@material-ui/core";
+import { CircularProgress, Grid, Typography } from "@mui/material";
 
-import withStyles from '@material-ui/styles/withStyles';
+import withStyles from '@mui/styles/withStyles';
 
-import CloseIcon from "@material-ui/icons/Close";
+import CloseIcon from "@mui/icons-material/Close";
 
 import { FormProvider } from "./FormContext";
 import { FormUpdateProvider } from "./FormUpdateContext";

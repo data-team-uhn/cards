@@ -31,17 +31,17 @@ import {
   TableRow,
   Tooltip,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 
-import withStyles from '@material-ui/styles/withStyles';
+import withStyles from '@mui/styles/withStyles';
 
 import moment from "moment";
 
-import EditIcon from '@material-ui/icons/Edit';
-import PreviewIcon from '@material-ui/icons/FindInPage';
+import EditIcon from '@mui/icons-material/Edit';
+import PreviewIcon from '@mui/icons-material/FindInPage';
 import DeleteButton from "../dataHomepage/DeleteButton";
 import QuestionnaireStyle from "./QuestionnaireStyle";
-import { blue } from '@material-ui/core/colors';
+import { blue } from '@mui/material/colors';
 import { ENTRY_TYPES } from "./FormEntry";
 import Fields from "../questionnaireEditor/Fields";
 import CreationMenu from "../questionnaireEditor/CreationMenu";
