@@ -205,7 +205,7 @@ public class PatientLocalStorage
                 + "-" + surveyInfo.getSurveyID(), "/SubjectTypes/Patient/Visit/", patient);
             final Resource visitInfo = getOrCreateForm(visit, "/Questionnaires/Visit information");
             updateVisitInformationForm(visitInfo, appointment, surveyInfo.getDisplayName(),
-                surveyInfo.getClinicHash());
+                surveyInfo.getClinicPath());
         }
     }
 
@@ -542,9 +542,10 @@ public class PatientLocalStorage
      * @param form The Visit Information form to update
      * @param info The JsonObject representing a visit returned from Torch
      * @param locationName A string representing the display name of the location for this visit
+     * @param clinicPath The path to the clinicMapping node for the clinic of this visit
      */
     void updateVisitInformationForm(final Resource form, final JsonObject info, final String locationName,
-        final String clinicHash)
+        final String clinicPath)
         throws RepositoryException, PersistenceException
     {
         final Map<String, JsonGetter> formMapping = Map.of(
@@ -576,7 +577,7 @@ public class PatientLocalStorage
                 return providerNames.toArray();
             },
             "location", obj -> locationName,
-            "clinic", obj -> clinicHash);
+            "clinic", obj -> clinicPath);
 
         updateForm(form, info, "/Questionnaires/Visit information", formMapping);
 
@@ -662,7 +663,7 @@ public class PatientLocalStorage
     {
         private String displayName;
 
-        private String clinicHash;
+        private String clinicPath;
 
         private String surveyID;
 
@@ -681,14 +682,14 @@ public class PatientLocalStorage
             return this.displayName;
         }
 
-        public void setClinicHash(final String hash)
+        public void setClinicPath(final String path)
         {
-            this.clinicHash = hash;
+            this.clinicPath = path;
         }
 
-        public String getClinicHash()
+        public String getClinicPath()
         {
-            return this.clinicHash;
+            return this.clinicPath;
         }
 
         public String getSurveyID()
@@ -721,7 +722,7 @@ public class PatientLocalStorage
                     final Node thisNode = mapping.adaptTo(Node.class);
                     thisSurvey.setSurveyName(thisNode.getProperty("survey").getString());
                     thisSurvey.setDisplayName(thisNode.getProperty("displayName").getString());
-                    thisSurvey.setClinicHash(String.valueOf(clinic.hashCode()));
+                    thisSurvey.setClinicPath(mapPath);
                     results.add(thisSurvey);
                 } catch (final RepositoryException e) {
                     LOGGER.error("Error while resolving clinic mapping: {} {} ", clinic, e.getMessage(), e);

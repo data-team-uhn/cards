@@ -712,9 +712,13 @@ public class VisitChangeListener implements ResourceChangeListener
                 .getValue(VisitChangeListener.this.formUtils.getAnswer(form, this.visitDateQuestion));
             this.clinicQuestion =
                 VisitChangeListener.this.questionnaireUtils.getQuestion(questionnaire, "clinic");
-            final Object[] clinicAnswerObj = (Object[]) VisitChangeListener.this.formUtils
+            final Object clinicAnswerObj = VisitChangeListener.this.formUtils
                 .getValue(VisitChangeListener.this.formUtils.getAnswer(form, this.clinicQuestion));
-            final String[] clinicAnswer = Arrays.copyOf(clinicAnswerObj, clinicAnswerObj.length, String[].class);
+            // clinicAnswerObj may either be a string representing a single clinic, or an array
+            // representing a [clinicPath, displayedValue] pair
+            final String[] clinicAnswer = clinicAnswerObj.getClass().isArray()
+                ? Arrays.copyOf((Object[]) clinicAnswerObj, ((Object[]) clinicAnswerObj).length, String[].class)
+                : new String[] {(String) clinicAnswerObj};
             if (clinicAnswer.length > 0) {
                 final String clinicName = clinicAnswer.length > 1 ? clinicAnswer[1] : clinicAnswer[0];
                 final Node clinicNode = session.nodeExists(clinicName) ? session.getNode(clinicName) : null;
