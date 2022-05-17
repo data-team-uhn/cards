@@ -125,7 +125,7 @@ CARDS_TYPE_TO_SLING_TYPE_HINT['cards:VocabularyAnswer'] = "string"
 CARDS_TYPE_TO_SLING_TYPE_HINT['cards:ChromosomeAnswer'] = "string"
 CARDS_TYPE_TO_SLING_TYPE_HINT['cards:FileAnswer'] = "string" # TODO Properly handle FileAnswers
 
-def createAnswerInJcr(answerNodePath, questionNodePath, primaryType, value, note=None, fileDataSha256=None):
+def createAnswerInJcr(answerNodePath, questionNodePath, primaryType, value, extraValues={}, fileDataSha256=None):
   params = []
   params.append(('jcr:primaryType', (None, primaryType)))
   params.append(('question', (None, getJcrUuid(questionNodePath))))
@@ -137,8 +137,9 @@ def createAnswerInJcr(answerNodePath, questionNodePath, primaryType, value, note
   else:
     params.append(('value', (None, str(value))))
     params.append(('value@TypeHint', (None, CARDS_TYPE_TO_SLING_TYPE_HINT[primaryType])))
-  if note is not None:
-    params.append(('note', (None, str(note))))
+
+  for extraValueKey in extraValues:
+    params.append((extraValueKey, (None, str(extraValues[extraValueKey]))))
 
   if primaryType == "cards:FileAnswer" and type(fileDataSha256) == dict:
     for jcrFilename in fileDataSha256:
@@ -176,11 +177,15 @@ for formPath in FORM_LIST:
     associatedQuestion = form["responses"][responsePath]["question"]
     dataType = form["responses"][responsePath]["jcr:primaryType"]
     dataValue = form["responses"][responsePath]["value"]
-    noteValue = None
+
+    extraValues = {}
     if "note" in form["responses"][responsePath]:
-      noteValue = form["responses"][responsePath]["note"]
+      extraValues["note"] = form["responses"][responsePath]["note"]
+    if "image" in form["responses"][responsePath]:
+      extraValues["image"] = form["responses"][responsePath]["image"]
+
     fileSha256 = None
     if "fileDataSha256" in form["responses"][responsePath]:
       fileSha256 = form["responses"][responsePath]["fileDataSha256"]
     createIntermediateAnswerSectionsInJcr(responsePath, associatedQuestion)
-    createAnswerInJcr(responsePath, associatedQuestion, dataType, dataValue, noteValue, fileSha256)
+    createAnswerInJcr(responsePath, associatedQuestion, dataType, dataValue, extraValues, fileSha256)
