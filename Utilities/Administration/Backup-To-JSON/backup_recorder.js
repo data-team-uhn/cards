@@ -54,7 +54,8 @@ const RESPONSE_KEEP_PROPERTIES = [
   "jcr:createdBy",
   "question",
   "value",
-  "note"
+  "note",
+  "image"
 ];
 
 const isNtFile = (obj) => {
