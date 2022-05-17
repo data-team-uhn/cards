@@ -20,6 +20,7 @@
   under the License.
 """
 
+import io
 import os
 import sys
 import json
@@ -124,7 +125,7 @@ CARDS_TYPE_TO_SLING_TYPE_HINT['cards:VocabularyAnswer'] = "string"
 CARDS_TYPE_TO_SLING_TYPE_HINT['cards:ChromosomeAnswer'] = "string"
 CARDS_TYPE_TO_SLING_TYPE_HINT['cards:FileAnswer'] = "string" # TODO Properly handle FileAnswers
 
-def createAnswerInJcr(answerNodePath, questionNodePath, primaryType, value, note=None):
+def createAnswerInJcr(answerNodePath, questionNodePath, primaryType, value, note=None, fileDataSha256=None):
   params = []
   params.append(('jcr:primaryType', (None, primaryType)))
   params.append(('question', (None, getJcrUuid(questionNodePath))))
@@ -138,7 +139,20 @@ def createAnswerInJcr(answerNodePath, questionNodePath, primaryType, value, note
     params.append(('value@TypeHint', (None, CARDS_TYPE_TO_SLING_TYPE_HINT[primaryType])))
   if note is not None:
     params.append(('note', (None, str(note))))
+
+  if primaryType == "cards:FileAnswer" and type(fileDataSha256) == dict:
+    for jcrFilename in fileDataSha256:
+      blobFilePath = os.path.join(BACKUP_DIRECTORY, "blobs", fileDataSha256[jcrFilename] + ".blob")
+      f_blob = open(blobFilePath, 'rb')
+      params.append((jcrFilename, f_blob))
+
   resp = requests.post(CARDS_URL + answerNodePath, auth=('admin', ADMIN_PASSWORD), files=tuple(params))
+
+  # Close any files that were uploaded
+  for p in params:
+    if type(p[1]) == io.BufferedReader:
+      p[1].close()
+
   if resp.status_code != 201:
     raise Exception("Failed to create Answer node in JCR")
 
@@ -165,5 +179,8 @@ for formPath in FORM_LIST:
     noteValue = None
     if "note" in form["responses"][responsePath]:
       noteValue = form["responses"][responsePath]["note"]
+    fileSha256 = None
+    if "fileDataSha256" in form["responses"][responsePath]:
+      fileSha256 = form["responses"][responsePath]["fileDataSha256"]
     createIntermediateAnswerSectionsInJcr(responsePath, associatedQuestion)
-    createAnswerInJcr(responsePath, associatedQuestion, dataType, dataValue, noteValue)
+    createAnswerInJcr(responsePath, associatedQuestion, dataType, dataValue, noteValue, fileSha256)
