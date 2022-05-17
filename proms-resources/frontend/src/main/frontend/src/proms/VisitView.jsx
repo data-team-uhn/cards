@@ -56,13 +56,13 @@ function VisitView(props) {
 "select distinct visitInformation.* " +
   "from " +
     "[cards:Form] as visitInformation " +
-      "inner join [cards:TextAnswer] as visitClinic on isdescendantnode(visitClinics, visitInformation) " +
+      "inner join [cards:TextAnswer] as visitClinic on isdescendantnode(visitClinic, visitInformation) " +
       "inner join [cards:DateAnswer] as visitDate on isdescendantnode(visitDate, visitInformation) " +
       "inner join [cards:TextAnswer] as visitStatus on isdescendantnode(visitStatus, visitInformation) " +
   "where " +
     `visitInformation.questionnaire = '${visitInfo?.["jcr:uuid"]}' ` +
       `and visitDate.question = '${visitInfo?.time?.["jcr:uuid"]}' and __DATE_FILTER_PLACEHOLDER__ ` +
-      `and visitClinic.question = '${visitInfo?.clinic?.["jcr:uuid"]}' and visitClinic.value = '${clinicId}' ` +
+      `and visitClinic.question = '${visitInfo?.clinic?.["jcr:uuid"]}' and visitClinic.value = '/Proms/ClinicMapping/${clinicId}' ` +
       `and visitStatus.question = '${visitInfo?.status?.["jcr:uuid"]}' and visitStatus.value <> 'cancelled' and visitStatus.value <> 'entered-in-error' ` +
   "order by visitDate.value __SORT_ORDER_PLACEHOLDER__"
 )
