@@ -29,11 +29,11 @@ import {
   Tooltip,
   Typography,
   Zoom,
-} from "@material-ui/core";
+} from "@mui/material";
 
-import makeStyles from '@material-ui/styles/makeStyles';
+import makeStyles from '@mui/styles/makeStyles';
 
-import CloseIcon from "@material-ui/icons/Close";
+import CloseIcon from "@mui/icons-material/Close";
 
 import VocabularyAction from "./vocabularyAction";
 import VocabularyBrowser from "./vocabQuery/VocabularyBrowser.jsx";

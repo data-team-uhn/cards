@@ -11,7 +11,7 @@
 */
 import PropTypes from "prop-types";
 import React, { useContext, useEffect, useRef, useState } from "react";
-// @material-ui/core components
+// @mui/material components
 import {
   Avatar,
   ClickAwayListener,
@@ -26,11 +26,11 @@ import {
   Popper,
   Snackbar,
   Tooltip,
-} from "@material-ui/core";
-import withStyles from '@material-ui/styles/withStyles';
-import CloseIcon from '@material-ui/icons/Close';
-import VpnKeyIcon from '@material-ui/icons/VpnKey';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+} from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import CloseIcon from '@mui/icons-material/Close';
+import VpnKeyIcon from '@mui/icons-material/VpnKey';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import classNames from "classnames";
 
 import HeaderSearchBar from "./HeaderSearchBar.jsx";

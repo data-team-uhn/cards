@@ -34,13 +34,13 @@ import {
   TextField,
   Tooltip,
   Typography,
-} from "@material-ui/core";
-import makeStyles from '@material-ui/styles/makeStyles';
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
-import BackupIcon from '@material-ui/icons/Backup';
-import CloseIcon from '@material-ui/icons/Close';
-import GetApp from '@material-ui/icons/GetApp';
+import BackupIcon from '@mui/icons-material/Backup';
+import CloseIcon from '@mui/icons-material/Close';
+import GetApp from '@mui/icons-material/GetApp';
 import MaterialTable from "material-table";
 import { v4 as uuidv4 } from 'uuid';
 import moment from "moment";

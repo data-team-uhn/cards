@@ -35,9 +35,9 @@ import {
   DialogTitle,
   Grid,
   Typography,
-} from "@material-ui/core";
-import withStyles from '@material-ui/styles/withStyles';
-import AddIcon from "@material-ui/icons/Add";
+} from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import AddIcon from "@mui/icons-material/Add";
 
 async function getDashboardExtensions() {
   return loadExtensions("DashboardViews")

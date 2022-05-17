@@ -18,7 +18,7 @@
 //
 
 import React from "react";
-import { Tooltip, Typography } from "@material-ui/core";
+import { Tooltip, Typography } from "@mui/material";
 
 function AppInfo (props) {
   const { classes, textVariant, showTeamInfo } = props;

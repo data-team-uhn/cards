@@ -31,9 +31,9 @@ import {
   Select,
   TextField,
   Typography,
-} from "@material-ui/core";
-import withStyles from '@material-ui/styles/withStyles';
-import Close from "@material-ui/icons/Close";
+} from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import Close from "@mui/icons-material/Close";
 import PropTypes from 'prop-types';
 
 import Answer, {LABEL_POS, VALUE_POS, DESC_POS, IS_DEFAULT_OPTION_POS, IS_DEFAULT_ANSWER_POS} from "./Answer";

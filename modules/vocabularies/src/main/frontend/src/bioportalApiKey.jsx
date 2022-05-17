@@ -30,10 +30,12 @@ import {
   TextField,
   Tooltip,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 
-import makeStyles from '@material-ui/styles/makeStyles';
-import SettingsIcon from '@material-ui/icons/Settings';
+import makeStyles from '@mui/styles/makeStyles';
+
+import SettingsIcon from '@mui/icons-material/Settings';
+
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
 const APIKEY_SERVLET_URL = "/Vocabularies.bioportalApiKey";

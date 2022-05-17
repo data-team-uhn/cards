@@ -20,12 +20,12 @@
 import React, { forwardRef } from "react";
 import PropTypes from "prop-types";
 
-import { Dialog, DialogTitle, IconButton, useMediaQuery } from "@material-ui/core";
+import { Dialog, DialogTitle, IconButton, useMediaQuery } from "@mui/material";
 
-import makeStyles from '@material-ui/styles/makeStyles';
+import makeStyles from '@mui/styles/makeStyles';
 
-import CloseIcon from '@material-ui/icons/Close';
-import { useTheme } from '@material-ui/core/styles';
+import CloseIcon from '@mui/icons-material/Close';
+import { useTheme } from '@mui/material/styles';
 
 // Component that renders the Dialog containers that expand to full screen once
 // the screen becomes more narrow than the specified width

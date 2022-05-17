@@ -19,11 +19,11 @@
 import PropTypes from "prop-types";
 import React from "react";
 
-import { blue, green, orange } from '@material-ui/core/colors';
-import { Avatar, ListItem, ListItemText, ListItemAvatar }  from "@material-ui/core";
-import DescriptionIcon from "@material-ui/icons/Description";
-import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
-import AssignmentIcon from '@material-ui/icons/Assignment';
+import { blue, green, orange } from '@mui/material/colors';
+import { Avatar, ListItem, ListItemText, ListItemAvatar }  from "@mui/material";
+import DescriptionIcon from "@mui/icons-material/Description";
+import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
+import AssignmentIcon from '@mui/icons-material/Assignment';
 import { Link } from "react-router-dom";
 import { getEntityIdentifier } from "../EntityIdentifier.jsx";
 

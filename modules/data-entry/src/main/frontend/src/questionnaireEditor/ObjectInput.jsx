@@ -20,9 +20,9 @@
 import React, { useState } from "react";
 import Fields from "./Fields"
 import PropTypes from "prop-types";
-import { Grid, MenuItem, Select, Typography } from "@material-ui/core";
+import { Grid, MenuItem, Select, Typography } from "@mui/material";
 
-import withStyles from '@material-ui/styles/withStyles';
+import withStyles from '@mui/styles/withStyles';
 
 import EditorInput from "./EditorInput";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle";

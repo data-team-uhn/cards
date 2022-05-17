@@ -37,11 +37,11 @@ import {
   DialogTitle,
   Typography,
   useMediaQuery,
-} from "@material-ui/core";
+} from "@mui/material";
 
-import { useTheme } from '@material-ui/core/styles';
+import makeStyles from '@mui/styles/makeStyles';
 
-import makeStyles from '@material-ui/styles/makeStyles';
+import { useTheme } from '@mui/material/styles';
 
 import FormattedText from "../components/FormattedText.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";

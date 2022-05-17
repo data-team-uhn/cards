@@ -19,7 +19,7 @@
 import React, { useState } from "react";
 import {
   Link,
-} from "@material-ui/core";
+} from "@mui/material";
 import ToUDialog from "./ToUDialog.jsx";
 
 function ToULink (props) {

@@ -19,9 +19,9 @@
 
 import React, { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
-import { InputAdornment, TextField, Typography } from "@material-ui/core";
+import { InputAdornment, TextField, Typography } from "@mui/material";
 
-import withStyles from '@material-ui/styles/withStyles';
+import withStyles from '@mui/styles/withStyles';
 
 import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";

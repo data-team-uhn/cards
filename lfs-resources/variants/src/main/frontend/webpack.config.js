@@ -6,7 +6,7 @@ module_name = require("./package.json").name + ".";
 module.exports = {
   mode: 'development',
   entry: {
-    [module_name + 'variantsIcon']: '@material-ui/icons/Subtitles.js',
+    [module_name + 'variantsIcon']: '@mui/icons-material/Subtitles.js',
     [module_name + 'variantFilesContainer']: './src/variantFilesContainer.jsx'
   },
   plugins: [

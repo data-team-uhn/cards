@@ -31,7 +31,7 @@ import {
   TimelineContent,
   TimelineDot,
   TimelineOppositeContent
-} from "@material-ui/core";
+} from "@mui/material";
 
 import DateQuestionUtilities from "./DateQuestionUtilities.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
@@ -39,9 +39,9 @@ import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import { displayQuestion } from "./Subject.jsx";
 import { ENTRY_TYPES, QUESTION_TYPES, SECTION_TYPES } from "./FormEntry.jsx"
 
-import { Typography } from "@material-ui/core";
+import { Typography } from "@mui/material";
 
-import withStyles from '@material-ui/styles/withStyles';
+import withStyles from '@mui/styles/withStyles';
 
 const NUM_QUESTIONS = 2;
 const STRIPPING_REGEX = [/^date of +/i, / +date$/i]

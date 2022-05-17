@@ -17,9 +17,9 @@
 
 import React from "react";
 
-import withStyles from '@material-ui/styles/withStyles';
+import withStyles from '@mui/styles/withStyles';
 
-import { Avatar, Button, Card, CardHeader, CardContent, Grid, Table, TableCell, TableBody, TableHead, TableRow } from "@material-ui/core";
+import { Avatar, Button, Card, CardHeader, CardContent, Grid, Table, TableCell, TableBody, TableHead, TableRow } from "@mui/material";
 
 import userboardStyle from '../userboardStyle.jsx';
 import CreateGroupDialogue from "./creategroupdialogue.jsx";

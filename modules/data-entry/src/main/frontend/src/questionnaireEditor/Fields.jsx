@@ -19,8 +19,8 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Grid, Typography } from "@material-ui/core";
-import withStyles from '@material-ui/styles/withStyles';
+import { Grid, Typography } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
 import QuestionComponentManager from "../questionnaireEditor/QuestionComponentManager";
 import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
 

@@ -32,11 +32,11 @@ import {
   Tabs,
   Tooltip,
   Typography,
-} from "@material-ui/core";
-import withStyles from '@material-ui/styles/withStyles';
+} from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
 import { Link } from 'react-router-dom';
-import DescriptionIcon from '@material-ui/icons/Description';
-import LaunchIcon from '@material-ui/icons/Launch';
+import DescriptionIcon from '@mui/icons-material/Description';
+import LaunchIcon from '@mui/icons-material/Launch';
 import DeleteButton from "./DeleteButton.jsx";
 import EditButton from "./EditButton.jsx";
 import NewFormDialog from "./NewFormDialog.jsx";

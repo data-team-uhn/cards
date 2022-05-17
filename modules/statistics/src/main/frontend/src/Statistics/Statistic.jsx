@@ -17,11 +17,11 @@
 //  under the License.
 //
 import React, { useState } from "react";
-import { Avatar, Card, CardContent, CardHeader, Grid, Typography } from "@material-ui/core";
-import withStyles from '@material-ui/styles/withStyles';
-import BarChartIcon from '@material-ui/icons/BarChart';
-import LineChartIcon from '@material-ui/icons/ShowChart';
-import { deepPurple, indigo } from '@material-ui/core/colors';
+import { Avatar, Card, CardContent, CardHeader, Grid, Typography } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import LineChartIcon from '@mui/icons-material/ShowChart';
+import { deepPurple, indigo } from '@mui/material/colors';
 
 import { useHistory } from 'react-router-dom';
 

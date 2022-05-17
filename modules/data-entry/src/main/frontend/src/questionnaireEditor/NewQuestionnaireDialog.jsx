@@ -29,9 +29,9 @@ import {
   DialogTitle,
   TextField,
   Typography,
-} from "@material-ui/core";
-import withStyles from '@material-ui/styles/withStyles';
-import AddIcon from "@material-ui/icons/Add";
+} from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import AddIcon from "@mui/icons-material/Add";
 import { v4 as uuidv4 } from 'uuid';
 import NewItemButton from "../components/NewItemButton.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";

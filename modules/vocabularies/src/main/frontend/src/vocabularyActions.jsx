@@ -25,11 +25,11 @@ import {
   DialogTitle,
   IconButton,
   Typography
-} from "@material-ui/core";
+} from "@mui/material";
 
-import makeStyles from '@material-ui/styles/makeStyles';
+import makeStyles from '@mui/styles/makeStyles';
 
-import CloseIcon from "@material-ui/icons/Close";
+import CloseIcon from "@mui/icons-material/Close";
 
 import VocabularyDetails from "./vocabularyDetails"
 import VocabularyAction from "./vocabularyAction"

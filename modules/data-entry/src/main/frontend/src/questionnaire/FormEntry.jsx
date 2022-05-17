@@ -21,7 +21,7 @@ import React, { useRef, useEffect, useState } from "react";
 
 import { useLocation } from 'react-router-dom';
 
-import { Card, CardContent, Grid } from "@material-ui/core";
+import { Card, CardContent, Grid } from "@mui/material";
 
 import AnswerComponentManager from "./AnswerComponentManager";
 import Section from "./Section";

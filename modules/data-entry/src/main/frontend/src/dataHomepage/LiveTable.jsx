@@ -18,7 +18,7 @@
 //
 
 import React, { useState, useEffect, useContext } from "react";
-import { Paper, Table, TableHead, TableBody, TableRow, TableCell, TablePagination } from "@material-ui/core";
+import { Paper, Table, TableHead, TableBody, TableRow, TableCell, TablePagination } from "@mui/material";
 import {
   Card,
   CardHeader,
@@ -29,8 +29,8 @@ import {
   Typography,
   Button,
   LinearProgress,
-} from "@material-ui/core";
-import withStyles from '@material-ui/styles/withStyles';
+} from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
 import { Link } from 'react-router-dom';
 import moment from "moment";
 

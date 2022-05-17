@@ -19,14 +19,14 @@
 import React, { useState, useEffect } from "react";
 import LiveTable from "./LiveTable.jsx";
 
-import { Button, Card, CardContent, CardHeader, IconButton, Tooltip } from "@material-ui/core";
-import withStyles from '@material-ui/styles/withStyles';
+import { Button, Card, CardContent, CardHeader, IconButton, Tooltip } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
 import { Link } from 'react-router-dom';
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import SubjectTypeDialog from "../questionnaire/SubjectTypeDialog.jsx";
 import NewItemButton from "../components/NewItemButton.jsx";
 import DeleteButton from "./DeleteButton.jsx";
-import EditIcon from "@material-ui/icons/Edit";
+import EditIcon from "@mui/icons-material/Edit";
 
 // Get a flat list of subject type parents as labels separated by " / "
 function getTextHierarchy (path, subjectTypes) {

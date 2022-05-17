@@ -41,9 +41,9 @@ import {
   Tab,
   Tabs,
   Typography,
-} from "@material-ui/core";
-import withStyles from '@material-ui/styles/withStyles';
-import FileIcon from "@material-ui/icons/InsertDriveFile";
+} from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import FileIcon from "@mui/icons-material/InsertDriveFile";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 import EditButton from "../dataHomepage/EditButton.jsx";
 import PrintButton from "../dataHomepage/PrintButton.jsx";

@@ -32,9 +32,9 @@ import {
   ListItem,
   ListItemAvatar,
   TextField,
-} from "@material-ui/core";
-import withStyles from '@material-ui/styles/withStyles';
-import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
+} from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import MaterialTable from "material-table";
 import Alert from '@mui/material/Alert';
 

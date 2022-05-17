@@ -29,7 +29,7 @@ import {
     CardHeader,
     List,
     ListItem,
-} from '@material-ui/core';
+} from '@mui/material';
 
 function QuickSearchConfiguration(props) {
   const { match, location, classes } = props;

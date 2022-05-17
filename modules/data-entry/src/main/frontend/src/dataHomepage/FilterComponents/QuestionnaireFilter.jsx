@@ -18,9 +18,9 @@
 //
 
 import React, { forwardRef, useState } from "react";
-import { Select, MenuItem, Card, CardHeader, CardContent } from "@material-ui/core";
-import withStyles from '@material-ui/styles/withStyles';
-import ErrorIcon from "@material-ui/icons/Error";
+import { Select, MenuItem, Card, CardHeader, CardContent } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import ErrorIcon from "@mui/icons-material/Error";
 import PropTypes from "prop-types";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";

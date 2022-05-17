@@ -34,12 +34,12 @@ import {
   Tabs,
   Tooltip,
   Typography,
-} from "@material-ui/core";
-import withStyles from '@material-ui/styles/withStyles';
+} from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
 import { Link } from 'react-router-dom';
-import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
-import LaunchIcon from '@material-ui/icons/Launch';
-import AddIcon from '@material-ui/icons/Add';
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import LaunchIcon from '@mui/icons-material/Launch';
+import AddIcon from '@mui/icons-material/Add';
 import DeleteButton from "./DeleteButton.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";

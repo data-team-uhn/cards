@@ -26,7 +26,7 @@ import {
   ListItem,
   ListItemText,
   Typography
-} from '@material-ui/core';
+} from '@mui/material';
 import { Link } from 'react-router-dom';
 
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";

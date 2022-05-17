@@ -20,13 +20,13 @@ import PropTypes from "prop-types";
 import React, { useState, useContext } from "react";
 import { withRouter } from "react-router-dom";
 
-import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, ListItemText, MenuItem, ListItemAvatar, Avatar }  from "@material-ui/core";
-import { MenuList, Paper, Popper } from "@material-ui/core";
-import withStyles from '@material-ui/styles/withStyles';
+import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, ListItemText, MenuItem, ListItemAvatar, Avatar }  from "@mui/material";
+import { MenuList, Paper, Popper } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
 import { Link } from "react-router-dom";
 import { getEntityIdentifier } from "./themePage/EntityIdentifier.jsx";
-import DescriptionIcon from "@material-ui/icons/Description";
-import Search from "@material-ui/icons/Search";
+import DescriptionIcon from "@mui/icons-material/Description";
+import Search from "@mui/icons-material/Search";
 import HeaderStyle from "./headerStyle.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 

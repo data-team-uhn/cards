@@ -20,8 +20,10 @@ import React, { useState } from "react";
 
 import {
   Typography
-} from "@material-ui/core";
-import makeStyles from '@material-ui/styles/makeStyles';
+} from "@mui/material";
+
+import makeStyles from '@mui/styles/makeStyles';
+
 import { DateTime } from "luxon";
 
 const useStyles = makeStyles(theme => ({

@@ -36,14 +36,14 @@ import {
   Popover,
   Tooltip,
   Typography,
-} from "@material-ui/core";
-import withStyles from '@material-ui/styles/withStyles';
-import CloseIcon from "@material-ui/icons/Close";
-import EditIcon from '@material-ui/icons/Edit';
-import CloudUploadIcon from "@material-ui/icons/CloudUpload";
-import DoneIcon from "@material-ui/icons/Done";
-import WarningIcon from '@material-ui/icons/Warning';
-import MoreIcon from '@material-ui/icons/MoreVert';
+} from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import CloseIcon from "@mui/icons-material/Close";
+import EditIcon from '@mui/icons-material/Edit';
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import DoneIcon from "@mui/icons-material/Done";
+import WarningIcon from '@mui/icons-material/Warning';
+import MoreIcon from '@mui/icons-material/MoreVert';
 
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
 import FormEntry, { QUESTION_TYPES, ENTRY_TYPES } from "./FormEntry";

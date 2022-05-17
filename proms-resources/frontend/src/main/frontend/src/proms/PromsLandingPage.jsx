@@ -19,11 +19,11 @@
 
 import React, { useState, useEffect } from "react";
 
-import { Breadcrumbs, Button, Dialog, DialogContent, Grid, Tooltip, Typography } from '@material-ui/core';
+import { Breadcrumbs, Button, Dialog, DialogContent, Grid, Tooltip, Typography } from '@mui/material';
 
-import makeStyles from '@material-ui/styles/makeStyles';
+import makeStyles from '@mui/styles/makeStyles';
 
-import { ThemeProvider, StyledEngineProvider } from '@material-ui/core/styles';
+import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { appTheme } from "../themePalette.jsx";
 
 const useStyles = makeStyles(theme => ({

@@ -20,9 +20,9 @@ import React, { useState, useRef, useEffect } from "react";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 
-import { Button, IconButton, Tooltip } from "@material-ui/core";
-import withStyles from '@material-ui/styles/withStyles';
-import PrintIcon from "@material-ui/icons/Print";
+import { Button, IconButton, Tooltip } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import PrintIcon from "@mui/icons-material/Print";
 import PrintPreview from "../questionnaire/PrintPreview.jsx";
 import moment from "moment";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";

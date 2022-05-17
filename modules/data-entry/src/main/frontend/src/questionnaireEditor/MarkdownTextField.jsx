@@ -19,7 +19,7 @@
 
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import withStyles from '@material-ui/styles/withStyles';
+import withStyles from '@mui/styles/withStyles';
 
 import EditorInput from "./EditorInput";
 import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';

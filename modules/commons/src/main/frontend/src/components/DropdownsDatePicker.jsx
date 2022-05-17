@@ -24,10 +24,8 @@
 
 import React, { useState } from "react";
 
-import { Select, MenuItem } from "@material-ui/core";
-
-import makeStyles from '@material-ui/styles/makeStyles';
-
+import { Select, MenuItem } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import PropTypes from "prop-types";
 import moment from "moment";
 

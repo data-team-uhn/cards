@@ -20,7 +20,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import { withRouter } from "react-router-dom";
 
-import withStyles from '@material-ui/styles/withStyles';
+import withStyles from '@mui/styles/withStyles';
 import HeaderStyle from "../../headerStyle.jsx";
 import SearchBar from "../../SearchBar.jsx"; // In the commons module
 import { QuickSearchIdentifier } from "./QuickSearchIdentifier.jsx";

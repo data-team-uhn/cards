@@ -29,12 +29,12 @@ import {
   IconButton,
   Tooltip,
   Typography,
-} from "@material-ui/core";
-import withStyles from '@material-ui/styles/withStyles';
-import Add from "@material-ui/icons/Add";
-import Delete from '@material-ui/icons/Delete';
-import UnfoldLess from '@material-ui/icons/UnfoldLess';
-import UnfoldMore from '@material-ui/icons/UnfoldMore';
+} from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import Add from "@mui/icons-material/Add";
+import Delete from '@mui/icons-material/Delete';
+import UnfoldLess from '@mui/icons-material/UnfoldLess';
+import UnfoldMore from '@mui/icons-material/UnfoldMore';
 
 import ConditionalComponentManager from "./ConditionalComponentManager";
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";

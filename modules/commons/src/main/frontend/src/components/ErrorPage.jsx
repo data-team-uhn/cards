@@ -18,12 +18,10 @@
 //
 import React, { useEffect, useState } from 'react';
 
-import { Fab, Grid, Paper, Typography } from '@material-ui/core';
-import { ThemeProvider, StyledEngineProvider } from '@material-ui/core/styles';
-
-import makeStyles from '@material-ui/styles/makeStyles';
-
-import NavigationIcon from '@material-ui/icons/Navigation';
+import { Fab, Grid, Paper, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
+import NavigationIcon from '@mui/icons-material/Navigation';
 import { appTheme } from "../themePalette.jsx";
 
 const useStyles = makeStyles(theme => ({

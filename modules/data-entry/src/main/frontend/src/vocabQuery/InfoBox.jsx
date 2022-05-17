@@ -33,9 +33,9 @@ import {
   Popper,
   Tooltip,
   Typography,
-} from "@material-ui/core";
-import withStyles from '@material-ui/styles/withStyles';
-import CloseIcon from '@material-ui/icons/Close';
+} from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import CloseIcon from '@mui/icons-material/Close';
 
 import QueryStyle from "./queryStyle.jsx";
 
