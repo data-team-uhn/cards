@@ -370,7 +370,7 @@ public class VisitChangeListener implements ResourceChangeListener
     private void pruneQuestionnaireSetByVisit(final Node visit, final VisitInformation visitInformation,
         final Map<String, QuestionnaireFrequency> questionnaireSetInfo) throws RepositoryException
     {
-        String visitQuestionnaireSet = null;
+        String visitClinic = null;
 
         // Create a list of all complete forms that exist for this visit.
         // Record the visit's date as well, if there is a Visit Information form with a date.
@@ -383,7 +383,7 @@ public class VisitChangeListener implements ResourceChangeListener
                 if (questionnaire.isSame(visitInformation.getQuestionnaire())) {
                     visitDate = (Calendar) this.formUtils
                         .getValue(this.formUtils.getAnswer(form, visitInformation.getVisitDateQuestion()));
-                    visitQuestionnaireSet = (String) this.formUtils
+                    visitClinic = (String) this.formUtils
                         .getValue(this.formUtils.getAnswer(form, visitInformation.getClinicQuestion()));
                 } else {
                     questionnaires.merge(questionnaire.getIdentifier(), !isFormIncomplete(form), Boolean::logicalOr);
@@ -392,7 +392,7 @@ public class VisitChangeListener implements ResourceChangeListener
         }
 
         // Ignore forms for different clinics, or forms without a clinic
-        if (visitQuestionnaireSet == null || !visitInformation.getClinicPath().equals(visitQuestionnaireSet)) {
+        if (visitClinic == null || !visitInformation.getClinicPath().equals(visitClinic)) {
             return;
         } else {
             removeQuestionnairesFromVisit(visitInformation, visitDate, questionnaires, questionnaireSetInfo);

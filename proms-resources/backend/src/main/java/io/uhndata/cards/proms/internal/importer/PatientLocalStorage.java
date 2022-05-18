@@ -199,13 +199,13 @@ public class PatientLocalStorage
         throws RepositoryException, PersistenceException
     {
         // In one usage of patientLocalStorage.store(), only store those within a specific timeframe
-        final List<SurveyInfo> surveyInfos = getSurveyInfo(appointment.getJsonArray("location"));
-        for (final SurveyInfo surveyInfo : surveyInfos) {
+        final List<ClinicInfo> clinicInfos = getClinicInfo(appointment.getJsonArray("location"));
+        for (final ClinicInfo clinicInfo : clinicInfos) {
             final Resource visit = getOrCreateSubject(appointment.getString(PatientLocalStorage.FHIR_FIELD)
-                + "-" + surveyInfo.getSurveyID(), "/SubjectTypes/Patient/Visit/", patient);
+                + "-" + clinicInfo.getSurveyID(), "/SubjectTypes/Patient/Visit/", patient);
             final Resource visitInfo = getOrCreateForm(visit, "/Questionnaires/Visit information");
-            updateVisitInformationForm(visitInfo, appointment, surveyInfo.getDisplayName(),
-                surveyInfo.getClinicPath());
+            updateVisitInformationForm(visitInfo, appointment, clinicInfo.getDisplayName(),
+                clinicInfo.getClinicPath());
         }
     }
 
@@ -657,19 +657,24 @@ public class PatientLocalStorage
     }
 
     /**
-     * Storage class for survey information.
+     * Storage class for clinic information.
      */
-    class SurveyInfo
+    class ClinicInfo
     {
-        private String displayName;
-
         private String clinicPath;
+
+        private String displayName;
 
         private String surveyID;
 
-        public void setSurveyName(final String id)
+        public void setClinicPath(final String path)
         {
-            this.surveyID = id;
+            this.clinicPath = path;
+        }
+
+        public String getClinicPath()
+        {
+            return this.clinicPath;
         }
 
         public void setDisplayName(final String name)
@@ -682,14 +687,9 @@ public class PatientLocalStorage
             return this.displayName;
         }
 
-        public void setClinicPath(final String path)
+        public void setSurveyName(final String id)
         {
-            this.clinicPath = path;
-        }
-
-        public String getClinicPath()
-        {
-            return this.clinicPath;
+            this.surveyID = id;
         }
 
         public String getSurveyID()
@@ -702,11 +702,11 @@ public class PatientLocalStorage
      * Map the given Torch clinic name to a survey ID and display name.
      *
      * @param locations The appointment locations array to parse
-     * @return The survey information as a list
+     * @return The clinic information as a list
      */
-    List<SurveyInfo> getSurveyInfo(final JsonArray locations)
+    List<ClinicInfo> getClinicInfo(final JsonArray locations)
     {
-        final List<SurveyInfo> results = new LinkedList<>();
+        final List<ClinicInfo> results = new LinkedList<>();
         for (int i = 0; i < locations.size(); i++) {
             // Resolve this name from our mapping
             final String clinic = locations.getString(i);
@@ -718,12 +718,12 @@ public class PatientLocalStorage
                 LOGGER.warn("Could not find mapping for location {} (checking {})", clinic, mapPath);
             } else {
                 try {
-                    final SurveyInfo thisSurvey = new SurveyInfo();
+                    final ClinicInfo thisClinic = new ClinicInfo();
                     final Node thisNode = mapping.adaptTo(Node.class);
-                    thisSurvey.setSurveyName(thisNode.getProperty("survey").getString());
-                    thisSurvey.setDisplayName(thisNode.getProperty("displayName").getString());
-                    thisSurvey.setClinicPath(mapPath);
-                    results.add(thisSurvey);
+                    thisClinic.setSurveyName(thisNode.getProperty("survey").getString());
+                    thisClinic.setDisplayName(thisNode.getProperty("displayName").getString());
+                    thisClinic.setClinicPath(mapPath);
+                    results.add(thisClinic);
                 } catch (final RepositoryException e) {
                     LOGGER.error("Error while resolving clinic mapping: {} {} ", clinic, e.getMessage(), e);
                 }
