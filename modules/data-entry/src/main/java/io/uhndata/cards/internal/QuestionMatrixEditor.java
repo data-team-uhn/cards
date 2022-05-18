@@ -80,10 +80,6 @@ public class QuestionMatrixEditor extends DefaultEditor
         }
     }
 
-    // When something changes in a node deep in the content tree, the editor is invoked starting with the root node,
-    // descending to the actually changed node through subsequent calls to childNodeChanged. The default behavior of
-    // DefaultEditor is to stop at the root, so we must override the following two methods in order for the editor to be
-    // invoked on non-root nodes.
     @Override
     public Editor childNodeAdded(final String name, final NodeState after)
         throws CommitFailedException

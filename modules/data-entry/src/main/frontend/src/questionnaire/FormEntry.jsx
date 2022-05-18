@@ -171,7 +171,7 @@ let displayMatrix = (sectionDefinition, path, existingAnswer, key, classes, page
       && answer[1]["sling:resourceSuperType"] === "cards/Answer");
 
   // Determine if the section is flagged as incomplete/invalid
-  // Note: bay be better explicitly check <statusFlags.includes('INCOMPLETE')> and same for INVALID
+  // Note: may be better to explicitly check <statusFlags.includes('INCOMPLETE')>, and same for INVALID
   const isFlagged = (existingSectionAnswer?.[1]?.statusFlags?.length > 0);
   // View mode should display all mandatory questions whether or not they have an answer
   const hasAnswers = existingAnswers?.filter(answer => answer[1]["displayedValue"]).length > 0;
