@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -48,17 +49,43 @@ public final class HttpRequests
         return retVal.toString();
     }
 
-    public static String getPostResponse(final String url, final String data, final String contentType)
+    public static HttpResponse doHttpPost(final String url, final String data, final String contentType,
+        final String payloadEncoding)
         throws IOException
     {
         CloseableHttpClient client = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(url);
-        StringEntity entity = new StringEntity(data);
+        StringEntity entity = new StringEntity(data, payloadEncoding);
         httpPost.setEntity(entity);
         httpPost.setHeader("Content-type", contentType);
         CloseableHttpResponse response = client.execute(httpPost);
         String responseString = readInputStream(response.getEntity().getContent());
+        StatusLine statusLine = response.getStatusLine();
+        HttpResponse httpResponse = new HttpResponse(-1, responseString);
+        if (statusLine != null) {
+            httpResponse.setStatusCode(statusLine.getStatusCode());
+        }
         client.close();
-        return responseString;
+        return httpResponse;
+    }
+
+    public static HttpResponse doHttpPost(final String url, final String data, final String contentType)
+        throws IOException
+    {
+        return doHttpPost(url, data, contentType, "UTF-8");
+    }
+
+    public static String getPostResponse(final String url, final String data, final String contentType)
+        throws IOException
+    {
+        HttpResponse httpResponse = doHttpPost(url, data, contentType);
+        return httpResponse.getResponsePayload();
+    }
+
+    public static String getPostResponse(final String url, final String data, final String contentType,
+        final String payloadEncoding) throws IOException
+    {
+        HttpResponse httpResponse = doHttpPost(url, data, contentType, payloadEncoding);
+        return httpResponse.getResponsePayload();
     }
 }
