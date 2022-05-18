@@ -16,7 +16,6 @@
  */
 package io.uhndata.cards.proms.internal;
 
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -712,25 +711,17 @@ public class VisitChangeListener implements ResourceChangeListener
                 .getValue(VisitChangeListener.this.formUtils.getAnswer(form, this.visitDateQuestion));
             this.clinicQuestion =
                 VisitChangeListener.this.questionnaireUtils.getQuestion(questionnaire, "clinic");
-            final Object clinicAnswerObj = VisitChangeListener.this.formUtils
+            final String clinicName = (String) VisitChangeListener.this.formUtils
                 .getValue(VisitChangeListener.this.formUtils.getAnswer(form, this.clinicQuestion));
-            // clinicAnswerObj may either be a string representing a single clinic, or an array
-            // representing a [clinicPath, displayedValue] pair
-            final String[] clinicAnswer = clinicAnswerObj.getClass().isArray()
-                ? Arrays.copyOf((Object[]) clinicAnswerObj, ((Object[]) clinicAnswerObj).length, String[].class)
-                : new String[] {(String) clinicAnswerObj};
-            if (clinicAnswer.length > 0) {
-                final String clinicName = clinicAnswer.length > 1 ? clinicAnswer[1] : clinicAnswer[0];
-                final Node clinicNode = session.nodeExists(clinicName) ? session.getNode(clinicName) : null;
-                if (clinicNode != null) {
-                    this.questionnaireSet = session.nodeExists("/Proms/" + clinicNode.getProperty("survey").getString())
-                        ? clinicNode.getProperty("survey").getString() : null;
-                    this.clinicPath = clinicNode.getPath();
-                    return;
-                }
+            final Node clinicNode = session.nodeExists(clinicName) ? session.getNode(clinicName) : null;
+            if (clinicNode != null) {
+                this.questionnaireSet = session.nodeExists("/Proms/" + clinicNode.getProperty("survey").getString())
+                    ? clinicNode.getProperty("survey").getString() : null;
+                this.clinicPath = clinicNode.getPath();
+            } else {
+                this.questionnaireSet = null;
+                this.clinicPath = "";
             }
-            this.questionnaireSet = null;
-            this.clinicPath = "";
         }
 
         public boolean hasRequiredInformation()
