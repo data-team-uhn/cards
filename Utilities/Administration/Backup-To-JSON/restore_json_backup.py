@@ -134,7 +134,7 @@ def createAnswerInJcr(answerNodePath, questionNodePath, primaryType, value, extr
     for item in value:
       params.append(('value', (None, str(item))))
     params.append(('value@TypeHint', (None, CARDS_TYPE_TO_SLING_TYPE_HINT[primaryType] + "[]")))
-  else:
+  elif value is not None:
     params.append(('value', (None, str(value))))
     params.append(('value@TypeHint', (None, CARDS_TYPE_TO_SLING_TYPE_HINT[primaryType])))
 
@@ -176,7 +176,10 @@ for formPath in FORM_LIST:
     # ...first create all (if any) of the intermediate AnswerSection nodes
     associatedQuestion = form["responses"][responsePath]["question"]
     dataType = form["responses"][responsePath]["jcr:primaryType"]
-    dataValue = form["responses"][responsePath]["value"]
+
+    dataValue = None
+    if "value" in form["responses"][responsePath]:
+      dataValue = form["responses"][responsePath]["value"]
 
     extraValues = {}
     if "note" in form["responses"][responsePath]:
