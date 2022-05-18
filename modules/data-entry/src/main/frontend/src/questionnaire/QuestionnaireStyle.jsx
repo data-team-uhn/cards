@@ -633,6 +633,76 @@ const questionnaireStyle = theme => ({
       flexBasis: "100%",
       paddingLeft: theme.spacing(4)
     },
+    questionMatrixView: {
+      width: "auto",
+      "& th, td" : {
+        border: "none",
+        padding: theme.spacing(1, 1, 1, 0),
+        verticalAlign: "baseline",
+      },
+      "& td" : {
+        fontSize: "1rem",
+        fontWeight: "300 !important",
+        padding: theme.spacing(1),
+      },
+    },
+    questionMatrixControls: {
+      "& .MuiTableHead-root th": {
+        fontWeight: "bold",
+        paddingTop: 0,
+        verticalAlign: "top",
+      },
+      "& .MuiTableBody-root th": {
+        paddingLeft: 0,
+      },
+      "& .MuiTableBody-root tr:last-child .MuiTableCell-root": {
+        border: "0 none",
+      },
+    },
+    questionMatrixHorizontal: {
+      "& .MuiFormControlLabel-root" : {
+        margin: "0 !important",
+      },
+      "& .MuiFormControlLabel-label, .MuiFormControlLabel-root + .MuiTypography-root": {
+        display: "none",
+      },
+    },
+    questionMatrixVertical: {
+      display: "block",
+      "& .MuiTableBody-root, .MuiTableRow-root, .MuiTableCell-root" : {
+        display: "block",
+        width: "100%",
+      },
+      "& td": {
+        padding: theme.spacing(1, 0),
+      },
+    },
+    questionMatrixStackedAnswer : {
+      "&:not(:first-child) th" : {
+        paddingTop: theme.spacing(3),
+      },
+      "& td" : {
+        padding: 0,
+      },
+      "&:not(:last-child) td" : {
+        paddingBottom: theme.spacing(3),
+        borderBottom: "1px solid " + theme.palette.divider,
+      }
+    },
+    questionMatrixFullEntry : {
+      "& th" : {
+        paggingBottom: theme.spacing(3),
+      },
+      "& th, td:not(:last-child)": {
+        border: "0 none",
+      },
+      "&:not(:last-child) td:last-child" : {
+        paddingBottom: theme.spacing(4),
+      },
+      "&:not(:first-child) th": {
+        paddingTop: theme.spacing(4),
+      },
+    },
 });
 
 export default questionnaireStyle;

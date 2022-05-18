@@ -27,12 +27,11 @@ import {
 
 import EditDialog from "./EditDialog";
 import NewItemButton from "../components/NewItemButton";
-import { QUESTIONNAIRE_ITEM_NAMES } from "../questionnaire/Questionnaire";
 
 // Menu for creating questions or sections
 
 let CreationMenu = (props) => {
-  const { isMainAction, data, onClose } = props;
+  const { isMainAction, data, menuItems, models, onClose } = props;
   let [ anchorEl, setAnchorEl ] = useState(null);
   let [ entityType, setEntityType ] = useState('Question');
   let [ dialogOpen, setDialogOpen ] = useState(false);
@@ -66,7 +65,7 @@ let CreationMenu = (props) => {
           open={Boolean(anchorEl)}
           onClose={handleCloseMenu}
       >
-        { QUESTIONNAIRE_ITEM_NAMES.map(type =>
+        { menuItems.map(type =>
             <MenuItem key={type} onClick={() => { openDialog(type); handleCloseMenu(); }}>{type}</MenuItem>
         )}
       </Menu>
@@ -74,6 +73,7 @@ let CreationMenu = (props) => {
                         targetExists={false}
                         data={data}
                         type={entityType}
+                        model={models?.[entityType]}
                         isOpen={dialogOpen}
                         onClose={(newData) => { setDialogOpen(false); onClose && onClose(newData); }}
                         onCancel={() => { setDialogOpen(false); }}
@@ -86,6 +86,7 @@ let CreationMenu = (props) => {
 CreationMenu.propTypes = {
   isMainAction: PropTypes.bool,
   data: PropTypes.object.isRequired,
+  menuItems: PropTypes.array.isRequired,
   onClose: PropTypes.func
 };
 

@@ -17,8 +17,9 @@
 //  under the License.
 //
 
-import React from "react";
+import React, { useRef, useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import { useLocation } from 'react-router-dom';
 
 import { Card, CardHeader, CardContent, List, ListItem, Typography, withStyles } from "@material-ui/core";
 
@@ -29,12 +30,48 @@ import FormattedText from "../components/FormattedText.jsx";
 // GUI for displaying answers
 function Question (props) {
   let { classes, children, questionDefinition, existingAnswer, isEdit, pageActive, preventDefaultView, defaultDisplayFormatter } = props;
-  let { text, compact, description, disableInstructions } = { ...questionDefinition, ...props }
+  let { compact } = { ...questionDefinition };
+  let { text, description, disableInstructions } = { ...questionDefinition, ...props }
+
+  const [ doHighlight, setDoHighlight ] = useState();
+  const [ anchor, setAnchor ] = useState();
+
+  const location = useLocation();
+
+  // if autofocus is needed and specified in the url
+  useEffect(() => {
+    setAnchor(decodeURIComponent(location.hash.substring(1)))
+  }, [location]);
+  useEffect(() => {
+    if (anchor && questionDefinition) {
+      if (questionDefinition.displayMode === "matrix") {
+        setDoHighlight(Array.of(existingAnswer?.[1]["displayedValue"]).flat().filter(answer => anchor == answer[1].question["@path"]).length > 0);
+      } else {
+         setDoHighlight(anchor == questionDefinition["@path"]);
+      }
+    }
+  }, [anchor, questionDefinition]);
+
+  const questionRef = useRef();
+
+  // create a ref to store the question container DOM element
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      questionRef?.current?.scrollIntoView({block: "center"});
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [questionRef]);
+
+  let cardClasses = [classes.questionCard];
+  if (doHighlight) {
+    cardClasses.push(classes.focusedQuestionnaireItem);
+  }
 
   return (
     <Card
       variant="outlined"
-      className={classes.questionCard}
+      ref={doHighlight ? questionRef : undefined}
+      className={cardClasses.join(" ")}
       >
       {
         // Note that we need to preserve the hierarchy in which we place children
@@ -63,7 +100,7 @@ function Question (props) {
               <List>
                 { Array.of(existingAnswer?.[1]["displayedValue"]).flat().map( (item, idx) => {
                   return(
-                    <ListItem key={item}> {defaultDisplayFormatter ? defaultDisplayFormatter(item, idx) : item} </ListItem>
+                    <ListItem key={existingAnswer[0] + idx}> {defaultDisplayFormatter ? defaultDisplayFormatter(item, idx) : item} </ListItem>
                   )})
                 }
               </List>
