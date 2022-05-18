@@ -50,14 +50,20 @@ with open(SUBJECT_LIST_FILE, 'r') as f:
 
 def getSubject(subjectPath):
   subjectBasename = os.path.basename(subjectPath)
-  with open(os.path.join(BACKUP_DIRECTORY, "Subjects", subjectBasename + ".json"), 'r') as f:
+  subjectJsonPath = os.path.join(BACKUP_DIRECTORY, "Subjects", subjectBasename + ".json")
+  if not os.path.exists(subjectJsonPath):
+    return None
+  with open(subjectJsonPath, 'r') as f:
     subjectData = json.loads(f.read())
   if subjectData["@path"] == subjectPath:
     return subjectData
 
 def getForm(formPath):
   formBasename = os.path.basename(formPath)
-  with open(os.path.join(BACKUP_DIRECTORY, "Forms", formBasename + ".json"), 'r') as f:
+  formJsonPath = os.path.join(BACKUP_DIRECTORY, "Forms", formBasename + ".json")
+  if not os.path.exists(formJsonPath):
+    return None
+  with open(formJsonPath, 'r') as f:
     formData = json.loads(f.read())
   return formData
 
@@ -163,12 +169,21 @@ SUBJECT_LIST = sorted(SUBJECT_LIST, key=lambda x: x.count('/'))
 # Restore the Subjects
 for subjectPath in SUBJECT_LIST:
   subject = getSubject(subjectPath)
+  if subject is None:
+    print("Warning: No JSON file for Subject {} was found. Perhaps the Subject was created just outside of the snapshot window.".format(subjectPath))
+    continue
   print("Creating Subject (type={}) at: {}".format(subject["type"], subjectPath))
   createSubjectInJcr(subjectPath, subject["type"], subject["identifier"])
 
 # After the Subjects have been restored, we can begin to restore the Forms
 for formPath in FORM_LIST:
   form = getForm(formPath)
+  if form is None:
+    print("Warning: No JSON file for Form {} was found. Perhaps the Form was created just outside of the snapshot window.".format(formPath))
+    continue
+  if form["subject"] not in SUBJECT_LIST:
+    print("Warning: Skipping the creation of Form {} as its associated Subject {} cannot be found.".format(formPath, form["subject"]))
+    continue
   print("Creating Form (subject={}, questionnaire={}) at: {}".format(form["subject"], form["questionnaire"], formPath))
   createFormInJcr(formPath, form["questionnaire"], form["subject"])
   # For all the responses to this Form...
