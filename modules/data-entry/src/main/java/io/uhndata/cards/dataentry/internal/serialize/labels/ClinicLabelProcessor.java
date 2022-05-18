@@ -21,9 +21,7 @@ package io.uhndata.cards.dataentry.internal.serialize.labels;
 import java.util.function.Function;
 
 import javax.jcr.Node;
-import javax.jcr.Property;
 import javax.jcr.RepositoryException;
-import javax.jcr.Value;
 import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
@@ -72,7 +70,7 @@ public class ClinicLabelProcessor extends SimpleAnswerLabelProcessor implements 
             // Determine which clinic this questionnaire is for
             ResourceResolver resolver = this.resolverFactory.getThreadResourceResolver();
 
-            final Resource mapping = resolver.getResource(getValueFromArray(node.getProperty("value")));
+            final Resource mapping = resolver.getResource(node.getProperty("value").getString());
             if (mapping != null) {
                 return Json.createValue(
                     mapping.adaptTo(Node.class).getProperty("clinicName").getString());
@@ -84,27 +82,5 @@ public class ClinicLabelProcessor extends SimpleAnswerLabelProcessor implements 
             // Shouldn't be happening
         }
         return null;
-    }
-
-    /***
-     * Get the String of the value from a possibly multi-valued answer.
-     * In most cases, this will be the second value of a multi-valued answer.
-     *
-     * @param prop Property to extract the value from
-     * @return The value in the VALUE_POS position
-     */
-    private String getValueFromArray(final Property prop)
-        throws RepositoryException
-    {
-        if (prop.isMultiple()) {
-            Value[] values = prop.getValues();
-            if (values.length > 1) {
-                return values[1].getString();
-            } else {
-                return values[0].getString();
-            }
-        } else {
-            return prop.getString();
-        }
     }
 }
