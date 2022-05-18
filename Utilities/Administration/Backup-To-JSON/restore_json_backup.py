@@ -129,7 +129,7 @@ CARDS_TYPE_TO_SLING_TYPE_HINT['cards:TimeAnswer'] = "string"
 CARDS_TYPE_TO_SLING_TYPE_HINT['cards:PedigreeAnswer'] = "string"
 CARDS_TYPE_TO_SLING_TYPE_HINT['cards:VocabularyAnswer'] = "string"
 CARDS_TYPE_TO_SLING_TYPE_HINT['cards:ChromosomeAnswer'] = "string"
-CARDS_TYPE_TO_SLING_TYPE_HINT['cards:FileAnswer'] = "string" # TODO Properly handle FileAnswers
+CARDS_TYPE_TO_SLING_TYPE_HINT['cards:FileAnswer'] = "string"
 
 def createAnswerInJcr(answerNodePath, questionNodePath, primaryType, value, extraValues={}, fileDataSha256=None):
   params = []
