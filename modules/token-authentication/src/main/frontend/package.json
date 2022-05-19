@@ -21,11 +21,11 @@
     ]
   },
   "devDependencies": {
-    "@babel/core": "7.17.12",
-    "@babel/plugin-proposal-class-properties": "7.17.12",
-    "@babel/preset-env": "7.17.12",
-    "@babel/preset-react": "7.17.12",
-    "babel-loader": "8.2.5",
+   "@babel/core": "7.12.10",
+    "@babel/plugin-proposal-class-properties": "7.10.4",
+    "@babel/preset-env": "7.12.11",
+    "@babel/preset-react": "7.12.10",
+    "babel-loader": "8.2.2",
     "clean-webpack-plugin": "4.0.0",
     "eslint-plugin-react": "7.29.4",
     "eslint-plugin-auto-import": "0.1.1",
@@ -44,6 +44,6 @@
     "yup": "0.32.11"
   },
   "resolutions": {
-    "@babel/runtime": "^7.17.9"
+    "@babel/runtime": "^7.12.5"
   }
 }
