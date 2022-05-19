@@ -35,9 +35,6 @@ import cornerstone from "cornerstone-core";
 // Non dynamic loading version
 import cornerstoneWADOImageLoader from "cornerstone-wado-image-loader";
 
-// Dynamic loading version
-//import cornerstoneWADOImageLoader from "cornerstone-wado-image-loader/dist/dynamic-import/cornerstoneWADOImageLoader.min.js";
-
 import dicomParser from "dicom-parser";
 
 cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
