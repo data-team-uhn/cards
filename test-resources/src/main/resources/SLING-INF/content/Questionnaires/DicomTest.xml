@@ -18,11 +18,16 @@
 -->
 
 <node>
-	<name>Dicom</name>
+	<name>DicomTest</name>
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
-		<value>Imaging</value>
+		<value>DICOM Imaging Test</value>
+		<type>String</type>
+	</property>
+	<property>
+		<name>description</name>
+		<value>CARDS-1623, CARDS-1724</value>
 		<type>String</type>
 	</property>
 	<property>
