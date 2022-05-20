@@ -73,13 +73,13 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
     }
 
     @Override
-    public String serialize(Resource resource)
+    public String serialize(final Resource resource)
     {
         // The proper serialization depends on "deep", "dereference", and "-labels", but we may allow other JSON
         // processors to be enabled/disabled to further customize the data, so we also append the original selectors
         final String processedPath = resource.getPath()
             + resource.getResourceMetadata().getResolutionPathInfo() + ".deep.dereference.-labels";
-        JsonObject result = resource.getResourceResolver().resolve(processedPath).adaptTo(JsonObject.class);
+        final JsonObject result = resource.getResourceResolver().resolve(processedPath).adaptTo(JsonObject.class);
 
         if (result != null) {
             return processQuestionnaire(result, resource.getResourceResolver());
@@ -141,8 +141,8 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
         }
     }
 
-    private void getSubjectTypes(JsonArray subjectTypesArray, Map<String, Map<Integer, String>> csvData,
-        List<String> columns)
+    private void getSubjectTypes(final JsonArray subjectTypesArray, final Map<String, Map<Integer, String>> csvData,
+        final List<String> columns)
     {
         final List<JsonObject> subjectTypes = new ArrayList<>();
         subjectTypesArray.stream().map(JsonValue::asJsonObject)
@@ -164,8 +164,9 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
         }
     }
 
-    private void processSectionToHeaderRow(JsonObject questionnaire, Map<String, Map<Integer, String>> csvData,
-        List<String> columns)
+    private void processSectionToHeaderRow(final JsonObject questionnaire,
+        final Map<String, Map<Integer, String>> csvData,
+        final List<String> columns)
     {
         questionnaire.values().stream()
             .filter(value -> ValueType.OBJECT.equals(value.getValueType()))
@@ -182,12 +183,11 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
      * @param csvData data aggregator
      * @param columns a list of column headers
      */
-    private void processHeaderElement(final JsonObject nodeJson, Map<String, Map<Integer, String>> csvData,
-        List<String> columns)
+    private void processHeaderElement(final JsonObject nodeJson, final Map<String, Map<Integer, String>> csvData,
+        final List<String> columns)
     {
         final String nodeType = nodeJson.getString(PRIMARY_TYPE_PROP);
         if ("cards:Section".equals(nodeType)) {
-            getDisplayMode(nodeJson);
             processSectionToHeaderRow(nodeJson, csvData, columns);
         } else if ("cards:Question".equals(nodeType)) {
             final String displayMode = getDisplayMode(nodeJson);
@@ -204,16 +204,16 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
         }
     }
 
-    private void processFormsToRows(JsonArray formsJson, Map<String, Map<Integer, String>> csvData,
-        CSVPrinter csvPrinter)
+    private void processFormsToRows(final JsonArray formsJson, final Map<String, Map<Integer, String>> csvData,
+        final CSVPrinter csvPrinter)
     {
-        for (JsonValue form : formsJson) {
+        for (final JsonValue form : formsJson) {
             processForm((JsonObject) form, csvData, csvPrinter);
         }
     }
 
-    private void processForm(final JsonObject form, Map<String, Map<Integer, String>> csvData,
-        CSVPrinter csvPrinter)
+    private void processForm(final JsonObject form, final Map<String, Map<Integer, String>> csvData,
+        final CSVPrinter csvPrinter)
     {
         // Collect information regarding the form subjects and subject parents
         if (form.containsKey("subject")) {
@@ -245,7 +245,7 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
         // Last, we build the CSV rows, copying data from the form on the correct row number.
 
         // Step one, extract the tree structure of the form.
-        final TreeGraph formGraph = new TreeGraph("root", null, null, false, true);
+        final TreeGraph formGraph = new TreeGraph(null, null, true);
         copyFormSection(form, formGraph);
 
         // Step two, compute the number of levels and height of each element.
@@ -331,20 +331,18 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
      */
     private void copyFormElement(final JsonObject nodeJson, final TreeGraph formGraph)
     {
-        final String nodeName = nodeJson.getString("@name");
         final String nodeType = nodeJson.getString(PRIMARY_TYPE_PROP);
         if ("cards:AnswerSection".equals(nodeType)) {
-            final boolean isRecurrent = nodeJson.getJsonObject("section").getBoolean("recurrent");
             final String uuid = nodeJson.getJsonObject("section").getString(UUID_PROP);
             // Add Section node to the tree
-            final TreeGraph sectionTreeNode = new TreeGraph(nodeName, uuid, null, isRecurrent, true);
+            final TreeGraph sectionTreeNode = new TreeGraph(uuid, null, true);
             formGraph.addChild(sectionTreeNode);
             copyFormSection(nodeJson, sectionTreeNode);
         } else if (nodeType.startsWith("cards:") && nodeType.endsWith("Answer")) {
             final String uuid = nodeJson.getJsonObject("question").getString(UUID_PROP);
             final String answer = getAnswerString(nodeJson, nodeType);
             // Add Answer child to the tree
-            formGraph.addChild(nodeName, uuid, answer, false, false);
+            formGraph.addChild(new TreeGraph(uuid, answer, false));
         }
     }
 

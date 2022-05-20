@@ -25,110 +25,83 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Helper class used by {@link QuestionnaireToCsvProcessor} for flattening a tree-like form into a grid. A
+ * {@code TreeGraph} represents an element from a {@code Form}, either a {@code AnswerSection} or an {@code Answer}.
+ *
+ * @version $Id$
+ */
 public class TreeGraph
 {
-    private final String data;
-
-    private final String elementId;
-
+    /**
+     * The internal identifier of the questionnaire element answered by this element, either a Section or a Question.
+     */
     private final String answeredElementId;
 
+    /** The answer value, if this is an Answer. */
+    private final String data;
+
+    /** The list of child nodes, if this is an AnswerSection. */
     private final List<TreeGraph> children = new ArrayList<>();
 
+    /** The list of children, grouped by their level. */
     private final Map<Integer, List<TreeGraph>> childrenByLevel = new LinkedHashMap<>();
 
+    /** Whether this is an answer section ({@code true}) or a simple answer. */
     private final boolean isSection;
 
-    private final boolean isRecurrentSection;
-
-    private int childrenLevels;
-
+    /** The number of rows needed to print this element. */
     private int height;
 
+    /**
+     * The row number on which this question will be printed on, if this is a question, or from which its children will
+     * be printed on, if this is a section.
+     */
     private int startingRow;
 
-    public TreeGraph(final String elementId, final String answeredElementId, final String data,
-        final boolean isRecurrentSection,
-        final boolean isSection)
+    /**
+     * Basic constructor receiving all the needed data from a form element. The object is not yet finalized, its
+     * children must be {@link TreeGraph#addChild added}, its height must be {@link #computeHeight() computed}, its
+     * starting row must be {@link #assignStartingRow(int) assigned}, and then the data can be {@link #tabulateData(Map)
+     * extracted into a grid}.
+     *
+     * @param answeredElementId see {@link #answeredElementId}
+     * @param data see {@link #data}
+     * @param isSection see {@link #isSection}
+     */
+    public TreeGraph(final String answeredElementId, final String data, final boolean isSection)
     {
-        // The unique ID of the node, in our case we use node {@name} attribute
-        this.elementId = elementId;
-        // Node's Section or question uuid
         this.answeredElementId = answeredElementId;
-        // Answer data string to be printed in CSV
         this.data = data;
-        this.isRecurrentSection = isRecurrentSection;
         this.isSection = isSection;
     }
 
-    public String getAnsweredElementId()
-    {
-        return this.answeredElementId;
-    }
-
-    public String getElementId()
-    {
-        return this.elementId;
-    }
-
-    public int getLevels()
-    {
-        return this.childrenLevels;
-    }
-
-    public int getHeight()
-    {
-        return this.height;
-    }
-
+    /**
+     * Add a child node under this element.
+     *
+     * @param child the child to add
+     */
     public void addChild(final TreeGraph child)
     {
         this.children.add(child);
     }
 
-    public void addChild(final String elementId, final String answeredElementId, final String data,
-        final boolean isRecurrentSection,
-        final boolean isSection)
-    {
-        final TreeGraph newChild = new TreeGraph(elementId, answeredElementId, data, isRecurrentSection, isSection);
-        this.addChild(newChild);
-    }
-
-    public List<TreeGraph> getChildren()
-    {
-        return this.children;
-    }
-
-    public String getData()
-    {
-        return this.data;
-    }
-
-    public boolean isRecurrentSection()
-    {
-        return this.isRecurrentSection;
-    }
-
-    public boolean isSection()
-    {
-        return this.isSection;
-    }
-
+    /**
+     * Compute the height of this element and its children. Also computes {@link #childrenByLevel}. Must be called after
+     * {@link #addChild(TreeGraph) all the children have been added}, and before {@link #assignStartingRow(int)} and
+     * {@link #tabulateData(Map)}.
+     */
     public void computeHeight()
     {
         if (!this.isSection) {
             this.height = 1;
-            this.childrenLevels = 0;
         } else {
             // Compute the height/levels of each child recursively
             this.children.forEach(TreeGraph::computeHeight);
             // Group together elements answering the same section (or question)
             final Map<String, List<TreeGraph>> childrenByAnsweredElement = new HashMap<>();
             this.children.stream().forEach(child -> childrenByAnsweredElement
-                .computeIfAbsent(child.getAnsweredElementId(), k -> new LinkedList<>()).add(child));
-            // Compute how many levels are needed: the maximum number of repeats of the same element
-            this.childrenLevels =
-                childrenByAnsweredElement.values().stream().map(List::size).max(Integer::compare).orElse(0);
+                .computeIfAbsent(child.answeredElementId, k -> new LinkedList<>()).add(child));
             // Group together elements on each level
             childrenByAnsweredElement.values().stream().forEach(list -> {
                 for (int i = 0; i < list.size(); ++i) {
@@ -137,25 +110,37 @@ public class TreeGraph
             });
             // Compute the total height of this section: the sum of the maximum height on each level
             this.height = this.childrenByLevel.values().stream().map(
-                elementsOnLevel -> elementsOnLevel.stream().map(TreeGraph::getHeight).max(Integer::compare).orElse(0))
+                elementsOnLevel -> elementsOnLevel.stream().map(e -> e.height).max(Integer::compare).orElse(0))
                 .reduce(Integer::sum).orElse(0);
         }
     }
 
+    /**
+     * Assign the row number for this element, and recursively for all its children. Must be called after
+     * {@link #addChild(TreeGraph) all the children have been added} and {@link #computeHeight() the height has been
+     * computed}, and before {@link #tabulateData(Map) the data is tabulated}.
+     *
+     * @param rowNumber the row number on which this element is to be printed, 0-based
+     */
     public void assignStartingRow(final int rowNumber)
     {
         this.startingRow = rowNumber;
         int levelRow = rowNumber;
-        for (int level = 0; level < this.childrenLevels; ++level) {
+        for (List<TreeGraph> childrenOnLevel : this.childrenByLevel.values()) {
             int levelHeight = 0;
-            for (TreeGraph child : this.childrenByLevel.get(level)) {
+            for (TreeGraph child : childrenOnLevel) {
                 child.assignStartingRow(levelRow);
-                levelHeight = Math.max(levelHeight, child.getHeight());
+                levelHeight = Math.max(levelHeight, child.height);
             }
             levelRow += levelHeight;
         }
     }
 
+    /**
+     * Copy the data from this subtree into a grid. Must be called last, after all the other methods.
+     *
+     * @param csvData the tabular data being aggregated
+     */
     public void tabulateData(final Map<String, Map<Integer, String>> csvData)
     {
         if (this.isSection) {

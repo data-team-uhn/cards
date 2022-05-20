@@ -48,11 +48,11 @@ public class QuestionnaireCSVServlet extends SlingSafeMethodsServlet
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
         throws IOException
     {
-        Resource questionnaire = request.getResource();
+        final Resource questionnaire = request.getResource();
         final String csvPath = questionnaire.getPath() + ".data"
             + questionnaire.getResourceMetadata().getResolutionPathInfo();
-        CSVString csv = questionnaire.getResourceResolver().resolve(csvPath).adaptTo(CSVString.class);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HHmm");
+        final CSVString csv = questionnaire.getResourceResolver().resolve(csvPath).adaptTo(CSVString.class);
+        final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HHmm");
         response.addHeader("Content-disposition", "attachment; filename=" + questionnaire.getName()
             + "_" + dateFormat.format(new Date()) + ".csv");
         response.setCharacterEncoding("UTF-8");
