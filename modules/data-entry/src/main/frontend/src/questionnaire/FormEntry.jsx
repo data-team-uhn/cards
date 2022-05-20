@@ -38,6 +38,7 @@ import ComputedQuestion from "./ComputedQuestion";
 import VocabularyQuestion from "./VocabularyQuestion";
 import FileQuestion from "./FileQuestion";
 import QuestionMatrix from "./QuestionMatrix";
+import ResourceQuestion from "./ResourceQuestion";
 
 import FormattedText from "../components/FormattedText";
 

@@ -95,6 +95,12 @@ const questionnaireStyle = theme => ({
         // is insufficient in making sure all components are the same size
         minWidth: "250px",
     },
+    selectMultiValues: {
+        whiteSpace: "normal",
+        "& .MuiChip-root" : {
+          margin: "1px",
+        },
+    },
     noteTextField: {
         width: "100%",
     },

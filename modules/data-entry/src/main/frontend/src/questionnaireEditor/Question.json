@@ -227,6 +227,31 @@
           }
         }
       },
+      "resource": {
+        "primaryType" : "string",
+        "labelProperty" : "string",
+        "entryMode": {
+          "user": {
+            "minAnswers": "long",
+            "maxAnswers": "long",
+            "displayMode": {
+              "select" : {},
+              "list": {
+                "compact" : "boolean"
+              }
+            }
+          },
+          "computed" : {
+            "minAnswers": {"0":{}, "1":{}},
+            "expression": "string",
+            "displayMode" : {
+              "input" : {},
+              "formatted" : {},
+              "hidden": {}
+            }
+          }
+        }
+      },
       "time": {
         "minAnswers": {"0":{}, "1":{}},
         "dateFormat": "string",

@@ -19,7 +19,7 @@
 
 import React, { useState, useEffect } from 'react';
 
-import { Checkbox, FormControlLabel, IconButton, List, ListItem, MenuItem, Radio, RadioGroup, Select, TextField, Typography } from "@mui/material";
+import { Checkbox, Chip, FormControlLabel, IconButton, List, ListItem, MenuItem, Radio, RadioGroup, Select, TextField, Typography } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import Close from "@mui/icons-material/Close";
 import PropTypes from 'prop-types';
@@ -425,12 +425,29 @@ function MultipleChoice(props) {
             {instructions}
             <Select
               variant="standard"
-              value={selection?.[0]?.[0] || ''}
-              className={classes.textField + ' ' + classes.answerField}
-              onChange={(event) => {
-                setSelection([[event.target.value, event.target.value]]);
+              multiple={maxAnswers != 1}
+              value={
+                maxAnswers == 1
+                ? (selection?.[0]?.[VALUE_POS] || '')
+                : (selection?.map(s => s[VALUE_POS]) || [])
               }
-            }>
+              className={classes.textField}
+              onChange={(event) => {
+                if (maxAnswers == 1) {
+                  setSelection([[event.target.value, event.target.value]]);
+                } else {
+                  setSelection(Array.of(event.target.value || []).flat().map(v => [v,v]));
+                }
+              }}
+              renderValue={
+                maxAnswers == 1 ? undefined
+                : (value) => (<div className={classes.selectMultiValues}>
+                  { value.map((v, i) => (
+                    <Chip key={v + i} label={defaults.find(e => e[VALUE_POS] == v)?.[LABEL_POS] || v}/>
+                  ))}
+                </div>)
+              }
+            >
             {defaults.map(function([name, key], index) {
                 return <MenuItem value={key} key={key}>{name}</MenuItem>;
             })}
