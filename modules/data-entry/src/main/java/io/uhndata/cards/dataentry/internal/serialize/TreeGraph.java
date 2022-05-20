@@ -19,58 +19,78 @@
 package io.uhndata.cards.dataentry.internal.serialize;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class TreeGraph<T>
+public class TreeGraph
 {
-    private T data;
-    private String id;
-    private String uuid;
-    private int level;
-    private List<TreeGraph> children = new ArrayList<>();
-    private TreeGraph parent;
-    private Boolean isSection = false;
-    private Boolean isRecurrentSection = false;
+    private final String data;
 
-    public TreeGraph(String id, String uuid, T data, int level, Boolean isRecurrentSection, Boolean isSection)
+    private final String elementId;
+
+    private final String answeredElementId;
+
+    private final List<TreeGraph> children = new ArrayList<>();
+
+    private final Map<Integer, List<TreeGraph>> childrenByLevel = new LinkedHashMap<>();
+
+    private final boolean isSection;
+
+    private final boolean isRecurrentSection;
+
+    private int childrenLevels;
+
+    private int height;
+
+    private int startingRow;
+
+    public TreeGraph(final String elementId, final String answeredElementId, final String data,
+        final boolean isRecurrentSection,
+        final boolean isSection)
     {
         // The unique ID of the node, in our case we use node {@name} attribute
-        this.id = id;
+        this.elementId = elementId;
         // Node's Section or question uuid
-        this.uuid = uuid;
+        this.answeredElementId = answeredElementId;
         // Answer data string to be printed in CSV
         this.data = data;
-        // Depth level of the node in the tree
-        this.level = level;
         this.isRecurrentSection = isRecurrentSection;
         this.isSection = isSection;
     }
 
-    public String getUuid()
+    public String getAnsweredElementId()
     {
-        return this.uuid;
+        return this.answeredElementId;
     }
 
-    public String getId()
+    public String getElementId()
     {
-        return this.id;
+        return this.elementId;
     }
 
-    public int getLevel()
+    public int getLevels()
     {
-        return this.level;
+        return this.childrenLevels;
     }
 
-    public void addChild(TreeGraph child)
+    public int getHeight()
     {
-        child.setParent(this);
+        return this.height;
+    }
+
+    public void addChild(final TreeGraph child)
+    {
         this.children.add(child);
     }
 
-    public void addChild(String id, String questionId, T data, int level, Boolean isRecurrentSection, Boolean isSection)
+    public void addChild(final String elementId, final String answeredElementId, final String data,
+        final boolean isRecurrentSection,
+        final boolean isSection)
     {
-        TreeGraph<T> newChild = new TreeGraph<>(id, questionId, data, level, isRecurrentSection, isSection);
+        final TreeGraph newChild = new TreeGraph(elementId, answeredElementId, data, isRecurrentSection, isSection);
         this.addChild(newChild);
     }
 
@@ -79,54 +99,69 @@ public class TreeGraph<T>
         return this.children;
     }
 
-    public T getData()
+    public String getData()
     {
         return this.data;
     }
 
-    public Boolean isRecurrentSection()
+    public boolean isRecurrentSection()
     {
         return this.isRecurrentSection;
     }
 
-    public Boolean isSection()
+    public boolean isSection()
     {
         return this.isSection;
     }
 
-    private void setParent(TreeGraph parent)
+    public void computeHeight()
     {
-        this.parent = parent;
+        if (!this.isSection) {
+            this.height = 1;
+            this.childrenLevels = 0;
+        } else {
+            // Compute the height/levels of each child recursively
+            this.children.forEach(TreeGraph::computeHeight);
+            // Group together elements answering the same section (or question)
+            final Map<String, List<TreeGraph>> childrenByAnsweredElement = new HashMap<>();
+            this.children.stream().forEach(child -> childrenByAnsweredElement
+                .computeIfAbsent(child.getAnsweredElementId(), k -> new LinkedList<>()).add(child));
+            // Compute how many levels are needed: the maximum number of repeats of the same element
+            this.childrenLevels =
+                childrenByAnsweredElement.values().stream().map(List::size).max(Integer::compare).orElse(0);
+            // Group together elements on each level
+            childrenByAnsweredElement.values().stream().forEach(list -> {
+                for (int i = 0; i < list.size(); ++i) {
+                    this.childrenByLevel.computeIfAbsent(i, index -> new LinkedList<>()).add(list.get(i));
+                }
+            });
+            // Compute the total height of this section: the sum of the maximum height on each level
+            this.height = this.childrenByLevel.values().stream().map(
+                elementsOnLevel -> elementsOnLevel.stream().map(TreeGraph::getHeight).max(Integer::compare).orElse(0))
+                .reduce(Integer::sum).orElse(0);
+        }
     }
 
-    @SuppressWarnings({"checkstyle:CyclomaticComplexity", "checkstyle:NPathComplexity"})
-    public void dfsRecursive(Map<String, TreeGraph> result)
+    public void assignStartingRow(final int rowNumber)
     {
-        if (this.getId() != null) {
-            result.put(this.getId(), this);
+        this.startingRow = rowNumber;
+        int levelRow = rowNumber;
+        for (int level = 0; level < this.childrenLevels; ++level) {
+            int levelHeight = 0;
+            for (TreeGraph child : this.childrenByLevel.get(level)) {
+                child.assignStartingRow(levelRow);
+                levelHeight = Math.max(levelHeight, child.getHeight());
+            }
+            levelRow += levelHeight;
         }
+    }
 
-        // First add answers only
-        for (Object child : this.getChildren()) {
-            TreeGraph newChild = (TreeGraph) child;
-            if (!result.containsKey(newChild.getId()) && !newChild.isSection()) {
-                newChild.dfsRecursive(result);
-            }
-        }
-        // Then add non-recurrent sections
-        for (Object child : this.getChildren()) {
-            TreeGraph newChild = (TreeGraph) child;
-            if (!result.containsKey(newChild.getId()) && newChild.isSection()
-                    && !newChild.isRecurrentSection()) {
-                newChild.dfsRecursive(result);
-            }
-        }
-        // Then add recurrent sections
-        for (Object child : this.getChildren()) {
-            TreeGraph newChild = (TreeGraph) child;
-            if (!result.containsKey(newChild.getId()) && newChild.isRecurrentSection()) {
-                newChild.dfsRecursive(result);
-            }
+    public void tabulateData(final Map<String, Map<Integer, String>> csvData)
+    {
+        if (this.isSection) {
+            this.children.forEach(child -> child.tabulateData(csvData));
+        } else {
+            csvData.computeIfAbsent(this.answeredElementId, key -> new HashMap<>()).put(this.startingRow, this.data);
         }
     }
 }

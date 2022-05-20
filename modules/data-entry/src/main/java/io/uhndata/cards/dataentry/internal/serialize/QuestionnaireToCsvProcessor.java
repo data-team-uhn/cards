@@ -93,10 +93,10 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
             final StringBuilder output = new StringBuilder();
             final CSVPrinter csvPrinter = new CSVPrinter(output, CSVFormat.DEFAULT);
 
-            // CSV data strings aggregator where the key is Question uuid that maps to the list of pairs
-            // of corresponding answer strings to row number/level in the csv [ <uuid> : List<Pair<int, String>> ]
+            // CSV data aggregator mapping Question UUIDs to pairs of corresponding row number to answer in the csv
+            // [ question : [ row# : answer ] ]
             final Map<String, Map<Integer, String>> csvData = new LinkedHashMap<>();
-            // collect column headers explicitly as labels because csvData maps only questions uuids to answers
+            // Collect column headers explicitly as labels because csvData maps only questions uuids to answers
             final List<String> columns = new ArrayList<>();
             columns.add(IDENTIFIER_HEADER);
 
@@ -110,22 +110,20 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
             csvData.put(CREATED_HEADER, new HashMap<>());
             columns.add(CREATED_HEADER);
 
-            // get header titles from the questionnaire question objects
+            // Get header titles from the questionnaire question objects
             processSectionToHeaderRow(questionnaire, csvData, columns);
-            // print header
-            csvPrinter.printRecord(columns.toArray());
+            // Print header
+            csvPrinter.printRecord(columns);
 
             // Aggregate form answers to the csvData collector for the CSV output
             if (questionnaire.containsKey("@data")) {
                 processFormsToRows(questionnaire.getJsonArray("@data"), csvData, csvPrinter);
             }
 
-            final String result = output.toString();
-
-            csvPrinter.flush();
-            csvPrinter.close();
-            return result;
-        } catch (IOException e) {
+            // All done, flush, close and return the CSV
+            csvPrinter.close(true);
+            return output.toString();
+        } catch (final IOException e) {
             LOGGER.error("Error in CSV export of {} questionnaire", questionnaire.getString("@name"));
         }
         return null;
@@ -223,22 +221,49 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
         }
         csvData.get(CREATED_HEADER).put(0, form.getString("jcr:created"));
 
-        // Set the root graph node
-        TreeGraph<String> formGraph = new TreeGraph<String>("root", null, null, 0, false, true);
+        // Compute on which row each answer is supposed to be.
+        // Without repeatable sections, this would be easy, since everything in a flat form is on the same row.
+        // Repeatable sections complicate things since more than one row is needed for the same form.
+        // Multiple nested repeatable sections complicate things even more, since the number of rows needed for a
+        // subsection may be different from the number of rows needed for a sibling/cousin subsection.
+        //
+        // Each element has:
+        // - a number of levels, which is the maximum number of repeats of its subsections
+        // - a height, which is the total number of rows it needs to display itself and all its children
+        // - a starting row number, 0-based, which is where the element starts outputting its data
+        //
+        // A single question has only one level and height of 1.
+        // An empty section has nothing to display, so its height/levels is 0.
+        // A section's number of levels is max(count(same element instances)).
+        // Each level's height is max(height(instance on the level).
+        // A section's height is sum(height(level))
+        //
+        // First, extract the tree structure of the form into a separate structure where we will compute
+        // levels/height/start row.
+        // Second, going bottom-up, compute the number of levels and height of each element.
+        // Third, going top-down, we assign the starting row of each element.
+        // Last, we build the CSV rows, copying data from the form on the correct row number.
 
-        processFormSection(form, csvData, formGraph);
-        Map<String, TreeGraph> result = new LinkedHashMap<String, TreeGraph>();
-        formGraph.dfsRecursive(result);
+        // Step one, extract the tree structure of the form.
+        final TreeGraph formGraph = new TreeGraph("root", null, null, false, true);
+        copyFormSection(form, formGraph);
 
-        fillCSVData(formGraph, result, csvData);
+        // Step two, compute the number of levels and height of each element.
+        formGraph.computeHeight();
 
+        // Step three, assign starting row numbers
+        formGraph.assignStartingRow(0);
+
+        // Step four, copy data from the treegraph into the CSV
+        // Tabulate data, transforming the tree into a grid [ question : [ row# : answer ] ]
+        formGraph.tabulateData(csvData);
+        // Get the maximum number of rows
         final int levels = csvData.values().stream().map(Map::keySet)
             .flatMap(Set::stream)
             .max(Comparator.comparing(Integer::valueOf))
             .get();
-
-        // Assemble CSV by rows
-        for (int i = 0; i <= levels; i++) {
+        // Assemble and print the CSV row by row
+        for (int level = 0; level <= levels; ++level) {
             final List<String> row = new ArrayList<>();
             // First add the form identifier
             row.add(form.getString("@name"));
@@ -246,9 +271,9 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
             for (final Map<Integer, String> answerList : csvData.values()) {
                 // Look for the answer with the level <i> in the list of pairs <level,Answer>
                 // If none found, we add ""
-                row.add(StringUtils.defaultString(answerList.get(i)));
+                row.add(StringUtils.defaultString(answerList.get(level)));
             }
-            // print one row for the level i
+            // Print one row for the level
             try {
                 csvPrinter.printRecord(row.toArray());
             } catch (final IOException e) {
@@ -256,111 +281,70 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
             }
         }
 
-        // Empty csvData for future form
+        // Empty csvData for next form
+        // By emptying just the inner maps instead of the whole outer map, we preserve the initial order of the columns
         csvData.values().forEach(Map::clear);
     }
 
-    @SuppressWarnings("checkstyle:CyclomaticComplexity")
-    private void fillCSVData(TreeGraph<String> formGraph, Map<String, TreeGraph> result,
-        Map<String, Map<Integer, String>> csvData)
+    /**
+     * Recursively extract the form's subjects and add them to the gathered data.
+     *
+     * @param subjectJson a JSON serialization of an answer
+     * @param data the gathered data
+     */
+    private void processFormSubjects(final JsonObject subjectJson, final Map<String, Map<Integer, String>> data)
     {
-        // Fill in csvData from the tree
-        int rowNumber = 0;
-        Boolean isRecurring = false;
-        Boolean isSameSection = false;
-        Boolean isCurrentlyReccurentSection = false;
-        String sectionId = formGraph.getUuid();
-        int depth = formGraph.getLevel();
-        for (final String name : result.keySet()) {
-            TreeGraph node = result.get(name);
-
-            if (node.isSection()) {
-                isRecurring = node.isRecurrentSection();
-                isSameSection = sectionId == node.getUuid();
-            }
-
-            int newDepth = node.getLevel();
-
-            Boolean isNewRowPartOne = (newDepth == depth - 1) && (isRecurring && isCurrentlyReccurentSection)
-                && isSameSection;
-            Boolean isNewRowPartTwo = (newDepth < depth - 1) && (isRecurring && isCurrentlyReccurentSection);
-
-            if (isNewRowPartOne || isNewRowPartTwo) {
-                rowNumber++;
-            }
-
-            depth = newDepth;
-            isCurrentlyReccurentSection = isRecurring;
-            if (node.isSection()) {
-                sectionId = node.getUuid();
-            }
-
-            final Map<Integer, String> answerColumn = csvData.get(node.getUuid());
-            if (answerColumn == null) {
-                // This is a skipped question, either hidden or in a non-data section
-                continue;
-            }
-            answerColumn.put(rowNumber, (String) node.getData());
-        }
-    }
-
-    private void processFormSubjects(final JsonObject subjectJson, final Map<String, Map<Integer, String>> csvData)
-    {
-        final Map<Integer, String> subjectColumn = csvData.get(subjectJson.getJsonObject("type").getString(UUID_PROP));
+        final Map<Integer, String> subjectColumn = data.get(subjectJson.getJsonObject("type").getString(UUID_PROP));
         if (subjectColumn != null) {
             subjectColumn.put(0, subjectJson.getString("identifier"));
         }
         // Recursively collect all of the subjects parents in the hierarchy
         if (subjectJson.containsKey("parents")) {
-            processFormSubjects(subjectJson.getJsonObject("parents"), csvData);
+            processFormSubjects(subjectJson.getJsonObject("parents"), data);
         }
     }
 
     /**
-     * Converts a JSON serialization of an answer section to CSV text.
+     * Adds all the relevant children of an AnswerSection to a TreeGraph.
      *
      * @param answerSectionJson a JSON serialization of an answer section
-     * @param csvData data aggregator
-     * @param formGraph tree structure
+     * @param formGraph tree structure corresponding to the answer section under which to add all the children
      */
-    private void processFormSection(final JsonObject answSectionJson, Map<String, Map<Integer, String>> csvData,
-        TreeGraph<String> formGraph)
+    private void copyFormSection(final JsonObject answerSectionJson, final TreeGraph formGraph)
     {
-        answSectionJson.values().stream()
+        answerSectionJson.values().stream()
             .filter(value -> ValueType.OBJECT.equals(value.getValueType()))
             .map(JsonValue::asJsonObject)
             .filter(value -> value.containsKey(PRIMARY_TYPE_PROP)
                 && ("cards:AnswerSection".equals(value.getString(PRIMARY_TYPE_PROP))
                     || value.getString(PRIMARY_TYPE_PROP).startsWith("cards:")
                         && value.getString(PRIMARY_TYPE_PROP).endsWith("Answer")))
-            .forEach(value -> processFormElement(value, csvData, formGraph));
+            .forEach(value -> copyFormElement(value, formGraph));
     }
 
     /**
-     * Process node answer to fill in data aggregator.
+     * Add a form element, either an AnswerSection or an Answer, to the TreeGraph. If the element is an AnswerSection,
+     * recursively process its children as well.
      *
-     * @param nodeJson a JSON serialization of an answer node
-     * @param csvData data aggregator
-     * @param formGraph tree structure
+     * @param nodeJson a JSON serialization of a node
+     * @param formGraph tree structure under which to add the element
      */
-    private void processFormElement(final JsonObject nodeJson, Map<String, Map<Integer, String>> csvData,
-        TreeGraph<String> formGraph)
+    private void copyFormElement(final JsonObject nodeJson, final TreeGraph formGraph)
     {
-        int newLevel = formGraph.getLevel() + 1;
         final String nodeName = nodeJson.getString("@name");
         final String nodeType = nodeJson.getString(PRIMARY_TYPE_PROP);
         if ("cards:AnswerSection".equals(nodeType)) {
-            Boolean isRecurrent = nodeJson.getJsonObject("section").getBoolean("recurrent");
+            final boolean isRecurrent = nodeJson.getJsonObject("section").getBoolean("recurrent");
             final String uuid = nodeJson.getJsonObject("section").getString(UUID_PROP);
             // Add Section node to the tree
-            TreeGraph<String> sectionTreeNode = new TreeGraph(nodeName, uuid, null, newLevel, isRecurrent, true);
+            final TreeGraph sectionTreeNode = new TreeGraph(nodeName, uuid, null, isRecurrent, true);
             formGraph.addChild(sectionTreeNode);
-            processFormSection(nodeJson, csvData, sectionTreeNode);
+            copyFormSection(nodeJson, sectionTreeNode);
         } else if (nodeType.startsWith("cards:") && nodeType.endsWith("Answer")) {
             final String uuid = nodeJson.getJsonObject("question").getString(UUID_PROP);
-            String answer = getAnswerString(nodeJson, nodeType);
+            final String answer = getAnswerString(nodeJson, nodeType);
             // Add Answer child to the tree
-            formGraph.addChild(nodeName, uuid, answer, newLevel, false, false);
+            formGraph.addChild(nodeName, uuid, answer, false, false);
         }
     }
 
