@@ -1,0 +1,4 @@
+{
+    "jcr:primaryType": "cards:DowntimeWarningConfiguration",
+    "enabled": "false"
+}

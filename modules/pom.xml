@@ -50,6 +50,7 @@
     <module>permissions-trusted</module>
     <module>vocabularies</module>
     <module>demo-banner</module>
+    <module>downtime-warning-banner</module>
     <module>versioning</module>
     <module>favicon</module>
     <module>upgrade-marker</module>
