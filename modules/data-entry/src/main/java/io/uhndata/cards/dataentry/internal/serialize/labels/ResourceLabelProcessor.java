@@ -30,8 +30,6 @@ import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
@@ -47,11 +45,9 @@ import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
  * @version $Id$
  */
 @Component(immediate = true)
-public class ResourceLabelProcessor extends SimpleAnswerLabelProcessor implements ResourceJsonProcessor
+public class ResourceLabelProcessor extends AbstractResourceLabelProcessor implements ResourceJsonProcessor
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourceLabelProcessor.class);
-
-    private static final String PROP_RESOURCE_LABEL = "labelProperty";
 
     /** Provides access to resources. */
     @Reference
@@ -99,56 +95,5 @@ public class ResourceLabelProcessor extends SimpleAnswerLabelProcessor implement
             // Shouldn't be happening
         }
         return null;
-    }
-
-    /**
-     * Given a resource question definition, find the resource property that should be used as the label for
-     * answers of that type, if it exists.
-     * @param question the Question node
-     * @return the property name as a string, or null if the question definition doesn't have the labelProperty
-     *     defined or its value is blank
-     */
-    private String getLabelPropertyName(final Node question)
-    {
-        try {
-            if (question != null
-                && question.getProperty(PROP_RESOURCE_LABEL) != null
-                && !StringUtils.isBlank(question.getProperty(PROP_RESOURCE_LABEL).getString())) {
-                return question.getProperty(PROP_RESOURCE_LABEL).getString();
-            }
-        } catch (final RepositoryException ex) {
-            // Shouldn't be happening
-        }
-        return null;
-    }
-
-    /**
-     * Given a resource path as a String, extract the value indicated by labelPropertyName
-     * from the resource node and return it as the label.
-     */
-    private String getLabelForResource(final String resourcePath, final ResourceResolver resolver,
-        final String labelPropertyName)
-    {
-        try {
-            // Determine the resource which is the answer to this question
-            final Resource resource = resolver.getResource(resourcePath);
-            if (resource != null) {
-                final Node resourceNode = resource.adaptTo(Node.class);
-                // Default the label to the resource name if the value for labelProperty is missing
-                if (labelPropertyName != null
-                    && resourceNode.getProperty(labelPropertyName) != null
-                    && !StringUtils.isBlank(resourceNode.getProperty(labelPropertyName).getString())) {
-                    return resourceNode.getProperty(labelPropertyName).getString();
-                } else {
-                    return resource.getName();
-                }
-            } else {
-                // No resource found
-                return resourcePath;
-            }
-        } catch (final RepositoryException ex) {
-            // Shouldn't be happening
-        }
-        return resourcePath;
     }
 }
