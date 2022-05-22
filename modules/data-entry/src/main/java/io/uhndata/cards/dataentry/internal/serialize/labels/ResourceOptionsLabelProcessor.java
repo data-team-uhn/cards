@@ -18,8 +18,9 @@
  */
 package io.uhndata.cards.dataentry.internal.serialize.labels;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.function.Function;
 
 import javax.jcr.Node;
@@ -42,14 +43,14 @@ import org.slf4j.LoggerFactory;
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 
 /**
- * Fills in the clinic answer for a given visit information clinic node.
+ * Adds a label to Answer Option nodes in a questionnaire's JSON.
  *
  * @version $Id$
  */
 @Component(immediate = true)
-public class ResourceLabelProcessor extends SimpleAnswerLabelProcessor implements ResourceJsonProcessor
+public class ResourceOptionsLabelProcessor extends SimpleAnswerLabelProcessor implements ResourceJsonProcessor
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ResourceLabelProcessor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ResourceOptionsLabelProcessor.class);
 
     private static final String PROP_RESOURCE_LABEL = "labelProperty";
 
@@ -58,45 +59,68 @@ public class ResourceLabelProcessor extends SimpleAnswerLabelProcessor implement
     private ResourceResolverFactory resolverFactory;
 
     @Override
-    public int getPriority()
+    public boolean canProcess(Resource resource)
     {
-        return 90;
+        return resource.isResourceType("cards/Form") || resource.isResourceType("cards/Questionnaire");
     }
 
     @Override
     public void leave(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
     {
         try {
-            if (node.isNodeType("cards:ResourceAnswer")) {
-                addProperty(node, json, serializeNode);
+            Node question = node.getParent();
+            if (node.isNodeType("cards:AnswerOption")
+                && !node.hasProperty(PROP_LABEL)
+                && "resource".equals(question.getProperty("dataType").getString())) {
+                // Find the resource property that should be holding the label, as configured in the parent question
+                // Default to the resource node's name if no such configuration is present
+                String labelPropertyName = getLabelPropertyName(question);
+                // Generate and add the label
+                json.add(PROP_LABEL, getAnswerOptionLabel(node, labelPropertyName));
             }
         } catch (RepositoryException e) {
-            // Shouldn't happen
+            // Really shouldn't happen
         }
     }
 
-    @Override
-    public JsonValue getAnswerLabel(final Node node, final Node question)
+    /**
+     * Basic method to get the answer label associated with the resource answer option.
+     *
+     * @param node the AnswerOption node being serialized
+     * @return the label for that AmswerOption, obtained from the label property (indicated by the parent question)
+     *     of resource it refers to
+     */
+    private JsonValue getAnswerOptionLabel(final Node node, final String labelPropertyName)
     {
         try {
-            // Find the property of the resource that should be used as the label
-            String labelPropertyName = getLabelPropertyName(question);
-            ResourceResolver resolver = this.resolverFactory.getThreadResourceResolver();
-            // The value property is either one resource path or an array of resource paths
-            Property valueProperty = node.getProperty(PROP_VALUE);
-            if (valueProperty.isMultiple()) {
-                List<String> labels = new ArrayList<>();
-                for (Value item : valueProperty.getValues()) {
-                    String label = getLabelForResource(item.getString(), resolver, labelPropertyName);
-                    labels.add(label);
+            // Gather all the values in a map to prepare for associating labels
+            // The label will default to the value if no matching resource is found
+            Map<String, String> valueLabelMap = new LinkedHashMap<>();
+
+            Property valueProp = node.getProperty(PROP_VALUE);
+            if (valueProp.isMultiple()) {
+                for (Value value : valueProp.getValues()) {
+                    valueLabelMap.put(value.getString(), value.getString());
                 }
-                return createJsonArrayFromList(labels);
             } else {
-                String label = getLabelForResource(valueProperty.getString(), resolver, labelPropertyName);
-                return Json.createValue(label);
+                valueLabelMap.put(valueProp.getString(), valueProp.getString());
             }
+
+            ResourceResolver resolver = this.resolverFactory.getThreadResourceResolver();
+            // Populate the labels in the map
+            for (String value : new LinkedHashSet<>(valueLabelMap.keySet())) {
+                if (value.startsWith("/")) {
+                    valueLabelMap.put(value, getLabelForResource(value, resolver, labelPropertyName));
+                }
+            }
+
+            if (valueLabelMap.size() == 1) {
+                return Json.createValue((String) valueLabelMap.values().toArray()[0]);
+            }
+
+            return createJsonArrayFromList(valueLabelMap.values());
         } catch (final RepositoryException ex) {
-            // Shouldn't be happening
+            // Really shouldn't happen
         }
         return null;
     }
@@ -117,7 +141,7 @@ public class ResourceLabelProcessor extends SimpleAnswerLabelProcessor implement
                 return question.getProperty(PROP_RESOURCE_LABEL).getString();
             }
         } catch (final RepositoryException ex) {
-            // Shouldn't be happening
+            // Really shouldn't happen
         }
         return null;
     }

@@ -24,6 +24,7 @@ import PropTypes from "prop-types";
 
 import MultipleChoice from "./MultipleChoice";
 import Question from "./Question";
+import ResourceQuery from "../resourceQuery/ResourceQuery";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
 import AnswerComponentManager from "./AnswerComponentManager";
@@ -34,25 +35,46 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js"
 
 function ResourceQuestion(props) {
   const {classes, ...rest} = props;
-  const {primaryType, labelProperty} = { ...props.questionDefinition };
+  const {primaryType, labelProperty, maxAnswers, displayMode} = { ...props.questionDefinition };
   const [options, setOptions] = useState();
+
+  // If the display mode is list or select, set a limit to how many entries can be displayed in
+  // the lsit or dropdown.
+  // If the real number of resources matching the criteria specified by the question definition
+  // excedes this limit, ignore the specified displayMode and use a suggested input instead.
+  const MAX_TO_DISPLAY = 50;
+
+  // In when the input is a fallback as explained above, it should not accept custom entries
+  const enableUserEntry = !!!displayMode || displayMode.includes("input");
+
+  // In order to determine indentation levels, we need to see if there are any default suggestions
+  // (i.e. children of the definition that are of type cards:AnswerOption)
+  let defaults = props.defaults || Object.values(props.questionDefinition)
+    .filter(value => value['jcr:primaryType'] == 'cards:AnswerOption');
+  let singleEntryInput = maxAnswers === 1;
+  let isNested = !!(singleEntryInput && defaults?.length);
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
   useEffect(() => {
-    // TODO: with too many matching resources, default to a suggested input
-    // (to be implemented) regardless of the display mode
     const url = (
       primaryType
-      ? `/query?query=select * from [${primaryType}]&limit=1000`
+      ? `/query?query=select * from [${primaryType}]&limit=${MAX_TO_DISPLAY}`
       : undefined
     );
-    url && fetchWithReLogin(globalLoginDisplay, url)
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => setOptions(
-        json?.rows?.map(row => [row[labelProperty] || row["@name"], row["@path"], true])
-        || []
-      ))
+    if (!enableUserEntry && !defaults?.length && url) {
+      // NB: if there are too many matching resources, we default to a suggested input
+      // (by resetting `options` to []) regardless of the display mode
+      fetchWithReLogin(globalLoginDisplay, url)
+        .then((response) => response.ok ? response.json() : Promise.reject(response))
+        .then((json) => setOptions(
+          (json?.totalrows == json?.returnedrows) &&
+          json?.rows?.map(row => [row[labelProperty] || row["@name"], row["@path"], true])
+          || []
+        ))
+    } else {
+      setOptions([]);
+    }
   }, []);
 
   return (
@@ -62,9 +84,18 @@ function ResourceQuestion(props) {
       >
       { options ?
         <MultipleChoice
+          customInput = {options.length == 0 ? ResourceQuery : undefined}
+          customInputProps = {{
+            questionDefinition: props.questionDefinition,
+            focusAfterSelecting: !singleEntryInput,
+            isNested: isNested,
+            variant: "labeled",
+            clearOnClick: !singleEntryInput,
+            enableUserEntry: enableUserEntry,
+          }}
           answerNodeType="cards:ResourceAnswer"
           valueType="String"
-          defaults={options.length > 0 ? options : undefined}
+          defaults={props.defaults || (options.length > 0 ? options : undefined)}
           {...rest}
           />
         : <CircularProgress />
@@ -78,6 +109,7 @@ ResourceQuestion.propTypes = {
     text: PropTypes.string.isRequired,
     primaryType: PropTypes.string,
     labelProperty: PropTypes.string,
+    propertiesToSearch: PropTypes.string,
   }).isRequired,
 };
 

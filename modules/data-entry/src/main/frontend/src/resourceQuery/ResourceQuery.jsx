@@ -17,33 +17,32 @@
 //  under the License.
 //
 import classNames from "classnames";
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useContext } from "react";
 import PropTypes from "prop-types";
 
-import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, InputLabel, FormControl, Typography } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
-import { Divider, LinearProgress, MenuItem, MenuList, Paper, Popper } from "@mui/material";
+import { withStyles, ClickAwayListener, Grow, Input, InputAdornment, InputLabel, FormControl, Typography } from "@material-ui/core"
+import { Divider, LinearProgress, MenuItem, MenuList, Paper, Popper } from "@material-ui/core";
 
-import Search from "@mui/icons-material/Search";
-import Info from "@mui/icons-material/Info";
+import Search from "@material-ui/icons/Search";
 
-import VocabularyBrowser from "./VocabularyBrowser.jsx";
-import { REST_URL, MakeRequest } from "./util.jsx";
+import QueryStyle from "./queryStyle.jsx";
 import { LABEL_POS, VALUE_POS } from "../questionnaire/Answer";
-import QueryMatchingUtils from "../resourceQuery/QueryMatchingUtils";
-import QueryStyle from "../resourceQuery/queryStyle.jsx";
+import QueryMatchingUtils from "./QueryMatchingUtils";
+import FormattedText from "../components/FormattedText";
+
+import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
 const NO_RESULTS_TEXT = "No results, use:";
 const NONE_OF_ABOVE_TEXT = "None of the above, use:";
 const MAX_RESULTS = 10;
 
-// Component that renders a search bar for vocabulary terms.
+// Component that renders a search bar for resources.
 //
 // Required arguments:
 //  clearOnClick: Whether selecting an option will clear the search bar (default: true)
 //  onClick: Callback when the user clicks on this element
 //  focusAfterSelecting: focus after selecting (default: true)
-//  questionDefinition: Object describing the Vocabulary Question for which this suggested input is displayed
+//  questionDefinition: Object describing the Resource Question for which this suggested input is displayed
 //
 // Optional arguments:
 //  disabled: Boolean representing whether or not this element is disabled
@@ -52,21 +51,19 @@ const MAX_RESULTS = 10;
 //  placeholder: String to display as the input element's placeholder
 //  value: String to use as the input element value
 //  onChange: Callback in term input change event
-//  allowTermSelection: Boolean enabler for term selection from vocabulary tree browser
 //  initialSelection: Existing answers
 //  onRemoveOption: Function to remove added answer
 //
-function VocabularyQuery(props) {
+function ResourceQuery(props) {
   const { clearOnClick, onClick, focusAfterSelecting, disabled, variant, isNested, placeholder,
-    value, questionDefinition, onChange, allowTermSelection, initialSelection, onRemoveOption, classes } = props;
+    value, questionDefinition, onChange,  initialSelection, onRemoveOption, classes } = props;
+  const { maxAnswers, primaryType, labelProperty, propertiesToSearch } = questionDefinition;
+  const { enableUserEntry } = props;
+
   const [suggestions, setSuggestions] = useState([]);
   const [suggestionsLoading, setSuggestionsLoading] = useState(false);
   const [suggestionsVisible, setSuggestionsVisible] = useState(false);
   const [lookupTimer, setLookupTimer] = useState(null);
-  const maxAnswers = questionDefinition?.maxAnswers;
-
-  // Holds term path on dropdown info button click
-  const [termPath, setTermPath] = useState("");
 
   // Checks whether path is listed in the default answer options in the question definition
   let isDefaultOption = (path) => {
@@ -76,17 +73,13 @@ function VocabularyQuery(props) {
 
   const [inputValue, setInputValue] = useState(value);
   const [error, setError] = useState("");
+  const [queryFailed, setQueryFailed] = useState();
 
-  // Holds dropdown info buttons refs to be used as anchor elements by term infoBoxes
-  const [buttonRefs, setButtonRefs] = useState({});
 
   let menuPopperRef = useRef();
   let anchorEl = useRef();
   let searchButtonRef = useRef();
   let menuRef = useRef();
-
-  let infoboxRef = useRef();
-  let browserRef = useRef();
 
   const inputEl = (
     <Input
@@ -122,8 +115,8 @@ function VocabularyQuery(props) {
       onFocus={(status) => {
         anchorEl.current.select();
         setSuggestionsVisible(false);
-        setTermPath("");
         setError("");
+        setQueryFailed(false);
       }}
       className={variant == "labeled" ? classes.searchInput : ""}
       multiline={true}
@@ -141,7 +134,24 @@ function VocabularyQuery(props) {
     />
   );
 
-  // Lookup the search term after a short interval
+  const globalContext = useContext(GlobalLoginContext);
+
+  const otherProperties = propertiesToSearch?.trim() ? propertiesToSearch.trim().split(/\s*,\s*/) : [];
+
+  const generateSearchURL = (input) => {
+    let url = `/query?query=select distinct r.* from [${primaryType}] as r where`;
+    let propNames = [labelProperty || '@name', ...otherProperties];
+    propNames.forEach((propName, index) => {
+      if (index != 0) {
+        url += " OR"
+      }
+      url += ` contains(r.${propName},'*${input.replace(/[^\w\s]/g, ' ')}*')`;
+    });
+    url += `&limit=${MAX_RESULTS}`;
+    return url;
+  }
+
+  // Lookup the search input after a short interval
   // This will reset the interval if called before the interval hangs up
   let delayLookup = (value) => {
     if (lookupTimer !== null) {
@@ -151,30 +161,6 @@ function VocabularyQuery(props) {
     setLookupTimer(setTimeout(queryInput, 500, value));
     setSuggestionsVisible(true);
     setSuggestions([]);
-  }
-
-  let makeMultiRequest = (queue, input, statuses, prevData) => {
-    // Get vocabulary to search through
-    var selectedVocab = queue.pop();
-    if (selectedVocab === undefined) {
-      showSuggestions(statuses, {rows: prevData.slice(0, MAX_RESULTS)});
-      return;
-    }
-    var url = new URL(`./${selectedVocab}.search.json`, REST_URL);
-    url.searchParams.set("suggest", input.replace(/[^\w\s]/g, ' '));
-
-    //Are there any filters that should be associated with this request?
-    if (questionDefinition?.vocabularyFilters?.[selectedVocab]) {
-      var filter = questionDefinition.vocabularyFilters[selectedVocab].map((category) => {
-        return (`term_category:${category}`);
-      }).join(" OR ");
-      url.searchParams.set("customFilter", `(${filter})`);
-    }
-
-    MakeRequest(url, (status, data) => {
-      statuses[selectedVocab] = status;
-      makeMultiRequest(queue, input, statuses, prevData.concat(!status && data && data['rows'] ? data['rows'] : []));
-    });
   }
 
   // Grab suggestions for the given input
@@ -187,91 +173,83 @@ function VocabularyQuery(props) {
       return;
     }
     setError("");
+    setQueryFailed(false);
 
     // Grab suggestions
-    //...Make a queue of vocabularies to search through
     setSuggestionsLoading(true);
-    var vocabQueue = questionDefinition.sourceVocabularies.slice();
-    makeMultiRequest(vocabQueue, input, {}, []);
+    // Query for resources matching the input
+
+    fetchWithReLogin(globalContext, generateSearchURL(input))
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then(showSuggestions)
+      .catch(err => setQueryFailed(true));
+  }
+
+  let shapeSuggestionData = (rawData, query) => {
+    let suggestion = {
+      isPerfectMatch: false,
+      "@path" : rawData["@path"],
+      label : rawData[labelProperty || '@name'],
+      matchedFields : []
+    };
+    if (!QueryMatchingUtils.matches(query, suggestion.label)) {
+      Object.entries(rawData)
+        .filter(([propName, _]) => otherProperties.includes(propName))
+        .forEach(([_, value]) => {
+          if (Array.isArray(value)) {
+            suggestion.matchedFields.push(QueryMatchingUtils.getMatchingSubset(query, value));
+          } else {
+            suggestion.matchedFields.push(QueryMatchingUtils.getMatchingExcerpt(query, value));
+          }
+        });
+    }
+    suggestion.isPerfectMatch = (suggestion.label.toLowerCase() == query.toLowerCase());
+    return suggestion;
   }
 
   // Callback for queryInput to populate the suggestions bar
-  let showSuggestions = (statuses, data) => {
+  let showSuggestions = (data) => {
     setSuggestionsLoading(false);
 
     // Populate suggestions
     var suggestions = [];
     var query = anchorEl.current.value;
-    var showUserEntry = true;
+    var showUserEntry = enableUserEntry;
 
     if (data["rows"]?.length > 0) {
       data["rows"].forEach((element) => {
-        var name = element["label"] || element["name"] || element["identifier"];
-        var synonyms = element["synonym"] || element["has_exact_synonym"] || [];
-        var definition = Array.from(element["def"] || element["description"] || element["definition"] || [])[0] || "";
-        if (name.toLowerCase() == query.toLowerCase()
-            || synonyms.find(s => s.toLowerCase() == query.toLowerCase())) {
-          showUserEntry = false;
-        }
-
-        // Display an existing synonym or definition if the user's search query doesn't
-        // match the term's label but matches that synonym/definition
-        // TODO: this logic will have to be revisited once vocabulary indexing is improved to
-        // acount for typos
-        var matchedFields = [];
-        if (!QueryMatchingUtils.matches(query, name)) {
-          matchedFields = QueryMatchingUtils.getMatchingSubset(query, synonyms);
-          if (!matchedFields.length && QueryMatchingUtils.matches(query, definition)) {
-             matchedFields.push(QueryMatchingUtils.getMatchingExcerpt(query, definition));
-          }
-        }
+        let suggestion = shapeSuggestionData(element, query);
+        showUserEntry = showUserEntry && !suggestion.isPerfectMatch;
 
         suggestions.push(
           <MenuItem
             className={classes.dropdownItem}
-            key={element["@path"]}
+            key={suggestion["@path"]}
             onClick={(e) => {
-              onClick(element["@path"], name);
-              setInputValue(clearOnClick || isDefaultOption(element["@path"]) ? "" : name);
+              onClick(suggestion["@path"], suggestion.label);
+              setInputValue(clearOnClick || isDefaultOption(suggestion["@path"]) ? "" : suggestion.label);
               closeSuggestions();
             }}
           >
-          <div>
-            {name}
-            <IconButton
-              size="small"
-              ref={node => {
-                registerInfoButton(element["identifier"], node);
-              }}
-              color="primary"
-              aria-owns={"menu-list-grow"}
-              aria-haspopup={true}
-              onClick={(e) => {setTermPath(element["@path"]); e.preventDefault(); e.stopPropagation();}}
-              className={classes.infoButton}
-            >
-              <Info color="primary" />
-            </IconButton>
-            { matchedFields?.map(f =>
-              <Typography
+            <div>
+            { suggestion.label }
+            { suggestion.matchedFields?.map(f =>
+              <FormattedText
                 key={f}
                 component="div"
                 variant="caption"
                 color="textSecondary"
               >
                 {f}
-              </Typography>
+              </FormattedText>
             )}
-          </div>
+            </div>
           </MenuItem>
-          );
+        );
       });
     }
 
-    var allRequestsFailed = Object.keys(statuses).filter(vocab => !statuses[vocab]).length == 0;
-    var allRequestsSucceded = Object.keys(statuses).filter(vocab => statuses[vocab]).length == 0;
-
-    if (!allRequestsSucceded) {
-     suggestions.length > 0 && suggestions.push(<Divider key="error-divider"/>);
+    if (queryFailed) {
       suggestions.push(
         <MenuItem
           className={classes.dropdownMessage}
@@ -283,14 +261,9 @@ function VocabularyQuery(props) {
             variant="caption"
             color="error"
           >
-            { allRequestsFailed && "Answer suggestions cannot be loaded for this question. Please inform your administrator." }
-            { !allRequestsFailed && !allRequestsSucceded && "Some answer suggestions for this question could not be loaded. Please inform your administrator." }
+            Answer suggestions cannot be loaded for this question. Please inform your administrator.
           </Typography>
         </MenuItem>
-      );
-      Object.keys(statuses).filter(vocab => statuses[vocab]).map( vocab => {
-          console.error("Cannot load answer suggestions from " + vocab);
-        }
       );
     }
 
@@ -335,9 +308,7 @@ function VocabularyQuery(props) {
 
   // Event handler for clicking away from the autocomplete while it is open
   let closeAutocomplete = event => {
-    if ( browserRef?.current
-      || menuPopperRef?.current?.contains(event.target)
-      || infoboxRef?.current?.contains(event.target)) {
+    if ( menuPopperRef?.current?.contains(event.target)) {
       return;
     }
 
@@ -347,23 +318,10 @@ function VocabularyQuery(props) {
       && clearOnClick
       && setInputValue("");
     setSuggestionsVisible(false);
-    setTermPath("");
     setError("");
+    setQueryFailed(false);
   };
 
-  // Register a button reference that the info box can use to align itself to
-  let registerInfoButton = (id, node) => {
-    // List items getting deleted will overwrite new browser button refs, so
-    // we must ignore deregistration events
-    if (node) {
-      buttonRefs[id] = node;
-    }
-  }
-
-  // Event handler for clicking away from the info window while it is open
-  let closeInfo = (event) => {
-    setTermPath("");
-  }
 
   let closeSuggestions = () => {
     if (clearOnClick && anchorEl?.current) {
@@ -373,27 +331,6 @@ function VocabularyQuery(props) {
       anchorEl?.current?.select();
     }
     setSuggestionsVisible(false);
-  }
-
-  let onCloseBrowser = (selectedTerms, removedTerms) => {
-    selectedTerms && selectedTerms.map(item => onClick(item[VALUE_POS], item[LABEL_POS]));
-    removedTerms && removedTerms.map(item => onRemoveOption(item[VALUE_POS], item[LABEL_POS]));
-
-    // Set input value to selected term label or initial selection label if single answer question
-    if (maxAnswers === 1) {
-      if (selectedTerms?.length > 0) {
-        // Search in default answer options
-        !isDefaultOption(selectedTerms[0][VALUE_POS]) && setInputValue(selectedTerms[0][LABEL_POS]);
-      }
-    }
-    if (selectedTerms || removedTerms) {
-      setSuggestionsVisible(false);
-      setTermPath("");
-      maxAnswers != 1 && setInputValue("");
-      setError("");
-    } else {
-      anchorEl.current.focus();
-    }
   }
 
   if (disabled && anchorEl?.current) {
@@ -409,7 +346,7 @@ function VocabularyQuery(props) {
 
         <div className={variant == "labeled" ? classes.searchWrapper : ""}>
           {variant == "labeled" ?
-          <FormControl variant="standard" className={isNested ? classes.nestedSearchInput : classes.search}>
+          <FormControl className={isNested ? classes.nestedSearchInput : classes.search}>
             <InputLabel
               classes={{
                 root: classes.searchLabel,
@@ -440,26 +377,19 @@ function VocabularyQuery(props) {
           }
           placement = "bottom-start"
           keepMounted
-          modifiers={[
-		    {
-		      name: 'flip',
-		      enabled: true
-		    },
-		    {
-		      name: 'preventOverflow',
-		      enabled: true,
-		      options: {
-		        altAxis: true,
-		        altBoundary: true,
-		        tether: true,
-		        rootBoundary: 'window',
-		      }
-		    },
-		    {
-		      name: 'hide',
-		      enabled: true
-		    }
-          ]}
+          modifiers={{
+            flip: {
+              enabled: true
+            },
+            preventOverflow: {
+              enabled: true,
+              boundariesElement: 'window',
+              escapeWithReference: true,
+            },
+            hide: {
+              enabled: true
+            }
+          }}
           ref={menuPopperRef}
         >
           {({ TransitionProps }) => (
@@ -480,22 +410,11 @@ function VocabularyQuery(props) {
             </Grow>
           )}
         </Popper>
-        <VocabularyBrowser
-          infoPath={termPath}
-          onCloseInfo={closeInfo}
-          infoButtonRefs={buttonRefs}
-          browserRef={browserRef}
-          infoboxRef={infoboxRef}
-          questionDefinition={questionDefinition}
-          allowTermSelection={allowTermSelection}
-          initialSelection={initialSelection}
-          onCloseBrowser={onCloseBrowser}
-        />
       </div>
     );
 }
 
-VocabularyQuery.propTypes = {
+ResourceQuery.propTypes = {
     classes: PropTypes.object.isRequired,
     clearOnClick: PropTypes.bool.isRequired,
     onClick: PropTypes.func.isRequired,
@@ -507,15 +426,15 @@ VocabularyQuery.propTypes = {
     value: PropTypes.string,
     questionDefinition: PropTypes.object.isRequired,
     onChange: PropTypes.func,
-    allowTermSelection: PropTypes.bool,
     initialSelection: PropTypes.array,
     onRemoveOption: PropTypes.func
 };
 
-VocabularyQuery.defaultProps = {
+ResourceQuery.defaultProps = {
   clearOnClick: true,
   focusAfterSelecting: true,
+  enableUserEntry: true,
   variant: 'default'
 };
 
-export default withStyles(QueryStyle)(VocabularyQuery);
+export default withStyles(QueryStyle)(ResourceQuery);

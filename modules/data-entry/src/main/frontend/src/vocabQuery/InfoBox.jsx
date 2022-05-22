@@ -23,7 +23,7 @@ import { Avatar, Button, Card, CardActions, CardContent, CardHeader, ClickAwayLi
 import withStyles from '@mui/styles/withStyles';
 import CloseIcon from '@mui/icons-material/Close';
 
-import QueryStyle from "./queryStyle.jsx";
+import BrowseTheme from "./browseStyle.jsx";
 
 // Component that renders a dialog with term info for a single vocabulary term.
 //
@@ -158,4 +158,4 @@ InfoBox.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(QueryStyle)(InfoBox);
+export default withStyles(BrowseTheme)(InfoBox);

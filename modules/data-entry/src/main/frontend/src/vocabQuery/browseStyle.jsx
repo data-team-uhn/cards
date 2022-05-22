@@ -17,10 +17,43 @@
 //  under the License.
 //
 
-import queryStyle from "./queryStyle.jsx";
+import queryStyle from "../resourceQuery/queryStyle.jsx";
 
 const browseStyle = theme => ({
     ...queryStyle(theme),
+    infoPaper: {
+      padding: theme.spacing(2),
+    },
+    infoCard: {
+      maxWidth: "500px",
+      fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+      position: "static",
+      zIndex: "4 !important",
+    },
+    vocabularyAvatar: {
+      height: 64,
+      minWidth: 64,
+      width: "auto",
+      padding: theme.spacing(0.5),
+      backgroundColor: theme.palette.info.main,
+      color: theme.palette.getContrastText(theme.palette.info.main)
+    },
+    infoSection: {
+      padding: theme.spacing(1, 0),
+    },
+    // The following ensures poppers are placed below the presentation (zIndex 1300)
+    // but above everything else
+    popperInfoOnTop: {
+      zIndex: "1302 !important",
+    },
+    infoAboveBackdrop: {
+      // When the info box is spawned from the browse menu,
+      // it should no longer be greyed out
+      zIndex: "1352 !important",
+    },
+    infoDialog: {
+      zIndex: "1350 !important",
+    },
     dialogPaper: {
       top: "0px",
       position: "absolute",

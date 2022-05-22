@@ -25,7 +25,7 @@ import withStyles from '@mui/styles/withStyles';
 import VocabularyTree from "./VocabularyTree.jsx";
 import InfoBox from "./InfoBox.jsx";
 import { REST_URL, MakeRequest } from "./util.jsx";
-import QueryStyle from "./queryStyle.jsx";
+import BrowseTheme from "./browseStyle.jsx";
 
 // Component that renders a vocabulary info box and browser.
 //
@@ -255,4 +255,4 @@ VocabularyBrowser.propTypes = {
   classes: PropTypes.object.isRequired
 }
 
-export default withStyles(QueryStyle)(VocabularyBrowser);
+export default withStyles(BrowseTheme)(VocabularyBrowser);

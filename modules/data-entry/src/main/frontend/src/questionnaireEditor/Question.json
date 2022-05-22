@@ -235,9 +235,17 @@
             "minAnswers": "long",
             "maxAnswers": "long",
             "displayMode": {
+              "input": {
+                "propertiesToSearch" : "string"
+              },
               "select" : {},
               "list": {
                 "compact" : "boolean"
+              },
+              "list+input" : {
+                "propertiesToSearch" : "string",
+                "compact" : "boolean",
+                "answerOptions" : "textOptions"
               }
             }
           },
