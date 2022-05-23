@@ -22,6 +22,10 @@
       "start-order":"25"
     },
     {
+      "id":"${project.groupId}:cards-visit-subject-type:${project.version}",
+      "start-order":"26"
+    },
+    {
       "id":"${project.groupId}:${project.artifactId}:${project.version}",
       "start-order":"25"
     }
