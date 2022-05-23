@@ -72,7 +72,6 @@ function ResourceQuery(props) {
   }
 
   const [inputValue, setInputValue] = useState(value);
-  const [error, setError] = useState("");
   const [queryFailed, setQueryFailed] = useState();
 
 
@@ -84,7 +83,6 @@ function ResourceQuery(props) {
   const inputEl = (
     <Input
       disabled={disabled}
-      error={!!error}
       variant='outlined'
       inputProps={{
         "aria-label": "Search"
@@ -115,7 +113,6 @@ function ResourceQuery(props) {
       onFocus={(status) => {
         anchorEl.current.select();
         setSuggestionsVisible(false);
-        setError("");
         setQueryFailed(false);
       }}
       className={variant == "labeled" ? classes.searchInput : ""}
@@ -172,7 +169,6 @@ function ResourceQuery(props) {
     if (input.trim() === "") {
       return;
     }
-    setError("");
     setQueryFailed(false);
 
     // Grab suggestions
@@ -318,7 +314,6 @@ function ResourceQuery(props) {
       && clearOnClick
       && setInputValue("");
     setSuggestionsVisible(false);
-    setError("");
     setQueryFailed(false);
   };
 
@@ -363,7 +358,6 @@ function ResourceQuery(props) {
           :
           inputEl}
           <LinearProgress className={classes.progressIndicator + " " + (suggestionsLoading ? "" : classes.inactiveProgress)}/>
-          { error && <Typography component="div" color="error" variant="caption">{error}</Typography> }
         </div>
         {/* Suggestions list using Popper */}
         <Popper
