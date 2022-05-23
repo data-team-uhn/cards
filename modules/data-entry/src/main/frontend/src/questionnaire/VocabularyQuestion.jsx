@@ -67,7 +67,7 @@ function VocabularyQuestion(props) {
           isNested: isBare,
           variant: "labeled",
           clearOnClick: !singleInput,
-          allowTermSelection: true
+          enableSelection: true
         }}
         answerNodeType = "cards:VocabularyAnswer"
         noteComponent={NCRNote}

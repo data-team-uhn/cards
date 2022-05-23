@@ -20,10 +20,11 @@ import classNames from "classnames";
 import React, { useRef, useEffect, useState, useContext } from "react";
 import PropTypes from "prop-types";
 
-import { withStyles, ClickAwayListener, Grow, Input, InputAdornment, InputLabel, FormControl, Typography } from "@material-ui/core"
+import { withStyles, ClickAwayListener, Grow, IconButton, Input, InputAdornment, InputLabel, FormControl, Typography } from "@material-ui/core"
 import { Divider, LinearProgress, MenuItem, MenuList, Paper, Popper } from "@material-ui/core";
 
 import Search from "@material-ui/icons/Search";
+import Info from "@material-ui/icons/Info";
 
 import QueryStyle from "./queryStyle.jsx";
 import { LABEL_POS, VALUE_POS } from "../questionnaire/Answer";
@@ -51,19 +52,24 @@ const MAX_RESULTS = 10;
 //  placeholder: String to display as the input element's placeholder
 //  value: String to use as the input element value
 //  onChange: Callback in term input change event
+//  enableSelection: Boolean enabler for selection from a resource browser
 //  initialSelection: Existing answers
 //  onRemoveOption: Function to remove added answer
 //
 function ResourceQuery(props) {
   const { clearOnClick, onClick, focusAfterSelecting, disabled, variant, isNested, placeholder,
-    value, questionDefinition, onChange,  initialSelection, onRemoveOption, classes } = props;
+    value, questionDefinition, onChange, enableSelection, initialSelection, onRemoveOption, classes } = props;
   const { maxAnswers, primaryType, labelProperty, propertiesToSearch } = questionDefinition;
   const { enableUserEntry } = props;
+  const { fetchSuggestions, formatSuggestionData, infoDisplayer } = props;
 
   const [suggestions, setSuggestions] = useState([]);
   const [suggestionsLoading, setSuggestionsLoading] = useState(false);
   const [suggestionsVisible, setSuggestionsVisible] = useState(false);
   const [lookupTimer, setLookupTimer] = useState(null);
+
+  // Holds resource path on dropdown info button click
+  const [resourcePath, setResourcePath] = useState("");
 
   // Checks whether path is listed in the default answer options in the question definition
   let isDefaultOption = (path) => {
@@ -72,13 +78,19 @@ function ResourceQuery(props) {
   }
 
   const [inputValue, setInputValue] = useState(value);
-  const [queryFailed, setQueryFailed] = useState();
 
+  // Holds dropdown info buttons refs to be used as anchor elements by term infoBoxes
+  const [buttonRefs, setButtonRefs] = useState({});
 
   let menuPopperRef = useRef();
   let anchorEl = useRef();
   let searchButtonRef = useRef();
   let menuRef = useRef();
+
+  // If info buttons are enabled, assign refs for the info box and a possible resource browser
+  // (that may be used for resources organized in a tree) to control clickaway events
+  let infoboxRef = useRef();
+  let browserRef = useRef();
 
   const inputEl = (
     <Input
@@ -113,7 +125,7 @@ function ResourceQuery(props) {
       onFocus={(status) => {
         anchorEl.current.select();
         setSuggestionsVisible(false);
-        setQueryFailed(false);
+        setResourcePath("");
       }}
       className={variant == "labeled" ? classes.searchInput : ""}
       multiline={true}
@@ -169,19 +181,34 @@ function ResourceQuery(props) {
     if (input.trim() === "") {
       return;
     }
-    setQueryFailed(false);
 
     // Grab suggestions
     setSuggestionsLoading(true);
     // Query for resources matching the input
-
-    fetchWithReLogin(globalContext, generateSearchURL(input))
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then(showSuggestions)
-      .catch(err => setQueryFailed(true));
+    getSuggestions(
+      input,
+      showSuggestions,
+      () => showSuggestions({rows: [{
+        error: true,
+        message: "Answer suggestions cannot be loaded for this question."
+      }]})
+    );
   }
 
+  let getSuggestions = fetchSuggestions || ((input, onSuccess, onFailure) => {
+    fetchWithReLogin(globalContext, generateSearchURL(input))
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then(onSuccess)
+      .catch(onFailure);
+  });
+
   let shapeSuggestionData = (rawData, query) => {
+    if (rawData.error) return rawData;
+
+    if (formatSuggestionData) {
+      return formatSuggestionData(rawData, query);
+    }
+
     let suggestion = {
       isPerfectMatch: false,
       "@path" : rawData["@path"],
@@ -218,6 +245,21 @@ function ResourceQuery(props) {
         showUserEntry = showUserEntry && !suggestion.isPerfectMatch;
 
         suggestions.push(
+          suggestion.error ?
+          <MenuItem
+            className={classes.dropdownMessage}
+            key={suggestion.message}
+            disabled={true}
+          >
+            <Typography
+              component="p"
+              variant="caption"
+              color="error"
+            >
+            {suggestion.message}
+            </Typography>
+          </MenuItem>
+          :
           <MenuItem
             className={classes.dropdownItem}
             key={suggestion["@path"]}
@@ -229,6 +271,19 @@ function ResourceQuery(props) {
           >
             <div>
             { suggestion.label }
+            { infoDisplayer &&
+              <IconButton
+                size="small"
+                buttonRef={node => {
+                  registerInfoButton(suggestion["@path"], node);
+                }}
+                color="primary"
+                onClick={(e) => {setResourcePath(element["@path"]); e.preventDefault(); e.stopPropagation();}}
+                className={classes.infoButton}
+            >
+              <Info color="primary" />
+            </IconButton>
+            }
             { suggestion.matchedFields?.map(f =>
               <FormattedText
                 key={f}
@@ -245,24 +300,6 @@ function ResourceQuery(props) {
       });
     }
 
-    if (queryFailed) {
-      suggestions.push(
-        <MenuItem
-          className={classes.dropdownMessage}
-          key="error-message"
-          disabled={true}
-        >
-          <Typography
-            component="p"
-            variant="caption"
-            color="error"
-          >
-            Answer suggestions cannot be loaded for this question. Please inform your administrator.
-          </Typography>
-        </MenuItem>
-      );
-    }
-
     if (showUserEntry) {
       suggestions.length > 0 && suggestions.push(<Divider key="divider"/>);
       suggestions.push(
@@ -276,7 +313,7 @@ function ResourceQuery(props) {
             className={classes.noResults}
             variant="caption"
           >
-            {data["rows"].length > 0 ? NONE_OF_ABOVE_TEXT : NO_RESULTS_TEXT}
+            {data["rows"].filter(r => !r.error).length > 0 ? NONE_OF_ABOVE_TEXT : NO_RESULTS_TEXT}
           </Typography>
         </MenuItem>
       );
@@ -304,7 +341,9 @@ function ResourceQuery(props) {
 
   // Event handler for clicking away from the autocomplete while it is open
   let closeAutocomplete = event => {
-    if ( menuPopperRef?.current?.contains(event.target)) {
+    if ( browserRef?.current
+      || menuPopperRef?.current?.contains(event.target)
+      || infoboxRef?.current?.contains(event.target)) {
       return;
     }
 
@@ -314,9 +353,24 @@ function ResourceQuery(props) {
       && clearOnClick
       && setInputValue("");
     setSuggestionsVisible(false);
-    setQueryFailed(false);
+    setResourcePath("");
   };
 
+  let InfoDisplayer = infoDisplayer;
+
+    // Register a button reference that the info box can use to align itself to
+  let registerInfoButton = (id, node) => {
+    // List items getting deleted will overwrite new browser button refs, so
+    // we must ignore deregistration events
+    if (node) {
+      buttonRefs[id] = node;
+    }
+  }
+
+  // Event handler for clicking away from the info window while it is open
+  let closeInfo = (event) => {
+    setResourcePath("");
+  }
 
   let closeSuggestions = () => {
     if (clearOnClick && anchorEl?.current) {
@@ -326,6 +380,26 @@ function ResourceQuery(props) {
       anchorEl?.current?.select();
     }
     setSuggestionsVisible(false);
+  }
+
+  let updateSelection = (selectedEntries, removedEntries) => {
+    selectedEntries && selectedEntries.map(item => onClick(item[VALUE_POS], item[LABEL_POS]));
+    removedEntries && removedEntries.map(item => onRemoveOption(item[VALUE_POS], item[LABEL_POS]));
+
+    // Set input value to selected term label or initial selection label if single answer question
+    if (maxAnswers === 1) {
+      if (selectedEntries?.length > 0) {
+        // Search in default answer options
+        !isDefaultOption(selectedEntries[0][VALUE_POS]) && setInputValue(selectedEntries[0][LABEL_POS]);
+      }
+    }
+    if (selectedEntries || removedEntries) {
+      setSuggestionsVisible(false);
+      setResourcePath("");
+      maxAnswers != 1 && setInputValue("");
+    } else {
+      anchorEl.current.focus();
+    }
   }
 
   if (disabled && anchorEl?.current) {
@@ -404,6 +478,19 @@ function ResourceQuery(props) {
             </Grow>
           )}
         </Popper>
+        { infoDisplayer &&
+            <InfoDisplayer
+              infoPath={resourcePath}
+              infoButtonRefs={buttonRefs}
+              infoboxRef={infoboxRef}
+              enableSelection={enableSelection}
+              initialSelection={initialSelection}
+              browserRef={browserRef}
+              onCloseBrowser={updateSelection}
+              onCloseInfo={() => setResourcePath("")}
+              questionDefinition={questionDefinition}
+           />
+        }
       </div>
     );
 }
@@ -420,8 +507,12 @@ ResourceQuery.propTypes = {
     value: PropTypes.string,
     questionDefinition: PropTypes.object.isRequired,
     onChange: PropTypes.func,
+    enableSelection: PropTypes.bool,
     initialSelection: PropTypes.array,
-    onRemoveOption: PropTypes.func
+    onRemoveOption: PropTypes.func,
+    infoDisplayer: PropTypes.object,
+    fetchSuggestions: PropTypes.func,
+    formatSuggestionData: PropTypes.func,
 };
 
 ResourceQuery.defaultProps = {
