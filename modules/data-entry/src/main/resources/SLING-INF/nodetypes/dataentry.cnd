@@ -348,7 +348,7 @@
   // Properties
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "cards/Conditional" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/ConditionalGroup" mandatory autocreated protected
 
   // Hardcode the resource supertype: each section link is a resource.
   - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
