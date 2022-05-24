@@ -59,7 +59,7 @@ function ResourceQuestion(props) {
   useEffect(() => {
     const url = (
       primaryType
-      ? `/query?query=select * from [${primaryType}]&limit=${MAX_TO_DISPLAY}`
+      ? `/query?query=select * from [${primaryType}] as n order by n.'cards:defaultOrder', n.'${labelProperty}'&limit=${MAX_TO_DISPLAY}`
       : undefined
     );
     if (!enableUserEntry && !defaults?.length && url) {
