@@ -220,9 +220,13 @@ function SearchBar(props) {
         open={popperOpen}
         anchorEl={input.current}
         className={popperOpen ? classes.aboveBackground : ""}
-        modifiers={{
-          keepTogether: {enabled: true}
-        }}
+        modifiers={[{
+          name: 'preventOverflow',
+	      enabled: true,
+	      options: {
+	        tether: true,
+	      },
+        }]}
         placement = "bottom-start"
         transition
         keepMounted

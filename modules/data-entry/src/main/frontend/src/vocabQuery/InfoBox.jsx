@@ -71,20 +71,20 @@ function InfoBox(props) {
         + " " + classes.popperNav
         + " " + (infoAboveBackground ? classes.infoAboveBackdrop : classes.popperInfoOnTop)
       }
-      modifiers={{
-        keepTogether: {
-          enabled: true
+      modifiers={[{
+        name: 'preventOverflow',
+        enabled: true,
+        options: {
+          rootBoundary: 'viewport',
+          padding: 8,
+          tether: true,
+          }
         },
-        preventOverflow: {
-          boundariesElement: 'viewport',
-          padding: '8',
-          escapeWithReference: false,
-          enabled: true
-        },
-        arrow: {
-          enabled: false
-        }
-      }}
+	    {
+	      name: 'arrow',
+	      enabled: true
+	    }
+      ]}
     >
       {({ TransitionProps }) => (
         <Grow

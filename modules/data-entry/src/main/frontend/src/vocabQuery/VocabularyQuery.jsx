@@ -451,19 +451,26 @@ function VocabularyQuery(props) {
         }
         placement = "bottom-start"
         keepMounted
-        modifiers={{
-          flip: {
-            enabled: true
-          },
-          preventOverflow: {
-            enabled: true,
-            boundariesElement: 'window',
-            escapeWithReference: true,
-          },
-          hide: {
-            enabled: true
-          }
-        }}
+        modifiers={[
+		    {
+		      name: 'flip',
+		      enabled: true
+		    },
+		    {
+		      name: 'preventOverflow',
+		      enabled: true,
+		      options: {
+		        altAxis: true,
+		        altBoundary: true,
+		        tether: true,
+		        rootBoundary: 'window',
+		      }
+		    },
+		    {
+		      name: 'hide',
+		      enabled: true
+		    }
+        ]}
         ref={menuPopperRef}
       >
         {({ TransitionProps }) => (

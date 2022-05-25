@@ -103,11 +103,12 @@ function UserInputAssistant (props) {
       anchorEl={anchorEl}
       placement={placement}
       transition
-      modifiers={{
-        flip: {
-          enabled: false,
-        }
-      }}
+      modifiers={[
+	    {
+	      name: 'flip',
+	      enabled: true
+	    }
+	  ]}
       >
     {({ TransitionProps }) => (
       <Fade {...TransitionProps} timeout={350}>

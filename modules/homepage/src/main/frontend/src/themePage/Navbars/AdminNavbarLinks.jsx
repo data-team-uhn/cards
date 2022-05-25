@@ -135,13 +135,18 @@ function HeaderLinks (props) {
       <Hidden mdUp implementation="css">
         {menuItems}
       </Hidden>
+      {/* Avatar + sign out link */}
       <Popper
         open={popperOpen}
         anchorEl={avatarRef.current}
         className={popperOpen ? classes.aboveBackground : ""}
-        modifiers={{
-          keepTogether: {enabled: true}
-        }}
+        modifiers={[{
+          name: 'preventOverflow',
+	      enabled: true,
+	      options: {
+	        tether: true,
+	      }
+        }]}
         placement = "bottom-end"
         transition
         >
