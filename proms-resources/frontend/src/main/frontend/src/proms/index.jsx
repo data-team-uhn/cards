@@ -55,12 +55,12 @@ hist.listen(({action, location}) => window.dispatchEvent(new Event("beforeunload
 ReactDOM.render(
   <StyledEngineProvider injectFirst>
     <ThemeProvider theme={appTheme}>
-    <Router history={hist}>
-      <Switch>
-        <Route path="/Proms.html/" component={PromsHomepage} />
-        <Redirect from="/Proms" to="/Proms.html/"/>
-      </Switch>
-    </Router>
+      <Router history={hist}>
+        <Switch>
+          <Route path="/Proms.html/" component={PromsHomepage} />
+          <Redirect from="/Proms" to="/Proms.html/"/>
+        </Switch>
+      </Router>
     </ThemeProvider>
   </StyledEngineProvider>,
   document.querySelector('#proms-container')

@@ -17,9 +17,9 @@
 //  under the License.
 //
 import React from 'react';
-import { createTheme, adaptV4Theme } from '@mui/material/styles';
+import { createTheme } from '@mui/material/styles';
 
-const appTheme = createTheme(adaptV4Theme({
+const appTheme = createTheme({
   palette: {
     primary: {
       main: '#003366',
@@ -28,6 +28,6 @@ const appTheme = createTheme(adaptV4Theme({
       main: '#f94900',
     },
   }
-}));
+});
 
 export { appTheme };

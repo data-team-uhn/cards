@@ -49,30 +49,33 @@ export default function TokenExpired() {
   const classes = useStyles();
 
   return (
-    <StyledEngineProvider injectFirst>
-      <ThemeProvider theme={appTheme}>
-        <Paper className={`${classes.paper}`} elevation={0}>
-          <Grid
-            container
-            direction="column"
-            spacing={7}
-            alignItems="center"
-            alignContent="center"
-            className={classes.notFoundContainer}
-          >
-            <Grid item>
-              <img src={document.querySelector('meta[name="logoLight"]').content} alt="" className={classes.logo}/>
-            </Grid>
-            <Grid item>
-              <Typography variant="h1" color="primary" gutterBottom>
-                This link is no longer valid, please close the page.
-              </Typography>
-            </Grid>
-          </Grid>
-        </Paper>
-      </ThemeProvider>
-    </StyledEngineProvider>
+    <Paper className={`${classes.paper}`} elevation={0}>
+      <Grid
+        container
+        direction="column"
+        spacing={7}
+        alignItems="center"
+        alignContent="center"
+        className={classes.notFoundContainer}
+      >
+        <Grid item>
+          <img src={document.querySelector('meta[name="logoLight"]').content} alt="" className={classes.logo}/>
+        </Grid>
+        <Grid item>
+          <Typography variant="h1" color="primary" gutterBottom>
+            This link is no longer valid, please close the page.
+          </Typography>
+        </Grid>
+      </Grid>
+    </Paper>
   );
 }
 
-ReactDOM.render(<TokenExpired />, document.getElementById('token-expired-container'));
+ReactDOM.render(
+  <StyledEngineProvider injectFirst>
+    <ThemeProvider theme={appTheme}>
+      <TokenExpired />
+    </ThemeProvider>
+  </StyledEngineProvider>,
+  document.getElementById('token-expired-container')
+);

@@ -20,13 +20,15 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import MainLoginComponent from './loginMainComponent';
 import PageStart from '../PageStart';
+import { appTheme } from "../themePalette.jsx";
+import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 
 ReactDOM.render(
-  <React.Fragment>
-    <PageStart
-      extensionsName="LoginPageStart"
-    />
-    <MainLoginComponent selfContained redirectOnLogin={true} />
-  </React.Fragment>,
+  <StyledEngineProvider injectFirst>
+    <ThemeProvider theme={appTheme}>
+      <PageStart extensionsName="LoginPageStart" />
+      <MainLoginComponent selfContained redirectOnLogin={true} />
+    </ThemeProvider>
+  </StyledEngineProvider>,
   document.getElementById('main-login-container')
 );

@@ -103,8 +103,6 @@ class Main extends React.Component {
     const { classes, ...rest } = this.props;
 
     return (
-      <StyledEngineProvider injectFirst>
-        <ThemeProvider theme={appTheme}>
         <React.Fragment>
         <GlobalLoginContext.Provider
           value={{
@@ -173,8 +171,6 @@ class Main extends React.Component {
           </div>
         </GlobalLoginContext.Provider>
         </React.Fragment>
-        </ThemeProvider>
-      </StyledEngineProvider>
     );
   }
 }
@@ -187,13 +183,17 @@ const MainComponent = (withStyles(IndexStyle, {withTheme: true})(Main));
 const hist = createBrowserHistory();
 hist.listen(({action, location}) => window.dispatchEvent(new Event("beforeunload")));
 ReactDOM.render(
-  <Router history={hist}>
-    <Switch>
-      <Route path="/content.html/" component={MainComponent} />
-      <Redirect from="/" to="/content.html/Questionnaires/User"/>
-      <Redirect from="/content" to="/content.html/Questionnaires/User" />
-    </Switch>
-  </Router>,
+  <StyledEngineProvider injectFirst>
+    <ThemeProvider theme={appTheme}>
+	  <Router history={hist}>
+	    <Switch>
+	      <Route path="/content.html/" component={MainComponent} />
+	      <Redirect from="/" to="/content.html/Questionnaires/User"/>
+	      <Redirect from="/content" to="/content.html/Questionnaires/User" />
+	    </Switch>
+	  </Router>
+    </ThemeProvider>
+  </StyledEngineProvider>,
   document.querySelector('#main-container')
 );
 

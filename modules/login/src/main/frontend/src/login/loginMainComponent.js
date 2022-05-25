@@ -21,9 +21,7 @@ import SignUpForm from './signUpForm';
 import SignIn from './loginForm';
 
 import { Breadcrumbs, Button, Grid, Paper, Tooltip, Typography } from '@mui/material';
-import withStyles from '@mui/styles/withStyles';
-import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
-import { appTheme } from "../themePalette.jsx";
+import { withStyles } from '@mui/styles';
 
 import styles from "../styling/styles";
 
@@ -50,8 +48,6 @@ class MainLoginContainer extends React.Component {
     const { classes, selfContained } = this.props;
 
     return (
-      <StyledEngineProvider injectFirst>
-        <ThemeProvider theme={appTheme}>
         <Paper className={`${classes.paper}  ${selfContained ? classes.selfContained : ''}`} elevation={0}>
           <Grid container direction="column" spacing={3} alignItems="center" alignContent="center">
             <Grid item>
@@ -85,8 +81,6 @@ class MainLoginContainer extends React.Component {
             }
           </Grid>
         </Paper>
-        </ThemeProvider>
-      </StyledEngineProvider>
     );
   }
 }

@@ -20,9 +20,8 @@ import React, { useEffect, useState } from 'react';
 
 import { Fab, Grid, Paper, Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
-import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
+
 import NavigationIcon from '@mui/icons-material/Navigation';
-import { appTheme } from "../themePalette.jsx";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -48,8 +47,6 @@ export default function ErrorPage(props) {
   const classes = useStyles();
 
   return (
-  <StyledEngineProvider injectFirst>
-    <ThemeProvider theme={appTheme}>
       <Paper className={classes.paper} elevation={0}>
         <Grid
           container
@@ -86,7 +83,5 @@ export default function ErrorPage(props) {
           }
         </Grid>
       </Paper>
-    </ThemeProvider>
-  </StyledEngineProvider>
   );
 }

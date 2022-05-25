@@ -86,65 +86,65 @@ function Unsubscribe (props) {
   }, []);
 
   return (
-    <StyledEngineProvider injectFirst>
-      <ThemeProvider theme={appTheme}>
-          <Paper className={classes.paper} elevation={0}>
-            <Grid
-              container
-              direction="column"
-              spacing={7}
-              alignItems="center"
-              alignContent="center"
-            >
-              <Grid item>
-                <img src={document.querySelector('meta[name="logoLight"]').content} alt="" className={classes.logo}/>
-              </Grid>
-              <Grid item>
-                { error && <Alert severity="error">
-                  <AlertTitle>An error occurred</AlertTitle>
-                   {error}
-                  </Alert>
-                }
-                { alreadyUnsubscribed ?
-                  <>
-                    <Alert icon={false} severity="info">You are already unsubscribed.</Alert>
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      color="primary"
-                      className={classes.submit}
-                      onClick={() => unsubscribe(0)}
-                      >
-                      Resubscribe
-                    </Button>
-                  </>
-                  : confirmed !== null ?
-                  <Alert icon={false} severity="info">
-                    You have been {confirmed ? "unsubscribed" : "resubscribed"}.
-                  </Alert>
-                  :
-                  <><Typography>This will unsubscribe you from receiving all emails via DATA-PRO. If you wish to unsubscribe from all UHN communication, please contact your care team.</Typography>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    className={classes.submit}
-                    onClick={() => unsubscribe(1)}
-                    >
-                    Unsubscribe
-                  </Button>
-                  </>
-                }
-              </Grid>
-            </Grid>
-          </Paper>
-        </ThemeProvider>
-    </StyledEngineProvider>
+    <Paper className={classes.paper} elevation={0}>
+        <Grid
+          container
+          direction="column"
+          spacing={7}
+          alignItems="center"
+          alignContent="center"
+        >
+          <Grid item>
+            <img src={document.querySelector('meta[name="logoLight"]').content} alt="" className={classes.logo}/>
+          </Grid>
+          <Grid item>
+            { error && <Alert severity="error">
+              <AlertTitle>An error occurred</AlertTitle>
+               {error}
+              </Alert>
+            }
+            { alreadyUnsubscribed ?
+              <>
+                <Alert icon={false} severity="info">You are already unsubscribed.</Alert>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  className={classes.submit}
+                  onClick={() => unsubscribe(0)}
+                  >
+                  Resubscribe
+                </Button>
+              </>
+              : confirmed !== null ?
+              <Alert icon={false} severity="info">
+                You have been {confirmed ? "unsubscribed" : "resubscribed"}.
+              </Alert>
+              :
+              <><Typography>This will unsubscribe you from receiving all emails via DATA-PRO. If you wish to unsubscribe from all UHN communication, please contact your care team.</Typography>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+                onClick={() => unsubscribe(1)}
+                >
+                Unsubscribe
+              </Button>
+              </>
+            }
+          </Grid>
+        </Grid>
+    </Paper>
   );
 }
 
 ReactDOM.render(
-  <Unsubscribe />,
+  <StyledEngineProvider injectFirst>
+    <ThemeProvider theme={appTheme}>
+      <Unsubscribe />
+    </ThemeProvider>
+  </StyledEngineProvider>,
   document.querySelector('#proms-unsubscribe-container')
 );
 

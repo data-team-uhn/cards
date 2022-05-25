@@ -23,9 +23,6 @@ import { Breadcrumbs, Button, Dialog, DialogContent, Grid, Tooltip, Typography }
 
 import makeStyles from '@mui/styles/makeStyles';
 
-import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
-import { appTheme } from "../themePalette.jsx";
-
 const useStyles = makeStyles(theme => ({
   paper: {
     display: 'flex',
@@ -70,8 +67,6 @@ function PromsLandingPage(props) {
       fullScreen
       open={isOpen}
     >
-      <StyledEngineProvider injectFirst>
-        <ThemeProvider theme={appTheme}>
           <DialogContent className={classes.paper}>
             <Grid container direction="column" spacing={2} alignItems="center" alignContent="center">
               <Grid item>
@@ -123,21 +118,8 @@ function PromsLandingPage(props) {
                 </Breadcrumbs>
               </Grid>
             </Grid>
-            <Grid item>
-              <Breadcrumbs separator="by" className={classes.appInfo}>
-                <Typography variant="subtitle2">{appInfo}</Typography>
-                <Tooltip title="DATA Team @ UHN">
-                  <a href="https://uhndata.io/" target="_blank">
-                    <img src="/libs/cards/resources/media/default/data-logo_light_bg.png" width="80" alt="DATA" />
-                  </a>
-                </Tooltip>
-              </Breadcrumbs>
-            </Grid>
-          </Grid>
         </DialogContent>
-      </ThemeProvider>
-    </StyledEngineProvider>
-  </Dialog>
+    </Dialog>
   );
 }
 
