@@ -54,7 +54,7 @@ function VisitView(props) {
 "select distinct visitInformation.* " +
   "from " +
     "[cards:Form] as visitInformation " +
-      "inner join [cards:TextAnswer] as visitClinic on isdescendantnode(visitClinic, visitInformation) " +
+      "inner join [cards:ResourceAnswer] as visitClinic on isdescendantnode(visitClinic, visitInformation) " +
       "inner join [cards:DateAnswer] as visitDate on isdescendantnode(visitDate, visitInformation) " +
       "inner join [cards:TextAnswer] as visitStatus on isdescendantnode(visitStatus, visitInformation) " +
   "where " +
