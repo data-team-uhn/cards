@@ -119,7 +119,7 @@ def getCardsProjectLogoPath(project_name):
   logoPathMap['cards4proms'] = "proms-resources/clinical-data/src/main/media/SLING-INF/content/libs/cards/resources/media/proms/logo_light_bg.png"
 
   #Default logo if CARDS project is not specified
-  projectLogoPath = "modules/homepage/src/main/media/SLING-INF/content/libs/cards/resources/logo_light_bg.png"
+  projectLogoPath = "modules/homepage/src/main/media/SLING-INF/content/libs/cards/resources/media/default/logo_light_bg.png"
 
   if project_name in logoPathMap:
     projectLogoPath = logoPathMap[project_name]
