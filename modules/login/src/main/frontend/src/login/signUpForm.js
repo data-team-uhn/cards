@@ -118,6 +118,7 @@ class FormFields extends React.Component {
           onChange={change.bind(null, "confirmPassword")}
           className={classes.form}
           required
+
         />
         { !loginOnSuccess &&
           <Button variant="contained" size="small" onClick={handleReset} className={classes.submit + " " + classes.closeButton}>Close</Button>
