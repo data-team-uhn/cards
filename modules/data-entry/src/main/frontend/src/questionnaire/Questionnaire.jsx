@@ -94,7 +94,7 @@ let Questionnaire = (props) => {
     fetchData();
   }
 
-  let onCreate = (newData) => {
+  let onCreated = (newData) => {
     setData({});
     setData(newData);
   }
@@ -221,7 +221,7 @@ let Questionnaire = (props) => {
             isMainAction={true}
             data={data}
             menuItems={QUESTIONNAIRE_ITEM_NAMES}
-            onClose={onCreate}
+            onCreated={onCreated}
           />
         }
       </QuestionnaireItemSet>
