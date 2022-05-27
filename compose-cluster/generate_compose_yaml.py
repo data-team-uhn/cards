@@ -113,10 +113,10 @@ def generateSelfSignedCert():
 
 def getCardsProjectLogoPath(project_name):
   logoPathMap = {}
-  logoPathMap['cards4care'] = "cardiac-rehab-resources/clinical-data/src/main/media/SLING-INF/content/libs/cards/resources/logo_light_bg.png"
-  logoPathMap['cards4kids'] = "kids-resources/clinical-data/src/main/media/SLING-INF/content/libs/cards/resources/logo_light_bg.png"
-  logoPathMap['cards4lfs'] = "lfs-resources/clinical-data/src/main/media/SLING-INF/content/libs/cards/resources/logo_light_bg.png"
-  logoPathMap['cards4proms'] = "proms-resources/clinical-data/src/main/media/SLING-INF/content/libs/cards/resources/logo_light_bg.png"
+  logoPathMap['cards4care'] = "cardiac-rehab-resources/clinical-data/src/main/media/SLING-INF/content/libs/cards/resources/media/care/logo_light_bg.png"
+  logoPathMap['cards4kids'] = "kids-resources/clinical-data/src/main/media/SLING-INF/content/libs/cards/resources/media/kids/logo_light_bg.png"
+  logoPathMap['cards4lfs'] = "lfs-resources/clinical-data/src/main/media/SLING-INF/content/libs/cards/resources/media/lfs/logo_light_bg.png"
+  logoPathMap['cards4proms'] = "proms-resources/clinical-data/src/main/media/SLING-INF/content/libs/cards/resources/media/proms/logo_light_bg.png"
 
   #Default logo if CARDS project is not specified
   projectLogoPath = "modules/homepage/src/main/media/SLING-INF/content/libs/cards/resources/logo_light_bg.png"
