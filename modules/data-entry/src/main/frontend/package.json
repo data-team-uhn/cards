@@ -26,13 +26,13 @@
     "@babel/preset-env": "7.12.11",
     "@babel/preset-react": "7.12.10",
     "babel-loader": "8.2.2",
-    "clean-webpack-plugin": "4.0.0",
-    "eslint-plugin-react": "7.29.4",
-    "eslint-plugin-auto-import": "0.1.1",
-    "eslint": "8.15.0",
-    "webpack": "5.72.1",
-    "webpack-cli": "4.9.2",
-    "webpack-assets-manifest": "5.1.0"
+    "clean-webpack-plugin": "3.0.0",
+    "eslint-plugin-react": "7.22.0",
+    "eslint-plugin-auto-import": "0.1.0",
+    "eslint": "7.17.0",
+    "webpack": "5.17.0",
+    "webpack-cli": "4.4.0",
+    "webpack-assets-manifest": "5.0.0"
   },
   "dependencies": {
     "@mui/icons-material": "5.8.0",
@@ -43,15 +43,15 @@
     "react": "^17.0.0",
     "react-beautiful-dnd": "13.1.0",
     "react-dom": "^17.0.0",
-    "react-number-format": "4.9.3",
-    "react-router-dom": "5.3.2",
-    "react-to-print": "2.14.7",
+    "react-number-format": "4.4.1",
+    "react-router-dom": "5.2.0",
+    "react-to-print": "2.14.4",
     "material-table": "^2.0.3",
     "material-ui-dropzone": "3.5.0",
     "moment-jdateformatparser": "1.2.1",
     "moment": "2.29.1",
-    "prop-types": "15.8.1",
-    "uuid": "8.3.2",
-    "@uiw/react-md-editor": "3.12.3"
+    "prop-types": "15.7.2",
+    "uuid": "8.3.1",
+    "@uiw/react-md-editor": "3.4.7"
   }
 }
