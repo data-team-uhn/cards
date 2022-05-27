@@ -18,10 +18,26 @@
 //
 
 import React, { useEffect, useState } from "react";
-import { withStyles } from "@material-ui/core";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControlLabel,
+  FormGroup,
+  Switch,
+  Typography,
+  withStyles
+} from "@material-ui/core";
 
 import cornerstone from "cornerstone-core";
+
+// Non dynamic loading version
 import cornerstoneWADOImageLoader from "cornerstone-wado-image-loader";
+
+// Dynamic loading version
+//import cornerstoneWADOImageLoader from "cornerstone-wado-image-loader/dist/dynamic-import/cornerstoneWADOImageLoader.min.js";
+
 import dicomParser from "dicom-parser";
 
 cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
@@ -46,6 +62,9 @@ function DicomQuestion(props) {
 
   let [ dicomMetadataNote, setDicomMetadataNote ] = useState();
   let [ dicomImagePreviewURL, setDicomImagePreviewURL ] = useState();
+  let [ errorDialogText, setErrorDialogText ] = useState();
+  let [ advancedErrorDialogText, setAdvancedErrorDialogText ] = useState();
+  let [ showAdvancedErrorHelp, setShowAdvancedErrorHelp ] = useState(false);
 
   let fetchDicomFile = () => {
     let dicomFilePath = existingAnswer?.[1]
@@ -129,16 +148,23 @@ function DicomQuestion(props) {
     let dicomCtx = dicomCanvas.getContext('2d');
     let canvasImageData = dicomCtx.getImageData(0, 0, dicomCanvas.width, dicomCanvas.height);
 
-    // Normalize the data so that all pixels are between 0 and 255
-    for (let i = 0; i < canvasImageData.data.length; i+=4) {
-      let thisPixVal = 0;
-      if ((dicomMaxPix - dicomMinPix) !== 0) {
-        thisPixVal = Math.floor(255 * ((dicomImagePixels[i/4] - dicomMinPix) / (dicomMaxPix - dicomMinPix)));
+    if (dicomImage.color) {
+      // If the DICOM image is colored, simply copy the RGBA pixel values
+      for (let i = 0; i < canvasImageData.data.length; i++) {
+        canvasImageData.data[i] = dicomImagePixels[i];
       }
-      canvasImageData.data[i] = thisPixVal;
-      canvasImageData.data[i+1] = thisPixVal;
-      canvasImageData.data[i+2] = thisPixVal;
-      canvasImageData.data[i+3] = 255;
+    } else {
+      // Normalize the data so that all pixels are between 0 and 255
+      for (let i = 0; i < canvasImageData.data.length; i+=4) {
+        let thisPixVal = 0;
+        if ((dicomMaxPix - dicomMinPix) !== 0) {
+          thisPixVal = Math.floor(255 * ((dicomImagePixels[i/4] - dicomMinPix) / (dicomMaxPix - dicomMinPix)));
+        }
+        canvasImageData.data[i] = thisPixVal;
+        canvasImageData.data[i+1] = thisPixVal;
+        canvasImageData.data[i+2] = thisPixVal;
+        canvasImageData.data[i+3] = 255;
+      }
     }
     dicomCtx.putImageData(canvasImageData, 0, 0);
     return dicomCanvas.toDataURL();
@@ -150,6 +176,10 @@ function DicomQuestion(props) {
     cornerstone.loadImage(dicomPointer)
       .then((dicomImage) => {
         setDicomImagePreviewURL(dicomImageToDataURL(dicomImage));
+      })
+      .catch(() => {
+        setErrorDialogText("Something went wrong when parsing the DICOM file.");
+        setAdvancedErrorDialogText("You may be able to fix the DICOM file with: gdcmconv -C file.dcm fixed_file.dcm");
       })
     // Parse the metadata locally and populate the Notes
     file.arrayBuffer()
@@ -181,23 +211,61 @@ function DicomQuestion(props) {
 
   // Render a customized FileQuestion
   return (
-    <FileQuestion
-      questionDefinition={{...questionDefinition, maxAnswers: 1, enableNotes: true}}
-      existingAnswer={existingAnswer}
-      {...rest}
-      onBeforeUpload={processDicomFile}
-      onDelete={() => {
-        setDicomMetadataNote("");
-        setDicomImagePreviewURL(undefined);
-      }}
-      previewRenderer={previewRenderer}
-      answerNodeType="cards:DicomAnswer"
-      noteProps={{
-        fullSize: true,
-        placeholder: "Dicom metadata",
-        value: dicomMetadataNote
-      }}
-    />
+    <React.Fragment>
+      <Dialog
+        open={Boolean(errorDialogText)}
+        onClose={() => {
+          setErrorDialogText();
+          setAdvancedErrorDialogText();
+          setShowAdvancedErrorHelp();
+        }}
+      >
+        <DialogTitle disableTypography>
+          <Typography variant="h6" color="error">
+            Error
+          </Typography>
+        </DialogTitle>
+        <DialogContent dividers>
+          <Typography variant="h6">
+            {errorDialogText}
+          </Typography>
+          { showAdvancedErrorHelp &&
+            <Typography variant="body1">
+              {advancedErrorDialogText}
+            </Typography>
+          }
+        </DialogContent>
+        <DialogActions>
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Switch
+                  onChange={(evt) => setShowAdvancedErrorHelp(evt.target.checked)}
+                 />
+              }
+              label="Advanced Help"
+            />
+          </FormGroup>
+        </DialogActions>
+      </Dialog>
+      <FileQuestion
+        questionDefinition={{...questionDefinition, maxAnswers: 1, enableNotes: true}}
+        existingAnswer={existingAnswer}
+        {...rest}
+        onBeforeUpload={processDicomFile}
+        onDelete={() => {
+          setDicomMetadataNote("");
+          setDicomImagePreviewURL(undefined);
+        }}
+        previewRenderer={previewRenderer}
+        answerNodeType="cards:DicomAnswer"
+        noteProps={{
+          fullSize: true,
+          placeholder: "Dicom metadata",
+          value: dicomMetadataNote
+        }}
+      />
+    </React.Fragment>
   );
 }
 
