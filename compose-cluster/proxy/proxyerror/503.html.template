@@ -23,7 +23,7 @@
   <body>
     <div style="display: flex; align-items: center; justify-content: center; height: 100%">
       <div style="text-align: center">
-        <img style="width: 25%" src="/proxyerror/logo.png"/>
+        <img style="width: 75%" src="/proxyerror/logo.png"/>
         <p style="font-family: sans">{{CARDS_APP_NAME}} is down for maintenance.</p>
         <p style="font-family: sans">We apoligize for any inconvenience this may cause.</p>
       </div>
