@@ -26,7 +26,7 @@ import org.osgi.service.component.annotations.Component;
 /**
  * Custom TokenConfiguration implementation which returns the CARDS-specific token provider.
  *
- * @version $Id: b07194a5c68f138d4c9c95dadafdb4b042a57ab7 $
+ * @version $Id$
  */
 @Component(
     service = { TokenConfiguration.class, SecurityConfiguration.class },

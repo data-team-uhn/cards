@@ -35,7 +35,7 @@ import io.uhndata.cards.auth.token.impl.CardsTokenImpl;
  * Custom token provider that uses {@code cards:Token} nodes to store authentication tokens, to be used with the Oak
  * token-based login mechanism.
  *
- * @version $Id: 339e26450dae140affa85ed9f893f910cb834479 $
+ * @version $Id$
  */
 public class CardsTokenProvider implements TokenProvider, TokenConstants
 {

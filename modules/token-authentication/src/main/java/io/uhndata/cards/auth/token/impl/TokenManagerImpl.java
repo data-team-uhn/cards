@@ -51,7 +51,7 @@ import io.uhndata.cards.auth.token.TokenManager;
 /**
  * Implementation of the {@link TokenManager} service using {@code cards:Token} nodes.
  *
- * @version $Id: 4efbf08bf8c496c0f19d2af5f4902dc32a1ca9ea $
+ * @version $Id$
  */
 @Component
 public class TokenManagerImpl implements TokenManager

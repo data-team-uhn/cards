@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
  * Custom implementation of {@link TokenInfo} which works both with the Oak API Tree, used during the authentication
  * process, and the JCR API Node, used post-authentication.
  *
- * @version $Id: 7b8c1875a81f6b39cdbb26743cb46b95a657eb3c $
+ * @version $Id$
  */
 public class CardsTokenImpl implements TokenInfo
 {
