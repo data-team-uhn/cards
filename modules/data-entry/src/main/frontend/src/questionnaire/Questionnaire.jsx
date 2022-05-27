@@ -44,6 +44,7 @@ import QuestionnaireStyle from "./QuestionnaireStyle";
 import { blue, blueGrey, cyan, deepPurple, indigo, orange } from '@mui/material/colors';
 import { ENTRY_TYPES } from "./FormEntry";
 import Fields from "../questionnaireEditor/Fields";
+import LabeledField from "../questionnaireEditor/LabeledField";
 import CreationMenu from "../questionnaireEditor/CreationMenu";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import QuestionnaireItemCard from "../questionnaireEditor/QuestionnaireItemCard";
@@ -335,6 +336,7 @@ QuestionnaireContents.propTypes = {
   type: PropTypes.string.isRequired,
   avatar: PropTypes.string,
   avatarColor: PropTypes.string,
+  titleField: PropTypes.string,
   model: PropTypes.string.isRequired
 };
 
@@ -343,6 +345,7 @@ QuestionnaireContents.defaultProps = {
   type: "Questionnaire",
   avatar: "assignment",
   avatarColor: blueGrey[700],
+  titleField: "title",
   model: "Questionnaire.json"
 };
 
@@ -449,7 +452,7 @@ ConditionalGroup.defaultProps = {
 // Generic QuestionnaireEntry component that can be adapted to any entry type via props
 
 let QuestionnaireEntry = (props) => {
-  let { onActionDone, onFieldsChanged, data, titleField, model, classes, menuProps, ...rest } = props;
+  let { onActionDone, onFieldsChanged, data, type, titleField, model, classes, menuProps, ...rest } = props;
   let [ entryData, setEntryData ] = useState(data);
   let [ doHighlight, setDoHighlight ] = useState(data.doHighlight);
 
@@ -517,11 +520,10 @@ let QuestionnaireEntry = (props) => {
     setEntryData(newData);
   }
 
-  // If a `titleField` is provided, exclude that field when displaying the entry fields
-  let viewSpec = Object.assign({}, spec);
-  delete viewSpec[titleField];
-
-  let renderFields = (options) => <Fields data={entryData} JSON={viewSpec} edit={false} {...options} />;
+  let renderFields = (options) => (<>
+    <LabeledField name={`${type}Id`} {...options}>{entryData["@name"]}</LabeledField>
+    <Fields data={entryData} JSON={spec} edit={false} {...options} />
+  </>);
   let FIELDS_CLASS_NAME = "cards-questionnaire-entry-props";
 
   return (
@@ -529,6 +531,7 @@ let QuestionnaireEntry = (props) => {
         titleField={titleField}
         moreInfo={renderFields({condensed: true})}
         data={entryData}
+        type={type}
         classes={classes}
         doHighlight={doHighlight}
         action={
@@ -567,6 +570,7 @@ QuestionnaireEntry.propTypes = {
   disableCollapse: PropTypes.bool,
   data: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired,
+  plain: PropTypes.bool,
   avatar: PropTypes.string,
   avatarColor: PropTypes.string,
   title: PropTypes.string,

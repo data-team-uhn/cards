@@ -31,7 +31,7 @@ import {
 } from "@mui/material";
 
 import Fields from './Fields';
-import { camelCaseToWords } from './Fields';
+import { camelCaseToWords } from './LabeledField';
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
 // Dialog for editing or creating questions or sections

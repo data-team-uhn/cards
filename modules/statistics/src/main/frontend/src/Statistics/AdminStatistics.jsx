@@ -41,7 +41,7 @@ import LiveTable from "../dataHomepage/LiveTable.jsx";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 import Fields from "../questionnaireEditor/Fields.jsx";
 import EditIcon from "@mui/icons-material/Edit";
-import { camelCaseToWords } from "../questionnaireEditor/Fields.jsx";
+import { camelCaseToWords } from "../questionnaireEditor/LabeledField.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
 /**

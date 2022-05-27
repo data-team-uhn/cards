@@ -18,45 +18,32 @@
 //
 
 import React from 'react';
-import makeStyles from '@mui/styles/makeStyles';
 import PropTypes from 'prop-types';
 import {
   Grid,
   Typography
 } from "@mui/material";
 
-import { camelCaseToWords } from "./LabeledField";
+export function camelCaseToWords(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1).replace( /([A-Z])/g, " $1" ).toLowerCase();
+}
 
-let EditorInput = (props) => {
-  let { children, name } = props;
-
-  const classes = makeStyles((theme) => ({
-    labelContainer: {
-      /* Match the input padding so the text of the label would appear aligned with the text of the input */
-      /* To do: switch to a vertical layout in the future to avoid most alignment issues  */
-      paddingTop: theme.spacing(1.75) + " !important",
-    },
-  }))();
+let LabeledField = (props) => {
+  let {name, condensed, children } = props;
 
   return (
-  <Grid item>
-    <Grid container alignItems="flex-start" spacing={2}>
-      <Grid item xs={4} className={classes.labelContainer}>
-        <Typography variant="subtitle2">
-          {camelCaseToWords(name?.concat(':')) || ''}
-        </Typography>
+    <Grid container alignItems='flex-start' spacing={2} direction="row">
+      <Grid item xs={condensed ? "auto" : 4}>
+        <Typography variant="subtitle2">{camelCaseToWords(name)}:</Typography>
       </Grid>
-      <Grid item xs={8}>
-        {children}
-      </Grid>
+      <Grid item xs={condensed ? "auto" : 8}>{children}</Grid>
     </Grid>
-  </Grid>
   );
 }
 
-EditorInput.propTypes = {
-  children: PropTypes.node.isRequired,
-  name: PropTypes.string.isRequired
+LabeledField.propTypes = {
+  name: PropTypes.string.isRequired,
+  condensed: PropTypes.bool,
 };
 
-export default EditorInput
+export default LabeledField;

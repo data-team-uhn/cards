@@ -43,30 +43,39 @@ import MoreIcon from '@mui/icons-material/MoreHoriz';
 import EditDialog from "./EditDialog";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 
-import { camelCaseToWords }  from "./Fields";
+import { camelCaseToWords }  from "./LabeledField";
 
 const useStyles = makeStyles(theme => ({
   root : {
     border: "0 none",
     background: theme.palette.action.hover,
-   "& > .MuiCardHeader-root": {
-     paddingBottom: 0,
-   },
-   "& > .MuiCardContent-root": {
-     paddingTop: 0,
-   },
-   "& .MuiCardHeader-content .MuiIconButton-root": {
-     display: "none",
-   },
-  },
-  title: {
-    "& + *" : {
-      paddingTop: theme.spacing(4),
+    "& .MuiCardHeader-avatar": {
+      alignSelf: "start",
+      zoom: .75,
+      marginTop: theme.spacing(.75),
+      fontWeight: "bold",
+    },
+    "& .MuiCardHeader-content .MuiIconButton-root": {
+      display: "none",
     },
   },
+  title: {
+    display: "inline",
+  },
+  titlePlaceholder: {
+    opacity: "0.6",
+    fontWeight: "300 !important",
+  },
   collapsed: {
+    "& .MuiCardContent-root": {
+      paddingTop: 0,
+      paddingBottom: 0,
+    },
     "& .cards-questionnaire-entry-props": {
       display: "none",
+    },
+    "& .MuiCardContent-root > .MuiGrid-container > .MuiGrid-item:last-child": {
+      marginBottom: theme.spacing(2),
     },
     "& .MuiCardHeader-content .MuiIconButton-root": {
      display: "inline-flex",
@@ -76,6 +85,17 @@ const useStyles = makeStyles(theme => ({
     "& h6": {
       whiteSpace: "nowrap",
     }
+  },
+  withAvatar: {
+    "&.MuiCardContent-root > .cards-questionnaire-entry-props": {
+      paddingLeft: theme.spacing(5.5),
+    },
+    "&.MuiCardContent-root > .MuiGrid-container > .MuiGrid-item": {
+      paddingLeft: theme.spacing(5.5),
+    },
+    "&.MuiCardContent-root > .MuiGrid-container > .MuiGrid-item.cards-questionnaire-entry-props": {
+      paddingLeft: theme.spacing(7.5),
+    },
   }
 }));
 
@@ -130,6 +150,13 @@ let QuestionnaireItemCard = (props) => {
 
   let formattedType = camelCaseToWords(type);
 
+  let titleClasses = [styles.title];
+  let titleText = title || data[titleField];
+  if (!titleText) {
+    titleText = `${formattedType} ${data["@name"]}`;
+    titleClasses.push(styles.titlePlaceholder);
+  }
+
   return (
     <Card variant="outlined" ref={highlight ? itemRef : undefined} className={cardClasses.join(" ")}>
       <CardHeader
@@ -141,7 +168,7 @@ let QuestionnaireItemCard = (props) => {
         }
         title={
           <>
-            { type && data["@name"] && <>{type} : {data["@name"]}</>}
+            { <Typography className={titleClasses.join(" ")} variant="h6">{titleText}</Typography> }
             { moreInfo &&
               <Tooltip title="Properties">
                 <IconButton onClick={(event) => setMoreInfoAnchor(event.currentTarget)} size="large">
@@ -197,9 +224,8 @@ let QuestionnaireItemCard = (props) => {
           </div>
         }
       />
-      <CardContent className={classes.questionnaireItemContent + (!!!plain ? " avatarCardContent" : '')}>
-        <Typography className={styles.title} variant="h6">{title || data[titleField] || ''}</Typography>
-        {children}
+      <CardContent className={!plain ? styles.withAvatar : undefined}>
+        { children }
         { editDialogOpen && <EditDialog
                               targetExists={true}
                               data={data}

@@ -36,11 +36,8 @@ import ObjectInput from "./ObjectInput";
 import TextInput from "./TextInput";
 import MarkdownTextField from "./MarkdownTextField";
 import ReferenceInput from "./ReferenceInput";
+import LabeledField from "./LabeledField";
 import { FieldsProvider } from "./FieldsContext.jsx";
-
-export function camelCaseToWords(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1).replace( /([A-Z])/g, " $1" ).toLowerCase();
-}
 
 let Fields = (props) => {
   let { data, JSON, edit, classes, condensed, ...rest } = props;
@@ -79,14 +76,9 @@ let Fields = (props) => {
     if (!hasValueToDisplay(key, value)) return '';
 
     return (<React.Fragment key={key}>
-      <Grid container alignItems='flex-start' spacing={2} direction="row">
-        <Grid item xs={condensed ? "auto" : 4}>
-          <Typography variant="subtitle2">{camelCaseToWords(key)}:</Typography>
-        </Grid>
-        <Grid item xs={condensed ? "auto" : 8}>
-          <ValueDisplay key={key} objectKey={key} value={value} data={data} />
-        </Grid>
-      </Grid>
+      <LabeledField condensed={condensed} name={key}>
+        <ValueDisplay key={key} objectKey={key} value={value} data={data} />
+      </LabeledField>
       {
         typeof(value) == "object" && typeof(value[data[key]]) == "object"?
         Object.entries(value[data[key]]).filter(([k, _]) => !k.startsWith("//"))

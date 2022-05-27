@@ -34,7 +34,7 @@ import LiveTable from "../dataHomepage/LiveTable.jsx";
 import NewItemButton from "../components/NewItemButton.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
-import { camelCaseToWords } from "../questionnaireEditor/Fields.jsx";
+import { camelCaseToWords } from "../questionnaireEditor/LabeledField.jsx";
 
 function Clinics(props) {
   const [currentClinicName, setCurrentClinicName] = useState("");
