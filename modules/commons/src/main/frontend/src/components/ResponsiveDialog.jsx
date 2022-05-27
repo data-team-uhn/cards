@@ -20,7 +20,12 @@
 import React, { forwardRef } from "react";
 import PropTypes from "prop-types";
 
-import { Dialog, DialogTitle, IconButton, useMediaQuery } from "@mui/material";
+import {
+  Dialog,
+  DialogTitle,
+  IconButton,
+  useMediaQuery
+} from "@mui/material";
 
 import makeStyles from '@mui/styles/makeStyles';
 

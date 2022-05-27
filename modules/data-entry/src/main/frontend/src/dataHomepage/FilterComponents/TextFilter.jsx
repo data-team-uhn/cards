@@ -68,7 +68,8 @@ const TextFilter = forwardRef((props, ref) => {
       value={input}
       inputRef={ref}
       placeholder="empty"
-      {...rest} />
+      {...rest}
+      />
   );
 });
 

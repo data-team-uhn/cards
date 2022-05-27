@@ -147,9 +147,7 @@ function PedigreeQuestion(props) {
             <Button variant="outlined" onClick={() => {setExpanded(true);}}>Draw</Button>
           }
           </div>
-          <Dialog
-            fullScreen
-            open={expanded}
+          <Dialog fullScreen open={expanded}
             onClose={() => { setExpanded(false); }}
             TransitionProps={{
               onEntering: () => { openPedigree(); },

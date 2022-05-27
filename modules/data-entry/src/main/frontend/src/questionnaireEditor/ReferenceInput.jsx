@@ -184,7 +184,7 @@ let ReferenceInput = (props) => {
         .then((json) => {
           let nodePath = json["rows"]?.[0]?.["@path"];
           nodePath || Promise.reject("Invalid reference: " + field);
-          return fetch(new URL(nodePath.match(/(\/Questionnaires\/.+?)\//)[1] + ".json", window.location.origin));
+          return fetch(new URL(nodePath.match(/(\/Questionnaires\/.+?)\//)[1] + ".json", window.location.origin))
         })
     }
     fetchRequest
@@ -276,7 +276,7 @@ let ReferenceInput = (props) => {
         {getReactComponentFromFields(options)}
       </Select>
     </EditorInput>
-  );
+  )
 }
 
 ReferenceInput.propTypes = {

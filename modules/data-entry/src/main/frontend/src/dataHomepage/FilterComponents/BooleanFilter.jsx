@@ -62,7 +62,8 @@ const BooleanFilter = forwardRef((props, ref) => {
       }}
       className={classes.answerField}
       ref={ref}
-      {...rest}>
+      {...rest}
+      >
       { options.map( (answer) => {
           return(
             <MenuItem value={answer[1]} key={answer[1]} data-label={answer[0]}>{answer[0]}</MenuItem>

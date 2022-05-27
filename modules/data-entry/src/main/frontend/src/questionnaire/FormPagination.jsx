@@ -19,7 +19,11 @@
 
 import React, { useState, useEffect } from "react";
 
-import { Button, MobileStepper, useMediaQuery } from "@mui/material";
+import {
+  Button,
+  MobileStepper,
+  useMediaQuery
+} from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
 
@@ -219,7 +223,7 @@ function FormPagination (props) {
       saveButton
     : null
   );
-}
+};
 
 FormPagination.propTypes = {
   enableSave: PropTypes.bool,

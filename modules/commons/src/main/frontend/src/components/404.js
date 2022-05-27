@@ -25,8 +25,8 @@ import { appTheme } from "../themePalette.jsx";
 ReactDOM.render(
   <StyledEngineProvider injectFirst>
     <ThemeProvider theme={appTheme}>
-	  <PageNotFound />
-	</ThemeProvider>
+      <PageNotFound />
+    </ThemeProvider>
   </StyledEngineProvider>,
   document.getElementById('main-404-container')
 );

@@ -150,7 +150,9 @@ function TimeQuestion(props) {
               checkError(event.target.value);
               changeTime(event.target.value);
             }}
-            value={selectedTime} />
+
+            value={selectedTime}
+          />
         </>
       }
       <Answer
@@ -162,8 +164,7 @@ function TimeQuestion(props) {
         pageActive={pageActive}
         {...rest}
         />
-    </Question>
-  );
+    </Question>);
 }
 
 TimeQuestion.propTypes = {

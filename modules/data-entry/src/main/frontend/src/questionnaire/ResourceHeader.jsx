@@ -20,7 +20,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { Breadcrumbs, Collapse, Grid, Typography, useScrollTrigger } from "@mui/material";
+import {
+  Breadcrumbs,
+  Collapse,
+  Grid,
+  Typography,
+  useScrollTrigger
+} from "@mui/material";
 
 import makeStyles from '@mui/styles/makeStyles';
 

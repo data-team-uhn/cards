@@ -147,8 +147,9 @@ function DateQuestionFull(props) {
         onChange={(event) => processChange(event.target.value, isEnd)}
         onBlur={(event) => processBlur(event.target.value, isEnd)}
         placeholder={dateFormat.toLowerCase()}
-        value={value} />
-    );
+        value={value}
+      />
+    )
   }
 
   return (

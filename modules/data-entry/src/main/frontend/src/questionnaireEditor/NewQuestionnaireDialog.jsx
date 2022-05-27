@@ -19,17 +19,7 @@
 import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
 
-import {
-  Avatar,
-  Button,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Avatar, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import AddIcon from "@mui/icons-material/Add";
 import { v4 as uuidv4 } from 'uuid';
@@ -149,7 +139,7 @@ function NewQuestionnaireDialog(props) {
            inProgress={!open && isFetching}
       />
     </React.Fragment>
-  );
+  )
 }
 
 export default withStyles(QuestionnaireStyle)(withRouter(NewQuestionnaireDialog));

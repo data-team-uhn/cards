@@ -17,20 +17,7 @@
 
 import React, { useState } from "react";
 
-import {
-  Button,
-  Grid,
-  Dialog,
-  DialogTitle,
-  DialogActions,
-  DialogContent,
-  InputLabel,
-  MenuItem,
-  TextField,
-  Typography,
-  Select,
-  FormHelperText,
-} from "@mui/material";
+import { Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, InputLabel, MenuItem, TextField, Typography, Select, FormHelperText } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
 
@@ -158,7 +145,8 @@ function SubjectTypeDialog(props) {
               onChange={(event) => { setLabel(event.target.value); validateLabel(event.target.value); }}
               autoFocus
               error={isDuplicateLabel}
-              helperText={isDuplicateLabel ? "This label already exists" : "Required*"} />
+                helperText={isDuplicateLabel ? "This label already exists" : "Required*"}
+            />
           </Grid>
           { (isEdit || subjectTypes && subjectTypes.length > 0) &&
             <>
@@ -173,7 +161,8 @@ function SubjectTypeDialog(props) {
                   label="optional"
                   value={parentSubject}
                   onChange={(event) => { setParentSubject(event.target.value); setError(""); }}
-                  displayEmpty>
+                  displayEmpty
+                >
                   <MenuItem key="none" value="/SubjectTypes">
                     <em>None</em>
                   </MenuItem>
@@ -198,7 +187,8 @@ function SubjectTypeDialog(props) {
               type="number"
               inputProps={{min: 0}}
               value={order}
-              onChange={(event) => { setOrder(event.target.value); setError(""); }} />
+              onChange={(event) => { setOrder(event.target.value); setError(""); }}
+            />
           </Grid>
           <Grid item xs={4}>
             <Typography>Subject list label</Typography>
@@ -209,7 +199,8 @@ function SubjectTypeDialog(props) {
               fullWidth
               type="text"
               value={subjectListLabel}
-              onChange={(event) => { setSubjectListLabel(event.target.value); setError(""); }} />
+              onChange={(event) => { setSubjectListLabel(event.target.value); setError(""); }}
+            />
           </Grid>
         </Grid>
         {error && <Typography color='error'>{error}</Typography>}

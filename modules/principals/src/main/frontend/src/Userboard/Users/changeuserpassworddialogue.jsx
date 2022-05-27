@@ -16,16 +16,7 @@
 */
 
 import React from "react";
-import {
-  Button,
-  Grid,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  TextField,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Button, Grid, Dialog, DialogTitle, DialogContent, TextField, Tooltip, Typography } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -76,7 +67,8 @@ class FormFields extends React.Component {
             value={oldPwd || ""}
             onChange={change.bind(null, "oldPwd")}
             className={classes.form}
-            required />
+            required
+          />
         }
         <TextField
           variant="standard"
@@ -90,7 +82,8 @@ class FormFields extends React.Component {
           value={newPwd || ""}
           onChange={change.bind(null, "newPwd")}
           className={classes.form}
-          required />
+          required
+        />
         <TextField
           variant="standard"
           id="newPwdConfirm"
@@ -103,7 +96,8 @@ class FormFields extends React.Component {
           value={newPwdConfirm || ""}
           onChange={change.bind(null, "newPwdConfirm")}
           className={classes.form}
-          required />
+          required
+        />
         <Button variant="contained" size="small" className={classes.formAction} onClick={handleReset}>Close</Button>
         { !isValid ?
           // Render hover over and button

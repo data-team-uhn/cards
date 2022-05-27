@@ -190,8 +190,9 @@ function DateQuestionMonth(props) {
         onChange={(event) => setDate(event.target.value, isEnd)}
         onBlur={() => onBlur(value, isEnd)}
         placeholder={dateFormat.toLowerCase()}
-        value={value} />
-    );
+        value={value}
+      />
+    )
   }
 
   return (

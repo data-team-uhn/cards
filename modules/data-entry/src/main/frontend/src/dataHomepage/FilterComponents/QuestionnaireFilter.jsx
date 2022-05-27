@@ -106,13 +106,14 @@ const QuestionnaireFilter = forwardRef((props, ref) => {
       }}
       className={classes.answerField}
       ref={ref}
-      {...rest}>
+      {...rest}
+      >
       {questionnaires.map((uuid) => (
         <MenuItem value={uuid} key={uuid} selected={selection && selection == uuid}>{uuidToTitle[uuid]}</MenuItem>
       ))
       }
     </Select>
-  );
+  )
 });
 
 QuestionnaireFilter.propTypes = {

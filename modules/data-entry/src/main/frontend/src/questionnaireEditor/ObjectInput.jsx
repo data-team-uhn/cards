@@ -20,7 +20,12 @@
 import React, { useState } from "react";
 import Fields from "./Fields"
 import PropTypes from "prop-types";
-import { Grid, MenuItem, Select, Typography } from "@mui/material";
+import {
+  Grid,
+  MenuItem,
+  Select,
+  Typography
+} from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
 
@@ -35,29 +40,31 @@ let ObjectInput = (props) => {
   const defaultValue = data[objectKey] || (Object.keys(value || {})[0] || '');
   let [ selectedValue, setSelectedValue ] = useState(defaultValue);
   
-  return <>
-  <EditorInput name={objectKey}>
-    <Select
-      variant="standard"
-      id={objectKey}
-      name={objectKey}
-      defaultValue={defaultValue}
-      onChange={(event) => {
-        setSelectedValue(event.target.value);
-      }}>
-      { typeof(value) === 'object' && Object.keys(value).map((name, val) =>
-        <MenuItem key={val} name={name} id={name} value={name}>
-          <Typography>{name}</Typography>
-        </MenuItem>
-      )}
-    </Select>
-  </EditorInput>
-  { typeof(value) === 'object' && selectedValue != '' && typeof (value[selectedValue]) === 'object' ?
-      <Fields data={data} JSON={value[selectedValue]} edit={true} {...rest} />
-    :
-    (selectedValue != '') && <Typography color="secondary" variant="subtitle2">Unsupported: {selectedValue}</Typography>
-  }
-  </>;
+  return (
+    <>
+    <EditorInput name={objectKey}>
+      <Select
+        variant="standard"
+        id={objectKey}
+        name={objectKey}
+        defaultValue={defaultValue}
+        onChange={(event) => {
+          setSelectedValue(event.target.value);
+        }}>
+        { typeof(value) === 'object' && Object.keys(value).map((name, val) =>
+          <MenuItem key={val} name={name} id={name} value={name}>
+            <Typography>{name}</Typography>
+          </MenuItem>
+        )}
+      </Select>
+    </EditorInput>
+    { typeof(value) === 'object' && selectedValue != '' && typeof (value[selectedValue]) === 'object' ?
+        <Fields data={data} JSON={value[selectedValue]} edit={true} {...rest} />
+      :
+      (selectedValue != '') && <Typography color="secondary" variant="subtitle2">Unsupported: {selectedValue}</Typography>
+    }
+    </>
+  )
 }
 
 ObjectInput.propTypes = {

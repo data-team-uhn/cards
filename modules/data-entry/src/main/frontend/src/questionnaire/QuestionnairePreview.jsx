@@ -21,7 +21,11 @@ import React, { useEffect, useState, useContext } from "react";
 import { useHistory } from 'react-router-dom';
 import PropTypes from "prop-types";
 
-import { CircularProgress, Grid, Typography } from "@mui/material";
+import {
+  CircularProgress,
+  Grid,
+  Typography
+} from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
 
@@ -123,6 +127,6 @@ function QuestionnairePreview (props) {
       />
     }
   </>);
-}
+};
 
 export default withStyles(QuestionnaireStyle)(QuestionnairePreview);

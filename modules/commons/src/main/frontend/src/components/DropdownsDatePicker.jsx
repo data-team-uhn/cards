@@ -23,7 +23,6 @@
 //
 
 import React, { useState } from "react";
-
 import { Select, MenuItem } from "@mui/material";
 import makeStyles from '@mui/styles/makeStyles';
 import PropTypes from "prop-types";
@@ -224,7 +223,8 @@ function DropdownsDatePicker(props) {
               return <div className={classes.placeholder}>Year</div>;
             }
             return selected;
-        }}>
+        }}
+      >
         {generateYearOptions()}
       </Select>
     )
@@ -248,7 +248,7 @@ function DropdownsDatePicker(props) {
         }}>
         {generateMonthOptions()}
       </Select>
-    );
+    )
   }
 
   let renderDay = () => {
@@ -272,7 +272,7 @@ function DropdownsDatePicker(props) {
         }}>
         {generateDayOptions()}
       </Select>
-    );
+    )
   }
 
   const renderParts = {

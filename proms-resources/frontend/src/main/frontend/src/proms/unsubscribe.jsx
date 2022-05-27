@@ -85,7 +85,7 @@ function Unsubscribe (props) {
       });
   }, []);
 
-  return (
+  return
     <Paper className={classes.paper} elevation={0}>
         <Grid
           container
@@ -136,7 +136,6 @@ function Unsubscribe (props) {
           </Grid>
         </Grid>
     </Paper>
-  );
 }
 
 ReactDOM.render(

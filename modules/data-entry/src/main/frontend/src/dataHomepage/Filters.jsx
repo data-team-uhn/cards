@@ -18,15 +18,7 @@
 //
 import React, { useCallback, useRef, useState, useContext, useEffect } from "react";
 import { Chip, Typography, Button, Dialog, CircularProgress, IconButton, Tooltip } from "@mui/material";
-import {
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Grid,
-  Select,
-  MenuItem,
-  TextField,
-} from "@mui/material";
+import { DialogActions, DialogContent, DialogTitle, Grid, Select, MenuItem, TextField } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import Add from "@mui/icons-material/Add";
 import CloseIcon from '@mui/icons-material/Close';
@@ -431,7 +423,7 @@ function Filters(props) {
     })
   }
 
-  return (
+  return(
     <div className={classes.filterContainer}>
       {/* Place the stuff in one row on the top */}
       <Typography display="inline" className={classes.filterLabel}>
@@ -521,7 +513,8 @@ function Filters(props) {
                       }}
                       className={classes.answerField}
                       autoFocus={(index === editingFilters.length-1 && toFocus === index)}
-                      displayEmpty>
+                      displayEmpty
+                      >
                         <MenuItem value="" disabled>
                           <span className={classes.selectPlaceholder}>Add new filter...</span>
                         </MenuItem>
@@ -533,7 +526,8 @@ function Filters(props) {
                     <Select
                       variant="standard"
                       value={filterDatum.comparator || ""}
-                      onChange={(event) => {handleChangeComparator(index, event.target.value);}}>
+                      onChange={(event) => {handleChangeComparator(index, event.target.value);}}
+                      >
                       {(filterComparators[filterDatum.name]?.map( (name) => {
                         return(
                             <MenuItem value={name} key={name}>{name}</MenuItem>

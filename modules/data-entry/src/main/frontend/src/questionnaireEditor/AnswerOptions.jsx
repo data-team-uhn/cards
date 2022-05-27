@@ -57,7 +57,6 @@ let extractSortedOptions = (data) => {
                             .slice()
                             .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder));
 }
-
 const useStyles = makeStyles(theme => ({
     answerOption: {
       border: "1px solid " + theme.palette.divider,
@@ -253,7 +252,7 @@ let AnswerOptions = (props) => {
       <Tooltip title={!item.description ? "Add a description" : "Edit description"}>
         <IconButton
           size="large"
-          onClick={(event) => {
+                    onClick={(event) => {
                                 setDescriptionAnchorEl(event.currentTarget);
                                 setDescriptionIndex(index);
                                 setDescriptionLabel(item.label || item.value);
@@ -303,8 +302,9 @@ let AnswerOptions = (props) => {
             helperText={option.isDuplicate ? 'duplicated value or label' : ''}
             className={classes.answerOptionInput}
             defaultValue={option.data.label? option.data.value + " = " + option.data.label : option.data.value}
-            onChange={(event) => { handleSpecialInputOption(option, event.target.value); }} />
-        </Tooltip>
+            onChange={(event) => { handleSpecialInputOption(option, event.target.value); }}
+          />
+      </Tooltip>
         </Grid>
         <Grid item xs={3} className={classes.answerOptionActions}>
         {generateDescriptionIcon(option.data, index, true)}
@@ -336,7 +336,7 @@ let AnswerOptions = (props) => {
         }
         </Grid>
       </Grid>
-    );
+    )
   }
   
   let handlePopoverClose = () => {
@@ -392,7 +392,7 @@ let AnswerOptions = (props) => {
                     >
                       <Grid item xs={1}>
                         <Tooltip title="Drag to reorder">
-                          <IconButton  size="large" {...provided.dragHandleProps} className={classes.optionsDragIndicator}>
+                          <IconButton {...provided.dragHandleProps} className={classes.optionsDragIndicator}>
                             <DragIndicatorIcon />
                           </IconButton>
                         </Tooltip>
@@ -417,18 +417,18 @@ let AnswerOptions = (props) => {
                             }}/>
                         </Tooltip>
                         <TextField
-                          variant="standard"
                           InputProps={{
                             readOnly: true,
                           }}
                           className={classes.answerOptionReadonly}
                           defaultValue={value.label? value.value + " = " + value.label : value.value}
-                          multiline />
+                          multiline
+                        />
                       </Grid>
                       <Grid item xs={3} className={classes.answerOptionActions}>
                         {generateDescriptionIcon(value, index, false)}
                         <Tooltip title="Delete option">
-                          <IconButton size="large" onClick={() => { deleteOption(index); }} className={classes.answerOptionButton}>
+                          <IconButton onClick={() => { deleteOption(index); }} className={classes.answerOptionButton}>
                             <CloseIcon/>
                           </IconButton>
                         </Tooltip>
@@ -443,7 +443,6 @@ let AnswerOptions = (props) => {
         </Droppable>
       </DragDropContext>
       <TextField
-        variant="standard"
         fullWidth
         className={classes.newOptionInput}
         value={tempValue}
@@ -462,9 +461,11 @@ let AnswerOptions = (props) => {
             }
           }
         })}
-        multiline />
+        multiline
+        />
       { generateSpecialOptions(1) }
       <Popover
+        disableBackdropClick
         disableEscapeKeyDown
         open={Boolean(descriptionAnchorEl)}
         anchorEl={descriptionAnchorEl}

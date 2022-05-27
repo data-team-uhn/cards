@@ -19,7 +19,11 @@
 
 import React, { useState } from "react";
 import PropTypes from 'prop-types';
-import { Grid, TextField, Typography } from "@mui/material";
+import {
+  Grid,
+  TextField,
+  Typography
+} from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
 
@@ -54,10 +58,11 @@ let NumberInput = (props) => {
           inputProps: { 
             min: defaultValue 
           }
-        }} />
+        }}
+      />
       <input type="hidden" name={objectKey + "@TypeHint"} value={type} />
     </EditorInput>
-  );
+  )
 }
 
 NumberInput.propTypes = {

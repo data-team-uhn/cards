@@ -20,7 +20,16 @@ import React, { useState } from "react";
 
 import LiveTable from "../dataHomepage/LiveTable.jsx";
 
-import { Avatar, Card, CardContent, CardHeader, Divider, Tab, Tabs, Typography } from "@mui/material";
+import {
+  Avatar,
+  Card,
+  CardContent,
+  CardHeader,
+  Divider,
+  Tab,
+  Tabs,
+  Typography
+} from "@mui/material";
 
 
 import makeStyles from '@mui/styles/makeStyles';

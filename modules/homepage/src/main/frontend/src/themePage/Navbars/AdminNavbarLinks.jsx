@@ -142,10 +142,10 @@ function HeaderLinks (props) {
         className={popperOpen ? classes.aboveBackground : ""}
         modifiers={[{
           name: 'preventOverflow',
-	      enabled: true,
-	      options: {
-	        tether: true,
-	      }
+          enabled: true,
+          options: {
+            tether: true,
+          }
         }]}
         placement = "bottom-end"
         transition

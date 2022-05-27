@@ -181,7 +181,7 @@ class SignIn extends React.Component {
           >
             { (this.state.phase == "USERNAME_ENTRY" || this.state.singleStepEntry) &&
               <React.Fragment>
-                <FormControl variant="standard" margin="normal" required fullWidth>
+                  <FormControl variant="standard" margin="normal" required fullWidth>
                   <InputLabel htmlFor="j_username">Username{this.state.singleStepEntry ? "" : " or email address"}</InputLabel>
                   <Input id="j_username" name="j_username" autoComplete="email" autoFocus onChange={(event) => {this.setState({username: event.target.value});}}/>
                 </FormControl>
@@ -201,7 +201,7 @@ class SignIn extends React.Component {
 
             { (this.state.phase == "PASSWORD_ENTRY" || this.state.singleStepEntry) &&
               <React.Fragment>
-                <FormControl variant="standard" margin="normal" required fullWidth>
+                  <FormControl variant="standard" margin="normal" required fullWidth>
                   <InputLabel htmlFor="j_password">Password{this.state.singleStepEntry ? "" : (" for " + this.state.username)}</InputLabel>
                   <Input name="j_password" type={this.state.passwordIsMasked ? 'text' : 'password'} id="j_password" autoComplete="current-password" autoFocus={this.state.phase === "PASSWORD_ENTRY"} onChange={(event) => {this.setState({password: event.target.value});}}
                     endAdornment={

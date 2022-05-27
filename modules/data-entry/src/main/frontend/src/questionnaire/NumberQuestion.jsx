@@ -379,7 +379,8 @@ function NumberQuestion(props) {
               placeholder={typeof minValue != "undefined" ? `${minValue}` : ""}
               onChange={event => setValue(setLowerLimit, event.target.value)}
               inputProps={textFieldProps}
-              InputProps={Object.assign({shrink: "true"}, muiInputProps)} />
+              InputProps={Object.assign({shrink: "true"}, muiInputProps)}
+              />
             <span className="separator">&mdash;</span>
             <TextField
               variant="standard"
@@ -388,7 +389,8 @@ function NumberQuestion(props) {
               placeholder={typeof maxValue != "undefined" ? `${maxValue}` : ""}
               onChange={event => setValue(setUpperLimit, event.target.value)}
               inputProps={textFieldProps}
-              InputProps={Object.assign({shrink: "true"}, muiInputProps)} />
+              InputProps={Object.assign({shrink: "true"}, muiInputProps)}
+              />
           </div>)
         }
         <Answer
@@ -441,8 +443,7 @@ function NumberQuestion(props) {
         }
         </>
       }
-    </Question>
-  );
+    </Question>);
 }
 
 // Helper function to bridge react-number-format with @material-ui

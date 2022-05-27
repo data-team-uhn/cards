@@ -185,13 +185,13 @@ hist.listen(({action, location}) => window.dispatchEvent(new Event("beforeunload
 ReactDOM.render(
   <StyledEngineProvider injectFirst>
     <ThemeProvider theme={appTheme}>
-	  <Router history={hist}>
-	    <Switch>
-	      <Route path="/content.html/" component={MainComponent} />
-	      <Redirect from="/" to="/content.html/Questionnaires/User"/>
-	      <Redirect from="/content" to="/content.html/Questionnaires/User" />
-	    </Switch>
-	  </Router>
+      <Router history={hist}>
+        <Switch>
+          <Route path="/content.html/" component={MainComponent} />
+          <Redirect from="/" to="/content.html/Questionnaires/User"/>
+          <Redirect from="/content" to="/content.html/Questionnaires/User" />
+        </Switch>
+      </Router>
     </ThemeProvider>
   </StyledEngineProvider>,
   document.querySelector('#main-container')

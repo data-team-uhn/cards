@@ -579,7 +579,7 @@ function SubjectMemberInternal (props) {
       }
     </>
   );
-}
+};
 
 let SubjectMember = withRouter(SubjectMemberInternal);
 
@@ -731,7 +731,7 @@ export function displayQuestion(entryDefinition, data, key, classes) {
     );
   }
   else return null;
-}
+};
 
 // Handle questions and sections differently
 export function handleDisplay(entryDefinition, data, key, handleDisplayQuestion) {

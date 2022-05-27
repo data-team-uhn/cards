@@ -18,7 +18,10 @@
 //
 
 import React, { useContext, useState } from "react";
-import { Grid, Typography } from "@mui/material";
+import {
+  Grid,
+  Typography
+} from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import statisticsStyle from "./statisticsStyle.jsx";

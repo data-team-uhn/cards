@@ -20,7 +20,12 @@ import React, { useState, useEffect, useContext } from "react";
 import { withRouter } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 
-import { Button, DialogActions, DialogContent, Typography } from "@mui/material";
+import {
+  Button,
+  DialogActions,
+  DialogContent,
+  Typography
+} from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import AddIcon from "@mui/icons-material/Add";
 import MaterialTable from "material-table";

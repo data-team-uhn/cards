@@ -332,7 +332,8 @@ function FileQuestion(props) {
                         value={knownAnswers?.[filepath]?.[nameIdx]}
                         className={classes.fileDetail + " " + classes.fileResourceAnswerInput}
                         key={nameIdx}
-                        readOnly />
+                        readOnly
+                      />
                     ))}
                   </span>
                 }
@@ -352,8 +353,7 @@ function FileQuestion(props) {
         pageActive={pageActive}
         {...rest}
         />
-    </Question>
-  );
+    </Question>);
 }
 
 FileQuestion.propTypes = {

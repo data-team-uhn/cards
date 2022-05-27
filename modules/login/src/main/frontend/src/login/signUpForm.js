@@ -89,7 +89,8 @@ class FormFields extends React.Component {
           onChange={change.bind(null, "username")}
           fullWidth
           className={classes.form}
-          required />
+          required
+        />
         <TextField
           variant="standard"
           id="password"
@@ -102,7 +103,8 @@ class FormFields extends React.Component {
           value={password}
           onChange={change.bind(null, "password")}
           className={classes.form}
-          required />
+          required
+        />
         <TextField
           variant="standard"
           id="confirmPassword"
@@ -115,7 +117,8 @@ class FormFields extends React.Component {
           value={confirmPassword}
           onChange={change.bind(null, "confirmPassword")}
           className={classes.form}
-          required />
+          required
+        />
         { !loginOnSuccess &&
           <Button variant="contained" size="small" onClick={handleReset} className={classes.submit + " " + classes.closeButton}>Close</Button>
         }

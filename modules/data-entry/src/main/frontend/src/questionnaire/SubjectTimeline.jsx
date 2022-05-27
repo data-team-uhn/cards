@@ -42,7 +42,9 @@ import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import { displayQuestion } from "./Subject.jsx";
 import { ENTRY_TYPES, QUESTION_TYPES, SECTION_TYPES } from "./FormEntry.jsx"
 
-import { Typography } from "@mui/material";
+import {
+  Typography
+} from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
 

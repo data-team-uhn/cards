@@ -20,16 +20,7 @@ import classNames from "classnames";
 import React, { useRef, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
-import {
-  ClickAwayListener,
-  Grow,
-  IconButton,
-  Input,
-  InputAdornment,
-  InputLabel,
-  FormControl,
-  Typography,
-} from "@mui/material";
+import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, InputLabel, FormControl, Typography } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import { Divider, LinearProgress, MenuItem, MenuList, Paper, Popper } from "@mui/material";
 
@@ -413,45 +404,43 @@ function VocabularyQuery(props) {
   }
 
   return (
-    <div>
-      {props.children}
+      <div>
+        {props.children}
 
-      <div className={variant == "labeled" ? classes.searchWrapper : ""}>
-        {variant == "labeled" ?
-        <FormControl
-          variant="standard"
-          className={isNested ? classes.nestedSearchInput : classes.search}>
-          <InputLabel
-            classes={{
-              root: classes.searchLabel,
-              shrink: classes.searchShrink,
-            }}
-          >
-            { /* Cover up a bug that causes the label to overlap the value:
-                 if it has a displayed value and isn't focused, don't show the label
-               */ }
-            { (document.activeElement === anchorEl.current || (!value && !(anchorEl.current?.value))) ? 'Search' : ''}
-          </InputLabel>
-          {inputEl}
-        </FormControl>
-        :
-        inputEl}
-        <LinearProgress className={classes.progressIndicator + " " + (suggestionsLoading ? "" : classes.inactiveProgress)}/>
-        { error && <Typography component="div" color="error" variant="caption">{error}</Typography> }
-      </div>
-      {/* Suggestions list using Popper */}
-      <Popper
-        open={suggestionsVisible}
-        anchorEl={anchorEl.current}
-        transition
-        className={
-          classNames({ [classes.popperClose]: !open })
-          + " " + classes.popperNav
-          + " " + classes.popperListOnTop
-        }
-        placement = "bottom-start"
-        keepMounted
-        modifiers={[
+        <div className={variant == "labeled" ? classes.searchWrapper : ""}>
+          {variant == "labeled" ?
+          <FormControl variant="standard" className={isNested ? classes.nestedSearchInput : classes.search}>
+            <InputLabel
+              classes={{
+                root: classes.searchLabel,
+                shrink: classes.searchShrink,
+              }}
+            >
+              { /* Cover up a bug that causes the label to overlap the value:
+                   if it has a displayed value and isn't focused, don't show the label
+                 */ }
+              { (document.activeElement === anchorEl.current || (!value && !(anchorEl.current?.value))) ? 'Search' : ''}
+            </InputLabel>
+            {inputEl}
+          </FormControl>
+          :
+          inputEl}
+          <LinearProgress className={classes.progressIndicator + " " + (suggestionsLoading ? "" : classes.inactiveProgress)}/>
+          { error && <Typography component="div" color="error" variant="caption">{error}</Typography> }
+        </div>
+        {/* Suggestions list using Popper */}
+        <Popper
+          open={suggestionsVisible}
+          anchorEl={anchorEl.current}
+          transition
+          className={
+            classNames({ [classes.popperClose]: !open })
+            + " " + classes.popperNav
+            + " " + classes.popperListOnTop
+          }
+          placement = "bottom-start"
+          keepMounted
+          modifiers={[
 		    {
 		      name: 'flip',
 		      enabled: true
@@ -470,40 +459,40 @@ function VocabularyQuery(props) {
 		      name: 'hide',
 		      enabled: true
 		    }
-        ]}
-        ref={menuPopperRef}
-      >
-        {({ TransitionProps }) => (
-          <Grow
-            {...TransitionProps}
-            id="menu-list-grow"
-            style={{
-              transformOrigin: "left top"
-            }}
-          >
-            <Paper>
-              <ClickAwayListener onClickAway={closeAutocomplete}>
-                <MenuList role="menu" ref={menuRef}>
-                  {suggestions}
-                </MenuList>
-              </ClickAwayListener>
-            </Paper>
-          </Grow>
-        )}
-      </Popper>
-      <VocabularyBrowser
-        infoPath={termPath}
-        onCloseInfo={closeInfo}
-        infoButtonRefs={buttonRefs}
-        browserRef={browserRef}
-        infoboxRef={infoboxRef}
-        questionDefinition={questionDefinition}
-        allowTermSelection={allowTermSelection}
-        initialSelection={initialSelection}
-        onCloseBrowser={onCloseBrowser}
-      />
-    </div>
-  );
+          ]}
+          ref={menuPopperRef}
+        >
+          {({ TransitionProps }) => (
+            <Grow
+              {...TransitionProps}
+              id="menu-list-grow"
+              style={{
+                transformOrigin: "left top"
+              }}
+            >
+              <Paper>
+                <ClickAwayListener onClickAway={closeAutocomplete}>
+                  <MenuList role="menu" ref={menuRef}>
+                    {suggestions}
+                  </MenuList>
+                </ClickAwayListener>
+              </Paper>
+            </Grow>
+          )}
+        </Popper>
+        <VocabularyBrowser
+          infoPath={termPath}
+          onCloseInfo={closeInfo}
+          infoButtonRefs={buttonRefs}
+          browserRef={browserRef}
+          infoboxRef={infoboxRef}
+          questionDefinition={questionDefinition}
+          allowTermSelection={allowTermSelection}
+          initialSelection={initialSelection}
+          onCloseBrowser={onCloseBrowser}
+        />
+      </div>
+    );
 }
 
 VocabularyQuery.propTypes = {

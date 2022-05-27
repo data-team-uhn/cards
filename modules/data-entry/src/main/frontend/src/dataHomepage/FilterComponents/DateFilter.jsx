@@ -68,8 +68,9 @@ const DateFilter = forwardRef((props, ref) => {
       defaultValue={defaultValue}
       onChange={(event) => {onChangeInput(event.target.value)}}
       inputRef={ref}
-      {...rest} />
-  );
+      {...rest}
+      />
+  )
 });
 
 DateFilter.propTypes = {

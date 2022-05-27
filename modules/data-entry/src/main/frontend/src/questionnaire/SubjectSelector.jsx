@@ -21,18 +21,7 @@ import React, { useRef, useEffect, useState, useContext } from "react";
 import { useHistory } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
-import {
-  Avatar,
-  Button,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  ListItem,
-  ListItemAvatar,
-  TextField,
-} from "@mui/material";
+import { Avatar, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, ListItem, ListItemAvatar, TextField } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import MaterialTable from "material-table";
@@ -1021,7 +1010,7 @@ function SubjectSelectorList(props) {
       />
     </React.Fragment>
   )
-}
+};
 
 const StyledSubjectSelectorList = withStyles(QuestionnaireStyle, {withTheme: true})(SubjectSelectorList)
 

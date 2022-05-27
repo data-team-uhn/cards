@@ -74,15 +74,15 @@ var HPOLegend = Class.create( Legend, {
     $super(id, name, nodeID);
   },
 
- /**	
-     * Retrieve the color associated with the given object	
-     *	
-     * @method getObjectColor	
-     * @param {String|Number} id ID of the object	
-     * @return {String} CSS color value for that disorder	
-     */	
-  getObjectColor: function(id) {	
-    return '#CCCCCC';	
+ /**    
+     * Retrieve the color associated with the given object    
+     *    
+     * @method getObjectColor    
+     * @param {String|Number} id ID of the object    
+     * @return {String} CSS color value for that disorder    
+     */    
+  getObjectColor: function(id) {    
+    return '#CCCCCC';    
   },
 
   /**

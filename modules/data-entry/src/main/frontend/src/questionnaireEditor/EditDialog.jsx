@@ -163,10 +163,11 @@ let EditDialog = (props) => {
             error={variableNameError}
             helperText={variableNameError}
             multiline
-            fullWidth />
+            fullWidth
+          />
         }</Grid>
       </Grid>
-    );
+    )
   }
 
   let checkVariableName = (newValue) => {

@@ -19,21 +19,7 @@
 import React from "react";
 import classNames from "classnames";
 import PropTypes from "prop-types";
-import {
-  Avatar,
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  ClickAwayListener,
-  Grow,
-  IconButton,
-  Link,
-  Popper,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Avatar, Button, Card, CardActions, CardContent, CardHeader, ClickAwayListener, Grow, IconButton, Link, Popper, Tooltip, Typography } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -80,10 +66,10 @@ function InfoBox(props) {
           tether: true,
           }
         },
-	    {
-	      name: 'arrow',
-	      enabled: true
-	    }
+        {
+          name: 'arrow',
+          enabled: true
+        }
       ]}
     >
       {({ TransitionProps }) => (

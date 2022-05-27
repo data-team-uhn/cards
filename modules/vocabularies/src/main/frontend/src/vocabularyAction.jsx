@@ -26,11 +26,9 @@ import {
   DialogContent,
   DialogTitle,
   CircularProgress,
-  List,
-  ListItem,
-  ListItemText,
+  List, ListItem, ListItemText,
   Typography,
-  Tooltip,
+  Tooltip
 } from "@mui/material";
 
 import makeStyles from '@mui/styles/makeStyles';

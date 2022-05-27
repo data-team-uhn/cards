@@ -17,16 +17,7 @@
 
 import React from "react";
 
-import {
-    Button,
-    Grid,
-    Dialog,
-    DialogTitle,
-    DialogActions,
-    DialogContent,
-    TextField,
-    Typography,
-} from "@mui/material";
+import { Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, TextField, Typography } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
 
@@ -80,7 +71,8 @@ class CreateGroupDialogue extends React.Component {
                                 name="name"
                                 label="Name"
                                 onChange={(event) => { this.setState({ newName: event.target.value, error: "" }); }}
-                                autoFocus />
+                                autoFocus
+                            />
                         </Grid>
                     </Grid>
                     {this.state.error && <Typography color='error'>{this.state.error}</Typography>}

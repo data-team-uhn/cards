@@ -574,6 +574,6 @@ function Form (props) {
       </Dialog>
     </form>
   );
-}
+};
 
 export default withStyles(QuestionnaireStyle)(withRouter(Form));

@@ -17,10 +17,9 @@
 //  under the License.
 //
 import React, { useState, useEffect } from "react";
-
 import {
   Toolbar,
-  Typography,
+  Typography
 } from "@mui/material";
 
 import makeStyles from '@mui/styles/makeStyles';
