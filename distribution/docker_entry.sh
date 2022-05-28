@@ -55,6 +55,7 @@ then
 elif [[ "${CARDS_PROJECT}" == 'cards4proms' ]]
 then
   featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4proms/${PROJECT_VERSION}/slingosgifeature"
+  SMTPS_ENABLED="true"
 fi
 
 if [ ! -z $DEV ]
@@ -105,6 +106,7 @@ do
   elif [[ ${legacyRunMode} == 'proms' ]]
   then
     featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4proms/${PROJECT_VERSION}/slingosgifeature"
+    SMTPS_ENABLED="true"
   elif [[ ${legacyRunMode} == 'test' ]]
   then
     featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-modules-test-forms/${PROJECT_VERSION}/slingosgifeature"
