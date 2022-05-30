@@ -51,10 +51,23 @@ const MAX_RESULTS = 10;
 //  isNested: If true, restyles the element to remove most padding and apply a negative margin for better nesting
 //  placeholder: String to display as the input element's placeholder
 //  value: String to use as the input element value
+//  questionDefinition: the metadata describing the resource question. Expected to include:
+//    - maxAnswers: if maxAnswers is 1, the suggestion list is considered single select, otherwise multi select)
+//    - primaryType: the type of resources queried
+//    - labelProperty: what property of the resource is used as the label
+//    - propertiesToSearch: when searching for resources based on texted entered by the user, what other properties
+//      of the resource node, in addition to labelProperty, should be queried
 //  onChange: Callback in term input change event
 //  enableSelection: Boolean enabler for selection from a resource browser
 //  initialSelection: Existing answers
 //  onRemoveOption: Function to remove added answer
+//  enableUserEntry: whether the user can choose to select a text that does not match any resources to store as the answer
+//  fetchSuggestions: a query function with the signature (inputText, onSuccessCallback, onFailure Callback) that implements
+//    a different way of obtaining suggestions for the given inputText.
+//    onSuccessCallback accepts the suggestion data as a parameter and displays the suggestions
+//    onFailureCallback takes no parameters and displays a generic failure message
+//  formatSuggestionData: a function for transforming the raw suggestion data into data that can be displayed by `showSuggestions`
+//  infoDisplayer: a component used to display further information about the resource
 //
 function ResourceQuery(props) {
   const { clearOnClick, onClick, focusAfterSelecting, disabled, variant, isNested, placeholder,
@@ -505,7 +518,13 @@ ResourceQuery.propTypes = {
     isNested: PropTypes.bool,
     placeholder: PropTypes.string,
     value: PropTypes.string,
-    questionDefinition: PropTypes.object.isRequired,
+    questionDefinition: PropTypes.shape({
+      text: PropTypes.string.isRequired,
+      maxAnswers: PropTypes.number,
+      primaryType: PropTypes.string,
+      labelProperty: PropTypes.string,
+      propertiesToSearch: PropTypes.string,
+    }).isRequired,
     onChange: PropTypes.func,
     enableSelection: PropTypes.bool,
     initialSelection: PropTypes.array,

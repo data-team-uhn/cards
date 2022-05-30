@@ -39,7 +39,7 @@ function ResourceQuestion(props) {
   const [options, setOptions] = useState();
 
   // If the display mode is list or select, set a limit to how many entries can be displayed in
-  // the lsit or dropdown.
+  // the list or dropdown.
   // If the real number of resources matching the criteria specified by the question definition
   // excedes this limit, ignore the specified displayMode and use a suggested input instead.
   const MAX_TO_DISPLAY = 50;
@@ -107,6 +107,8 @@ ResourceQuestion.propTypes = {
   classes: PropTypes.object.isRequired,
   questionDefinition: PropTypes.shape({
     text: PropTypes.string.isRequired,
+    maxAnswers: PropTypes.number,
+    displayMode: PropTypes.string,
     primaryType: PropTypes.string,
     labelProperty: PropTypes.string,
     propertiesToSearch: PropTypes.string,
