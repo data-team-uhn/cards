@@ -56,6 +56,9 @@ elif [[ "${CARDS_PROJECT}" == 'cards4proms' ]]
 then
   featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4proms/${PROJECT_VERSION}/slingosgifeature"
   SMTPS_ENABLED="true"
+elif [[ "${CARDS_PROJECT}" == 'cards4heracles' ]]
+then
+  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4heracles/${PROJECT_VERSION}/slingosgifeature"
 fi
 
 if [ ! -z $DEV ]
