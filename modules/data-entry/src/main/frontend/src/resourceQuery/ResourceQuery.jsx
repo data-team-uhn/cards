@@ -376,7 +376,11 @@ function ResourceQuery(props) {
     // List items getting deleted will overwrite new browser button refs, so
     // we must ignore deregistration events
     if (node) {
-      buttonRefs[id] = node;
+      setButtonRefs(oldRefs => {
+        let newRefs = Object.assign({}, oldRefs);
+        newRefs[id] = node;
+        return newRefs;
+      });
     }
   }
 
@@ -451,11 +455,11 @@ function ResourceQuery(props) {
           open={suggestionsVisible}
           anchorEl={anchorEl.current}
           transition
-          className={
-            classNames({ [classes.popperClose]: !open })
-            + " " + classes.popperNav
-            + " " + classes.popperListOnTop
-          }
+          className={classNames(
+            {[classes.popperClose]: !open},
+            classes.popperNav,
+            classes.popperListOnTop
+          )}
           placement = "bottom-start"
           keepMounted
           modifiers={{
