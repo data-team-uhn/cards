@@ -215,7 +215,7 @@ function ResourceQuery(props) {
       .catch(onFailure);
   });
 
-  let shapeSuggestionData = (rawData, query) => {
+  let formatSuggestion = (rawData, query) => {
     if (rawData.error) return rawData;
 
     if (formatSuggestionData) {
@@ -254,7 +254,7 @@ function ResourceQuery(props) {
 
     if (data["rows"]?.length > 0) {
       data["rows"].forEach((element) => {
-        let suggestion = shapeSuggestionData(element, query);
+        let suggestion = formatSuggestion(element, query);
         showUserEntry = showUserEntry && !suggestion.isPerfectMatch;
 
         suggestions.push(
