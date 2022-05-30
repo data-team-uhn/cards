@@ -18,11 +18,16 @@
 -->
 
 <node>
-	<name>Cohort</name>
+	<name>Historical CPET Tests</name>
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
+		<name>maxPerSubject</name>
+		<value>1</value>
+		<type>Long</type>
+	</property>
+	<property>
 		<name>title</name>
-		<value>Cohort assignment</value>
+		<value>Historical CPET Tests</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -33,72 +38,64 @@
 		<type>Reference</type>
 	</property>
 	<node>
-		<name>cohort</name>
-		<primaryNodeType>cards:Question</primaryNodeType>
+		<name>CPET</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
-			<name>text</name>
-			<value>Cohort</value>
+			<name>label</name>
+			<value>CPET</value>
 			<type>String</type>
 		</property>
-		<property>
-			<name>minAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
 		<node>
-			<name>Cohort1</name>
-			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<name>cpet_date</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
-				<name>defaultOrder</name>
+				<name>text</name>
+				<value>Date of CPET</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dateFormat</name>
+				<value>MM/dd/yyyy</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
 			</property>
 			<property>
-				<name>value</name>
-				<value>Cohort 1</value>
-				<type>String</type>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
 			</property>
 		</node>
 		<node>
-			<name>Cohort2</name>
-			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<name>cpet_peak_vo2_historic</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
-				<name>defaultOrder</name>
-				<value>2</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>value</name>
-				<value>Cohort 2</value>
+				<name>text</name>
+				<value>Peak VO2</value>
 				<type>String</type>
 			</property>
-		</node>
-		<node>
-			<name>Cohort3</name>
-			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
-				<name>defaultOrder</name>
-				<value>3</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>value</name>
-				<value>Cohort 3</value>
+				<name>dataType</name>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
-		</node>
-		<node>
-			<name>Cohort4</name>
-			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
-				<name>defaultOrder</name>
-				<value>4</value>
-				<type>Long</type>
+				<name>unitOfMeasurement</name>
+				<value>mL/kg/min</value>
+				<type>String</type>
 			</property>
 			<property>
-				<name>value</name>
-				<value>Cohort 4</value>
-				<type>String</type>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
 			</property>
 		</node>
 	</node>
