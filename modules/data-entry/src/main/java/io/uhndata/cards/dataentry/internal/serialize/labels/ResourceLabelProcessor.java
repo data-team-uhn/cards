@@ -34,21 +34,18 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 
 /**
- * Fills in the clinic answer for a given visit information clinic node.
+ * Fills in the human-readable question answer for resource questions with the value of the resource node property
+ * specified in the question definition by `labelProperty`.
  *
  * @version $Id$
  */
 @Component(immediate = true)
 public class ResourceLabelProcessor extends AbstractResourceLabelProcessor implements ResourceJsonProcessor
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ResourceLabelProcessor.class);
-
     /** Provides access to resources. */
     @Reference
     private ResourceResolverFactory resolverFactory;

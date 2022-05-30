@@ -36,21 +36,17 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 
 /**
- * Adds a label to Answer Option nodes in a questionnaire's JSON.
+ * Adds a label to Answer Option nodes for resource questions in a questionnaire's JSON.
  *
  * @version $Id$
  */
 @Component(immediate = true)
 public class ResourceOptionsLabelProcessor extends AbstractResourceLabelProcessor implements ResourceJsonProcessor
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ResourceOptionsLabelProcessor.class);
-
     /** Provides access to resources. */
     @Reference
     private ResourceResolverFactory resolverFactory;

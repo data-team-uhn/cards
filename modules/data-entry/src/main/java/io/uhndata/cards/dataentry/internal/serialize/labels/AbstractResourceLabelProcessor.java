@@ -29,7 +29,8 @@ import org.osgi.service.component.annotations.Component;
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 
 /**
- * Fills in the clinic answer for a given visit information clinic node.
+ * Base class for processors that fill in the human-readable question answer or answer options for resource questions
+ * with the value of the resource node property specified in the question definition by `labelProperty`.
  *
  * @version $Id$
  */
@@ -49,7 +50,7 @@ public abstract class AbstractResourceLabelProcessor extends SimpleAnswerLabelPr
     {
         try {
             if (question != null
-                && question.getProperty(PROP_RESOURCE_LABEL) != null
+                && question.hasProperty(PROP_RESOURCE_LABEL)
                 && !StringUtils.isBlank(question.getProperty(PROP_RESOURCE_LABEL).getString())) {
                 return question.getProperty(PROP_RESOURCE_LABEL).getString();
             }
@@ -73,7 +74,7 @@ public abstract class AbstractResourceLabelProcessor extends SimpleAnswerLabelPr
                 final Node resourceNode = resource.adaptTo(Node.class);
                 // Default the label to the resource name if the value for labelProperty is missing
                 if (labelPropertyName != null
-                    && resourceNode.getProperty(labelPropertyName) != null
+                    && resourceNode.hasProperty(labelPropertyName)
                     && !StringUtils.isBlank(resourceNode.getProperty(labelPropertyName).getString())) {
                     return resourceNode.getProperty(labelPropertyName).getString();
                 } else {
