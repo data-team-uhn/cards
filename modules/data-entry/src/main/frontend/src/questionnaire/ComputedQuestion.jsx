@@ -287,7 +287,6 @@ let ComputedQuestion = (props) => {
           <TextField
             variant="standard"
             type={fieldType}
-            dateFormat={(fieldType === "date" || fieldType === "time" && dateFormat) || null}
             disabled={true}
             className={classes.textField + " " + classes.answerField}
             value={displayValue}
