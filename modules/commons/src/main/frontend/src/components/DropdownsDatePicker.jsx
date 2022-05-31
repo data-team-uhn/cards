@@ -245,7 +245,8 @@ function DropdownsDatePicker(props) {
               return <div className={classes.placeholder}>Month</div>;
             }
             return monthShort ? moment().month(selected).format("MMM") : moment().month(selected).format("MMMM");
-        }}>
+        }}
+      >
         {generateMonthOptions()}
       </Select>
     )
@@ -269,7 +270,8 @@ function DropdownsDatePicker(props) {
               return "0" + selected;
             }
             return selected;
-        }}>
+        }}
+      >
         {generateDayOptions()}
       </Select>
     )

@@ -18,14 +18,14 @@
 //
 import React from 'react';
 import {
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  IconButton,
-  TextField,
-  Tooltip,
-  Typography,
+    Button,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    IconButton,
+    TextField,
+    Tooltip,
+    Typography
 } from '@mui/material';
 import withStyles from '@mui/styles/withStyles';
 import { Close } from "@mui/icons-material";
@@ -77,7 +77,8 @@ class FormFields extends React.Component {
           onChange={change.bind(null, "email")}
           className={classes.form}
           required
-          autoFocus />
+          autoFocus
+        />
         <TextField
           variant="standard"
           id="username"
@@ -104,6 +105,7 @@ class FormFields extends React.Component {
           onChange={change.bind(null, "password")}
           className={classes.form}
           required
+
         />
         <TextField
           variant="standard"

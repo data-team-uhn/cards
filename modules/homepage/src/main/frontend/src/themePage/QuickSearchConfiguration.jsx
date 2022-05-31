@@ -135,7 +135,8 @@ function QuickSearchConfiguration(props) {
                 label="Limit"
                 value={limit}
                 onChange={(event) => { setOnSuccess(false); setLimit(event.target.value); }}
-                style={{'width' : '10%'}} />
+                style={{'width' : '10%'}}
+              />
               <Typography variant="body1">How many results should be displayed</Typography>
             </ListItem>
             <ListItem key="showTotalRows">

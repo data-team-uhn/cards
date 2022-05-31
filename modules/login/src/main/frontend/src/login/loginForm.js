@@ -19,15 +19,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Button,
-  FormControl,
-  Grid,
-  IconButton,
-  Input,
-  InputAdornment,
-  InputLabel,
-  Tooltip,
-  Typography,
+    Button,
+    FormControl,
+    Grid,
+    IconButton,
+    Input,
+    InputAdornment,
+    InputLabel,
+    Tooltip,
+    Typography
 } from '@mui/material';
 import withStyles from '@mui/styles/withStyles';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -165,105 +165,105 @@ class SignIn extends React.Component {
     }
 
     return (
-      <div className={classes.main}>
-          {this.state.failedLogin && <Typography component="h2" className={classes.errorMessage}>{this.state.failedLogin}</Typography>}
+        <div className={classes.main}>
+            {this.state.failedLogin && <Typography component="h2" className={classes.errorMessage}>{this.state.failedLogin}</Typography>}
 
-          <form
-            className={classes.form}
-            onSubmit={(event)=> {
-              event.preventDefault();
-              if (this.state.phase == "PASSWORD_ENTRY" || this.state.singleStepEntry === true) {
-                this.submitLogin();
-              } else if (this.state.phase == "USERNAME_ENTRY" && this.state.singleStepEntry === false) {
-                nextButtonCallback();
-              }
-            }}
-          >
-            { (this.state.phase == "USERNAME_ENTRY" || this.state.singleStepEntry) &&
-              <React.Fragment>
-                  <FormControl variant="standard" margin="normal" required fullWidth>
-                  <InputLabel htmlFor="j_username">Username{this.state.singleStepEntry ? "" : " or email address"}</InputLabel>
-                  <Input id="j_username" name="j_username" autoComplete="email" autoFocus onChange={(event) => {this.setState({username: event.target.value});}}/>
-                </FormControl>
-                {  (!this.state.singleStepEntry) &&
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                    className={classes.submit}
-                    onClick={nextButtonCallback}
-                  >
-                    Next
-                  </Button>
+            <form
+              className={classes.form}
+              onSubmit={(event)=> {
+                event.preventDefault();
+                if (this.state.phase == "PASSWORD_ENTRY" || this.state.singleStepEntry === true) {
+                  this.submitLogin();
+                } else if (this.state.phase == "USERNAME_ENTRY" && this.state.singleStepEntry === false) {
+                  nextButtonCallback();
                 }
-              </React.Fragment>
-            }
-
-            { (this.state.phase == "PASSWORD_ENTRY" || this.state.singleStepEntry) &&
-              <React.Fragment>
+              }}
+            >
+              { (this.state.phase == "USERNAME_ENTRY" || this.state.singleStepEntry) &&
+                <React.Fragment>
                   <FormControl variant="standard" margin="normal" required fullWidth>
-                  <InputLabel htmlFor="j_password">Password{this.state.singleStepEntry ? "" : (" for " + this.state.username)}</InputLabel>
-                  <Input name="j_password" type={this.state.passwordIsMasked ? 'text' : 'password'} id="j_password" autoComplete="current-password" autoFocus={this.state.phase === "PASSWORD_ENTRY"} onChange={(event) => {this.setState({password: event.target.value});}}
-                    endAdornment={
-                      <InputAdornment position="end">
-                        <Tooltip title={this.state.passwordIsMasked ? "Mask Password" : "Show Password"}>
-                          <IconButton
-                            size="large"
-                            aria-label="Toggle password visibility"
-                            onClick={this.togglePasswordMask}
-                          >
-                            {this.state.passwordIsMasked ? <VisibilityIcon/> : <VisibilityOffIcon/>}
-                          </IconButton>
-                        </Tooltip>
-                      </InputAdornment>
-                    }
-                  />
-                </FormControl>
-                <Grid container direction="row" justify="center" alignItems="center">
+                    <InputLabel htmlFor="j_username">Username{this.state.singleStepEntry ? "" : " or email address"}</InputLabel>
+                    <Input id="j_username" name="j_username" autoComplete="email" autoFocus onChange={(event) => {this.setState({username: event.target.value});}}/>
+                  </FormControl>
                   {  (!this.state.singleStepEntry) &&
-                    <Grid item xs={3}>
-                    </Grid>
-                  }
-                  {  (!this.state.singleStepEntry) &&
-                    <Grid item xs={3}>
-                      <Button
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        className={classes.submit}
-                        onClick={() => {
-                          this.setState({
-                            failedLogin: undefined,
-                            username: "",
-                            password: "",
-                            phase: "USERNAME_ENTRY"
-                          });
-                        }}
-                      >
-                        Back
-                      </Button>
-                    </Grid>
-                  }
-                  <Grid item xs={this.state.singleStepEntry ? 12: 3}>
                     <Button
-                      type="submit"
                       fullWidth
                       variant="contained"
                       color="primary"
                       className={classes.submit}
+                      onClick={nextButtonCallback}
                     >
-                      Sign in
+                      Next
                     </Button>
-                  </Grid>
-                  {  (!this.state.singleStepEntry) &&
-                    <Grid item xs={3}>
-                    </Grid>
                   }
-                </Grid>
-              </React.Fragment>
-            }
-          </form>
-      </div>
+                </React.Fragment>
+              }
+
+              { (this.state.phase == "PASSWORD_ENTRY" || this.state.singleStepEntry) &&
+                <React.Fragment>
+                  <FormControl variant="standard" margin="normal" required fullWidth>
+                    <InputLabel htmlFor="j_password">Password{this.state.singleStepEntry ? "" : (" for " + this.state.username)}</InputLabel>
+                    <Input name="j_password" type={this.state.passwordIsMasked ? 'text' : 'password'} id="j_password" autoComplete="current-password" autoFocus={this.state.phase === "PASSWORD_ENTRY"} onChange={(event) => {this.setState({password: event.target.value});}}
+                      endAdornment={
+                        <InputAdornment position="end">
+                          <Tooltip title={this.state.passwordIsMasked ? "Mask Password" : "Show Password"}>
+                            <IconButton
+                              size="large"
+                              aria-label="Toggle password visibility"
+                              onClick={this.togglePasswordMask}
+                            >
+                              {this.state.passwordIsMasked ? <VisibilityIcon/> : <VisibilityOffIcon/>}
+                            </IconButton>
+                          </Tooltip>
+                        </InputAdornment>
+                      }
+                    />
+                  </FormControl>
+                  <Grid container direction="row" justify="center" alignItems="center">
+                    {  (!this.state.singleStepEntry) &&
+                      <Grid item xs={3}>
+                      </Grid>
+                    }
+                    {  (!this.state.singleStepEntry) &&
+                      <Grid item xs={3}>
+                        <Button
+                          fullWidth
+                          variant="contained"
+                          color="primary"
+                          className={classes.submit}
+                          onClick={() => {
+                            this.setState({
+                              failedLogin: undefined,
+                              username: "",
+                              password: "",
+                              phase: "USERNAME_ENTRY"
+                            });
+                          }}
+                        >
+                          Back
+                        </Button>
+                      </Grid>
+                    }
+                    <Grid item xs={this.state.singleStepEntry ? 12: 3}>
+                      <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        className={classes.submit}
+                      >
+                        Sign in
+                      </Button>
+                    </Grid>
+                    {  (!this.state.singleStepEntry) &&
+                      <Grid item xs={3}>
+                      </Grid>
+                    }
+                  </Grid>
+                </React.Fragment>
+              }
+            </form>
+        </div>
     );
   }
 }

@@ -113,7 +113,8 @@ function NewQuestionnaireDialog(props) {
               handleChangeTitle(event.target.value);
             }}
             error={duplicateTitle}
-            helperText={duplicateTitle ? "A questionnaire with this name already exists" : " "}>  
+            helperText={duplicateTitle ? "A questionnaire with this name already exists" : " "}
+          >  
           </TextField>
         </DialogContent>
          <DialogActions>

@@ -19,19 +19,19 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
-import {
-  Button,
-  Card,
+import { 
+  Button, 
+  Card, 
   CardContent,
   CardHeader,
-  Dialog,
-  DialogActions,
-  DialogContent,
+  Dialog, 
+  DialogActions, 
+  DialogContent, 
   DialogTitle,
   Grid,
   IconButton,
   Tooltip,
-  Typography,
+  Typography
 } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import statisticsStyle from "./statisticsStyle.jsx";

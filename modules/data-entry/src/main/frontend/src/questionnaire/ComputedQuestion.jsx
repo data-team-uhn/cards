@@ -292,7 +292,7 @@ let ComputedQuestion = (props) => {
             className={classes.textField + " " + classes.answerField}
             value={displayValue}
             InputProps={muiInputProps}
-            />
+          />
           }
         </>
       }

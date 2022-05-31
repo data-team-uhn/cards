@@ -57,6 +57,7 @@ let extractSortedOptions = (data) => {
                             .slice()
                             .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder));
 }
+
 const useStyles = makeStyles(theme => ({
     answerOption: {
       border: "1px solid " + theme.palette.divider,
@@ -273,69 +274,69 @@ let AnswerOptions = (props) => {
   let generateSpecialOptions = (index) => {
     let option = specialOptionsInfo[index];
     return (
-      <Grid container
-         direction="row"
-         justify="space-between"
-         alignItems="stretch"
-         className={classes.answerOption}
-         onClick={(event) => option.setter({ ...option.data, [option.label]: true})}
-         >
-        <Grid item xs={1}></Grid>
-        <Grid item xs={8}>
-        <Tooltip title="Selected by default">
-          <Checkbox
-            checked={option.data.isDefault}
-            disabled={!option.data[option.label]} onChange={(event) => {
-                option.setter({
-                  ...option.data,
-                  "isDefault": !!(event?.target?.checked)
-                });
-              }}
-            />
-        </Tooltip>
-        <Tooltip title={option.tooltip}>
-          <TextField
-            variant="standard"
-            disabled={!option.data[option.label]}
-            label={option.tootltip}
-            error={option.data[option.label] && option.isDuplicate}
-            helperText={option.isDuplicate ? 'duplicated value or label' : ''}
-            className={classes.answerOptionInput}
-            defaultValue={option.data.label? option.data.value + " = " + option.data.label : option.data.value}
-            onChange={(event) => { handleSpecialInputOption(option, event.target.value); }}
+    <Grid container
+       direction="row"
+       justify="space-between"
+       alignItems="stretch"
+       className={classes.answerOption}
+       onClick={(event) => option.setter({ ...option.data, [option.label]: true})}
+       >
+      <Grid item xs={1}></Grid>
+      <Grid item xs={8}>
+      <Tooltip title="Selected by default">
+        <Checkbox
+          checked={option.data.isDefault}
+          disabled={!option.data[option.label]} onChange={(event) => {
+              option.setter({
+                ...option.data,
+                "isDefault": !!(event?.target?.checked)
+              });
+            }}
           />
       </Tooltip>
-        </Grid>
-        <Grid item xs={3} className={classes.answerOptionActions}>
-        {generateDescriptionIcon(option.data, index, true)}
-        <Tooltip title={option.switchTooltip} className={classes.answerOptionSwitch}>
-          <FormControlLabel
-            control={
-              <Switch
-                size="small"
-                checked={!!option.data[option.label]}
-                onChange={(event) => option.setter({ ...option.data, [option.label]: event.target.checked})}
-                />
-            }
-          />
-        </Tooltip>
-        { option.data[option.label]
-          ?
-          <>
-            <input type='hidden' name={`${option.data['@path']}/jcr:primaryType`} value={'cards:AnswerOption'} />
-            <input type='hidden' name={`${option.data['@path']}/value`} value={option.data.value} />
-            <input type='hidden' name={`${option.data['@path']}/label`} value={option.data.label} />
-            <input type='hidden' name={`${option.data['@path']}/${option.label}`} value={option.data[option.label]} />
-            <input type='hidden' name={`${option.data['@path']}/defaultOrder`} value={option.defaultOrder} />
-            <input type="hidden" name={`${option.data['@path']}/description`} value={option.data.description || ''} />
-            <input type="hidden" name={`${option.data['@path']}/isDefault`} value={option.data.isDefault || ''} />
-            <input type="hidden" name={`${option.data['@path']}/isDefault@TypeHint`} value="Boolean" />
-          </>
-          :
-          <input type='hidden' name={`${option.data['@path']}@Delete`} value="0" />
-        }
-        </Grid>
+      <Tooltip title={option.tooltip}>
+        <TextField
+          variant="standard"
+          disabled={!option.data[option.label]}
+          label={option.tootltip}
+          error={option.data[option.label] && option.isDuplicate}
+          helperText={option.isDuplicate ? 'duplicated value or label' : ''}
+          className={classes.answerOptionInput}
+          defaultValue={option.data.label? option.data.value + " = " + option.data.label : option.data.value}
+          onChange={(event) => { handleSpecialInputOption(option, event.target.value); }}
+        />
+      </Tooltip>
       </Grid>
+      <Grid item xs={3} className={classes.answerOptionActions}>
+      {generateDescriptionIcon(option.data, index, true)}
+      <Tooltip title={option.switchTooltip} className={classes.answerOptionSwitch}>
+        <FormControlLabel
+          control={
+            <Switch
+              size="small"
+              checked={!!option.data[option.label]}
+              onChange={(event) => option.setter({ ...option.data, [option.label]: event.target.checked})}
+              />
+          }
+        />
+      </Tooltip>
+      { option.data[option.label]
+        ?
+        <>
+          <input type='hidden' name={`${option.data['@path']}/jcr:primaryType`} value={'cards:AnswerOption'} />
+          <input type='hidden' name={`${option.data['@path']}/value`} value={option.data.value} />
+          <input type='hidden' name={`${option.data['@path']}/label`} value={option.data.label} />
+          <input type='hidden' name={`${option.data['@path']}/${option.label}`} value={option.data[option.label]} />
+          <input type='hidden' name={`${option.data['@path']}/defaultOrder`} value={option.defaultOrder} />
+          <input type="hidden" name={`${option.data['@path']}/description`} value={option.data.description || ''} />
+          <input type="hidden" name={`${option.data['@path']}/isDefault`} value={option.data.isDefault || ''} />
+          <input type="hidden" name={`${option.data['@path']}/isDefault@TypeHint`} value="Boolean" />
+        </>
+        :
+        <input type='hidden' name={`${option.data['@path']}@Delete`} value="0" />
+      }
+      </Grid>
+    </Grid>
     )
   }
   

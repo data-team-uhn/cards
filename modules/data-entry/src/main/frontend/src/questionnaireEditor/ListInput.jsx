@@ -129,3 +129,4 @@ QuestionComponentManager.registerQuestionComponent((definition) => {
     return [StyledListInput, 50];
   }
 });
+

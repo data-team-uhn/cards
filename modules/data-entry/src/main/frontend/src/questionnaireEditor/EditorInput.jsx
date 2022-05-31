@@ -31,7 +31,7 @@ export function formatIdentifier(key) {
 
 let EditorInput = (props) => {
   let { children, name } = props;
-
+  
   const classes = makeStyles((theme) => ({
     labelContainer: {
       /* Match the input padding so the text of the label would appear aligned with the text of the input */

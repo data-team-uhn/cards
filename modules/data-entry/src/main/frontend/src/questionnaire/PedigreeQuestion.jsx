@@ -169,8 +169,7 @@ function PedigreeQuestion(props) {
         pageActive={pageActive}
         {...rest}
       />
-    </Question>
-  );
+    </Question>);
 }
 
 PedigreeQuestion.propTypes = {

@@ -21,7 +21,7 @@
       ]
     },
   "devDependencies": {
-     "@babel/core": "7.12.10",
+    "@babel/core": "7.12.10",
     "@babel/plugin-proposal-class-properties": "7.10.4",
     "@babel/plugin-proposal-optional-chaining": "7.11.0",
     "@babel/preset-env": "7.12.11",
@@ -45,7 +45,6 @@
     "material-table": "2.0.3",
     "formik": "2.2.6",
     "history": "4.10.1",
-    "jss": "10.9.0",
     "semantic-ui-css": "2.4.1",
     "semantic-ui-react": "2.0.1",
     "set-blocking": "2.0.0",

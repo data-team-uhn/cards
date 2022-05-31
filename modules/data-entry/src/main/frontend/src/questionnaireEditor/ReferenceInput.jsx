@@ -272,7 +272,8 @@ let ReferenceInput = (props) => {
         value={curValue || []}
         onChange={(event) => {changeCurValue(event.target.value);}}
         input={<Input id={objectKey} />}
-        renderValue={(value) => titleMap[value]}>
+        renderValue={(value) => titleMap[value]}
+      >
         {getReactComponentFromFields(options)}
       </Select>
     </EditorInput>

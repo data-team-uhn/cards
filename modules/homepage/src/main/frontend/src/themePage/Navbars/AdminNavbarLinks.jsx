@@ -135,7 +135,6 @@ function HeaderLinks (props) {
       <Hidden mdUp implementation="css">
         {menuItems}
       </Hidden>
-      {/* Avatar + sign out link */}
       <Popper
         open={popperOpen}
         anchorEl={avatarRef.current}

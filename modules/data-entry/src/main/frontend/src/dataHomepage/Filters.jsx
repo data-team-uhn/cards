@@ -500,7 +500,7 @@ function Filters(props) {
               let isUnary = filterDatum.comparator && UNARY_COMPARATORS.includes(filterDatum.comparator);
               let isNotesContain = filterDatum.comparator && (filterDatum.comparator === notesComparator);
               let isContain = filterDatum.comparator && (filterDatum.comparator.includes(TEXT_COMPARATORS));
-              return (
+              return(
                 <React.Fragment key={index}>
                   {/* Select the field to filter */}
                   <Grid item xs={5}>
