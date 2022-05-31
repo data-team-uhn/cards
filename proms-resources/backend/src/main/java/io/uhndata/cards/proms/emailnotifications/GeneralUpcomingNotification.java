@@ -23,11 +23,16 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Designate(ocd = GeneralUpcomingNotification.Config.class, factory = true)
 @Component(configurationPolicy = ConfigurationPolicy.REQUIRE)
 public final class GeneralUpcomingNotification
 {
+    /** Default log. */
+    private static final Logger LOGGER = LoggerFactory.getLogger(GeneralUpcomingNotification.class);
+
     @ObjectClassDefinition(name = "Upcoming appointment notification",
         description = "Send emails for upcoming appointments")
     public static @interface Config
@@ -52,12 +57,12 @@ public final class GeneralUpcomingNotification
     @Activate
     private void activate(final Config config)
     {
-        //
+        LOGGER.info("Activating upcoming email notifications: {}", config.name());
     }
 
     @Deactivate
-    private void deactivate()
+    private void deactivate(final Config config)
     {
-        //
+        LOGGER.info("Deactivating upcoming email notifications: {}", config.name());
     }
 }
