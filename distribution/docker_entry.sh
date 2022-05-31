@@ -42,24 +42,16 @@ fi
 PROJECT_ARTIFACTID=$1
 PROJECT_VERSION=$2
 
+VALID_CARDS_PROJECTS="||cards4care|cards4kids|cards4lfs|cards4proms|cards4heracles|"
+echo "${VALID_CARDS_PROJECTS}" | grep -q "|${CARDS_PROJECT}|" || { echo "Invalid project specified - defaulting to generic CARDS."; unset CARDS_PROJECT; }
+
 featureFlagString=""
-if [[ "${CARDS_PROJECT}" == 'cards4care' ]]
+if [ ! -z $CARDS_PROJECT ]
 then
-  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4care/${PROJECT_VERSION}/slingosgifeature"
-elif [[ "${CARDS_PROJECT}" == 'cards4kids' ]]
-then
-  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4kids/${PROJECT_VERSION}/slingosgifeature"
-elif [[ "${CARDS_PROJECT}" == 'cards4lfs' ]]
-then
-  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4lfs/${PROJECT_VERSION}/slingosgifeature"
-elif [[ "${CARDS_PROJECT}" == 'cards4proms' ]]
-then
-  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4proms/${PROJECT_VERSION}/slingosgifeature"
-  SMTPS_ENABLED="true"
-elif [[ "${CARDS_PROJECT}" == 'cards4heracles' ]]
-then
-  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4heracles/${PROJECT_VERSION}/slingosgifeature"
+  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/${CARDS_PROJECT}/${PROJECT_VERSION}/slingosgifeature"
 fi
+
+[[ "${CARDS_PROJECT}" == 'cards4proms' ]] && SMTPS_ENABLED="true"
 
 if [ ! -z $DEV ]
 then
