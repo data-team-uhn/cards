@@ -18,6 +18,7 @@ import {
     infoColor,
     tealColor,
     roseColor,
+    bronzeColor,
     successColor,
     warningColor,
     dangerColor,
@@ -318,6 +319,28 @@ import {
           hexToRgb(blackColor) +
           ",.12), 0 7px 8px -5px rgba(" +
           hexToRgb(roseColor[2]) +
+          ",.2)"
+      }
+    },
+    bronze: {
+      backgroundColor: bronzeColor[2],
+      boxShadow:
+        "0 12px 20px -10px rgba(" +
+        hexToRgb(bronzeColor[2]) +
+        ",.28), 0 4px 20px 0 rgba(" +
+        hexToRgb(blackColor) +
+        ",.12), 0 7px 8px -5px rgba(" +
+        hexToRgb(bronzeColor[2]) +
+        ",.2)",
+      "&:hover": {
+        backgroundColor: bronzeColor[2],
+        boxShadow:
+          "0 12px 20px -10px rgba(" +
+          hexToRgb(bronzeColor[2]) +
+          ",.28), 0 4px 20px 0 rgba(" +
+          hexToRgb(blackColor) +
+          ",.12), 0 7px 8px -5px rgba(" +
+          hexToRgb(bronzeColor[2]) +
           ",.2)"
       }
     },
