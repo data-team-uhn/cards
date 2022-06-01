@@ -299,6 +299,24 @@ let QuestionnaireItemSet = (props) => {
     }
   }
 
+  // Display questionnaire entries of the (primary) types specified by the `types` argument.
+  // For these entries, display only the properties specified in the model mapping (the `typeModels` argument).
+  //
+  // NB: We implemented React components for displaying each supported entry type.
+  //     The names of the React components match the primary types, i.e. we have a `Question` component for
+  //     displaying entries with `jcr:primaryType` = "cards:Question", a `Section` component for displaying
+  //     entries with `jcr:primaryType` = "cards:Section", etc.
+  //     To call the right component for each entry that has passed the "types" filter,  we strip its primaryType
+  //     of the "cards:" prefix and then `eval` the result to the functional component's name, which is passed as
+  //     a parameter to an anonymous function called for each such entry, that renders the component inside a
+  //     Grid itme.
+  //
+  // @param types - an array of (primary) types of entries to display.
+  //   Each element in the array is a string representing a primaryType, e.g. "cards:Question"
+  // @param typeModels - an object mapping an entry type (where the type is tripped of the "cards:"
+  //   prefix) to a json file specifying the "model", i.e. which properties to display
+  // @return a React fragment rendering the entries from the `data` prop according to the `types` filter and
+  //   the `typeModels` property restriction
   let listEntries = (typeModels, types) => (
     <>
     { Object.entries(data)
