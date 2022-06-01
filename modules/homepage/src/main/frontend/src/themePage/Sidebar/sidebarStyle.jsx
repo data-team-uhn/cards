@@ -327,13 +327,15 @@ import {
       overflow: "auto",
       width: "260px",
       zIndex: "4",
-      overflowScrolling: "touch"
+      overflowScrolling: "touch",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "space-between"
     },
     adminButton: {
     },
     adminSidebar: {
       [theme.breakpoints.up("md")]: {
-        position: "absolute",
         width: "100%",
         bottom: "13px"
       }

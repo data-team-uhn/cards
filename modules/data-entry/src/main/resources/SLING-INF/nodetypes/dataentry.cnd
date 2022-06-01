@@ -313,11 +313,27 @@
   // Can this section be repeated?
   - recurrent (boolean) = false autocreated
 
+  // Section display mode, one of default, header, footer, matrix
+  - displayMode (string) = 'default' autocreated
+
+  // Same as for cards:Question.
+  - minAnswers (long) = '0' autocreated
+
+  // Same as for cards:Question.
+  - maxAnswers (long) = '0' autocreated
+
+  // Which type of data is being recorded?
+  // The possible values are limited to:
+  // - text: simple text, either from a list of predefined options, or free text entered by the user
+  // - long, double, decimal: a number
+  // - vocabulary: a term from a vocabulary
+  - dataType (string) = 'text' mandatory autocreated
+
   // Children
 
   // The questions and sub-sections that make up this section.
   // The conditions to display this section may also be listed as children
-  + * (cards:Question, cards:Section, cards:Information, cards:Conditional, cards:ConditionalGroup) = cards:Question
+  + * (cards:Question, cards:Section, cards:Information, cards:Conditional, cards:ConditionalGroup, cards:AnswerOption) = cards:Question
 
 //-----------------------------------------------------------------------------
 // A conditional group is a set of conditions that can be imposed on e.g. the display of a section.
@@ -332,7 +348,7 @@
   // Properties
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "cards/Conditional" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/ConditionalGroup" mandatory autocreated protected
 
   // Hardcode the resource supertype: each section link is a resource.
   - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected

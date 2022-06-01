@@ -17,10 +17,7 @@
 //  under the License.
 //
 
-import React, { useRef, useEffect, useState } from "react";
-
-import { useLocation } from 'react-router-dom';
-
+import React, { useEffect, useState } from "react";
 import { Card, CardContent, Grid } from "@mui/material";
 
 import AnswerComponentManager from "./AnswerComponentManager";
@@ -40,6 +37,7 @@ import TextQuestion from "./TextQuestion";
 import ComputedQuestion from "./ComputedQuestion";
 import VocabularyQuestion from "./VocabularyQuestion";
 import FileQuestion from "./FileQuestion";
+import QuestionMatrix from "./QuestionMatrix";
 
 import FormattedText from "../components/FormattedText";
 
@@ -59,30 +57,6 @@ export const ENTRY_TYPES = QUESTION_TYPES.concat(SECTION_TYPES).concat(INFO_TYPE
  * @returns a React component that renders the question
  */
 let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, onAddedAnswerPath, sectionAnswersState, onChange, pageActive, isEdit, isSummary, instanceId) => {
-  const [ doHighlight, setDoHighlight ] = useState();
-  const [ anchor, setAnchor ] = useState();
-
-  const location = useLocation();
-
-  // if autofocus is needed and specified in the url
-  useEffect(() => {
-    setAnchor(decodeURIComponent(location.hash.substring(1)))
-  }, [location]);
-  useEffect(() => {
-    setDoHighlight(anchor == questionDefinition["@path"]);
-  }, [anchor, questionDefinition]);
-
-  const questionRef = useRef();
-
-  // create a ref to store the question container DOM element
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      questionRef?.current?.scrollIntoView({block: "center"});
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [questionRef]);
-
-
   const existingQuestionAnswer = existingAnswer && Object.entries(existingAnswer)
     .find(([key, value]) => value["sling:resourceSuperType"] == "cards/Answer"
       && value["question"]["jcr:uuid"] === questionDefinition["jcr:uuid"]);
@@ -96,9 +70,6 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, o
   const QuestionDisplay = AnswerComponentManager.getAnswerComponent(questionDefinition);
 
   let gridClasses = [];
-  if (doHighlight) {
-    gridClasses.push(classes.focusedQuestionnaireItem);
-  }
   let displayMode = questionDefinition.displayMode;
   if (pageActive === false || displayMode == 'hidden' || (isSummary && displayMode !== "summary") || (!isSummary && displayMode === "summary")) {
     gridClasses.push(classes.hiddenQuestion);
@@ -106,7 +77,7 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, o
 
   // component will either render the default question display, or a list of questions/answers from the form (used for subjects)
   return (
-    <Grid item key={key} ref={doHighlight ? questionRef : undefined} className={gridClasses.join(" ")}>
+    <Grid item key={key} className={gridClasses.join(" ")}>
       <QuestionDisplay
         questionDefinition={questionDefinition}
         existingAnswer={existingQuestionAnswer}
@@ -180,6 +151,55 @@ let displayInformation = (infoDefinition, key, classes, pageActive, isEdit) => {
 }
 
 /**
+ * Method responsible for displaying a matrix section from the questionnaire.
+ *
+ * @param {Object} sectionDefinition the section definition JSON
+ * @param {string} path the path to the parent of the question
+ * @param {Object} existingAnswer form data that may include answers already submitted for this component
+ * @param {string} key the node name of the question definition JCR node
+ * @param {Object} classes style classes
+ * @returns a React component that renders the matrix section
+ */
+let displayMatrix = (sectionDefinition, path, existingAnswer, key, classes, pageActive, isEdit, instanceId) => {
+  // Find the existing AnswerSection for this section, if available
+  const existingSectionAnswer = existingAnswer && Object.entries(existingAnswer)
+    .find(([key, value]) => value["sling:resourceType"] == "cards/AnswerSection"
+      && value["section"]["jcr:uuid"] === sectionDefinition["jcr:uuid"]);
+
+  const existingAnswers = existingSectionAnswer && Object.entries(existingSectionAnswer[1])
+    .filter(answer => answer[1]["sling:resourceSuperType"]
+      && answer[1]["sling:resourceSuperType"] === "cards/Answer");
+
+  // Determine if the section is flagged as incomplete/invalid
+  // Note: may be better to explicitly check <statusFlags.includes('INCOMPLETE')>, and same for INVALID
+  const isFlagged = (existingSectionAnswer?.[1]?.statusFlags?.length > 0);
+  // View mode should display all mandatory questions whether or not they have an answer
+  const hasAnswers = existingAnswers?.filter(answer => answer[1]["displayedValue"]).length > 0;
+  if (!isEdit && !isFlagged && !hasAnswers) {
+      // Do not show anything if not mandatory, in view mode and no value is recorded yet
+      return null;
+  }
+
+  let gridClasses = [];
+  if (pageActive === false || sectionDefinition.displayMode == 'hidden') {
+    gridClasses.push(classes.hiddenQuestion);
+  }
+
+  return (
+    <Grid item key={key} className={gridClasses.join(" ")}>
+      <QuestionMatrix
+        sectionDefinition={sectionDefinition}
+        existingSectionAnswer={existingSectionAnswer}
+        existingAnswers={existingAnswers}
+        path={path}
+        isEdit={isEdit}
+        pageActive={pageActive}
+      />
+    </Grid>
+  );
+};
+
+/**
  * Display a question or section from the questionnaire, along with its answer(s).
  *
  * @param {Object} entryDefinition the definition for this entry JSON
@@ -198,7 +218,12 @@ let displayInformation = (infoDefinition, key, classes, pageActive, isEdit) => {
     if (visibleCallback) visibleCallback(true);
     return displayQuestion(entryDefinition, path, existingAnswers, keyProp, classes, onAddedAnswerPath, sectionAnswersState, onChange, pageActive, isEdit, isSummary, instanceId);
   } else if (SECTION_TYPES.includes(entryDefinition["jcr:primaryType"])) {
-    return displaySection(entryDefinition, path, depth, existingAnswers, keyProp, onChange, visibleCallback, pageActive, isEdit, isSummary, instanceId, contentOffset);
+    if (visibleCallback) visibleCallback(true);
+    if ("matrix" === entryDefinition["displayMode"]) {
+      return displayMatrix(entryDefinition, path, existingAnswers, keyProp, classes, pageActive, isEdit, instanceId);
+    } else {
+      return displaySection(entryDefinition, path, depth, existingAnswers, keyProp, onChange, visibleCallback, pageActive, isEdit, isSummary, instanceId, contentOffset);
+    }
   } else if (INFO_TYPES.includes(entryDefinition["jcr:primaryType"])) {
     return displayInformation(entryDefinition, keyProp, classes, pageActive, isEdit);
   }

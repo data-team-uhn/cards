@@ -54,6 +54,10 @@
             "start-order":"25"
         },
         {
+            "id":"io.uhndata.cards:cards-modules-downtime-warning-banner:${project.version}",
+            "start-order":"25"
+        },
+        {
             "id":"io.uhndata.cards:cards-modules-vocabularies-ignore:${project.version}",
             "start-order":"25"
         }

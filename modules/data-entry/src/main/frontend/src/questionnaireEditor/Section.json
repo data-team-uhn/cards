@@ -2,14 +2,41 @@
   {
     "label": "string",
     "description": "markdown",
-    "displayMode" : {
+    "displayMode": {
       "default" : {
         "recurrent": "boolean",
         "initialNumberOfInstances" : "long"
       },
       "header" : {},
       "footer" : {},
-      "summary" : {}
+      "summary" : {},
+      "matrix" : {
+        "//CHILDREN" : {"Question" : "QuestionMatrixEntry.json"},
+        "minAnswers": "long",
+        "maxAnswers": "long",
+        "dataType": {
+          "text": {
+            "answerOptions" : "textOptions"
+          },
+          "long": {
+            "answerOptions" : "numberOptions"
+          },
+          "decimal": {
+            "answerOptions" : "numberOptions"
+          },
+          "vocabulary": {
+            "answerOptions" : "textOptions",
+            "sourceVocabularies": {
+              "type": "list",
+              "primaryType": "cards:Vocabulary",
+              "saveType": "String",
+              "displayProperty": "identifier",
+              "orderProperty": "cards:Vocabulary",
+              "identifierProperty": "identifier"
+            }
+          }
+        }
+      }
     }
   }
 ]
