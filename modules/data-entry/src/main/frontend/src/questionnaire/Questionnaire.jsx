@@ -258,7 +258,7 @@ let QuestionnaireItemSet = (props) => {
     //   f: "f.json",
     //   group3 : {entries: {g: "g,json", h: "h.json"}, defaultOrder: 1}
     // }
-    // => {g: "g.json", h: "h,json", h: "h.json", e: "e.json"}
+    // => {g: "g.json", h: "h,json", d: "d.json", e: "e.json"}
     Object.values(models || {})
       // Filter in groups with entries and with defaultOrder specified
       .filter(v => typeof(v) == "object" && typeof(v?.entries) != "undefined" && typeof(v?.defaultOrder) != "undefined")
@@ -268,7 +268,7 @@ let QuestionnaireItemSet = (props) => {
       .forEach(v => prioritaryModels = {...prioritaryModels, ...v.entries});
 
     // If there are any entries with defaultOrder, we update the priorityEntryTypes
-    if (prioritaryModels != {}) {
+    if (Object.keys(prioritaryModels).length > 0) {
       prioritaryEntryTypes = getEntryTypes(prioritaryModels);
     }
 
@@ -294,7 +294,7 @@ let QuestionnaireItemSet = (props) => {
     });
     // If there are any entries without defaultOrder, we update the generalEntryTypes
     // Otherwise the original list is kept, i.e. ENTRY_TYPES
-    if (generalModels != {}) {
+    if (Object.keys(generalModels).length > 0) {
        generalEntryTypes = getEntryTypes(generalModels);
     }
   }
