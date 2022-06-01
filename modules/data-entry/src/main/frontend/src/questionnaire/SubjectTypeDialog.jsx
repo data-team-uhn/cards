@@ -131,7 +131,7 @@ function SubjectTypeDialog(props) {
     >
       <DialogTitle>{isEdit ? "Modify " + currentSubjectType.label : "Create New Subject Type"}</DialogTitle>
       <DialogContent>
-        <Grid container justify="flex-start" alignItems="center" spacing={2}>
+        <Grid container justifyContent="flex-start" alignItems="center" spacing={2}>
           <Grid item xs={4}>
             <Typography>Label</Typography>
           </Grid>

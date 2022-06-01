@@ -24,7 +24,7 @@ export const FORM_ENTRY_CONTAINER_PROPS = {
     direction: "column",
     spacing: 4,
     alignItems: "stretch",
-    justify: "space-between",
+    justifyContent: "space-between",
     wrap: "nowrap"
   };
 

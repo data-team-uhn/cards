@@ -133,7 +133,7 @@ let EditDialog = (props) => {
   // If an error was returned, do not display a form at all, but report the error
   if (error) {
     return (
-      <Grid container justify='center'>
+      <Grid container justifyContent='center'>
         <Grid item>
           <Typography variant='h2' color='error'>
             Error obtaining form data: {error.status} {error.statusText}

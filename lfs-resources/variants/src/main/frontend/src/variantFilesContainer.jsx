@@ -786,7 +786,7 @@ export default function VariantFilesContainer() {
             onSubmit={upload}
             key="file-upload"
             id="variantForm">
-        <Grid container direction="row-reverse" justify="flex-end" spacing={3} alignItems="stretch" className={classes.dragAndDropContainer}>
+        <Grid container direction="row-reverse" justifyContent="flex-end" spacing={3} alignItems="stretch" className={classes.dragAndDropContainer}>
           <Grid item xs={12} lg={6}>
             <Alert severity="info">
               <AlertTitle>Expected file name format:</AlertTitle>

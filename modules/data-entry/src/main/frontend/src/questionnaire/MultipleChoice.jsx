@@ -484,6 +484,7 @@ function MultipleChoice(props) {
                 <FormControlLabel
                   control={
                   <Radio
+                    color="secondary"
                     checked={ghostSelected}
                     onChange={() => {
                       selectOption(ghostValue, ghostName);
@@ -580,6 +581,7 @@ function ResponseChild(props) {
                   isRadio ?
                   (
                     <Radio
+                      color="secondary"
                       onChange={() => {onClick(id, name, checked);}}
                       disabled={!checked && disabled}
                       className={classes.checkbox}
@@ -591,6 +593,7 @@ function ResponseChild(props) {
                       onChange={() => {onClick(id, name, checked)}}
                       disabled={!checked && disabled}
                       className={classes.checkbox}
+                      color="secondary"
                     />
                   )
                 }

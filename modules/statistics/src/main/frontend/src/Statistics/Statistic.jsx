@@ -208,7 +208,7 @@ function Statistic(props) {
         />
       <CardContent>
       { allFields.length == 0 ?
-        <Grid container direction="row" justify="center" alignItems="center" style={{height: widgetHeight}}>
+        <Grid container direction="row" justifyContent="center" alignItems="center" style={{height: widgetHeight}}>
           <Grid item>
             <Typography color="textSecondary" variant="caption">No data available for this statistic</Typography>
           </Grid>

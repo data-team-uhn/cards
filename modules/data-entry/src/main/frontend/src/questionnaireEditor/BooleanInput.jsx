@@ -40,6 +40,7 @@ let BooleanInput = (props) => {
   return (
     <EditorInput name={objectKey}>
       <Switch
+        color="secondary"
         edge="start"
         id={objectKey}
         onChange={(event) => {setChecked(event.target.checked);}}

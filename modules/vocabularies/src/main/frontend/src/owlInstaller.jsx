@@ -153,7 +153,7 @@ export default function OwlInstaller(props) {
           <Grid item>
             <TextField
                  disabled={(phase == "installing") || (owlSelected == "Select File")}
-                 variant="outlined"
+                 variant="standard"
                  error={(phase != "installing") && (owlIdentifier == "") && (owlSelected != "Select File")}
                  onChange={(evt) => {
                    setOwlIdentifier(evt.target.value);
@@ -168,7 +168,7 @@ export default function OwlInstaller(props) {
           <Grid item>
             <TextField
                  disabled={(phase == "installing") || (owlSelected == "Select File")}
-                 variant="outlined"
+                 variant="standard"
                  error={(phase != "installing") && (owlName == "") && (owlSelected != "Select File")}
                  onChange={(evt) => {
                    setOwlName(evt.target.value);
@@ -183,7 +183,7 @@ export default function OwlInstaller(props) {
           <Grid item>
             <TextField
                  disabled={(phase == "installing") || (owlSelected == "Select File")}
-                 variant="outlined"
+                 variant="standard"
                  error={(phase != "installing") && (owlVersion == "") && (owlSelected != "Select File")}
                  onChange={(evt) => {
                    setOwlVersion(evt.target.value);

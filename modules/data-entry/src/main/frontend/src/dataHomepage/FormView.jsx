@@ -124,7 +124,7 @@ function FormView(props) {
         avatar={!disableAvatar && <Avatar className={classes.formViewAvatar}><DescriptionIcon/></Avatar>}
         title={
           <>
-            <Tabs value={activeTab} onChange={(event, value) => setActiveTab(value)}>
+            <Tabs value={activeTab} onChange={(event, value) => setActiveTab(value)} indicatorColor="primary" textColor="inherit" >
             { tabs.map((value, index) => {
               return <Tab label={<Typography variant="h6">{value}</Typography>}  key={"form-" + index} />;
             })}

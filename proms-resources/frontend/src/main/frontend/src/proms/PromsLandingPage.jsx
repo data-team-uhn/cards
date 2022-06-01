@@ -84,7 +84,7 @@ function PromsLandingPage(props) {
                 <Typography variant="h6">I am a...</Typography>
               </Grid>
               <Grid item>
-                <Grid container spacing={3} direction="column" justify="center" alignItems="center">
+                <Grid container spacing={3} direction="column" justifyContent="center" alignItems="center">
                   <Grid item>
                     <Button
                       fullWidth

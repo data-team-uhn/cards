@@ -69,7 +69,7 @@ function QuestionnaireSets(props) {
   }
 
   return (
-    <Grid container direction="column" alignItems="center" justify="center">
+    <Grid container direction="column" alignItems="center" justifyContent="center">
       <Grid item xs={12}>
         {content}
       </Grid>

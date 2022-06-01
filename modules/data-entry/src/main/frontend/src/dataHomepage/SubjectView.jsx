@@ -127,7 +127,7 @@ function SubjectView(props) {
           ? <CircularProgress/>
           : subjectTypes.length < 1 ?
           <></>
-          : <Tabs value={activeTab} onChange={(event, value) => setActiveTab(value)}>
+          : <Tabs value={activeTab} onChange={(event, value) => setActiveTab(value)} indicatorColor="primary" textColor="inherit" >
               {subjectTypes.map((subject, index) => {
                 return <Tab
                          label={

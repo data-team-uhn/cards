@@ -69,7 +69,7 @@ function ParsedNoteSection (props) {
     <Typography display="inline">{frontMatter}</Typography>
     {hasMatch &&
       <React.Fragment>
-        <Tooltip interactive title={`Add ${matchName} (${matchID}) to selection`}>
+        <Tooltip title={`Add ${matchName} (${matchID}) to selection`}>
           <Link
             onClick={addSuggestion}
             component="button"

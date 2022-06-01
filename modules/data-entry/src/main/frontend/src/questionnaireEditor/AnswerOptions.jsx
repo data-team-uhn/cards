@@ -276,7 +276,7 @@ let AnswerOptions = (props) => {
     return (
     <Grid container
        direction="row"
-       justify="space-between"
+       justifyContent="space-between"
        alignItems="stretch"
        className={classes.answerOption}
        onClick={(event) => option.setter({ ...option.data, [option.label]: true})}
@@ -285,6 +285,7 @@ let AnswerOptions = (props) => {
       <Grid item xs={8}>
       <Tooltip title="Selected by default">
         <Checkbox
+          color="secondary"
           checked={option.data.isDefault}
           disabled={!option.data[option.label]} onChange={(event) => {
               option.setter({
@@ -313,6 +314,7 @@ let AnswerOptions = (props) => {
         <FormControlLabel
           control={
             <Switch
+              color="secondary"
               size="small"
               checked={!!option.data[option.label]}
               onChange={(event) => option.setter({ ...option.data, [option.label]: event.target.checked})}
@@ -380,7 +382,7 @@ let AnswerOptions = (props) => {
                   { (provided, snapshot) => (
                     <Grid container
                       direction="row"
-                      justify="space-between"
+                      justifyContent="space-between"
                       alignItems="stretch"
                       className={classes.answerOption}
                       key={value.value}
@@ -408,6 +410,7 @@ let AnswerOptions = (props) => {
                         <input type="hidden" name={`${value['@path']}/isDefault@TypeHint`} value="Boolean" />
                         <Tooltip title="Selected by default">
                           <Checkbox
+                            color="secondary"
                             checked={value.isDefault}
                             onChange={(event) => {
                               setOptions(old => {

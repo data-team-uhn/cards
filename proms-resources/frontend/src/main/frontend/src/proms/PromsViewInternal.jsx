@@ -107,7 +107,7 @@ function PromsViewInternal (props) {
         avatar={<Avatar className={classes.promsViewAvatar}>{avatar}</Avatar>}
         title={<Typography variant="overline" className={classes.promsViewTitle}>{title}</Typography>}
       /> }
-      <Tabs value={activeTab} onChange={(event, value) => setActiveTab(value)}>
+      <Tabs value={activeTab} onChange={(event, value) => setActiveTab(value)} indicatorColor="primary" textColor="inherit" >
         { tabs.map((value, index) => <Tab label={value}  key={"form-" + questionnaireId + index} />) }
       </Tabs>
       <Divider />

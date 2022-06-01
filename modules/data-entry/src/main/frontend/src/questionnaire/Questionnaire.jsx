@@ -249,7 +249,7 @@ let QuestionnaireItemSet = (props) => {
                     EntryType => <Grid item key={key}><EntryType data={value} onActionDone={onActionDone} classes={classes} /></Grid>
                   )(eval(_stripCardsNamespace(value['jcr:primaryType'])))
                 )
-        : <Grid item><Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid></Grid>
+        : <Grid item><Grid container justifyContent="center"><Grid item><CircularProgress/></Grid></Grid></Grid>
       }
     </Grid>
   );

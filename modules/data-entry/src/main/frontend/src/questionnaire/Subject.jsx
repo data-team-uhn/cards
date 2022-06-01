@@ -173,7 +173,8 @@ function Subject(props) {
         <Grid item>
           <Tabs className={classes.subjectTabs} value={activeTab} onChange={(event, value) => {
             setTab(value);
-          }}>
+          }}
+          indicatorColor="primary" textColor="inherit" >
             {tabs.map((tab) => {
               return <Tab label={tab} key={tab}/>;
             })}
@@ -251,13 +252,13 @@ function SubjectContainer(props) {
   // If the data has not yet been fetched, return an in-progress symbol
   if (!subject) {
     return (
-      <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
+      <Grid container justifyContent="center"><Grid item><CircularProgress/></Grid></Grid>
     );
   }
 
   if (error) {
     return (
-      <Grid container justify="center">
+      <Grid container justifyContent="center">
         <Grid item>
           <Typography variant="h2" color="error">
             Error obtaining subject data: {error.status} {error.statusText ? error.statusText : error.toString()}
@@ -442,7 +443,7 @@ function SubjectMemberInternal (props) {
   // If an error was returned, do not display a subject at all, but report the error
   if (error) {
     return (
-      <Grid container justify="center">
+      <Grid container justifyContent="center">
         <Grid item>
           <Typography variant="h2" color="error">
             Error obtaining subject data: {error.status} {error.statusText ? error.statusText : error.toString()}
@@ -488,7 +489,7 @@ function SubjectMemberInternal (props) {
     {
       level > 0 &&
         <Grid item className={classes.subjectTitleWithAvatar}>
-          <Grid container direction="row" spacing={1} justify="flex-start">
+          <Grid container direction="row" spacing={1} justifyContent="flex-start">
             <Grid item xs={false}>{avatar}</Grid>
             <Grid item>
               <Typography variant="h5">
@@ -617,7 +618,7 @@ function FormData(props) {
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
     return (
-      <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
+      <Grid container justifyContent="center"><Grid item><CircularProgress/></Grid></Grid>
     );
   }
 

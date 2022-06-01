@@ -156,7 +156,7 @@ export default function Search(props) {
           onKeyDown={handleSearchInput}
           type="text"
           value={keywords}
-          variant="outlined"
+          variant="standard"
         />
       </Grid>
     </React.Fragment>

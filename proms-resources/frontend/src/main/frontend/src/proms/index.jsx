@@ -56,7 +56,7 @@ ReactDOM.render(
   <StyledEngineProvider injectFirst>
     <ThemeProvider theme={appTheme}>
       <Router history={hist}>
-        <Switch>
+        <Switch color="secondary">
           <Route path="/Proms.html/" component={PromsHomepage} />
           <Redirect from="/Proms" to="/Proms.html/"/>
         </Switch>

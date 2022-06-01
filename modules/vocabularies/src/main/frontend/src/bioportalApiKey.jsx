@@ -148,7 +148,7 @@ export function BioPortalApiKey(props) {
           <Grid container
             direction="row"
             alignItems="center"
-            justify="space-between"
+            justifyContent="space-between"
             alignContent="space-between"
             spacing={2}
           >

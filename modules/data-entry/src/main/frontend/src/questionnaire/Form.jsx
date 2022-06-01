@@ -337,14 +337,14 @@ function Form (props) {
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
     return (
-      <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
+      <Grid container justifyContent="center"><Grid item><CircularProgress/></Grid></Grid>
     );
   }
 
   // If an error was returned, do not display a form at all, but report the error
   if (error) {
     return (
-      <Grid container justify="center">
+      <Grid container justifyContent="center">
         <Grid item>
           <Typography variant="h2" color="error">
             Error obtaining form data: {error.status} {error.statusText}

@@ -146,7 +146,6 @@ function QuickSearchConfiguration(props) {
                     checked={showTotalRows}
                     onChange={(event) => { event.preventDefault(); setOnSuccess(false); setShowTotalRows(event.target.checked); }}
                     name="showTotalRows"
-                    color="primary"
                   />
                 }
                 label="Show the total number of results"
@@ -165,7 +164,6 @@ function QuickSearchConfiguration(props) {
                           checked={allowedResourceTypes.indexOf(resourceName) > -1}
                           onChange={(event) => { onSourceTypeChange(event.target.checked, resourceName); }}
                           name={resourceName}
-                          color="primary"
                         />
                       }
                       label={resourceName.replace('cards:', '') + 's'}
