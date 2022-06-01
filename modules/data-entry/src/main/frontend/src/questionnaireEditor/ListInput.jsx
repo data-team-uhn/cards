@@ -131,7 +131,7 @@ QuestionComponentManager.registerQuestionComponent((definition) => {
   }
 });
 
-// Long value displayer: display Unlimited for a "max" = 0
+// List value displayer: display "Any" for an empty value array
 let ListValue = (props) => {
   let { objectKey, value, data } = props;
   return (Array.of(data[objectKey] || []).flat().map(e => e[value.displayProperty]).join(', ') || 'Any');
