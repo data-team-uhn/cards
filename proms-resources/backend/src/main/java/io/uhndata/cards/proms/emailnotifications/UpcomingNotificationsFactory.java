@@ -106,5 +106,11 @@ public final class UpcomingNotificationsFactory
     private void deactivate(final Config config)
     {
         LOGGER.info("Deactivating upcoming email notifications: {}", config.name());
+        String jobName = "NightlyNotifications-" + config.name();
+        if (this.scheduler.unschedule(jobName)) {
+            LOGGER.info("Sucessfully unscheduled {}", jobName);
+        } else {
+            LOGGER.error("Failed to unschedule {}", jobName);
+        }
     }
 }
