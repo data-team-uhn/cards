@@ -16,22 +16,46 @@
  */
 package io.uhndata.cards.proms.emailnotifications;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.commons.messaging.mail.MailService;
+import org.apache.sling.commons.scheduler.ScheduleOptions;
+import org.apache.sling.commons.scheduler.Scheduler;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Designate(ocd = GeneralUpcomingNotification.Config.class, factory = true)
+import io.uhndata.cards.auth.token.TokenManager;
+
+@Designate(ocd = UpcomingNotificationsFactory.Config.class, factory = true)
 @Component(configurationPolicy = ConfigurationPolicy.REQUIRE)
-public final class GeneralUpcomingNotification
+public final class UpcomingNotificationsFactory
 {
     /** Default log. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(GeneralUpcomingNotification.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UpcomingNotificationsFactory.class);
+
+    /** Provides access to resources. */
+    @Reference
+    private ResourceResolverFactory resolverFactory;
+
+    /** The scheduler for rescheduling jobs. */
+    @Reference
+    private Scheduler scheduler;
+
+    /** The MailService for sending notification emails to patients. */
+    @Reference
+    private MailService mailService;
+
+    /** The TokenManager for generating patient-access tokens. */
+    @Reference
+    private TokenManager tokenManager;
 
     @ObjectClassDefinition(name = "Upcoming appointment notification",
         description = "Send emails for upcoming appointments")
@@ -50,14 +74,32 @@ public final class GeneralUpcomingNotification
         @AttributeDefinition(name = "HTML Email Template JCR Path", description = "HTML Email Template JCR Path")
         String htmlEmailTemplatePath();
 
-        @AttributeDefinition(name = "Hours before upcoming visit", description = "Hours before upcoming visit")
-        int hoursBeforeUpcomingVisit();
+        @AttributeDefinition(name = "Days before upcoming visit", description = "Days before upcoming visit")
+        int daysBeforeUpcomingVisit();
     }
 
     @Activate
     private void activate(final Config config)
     {
         LOGGER.info("Activating upcoming email notifications: {}", config.name());
+        final String nightlyNotificationsSchedule =
+            StringUtils.defaultIfEmpty(System.getenv("NIGHTLY_NOTIFICATIONS_SCHEDULE"), "0 0 6 * * ? *");
+
+        ScheduleOptions notificationsOptions = this.scheduler.EXPR(nightlyNotificationsSchedule);
+        notificationsOptions.name("NightlyNotifications-" + config.name());
+        notificationsOptions.canRunConcurrently(true);
+
+        // Instantiate the Runnable
+        final Runnable notificationsJob = new GeneralNotificationsTask(this.resolverFactory, this.tokenManager,
+            this.mailService, config.emailSubject(), config.plainTextEmailTemplatePath(),
+            config.htmlEmailTemplatePath(), config.daysBeforeUpcomingVisit());
+
+        try {
+            this.scheduler.schedule(notificationsJob, notificationsOptions);
+            LOGGER.info("Scheduled Upcoming Notifications Task: {}", config.name());
+        } catch (Exception e) {
+            LOGGER.error("Failed to schedule Upcoming Notifications Task: {}. {}", config.name(), e.getMessage(), e);
+        }
     }
 
     @Deactivate
