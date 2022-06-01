@@ -22,10 +22,10 @@
   </head>
   <body>
     <div style="display: flex; align-items: center; justify-content: center; height: 100%">
-      <div style="text-align: center">
-        <img style="width: 75%" src="/proxyerror/logo.png"/>
-        <p style="font-family: sans">{{CARDS_APP_NAME}} is down for maintenance.</p>
-        <p style="font-family: sans">We apoligize for any inconvenience this may cause.</p>
+      <div style="color: #024; font-family: sans; font-size: large; text-align: center">
+        <img style="margin-bottom: 40px; max-width: 500px; width: 100%" src="/proxyerror/logo.png"/>
+        <h1>{{CARDS_APP_NAME}} is down for maintenance</h1>
+        <p>We apologize for any inconvenience this may cause.</p>
       </div>
     </div>
   </body>
