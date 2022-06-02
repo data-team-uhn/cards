@@ -208,12 +208,12 @@ function DeleteButton(props) {
 DeleteButton.propTypes = {
   variant: PropTypes.oneOf(["icon", "text", "extended"]), // "extended" means both icon and text
   label: PropTypes.string,
-  size: PropTypes.oneOf(["small", "medium"]),
+  size: PropTypes.oneOf(["small", "medium", "large"]),
 }
 
 DeleteButton.defaultProps = {
   variant: "icon",
-  size: "medium",
+  size: "large",
 }
 
 export default withStyles(QuestionnaireStyle)(withRouter(DeleteButton));

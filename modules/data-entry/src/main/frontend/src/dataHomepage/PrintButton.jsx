@@ -140,7 +140,7 @@ PrintButton.propTypes = {
 
 PrintButton.defaultProps = {
   variant: "icon",
-  size: "medium",
+  size: "large",
   fullScreen: true,
 }
 

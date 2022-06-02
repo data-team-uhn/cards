@@ -367,7 +367,7 @@ function SubjectHeader(props) {
                  entryName={title}
                  entryType={label}
                  onComplete={handleDeletion}
-                 size="medium"
+                 size="large"
                />
             </div>
   );
