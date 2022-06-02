@@ -315,7 +315,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>"High Touch"</value>
+							<value>"High Touch" AND if 6mwt_reason = "Study"</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -422,7 +422,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>"Low Touch"</value>
+							<value>"Low Touch" AND if 6mwt_reason = "Study"</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -435,178 +435,379 @@
 			</node>
 		</node>
 		<node>
-			<name>6mwt_yearnumber</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Year Number</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>Triggered</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>long</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
+			<name>6mwt_yearnumberSection</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>1</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>6mwt_yearnumber</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
+					<name>text</name>
+					<value>Year Number</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
 					<value>1</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
 				<property>
-					<name>value</name>
+					<name>minAnswers</name>
 					<value>1</value>
-					<type>String</type>
+					<type>Long</type>
 				</property>
+				<node>
+					<name>Y1</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Y1</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Y1</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Y2</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Y2</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Y2</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Y3</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Y3</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Y3</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Y4</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Y4</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Y4</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Y5</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Y5</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Y5</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 			<node>
-				<name>2</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>condition</name>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>2</value>
+					<name>comparator</name>
+					<value>=</value>
 					<type>String</type>
 				</property>
-				<property>
-					<name>value</name>
-					<value>2</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>3</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>3</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>3</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>4</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>4</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>4</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>5</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>5</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>5</value>
-					<type>String</type>
-				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>6mwt_reason</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>"Triggered Assessment"</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
 			</node>
 		</node>
 		<node>
-			<name>6mwt_assessmentnumber</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Triggered Assessment Number</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
+			<name>6mwt_assessmentnumberSection</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>T1</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>6mwt_assessmentnumber</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>T1</value>
+					<name>text</name>
+					<value>Assessment Number</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>T1</value>
+					<name>dataType</name>
+					<value>text</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<node>
+					<name>T1</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>T1</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>T1</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>T2</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>T2</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>T2</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>T3</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>T3</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>T3</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 			<node>
-				<name>T2</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>condition</name>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>T2</value>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>6mwt_reason</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>"Triggered Assessment"</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
+		</node>
+		<node>
+			<name>6mwt_triggernumberSection</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
+			<node>
+				<name>6mwt_triggernumber</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Triggered Assessment Number</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>T2</value>
+					<name>dataType</name>
+					<value>text</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<node>
+					<name>6mwt_yearnumber</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>6mwt_yearnumber</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>6mwt_yearnumber</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>":"</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>":"</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>":"</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>6mwt_assessmentnumber</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>6mwt_assessmentnumber</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>6mwt_assessmentnumber</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 			<node>
-				<name>T3</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>condition</name>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>T3</value>
+					<name>comparator</name>
+					<value>=</value>
 					<type>String</type>
 				</property>
-				<property>
-					<name>value</name>
-					<value>T3</value>
-					<type>String</type>
-				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>6mwt_reason</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>"Triggered Assessment"</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
 			</node>
 		</node>
 		<node>
@@ -730,6 +931,29 @@
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>Age</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Age</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>6mwt_age</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>What is the participant's age?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
 			</property>
 		</node>
 	</node>

@@ -169,18 +169,8 @@
 			</property>
 			<property>
 				<name>maxAnswers</name>
-				<value>1</value>
+				<value>10</value>
 				<type>Long</type>
-			</property>
-			<property>
-				<name>minValue</name>
-				<value>0.0</value>
-				<type>Double</type>
-			</property>
-			<property>
-				<name>maxValue</name>
-				<value>10.0</value>
-				<type>Double</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
@@ -337,18 +327,8 @@
 			</property>
 			<property>
 				<name>maxAnswers</name>
-				<value>1</value>
+				<value>2</value>
 				<type>Long</type>
-			</property>
-			<property>
-				<name>minValue</name>
-				<value>0.0</value>
-				<type>Double</type>
-			</property>
-			<property>
-				<name>maxValue</name>
-				<value>2.0</value>
-				<type>Double</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
@@ -446,18 +426,8 @@
 		</property>
 		<property>
 			<name>maxAnswers</name>
-			<value>1</value>
+			<value>5</value>
 			<type>Long</type>
-		</property>
-		<property>
-			<name>minValue</name>
-			<value>1.0</value>
-			<type>Double</type>
-		</property>
-		<property>
-			<name>maxValue</name>
-			<value>5.0</value>
-			<type>Double</type>
 		</property>
 		<node>
 			<name>1</name>
@@ -597,11 +567,11 @@
 		</node>
 	</node>
 	<node>
-		<name>file_source</name>
+		<name>externalfile_norav</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>File Source</value>
+			<value>Vmax File Upload</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -610,42 +580,19 @@
 			<type>String</type>
 		</property>
 		<property>
-			<name>displayMode</name>
-			<value>list</value>
+			<name>description</name>
+			<value>Add up to 3 files</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>maxAnswers</name>
+			<value>3</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
 			<value>1</value>
 			<type>Long</type>
 		</property>
-		<node>
-			<name>Norav</name>
-			<primaryNodeType>cards:AnswerOption</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>Norav</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>value</name>
-				<value>Norav</value>
-				<type>String</type>
-			</property>
-		</node>
-		<node>
-			<name>Vmax</name>
-			<primaryNodeType>cards:AnswerOption</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>Vmax</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>value</name>
-				<value>Vmax</value>
-				<type>String</type>
-			</property>
-		</node>
 	</node>
 </node>
