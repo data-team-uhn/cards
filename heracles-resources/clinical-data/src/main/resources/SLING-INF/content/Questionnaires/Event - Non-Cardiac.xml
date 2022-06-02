@@ -75,6 +75,63 @@
 			</property>
 		</node>
 		<node>
+			<name>ncevent_record</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Medical Record</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<node>
+				<name>Yes</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Yes</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Yes</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>No</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>No</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>No</value>
+					<type>String</type>
+				</property>
+			</node>
+		</node>
+		<node>
 			<name>cenc_class</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>

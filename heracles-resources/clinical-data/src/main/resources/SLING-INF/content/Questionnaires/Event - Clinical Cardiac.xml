@@ -27,7 +27,7 @@
 	</property>
 	<property>
 		<name>title</name>
-		<value>Event: Clinical Cardiac</value>
+		<value>Event - Clinical Cardiac</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -38,11 +38,11 @@
 		<type>Reference</type>
 	</property>
 	<node>
-		<name>EventClinicalCardiac</name>
+		<name>Event-ClinicalCardiac</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>Event: Clinical Cardiac</value>
+			<value>Event - Clinical Cardiac</value>
 			<type>String</type>
 		</property>
 		<node>
