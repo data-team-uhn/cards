@@ -35,7 +35,7 @@
         },
         {
             "id":"io.uhndata.cards:cards-permissions:${project.version}",
-            "start-order":"25"
+            "start-order":"15"
         },
         {
             "id":"io.uhndata.cards:cards-utils:${project.version}",
