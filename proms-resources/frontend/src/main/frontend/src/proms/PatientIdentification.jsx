@@ -264,7 +264,7 @@ function PatientIdentification(props) {
          {/* If we haven't authenticated and retrieved the visit list for this patient yet,
              display the identification form */}
 
-         { !visitList ?
+         { (!visitList || showTou) ?
 
          <>
          <Grid item xs={12} className={classes.description}>
