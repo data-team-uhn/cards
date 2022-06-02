@@ -38,8 +38,8 @@ const useStyles = makeStyles(theme => ({
     resourceHeader: {
       position: "sticky",
       top: 0,
-      paddingBottom: "0 !important",
-      margin: theme.spacing(2*GRID_SPACE_UNIT, GRID_SPACE_UNIT, 0),
+      padding: `${theme.spacing(GRID_SPACE_UNIT, GRID_SPACE_UNIT, 0)} !important`,
+      margin: theme.spacing(3*GRID_SPACE_UNIT, 0, 0, 2*GRID_SPACE_UNIT),
       backgroundColor: grey[100],
       zIndex: "1010",
       "& .MuiBreadcrumbs-root" : {
@@ -60,8 +60,8 @@ const useStyles = makeStyles(theme => ({
     },
     resourceTitle: {
       backgroundColor: grey[100],
-      margin: theme.spacing(0, GRID_SPACE_UNIT, GRID_SPACE_UNIT),
-      paddingTop: "0 !important",
+      margin: theme.spacing(0, 0, 0, 2*GRID_SPACE_UNIT),
+      padding: `${theme.spacing(0, GRID_SPACE_UNIT, GRID_SPACE_UNIT)} !important`,
       zIndex: 2,
     }
 }))
