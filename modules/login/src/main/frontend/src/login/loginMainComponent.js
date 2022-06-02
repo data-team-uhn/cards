@@ -59,6 +59,7 @@ class MainLoginContainer extends React.Component {
             { this.state.isLongForm && (!this.state.signInShown || this.state.signUpEnabled) &&
               <Grid item>
                 <Button
+                  variant="outlined"
                   fullWidth
                   className={classes.main}
                   onClick={this.handleSwap}

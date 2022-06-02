@@ -574,7 +574,7 @@ function Filters(props) {
             {'Apply'}
           </Button>
           <Button
-            variant="contained"
+            variant="outlined"
             onClick={closeDialog}
             >
             {'Cancel'}

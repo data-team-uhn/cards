@@ -279,7 +279,7 @@ function VocabularyTree(props) {
               Done
           </Button>
           <Button onClick={onCancel}
-                  variant="contained"
+                  variant="outlined"
                   className={classes.browseAction} >
             Cancel
           </Button>

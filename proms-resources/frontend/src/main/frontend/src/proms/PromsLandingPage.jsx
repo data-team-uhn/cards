@@ -89,7 +89,6 @@ function PromsLandingPage(props) {
                     <Button
                       fullWidth
                       variant="contained"
-                      color="primary"
                       className={classes.button}
                       onClick={() => {
                         window.location = "/Proms";

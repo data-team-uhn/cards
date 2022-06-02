@@ -181,7 +181,7 @@ function ToUDialog(props) {
           <Button color="primary" onClick={() => saveTouAccepted(tou.version)} variant="contained">
             Accept
           </Button>
-          <Button onClick={() => setShowConfirmationTou(true)} variant="contained" >
+          <Button variant="outlined" onClick={() => setShowConfirmationTou(true)} variant="contained" >
             Decline
           </Button>
         </>
@@ -204,7 +204,7 @@ function ToUDialog(props) {
           <Button color="primary" onClick={() => saveTouAccepted(tou?.version)} variant="contained" >
             Accept
           </Button>
-          <Button onClick={() => {setShowConfirmationTou(false); onDecline && onDecline()}} variant="contained" >
+          <Button variant="outlined" onClick={() => {setShowConfirmationTou(false); onDecline && onDecline()}} variant="contained" >
             Decline
           </Button>
         </DialogActions>

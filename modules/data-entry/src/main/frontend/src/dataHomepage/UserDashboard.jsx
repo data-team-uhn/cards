@@ -129,7 +129,7 @@ function UserDashboard(props) {
         </DialogContent>
         <DialogActions>
           <Button
-            variant="contained"
+            variant="outlined"
             onClick={onClose}
             >
             Cancel

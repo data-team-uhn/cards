@@ -142,7 +142,7 @@ function UnstyledNewSubjectDialog (props) {
         <DialogActions>
           <Button
             onClick={() => {setNewSubjectType(""); onClose()}}
-            variant="contained"
+            variant="outlined"
             disabled={disabled}
             >
             Cancel
@@ -270,14 +270,14 @@ function UnstyledSelectParentDialog (props) {
         }
         <Button
           onClick={onClose}
-          variant="contained"
+          variant="outlined"
           disabled={disabled}
           >
           Cancel
         </Button>
         <Button
           onClick={onBack}
-          variant="contained"
+          variant="outlined"
           disabled={disabled}
           >
           Back
@@ -690,7 +690,7 @@ function UnstyledSelectorDialog (props) {
         </Button>
         <Button
           onClick={onClose}
-          variant="contained"
+          variant="outlined"
           disabled={disabled_controls}
           >
           Cancel

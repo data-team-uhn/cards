@@ -285,7 +285,7 @@ function StatisticDialog(props) {
       <DialogActions>
         <Button
             onClick={onClose}
-            variant="contained"
+            variant="outlined"
             >
             Cancel
           </Button>

@@ -300,7 +300,7 @@ function Section(props) {
         <Grid item className="addSectionContainer">
           <Button
             size="small"
-            variant="contained"
+            variant="outlined"
             className={classes.addSectionButton}
             onClick={() => {
               setInstanceLabels((oldLabels) => [...oldLabels, uuidv4()]);
