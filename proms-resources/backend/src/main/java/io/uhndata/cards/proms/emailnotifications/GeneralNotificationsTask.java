@@ -27,17 +27,20 @@ import io.uhndata.cards.metrics.Metrics;
 
 public class GeneralNotificationsTask extends AbstractPromsNotification implements Runnable
 {
+    private String taskName;
     private String emailSubject;
     private String plainTemplatePath;
     private String htmlTemplatePath;
     private int daysBeforeVisit;
 
+    @SuppressWarnings({ "checkstyle:ParameterNumber" })
     GeneralNotificationsTask(final ResourceResolverFactory resolverFactory,
-        final TokenManager tokenManager, final MailService mailService,
-        final String emailSubject, final String plainTemplatePath,
-        final String htmlTemplatePath, final int daysBeforeVisit)
+        final TokenManager tokenManager, final MailService mailService, final String taskName,
+        final String emailSubject, final String plainTemplatePath, final String htmlTemplatePath,
+        final int daysBeforeVisit)
     {
         super(resolverFactory, tokenManager, mailService);
+        this.taskName = taskName;
         this.emailSubject = emailSubject;
         this.plainTemplatePath = plainTemplatePath;
         this.htmlTemplatePath = htmlTemplatePath;
@@ -49,6 +52,6 @@ public class GeneralNotificationsTask extends AbstractPromsNotification implemen
     {
         long emailsSent = sendNotification(this.daysBeforeVisit, this.plainTemplatePath, this.htmlTemplatePath,
             this.emailSubject);
-        Metrics.increment(this.resolverFactory, "InitialEmailsSent", emailsSent);
+        Metrics.increment(this.resolverFactory, this.taskName, emailsSent);
     }
 }

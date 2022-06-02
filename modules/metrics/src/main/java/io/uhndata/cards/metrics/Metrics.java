@@ -94,6 +94,38 @@ public final class Metrics
         }
     }
 
+    public static void createStatistic(final ResourceResolverFactory resolverFactory, final String statName)
+    {
+        Map<String, Object> params = new HashMap<>();
+        params.put(ResourceResolverFactory.SUBSERVICE, "MetricLogger");
+        try (ResourceResolver resolver = resolverFactory.getServiceResourceResolver(params)) {
+            Resource metricsFolderResource = resolver.getResource(METRICS_PATH);
+            if (metricsFolderResource == null) {
+                return;
+            }
+            final Map<String, Object> statNodeProperties = new HashMap<>();
+            statNodeProperties.put("jcr:primaryType", "sling:Folder");
+            resolver.create(metricsFolderResource, statName, statNodeProperties);
+            Resource thisFolderResource = resolver.getResource(METRICS_PATH + statName);
+            if (thisFolderResource == null) {
+                return;
+            }
+            final Map<String, Object> prevTotalProperties = new HashMap<>();
+            prevTotalProperties.put("jcr:primaryType", "nt:unstructured");
+            prevTotalProperties.put("value", 0);
+            resolver.create(thisFolderResource, "prevTotal", prevTotalProperties);
+            final Map<String, Object> totalProperties = new HashMap<>();
+            totalProperties.put("jcr:primaryType", "nt:unstructured");
+            final String[] jcrMixinTypes = {"mix:atomicCounter"};
+            totalProperties.put("jcr:mixinTypes", jcrMixinTypes);
+            resolver.create(thisFolderResource, "total", totalProperties);
+            resolver.commit();
+        } catch (LoginException | PersistenceException e) {
+            LOGGER.error("createStatistic failed for {}", statName);
+            return;
+        }
+    }
+
     /**
      * Gets a Map of the "today" and "total" values for a performance statistic and
      * sets the previous read value of the performance statistic to the current read

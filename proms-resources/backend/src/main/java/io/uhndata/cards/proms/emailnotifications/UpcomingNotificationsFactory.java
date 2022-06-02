@@ -33,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.auth.token.TokenManager;
+import io.uhndata.cards.metrics.Metrics;
 
 @Designate(ocd = UpcomingNotificationsFactory.Config.class, factory = true)
 @Component(configurationPolicy = ConfigurationPolicy.REQUIRE)
@@ -85,13 +86,16 @@ public final class UpcomingNotificationsFactory
         final String nightlyNotificationsSchedule =
             StringUtils.defaultIfEmpty(System.getenv("NIGHTLY_NOTIFICATIONS_SCHEDULE"), "0 0 6 * * ? *");
 
+        // Create the performance metrics measurement node
+        Metrics.createStatistic(this.resolverFactory, config.name());
+
         ScheduleOptions notificationsOptions = this.scheduler.EXPR(nightlyNotificationsSchedule);
         notificationsOptions.name("NightlyNotifications-" + config.name());
         notificationsOptions.canRunConcurrently(true);
 
         // Instantiate the Runnable
         final Runnable notificationsJob = new GeneralNotificationsTask(this.resolverFactory, this.tokenManager,
-            this.mailService, config.emailSubject(), config.plainTextEmailTemplatePath(),
+            this.mailService, config.name(), config.emailSubject(), config.plainTextEmailTemplatePath(),
             config.htmlEmailTemplatePath(), config.daysBeforeUpcomingVisit());
 
         try {
