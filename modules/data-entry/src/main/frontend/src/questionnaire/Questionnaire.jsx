@@ -309,7 +309,7 @@ let QuestionnaireItemSet = (props) => {
   //     To call the right component for each entry that has passed the "types" filter,  we strip its primaryType
   //     of the "cards:" prefix and then `eval` the result to the functional component's name, which is passed as
   //     a parameter to an anonymous function called for each such entry, that renders the component inside a
-  //     Grid itme.
+  //     Grid item.
   //
   // @param types - an array of (primary) types of entries to display.
   //   Each element in the array is a string representing a primaryType, e.g. "cards:Question"

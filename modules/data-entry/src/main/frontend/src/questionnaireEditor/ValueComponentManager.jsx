@@ -23,8 +23,8 @@ export default class ValueComponentManager {
   // Registers a new value displayer. This method is only supposed to be called by each value displayer.
   //
   // @param component A function which can be called to determine how well suited the registered component can display a specific question.
-  //     The function receives the JSON of a question definition, and returns a tuple (array with 2 items), the actual React Component that can display the question, and the confidence that it is the right displayer.
-  //     The confidence is a number between 0 and 100, with a bigger number indicating more confidence. The registered component with the highest confidence will be used to display the question.
+  //     The function receives the value type which can be either a JSON Object or a string, and returns a tuple (array with 2 items), the actual React Component that can display the value, and the confidence that it is the right displayer.
+  //     The confidence is a number between 0 and 100, with a bigger number indicating more confidence. The registered component with the highest confidence will be used to display the value.
   static registerValueComponent(component) {
     _registeredComponents.push(component);
   }
