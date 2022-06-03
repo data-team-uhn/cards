@@ -240,7 +240,7 @@ function VocabularyQuery(props) {
             {name}
             <IconButton
               size="small"
-              buttonRef={node => {
+              ref={node => {
                 registerInfoButton(element["identifier"], node);
               }}
               color="primary"
