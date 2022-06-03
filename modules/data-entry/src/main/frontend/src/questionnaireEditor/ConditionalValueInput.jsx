@@ -313,18 +313,18 @@ let ConditionalValue = (props) => {
     })
   }
 
-   return (
-     data?.[objectKey]?.value?.length > 0
-     ? data[objectKey].value.map(value => (
-       <ListItemText
-         style={{marginTop: 0}}
-         key={value}
-         primary={value}
-         secondary={data?.[objectKey]?.isReference && variables?.find(v => v.name == value)?.text}
-       />
-     ))
-     : null
-   );
+  return (
+    data?.[objectKey]?.value?.length > 0
+    ? data[objectKey].value.map(value => (
+      <ListItemText
+        style={{marginTop: 0}}
+        key={value}
+        primary={value}
+        secondary={data?.[objectKey]?.isReference && variables?.find(v => v.name == value)?.text}
+      />
+    ))
+    : null
+  );
 }
 
 ConditionalValue.propTypes = {
