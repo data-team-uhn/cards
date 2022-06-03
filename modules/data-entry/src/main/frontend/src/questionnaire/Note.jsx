@@ -56,7 +56,7 @@ function Note (props) {
         title = {visible ? "Hide notes" : (noteIsEmpty ? "Add notes" : "Show notes")}
         >
         <Button
-          color = "default"
+          variant = "text"
           className = {classes.toggleNotesButton}
           onClick = {() => {
             setVisible(!visible);

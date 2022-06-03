@@ -216,8 +216,7 @@ let EditDialog = (props) => {
               'Save'}
             </Button>
             <Button
-              variant='contained'
-              color='default'
+              variant='outlined'
               onClick={() => { setOpen(false); onCancel && onCancel();}}
             >
               {'Cancel'}
