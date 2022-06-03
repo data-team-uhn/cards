@@ -220,7 +220,7 @@ function SubjectTypeDialog(props) {
          >
           { isEdit ? "Save" : "Create" }
         </Button>
-        <Button variant="contained" size="small" onClick={close}>Close</Button>
+        <Button variant="outlined" size="small" onClick={close}>Close</Button>
       </DialogActions>
     </Dialog>
   );

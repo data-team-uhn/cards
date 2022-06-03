@@ -506,7 +506,7 @@ let AnswerOptions = (props) => {
           }
           </CardContent>
           <CardActions>
-            <Button size='small' variant='contained' onClick={handlePopoverClose}>Cancel</Button>
+            <Button size='small' variant='outlined' onClick={handlePopoverClose}>Cancel</Button>
             <Button size='small' variant='contained' color='primary' onClick={updateOptionDescription}>Done</Button>
           </CardActions>
         </Card>

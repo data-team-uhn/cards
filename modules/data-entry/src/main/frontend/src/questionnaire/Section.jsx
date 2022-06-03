@@ -326,7 +326,7 @@ function Section(props) {
       >
       <DialogTitle id={uuid + "-delete-dialog-title"}>Are you sure you want to delete this section?</DialogTitle>
       <DialogActions>
-        <Button onClick={closeDialog} color="primary">
+        <Button onClick={closeDialog} variant="outlined">
           Cancel
         </Button>
         <Button

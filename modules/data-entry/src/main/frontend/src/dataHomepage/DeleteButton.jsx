@@ -180,10 +180,10 @@ function DeleteButton(props) {
             <Typography variant="body1">{dialogAction}</Typography>
         </DialogContent>
         <DialogActions className={classes.dialogActions}>
-            <Button variant="contained" color="secondary" size="small" onClick={() => handleDelete()}>
+            <Button variant="contained" size="small" onClick={() => handleDelete()}>
               { deleteRecursive ? "Delete All" : "Delete" }
             </Button>
-            <Button variant="contained" size="small" onClick={closeDialog}>Close</Button>
+            <Button variant="outlined" size="small" onClick={closeDialog}>Close</Button>
         </DialogActions>
       </Dialog>
       {variant == "icon" ?

@@ -79,7 +79,7 @@ class CreateGroupDialogue extends React.Component {
                 </DialogContent>
                 <DialogActions className={classes.dialogActions}>
                     <Button color="primary" variant="contained" size="small" onClick={(event) => { event.preventDefault(); this.handleCreateGroup(); }}>Create Group</Button>
-                    <Button variant="contained" size="small" onClick={this.props.handleClose}>Close</Button>
+                    <Button variant="outlined" size="small" onClick={this.props.handleClose}>Close</Button>
                 </DialogActions>
             </Dialog>
         );

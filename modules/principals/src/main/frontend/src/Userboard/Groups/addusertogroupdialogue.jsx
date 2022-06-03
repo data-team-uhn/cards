@@ -131,7 +131,7 @@ class AddUserToGroupDialogue extends React.Component {
                 </DialogContent>
                 <DialogActions className={classes.dialogActions}>
                     <Button variant="contained" size="small" color="primary" onClick={() => this.handleAddUsers()} disabled={this.state.selectedUsers.length == 0}>Add</Button>
-                    <Button variant="contained" size="small" onClick={() => this.handleExit()}>Close</Button>
+                    <Button variant="outlined" size="small" onClick={() => this.handleExit()}>Close</Button>
                 </DialogActions>
             </Dialog>
         );

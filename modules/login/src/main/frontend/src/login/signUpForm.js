@@ -123,7 +123,7 @@ class FormFields extends React.Component {
 
         />
         { !loginOnSuccess &&
-          <Button variant="contained" size="small" onClick={handleReset} className={classes.submit + " " + classes.closeButton}>Close</Button>
+          <Button variant="outlined" size="small" onClick={handleReset} className={classes.submit + " " + classes.closeButton}>Close</Button>
         }
         {!isValid ?
           // Render hover over and button
