@@ -111,13 +111,24 @@ def generateSelfSignedCert():
   pem_cert = crypto.dump_certificate(crypto.FILETYPE_PEM, cert).decode('utf-8')
   return pem_key, pem_cert
 
-def getLogoByResourcesDirectory(project_name):
+def getPathToConfDirectory(project_name):
   CARDS4_PREFIX = "cards4"
   if not project_name.startswith(CARDS4_PREFIX):
     return None
 
   project_id = project_name[len(CARDS4_PREFIX):]
-  path_to_media_json = "../{}-resources/clinical-data/src/main/resources/SLING-INF/content/libs/cards/conf/Media.json".format(project_id)
+  return "../{}-resources/clinical-data/src/main/resources/SLING-INF/content/libs/cards/conf/".format(project_id)
+
+def getPathToMediaContentDirectory(project_name):
+  CARDS4_PREFIX = "cards4"
+  if not project_name.startswith(CARDS4_PREFIX):
+    return None
+
+  project_id = project_name[len(CARDS4_PREFIX):]
+  return "../{}-resources/clinical-data/src/main/media/SLING-INF/content".format(project_id)
+
+def getLogoByResourcesDirectory(project_name):
+  path_to_media_json = os.path.join(getPathToConfDirectory(project_name), "Media.json")
   if not os.path.exists(path_to_media_json):
     print("Warning: {} does not exist.".format(path_to_media_json))
     return None
@@ -133,7 +144,7 @@ def getLogoByResourcesDirectory(project_name):
     print("Warning: 'logoLight' was not specified in {}.".format(path_to_media_json))
     return None
 
-  path_to_media_sling_content_directory = "../{}-resources/clinical-data/src/main/media/SLING-INF/content".format(project_id)
+  path_to_media_sling_content_directory = getPathToMediaContentDirectory(project_name)
 
   logo_light_path = media_config["logoLight"].lstrip("/")
   logo_light_path = os.path.join(path_to_media_sling_content_directory, logo_light_path)
@@ -162,17 +173,44 @@ def getCardsProjectLogoPath(project_name):
   projectLogoPath = "../modules/homepage/src/main/media/SLING-INF/content/libs/cards/resources/media/default/logo_light_bg.png"
   return projectLogoPath
 
+def getApplicationNameByResourcesDirectory(project_name):
+  path_to_appname_json = os.path.join(getPathToConfDirectory(project_name), "AppName.json")
+  if not os.path.exists(path_to_appname_json):
+    print("Warning: {} does not exist.".format(path_to_appname_json))
+    return None
+
+  with open(path_to_appname_json, 'r') as f_json:
+    try:
+      appname_config = json.load(f_json)
+    except json.decoder.JSONDecodeError:
+      print("Warning: {} contains invalid JSON.".format(appname_config))
+      return None
+
+  if "AppName" not in appname_config:
+    print("Warning: 'AppName' was not specified in {}.".format(appname_config))
+    return None
+
+  if type(appname_config['AppName']) != str:
+    print("Warning: 'AppName' in {} is of wrong data-type.".format(path_to_appname_json))
+    return None
+
+  return appname_config['AppName']
+
 def getCardsApplicationName(project_name):
   projectApplicationNameMap = {}
   projectApplicationNameMap['cards4care'] = "Cards 4 CaRe"
-  projectApplicationNameMap['cards4kids'] = "WilliamsDB"
-  projectApplicationNameMap['cards4lfs'] = "LFS Data Core"
-  projectApplicationNameMap['cards4proms'] = "DATA-PRO"
 
+  # If an entry for this project_name exists in projectApplicationNameMap use it instead of anything else
   if project_name in projectApplicationNameMap:
     return projectApplicationNameMap[project_name]
-  else:
-    return "CARDS"
+
+  # Try to see if a {project_id}-resources directory exists that can be used for obtaining the logo
+  projectAppName = getApplicationNameByResourcesDirectory(project_name)
+  if projectAppName is not None:
+    return projectAppName
+
+  # If all else fails, use the generic CARDS name
+  return "CARDS"
 
 OUTPUT_FILENAME = "docker-compose.yml"
 
