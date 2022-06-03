@@ -92,7 +92,7 @@ function UnstyledNewSubjectDialog (props) {
           <div className={classes.newSubjectInput}>
             <TextField
               label="Enter subject identifier"
-              variant="standard"
+              variant="outlined"
               fullWidth
               autoFocus
               disabled={disabled}
