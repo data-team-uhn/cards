@@ -111,21 +111,27 @@ def generateSelfSignedCert():
   pem_cert = crypto.dump_certificate(crypto.FILETYPE_PEM, cert).decode('utf-8')
   return pem_key, pem_cert
 
-def getPathToConfDirectory(project_name):
+def getPathToProjectResourcesDirectory(project_name):
   CARDS4_PREFIX = "cards4"
   if not project_name.startswith(CARDS4_PREFIX):
     return None
 
   project_id = project_name[len(CARDS4_PREFIX):]
-  return "../{}-resources/clinical-data/src/main/resources/SLING-INF/content/libs/cards/conf/".format(project_id)
+  return "../{}-resources/".format(project_id)
+
+def getPathToConfDirectory(project_name):
+  project_resources_dir = getPathToProjectResourcesDirectory(project_name)
+  if project_resources_dir is not None:
+    return os.path.join(project_resources_dir, "clinical-data/src/main/resources/SLING-INF/content/libs/cards/conf/")
+
+  return None
 
 def getPathToMediaContentDirectory(project_name):
-  CARDS4_PREFIX = "cards4"
-  if not project_name.startswith(CARDS4_PREFIX):
-    return None
+  project_resources_dir = getPathToProjectResourcesDirectory(project_name)
+  if project_resources_dir is not None:
+    return os.path.join(project_resources_dir, "clinical-data/src/main/media/SLING-INF/content")
 
-  project_id = project_name[len(CARDS4_PREFIX):]
-  return "../{}-resources/clinical-data/src/main/media/SLING-INF/content".format(project_id)
+  return None
 
 def getLogoByResourcesDirectory(project_name):
   path_to_media_json = os.path.join(getPathToConfDirectory(project_name), "Media.json")
