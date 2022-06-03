@@ -131,13 +131,8 @@ export default class DateQuestionUtilities {
 
   // Convert a moment string to a month display
   static dateStringToDisplayMonth(dateFormat, value) {
-    // Switch month and year if required as Moment returns a fixed order
     let monthIndex = dateFormat.indexOf('MM');
-    if (monthIndex === 0) {
-      let separator = dateFormat[2];
-      // Switch back from moment supported yyyy/mm to desired mm/yyyy.
-      value = [value.slice(5, 7), separator, value.slice(0, 4)].join('');
-    } else if (monthIndex === 5) {
+    if (monthIndex === 5) {
       value = value.replaceAll("-", dateFormat[4]);
     }
     if (value.length > 7) {
