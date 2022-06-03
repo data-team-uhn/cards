@@ -111,20 +111,56 @@ def generateSelfSignedCert():
   pem_cert = crypto.dump_certificate(crypto.FILETYPE_PEM, cert).decode('utf-8')
   return pem_key, pem_cert
 
+def getLogoByResourcesDirectory(project_name):
+  CARDS4_PREFIX = "cards4"
+  if not project_name.startswith(CARDS4_PREFIX):
+    return None
+
+  project_id = project_name[len(CARDS4_PREFIX):]
+  path_to_media_json = "../{}-resources/clinical-data/src/main/resources/SLING-INF/content/libs/cards/conf/Media.json".format(project_id)
+  if not os.path.exists(path_to_media_json):
+    print("Warning: {} does not exist.".format(path_to_media_json))
+    return None
+
+  with open(path_to_media_json, 'r') as f_json:
+    try:
+      media_config = json.load(f_json)
+    except json.decoder.JSONDecodeError:
+      print("Warning: {} contains invalid JSON.".format(path_to_media_json))
+      return None
+
+  if "logoLight" not in media_config:
+    print("Warning: 'logoLight' was not specified in {}.".format(path_to_media_json))
+    return None
+
+  path_to_media_sling_content_directory = "../{}-resources/clinical-data/src/main/media/SLING-INF/content".format(project_id)
+
+  logo_light_path = media_config["logoLight"].lstrip("/")
+  logo_light_path = os.path.join(path_to_media_sling_content_directory, logo_light_path)
+
+  if not os.path.exists(logo_light_path):
+    print("Warning: The path {} in {} does not exist.".format(logo_light_path, path_to_media_json))
+    return None
+
+  return logo_light_path
+
 def getCardsProjectLogoPath(project_name):
   logoPathMap = {}
   logoPathMap['cards4care'] = "cardiac-rehab-resources/clinical-data/src/main/media/SLING-INF/content/libs/cards/resources/media/care/logo_light_bg.png"
-  logoPathMap['cards4kids'] = "kids-resources/clinical-data/src/main/media/SLING-INF/content/libs/cards/resources/media/kids/logo_light_bg.png"
-  logoPathMap['cards4lfs'] = "lfs-resources/clinical-data/src/main/media/SLING-INF/content/libs/cards/resources/media/lfs/logo_light_bg.png"
-  logoPathMap['cards4proms'] = "proms-resources/clinical-data/src/main/media/SLING-INF/content/libs/cards/resources/media/proms/logo_light_bg.png"
 
-  #Default logo if CARDS project is not specified
-  projectLogoPath = "modules/homepage/src/main/media/SLING-INF/content/libs/cards/resources/media/default/logo_light_bg.png"
-
+  # If an entry for this project_name exists in logoPathMap use it instead of anything else
   if project_name in logoPathMap:
-    projectLogoPath = logoPathMap[project_name]
+    projectLogoPath = "../" + logoPathMap[project_name]
+    return projectLogoPath
 
-  return "../" + projectLogoPath
+  # Try to see if a {project_id}-resources directory exists that can be used for obtaining the logo
+  projectLogoPath = getLogoByResourcesDirectory(project_name)
+  if projectLogoPath is not None:
+    return projectLogoPath
+
+  # If all else fails, use the default CARDS logo
+  projectLogoPath = "../modules/homepage/src/main/media/SLING-INF/content/libs/cards/resources/media/default/logo_light_bg.png"
+  return projectLogoPath
 
 def getCardsApplicationName(project_name):
   projectApplicationNameMap = {}
