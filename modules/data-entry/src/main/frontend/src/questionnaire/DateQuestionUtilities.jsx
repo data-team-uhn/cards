@@ -113,8 +113,6 @@ export default class DateQuestionUtilities {
       'M':'year'
     };
     let truncateTo;
-    // Both 'd' and 'D' should truncate to month
-    toFormat = toFormat.replaceAll("D","d");
     for (let [formatSpecifier, targetPrecision] of Object.entries(truncate)) {
       if (toFormat.indexOf(formatSpecifier) < 0) {
         truncateTo = targetPrecision;
