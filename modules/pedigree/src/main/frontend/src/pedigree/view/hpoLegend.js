@@ -74,7 +74,7 @@ var HPOLegend = Class.create( Legend, {
     $super(id, name, nodeID);
   },
 
-  /**	
+ /**	
      * Retrieve the color associated with the given object	
      *	
      * @method getObjectColor	

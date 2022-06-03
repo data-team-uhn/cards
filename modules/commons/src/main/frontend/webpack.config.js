@@ -25,7 +25,7 @@ module_name = require("./package.json").name + ".";
 module.exports = {
   mode: 'development',
   entry: {
-	  [module_name + '404']: './src/components/404.js',
+	[module_name + '404']: './src/components/404.js',
   },
   plugins: [
     new CleanWebpackPlugin(),
