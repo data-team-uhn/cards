@@ -284,9 +284,11 @@ let QuestionnaireItemSet = (props) => {
     // }
     // => {a: "a.json", b: "b,json", c: "c.json", f: "f.json"}
     Object.entries(models).forEach(([k,v]) => {
-      if ( typeof(v) == "object" && typeof(v?.entries) != "undefined" && typeof(v?.defaultOrder) == "undefined") {
-        // Flatten groups with `entries` but without `defaultOrder` (the ones with defaultOrder are already in the "priority" list)
-        generalModels = {...generalModels, ...v.entries}
+      if ( typeof(v) == "object") {
+        if (typeof(v?.entries) != "undefined" && typeof(v?.defaultOrder) == "undefined") {
+          // Flatten groups with `entries` but without `defaultOrder` (the ones with defaultOrder are already in the "priority" list)
+          generalModels = {...generalModels, ...v.entries}
+        }
       } else {
         // also record groups without metadata
         generalModels[k] = v;
