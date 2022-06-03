@@ -767,7 +767,7 @@
 		<property>
 			<name>text</name>
 			<value>
-#### Also go to [Multiple Choice Test](VocabularyMultipleChoiceTest) and [Concept Recognition Test](ConceptRecognitionTest) to check other functionalities related to Vocabulary Questions.
+#### Also go to `Multiple Choice Test` and `Concept Recognition Test` to check other functionalities related to Vocabulary Questions.
 			</value>
 			<type>String</type>
 		</property>
