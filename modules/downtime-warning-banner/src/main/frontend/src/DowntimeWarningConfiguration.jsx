@@ -29,8 +29,8 @@ import {
     CardHeader,
     List,
     ListItem,
-    makeStyles
-} from '@material-ui/core';
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles(theme => ({
   textField: {
@@ -154,6 +154,7 @@ function DowntimeWarningConfiguration() {
             </ListItem>
             <ListItem key="fromDate">
               <TextField
+                variant="standard"
                 label="Start of maintenance"
                 type="datetime-local"
                 InputLabelProps={{ shrink: true }}
@@ -166,6 +167,7 @@ function DowntimeWarningConfiguration() {
             </ListItem>
             <ListItem key="toDate">
               <TextField
+                variant="standard"
                 label="End of maintenance"
                 type="datetime-local"
                 InputLabelProps={{ shrink: true }}
