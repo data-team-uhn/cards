@@ -169,10 +169,11 @@ def getLogoByResourcesDirectory(project_name):
   return logo_light_path
 
 def getCardsProjectLogoPath(project_name):
-  # Try to see if a {project_id}-resources directory exists that can be used for obtaining the logo
-  projectLogoPath = getLogoByResourcesDirectory(project_name)
-  if projectLogoPath is not None:
-    return projectLogoPath
+  if project_name is not None:
+    # Try to see if a {project_id}-resources directory exists that can be used for obtaining the logo
+    projectLogoPath = getLogoByResourcesDirectory(project_name)
+    if projectLogoPath is not None:
+      return projectLogoPath
 
   # If all else fails, use the default CARDS logo
   projectLogoPath = "../modules/homepage/src/main/media/SLING-INF/content/libs/cards/resources/media/default/logo_light_bg.png"
@@ -202,10 +203,11 @@ def getApplicationNameByResourcesDirectory(project_name):
   return appname_config['AppName']
 
 def getCardsApplicationName(project_name):
-  # Try to see if a {project_id}-resources directory exists that can be used for obtaining the logo
-  projectAppName = getApplicationNameByResourcesDirectory(project_name)
-  if projectAppName is not None:
-    return projectAppName
+  if project_name is not None:
+    # Try to see if a {project_id}-resources directory exists that can be used for obtaining the logo
+    projectAppName = getApplicationNameByResourcesDirectory(project_name)
+    if projectAppName is not None:
+      return projectAppName
 
   # If all else fails, use the generic CARDS name
   return "CARDS"
