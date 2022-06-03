@@ -113,6 +113,13 @@ def generateSelfSignedCert():
 
 def getPathToProjectResourcesDirectory(project_name):
   CARDS4_PREFIX = "cards4"
+  resourcesPathMap = {}
+  resourcesPathMap['cards4care'] = "../cardiac-rehab-resources/"
+
+  # If an entry for this project_name exists in resourcesPathMap use it instead of anything else
+  if project_name in resourcesPathMap:
+    return resourcesPathMap[project_name]
+
   if not project_name.startswith(CARDS4_PREFIX):
     return None
 
@@ -162,14 +169,6 @@ def getLogoByResourcesDirectory(project_name):
   return logo_light_path
 
 def getCardsProjectLogoPath(project_name):
-  logoPathMap = {}
-  logoPathMap['cards4care'] = "cardiac-rehab-resources/clinical-data/src/main/media/SLING-INF/content/libs/cards/resources/media/care/logo_light_bg.png"
-
-  # If an entry for this project_name exists in logoPathMap use it instead of anything else
-  if project_name in logoPathMap:
-    projectLogoPath = "../" + logoPathMap[project_name]
-    return projectLogoPath
-
   # Try to see if a {project_id}-resources directory exists that can be used for obtaining the logo
   projectLogoPath = getLogoByResourcesDirectory(project_name)
   if projectLogoPath is not None:
@@ -203,13 +202,6 @@ def getApplicationNameByResourcesDirectory(project_name):
   return appname_config['AppName']
 
 def getCardsApplicationName(project_name):
-  projectApplicationNameMap = {}
-  projectApplicationNameMap['cards4care'] = "Cards 4 CaRe"
-
-  # If an entry for this project_name exists in projectApplicationNameMap use it instead of anything else
-  if project_name in projectApplicationNameMap:
-    return projectApplicationNameMap[project_name]
-
   # Try to see if a {project_id}-resources directory exists that can be used for obtaining the logo
   projectAppName = getApplicationNameByResourcesDirectory(project_name)
   if projectAppName is not None:
