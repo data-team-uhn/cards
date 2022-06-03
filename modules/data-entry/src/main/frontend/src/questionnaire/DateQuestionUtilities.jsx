@@ -154,8 +154,6 @@ export default class DateQuestionUtilities {
       // Year-only dates are displayed like a number
       return value;
     }
-    // Quick fix for moment using a different date specifier than Java
-    dateFormat = dateFormat.replaceAll('d', "D");
     let date = this.toPrecision(value, dateFormat);
     if (dateType === this.MONTH_DATE_TYPE) {
       return this.dateStringToDisplayMonth(
