@@ -38,7 +38,7 @@ const useStyles = makeStyles(theme => ({
     resourceHeader: {
       position: "sticky",
       top: 0,
-      padding: `${theme.spacing(GRID_SPACE_UNIT, GRID_SPACE_UNIT, 0)} !important`,
+      padding: `${theme.spacing(GRID_SPACE_UNIT, GRID_SPACE_UNIT, GRID_SPACE_UNIT)} !important`,
       margin: theme.spacing(3*GRID_SPACE_UNIT, 0, 0, 2*GRID_SPACE_UNIT),
       backgroundColor: grey[100],
       zIndex: "1010",
@@ -50,13 +50,7 @@ const useStyles = makeStyles(theme => ({
       },
     },
     breadcrumbAction: {
-      margin: theme.spacing(-1.25, 0),
-    },
-    headerSeparator: {
-      visibility: "hidden",
-      border: "0 none",
-      height: theme.spacing(2),
-      margin: 0,
+      margin: theme.spacing(-1.25, 0, -2.25),
     },
     resourceTitle: {
       backgroundColor: grey[100],
@@ -107,10 +101,11 @@ function ResourceHeader (props) {
 
   const classes = useStyles();
 
+  // Scroll trigger for collapsing the Title and action into the breadcrumbs
   const fullBreadcrumbTrigger = useScrollTrigger({
     target: window,
     disableHysteresis: true,
-    threshold: 60,
+    threshold: 120,
   });
 
   return (
@@ -129,20 +124,16 @@ function ResourceHeader (props) {
           { fullBreadcrumbTrigger && <div className={classes.breadcrumbAction}>{action}</div> }
         </Collapse>
       </Grid>
-      <Collapse in={fullBreadcrumbTrigger}>
-        <hr className={classes.headerSeparator} />
-      </Collapse>
     </Grid>
-    <Collapse in={!(fullBreadcrumbTrigger)}
-      component={Grid} item xs={12} className={classes.resourceTitle}>
-        <Grid container direction="row" justifyContent="space-between" alignItems="center">
+    <Grid item xs={12} className={classes.resourceTitle}>
+       <Grid container direction="row" justifyContent="space-between" alignItems="start">
           <Grid item>
             <Typography component="h2" variant="h4">{title}</Typography>
           </Grid>
           {action && !fullBreadcrumbTrigger && <Grid item>{action}</Grid>}
-        </Grid>
-        {children}
-    </Collapse>
+       </Grid>
+       {children}
+    </Grid>
     </>
   )
 };
