@@ -36,22 +36,28 @@ def prepare_conditional(question, row):
 def prepare_conditional_string(conditional_string, question):
     # Split statement into two at the 'or'
     if conditional_string.rfind(' or ') != -1:
+        question.update({'conditionalGroup': {'jcr:primaryType': 'cards:ConditionalGroup'}})
+        # The keyword 'all' in the conditional string should correspond to 'requireAll' == true
+        # If it is present, remove it from the operand and add 'requireAll' to the conditional group
+        if conditional_string.startswith('all '):
+            conditional_string = conditional_string[4:]
+            question['conditionalGroup'].update({'requireAll': True})
         conditional_string = conditional_string.partition(' or ')
         # If one of the resulting statements is incomplete
         # Such as in the case of splitting "if CVLT-C or CVLT-II=yes"
         # Copy what's after the equals sign to the incomplete part
         if "=" not in conditional_string[0]:
-            insert_conditional(conditional_string[0] + conditional_string[2].partition("=")[1] + conditional_string[2].partition("=")[2], question, '1')
+            insert_conditional(conditional_string[0] + conditional_string[2].partition("=")[1] + conditional_string[2].partition("=")[2], question['conditionalGroup'], '1')
         else:
-            insert_conditional(conditional_string[0], question, '1')
-        insert_conditional(conditional_string[2], question, '2')
+            insert_conditional(conditional_string[0], question['conditionalGroup'], '1')
+        insert_conditional(conditional_string[2], question['conditionalGroup'], '2')
     else:
         # No title is needed because only a single cards:Conditional will be created
         insert_conditional(conditional_string, question, '')
 
 
 # Updates the question with cards:Conditionals from the output of prepare_conditional
-def insert_conditional(conditional_string, question, title):
+def insert_conditional(conditional_string, parent, title):
     # Split the conditional into two operands and an operator
     conditional_string = partition_conditional_string(conditional_string)
     operand_a = conditional_string[0].strip()
@@ -60,29 +66,29 @@ def insert_conditional(conditional_string, question, title):
     # If the first operand is a comma-separated list, create a separate conditional for each
     # Enclose the conditionals in a cards:ConditionalGroup
     if ',' in operand_a:
-        question.update({'conditionalGroup': {'jcr:primaryType': 'cards:ConditionalGroup'}})
+        parent.update({'conditionalGroup': {'jcr:primaryType': 'cards:ConditionalGroup'}})
         # The keyword 'all' in the conditional string should correspond to 'requireAll' == true
         # If it is present, remove it from the operand and add 'requireAll' to the conditional group
         if 'all' in operand_a:
             operand_a = operand_a[:-3]
-            question['conditionalGroup'].update({'requireAll': True})
+            parent['conditionalGroup'].update({'requireAll': True})
         operand_a_list = list(operand_a.replace(' ', '').split(','))
         for index, item in enumerate(operand_a_list):
-            question['conditionalGroup'].update(create_conditional(item, operator, operand_b, 'condition' + str(index)))
+            parent['conditionalGroup'].update(create_conditional(item, operator, operand_b, 'condition' + str(index)))
     # If the second operand is a comma-separated list, create a separate conditional for each
     # Enclose the conditionals in a cards:ConditionalGroup
     elif ',' in operand_b:
-        question.update({'conditionalGroup': {'jcr:primaryType': 'cards:ConditionalGroup'}})
+        parent.update({'conditionalGroup': {'jcr:primaryType': 'cards:ConditionalGroup'}})
         # The keyword 'all' in the conditional string should correspond to 'requireAll' == true
         # If it is present, remove it from the operand and add 'requireAll' to the conditional group
         if 'all' in operand_b:
             operand_b = operand_b[:-3]
-            question['conditionalGroup'].update({'requireAll': True})
+            parent['conditionalGroup'].update({'requireAll': True})
         operand_b_list = list(operand_b.replace(' ', '').split(','))
         for index, item in enumerate(operand_b_list):
-            question['conditionalGroup'].update(create_conditional(operand_a, operator, item, 'condition' + str(index)))
+            parent['conditionalGroup'].update(create_conditional(operand_a, operator, item, 'condition' + str(index)))
     else:
-        question.update(create_conditional(operand_a, operator, operand_b, 'condition' + title))
+        parent.update(create_conditional(operand_a, operator, operand_b, 'condition' + title))
 
 # Split the conditional_string entry into 3 parts: The first operand, the operator and the second operand.
 def partition_conditional_string(conditional_string):

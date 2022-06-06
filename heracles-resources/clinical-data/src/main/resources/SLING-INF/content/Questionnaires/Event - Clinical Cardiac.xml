@@ -446,86 +446,136 @@
 			<node>
 				<name>conditionalGroup</name>
 				<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
+				<property>
+					<name>requireAll</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
 				<node>
-					<name>condition0</name>
-					<primaryNodeType>cards:Conditional</primaryNodeType>
-					<property>
-						<name>comparator</name>
-						<value>=</value>
-						<type>String</type>
-					</property>
+					<name>conditionalGroup</name>
+					<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
 					<node>
-						<name>operandA</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<name>condition0</name>
+						<primaryNodeType>cards:Conditional</primaryNodeType>
 						<property>
-							<name>value</name>
-							<values>
-								<value>ce_test_2</value>
-							</values>
+							<name>comparator</name>
+							<value>=</value>
 							<type>String</type>
 						</property>
-						<property>
-							<name>isReference</name>
-							<value>True</value>
-							<type>Boolean</type>
-						</property>
+						<node>
+							<name>operandA</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>ce_test_2</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>True</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+						<node>
+							<name>operandB</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>Exercisestresstest</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>False</value>
+								<type>Boolean</type>
+							</property>
+						</node>
 					</node>
 					<node>
-						<name>operandB</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<name>condition1</name>
+						<primaryNodeType>cards:Conditional</primaryNodeType>
 						<property>
-							<name>value</name>
-							<values>
-								<value>Exercisestresstest</value>
-							</values>
+							<name>comparator</name>
+							<value>=</value>
 							<type>String</type>
 						</property>
-						<property>
-							<name>isReference</name>
-							<value>False</value>
-							<type>Boolean</type>
-						</property>
+						<node>
+							<name>operandA</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>ce_test_2</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>True</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+						<node>
+							<name>operandB</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>Nuclearstresstest</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>False</value>
+								<type>Boolean</type>
+							</property>
+						</node>
 					</node>
-				</node>
-				<node>
-					<name>condition1</name>
-					<primaryNodeType>cards:Conditional</primaryNodeType>
-					<property>
-						<name>comparator</name>
-						<value>=</value>
-						<type>String</type>
-					</property>
 					<node>
-						<name>operandA</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<name>condition2</name>
+						<primaryNodeType>cards:Conditional</primaryNodeType>
 						<property>
-							<name>value</name>
-							<values>
-								<value>ce_test_2</value>
-							</values>
+							<name>comparator</name>
+							<value>=</value>
 							<type>String</type>
 						</property>
-						<property>
-							<name>isReference</name>
-							<value>True</value>
-							<type>Boolean</type>
-						</property>
-					</node>
-					<node>
-						<name>operandB</name>
-						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-						<property>
-							<name>value</name>
-							<values>
-								<value>Nuclearstresstest</value>
-							</values>
-							<type>String</type>
-						</property>
-						<property>
-							<name>isReference</name>
-							<value>False</value>
-							<type>Boolean</type>
-						</property>
+						<node>
+							<name>operandA</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>ce_test_2</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>True</value>
+								<type>Boolean</type>
+							</property>
+						</node>
+						<node>
+							<name>operandB</name>
+							<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+							<property>
+								<name>value</name>
+								<values>
+									<value>Nuclearpharmocologicstresstest</value>
+								</values>
+								<type>String</type>
+							</property>
+							<property>
+								<name>isReference</name>
+								<value>False</value>
+								<type>Boolean</type>
+							</property>
+						</node>
 					</node>
 				</node>
 				<node>
@@ -542,7 +592,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>ce_test_2</value>
+								<value>ce_test</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -558,7 +608,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>Nuclearpharmocologicstresstestandifce_test=1</value>
+								<value>1</value>
 							</values>
 							<type>String</type>
 						</property>
