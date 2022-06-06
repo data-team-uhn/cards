@@ -160,7 +160,7 @@ const generateRandomDataPatientsByDateAndClinic = (nDataPoints) => {
   };
 }
 
-const graphQlResponse = {
+const defaultGraphQlResponse = {
   data: {
     patientsByDateAndClinic: [
       {
@@ -273,7 +273,7 @@ const selectGraphQlResponse = () => {
   if (nRandomPatients !== undefined) {
     return generateRandomDataPatientsByDateAndClinic(parseInt(nRandomPatients));
   } else {
-    return graphQlResponse;
+    return defaultGraphQlResponse;
   }
 };
 
