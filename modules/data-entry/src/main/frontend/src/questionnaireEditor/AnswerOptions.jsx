@@ -91,7 +91,7 @@ const useStyles = makeStyles(theme => ({
       marginBottom: theme.spacing(2),
     },
     answerOptionSwitch: {
-      margin: theme.spacing(0.5),
+      margin: theme.spacing(0.5, 0.5, 0.5, -0.5),
     },
     optionsDragIndicator: {
       padding: theme.spacing(1.5, 0.5),
@@ -355,7 +355,7 @@ let AnswerOptions = (props) => {
     </Grid>
     )
   }
-  
+
   let handlePopoverClose = () => {
     setDescriptionAnchorEl(null);
     setDescriptionIndex(null);
@@ -435,6 +435,7 @@ let AnswerOptions = (props) => {
                             }}/>
                         </Tooltip>
                         <TextField
+                          variant="standard"
                           InputProps={{
                             readOnly: true,
                           }}
@@ -462,6 +463,7 @@ let AnswerOptions = (props) => {
       </DragDropContext>
       <TextField
         fullWidth
+        variant="standard"
         className={classes.newOptionInput}
         value={tempValue}
         error={isDuplicate}
