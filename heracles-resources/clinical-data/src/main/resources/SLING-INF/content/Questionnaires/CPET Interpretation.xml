@@ -295,44 +295,94 @@
 				</node>
 			</node>
 			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<name>conditionalGroup</name>
+				<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
 				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
+					<name>requireAll</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<name>condition1</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>study_stream</value>
-						</values>
+						<name>comparator</name>
+						<value>=</value>
 						<type>String</type>
 					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>study_stream</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>High Touch</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<name>condition2</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>High Touch AND if cpet_reason = Study</value>
-						</values>
+						<name>comparator</name>
+						<value>=</value>
 						<type>String</type>
 					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>cpet_reason</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>Study</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
 				</node>
 			</node>
 		</node>
@@ -397,44 +447,94 @@
 				</node>
 			</node>
 			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<name>conditionalGroup</name>
+				<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
 				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
+					<name>requireAll</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<name>condition1</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>study_stream</value>
-						</values>
+						<name>comparator</name>
+						<value>=</value>
 						<type>String</type>
 					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>study_stream</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>Low Touch</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
 				</node>
 				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<name>condition2</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
 					<property>
-						<name>value</name>
-						<values>
-							<value>Low Touch AND if cpet_reason = Study</value>
-						</values>
+						<name>comparator</name>
+						<value>=</value>
 						<type>String</type>
 					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>cpet_reason</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>Study</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
 				</node>
 			</node>
 		</node>
