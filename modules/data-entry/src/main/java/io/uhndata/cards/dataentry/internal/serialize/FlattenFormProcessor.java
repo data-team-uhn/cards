@@ -38,6 +38,8 @@ import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 @Component(immediate = true)
 public class FlattenFormProcessor implements ResourceJsonProcessor
 {
+    private static final int ID_LENGTH = 36;
+
     private ThreadLocal<Map<String, JsonObject>> childrenJsons = ThreadLocal.withInitial(HashMap::new);
     private ThreadLocal<JsonObjectBuilder> jsonSection = ThreadLocal.withInitial(Json::createObjectBuilder);
     private ThreadLocal<Map<String, JsonObjectBuilder>> jsonSectionMap = ThreadLocal.withInitial(HashMap::new);
@@ -96,23 +98,26 @@ public class FlattenFormProcessor implements ResourceJsonProcessor
     private void addAnswers(final Node node, final JsonObjectBuilder json)
     {
         try {
+            // The first time we encounter a section, we create a JsonArrayBuilder for it,
+            // and add its children in the output.
+            // While leaving the section we add all its children saved in Map getting them by section id.
             final NodeIterator children = node.getNodes();
             while (children.hasNext()) {
                 final Node child = children.nextNode();
                 final String childId = child.getIdentifier();
+                final String idWithoutParent = childId.substring(childId.length() - ID_LENGTH);
                 if (child.isNodeType("cards:Answer") && this.childrenJsons.get().containsKey(childId)) {
-                    final String answerId = childId.substring(childId.length() - 36);
                     final JsonObject childJson = this.childrenJsons.get().get(childId);
                     if (child.getParent().isNodeType("cards:AnswerSection")) {
-                        this.jsonSection.get().add(answerId, childJson);
+                        this.jsonSection.get().add(idWithoutParent, childJson);
                         this.jsonSectionMap.get().put(child.getParent().getIdentifier(), this.jsonSection.get());
                     } else {
-                        json.add(answerId, childJson);
+                        json.add(idWithoutParent, childJson);
                     }
                     this.childrenJsons.get().remove(childId);
-                } else if (child.isNodeType("cards:AnswerSection")) {
-                    json.addAll(this.jsonSectionMap.get().get(child.getIdentifier()));
-                    this.jsonSectionMap.get().remove(child.getIdentifier());
+                } else if (child.isNodeType("cards:AnswerSection") && this.jsonSectionMap.get().containsKey(childId)) {
+                    json.addAll(this.jsonSectionMap.get().get(childId));
+                    this.jsonSectionMap.get().remove(childId);
                 }
             }
         } catch (RepositoryException e) {
