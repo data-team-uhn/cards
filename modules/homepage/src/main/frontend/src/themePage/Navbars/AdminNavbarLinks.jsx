@@ -14,9 +14,9 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 // @mui/material components
 import {
   Avatar,
+  Box,
   ClickAwayListener,
   Grow,
-  Hidden,
   IconButton,
   ListItemIcon,
   ListItemText,
@@ -120,8 +120,9 @@ function HeaderLinks (props) {
         />
       }
       {/* Avatar + sign out link */}
-      <Hidden smDown>
-        <Tooltip title={username}>
+      {/* hide on screens sm and down */}
+      <Tooltip title={username}>
+        <Box sx={{ display: { xs: 'none', md: 'inline-flex' }}}>
           <IconButton
             className={classes.buttonLink + " " + classes.logout + " " + expand || classes.linkText}
             onClick={() => setPopperOpen((open) => !open)}
@@ -130,11 +131,12 @@ function HeaderLinks (props) {
             >
             <Avatar className={classes[color]}>{initials}</Avatar>
           </IconButton>
-        </Tooltip>
-      </Hidden>
-      <Hidden mdUp implementation="css">
+        </Box>
+      </Tooltip>
+      {/* hide on screens md and up */}
+      <Box sx={{ display: { md: 'none', xs: 'block' } }}>
         {menuItems}
-      </Hidden>
+      </Box>
       <Popper
         open={popperOpen}
         anchorEl={avatarRef.current}

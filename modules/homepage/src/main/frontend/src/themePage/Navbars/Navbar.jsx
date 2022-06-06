@@ -13,7 +13,7 @@ import React from "react";
 import classNames from "classnames";
 import PropTypes from "prop-types";
 import withStyles from '@mui/styles/withStyles';
-import { AppBar, Button, Toolbar, IconButton, Hidden } from "@mui/material";
+import { AppBar, Box, Button, Toolbar, IconButton } from "@mui/material";
 // @mui/icons-material
 import Menu from "@mui/icons-material/Menu";
 // core components
@@ -32,11 +32,9 @@ function Header({ ...props }) {
       <Toolbar className={classes.container}>
         <div className={classes.flex} />
         {/* While the screen is wide enough, display the navbar at the topright */}
-        <Hidden smDown implementation="css">
-          <AdminNavbarLinks closeSidebar={props.handleDrawerToggle} color={color} />
-        </Hidden>
+        <AdminNavbarLinks closeSidebar={props.handleDrawerToggle} color={color} sx={{ display: { xs: 'none', md: 'block' } }}/>
         {/* While the screen is too narrow, display the mini sidebar control */}
-        <Hidden mdUp implementation="css">
+        <Box sx={{ display: { md: 'none', xs: 'inline-flex' } }}>
           <IconButton
             size="large"
             color="inherit"
@@ -45,7 +43,7 @@ function Header({ ...props }) {
           >
             <Menu />
           </IconButton>
-        </Hidden>
+        </Box>
       </Toolbar>
     </AppBar>
   );

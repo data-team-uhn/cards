@@ -15,7 +15,7 @@ import PropTypes from "prop-types";
 import { NavLink } from "react-router-dom";
 import withStyles from '@mui/styles/withStyles';
 import { loadExtensions } from "../../uiextension/extensionManager";
-import { Drawer, Hidden, List, ListItem, ListItemText } from "@mui/material";
+import { Drawer, List, ListItem, ListItemText } from "@mui/material";
 
 import AdminNavbarLinks from "../Navbars/AdminNavbarLinks.jsx";
 import sidebarStyle from "./sidebarStyle.jsx";
@@ -131,8 +131,8 @@ const Sidebar = ({ ...props }) => {
   return (
     <div>
       {/* Render ourselves at the top right of the content page */}
-      <Hidden mdUp implementation="css">
-        <Drawer
+      <Drawer
+          sx={{ display: { md: 'none', xs: 'block' } }}
           variant="temporary"
           anchor="right"
           open={props.open}
@@ -155,11 +155,10 @@ const Sidebar = ({ ...props }) => {
               style={{ backgroundImage: "url(" + image + ")" }}
             />
           ) : null}
-        </Drawer>
-      </Hidden>
+      </Drawer>
       {/* Render ourselves at the top of the sidebar */}
-      <Hidden smDown implementation="css">
-        <Drawer
+      <Drawer
+          sx={{ display: { xs: 'none', md: 'block' } }}
           anchor="left"
           variant="permanent"
           open
@@ -177,8 +176,7 @@ const Sidebar = ({ ...props }) => {
               style={{ backgroundImage: "url(" + image + ")" }}
             />
           ) : null}
-        </Drawer>
-      </Hidden>
+      </Drawer>
     </div>
   );
 };
