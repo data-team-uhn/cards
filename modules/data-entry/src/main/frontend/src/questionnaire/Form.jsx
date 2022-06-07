@@ -389,6 +389,7 @@ function Form (props) {
                           entryType="Form"
                           onComplete={onDelete}
                           variant="text"
+                          size="medium"
                         />
                     </ListItem>
                   </List>

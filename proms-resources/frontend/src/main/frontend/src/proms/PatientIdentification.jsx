@@ -101,7 +101,7 @@ const useStyles = makeStyles(theme => ({
     cursor: 'pointer',
   },
   appointmentEntry: {
-    "& .MuiButton-label" : {
+    "& .MuiButton-root" : {
       justifyContent: "flex-start",
       textTransform: "none",
     },
