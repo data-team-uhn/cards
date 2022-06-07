@@ -32,7 +32,9 @@ function Header({ ...props }) {
       <Toolbar className={classes.container}>
         <div className={classes.flex} />
         {/* While the screen is wide enough, display the navbar at the topright */}
-        <AdminNavbarLinks closeSidebar={props.handleDrawerToggle} color={color} sx={{ display: { xs: 'none', md: 'block' } }}/>
+        <Box sx={{ display: { md: 'inline-flex', xs: 'none' } }}>
+          <AdminNavbarLinks closeSidebar={props.handleDrawerToggle} color={color} />
+        </Box>
         {/* While the screen is too narrow, display the mini sidebar control */}
         <Box sx={{ display: { md: 'none', xs: 'inline-flex' } }}>
           <IconButton
