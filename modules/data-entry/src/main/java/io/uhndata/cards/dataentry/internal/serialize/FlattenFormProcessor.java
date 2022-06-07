@@ -38,10 +38,11 @@ import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 @Component(immediate = true)
 public class FlattenFormProcessor implements ResourceJsonProcessor
 {
-    private static final int ID_LENGTH = 36;
-
+    // Saves all children with type card:Answer of root node
     private ThreadLocal<Map<String, JsonObject>> childrenJsons = ThreadLocal.withInitial(HashMap::new);
+    // Saves all children with type card:Answer of specific AnswerSection node
     private ThreadLocal<JsonObjectBuilder> jsonSection = ThreadLocal.withInitial(Json::createObjectBuilder);
+    // Saves all AnswerSection nodes ids with all children with type card:Answer that belong them
     private ThreadLocal<Map<String, JsonObjectBuilder>> jsonSectionMap = ThreadLocal.withInitial(HashMap::new);
 
     @Override
@@ -62,6 +63,10 @@ public class FlattenFormProcessor implements ResourceJsonProcessor
         return resource.isResourceType("cards/Form");
     }
 
+    // Each time it is invoked, it is passed a JCR node and if that JCR node is a cards:Answer node, this node is
+    // serialized and stored to a (this.childrenJsons) ThreadLocal object.
+    // We need to proceed and change representation just Answer which is saved in Answer Section, that is why in case
+    // of cards:Answer and cards:AnswerSection, otherwise the input JsonValue is simply passed-through.
     @Override
     public JsonValue processChild(Node node, Node child, JsonValue input, Function<Node, JsonValue> serializeNode)
     {
@@ -105,19 +110,23 @@ public class FlattenFormProcessor implements ResourceJsonProcessor
             while (children.hasNext()) {
                 final Node child = children.nextNode();
                 final String childId = child.getIdentifier();
-                final String idWithoutParent = childId.substring(childId.length() - ID_LENGTH);
+                final String idWithoutParent = childId.substring(childId.lastIndexOf("/") + 1);
                 if (child.isNodeType("cards:Answer") && this.childrenJsons.get().containsKey(childId)) {
                     final JsonObject childJson = this.childrenJsons.get().get(childId);
-                    if (child.getParent().isNodeType("cards:AnswerSection")) {
+                    if (node.isNodeType("cards:AnswerSection")) {
                         this.jsonSection.get().add(idWithoutParent, childJson);
-                        this.jsonSectionMap.get().put(child.getParent().getIdentifier(), this.jsonSection.get());
+                        this.jsonSectionMap.get().put(node.getIdentifier(), this.jsonSection.get());
                     } else {
                         json.add(idWithoutParent, childJson);
                     }
                     this.childrenJsons.get().remove(childId);
                 } else if (child.isNodeType("cards:AnswerSection") && this.jsonSectionMap.get().containsKey(childId)) {
-                    json.addAll(this.jsonSectionMap.get().get(childId));
-                    this.jsonSectionMap.get().remove(childId);
+                    if (node.isNodeType("cards:AnswerSection")) {
+                        this.jsonSectionMap.get().put(node.getIdentifier(), this.jsonSectionMap.get().get(childId));
+                    } else {
+                        json.addAll(this.jsonSectionMap.get().get(childId));
+                        this.jsonSectionMap.get().remove(childId);
+                    }
                 }
             }
         } catch (RepositoryException e) {
