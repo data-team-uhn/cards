@@ -202,7 +202,7 @@ function FormPagination (props) {
                 || lastSaveStatus === false}
               onClick={handleBack}
               className={classes.paginationButton}
-              color="primary"
+              variant="outlined"
             >
               Back
             </Button>
