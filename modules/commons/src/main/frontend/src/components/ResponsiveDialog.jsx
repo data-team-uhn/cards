@@ -99,7 +99,11 @@ const ResponsiveDialog = forwardRef((props, ref) => {
       maxWidth={width}
       fullWidth
       fullScreen={fullScreen}
-      onClose={onClose}
+      onClose={(event, reason) => {
+        if (reason !== 'backdropClick') {
+          onClose(event);
+        }
+      }}
       {...rest}
     >
       { title && <DialogTitle>{title}{closeButton}</DialogTitle>}

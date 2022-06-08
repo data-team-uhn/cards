@@ -485,11 +485,13 @@ let AnswerOptions = (props) => {
         />
       { generateSpecialOptions(1) }
       <Popover
-        disableBackdropClick
-        disableEscapeKeyDown
         open={Boolean(descriptionAnchorEl)}
         anchorEl={descriptionAnchorEl}
-        onClose={handlePopoverClose}
+        onClose={(event, reason) => {
+          if (reason !== 'backdropClick') {
+            handlePopoverClose(event);
+          }
+        }}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'center',
