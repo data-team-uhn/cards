@@ -111,6 +111,107 @@ def generateSelfSignedCert():
   pem_cert = crypto.dump_certificate(crypto.FILETYPE_PEM, cert).decode('utf-8')
   return pem_key, pem_cert
 
+def getPathToProjectResourcesDirectory(project_name):
+  CARDS4_PREFIX = "cards4"
+  resourcesPathMap = {}
+  resourcesPathMap['cards4care'] = "../cardiac-rehab-resources/"
+
+  # If an entry for this project_name exists in resourcesPathMap use it instead of anything else
+  if project_name in resourcesPathMap:
+    return resourcesPathMap[project_name]
+
+  if not project_name.startswith(CARDS4_PREFIX):
+    return None
+
+  project_id = project_name[len(CARDS4_PREFIX):]
+  return "../{}-resources/".format(project_id)
+
+def getPathToConfDirectory(project_name):
+  project_resources_dir = getPathToProjectResourcesDirectory(project_name)
+  if project_resources_dir is not None:
+    return os.path.join(project_resources_dir, "clinical-data/src/main/resources/SLING-INF/content/libs/cards/conf/")
+
+  return None
+
+def getPathToMediaContentDirectory(project_name):
+  project_resources_dir = getPathToProjectResourcesDirectory(project_name)
+  if project_resources_dir is not None:
+    return os.path.join(project_resources_dir, "clinical-data/src/main/media/SLING-INF/content")
+
+  return None
+
+def getLogoByResourcesDirectory(project_name):
+  path_to_media_json = os.path.join(getPathToConfDirectory(project_name), "Media.json")
+  if not os.path.exists(path_to_media_json):
+    print("Warning: {} does not exist.".format(path_to_media_json))
+    return None
+
+  with open(path_to_media_json, 'r') as f_json:
+    try:
+      media_config = json.load(f_json)
+    except json.decoder.JSONDecodeError:
+      print("Warning: {} contains invalid JSON.".format(path_to_media_json))
+      return None
+
+  if "logoLight" not in media_config:
+    print("Warning: 'logoLight' was not specified in {}.".format(path_to_media_json))
+    return None
+
+  path_to_media_sling_content_directory = getPathToMediaContentDirectory(project_name)
+
+  logo_light_path = media_config["logoLight"].lstrip("/")
+  logo_light_path = os.path.join(path_to_media_sling_content_directory, logo_light_path)
+
+  if not os.path.exists(logo_light_path):
+    print("Warning: The path {} in {} does not exist.".format(logo_light_path, path_to_media_json))
+    return None
+
+  return logo_light_path
+
+def getCardsProjectLogoPath(project_name):
+  if project_name is not None:
+    # Try to see if a {project_id}-resources directory exists that can be used for obtaining the logo
+    projectLogoPath = getLogoByResourcesDirectory(project_name)
+    if projectLogoPath is not None:
+      return projectLogoPath
+
+  # If all else fails, use the default CARDS logo
+  projectLogoPath = "../modules/homepage/src/main/media/SLING-INF/content/libs/cards/resources/media/default/logo_light_bg.png"
+  return projectLogoPath
+
+def getApplicationNameByResourcesDirectory(project_name):
+  path_to_appname_json = os.path.join(getPathToConfDirectory(project_name), "AppName.json")
+  if not os.path.exists(path_to_appname_json):
+    print("Warning: {} does not exist.".format(path_to_appname_json))
+    return None
+
+  with open(path_to_appname_json, 'r') as f_json:
+    try:
+      appname_config = json.load(f_json)
+    except json.decoder.JSONDecodeError:
+      print("Warning: {} contains invalid JSON.".format(appname_config))
+      return None
+
+  if "AppName" not in appname_config:
+    print("Warning: 'AppName' was not specified in {}.".format(appname_config))
+    return None
+
+  if type(appname_config['AppName']) != str:
+    print("Warning: 'AppName' in {} is of wrong data-type.".format(path_to_appname_json))
+    return None
+
+  return appname_config['AppName']
+
+def getCardsApplicationName(project_name):
+  if project_name is not None:
+    # Try to see if a {project_id}-resources directory exists that can be used for obtaining the logo
+    projectAppName = getApplicationNameByResourcesDirectory(project_name)
+    if projectAppName is not None:
+      return projectAppName
+
+  # If all else fails, use the generic CARDS name
+  return "CARDS"
+
 OUTPUT_FILENAME = "docker-compose.yml"
 
 yaml_obj = {}
@@ -389,6 +490,13 @@ yaml_obj['services']['proxy']['depends_on'] = ['cardsinitial']
 if ENABLE_NCR:
   yaml_obj['services']['proxy']['depends_on'].append('neuralcr')
 
+#Add the appropriate CARDS logo (eg. DATAPRO, Cards4CaRe, etc...) for the selected project
+shutil.copyfile(getCardsProjectLogoPath(args.cards_project), "./proxy/proxyerror/logo.png")
+
+#Specify the Application Name of the CARDS project to the proxy
+yaml_obj['services']['proxy']['environment'] = []
+yaml_obj['services']['proxy']['environment'].append("CARDS_APP_NAME={}".format(getCardsApplicationName(args.cards_project)))
+
 if SSL_PROXY:
   if args.saml:
     shutil.copyfile("proxy/https_saml_000-default.conf", "proxy/000-default.conf")
@@ -406,8 +514,6 @@ else:
     shutil.copyfile("proxy/http_000-default.conf", "proxy/000-default.conf")
 
 if args.saml:
-  yaml_obj['services']['proxy']['environment'] = []
-
   if args.saml_idp_destination:
     idp_url = args.saml_idp_destination
   else:

@@ -17,5 +17,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
+nodejs /render_503_page.js
 nodejs /http_proxy.js &
 apachectl -D FOREGROUND
