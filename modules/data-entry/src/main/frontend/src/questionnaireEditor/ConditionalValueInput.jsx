@@ -28,18 +28,19 @@ import {
   MenuItem,
   Select,
   TextField,
+  ToggleButton,
+  ToggleButtonGroup,
   Tooltip,
   Typography,
-  makeStyles
-} from "@material-ui/core";
+} from "@mui/material";
 
-import ToggleButton from '@material-ui/lab/ToggleButton';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import { makeStyles } from '@mui/styles';
+
+import CloseIcon from '@mui/icons-material/Close';
 
 import EditorInput from "./EditorInput";
 import QuestionComponentManager from "./QuestionComponentManager";
 import ValueComponentManager from "./ValueComponentManager";
-import CloseIcon from '@material-ui/icons/Close';
 
 const useStyles = makeStyles(theme => ({
   referenceToggle: {
@@ -48,6 +49,11 @@ const useStyles = makeStyles(theme => ({
       paddingBottom: theme.spacing(0.5),
       textTransform: "none",
     },
+  },
+  variableDropdown: {
+    "& > .MuiInputLabel-root" : {
+      maxWidth: `calc(100% - ${theme.spacing(3)})`,
+	},
   },
   variableOption: {
     whiteSpace: "normal",
@@ -60,9 +66,6 @@ const useStyles = makeStyles(theme => ({
       display: "flex",
       paddingLeft: theme.spacing(1.5),
       alignItems: "center",
-    },
-    "& .MuiListItemText-root" : {
-      margin: "0 !important",
     },
   },
   valueActions: {
@@ -166,6 +169,7 @@ let ConditionalValueInput = (props) => {
   let textField = (label, params) => (
     <TextField
         {...params}
+        variant="standard"
         fullWidth
         value={tempValue}
         error={isDuplicate}
@@ -205,7 +209,7 @@ let ConditionalValueInput = (props) => {
         <Grid container
           key={`${value}-${index}`}
           direction="row"
-          justify="space-between"
+          justifyContent="space-between"
           alignItems="stretch"
           className={classes.valueEntry}
           key={value}
@@ -223,9 +227,10 @@ let ConditionalValueInput = (props) => {
 
       {/* Display a dropdown for variable names or a simple input for values */}
       { isReference && !error ?
-        <FormControl fullWidth>
+        <FormControl variant="standard" fullWidth className={classes.variableDropdown}>
           <InputLabel id={`label-${path}`}>Select the id of a question from this questionnaire</InputLabel>
           <Select
+            variant="standard"
             labelId={`label-${path}`}
             id={path}
             value={tempValue}
