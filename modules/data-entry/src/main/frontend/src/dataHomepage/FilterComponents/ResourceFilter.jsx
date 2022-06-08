@@ -29,12 +29,12 @@ import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
 const COMPARATORS = DEFAULT_COMPARATORS.slice().concat(UNARY_COMPARATORS);
 
 /**
- * Display a filter on a vocabulary answer of a form. This is not meant to be instantiated directly, but is returned from FilterComponentManager's
+ * Display a filter on a resource answer of a form. This is not meant to be instantiated directly, but is returned from FilterComponentManager's
  * getFilterComparatorsAndComponent method.
  *
- * @param {string} defaultValue The default value to place in the vocabulary filter
+ * @param {string} defaultValue The default value to place in the filter
  * @param {func} onChangeInput Callback for when the value select has changed
- * @param {object} questionDefinition Object containing the definition of the question. Should include "sourceVocabularies" and "vocabularyFilters" children.
+ * @param {object} questionDefinition Object containing the definition of the question. Should include "primaryType", "labelProperty", and "propertiesToSearch" children.
  * Other props are forwarded to the VocabularyQuery component
  *
  */
@@ -62,7 +62,9 @@ ResourceFilter.propTypes = {
   defaultValue: PropTypes.string,
   onChangeInput: PropTypes.func,
   questionDefinition: PropTypes.shape({
-    sourceVocabularies: PropTypes.array,
+    primaryType: PropTypes.string,
+    labelProperty: PropTypes.string,
+    propertiesToSearch: PropTypes.string,
   })
 }
 
