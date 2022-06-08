@@ -27,8 +27,8 @@ import {
   FormGroup,
   Switch,
   Typography,
-  withStyles
-} from "@material-ui/core";
+} from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
 
 import cornerstone from "cornerstone-core";
 
