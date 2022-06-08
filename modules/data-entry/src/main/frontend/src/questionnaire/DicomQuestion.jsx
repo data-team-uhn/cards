@@ -47,7 +47,7 @@ import QuestionnaireStyle from "./QuestionnaireStyle";
 
 import AnswerComponentManager from "./AnswerComponentManager";
 
-import DICOM_TAG_DICT from "./dicomDataDictionary";
+import DICOM_TAG_DICT from "../dicom/dicomDataDictionary";
 
 // Component that renders a dicom upload question.
 // Filepaths are placed in a series of <input type="hidden"> tags for
