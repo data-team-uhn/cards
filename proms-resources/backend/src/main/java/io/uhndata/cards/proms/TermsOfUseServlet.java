@@ -47,8 +47,6 @@ import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.dataentry.api.FormUtils;
 import io.uhndata.cards.dataentry.api.QuestionnaireUtils;
-import io.uhndata.cards.dataentry.api.SubjectTypeUtils;
-import io.uhndata.cards.dataentry.api.SubjectUtils;
 
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(resourceTypes = { "cards/PromsHomepage" }, extensions = {
@@ -66,12 +64,6 @@ public class TermsOfUseServlet extends SlingAllMethodsServlet
 
     @Reference
     private FormUtils formUtils;
-
-    @Reference
-    private SubjectTypeUtils subjectTypeUtils;
-
-    @Reference
-    private SubjectUtils subjectUtils;
 
     @Reference
     private QuestionnaireUtils questionnaireUtils;

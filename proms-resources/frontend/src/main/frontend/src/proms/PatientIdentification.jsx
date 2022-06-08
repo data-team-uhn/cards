@@ -209,7 +209,7 @@ function PatientIdentification(props) {
   // to the parent component
   useEffect(() => {
     visit && touAccepted && patientDetails && onSuccess && onSuccess(Object.assign({subject: visit}, patientDetails));
-  }, [visit, touAccepted, patientDetails]);
+  }, [visit, touAccepted, !!patientDetails]);
 
   // -----------------------------------------------------------------------------------------------------
   // Rendering
