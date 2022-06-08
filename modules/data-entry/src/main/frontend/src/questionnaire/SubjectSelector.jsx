@@ -261,7 +261,7 @@ function UnstyledSelectParentDialog (props) {
         { onCreateParent &&
           <Button
             variant="contained"
-            color="secondary"
+            color="success"
             onClick={onCreateParent}
             className={classes.createNewSubjectButton}
             >
@@ -681,7 +681,7 @@ function UnstyledSelectorDialog (props) {
       <DialogActions>
         <Button
           variant="contained"
-          color="secondary"
+          color="success"
           disabled={disabled_controls}
           onClick={() => { setNewSubjectPopperOpen(true); }}
           className={classes.createNewSubjectButton}

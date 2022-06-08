@@ -390,7 +390,7 @@ function NewFormDialog(props) {
           {progress === PROGRESS_SELECT_SUBJECT &&
             <Button
               variant="contained"
-              color="secondary"
+              color="success"
               onClick={() => { setNewSubjectPopperOpen(true); setError(); }}
               className={classes.createNewSubjectButton}
               >
