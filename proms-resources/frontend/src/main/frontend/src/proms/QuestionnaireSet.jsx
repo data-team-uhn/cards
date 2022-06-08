@@ -39,8 +39,7 @@ import NextStepIcon from '@mui/icons-material/ChevronRight';
 import DoneIcon from '@mui/icons-material/Done';
 import WarningIcon from '@mui/icons-material/Warning';
 
-import moment from "moment";
-import * as jdfp from "moment-jdateformatparser";
+import { DateTime } from "luxon";
 
 import Form from "../questionnaire/Form.jsx";
 import PromsHeader from "./Header.jsx";
@@ -466,13 +465,12 @@ function QuestionnaireSet(props) {
 
   const getVisitDate = () => {
     let dateAnswer = getVisitInformation("time");
-    return dateAnswer == null ? null : DateQuestionUtilities.amendMoment(DateQuestionUtilities.stripTimeZone(dateAnswer));
+    return DateQuestionUtilities.toPrecision(DateQuestionUtilities.stripTimeZone(dateAnswer));
   }
 
   const appointmentDate = () => {
     let date = getVisitDate();
-    return date == null ? ""
-      : date.formatWithJDF("EEEE, MMMM d, yyyy h:mma");
+    return !date?.isValid ? "" : date.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY);
   }
 
   let appointmentAlert = () => {
@@ -490,11 +488,8 @@ function QuestionnaireSet(props) {
       : null
   }
 
-  const diffString = (startDate, endDate, division, result, modulus = null) => {
-    let diff = endDate.diff(startDate, division);
-    if (modulus != null) {
-      diff = diff % modulus;
-    }
+  const diffString = (division, result, diffs) => {
+    let diff = Math.floor(diffs[division]);
     if (diff > 0) {
       result.push(diff + " " + (diff == 1 && division[division.length - 1] == "s"
         ? division.substring(0, division.length -1)
@@ -505,17 +500,17 @@ function QuestionnaireSet(props) {
   const expiryDate = () => {
     let result = "";
     const date = getVisitDate();
-    if (date != null) {
+    if (date?.isValid) {
       // If the visit date could be retrieved, this is an emailed token and will expire 2 hours after the visit
-      date.add(2, 'hours');
+      date.plus({hours: 2});
 
       // Get the date difference in the format: X days, Y hours and Z minutes,
       // skipping any time division that has a value of 0
-      const now = moment();
-      const diffStrings = [];
-      diffString(now, date, "days", diffStrings);
-      diffString(now, date, "hours", diffStrings, 24);
-      diffString(now, date, "minutes", diffStrings, 60);
+      const diffs = date.diffNow(['days', 'hours', 'minutes']).toObject();
+      let diffStrings = [];
+      diffString("days", diffStrings, diffs);
+      diffString("hours", diffStrings, diffs);
+      diffString("minutes", diffStrings, diffs);
 
       if (diffStrings.length > 1) {
         result = " and " + diffStrings.pop();

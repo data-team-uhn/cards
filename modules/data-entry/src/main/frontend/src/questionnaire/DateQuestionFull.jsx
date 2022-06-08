@@ -23,8 +23,7 @@ import { TextField, Typography } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
 
-import moment from "moment";
-import * as jdfp from "moment-jdateformatparser";
+import { DateTime } from "luxon";
 
 import Answer from "./Answer";
 import Question from "./Question";
@@ -41,14 +40,14 @@ import DateQuestionUtilities from "./DateQuestionUtilities";
 // text: the question to be displayed
 // type: "timestamp" for a single date or "interval" for two dates
 // dateFormat: A string specifying a date format including date, as detected by DateQuestionUtilities
-// lowerLimit: lower date limit (inclusive) given as an object or string parsable by moment()
-// upperLimit: upper date limit (inclusive) given as an object or string parsable by moment()
+// lowerLimit: lower date limit (inclusive) given as an object or string parsable by luxon
+// upperLimit: upper date limit (inclusive) given as an object or string parsable by luxon
 // Other options are passed to the <question> widget
 //
 // Sample usage:
 //<DateQuestion
 //  text="Please enter a date-time in 2019"
-//  dateFormat="yyyy-MM-dd hh:mm:ss"
+//  dateFormat="yyyy-MM-dd HH:mm:ss"
 //  lowerLimit={new Date("01-01-2019")}
 //  upperLimit={new Date("12-31-2019")}
 //  type="timestamp"
@@ -59,14 +58,14 @@ function DateQuestionFull(props) {
 
   let startValues = existingAnswer && existingAnswer[1].value || "";
 
-  const [ startDate, setStartDate ] = useState(DateQuestionUtilities.amendMoment(
+  const [ startDate, setStartDate ] = useState(DateQuestionUtilities.toPrecision(
     DateQuestionUtilities.stripTimeZone(typeof(startValues) === "object" ? startValues[0] : startValues)
   ));
   const [ endDate, setEndDate ] = useState(
-    typeof(startValues) === "object" ? DateQuestionUtilities.amendMoment(DateQuestionUtilities.stripTimeZone(startValues[1])) : null
+    typeof(startValues) === "object" ? DateQuestionUtilities.toPrecision(DateQuestionUtilities.stripTimeZone(startValues[1])) : null
   );
-  const upperLimitMoment = DateQuestionUtilities.amendMoment(upperLimit);
-  const lowerLimitMoment = DateQuestionUtilities.amendMoment(lowerLimit);
+  const upperLimitMoment = DateQuestionUtilities.toPrecision(upperLimit);
+  const lowerLimitMoment = DateQuestionUtilities.toPrecision(lowerLimit);
 
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("Invalid date");
@@ -80,7 +79,7 @@ function DateQuestionFull(props) {
   }
 
   let processChange = (value, isEnd) => {
-    setDate(DateQuestionUtilities.amendMoment(value, dateFormat), isEnd);
+    setDate(DateQuestionUtilities.toPrecision(value, dateFormat), isEnd);
   }
 
   let processBlur = (value, isEnd) => {
@@ -96,7 +95,7 @@ function DateQuestionFull(props) {
   // Check that the given date is within the upper/lower limit (if specified),
   // and also after an optional startDate
   let boundDate = (date, startDate = null) => {
-    date = DateQuestionUtilities.amendMoment(date, dateFormat);
+    date = DateQuestionUtilities.toPrecision(date, dateFormat);
     if (upperLimitMoment && upperLimitMoment < date) {
       date = upperLimitMoment;
     }
@@ -113,7 +112,7 @@ function DateQuestionFull(props) {
 
   let getSlingDate = (isEnd) => {
     let date = isEnd ? endDate : startDate;
-    return date ? date.formatWithJDF(DateQuestionUtilities.slingDateFormat) : "";
+    return date ? date.toFormat(DateQuestionUtilities.slingDateFormat) : "";
   }
 
   // Determine the granularity of the input textfield
@@ -160,12 +159,12 @@ function DateQuestionFull(props) {
       {
         pageActive && <>
           {error && <Typography color='error'>{errorMessage}</Typography>}
-          {getTextField(false, DateQuestionUtilities.momentToString(startDate, textFieldType))}
+          {getTextField(false, DateQuestionUtilities.dateToFormattedString(startDate, textFieldType))}
           { /* If this is an interval, allow the user to select a second date */
           type === DateQuestionUtilities.INTERVAL_TYPE &&
           <React.Fragment>
             <span className={classes.mdash}>&mdash;</span>
-            {getTextField(true, DateQuestionUtilities.momentToString(endDate, textFieldType))}
+            {getTextField(true, DateQuestionUtilities.dateToFormattedString(endDate, textFieldType))}
           </React.Fragment>
           }
         </>

@@ -22,7 +22,7 @@ import { Paper, Table, TableHead, TableBody, TableRow, TableCell, TablePaginatio
 import { Card, CardHeader, CardContent, CardActions, Chip, IconButton, Typography, Button, LinearProgress } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import { Link } from 'react-router-dom';
-import moment from "moment";
+import { DateTime } from "luxon";
 
 import Filters from "./Filters.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
@@ -33,9 +33,9 @@ import LiveTableStyle from "./tableStyle.jsx";
 // Convert a date into the given format string
 // If the date is invalid (usually because it is missing), return ""
 let _formatDate = (date, formatString) => {
-  let dateObj = moment(date);
-  if (dateObj.isValid()) {
-    return dateObj.format(formatString)
+  let dateObj = DateTime.fromISO(date);
+  if (dateObj.isValid) {
+    return dateObj.toFormat(formatString);
   }
   return "";
 };
@@ -193,7 +193,7 @@ function LiveTable(props) {
       // The format can be either just "date", in which case a default date format is used, or "date:FORMAT".
       // Cutting after the fifth char means that either we skip "date:" and read the format,
       // or we just get the empty string and use the default format.
-      let format = column.format.substring(5) || 'YYYY-MM-dd';
+      let format = column.format.substring(5) || 'yyyy-MM-dd';
       content = _formatDate(content, format);
     }
 

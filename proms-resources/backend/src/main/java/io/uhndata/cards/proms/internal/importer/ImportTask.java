@@ -163,7 +163,7 @@ public class ImportTask implements Runnable
         String token = "Bearer " + this.vaultToken;
 
         // If we have no role to login to, we can skip the rest of the Vault auth process
-        if ("".equals(this.vaultRole)) {
+        if (StringUtils.isBlank(this.vaultRole)) {
             return token;
         }
 

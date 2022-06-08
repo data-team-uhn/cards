@@ -120,10 +120,10 @@ public class TermsOfUseServlet extends SlingAllMethodsServlet
         try (ResourceResolver rr = this.resolverFactory.getServiceResourceResolver(
             Map.of(ResourceResolverFactory.SUBSERVICE, "tou"))) {
             final Session session = rr.adaptTo(Session.class);
-            final Node visitSubject = session.getNodeByIdentifier(sessionSubjectIdentifier);
+            final Node subject = session.getNodeByIdentifier(sessionSubjectIdentifier);
             final Node patientInformationQuestionnaire = getPatientInformationQuestionnaire(session);
             final Node patientInformationForm =
-                getPatientInformationForm(visitSubject, patientInformationQuestionnaire, session);
+                getPatientInformationForm(subject, patientInformationQuestionnaire, session);
             if (patientInformationForm == null) {
                 writeError(response, SlingHttpServletResponse.SC_CONFLICT, "Sorry, cannot record your answer");
                 return;
@@ -157,11 +157,21 @@ public class TermsOfUseServlet extends SlingAllMethodsServlet
         return session.getNode("/Questionnaires/Patient information");
     }
 
-    private Node getPatientInformationForm(final Node visitSubject, final Node patientInformationQuestionnaire,
+    private Node getPatientInformationForm(final Node subject, final Node patientInformationQuestionnaire,
         final Session session) throws RepositoryException
     {
         // Look for the patient's information in the repository
-        final Node patientSubject = visitSubject.getParent();
+        final Node patientSubject;
+
+        // Make sure we have the root patient subject, not a visit.
+        if (StringUtils.countMatches(subject.getPath(), "/") > 2) {
+            // Path is in the form /Subjects/patientId/VisitId
+            patientSubject = subject.getParent();
+        } else {
+            // Path is in the form /Subjects/patientId
+            patientSubject = subject;
+        }
+
         final PropertyIterator properties = patientSubject.getReferences("subject");
         while (properties.hasNext()) {
             final Node form = properties.nextProperty().getParent();

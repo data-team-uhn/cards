@@ -59,10 +59,14 @@ import org.slf4j.LoggerFactory;
 import io.uhndata.cards.auth.token.TokenManager;
 import io.uhndata.cards.dataentry.api.FormUtils;
 import io.uhndata.cards.dataentry.api.QuestionnaireUtils;
+import io.uhndata.cards.dataentry.api.SubjectTypeUtils;
+import io.uhndata.cards.dataentry.api.SubjectUtils;
 
 @Component(service = { Servlet.class }, property = { "sling.auth.requirements=-/Proms" })
 @SlingServletResourceTypes(resourceTypes = { "cards/PromsHomepage" }, extensions = {
     "validateCredentials" }, methods = { "POST" })
+
+@SuppressWarnings("checkstyle:ClassFanOutComplexity")
 public class ValidateCredentialsServlet extends SlingAllMethodsServlet
 {
     private static final long serialVersionUID = 1223548547434563162L;
@@ -87,6 +91,12 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
     private FormUtils formUtils;
 
     @Reference
+    private SubjectTypeUtils subjectTypeUtils;
+
+    @Reference
+    private SubjectUtils subjectUtils;
+
+    @Reference
     private QuestionnaireUtils questionnaireUtils;
 
     @Reference
@@ -100,8 +110,20 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
             Map.of(ResourceResolverFactory.SUBSERVICE, "validateCredentials"))) {
             final Session session = rr.adaptTo(Session.class);
             // Check if this is a token-authenticated session
-            final String sessionSubjectIdentifier =
+            String sessionSubjectIdentifier =
                 (String) this.resolverFactory.getThreadResourceResolver().getAttribute("cards:sessionSubject");
+
+            // Check if the current token is a temporary terms of use token.
+            // If so, discard this token as it should only be used for checking the patients terms of use version
+            if (sessionSubjectIdentifier != null
+                && "Patient".equals(this.subjectTypeUtils.getLabel(this.subjectUtils.getType(
+                    this.subjectUtils.getSubject(sessionSubjectIdentifier))))) {
+                // By default, existing auth tokens are recreated by TokenAuthenticationHandler.
+                // Reset the response to clear the old terms of use token
+                response.reset();
+                sessionSubjectIdentifier = null;
+            }
+
             if (sessionSubjectIdentifier == null) {
                 // Not a token authenticated session. Verify based on provided patient details
                 handleTokenlessAuthentication(request, response, session, rr);
@@ -133,33 +155,46 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
             Node visitSubject = this.formUtils.getSubject(validVisitForms.get(0));
             String visitSubjectPath = visitSubject.getPath();
 
-            // Generate token
-            Calendar tokenExpiryDate = Calendar.getInstance();
-            tokenExpiryDate.add(Calendar.HOUR_OF_DAY, 1);
-            final String token = this.tokenManager.create(
-                "guest-patient",
-                tokenExpiryDate,
-                Collections.singletonMap("cards:sessionSubject", visitSubjectPath))
-                .getToken();
-
-            // Apply token
-            final Cookie cookie = new Cookie("cards_auth_token", token);
-            final String ctxPath = request.getContextPath();
-            final String cookiePath = (ctxPath == null || ctxPath.length() == 0) ? "/" : ctxPath;
-            cookie.setPath(cookiePath);
-            cookie.setHttpOnly(true);
-            // Cookie should expire in 1 hour when the token expires.
-            // setMaxAge expects seconds, so 60 seconds * 60 minutes in 1 hour, or 3600 seconds
-            cookie.setMaxAge(3600);
-            response.addCookie(cookie);
-
+            generateAndApplyToken(request, response, "guest-patient", visitSubjectPath);
             writeSuccess(response, visitSubjectPath, visitSubject, session, false);
         } else {
             // Patient has zero or multiple possible visits: Send back to the client to continue
             Node visitQuestionnaire = getVisitInformationQuestionnaire(session);
             Node visitLocationQuestion = this.questionnaireUtils.getQuestion(visitQuestionnaire, "location");
+
+            generateAndApplyToken(request, response, "tou-patient", patientSubject.getPath());
             writeVisitSelection(response, validVisitForms, visitLocationQuestion);
         }
+    }
+
+    private void generateAndApplyToken(final SlingHttpServletRequest request,
+        final SlingHttpServletResponse response, String tokenUser, String subjectPath)
+    {
+        // Generate token
+        Calendar tokenExpiryDate = Calendar.getInstance();
+        tokenExpiryDate.add(Calendar.HOUR_OF_DAY, 1);
+        final String token = this.tokenManager.create(
+            tokenUser,
+            tokenExpiryDate,
+            Collections.singletonMap("cards:sessionSubject", subjectPath))
+            .getToken();
+
+        // Apply token
+        // Cookie should expire in 1 hour when the token expires, so 60 * 60 = 3600 seconds
+        createCookie(request, response, token, 3600);
+    }
+
+    private void createCookie(final SlingHttpServletRequest request,
+        final SlingHttpServletResponse response, final String value, final int maxAgeSeconds)
+    {
+        final Cookie cookie = new Cookie("cards_auth_token", value);
+        final String ctxPath = request.getContextPath();
+        final String cookiePath = (ctxPath == null || ctxPath.length() == 0) ? "/" : ctxPath;
+        cookie.setPath(cookiePath);
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(maxAgeSeconds);
+        response.addCookie(cookie);
+
     }
 
     private void handleTokenAuthentication(final SlingHttpServletRequest request,

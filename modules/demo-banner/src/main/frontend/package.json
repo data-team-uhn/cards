@@ -24,8 +24,7 @@
     "@mui/icons-material": "5.8.0",
     "@mui/material": "5.8.0",
     "@mui/styles": "5.8.0",
-    "react": "^17.0.0",
-    "moment": "2.29.1"
+    "react": "^17.0.0"
   },
   "devDependencies": {
     "@babel/core": "7.12.10",

@@ -62,7 +62,7 @@ function FormView(props) {
     {
       "key": "jcr:created",
       "label": "Created on",
-      "format": "date:YYYY-MM-DD HH:mm",
+      "format": "date:yyyy-MM-dd HH:mm",
     },
     {
       "key": "jcr:createdBy",

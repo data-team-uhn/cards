@@ -186,7 +186,7 @@ public abstract class AbstractFormToStringSerializer
     private void processAnswer(final JsonObject answerJson, final String nodeType, final StringBuilder result)
     {
         final String displayMode = getDisplayMode("question", answerJson);
-        if ("hidden".equals(displayMode) || "summary".equals(displayMode)) {
+        if (displayMode == null || "hidden".equals(displayMode) || "summary".equals(displayMode)) {
             return;
         }
 
@@ -239,7 +239,7 @@ public abstract class AbstractFormToStringSerializer
     {
         try {
             return ((JsonString) answerElementJson.getValue("/" + element + "/displayMode")).getString();
-        } catch (JsonException | NullPointerException ex) {
+        } catch (JsonException | NullPointerException | ClassCastException ex) {
             // Not there, return
         }
         return null;
@@ -256,7 +256,7 @@ public abstract class AbstractFormToStringSerializer
     {
         try {
             return answerJson.getJsonObject("question").getString("text");
-        } catch (JsonException | NullPointerException ex) {
+        } catch (JsonException | NullPointerException | ClassCastException ex) {
             // Not there, return
         }
         return null;

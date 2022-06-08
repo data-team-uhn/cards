@@ -23,8 +23,6 @@ import { TextField, Typography } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
 
-import * as jdfp from "moment-jdateformatparser";
-
 import Answer from "./Answer";
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
@@ -40,8 +38,8 @@ import DateQuestionUtilities from "./DateQuestionUtilities";
 // text: the question to be displayed
 // type: "timestamp" for a single date or "interval" for two dates
 // dateFormat: A string specifying a date format, including month but not date, as detected by DateQuestionUtilities
-// lowerLimit: lower date limit (inclusive) given as an object or string parsable by moment()
-// upperLimit: upper date limit (inclusive) given as an object or string parsable by moment()
+// lowerLimit: lower date limit (inclusive) given as an object or string parsable by luxon
+// upperLimit: upper date limit (inclusive) given as an object or string parsable by luxon
 // Other options are passed to the <question> widget
 //
 // Sample usage:
@@ -64,8 +62,8 @@ function DateQuestionMonth(props) {
   const [ displayedEndDate, setDisplayedEndDate ] = useState(DateQuestionUtilities.formatDateAnswer(
     dateFormat,
     DateQuestionUtilities.stripTimeZone(typeof(startValues) === "object" ? startValues[1] : "")));
-  const upperLimitMoment = DateQuestionUtilities.amendMoment(upperLimit);
-  const lowerLimitMoment = DateQuestionUtilities.amendMoment(lowerLimit);
+  const upperLimitMoment = DateQuestionUtilities.toPrecision(upperLimit);
+  const lowerLimitMoment = DateQuestionUtilities.toPrecision(lowerLimit);
 
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("Invalid date");
@@ -75,12 +73,14 @@ function DateQuestionMonth(props) {
   const yearRegExp = "\\d{4}";
   // Create a RegExp to test for the display format
   let regExpString = `^${dateFormat.replaceAll(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`;
+  // tests for month being in the format `1x` or `0x` or just `x`
   inputRegExp = new RegExp(regExpString.replace("yyyy", `(${yearRegExp})`).replace("MM", `(1[0-2]|0?[1-9])`));
+  // tests for month being strictly in the format `1x` or `0x`
   strictInputRegExp = new RegExp(regExpString.replace("yyyy", `(${yearRegExp})`).replace("MM", `(1[0-2]|0[1-9])`));
 
   let onBlur = (value, isEnd) => {
     if (validateMonthString(value)) {
-      let startDate = isEnd ? amendMomentFromString(displayedDate, dateFormat) : null;
+      let startDate = isEnd ? toPrecisionFromString(displayedDate, dateFormat) : null;
       let parsedDate = DateQuestionUtilities.formatDateAnswer(dateFormat, boundDate(value, startDate));
       setDate(value.length === 0 ? value : parsedDate, isEnd);
       if (!isEnd) {
@@ -118,7 +118,7 @@ function DateQuestionMonth(props) {
   // Check that the given date is within the upper/lower limit (if specified),
   // and also after an optional startDate
   let boundDate = (date, startDate = null) => {
-    date = amendMomentFromString(date, dateFormat);
+    date = toPrecisionFromString(date, dateFormat);
     if (upperLimitMoment && upperLimitMoment < date) {
       date = upperLimitMoment;
     }
@@ -133,23 +133,17 @@ function DateQuestionMonth(props) {
     return(date);
   }
 
-  let amendMomentFromString = (value, dateFormat) => {
-    return DateQuestionUtilities.amendMoment(typeof value === "string" ? displayMonthToMomentString(value) : value, dateFormat);
+  let toPrecisionFromString = (value, dateFormat) => {
+    return DateQuestionUtilities.toPrecision(typeof value === "string" ? displayMonthToString(value) : value, dateFormat);
   }
 
-  let displayMonthToMomentString = (value) => {
+  let displayMonthToString = (value) => {
     let monthIndex = dateFormat.indexOf('MM');
     if (!strictInputRegExp.test(value)) {
-      // Input has a single digit month. Prepend month with 0 to ensure Moment can handle the date
+      // Input has a single digit month. Prepend month with 0 to ensure Luxon can handle the date
       value = [value.slice(0, monthIndex), "0", value.slice(monthIndex)].join('');
     }
 
-    // Make sure month and year are ordered correctly for parsing via Moment
-    if (monthIndex === 0) {
-      // Moment requires year before month.
-      let yearIndex = dateFormat.indexOf('y');
-      value = [value.slice(yearIndex, yearIndex + 4), '-', value.slice(0, 2)].join('');
-    }
     return value.replace('/', '-') + '-01'
   }
 
@@ -159,7 +153,7 @@ function DateQuestionMonth(props) {
       dateString = "";
     }
     if (dateString.length > 0) {
-      dateString = amendMomentFromString(dateString, dateFormat).formatWithJDF(DateQuestionUtilities.slingDateFormat);
+      dateString = toPrecisionFromString(dateString, dateFormat)?.toFormat(DateQuestionUtilities.slingDateFormat) || "";
     }
     return dateString;
   }

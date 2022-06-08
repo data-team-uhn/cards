@@ -24,7 +24,7 @@ import { Button, IconButton, Tooltip } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import PrintIcon from "@mui/icons-material/Print";
 import PrintPreview from "../questionnaire/PrintPreview.jsx";
-import moment from "moment";
+
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 /**
