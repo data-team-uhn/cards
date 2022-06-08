@@ -19,7 +19,8 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Chip, Input, MenuItem, Select, Typography, withStyles } from "@material-ui/core";
+import { Chip, Input, MenuItem, Select, Typography } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
 
 import EditorInput from "./EditorInput";
 import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
@@ -91,6 +92,7 @@ let ListInput = (props) => {
         value.length == 0 && <input type="hidden" name={objectKey + "@Delete"} value="" />
       }
       <Select
+        variant="standard"
         id={objectKey}
         multiple
         value={value}

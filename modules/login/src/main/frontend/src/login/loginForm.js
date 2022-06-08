@@ -27,11 +27,11 @@ import {
     InputAdornment,
     InputLabel,
     Tooltip,
-    Typography,
-    withStyles
-} from '@material-ui/core';
-import VisibilityIcon from '@material-ui/icons/Visibility';
-import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
+    Typography
+} from '@mui/material';
+import withStyles from '@mui/styles/withStyles';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import styles from "../styling/styles";
 
 class SignIn extends React.Component {
@@ -181,7 +181,7 @@ class SignIn extends React.Component {
             >
               { (this.state.phase == "USERNAME_ENTRY" || this.state.singleStepEntry) &&
                 <React.Fragment>
-                  <FormControl margin="normal" required fullWidth>
+                  <FormControl variant="standard" margin="normal" required fullWidth>
                     <InputLabel htmlFor="j_username">Username{this.state.singleStepEntry ? "" : " or email address"}</InputLabel>
                     <Input id="j_username" name="j_username" autoComplete="email" autoFocus onChange={(event) => {this.setState({username: event.target.value});}}/>
                   </FormControl>
@@ -201,13 +201,14 @@ class SignIn extends React.Component {
 
               { (this.state.phase == "PASSWORD_ENTRY" || this.state.singleStepEntry) &&
                 <React.Fragment>
-                  <FormControl margin="normal" required fullWidth>
+                  <FormControl variant="standard" margin="normal" required fullWidth>
                     <InputLabel htmlFor="j_password">Password{this.state.singleStepEntry ? "" : (" for " + this.state.username)}</InputLabel>
                     <Input name="j_password" type={this.state.passwordIsMasked ? 'text' : 'password'} id="j_password" autoComplete="current-password" autoFocus={this.state.phase === "PASSWORD_ENTRY"} onChange={(event) => {this.setState({password: event.target.value});}}
                       endAdornment={
                         <InputAdornment position="end">
                           <Tooltip title={this.state.passwordIsMasked ? "Mask Password" : "Show Password"}>
                             <IconButton
+                              size="large"
                               aria-label="Toggle password visibility"
                               onClick={this.togglePasswordMask}
                             >
@@ -218,7 +219,7 @@ class SignIn extends React.Component {
                       }
                     />
                   </FormControl>
-                  <Grid container direction="row" justify="center" alignItems="center">
+                  <Grid container direction="row" justifyContent="center" alignItems="center">
                     {  (!this.state.singleStepEntry) &&
                       <Grid item xs={3}>
                       </Grid>

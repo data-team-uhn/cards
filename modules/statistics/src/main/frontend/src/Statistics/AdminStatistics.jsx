@@ -31,16 +31,16 @@ import {
   Grid,
   IconButton,
   Tooltip,
-  Typography,
-  withStyles,
-} from "@material-ui/core";
+  Typography
+} from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
 import statisticsStyle from "./statisticsStyle.jsx";
 import NewItemButton from "../components/NewItemButton.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog.jsx";
 import LiveTable from "../dataHomepage/LiveTable.jsx";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 import Fields from "../questionnaireEditor/Fields.jsx";
-import EditIcon from "@material-ui/icons/Edit";
+import EditIcon from "@mui/icons-material/Edit";
 import { formatIdentifier } from "../questionnaireEditor/EditorInput.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
@@ -63,7 +63,7 @@ function createTableCell(node) {
     try {
       let questionnairePath = /^(.*\/Questionnaires\/[^\/]+)/.exec(path)[0];
       let link = `/content.html/admin${questionnairePath}#${path}`;
-      return <Link to={link}>{label}</Link>
+      return <Link to={link} underline="hover">{label}</Link>
     } catch {
       return label;
     }
@@ -77,7 +77,7 @@ function EditStatisticButton(props) {
   const { onClick } = props;
   return(
     <Tooltip title={"Edit Statistic"}>
-      <IconButton onClick={onClick}>
+      <IconButton onClick={onClick} size="large">
         <EditIcon />
       </IconButton>
     </Tooltip>
@@ -285,8 +285,7 @@ function StatisticDialog(props) {
       <DialogActions>
         <Button
             onClick={onClose}
-            variant="contained"
-            color="default"
+            variant="outlined"
             >
             Cancel
           </Button>

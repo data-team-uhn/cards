@@ -19,13 +19,13 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
-import { withStyles } from "@material-ui/core";
-import { Button, CircularProgress, IconButton, Tooltip, Typography } from '@material-ui/core';
+import withStyles from '@mui/styles/withStyles';
+import { Button, CircularProgress, IconButton, Tooltip, Typography } from '@mui/material';
 
-import Info from "@material-ui/icons/Info";
-import ArrowDown from "@material-ui/icons/KeyboardArrowDown";
-import ArrowRight from "@material-ui/icons/KeyboardArrowRight";
-import More from "@material-ui/icons/MoreHoriz";
+import Info from "@mui/icons-material/Info";
+import ArrowDown from "@mui/icons-material/KeyboardArrowDown";
+import ArrowRight from "@mui/icons-material/KeyboardArrowRight";
+import More from "@mui/icons-material/MoreHoriz";
 
 import BrowseTheme from "./browseStyle.jsx";
 import { REST_URL, MakeRequest } from "./util.jsx";
@@ -297,7 +297,7 @@ function VocabularyBranch(props) {
           <IconButton
             size="small"
             color="primary"
-            buttonRef={(node) => {registerInfo(id + parentId, node)}}
+            ref={(node) => {registerInfo(id + parentId, node)}}
             onClick={(event) => {event.stopPropagation(); getInfo(path, parentId)}}
             className={classes.infoButton}
           >

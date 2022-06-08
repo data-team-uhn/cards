@@ -20,7 +20,9 @@
 import React, { useState, useRef } from "react";
 import PropTypes from "prop-types";
 
-import { CircularProgress, Link, Tooltip, withStyles, Typography } from "@material-ui/core";
+import { CircularProgress, Link, Tooltip, Typography } from "@mui/material";
+
+import withStyles from '@mui/styles/withStyles';
 
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import Note from "./Note.jsx";
@@ -67,10 +69,11 @@ function ParsedNoteSection (props) {
     <Typography display="inline">{frontMatter}</Typography>
     {hasMatch &&
       <React.Fragment>
-        <Tooltip interactive title={`Add ${matchName} (${matchID}) to selection`}>
+        <Tooltip title={`Add ${matchName} (${matchID}) to selection`}>
           <Link
             onClick={addSuggestion}
             component="button"
+            underline="hover"
             >
             {/* Create a div purely to hold a ref for the above Tooltip */}
             <span className={classes.NCRTooltip}>

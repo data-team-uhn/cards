@@ -19,7 +19,9 @@
 
 import React, { useState } from "react";
 
-import { TextField, Typography, withStyles } from "@material-ui/core";
+import { TextField, Typography } from "@mui/material";
+
+import withStyles from '@mui/styles/withStyles';
 
 import PropTypes from "prop-types";
 
@@ -130,6 +132,7 @@ function TimeQuestion(props) {
         pageActive && <>
           {error && <Typography color='error'>{errorMessage}</Typography>}
           <TextField
+            variant="standard"
             /* time input is hh:mm or hh:mm:ss only */
             type={Time.timeQuestionFieldType(dateFormat)}
             className={classes.textField + " " + classes.answerField}

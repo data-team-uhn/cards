@@ -31,12 +31,13 @@ import {
   ListItemAvatar,
   Paper,
   Typography,
-  makeStyles
-} from '@material-ui/core';
-import { Alert, AlertTitle } from '@material-ui/lab';
-import NextStepIcon from '@material-ui/icons/ChevronRight';
-import DoneIcon from '@material-ui/icons/Done';
-import WarningIcon from '@material-ui/icons/Warning';
+} from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
+import NextStepIcon from '@mui/icons-material/ChevronRight';
+import DoneIcon from '@mui/icons-material/Done';
+import WarningIcon from '@mui/icons-material/Warning';
 
 import { DateTime } from "luxon";
 
@@ -67,6 +68,9 @@ const useStyles = makeStyles(theme => ({
     alignItems: "center",
     margin: "auto",
     maxWidth: "780px",
+    "& > .MuiGrid-item" : {
+      paddingLeft: 0,
+    },
     "& h4, h6" : {
       textAlign: "center",
     }

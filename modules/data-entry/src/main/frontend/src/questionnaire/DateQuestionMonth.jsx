@@ -19,7 +19,9 @@
 
 import React, { useState } from "react";
 
-import { TextField, Typography, withStyles } from "@material-ui/core";
+import { TextField, Typography } from "@mui/material";
+
+import withStyles from '@mui/styles/withStyles';
 
 import Answer from "./Answer";
 import Question from "./Question";
@@ -166,6 +168,7 @@ function DateQuestionMonth(props) {
   let getTextField = (isEnd, value) => {
     return (
       <TextField
+        variant="standard"
         type="text"
         className={classes.textField + isEnd ? "" : (" " + classes.answerField)}
         InputLabelProps={{

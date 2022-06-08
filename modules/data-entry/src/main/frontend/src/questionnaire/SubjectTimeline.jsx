@@ -24,14 +24,17 @@ import {
   Link,
   Paper,
   Tooltip
-} from '@material-ui/core'
-import Timeline from '@material-ui/lab/Timeline';
-import TimelineItem from '@material-ui/lab/TimelineItem';
-import TimelineSeparator from '@material-ui/lab/TimelineSeparator';
-import TimelineConnector from '@material-ui/lab/TimelineConnector';
-import TimelineContent from '@material-ui/lab/TimelineContent';
-import TimelineDot from '@material-ui/lab/TimelineDot';
-import TimelineOppositeContent from '@material-ui/lab/TimelineOppositeContent';
+} from "@mui/material";
+
+import {
+  Timeline,
+  TimelineItem,
+  TimelineSeparator,
+  TimelineConnector,
+  TimelineContent,
+  TimelineDot,
+  TimelineOppositeContent
+} from "@mui/lab";
 
 import DateQuestionUtilities from "./DateQuestionUtilities.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
@@ -40,9 +43,10 @@ import { displayQuestion } from "./Subject.jsx";
 import { ENTRY_TYPES, QUESTION_TYPES, SECTION_TYPES } from "./FormEntry.jsx"
 
 import {
-  Typography,
-  withStyles,
-} from "@material-ui/core";
+  Typography
+} from "@mui/material";
+
+import withStyles from '@mui/styles/withStyles';
 
 const NUM_QUESTIONS = 2;
 const STRIPPING_REGEX = [/^date of +/i, / +date$/i]
@@ -72,7 +76,7 @@ function DateAnswerDisplay(classes, questionData, index, length, rootLevel) {
 
   return <div key={index} className={divClasses.join(",")}>
     <Typography variant="h6" component="h1">
-      {questionTitle} (<Link href={`/content.html${formPath}#${questionData.questionPath}`}>{formTitle}</Link>)
+      {questionTitle} (<Link href={`/content.html${formPath}#${questionData.questionPath}`} underline="hover">{formTitle}</Link>)
     </Typography>
     {questionData.followup}
   </div>

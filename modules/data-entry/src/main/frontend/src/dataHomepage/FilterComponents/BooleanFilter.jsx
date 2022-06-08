@@ -18,7 +18,8 @@
 //
 
 import React, { forwardRef, useState } from "react";
-import { Select, MenuItem,  withStyles } from "@material-ui/core";
+import { Select, MenuItem } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
 import PropTypes from "prop-types";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
@@ -53,6 +54,7 @@ const BooleanFilter = forwardRef((props, ref) => {
 
   return (
     <Select
+      variant="standard"
       value={selection}
       onChange={(event) => {
         setSelection(event.target.value);

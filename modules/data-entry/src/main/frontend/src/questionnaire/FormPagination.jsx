@@ -22,11 +22,12 @@ import React, { useState, useEffect } from "react";
 import {
   Button,
   MobileStepper,
-  withStyles,
   useMediaQuery
-} from "@material-ui/core";
+} from "@mui/material";
 
-import { useTheme } from '@material-ui/core/styles';
+import withStyles from '@mui/styles/withStyles';
+
+import { useTheme } from '@mui/material/styles';
 import PropTypes from "prop-types";
 import { SECTION_TYPES, ENTRY_TYPES } from "./FormEntry";
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
@@ -63,7 +64,7 @@ function FormPagination (props) {
   let pagesArray = [];
 
   const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
   useEffect(() => {
     setPagesCallback(null);
@@ -201,7 +202,7 @@ function FormPagination (props) {
                 || lastSaveStatus === false}
               onClick={handleBack}
               className={classes.paginationButton}
-              color="primary"
+              variant="outlined"
             >
               Back
             </Button>

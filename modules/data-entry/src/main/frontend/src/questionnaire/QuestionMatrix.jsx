@@ -20,9 +20,19 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from 'prop-types';
 
-import { Table, TableHead, TableBody, TableRow, TableCell } from "@material-ui/core";
-import { Checkbox, Radio, FormControlLabel, Typography, withStyles } from "@material-ui/core";
-import { useMediaQuery } from "@material-ui/core";
+import {
+  Checkbox,
+  FormControlLabel,
+  Radio,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography
+} from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 import Answer, {LABEL_POS, VALUE_POS, DESC_POS, IS_DEFAULT_OPTION_POS, IS_DEFAULT_ANSWER_POS} from "./Answer";
 import AnswerInstructions from "./AnswerInstructions";
@@ -256,6 +266,7 @@ let QuestionMatrix = (props) => {
   let renderControlElement = (question, option) => {
     return (
       <ControlElement
+        color="secondary"
         checked={selectionElementStates[question + option[VALUE_POS]]}
         value={option[VALUE_POS]}
         name={"answer-" + sectionAnswerPath + question}

@@ -23,10 +23,11 @@ import {
   InputAdornment,
   Slider,
   TextField,
-  Typography,
-  makeStyles,
-  withStyles
-} from "@material-ui/core";
+  Typography
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import withStyles from '@mui/styles/withStyles';
+
 import NumberFormat from 'react-number-format';
 
 import PropTypes from "prop-types";
@@ -68,10 +69,8 @@ const useSliderStyles = makeStyles(theme => ({
       marginLeft: theme.spacing(4),
       marginRight: theme.spacing(4),
       "& .MuiSlider-valueLabel" : {
-        transform: "rotate(-90deg) translate3d(-7px, -14px, 0) !important",
-        "& > span > span" : {
-          transform: "rotate(135deg)",
-        },
+        background: theme.palette.secondary.main,
+        transform: "rotate(-90deg) translate3d(7px, -18px, 0) !important",
       },
     },
   },
@@ -89,6 +88,9 @@ const useSliderStyles = makeStyles(theme => ({
     "& .MuiSlider-root" : {
       maxWidth: "700px",
       marginTop: theme.spacing(2.5),
+      "& .MuiSlider-valueLabel" : {
+        background: theme.palette.secondary.main,
+      },
     },
   },
 }));
@@ -372,6 +374,7 @@ function NumberQuestion(props) {
           :
           <div className={classes.range}>
             <TextField
+              variant="standard"
               helperText="Lower limit"
               value={lowerLimit}
               placeholder={typeof minValue != "undefined" ? `${minValue}` : ""}
@@ -381,6 +384,7 @@ function NumberQuestion(props) {
               />
             <span className="separator">&mdash;</span>
             <TextField
+              variant="standard"
               helperText="Upper limit"
               value={upperLimit}
               placeholder={typeof maxValue != "undefined" ? `${maxValue}` : ""}

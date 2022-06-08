@@ -19,7 +19,8 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
-import { withStyles, Button, Checkbox, DialogContent, DialogActions, Chip, Radio, Typography } from '@material-ui/core';
+import { Button, Checkbox, DialogContent, DialogActions, Chip, Radio, Typography } from '@mui/material';
+import withStyles from '@mui/styles/withStyles';
 import ResponsiveDialog from "../components/ResponsiveDialog";
 import VocabularyBranch from "./VocabularyBranch.jsx";
 import AnswerInstructions from "../questionnaire/AnswerInstructions.jsx";
@@ -277,9 +278,8 @@ function VocabularyTree(props) {
                   className={classes.browseAction} >
               Done
           </Button>
-          <Button color="default"
-                  onClick={onCancel}
-                  variant="contained"
+          <Button onClick={onCancel}
+                  variant="outlined"
                   className={classes.browseAction} >
             Cancel
           </Button>

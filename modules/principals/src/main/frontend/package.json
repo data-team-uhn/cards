@@ -36,12 +36,13 @@
     "webpack-assets-manifest": "5.0.0"
   },
   "dependencies": {
-    "@material-ui/core": "4.11.2",
-    "@material-ui/icons": "4.11.2",
-    "react": "16.14.0",
-    "react-dom": "16.14.0",
+    "@mui/icons-material": "5.8.0",
+    "@mui/material": "5.8.0",
+    "@mui/styles": "5.8.0",
+    "react": "^17.0.0",
+    "react-dom": "^17.0.0",
     "react-router-dom": "5.2.0",
-    "material-table": "1.69.2",
+    "material-table": "2.0.3",
     "formik": "2.2.6",
     "history": "4.10.1",
     "semantic-ui-css": "2.4.1",

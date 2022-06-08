@@ -19,11 +19,12 @@
 import PropTypes from 'prop-types';
 import React, { Suspense } from "react";
 import ReactDOM from "react-dom";
-import { MuiThemeProvider } from '@material-ui/core/styles';
+import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { appTheme } from "../themePalette.jsx";
 import Sidebar from "./Sidebar/sidebar"
 import { getRoutes } from '../routes';
-import { withStyles } from '@material-ui/core';
+import withStyles from '@mui/styles/withStyles';
+import GlobalStyles from '@mui/material/GlobalStyles';
 import { Redirect, Router, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import Navbar from "./Navbars/Navbar";
@@ -31,6 +32,13 @@ import Page from "./Page";
 import PageStart from "../PageStart";
 import IndexStyle from "./indexStyle.jsx";
 import DialogueLoginContainer, { GlobalLoginContext } from "../login/loginDialogue.js";
+
+// Temporary fix for the duplicate displayedRows occurring in material-table 2.0.3
+const materialTableStyles = <GlobalStyles styles={{
+  "div[class^=MTablePaginationInner-root] .MuiTypography-caption" : {
+    display: "none"
+  }
+}} />;
 
 class Main extends React.Component {
   constructor(props) {
@@ -75,7 +83,7 @@ class Main extends React.Component {
   };
 
   switchRoutes = (routes) => {
-    return (<Switch>
+    return (<Switch color="secondary">
       {routes.map((route, key) => {
         return (
           <Route
@@ -103,8 +111,8 @@ class Main extends React.Component {
     const { classes, ...rest } = this.props;
 
     return (
-      <MuiThemeProvider theme={appTheme}>
       <React.Fragment>
+      {materialTableStyles}
       <GlobalLoginContext.Provider
         value={{
           dialogOpen: (loginHandlerFcn, discardOnFailure) => {
@@ -172,7 +180,6 @@ class Main extends React.Component {
         </div>
       </GlobalLoginContext.Provider>
       </React.Fragment>
-      </MuiThemeProvider>
     );
   }
 }
@@ -185,13 +192,17 @@ const MainComponent = (withStyles(IndexStyle, {withTheme: true})(Main));
 const hist = createBrowserHistory();
 hist.listen(({action, location}) => window.dispatchEvent(new Event("beforeunload")));
 ReactDOM.render(
-  <Router history={hist}>
-    <Switch>
-      <Route path="/content.html/" component={MainComponent} />
-      <Redirect from="/" to="/content.html/Questionnaires/User"/>
-      <Redirect from="/content" to="/content.html/Questionnaires/User" />
-    </Switch>
-  </Router>,
+  <StyledEngineProvider injectFirst>
+    <ThemeProvider theme={appTheme}>
+      <Router history={hist}>
+        <Switch color="secondary">
+          <Route path="/content.html/" component={MainComponent} />
+          <Redirect from="/" to="/content.html/Questionnaires/User"/>
+          <Redirect from="/content" to="/content.html/Questionnaires/User" />
+        </Switch>
+      </Router>
+    </ThemeProvider>
+  </StyledEngineProvider>,
   document.querySelector('#main-container')
 );
 

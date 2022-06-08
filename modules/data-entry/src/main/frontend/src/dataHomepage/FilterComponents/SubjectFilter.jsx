@@ -18,8 +18,9 @@
 //
 
 import React, { forwardRef, useState } from "react";
-import { Avatar, InputAdornment, ListItemAvatar, ListItemText, Tooltip, withStyles } from "@material-ui/core";
-import ErrorIcon from "@material-ui/icons/Error";
+import { Avatar, InputAdornment, ListItemAvatar, ListItemText, Tooltip } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import ErrorIcon from "@mui/icons-material/Error";
 import PropTypes from "prop-types";
 
 import SearchBar from "../../SearchBar.jsx";

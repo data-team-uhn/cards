@@ -17,9 +17,9 @@
 //  under the License.
 //
 import React from 'react';
-import { createMuiTheme } from '@material-ui/core/styles';
+import { createTheme } from '@mui/material/styles';
 
-const appTheme = createMuiTheme({
+const appTheme = createTheme({
   palette: {
     primary: {
       main: '#003366',

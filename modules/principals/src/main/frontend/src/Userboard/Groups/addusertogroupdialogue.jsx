@@ -17,10 +17,10 @@
 
 import React from "react";
 
-import { withStyles } from "@material-ui/core/styles";
+import withStyles from '@mui/styles/withStyles';
 import userboardStyle from '../userboardStyle.jsx';
 
-import { Avatar, Button, Dialog, DialogTitle, DialogActions, DialogContent, Grid } from "@material-ui/core";
+import { Avatar, Button, Dialog, DialogTitle, DialogActions, DialogContent, Grid } from "@mui/material";
 
 import MaterialTable from 'material-table';
 
@@ -94,9 +94,10 @@ class AddUserToGroupDialogue extends React.Component {
             <Dialog
                 maxWidth="sm"
                 open={this.props.isOpen}
-                onEntering={() => this.handleEntering()}
                 onClose={() => this.handleExit()}
-            >
+                TransitionProps={{
+                    onEntering: () => this.handleEntering()
+                }}>
                 <DialogTitle>
                     Add Users to the {this.props.name} group
                 </DialogTitle>
@@ -130,7 +131,7 @@ class AddUserToGroupDialogue extends React.Component {
                 </DialogContent>
                 <DialogActions className={classes.dialogActions}>
                     <Button variant="contained" size="small" color="primary" onClick={() => this.handleAddUsers()} disabled={this.state.selectedUsers.length == 0}>Add</Button>
-                    <Button variant="contained" size="small" onClick={() => this.handleExit()}>Close</Button>
+                    <Button variant="outlined" size="small" onClick={() => this.handleExit()}>Close</Button>
                 </DialogActions>
             </Dialog>
         );

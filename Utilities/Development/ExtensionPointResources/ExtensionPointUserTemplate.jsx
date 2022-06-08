@@ -18,7 +18,7 @@
 //
 
 import React, { useEffect, useState } from "react";
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import { loadExtensions } from "../uiextension/extensionManager";
 
 export default function _____DEFAULT_FUNCTION_NAME_____(props) {

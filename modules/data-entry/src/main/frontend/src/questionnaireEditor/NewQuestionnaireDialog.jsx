@@ -19,8 +19,9 @@
 import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
 
-import { Avatar, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography, withStyles } from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
+import { Avatar, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import AddIcon from "@mui/icons-material/Add";
 import { v4 as uuidv4 } from 'uuid';
 import NewItemButton from "../components/NewItemButton.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
@@ -98,6 +99,7 @@ function NewQuestionnaireDialog(props) {
         <DialogContent>
         {error && <Typography color='error'>{error}</Typography>}
           <TextField
+            variant="standard"
             autoFocus
             inputProps={{
               onKeyDown: (event) => {
@@ -125,8 +127,7 @@ function NewQuestionnaireDialog(props) {
             {'Create'}
           </Button>
           <Button
-            variant="contained"
-            color="default"
+            variant="outlined"
             onClick={() => { setOpen(false); }}
             >
             {'Cancel'}

@@ -20,9 +20,10 @@ import React, { useState, useContext } from "react";
 import { withRouter, useHistory } from "react-router-dom";
 import PropTypes from "prop-types";
 
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from "@material-ui/core";
-import { Tooltip, Typography, withStyles } from "@material-ui/core";
-import { Delete, Close } from "@material-ui/icons";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from "@mui/material";
+import { Tooltip, Typography } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import { Delete, Close } from "@mui/icons-material";
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
@@ -160,9 +161,9 @@ function DeleteButton(props) {
   return (
     <React.Fragment>
       <Dialog open={errorOpen} onClose={closeError}>
-        <DialogTitle disableTypography>
+        <DialogTitle>
           <Typography variant="h6" color="error" className={classes.dialogTitle}>Error</Typography>
-          <IconButton onClick={closeError} className={classes.closeButton}>
+          <IconButton onClick={closeError} className={classes.closeButton} size="large">
             <Close />
           </IconButton>
         </DialogTitle>
@@ -171,7 +172,7 @@ function DeleteButton(props) {
         </DialogContent>
       </Dialog>
       <Dialog open={open} onClose={closeDialog}>
-        <DialogTitle disableTypography>
+        <DialogTitle>
         <Typography variant="h6">Delete {entryLabel ? entryLabel.concat(' ') : ''}{entryName}{deleteRecursive ? " and dependent items": null }</Typography>
         </DialogTitle>
         <DialogContent>
@@ -179,10 +180,10 @@ function DeleteButton(props) {
             <Typography variant="body1">{dialogAction}</Typography>
         </DialogContent>
         <DialogActions className={classes.dialogActions}>
-            <Button variant="contained" color="secondary" size="small" onClick={() => handleDelete()}>
+            <Button variant="contained" color="error" size="small" onClick={() => handleDelete()}>
               { deleteRecursive ? "Delete All" : "Delete" }
             </Button>
-            <Button variant="contained" size="small" onClick={closeDialog}>Close</Button>
+            <Button variant="outlined" size="small" onClick={closeDialog}>Close</Button>
         </DialogActions>
       </Dialog>
       {variant == "icon" ?
@@ -193,6 +194,7 @@ function DeleteButton(props) {
         </Tooltip>
         :
         <Button
+          color="error"
           onClick={handleClick}
           size={size ? size : "medium"}
           startIcon={variant == "extended" ? <Delete /> : undefined}
@@ -207,12 +209,12 @@ function DeleteButton(props) {
 DeleteButton.propTypes = {
   variant: PropTypes.oneOf(["icon", "text", "extended"]), // "extended" means both icon and text
   label: PropTypes.string,
-  size: PropTypes.oneOf(["small", "medium"]),
+  size: PropTypes.oneOf(["small", "medium", "large"]),
 }
 
 DeleteButton.defaultProps = {
   variant: "icon",
-  size: "medium",
+  size: "large",
 }
 
 export default withStyles(QuestionnaireStyle)(withRouter(DeleteButton));

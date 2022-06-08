@@ -24,9 +24,10 @@ import {
   Grid,
   MenuItem,
   Select,
-  Typography,
-  withStyles
-} from "@material-ui/core";
+  Typography
+} from "@mui/material";
+
+import withStyles from '@mui/styles/withStyles';
 
 import EditorInput from "./EditorInput";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle";
@@ -43,6 +44,7 @@ let ObjectInput = (props) => {
     <>
     <EditorInput name={objectKey}>
       <Select
+        variant="standard"
         id={objectKey}
         name={objectKey}
         defaultValue={defaultValue}

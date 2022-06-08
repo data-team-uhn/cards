@@ -25,10 +25,10 @@ import {
     IconButton,
     TextField,
     Tooltip,
-    Typography,
-    withStyles
-} from '@material-ui/core';
-import { Close } from "@material-ui/icons";
+    Typography
+} from '@mui/material';
+import withStyles from '@mui/styles/withStyles';
+import { Close } from "@mui/icons-material";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
@@ -66,6 +66,7 @@ class FormFields extends React.Component {
         className={classes.form}
       >
         <TextField
+          variant="standard"
           id="email"
           name="email"
           helperText={touched.email ? errors.email : ""}
@@ -79,6 +80,7 @@ class FormFields extends React.Component {
           autoFocus
         />
         <TextField
+          variant="standard"
           id="username"
           name="username"
           helperText={touched.username ? errors.username : ""}
@@ -91,6 +93,7 @@ class FormFields extends React.Component {
           required
         />
         <TextField
+          variant="standard"
           id="password"
           name="password"
           helperText={touched.password ? errors.password : ""}
@@ -105,6 +108,7 @@ class FormFields extends React.Component {
 
         />
         <TextField
+          variant="standard"
           id="confirmPassword"
           name="confirmPassword"
           helperText={touched.confirmPassword ? errors.confirmPassword : ""}
@@ -119,7 +123,7 @@ class FormFields extends React.Component {
 
         />
         { !loginOnSuccess &&
-          <Button variant="contained" size="small" onClick={handleReset} className={classes.submit + " " + classes.closeButton}>Close</Button>
+          <Button variant="outlined" size="small" onClick={handleReset} className={classes.submit + " " + classes.closeButton}>Close</Button>
         }
         {!isValid ?
           // Render hover over and button
@@ -259,9 +263,9 @@ class SignUpForm extends React.Component {
     return (
       <React.Fragment>
         <Dialog open={this.state.errorOpen} onClose={() => this.setState({errorOpen: false})}>
-          <DialogTitle disableTypography>
+          <DialogTitle>
             <Typography variant="h6" color="error" className={classes.errorDialogTitle}>Error</Typography>
-            <IconButton onClick={() => this.setState({errorOpen: false})} className={classes.errorCloseButton}>
+            <IconButton size="large" onClick={() => this.setState({errorOpen: false})} className={classes.errorCloseButton}>
               <Close />
             </IconButton>
           </DialogTitle>

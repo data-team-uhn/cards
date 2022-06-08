@@ -24,12 +24,12 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
-  makeStyles,
-  Typography,
-  withStyles
-} from "@material-ui/core";
+  Typography
+} from "@mui/material";
 
-import CloseIcon from "@material-ui/icons/Close";
+import makeStyles from '@mui/styles/makeStyles';
+
+import CloseIcon from "@mui/icons-material/Close";
 
 import VocabularyDetails from "./vocabularyDetails"
 import VocabularyAction from "./vocabularyAction"
@@ -146,9 +146,9 @@ export default function VocabularyActions(props) {
         />
         <Dialog open={error} onClose={handleClose}>
 
-          <DialogTitle disableTypography>
+          <DialogTitle>
             <Typography variant="h6" color="error" className={classes.title}>Failed to {action}</Typography>
-            <IconButton onClick={handleClose} className={classes.closeButton}>
+            <IconButton onClick={handleClose} className={classes.closeButton} size="large">
               <CloseIcon />
             </IconButton>
           </DialogTitle>

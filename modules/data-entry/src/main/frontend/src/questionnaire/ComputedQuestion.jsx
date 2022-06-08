@@ -19,7 +19,9 @@
 
 import React, { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
-import { InputAdornment, TextField, Typography, withStyles } from "@material-ui/core";
+import { InputAdornment, TextField, Typography } from "@mui/material";
+
+import withStyles from '@mui/styles/withStyles';
 
 import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
@@ -283,6 +285,7 @@ let ComputedQuestion = (props) => {
             </FormattedText>
           :
           <TextField
+            variant="standard"
             type={fieldType}
             disabled={true}
             className={classes.textField + " " + classes.answerField}

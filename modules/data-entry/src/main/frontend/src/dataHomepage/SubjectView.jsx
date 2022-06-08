@@ -34,12 +34,12 @@ import {
   Tabs,
   Tooltip,
   Typography,
-  withStyles
-} from "@material-ui/core";
+} from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
 import { Link } from 'react-router-dom';
-import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
-import LaunchIcon from '@material-ui/icons/Launch';
-import AddIcon from '@material-ui/icons/Add';
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import LaunchIcon from '@mui/icons-material/Launch';
+import AddIcon from '@mui/icons-material/Add';
 import DeleteButton from "./DeleteButton.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
@@ -127,7 +127,7 @@ function SubjectView(props) {
           ? <CircularProgress/>
           : subjectTypes.length < 1 ?
           <></>
-          : <Tabs value={activeTab} onChange={(event, value) => setActiveTab(value)}>
+          : <Tabs value={activeTab} onChange={(event, value) => setActiveTab(value)} indicatorColor="primary" textColor="inherit" >
               {subjectTypes.map((subject, index) => {
                 return <Tab
                          label={
@@ -143,8 +143,8 @@ function SubjectView(props) {
         action={
           !expanded &&
           <Tooltip title="Expand">
-            <Link to={"/content.html/Subjects#" + new URLSearchParams({"subjects:activeTab" : subjectTypes?.[activeTab]?.['@name'] || "", "subjects:filters" : filtersJsonString || ""}).toString()}>
-              <IconButton>
+            <Link to={"/content.html/Subjects#" + new URLSearchParams({"subjects:activeTab" : subjectTypes?.[activeTab]?.['@name'] || "", "subjects:filters" : filtersJsonString || ""}).toString()} underline="hover">
+              <IconButton size="large">
                 <LaunchIcon/>
               </IconButton>
             </Link>

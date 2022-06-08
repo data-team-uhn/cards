@@ -19,8 +19,9 @@
 import React from "react";
 import classNames from "classnames";
 import PropTypes from "prop-types";
-import { withStyles, Avatar, Button, Card, CardActions, CardContent, CardHeader, ClickAwayListener, Grow, IconButton, Link, Popper, Tooltip, Typography } from "@material-ui/core";
-import CloseIcon from '@material-ui/icons/Close';
+import { Avatar, Button, Card, CardActions, CardContent, CardHeader, ClickAwayListener, Grow, IconButton, Link, Popper, Tooltip, Typography } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import CloseIcon from '@mui/icons-material/Close';
 
 import QueryStyle from "./queryStyle.jsx";
 
@@ -56,20 +57,20 @@ function InfoBox(props) {
         + " " + classes.popperNav
         + " " + (infoAboveBackground ? classes.infoAboveBackdrop : classes.popperInfoOnTop)
       }
-      modifiers={{
-        keepTogether: {
-          enabled: true
+      modifiers={[{
+        name: 'preventOverflow',
+        enabled: true,
+        options: {
+          rootBoundary: 'viewport',
+          padding: 8,
+          tether: true,
+          }
         },
-        preventOverflow: {
-          boundariesElement: 'viewport',
-          padding: '8',
-          escapeWithReference: false,
+        {
+          name: 'arrow',
           enabled: true
-        },
-        arrow: {
-          enabled: false
         }
-      }}
+      ]}
     >
       {({ TransitionProps }) => (
         <Grow
@@ -96,7 +97,7 @@ function InfoBox(props) {
                   </Link>
                 }
                 action={
-                  <IconButton aria-label="close" onClick={onClose}>
+                  <IconButton aria-label="close" onClick={onClose} size="large">
                     <CloseIcon />
                   </IconButton>
                 }

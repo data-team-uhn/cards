@@ -20,9 +20,10 @@ import React, { useState, useEffect, useContext } from "react";
 
 import {
   CircularProgress,
-  Typography,
-  makeStyles,
-} from "@material-ui/core";
+  Typography
+} from "@mui/material";
+
+import makeStyles from '@mui/styles/makeStyles';
 
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import PromsViewInternal from "./PromsViewInternal.jsx";

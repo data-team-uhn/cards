@@ -21,10 +21,11 @@ import React, { useRef, useEffect, useState, useContext } from "react";
 import { useHistory } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
-import { Avatar, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, ListItem, ListItemAvatar, TextField, withStyles } from "@material-ui/core";
-import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
+import { Avatar, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, ListItem, ListItemAvatar, TextField } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import MaterialTable from "material-table";
-import Alert from '@material-ui/lab/Alert';
+import Alert from '@mui/material/Alert';
 
 import { escapeJQL } from "../escape.jsx";
 import { getHierarchy, getSubjectIdFromPath } from "./Subject.jsx";
@@ -141,8 +142,7 @@ function UnstyledNewSubjectDialog (props) {
         <DialogActions>
           <Button
             onClick={() => {setNewSubjectType(""); onClose()}}
-            variant="contained"
-            color="default"
+            variant="outlined"
             disabled={disabled}
             >
             Cancel
@@ -261,7 +261,7 @@ function UnstyledSelectParentDialog (props) {
         { onCreateParent &&
           <Button
             variant="contained"
-            color="secondary"
+            color="success"
             onClick={onCreateParent}
             className={classes.createNewSubjectButton}
             >
@@ -270,16 +270,14 @@ function UnstyledSelectParentDialog (props) {
         }
         <Button
           onClick={onClose}
-          variant="contained"
-          color="default"
+          variant="outlined"
           disabled={disabled}
           >
           Cancel
         </Button>
         <Button
           onClick={onBack}
-          variant="contained"
-          color="default"
+          variant="outlined"
           disabled={disabled}
           >
           Back
@@ -683,7 +681,7 @@ function UnstyledSelectorDialog (props) {
       <DialogActions>
         <Button
           variant="contained"
-          color="secondary"
+          color="success"
           disabled={disabled_controls}
           onClick={() => { setNewSubjectPopperOpen(true); }}
           className={classes.createNewSubjectButton}
@@ -692,8 +690,7 @@ function UnstyledSelectorDialog (props) {
         </Button>
         <Button
           onClick={onClose}
-          variant="contained"
-          color="default"
+          variant="outlined"
           disabled={disabled_controls}
           >
           Cancel

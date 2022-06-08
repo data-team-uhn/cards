@@ -36,14 +36,14 @@ import {
   Popover,
   Tooltip,
   Typography,
-  withStyles
-} from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
-import EditIcon from '@material-ui/icons/Edit';
-import CloudUploadIcon from "@material-ui/icons/CloudUpload";
-import DoneIcon from "@material-ui/icons/Done";
-import WarningIcon from '@material-ui/icons/Warning';
-import MoreIcon from '@material-ui/icons/MoreVert';
+} from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import CloseIcon from "@mui/icons-material/Close";
+import EditIcon from '@mui/icons-material/Edit';
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import DoneIcon from "@mui/icons-material/Done";
+import WarningIcon from '@mui/icons-material/Warning';
+import MoreIcon from '@mui/icons-material/MoreVert';
 
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
 import FormEntry, { QUESTION_TYPES, ENTRY_TYPES } from "./FormEntry";
@@ -337,14 +337,14 @@ function Form (props) {
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
     return (
-      <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
+      <Grid container justifyContent="center"><Grid item><CircularProgress/></Grid></Grid>
     );
   }
 
   // If an error was returned, do not display a form at all, but report the error
   if (error) {
     return (
-      <Grid container justify="center">
+      <Grid container justifyContent="center">
         <Grid item>
           <Typography variant="h2" color="error">
             Error obtaining form data: {error.status} {error.statusText}
@@ -366,6 +366,7 @@ function Form (props) {
                     <ListItem className={classes.actionsMenuItem}>
                       <PrintButton
                          variant="text"
+                         size="medium"
                          resourcePath={formURL}
                          resourceData={data}
                          breadcrumb={getTextHierarchy(data?.subject, true)}
@@ -374,7 +375,9 @@ function Form (props) {
                        />
                     </ListItem>
                     <ListItem className={classes.actionsMenuItem}>
-                      <Button onClick={() => {
+                      <Button
+                         size="medium"
+                         onClick={() => {
                          window.open(formURL + ".txt");
                          setActionsMenu(null);
                         }}>
@@ -389,6 +392,7 @@ function Form (props) {
                           entryType="Form"
                           onComplete={onDelete}
                           variant="text"
+                          size="medium"
                         />
                     </ListItem>
                   </List>
@@ -398,19 +402,19 @@ function Form (props) {
             <div className={classes.actionsMenu}>
                 {isEdit ?
                   <Tooltip title="Save and view" onClick={onClose}>
-                    <IconButton color="primary">
+                    <IconButton color="primary" size="large">
                       <DoneIcon />
                     </IconButton>
                   </Tooltip>
                   :
                   <Tooltip title="Edit">
-                    <IconButton color="primary" onClick={onEdit}>
+                    <IconButton color="primary" onClick={onEdit} size="large">
                       <EditIcon />
                     </IconButton>
                   </Tooltip>
                 }
                 <Tooltip title="More actions" onClick={(event) => {setActionsMenu(event.currentTarget)}}>
-                  <IconButton>
+                  <IconButton size="large">
                     <MoreIcon fontSize="small" />
                   </IconButton>
                 </Tooltip>
@@ -558,9 +562,9 @@ function Form (props) {
         }
       </Grid>
       <Dialog open={errorDialogDisplayed} onClose={closeErrorDialog}>
-        <DialogTitle disableTypography>
+        <DialogTitle>
           <Typography variant="h6" color="error" className={classes.dialogTitle}>Failed to save</Typography>
-          <IconButton onClick={closeErrorDialog} className={classes.closeButton}>
+          <IconButton onClick={closeErrorDialog} className={classes.closeButton} size="large">
             <CloseIcon />
           </IconButton>
         </DialogTitle>

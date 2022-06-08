@@ -32,11 +32,11 @@ import {
   Tabs,
   Tooltip,
   Typography,
-  withStyles
-} from "@material-ui/core";
+} from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
 import { Link } from 'react-router-dom';
-import DescriptionIcon from '@material-ui/icons/Description';
-import LaunchIcon from '@material-ui/icons/Launch';
+import DescriptionIcon from '@mui/icons-material/Description';
+import LaunchIcon from '@mui/icons-material/Launch';
 import DeleteButton from "./DeleteButton.jsx";
 import EditButton from "./EditButton.jsx";
 import NewFormDialog from "./NewFormDialog.jsx";
@@ -124,7 +124,7 @@ function FormView(props) {
         avatar={!disableAvatar && <Avatar className={classes.formViewAvatar}><DescriptionIcon/></Avatar>}
         title={
           <>
-            <Tabs value={activeTab} onChange={(event, value) => setActiveTab(value)}>
+            <Tabs value={activeTab} onChange={(event, value) => setActiveTab(value)} indicatorColor="primary" textColor="inherit" >
             { tabs.map((value, index) => {
               return <Tab label={<Typography variant="h6">{value}</Typography>}  key={"form-" + index} />;
             })}
@@ -134,8 +134,8 @@ function FormView(props) {
         action={
           !expanded &&
           <Tooltip title="Expand">
-            <Link to={"/content.html/Forms#" + new URLSearchParams({"forms:activeTab" : tabs?.[activeTab] || "", "forms:filters" : filtersJsonString || ""}).toString()}>
-              <IconButton>
+            <Link to={"/content.html/Forms#" + new URLSearchParams({"forms:activeTab" : tabs?.[activeTab] || "", "forms:filters" : filtersJsonString || ""}).toString()} underline="hover">
+              <IconButton size="large">
                 <LaunchIcon/>
               </IconButton>
             </Link>

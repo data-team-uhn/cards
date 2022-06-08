@@ -18,7 +18,8 @@
 //
 
 import React, { forwardRef, useState } from "react";
-import { TextField, withStyles } from "@material-ui/core";
+import { TextField } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
 import PropTypes from "prop-types";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
@@ -42,6 +43,7 @@ const NumericFilter = forwardRef((props, ref) => {
   const { classes, defaultValue, onChangeInput, questionDefinition, ...rest } = props;
   return (
     <TextField
+      variant="standard"
       className={classes.answerField}
       inputProps={{
         decimalScale: questionDefinition["dataType"] === "long" ? 0 : undefined

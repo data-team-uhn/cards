@@ -19,8 +19,9 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
 
-import { IconButton, Tooltip, withStyles } from "@material-ui/core";
-import EditIcon from "@material-ui/icons/Edit";
+import { IconButton, Tooltip } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import EditIcon from "@mui/icons-material/Edit";
 import { Link } from 'react-router-dom';
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
@@ -31,9 +32,9 @@ import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 function EditButton(props) {
   const { entryPath, entryType, buttonClass, admin } = props;
   return(
-    <Link to={(admin ? "/content.html/admin" : "/content.html") + entryPath + ".edit"}>
+    <Link to={(admin ? "/content.html/admin" : "/content.html") + entryPath + ".edit"} underline="hover">
       <Tooltip title={entryType ? "Edit " + entryType : "Edit"}>
-        <IconButton className={buttonClass}>
+        <IconButton className={buttonClass} size="large">
           <EditIcon />
         </IconButton>
       </Tooltip>

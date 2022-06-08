@@ -33,18 +33,19 @@ import {
   Switch,
   TextField,
   Tooltip,
-  makeStyles
-} from "@material-ui/core";
+} from "@mui/material";
+
+import makeStyles from '@mui/styles/makeStyles';
 
 import EditorInput from "./EditorInput";
 import QuestionComponentManager from "./QuestionComponentManager";
 import MarkdownText from "./MarkdownText";
-import CloseIcon from '@material-ui/icons/Close';
-import AddIcon from '@material-ui/icons/Add';
-import EditIcon from '@material-ui/icons/Edit';
-import NotesIcon from '@material-ui/icons/Notes';
+import CloseIcon from '@mui/icons-material/Close';
+import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
+import NotesIcon from '@mui/icons-material/Notes';
 import { stringToHash } from "../escape.jsx";
-import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 import ComposedIcon from "../components/ComposedIcon.jsx";
@@ -90,7 +91,7 @@ const useStyles = makeStyles(theme => ({
       marginBottom: theme.spacing(2),
     },
     answerOptionSwitch: {
-      margin: theme.spacing(0.5),
+      margin: theme.spacing(0.5, 0.5, 0.5, -0.5),
     },
     optionsDragIndicator: {
       padding: theme.spacing(1.5, 0.5),
@@ -265,7 +266,8 @@ let AnswerOptions = (props) => {
     return (
       <Tooltip title={!item.description ? "Add a description" : "Edit description"}>
         <IconButton
-          onClick={(event) => {
+          size="large"
+                    onClick={(event) => {
                                 setDescriptionAnchorEl(event.currentTarget);
                                 setDescriptionIndex(index);
                                 setDescriptionLabel(item.label || item.value);
@@ -288,7 +290,7 @@ let AnswerOptions = (props) => {
     return (
     <Grid container
        direction="row"
-       justify="space-between"
+       justifyContent="space-between"
        alignItems="stretch"
        className={classes.answerOption}
        onClick={(event) => option.setter({ ...option.data, [option.label]: true})}
@@ -297,6 +299,7 @@ let AnswerOptions = (props) => {
       <Grid item xs={8}>
       <Tooltip title="Selected by default">
         <Checkbox
+          color="secondary"
           checked={option.data.isDefault}
           disabled={!option.data[option.label]} onChange={(event) => {
               option.setter({
@@ -308,6 +311,7 @@ let AnswerOptions = (props) => {
       </Tooltip>
       <Tooltip title={option.tooltip}>
         <TextField
+          variant="standard"
           disabled={!option.data[option.label]}
           label={option.tootltip}
           error={option.data[option.label] && option.isDuplicate}
@@ -324,6 +328,7 @@ let AnswerOptions = (props) => {
         <FormControlLabel
           control={
             <Switch
+              color="secondary"
               size="small"
               checked={!!option.data[option.label]}
               onChange={(event) => option.setter({ ...option.data, [option.label]: event.target.checked})}
@@ -350,7 +355,7 @@ let AnswerOptions = (props) => {
     </Grid>
     )
   }
-  
+
   let handlePopoverClose = () => {
     setDescriptionAnchorEl(null);
     setDescriptionIndex(null);
@@ -391,7 +396,7 @@ let AnswerOptions = (props) => {
                   { (provided, snapshot) => (
                     <Grid container
                       direction="row"
-                      justify="space-between"
+                      justifyContent="space-between"
                       alignItems="stretch"
                       className={classes.answerOption}
                       key={value.value}
@@ -419,6 +424,7 @@ let AnswerOptions = (props) => {
                         <input type="hidden" name={`${value['@path']}/isDefault@TypeHint`} value="Boolean" />
                         <Tooltip title="Selected by default">
                           <Checkbox
+                            color="secondary"
                             checked={value.isDefault}
                             onChange={(event) => {
                               setOptions(old => {
@@ -429,6 +435,7 @@ let AnswerOptions = (props) => {
                             }}/>
                         </Tooltip>
                         <TextField
+                          variant="standard"
                           InputProps={{
                             readOnly: true,
                           }}
@@ -456,6 +463,7 @@ let AnswerOptions = (props) => {
       </DragDropContext>
       <TextField
         fullWidth
+        variant="standard"
         className={classes.newOptionInput}
         value={tempValue}
         error={isDuplicate}
@@ -477,11 +485,13 @@ let AnswerOptions = (props) => {
         />
       { generateSpecialOptions(1) }
       <Popover
-        disableBackdropClick
-        disableEscapeKeyDown
         open={Boolean(descriptionAnchorEl)}
         anchorEl={descriptionAnchorEl}
-        onClose={handlePopoverClose}
+        onClose={(event, reason) => {
+          if (reason !== 'backdropClick') {
+            handlePopoverClose(event);
+          }
+        }}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'center',
@@ -500,7 +510,7 @@ let AnswerOptions = (props) => {
           }
           </CardContent>
           <CardActions>
-            <Button size='small' variant='contained' onClick={handlePopoverClose}>Cancel</Button>
+            <Button size='small' variant='outlined' onClick={handlePopoverClose}>Cancel</Button>
             <Button size='small' variant='contained' color='primary' onClick={updateOptionDescription}>Done</Button>
           </CardActions>
         </Card>

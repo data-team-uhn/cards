@@ -24,11 +24,12 @@ import PropTypes from "prop-types";
 import {
   CircularProgress,
   Grid,
-  Typography,
-  withStyles
-} from "@material-ui/core";
+  Typography
+} from "@mui/material";
 
-import CloseIcon from "@material-ui/icons/Close";
+import withStyles from '@mui/styles/withStyles';
+
+import CloseIcon from "@mui/icons-material/Close";
 
 import { FormProvider } from "./FormContext";
 import { FormUpdateProvider } from "./FormUpdateContext";
@@ -71,7 +72,7 @@ function QuestionnairePreview (props) {
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
     return (
-      <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
+      <Grid container justifyContent="center"><Grid item><CircularProgress/></Grid></Grid>
     );
   }
 

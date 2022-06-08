@@ -18,10 +18,10 @@
 //
 import React, { useEffect, useState } from 'react';
 
-import { Fab, Grid, Paper, Typography, makeStyles } from '@material-ui/core';
-import { MuiThemeProvider } from '@material-ui/core/styles';
-import NavigationIcon from '@material-ui/icons/Navigation';
-import { appTheme } from "../themePalette.jsx";
+import { Fab, Grid, Paper, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+
+import NavigationIcon from '@mui/icons-material/Navigation';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -47,7 +47,6 @@ export default function ErrorPage(props) {
   const classes = useStyles();
 
   return (
-    <MuiThemeProvider theme={appTheme}>
       <Paper className={classes.paper} elevation={0}>
         <Grid
           container
@@ -84,6 +83,5 @@ export default function ErrorPage(props) {
           }
         </Grid>
       </Paper>
-    </MuiThemeProvider>
   );
 }

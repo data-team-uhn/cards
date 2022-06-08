@@ -22,9 +22,10 @@ import PropTypes from 'prop-types';
 import {
   Grid,
   TextField,
-  Typography,
-  withStyles
-} from "@material-ui/core";
+  Typography
+} from "@mui/material";
+
+import withStyles from '@mui/styles/withStyles';
 
 import EditorInput from "./EditorInput";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle";
@@ -43,6 +44,7 @@ let NumberInput = (props) => {
   return (
     <EditorInput name={objectKey}>
       <TextField
+        variant="standard"
         fullWidth
         name={objectKey || ''}
         id={objectKey || ''}

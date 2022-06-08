@@ -20,8 +20,9 @@ import React, { useState, useRef, useEffect } from "react";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 
-import { Button, IconButton, Tooltip, withStyles } from "@material-ui/core";
-import PrintIcon from "@material-ui/icons/Print";
+import { Button, IconButton, Tooltip } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import PrintIcon from "@mui/icons-material/Print";
 import PrintPreview from "../questionnaire/PrintPreview.jsx";
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
@@ -112,7 +113,7 @@ function PrintButton(props) {
         :
         <Button
           onClick={onOpenView}
-          size={size ? size : "medium"}
+          size={size}
           startIcon={variant == "extended" ? <PrintIcon /> : undefined}
         >
           {buttonText}
@@ -134,12 +135,12 @@ PrintButton.propTypes = {
   date: PropTypes.string,
   onOpen: PropTypes.func,
   onClose: PropTypes.func,
-  size: PropTypes.oneOf(["small", "medium"]),
+  size: PropTypes.oneOf(["small", "medium", "large"]),
 }
 
 PrintButton.defaultProps = {
   variant: "icon",
-  size: "medium",
+  size: "large",
   fullScreen: true,
 }
 

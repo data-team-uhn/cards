@@ -17,6 +17,8 @@
 //  under the License.
 //
 
+import React, {useEffect, useContext} from "react";
+
 import {
   Button,
   Grid,
@@ -28,11 +30,12 @@ import {
   TextField,
   Tooltip,
   Typography,
-  makeStyles
-} from "@material-ui/core";
+} from "@mui/material";
 
-import React, {useEffect, useContext} from "react";
-import SettingsIcon from '@material-ui/icons/Settings';
+import makeStyles from '@mui/styles/makeStyles';
+
+import SettingsIcon from '@mui/icons-material/Settings';
+
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
 const APIKEY_SERVLET_URL = "/Vocabularies.bioportalApiKey";
@@ -128,7 +131,7 @@ export function BioPortalApiKey(props) {
           Find on <a href="https://bioportal.bioontology.org/" target="_blank">BioPortal</a>
           { bioPortalApiKey &&
             <Tooltip title="Change BioPortal API key">
-              <IconButton onClick={() => {setDisplayPopup(true)}} className={classes.settingIcon}>
+              <IconButton onClick={() => {setDisplayPopup(true)}} className={classes.settingIcon} size="large">
                 <SettingsIcon/>
               </IconButton>
             </Tooltip>
@@ -145,7 +148,7 @@ export function BioPortalApiKey(props) {
           <Grid container
             direction="row"
             alignItems="center"
-            justify="space-between"
+            justifyContent="space-between"
             alignContent="space-between"
             spacing={2}
           >
@@ -167,8 +170,8 @@ export function BioPortalApiKey(props) {
            { getBioportalKeyInfo(true) }
           </DialogContent>
           <DialogActions>
-            <Button color="primary" variant="contained" className={classes.vocabularyAction} onClick={() => {addNewKey()}}>Update</Button>
-            <Button variant="contained" className={classes.vocabularyAction} onClick={() => {setDisplayPopup(false)}}>Cancel</Button>
+            <Button variant="contained" className={classes.vocabularyAction} onClick={() => {addNewKey()}}>Update</Button>
+            <Button variant="outlined" className={classes.vocabularyAction} onClick={() => {setDisplayPopup(false)}}>Cancel</Button>
           </DialogActions>
       </Dialog>
     </React.Fragment>

@@ -25,7 +25,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useTheme } from '@material-ui/core/styles';
+import { useTheme } from '@mui/material/styles';
 
 const sizesMap = {
   'small': { size: 17, extraSize: 10 },

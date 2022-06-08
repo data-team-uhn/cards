@@ -19,8 +19,9 @@
 
 import React, { useRef, useEffect, useState } from "react";
 
-import { IconButton, Typography, makeStyles } from "@material-ui/core";
-import AttachFile from '@material-ui/icons/AttachFile';
+import { IconButton, Typography } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import AttachFile from '@mui/icons-material/AttachFile';
 
 const useStyles = makeStyles(theme => ({
   active: {
@@ -141,7 +142,7 @@ export default function DragAndDrop(props) {
         disabled={disabled}
       />
       <div className={drag ? classes.active : classes.dropzone} >
-          <IconButton color="primary" component="span">
+          <IconButton color="primary" component="span" size="large">
             <AttachFile />
           </IconButton>
           { error && <Typography color='error'>{error}</Typography> }

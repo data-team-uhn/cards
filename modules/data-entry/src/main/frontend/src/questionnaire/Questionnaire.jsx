@@ -31,16 +31,17 @@ import {
   TableRow,
   Tooltip,
   Typography,
-  withStyles
-} from "@material-ui/core";
+} from "@mui/material";
+
+import withStyles from '@mui/styles/withStyles';
 
 import { DateTime } from "luxon";
 
-import EditIcon from '@material-ui/icons/Edit';
-import PreviewIcon from '@material-ui/icons/FindInPage';
+import EditIcon from '@mui/icons-material/Edit';
+import PreviewIcon from '@mui/icons-material/FindInPage';
 import DeleteButton from "../dataHomepage/DeleteButton";
 import QuestionnaireStyle from "./QuestionnaireStyle";
-import { blue } from '@material-ui/core/colors';
+import { blue } from '@mui/material/colors';
 import { ENTRY_TYPES } from "./FormEntry";
 import Fields from "../questionnaireEditor/Fields";
 import CreationMenu from "../questionnaireEditor/CreationMenu";
@@ -132,13 +133,13 @@ let Questionnaire = (props) => {
       <div className={classes.actionsMenu}>
         { isEdit ?
           <Tooltip title="Preview" onClick={() => history.push(questionnaireUrl)}>
-            <IconButton>
+            <IconButton size="large">
               <PreviewIcon />
             </IconButton>
           </Tooltip>
           :
           <Tooltip title="Edit" onClick={() => history.push(questionnaireUrl + ".edit")}>
-            <IconButton color="primary">
+            <IconButton color="primary" size="large">
               <EditIcon />
             </IconButton>
           </Tooltip>
@@ -156,7 +157,7 @@ let Questionnaire = (props) => {
   let questionnaireHeader = (
         <ResourceHeader
           title={questionnaireTitle || ""}
-          breadcrumbs={[<Link to={baseUrl}>Questionnaires</Link>]}
+          breadcrumbs={[<Link to={baseUrl} underline="hover">Questionnaires</Link>]}
           action={questionnaireMenu}
           contentOffset={props.contentOffset}
           >
@@ -256,7 +257,7 @@ let QuestionnaireItemSet = (props) => {
                                  </Grid>
                   )(eval(_stripCardsNamespace(value['jcr:primaryType'])))
                 )
-        : <Grid item><Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid></Grid>
+        : <Grid item><Grid container justifyContent="center"><Grid item><CircularProgress/></Grid></Grid></Grid>
       }
     </Grid>
   );

@@ -23,7 +23,8 @@
 //
 
 import React, { useState } from "react";
-import { Select, MenuItem,  makeStyles } from "@material-ui/core";
+import { Select, MenuItem } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import PropTypes from "prop-types";
 import { Info } from "luxon";
 
@@ -210,6 +211,7 @@ function DropdownsDatePicker(props) {
   let renderYear = () => {
     return (
       <Select
+        variant="standard"
         key="year"
         onChange={handleYearChange}
         value={selectedYear}
@@ -231,6 +233,7 @@ function DropdownsDatePicker(props) {
   let renderMonth = () => {
     return (
       <Select
+        variant="standard"
         key="month"
         onChange={handleMonthChange}
         value={selectedMonth}
@@ -252,6 +255,7 @@ function DropdownsDatePicker(props) {
   let renderDay = () => {
     return (
       <Select
+        variant="standard"
         key="day"
         value={selectedDay}
         onChange={handleDayChange}

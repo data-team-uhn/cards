@@ -19,8 +19,8 @@
 import classNames from "classnames";
 import React, { useRef, useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Snackbar, SnackbarContent } from "@material-ui/core";
-import { withStyles } from "@material-ui/core";
+import { Snackbar, SnackbarContent } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
 
 import VocabularyTree from "./VocabularyTree.jsx";
 import InfoBox from "./InfoBox.jsx";

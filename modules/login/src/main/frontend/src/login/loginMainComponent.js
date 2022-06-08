@@ -20,9 +20,8 @@ import React from 'react';
 import SignUpForm from './signUpForm';
 import SignIn from './loginForm';
 
-import { Breadcrumbs, Button, Grid, Paper, Tooltip, Typography, withStyles } from '@material-ui/core';
-import { MuiThemeProvider } from '@material-ui/core/styles';
-import { appTheme } from "../themePalette.jsx";
+import { Breadcrumbs, Button, Grid, Paper, Tooltip, Typography } from '@mui/material';
+import { withStyles } from '@mui/styles';
 
 import styles from "../styling/styles";
 
@@ -49,42 +48,40 @@ class MainLoginContainer extends React.Component {
     const { classes, selfContained } = this.props;
 
     return (
-      <MuiThemeProvider theme={appTheme}>
-      <Paper className={`${classes.paper}  ${selfContained ? classes.selfContained : ''}`} elevation={0}>
-        <Grid container direction="column" spacing={3} alignItems="center" alignContent="center">
-          <Grid item>
-            <img src={document.querySelector('meta[name="logoLight"]').content} alt="" className={classes.logo}/>
-          </Grid>
-          <Grid item>
-          { this.state.signInShown ? <SignIn handleLogin={this.props.handleLogin} redirectOnLogin={this.props.redirectOnLogin}/> : <SignUpForm loginOnSuccess={true} handleLogin={this.props.handleLogin} /> }
-          </Grid>
-          { this.state.isLongForm && (!this.state.signInShown || this.state.signUpEnabled) &&
+        <Paper className={`${classes.paper}  ${selfContained ? classes.selfContained : ''}`} elevation={0}>
+          <Grid container direction="column" spacing={3} alignItems="center" alignContent="center">
             <Grid item>
-              <Button
-                fullWidth
-                color="default"
-                className={classes.main}
-                onClick={this.handleSwap}
-               >
-                { this.state.signInShown ?  "Sign up" : "Sign In" }
-              </Button>
+              <img src={document.querySelector('meta[name="logoLight"]').content} alt="" className={classes.logo}/>
             </Grid>
-          }
-          { this.state.isLongForm &&
-          <Grid item>
-            <Breadcrumbs separator="by" className={classes.appInfo}>
-              <Typography variant="subtitle2">{this.state.title}</Typography>
-              <Tooltip title="DATA Team @ UHN">
-                <a href="https://uhndata.io/" target="_blank">
-                  <img src="/libs/cards/resources/media/default/data-logo_light_bg.png" width="80" alt="DATA" />
-                </a>
-              </Tooltip>
-            </Breadcrumbs>
+            <Grid item>
+            { this.state.signInShown ? <SignIn handleLogin={this.props.handleLogin} redirectOnLogin={this.props.redirectOnLogin}/> : <SignUpForm loginOnSuccess={true} handleLogin={this.props.handleLogin} /> }
+            </Grid>
+            { this.state.isLongForm && (!this.state.signInShown || this.state.signUpEnabled) &&
+              <Grid item>
+                <Button
+                  variant="outlined"
+                  fullWidth
+                  className={classes.main}
+                  onClick={this.handleSwap}
+                 >
+                  { this.state.signInShown ?  "Sign up" : "Sign In" }
+                </Button>
+              </Grid>
+            }
+            { this.state.isLongForm &&
+            <Grid item>
+              <Breadcrumbs separator="by" className={classes.appInfo}>
+                <Typography variant="subtitle2">{this.state.title}</Typography>
+                <Tooltip title="DATA Team @ UHN">
+                  <a href="https://uhndata.io/" target="_blank">
+                    <img src="/libs/cards/resources/media/default/data-logo_light_bg.png" width="80" alt="DATA" />
+                  </a>
+                </Tooltip>
+              </Breadcrumbs>
+            </Grid>
+            }
           </Grid>
-          }
-        </Grid>
-      </Paper>
-      </MuiThemeProvider>
+        </Paper>
     );
   }
 }

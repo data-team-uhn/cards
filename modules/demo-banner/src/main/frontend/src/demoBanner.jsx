@@ -21,13 +21,14 @@ import React from "react";
 
 import {
   AppBar,
-  withStyles,
   Grid,
   Toolbar,
   Typography
-} from '@material-ui/core';
+} from '@mui/material';
 
-import WarningIcon from '@material-ui/icons/Warning';
+import withStyles from '@mui/styles/withStyles';
+
+import WarningIcon from '@mui/icons-material/Warning';
 
 const appbarStyle = theme => ({
   root: {
@@ -41,7 +42,7 @@ export default function DemoBanner(props) {
   return (
     <StyledAppBar position="fixed" style={props.style} ref={props.onRender}>
       <Toolbar>
-      <Grid container spacing={1} direction="row" justify="center" alignItems="center" wrap="nowrap">
+      <Grid container spacing={1} direction="row" justifyContent="center" alignItems="center" wrap="nowrap">
         <Grid item><WarningIcon/></Grid>
         <Grid item>
         <Typography variant="subtitle2">

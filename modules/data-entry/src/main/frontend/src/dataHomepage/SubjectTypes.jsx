@@ -19,13 +19,14 @@
 import React, { useState, useEffect } from "react";
 import LiveTable from "./LiveTable.jsx";
 
-import { Button, Card, CardContent, CardHeader, IconButton, Tooltip, withStyles } from "@material-ui/core";
+import { Button, Card, CardContent, CardHeader, IconButton, Tooltip } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
 import { Link } from 'react-router-dom';
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import SubjectTypeDialog from "../questionnaire/SubjectTypeDialog.jsx";
 import NewItemButton from "../components/NewItemButton.jsx";
 import DeleteButton from "./DeleteButton.jsx";
-import EditIcon from "@material-ui/icons/Edit";
+import EditIcon from "@mui/icons-material/Edit";
 
 // Get a flat list of subject type parents as labels separated by " / "
 function getTextHierarchy (path, subjectTypes) {
@@ -42,7 +43,7 @@ function EditSubjectTypeButton(props) {
   const { onClick } = props;
   return(
     <Tooltip title={"Edit Subject Type"}>
-      <IconButton onClick={onClick}>
+      <IconButton onClick={onClick} size="large">
         <EditIcon />
       </IconButton>
     </Tooltip>
@@ -70,7 +71,7 @@ function SubjectTypes(props) {
     {
       "key": "",
       "label": "Subjects",
-      "format": (row) => (row.instanceCount ? <Link to={"/content.html/Subjects#" + row['@name']} title={"Show subjects of type " + row.label}>{row.instanceCount}</Link> : "0"),
+      "format": (row) => (row.instanceCount ? <Link to={"/content.html/Subjects#" + row['@name']} title={"Show subjects of type " + row.label} underline="hover">{row.instanceCount}</Link> : "0"),
     },
     {
       "key": "cards:defaultOrder",

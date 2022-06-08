@@ -20,12 +20,13 @@ import PropTypes from "prop-types";
 import React, { useState, useContext } from "react";
 import { withRouter } from "react-router-dom";
 
-import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, ListItemText, MenuItem, ListItemAvatar, Avatar }  from "@material-ui/core";
-import { MenuList, Paper, Popper, withStyles } from "@material-ui/core";
+import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, ListItemText, MenuItem, ListItemAvatar, Avatar }  from "@mui/material";
+import { MenuList, Paper, Popper } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
 import { Link } from "react-router-dom";
 import { getEntityIdentifier } from "./themePage/EntityIdentifier.jsx";
-import DescriptionIcon from "@material-ui/icons/Description";
-import Search from "@material-ui/icons/Search";
+import DescriptionIcon from "@mui/icons-material/Description";
+import Search from "@mui/icons-material/Search";
 import HeaderStyle from "./headerStyle.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
@@ -196,6 +197,7 @@ function SearchBar(props) {
         endAdornment={
           <InputAdornment position="end">
             <IconButton
+              size="large"
               className={invertColors ? classes.invertedColors : ""}
               onClick={(event) => {
                 input?.current?.focus();
@@ -218,9 +220,13 @@ function SearchBar(props) {
         open={popperOpen}
         anchorEl={input.current}
         className={popperOpen ? classes.aboveBackground : ""}
-        modifiers={{
-          keepTogether: {enabled: true}
-        }}
+        modifiers={[{
+          name: 'preventOverflow',
+          enabled: true,
+          options: {
+            tether: true,
+          }
+        }]}
         placement = "bottom-start"
         transition
         keepMounted
@@ -271,7 +277,7 @@ function SearchBar(props) {
                   { !results[0]?.disabled && showAllResultsLink &&
                   <Link to={"/content.html/QuickSearchResults?query=" + encodeURIComponent(search)
                               + allowedResourceTypes.map(i => `&allowedResourceTypes=${encodeURIComponent(i)}`).join('')}
-                          className={classes.root}>
+                          className={classes.root} underline="hover">
                     <MenuItem
                       className={classes.dropdownItem}
                       onClick={() => setPopperOpen(false)}

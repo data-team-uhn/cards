@@ -17,7 +17,9 @@
 
 import React, { useState } from "react";
 
-import { Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, InputLabel, MenuItem, TextField, Typography, Select, FormHelperText, withStyles } from "@material-ui/core";
+import { Button, Grid, Dialog, DialogTitle, DialogActions, DialogContent, InputLabel, MenuItem, TextField, Typography, Select, FormHelperText } from "@mui/material";
+
+import withStyles from '@mui/styles/withStyles';
 
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 
@@ -129,19 +131,20 @@ function SubjectTypeDialog(props) {
     >
       <DialogTitle>{isEdit ? "Modify " + currentSubjectType.label : "Create New Subject Type"}</DialogTitle>
       <DialogContent>
-        <Grid container justify="flex-start" alignItems="center" spacing={2}>
+        <Grid container justifyContent="flex-start" alignItems="center" spacing={2}>
           <Grid item xs={4}>
             <Typography>Label</Typography>
           </Grid>
           <Grid item xs={8}>
             <TextField
-                fullWidth
-                value={label}
-                id="label"
-                name="label"
-                onChange={(event) => { setLabel(event.target.value); validateLabel(event.target.value); }}
-                autoFocus
-                error={isDuplicateLabel}
+              variant="standard"
+              fullWidth
+              value={label}
+              id="label"
+              name="label"
+              onChange={(event) => { setLabel(event.target.value); validateLabel(event.target.value); }}
+              autoFocus
+              error={isDuplicateLabel}
                 helperText={isDuplicateLabel ? "This label already exists" : "Required*"}
             />
           </Grid>
@@ -152,6 +155,7 @@ function SubjectTypeDialog(props) {
               </Grid>
               <Grid item xs={8}>
                 <Select
+                  variant="standard"
                   disabled={isEdit && currentSubjectType.instanceCount != undefined && currentSubjectType.instanceCount > 0}
                   labelId="parent"
                   label="optional"
@@ -178,6 +182,7 @@ function SubjectTypeDialog(props) {
           </Grid>
           <Grid item xs={8}>
             <TextField
+              variant="standard"
               fullWidth
               type="number"
               inputProps={{min: 0}}
@@ -190,6 +195,7 @@ function SubjectTypeDialog(props) {
           </Grid>
           <Grid item xs={8}>
             <TextField
+              variant="standard"
               fullWidth
               type="text"
               value={subjectListLabel}
@@ -214,7 +220,7 @@ function SubjectTypeDialog(props) {
          >
           { isEdit ? "Save" : "Create" }
         </Button>
-        <Button variant="contained" size="small" onClick={close}>Close</Button>
+        <Button variant="outlined" size="small" onClick={close}>Close</Button>
       </DialogActions>
     </Dialog>
   );

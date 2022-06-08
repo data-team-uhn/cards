@@ -19,8 +19,9 @@
 
 import React, { useState, useEffect } from 'react';
 
-import { Checkbox, FormControlLabel, IconButton, List, ListItem, MenuItem, Radio, RadioGroup, Select, TextField, Typography, withStyles } from "@material-ui/core";
-import Close from "@material-ui/icons/Close";
+import { Checkbox, FormControlLabel, IconButton, List, ListItem, MenuItem, Radio, RadioGroup, Select, TextField, Typography } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import Close from "@mui/icons-material/Close";
 import PropTypes from 'prop-types';
 
 import Answer, {LABEL_POS, VALUE_POS, DESC_POS, IS_DEFAULT_OPTION_POS, IS_DEFAULT_ANSWER_POS} from "./Answer";
@@ -355,6 +356,7 @@ function MultipleChoice(props) {
             />
         :
           <TextField
+            variant="standard"
             helperText={maxAnswers !== 1 && "Press ENTER to add a new option"}
             className={classes.textField + (isRadio ? (' ' + classes.nestedInput) : '')}
             onChange={ghostUpdateEvent}
@@ -422,6 +424,7 @@ function MultipleChoice(props) {
           pageActive && <>
             {instructions}
             <Select
+              variant="standard"
               value={selection?.[0]?.[0] || ''}
               className={classes.textField + ' ' + classes.answerField}
               onChange={(event) => {
@@ -481,6 +484,7 @@ function MultipleChoice(props) {
                 <FormControlLabel
                   control={
                   <Radio
+                    color="secondary"
                     checked={ghostSelected}
                     onChange={() => {
                       selectOption(ghostValue, ghostName);
@@ -577,6 +581,7 @@ function ResponseChild(props) {
                   isRadio ?
                   (
                     <Radio
+                      color="secondary"
                       onChange={() => {onClick(id, name, checked);}}
                       disabled={!checked && disabled}
                       className={classes.checkbox}
@@ -588,6 +593,7 @@ function ResponseChild(props) {
                       onChange={() => {onClick(id, name, checked)}}
                       disabled={!checked && disabled}
                       className={classes.checkbox}
+                      color="secondary"
                     />
                   )
                 }
@@ -609,6 +615,7 @@ function ResponseChild(props) {
                 className={classes.deleteButton}
                 color="secondary"
                 title="Delete"
+                size="large"
               >
                 <Close color="action" className={classes.deleteIcon}/>
               </IconButton>

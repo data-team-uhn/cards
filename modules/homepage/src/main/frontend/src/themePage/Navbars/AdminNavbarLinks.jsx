@@ -11,12 +11,12 @@
 */
 import PropTypes from "prop-types";
 import React, { useContext, useEffect, useRef, useState } from "react";
-// @material-ui/core components
+// @mui/material components
 import {
   Avatar,
+  Box,
   ClickAwayListener,
   Grow,
-  Hidden,
   IconButton,
   ListItemIcon,
   ListItemText,
@@ -26,11 +26,11 @@ import {
   Popper,
   Snackbar,
   Tooltip,
-  withStyles
-} from "@material-ui/core";
-import CloseIcon from '@material-ui/icons/Close';
-import VpnKeyIcon from '@material-ui/icons/VpnKey';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+} from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import CloseIcon from '@mui/icons-material/Close';
+import VpnKeyIcon from '@mui/icons-material/VpnKey';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import classNames from "classnames";
 
 import HeaderSearchBar from "./HeaderSearchBar.jsx";
@@ -120,27 +120,34 @@ function HeaderLinks (props) {
         />
       }
       {/* Avatar + sign out link */}
-      <Hidden smDown>
-        <Tooltip title={username}>
+      {/* hide on screens sm and down */}
+      <Tooltip title={username}>
+        <Box sx={{ display: { xs: 'none', md: 'inline-flex' }}}>
           <IconButton
             className={classes.buttonLink + " " + classes.logout + " " + expand || classes.linkText}
             onClick={() => setPopperOpen((open) => !open)}
             ref={avatarRef}
+            size="large"
             >
             <Avatar className={classes[color]}>{initials}</Avatar>
           </IconButton>
-        </Tooltip>
-      </Hidden>
-      <Hidden mdUp implementation="css">
+        </Box>
+      </Tooltip>
+      {/* hide on screens md and up */}
+      <Box sx={{ display: { md: 'none', xs: 'block' } }}>
         {menuItems}
-      </Hidden>
+      </Box>
       <Popper
         open={popperOpen}
         anchorEl={avatarRef.current}
         className={popperOpen ? classes.aboveBackground : ""}
-        modifiers={{
-          keepTogether: {enabled: true}
-        }}
+        modifiers={[{
+          name: 'preventOverflow',
+          enabled: true,
+          options: {
+            tether: true,
+          }
+        }]}
         placement = "bottom-end"
         transition
         >

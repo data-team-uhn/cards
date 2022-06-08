@@ -21,7 +21,9 @@ import LiveTable from "../dataHomepage/LiveTable.jsx";
 import HeaderStyle from "../headerStyle.jsx";
 import { QuickSearchMatch, QuickSearchIdentifier } from "./Navbars/QuickSearchIdentifier.jsx";
 
-import { Button, Card, CardContent, CardHeader, withStyles } from "@material-ui/core";
+import { Button, Card, CardContent, CardHeader } from "@mui/material";
+
+import withStyles from '@mui/styles/withStyles';
 
 // Location of the quick search result metadata in a node, outlining what needs to be highlighted
 const CARDS_QUERY_MATCH_KEY = "cards:queryMatch";

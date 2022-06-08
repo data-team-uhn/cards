@@ -28,8 +28,7 @@ import {
   Grid,
   TextField,
   Typography,
-  withStyles
-} from "@material-ui/core";
+} from "@mui/material";
 
 import Fields from './Fields';
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
@@ -136,7 +135,7 @@ let EditDialog = (props) => {
   // If an error was returned, do not display a form at all, but report the error
   if (error) {
     return (
-      <Grid container justify='center'>
+      <Grid container justifyContent='center'>
         <Grid item>
           <Typography variant='h2' color='error'>
             Error obtaining form data: {error.status} {error.statusText}
@@ -158,6 +157,7 @@ let EditDialog = (props) => {
           targetExists ?
           <Typography>{data["@name"]}</Typography> :
           <TextField
+            variant="standard"
             name=''
             value={targetId}
             onChange={(event)=> { setTargetId(event.target.value); setVariableNameError(''); }}
@@ -216,8 +216,7 @@ let EditDialog = (props) => {
               'Save'}
             </Button>
             <Button
-              variant='contained'
-              color='default'
+              variant='outlined'
               onClick={() => { setOpen(false); onCancel && onCancel();}}
             >
               {'Cancel'}

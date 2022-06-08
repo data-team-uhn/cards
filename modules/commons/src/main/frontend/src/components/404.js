@@ -19,5 +19,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PageNotFound from './PageNotFound';
+import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
+import { appTheme } from "../themePalette.jsx";
 
-ReactDOM.render(<PageNotFound />, document.getElementById('main-404-container'));
+ReactDOM.render(
+  <StyledEngineProvider injectFirst>
+    <ThemeProvider theme={appTheme}>
+      <PageNotFound />
+    </ThemeProvider>
+  </StyledEngineProvider>,
+  document.getElementById('main-404-container')
+);

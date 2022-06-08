@@ -16,7 +16,9 @@
 */
 
 import React from "react";
-import { Button, Dialog, DialogTitle, DialogActions, DialogContent, Typography, withStyles } from "@material-ui/core";
+import { Button, Dialog, DialogTitle, DialogActions, DialogContent, Typography } from "@mui/material";
+
+import withStyles from '@mui/styles/withStyles';
 
 import userboardStyle from './userboardStyle.jsx';
 
@@ -49,15 +51,15 @@ class DeletePrincipalDialogue extends React.Component {
                 open={this.props.isOpen}
                 onClose={() => this.props.handleClose()}
             >
-                <DialogTitle disableTypography>
+                <DialogTitle>
                   <Typography variant="h6">Delete {this.props.name}</Typography>
                 </DialogTitle>
                 <DialogContent>
                     <Typography variant="body1">Are you sure you want to delete {this.props.type} {this.props.name}?</Typography>
                 </DialogContent>
                 <DialogActions className={classes.dialogActions}>
-                    <Button variant="contained" color="secondary" size="small" onClick={() => this.handleDelete()}>Delete</Button>
-                    <Button variant="contained" size="small" onClick={() => this.props.handleClose()}>Close</Button>
+                    <Button variant="contained" color="error" size="small" onClick={() => this.handleDelete()}>Delete</Button>
+                    <Button variant="outlined" size="small" onClick={() => this.props.handleClose()}>Close</Button>
                 </DialogActions>
             </Dialog>
         );

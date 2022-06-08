@@ -18,7 +18,8 @@
 //
 
 import React, { forwardRef, useState } from "react";
-import { TextField,  withStyles } from "@material-ui/core";
+import { TextField } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
 import PropTypes from "prop-types";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
@@ -51,6 +52,7 @@ const TextFilter = forwardRef((props, ref) => {
 
   return (
     <TextField
+      variant="standard"
       className={classes.answerField}
       InputLabelProps={{
       shrink: true,

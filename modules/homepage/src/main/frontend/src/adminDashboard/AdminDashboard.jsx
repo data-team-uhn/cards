@@ -33,8 +33,9 @@ import {
   ListItemIcon,
   ListItemText, 
   Typography,
-  withStyles
-} from "@material-ui/core";
+} from "@mui/material";
+
+import withStyles from '@mui/styles/withStyles';
 
 // function to get the routes for the admin dashboard, also used in the navbar
 async function getAdminRoutes() {
@@ -58,7 +59,7 @@ function AdminDashboard(props) {
 
   if (loading) {
     return (
-      <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
+      <Grid container justifyContent="center"><Grid item><CircularProgress/></Grid></Grid>
     );
   }
 

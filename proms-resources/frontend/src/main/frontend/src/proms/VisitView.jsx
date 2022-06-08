@@ -18,11 +18,9 @@
 //
 import React, { useState, useEffect, useContext } from "react";
 
-import {
-  makeStyles,
-} from "@material-ui/core";
+import makeStyles from '@mui/styles/makeStyles';
 import { Link } from 'react-router-dom';
-import EventIcon from '@material-ui/icons/Event';
+import EventIcon from '@mui/icons-material/Event';
 
 import PromsViewInternal from "./PromsViewInternal.jsx";
 
@@ -94,7 +92,8 @@ function VisitView(props) {
       "format" : (row) => (
          <Link
            className={classes["status" + (!row.has_surveys ? "Unassigned" : (!row.surveys_complete ? "Incomplete" : (!row.surveys_submitted ? "Unreviewed" : "Completed")))]}
-           to={`/content.html${row.subject['@path']}`}>
+           to={`/content.html${row.subject['@path']}`}
+           underline="hover">
            { row.email_unsubscribed ? "Unsubscribed" : (!row.has_surveys ? "No surveys assigned" : (!row.surveys_complete ? "Incomplete" : (!row.surveys_submitted ? "Pending submission" : "Completed"))) }
          </Link>
       )

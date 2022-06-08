@@ -30,10 +30,10 @@ import {
   ClickAwayListener,
   Fade,
   Popper,
-  withStyles
-} from "@material-ui/core";
-import EmojiObjectsIcon from "@material-ui/icons/EmojiObjects";
-import WarningIcon from "@material-ui/icons/Warning";
+} from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import EmojiObjectsIcon from "@mui/icons-material/EmojiObjects";
+import WarningIcon from "@mui/icons-material/Warning";
 
 import style from "./style.jsx";
 
@@ -103,11 +103,12 @@ function UserInputAssistant (props) {
       anchorEl={anchorEl}
       placement={placement}
       transition
-      modifiers={{
-        flip: {
-          enabled: false,
+      modifiers={[
+        {
+          name: 'flip',
+          enabled: true
         }
-      }}
+      ]}
       >
     {({ TransitionProps }) => (
       <Fade {...TransitionProps} timeout={350}>
@@ -127,12 +128,12 @@ function UserInputAssistant (props) {
           </CardContent>
           <CardActions>
           { actionLabel && onAction &&
-            <Button color="default" onClick={onAction}>{actionLabel}</Button>
+            <Button variant="outlined" onClick={onAction}>{actionLabel}</Button>
           }
           { onIgnore ?
-            <Button color="default" onClick={() => {setEnabled(false); onIgnore();}}>Ignore for now</Button>
+            <Button variant="outlined" onClick={() => {setEnabled(false); onIgnore();}}>Ignore for now</Button>
             :
-            <Button color="default" onClick={() => {setEnabled(false)}}>Got it!</Button>
+            <Button variant="outlined" onClick={() => {setEnabled(false)}}>Got it!</Button>
           }
           </CardActions>
         </Card>

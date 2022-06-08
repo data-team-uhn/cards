@@ -27,7 +27,7 @@ import {
   DialogTitle,
   Grid,
   Typography
-} from "@material-ui/core";
+} from "@mui/material";
 
 import Fields, { formatString } from "../questionnaireEditor/Fields.jsx";
 import LiveTable from "../dataHomepage/LiveTable.jsx";
@@ -208,8 +208,7 @@ function OnboardNewClinicDialog(props) {
         <DialogActions>
           <Button
             onClick={onClose}
-            variant="contained"
-            color="default"
+            variant="outlined"
           >
             Cancel
           </Button>

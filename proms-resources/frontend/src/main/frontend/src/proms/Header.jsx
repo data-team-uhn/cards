@@ -26,9 +26,10 @@ import {
   Link,
   Toolbar,
   Typography,
-  makeStyles,
   useScrollTrigger,
-} from "@material-ui/core";
+} from "@mui/material";
+
+import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles(theme => ({
   appbar : {
@@ -104,7 +105,7 @@ function PromsHeader (props) {
           </div>
           <Breadcrumbs separator = "·">
             {greeting && <span className={classes.greeting}>{ greeting }</span>}
-            <Link href="/system/sling/logout">Sign out</Link>
+            <Link href="/system/sling/logout" underline="hover">Sign out</Link>
           </Breadcrumbs>
         </Toolbar>
       </Collapse>

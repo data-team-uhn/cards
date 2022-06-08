@@ -22,9 +22,10 @@ import PropTypes from 'prop-types';
 import {
   Grid,
   Switch,
-  Typography,
-  withStyles
-} from "@material-ui/core";
+  Typography
+} from "@mui/material";
+
+import withStyles from '@mui/styles/withStyles';
 
 import EditorInput from "./EditorInput";
 import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
@@ -39,6 +40,7 @@ let BooleanInput = (props) => {
   return (
     <EditorInput name={objectKey}>
       <Switch
+        color="secondary"
         edge="start"
         id={objectKey}
         onChange={(event) => {setChecked(event.target.checked);}}

@@ -18,8 +18,9 @@
 //
 
 import React, { forwardRef, useState } from "react";
-import { Select, MenuItem, Card, CardHeader, CardContent, withStyles } from "@material-ui/core";
-import ErrorIcon from "@material-ui/icons/Error";
+import { Select, MenuItem, Card, CardHeader, CardContent } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import ErrorIcon from "@mui/icons-material/Error";
 import PropTypes from "prop-types";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
@@ -96,6 +97,7 @@ const QuestionnaireFilter = forwardRef((props, ref) => {
 
   return (
     <Select
+      variant="standard"
       value={selection}
       onChange={(event) => {
         let uuid = event.target.value;

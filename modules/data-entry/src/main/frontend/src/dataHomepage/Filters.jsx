@@ -17,10 +17,11 @@
 //  under the License.
 //
 import React, { useCallback, useRef, useState, useContext, useEffect } from "react";
-import { Chip, Typography, Button, Dialog, CircularProgress, IconButton, Tooltip } from "@material-ui/core";
-import { DialogActions, DialogContent, DialogTitle, Grid, Select, MenuItem, TextField, withStyles } from "@material-ui/core";
-import Add from "@material-ui/icons/Add";
-import CloseIcon from '@material-ui/icons/Close';
+import { Chip, Typography, Button, Dialog, CircularProgress, IconButton, Tooltip } from "@mui/material";
+import { DialogActions, DialogContent, DialogTitle, Grid, Select, MenuItem, TextField } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import Add from "@mui/icons-material/Add";
+import CloseIcon from '@mui/icons-material/Close';
 
 import LiveTableStyle from "./tableStyle.jsx";
 import FilterComponentManager from "./FilterComponents/FilterComponentManager.jsx";
@@ -504,6 +505,7 @@ function Filters(props) {
                   {/* Select the field to filter */}
                   <Grid item xs={5}>
                     <Select
+                      variant="standard"
                       value={(filterDatum.name || "")}
                       onChange={(event) => {handleChangeFilter(index, event);}}
                       MenuProps={{
@@ -522,6 +524,7 @@ function Filters(props) {
                   {/* Depending on whether or not the comparator chosen is unary, the size can change */}
                   <Grid item xs={isUnary ? 6 : (isNotesContain ? 3 : (isContain ? 2 : 1))} className={index == editingFilters.length-1 ? classes.hidden : ""}>
                     <Select
+                      variant="standard"
                       value={filterDatum.comparator || ""}
                       onChange={(event) => {handleChangeComparator(index, event.target.value);}}
                       >
@@ -537,7 +540,7 @@ function Filters(props) {
                     <Grid item xs={isNotesContain ? 3 : (isContain ? 4 : 5)} className={index == editingFilters.length-1 ? classes.hidden : ""}>
                       {filterDatum.comparator ?
                           getCachedInput(filterDatum, index, (index !== editingFilters.length-1 && toFocus === index ? focusCallback : undefined))
-                        : <TextField disabled className={classes.answerField}></TextField>
+                        : <TextField variant="standard" disabled className={classes.answerField}></TextField>
                       }
                     </Grid>}
                   {/* Deletion button */}
@@ -571,8 +574,7 @@ function Filters(props) {
             {'Apply'}
           </Button>
           <Button
-            variant="contained"
-            color="default"
+            variant="outlined"
             onClick={closeDialog}
             >
             {'Cancel'}

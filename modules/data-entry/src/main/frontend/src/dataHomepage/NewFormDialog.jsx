@@ -24,12 +24,12 @@ import {
   Button,
   DialogActions,
   DialogContent,
-  Typography,
-  withStyles
-} from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
+  Typography
+} from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import AddIcon from "@mui/icons-material/Add";
 import MaterialTable from "material-table";
-import Alert from '@material-ui/lab/Alert';
+import Alert from '@mui/material/Alert';
 
 import SubjectSelectorList, { NewSubjectDialog, parseToArray } from "../questionnaire/SubjectSelector.jsx";
 import NewItemButton from "../components/NewItemButton.jsx";
@@ -390,7 +390,7 @@ function NewFormDialog(props) {
           {progress === PROGRESS_SELECT_SUBJECT &&
             <Button
               variant="contained"
-              color="secondary"
+              color="success"
               onClick={() => { setNewSubjectPopperOpen(true); setError(); }}
               className={classes.createNewSubjectButton}
               >
@@ -398,8 +398,7 @@ function NewFormDialog(props) {
             </Button>
           }
           <Button
-            variant="contained"
-            color="default"
+            variant="outlined"
             onClick={goBack}
             >
             { (progress == PROGRESS_SELECT_QUESTIONNAIRE || presetPath) ?

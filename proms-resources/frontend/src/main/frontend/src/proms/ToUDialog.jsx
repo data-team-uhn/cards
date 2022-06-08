@@ -23,11 +23,13 @@ import PropTypes from "prop-types";
 import {
   Button,
   DialogActions,
-  DialogContent,
-  makeStyles
-} from "@material-ui/core";
+  DialogContent
+} from "@mui/material";
 
-import { Alert, AlertTitle } from "@material-ui/lab";
+import makeStyles from '@mui/styles/makeStyles';
+
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 
 import FormattedText from "../components/FormattedText.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog";
@@ -179,12 +181,12 @@ function ToUDialog(props) {
           <Button color="primary" onClick={() => saveTouAccepted(tou.version)} variant="contained">
             Accept
           </Button>
-          <Button color="default" onClick={() => setShowConfirmationTou(true)} variant="contained" >
+          <Button color="secondary" onClick={() => setShowConfirmationTou(true)} variant="contained">
             Decline
           </Button>
         </>
         :
-        <Button color="primary" onClick={onClose} variant="contained">
+        <Button color="primary" onClick={onClose} variant="outlined">
           Close
         </Button>
       }
@@ -196,13 +198,13 @@ function ToUDialog(props) {
           You can only fill out your pre-appointment surveys online after accepting the DATA PRO Terms of Use.
         </DialogContent>
         <DialogActions>
-          <Button color="secondary" onClick={() => setShowConfirmationTou(false)} variant="contained" className={classes.reviewButton}>
+          <Button onClick={() => setShowConfirmationTou(false)} variant="outlined" className={classes.reviewButton}>
             Review Terms
           </Button>
           <Button color="primary" onClick={() => saveTouAccepted(tou?.version)} variant="contained" >
             Accept
           </Button>
-          <Button color="default" onClick={() => {setShowConfirmationTou(false); onDecline && onDecline()}} variant="contained" >
+          <Button color="secondary" onClick={() => {setShowConfirmationTou(false); onDecline && onDecline()}} variant="contained" >
             Decline
           </Button>
         </DialogActions>

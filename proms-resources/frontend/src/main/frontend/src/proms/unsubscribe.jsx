@@ -19,10 +19,12 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { Router, Route, Redirect, Switch } from "react-router-dom";
-import { Paper, Grid, Button, Typography, makeStyles } from '@material-ui/core';
-import { Alert, AlertTitle } from "@material-ui/lab";
+import { Paper, Grid, Button, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 import { createBrowserHistory } from "history";
-import { MuiThemeProvider } from '@material-ui/core/styles';
+import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { appTheme } from "../themePalette.jsx";
 import PromsFooter from "./Footer.jsx";
 import ErrorPage from "../components/ErrorPage.jsx";
@@ -83,8 +85,8 @@ function Unsubscribe (props) {
       });
   }, []);
 
-  return <MuiThemeProvider theme={appTheme}>
-      <Paper className={classes.paper} elevation={0}>
+  return
+    <Paper className={classes.paper} elevation={0}>
         <Grid
           container
           direction="column"
@@ -133,12 +135,15 @@ function Unsubscribe (props) {
             }
           </Grid>
         </Grid>
-      </Paper>
-    </MuiThemeProvider>
+    </Paper>
 }
 
 ReactDOM.render(
-  <Unsubscribe />,
+  <StyledEngineProvider injectFirst>
+    <ThemeProvider theme={appTheme}>
+      <Unsubscribe />
+    </ThemeProvider>
+  </StyledEngineProvider>,
   document.querySelector('#proms-unsubscribe-container')
 );
 

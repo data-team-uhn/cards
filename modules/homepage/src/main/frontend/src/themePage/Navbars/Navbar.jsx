@@ -12,11 +12,10 @@
 import React from "react";
 import classNames from "classnames";
 import PropTypes from "prop-types";
-// @material-ui/core components
-import { withStyles } from "@material-ui/core";
-import { AppBar, Button, Toolbar, IconButton, Hidden } from "@material-ui/core";
-// @material-ui/icons
-import Menu from "@material-ui/icons/Menu";
+import withStyles from '@mui/styles/withStyles';
+import { AppBar, Box, Button, Toolbar, IconButton } from "@mui/material";
+// @mui/icons-material
+import Menu from "@mui/icons-material/Menu";
 // core components
 import AdminNavbarLinks from "./AdminNavbarLinks.jsx";
 
@@ -33,19 +32,20 @@ function Header({ ...props }) {
       <Toolbar className={classes.container}>
         <div className={classes.flex} />
         {/* While the screen is wide enough, display the navbar at the topright */}
-        <Hidden smDown implementation="css">
+        <Box sx={{ display: { md: 'inline-flex', xs: 'none' } }}>
           <AdminNavbarLinks closeSidebar={props.handleDrawerToggle} color={color} />
-        </Hidden>
+        </Box>
         {/* While the screen is too narrow, display the mini sidebar control */}
-        <Hidden mdUp implementation="css">
+        <Box sx={{ display: { md: 'none', xs: 'inline-flex' } }}>
           <IconButton
+            size="large"
             color="inherit"
             aria-label="open drawer"
             onClick={props.handleDrawerToggle}
           >
             <Menu />
           </IconButton>
-        </Hidden>
+        </Box>
       </Toolbar>
     </AppBar>
   );

@@ -29,7 +29,7 @@ import {
     CardHeader,
     List,
     ListItem,
-} from '@material-ui/core';
+} from '@mui/material';
 
 function QuickSearchConfiguration(props) {
   const { match, location, classes } = props;
@@ -128,6 +128,7 @@ function QuickSearchConfiguration(props) {
             </ListItem>
             <ListItem key="limit">
               <TextField
+                variant="standard"
                 id="limit"
                 name="limit"
                 type="number"
@@ -145,7 +146,6 @@ function QuickSearchConfiguration(props) {
                     checked={showTotalRows}
                     onChange={(event) => { event.preventDefault(); setOnSuccess(false); setShowTotalRows(event.target.checked); }}
                     name="showTotalRows"
-                    color="primary"
                   />
                 }
                 label="Show the total number of results"
@@ -164,7 +164,6 @@ function QuickSearchConfiguration(props) {
                           checked={allowedResourceTypes.indexOf(resourceName) > -1}
                           onChange={(event) => { onSourceTypeChange(event.target.checked, resourceName); }}
                           name={resourceName}
-                          color="primary"
                         />
                       }
                       label={resourceName.replace('cards:', '') + 's'}

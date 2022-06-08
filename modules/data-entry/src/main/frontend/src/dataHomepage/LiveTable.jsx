@@ -18,8 +18,9 @@
 //
 
 import React, { useState, useEffect, useContext } from "react";
-import { Paper, Table, TableHead, TableBody, TableRow, TableCell, TablePagination } from "@material-ui/core";
-import { Card, CardHeader, CardContent, CardActions, Chip, IconButton, Typography, Button, LinearProgress, withStyles } from "@material-ui/core";
+import { Paper, Table, TableHead, TableBody, TableRow, TableCell, TablePagination } from "@mui/material";
+import { Card, CardHeader, CardContent, CardActions, Chip, IconButton, Typography, Button, LinearProgress } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
 import { Link } from 'react-router-dom';
 import { DateTime } from "luxon";
 
@@ -204,15 +205,15 @@ function LiveTable(props) {
       if (column.link === 'path') {
         content = (<a href={entry["@path"]}>{content}</a>);
       } else if (column.link === 'dashboard+path') {
-        content = (<Link to={pathPrefix + entry["@path"]}>{content}</Link>);
+        content = (<Link to={pathPrefix + entry["@path"]} underline="hover">{content}</Link>);
       } else if (column.link === 'value') {
         content = (<a href={content}>{content}</a>);
       } else if (column.link === 'dashboard+value') {
-        content = (<Link to={pathPrefix + content}>{content}</Link>);
+        content = (<Link to={pathPrefix + content} underline="hover">{content}</Link>);
       } else if (column.link.startsWith('field:')) {
         content = (<a href={getNestedValue(entry, column.link.substring('field:'.length))}>{content}</a>);
       } else if (column.link.startsWith('dashboard+field:')) {
-        content = (<Link to={pathPrefix + getNestedValue(entry, column.link.substring('dashboard+field:'.length))}>{content}</Link>);
+        content = (<Link to={pathPrefix + getNestedValue(entry, column.link.substring('dashboard+field:'.length))} underline="hover">{content}</Link>);
       }
     }
 
@@ -341,8 +342,8 @@ function LiveTable(props) {
       count={paginationData.totalIsApproximate ? -1 : paginationData.total}
       rowsPerPage={paginationData.limit}
       page={paginationData.page}
-      onChangePage={handleChangePage}
-      onChangeRowsPerPage={handleChangeRowsPerPage}
+      onPageChange={handleChangePage}
+      onRowsPerPageChange={handleChangeRowsPerPage}
       labelDisplayedRows={({from, to, count}) =>
           `${from}-${to} of ${paginationData.totalIsApproximate ? `more than ${paginationData.total}` : count}`
       }

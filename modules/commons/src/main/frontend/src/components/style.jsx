@@ -51,9 +51,9 @@ const style = theme => ({
         "&:before" : {
           content: "''",
           display: "block",
-          borderTop: theme.spacing(2) + "px solid transparent",
-          borderBottom: theme.spacing(2) + "px solid transparent",
-          borderRight: theme.spacing(2) + "px solid " + theme.palette.primary.main,
+          borderTop: theme.spacing(2) + " solid transparent",
+          borderBottom: theme.spacing(2) + " solid transparent",
+          borderRight: theme.spacing(2) + " solid " + theme.palette.primary.main,
           position: "absolute",
           left: 0,
           top: "50%",

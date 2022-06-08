@@ -21,7 +21,9 @@ import React, { useRef, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { useLocation } from 'react-router-dom';
 
-import { Card, CardHeader, CardContent, List, ListItem, Typography, withStyles } from "@material-ui/core";
+import { Card, CardHeader, CardContent, List, ListItem, Typography } from "@mui/material";
+
+import withStyles from '@mui/styles/withStyles';
 
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import AnswerInstructions from "./AnswerInstructions";

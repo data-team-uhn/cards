@@ -24,12 +24,13 @@ import {
   Dialog,
   DialogTitle,
   IconButton,
-  makeStyles,
   useMediaQuery
-} from "@material-ui/core";
+} from "@mui/material";
 
-import CloseIcon from '@material-ui/icons/Close';
-import { useTheme } from '@material-ui/core/styles';
+import makeStyles from '@mui/styles/makeStyles';
+
+import CloseIcon from '@mui/icons-material/Close';
+import { useTheme } from '@mui/material/styles';
 
 // Component that renders the Dialog containers that expand to full screen once
 // the screen becomes more narrow than the specified width
@@ -81,7 +82,7 @@ const ResponsiveDialog = forwardRef((props, ref) => {
   const fullScreen = useMediaQuery(theme.breakpoints.down(width));
 
   let closeButton = withCloseButton ?
-    <IconButton aria-label="close" className={classes.closeButton} onClick={onClose}>
+    <IconButton aria-label="close" className={classes.closeButton} onClick={onClose} size="large">
       <CloseIcon />
     </IconButton>
     : null;
@@ -98,8 +99,11 @@ const ResponsiveDialog = forwardRef((props, ref) => {
       maxWidth={width}
       fullWidth
       fullScreen={fullScreen}
-      disableBackdropClick
-      onClose={onClose}
+      onClose={(event, reason) => {
+        if (reason !== 'backdropClick') {
+          onClose(event);
+        }
+      }}
       {...rest}
     >
       { title && <DialogTitle>{title}{closeButton}</DialogTitle>}

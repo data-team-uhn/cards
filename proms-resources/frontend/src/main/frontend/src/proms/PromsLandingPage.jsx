@@ -26,12 +26,10 @@ import {
   DialogContent,
   Grid,
   Tooltip,
-  Typography,
-  makeStyles
-} from '@material-ui/core';
+  Typography
+} from '@mui/material';
 
-import { MuiThemeProvider } from '@material-ui/core/styles';
-import { appTheme } from "../themePalette.jsx";
+import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -77,60 +75,57 @@ function PromsLandingPage(props) {
       fullScreen
       open={isOpen}
     >
-      <MuiThemeProvider theme={appTheme}>
-        <DialogContent className={classes.paper}>
-          <Grid container direction="column" spacing={2} alignItems="center" alignContent="center">
-            <Grid item>
-              <img src={document.querySelector('meta[name="logoLight"]').content} alt="" className={classes.logo} />
-            </Grid>
-            <Grid item>
-              <Typography variant="h6">I am a...</Typography>
-            </Grid>
-            <Grid item>
-              <Grid container spacing={3} direction="column" justify="center" alignItems="center">
-                <Grid item>
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                    className={classes.button}
-                    onClick={() => {
-                      window.location = "/Proms";
-                    }}
-                   >
-                    <Typography variant="h6">Patient</Typography>
-                  </Button>
-                </Grid>
-                <Grid item>
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    className={classes.button}
-                    onClick={() => {
-                      let query = new URLSearchParams(window.location?.search || "");
-                      query.delete(USER_TYPE_PARAM);
-                      query.append(USER_TYPE_PARAM, USER_TYPE_HCP);
-                      window.location.search = query;
-                    }}
-                   >
-                    <Typography variant="h6">Healthcare Provider</Typography>
-                  </Button>
+          <DialogContent className={classes.paper}>
+            <Grid container direction="column" spacing={2} alignItems="center" alignContent="center">
+              <Grid item>
+                <img src={document.querySelector('meta[name="logoLight"]').content} alt="" className={classes.logo} />
+              </Grid>
+              <Grid item>
+                <Typography variant="h6">I am a...</Typography>
+              </Grid>
+              <Grid item>
+                <Grid container spacing={3} direction="column" justifyContent="center" alignItems="center">
+                  <Grid item>
+                    <Button
+                      fullWidth
+                      variant="contained"
+                      className={classes.button}
+                      onClick={() => {
+                        window.location = "/Proms";
+                      }}
+                     >
+                      <Typography variant="h6">Patient</Typography>
+                    </Button>
+                  </Grid>
+                  <Grid item>
+                    <Button
+                      fullWidth
+                      variant="contained"
+                      className={classes.button}
+                      onClick={() => {
+                        let query = new URLSearchParams(window.location?.search || "");
+                        query.delete(USER_TYPE_PARAM);
+                        query.append(USER_TYPE_PARAM, USER_TYPE_HCP);
+                        window.location.search = query;
+                      }}
+                     >
+                      <Typography variant="h6">Healthcare Provider</Typography>
+                    </Button>
+                  </Grid>
                 </Grid>
               </Grid>
+              <Grid item>
+                <Breadcrumbs separator="by" className={classes.appInfo}>
+                  <Typography variant="subtitle2">{appInfo}</Typography>
+                  <Tooltip title="DATA Team @ UHN">
+                    <a href="https://uhndata.io/" target="_blank">
+                      <img src="/libs/cards/resources/media/default/data-logo_light_bg.png" width="80" alt="DATA" />
+                    </a>
+                  </Tooltip>
+                </Breadcrumbs>
+              </Grid>
             </Grid>
-            <Grid item>
-              <Breadcrumbs separator="by" className={classes.appInfo}>
-                <Typography variant="subtitle2">{appInfo}</Typography>
-                <Tooltip title="DATA Team @ UHN">
-                  <a href="https://uhndata.io/" target="_blank">
-                    <img src="/libs/cards/resources/media/default/data-logo_light_bg.png" width="80" alt="DATA" />
-                  </a>
-                </Tooltip>
-              </Breadcrumbs>
-            </Grid>
-          </Grid>
         </DialogContent>
-      </MuiThemeProvider>
     </Dialog>
   );
 }

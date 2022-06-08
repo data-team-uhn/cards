@@ -16,7 +16,8 @@
 */
 
 import React from "react";
-import { Button, Grid, Dialog, DialogTitle, DialogContent, TextField, Tooltip, Typography, withStyles } from "@material-ui/core";
+import { Button, Grid, Dialog, DialogTitle, DialogContent, TextField, Tooltip, Typography } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
 import { Formik } from "formik";
 import * as Yup from "yup";
 
@@ -55,6 +56,7 @@ class FormFields extends React.Component {
       >
         { requireOldPassword &&
           <TextField
+            variant="standard"
             id="oldPwd"
             name="oldPwd"
             helperText={touched.oldPwd ? errors.oldPwd : ""}
@@ -69,6 +71,7 @@ class FormFields extends React.Component {
           />
         }
         <TextField
+          variant="standard"
           id="newPwd"
           name="newPwd"
           helperText={touched.newPwd ? errors.newPwd : ""}
@@ -82,6 +85,7 @@ class FormFields extends React.Component {
           required
         />
         <TextField
+          variant="standard"
           id="newPwdConfirm"
           name="newPwdConfirm"
           helperText={touched.newPwdConfirm ? errors.newPwdConfirm : ""}
@@ -94,7 +98,7 @@ class FormFields extends React.Component {
           className={classes.form}
           required
         />
-        <Button variant="contained" size="small" className={classes.formAction} onClick={handleReset}>Close</Button>
+        <Button variant="outlined" size="small" className={classes.formAction} onClick={handleReset}>Close</Button>
         { !isValid ?
           // Render hover over and button
           <React.Fragment>

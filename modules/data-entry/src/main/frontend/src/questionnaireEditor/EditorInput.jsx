@@ -18,12 +18,12 @@
 //
 
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import makeStyles from '@mui/styles/makeStyles';
 import PropTypes from 'prop-types';
 import {
   Grid,
   Typography
-} from "@material-ui/core";
+} from "@mui/material";
 
 export function formatIdentifier(key) {
   return key.charAt(0).toUpperCase() + key.slice(1).replace( /([A-Z])/g, " $1" ).toLowerCase();
@@ -36,7 +36,7 @@ let EditorInput = (props) => {
     labelContainer: {
       /* Match the input padding so the text of the label would appear aligned with the text of the input */
       /* To do: switch to a vertical layout in the future to avoid most alignment issues  */
-      paddingTop: theme.spacing(1.75) + "px !important",
+      paddingTop: theme.spacing(1.75) + " !important",
     },
   }))();
 

@@ -28,7 +28,7 @@ import NewFormDialog from "../dataHomepage/NewFormDialog";
 import { QUESTION_TYPES, SECTION_TYPES, ENTRY_TYPES } from "./FormEntry.jsx";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
-import MaterialTable, { MTablePagination } from 'material-table';
+import MaterialTable from 'material-table';
 
 import {
   Avatar,
@@ -41,9 +41,9 @@ import {
   Tab,
   Tabs,
   Typography,
-  withStyles,
-} from "@material-ui/core";
-import FileIcon from "@material-ui/icons/InsertDriveFile";
+} from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import FileIcon from "@mui/icons-material/InsertDriveFile";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 import EditButton from "../dataHomepage/EditButton.jsx";
 import PrintButton from "../dataHomepage/PrintButton.jsx";
@@ -98,7 +98,7 @@ export function getTextHierarchy (node, withType = false) {
 // Recursive function to get the list of ancestors as an array
 export function getHierarchyAsList (node, includeHomepage) {
   let props = defaultCreator(node);
-  let parent = <>{node.type.label} <Link {...props}>{node.identifier}</Link></>;
+  let parent = <>{node.type.label} <Link {...props} underline="hover">{node.identifier}</Link></>;
   if (node["parents"]) {
     let ancestors = getHierarchyAsList(node["parents"]);
     ancestors.push(parent);
@@ -112,7 +112,7 @@ export function getHierarchyAsList (node, includeHomepage) {
 
 export function getHomepageLink (subjectNode) {
   let props = defaultCreator({"@path": `/Subjects#subjects:activeTab=${subjectNode?.type?.["@name"]}`});
-  return (<Link {...props}>{subjectNode?.type?.subjectListLabel || "Subjects"}</Link>);
+  return (<Link {...props} underline="hover">{subjectNode?.type?.subjectListLabel || "Subjects"}</Link>);
 }
 
 /**
@@ -173,7 +173,8 @@ function Subject(props) {
         <Grid item>
           <Tabs className={classes.subjectTabs} value={activeTab} onChange={(event, value) => {
             setTab(value);
-          }}>
+          }}
+          indicatorColor="primary" textColor="inherit" >
             {tabs.map((tab) => {
               return <Tab label={tab} key={tab}/>;
             })}
@@ -251,13 +252,13 @@ function SubjectContainer(props) {
   // If the data has not yet been fetched, return an in-progress symbol
   if (!subject) {
     return (
-      <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
+      <Grid container justifyContent="center"><Grid item><CircularProgress/></Grid></Grid>
     );
   }
 
   if (error) {
     return (
-      <Grid container justify="center">
+      <Grid container justifyContent="center">
         <Grid item>
           <Typography variant="h2" color="error">
             Error obtaining subject data: {error.status} {error.statusText ? error.statusText : error.toString()}
@@ -366,7 +367,7 @@ function SubjectHeader(props) {
                  entryName={title}
                  entryType={label}
                  onComplete={handleDeletion}
-                 size="medium"
+                 size="large"
                />
             </div>
   );
@@ -442,7 +443,7 @@ function SubjectMemberInternal (props) {
   // If an error was returned, do not display a subject at all, but report the error
   if (error) {
     return (
-      <Grid container justify="center">
+      <Grid container justifyContent="center">
         <Grid item>
           <Typography variant="h2" color="error">
             Error obtaining subject data: {error.status} {error.statusText ? error.statusText : error.toString()}
@@ -488,11 +489,11 @@ function SubjectMemberInternal (props) {
     {
       level > 0 &&
         <Grid item className={classes.subjectTitleWithAvatar}>
-          <Grid container direction="row" spacing={1} justify="flex-start">
+          <Grid container direction="row" spacing={1} justifyContent="flex-start">
             <Grid item xs={false}>{avatar}</Grid>
             <Grid item>
               <Typography variant="h5">
-                 <Link to={"/content.html" + path}>{title}</Link>
+                 <Link to={"/content.html" + path} underline="hover">{title}</Link>
                  {action}
               </Typography>
             </Grid>
@@ -511,6 +512,7 @@ function SubjectMemberInternal (props) {
                   actionsColumnIndex: -1,
                   emptyRowsWhenPaging: false,
                   toolbar: false,
+                  paging: !!(subjectGroups[questionnaireTitle]?.length > pageSize),
                   pageSize: pageSize,
                   header: false,
                   rowStyle: {
@@ -525,7 +527,7 @@ function SubjectMemberInternal (props) {
                       width: '1%',
                       whiteSpace: 'nowrap',
                     },
-                    render: rowData => <Link to={"/content.html" + rowData["@path"]}>
+                    render: rowData => <Link to={"/content.html" + rowData["@path"]} underline="hover">
                                          {DateTime.fromISO(rowData['jcr:created']).toFormat("yyyy-MM-dd")}
                                        </Link> },
                   { title: 'Status',
@@ -567,10 +569,6 @@ function SubjectMemberInternal (props) {
                                          />
                                        </React.Fragment> },
                 ]}
-                components={{
-                    Pagination: props => { const { classes, ...other } = props;
-                                           return (subjectGroups[questionnaireTitle].length > pageSize && <MTablePagination {...other} />)}
-                }}
                />
             </Grid>)
           })
@@ -617,7 +615,7 @@ function FormData(props) {
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
     return (
-      <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
+      <Grid container justifyContent="center"><Grid item><CircularProgress/></Grid></Grid>
     );
   }
 

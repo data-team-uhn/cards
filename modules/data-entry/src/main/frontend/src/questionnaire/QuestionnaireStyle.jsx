@@ -17,14 +17,14 @@
 //  under the License.
 //
 
-import { orange, grey } from '@material-ui/core/colors';
+import { orange, grey } from '@mui/material/colors';
 
 // Props used in grid containers for displaying Form entries
 export const FORM_ENTRY_CONTAINER_PROPS = {
     direction: "column",
     spacing: 4,
     alignItems: "stretch",
-    justify: "space-between",
+    justifyContent: "space-between",
     wrap: "nowrap"
   };
 
@@ -342,6 +342,8 @@ const questionnaireStyle = theme => ({
         position: "sticky",
         top: 0,
         zIndex: 2,
+        marginTop: theme.spacing(2*GRID_SPACE_UNIT),
+        paddingTop: 0,
       },
       "& > .MuiCollapse-wrapper" : {
         border: "1px solid " + theme.palette.primary.light,

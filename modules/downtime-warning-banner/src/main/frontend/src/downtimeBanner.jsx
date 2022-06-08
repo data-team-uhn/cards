@@ -25,13 +25,11 @@ import {
   Grid,
   Toolbar,
   Typography,
-  withStyles,
-} from '@material-ui/core';
+} from '@mui/material';
 
-import BuildIcon from '@material-ui/icons/Build';
+import { withStyles } from '@mui/styles';
 
-import { MuiThemeProvider } from '@material-ui/core/styles';
-import { appTheme } from "./themePalette.jsx";
+import BuildIcon from '@mui/icons-material/Build';
 
 const appbarStyle = theme => ({
   root: {
@@ -87,7 +85,6 @@ export default function DowntimeWarning(props) {
   }
 
   return (
-    <MuiThemeProvider theme={appTheme}>
     <StyledAppBar position="fixed" style={props.style} ref={props.onRender}>
       <Toolbar>
       {error && <Typography color='error'>{errorText}</Typography>}
@@ -101,6 +98,5 @@ export default function DowntimeWarning(props) {
       </Grid>
       </Toolbar>
     </StyledAppBar>
-    </MuiThemeProvider>
   );
 }

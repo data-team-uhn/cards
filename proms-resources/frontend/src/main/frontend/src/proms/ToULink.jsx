@@ -19,7 +19,7 @@
 import React, { useState } from "react";
 import {
   Link,
-} from "@material-ui/core";
+} from "@mui/material";
 import ToUDialog from "./ToUDialog.jsx";
 
 function ToULink (props) {
@@ -31,6 +31,7 @@ function ToULink (props) {
       color="inherit"
       variant="caption"
       onClick={() => {setShowTou(true);}}
+      underline="hover"
     >
       Terms of Use and Privacy Policy
     </Link>

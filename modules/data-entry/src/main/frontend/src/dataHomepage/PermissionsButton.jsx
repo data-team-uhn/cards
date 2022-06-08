@@ -19,8 +19,9 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
 
-import { IconButton, Tooltip, Typography, withStyles } from "@material-ui/core";
-import { Lock } from "@material-ui/icons"
+import { IconButton, Tooltip, Typography } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import { Lock } from "@mui/icons-material"
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
@@ -33,7 +34,7 @@ function PermissionsButton(props) {
   return (
     <React.Fragment>
       <Tooltip title={"Set Permissions"}>
-        <IconButton component="span" className={classes.titleButton}>
+        <IconButton component="span" className={classes.titleButton} size="large">
           <Lock fontSize={size ? size : "default"}/>
         </IconButton>
       </Tooltip>

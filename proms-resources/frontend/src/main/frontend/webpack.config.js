@@ -13,7 +13,7 @@ module.exports = {
     [module_name + 'PromsDashboard']: './src/proms/PromsDashboard.jsx',
     [module_name + 'PromsView']: './src/proms/PromsView.jsx',
     [module_name + 'VisitView']: './src/proms/VisitView.jsx',
-    [module_name + 'clinicIcon']: '@material-ui/icons/Event.js',
+    [module_name + 'clinicIcon']: '@mui/icons-material/Event.js',
     [module_name + 'Clinics']: './src/proms/Clinics.jsx',
     [module_name + 'PrintHeader']: './src/proms/PrintHeader.jsx'
   },

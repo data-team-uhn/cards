@@ -27,10 +27,11 @@ import {
   DialogTitle,
   CircularProgress,
   List, ListItem, ListItemText,
-  makeStyles,
   Typography,
   Tooltip
-} from "@material-ui/core";
+} from "@mui/material";
+
+import makeStyles from '@mui/styles/makeStyles';
 
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
@@ -191,12 +192,12 @@ export default function VocabularyAction(props) {
     )}
     {exit && (
       <Tooltip title="Close">
-        <Button onClick={exit} variant="contained" className={classes.vocabularyAction}>Close</Button>
+        <Button onClick={exit} variant="outlined" className={classes.vocabularyAction}>Close</Button>
       </Tooltip>
     )}
     <Dialog onClose={handleClose} open={displayPopup}>
 
-      <DialogTitle disableTypography>
+      <DialogTitle>
         <Typography variant="h4" className={classes.dialogTitle}>{vocabulary.name} ({vocabulary.acronym})</Typography>
       </DialogTitle>
 
@@ -225,7 +226,7 @@ export default function VocabularyAction(props) {
 
       <DialogActions>
         <Button onClick={handleUninstall} variant="contained" color="primary" className={classes.vocabularyAction + " " + classes.uninstall}>Uninstall</Button>
-        <Button onClick={handleClose} variant="contained" className={classes.vocabularyAction}>Cancel</Button>
+        <Button onClick={handleClose} variant="outlined" className={classes.vocabularyAction}>Cancel</Button>
       </DialogActions>
 
     </Dialog>

@@ -36,11 +36,12 @@ import {
   DialogContent,
   DialogTitle,
   Typography,
-  makeStyles,
-  useMediaQuery
-} from "@material-ui/core";
+  useMediaQuery,
+} from "@mui/material";
 
-import { useTheme } from '@material-ui/core/styles';
+import makeStyles from '@mui/styles/makeStyles';
+
+import { useTheme } from '@mui/material/styles';
 
 import FormattedText from "../components/FormattedText.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
@@ -131,7 +132,7 @@ function PrintPreview(props) {
 
   let globalLoginDisplay = useContext(GlobalLoginContext);
 
-  const ref = useRef();
+  const ref = useRef(null);
 
   const handlePrint = useReactToPrint({
     content: () => ref.current,
@@ -227,7 +228,7 @@ function PrintPreview(props) {
         }
         </DialogContent>
         <DialogActions>
-          <Button variant="contained" onClick={onClose}>Close</Button>
+          <Button variant="outlined" onClick={onClose}>Close</Button>
           <Button variant="contained" color="primary" onClick={handlePrint} disabled={!!!content}>Print</Button>
         </DialogActions>
       </Dialog>

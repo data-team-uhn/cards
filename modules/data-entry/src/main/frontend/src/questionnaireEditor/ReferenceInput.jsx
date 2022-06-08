@@ -19,7 +19,9 @@
 
 import React, { useContext, useEffect, useState } from "react";
 import PropTypes, { object } from 'prop-types';
-import { Input, MenuItem, Select, Typography, withStyles } from "@material-ui/core";
+import { Input, MenuItem, Select, Typography } from "@mui/material";
+
+import withStyles from '@mui/styles/withStyles';
 
 import EditorInput from "./EditorInput";
 import LiveTableStyle from "../dataHomepage/tableStyle.jsx";
@@ -265,6 +267,7 @@ let ReferenceInput = (props) => {
       <input type="hidden" name={objectKey + "@TypeHint"} value='Reference' />
       {hiddenInput}
       <Select
+        variant="standard"
         id={objectKey}
         value={curValue || []}
         onChange={(event) => {changeCurValue(event.target.value);}}

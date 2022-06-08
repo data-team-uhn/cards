@@ -19,10 +19,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { Fab, Grid, Paper, Typography, makeStyles } from '@material-ui/core';
-import { MuiThemeProvider } from '@material-ui/core/styles';
-import NavigationIcon from '@material-ui/icons/Navigation';
-import { lightBlue } from '@material-ui/core/colors';
+import { Fab, Grid, Paper, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
+import NavigationIcon from '@mui/icons-material/Navigation';
+import { lightBlue } from '@mui/material/colors';
 import { appTheme } from "../themePalette.jsx";
 import { useHistory } from 'react-router-dom';
 
@@ -48,28 +49,33 @@ export default function TokenExpired() {
   const classes = useStyles();
 
   return (
-    <MuiThemeProvider theme={appTheme}>
-      <Paper className={`${classes.paper}`} elevation={0}>
-        <Grid
-          container
-          direction="column"
-          spacing={7}
-          alignItems="center"
-          alignContent="center"
-          className={classes.notFoundContainer}
-        >
-          <Grid item>
-            <img src={document.querySelector('meta[name="logoLight"]').content} alt="" className={classes.logo}/>
-          </Grid>
-          <Grid item>
-            <Typography variant="h1" color="primary" gutterBottom>
-              This link is no longer valid, please close the page.
-            </Typography>
-          </Grid>
+    <Paper className={`${classes.paper}`} elevation={0}>
+      <Grid
+        container
+        direction="column"
+        spacing={7}
+        alignItems="center"
+        alignContent="center"
+        className={classes.notFoundContainer}
+      >
+        <Grid item>
+          <img src={document.querySelector('meta[name="logoLight"]').content} alt="" className={classes.logo}/>
         </Grid>
-      </Paper>
-    </MuiThemeProvider>
+        <Grid item>
+          <Typography variant="h1" color="primary" gutterBottom>
+            This link is no longer valid, please close the page.
+          </Typography>
+        </Grid>
+      </Grid>
+    </Paper>
   );
 }
 
-ReactDOM.render(<TokenExpired />, document.getElementById('token-expired-container'));
+ReactDOM.render(
+  <StyledEngineProvider injectFirst>
+    <ThemeProvider theme={appTheme}>
+      <TokenExpired />
+    </ThemeProvider>
+  </StyledEngineProvider>,
+  document.getElementById('token-expired-container')
+);

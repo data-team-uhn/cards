@@ -19,7 +19,9 @@
 
 import React, { useEffect, useState } from "react";
 
-import { Button, Dialog, DialogContent, Grid, Link, Tooltip, withStyles } from "@material-ui/core";
+import { Button, Dialog, DialogContent, Grid, Link, Tooltip } from "@mui/material";
+
+import withStyles from '@mui/styles/withStyles';
 
 import PropTypes from "prop-types";
 
@@ -124,10 +126,10 @@ function PedigreeQuestion(props) {
         pageActive && <>
           <div className={classes.answerField}>
           { pedigreeData.image ?
-            <Grid container direction="row" justify="flex-start" alignItems="flex-start" spacing={0}>
+            <Grid container direction="row" justifyContent="flex-start" alignItems="flex-start" spacing={0}>
               <Grid item>
                 <Tooltip title="Edit Pedigree">
-                  <Link className={classes.thumbnailLink} onClick={() => {setExpanded(true);}}>
+                  <Link className={classes.thumbnailLink} onClick={() => {setExpanded(true);}} underline="hover">
                     {image_div}
                   </Link>
                 </Tooltip>
@@ -146,9 +148,11 @@ function PedigreeQuestion(props) {
           }
           </div>
           <Dialog fullScreen open={expanded}
-            onEntering={() => { openPedigree(); }}
-            onExit={() => { closePedigree(); }}
-            onClose={() => { setExpanded(false); }}>
+            onClose={() => { setExpanded(false); }}
+            TransitionProps={{
+              onEntering: () => { openPedigree(); },
+              onExit: () => { closePedigree(); }
+            }}>
             <DialogContent>
               <div id="pedigreeEditor"></div>
             </DialogContent>

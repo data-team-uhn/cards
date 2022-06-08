@@ -17,10 +17,13 @@
 //  under the License.
 //
 import React, { useState } from "react";
+
 import {
-  Typography,
-  makeStyles,
-} from "@material-ui/core";
+  Typography
+} from "@mui/material";
+
+import makeStyles from '@mui/styles/makeStyles';
+
 import { DateTime } from "luxon";
 
 const useStyles = makeStyles(theme => ({

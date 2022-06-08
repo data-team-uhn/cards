@@ -18,7 +18,8 @@
 //
 
 import React, { forwardRef, useState, useCallback } from "react";
-import { Select, MenuItem,  withStyles } from "@material-ui/core";
+import { Select, MenuItem } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
 import PropTypes from "prop-types";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
@@ -59,6 +60,7 @@ const ListFilter = forwardRef((props, ref) => {
 
   return (
     <Select
+      variant="standard"
       value={selection}
       onChange={(event) => {
         let value = event.target.value;
@@ -67,8 +69,7 @@ const ListFilter = forwardRef((props, ref) => {
       }}
       className={classes.answerField}
       ref={ref}
-      {...rest}
-      >
+      {...rest}>
       {options.map((value) => (
         <MenuItem value={value} key={value}>{valueToLabel[value]}</MenuItem>
       ))

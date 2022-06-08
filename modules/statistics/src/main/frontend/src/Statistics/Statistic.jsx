@@ -23,12 +23,12 @@ import {
   CardContent,
   CardHeader,
   Grid,
-  Typography,
-  withStyles
-} from "@material-ui/core";
-import BarChartIcon from '@material-ui/icons/BarChart';
-import LineChartIcon from '@material-ui/icons/ShowChart';
-import { deepPurple, indigo } from '@material-ui/core/colors';
+  Typography
+} from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import LineChartIcon from '@mui/icons-material/ShowChart';
+import { deepPurple, indigo } from '@mui/material/colors';
 
 import { useHistory } from 'react-router-dom';
 
@@ -208,7 +208,7 @@ function Statistic(props) {
         />
       <CardContent>
       { allFields.length == 0 ?
-        <Grid container direction="row" justify="center" alignItems="center" style={{height: widgetHeight}}>
+        <Grid container direction="row" justifyContent="center" alignItems="center" style={{height: widgetHeight}}>
           <Grid item>
             <Typography color="textSecondary" variant="caption">No data available for this statistic</Typography>
           </Grid>

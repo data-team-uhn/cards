@@ -18,7 +18,8 @@
 //
 
 import React, { forwardRef } from "react";
-import { TextField, withStyles } from "@material-ui/core";
+import { TextField } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
 import PropTypes from "prop-types";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
@@ -54,6 +55,7 @@ const DateFilter = forwardRef((props, ref) => {
 
   return (
     <TextField
+      variant="standard"
       id="date"
       type={textFieldType}
       className={classes.answerField}

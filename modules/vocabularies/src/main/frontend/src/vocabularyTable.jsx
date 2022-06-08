@@ -22,12 +22,12 @@ import React, { useEffect, useState } from "react";
 import {
   Grid,
   IconButton,
+  TextField,
   Typography,
-  Tooltip,
-  withStyles
-} from "@material-ui/core";
+  Tooltip
+} from "@mui/material";
 
-import { useTheme } from '@material-ui/core/styles';
+import { useTheme } from '@mui/material/styles';
 import MaterialTable from "material-table";
 import VocabularyActions from "./vocabularyActions"
 import Search from "./search";
@@ -53,6 +53,17 @@ export default function VocabularyTable(props) {
     }
   }, [filterTable, acronymFilterList])
 
+  let filterComponent = ({ columnDef, onFilterChanged }) => (
+    <TextField
+      variant="standard"
+      placeholder="Filter..."
+      onChange={(e) => {
+        // Calling the onFilterChanged with the current tableId and the new value
+        onFilterChanged(columnDef.tableData.id, e.target.value);
+      }}
+    />
+  );
+
   return(
     <React.Fragment>
       {(type === "remote") &&
@@ -73,12 +84,14 @@ export default function VocabularyTable(props) {
                   width: '10%',
                   whiteSpace: "pre",
                 },
+                filterComponent: filterComponent,
                 field: 'acronym'
               },
               { title: 'Name',
                 cellStyle: {
                   width: "33%",
                 },
+                filterComponent: filterComponent,
                 field: 'name'
               },
               { title: 'Version',

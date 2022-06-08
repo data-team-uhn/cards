@@ -29,11 +29,12 @@ import {
   CircularProgress,
   Grid,
   Typography,
-  useMediaQuery,
-  makeStyles,
-} from "@material-ui/core";
+  useMediaQuery
+} from "@mui/material";
 
-import { useTheme } from '@material-ui/core/styles';
+import makeStyles from '@mui/styles/makeStyles';
+
+import { useTheme } from '@mui/material/styles';
 
 import PromsView from "./PromsView";
 import VisitView from "./VisitView";
@@ -172,7 +173,7 @@ function PromsDashboard(props) {
 
   if (defaultsLoading || extensionsLoading || !visitInfo) {
     return (
-      <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
+      <Grid container justifyContent="center"><Grid item><CircularProgress/></Grid></Grid>
     );
   }
 

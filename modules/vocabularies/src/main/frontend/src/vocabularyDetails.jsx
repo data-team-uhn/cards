@@ -26,13 +26,14 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
-  makeStyles,
   Tooltip,
   Typography,
-  Zoom
-} from "@material-ui/core";
+  Zoom,
+} from "@mui/material";
 
-import CloseIcon from "@material-ui/icons/Close";
+import makeStyles from '@mui/styles/makeStyles';
+
+import CloseIcon from "@mui/icons-material/Close";
 
 import VocabularyAction from "./vocabularyAction";
 import VocabularyBrowser from "./vocabQuery/VocabularyBrowser.jsx";
@@ -98,7 +99,7 @@ export default function VocabularyDetails(props) {
 
       <Dialog onClose={handleClose} open={displayPopup}>
 
-        <DialogTitle disableTypography>
+        <DialogTitle>
           <Typography variant="h4" className={classes.dialogTitle}>{vocabulary.name} ({vocabulary.acronym})</Typography>
         </DialogTitle>
 

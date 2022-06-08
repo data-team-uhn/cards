@@ -18,8 +18,9 @@
 //
 
 import React, { useContext, useState } from "react";
-import { Grid, IconButton, LinearProgress, Link, TextField, Typography, withStyles } from "@material-ui/core";
-import Delete from "@material-ui/icons/Delete";
+import { Grid, IconButton, LinearProgress, Link, TextField, Typography } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import Delete from "@mui/icons-material/Delete";
 
 import PropTypes from "prop-types";
 
@@ -309,7 +310,7 @@ function FileQuestion(props) {
               <li key={idx}>
                 <div>
                   <span>File </span>
-                  <Link href={fixFileURL(uploadedFiles[filepath], filepath)} target="_blank" rel="noopener" download>
+                  <Link href={fixFileURL(uploadedFiles[filepath], filepath)} target="_blank" rel="noopener" download underline="hover">
                     {filepath}
                   </Link>:
                   <IconButton
@@ -317,6 +318,7 @@ function FileQuestion(props) {
                     className={classes.deleteButton + " " + classes.fileResourceDeleteButton}
                     color="secondary"
                     title="Delete"
+                    size="large"
                   >
                     <Delete color="action" className={classes.deleteIcon}/>
                   </IconButton>
@@ -325,6 +327,7 @@ function FileQuestion(props) {
                   <span>
                     {varNames.map((name, nameIdx) => (
                       <TextField
+                        variant="standard"
                         label={name}
                         value={knownAnswers?.[filepath]?.[nameIdx]}
                         className={classes.fileDetail + " " + classes.fileResourceAnswerInput}

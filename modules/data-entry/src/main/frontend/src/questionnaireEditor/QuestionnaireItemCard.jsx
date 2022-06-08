@@ -24,10 +24,10 @@ import {
   Card,
   CardContent,
   IconButton
-} from "@material-ui/core";
+} from "@mui/material";
 
-import DeleteIcon from "@material-ui/icons/Delete";
-import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from '@mui/icons-material/Edit';
 
 import EditDialog from "./EditDialog";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
@@ -88,7 +88,7 @@ let QuestionnaireItemCard = (props) => {
           <div>
             {action}
             {!disableEdit &&
-            <IconButton onClick={() => { setEditDialogOpen(true); }}>
+            <IconButton onClick={() => { setEditDialogOpen(true); }} size="large">
               <EditIcon />
             </IconButton>
             }

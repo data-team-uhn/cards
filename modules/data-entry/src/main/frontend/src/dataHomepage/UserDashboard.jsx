@@ -35,9 +35,9 @@ import {
   DialogTitle,
   Grid,
   Typography,
-  withStyles
-} from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
+} from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import AddIcon from "@mui/icons-material/Add";
 
 async function getDashboardExtensions() {
   return loadExtensions("DashboardViews")
@@ -88,7 +88,7 @@ function UserDashboard(props) {
 
   if (loading) {
     return (
-      <Grid container justify="center"><Grid item><CircularProgress/></Grid></Grid>
+      <Grid container justifyContent="center"><Grid item><CircularProgress/></Grid></Grid>
     );
   }
 
@@ -129,8 +129,7 @@ function UserDashboard(props) {
         </DialogContent>
         <DialogActions>
           <Button
-            variant="contained"
-            color="default"
+            variant="outlined"
             onClick={onClose}
             >
             Cancel

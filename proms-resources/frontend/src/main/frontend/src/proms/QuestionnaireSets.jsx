@@ -26,7 +26,7 @@ import {
   ListItem,
   ListItemText,
   Typography
-} from '@material-ui/core';
+} from '@mui/material';
 import { Link } from 'react-router-dom';
 
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
@@ -62,14 +62,14 @@ function QuestionnaireSets(props) {
       <List>
         <ListItem key="title"><Typography variant="h6">Surveys</Typography></ListItem>
         { surveys.map((s, i) => (
-          <ListItem key={i}><Link to={`/Proms.html/${s['@name']}`}>{s.name}</Link></ListItem>
+          <ListItem key={i}><Link to={`/Proms.html/${s['@name']}`} underline="hover">{s.name}</Link></ListItem>
         ))}
       </List>
     );
   }
 
   return (
-    <Grid container direction="column" alignItems="center" justify="center">
+    <Grid container direction="column" alignItems="center" justifyContent="center">
       <Grid item xs={12}>
         {content}
       </Grid>

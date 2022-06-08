@@ -23,9 +23,10 @@ import {
   DialogContent,
   Grid,
   TextField,
-  Typography,
-  makeStyles
-} from "@material-ui/core";
+  Typography
+} from "@mui/material";
+
+import makeStyles from '@mui/styles/makeStyles';
 
 import React, {useEffect} from "react";
 
@@ -192,7 +193,7 @@ export default function VocabulariesAdminPage() {
   let wrapSection = (content) => {
     return (
       <Grid item>
-        <Grid container direction="column" spacing={2} justify="space-around">
+        <Grid container direction="column" spacing={2} justifyContent="space-around">
           {content}
         </Grid>
       </Grid>
@@ -200,7 +201,7 @@ export default function VocabulariesAdminPage() {
   }
 
   return (
-    <Grid container direction="column" spacing={6} justify="space-around">
+    <Grid container direction="column" spacing={6} justifyContent="space-around">
       <Grid item>
         <Typography variant="h2">
           Vocabularies

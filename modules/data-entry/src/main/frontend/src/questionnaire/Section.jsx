@@ -19,11 +19,12 @@
 
 import React, { useCallback, useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Button, Collapse, Dialog, DialogActions, DialogTitle, Grid, IconButton, Tooltip, Typography, withStyles } from "@material-ui/core";
-import Add from "@material-ui/icons/Add";
-import Delete from '@material-ui/icons/Delete';
-import UnfoldLess from '@material-ui/icons/UnfoldLess';
-import UnfoldMore from '@material-ui/icons/UnfoldMore';
+import { Button, Collapse, Dialog, DialogActions, DialogTitle, Grid, IconButton, Tooltip, Typography } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import Add from "@mui/icons-material/Add";
+import Delete from '@mui/icons-material/Delete';
+import UnfoldLess from '@mui/icons-material/UnfoldLess';
+import UnfoldMore from '@mui/icons-material/UnfoldMore';
 
 import ConditionalComponentManager from "./ConditionalComponentManager";
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
@@ -221,12 +222,12 @@ function Section(props) {
                       <Tooltip title="Delete section" aria-label="Delete section" >
                         <IconButton
                           autoFocus={focus && (idx == instanceLabels.length - 1)}
-                          color="default"
                           className={classes.entryActionIcon}
                           onClick={() => {
                             setDialogOpen(true);
                             setSelectedUUID(uuid);
                           }}
+                          size="large"
                           >
                           <Delete fontSize="small" />
                         </IconButton>
@@ -234,11 +235,11 @@ function Section(props) {
                     {pageActive !== true  &&
                       <Tooltip title="Expand section" aria-label="Expand section" >
                         <IconButton
-                          color="default"
                           className={classes.entryActionIcon}
                           onClick={() => {
                             setLabelsToHide((toHide) => ({...toHide, [uuid]: !hiddenSection}));
                           }}
+                          size="large"
                           >
                           {hiddenSection ?
                             <UnfoldMore fontSize="small" />
@@ -299,8 +300,7 @@ function Section(props) {
         <Grid item className="addSectionContainer">
           <Button
             size="small"
-            variant="contained"
-            color="default"
+            variant="outlined"
             className={classes.addSectionButton}
             onClick={() => {
               setInstanceLabels((oldLabels) => [...oldLabels, uuidv4()]);
@@ -326,7 +326,7 @@ function Section(props) {
       >
       <DialogTitle id={uuid + "-delete-dialog-title"}>Are you sure you want to delete this section?</DialogTitle>
       <DialogActions>
-        <Button onClick={closeDialog} color="primary">
+        <Button onClick={closeDialog} variant="outlined">
           Cancel
         </Button>
         <Button
@@ -335,7 +335,7 @@ function Section(props) {
             setInstanceLabels((oldLabels) => oldLabels.filter((label) => label != selectedUUID));
             setUUIDsToRemove((old_uuids_to_remove) => [...old_uuids_to_remove, selectedUUID]);
           }}
-          color="primary"
+          color="error"
           >
           Delete
         </Button>

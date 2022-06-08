@@ -27,11 +27,12 @@ import {
   InputAdornment,
   LinearProgress,
   TextField,
-  makeStyles
-} from "@material-ui/core";
+} from "@mui/material";
 
-import SearchIcon from "@material-ui/icons/Search";
-import CloseIcon from "@material-ui/icons/Close";
+import makeStyles from '@mui/styles/makeStyles';
+
+import SearchIcon from "@mui/icons-material/Search";
+import CloseIcon from "@mui/icons-material/Close";
 
 import fetchBioPortalApiKey from "./bioportalApiKey";
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
@@ -142,7 +143,7 @@ export default function Search(props) {
                               </IconButton>
                             }
                             <div className={classes.searchAdornmentWrapper}>
-                              <IconButton onClick={keywords === "" ? reset: search}>
+                              <IconButton onClick={keywords === "" ? reset: search} size="large">
                                 <SearchIcon/>
                               </IconButton>
                               {loading && <CircularProgress className={classes.searchProgress} />}

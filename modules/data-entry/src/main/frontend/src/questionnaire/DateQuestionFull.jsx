@@ -19,7 +19,9 @@
 
 import React, { useState } from "react";
 
-import { TextField, Typography, withStyles } from "@material-ui/core";
+import { TextField, Typography } from "@mui/material";
+
+import withStyles from '@mui/styles/withStyles';
 
 import { DateTime } from "luxon";
 
@@ -128,6 +130,7 @@ function DateQuestionFull(props) {
   let getTextField = (isEnd, value) => {
     return (
       <TextField
+        variant="standard"
         type={textFieldType}
         className={classes.textField + isEnd ? "" : (" " + classes.answerField)}
         InputLabelProps={{

@@ -35,10 +35,10 @@ import {
   ListItem,
   Link,
   Typography,
-  makeStyles
-} from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
-import AppointmentIcon from '@material-ui/icons/Event';
+} from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import CloseIcon from '@mui/icons-material/Close';
+import AppointmentIcon from '@mui/icons-material/Event';
 
 import ToUDialog from "./ToUDialog.jsx";
 
@@ -101,7 +101,7 @@ const useStyles = makeStyles(theme => ({
     cursor: 'pointer',
   },
   appointmentEntry: {
-    "& .MuiButton-label" : {
+    "& .MuiButton-root" : {
       justifyContent: "flex-start",
       textTransform: "none",
     },
@@ -237,7 +237,7 @@ function PatientIdentification(props) {
     <Dialog onClose={() => {setMrnHelperOpen(false)}} open={mrnHelperOpen}>
       <DialogTitle>
         Where can I find my MRN?
-        <IconButton onClick={() => setMrnHelperOpen(false)} className={classes.closeButton}>
+        <IconButton onClick={() => setMrnHelperOpen(false)} className={classes.closeButton} size="large">
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -256,7 +256,7 @@ function PatientIdentification(props) {
     {/* Patient identification form */}
 
     <form className={classes.form} onSubmit={onSubmit} >
-      <Grid container direction="column" spacing={4} alignItems="center" justify="center">
+      <Grid container direction="column" spacing={4} alignItems="center" justifyContent="center">
          <Grid item xs={12}>
            <img src={document.querySelector('meta[name="logoLight"]').content} className={classes.logo} alt="logo" />
          </Grid>
@@ -291,15 +291,16 @@ function PatientIdentification(props) {
             </div>
             <InputLabel htmlFor="j_dob" shrink={true} className={classes.dateLabel}>Date of birth</InputLabel>
             <DropdownsDatePicker id="j_dob" name="j_dob" formatDate onDateChange={setDob} autoFocus fullWidth/>
-            <Grid container direction="row" alignItems="flex-end" spacing={3} wrap="nowrap" justify="space-between" className={classes.identifierContainer}>
+            <Grid container direction="row" alignItems="flex-end" spacing={3} wrap="nowrap" justifyContent="space-between" className={classes.identifierContainer}>
               <Grid item>
-                <FormControl margin="normal" fullWidth>
+                <FormControl variant="standard" margin="normal" fullWidth>
                   <InputLabel htmlFor="j_mrn" shrink={true}>MRN</InputLabel>
                   <Input id="j_mrn" name="j_mrn" autoComplete="off" type="number" placeholder="1234567" className={classes.mrnInput} onChange={event => setMrn(event.target.value)}/>
                   <FormHelperText id="mrn_helper">
                   <Link
                     color="primary"
                     variant="caption"
+                    underline="hover"
                     onClick={() => {setMrnHelperOpen(true)}}
                     className={classes.mrnHelperLink}
                     >
@@ -310,7 +311,7 @@ function PatientIdentification(props) {
               </Grid>
               <Grid item className={classes.identifierDivider}>or</Grid>
               <Grid item>
-                <FormControl margin="normal" fullWidth>
+                <FormControl variant="standard" margin="normal" fullWidth>
                   <InputLabel htmlFor="j_hc" shrink={true}>Health card number</InputLabel>
                   <Input id="j_hc" name="j_hc" autoComplete="off" placeholder="2345 678 901 XY" onChange={event => setHc(sanitizeHC(event.target.value))}/>
                  </FormControl>
@@ -358,7 +359,7 @@ function PatientIdentification(props) {
             </Grid>
             <Grid item className={classes.description}>
               <Typography variant="body2" color="textSecondary">
-                If you prefer not to proceed with filling out your surveys at this time, you can <Link href="/system/sling/logout">close this page</Link>.
+                If you prefer not to proceed with filling out your surveys at this time, you can <Link href="/system/sling/logout" underline="hover">close this page</Link>.
               </Typography>
             </Grid>
             </>

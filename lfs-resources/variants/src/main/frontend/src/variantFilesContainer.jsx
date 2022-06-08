@@ -34,12 +34,13 @@ import {
   TextField,
   Tooltip,
   Typography,
-  makeStyles
-} from "@material-ui/core";
-import { Alert, AlertTitle } from '@material-ui/lab';
-import BackupIcon from '@material-ui/icons/Backup';
-import CloseIcon from '@material-ui/icons/Close';
-import GetApp from '@material-ui/icons/GetApp';
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
+import BackupIcon from '@mui/icons-material/Backup';
+import CloseIcon from '@mui/icons-material/Close';
+import GetApp from '@mui/icons-material/GetApp';
 import MaterialTable from "material-table";
 import { v4 as uuidv4 } from 'uuid';
 import { DateTime } from "luxon";
@@ -785,7 +786,7 @@ export default function VariantFilesContainer() {
             onSubmit={upload}
             key="file-upload"
             id="variantForm">
-        <Grid container direction="row-reverse" justify="flex-end" spacing={3} alignItems="stretch" className={classes.dragAndDropContainer}>
+        <Grid container direction="row-reverse" justifyContent="flex-end" spacing={3} alignItems="stretch" className={classes.dragAndDropContainer}>
           <Grid item xs={12} lg={6}>
             <Alert severity="info">
               <AlertTitle>Expected file name format:</AlertTitle>
@@ -838,13 +839,14 @@ export default function VariantFilesContainer() {
                 { upprogress && upprogress.state == "error" && <Typography color='error'>Error uploading file</Typography> }
                 { uploadProgress && uploadProgress[file.name] && uploadProgress[file.name].state === "done" ?
                   <Typography variant="overline" component="div">
-                    {patientSubjectLabel} <Link href={subjectPath} target="_blank"> {file.subject.id} </Link> /&nbsp;
-                    {tumorSubjectLabel} <Link href={tumorPath} target="_blank"> {file.tumor.id} </Link>
-                    { file?.region?.path && <> / {regionSubjectLabel} <Link href={regionPath} target="_blank"> {file.region.id} </Link> </> }
-                    { file.formPath && <> : <Link href={file.formPath} target="_blank">{somaticVariantsTitle}</Link> </>}
+                    {patientSubjectLabel} <Link href={subjectPath} target="_blank" underline="hover"> {file.subject.id} </Link> /&nbsp;
+                    {tumorSubjectLabel} <Link href={tumorPath} target="_blank" underline="hover"> {file.tumor.id} </Link>
+                    { file?.region?.path && <> / {regionSubjectLabel} <Link href={regionPath} target="_blank" underline="hover"> {file.region.id} </Link> </> }
+                    { file.formPath && <> : <Link href={file.formPath} target="_blank" underline="hover">{somaticVariantsTitle}</Link> </>}
                   </Typography>
                 : <div className={classes.fileFormSection}>
                   <TextField
+                    variant="standard"
                     label={patientSubjectLabel}
                     value={file.subject.id}
                     onChange={(event) => setSubject(event.target.value, file.name)}
@@ -854,6 +856,7 @@ export default function VariantFilesContainer() {
                     helperText="Required"
                   />
                   <TextField
+                    variant="standard"
                     label={tumorSubjectLabel}
                     value={file.tumor.id}
                     onChange={(event) => setTumor(event.target.value, file.name)}
@@ -863,6 +866,7 @@ export default function VariantFilesContainer() {
                     helperText="Required"
                   />
                   <TextField
+                    variant="standard"
                     label={regionSubjectLabel}
                     value={file?.region?.id}
                     onChange={(event) => setRegion(event.target.value, file.name)}
@@ -910,7 +914,7 @@ export default function VariantFilesContainer() {
     <Dialog open={showVersionsDialog} onClose={() => setShowVersionsDialog(false)}>
       <DialogTitle>
         <span className={classes.dialogTitle}>Versions of {fileSelected?.name}</span>
-        <IconButton onClick={() => setShowVersionsDialog(false)} className={classes.closeButton}>
+        <IconButton onClick={() => setShowVersionsDialog(false)} className={classes.closeButton} size="large">
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -933,7 +937,7 @@ export default function VariantFilesContainer() {
                 width: '1%',
                 whiteSpace: 'nowrap',
               },
-              render: rowData => <Link href={rowData["@path"]}>
+              render: rowData => <Link href={rowData["@path"]} underline="hover">
                                   {DateTime.fromISO(rowData['jcr:created']).toFormat("yyyy-MM-dd")}
                                 </Link> },
             { title: 'Uploaded By',
@@ -951,7 +955,7 @@ export default function VariantFilesContainer() {
               },
               sorting: false,
               render: rowData => <Tooltip title={"Download"}>
-                                  <IconButton>
+                                  <IconButton size="large">
                                     <Link underline="none" color="inherit" href={rowData["@path"]} download><GetApp /></Link>
                                   </IconButton>
                                 </Tooltip> },
