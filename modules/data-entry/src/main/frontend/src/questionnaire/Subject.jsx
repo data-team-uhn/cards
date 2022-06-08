@@ -28,7 +28,7 @@ import NewFormDialog from "../dataHomepage/NewFormDialog";
 import { QUESTION_TYPES, SECTION_TYPES, ENTRY_TYPES } from "./FormEntry.jsx";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
-import MaterialTable, { MTablePagination } from 'material-table';
+import MaterialTable from 'material-table';
 
 import {
   Avatar,
@@ -512,6 +512,7 @@ function SubjectMemberInternal (props) {
                   actionsColumnIndex: -1,
                   emptyRowsWhenPaging: false,
                   toolbar: false,
+                  paging: !!(subjectGroups[questionnaireTitle]?.length > pageSize),
                   pageSize: pageSize,
                   header: false,
                   rowStyle: {
@@ -568,10 +569,6 @@ function SubjectMemberInternal (props) {
                                          />
                                        </React.Fragment> },
                 ]}
-                components={{
-                    Pagination: props => { const { classes, ...other } = props;
-                                           return (subjectGroups[questionnaireTitle].length > pageSize && <MTablePagination {...other} />)}
-                }}
                />
             </Grid>)
           })
