@@ -440,10 +440,7 @@ function ResourceQuery(props) {
                 shrink: classes.searchShrink,
               }}
             >
-              { /* Cover up a bug that causes the label to overlap the value:
-                   if it has a displayed value and isn't focused, don't show the label
-                 */ }
-              { (document.activeElement === anchorEl.current || (!value && !(anchorEl.current?.value))) ? 'Search' : ''}
+              Search
             </InputLabel>
             {inputEl}
           </FormControl>
