@@ -69,11 +69,11 @@ public class MockNCREndpoint extends SlingSafeMethodsServlet
     {
         if (text == null) {
             return "{\"matches\": []}";
-        } else if (MOCK_NCR_INPUT_1.equals(text)) {
+        } else if (MOCK_NCR_INPUT_1.equals(text.stripTrailing())) {
             return MOCK_NCR_OUTPUT_1;
-        } else if (MOCK_NCR_INPUT_2.equals(text)) {
+        } else if (MOCK_NCR_INPUT_2.equals(text.stripTrailing())) {
             return MOCK_NCR_OUTPUT_2;
-        } else if (MOCK_NCR_INPUT_3.equals(text)) {
+        } else if (MOCK_NCR_INPUT_3.equals(text.stripTrailing())) {
             return MOCK_NCR_OUTPUT_3;
         }
         return "{\"matches\": []}";
