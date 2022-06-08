@@ -180,7 +180,7 @@ function DeleteButton(props) {
             <Typography variant="body1">{dialogAction}</Typography>
         </DialogContent>
         <DialogActions className={classes.dialogActions}>
-            <Button variant="contained" size="small" onClick={() => handleDelete()}>
+            <Button variant="contained" color="error" size="small" onClick={() => handleDelete()}>
               { deleteRecursive ? "Delete All" : "Delete" }
             </Button>
             <Button variant="outlined" size="small" onClick={closeDialog}>Close</Button>
@@ -194,6 +194,7 @@ function DeleteButton(props) {
         </Tooltip>
         :
         <Button
+          color="error"
           onClick={handleClick}
           size={size ? size : "medium"}
           startIcon={variant == "extended" ? <Delete /> : undefined}

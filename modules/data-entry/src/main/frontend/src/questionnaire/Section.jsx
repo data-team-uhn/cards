@@ -335,7 +335,7 @@ function Section(props) {
             setInstanceLabels((oldLabels) => oldLabels.filter((label) => label != selectedUUID));
             setUUIDsToRemove((old_uuids_to_remove) => [...old_uuids_to_remove, selectedUUID]);
           }}
-          color="primary"
+          color="error"
           >
           Delete
         </Button>
