@@ -374,7 +374,9 @@ function Form (props) {
                        />
                     </ListItem>
                     <ListItem className={classes.actionsMenuItem}>
-                      <Button onClick={() => {
+                      <Button
+                         size="large"
+                         onClick={() => {
                          window.open(formURL + ".txt");
                          setActionsMenu(null);
                         }}>

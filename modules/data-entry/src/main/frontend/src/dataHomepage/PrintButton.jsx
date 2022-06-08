@@ -113,7 +113,7 @@ function PrintButton(props) {
         :
         <Button
           onClick={onOpenView}
-          size={size ? size : "medium"}
+          size={size}
           startIcon={variant == "extended" ? <PrintIcon /> : undefined}
         >
           {buttonText}
@@ -135,7 +135,7 @@ PrintButton.propTypes = {
   date: PropTypes.string,
   onOpen: PropTypes.func,
   onClose: PropTypes.func,
-  size: PropTypes.oneOf(["small", "medium"]),
+  size: PropTypes.oneOf(["small", "medium", "large"]),
 }
 
 PrintButton.defaultProps = {
