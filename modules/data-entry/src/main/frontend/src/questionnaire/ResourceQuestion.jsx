@@ -18,7 +18,8 @@
 //
 
 import React, { useState, useEffect, useContext } from "react";
-import { CircularProgress, withStyles } from "@material-ui/core";
+import { CircularProgress} from '@mui/material';
+import withStyles from '@mui/styles/withStyles';
 
 import PropTypes from "prop-types";
 

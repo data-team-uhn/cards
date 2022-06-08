@@ -20,11 +20,12 @@ import classNames from "classnames";
 import React, { useRef, useEffect, useState, useContext } from "react";
 import PropTypes from "prop-types";
 
-import { withStyles, ClickAwayListener, Grow, IconButton, Input, InputAdornment, InputLabel, FormControl, Typography } from "@material-ui/core"
-import { Divider, LinearProgress, MenuItem, MenuList, Paper, Popper } from "@material-ui/core";
+import { ClickAwayListener, Grow, IconButton, Input, InputAdornment, InputLabel, FormControl, Typography } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import { Divider, LinearProgress, MenuItem, MenuList, Paper, Popper } from "@mui/material";
 
-import Search from "@material-ui/icons/Search";
-import Info from "@material-ui/icons/Info";
+import Search from "@mui/icons-material/Search";
+import Info from "@mui/icons-material/Info";
 
 import QueryStyle from "./queryStyle.jsx";
 import { LABEL_POS, VALUE_POS } from "../questionnaire/Answer";
@@ -287,7 +288,7 @@ function ResourceQuery(props) {
             { infoDisplayer &&
               <IconButton
                 size="small"
-                buttonRef={node => {
+                ref={node => {
                   registerInfoButton(suggestion["@path"], node);
                 }}
                 color="primary"
@@ -432,7 +433,7 @@ function ResourceQuery(props) {
 
         <div className={variant == "labeled" ? classes.searchWrapper : ""}>
           {variant == "labeled" ?
-          <FormControl className={isNested ? classes.nestedSearchInput : classes.search}>
+          <FormControl variant="standard" className={isNested ? classes.nestedSearchInput : classes.search}>
             <InputLabel
               classes={{
                 root: classes.searchLabel,
@@ -462,19 +463,26 @@ function ResourceQuery(props) {
           )}
           placement = "bottom-start"
           keepMounted
-          modifiers={{
-            flip: {
-              enabled: true
-            },
-            preventOverflow: {
-              enabled: true,
-              boundariesElement: 'window',
-              escapeWithReference: true,
-            },
-            hide: {
-              enabled: true
-            }
-          }}
+          modifiers={[
+		    {
+		      name: 'flip',
+		      enabled: true
+		    },
+		    {
+		      name: 'preventOverflow',
+		      enabled: true,
+		      options: {
+		        altAxis: true,
+		        altBoundary: true,
+		        tether: true,
+		        rootBoundary: 'window',
+		      }
+		    },
+		    {
+		      name: 'hide',
+		      enabled: true
+		    }
+          ]}
           ref={menuPopperRef}
         >
           {({ TransitionProps }) => (
