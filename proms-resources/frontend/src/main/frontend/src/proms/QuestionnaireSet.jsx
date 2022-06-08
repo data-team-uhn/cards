@@ -69,6 +69,9 @@ const useStyles = makeStyles(theme => ({
     alignItems: "center",
     margin: "auto",
     maxWidth: "780px",
+    "& > .MuiGrid-item" : {
+      paddingLeft: 0,
+    },
     "& h4, h6" : {
       textAlign: "center",
     }
