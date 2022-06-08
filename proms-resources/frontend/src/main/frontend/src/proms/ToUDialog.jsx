@@ -198,7 +198,7 @@ function ToUDialog(props) {
           You can only fill out your pre-appointment surveys online after accepting the DATA PRO Terms of Use.
         </DialogContent>
         <DialogActions>
-          <Button color="secondary" onClick={() => setShowConfirmationTou(false)} variant="contained" className={classes.reviewButton}>
+          <Button onClick={() => setShowConfirmationTou(false)} variant="outlined" className={classes.reviewButton}>
             Review Terms
           </Button>
           <Button color="primary" onClick={() => saveTouAccepted(tou?.version)} variant="contained" >
