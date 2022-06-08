@@ -366,6 +366,7 @@ function Form (props) {
                     <ListItem className={classes.actionsMenuItem}>
                       <PrintButton
                          variant="text"
+                         size="medium"
                          resourcePath={formURL}
                          resourceData={data}
                          breadcrumb={getTextHierarchy(data?.subject, true)}
@@ -375,7 +376,7 @@ function Form (props) {
                     </ListItem>
                     <ListItem className={classes.actionsMenuItem}>
                       <Button
-                         size="large"
+                         size="medium"
                          onClick={() => {
                          window.open(formURL + ".txt");
                          setActionsMenu(null);
