@@ -47,8 +47,7 @@
     "react-to-print": "2.14.4",
     "material-table": "1.69.2",
     "material-ui-dropzone": "3.5.0",
-    "moment-jdateformatparser": "1.2.1",
-    "moment": "2.29.1",
+    "luxon": "2.4.0",
     "prop-types": "15.7.2",
     "uuid": "8.3.1",
     "@uiw/react-md-editor": "3.4.7"

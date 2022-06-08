@@ -23,7 +23,7 @@ import PropTypes from "prop-types";
 import { Button, IconButton, Tooltip, withStyles } from "@material-ui/core";
 import PrintIcon from "@material-ui/icons/Print";
 import PrintPreview from "../questionnaire/PrintPreview.jsx";
-import moment from "moment";
+
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 /**

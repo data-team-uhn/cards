@@ -35,14 +35,14 @@ import DateQuestionUtilities from "./DateQuestionUtilities";
 // text: the question to be displayed
 // type: "timestamp" for a single date or "interval" for two dates
 // dateFormat: yyyy
-// lowerLimit: lower date limit (inclusive) given as an object or string parsable by moment()
-// upperLimit: upper date limit (inclusive) given as an object or string parsable by moment()
+// lowerLimit: lower date limit (inclusive) given as an object or string parsable by luxon
+// upperLimit: upper date limit (inclusive) given as an object or string parsable by luxon
 // Other options are passed to the <question> widget
 //
 // Sample usage:
 //<DateQuestionYear
 //  text="Please enter a date-time in 2019"
-//  dateFormat="yyyy-MM-dd hh:mm:ss"
+//  dateFormat="yyyy-MM-dd HH:mm:ss"
 //  lowerLimit={new Date("01-01-2019")}
 //  upperLimit={new Date("12-31-2019")}
 //  type="timestamp"

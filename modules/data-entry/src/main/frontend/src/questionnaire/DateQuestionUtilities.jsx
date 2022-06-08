@@ -18,13 +18,13 @@
 //
 
 import PropTypes from "prop-types";
-import moment from "moment";
+import { DateTime } from "luxon";
 
 export default class DateQuestionUtilities {
 
   static TIMESTAMP_TYPE = "timestamp";
   static INTERVAL_TYPE = "interval";
-  static slingDateFormat = "yyyy-MM-DDTHH:mm:ss";
+  static slingDateFormat = "yyyy-MM-dd\'T\'HH:mm:ss";
 
   static YEAR_DATE_TYPE = "year";
   static MONTH_DATE_TYPE = "month";
@@ -33,10 +33,10 @@ export default class DateQuestionUtilities {
   static DEFAULT_DATE_TYPE = this.FULL_DATE_TYPE;
 
   static yearTag = "yyyy";
-  static monthTag = "mm";
+  static monthTag = "MM";
   static dayTag = "dd";
-  static hourTag = "hh";
-  static minuteTag = "ss";
+  static hourTag = "HH";
+  static minuteTag = "mm";
 
   static PROP_TYPES = {
     classes: PropTypes.object.isRequired,
@@ -51,10 +51,10 @@ export default class DateQuestionUtilities {
 
   static getDateType(dateFormat) {
     if (typeof(dateFormat) === "string") {
-      const year = dateFormat.toLowerCase().includes(this.yearTag);
-      const month = dateFormat.toLowerCase().includes(this.monthTag);
-      const day = dateFormat.toLowerCase().includes(this.dayTag);
-      const time = dateFormat.toLowerCase().includes(this.hourTag) || dateFormat.toLowerCase().includes(this.minuteTag) ;
+      const year = dateFormat.includes(this.yearTag);
+      const month = dateFormat.includes(this.monthTag);
+      const day = dateFormat.includes(this.dayTag);
+      const time = dateFormat.includes(this.hourTag) || dateFormat.includes(this.minuteTag);
 
       if (time) return this.DATETIME_TYPE;
       if (day) return this.FULL_DATE_TYPE;
@@ -85,19 +85,22 @@ export default class DateQuestionUtilities {
     return result;
   }
 
-  // Truncates fields in the given moment object or date string
+  // Truncates fields in the given DateTime object or date string
   // according to the given format string
-  static amendMoment(date, format) {
+  static toPrecision(date, toFormat, fromFormat) {
     if (!date) {
       return null;
     }
-    if (!format) {
-      format = this.slingDateFormat;
+    if (!toFormat) {
+      toFormat = this.slingDateFormat;
     }
 
     let new_date = date;
     if (typeof new_date === "string") {
-      new_date = moment(new_date);
+      new_date = fromFormat ? DateTime.fromFormat(new_date, fromFormat) : DateTime.fromISO(new_date);
+    }
+    if (!new_date.isValid) {
+      return null;
     }
 
     // Determine the coarsest measure to truncate the input to
@@ -110,10 +113,8 @@ export default class DateQuestionUtilities {
       'M':'year'
     };
     let truncateTo;
-    // Both 'd' and 'D' should truncate to month
-    format = format.replaceAll("D","d");
     for (let [formatSpecifier, targetPrecision] of Object.entries(truncate)) {
-      if (format.indexOf(formatSpecifier) < 0) {
+      if (toFormat.indexOf(formatSpecifier) < 0) {
         truncateTo = targetPrecision;
       }
     }
@@ -121,21 +122,15 @@ export default class DateQuestionUtilities {
     return(new_date.startOf(truncateTo));
   }
 
-  static momentToString(date, textFieldType) {
-    return (!date || !date.isValid()) ? "" :
-    textFieldType === "date" ? date.format(moment.HTML5_FMT.DATE) :
-    date.format(moment.HTML5_FMT.DATETIME_LOCAL);
+  static dateToFormattedString(date, textFieldType) {
+    return (!date?.isValid) ? "" :
+    textFieldType === "date" ? date.toFormat("yyyy-MM-dd") : date.toFormat("yyyy-MM-dd\'T\'HH:mm");
   }
 
   // Convert a moment string to a month display
-  static momentStringToDisplayMonth(dateFormat, value) {
-    // Switch month and year if required as Moment returns a fixed order
+  static dateStringToDisplayMonth(dateFormat, value) {
     let monthIndex = dateFormat.indexOf('MM');
-    if (monthIndex === 0) {
-      let separator = dateFormat[2];
-      // Switch back from moment supported yyyy/mm to desired mm/yyyy.
-      value = [value.slice(5, 7), separator, value.slice(0, 4)].join('');
-    } else if (monthIndex === 5) {
+    if (monthIndex === 5) {
       value = value.replaceAll("-", dateFormat[4]);
     }
     if (value.length > 7) {
@@ -159,14 +154,11 @@ export default class DateQuestionUtilities {
       // Year-only dates are displayed like a number
       return value;
     }
-    // Quick fix for moment using a different date specifier than Java
-    dateFormat = dateFormat.replaceAll('d', "D");
-    let date = this.amendMoment(value, dateFormat);
+    let date = this.toPrecision(value, dateFormat);
     if (dateType === this.MONTH_DATE_TYPE) {
-      return this.momentStringToDisplayMonth(
+      return this.dateStringToDisplayMonth(
         dateFormat,
-        !date.isValid() ? "" :
-        date.format(moment.HTML5_FMT.MONTH)
+        !date?.isValid ? "" : date.toFormat("yyyy-MM")
         );
     } else {
       return date.format(dateFormat);
@@ -175,7 +167,7 @@ export default class DateQuestionUtilities {
 
   static stripTimeZone(dateString) {
     // Remove the time zone (eg. "-05:00") from the end of a sling provided date string
-    return dateString.replace(/[-+][0-9]{2}:[0-9]{2}$/gm, '');
+    return dateString?.replace(/[-+][0-9]{2}:[0-9]{2}$/gm, '');
   }
 
   static isAnswerComplete(answers, type) {
@@ -186,8 +178,8 @@ export default class DateQuestionUtilities {
     // Compute the displayed difference
     let result = {long:""}
     if (startDateInput && endDateInput) {
-      let startDate = this.amendMoment(startDateInput, "yyyy-MM-dd");
-      let endDate = this.amendMoment(endDateInput, "yyyy-MM-dd");
+      let startDate = this.toPrecision(startDateInput, "yyyy-MM-dd");
+      let endDate = this.toPrecision(endDateInput, "yyyy-MM-dd");
 
       let diff = [];
       let longDiff = [];

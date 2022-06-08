@@ -47,7 +47,7 @@ import MoreIcon from '@material-ui/icons/MoreVert';
 
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
 import FormEntry, { QUESTION_TYPES, ENTRY_TYPES } from "./FormEntry";
-import moment from "moment";
+import { DateTime } from "luxon";
 import { getHierarchy, getTextHierarchy, getHierarchyAsList } from "./Subject";
 import { SelectorDialog, parseToArray } from "./SubjectSelector";
 import { FormProvider } from "./FormContext";
@@ -369,7 +369,7 @@ function Form (props) {
                          resourcePath={formURL}
                          resourceData={data}
                          breadcrumb={getTextHierarchy(data?.subject, true)}
-                         date={moment(data['jcr:created']).format("MMM Do YYYY")}
+                         date={DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED)}
                          onClose={() => { setActionsMenu(null); }}
                        />
                     </ListItem>
@@ -460,7 +460,7 @@ function Form (props) {
           <Breadcrumbs separator="·">
           {
             data && data['jcr:createdBy'] && data['jcr:created'] ?
-            <Typography variant="overline">Entered by {data['jcr:createdBy']} on {moment(data['jcr:created']).format("dddd, MMMM Do YYYY")}</Typography>
+            <Typography variant="overline">Entered by {data['jcr:createdBy']} on {DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}</Typography>
             : ""
           }
           {
@@ -470,10 +470,10 @@ function Form (props) {
           }
           {
             lastSaveTimestamp ?
-            <Typography variant="overline">{saveInProgress ? "Saving ... " : "Saved " + moment(lastSaveTimestamp.toISOString()).calendar()}</Typography>
+            <Typography variant="overline">{saveInProgress ? "Saving ... " : "Saved " + DateTime.fromISO(lastSaveTimestamp.toISOString()).toRelativeCalendar()}</Typography>
             :
             data && data['jcr:lastModified'] ?
-            <Typography variant="overline">{"Last modified " + moment(data['jcr:lastModified']).calendar()}</Typography>
+            <Typography variant="overline">{"Last modified " + DateTime.fromISO(data['jcr:lastModified']).toRelativeCalendar()}</Typography>
             : ""
           }
           </Breadcrumbs>
@@ -568,7 +568,7 @@ function Form (props) {
             <Typography variant="h6">Your changes were not saved.</Typography>
             <Typography variant="body1" paragraph>Server responded with response code {errorCode}: {errorMessage}</Typography>
             {lastSaveTimestamp &&
-            <Typography variant="body1" paragraph>Time of the last successful save: {moment(lastSaveTimestamp.toISOString()).calendar()}</Typography>
+            <Typography variant="body1" paragraph>Time of the last successful save: {DateTime.fromISO(lastSaveTimestamp.toISOString()).toRelativeCalendar()}</Typography>
             }
         </DialogContent>
       </Dialog>

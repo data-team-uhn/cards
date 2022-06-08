@@ -34,7 +34,7 @@ import {
   withStyles
 } from "@material-ui/core";
 
-import moment from "moment";
+import { DateTime } from "luxon";
 
 import EditIcon from '@material-ui/icons/Edit';
 import PreviewIcon from '@material-ui/icons/FindInPage';
@@ -162,7 +162,7 @@ let Questionnaire = (props) => {
           >
           { data?.['jcr:createdBy'] && data?.['jcr:created'] &&
             <Typography variant="overline">
-              Created by {data['jcr:createdBy']} on {moment(data['jcr:created']).format("dddd, MMMM Do YYYY")}
+              Created by {data['jcr:createdBy']} on {DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}
             </Typography>
           }
         </ResourceHeader>

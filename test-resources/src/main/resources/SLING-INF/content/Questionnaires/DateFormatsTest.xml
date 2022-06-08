@@ -124,7 +124,7 @@
 		</property>
 		<property>
 			<name>dateFormat</name>
-			<value>yyyy-MM-DD</value>
+			<value>yyyy-MM-dd</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -148,7 +148,7 @@
 		</property>
 		<property>
 			<name>dateFormat</name>
-			<value>MM-DD-yyyy</value>
+			<value>MM-dd-yyyy</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -172,7 +172,7 @@
 		</property>
 		<property>
 			<name>dateFormat</name>
-			<value>yyyy-MM-DD HH:mm</value>
+			<value>yyyy-MM-dd HH:mm</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -196,7 +196,7 @@
 		</property>
 		<property>
 			<name>dateFormat</name>
-			<value>yyyy-MM-DD HH:mm:ss</value>
+			<value>yyyy-MM-dd HH:mm:ss</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -307,7 +307,7 @@
 		</property>
 		<property>
 			<name>dateFormat</name>
-			<value>yyyy-MM-DD</value>
+			<value>yyyy-MM-dd</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -336,7 +336,7 @@
 		</property>
 		<property>
 			<name>dateFormat</name>
-			<value>MM-DD-yyyy</value>
+			<value>MM-dd-yyyy</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -365,7 +365,7 @@
 		</property>
 		<property>
 			<name>dateFormat</name>
-			<value>yyyy-MM-DD HH:mm</value>
+			<value>yyyy-MM-dd HH:mm</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -394,7 +394,7 @@
 		</property>
 		<property>
 			<name>dateFormat</name>
-			<value>yyyy-MM-DD HH:mm:ss</value>
+			<value>yyyy-MM-dd HH:mm:ss</value>
 			<type>String</type>
 		</property>
 		<property>
