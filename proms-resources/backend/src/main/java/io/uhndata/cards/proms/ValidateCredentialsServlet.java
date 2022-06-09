@@ -386,7 +386,7 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
         Node visitQuestionnaire = getVisitInformationQuestionnaire(session);
         Map<String, Predicate<Property>> tests = Map.of(
             // Verify surveys set
-            "surveys", p -> true,
+            "clinic", p -> true,
 
             // Verify visit is upcoming
             "time", p -> {
