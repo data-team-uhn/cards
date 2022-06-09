@@ -42,6 +42,7 @@ let QuestionnaireItemCard = (props) => {
     avatarColor,
     type,
     title,
+    titleField,
     action,
     disableEdit,
     disableDelete,
@@ -67,22 +68,14 @@ let QuestionnaireItemCard = (props) => {
     }
   }, [itemRef]);
 
-  let fetchData = () => {
-    fetch(`${data["@path"]}.deep.json`)
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => {
-        onActionDone(json);
-      })
-      .catch(() => onActionDone());
-  };
-
   return (
     <Card variant="outlined" ref={highlight ? itemRef : undefined} className={highlight ? classes.focusedQuestionnaireItem : ''}>
       <QuestionnaireCardHeader
         avatar={avatar}
         avatarColor={avatarColor}
         type={type}
-        label={title || data.label || data.text}
+        id={data["@name"]}
+        label={title || data[titleField] || ''}
         plain={plain}
         action={
           <div>
@@ -111,7 +104,7 @@ let QuestionnaireItemCard = (props) => {
                               type={type}
                               model={model}
                               isOpen={editDialogOpen}
-                              onClose={() => { setEditDialogOpen(false); fetchData(); }}
+                              onSaved={() => { setEditDialogOpen(false); onActionDone(); }}
                               onCancel={() => { setEditDialogOpen(false); }}
                             />
         }

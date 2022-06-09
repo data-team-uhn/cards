@@ -1,0 +1,15 @@
+[
+  {
+    "operandA" : "conditionalValue",
+    "comparator" : {
+      "="  : {"operandB" : "conditionalValue"},
+      "<>" : {"operandB" : "conditionalValue"},
+      "<"  : {"operandB" : "conditionalValue"},
+      "<=" : {"operandB" : "conditionalValue"},
+      ">"  : {"operandB" : "conditionalValue"},
+      ">=" : {"operandB" : "conditionalValue"},
+      "is empty" : {},
+      "is not empty" : {}
+    }
+  }
+]

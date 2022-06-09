@@ -37,12 +37,8 @@ let QuestionnaireCardHeader = (props) => {
             </Avatar>
             : null
         }
-        title={
-          <div>
-            {!!!props.plain && <Typography variant="overline">{props.type}</Typography>}
-            <Typography variant="h6">{props.label}</Typography>
-          </div>
-        }
+        title={!!!props.plain && <><Typography variant="overline">{props.type}</Typography> : {props.id}</>}
+        subheader={<Typography variant="h6">{props.label}</Typography>}
         action={props.action}
       >
       </CardHeader>

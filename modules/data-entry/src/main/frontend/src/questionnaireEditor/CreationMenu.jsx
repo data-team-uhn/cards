@@ -31,7 +31,7 @@ import NewItemButton from "../components/NewItemButton";
 // Menu for creating questions or sections
 
 let CreationMenu = (props) => {
-  const { isMainAction, data, menuItems, models, onClose } = props;
+  const { isMainAction, data, menuItems, models, onCreated } = props;
   let [ anchorEl, setAnchorEl ] = useState(null);
   let [ entityType, setEntityType ] = useState('Question');
   let [ dialogOpen, setDialogOpen ] = useState(false);
@@ -75,7 +75,7 @@ let CreationMenu = (props) => {
                         type={entityType}
                         model={models?.[entityType]}
                         isOpen={dialogOpen}
-                        onClose={(newData) => { setDialogOpen(false); onClose && onClose(newData); }}
+                        onSaved={(newData) => { setDialogOpen(false); onCreated && onCreated(newData); }}
                         onCancel={() => { setDialogOpen(false); }}
                       />
       }
@@ -87,7 +87,7 @@ CreationMenu.propTypes = {
   isMainAction: PropTypes.bool,
   data: PropTypes.object.isRequired,
   menuItems: PropTypes.array.isRequired,
-  onClose: PropTypes.func
+  onCreated: PropTypes.func
 };
 
 CreationMenu.defaultProps = {

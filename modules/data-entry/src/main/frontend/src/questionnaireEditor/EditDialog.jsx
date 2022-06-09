@@ -36,7 +36,7 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js"
 // Dialog for editing or creating questions or sections
 
 let EditDialog = (props) => {
-  const { data, type, targetExists, isOpen, onClose, onCancel, id, model } = props;
+  const { data, type, targetExists, isOpen, onSaved, onCancel, id, model } = props;
   let [ targetId, setTargetId ] = useState('');
   let [ dialogData, setDialogData ] = useState(targetExists ? data : {});
   // Marks that a save operation is in progress
@@ -76,7 +76,7 @@ let EditDialog = (props) => {
           if (response.ok) {
             setSaveInProgress(false);
             setOpen(false);
-            onClose && onClose();
+            onSaved && onSaved();
           } else {
             handleError(response);
           }
@@ -108,7 +108,7 @@ let EditDialog = (props) => {
                 newData[targetId] = item;
                 setSaveInProgress(false);
                 setOpen(false);
-                onClose && onClose(newData);
+                onSaved && onSaved(newData);
               })
               .catch(handleError);
           } else {
@@ -152,7 +152,7 @@ let EditDialog = (props) => {
   let targetIdField = () => {
     return (
       <Grid container alignItems='baseline' spacing={2} direction="row">
-        <Grid item xs={4}><Typography variant="subtitle2">{type === 'Question' ? 'Variable name:' : `${type} identifier` }</Typography></Grid>
+        <Grid item xs={4}><Typography variant="subtitle2">{`${type} id:` }</Typography></Grid>
         <Grid item xs={8}>{
           targetExists ?
           <Typography>{data["@name"]}</Typography> :
@@ -162,7 +162,7 @@ let EditDialog = (props) => {
             value={targetId}
             onChange={(event)=> { setTargetId(event.target.value); setVariableNameError(''); }}
             onBlur={(event)=> { checkVariableName(event.target.value?.trim()); }}
-            error={variableNameError}
+            error={!!variableNameError}
             helperText={variableNameError}
             required
             multiline
@@ -208,7 +208,7 @@ let EditDialog = (props) => {
               type='submit'
               variant='contained'
               color='primary'
-              disabled={saveInProgress || variableNameError}
+              disabled={saveInProgress || !!variableNameError}
             >
               {saveInProgress ? 'Saving' :
               lastSaveStatus === true ? 'Saved' :
@@ -232,7 +232,7 @@ EditDialog.propTypes = {
   type: PropTypes.string.isRequired,
   targetExists: PropTypes.bool.isRequired,
   isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func,
+  onSaved: PropTypes.func,
   onCancel: PropTypes.func
 };
 

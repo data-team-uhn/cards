@@ -24,7 +24,9 @@ import withStyles from '@mui/styles/withStyles';
 import EditorInput from "./EditorInput";
 import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
 import QuestionComponentManager from "../questionnaireEditor/QuestionComponentManager";
+import ValueComponentManager from "../questionnaireEditor/ValueComponentManager";
 import MarkdownText from "./MarkdownText";
+import FormattedText from "../components/FormattedText.jsx";
 
 // Markdown Text Input field used by Edit dialog component
 let MarkdownTextField = (props) => {
@@ -52,4 +54,16 @@ QuestionComponentManager.registerQuestionComponent((definition) => {
   if (definition === 'markdown') {
     return [StyledMarkdownTextField, 50];
   }
+});
+
+// Formatted text value displayer
+let MarkdownTextValue = (props) => {
+  let { objectKey, data } = props;
+  return <FormattedText>{data[objectKey]}</FormattedText>
+};
+
+ValueComponentManager.registerValueComponent((definition) => {
+    if (definition == "markdown") {
+      return [MarkdownTextValue, 50];
+    }
 });

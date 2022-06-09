@@ -1,5 +1,18 @@
 [
   {
+    "//CHILDREN" : {
+      "Condition" : {
+         "entries" : {
+           "Conditional" : "Conditional.json",
+           "ConditionalGroup" : "ConditionalGroup.json"
+         },
+         "max" : 1,
+         "defaultOrder" : 1
+      },
+      "Question" : "Question.json",
+      "Section" : "Section.json",
+      "Information" : "Information.json"
+    },
     "label": "string",
     "description": "markdown",
     "displayMode": {

@@ -20,59 +20,34 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { TextField, Typography } from "@mui/material";
-
-import withStyles from '@mui/styles/withStyles';
-
-import EditorInput from "./EditorInput";
-import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
+import TextInput from "./TextInput";
+import FormattedText from "../components/FormattedText.jsx";
 import QuestionComponentManager from "../questionnaireEditor/QuestionComponentManager";
 import ValueComponentManager from "../questionnaireEditor/ValueComponentManager";
 
-// Text Input field used by Edit dialog component
-let TextInput = (props) => {
-  let { objectKey, data, multiline, variant } = props;
+// Code Input field used by Edit dialog component
+let CodeInput = (props) => <TextInput {...props} multiline variant="filled" />
 
-  return (
-    <EditorInput name={objectKey}>
-      <TextField
-        variant="standard"
-        name={objectKey}
-        id={objectKey}
-        defaultValue={typeof(data[objectKey]) != 'undefined' ? data[objectKey] : ''}
-        required={objectKey.includes('text')}
-        fullWidth
-        multiline={multiline}
-        variant={variant || "standard"}
-      />
-    </EditorInput>
-  )
-}
-
-TextInput.propTypes = {
+CodeInput.propTypes = {
   objectKey: PropTypes.string.isRequired,
   data: PropTypes.object.isRequired
 };
 
-const StyledTextInput = withStyles(QuestionnaireStyle)(TextInput);
-export default StyledTextInput;
-
 QuestionComponentManager.registerQuestionComponent((definition) => {
-  return [StyledTextInput, 0];
+  if (definition === 'code') {
+    return [CodeInput, 50];
+  }
 });
 
 
-// Generic value displayer
-let TextValue = (props) => {
+// Formatted code block
+let CodeBlock = (props) => {
   let { objectKey, data } = props;
-
-  return (
-    Array.isArray(data[objectKey]) ?
-      data[objectKey].map(item => <Typography key={item}>{`${item}`}</Typography>)
-    : <Typography>{`${data[objectKey]}`}</Typography>
-  );
+  return <FormattedText>{"```\n" + data[objectKey] + "\n```"}</FormattedText>
 };
 
 ValueComponentManager.registerValueComponent((definition) => {
-  return [TextValue, 0];
+    if (definition == "code") {
+      return [CodeBlock, 50];
+    }
 });

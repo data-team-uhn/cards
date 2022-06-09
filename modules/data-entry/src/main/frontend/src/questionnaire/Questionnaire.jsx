@@ -94,7 +94,7 @@ let Questionnaire = (props) => {
     fetchData();
   }
 
-  let onCreate = (newData) => {
+  let onCreated = (newData) => {
     setData({});
     setData(newData);
   }
@@ -221,7 +221,7 @@ let Questionnaire = (props) => {
             isMainAction={true}
             data={data}
             menuItems={QUESTIONNAIRE_ITEM_NAMES}
-            onClose={onCreate}
+            onCreated={onCreated}
           />
         }
       </QuestionnaireItemSet>
@@ -240,23 +240,119 @@ export default withStyles(QuestionnaireStyle)(Questionnaire);
 let QuestionnaireItemSet = (props) => {
   let { children, models, onActionDone, data, classes } = props;
 
+  let prioritaryModels = {};
+  let prioritaryEntryTypes = null;
+  let generalModels = {};
+  let generalEntryTypes = ENTRY_TYPES;
+
+  let getEntryTypes = entryModels => Object.keys(entryModels || {}).map(e => `cards:${e}`);
+
+  if (models) {
+    // Is defaultOrder specified for some entry types? Pull those into a flat "priority" list
+    // to display them first, in the order specified by their `defaultOrder`
+    // Example:
+    // {
+    //   a: "a.json",
+    //   group1 : {entries: {b: "b,json", c: "c.json"}},
+    //   group2 : {entries: {d: "d,json", e: "e.json"}, defaultOrder: 5},
+    //   f: "f.json",
+    //   group3 : {entries: {g: "g,json", h: "h.json"}, defaultOrder: 1}
+    // }
+    // => {g: "g.json", h: "h,json", d: "d.json", e: "e.json"}
+    Object.values(models || {})
+      // Filter in groups with entries and with defaultOrder specified
+      .filter(v => typeof(v) == "object" && typeof(v?.entries) != "undefined" && typeof(v?.defaultOrder) != "undefined")
+      // Sort by the specified order
+      .sort((a, b) => a.defaultOrder - b.defaultOrder)
+      // Record the sorted entries into the priority list
+      .forEach(v => prioritaryModels = {...prioritaryModels, ...v.entries});
+
+    // If there are any entries with defaultOrder, we update the priorityEntryTypes
+    if (Object.keys(prioritaryModels).length > 0) {
+      prioritaryEntryTypes = getEntryTypes(prioritaryModels);
+    }
+
+    // Get entry types without a defaultOrder specified, in the order they appear in the configuration
+    // Dive inside groups to get the `entries`
+    // Example:
+    // {
+    //   a: "a.json",
+    //   group1 : {entries: {b: "b,json", c: "c.json"}},
+    //   group2 : {entries: {d: "d,json", e: "e.json"}, defaultOrder: 5},
+    //   f: "f.json",
+    //   group3 : {entries: {g: "g,json", h: "h.json"}, defaultOrder: 1}
+    // }
+    // => {a: "a.json", b: "b,json", c: "c.json", f: "f.json"}
+    Object.entries(models).forEach(([k,v]) => {
+      if ( typeof(v) == "object") {
+        if (typeof(v?.entries) != "undefined" && typeof(v?.defaultOrder) == "undefined") {
+          // Flatten groups with `entries` but without `defaultOrder` (the ones with defaultOrder are already in the "priority" list)
+          generalModels = {...generalModels, ...v.entries}
+        }
+      } else {
+        // also record groups without metadata
+        generalModels[k] = v;
+      }
+    });
+    // If there are any entries without defaultOrder, we update the generalEntryTypes
+    // Otherwise the original list is kept, i.e. ENTRY_TYPES
+    if (Object.keys(generalModels).length > 0) {
+       generalEntryTypes = getEntryTypes(generalModels);
+    }
+  }
+
+  // Display questionnaire entries of the (primary) types specified by the `types` argument.
+  // For these entries, display only the properties specified in the model mapping (the `typeModels` argument).
+  //
+  // NB: We implemented React components for displaying each supported entry type.
+  //     The names of the React components match the primary types, i.e. we have a `Question` component for
+  //     displaying entries with `jcr:primaryType` = "cards:Question", a `Section` component for displaying
+  //     entries with `jcr:primaryType` = "cards:Section", etc.
+  //     To call the right component for each entry that has passed the "types" filter,  we strip its primaryType
+  //     of the "cards:" prefix and then `eval` the result to the functional component's name, which is passed as
+  //     a parameter to an anonymous function called for each such entry, that renders the component inside a
+  //     Grid item.
+  //
+  // @param types - an array of (primary) types of entries to display.
+  //   Each element in the array is a string representing a primaryType, e.g. "cards:Question"
+  // @param typeModels - an object mapping an entry type (where the type is tripped of the "cards:"
+  //   prefix) to a json file specifying the "model", i.e. which properties to display
+  // @return a React fragment rendering the entries from the `data` prop according to the `types` filter and
+  //   the `typeModels` property restriction
+  let listEntries = (typeModels, types) => (
+    <>
+    { Object.entries(data)
+      .filter(([key, value]) => types?.includes(value['jcr:primaryType']))
+      .map(([key, value]) => (
+        EntryType => <Grid item key={key}>
+                       <EntryType
+                         data={value}
+                         model={typeModels?.[_stripCardsNamespace(value['jcr:primaryType'])]}
+                         onActionDone={onActionDone}
+                         classes={classes}
+                       />
+                     </Grid>
+        )(eval(_stripCardsNamespace(value['jcr:primaryType'])))
+      )
+    }
+    </>
+  )
+
+  // There is no data to display, do not render an empty container
+  if ( !!!children &&
+       !Object.values(data).some(v => [...(generalEntryTypes ||[]), ...(prioritaryEntryTypes || [])].includes(v['jcr:primaryType'])) ) {
+    return null;
+  }
+
   return (
     <Grid container direction="column" spacing={4} wrap="nowrap">
       {children}
       {
         data ?
-        Object.entries(data).filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
-            .map(([key, value]) => (
-                    EntryType => <Grid item key={key}>
-                                   <EntryType
-                                     data={value}
-                                     model={models?.[_stripCardsNamespace(value['jcr:primaryType'])]}
-                                     onActionDone={onActionDone}
-                                     classes={classes}
-                                   />
-                                 </Grid>
-                  )(eval(_stripCardsNamespace(value['jcr:primaryType'])))
-                )
+        <>
+        { prioritaryEntryTypes && listEntries(prioritaryModels, prioritaryEntryTypes) }
+        { listEntries(generalModels, generalEntryTypes) }
+        </>
         : <Grid item><Grid container justifyContent="center"><Grid item><CircularProgress/></Grid></Grid></Grid>
       }
     </Grid>
@@ -271,187 +367,223 @@ QuestionnaireItemSet.propTypes = {
 
 
 // Details about an information block displayed in a questionnaire
-let Information = (props) => {
-  let { onActionDone, data, model, classes } = props;
-  let [ infoData, setInfoData ] = useState(data);
-  let [ doHighlight, setDoHighlight ] = useState(data.doHighlight);
-
-  let reloadData = (newData) => {
-    if (newData) {
-      setInfoData(newData);
-      setDoHighlight(true);
-    } else {
-      onActionDone();
-    }
-  }
-  return (
-    <QuestionnaireItemCard
-        avatar="info"
-        title=" "
-        avatarColor={blue[600]}
-        type="Information"
-        data={infoData}
-        classes={classes}
-        onActionDone={reloadData}
-        doHighlight={doHighlight}
-        model={model}
-    >
-      <Fields data={infoData} JSON={require(`../questionnaireEditor/${model}`)[0]} edit={false} />
-    </QuestionnaireItemCard>
-  );
-};
+let Information = (props) => <QuestionnaireEntry {...props} />;
 
 Information.propTypes = {
-  model: PropTypes.string,
   onActionDone: PropTypes.func,
-  data: PropTypes.object.isRequired
+  data: PropTypes.object.isRequired,
+  type: PropTypes.string.isRequired,
+  avatar: PropTypes.string,
+  avatarColor: PropTypes.string,
+  model: PropTypes.string.isRequired
 };
 
 Information.defaultProps = {
+  type: "Information",
+  avatar: "info",
+  avatarColor: blue[600],
   model: "Information.json"
 };
 
 
 // Details about a particular question in a questionnaire.
 // Not to be confused with the public Question component responsible for rendering questions inside a Form.
-let Question = (props) => {
-  let { onActionDone, data, model, classes } = props;
-  let [ questionData, setQuestionData ] = useState(data);
-  let [ doHighlight, setDoHighlight ] = useState(data.doHighlight);
-
-  let json = require(`../questionnaireEditor/${model}`)[0];
-
-  let reloadData = (newData) => {
-    if (newData) {
-      setQuestionData(newData);
-      setDoHighlight(true);
-    } else {
-      onActionDone();
-    }
-  }
-
-  return (
-    <QuestionnaireItemCard
-        avatar=""
-        avatarColor="purple"
-        type="Question"
-        data={questionData}
-        classes={classes}
-        onActionDone={reloadData}
-        doHighlight={doHighlight}
-        model={model}
-    >
-      <Fields data={questionData} JSON={json} edit={false} />
-      <AnswerOptionList data={questionData} modelDefinition={json} />
-    </QuestionnaireItemCard>
-  );
-};
+let Question = (props) => <QuestionnaireEntry {...props} />;
 
 Question.propTypes = {
-  model: PropTypes.string,
-  closeData: PropTypes.func,
-  data: PropTypes.object.isRequired
+  onActionDone: PropTypes.func,
+  data: PropTypes.object.isRequired,
+  type: PropTypes.string.isRequired,
+  avatar: PropTypes.string,
+  avatarColor: PropTypes.string,
+  titleField: PropTypes.string,
+  model: PropTypes.string.isRequired
 };
 
 Question.defaultProps = {
+  type: "Question",
+  avatarColor: "purple",
+  titleField: "text",
   model: "Question.json"
 };
 
+// Details about a particular section in a questionnaire.
+// Not to be confused with the public Section component responsible for rendering sections inside a Form.
+let Section = (props) => <QuestionnaireEntry {...props} />;
 
-let Section = (props) => {
-  let { onActionDone, data, model, classes } = props;
-  let [ sectionData, setSectionData ] = useState(data);
+Section.propTypes = {
+  onActionDone: PropTypes.func,
+  data: PropTypes.object.isRequired,
+  type: PropTypes.string.isRequired,
+  avatar: PropTypes.string,
+  avatarColor: PropTypes.string,
+  titleField: PropTypes.string,
+  model: PropTypes.string.isRequired
+};
+
+Section.defaultProps = {
+  type: "Section",
+  avatar: "view_stream",
+  avatarColor: "orange",
+  titleField: "label",
+  model: "Section.json"
+};
+
+
+// Details about a simple condition for desplaying a section
+let Conditional = (props) => <QuestionnaireEntry {...props} />;
+
+Conditional.propTypes = {
+  onActionDone: PropTypes.func,
+  data: PropTypes.object.isRequired,
+  type: PropTypes.string.isRequired,
+  avatar: PropTypes.string,
+  avatarColor: PropTypes.string,
+  model: PropTypes.string.isRequired
+};
+
+Conditional.defaultProps = {
+  type: "Conditional",
+  avatarColor: "cadetblue",
+  model: "Conditional.json"
+};
+
+// Details about a group pf conditions for desplaying a section
+let ConditionalGroup = (props) => <QuestionnaireEntry {...props} />;
+
+ConditionalGroup.propTypes = {
+  onActionDone: PropTypes.func,
+  data: PropTypes.object.isRequired,
+  type: PropTypes.string.isRequired,
+  avatar: PropTypes.string,
+  avatarColor: PropTypes.string,
+  model: PropTypes.string.isRequired
+};
+
+ConditionalGroup.defaultProps = {
+  type: "ConditionalGroup",
+  avatarColor: "navy",
+  model: "ConditionalGroup.json"
+};
+
+// Generic QuestionnaireEntry component that can be adapted to any entry type via props
+
+let QuestionnaireEntry = (props) => {
+  let { onActionDone, data, type, titleField, avatar, avatarColor, model, classes } = props;
+  let [ entryData, setEntryData ] = useState(data);
   let [ doHighlight, setDoHighlight ] = useState(data.doHighlight);
 
   let spec = require(`../questionnaireEditor/${model}`)[0];
 
-  let childModels = null;
+  // If this entry type has any children by default, they should be specified in the `//CHILDREN` field
+  let childModels = spec["//CHILDREN"];
 
+  // There may be `//CHILDREN` overrides for some definitions for this entry, find them and record them
   let findChildrenSpec = (key, value) => {
     if (key == '//CHILDREN') {
       childModels = value;
       return true;
     }
     return (
-      typeof(sectionData[key] != undefined) &&
+      typeof(entryData[key] != undefined) &&
       typeof(value) == "object" &&
-      typeof(value[sectionData[key]]) == "object" &&
-      Object.entries(value[sectionData[key]]).find(([k, v]) => findChildrenSpec(k, v))
+      typeof(value[entryData[key]]) == "object" &&
+      Object.entries(value[entryData[key]]).find(([k, v]) => findChildrenSpec(k, v))
     )
   };
 
   // Does this section have a different list of accepted child items?
-  Object.entries(spec || {}).find(([key, value]) => findChildrenSpec(key, value));
+  Object.entries(spec || {})
+    // ignore the default `//CHILDREN` specification
+    .filter(([key, value]) => key != "//CHILDREN")
+    // look for overrides deeper
+    .find(([key, value]) => findChildrenSpec(key, value));
 
-  let menuItems = childModels && Object.keys(childModels);
+  // Add the child types to the menu
+  let menuItems = childModels && Object.keys(childModels).filter(k => typeof(childModels[k]) != "object");
 
-  let extractConditions = () => {
-    let p = Array();
-    // Find conditionals
-    Object.entries(sectionData).filter(([key, value]) => (value['jcr:primaryType'] == 'cards:Conditional'))
-                               .map(([key, value]) => { p.push({
-                                                          name: key + sectionData["@name"],
-                                                          label: "Condition",
-                                                          value : value?.operandA?.value.join(', ') + " " + value?.comparator + " " + value?.operandB?.value.join(', ')
-                                                        });
-                                                      });
-    return p;
+  // Some child entries may be configured to have a maximum number of entries
+  // (for example, only one conditional or conditional group per section)
+  // Exclude from the creation menu any entries corresponding to child types
+  // for which maximum of that type has been reached
+  if (childModels) {
+    Object.values(childModels)
+      .filter(v => {
+        if (typeof(v) != "object" || typeof(v?.entries) != "object") return false;
+        let entryTypes = Object.keys(v.entries).map(e => `cards:${e}`);
+        return (Object.values(data).filter(e => entryTypes?.includes(e['jcr:primaryType'])).length < v?.max);
+      })
+      .forEach(v => menuItems.push(...Object.keys(v.entries)));
   }
 
   let reloadData = (newData) => {
+    // There's new data to load, display and highlight it:
     if (newData) {
-      setSectionData(newData);
+      setEntryData(newData);
       setDoHighlight(true);
     } else {
-      onActionDone();
+      // Try to reload the data from the server
+      // If it fails, pass it up to the parent
+      fetch(`${data["@path"]}.deep.json`)
+        .then(response => response.ok ? response.json() : Promise.reject(response))
+        .then(json => reloadData(json))
+        .catch(() => onActionDone());
     }
   }
 
-  let onCreate = (newData) => {
-    setSectionData({});
-    setSectionData(newData);
+  let onCreated = (newData) => {
+    setEntryData({});
+    setEntryData(newData);
   }
+
+  // If a `titleField` is provided, exclude that field when displaying the entry fields
+  let viewSpec = Object.assign({}, spec);
+  delete viewSpec[titleField];
 
   return (
     <QuestionnaireItemCard
-        avatar="view_stream"
-        avatarColor="orange"
-        type="Section"
-        data={sectionData}
+        titleField={titleField}
+        avatar={avatar}
+        avatarColor={avatarColor}
+        type={type}
+        data={entryData}
         classes={classes}
         doHighlight={doHighlight}
         action={
+            menuItems?.length > 0 ?
             <CreationMenu
-              data={sectionData}
-              onClose={onCreate}
-              menuItems={ menuItems || QUESTIONNAIRE_ITEM_NAMES }
+              data={entryData}
+              onCreated={onCreated}
+              menuItems={menuItems}
               models={childModels}
             />
+            : undefined
         }
         onActionDone={reloadData}
         model={model}
     >
-      <FieldsGrid fields={extractConditions()} classes={classes}/>
-      <Fields data={sectionData} JSON={spec} edit={false} />
-      <AnswerOptionList data={sectionData} modelDefinition={spec} />
-      <QuestionnaireItemSet
-        data={sectionData}
-        classes={classes}
-        onActionDone={onActionDone}
-        models={childModels}
-      >
-      </QuestionnaireItemSet>
+      <Fields data={entryData} JSON={viewSpec} edit={false} />
+      <AnswerOptionList data={entryData} modelDefinition={spec} />
+      { childModels &&
+        <QuestionnaireItemSet
+          data={entryData}
+          classes={classes}
+          onActionDone={reloadData}
+          models={childModels}
+        />
+      }
     </QuestionnaireItemCard>
   );
 };
 
-Section.propTypes = {
-  model: PropTypes.string,
-  data: PropTypes.object.isRequired
-};
-
-Section.defaultProps = {
-  model: "Section.json"
+QuestionnaireEntry.propTypes = {
+  onActionDone: PropTypes.func,
+  data: PropTypes.object.isRequired,
+  type: PropTypes.string.isRequired,
+  avatar: PropTypes.string,
+  avatarColor: PropTypes.string,
+  titleField: PropTypes.string,
+  model: PropTypes.string.isRequired
 };
 
 let FieldsGrid = (props) => {

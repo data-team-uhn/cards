@@ -22,17 +22,19 @@ import PropTypes from 'prop-types';
 import { Grid, Typography } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import QuestionComponentManager from "../questionnaireEditor/QuestionComponentManager";
+import ValueComponentManager from "../questionnaireEditor/ValueComponentManager";
 import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
 
 // Unused imports required for the component manager
 import AnswerOptions from "./AnswerOptions";
 import BooleanInput from "./BooleanInput";
+import CodeInput from "./CodeInput";
+import ConditionalValueInput from "./ConditionalValueInput";
 import ListInput from "./ListInput";
 import NumberInput from "./NumberInput";
 import ObjectInput from "./ObjectInput";
 import TextInput from "./TextInput";
 import MarkdownTextField from "./MarkdownTextField";
-import FormattedText from "../components/FormattedText.jsx";
 import ReferenceInput from "./ReferenceInput";
 import { FieldsProvider } from "./FieldsContext.jsx";
 
@@ -65,19 +67,14 @@ let Fields = (props) => {
   };
 
   let displayStaticField = (key, value) => {
+    const ValueDisplay = ValueComponentManager.getValueComponent(value);
     return (<React.Fragment key={key}>
       <Grid container alignItems='flex-start' spacing={2} direction="row">
         <Grid item xs={4}>
           <Typography variant="subtitle2">{formatString(key)}:</Typography>
         </Grid>
         <Grid item xs={8}>
-          { value === "markdown"
-            ?
-            <FormattedText>{data[key]}</FormattedText>
-            :
-            Array.isArray(data[key]) ? data[key].map((item) => <Typography key={item}>{`${item}`}</Typography>)
-                                     : <Typography>{`${data[key]}`}</Typography>
-          }
+          <ValueDisplay key={key} objectKey={key} value={value} data={data} />
         </Grid>
       </Grid>
       {

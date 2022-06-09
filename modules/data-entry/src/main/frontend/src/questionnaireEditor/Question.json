@@ -25,7 +25,7 @@
           },
           "computed": {
             "minAnswers": {"0":{}, "1":{}},
-            "expression": "string",
+            "expression": "code",
             "displayMode" : {
               "input" : {},
               "formatted" : {},
@@ -46,7 +46,7 @@
           "user": {
           },
           "computed": {
-            "expression": "string",
+            "expression": "code",
             "displayMode" : {
               "input" : {},
               "formatted" : {},
@@ -62,7 +62,7 @@
           "user": {
           },
           "computed": {
-            "expression": "string",
+            "expression": "code",
             "displayMode" : {
               "input" : {},
               "formatted" : {},
@@ -103,7 +103,7 @@
           },
           "computed": {
             "minAnswers": {"0":{}, "1":{}},
-            "expression": "string",
+            "expression": "code",
             "displayMode" : {
               "input" : {},
               "formatted" : {},
@@ -144,7 +144,7 @@
           },
           "computed": {
             "minAnswers": {"0":{}, "1":{}},
-            "expression": "string",
+            "expression": "code",
             "displayMode" : {
               "input" : {},
               "formatted" : {},
@@ -177,7 +177,7 @@
           },
           "computed": {
             "minAnswers": {"0":{}, "1":{}},
-            "expression": "string",
+            "expression": "code",
             "displayMode" : {
               "input" : {},
               "formatted" : {},
@@ -218,7 +218,7 @@
           },
           "computed": {
             "minAnswers": {"0":{}, "1":{}},
-            "expression": "string",
+            "expression": "code",
             "displayMode" : {
               "input" : {},
               "formatted" : {},
@@ -270,7 +270,7 @@
             "errorText": "string"
           },
           "computed": {
-            "expression": "string",
+            "expression": "code",
             "displayMode" : {
               "input" : {},
               "formatted" : {},

@@ -342,6 +342,8 @@
 [cards:ConditionalGroup] > sling:Folder
   // Attributes
 
+  // The list of conditions is orderable.
+  orderable
   // Conditionals are queryable
   query
 
@@ -363,6 +365,8 @@
 [cards:Conditional] > sling:Folder
   // Attributes
 
+  // The list of operands and operator is orderable.
+  orderable
   // Conditionals are queryable
   query
   // Our children are orderable, and may be executable in a specific order
