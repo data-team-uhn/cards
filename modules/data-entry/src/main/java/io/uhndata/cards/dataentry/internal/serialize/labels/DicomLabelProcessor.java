@@ -30,7 +30,7 @@ import org.osgi.service.component.annotations.Component;
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 
 /**
- * Gets the file name of the file question answer.
+ * Gets the file name of a DICOM question answer.
  *
  * @version $Id$
  */

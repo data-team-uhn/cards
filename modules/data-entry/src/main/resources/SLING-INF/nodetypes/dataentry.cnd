@@ -677,10 +677,10 @@
 //-----------------------------------------------------------------------------
 // File resource answers, whose children are nt:files with the answer
 [cards:FileAnswer] > cards:Answer
-  // The value does nothing
+  // The value holds the path to the JCR node storing the file
   - value (string)
 
-  // The real value is in a child nt:file resource
+  // The file is in a child nt:file resource
   + * (nt:file) = nt:file
 
   // Hardcode the resource type.
@@ -692,7 +692,7 @@
 //-----------------------------------------------------------------------------
 // DICOM resource answers
 [cards:DicomAnswer] > cards:Answer
-  // The value holds the YAML encoded DICOM metadata
+  // The value holds the path to the JCR node storing the DICOM file
   - value (string)
 
   // The DICOM file is in a child nt:file resource
