@@ -19,16 +19,19 @@
 
 import React, { useEffect, useState } from "react";
 import {
-  Dialog,
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   DialogActions,
   DialogContent,
-  DialogTitle,
   FormControlLabel,
   FormGroup,
   Switch,
   Typography,
 } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { makeStyles, withStyles } from '@mui/styles';
+
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import cornerstone from "cornerstone-core";
 
@@ -44,10 +47,27 @@ import PropTypes from "prop-types";
 
 import FileQuestion from "./FileQuestion";
 import QuestionnaireStyle from "./QuestionnaireStyle";
+import ResponsiveDialog from "../components/ResponsiveDialog";
 
 import AnswerComponentManager from "./AnswerComponentManager";
 
 import DICOM_TAG_DICT from "../dicom/dicomDataDictionary";
+
+const useStyles = makeStyles(theme => ({
+  advancedHelp : {
+	background: theme.palette.action.hover,
+	"&.Mui-expanded" : {
+	  margin: "0 !important",
+	},
+	"& .MuiAccordionSummary-root" : {
+	  flexDirection: "row-reverse",
+	},
+	"& .MuiAccordionDetails-root" : {
+	  background: "transparent",
+	  padding: theme.spacing(0, 3, 2),
+	},
+  }
+}));
 
 // Component that renders a dicom upload question.
 // Filepaths are placed in a series of <input type="hidden"> tags for
@@ -60,7 +80,6 @@ function DicomQuestion(props) {
   let [ dicomImagePreviewURL, setDicomImagePreviewURL ] = useState();
   let [ errorDialogText, setErrorDialogText ] = useState();
   let [ advancedErrorDialogText, setAdvancedErrorDialogText ] = useState();
-  let [ showAdvancedErrorHelp, setShowAdvancedErrorHelp ] = useState(false);
 
   let validateDicomFileTransferSyntax = (file) => {
     let FORBIDDEN_TRANSFER_SYNTAX_UID = ["1.2.840.10008.1.2.4.70"];
@@ -228,7 +247,7 @@ function DicomQuestion(props) {
     .then(() => previewDicomFile(file))
     .catch((err) => {
       if (err != "Invalid TransferSyntaxUID") {
-        setErrorDialogText("Something went wrong when parsing the DICOM file.");
+        setErrorDialogText("Something went wrong when parsing the DICOM file");
         setAdvancedErrorDialogText("You may be able to fix the DICOM file with: gdcmconv -C file.dcm fixed_file.dcm");
       }
     });
@@ -263,45 +282,35 @@ function DicomQuestion(props) {
     }
   }
 
+  const styles = useStyles();
+
   // Render a customized FileQuestion
   return (
     <React.Fragment>
-      <Dialog
+      <ResponsiveDialog
+        size="xs"
         open={Boolean(errorDialogText)}
         onClose={() => {
           setErrorDialogText();
           setAdvancedErrorDialogText();
-          setShowAdvancedErrorHelp();
         }}
+        withCloseButton
+        title="Error"
       >
-        <DialogTitle disableTypography>
-          <Typography variant="h6" color="error">
-            Error
-          </Typography>
-        </DialogTitle>
         <DialogContent dividers>
-          <Typography variant="h6">
+          <Typography>
             {errorDialogText}
           </Typography>
-          { showAdvancedErrorHelp &&
-            <Typography variant="body1">
-              {advancedErrorDialogText}
-            </Typography>
-          }
         </DialogContent>
-        <DialogActions>
-          <FormGroup>
-            <FormControlLabel
-              control={
-                <Switch
-                  onChange={(evt) => setShowAdvancedErrorHelp(evt.target.checked)}
-                 />
-              }
-              label="Advanced Help"
-            />
-          </FormGroup>
-        </DialogActions>
-      </Dialog>
+        <Accordion className={styles.advancedHelp}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography variant="subtitle2">Advanced help</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography variant="body2">{advancedErrorDialogText}</Typography>
+          </AccordionDetails>
+        </Accordion>
+      </ResponsiveDialog>
       <FileQuestion
         questionDefinition={{...questionDefinition, maxAnswers: 1, enableNotes: true}}
         existingAnswer={existingAnswer}
