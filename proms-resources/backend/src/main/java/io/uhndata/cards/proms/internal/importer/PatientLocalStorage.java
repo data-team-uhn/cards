@@ -687,7 +687,7 @@ public class PatientLocalStorage
             return this.displayName;
         }
 
-        public void setSurveyName(final String id)
+        public void setSurveyID(final String id)
         {
             this.surveyID = id;
         }
@@ -720,7 +720,7 @@ public class PatientLocalStorage
                 try {
                     final ClinicInfo thisClinic = new ClinicInfo();
                     final Node thisNode = mapping.adaptTo(Node.class);
-                    thisClinic.setSurveyName(thisNode.getProperty("survey").getString());
+                    thisClinic.setSurveyID(thisNode.getProperty("survey").getString());
                     thisClinic.setDisplayName(thisNode.getProperty("displayName").getString());
                     thisClinic.setClinicPath(mapPath);
                     results.add(thisClinic);

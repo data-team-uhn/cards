@@ -391,7 +391,7 @@ public class VisitChangeListener implements ResourceChangeListener
         }
 
         // Ignore forms for different clinics, or forms without a clinic
-        if (visitClinic == null || !visitInformation.getClinicPath().equals(visitClinic)) {
+        if (StringUtils.isBlank(visitClinic) || !visitInformation.getClinicPath().equals(visitClinic)) {
             return;
         } else {
             removeQuestionnairesFromVisit(visitInformation, visitDate, questionnaires, questionnaireSetInfo);
