@@ -817,8 +817,13 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>displayMode</name>
-				<value>list</value>
+				<name>expression</name>
+				<value>return @{cpet_yearnumber}+":"+@{cpet_assessmentnumber}</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>computed</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -826,48 +831,6 @@
 				<value>1</value>
 				<type>Long</type>
 			</property>
-			<node>
-				<name>cpet_yearnumber</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>cpet_yearnumber</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>cpet_yearnumber</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>":"</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>":"</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>":"</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>cpet_assessmentnumber</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>cpet_assessmentnumber</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>cpet_assessmentnumber</value>
-					<type>String</type>
-				</property>
-			</node>
 		</node>
 		<node>
 			<name>cpet_triggerreasonSection</name>
@@ -1065,7 +1028,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>"Red flag during CPET"</value>
+							<value>Red flag during CPET</value>
 						</values>
 						<type>String</type>
 					</property>

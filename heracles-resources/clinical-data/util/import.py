@@ -114,6 +114,8 @@ def create_conditional(operand_a, operator, operand_b, title):
         operand_b_updated = "0"
     else:
         operand_b_updated = operand_b
+    if operand_b_updated.startswith("\"") and operand_b_updated.endswith("\""):
+        operand_b_updated = operand_b_updated[1:-1]
     result = {
         'jcr:primaryType': 'cards:Conditional',
         'operandA': {
@@ -164,29 +166,32 @@ def process_options(question, row):
         question['dateFormat'] = row['Options (if applicable)']
     elif question['dataType'] == "computed":
         insert_expression(question, row['Options (if applicable)'])
+        question.update({"entryMode": "computed", "dataType": "text"})
     else:
         insert_options(question, row)
 
 def insert_expression(question, expression):
-    control_chars = "+-/* ()"
-    neutral_chars = ".0123456789:-"
-    start_chars = "@{"
-    end_chars = "}"
-    was_control = True
-    i = 0
-    while i < len(expression):
-        if not expression[i] in neutral_chars and was_control and not (expression[i] in control_chars):
-            was_control = False
-            expression = expression[:i] + start_chars + expression[i:]
-            i += len(start_chars)
-        elif not expression[i] in neutral_chars and not was_control and expression[i] in control_chars:
-            was_control = True
-            expression = expression[:i] + end_chars + expression[i:]
-            i += len(end_chars)
-        i += 1
-    if not was_control:
-        expression += end_chars
-    question['expression'] = "return " + expression
+    if not expression.startswith("return"):
+        control_chars = "+-/* ()\""
+        neutral_chars = ".0123456789:-"
+        start_chars = "@{"
+        end_chars = "}"
+        was_control = True
+        i = 0
+        while i < len(expression):
+            if not expression[i] in neutral_chars and was_control and not (expression[i] in control_chars):
+                was_control = False
+                expression = expression[:i] + start_chars + expression[i:]
+                i += len(start_chars)
+            elif not expression[i] in neutral_chars and not was_control and expression[i] in control_chars:
+                was_control = True
+                expression = expression[:i] + end_chars + expression[i:]
+                i += len(end_chars)
+            i += 1
+        if not was_control:
+            expression += end_chars
+        expression = "return " + expression
+    question['expression'] = expression
 
 # Creates cards:AnswerOptions from the CSV in 'Categorical List'
 def insert_options(question, row):
@@ -245,10 +250,12 @@ DATA_TO_CARDS_TYPE = {
     'integer (single)': 'long',
     'computed (decimal)': 'computed',
     'computed (integer)': 'computed',
+    'computed': 'computed',
     'time': 'time',
 }
 def convert_to_CARDS_data_type(userFormat):
     result = DATA_TO_CARDS_TYPE.get(userFormat.strip().lower(), 'text')
+
     return result
 
 def clean_title(title):
