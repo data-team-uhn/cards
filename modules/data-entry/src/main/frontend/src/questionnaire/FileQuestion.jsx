@@ -290,7 +290,7 @@ function FileQuestion(props) {
   let defaultDisplayFormatter = function(label, idx) {
     return (
       <div>
-        <Link href={fixFileURL(hrefs[idx], label)} target="_blank" rel="noopener" download>{label}</Link>
+        <Link href={fixFileURL(hrefs[idx], label)} target="_blank" rel="noopener" download underline="hover">{label}</Link>
         { previewRenderer && previewRenderer(fixFileURL(hrefs[idx], label), label, idx) }
       </div>
     );
