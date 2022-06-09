@@ -227,6 +227,39 @@
           }
         }
       },
+      "resource": {
+        "primaryType" : "string",
+        "labelProperty" : "string",
+        "entryMode": {
+          "user": {
+            "minAnswers": "long",
+            "maxAnswers": "long",
+            "displayMode": {
+              "input": {
+                "propertiesToSearch" : "string"
+              },
+              "select" : {},
+              "list": {
+                "compact" : "boolean"
+              },
+              "list+input" : {
+                "propertiesToSearch" : "string",
+                "compact" : "boolean",
+                "answerOptions" : "textOptions"
+              }
+            }
+          },
+          "computed" : {
+            "minAnswers": {"0":{}, "1":{}},
+            "expression": "string",
+            "displayMode" : {
+              "input" : {},
+              "formatted" : {},
+              "hidden": {}
+            }
+          }
+        }
+      },
       "time": {
         "minAnswers": {"0":{}, "1":{}},
         "dateFormat": "string",

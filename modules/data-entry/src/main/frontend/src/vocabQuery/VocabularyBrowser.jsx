@@ -25,7 +25,7 @@ import withStyles from '@mui/styles/withStyles';
 import VocabularyTree from "./VocabularyTree.jsx";
 import InfoBox from "./InfoBox.jsx";
 import { REST_URL, MakeRequest } from "./util.jsx";
-import QueryStyle from "./queryStyle.jsx";
+import BrowseTheme from "./browseStyle.jsx";
 
 // Component that renders a vocabulary info box and browser.
 //
@@ -39,13 +39,13 @@ import QueryStyle from "./queryStyle.jsx";
 // infoButtonRefs: References to the term info buttons forwarded from the dropdown menu
 // infoPath: Term @path to get the term info
 // browserOpen: Boolean representing whether or not the vocabulary tree dialog is open
-// allowTermSelection: Boolean enabler for term selection from vocabulary tree browser
+// enableSelection: Boolean enabler for term selection from vocabulary tree browser
 // initialSelection: Existing answers
 // questionDefinition: Object describing the Vocabulary Question for which this suggested input is displayed
 //
 function VocabularyBrowser(props) {
   const { browserOpen, onCloseInfo, onCloseBrowser, infoPath, infoButtonRefs, infoboxRef, browserRef, browseRoots,
-    vocabulary, allowTermSelection, initialSelection, questionDefinition, classes } = props;
+    vocabulary, enableSelection, initialSelection, questionDefinition, classes } = props;
 
   const [termInfoVisible, setTermInfoVisible] = useState(false);
   const [term, setTerm] = useState({});
@@ -139,7 +139,7 @@ function VocabularyBrowser(props) {
                alsoKnownAs: data["synonym"] || data["has_exact_synonym"] || [],
                typeOf: data["parents"]?.filter(p => typeof p === 'object').map(p => p["label"] || p["name"] || p["identifier"] || p["id"]) || [],
                path: data["@path"],
-               infoAnchor: browserOpened ? buttonRefs[data["identifier"] + params.parentInfoId] : infoButtonRefs[data["identifier"]]
+               infoAnchor: browserOpened ? buttonRefs[data["identifier"] + params.parentInfoId] : infoButtonRefs[data["@path"]]
              });
       setTermInfoVisible(true);
       setInfoAboveBackground(browserOpened);
@@ -216,7 +216,7 @@ function VocabularyBrowser(props) {
           registerInfo={registerInfoButton}
           getInfo={getInfo}
           browseRoots={browseRoots}
-          allowTermSelection={allowTermSelection}
+          enableSelection={enableSelection}
           initialSelection={initialSelection}
           questionDefinition={questionDefinition}
         />}
@@ -249,10 +249,10 @@ VocabularyBrowser.propTypes = {
   infoButtonRefs: PropTypes.object,
   infoboxRef: PropTypes.object.isRequired,
   browserRef: PropTypes.object.isRequired,
-  allowTermSelection: PropTypes.bool,
+  enableSelection: PropTypes.bool,
   initialSelection: PropTypes.array,
   questionDefinition: PropTypes.object,
   classes: PropTypes.object.isRequired
 }
 
-export default withStyles(QueryStyle)(VocabularyBrowser);
+export default withStyles(BrowseTheme)(VocabularyBrowser);

@@ -36,6 +36,7 @@ import VocabularyFilter from "./FilterComponents/VocabularyFilter.jsx";
 import TextFilter from "./FilterComponents/TextFilter.jsx";
 import SubjectFilter from "./FilterComponents/SubjectFilter.jsx";
 import QuestionnaireFilter from "./FilterComponents/QuestionnaireFilter.jsx";
+import ResourceFilter from "./FilterComponents/ResourceFilter.jsx";
 import { UNARY_COMPARATORS, TEXT_COMPARATORS } from "./FilterComponents/FilterComparators.jsx";
 
 const ALL_QUESTIONNAIRES_URL = "/Questionnaires.deep.json";

@@ -51,6 +51,11 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>Suggests terms defined under **ancestry category** (HANCESTRO_0004)</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>minAnswers</name>
 			<value>0</value>
 			<type>Long</type>
@@ -176,6 +181,11 @@
 		<property>
 			<name>text</name>
 			<value>Race/Ethnicity reported</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Suggests terms defined under **ancestry category** (HANCESTRO_0004)</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -307,6 +317,11 @@
 			<type>String</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>Suggests terms defined under **European** (HANCESTRO_0005)</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>minAnswers</name>
 			<value>0</value>
 			<type>Long</type>
@@ -356,6 +371,11 @@
 		<property>
 			<name>text</name>
 			<value>Race/Ethnicity reported</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>Suggests terms defined under **European** (HANCESTRO_0005)</value>
 			<type>String</type>
 		</property>
 		<property>

@@ -31,6 +31,7 @@ import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
+import org.apache.sling.api.resource.Resource;
 import org.osgi.service.component.annotations.Component;
 
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
@@ -43,6 +44,12 @@ import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 @Component(immediate = true)
 public class VocabularyOptionsLabelProcessor extends SimpleAnswerLabelProcessor implements ResourceJsonProcessor
 {
+    @Override
+    public boolean canProcess(Resource resource)
+    {
+        return resource.isResourceType("cards/Form") || resource.isResourceType("cards/Questionnaire");
+    }
+
     @Override
     public void leave(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
     {

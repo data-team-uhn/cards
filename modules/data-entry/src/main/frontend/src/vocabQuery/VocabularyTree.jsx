@@ -46,20 +46,20 @@ import { REST_URL, MakeRequest } from "./util.jsx";
 //  vocabulary: Vocabulary info
 //  browseRoots: Boolean representing whether or not the vocabulary tree shows roots
 //  onCloseInfoBox: Callback to close term info box
-//  allowTermSelection: Boolean enabler for term selection from vocabulary tree browser
+//  enableSelection: Boolean enabler for term selection from vocabulary tree browser
 //  initialSelection: Existing answers
 //  questionDefinition: Object describing the Vocabulary Question for which this suggested input is displayed
 //
 function VocabularyTree(props) {
   const { open, path, onTermClick, registerInfo, getInfo, onClose, onCloseInfoBox, onError, browserRef, classes, vocabulary,
-    browseRoots, allowTermSelection, initialSelection, questionDefinition, infoAboveBackground, ...rest } = props;
+    browseRoots, enableSelection, initialSelection, questionDefinition, infoAboveBackground, ...rest } = props;
 
   const [ lastKnownTerm, setLastKnownTerm ] = useState("");
   const [ parentNode, setParentNode ] = useState();
   const [ currentNode, setCurrentNode ] = useState();
   const [ roots, setRoots ] = useState(vocabulary.roots);
   const maxAnswers = questionDefinition?.maxAnswers;
-  const selectorComponent = allowTermSelection ? (maxAnswers == 1 ? Radio : Checkbox) : undefined;
+  const selectorComponent = enableSelection ? (maxAnswers == 1 ? Radio : Checkbox) : undefined;
 
   const [selectedTerms, setSelectedTerms] = useState(initialSelection);
   const [removedTerms, setRemovedTerms] = useState([]);
@@ -223,7 +223,7 @@ function VocabularyTree(props) {
   return (
     <ResponsiveDialog
       title={`${vocabulary.name} (${vocabulary.acronym})` || "Related terms"}
-      withCloseButton={!allowTermSelection}
+      withCloseButton={!enableSelection}
       open={open}
       ref={browserRef}
       onClose={(evt) => onCancel(evt)}
@@ -234,7 +234,7 @@ function VocabularyTree(props) {
       }}
       {...rest}
     >
-      { allowTermSelection && <>
+      { enableSelection && <>
         <div className={classes.selectionContainer}>
           <Typography variant="body2" component="span">{questionDefinition?.text}:</Typography>
           { selectedTerms?.filter(i => i[LABEL_POS]).map(s =>
@@ -269,7 +269,7 @@ function VocabularyTree(props) {
           {currentNode}
         </div>
       </DialogContent>
-      { allowTermSelection &&
+      { enableSelection &&
         <DialogActions>
           <Button color="primary"
                   onClick={onDone}
@@ -302,7 +302,7 @@ VocabularyTree.propTypes = {
   browserRef: PropTypes.object.isRequired,
   browseRoots: PropTypes.bool,
   vocabulary: PropTypes.object,
-  allowTermSelection: PropTypes.bool,
+  enableSelection: PropTypes.bool,
   initialSelection: PropTypes.array,
   questionDefinition: PropTypes.object,
   classes: PropTypes.object.isRequired
