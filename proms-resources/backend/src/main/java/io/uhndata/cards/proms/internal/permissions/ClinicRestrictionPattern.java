@@ -41,7 +41,7 @@ import io.uhndata.cards.dataentry.api.FormUtils;
 import io.uhndata.cards.dataentry.api.QuestionnaireUtils;
 
 /**
- * A restriction that makes a permissions entry only be valid on a specific Clinic node.
+ * A restriction that makes a permissions entry only be valid on a form for a specific Clinic.
  *
  * @version $Id$
  */
@@ -141,7 +141,7 @@ public class ClinicRestrictionPattern implements RestrictionPattern
     }
 
     /**
-     * Return the visit information form for a given subject, or null if none exists.
+     * Return the visit information form for a given subject, or null if it is inaccessible or none exists.
      *
      * @param subjectID The ID of the subject
      * @return A Visit Information form for the given subject, or null if none exists. If multiple exist, returns
@@ -150,7 +150,7 @@ public class ClinicRestrictionPattern implements RestrictionPattern
     public Resource getVisitInformationForSubject(String subjectID) throws RepositoryException
     {
         // Grab the uuid for the visit information questionnaire
-        Node visitInformationNode = this.session.getNodeByIdentifier(ClinicRestrictionPattern.VISIT_INFORMATION_PATH);
+        Node visitInformationNode = this.session.getNode(ClinicRestrictionPattern.VISIT_INFORMATION_PATH);
 
         // Perform a query for any Visit Information form for this subject
         String query = "SELECT * FROM [cards:Form] AS f WHERE f.'subject'='" + subjectID + "' AND f.'questionnaire'='"
