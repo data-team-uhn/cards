@@ -48,6 +48,7 @@ import PropTypes from "prop-types";
 import FileQuestion from "./FileQuestion";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 import ResponsiveDialog from "../components/ResponsiveDialog";
+import FormattedText from "../components/FormattedText";
 
 import AnswerComponentManager from "./AnswerComponentManager";
 
@@ -248,7 +249,7 @@ function DicomQuestion(props) {
     .catch((err) => {
       if (err != "Invalid TransferSyntaxUID") {
         setErrorDialogText("Something went wrong when parsing the DICOM file");
-        setAdvancedErrorDialogText("You may be able to fix the DICOM file with: gdcmconv -C file.dcm fixed_file.dcm");
+        setAdvancedErrorDialogText("You may be able to fix the DICOM file with: `gdcmconv -C file.dcm fixed_file.dcm`");
       }
     });
   }
@@ -307,7 +308,7 @@ function DicomQuestion(props) {
             <Typography variant="subtitle2">Advanced help</Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <Typography variant="body2">{advancedErrorDialogText}</Typography>
+            <FormattedText variant="body2">{advancedErrorDialogText}</FormattedText>
           </AccordionDetails>
         </Accordion>
       </ResponsiveDialog>
