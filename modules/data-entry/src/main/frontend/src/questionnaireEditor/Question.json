@@ -191,6 +191,9 @@
         "maxAnswers": "long",
         "namePattern": "string"
       },
+      "dicom": {
+        "minAnswers": {"0":{}, "1":{}}
+      },
       "vocabulary": {
         "sourceVocabularies": {
           "type": "list",

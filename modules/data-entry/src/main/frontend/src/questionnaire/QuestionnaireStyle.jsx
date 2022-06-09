@@ -444,6 +444,7 @@ const questionnaireStyle = theme => ({
         color: theme.palette.primary.light,
     },
     notesContainer: {
+        whiteSpace: "pre-wrap",
         padding: theme.spacing(3, 0, 1)
     },
     toggleNotesButton: {
@@ -622,7 +623,14 @@ const questionnaireStyle = theme => ({
     fileResourceAnswerList: {
       listStyleType: 'none',
       paddingInlineStart: "0",
-      marginTop: theme.spacing(3)
+      marginTop: theme.spacing(3),
+      "& > li" : {
+        display: "flex",
+        alignItems: "center",
+      },
+      "& > li > .MuiIconButton-root" : {
+        marginLeft: theme.spacing(0.5),
+      },
     },
     fileResourceAnswerInput: {
       marginTop: theme.spacing(-1.25),
