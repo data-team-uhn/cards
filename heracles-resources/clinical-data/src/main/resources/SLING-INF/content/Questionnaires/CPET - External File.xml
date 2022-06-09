@@ -292,7 +292,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>"High Touch"</value>
+						<value>High Touch</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -394,7 +394,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>"Low Touch"</value>
+						<value>Low Touch</value>
 					</values>
 					<type>String</type>
 				</property>

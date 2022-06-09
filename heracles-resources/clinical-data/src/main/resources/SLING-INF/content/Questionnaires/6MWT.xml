@@ -323,7 +323,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>"High Touch"</value>
+								<value>High Touch</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -364,7 +364,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>"Study"</value>
+								<value>Study</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -480,7 +480,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>"Low Touch"</value>
+								<value>Low Touch</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -521,7 +521,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>"Study"</value>
+								<value>Study</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -666,7 +666,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>"Triggered Assessment"</value>
+							<value>Triggered Assessment</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -782,7 +782,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>"Triggered Assessment"</value>
+							<value>Triggered Assessment</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -811,8 +811,13 @@
 					<type>String</type>
 				</property>
 				<property>
-					<name>displayMode</name>
-					<value>list</value>
+					<name>expression</name>
+					<value>return @{6mwt_yearnumber}+":"+@{6mwt_assessmentnumber}</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>entryMode</name>
+					<value>computed</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -825,48 +830,6 @@
 					<value>1</value>
 					<type>Long</type>
 				</property>
-				<node>
-					<name>6mwt_yearnumber</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>6mwt_yearnumber</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>6mwt_yearnumber</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>":"</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>":"</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>":"</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>6mwt_assessmentnumber</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>6mwt_assessmentnumber</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>6mwt_assessmentnumber</value>
-						<type>String</type>
-					</property>
-				</node>
 			</node>
 			<node>
 				<name>condition</name>
@@ -898,7 +861,7 @@
 					<property>
 						<name>value</name>
 						<values>
-							<value>"Triggered Assessment"</value>
+							<value>Triggered Assessment</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -1841,12 +1804,17 @@
 				</property>
 				<property>
 					<name>dataType</name>
-					<value>computed</value>
+					<value>text</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>expression</name>
 					<value>return (@{wd_laps} * @{wd_lap_dist}) + @{wd_part_lap}</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>entryMode</name>
+					<value>computed</value>
 					<type>String</type>
 				</property>
 				<property>
