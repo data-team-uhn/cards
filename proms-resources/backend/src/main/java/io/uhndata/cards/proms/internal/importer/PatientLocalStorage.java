@@ -202,7 +202,7 @@ public class PatientLocalStorage
         final List<ClinicInfo> clinicInfos = getClinicInfo(appointment.getJsonArray("location"));
         for (final ClinicInfo clinicInfo : clinicInfos) {
             final Resource visit = getOrCreateSubject(appointment.getString(PatientLocalStorage.FHIR_FIELD)
-                + "-" + clinicInfo.getSurveyID(), "/SubjectTypes/Patient/Visit/", patient);
+                + "-" + clinicInfo.getSurveyId(), "/SubjectTypes/Patient/Visit/", patient);
             final Resource visitInfo = getOrCreateForm(visit, "/Questionnaires/Visit information");
             updateVisitInformationForm(visitInfo, appointment, clinicInfo.getDisplayName(),
                 clinicInfo.getClinicPath());
@@ -665,7 +665,7 @@ public class PatientLocalStorage
 
         private String displayName;
 
-        private String surveyID;
+        private String surveyId;
 
         public void setClinicPath(final String path)
         {
@@ -687,14 +687,14 @@ public class PatientLocalStorage
             return this.displayName;
         }
 
-        public void setSurveyID(final String id)
+        public void setSurveyId(final String id)
         {
-            this.surveyID = id;
+            this.surveyId = id;
         }
 
-        public String getSurveyID()
+        public String getSurveyId()
         {
-            return this.surveyID;
+            return this.surveyId;
         }
     }
 
@@ -720,7 +720,7 @@ public class PatientLocalStorage
                 try {
                     final ClinicInfo thisClinic = new ClinicInfo();
                     final Node thisNode = mapping.adaptTo(Node.class);
-                    thisClinic.setSurveyID(thisNode.getProperty("survey").getString());
+                    thisClinic.setSurveyId(thisNode.getProperty("survey").getString());
                     thisClinic.setDisplayName(thisNode.getProperty("displayName").getString());
                     thisClinic.setClinicPath(mapPath);
                     results.add(thisClinic);
