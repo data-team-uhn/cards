@@ -154,32 +154,40 @@ let ComputedQuestion = (props) => {
   }
 
   let parseExpressionInputs = (expr, form) => {
-    let inputNames = [];
-    let inputValues = [];
+    // List of all the questions that have an argument already
+    let questions = new Map();
+
     let start = expr.indexOf(startTag);
     let end = expr.indexOf(endTag, start);
+    // For each argument in the expression, parse the question name and default value if present.
+    // To prevent question names from breaking the evaluating funtion, replace them with a default
+    // argument name in the evaluated expression.
     while(start > -1 && end > -1) {
-      let optionStart = expr.indexOf(defaultTag, start);
-      let hasOption = (optionStart > -1 && optionStart < end);
-      // Divide the text between the start and end tag the question name and a default value if provided
-      let inputName;
+      let defaultStart = expr.indexOf(defaultTag, start);
+      let hasDefault = (defaultStart > -1 && defaultStart < end);
+
+      // Parse out the question name and default value if provided
+      let questionName;
       let defaultValue = null;
-      if (hasOption) {
-        inputName = expr.substring(start + startTag.length, optionStart);
+      if (hasDefault) {
+        questionName = expr.substring(start + startTag.length, optionStart);
         defaultValue = expr.substring(optionStart + defaultTag.length, end);
       } else {
-        inputName = expr.substring(start + startTag.length, end);
+        questionName = expr.substring(start + startTag.length, end);
       }
-      if (!inputNames.includes(inputName)) {
-        inputNames.push(inputName);
-        inputValues.push(getQuestionValue(inputName, form, defaultValue));
+
+      // Insert this question into the list of arguments
+      if (!questions.has(questionName)) {
+        questions.set(questionName,
+          {"argument": "arg" + (questions.size + 1), "value": getQuestionValue(questionName, form, defaultValue)});
       }
-      // Remove the start and end tags as well as the default option if provided
-      expr = [expr.substring(0, start), expr.substring(start + startTag.length, hasOption ? optionStart : end), expr.substring(end + endTag.length)].join('');
-      start = expr.indexOf(startTag, hasOption ? optionStart : end - startTag.length);
+
+      // Remove the start and end tags and replace the question name with the argument name for this question
+      expr = [expr.substring(0, start), questions.get(questionName)["argument"], expr.substring(end + endTag.length)].join('');
+      start = expr.indexOf(startTag);
       end = expr.indexOf(endTag, start);
     }
-    return [inputNames, inputValues, expr];
+    return [questions, expr];
   }
 
   let evaluateExpression = () => {
@@ -187,15 +195,22 @@ let ComputedQuestion = (props) => {
     let expressionError = null;
     try {
       let parseResults = parseExpressionInputs(expression, form);
-      let expressionArguments = ["form", "setError"].concat(parseResults[0]);
-      result = new Function(expressionArguments, parseResults[2])
-        (form, (errorMessage) => {expressionError = errorMessage}, ...parseResults[1]);
+      let questions = parseResults[0];
+      let parsedExpression = parseResults[1];
+
+      let expressionArguments = ["form", "setError"];
+      let expressionValues = [form, (errorMessage) => {expressionError = errorMessage}];
+      for(const question of questions.values()) {
+        expressionArguments.push(question["argument"]);
+        expressionValues.push(question["value"]);
+      };
+      result = new Function(expressionArguments, parsedExpression)(...expressionValues);
       if (missingValue || typeof(result) === "undefined" || (typeof(result) === "number" && isNaN(result))) {
         result = "";
       }
     }
     catch(err) {
-      console.error(`Error encountered evaluating expression:\n${expression}\n`, err);
+      console.error(`Error encountered evaluating expression:\n${expression}\n`, err.message);
       result = "";
     }
     if (expressionError) {
