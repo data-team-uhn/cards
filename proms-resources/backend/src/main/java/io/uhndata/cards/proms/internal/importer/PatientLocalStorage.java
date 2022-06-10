@@ -304,7 +304,7 @@ public class PatientLocalStorage
             if (provider.containsKey("role")) {
                 Boolean isAllowedRole = false;
                 for (final String allowedRole : this.providerRoles) {
-                    if (provider.getString("role") == allowedRole) {
+                    if (allowedRole.equals(provider.getString("role"))) {
                         isAllowedRole = true;
                         break;
                     }
