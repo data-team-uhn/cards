@@ -20,7 +20,7 @@
 import React, { useState, useRef } from "react";
 import PropTypes from "prop-types";
 
-import { CircularProgress, Link, Tooltip, Typography } from "@mui/material";
+import { CircularProgress, Chip, Tooltip, Typography } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
 
@@ -59,7 +59,7 @@ function ParsedNoteSection (props) {
     var endMatter = text.substring(lastMatch-offset);
   }
 
-  // Handle the user clicking on a link which corresponds to a suggestion
+  // Handle the user clicking on a chip which corresponds to a suggestion
   let addSuggestion = (event) => {
     event.preventDefault();
     onAddSuggestion(firstMatch[ONTOLOGY_KEY].replace(/:/g, ""), firstMatch["names"][0])
@@ -70,13 +70,11 @@ function ParsedNoteSection (props) {
     {hasMatch &&
       <React.Fragment>
         <Tooltip title={`Add ${matchName} (${matchID}) to selection`}>
-          <Link
+          <Chip
+            size="small"
             onClick={addSuggestion}
-            component="button"
-            underline="hover"
-            >
-            {/* Create a div purely to hold a ref for the above Tooltip */}
-            <span className={classes.NCRTooltip}>
+            color="info"
+            label={
               <ParsedNoteSection
                 tooltips={containedMatches}
                 text={containedMatter}
@@ -84,8 +82,8 @@ function ParsedNoteSection (props) {
                 classes={classes}
                 onAddSuggestion={onAddSuggestion}
                 />
-            </span>
-          </Link>
+            }
+          />
         </Tooltip>
         <ParsedNoteSection
           tooltips={uncontainedMatches}
