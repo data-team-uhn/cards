@@ -1,0 +1,104 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.uhndata.cards.internal;
+
+import javax.jcr.Node;
+import javax.jcr.PropertyIterator;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+
+import org.apache.jackrabbit.oak.api.CommitFailedException;
+import org.apache.jackrabbit.oak.api.Type;
+import org.apache.jackrabbit.oak.spi.commit.DefaultValidator;
+import org.apache.jackrabbit.oak.spi.commit.Validator;
+import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
+import org.apache.jackrabbit.oak.spi.state.NodeState;
+
+public class MaxFormsOfTypePerSubjectValidator extends DefaultValidator
+{
+    private final Session session;
+
+    // This holds the builder for the current node. The methods called for editing specific properties don't receive the
+    // actual parent node of those properties, so we must manually keep track of the current node.
+    private final NodeBuilder currentNodeBuilder;
+
+    public MaxFormsOfTypePerSubjectValidator(Session session, NodeBuilder currentNodeBuilder)
+    {
+        this.session = session;
+        this.currentNodeBuilder = currentNodeBuilder;
+    }
+
+    @Override
+    public Validator childNodeAdded(String name, NodeState after) throws CommitFailedException
+    {
+
+        if (isForm(this.currentNodeBuilder)) {
+            try {
+                Node questionnaire = this.session.getNodeByIdentifier(this.currentNodeBuilder
+                        .getProperty("questionnaire").getValue(Type.REFERENCE));
+                Node subject = this.session.getNodeByIdentifier(this.currentNodeBuilder.getProperty("subject")
+                        .getValue(Type.REFERENCE));
+                PropertyIterator maxFormNumberPerSubject = questionnaire.getProperties("maxPerSubject");
+                if (maxFormNumberPerSubject != null && Integer.parseInt(maxFormNumberPerSubject.toString()) > 0) {
+                    int formNumber = countFormsPerSubject(subject);
+                    if (formNumber > Integer.parseInt(maxFormNumberPerSubject.toString())) {
+                        throw new CommitFailedException("Type", 400,
+                                "The number of created forms is bigger then is allowed");
+                    }
+                }
+            } catch (RepositoryException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return new MaxFormsOfTypePerSubjectValidator(this.session, this.currentNodeBuilder.getChildNode(name));
+    }
+
+    private int countFormsPerSubject(Node subject)
+    {
+        // here should be some logic to find out the number of specific forms created by subject
+        return 0;
+    }
+
+    @Override
+    public Validator childNodeChanged(String name, NodeState before, NodeState after) throws CommitFailedException
+    {
+        return childNodeAdded(name, after);
+    }
+
+    /**
+     * Checks if the given node is a Form node.
+     *
+     * @param node the JCR Node to check
+     * @return {@code true} if the node is a Form node, {@code false} otherwise
+     */
+    private boolean isForm(NodeBuilder node)
+    {
+        return "cards:Form".equals(getNodeType(node));
+    }
+
+    /**
+     * Retrieves the primary node type of a node, as a String.
+     *
+     * @param node the node whose type to retrieve
+     * @return a string
+     */
+    private String getNodeType(NodeBuilder node)
+    {
+        return node.getProperty("jcr:primaryType").getValue(Type.STRING);
+    }
+
+}
