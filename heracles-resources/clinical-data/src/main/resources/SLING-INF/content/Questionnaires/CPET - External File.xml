@@ -61,6 +61,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
 			<name>minAnswers</name>
 			<value>1</value>
 			<type>Long</type>
@@ -117,6 +122,11 @@
 			<value>1</value>
 			<type>Long</type>
 		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
 		<node>
 			<name>High Touch</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -171,6 +181,11 @@
 				<name>maxAnswers</name>
 				<value>10</value>
 				<type>Long</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
@@ -331,6 +346,11 @@
 				<type>Long</type>
 			</property>
 			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -429,6 +449,11 @@
 			<value>5</value>
 			<type>Long</type>
 		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
 		<node>
 			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -523,6 +548,11 @@
 			<value>1</value>
 			<type>Long</type>
 		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
 		<node>
 			<name>T1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -576,18 +606,18 @@
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>description</name>
-			<value>Add up to 3 files</value>
+			<value>file</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>maxAnswers</name>
 			<value>3</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<property>
 			<name>minAnswers</name>

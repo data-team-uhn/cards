@@ -252,6 +252,7 @@ DATA_TO_CARDS_TYPE = {
     'computed (integer)': 'computed',
     'computed': 'computed',
     'time': 'time',
+    'file upload': 'file',
 }
 def convert_to_CARDS_data_type(userFormat):
     result = DATA_TO_CARDS_TYPE.get(userFormat.strip().lower(), 'text')
@@ -387,8 +388,8 @@ def csv_to_json(title):
                     }
                 if row['Options (if applicable)']:
                     process_options(parent[question], row)
-                    if not "multiple" in row['Field Type']:
-                        parent[question]['maxAnswers'] = 1
+                    if "multiple" in row['Field Type']:
+                        parent[question]['maxAnswers'] = 0
                 if 'Description' in row and row['Description'] != '':
                     parent[question]['description'] = row['Description']
                 if 'Units' in row and row['Units'] != '':
@@ -397,10 +398,12 @@ def csv_to_json(title):
                     parent[question]['minValue'] = float(row['Min Value'])
                 if 'Max Value' in row and row['Max Value']:
                     parent[question]['maxValue'] = float(row['Max Value'])
-                if row['Field Type'].endswith("(single)"):
-                    parent[question]['maxAnswers'] = 1
+                if row['Field Type'].endswith("(multiple)"):
+                    parent[question]['maxAnswers'] = 0
                 if 'Max Answers' in row and row['Max Answers']:
                     parent[question]['maxAnswers'] = int(row['Max Answers'])
+                elif not 'maxAnswers' in parent[question]:
+                    parent[question]['maxAnswers'] = 1
                 if 'Compact' in row and row['Compact'] != '':
                     value = row['Compact']
                     if value[0].lower() == "y":
