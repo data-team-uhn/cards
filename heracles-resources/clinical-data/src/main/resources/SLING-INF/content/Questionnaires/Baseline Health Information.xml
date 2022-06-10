@@ -55,18 +55,18 @@
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>long</value>
+				<value>text</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>displayMode</name>
-				<value>list</value>
+				<name>expression</name>
+				<value>return 1</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
+				<name>entryMode</name>
+				<value>computed</value>
+				<type>String</type>
 			</property>
 			<property>
 				<name>minValue</name>
@@ -79,6 +79,11 @@
 				<type>Double</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>compact</name>
 				<value>True</value>
 				<type>Boolean</type>
@@ -88,20 +93,6 @@
 				<value>1</value>
 				<type>Long</type>
 			</property>
-			<node>
-				<name>1</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>1</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>1</value>
-					<type>String</type>
-				</property>
-			</node>
 		</node>
 	</node>
 	<node>
@@ -134,6 +125,11 @@
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
@@ -242,6 +238,16 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
@@ -733,6 +739,16 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>maxAnswers</name>
+					<value>0</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -863,6 +879,11 @@
 					<type>Long</type>
 				</property>
 				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -958,6 +979,16 @@
 					<name>displayMode</name>
 					<value>list</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>0</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 				<property>
 					<name>minAnswers</name>
@@ -1090,6 +1121,11 @@
 					<type>Long</type>
 				</property>
 				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -1206,6 +1242,11 @@
 					<type>Long</type>
 				</property>
 				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -1312,6 +1353,16 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -1374,6 +1425,16 @@
 					<name>dataType</name>
 					<value>text</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 				<property>
 					<name>minAnswers</name>
@@ -1445,6 +1506,11 @@
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
@@ -1526,6 +1592,16 @@
 				<value>decimal</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 		</node>
 		<node>
 			<name>bl_smoking_sd</name>
@@ -1554,6 +1630,11 @@
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 		</node>
 		<node>
@@ -1584,6 +1665,11 @@
 				<value>1</value>
 				<type>Long</type>
 			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 		</node>
 		<node>
 			<name>bl_procedure</name>
@@ -1597,6 +1683,16 @@
 				<name>dataType</name>
 				<value>boolean</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
@@ -1624,6 +1720,16 @@
 					<name>displayMode</name>
 					<value>list</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>0</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 				<property>
 					<name>minAnswers</name>
@@ -1900,6 +2006,16 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -1964,6 +2080,16 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -2026,6 +2152,16 @@
 					<name>dataType</name>
 					<value>text</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 				<property>
 					<name>minAnswers</name>
@@ -2098,6 +2234,16 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -2123,6 +2269,16 @@
 					<name>displayMode</name>
 					<value>list+input</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>0</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 				<property>
 					<name>minAnswers</name>
@@ -2364,6 +2520,16 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -2522,6 +2688,16 @@
 				<name>displayMode</name>
 				<value>list+input</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
@@ -2693,6 +2869,16 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -2771,6 +2957,16 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
@@ -2859,6 +3055,16 @@
 					<name>displayMode</name>
 					<value>list</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>0</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 				<property>
 					<name>minAnswers</name>
@@ -3014,6 +3220,16 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>maxAnswers</name>
+					<value>0</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -3134,6 +3350,16 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -3199,6 +3425,16 @@
 				<value>text</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 		</node>
 	</node>
 	<node>
@@ -3229,8 +3465,18 @@
 			</property>
 			<property>
 				<name>displayMode</name>
-				<value>list</value>
+				<value>list+input</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
@@ -3406,20 +3652,6 @@
 				</property>
 			</node>
 			<node>
-				<name>Other cardiovascular family history</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Other cardiovascular family history</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Other cardiovascular family history</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
 				<name>None of the above</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
@@ -3454,6 +3686,16 @@
 					<name>dataType</name>
 					<value>text</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 				<property>
 					<name>minAnswers</name>
