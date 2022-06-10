@@ -199,12 +199,13 @@ public class PatientLocalStorage
         throws RepositoryException, PersistenceException
     {
         // In one usage of patientLocalStorage.store(), only store those within a specific timeframe
-        final List<SurveyInfo> surveyInfos = getSurveyInfo(appointment.getJsonArray("location"));
-        for (final SurveyInfo surveyInfo : surveyInfos) {
+        final List<ClinicInfo> clinicInfos = getClinicInfo(appointment.getJsonArray("location"));
+        for (final ClinicInfo clinicInfo : clinicInfos) {
             final Resource visit = getOrCreateSubject(appointment.getString(PatientLocalStorage.FHIR_FIELD)
-                + "-" + surveyInfo.getSurveyID(), "/SubjectTypes/Patient/Visit/", patient);
+                + "-" + clinicInfo.getSurveyId(), "/SubjectTypes/Patient/Visit/", patient);
             final Resource visitInfo = getOrCreateForm(visit, "/Questionnaires/Visit information");
-            updateVisitInformationForm(visitInfo, appointment, surveyInfo.getSurveyID(), surveyInfo.getDisplayName());
+            updateVisitInformationForm(visitInfo, appointment, clinicInfo.getDisplayName(),
+                clinicInfo.getClinicPath());
         }
     }
 
@@ -540,11 +541,11 @@ public class PatientLocalStorage
      *
      * @param form The Visit Information form to update
      * @param info The JsonObject representing a visit returned from Torch
-     * @param surveyID A string representing the internally mapped survey ID for the location of this visit
      * @param locationName A string representing the display name of the location for this visit
+     * @param clinicPath The path to the clinicMapping node for the clinic of this visit
      */
-    void updateVisitInformationForm(final Resource form, final JsonObject info, final String surveyID,
-        final String locationName)
+    void updateVisitInformationForm(final Resource form, final JsonObject info, final String locationName,
+        final String clinicPath)
         throws RepositoryException, PersistenceException
     {
         final Map<String, JsonGetter> formMapping = Map.of(
@@ -575,10 +576,8 @@ public class PatientLocalStorage
                 }
                 return providerNames.toArray();
             },
-            // We need to map the display name of the clinic given to a survey ID
-            // The mappings are stored at /Proms/ClinicMapping/<location hashcCode>
-            "surveys", obj -> surveyID,
-            "location", obj -> locationName);
+            "location", obj -> locationName,
+            "clinic", obj -> clinicPath);
 
         updateForm(form, info, "/Questionnaires/Visit information", formMapping);
 
@@ -658,22 +657,24 @@ public class PatientLocalStorage
     }
 
     /**
-     * Storage class for survey information.
+     * Storage class for clinic information.
      */
-    class SurveyInfo
+    class ClinicInfo
     {
-        private String surveyID;
+        private String clinicPath;
 
         private String displayName;
 
-        public void setSurveyID(final String id)
+        private String surveyId;
+
+        public void setClinicPath(final String path)
         {
-            this.surveyID = id;
+            this.clinicPath = path;
         }
 
-        public String getSurveyID()
+        public String getClinicPath()
         {
-            return this.surveyID;
+            return this.clinicPath;
         }
 
         public void setDisplayName(final String name)
@@ -685,17 +686,27 @@ public class PatientLocalStorage
         {
             return this.displayName;
         }
+
+        public void setSurveyId(final String id)
+        {
+            this.surveyId = id;
+        }
+
+        public String getSurveyId()
+        {
+            return this.surveyId;
+        }
     }
 
     /**
      * Map the given Torch clinic name to a survey ID and display name.
      *
      * @param locations The appointment locations array to parse
-     * @return The survey information as a list
+     * @return The clinic information as a list
      */
-    List<SurveyInfo> getSurveyInfo(final JsonArray locations)
+    List<ClinicInfo> getClinicInfo(final JsonArray locations)
     {
-        final List<SurveyInfo> results = new LinkedList<>();
+        final List<ClinicInfo> results = new LinkedList<>();
         for (int i = 0; i < locations.size(); i++) {
             // Resolve this name from our mapping
             final String clinic = locations.getString(i);
@@ -707,11 +718,12 @@ public class PatientLocalStorage
                 LOGGER.warn("Could not find mapping for location {} (checking {})", clinic, mapPath);
             } else {
                 try {
-                    final SurveyInfo thisSurvey = new SurveyInfo();
+                    final ClinicInfo thisClinic = new ClinicInfo();
                     final Node thisNode = mapping.adaptTo(Node.class);
-                    thisSurvey.setSurveyID(thisNode.getProperty("survey").getString());
-                    thisSurvey.setDisplayName(thisNode.getProperty("displayName").getString());
-                    results.add(thisSurvey);
+                    thisClinic.setSurveyId(thisNode.getProperty("survey").getString());
+                    thisClinic.setDisplayName(thisNode.getProperty("displayName").getString());
+                    thisClinic.setClinicPath(mapPath);
+                    results.add(thisClinic);
                 } catch (final RepositoryException e) {
                     LOGGER.error("Error while resolving clinic mapping: {} {} ", clinic, e.getMessage(), e);
                 }
