@@ -199,7 +199,7 @@ function Statistic(props) {
 
   let customStyle = disableClick ? {} : {cursor: "pointer"};
 
-  return <Grid item md={12} lg={6}>
+  return <Grid item xs={12} lg={6}>
     <Card className={classes.statsCard}>
       <CardHeader
         disableTypography

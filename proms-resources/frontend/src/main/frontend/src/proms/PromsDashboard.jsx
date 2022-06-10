@@ -183,12 +183,12 @@ function PromsDashboard(props) {
       { description && <Typography variant="overline">{description}</Typography>}
       <Grid container spacing={4} className={classes.dashboardContainer}>
         {/* Appointments view */}
-        <Grid item lg={12} xl={6} key={`view-appointments-${clinicId}`} className={classes.dashboardEntry}>
+        <Grid item xs={12} xl={6} key={`view-appointments-${clinicId}`} className={classes.dashboardEntry}>
           <VisitView color={getColor(0)} visitInfo={visitInfo} clinicId={clinicId} />
         </Grid>
         {/* Survey views */}
         { surveys?.map((s, index) => (
-            <Grid item lg={12} xl={6} key={`view-survey-${clinicId}-${s["@name"]}`} className={classes.dashboardEntry}>
+            <Grid item xs={12} xl={6} key={`view-survey-${clinicId}-${s["@name"]}`} className={classes.dashboardEntry}>
               <PromsView data={s} color={getColor(index + 1)} visitInfo={visitInfo} clinicId={clinicId} />
             </Grid>
           ))
@@ -197,7 +197,7 @@ function PromsDashboard(props) {
         {
           dashboardExtensions.map((extension, index) => {
             let Extension = extension["cards:extensionRender"];
-            return <Grid item lg={12} xl={6} key={`extension-${clinicId}-${index}`} className={classes.dashboardEntry}>
+            return <Grid item xs={12} xl={6} key={`extension-${clinicId}-${index}`} className={classes.dashboardEntry}>
               <Extension data={extension["cards:data"]} color={getColor(index)} visitInfo={visitInfo} clinicId={clinicId} />
             </Grid>
           })
