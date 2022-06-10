@@ -31,6 +31,7 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@SuppressWarnings("MultipleStringLiterals")
 public final class AppointmentUtils
 {
     /** Default log. */
@@ -227,6 +228,27 @@ public final class AppointmentUtils
     }
 
     /**
+     * Gets an email template from the provided JCR path.
+     *
+     * @param resolver a ResourceResolver that can be used to query the JCR
+     * @param jcrPath the JCR path to where the email template can be found
+     * @return the specified email template or null if no template can be found
+     */
+    public static String getEmailTemplateFromPath(ResourceResolver resolver, String jcrPath)
+    {
+        Resource mailTemplateResource = resolver.getResource(jcrPath + "/jcr:content");
+        if (mailTemplateResource == null) {
+            return null;
+        }
+
+        String mailTemplate = mailTemplateResource.getValueMap().get("jcr:data", "");
+        if ("".equals(mailTemplate)) {
+            return null;
+        }
+        return mailTemplate;
+    }
+
+    /**
      * Gets an email template for a given clinic.
      *
      * @param resolver a ResourceResolver that can be used to query the JCR
@@ -236,22 +258,11 @@ public final class AppointmentUtils
      */
     public static String getClinicEmailTemplate(ResourceResolver resolver, String clinicId, String templateName)
     {
-        Resource mailTemplateResource = resolver.getResource(
-            "/apps/cards/proms/clinics/"
+        return getEmailTemplateFromPath(resolver, "/apps/cards/proms/clinics/"
             + clinicId
             + "/mailTemplates/"
             + templateName
-            + "/jcr:content"
         );
-        if (mailTemplateResource == null) {
-            return null;
-        }
-
-        String htmlTemplate = mailTemplateResource.getValueMap().get("jcr:data", "");
-        if ("".equals(htmlTemplate)) {
-            return null;
-        }
-        return htmlTemplate;
     }
 
     /**
@@ -428,13 +439,27 @@ public final class AppointmentUtils
     }
 
     /**
-     * Finds all appointments scheduled for a given day.
+     * Finds all appointments scheduled for a given day for all clinics.
      *
      * @param resolver a ResourceResolver that can be used to query the JCR
      * @param dateToQuery the Java Calendar object for the day to query for appointments
      * @return an Iterator of cards:DateAnswer Resources representing the scheduled visits
      */
     public static Iterator<Resource> getAppointmentsForDay(ResourceResolver resolver, Calendar dateToQuery)
+    {
+        return getAppointmentsForDay(resolver, dateToQuery, null);
+    }
+
+    /**
+     * Finds all appointments scheduled for a given day for a given clinic.
+     *
+     * @param resolver a ResourceResolver that can be used to query the JCR
+     * @param dateToQuery the Java Calendar object for the day to query for appointments
+     * @param clinicId the clinic indentifier recorded in the Visit information form - ensure that it matches.
+     * @return an Iterator of cards:DateAnswer Resources representing the scheduled visits
+     */
+    public static Iterator<Resource> getAppointmentsForDay(ResourceResolver resolver,
+        Calendar dateToQuery, String clinicId)
     {
         final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         final Resource visitTimeResult = resolver.getResource("/Questionnaires/Visit information/time");
@@ -456,12 +481,14 @@ public final class AppointmentUtils
             "SELECT d.* FROM [cards:DateAnswer] AS d "
                 + "  INNER JOIN [cards:Form] AS f ON isdescendantnode(d, f) "
                 + "  INNER JOIN [cards:TextAnswer] AS s ON isdescendantnode(s, f) "
+                + ((clinicId != null) ? "  INNER JOIN [cards:TextAnswer] AS c ON isdescendantnode(c, f) " : "")
                 + "WHERE d.'question'='" + visitTimeUUID + "' "
                 + "  AND d.'value' >= cast('" + formatter.format(lowerBoundDate.getTime()) + "' AS date)"
                 + "  AND d.'value' < cast('" + formatter.format(upperBoundDate.getTime()) + "' AS date)"
                 + "  AND s.'question' = '" + statusUUID + "' "
                 + "  AND s.'value' <> 'cancelled'"
-                + "  AND s.'value' <> 'entered-in-error'",
+                + "  AND s.'value' <> 'entered-in-error'"
+                + ((clinicId != null) ? ("  AND c.'value' = '" + clinicId + "'") : ""),
             "JCR-SQL2");
         return results;
     }

@@ -62,9 +62,15 @@ abstract class AbstractPromsNotification
         this.mailService = mailService;
     }
 
-    @SuppressWarnings("checkstyle:ExecutableStatementCount")
     public long sendNotification(final int daysInTheFuture, final String emailTextTemplateName,
         final String emailHtmlTemplateName, final String emailSubject)
+    {
+        return sendNotification(daysInTheFuture, emailTextTemplateName, emailHtmlTemplateName, emailSubject, null);
+    }
+
+    @SuppressWarnings("checkstyle:ExecutableStatementCount")
+    public long sendNotification(final int daysInTheFuture, final String emailTextTemplateName,
+        final String emailHtmlTemplateName, final String emailSubject, final String clinicId)
     {
         final Calendar dateToQuery = Calendar.getInstance();
         dateToQuery.add(Calendar.DATE, daysInTheFuture);
@@ -72,7 +78,8 @@ abstract class AbstractPromsNotification
             Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, "EmailNotifications");
         long emailsSent = 0;
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(parameters)) {
-            Iterator<Resource> appointmentResults = AppointmentUtils.getAppointmentsForDay(resolver, dateToQuery);
+            Iterator<Resource> appointmentResults = AppointmentUtils.getAppointmentsForDay(resolver,
+                dateToQuery, clinicId);
             while (appointmentResults.hasNext()) {
                 Resource appointmentDate = appointmentResults.next();
                 Resource appointmentForm = AppointmentUtils.getFormForAnswer(resolver, appointmentDate);
@@ -94,16 +101,28 @@ abstract class AbstractPromsNotification
                 if (patientEmailAddress == null) {
                     continue;
                 }
-                String emailTextTemplate =
-                    AppointmentUtils.getVisitEmailTemplate(resolver, visitSubject, emailTextTemplateName);
-                if (emailTextTemplate == null) {
+
+                /* If a clinicId is specified, then emailTextTemplateName and emailHtmlTemplateName are JCR
+                 * paths to the plaintext and HTML email templates, respectively. Otherwise, if clinicId is null,
+                 * then we need to resolve the full JCR path to the email templates based on the clinic specified
+                 * in the Visit information Form and the given emailTextTemplateName, and emailHtmlTemplateName values.
+                 */
+                String emailTextTemplate = null;
+                String emailHtmlTemplate = null;
+                if (clinicId != null) {
+                    emailTextTemplate = AppointmentUtils.getEmailTemplateFromPath(resolver, emailTextTemplateName);
+                    emailHtmlTemplate = AppointmentUtils.getEmailTemplateFromPath(resolver, emailHtmlTemplateName);
+                } else {
+                    emailTextTemplate = AppointmentUtils.getVisitEmailTemplate(resolver,
+                        visitSubject, emailTextTemplateName);
+                    emailHtmlTemplate = AppointmentUtils.getVisitEmailTemplate(resolver,
+                        visitSubject, emailHtmlTemplateName);
+                }
+
+                if (emailTextTemplate == null || emailHtmlTemplate == null) {
                     continue;
                 }
-                String emailHtmlTemplate =
-                    AppointmentUtils.getVisitEmailTemplate(resolver, visitSubject, emailHtmlTemplateName);
-                if (emailHtmlTemplate == null) {
-                    continue;
-                }
+
                 String patientFullName = AppointmentUtils.getPatientFullName(resolver, patientSubject);
                 Calendar tokenExpiryDate = AppointmentUtils.parseDate(appointmentDate.getValueMap().get("value", ""));
                 atMidnight(tokenExpiryDate);

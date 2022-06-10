@@ -65,6 +65,10 @@ public final class UpcomingNotificationsFactory
         @AttributeDefinition(name = "Name", description = "Name")
         String name();
 
+        @AttributeDefinition(name = "ClinicID",
+            description = "Clinic Identifier as recorded under /apps/cards/proms/clinics/")
+        String clinicId();
+
         @AttributeDefinition(name = "Email Subject Line", description = "Email Subject Line")
         String emailSubject();
 
@@ -95,8 +99,9 @@ public final class UpcomingNotificationsFactory
 
         // Instantiate the Runnable
         final Runnable notificationsJob = new GeneralNotificationsTask(this.resolverFactory, this.tokenManager,
-            this.mailService, config.name(), config.emailSubject(), config.plainTextEmailTemplatePath(),
-            config.htmlEmailTemplatePath(), config.daysBeforeUpcomingVisit());
+            this.mailService, config.name(), config.clinicId(), config.emailSubject(),
+            config.plainTextEmailTemplatePath(), config.htmlEmailTemplatePath(),
+            config.daysBeforeUpcomingVisit());
 
         try {
             this.scheduler.schedule(notificationsJob, notificationsOptions);
