@@ -56,6 +56,7 @@ import SubjectTimeline from "./SubjectTimeline.jsx";
 let createQueryURL = (query, type) => {
   let url = new URL("/query", window.location.origin);
   url.searchParams.set("query", `SELECT * FROM [${type}] as n` + query);
+  url.searchParams.set("limit", 1000);
   return url;
 }
 
