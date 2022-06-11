@@ -185,19 +185,19 @@ const questionnaireStyle = theme => ({
     },
     subjectView : {
         "& .MuiTabs-indicator": {
-            background: "orange",
+            background: theme.palette.secondary.main,
         },
     },
     subjectViewAvatar: {
-        background: "orange",
+        background: theme.palette.secondary.main,
     },
     formView: {
         "& .MuiTabs-indicator": {
-            background: theme.palette.info.main,
+            background: theme.palette.primary.main,
         },
     },
     formViewAvatar: {
-        background: theme.palette.info.main,
+        background: theme.palette.primary.main,
     },
     newFormTypePlaceholder: {
         position: 'relative',
@@ -214,12 +214,17 @@ const questionnaireStyle = theme => ({
         }
     },
     subjectAvatar : {
-        backgroundColor: "orange",
+        backgroundColor: theme.palette.secondary.main,
+        fontWeight: 800,
+        zoom: .75,
     },
     subjectTitleWithAvatar: {
-        marginLeft: theme.spacing(-7),
+        marginLeft: theme.spacing(-5),
+        "& > *" : {
+          alignItems: "center",
+        },
         "& a": {
-          color: theme.palette.text.primary,
+          color: theme.palette.primary.main,
           textDecoration: "none",
         }
     },
@@ -228,7 +233,7 @@ const questionnaireStyle = theme => ({
         marginBottom: theme.spacing(4),
     },
     subjectNestedContainer: {
-        marginLeft: theme.spacing(7),
+        marginLeft: theme.spacing(5),
         marginTop: theme.spacing(4),
         "& .MuiGrid-container:last-child" : {
           marginBottom: "0 !important",
@@ -259,7 +264,7 @@ const questionnaireStyle = theme => ({
         textTransform: "initial",
       },
       "& .MuiTabs-indicator": {
-        background: "orange",
+        background: theme.palette.secondary.main,
       },
     },
     timelineContainer: {

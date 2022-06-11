@@ -19,11 +19,12 @@
 import PropTypes from "prop-types";
 import React from "react";
 
-import { blue, green, orange } from '@mui/material/colors';
+import { useTheme } from '@mui/material/styles';
 import { Avatar, ListItem, ListItemText, ListItemAvatar }  from "@mui/material";
 import DescriptionIcon from "@mui/icons-material/Description";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import OtherIcon from '@mui/icons-material/Reorder';
 import { Link } from "react-router-dom";
 import { getEntityIdentifier } from "../EntityIdentifier.jsx";
 
@@ -57,21 +58,27 @@ export function QuickSearchMatch(props) {
 
 function MatchAvatar(props) {
     const { matchData, classes } = props;
+    const theme = useTheme();
     let icon = <DescriptionIcon />;
     let style = '';
     switch (matchData["jcr:primaryType"]) {
       case "cards:Subject":
         icon = <AssignmentIndIcon />;
-        style = { backgroundColor: green[500] };
+        style = { backgroundColor: theme.palette.secondary.main };
         break;
       case "cards:Questionnaire":
         icon = <AssignmentIcon  />;
-        style = { backgroundColor: orange[500] };
+        style = { backgroundColor: theme.palette.text.secondary };
+        break;
+      // default covers other cases
+      case "cards:Form":
+        icon = <DescriptionIcon />;
+        style = { backgroundColor: theme.palette.primary.main };
         break;
       // default covers other cases
       default:
-        icon = <DescriptionIcon />;
-        style = { backgroundColor: blue[500] };
+        icon = <OtherIcon />;
+        style = { backgroundColor: theme.palette.text.primary };
         break;
     }
     return <Avatar className={classes.searchResultAvatar} style={style}>{icon}</Avatar>;

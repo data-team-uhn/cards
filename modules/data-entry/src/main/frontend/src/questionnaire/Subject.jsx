@@ -492,7 +492,7 @@ function SubjectMemberInternal (props) {
           <Grid container direction="row" spacing={1} justifyContent="flex-start">
             <Grid item xs={false}>{avatar}</Grid>
             <Grid item>
-              <Typography variant="h5">
+              <Typography variant="h6">
                  <Link to={"/content.html" + path} underline="hover">{title}</Link>
                  {action}
               </Typography>
