@@ -73,7 +73,7 @@ public class MaxFormsOfTypePerSubjectValidator extends DefaultValidator
                         .getValue(Type.REFERENCE));
                 long maxFormNumberPerSubject = questionnaire.getProperty("maxPerSubject").getLong();
                 if (maxFormNumberPerSubject > 0) {
-                    long formNumber = countVisitForms(subject.getProperty("uuid").getString(),
+                    long formNumber = countFormsPerSubject(subject.getProperty("uuid").getString(),
                             questionnaire.getProperty("title").getString()) + 1;
                     if (formNumber > maxFormNumberPerSubject) {
                         throw new CommitFailedException(CommitFailedException.STATE, 400,
@@ -99,16 +99,16 @@ public class MaxFormsOfTypePerSubjectValidator extends DefaultValidator
     /**
      * Counts the number of created forms per subject with specific questionnaire title.
      *
-     * @param visitUUID subject to be checked id
+     * @param subjectUUID subject to be checked id
      * @param excludeFormQuestionnaireType type of questionnaire to be count per subject
      * @return a long
      */
-    private long countVisitForms(String visitUUID, String excludeFormQuestionnaireType)
+    private long countFormsPerSubject(String subjectUUID, String excludeFormQuestionnaireType)
     {
         long count = 0;
         Iterator<Resource> results = this.resolver.findResources(
                 "SELECT * FROM [cards:Form] as f INNER JOIN [cards:Questionnaires] as q"
-                        + " ON f.'questionnaire'=q.'jcr:uuid' as fq WHERE fq.'relatedSubjects'='" + visitUUID + "'"
+                        + " ON f.'questionnaire'=q.'jcr:uuid' as fq WHERE fq.'subject'='" + subjectUUID + "'"
                         + " AND fq.'title'<>'" + excludeFormQuestionnaireType + "'",
                 "JCR-SQL2"
         );
