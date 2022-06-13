@@ -179,11 +179,13 @@ let ComputedQuestion = (props) => {
       // Insert this question into the list of arguments
       if (!questions.has(questionName)) {
         questions.set(questionName,
-          {"argument": "arg" + (questions.size + 1), "value": getQuestionValue(questionName, form, defaultValue)});
+          {"argument": "arg" + (questions.size + 1),
+            "value": getQuestionValue(questionName, form, defaultValue)});
       }
 
       // Remove the start and end tags and replace the question name with the argument name for this question
-      expr = [expr.substring(0, start), questions.get(questionName)["argument"], expr.substring(end + endTag.length)].join('');
+      expr = [expr.substring(0, start), questions.get(questionName)["argument"],
+        expr.substring(end + endTag.length)].join('');
       start = expr.indexOf(startTag);
       end = expr.indexOf(endTag, start);
     }
