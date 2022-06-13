@@ -37,6 +37,7 @@ public final class Metrics
     private static final String LABEL_TODAY = "today";
     private static final String LABEL_TOTAL = "total";
     private static final String METRICS_PATH = "/Metrics/";
+    private static final String PROP_VALUE = "value";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Metrics.class);
 
@@ -64,7 +65,7 @@ public final class Metrics
 
         ValueMap statMapPrevTotal = statResourcePrevTotal.getValueMap();
         ValueMap statMapTotal = statResourceTotal.getValueMap();
-        long prevTotalCount = statMapPrevTotal.get("value", (long) (-1));
+        long prevTotalCount = statMapPrevTotal.get(PROP_VALUE, (long) (-1));
         long totalCount = statMapTotal.get("oak:counter", (long) (-1));
         if (prevTotalCount < 0 || totalCount < 0) {
             return null;
@@ -113,11 +114,11 @@ public final class Metrics
             }
             final Map<String, Object> metricNameProperties = new HashMap<>();
             metricNameProperties.put("jcr:primaryType", "nt:unstructured");
-            metricNameProperties.put("value", statHumanName);
+            metricNameProperties.put(PROP_VALUE, statHumanName);
             resolver.create(thisFolderResource, "name", metricNameProperties);
             final Map<String, Object> prevTotalProperties = new HashMap<>();
             prevTotalProperties.put("jcr:primaryType", "nt:unstructured");
-            prevTotalProperties.put("value", 0);
+            prevTotalProperties.put(PROP_VALUE, 0);
             resolver.create(thisFolderResource, "prevTotal", prevTotalProperties);
             final Map<String, Object> totalProperties = new HashMap<>();
             totalProperties.put("jcr:primaryType", "nt:unstructured");
@@ -156,7 +157,7 @@ public final class Metrics
             Resource statResourcePrevTotal = resolver.getResource(
                 METRICS_PATH + statName + "/prevTotal");
             ModifiableValueMap statMapPrevTotal = statResourcePrevTotal.adaptTo(ModifiableValueMap.class);
-            statMapPrevTotal.put("value", totalCount);
+            statMapPrevTotal.put(PROP_VALUE, totalCount);
             resolver.commit();
         } catch (PersistenceException e) {
             return null;
@@ -177,7 +178,7 @@ public final class Metrics
         if (statResourceName == null) {
             return null;
         }
-        String humanName = statResourceName.getValueMap().get("value", "");
+        String humanName = statResourceName.getValueMap().get(PROP_VALUE, "");
         if ("".equals(humanName)) {
             return null;
         }
