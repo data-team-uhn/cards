@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React, { forwardRef, useState } from "react";
 
 import {
   InputAdornment,
@@ -448,13 +448,16 @@ function NumberQuestion(props) {
 }
 
 // Helper function to bridge react-number-format with @material-ui
-export function NumberFormatCustom(props) {
+export const NumberFormatCustom = React.forwardRef(function NumberFormatCustom(
+    props,
+    ref,
+  ) {
   const { inputRef, onChange, ...other } = props;
 
   return (
     <NumberFormat
       {...other}
-      getInputRef={inputRef}
+      getInputRef={ref}
       onValueChange={values => {
         onChange({
           target: {
@@ -464,10 +467,10 @@ export function NumberFormatCustom(props) {
       }}
     />
   );
-}
+});
 
 NumberFormatCustom.propTypes = {
-  inputRef: PropTypes.func.isRequired,
+  ref: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
 };
 
