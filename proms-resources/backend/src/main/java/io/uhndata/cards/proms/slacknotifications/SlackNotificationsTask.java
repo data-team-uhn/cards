@@ -21,12 +21,14 @@ package io.uhndata.cards.proms.slacknotifications;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.json.Json;
 import javax.json.JsonObject;
 
 import org.apache.sling.api.resource.LoginException;
+import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.slf4j.Logger;
@@ -89,74 +91,42 @@ public class SlackNotificationsTask implements Runnable
             params.put(ResourceResolverFactory.SUBSERVICE, "SlackNotifications");
             ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(params);
 
-            Map<String, Long> initialEmailsSent =
-                Metrics.getAndReset(resolver, "InitialEmailsSent");
-            Map<String, Long> reminderEmailsSent =
-                Metrics.getAndReset(resolver, "ReminderEmailsSent");
-            Map<String, Long> totalSurveysSubmitted =
-                Metrics.getAndReset(resolver, "TotalSurveysSubmitted");
-            Map<String, Long> appointmentSurveysSubmitted =
-                Metrics.getAndReset(resolver, "AppointmentSurveysSubmitted");
-            Map<String, Long> importedAppointments =
-                Metrics.getAndReset(resolver, "ImportedAppointments");
+            Map<String, Map<String, Long>> gatheredStatistics = new HashMap<>();
+
+            // Get all the sling:Folder nodes under /Metrics/
+            Iterator<Resource> metricsIter;
+            metricsIter = resolver.findResources(
+                "SELECT n.* FROM [sling:Folder] AS n WHERE isdescendantnode(n, '/Metrics')",
+                "JCR-SQL2"
+            );
+
+            while (metricsIter.hasNext()) {
+                Resource thisResource = metricsIter.next();
+                String thisJcrName = thisResource.getName();
+                String thisHumanName = Metrics.getHumanName(resolver, thisJcrName);
+                if (thisHumanName == null) {
+                    continue;
+                }
+                Map<String, Long> thisMetricValue = Metrics.getAndReset(resolver, thisJcrName);
+                if (thisMetricValue == null) {
+                    continue;
+                }
+                gatheredStatistics.put(thisHumanName, thisMetricValue);
+            }
 
             resolver.close();
 
+            // Build the notification update string to be sent to Slack
             String slackNotificationString = "";
-            if (initialEmailsSent != null)
+            for (String key : gatheredStatistics.keySet())
             {
                 slackNotificationString = buildNotificationLine(
                     slackNotificationString,
-                    initialEmailsSent,
-                    "Initial Emails Sent"
+                    gatheredStatistics.get(key),
+                    key
                 );
-            } else {
-                LOGGER.warn("Couldn't get #Initial Emails Sent");
             }
 
-            if (reminderEmailsSent != null)
-            {
-                slackNotificationString = buildNotificationLine(
-                    slackNotificationString,
-                    reminderEmailsSent,
-                    "Reminder Emails Sent"
-                );
-            } else {
-                LOGGER.warn("Couldn't get #Reminder Emails Sent");
-            }
-
-            if (totalSurveysSubmitted != null)
-            {
-                slackNotificationString = buildNotificationLine(
-                    slackNotificationString,
-                    totalSurveysSubmitted,
-                    "Total Surveys Submitted"
-                );
-            } else {
-                LOGGER.warn("Couldn't get #Total Surveys Submitted");
-            }
-
-            if (appointmentSurveysSubmitted != null)
-            {
-                slackNotificationString = buildNotificationLine(
-                    slackNotificationString,
-                    appointmentSurveysSubmitted,
-                    "Appointment Surveys Submitted"
-                );
-            } else {
-                LOGGER.warn("Couldn't get #Appointment Surveys Submitted");
-            }
-
-            if (importedAppointments != null)
-            {
-                slackNotificationString = buildNotificationLine(
-                    slackNotificationString,
-                    importedAppointments,
-                    "Imported Appointments"
-                );
-            } else {
-                LOGGER.warn("Couldn't get #Imported Appointments");
-            }
             if (slackNotificationString.length() == 0) {
                 slackNotificationString = "*ERROR*: Could not gather any performance statistics";
             }
