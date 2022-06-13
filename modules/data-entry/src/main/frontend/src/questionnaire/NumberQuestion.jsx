@@ -260,8 +260,12 @@ function NumberQuestion(props) {
   let hasAnswerOptions = !!(props.defaults || Object.values(props.questionDefinition).some(value => value['jcr:primaryType'] == 'cards:AnswerOption'));
 
   // Generate message about accepted min/maxValues
+  // Don't show instructions if the the range is not defined or if
+  // the ui already prevents users from entering out of range values:
+  // * minValue  = 0
+  // * displayMode = slider
   let minMaxMessage = "";
-  if ((typeof minValue !== "undefined" || typeof maxValue !== "undefined") && !isSlider) {
+  if ((minValue || typeof maxValue !== "undefined") && !isSlider) {
     minMaxMessage = "Please enter values ";
     if (typeof minValue !== "undefined" && typeof maxValue !== "undefined") {
       minMaxMessage = `${minMaxMessage} between ${minValue} and ${maxValue}`;
