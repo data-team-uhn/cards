@@ -164,6 +164,26 @@ public final class Metrics
         return statsMap;
     }
 
+    /**
+     * Gets the human-readable name associated with a performance metric.
+     *
+     * @param resolver a ResourceResolver for querying the /Metrics/ JCR nodes
+     * @param statName the name of the performance statistic to obtain its human-readable name
+     * @return the human-readable name associated with the performance metric or null
+     */
+    public static String getHumanName(ResourceResolver resolver, String statName)
+    {
+        Resource statResourceName = resolver.getResource(METRICS_PATH + statName + "/name");
+        if (statResourceName == null) {
+            return null;
+        }
+        String humanName = statResourceName.getValueMap().get("value", "");
+        if ("".equals(humanName)) {
+            return null;
+        }
+        return humanName;
+    }
+
     private static void increment(ResourceResolver resolver, String statName, long incrementBy)
     {
         try {
