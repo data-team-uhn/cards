@@ -161,7 +161,7 @@ export default class DateQuestionUtilities {
         !date?.isValid ? "" : date.toFormat("yyyy-MM")
         );
     } else {
-      return date.format(dateFormat);
+      return date.toFormat(dateFormat);
     }
   }
 
@@ -184,11 +184,15 @@ export default class DateQuestionUtilities {
       let diff = [];
       let longDiff = [];
       for (const division of ["years", "months", "days"]) {
-        let value = endDate.diff(startDate, division);
-        diff.push(value);
-        if (value > 0) {
-          endDate = endDate.subtract(value, division);
+        let value = endDate.diff(startDate, division).values[division];
+        if (value > 1) {
+          diff.push(value);
+          let timeSlot = {};
+          timeSlot[division] = value;
+          endDate = endDate.minus(timeSlot);
           longDiff.push(value + division.charAt(0));
+        } else {
+          diff.push(0);
         }
       }
 
