@@ -95,16 +95,27 @@ public final class Metrics
         }
     }
 
+    /**
+     * Creates the performance metric node and its child nodes - total, prevTotal and name in the JCR.
+     *
+     * @param resolverFactory a ResourceResolverFactory that can be used for inserting nodes into the JCR under /Metrics
+     * @param statName the name of this performace metric to be placed in the JCR as /Metrics/{statName}
+     * @param statHumanName the human readable description of this metric to be stored as the "value" property
+     *     for /Metrics/{statName}/name
+     */
     public static void createStatistic(final ResourceResolverFactory resolverFactory,
         final String statName, final String statHumanName)
     {
         Map<String, Object> params = new HashMap<>();
         params.put(ResourceResolverFactory.SUBSERVICE, "MetricLogger");
         try (ResourceResolver resolver = resolverFactory.getServiceResourceResolver(params)) {
+            // Get the /Metrics sling:Folder JCR Resource
             Resource metricsFolderResource = resolver.getResource(METRICS_PATH);
             if (metricsFolderResource == null) {
                 return;
             }
+
+            // Create the statistic sling:Folder under /Metrics and get a reference to it
             final Map<String, Object> statNodeProperties = new HashMap<>();
             statNodeProperties.put("jcr:primaryType", "sling:Folder");
             resolver.create(metricsFolderResource, statName, statNodeProperties);
@@ -112,19 +123,27 @@ public final class Metrics
             if (thisFolderResource == null) {
                 return;
             }
+
+            // Create the /Metrics/<STAT NAME>/name JCR node
             final Map<String, Object> metricNameProperties = new HashMap<>();
             metricNameProperties.put("jcr:primaryType", "nt:unstructured");
             metricNameProperties.put(PROP_VALUE, statHumanName);
             resolver.create(thisFolderResource, "name", metricNameProperties);
+
+            // Create the /Metrics/<STAT NAME>/prevTotal JCR node
             final Map<String, Object> prevTotalProperties = new HashMap<>();
             prevTotalProperties.put("jcr:primaryType", "nt:unstructured");
             prevTotalProperties.put(PROP_VALUE, 0);
             resolver.create(thisFolderResource, "prevTotal", prevTotalProperties);
+
+            // Create the /Metrics/<STAT NAME>/total JCR node
             final Map<String, Object> totalProperties = new HashMap<>();
             totalProperties.put("jcr:primaryType", "nt:unstructured");
             final String[] jcrMixinTypes = {"mix:atomicCounter"};
             totalProperties.put("jcr:mixinTypes", jcrMixinTypes);
             resolver.create(thisFolderResource, "total", totalProperties);
+
+            // Commit these changes to JCR
             resolver.commit();
         } catch (LoginException | PersistenceException e) {
             LOGGER.error("createStatistic failed for {}", statName);
