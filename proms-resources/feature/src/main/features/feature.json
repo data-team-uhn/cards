@@ -89,18 +89,12 @@
         // Special handling of the 404 page button: patients go to the PROMS UI, all other users go to the dashboard
         "create path (sling:Folder) /RedirectURL \n set ACL on /RedirectURL \n   deny jcr:read for everyone \n   allow jcr:read for patient \n   allow jcr:read for guest-patient \n end \n set properties on /RedirectURL \n   set RedirectURL to /Proms.html \n   set RedirectLabel to \"Go to my surveys\" \n end ",
         // A /Metrics sling:Folder for storing performance info to be sent periodically via Slack
-        "create path (sling:Folder) /Metrics/InitialEmailsSent/prevTotal(nt:unstructured)",
-        "create path (sling:Folder) /Metrics/InitialEmailsSent/total(nt:unstructured mixin mix:atomicCounter)",
-        "create path (sling:Folder) /Metrics/ReminderEmailsSent/prevTotal(nt:unstructured)",
-        "create path (sling:Folder) /Metrics/ReminderEmailsSent/total(nt:unstructured mixin mix:atomicCounter)",
         "create path (sling:Folder) /Metrics/TotalSurveysSubmitted/prevTotal(nt:unstructured)",
         "create path (sling:Folder) /Metrics/TotalSurveysSubmitted/total(nt:unstructured mixin mix:atomicCounter)",
         "create path (sling:Folder) /Metrics/AppointmentSurveysSubmitted/prevTotal(nt:unstructured)",
         "create path (sling:Folder) /Metrics/AppointmentSurveysSubmitted/total(nt:unstructured mixin mix:atomicCounter)",
         "create path (sling:Folder) /Metrics/ImportedAppointments/prevTotal(nt:unstructured)",
         "create path (sling:Folder) /Metrics/ImportedAppointments/total(nt:unstructured mixin mix:atomicCounter)",
-        "set properties on /Metrics/InitialEmailsSent/prevTotal \n   default value{Long} to 0 \n end",
-        "set properties on /Metrics/ReminderEmailsSent/prevTotal \n   default value{Long} to 0 \n end",
         "set properties on /Metrics/TotalSurveysSubmitted/prevTotal \n   default value{Long} to 0 \n end",
         "set properties on /Metrics/AppointmentSurveysSubmitted/prevTotal \n   default value{Long} to 0 \n end",
         "set properties on /Metrics/ImportedAppointments/prevTotal \n   default value{Long} to 0 \n end"
