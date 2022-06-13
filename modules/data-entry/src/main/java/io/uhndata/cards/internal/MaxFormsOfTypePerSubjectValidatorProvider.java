@@ -40,6 +40,6 @@ public class MaxFormsOfTypePerSubjectValidatorProvider extends ValidatorProvider
     protected @Nullable Validator getRootValidator(NodeState before, NodeState after, CommitInfo commitInfo)
     {
         final ResourceResolver resolver = this.rrf.getThreadResourceResolver();
-        return new MaxFormsOfTypePerSubjectValidator(resolver.adaptTo(Session.class), after.builder());
+        return new MaxFormsOfTypePerSubjectValidator(resolver, resolver.adaptTo(Session.class), after.builder());
     }
 }
