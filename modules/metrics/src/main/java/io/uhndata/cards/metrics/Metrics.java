@@ -94,7 +94,8 @@ public final class Metrics
         }
     }
 
-    public static void createStatistic(final ResourceResolverFactory resolverFactory, final String statName)
+    public static void createStatistic(final ResourceResolverFactory resolverFactory,
+        final String statName, final String statHumanName)
     {
         Map<String, Object> params = new HashMap<>();
         params.put(ResourceResolverFactory.SUBSERVICE, "MetricLogger");
@@ -110,6 +111,10 @@ public final class Metrics
             if (thisFolderResource == null) {
                 return;
             }
+            final Map<String, Object> metricNameProperties = new HashMap<>();
+            metricNameProperties.put("jcr:primaryType", "nt:unstructured");
+            metricNameProperties.put("value", statHumanName);
+            resolver.create(thisFolderResource, "name", metricNameProperties);
             final Map<String, Object> prevTotalProperties = new HashMap<>();
             prevTotalProperties.put("jcr:primaryType", "nt:unstructured");
             prevTotalProperties.put("value", 0);

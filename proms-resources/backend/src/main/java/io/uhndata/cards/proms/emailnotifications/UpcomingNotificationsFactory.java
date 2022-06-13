@@ -65,6 +65,9 @@ public final class UpcomingNotificationsFactory
         @AttributeDefinition(name = "Name", description = "Name")
         String name();
 
+        @AttributeDefinition(name = "Metric Name", description = "Metric name description (eg. Reminder emails sent)")
+        String metricName();
+
         @AttributeDefinition(name = "Clinic Mapping Path",
             description = "Clinic mapping path for this clinic (eg. /Proms/ClinicMapping/123456789)")
         String clinicId();
@@ -91,7 +94,7 @@ public final class UpcomingNotificationsFactory
             StringUtils.defaultIfEmpty(System.getenv("NIGHTLY_NOTIFICATIONS_SCHEDULE"), "0 0 6 * * ? *");
 
         // Create the performance metrics measurement node
-        Metrics.createStatistic(this.resolverFactory, config.name());
+        Metrics.createStatistic(this.resolverFactory, config.name(), config.metricName());
 
         ScheduleOptions notificationsOptions = this.scheduler.EXPR(nightlyNotificationsSchedule);
         notificationsOptions.name("NightlyNotifications-" + config.name());
