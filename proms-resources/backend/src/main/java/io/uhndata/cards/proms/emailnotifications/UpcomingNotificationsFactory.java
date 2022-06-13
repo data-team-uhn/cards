@@ -65,8 +65,8 @@ public final class UpcomingNotificationsFactory
         @AttributeDefinition(name = "Name", description = "Name")
         String name();
 
-        @AttributeDefinition(name = "ClinicID",
-            description = "Clinic Identifier as recorded under /apps/cards/proms/clinics/")
+        @AttributeDefinition(name = "Clinic Mapping Path",
+            description = "Clinic mapping path for this clinic (eg. /Proms/ClinicMapping/123456789)")
         String clinicId();
 
         @AttributeDefinition(name = "Email Subject Line", description = "Email Subject Line")
