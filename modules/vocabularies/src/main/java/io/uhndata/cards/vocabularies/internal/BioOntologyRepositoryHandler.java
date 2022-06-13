@@ -21,7 +21,8 @@ package io.uhndata.cards.vocabularies.internal;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.json.Json;
@@ -66,7 +67,7 @@ public class BioOntologyRepositoryHandler implements RepositoryHandler
         but where the default download may be in an unsupported format. Such vocabularies
         should be explicitly requested to be downloaded in RDF format. */
     private static final Set<String> RDF_VOCABULARY_FORMATS =
-        Collections.singleton("OWL");
+        new HashSet<>(Arrays.asList("OWL", "UMLS"));
 
     /** Extra query parameter to request a vocabulary in RDF format (that is supported by our parser).
         See http://data.bioontology.org/documentation for full API documentation. */
