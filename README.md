@@ -33,6 +33,8 @@ To specify a different URL, use `-Dsling.url=https://cards.server:8443/system/co
 
 `mvn install -PintegrationTests` to run integration tests
 
+A docker image is automatically built when docker is detected. This slows down the build, and may fail if the current user does not have the right to access docker. Docker builds can be disabled with `mvn install -P-docker`.
+
 ## Run:
 `./start_cards.sh` => the app will run at `http://localhost:8080` (default port)
 
