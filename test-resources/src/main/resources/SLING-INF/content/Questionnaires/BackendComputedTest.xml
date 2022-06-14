@@ -30,13 +30,30 @@
         <value>CARDS-1800</value>
         <type>String</type>
     </property>
+    <node>
+        <name>testing-instructions</name>
+        <primaryNodeType>cards:Information</primaryNodeType>
+        <property>
+            <name>text</name>
+            <value>This form is designed to test both front end and back end computed questions.
+
+To test front end computed question handling, use the `admin` or `testuser` accounts to fill out this form.
+These users can complete all questions in this form, so the front end will calculate the computed questions.
+
+To test the back end computed questions, use the `computedtestuser` account (password: `testpassword`).
+This account has permission to view and edit the user questions, but not the computed questions.
+As a result, creating and completing this form with `computedtestuser` will force the backend to calculate the computed questions,
+which can then be verified for accuracy by opening the form in read mode with the `admin` or normal `testuser` accounts.</value>
+            <type>String</type>
+        </property>
+    </node>
 
     <node>
-        <name>dataquestions</name>
+        <name>userquestions</name>
         <primaryNodeType>cards:Section</primaryNodeType>
         <property>
             <name>label</name>
-            <value>Data Questions</value>
+            <value>User Questions</value>
             <type>String</type>
         </property>
         <node>
@@ -132,7 +149,7 @@
        <primaryNodeType>cards:Section</primaryNodeType>
        <property>
            <name>label</name>
-           <value>Polar</value>
+           <value>Computed Questions</value>
             <type>String</type>
         </property>
         <node>
