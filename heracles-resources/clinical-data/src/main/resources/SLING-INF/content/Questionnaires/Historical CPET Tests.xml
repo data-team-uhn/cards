@@ -38,70 +38,61 @@
 		<type>Reference</type>
 	</property>
 	<node>
-		<name>CPET</name>
-		<primaryNodeType>cards:Section</primaryNodeType>
+		<name>cpet_date</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
-			<name>label</name>
-			<value>CPET</value>
+			<name>text</name>
+			<value>Date of CPET</value>
 			<type>String</type>
 		</property>
-		<node>
-			<name>cpet_date</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Date of CPET</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>date</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dateFormat</name>
-				<value>MM/dd/yyyy</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-		</node>
-		<node>
-			<name>cpet_peak_vo2_historic</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Peak VO2</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>decimal</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>unitOfMeasurement</name>
-				<value>mL/kg/min</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-		</node>
+		<property>
+			<name>dataType</name>
+			<value>date</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dateFormat</name>
+			<value>MM/dd/yyyy</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+	</node>
+	<node>
+		<name>cpet_peak_vo2_historic</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Peak VO2</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>decimal</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>unitOfMeasurement</name>
+			<value>mL/kg/min</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
 	</node>
 </node>

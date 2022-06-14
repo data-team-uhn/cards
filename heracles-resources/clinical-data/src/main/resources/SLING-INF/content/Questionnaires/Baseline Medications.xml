@@ -60,18 +60,13 @@
 			</property>
 			<property>
 				<name>displayMode</name>
-				<value>list</value>
+				<value>list+input</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>maxAnswers</name>
 				<value>0</value>
 				<type>Long</type>
-			</property>
-			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
@@ -233,20 +228,6 @@
 				</property>
 			</node>
 			<node>
-				<name>Other medication</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Other medication</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Other medication</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
 				<name>None of the above</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
@@ -264,80 +245,6 @@
 					<value>True</value>
 					<type>Boolean</type>
 				</property>
-			</node>
-		</node>
-		<node>
-			<name>bl_med_types_otherSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>bl_med_types_other</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Specify other medication(s):</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>compact</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>bl_med_types</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>Other medication</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
 			</node>
 		</node>
 		<node>
@@ -564,11 +471,6 @@
 					<type>Long</type>
 				</property>
 				<property>
-					<name>compact</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -725,11 +627,6 @@
 					<name>maxAnswers</name>
 					<value>1</value>
 					<type>Long</type>
-				</property>
-				<property>
-					<name>compact</name>
-					<value>True</value>
-					<type>Boolean</type>
 				</property>
 				<property>
 					<name>minAnswers</name>
@@ -1108,11 +1005,6 @@
 					<type>Long</type>
 				</property>
 				<property>
-					<name>compact</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -1269,11 +1161,6 @@
 					<name>maxAnswers</name>
 					<value>1</value>
 					<type>Long</type>
-				</property>
-				<property>
-					<name>compact</name>
-					<value>True</value>
-					<type>Boolean</type>
 				</property>
 				<property>
 					<name>minAnswers</name>

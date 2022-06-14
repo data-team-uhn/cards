@@ -74,11 +74,6 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
-			</property>
-			<property>
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -912,11 +907,6 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
-			</property>
-			<property>
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -1457,11 +1447,6 @@
 					<name>maxAnswers</name>
 					<value>1</value>
 					<type>Long</type>
-				</property>
-				<property>
-					<name>compact</name>
-					<value>True</value>
-					<type>Boolean</type>
 				</property>
 				<property>
 					<name>minAnswers</name>
@@ -2121,11 +2106,6 @@
 					<type>Long</type>
 				</property>
 				<property>
-					<name>compact</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -2328,11 +2308,6 @@
 					<name>maxAnswers</name>
 					<value>0</value>
 					<type>Long</type>
-				</property>
-				<property>
-					<name>compact</name>
-					<value>True</value>
-					<type>Boolean</type>
 				</property>
 				<property>
 					<name>minAnswers</name>
@@ -2621,11 +2596,6 @@
 					<name>maxAnswers</name>
 					<value>0</value>
 					<type>Long</type>
-				</property>
-				<property>
-					<name>compact</name>
-					<value>True</value>
-					<type>Boolean</type>
 				</property>
 				<property>
 					<name>minAnswers</name>
@@ -2939,11 +2909,6 @@
 					<type>Long</type>
 				</property>
 				<property>
-					<name>compact</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -3190,11 +3155,6 @@
 					<type>Long</type>
 				</property>
 				<property>
-					<name>compact</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -3354,15 +3314,8 @@
 				<type>String</type>
 			</property>
 			<property>
-				<name>description</name>
-				<value>1111111
-2222222
-3333333
-4444444
-5555555
-6666666
-7777777
-8888888</value>
+				<name>displayMode</name>
+				<value>list</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -3371,15 +3324,122 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
-			</property>
-			<property>
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
 			</property>
+			<node>
+				<name>1111111</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>1111111</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>1111111</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>2222222</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>2222222</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>2222222</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>3333333</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>3333333</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>3333333</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>4444444</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>4444444</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>4444444</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>5555555</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>5555555</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>5555555</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>6666666</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>6666666</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>6666666</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>7777777</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>7777777</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>7777777</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>8888888</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>8888888</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>8888888</value>
+					<type>String</type>
+				</property>
+			</node>
 		</node>
 	</node>
 </node>

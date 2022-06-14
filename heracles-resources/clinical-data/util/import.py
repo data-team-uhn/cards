@@ -251,6 +251,7 @@ DATA_TO_CARDS_TYPE = {
     'computed (decimal)': 'computed',
     'computed (integer)': 'computed',
     'computed': 'computed',
+    'computed formatted': 'computed',
     'time': 'time',
     'file upload': 'file',
 }
@@ -400,6 +401,8 @@ def csv_to_json(title):
                     parent[question]['maxValue'] = float(row['Max Value'])
                 if row['Field Type'].endswith("(multiple)"):
                     parent[question]['maxAnswers'] = 0
+                if 'formatted' in row['Field Type'].lower():
+                    parent[question]['displayMode'] = 'formatted'
                 if 'Max Answers' in row and row['Max Answers']:
                     parent[question]['maxAnswers'] = int(row['Max Answers'])
                 elif not 'maxAnswers' in parent[question]:

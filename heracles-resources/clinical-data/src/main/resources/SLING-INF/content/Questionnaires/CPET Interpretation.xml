@@ -126,11 +126,6 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
-			</property>
-			<property>
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -889,11 +884,6 @@
 					<type>Long</type>
 				</property>
 				<property>
-					<name>compact</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -1219,11 +1209,6 @@
 				<value>1</value>
 				<type>Long</type>
 			</property>
-			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
-			</property>
 			<node>
 				<name>Laying down</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -1476,11 +1461,6 @@
 					<type>Long</type>
 				</property>
 				<property>
-					<name>compact</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -1600,11 +1580,6 @@
 					<name>maxAnswers</name>
 					<value>1</value>
 					<type>Long</type>
-				</property>
-				<property>
-					<name>compact</name>
-					<value>True</value>
-					<type>Boolean</type>
 				</property>
 				<property>
 					<name>minAnswers</name>
@@ -1781,11 +1756,6 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
-			</property>
-			<property>
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -1860,11 +1830,6 @@
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
-			</property>
-			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
@@ -2034,11 +1999,6 @@
 					<type>Long</type>
 				</property>
 				<property>
-					<name>compact</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -2139,11 +2099,6 @@
 					<name>maxAnswers</name>
 					<value>0</value>
 					<type>Long</type>
-				</property>
-				<property>
-					<name>compact</name>
-					<value>True</value>
-					<type>Boolean</type>
 				</property>
 				<property>
 					<name>minAnswers</name>
@@ -2574,11 +2529,6 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 					<name>maxAnswers</name>
 					<value>1</value>
 					<type>Long</type>
-				</property>
-				<property>
-					<name>compact</name>
-					<value>True</value>
-					<type>Boolean</type>
 				</property>
 				<property>
 					<name>minAnswers</name>
@@ -3161,11 +3111,6 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 				<value>1</value>
 				<type>Long</type>
 			</property>
-			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
-			</property>
 			<node>
 				<name>Yes</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -3236,11 +3181,6 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
-			</property>
-			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
 			</property>
 			<node>
 				<name>Above average</name>
@@ -3327,11 +3267,6 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 				<value>1</value>
 				<type>Long</type>
 			</property>
-			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
-			</property>
 			<node>
 				<name>Normal</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -3404,11 +3339,6 @@ Abnormal if below the range</value>
 				<value>1</value>
 				<type>Long</type>
 			</property>
-			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
-			</property>
 			<node>
 				<name>Normal</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -3480,11 +3410,6 @@ Abnormal is fall in systolic BP >20 mmHg from the highest peak sBP during the te
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
-			</property>
-			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
 			</property>
 			<node>
 				<name>Normal</name>
@@ -3559,11 +3484,6 @@ Normal = less than 34 at anaerobic threshold
 				<value>1</value>
 				<type>Long</type>
 			</property>
-			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
-			</property>
 			<node>
 				<name>Normal</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -3634,11 +3554,6 @@ Normal = less than 34 at anaerobic threshold
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
-			</property>
-			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
 			</property>
 			<node>
 				<name>Normal</name>
@@ -3714,11 +3629,6 @@ Normal = less than 34 at anaerobic threshold
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
-			</property>
-			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
@@ -3927,11 +3837,6 @@ Normal = less than 34 at anaerobic threshold
 				<name>maxAnswers</name>
 				<value>0</value>
 				<type>Long</type>
-			</property>
-			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
 			</property>
 			<node>
 				<name>I</name>
@@ -4149,11 +4054,6 @@ Normal = less than 34 at anaerobic threshold
 				<value>0</value>
 				<type>Long</type>
 			</property>
-			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
-			</property>
 			<node>
 				<name>I</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -4365,11 +4265,6 @@ Normal = less than 34 at anaerobic threshold
 				<value>0</value>
 				<type>Long</type>
 			</property>
-			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
-			</property>
 			<node>
 				<name>Atrial flutter</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -4527,11 +4422,6 @@ See Fletcher, Circulation 2013:
 				<value>1</value>
 				<type>Long</type>
 			</property>
-			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
-			</property>
 			<node>
 				<name>Yes</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -4602,11 +4492,6 @@ See Fletcher, Circulation 2013:
 				<name>maxAnswers</name>
 				<value>0</value>
 				<type>Long</type>
-			</property>
-			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
 			</property>
 			<node>
 				<name>I</name>
@@ -4824,11 +4709,6 @@ See Fletcher, Circulation 2013:
 				<value>0</value>
 				<type>Long</type>
 			</property>
-			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
-			</property>
 			<node>
 				<name>I</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -5039,11 +4919,6 @@ See Fletcher, Circulation 2013:
 				<name>maxAnswers</name>
 				<value>0</value>
 				<type>Long</type>
-			</property>
-			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
 			</property>
 			<node>
 				<name>Chest pain and-or tightness</name>
