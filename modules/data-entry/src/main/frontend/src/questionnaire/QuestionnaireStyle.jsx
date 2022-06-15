@@ -598,25 +598,6 @@ const questionnaireStyle = theme => ({
     questionnaireListItem: {
         color: theme.palette.grey["900"]
     },
-    questionnaireItemContent: {
-        "&.avatarCardContent": {
-           paddingLeft: theme.spacing(9),
-        },
-        "& table th": {
-            border: "0 none",
-            fontWeight: "bold",
-            verticalAlign: "top",
-            width: "1%",
-            whiteSpace: "nowrap",
-            paddingLeft: 0,
-            paddingTop: 0,
-        },
-        "& table td": {
-            border: "0 none",
-            paddingLeft: 0,
-            paddingTop: 0,
-        }
-    },
     focusedQuestionnaireItem: {
       "&.MuiCard-root, > .MuiCard-root" : {
         border: `2px solid ${theme.palette.primary.main}`,

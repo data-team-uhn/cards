@@ -1,5 +1,11 @@
 [
   {
+    "//CHILDREN" : {
+      "Question" : "Question.json",
+      "Section" : "Section.json",
+      "Information" : "Information.json"
+    },
+    "title" : "string",
     "description" : "markdown",
     "maxPerSubject": "long",
     "paginate": "boolean",

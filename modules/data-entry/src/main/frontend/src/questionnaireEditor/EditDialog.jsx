@@ -31,6 +31,7 @@ import {
 } from "@mui/material";
 
 import Fields from './Fields';
+import { camelCaseToWords } from './LabeledField';
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
 // Dialog for editing or creating questions or sections
@@ -53,6 +54,8 @@ let EditDialog = (props) => {
   let [ variableNameError, setVariableNameError ] = useState('');
 
   let json = model ? require(`./${model}`) : require(`./${type}.json`);
+
+  let formattedType = camelCaseToWords(type);
 
   let saveButtonRef = React.useRef();
   const globalLoginDisplay = useContext(GlobalLoginContext);
@@ -146,13 +149,13 @@ let EditDialog = (props) => {
   }
 
   let dialogTitle = () => {
-    return (targetExists ? 'Edit ' : 'New ').concat(type);
+    return (targetExists ? 'Edit ' : 'New ').concat(formattedType.toLowerCase());
   }
 
   let targetIdField = () => {
     return (
       <Grid container alignItems='baseline' spacing={2} direction="row">
-        <Grid item xs={4}><Typography variant="subtitle2">{`${type} id:` }</Typography></Grid>
+        <Grid item xs={4}><Typography variant="subtitle2">{`${formattedType} id:` }</Typography></Grid>
         <Grid item xs={8}>{
           targetExists ?
           <Typography>{data["@name"]}</Typography> :
@@ -179,7 +182,7 @@ let EditDialog = (props) => {
       let mainType = data["sling:resourceType"].replaceAll(/^cards\//g, "");
       let type = (data[newValue].dataType ? data[newValue].dataType + " " : "") + data[newValue]["sling:resourceType"].replaceAll(/^cards\//g, "");
       let label = data[newValue].label || data[newValue].text || newValue;
-      setVariableNameError(`The identifier ${newValue} is already in use in this ${mainType} for the ${type} '${label}'. Please choose a different identifier.`);
+      setVariableNameError(`The identifier ${newValue} is already in use in this ${mainType} for the ${formttedType} '${label}'. Please choose a different identifier.`);
     }
   }
 

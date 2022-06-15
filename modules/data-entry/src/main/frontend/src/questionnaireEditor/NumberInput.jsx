@@ -30,6 +30,7 @@ import withStyles from '@mui/styles/withStyles';
 import EditorInput from "./EditorInput";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle";
 import QuestionComponentManager from "./QuestionComponentManager";
+import ValueComponentManager from "./ValueComponentManager";
 
 // Number Input field used by Edit dialog component
 
@@ -79,3 +80,14 @@ QuestionComponentManager.registerQuestionComponent((definition) => {
   }
 });
 
+// Long value displayer: display Unlimited for a "max" = 0
+let LongValue = (props) => {
+  let { objectKey, data } = props;
+  return (objectKey.startsWith("max") && !(data?.[objectKey]) ? "Unlimited" : data?.[objectKey]);
+};
+
+ValueComponentManager.registerValueComponent((definition) => {
+  if (definition == "long") {
+    return [LongValue, 50];
+  }
+});

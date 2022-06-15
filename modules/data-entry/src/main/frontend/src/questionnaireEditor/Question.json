@@ -15,11 +15,17 @@
               "textbox": {},
               "list": {
                 "compact" : "boolean",
-                "answerOptions" : "textOptions"
+                "answerOptions" : {
+                  "type": "textOptions",
+                  "childrenType": "cards:AnswerOption"
+                }
               },
               "list+input" : {
                 "compact" : "boolean",
-                "answerOptions" : "textOptions"
+                "answerOptions" : {
+                  "type": "textOptions",
+                  "childrenType": "cards:AnswerOption"
+                }
               }
             }
           },
@@ -85,11 +91,17 @@
               },
               "list": {
                 "compact" : "boolean",
-                "answerOptions" : "numberOptions"
+                "answerOptions" : {
+                  "type": "numberOptions",
+                  "childrenType": "cards:AnswerOption"
+                }
               },
               "list+input" : {
                 "compact" : "boolean",
-                "answerOptions" : "numberOptions"
+                "answerOptions" : {
+                  "type": "numberOptions",
+                  "childrenType": "cards:AnswerOption"
+                }
               },
               "slider": {
                 "isRange" : "boolean",
@@ -126,11 +138,17 @@
               },
               "list": {
                 "compact" : "boolean",
-                "answerOptions" : "numberOptions"
+                "answerOptions" : {
+                  "type": "numberOptions",
+                  "childrenType": "cards:AnswerOption"
+                }
               },
               "list+input" : {
                 "compact" : "boolean",
-                "answerOptions" : "numberOptions"
+                "answerOptions" : {
+                  "type": "numberOptions",
+                  "childrenType": "cards:AnswerOption"
+                }
               },
               "slider": {
                 "isRange" : "boolean",
@@ -211,11 +229,17 @@
               "input": {},
               "list": {
                 "compact" : "boolean",
-                "answerOptions" : "textOptions"
+                "answerOptions" : {
+                  "type": "textOptions",
+                  "childrenType": "cards:AnswerOption"
+                }
               },
               "list+input" : {
                 "compact" : "boolean",
-                "answerOptions" : "textOptions"
+                "answerOptions" : {
+                  "type": "textOptions",
+                  "childrenType": "cards:AnswerOption"
+                }
               }
             }
           },

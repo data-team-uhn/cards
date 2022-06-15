@@ -30,6 +30,7 @@ import withStyles from '@mui/styles/withStyles';
 import EditorInput from "./EditorInput";
 import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
 import QuestionComponentManager from "../questionnaireEditor/QuestionComponentManager";
+import ValueComponentManager from "../questionnaireEditor/ValueComponentManager";
 
 // Boolean Input field used by Edit dialog component
 
@@ -66,3 +67,14 @@ QuestionComponentManager.registerQuestionComponent((definition) => {
   }
 });
 
+// Boolean value displayer: yes/no
+let BooleanValue = (props) => {
+  let { objectKey, data } = props;
+  return (data?.[objectKey] ? "Yes" : "No");
+};
+
+ValueComponentManager.registerValueComponent((definition) => {
+  if (definition == "boolean") {
+    return [BooleanValue, 50];
+  }
+});

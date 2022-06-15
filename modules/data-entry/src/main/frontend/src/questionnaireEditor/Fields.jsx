@@ -36,14 +36,11 @@ import ObjectInput from "./ObjectInput";
 import TextInput from "./TextInput";
 import MarkdownTextField from "./MarkdownTextField";
 import ReferenceInput from "./ReferenceInput";
+import LabeledField from "./LabeledField";
 import { FieldsProvider } from "./FieldsContext.jsx";
 
-export function formatString(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1).replace( /([A-Z])/g, " $1" ).toLowerCase();
-}
-
 let Fields = (props) => {
-  let { data, JSON, edit, classes, ...rest } = props;
+  let { data, JSON, edit, classes, condensed, ...rest } = props;
 
   /**
    * Method responsible for displaying a question from the questionnaire
@@ -66,21 +63,26 @@ let Fields = (props) => {
     );
   };
 
+  let hasValueToDisplay = (key, spec) => {
+    return (
+      typeof(data[key]) != "undefined" ||
+      spec?.childrenType && Object.values(data).some(c => c["jcr:primaryType"] == spec.childrenType)
+    );
+  }
+
   let displayStaticField = (key, value) => {
     const ValueDisplay = ValueComponentManager.getValueComponent(value);
+
+    if (!hasValueToDisplay(key, value)) return '';
+
     return (<React.Fragment key={key}>
-      <Grid container alignItems='flex-start' spacing={2} direction="row">
-        <Grid item xs={4}>
-          <Typography variant="subtitle2">{formatString(key)}:</Typography>
-        </Grid>
-        <Grid item xs={8}>
-          <ValueDisplay key={key} objectKey={key} value={value} data={data} />
-        </Grid>
-      </Grid>
+      <LabeledField condensed={condensed} name={key}>
+        <ValueDisplay key={key} objectKey={key} value={value} data={data} />
+      </LabeledField>
       {
         typeof(value) == "object" && typeof(value[data[key]]) == "object"?
         Object.entries(value[data[key]]).filter(([k, _]) => !k.startsWith("//"))
-                                        .map(([k, v]) => (typeof(data[k]) != 'undefined' ? displayStaticField(k, v) : ''))
+                                        .map(([k, v]) => displayStaticField(k, v))
         : ""
       }
     </React.Fragment>);
@@ -89,12 +91,8 @@ let Fields = (props) => {
   // Note that we remove the meta fields, starting with `//`, such as `//REQUIRED which indicates which fields are mandatory
   return <FieldsProvider>
       {
-        edit ?
           Object.entries(JSON).filter(([key, _]) => !key.startsWith("//"))
-                              .map(([key, value]) => displayEditField(key, value))
-        :
-          Object.entries(JSON).filter(([key, _]) => !key.startsWith("//"))
-                              .map(([key, value]) => (typeof(data[key]) != 'undefined' ? displayStaticField(key, value) : ''))
+                              .map(([key, value]) => edit ? displayEditField(key, value) : displayStaticField(key, value))
       }
     </FieldsProvider>;
 }
@@ -103,6 +101,7 @@ Fields.propTypes = {
   data: PropTypes.object.isRequired,
   JSON: PropTypes.object.isRequired,
   edit: PropTypes.bool.isRequired,
+  condensed: PropTypes.bool,
   onChange: PropTypes.func
 };
 

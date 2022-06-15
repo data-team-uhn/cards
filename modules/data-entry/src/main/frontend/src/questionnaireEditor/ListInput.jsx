@@ -25,6 +25,7 @@ import withStyles from '@mui/styles/withStyles';
 import EditorInput from "./EditorInput";
 import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
 import QuestionComponentManager from "./QuestionComponentManager";
+import ValueComponentManager from "./ValueComponentManager";
 import { useFieldsWriterContext } from "./FieldsContext";
 
 let ListInput = (props) => {
@@ -130,3 +131,14 @@ QuestionComponentManager.registerQuestionComponent((definition) => {
   }
 });
 
+// List value displayer: display "Any" for an empty value array
+let ListValue = (props) => {
+  let { objectKey, value, data } = props;
+  return (Array.of(data[objectKey] || []).flat().map(e => e[value.displayProperty]).join(', ') || 'Any');
+};
+
+ValueComponentManager.registerValueComponent((definition) => {
+  if (definition.type && definition.type === "list") {
+    return [ListValue, 50];
+  }
+});

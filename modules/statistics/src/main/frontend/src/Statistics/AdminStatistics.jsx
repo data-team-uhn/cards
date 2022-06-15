@@ -41,7 +41,7 @@ import LiveTable from "../dataHomepage/LiveTable.jsx";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 import Fields from "../questionnaireEditor/Fields.jsx";
 import EditIcon from "@mui/icons-material/Edit";
-import { formatIdentifier } from "../questionnaireEditor/EditorInput.jsx";
+import { camelCaseToWords } from "../questionnaireEditor/LabeledField.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
 /**
@@ -242,7 +242,7 @@ function StatisticDialog(props) {
     let mandatoryFields = statisticsSpecs["//REQUIRED"];
     for (const fieldName of mandatoryFields) {
       if ((!requestData.has(fieldName)) || requestData.get(fieldName) == "") {
-        setError(`The ${formatIdentifier(fieldName)} field is mandatory`);
+        setError(`The ${camelCaseToWords(fieldName)} field is mandatory`);
         return;
       }
     }

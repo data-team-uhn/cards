@@ -17,32 +17,33 @@
 //  under the License.
 //
 
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Avatar,
-  Icon,
-  CardHeader,
+  Grid,
   Typography
 } from "@mui/material";
 
-let QuestionnaireCardHeader = (props) => {
+export function camelCaseToWords(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1).replace( /([A-Z])/g, " $1" ).toLowerCase();
+}
+
+let LabeledField = (props) => {
+  let {name, condensed, children } = props;
+
   return (
-      <CardHeader
-        disableTypography
-        avatar={
-          !!!props.plain && (props.avatar || props.type) ?
-            <Avatar aria-label="recipe" style={{backgroundColor: props.avatarColor || "black"}}>
-              { props.avatar ? <Icon>{props.avatar}</Icon> : props.type.charAt(0) }
-            </Avatar>
-            : null
-        }
-        title={!!!props.plain && <><Typography variant="overline">{props.type}</Typography> : {props.id}</>}
-        subheader={<Typography variant="h6">{props.label}</Typography>}
-        action={props.action}
-      >
-      </CardHeader>
+    <Grid container alignItems='flex-start' spacing={2} direction="row">
+      <Grid item xs={condensed ? "auto" : 4}>
+        <Typography variant="subtitle2">{camelCaseToWords(name)}:</Typography>
+      </Grid>
+      <Grid item xs={condensed ? "auto" : 8}>{children}</Grid>
+    </Grid>
   );
+}
+
+LabeledField.propTypes = {
+  name: PropTypes.string.isRequired,
+  condensed: PropTypes.bool,
 };
 
-export default QuestionnaireCardHeader;
+export default LabeledField;

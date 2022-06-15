@@ -21,17 +21,83 @@ import React, { useEffect, useRef, useState } from 'react';
 import { withRouter } from "react-router-dom";
 import PropTypes from 'prop-types';
 import {
+  Avatar,
   Card,
   CardContent,
-  IconButton
+  CardHeader,
+  Icon,
+  IconButton,
+  Popover,
+  Tooltip,
+  Typography,
 } from "@mui/material";
+
+import makeStyles from '@mui/styles/makeStyles';
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from '@mui/icons-material/Edit';
+import ExpandIcon from '@mui/icons-material/UnfoldMore';
+import CollapseIcon from '@mui/icons-material/UnfoldLess';
+import MoreIcon from '@mui/icons-material/MoreHoriz';
 
 import EditDialog from "./EditDialog";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
-import QuestionnaireCardHeader from "./QuestionnaireCardHeader";
+
+import { camelCaseToWords }  from "./LabeledField";
+
+const useStyles = makeStyles(theme => ({
+  root : {
+    border: "0 none",
+    background: theme.palette.action.hover,
+    "& .MuiCardHeader-avatar": {
+      alignSelf: "start",
+      zoom: .75,
+      marginTop: theme.spacing(.75),
+      fontWeight: "bold",
+    },
+    "& .MuiCardHeader-content .MuiIconButton-root": {
+      display: "none",
+    },
+  },
+  title: {
+    display: "inline",
+  },
+  titlePlaceholder: {
+    opacity: "0.6",
+    fontWeight: "300 !important",
+  },
+  collapsed: {
+    "& .MuiCardContent-root": {
+      paddingTop: 0,
+      paddingBottom: 0,
+    },
+    "& .cards-questionnaire-entry-props": {
+      display: "none",
+    },
+    "& .MuiCardContent-root > .MuiGrid-container > .MuiGrid-item:last-child": {
+      marginBottom: theme.spacing(2),
+    },
+    "& .MuiCardHeader-content .MuiIconButton-root": {
+     display: "inline-flex",
+    }
+  },
+  moreInfo: {
+    "& h6": {
+      whiteSpace: "nowrap",
+    }
+  },
+  withAvatar: {
+    "&.MuiCardContent-root > .cards-questionnaire-entry-props": {
+      paddingLeft: theme.spacing(5.5),
+    },
+    "&.MuiCardContent-root > .MuiGrid-container > .MuiGrid-item": {
+      paddingLeft: theme.spacing(5.5),
+    },
+    "&.MuiCardContent-root > .MuiGrid-container > .MuiGrid-item.cards-questionnaire-entry-props": {
+      paddingLeft: theme.spacing(7.5),
+    },
+  }
+}));
 
 // General class or Sections and Questions
 
@@ -43,9 +109,11 @@ let QuestionnaireItemCard = (props) => {
     type,
     title,
     titleField,
+    moreInfo,
     action,
     disableEdit,
     disableDelete,
+    disableCollapse,
     plain,
     data,
     onActionDone,
@@ -54,6 +122,8 @@ let QuestionnaireItemCard = (props) => {
     classes
   } = props;
   let [ editDialogOpen, setEditDialogOpen ] = useState(false);
+  let [ isCollapsed, setCollapsed ] = useState(false);
+  let [ moreInfoAnchor, setMoreInfoAnchor ] = useState(null);
   const highlight = doHighlight || window.location?.hash?.substr(1) == data["@path"];
 
   const itemRef = useRef();
@@ -68,36 +138,94 @@ let QuestionnaireItemCard = (props) => {
     }
   }, [itemRef]);
 
+  const styles = useStyles();
+
+  let cardClasses = [styles.root];
+  if (isCollapsed) {
+    cardClasses.push(styles.collapsed);
+  }
+  if (highlight) {
+    cardClasses.push(classes.focusedQuestionnaireItem);
+  }
+
+  let formattedType = camelCaseToWords(type);
+
+  let titleClasses = [styles.title];
+  let titleText = title || data[titleField];
+  if (!titleText) {
+    titleText = `${formattedType} ${data["@name"]}`;
+    titleClasses.push(styles.titlePlaceholder);
+  }
+
   return (
-    <Card variant="outlined" ref={highlight ? itemRef : undefined} className={highlight ? classes.focusedQuestionnaireItem : ''}>
-      <QuestionnaireCardHeader
-        avatar={avatar}
-        avatarColor={avatarColor}
-        type={type}
-        id={data["@name"]}
-        label={title || data[titleField] || ''}
-        plain={plain}
+    <Card variant="outlined" ref={highlight ? itemRef : undefined} className={cardClasses.join(" ")}>
+      <CardHeader
+        avatar={!plain && (avatar || type) ?
+          <Avatar style={{backgroundColor: avatarColor || "black"}}>
+            { avatar ? <Icon>{avatar}</Icon> : type?.charAt(0) }
+          </Avatar>
+          : null
+        }
+        title={
+          <>
+            { <Typography className={titleClasses.join(" ")} variant="h6">{titleText}</Typography> }
+            { moreInfo &&
+              <Tooltip title="Properties">
+                <IconButton onClick={(event) => setMoreInfoAnchor(event.currentTarget)} size="large">
+                  <MoreIcon />
+                </IconButton>
+              </Tooltip>
+            }
+            { moreInfo && moreInfoAnchor &&
+              <Popover
+               className={styles.moreInfo}
+               open={Boolean(moreInfoAnchor)}
+               anchorEl={moreInfoAnchor}
+               onClose={() => setMoreInfoAnchor(null)}
+               anchorOrigin={{
+                 vertical: 'bottom',
+                 horizontal: 'left',
+               }}
+               transformOrigin={{
+                 vertical: 'top',
+                 horizontal: 'left',
+               }}
+             >
+               <Card><CardContent>{moreInfo}</CardContent></Card>
+              </Popover>
+            }
+          </>
+        }
         action={
           <div>
             {action}
             {!disableEdit &&
-            <IconButton onClick={() => { setEditDialogOpen(true); }} size="large">
-              <EditIcon />
-            </IconButton>
+            <Tooltip title={`Edit ${formattedType.toLowerCase()} properties`}>
+              <IconButton onClick={() => { setEditDialogOpen(true); }} size="large">
+                <EditIcon />
+              </IconButton>
+            </Tooltip>
             }
             {!disableDelete &&
             <DeleteButton
                entryPath={data["@path"]}
-               entryName={title || data.label || data.text || data["@name"]}
-               entryType={type}
+               entryName={title || data[titleField] || data["@name"]}
+               entryType={formattedType.toLowerCase()}
                onComplete={onActionDone}
             />
+            }
+            {!disableCollapse &&
+            <Tooltip title={isCollapsed? "Expanded view" : "Collapsed view"}>
+              <IconButton onClick={() => setCollapsed(!isCollapsed)} disabled={!!!children} size="large">
+                { isCollapsed ? <ExpandIcon /> : <CollapseIcon /> }
+              </IconButton>
+            </Tooltip>
             }
           </div>
         }
       />
-      <CardContent className={classes.questionnaireItemContent + (!!!plain ? " avatarCardContent" : '')}>
-        {children}
+      <CardContent className={!plain ? styles.withAvatar : undefined}>
+        { children }
         { editDialogOpen && <EditDialog
                               targetExists={true}
                               data={data}

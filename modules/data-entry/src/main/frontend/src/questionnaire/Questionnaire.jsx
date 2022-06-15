@@ -41,9 +41,10 @@ import EditIcon from '@mui/icons-material/Edit';
 import PreviewIcon from '@mui/icons-material/FindInPage';
 import DeleteButton from "../dataHomepage/DeleteButton";
 import QuestionnaireStyle from "./QuestionnaireStyle";
-import { blue } from '@mui/material/colors';
+import { blue, blueGrey, cyan, deepPurple, indigo, orange } from '@mui/material/colors';
 import { ENTRY_TYPES } from "./FormEntry";
 import Fields from "../questionnaireEditor/Fields";
+import LabeledField from "../questionnaireEditor/LabeledField";
 import CreationMenu from "../questionnaireEditor/CreationMenu";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import QuestionnaireItemCard from "../questionnaireEditor/QuestionnaireItemCard";
@@ -59,8 +60,8 @@ export const QUESTIONNAIRE_ITEM_NAMES = ENTRY_TYPES.map(type => _stripCardsNames
 let Questionnaire = (props) => {
   let { id, classes } = props;
   let [ data, setData ] = useState();
+  let [ questionnaireTitle, setQuestionnaireTitle ] = useState()
   let [ error, setError ] = useState();
-  let [ doHighlight, setDoHighlight ] = useState(false);
   let baseUrl = /((.*)\/Questionnaires)\/([^.]+)/.exec(location.pathname)[1];
   let questionnaireUrl = `${baseUrl}/${id}`;
   let isEdit = window.location.pathname.endsWith(".edit");
@@ -80,26 +81,14 @@ let Questionnaire = (props) => {
       .catch(handleError);
   };
 
-  let reloadData = (newData) => {
-    if (newData) {
-      setData(newData);
-      setDoHighlight(true);
-    } else {
-      setData({});
-      fetchData();
-    }
-  }
-
   if (!data) {
     fetchData();
   }
 
-  let onCreated = (newData) => {
-    setData({});
-    setData(newData);
-  }
+  useEffect(() => {
+    setQuestionnaireTitle(data?.title || decodeURI(id));
+  }, [data?.title]);
 
-  let questionnaireTitle = data ? data['title'] : decodeURI(id);
   useEffect(() => {
     pageNameWriter(questionnaireTitle);
   }, [questionnaireTitle]);
@@ -170,63 +159,34 @@ let Questionnaire = (props) => {
   );
 
   return (
-    <>
-      { error &&
-        <Typography variant="h2" color="error">
-          Error obtaining questionnaire info: {error.status} {error.statusText}
-        </Typography>
-      }
-      { !isEdit
-        ? <Grid container direction="column" spacing={4} wrap="nowrap">
-            {questionnaireHeader}
-            <Grid item>
+    error ?
+      <Typography variant="h2" color="error">
+        Error obtaining questionnaire info: {error.status} {error.statusText}
+      </Typography>
+    :
+      ( data?.["jcr:primaryType"] == "cards:Questionnaire" &&
+        <Grid container direction="column" spacing={4} wrap="nowrap">
+          { questionnaireHeader }
+          <Grid item>
+            { !isEdit ?
               <QuestionnairePreview
                 data={data}
                 title={questionnaireTitle}
                 contentOffset={props.contentOffset}
               />
-            </Grid>
-          </Grid>
-      :
-      <QuestionnaireItemSet
-        data={data}
-        classes={classes}
-        onActionDone={() => reloadData()}
-      >
-        {questionnaireHeader}
-        { data?.["jcr:primaryType"] == "cards:Questionnaire" && <Grid item>
-          <QuestionnaireItemCard
-            plain
-            type="Questionnaire"
-            title="Questionnaire properties"
-            disableDelete
-            data={data}
-            classes={classes}
-            onActionDone={reloadData}
-            doHighlight={doHighlight}
-          >
-              <FieldsGrid
+            :
+              <QuestionnaireContents
+                disableDelete
+                data={data}
                 classes={classes}
-                fields= {Array(
-                          {name: "description", label: "Description", value : data.description, type: "markdown"},
-                          {name: "maxPerType", label: "Maximum forms of this type per subject", value : (data.maxPerSubject > 0 ? data.maxPerSubject : 'Unlimited')},
-                          {name: "paginate", label: "Paginate", value : data.paginate, value : (data.paginate ? "Yes" : "No")},
-                          {name: "subjectTypes", label: "Subject types", value: data.requiredSubjectTypes?.label || data.requiredSubjectTypes?.map(t => t.label).join(', ') || 'Any'},
-                        )}
+                onFieldsChanged={(newData) => newData?.title && setQuestionnaireTitle(newData.title)}
+                onActionDone={()=>{}}
+                menuProps={{isMainAction: true}}
               />
-          </QuestionnaireItemCard>
-        </Grid>}
-        { data &&
-          <CreationMenu
-            isMainAction={true}
-            data={data}
-            menuItems={QUESTIONNAIRE_ITEM_NAMES}
-            onCreated={onCreated}
-          />
-        }
-      </QuestionnaireItemSet>
-      }
-    </>
+            }
+          </Grid>
+        </Grid>
+      )
   );
 };
 
@@ -365,6 +325,29 @@ QuestionnaireItemSet.propTypes = {
   data: PropTypes.object
 };
 
+// Questionnaire contents: properties + entries
+let QuestionnaireContents = (props) => <QuestionnaireEntry {...props} />;
+
+QuestionnaireContents.propTypes = {
+  onActionDone: PropTypes.func,
+  onFieldsChanged: PropTypes.func,
+  disableCollapse: PropTypes.bool,
+  data: PropTypes.object.isRequired,
+  type: PropTypes.string.isRequired,
+  avatar: PropTypes.string,
+  avatarColor: PropTypes.string,
+  titleField: PropTypes.string,
+  model: PropTypes.string.isRequired
+};
+
+QuestionnaireContents.defaultProps = {
+  disableCollapse: false,
+  type: "Questionnaire",
+  avatar: "assignment",
+  avatarColor: blueGrey[700],
+  titleField: "title",
+  model: "Questionnaire.json"
+};
 
 // Details about an information block displayed in a questionnaire
 let Information = (props) => <QuestionnaireEntry {...props} />;
@@ -402,7 +385,7 @@ Question.propTypes = {
 
 Question.defaultProps = {
   type: "Question",
-  avatarColor: "purple",
+  avatarColor: deepPurple[700],
   titleField: "text",
   model: "Question.json"
 };
@@ -424,7 +407,7 @@ Section.propTypes = {
 Section.defaultProps = {
   type: "Section",
   avatar: "view_stream",
-  avatarColor: "orange",
+  avatarColor: orange[800],
   titleField: "label",
   model: "Section.json"
 };
@@ -444,7 +427,7 @@ Conditional.propTypes = {
 
 Conditional.defaultProps = {
   type: "Conditional",
-  avatarColor: "cadetblue",
+  avatarColor: cyan[800],
   model: "Conditional.json"
 };
 
@@ -462,14 +445,14 @@ ConditionalGroup.propTypes = {
 
 ConditionalGroup.defaultProps = {
   type: "ConditionalGroup",
-  avatarColor: "navy",
+  avatarColor: indigo[800],
   model: "ConditionalGroup.json"
 };
 
 // Generic QuestionnaireEntry component that can be adapted to any entry type via props
 
 let QuestionnaireEntry = (props) => {
-  let { onActionDone, data, type, titleField, avatar, avatarColor, model, classes } = props;
+  let { onActionDone, onFieldsChanged, data, type, titleField, model, classes, menuProps, ...rest } = props;
   let [ entryData, setEntryData ] = useState(data);
   let [ doHighlight, setDoHighlight ] = useState(data.doHighlight);
 
@@ -521,6 +504,7 @@ let QuestionnaireEntry = (props) => {
     if (newData) {
       setEntryData(newData);
       setDoHighlight(true);
+      onFieldsChanged && onFieldsChanged(newData);
     } else {
       // Try to reload the data from the server
       // If it fails, pass it up to the parent
@@ -536,17 +520,18 @@ let QuestionnaireEntry = (props) => {
     setEntryData(newData);
   }
 
-  // If a `titleField` is provided, exclude that field when displaying the entry fields
-  let viewSpec = Object.assign({}, spec);
-  delete viewSpec[titleField];
+  let renderFields = (options) => (<>
+    <LabeledField name={`${type}Id`} {...options}>{entryData["@name"]}</LabeledField>
+    <Fields data={entryData} JSON={spec} edit={false} {...options} />
+  </>);
+  let FIELDS_CLASS_NAME = "cards-questionnaire-entry-props";
 
   return (
     <QuestionnaireItemCard
         titleField={titleField}
-        avatar={avatar}
-        avatarColor={avatarColor}
-        type={type}
+        moreInfo={renderFields({condensed: true})}
         data={entryData}
+        type={type}
         classes={classes}
         doHighlight={doHighlight}
         action={
@@ -556,21 +541,24 @@ let QuestionnaireEntry = (props) => {
               onCreated={onCreated}
               menuItems={menuItems}
               models={childModels}
+              {...menuProps}
             />
             : undefined
         }
         onActionDone={reloadData}
         model={model}
+        {...rest}
     >
-      <Fields data={entryData} JSON={viewSpec} edit={false} />
-      <AnswerOptionList data={entryData} modelDefinition={spec} />
-      { childModels &&
+      { childModels ?
         <QuestionnaireItemSet
           data={entryData}
           classes={classes}
           onActionDone={reloadData}
           models={childModels}
-        />
+        >
+          <Grid item className={FIELDS_CLASS_NAME}>{renderFields()}</Grid>
+        </QuestionnaireItemSet>
+        : <div className={FIELDS_CLASS_NAME}>{renderFields()}</div>
       }
     </QuestionnaireItemCard>
   );
@@ -578,67 +566,18 @@ let QuestionnaireEntry = (props) => {
 
 QuestionnaireEntry.propTypes = {
   onActionDone: PropTypes.func,
+  onFieldsChanged: PropTypes.func,
+  disableCollapse: PropTypes.bool,
   data: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired,
+  plain: PropTypes.bool,
   avatar: PropTypes.string,
   avatarColor: PropTypes.string,
+  title: PropTypes.string,
   titleField: PropTypes.string,
   model: PropTypes.string.isRequired
 };
 
-let FieldsGrid = (props) => {
-  return (
-    <Table aria-label="simple table">
-      <TableBody>
-        {props.fields?.map((row) => (
-          <TableRow key={row.name}>
-            <TableCell component="th" scope="row">{row.label}:</TableCell>
-            <TableCell align="left">
-              { row.type === "markdown"
-                ?
-                <FormattedText>{row.value}</FormattedText>
-                :
-                row.value
-              }
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  );
-}
-
-let AnswerOptionList = (props) => {
-  let { data, modelDefinition } = props;
-
-  let hasAnswerOptions = (key, value) => {
-    if (key == 'answerOptions') return true;
-    return (
-      typeof(data[key] != undefined) &&
-      typeof(value) == "object" &&
-      typeof(value[data[key]]) == "object" &&
-      Object.entries(value[data[key]]).some(([k, v]) => hasAnswerOptions(k, v))
-    )
-  };
-
-  let answerOptions = Object.values(data ||{}).filter(value => value['jcr:primaryType'] == 'cards:AnswerOption')
-                      .sort((option1, option2) => (option1.defaultOrder - option2.defaultOrder));
-
-  // Does this questionnaire entry have answerOptions enabled?
-  let enabled = Object.entries(modelDefinition || {}).some(([key, value]) => hasAnswerOptions(key, value));
-
-  if (!enabled || !(answerOptions?.length)) {
-    return null;
-  }
-
-  return (
-    <Grid container key={data['jcr:uuid']} alignItems='flex-start' spacing={2}>
-      <Grid item key="label" xs={4}>
-        <Typography variant="subtitle2">Answer options:</Typography>
-      </Grid>
-      <Grid item key="values" xs={8}>
-        { answerOptions.map(item => <Typography key={item['jcr:uuid']}>{(item.label || item.value) + (item.label ? (" (" + item.value + ")") : "")}</Typography>) }
-      </Grid>
-    </Grid>
-  );
-}
+QuestionnaireEntry.defaultProps = {
+  disableCollapse: true,
+};
