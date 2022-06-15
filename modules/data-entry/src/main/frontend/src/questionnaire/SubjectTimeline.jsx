@@ -363,7 +363,7 @@ function SubjectTimeline(props) {
   }
 
   return ( dateEntries?.length ?
-    <div className={classes.timelineContainer}><Timeline align="alternate" className={classes.timeline}>
+    <div className={classes.timelineContainer}><Timeline position="alternate" className={classes.timeline}>
     {
       dateEntries.map((dateEntry, index) => {
         let nextEntry = (index + 1 < dateEntries.length) ? dateEntries[index + 1] : null;
