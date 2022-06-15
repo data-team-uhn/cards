@@ -18,12 +18,15 @@
  */
 package io.uhndata.cards.proms.internal.permissions;
 
-import java.util.Iterator;
+import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.query.QueryResult;
+import javax.jcr.query.RowIterator;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.JackrabbitSession;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.User;
@@ -32,8 +35,9 @@ import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Tree;
 import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.security.authorization.restriction.RestrictionPattern;
-import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,10 +57,7 @@ public class ClinicRestrictionPattern implements RestrictionPattern
     private static final String VISIT_INFORMATION_PATH = "/Questionnaires/Visit information";
 
     /** The current session of the user activating this restriction. **/
-    private JackrabbitSession session;
-
-    /** The current session of the user activating this restriction. **/
-    private ResourceResolver resolver;
+    private ResourceResolverFactory rrf;
 
     /** For form management. **/
     private final FormUtils formUtils;
@@ -67,22 +68,24 @@ public class ClinicRestrictionPattern implements RestrictionPattern
     /**
      * Constructor which receives the configured restriction.
      *
+     * @param rrf resource resolver factory providing access to resources
      * @param formUtils a reference to a FormUtils object
      * @param questionnaireUtils a reference to a QuestionnaireUtils object
-     * @param resolver a reference to a session for use in resolving nodes
      */
-    public ClinicRestrictionPattern(final FormUtils formUtils, final QuestionnaireUtils questionnaireUtils,
-        final ResourceResolver resolver)
+    public ClinicRestrictionPattern(final ResourceResolverFactory rrf, final FormUtils formUtils,
+        final QuestionnaireUtils questionnaireUtils)
     {
         this.formUtils = formUtils;
         this.questionnaireUtils = questionnaireUtils;
-        this.resolver = resolver;
-        this.session = (JackrabbitSession) resolver.adaptTo(Session.class);
+        this.rrf = rrf;
     }
 
     @Override
     public boolean matches(final Tree tree, final PropertyState property)
     {
+        if (property != null) {
+            return true;
+        }
         // Make sure we can discern what this node is, before continuing
         if (!tree.hasProperty("sling:resourceType")) {
             return false;
@@ -104,38 +107,33 @@ public class ClinicRestrictionPattern implements RestrictionPattern
      */
     private boolean appliesToForm(final Tree tree)
     {
-        try {
-            final Node formQuestionnaire = this.session.getNodeByIdentifier(
-                tree.getProperty("questionnaire").getValue(Type.REFERENCE));
-            if (VISIT_INFORMATION_PATH.equals(formQuestionnaire.getPath())) {
-                // Grab the clinic mapping specified within this form
-                // If any of the following do not exist, we will return null in the NullReferenceException catch
-                final Node form = this.session.getNodeByIdentifier(tree.getPath());
-                final Node clinicQuestion = this.questionnaireUtils.getQuestion(formQuestionnaire, "clinic");
-                final String clinicAnswer = (String) this.formUtils.getValue(
-                    this.formUtils.getAnswer(form, clinicQuestion));
-                final Node clinicMapping = this.session.getNodeByIdentifier(clinicAnswer);
+        try (ResourceResolver srr = this.rrf.getServiceResourceResolver(
+            Map.of(ResourceResolverFactory.SUBSERVICE, "ClinicFormsRestriction"))) {
+            // The thread resolver must not be closed, so it's outside the try-with-resources block
+            ResourceResolver trr = this.rrf.getThreadResourceResolver();
+            final JackrabbitSession serviceSession = (JackrabbitSession) srr.adaptTo(Session.class);
+            final JackrabbitSession userSession = (JackrabbitSession) trr.adaptTo(Session.class);
 
-                // Check if the current session user belongs to the group specified
-                final String groupName = clinicMapping.getProperty("clinicName").getString();
-                final UserManager userManager = this.session.getUserManager();
-                Group group = (Group) userManager.getAuthorizable(groupName);
-                User user = (User) userManager.getAuthorizable(this.session.getUserID());
-                return group.isMember(user);
-            } else {
-                // If this is not a visit information form, instead we go looking for the Visit Information form
-                // for this subject (implied to be a visit).
-                // If the Visit information form for this subject is visible: we can see it and thus by extension
-                // this restriction pattern is authorized to apply to us
-                return this.getVisitInformationForSubject(tree.getProperty("subject").getValue(Type.STRING)) != null;
+            final String clinic = getClinic(tree.getProperty("subject").getValue(Type.STRING), serviceSession);
+            if (StringUtils.isBlank(clinic)) {
+                return false;
             }
-        } catch (RepositoryException e) {
+            final Node clinicMapping = serviceSession.getNode(clinic);
+
+            // Check if the current session user belongs to the group specified
+            final String groupName = clinicMapping.getProperty("clinicName").getString();
+            final UserManager userManager = serviceSession.getUserManager();
+            Group group = (Group) userManager.getAuthorizable(groupName);
+            User user = (User) userManager.getAuthorizable(userSession.getUserID());
+            return group != null && group.isMember(user);
+        } catch (LoginException | RepositoryException e) {
             LOGGER.error("Error calculating ACL for clinic restriction.\n" + e.getMessage());
             return false;
         } catch (NullPointerException e) {
             // There are a lot of nodes that are observed by this Restriction Pattern
             // In each case where the node does not exist, we do not want to apply to them
-            LOGGER.error("Null reference exception while calculating ClinicRestrictionPattern ACL: " + e.getMessage());
+            LOGGER.error("Null reference exception while calculating ClinicRestrictionPattern ACL: " + e.getMessage(),
+                e);
             return false;
         }
     }
@@ -144,21 +142,26 @@ public class ClinicRestrictionPattern implements RestrictionPattern
      * Return the visit information form for a given subject, or null if it is inaccessible or none exists.
      *
      * @param subjectID The ID of the subject
-     * @return A Visit Information form for the given subject, or null if none exists. If multiple exist, returns
-     *     the first one found.
+     * @param session a service session with read access to the repository
+     * @return A Visit Information form for the given subject, or null if none exists. If multiple exist, returns the
+     *         first one found.
      */
-    public Resource getVisitInformationForSubject(String subjectID) throws RepositoryException
+    public String getClinic(String subjectID, Session session) throws RepositoryException
     {
         // Grab the uuid for the visit information questionnaire
-        Node visitInformationNode = this.session.getNode(ClinicRestrictionPattern.VISIT_INFORMATION_PATH);
+        final Node visitInformationQuestionnaire = session.getNode(ClinicRestrictionPattern.VISIT_INFORMATION_PATH);
+        final Node clinicQuestion = this.questionnaireUtils.getQuestion(visitInformationQuestionnaire, "clinic");
 
         // Perform a query for any Visit Information form for this subject
-        String query = "SELECT * FROM [cards:Form] AS f WHERE f.'subject'='" + subjectID + "' AND f.'questionnaire'='"
-            + visitInformationNode.getProperty("jcr:uuid").getString() + "'";
-        Iterator<Resource> nodeIter = this.resolver.findResources(query, "JCR-SQL2");
+        String query = "SELECT a.value FROM [cards:Form] AS f INNER JOIN [cards:Answer] AS a ON ISDESCENDANTNODE(a, f)"
+            + " WHERE f.'subject'='" + subjectID
+            + "' AND f.'questionnaire'='" + visitInformationQuestionnaire.getIdentifier()
+            + "' AND a.'question'='" + clinicQuestion.getIdentifier() + "'";
 
-        if (nodeIter.hasNext()) {
-            return nodeIter.next();
+        QueryResult results = session.getWorkspace().getQueryManager().createQuery(query, "JCR-SQL2").execute();
+        RowIterator rows = results.getRows();
+        if (rows.hasNext()) {
+            return rows.nextRow().getValue("a.value").getString();
         }
         return null;
     }
