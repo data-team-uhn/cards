@@ -41,7 +41,7 @@ import io.uhndata.cards.permissions.spi.RestrictionFactory;
 public class ClinicRestrictionFactory implements RestrictionFactory
 {
     /** @see #getName */
-    public static final String NAME = "cards:clinic";
+    public static final String NAME = "cards:clinicForms";
 
     @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,
         policyOption = ReferencePolicyOption.GREEDY)
@@ -56,8 +56,7 @@ public class ClinicRestrictionFactory implements RestrictionFactory
     @Override
     public RestrictionPattern forValue(PropertyState value)
     {
-        return new ClinicRestrictionPattern(this.formUtils, this.questionnaireUtils,
-            this.rrf.getThreadResourceResolver());
+        return new ClinicRestrictionPattern(this.rrf, this.formUtils, this.questionnaireUtils);
     }
 
     @Override
@@ -69,8 +68,9 @@ public class ClinicRestrictionFactory implements RestrictionFactory
     @Override
     public Type<?> getType()
     {
-        // FIXME This should be Type.REFERENCE, but the current method of testing this restriction only works with
-        // strings
-        return Type.STRING;
+        // This doesn't actually support any type, since it is only a marker restriction. However, specifying a type is
+        // mandatory, and a single-value type enforces that a single value is provided, while a multi-value type happily
+        // accepts no value at all.
+        return Type.STRINGS;
     }
 }
