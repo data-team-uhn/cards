@@ -166,7 +166,7 @@ def process_options(question, row):
         question['dateFormat'] = row['Options (if applicable)']
     elif question['dataType'] == "computed":
         insert_expression(question, row['Options (if applicable)'])
-        question.update({"entryMode": "computed", "dataType": "text"})
+        question.update({"entryMode": "computed", "dataType": "text", "displayMode": "formatted"})
     else:
         insert_options(question, row)
 
@@ -401,8 +401,6 @@ def csv_to_json(title):
                     parent[question]['maxValue'] = float(row['Max Value'])
                 if row['Field Type'].endswith("(multiple)"):
                     parent[question]['maxAnswers'] = 0
-                if 'formatted' in row['Field Type'].lower():
-                    parent[question]['displayMode'] = 'formatted'
                 if 'Max Answers' in row and row['Max Answers']:
                     parent[question]['maxAnswers'] = int(row['Max Answers'])
                 elif not 'maxAnswers' in parent[question]:
@@ -411,21 +409,22 @@ def csv_to_json(title):
                     value = row['Compact']
                     if value[0].lower() == "y":
                         parent[question]['compact'] = True
-                # Response Required should be the last conditional property.
-                # Otherwise, parent[question] may error out if a conditional section has been created
-                if 'Response Required?' in row and row['Response Required?']:
-                    value = row['Response Required?']
-                    if value[0].lower() == "y":
-                        insert_min_answers(parent[question], row)
-                    if len(value) > 4 and value[2:4].lower() == "if":
+            # Response Required should be the last conditional property.
+            # Otherwise, parent[question] may error out if a conditional section has been created
+            if 'Response Required?' in row and row['Response Required?']:
+                value = row['Response Required?']
+                if question and value[0].lower() == "y":
+                    insert_min_answers(parent[question], row)
+                if len(value) > 4 and value[2:4].lower() == "if":
+                    if(question):
                         previous_data = parent[question]
                         parent.update({question + 'Section': {
                             'jcr:primaryType': 'cards:Section'
                         }})
                         parent[question + 'Section'][question] = previous_data
-                        prepare_conditional_string(value [5:], parent[question + 'Section'])
                         # The presence of a conditional will also prevent the question from being inserted into the main thing
                         del parent[question]
+                    prepare_conditional_string(value [5:], parent[question + 'Section'] if question else parent)
     if len(section) > 0:
         questionnaire[clean_name(section['label'])] = dict.copy(section)
     questionnaires.append(dict.copy(questionnaire))

@@ -104,7 +104,7 @@
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>study_stream</value>
+			<value>Study Stream</value>
 			<type>String</type>
 		</property>
 		<property>
