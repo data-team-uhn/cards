@@ -170,8 +170,8 @@ let ComputedQuestion = (props) => {
       let questionName;
       let defaultValue = null;
       if (hasDefault) {
-        questionName = expr.substring(start + startTag.length, optionStart);
-        defaultValue = expr.substring(optionStart + defaultTag.length, end);
+        questionName = expr.substring(start + startTag.length, defaultStart);
+        defaultValue = expr.substring(defaultStart + defaultTag.length, end);
       } else {
         questionName = expr.substring(start + startTag.length, end);
       }
