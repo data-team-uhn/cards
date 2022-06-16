@@ -18,14 +18,12 @@
  */
 package io.uhndata.cards.dataentry.internal.serialize;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
-import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
@@ -35,13 +33,21 @@ import org.osgi.service.component.annotations.Component;
 
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 
+/**
+ * Flattens a form so that all the answers, regardless of any sections and subsections they may normally be in, are
+ * listed in the top level of the JSON. The name of this processor is {@code flatten}. It is incompatible with the
+ * {@code bare} processor.
+ *
+ * @version $Id$
+ */
 @Component(immediate = true)
 public class FlattenFormProcessor implements ResourceJsonProcessor
 {
-    // Saves all children with type cards:Answer of root node
-    private ThreadLocal<Map<String, JsonObject>> childrenJsons = ThreadLocal.withInitial(HashMap::new);
-    // Saves all AnswerSection nodes ids with all children with type cards:Answer that belong them
-    private ThreadLocal<Map<String, JsonObjectBuilder>> jsonSectionMap = ThreadLocal.withInitial(HashMap::new);
+    /**
+     * Saves all JSONs of nodes with type {@code cards:Answer}. This maps from the node's name to the JSON. A linked map
+     * preserves the order of the answers, as encountered in a top-to-bottom DFS pass through the form.
+     */
+    private ThreadLocal<Map<String, JsonObject>> childrenJsons = ThreadLocal.withInitial(LinkedHashMap::new);
 
     @Override
     public String getName()
@@ -52,6 +58,8 @@ public class FlattenFormProcessor implements ResourceJsonProcessor
     @Override
     public int getPriority()
     {
+        // This should run last, after the JSON is finalized, since it prevents all following processors from seeing the
+        // JSON
         return 100;
     }
 
@@ -61,97 +69,49 @@ public class FlattenFormProcessor implements ResourceJsonProcessor
         return resource.isResourceType("cards/Form");
     }
 
-    // Each time this method is invoked, it is passed a JCR node and if that JCR node is a cards:Answer node, this node
-    // is serialized and stored to a (this.childrenJsons) ThreadLocal object.
-    // We need to change the serialized data representation only for cards:Answer and cards:AnswerSection nodes, which
-    // is why nodes that are not cards:Answer or cards:AnswerSection, are simply passed-through.
     @Override
     public JsonValue processChild(Node node, Node child, JsonValue input, Function<Node, JsonValue> serializeNode)
     {
+        // This removes the serialization of answers and sections from their original place, storing the serialization
+        // of answers to be added later in the root of the JSON.
         if (input == null) {
+            // No serialization coming from other processors, nothing to do
             return null;
         }
         try {
             if (child.isNodeType("cards:Answer")) {
-                this.childrenJsons.get().put(child.getIdentifier(), input.asJsonObject());
+                // Answers are stored for later, and discarded for now
+                this.childrenJsons.get().put(child.getName(), input.asJsonObject());
                 return null;
             } else if (child.isNodeType("cards:AnswerSection")) {
+                // Answer sections are completely discarded
                 return null;
             }
         } catch (RepositoryException e) {
             // Shouldn't happen
         }
+        // All other nodes (except Answer and AnswerSection) are left as is
         return input;
     }
 
     @Override
     public void leave(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
     {
-        addAnswers(node, json);
-    }
-
-    @Override
-    public void end(Resource resource)
-    {
-        this.childrenJsons.remove();
-        this.jsonSectionMap.remove();
-    }
-
-    @SuppressWarnings("checkstyle:CyclomaticComplexity")
-    private void addAnswers(final Node node, final JsonObjectBuilder json)
-    {
         try {
-            // The first time we encounter a section, we create a JsonArrayBuilder for it,
-            // and add its children in the output.
-            // While leaving the section we add all its children saved in Map getting them by section id.
-            final NodeIterator children = node.getNodes();
-            while (children.hasNext()) {
-                final Node child = children.nextNode();
-                final String childId = child.getIdentifier();
-                final String idWithoutParent = childId.substring(childId.lastIndexOf("/") + 1);
-                if (child.isNodeType("cards:Answer") && this.childrenJsons.get().containsKey(childId)) {
-                    final JsonObject childJson = this.childrenJsons.get().get(childId);
-                    if (node.isNodeType("cards:AnswerSection")) {
-                        // if child node type is cards:Answer and its parent is cards:AnswerSection the method add the
-                        // node to a separate appropriate to its AnswerSection jsonBuilder
-                        if (this.jsonSectionMap.get().get(node.getIdentifier()) != null) {
-                            this.jsonSectionMap.get().get(node.getIdentifier()).add(idWithoutParent, childJson);
-                        } else {
-                            JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder()
-                                    .add(idWithoutParent, childJson);
-                            this.jsonSectionMap.get().put(node.getIdentifier(), jsonObjectBuilder);
-                        }
-                    } else {
-                        // if child node type is cards:Answer and its parent is cards:Form the method simply add the
-                        // node to output stream
-                        json.add(idWithoutParent, childJson);
-                    }
-                    // in this case the child node is either added to final output stream or added to a separate
-                    // jsonBuilder and will be added to output stream while leaving the root AnswerSection, so there is
-                    // no need to save the child in childrenJsons
-                    this.childrenJsons.get().remove(childId);
-                } else if (child.isNodeType("cards:AnswerSection") && this.jsonSectionMap.get().containsKey(childId)) {
-                    if (node.isNodeType("cards:AnswerSection")) {
-                        // if child node type is cards:AnswerSection and its parent is cards:AnswerSection the method
-                        // add all its children nodes to a separate appropriate to its AnswerSection jsonBuilder
-                        if (this.jsonSectionMap.get().get(node.getIdentifier()) != null) {
-                            this.jsonSectionMap.get().get(node.getIdentifier())
-                                    .addAll(this.jsonSectionMap.get().get(childId));
-                        } else {
-                            this.jsonSectionMap.get().put(node.getIdentifier(), this.jsonSectionMap.get().get(childId));
-                        }
-                    } else {
-                        // if child node is cards:AnswerSection and its parent is not cards:AnswerSection then it is a
-                        // root AnswerSection and the method add to output stream all the cards:Answers that were saved
-                        // under root cards:AnswerSection. There is no need to save the jsonBuilder
-                        json.addAll(this.jsonSectionMap.get().get(childId));
-                        this.jsonSectionMap.get().remove(childId);
-                    }
-                }
+            if (node.isNodeType("cards:Form")) {
+                // Add the answers to the root node
+                this.childrenJsons.get().entrySet().stream()
+                    .forEach(entry -> json.add(entry.getKey(), entry.getValue()));
             }
         } catch (RepositoryException e) {
             // Shouldn't happen
         }
     }
 
+    @Override
+    public void end(Resource resource)
+    {
+        // Cleanup the state
+        this.childrenJsons.remove();
+    }
 }
