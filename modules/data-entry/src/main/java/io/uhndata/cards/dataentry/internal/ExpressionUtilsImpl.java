@@ -46,8 +46,6 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExpressionUtilsImpl.class);
 
-    private Boolean missingValue = false;
-
     @Reference
     private ScriptEngineManager manager;
 
@@ -97,7 +95,7 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
     {
         String expr = expression;
 
-        this.missingValue = false;
+        Boolean missingValue = false;
         Map<String, ExpressionArgument> questions = new HashMap<>();
 
         int start = expr.indexOf(START_MARKER);
@@ -121,9 +119,12 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
 
             // Insert this question into the list of arguments
             if (!questions.containsKey(questionName)) {
-                questions.put(questionName,
-                    new ExpressionArgument("arg" + questions.size(),
-                        getQuestionValue(questionName, values, defaultValue)));
+                ExpressionArgument arg = new ExpressionArgument("arg" + questions.size(),
+                    getQuestionValue(questionName, values, defaultValue));
+                if (arg.getValue() == null) {
+                    missingValue = true;
+                }
+                questions.put(questionName, arg);
             }
 
             // Remove the start and end tags and replace the question name with the argument name for this question
@@ -133,7 +134,7 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
             start = expr.indexOf(START_MARKER);
             end = expr.indexOf(END_MARKER, start);
         }
-        return new ParsedExpression(questions, expr, this.missingValue);
+        return new ParsedExpression(questions, expr, missingValue);
     }
 
     private Object getQuestionValue(String questionName, final Map<String, Object> values, String defaultValue)
@@ -141,9 +142,6 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
         Object value = values.get(questionName);
         if (value == null) {
             value = defaultValue;
-        }
-        if (value == null) {
-            this.missingValue = true;
         }
         return value;
     }

@@ -183,6 +183,11 @@ let ComputedQuestion = (props) => {
             "value": getQuestionValue(questionName, form, defaultValue)});
       }
 
+      if (missingValue) {
+        // Exit early as the expression cannot be evaluated without all inputs
+        return null;
+      }
+
       // Remove the start and end tags and replace the question name with the argument name for this question
       expr = [expr.substring(0, start), questions.get(questionName)["argument"],
         expr.substring(end + endTag.length)].join('');
@@ -197,18 +202,22 @@ let ComputedQuestion = (props) => {
     let expressionError = null;
     try {
       let parseResults = parseExpressionInputs(expression, form);
-      let questions = parseResults[0];
-      let parsedExpression = parseResults[1];
+      if (missingValue) {
+        result = ""
+      } else {
+        let questions = parseResults[0];
+        let parsedExpression = parseResults[1];
 
-      let expressionArguments = ["form", "setError"];
-      let expressionValues = [form, (errorMessage) => {expressionError = errorMessage}];
-      for(const question of questions.values()) {
-        expressionArguments.push(question["argument"]);
-        expressionValues.push(question["value"]);
-      };
-      result = new Function(expressionArguments, parsedExpression)(...expressionValues);
-      if (missingValue || typeof(result) === "undefined" || (typeof(result) === "number" && isNaN(result))) {
-        result = "";
+        let expressionArguments = ["form", "setError"];
+        let expressionValues = [form, (errorMessage) => {expressionError = errorMessage}];
+        for(const question of questions.values()) {
+          expressionArguments.push(question["argument"]);
+          expressionValues.push(question["value"]);
+        };
+        result = new Function(expressionArguments, parsedExpression)(...expressionValues);
+        if (typeof(result) === "undefined" || (typeof(result) === "number" && isNaN(result))) {
+          result = "";
+        }
       }
     }
     catch(err) {
