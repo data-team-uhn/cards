@@ -129,7 +129,7 @@ const useSliderStyles = makeStyles(theme => ({
 //    errorText="Please enter an age above 18, or select the <18 option"
 //    />
 function NumberQuestion(props) {
-  const { existingAnswer, errorText, classes, pageActive, ...rest} = props;
+  const { existingAnswer, errorText, classes, pageActive, disableValueInstructions, ...rest} = props;
   const { dataType,displayMode, minAnswers, minValue, maxValue, isRange,
     sliderStep, sliderMarkStep, sliderOrientation, minValueLabel, maxValueLabel }
     = {sliderOrientation: "horizontal", ...props.questionDefinition, ...props};
@@ -265,7 +265,7 @@ function NumberQuestion(props) {
   // * minValue  = 0
   // * displayMode = slider
   let minMaxMessage = "";
-  if ((minValue || typeof maxValue !== "undefined") && !isSlider) {
+  if ((minValue || typeof maxValue !== "undefined") && !isSlider && !disableValueInstructions) {
     minMaxMessage = "Please enter values ";
     if (typeof minValue !== "undefined" && typeof maxValue !== "undefined") {
       minMaxMessage = `${minMaxMessage} between ${minValue} and ${maxValue}`;

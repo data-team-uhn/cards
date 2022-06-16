@@ -62,6 +62,7 @@ function DateQuestionYear(props) {
       existingAnswer={existingAnswer}
       maxValue={upperLimit || 9999}
       minValue={lowerLimit || 1000}
+      disableValueInstructions={typeof(upperLimit) == 'undefined' && typeof(lowerLimit) == 'undefined'}
       {...rest}
       />
   );
