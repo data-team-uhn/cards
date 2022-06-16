@@ -38,74 +38,60 @@
 		<type>Reference</type>
 	</property>
 	<node>
-		<name>StudyStream</name>
-		<primaryNodeType>cards:Section</primaryNodeType>
+		<name>study_stream</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
-			<name>label</name>
-			<value>Study Stream</value>
+			<name>text</name>
+			<value>Study stream</value>
 			<type>String</type>
 		</property>
+		<property>
+			<name>dataType</name>
+			<value>text</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>list</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
 		<node>
-			<name>study_stream</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
+			<name>High Touch</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
-				<name>text</name>
-				<value>Study stream</value>
+				<name>label</name>
+				<value>High Touch</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>dataType</name>
-				<value>text</value>
+				<name>value</name>
+				<value>High Touch</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>Low Touch</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>label</name>
+				<value>Low Touch</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>displayMode</name>
-				<value>list</value>
+				<name>value</name>
+				<value>Low Touch</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<node>
-				<name>High Touch</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>High Touch</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>High Touch</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Low Touch</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Low Touch</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Low Touch</value>
-					<type>String</type>
-				</property>
-			</node>
 		</node>
 	</node>
 </node>

@@ -102,6 +102,1024 @@
 				</property>
 			</node>
 		</node>
+		<node>
+			<name>cpet_reason</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Reason for CPET</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<node>
+				<name>Study</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Study</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Study</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Triggered Assessment</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Triggered Assessment</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Triggered Assessment</value>
+					<type>String</type>
+				</property>
+			</node>
+		</node>
+		<node>
+			<name>cpet_visit_highSection</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
+			<node>
+				<name>cpet_visit_high</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Visit Number</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>long</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>maxValue</name>
+					<value>11.0</value>
+					<type>Double</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<node>
+					<name>0</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>0</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>0</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>2</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>2</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>2</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>3</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>3</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>3</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>5</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>5</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>5</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>7</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>7</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>7</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>9</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>9</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>9</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>11</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>11</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>11</value>
+						<type>String</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>conditionalGroup</name>
+				<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
+				<property>
+					<name>requireAll</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<node>
+					<name>condition1</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<property>
+						<name>comparator</name>
+						<value>=</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>study_stream</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>High Touch</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+				<node>
+					<name>condition2</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<property>
+						<name>comparator</name>
+						<value>=</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>cpet_reason</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>Study</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+			</node>
+		</node>
+		<node>
+			<name>cpet_visit_lowSection</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
+			<node>
+				<name>cpet_visit_low</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Visit Number</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>long</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<node>
+					<name>0</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>0</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>0</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>2</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>2</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>2</value>
+						<type>String</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>conditionalGroup</name>
+				<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
+				<property>
+					<name>requireAll</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<node>
+					<name>condition1</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<property>
+						<name>comparator</name>
+						<value>=</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>study_stream</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>Low Touch</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+				<node>
+					<name>condition2</name>
+					<primaryNodeType>cards:Conditional</primaryNodeType>
+					<property>
+						<name>comparator</name>
+						<value>=</value>
+						<type>String</type>
+					</property>
+					<node>
+						<name>operandA</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>cpet_reason</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>True</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+					<node>
+						<name>operandB</name>
+						<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+						<property>
+							<name>value</name>
+							<values>
+								<value>Study</value>
+							</values>
+							<type>String</type>
+						</property>
+						<property>
+							<name>isReference</name>
+							<value>False</value>
+							<type>Boolean</type>
+						</property>
+					</node>
+				</node>
+			</node>
+		</node>
+		<node>
+			<name>cpet_yearnumberSection</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
+			<node>
+				<name>cpet_yearnumber</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Year Number</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>maxValue</name>
+					<value>5.0</value>
+					<type>Double</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<node>
+					<name>Y1</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Y1</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Y1</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Y2</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Y2</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Y2</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Y3</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Y3</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Y3</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Y4</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Y4</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Y4</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Y5</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Y5</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Y5</value>
+						<type>String</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>condition</name>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>cpet_reason</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>Triggered Assessment</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
+		</node>
+		<node>
+			<name>cpet_assessmentnumberSection</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
+			<node>
+				<name>cpet_assessmentnumber</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Assessment Number</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<node>
+					<name>T1</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>T1</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>T1</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>T2</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>T2</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>T2</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>T3</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>T3</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>T3</value>
+						<type>String</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>condition</name>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>cpet_reason</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>Triggered Assessment</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
+		</node>
+		<node>
+			<name>cpet_computedtriggerSection</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
+			<node>
+				<name>cpet_computedtrigger</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Triggered Assessment Number</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>expression</name>
+					<value>return @{cpet_yearnumber}+":"+@{cpet_assessmentnumber}</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>entryMode</name>
+					<value>computed</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>formatted</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>condition</name>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>cpet_reason</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>Triggered Assessment</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
+		</node>
+		<node>
+			<name>cpet_triggerreasonSection</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
+			<node>
+				<name>cpet_triggerreason</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Reason for Triggered CPET</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<node>
+					<name>A clinically relevant change in functional capacity and-or a change in health metrics captured via watch sensor</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>A clinically relevant change in functional capacity and/or a change in health metrics captured via watch sensor</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>A clinically relevant change in functional capacity and/or a change in health metrics captured via watch sensor</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>A self-reported and-or objective change in total time spent pursuing MVPA</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>A self-reported and/or objective change in total time spent pursuing MVPA</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>A self-reported and/or objective change in total time spent pursuing MVPA</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>A self-reported change in health status</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>A self-reported change in health status</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>A self-reported change in health status</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Red flag during CPET</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Red flag during CPET</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Red flag during CPET</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>A matched control</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>A matched control</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>A matched control</value>
+						<type>String</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>condition</name>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>cpet_reason</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>Triggered Assessment</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
+		</node>
+		<node>
+			<name>cpet_redflagSection</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
+			<node>
+				<name>cpet_redflag</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>What is the reason for the red flag?</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>condition</name>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>cpet_triggerreason</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>Red flag during CPET</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
+		</node>
 	</node>
 	<node>
 		<name>CardiacStressTest</name>
@@ -116,18 +1134,28 @@
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Systolic BP (resting)</value>
+				<value>Systolic BP</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>description</name>
-				<value>mmHg</value>
+				<value>resting</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>mmHg</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
@@ -140,18 +1168,28 @@
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Diastolic BP (resting)</value>
+				<value>Diastolic BP</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>description</name>
-				<value>mmHg</value>
+				<value>resting</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>mmHg</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
@@ -176,6 +1214,11 @@
 				<name>dataType</name>
 				<value>long</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
@@ -263,6 +1306,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -283,6 +1331,11 @@
 					<name>dataType</name>
 					<value>text</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>minAnswers</name>
@@ -866,1100 +1919,646 @@
 			<type>String</type>
 		</property>
 		<node>
-			<name>cpet_startSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
+			<name>condition</name>
+			<primaryNodeType>cards:Conditional</primaryNodeType>
+			<property>
+				<name>comparator</name>
+				<value>=</value>
+				<type>String</type>
+			</property>
 			<node>
-				<name>cpet_start</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
+				<name>operandA</name>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
-					<name>text</name>
-					<value>CPET start time</value>
+					<name>value</name>
+					<values>
+						<value>cpet</value>
+					</values>
 					<type>String</type>
 				</property>
 				<property>
-					<name>dataType</name>
-					<value>time</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dateFormat</name>
-					<value>HH:MM (AM/PM)</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
+					<name>isReference</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 			</node>
 			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<name>operandB</name>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
-					<name>comparator</name>
-					<value>=</value>
+					<name>value</name>
+					<values>
+						<value>1</value>
+					</values>
 					<type>String</type>
 				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>cpet</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>1</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
+				<property>
+					<name>isReference</name>
+					<value>False</value>
+					<type>Boolean</type>
+				</property>
 			</node>
 		</node>
 		<node>
-			<name>cpet_protSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
+			<name>cpet_start</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>CPET start time</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>time</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dateFormat</name>
+				<value>HH:MM (AM/PM)</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+		</node>
+		<node>
+			<name>cpet_prot</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Protocol</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list+input</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
 			<node>
-				<name>cpet_prot</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
+				<name>Standard Bruce</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
-					<name>text</name>
-					<value>Protocol</value>
+					<name>label</name>
+					<value>Standard Bruce</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>dataType</name>
-					<value>text</value>
+					<name>value</name>
+					<value>Standard Bruce</value>
 					<type>String</type>
 				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list+input</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<node>
-					<name>Standard Bruce</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Standard Bruce</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Standard Bruce</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>Modified Bruce</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Modified Bruce</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Modified Bruce</value>
-						<type>String</type>
-					</property>
-				</node>
 			</node>
 			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<name>Modified Bruce</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
-					<name>comparator</name>
-					<value>=</value>
+					<name>label</name>
+					<value>Modified Bruce</value>
 					<type>String</type>
 				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>cpet</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>1</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
+				<property>
+					<name>value</name>
+					<value>Modified Bruce</value>
+					<type>String</type>
+				</property>
 			</node>
 		</node>
 		<node>
-			<name>cpet_end_criteriaSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
+			<name>cpet_end_criteria</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>What criteria was formally used to end the protocol?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list+input</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
 			<node>
-				<name>cpet_end_criteria</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
+				<name>Chest pain-tightness</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
-					<name>text</name>
-					<value>What criteria was formally used to end the protocol?</value>
+					<name>label</name>
+					<value>Chest pain/tightness</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>dataType</name>
-					<value>text</value>
+					<name>value</name>
+					<value>Chest pain/tightness</value>
 					<type>String</type>
 				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list+input</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<node>
-					<name>Chest pain-tightness</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Chest pain/tightness</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Chest pain/tightness</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>Difficulty tolerating mouthpiece-nose clip</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Difficulty tolerating mouthpiece/nose clip</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Difficulty tolerating mouthpiece/nose clip</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>Shortness of breath</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Shortness of breath</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Shortness of breath</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>Leg fatigue-discomfort</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Leg fatigue/discomfort</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Leg fatigue/discomfort</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>General fatigue</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>General fatigue</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>General fatigue</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>Hemodynamic instability</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Hemodynamic instability</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Hemodynamic instability</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>Arrhythmia</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Arrhythmia</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Arrhythmia</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>Lightheadedness, dizzy or feeling unsteady</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Lightheadedness, dizzy or feeling unsteady</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Lightheadedness, dizzy or feeling unsteady</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>Joint-muscle pain</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Joint/muscle pain</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Joint/muscle pain</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>External interruption</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>External interruption</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>External interruption</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>Maximum heart rate</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Maximum heart rate</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Maximum heart rate</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>Patient request to stop</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Patient request to stop</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Patient request to stop</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>ST changes</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>ST changes</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>ST changes</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>Physiological max</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Physiological max</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Physiological max</value>
-						<type>String</type>
-					</property>
-				</node>
 			</node>
 			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<name>Difficulty tolerating mouthpiece-nose clip</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
-					<name>comparator</name>
-					<value>=</value>
+					<name>label</name>
+					<value>Difficulty tolerating mouthpiece/nose clip</value>
 					<type>String</type>
 				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>cpet</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>1</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
+				<property>
+					<name>value</name>
+					<value>Difficulty tolerating mouthpiece/nose clip</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Shortness of breath</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Shortness of breath</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Shortness of breath</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Leg fatigue-discomfort</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Leg fatigue/discomfort</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Leg fatigue/discomfort</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>General fatigue</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>General fatigue</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>General fatigue</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Hemodynamic instability</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Hemodynamic instability</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Hemodynamic instability</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Arrhythmia</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Arrhythmia</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Arrhythmia</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Lightheadedness, dizzy or feeling unsteady</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Lightheadedness, dizzy or feeling unsteady</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Lightheadedness, dizzy or feeling unsteady</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Joint-muscle pain</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Joint/muscle pain</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Joint/muscle pain</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>External interruption</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>External interruption</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>External interruption</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Maximum heart rate</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Maximum heart rate</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Maximum heart rate</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Patient request to stop</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Patient request to stop</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Patient request to stop</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>ST changes</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>ST changes</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>ST changes</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Physiological max</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Physiological max</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Physiological max</value>
+					<type>String</type>
+				</property>
 			</node>
 		</node>
 		<node>
-			<name>cpet_peak_hrSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>cpet_peak_hr</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>HR at peak</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>bpm</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>long</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>cpet</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>1</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
+			<name>cpet_peak_hr</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>HR at peak</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>bpm</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
 		</node>
 		<node>
-			<name>cpet_ciSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>cpet_ci</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Chronotropic index</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>decimal</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>cpet</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>1</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
+			<name>cpet_ci</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Chronotropic index</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
 		</node>
 		<node>
-			<name>cpet_ci_hfSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>cpet_ci_hf</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Which chronotropic index formula was used for calculation?</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Non beta-blocker CI = (peak HR – resting HR) / ((220-age) – resting HR)
+			<name>cpet_ci_hf</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Which chronotropic index formula was used for calculation?</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Non beta-blocker CI = (peak HR – resting HR) / ((220-age) – resting HR)
 Beta-blocker CI = (peak HR – resting HR) / ((164-0.72*age) – resting HR)
 Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - resting HR)</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<node>
+				<name>Non beta blocker</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Non beta blocker</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>dataType</name>
-					<value>text</value>
+					<name>value</name>
+					<value>Non beta blocker</value>
 					<type>String</type>
 				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<node>
-					<name>Non beta blocker</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Non beta blocker</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Non beta blocker</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>Beta blocker</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Beta blocker</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Beta blocker</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>Heart failure</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Heart failure</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Heart failure</value>
-						<type>String</type>
-					</property>
-				</node>
 			</node>
 			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<name>Beta blocker</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
-					<name>comparator</name>
-					<value>=</value>
+					<name>label</name>
+					<value>Beta blocker</value>
 					<type>String</type>
 				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>cpet</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>1</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
+				<property>
+					<name>value</name>
+					<value>Beta blocker</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Heart failure</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Heart failure</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Heart failure</value>
+					<type>String</type>
+				</property>
 			</node>
 		</node>
 		<node>
-			<name>cpet_sbp_peakSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>cpet_sbp_peak</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Systolic BP at peak</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>mmHg</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>long</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>cpet</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>1</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
+			<name>cpet_sbp_peak</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Systolic BP at peak</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>mmHg</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
 		</node>
 		<node>
-			<name>cpet_dbp_peakSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>cpet_dbp_peak</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Diastolic BP at peak</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>mmHg</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>long</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>cpet</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>1</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
+			<name>cpet_dbp_peak</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Diastolic BP at peak</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>mmHg</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
 		</node>
 		<node>
-			<name>cpet_vo2_peakSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>cpet_vo2_peak</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Peak V02</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>long</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>unitOfMeasurement</name>
-					<value>ml/kg/min</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>cpet</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>1</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
+			<name>cpet_vo2_peak</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Peak V02</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>ml/kg/min</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
 		</node>
 		<node>
-			<name>cpet_o2pulse_peakSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>cpet_o2pulse_peak</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Peak O2 pulse</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>long</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>cpet</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>1</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
+			<name>cpet_o2pulse_peak</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Peak O2 pulse</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
 		</node>
 		<node>
-			<name>cpet_rer_peakSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>cpet_rer_peak</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Peak RER</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>long</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>cpet</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>1</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
+			<name>cpet_rer_peak</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Peak RER</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
 		</node>
 		<node>
-			<name>cpet_rpe_peakSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>cpet_rpe_peak</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Peak RPE</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>long</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>cpet</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>1</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
+			<name>cpet_rpe_peak</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Peak RPE</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
 		</node>
 	</node>
 	<node>
@@ -2657,6 +3256,11 @@ Normal = less than 34 at anaerobic threshold
 				<value>boolean</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
 		</node>
 		<node>
 			<name>cpet_bl_lvf</name>
@@ -2670,6 +3274,11 @@ Normal = less than 34 at anaerobic threshold
 				<name>dataType</name>
 				<value>boolean</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
 			</property>
 		</node>
 		<node>
@@ -2694,6 +3303,11 @@ Normal = less than 34 at anaerobic threshold
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<node>
 				<name>I</name>
@@ -2906,6 +3520,11 @@ Normal = less than 34 at anaerobic threshold
 				<value>list</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
 			<node>
 				<name>I</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -3111,6 +3730,11 @@ Normal = less than 34 at anaerobic threshold
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<node>
 				<name>Atrial flutter</name>
@@ -3335,6 +3959,11 @@ See Fletcher, Circulation 2013:
 				<value>list</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
 			<node>
 				<name>I</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -3546,6 +4175,11 @@ See Fletcher, Circulation 2013:
 				<value>list</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
 			<node>
 				<name>I</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -3751,6 +4385,11 @@ See Fletcher, Circulation 2013:
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<node>
 				<name>Chest pain and-or tightness</name>

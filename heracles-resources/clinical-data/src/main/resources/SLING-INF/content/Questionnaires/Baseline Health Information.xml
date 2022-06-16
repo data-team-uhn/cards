@@ -38,71 +38,53 @@
 		<type>Reference</type>
 	</property>
 	<node>
-		<name>VisitNumber</name>
-		<primaryNodeType>cards:Section</primaryNodeType>
+		<name>baseline-visit</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
-			<name>label</name>
+			<name>text</name>
 			<value>Visit Number</value>
 			<type>String</type>
 		</property>
-		<node>
-			<name>baseline-visit</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Visit Number</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>long</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>minValue</name>
-				<value>1.0</value>
-				<type>Double</type>
-			</property>
-			<property>
-				<name>maxValue</name>
-				<value>1.0</value>
-				<type>Double</type>
-			</property>
-			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<node>
-				<name>1</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>1</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>1</value>
-					<type>String</type>
-				</property>
-			</node>
-		</node>
+		<property>
+			<name>dataType</name>
+			<value>text</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>expression</name>
+			<value>return 1</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>entryMode</name>
+			<value>computed</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>formatted</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>1.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>maxValue</name>
+			<value>1.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
 	</node>
 	<node>
 		<name>Cardiacrehabindication</name>
@@ -242,6 +224,11 @@
 				<name>displayMode</name>
 				<value>list</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
@@ -733,6 +720,11 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>maxAnswers</name>
+					<value>0</value>
+					<type>Long</type>
+				</property>
+				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -863,6 +855,11 @@
 					<type>Long</type>
 				</property>
 				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -958,6 +955,11 @@
 					<name>displayMode</name>
 					<value>list</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>0</value>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>minAnswers</name>
@@ -1312,6 +1314,16 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -1374,6 +1386,16 @@
 					<name>dataType</name>
 					<value>text</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 				<property>
 					<name>minAnswers</name>
@@ -1526,6 +1548,16 @@
 				<value>decimal</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 		</node>
 		<node>
 			<name>bl_smoking_sd</name>
@@ -1554,6 +1586,11 @@
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 		</node>
 		<node>
@@ -1584,6 +1621,11 @@
 				<value>1</value>
 				<type>Long</type>
 			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
 		</node>
 		<node>
 			<name>bl_procedure</name>
@@ -1597,6 +1639,16 @@
 				<name>dataType</name>
 				<value>boolean</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
@@ -1624,6 +1676,11 @@
 					<name>displayMode</name>
 					<value>list</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>0</value>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>minAnswers</name>
@@ -1900,6 +1957,16 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -1964,6 +2031,16 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -2026,6 +2103,16 @@
 					<name>dataType</name>
 					<value>text</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 				<property>
 					<name>minAnswers</name>
@@ -2098,6 +2185,16 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -2123,6 +2220,11 @@
 					<name>displayMode</name>
 					<value>list+input</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>0</value>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>minAnswers</name>
@@ -2364,6 +2466,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -2522,6 +2629,11 @@
 				<name>displayMode</name>
 				<value>list+input</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
@@ -2693,6 +2805,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
+			</property>
+			<property>
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -2769,8 +2886,13 @@
 			</property>
 			<property>
 				<name>displayMode</name>
-				<value>list</value>
+				<value>list+input</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
@@ -2802,20 +2924,6 @@
 				<property>
 					<name>value</name>
 					<value>Back surgery</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>Other orthopedic surgery</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Other orthopedic surgery</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Other orthopedic surgery</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -2859,6 +2967,11 @@
 					<name>displayMode</name>
 					<value>list</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>0</value>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>minAnswers</name>
@@ -3014,6 +3127,11 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>maxAnswers</name>
+					<value>0</value>
+					<type>Long</type>
+				</property>
+				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -3118,70 +3236,6 @@
 			</node>
 		</node>
 		<node>
-			<name>other_orthoSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>other_ortho</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Specify other orthopedic surgery</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>non_cv_surg</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>Other orthopedic surgery</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
 			<name>bl_phy_notes</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
@@ -3198,6 +3252,16 @@
 				<name>dataType</name>
 				<value>text</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 		</node>
 	</node>
@@ -3229,8 +3293,13 @@
 			</property>
 			<property>
 				<name>displayMode</name>
-				<value>list</value>
+				<value>list+input</value>
 				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>0</value>
+				<type>Long</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
@@ -3406,20 +3475,6 @@
 				</property>
 			</node>
 			<node>
-				<name>Other cardiovascular family history</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Other cardiovascular family history</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Other cardiovascular family history</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
 				<name>None of the above</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
@@ -3454,6 +3509,16 @@
 					<name>dataType</name>
 					<value>text</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 				<property>
 					<name>minAnswers</name>

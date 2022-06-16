@@ -61,6 +61,11 @@
 			<type>Long</type>
 		</property>
 		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
 			<name>minAnswers</name>
 			<value>1</value>
 			<type>Long</type>
@@ -99,7 +104,7 @@
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>study_stream</value>
+			<value>Study Stream</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -116,6 +121,11 @@
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<node>
 			<name>High Touch</name>
@@ -173,14 +183,9 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>minValue</name>
-				<value>0.0</value>
-				<type>Double</type>
-			</property>
-			<property>
-				<name>maxValue</name>
-				<value>10.0</value>
-				<type>Double</type>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
@@ -286,7 +291,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>cohort</value>
+						<value>study_stream</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -302,7 +307,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>"High Touch"</value>
+						<value>High Touch</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -341,14 +346,9 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>minValue</name>
-				<value>0.0</value>
-				<type>Double</type>
-			</property>
-			<property>
-				<name>maxValue</name>
-				<value>2.0</value>
-				<type>Double</type>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
@@ -398,7 +398,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>cohort</value>
+						<value>study_stream</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -414,7 +414,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>"Low Touch"</value>
+						<value>Low Touch</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -446,18 +446,13 @@
 		</property>
 		<property>
 			<name>maxAnswers</name>
-			<value>1</value>
+			<value>5</value>
 			<type>Long</type>
 		</property>
 		<property>
-			<name>minValue</name>
-			<value>1.0</value>
-			<type>Double</type>
-		</property>
-		<property>
-			<name>maxValue</name>
-			<value>5.0</value>
-			<type>Double</type>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
 		</property>
 		<node>
 			<name>1</name>
@@ -553,6 +548,11 @@
 			<value>1</value>
 			<type>Long</type>
 		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
 		<node>
 			<name>T1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -597,55 +597,32 @@
 		</node>
 	</node>
 	<node>
-		<name>file_source</name>
+		<name>externalfile_norav</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>File Source</value>
+			<value>Vmax File Upload</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>displayMode</name>
-			<value>list</value>
+			<value>file</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>maxAnswers</name>
+			<value>3</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>compact</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
 			<value>1</value>
 			<type>Long</type>
 		</property>
-		<node>
-			<name>Norav</name>
-			<primaryNodeType>cards:AnswerOption</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>Norav</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>value</name>
-				<value>Norav</value>
-				<type>String</type>
-			</property>
-		</node>
-		<node>
-			<name>Vmax</name>
-			<primaryNodeType>cards:AnswerOption</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>Vmax</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>value</name>
-				<value>Vmax</value>
-				<type>String</type>
-			</property>
-		</node>
 	</node>
 </node>

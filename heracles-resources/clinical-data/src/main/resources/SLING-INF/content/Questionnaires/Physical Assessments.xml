@@ -21,14 +21,14 @@
 	<name>Physical Assessments</name>
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
-		<name>title</name>
-		<value>Physical Assessments</value>
-		<type>String</type>
-	</property>
-	<property>
 		<name>maxPerSubject</name>
 		<value>1</value>
 		<type>Long</type>
+	</property>
+	<property>
+		<name>title</name>
+		<value>Physical Assessments</value>
+		<type>String</type>
 	</property>
 	<property>
 		<name>requiredSubjectTypes</name>
@@ -38,99 +38,139 @@
 		<type>Reference</type>
 	</property>
 	<node>
-		<name>Physicalassessments</name>
-		<primaryNodeType>cards:Section</primaryNodeType>
+		<name>visit_number</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
-			<name>label</name>
-			<value>Physical assessments</value>
+			<name>text</name>
+			<value>Visit Number</value>
 			<type>String</type>
 		</property>
-		<node>
-			<name>height</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Height</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>decimal</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>unitOfMeasurement</name>
-				<value>cm</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minValue</name>
-				<value>0.0</value>
-				<type>Double</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-		</node>
-		<node>
-			<name>weight</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Weight</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>decimal</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>unitOfMeasurement</name>
-				<value>kg</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minValue</name>
-				<value>0.0</value>
-				<type>Double</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-		</node>
-		<node>
-			<name>waist_circumference</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Waist circumference</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>decimal</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>unitOfMeasurement</name>
-				<value>cm</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>minValue</name>
-				<value>0.0</value>
-				<type>Double</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-		</node>
+		<property>
+			<name>dataType</name>
+			<value>text</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>expression</name>
+			<value>return 1</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>entryMode</name>
+			<value>computed</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>formatted</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+	</node>
+	<node>
+		<name>height</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Height</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>decimal</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>unitOfMeasurement</name>
+			<value>cm</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>0.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+	</node>
+	<node>
+		<name>weight</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Weight</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>decimal</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>unitOfMeasurement</name>
+			<value>kg</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>0.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+	</node>
+	<node>
+		<name>waist_circumference</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Waist circumference</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>decimal</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>unitOfMeasurement</name>
+			<value>cm</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minValue</name>
+			<value>0.0</value>
+			<type>Double</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
 	</node>
 </node>
