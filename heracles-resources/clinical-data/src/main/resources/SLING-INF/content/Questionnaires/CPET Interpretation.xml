@@ -860,11 +860,6 @@
 					<type>Long</type>
 				</property>
 				<property>
-					<name>compact</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -1078,11 +1073,6 @@
 					<type>Long</type>
 				</property>
 				<property>
-					<name>compact</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-				<property>
 					<name>minAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -1144,12 +1134,12 @@
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Systolic BP (resting)</value>
+				<value>Systolic BP</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>description</name>
-				<value>mmHg</value>
+				<value>resting</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1158,14 +1148,14 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>unitOfMeasurement</name>
+				<value>mmHg</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
-			</property>
-			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
@@ -1178,12 +1168,12 @@
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Diastolic BP (resting)</value>
+				<value>Diastolic BP</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>description</name>
-				<value>mmHg</value>
+				<value>resting</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1192,14 +1182,14 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>unitOfMeasurement</name>
+				<value>mmHg</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
-			</property>
-			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
@@ -1229,11 +1219,6 @@
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
-			</property>
-			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
@@ -1326,11 +1311,6 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
-			</property>
-			<property>
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -1356,11 +1336,6 @@
 					<name>maxAnswers</name>
 					<value>1</value>
 					<type>Long</type>
-				</property>
-				<property>
-					<name>compact</name>
-					<value>True</value>
-					<type>Boolean</type>
 				</property>
 				<property>
 					<name>minAnswers</name>
@@ -1435,11 +1410,6 @@
 					<name>maxAnswers</name>
 					<value>1</value>
 					<type>Long</type>
-				</property>
-				<property>
-					<name>compact</name>
-					<value>True</value>
-					<type>Boolean</type>
 				</property>
 				<property>
 					<name>minAnswers</name>
@@ -2013,11 +1983,6 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
-			</property>
-			<property>
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -2329,11 +2294,6 @@
 				<type>Long</type>
 			</property>
 			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
-			</property>
-			<property>
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -2356,11 +2316,6 @@
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
-			</property>
-			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
@@ -2470,11 +2425,6 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 				<type>Long</type>
 			</property>
 			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
-			</property>
-			<property>
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -2502,11 +2452,6 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
-			</property>
-			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
@@ -2538,11 +2483,6 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 				<type>Long</type>
 			</property>
 			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
-			</property>
-			<property>
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -2565,11 +2505,6 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
-			</property>
-			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
@@ -2596,11 +2531,6 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 				<type>Long</type>
 			</property>
 			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
-			</property>
-			<property>
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -2623,11 +2553,6 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
-			</property>
-			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
 			</property>
 			<property>
 				<name>minAnswers</name>
@@ -3336,11 +3261,6 @@ Normal = less than 34 at anaerobic threshold
 				<value>1</value>
 				<type>Long</type>
 			</property>
-			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
-			</property>
 		</node>
 		<node>
 			<name>cpet_bl_lvf</name>
@@ -3359,11 +3279,6 @@ Normal = less than 34 at anaerobic threshold
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
-			</property>
-			<property>
-				<name>compact</name>
-				<value>True</value>
-				<type>Boolean</type>
 			</property>
 		</node>
 		<node>

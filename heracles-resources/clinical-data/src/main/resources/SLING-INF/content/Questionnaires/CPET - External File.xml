@@ -179,7 +179,7 @@
 			</property>
 			<property>
 				<name>maxAnswers</name>
-				<value>10</value>
+				<value>1</value>
 				<type>Long</type>
 			</property>
 			<property>
@@ -291,7 +291,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>cohort</value>
+						<value>study_stream</value>
 					</values>
 					<type>String</type>
 				</property>
@@ -342,7 +342,7 @@
 			</property>
 			<property>
 				<name>maxAnswers</name>
-				<value>2</value>
+				<value>1</value>
 				<type>Long</type>
 			</property>
 			<property>
@@ -398,7 +398,7 @@
 				<property>
 					<name>value</name>
 					<values>
-						<value>cohort</value>
+						<value>study_stream</value>
 					</values>
 					<type>String</type>
 				</property>
