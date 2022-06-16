@@ -441,6 +441,6 @@ def csv_to_json(title):
 titles = ['CPET_ External Files', '6MWT', 'CPET Interpretation', 'Historical CPET Test', 'Ad Hoc Lab Results',
     'Historic Lab Results', 'Event_ Medications', 'Events_ Non-Cardiac', 'Events_ Clinical Cardiac',
     'Baseline Medications', 'Baseline Health Information', 'Physical Assessments', 'Demographics',
-    'Participant Status', 'Study Stream']
+    'Participant Status', 'Study Stream', 'Legacy Data']
 for title in titles:
     csv_to_json(title)
