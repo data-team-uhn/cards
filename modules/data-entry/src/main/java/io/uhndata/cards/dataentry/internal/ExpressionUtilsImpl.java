@@ -52,7 +52,8 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
     @Override
     public Set<String> getDependencies(final Node question)
     {
-        return parseExpressionInputs(getExpressionFromQuestion(question), Collections.emptyMap()).getInputs().keySet();
+        return parseExpressionInputs(
+            getExpressionFromQuestion(question), Collections.emptyMap()).getQuestions().keySet();
     }
 
     @Override
@@ -79,7 +80,7 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
             ScriptEngine engine = this.manager.getEngineByName("JavaScript");
 
             Bindings env = engine.createBindings();
-            parsedExpression.getInputs().forEach((key, value) -> env.put(key, value));
+            parsedExpression.getQuestions().forEach((key, value) -> env.put(value.getArgument(), value.getValue()));
             Object result = engine.eval("(function(){" + parsedExpression.getExpression() + "})()", env);
             return ValueFormatter.formatResult(result, type);
         } catch (ScriptException e) {
@@ -89,69 +90,80 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
         return null;
     }
 
-    private static ExpressionUtilsImpl.ParsedExpression parseExpressionInputs(final String expression,
+    private ExpressionUtilsImpl.ParsedExpression parseExpressionInputs(final String expression,
         final Map<String, Object> values)
     {
         String expr = expression;
-        Map<String, Object> inputs = new HashMap<>();
+
+        Boolean missingValue = false;
+        Map<String, ExpressionArgument> questions = new HashMap<>();
+
         int start = expr.indexOf(START_MARKER);
         int end = expr.indexOf(END_MARKER, start);
-        boolean missingValue = false;
-
+        // For each argument in the expression, parse the question name and default value if present.
+        // To prevent question names from breaking the evaluating funtion, replace them with a default
+        // argument name in the evaluated expression.
         while (start > -1 && end > -1) {
-            int optionStart = expr.indexOf(DEFAULT_MARKER, start);
-            boolean hasOption = optionStart > -1 && optionStart < end;
+            int defaultStart = expr.indexOf(DEFAULT_MARKER, start);
+            boolean hasDefault = defaultStart > -1 && defaultStart < end;
 
-            String inputName;
+            // Parse out the question name and default value if provided
+            String questionName;
             String defaultValue = null;
-
-            if (hasOption) {
-                inputName = expr.substring(start + START_MARKER.length(), optionStart);
-                defaultValue = expr.substring(optionStart + DEFAULT_MARKER.length(), end);
+            if (hasDefault) {
+                questionName = expr.substring(start + START_MARKER.length(), defaultStart);
+                defaultValue = expr.substring(defaultStart + DEFAULT_MARKER.length(), end);
             } else {
-                inputName = expr.substring(start + START_MARKER.length(), end);
+                questionName = expr.substring(start + START_MARKER.length(), end);
             }
 
-            if (!inputs.containsKey(inputName)) {
-                Object value = values.get(inputName);
-                if (value == null) {
-                    value = defaultValue;
-                }
-                if (value == null) {
+            // Insert this question into the list of arguments
+            if (!questions.containsKey(questionName)) {
+                ExpressionArgument arg = new ExpressionArgument("arg" + questions.size(),
+                    getQuestionValue(questionName, values, defaultValue));
+                if (arg.getValue() == null) {
                     missingValue = true;
                 }
-                inputs.put(inputName, value);
+                questions.put(questionName, arg);
             }
 
-            // Remove the start and end tags as well as the default option if provided, leaving just
-            // the Javascript variable name
-            expr = expr.substring(0, start) + expr.substring(start + START_MARKER.length(), hasOption
-                ? optionStart : end) + expr.substring(end + END_MARKER.length());
+            // Remove the start and end tags and replace the question name with the argument name for this question
+            expr = expr.substring(0, start) + questions.get(questionName).getArgument()
+                + expr.substring(end + END_MARKER.length());
 
-            start = expr.indexOf(START_MARKER, (hasOption ? optionStart : end) - START_MARKER.length());
+            start = expr.indexOf(START_MARKER);
             end = expr.indexOf(END_MARKER, start);
         }
-        return new ParsedExpression(inputs, expr, missingValue);
+        return new ParsedExpression(questions, expr, missingValue);
+    }
+
+    private Object getQuestionValue(String questionName, final Map<String, Object> values, String defaultValue)
+    {
+        Object value = values.get(questionName);
+        if (value == null) {
+            value = defaultValue;
+        }
+        return value;
     }
 
     private static final class ParsedExpression
     {
-        private final Map<String, Object> inputs;
+        private final Map<String, ExpressionArgument> questions;
 
         private final String expression;
 
         private final boolean missingValue;
 
-        ParsedExpression(Map<String, Object> inputs, String expression, boolean missingValue)
+        ParsedExpression(Map<String, ExpressionArgument> questions, String expression, boolean missingValue)
         {
-            this.inputs = inputs;
+            this.questions = questions;
             this.expression = expression;
             this.missingValue = missingValue;
         }
 
-        public Map<String, Object> getInputs()
+        public Map<String, ExpressionArgument> getQuestions()
         {
-            return this.inputs;
+            return this.questions;
         }
 
         public String getExpression()
@@ -162,6 +174,29 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
         public boolean hasMissingValue()
         {
             return this.missingValue;
+        }
+    }
+
+    private static final class ExpressionArgument
+    {
+        private final String argument;
+
+        private final Object value;
+
+        ExpressionArgument(String argument, Object value)
+        {
+            this.argument = argument;
+            this.value = value;
+        }
+
+        public String getArgument()
+        {
+            return this.argument;
+        }
+
+        public Object getValue()
+        {
+            return this.value;
         }
     }
 
