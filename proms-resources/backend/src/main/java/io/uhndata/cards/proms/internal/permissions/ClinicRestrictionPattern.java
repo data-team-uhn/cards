@@ -83,19 +83,41 @@ public class ClinicRestrictionPattern implements RestrictionPattern
     @Override
     public boolean matches(final Tree tree, final PropertyState property)
     {
-        if (property != null) {
-            return true;
-        }
-        // Make sure we can discern what this node is, before continuing
-        if (!tree.hasProperty("sling:resourceType")) {
-            return false;
-        }
+        // This Node might not be the parent tree, find it among this tree's ancestors if possible
+        Tree formNode = getFormNodeParent(tree);
 
-        if (tree.getProperty("sling:resourceType").getValue(Type.STRING).equals("cards/Form")) {
-            return appliesToForm(tree);
+        if (formNode != null) {
+            boolean res = appliesToForm(formNode);
+            return res;
         } else {
-            // Unknown node type: ignore
+            // Not a child of a form: ignore
             return false;
+        }
+    }
+
+    /**
+     * Returns the form node corresponding to this tree, or null if none exists.
+     *
+     * @param tree Tree which might be a form node
+     * @return The form node parent, or null if none exists
+     */
+    public Tree getFormNodeParent(final Tree tree)
+    {
+        if (tree.hasProperty("sling:resourceType")
+            && tree.getProperty("sling:resourceType").getValue(Type.STRING).equals("cards/Form")) {
+            return tree;
+        } else {
+            // Recurse upwards
+            if (!tree.isRoot()) {
+                try {
+                    return getFormNodeParent(tree.getParent());
+                } catch (IllegalStateException e) {
+                    // Should not happen, since we check for root
+                    return null;
+                }
+            } else {
+                return null;
+            }
         }
     }
 
