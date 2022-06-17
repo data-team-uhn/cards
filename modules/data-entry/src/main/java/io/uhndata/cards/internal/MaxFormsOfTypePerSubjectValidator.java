@@ -16,11 +16,18 @@
  */
 package io.uhndata.cards.internal;
 
+import java.util.Collections;
+import java.util.Map;
+
 import org.apache.jackrabbit.oak.api.CommitFailedException;
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.commit.Validator;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
+import org.apache.sling.api.resource.LoginException;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +41,13 @@ import org.slf4j.LoggerFactory;
 public class MaxFormsOfTypePerSubjectValidator implements Validator
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(MaxFormsOfTypePerSubjectValidator.class);
+
+    private final ResourceResolverFactory rrf;
+
+    public MaxFormsOfTypePerSubjectValidator(final ResourceResolverFactory rrf)
+    {
+        this.rrf = rrf;
+    }
 
     @Override
     public void enter(NodeState before, NodeState after) throws CommitFailedException
@@ -72,6 +86,19 @@ public class MaxFormsOfTypePerSubjectValidator implements Validator
                 questionnaireUUID,
                 subjectUUID
             );
+            final Map<String, Object> parameters =
+                Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, "maxFormsOfTypePerSubjectValidator");
+            try (ResourceResolver serviceResolver = this.rrf.getServiceResourceResolver(parameters)) {
+                LOGGER.warn("Yay! We were able to get a ResourceResolver");
+                Resource someQuestionnaire = serviceResolver.resolve("/Questionnaires/Patient information");
+                LOGGER.warn("Resolved /Questionnaires/Patient information --> {}", someQuestionnaire);
+                if (someQuestionnaire != null) {
+                    long maxPerSubject = someQuestionnaire.getValueMap().get("maxPerSubject", -1);
+                    LOGGER.warn("/Questionnaires/Patient information/maxPerSubject = {}", maxPerSubject);
+                }
+            } catch (LoginException e) {
+                // Should not happen
+            }
         }
         return this;
     }

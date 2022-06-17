@@ -21,7 +21,9 @@ import org.apache.jackrabbit.oak.spi.commit.EditorProvider;
 import org.apache.jackrabbit.oak.spi.commit.Validator;
 import org.apache.jackrabbit.oak.spi.commit.ValidatorProvider;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
+import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * The {@link ValidatorProvider} for the
@@ -32,9 +34,15 @@ import org.osgi.service.component.annotations.Component;
 @Component(name = "MaxFormsOfTypePerSubjectValidatorProvider", service = EditorProvider.class)
 public class MaxFormsOfTypePerSubjectValidatorProvider extends ValidatorProvider
 {
+    @Reference
+    private ResourceResolverFactory rrf;
+
     @Override
     protected Validator getRootValidator(NodeState before, NodeState after, CommitInfo info)
     {
-        return new MaxFormsOfTypePerSubjectValidator();
+        if (this.rrf != null) {
+            return new MaxFormsOfTypePerSubjectValidator(this.rrf);
+        }
+        return null;
     }
 }
