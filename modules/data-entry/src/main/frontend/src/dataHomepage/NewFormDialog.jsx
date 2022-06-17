@@ -298,7 +298,7 @@ function NewFormDialog(props) {
                   let sql = `select * from [cards:Questionnaire] as n `;
                   let conditions = [];
                   if (query.search) {
-                    conditions.push(`CONTAINS(n.'title', '*${query.search}*')`);
+                    conditions.push(`(CONTAINS(n.'title', '*${query.search}*') or CONTAINS(n.'description', '*${query.search}*'))`);
                   }
                   // If we're on the patient chart, only allow the current subjects whose type is:
                   // a) the type of the current subject
