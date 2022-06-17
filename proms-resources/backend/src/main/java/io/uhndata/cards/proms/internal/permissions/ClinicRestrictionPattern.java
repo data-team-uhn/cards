@@ -21,10 +21,10 @@ package io.uhndata.cards.proms.internal.permissions;
 import java.util.Map;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.query.QueryResult;
-import javax.jcr.query.RowIterator;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.JackrabbitSession;
@@ -83,12 +83,18 @@ public class ClinicRestrictionPattern implements RestrictionPattern
     @Override
     public boolean matches(final Tree tree, final PropertyState property)
     {
+        // If this is being called on a property, the user already has access to the node
+        // In most cases, we want to apply the same rule to it
+        // However, since this restriction pattern is costly to apply, we shortcut to applying to it
+        if (property != null) {
+            return true;
+        }
+
         // This Node might not be the parent tree, find it among this tree's ancestors if possible
         Tree formNode = getFormNodeParent(tree);
 
         if (formNode != null) {
-            boolean res = appliesToForm(formNode);
-            return res;
+            return appliesToForm(formNode);
         } else {
             // Not a child of a form: ignore
             return false;
@@ -161,7 +167,8 @@ public class ClinicRestrictionPattern implements RestrictionPattern
     }
 
     /**
-     * Return the visit information form for a given subject, or null if it is inaccessible or none exists.
+     * Return the clinic name in the visit information form for a given subject, or null if it is inaccessible or none
+     * exists.
      *
      * @param subjectID The ID of the subject
      * @param session a service session with read access to the repository
@@ -175,15 +182,16 @@ public class ClinicRestrictionPattern implements RestrictionPattern
         final Node clinicQuestion = this.questionnaireUtils.getQuestion(visitInformationQuestionnaire, "clinic");
 
         // Perform a query for any Visit Information form for this subject
-        String query = "SELECT a.value FROM [cards:Form] AS f INNER JOIN [cards:Answer] AS a ON ISDESCENDANTNODE(a, f)"
+        String query = "SELECT f.* FROM [cards:Form] AS f"
             + " WHERE f.'subject'='" + subjectID
-            + "' AND f.'questionnaire'='" + visitInformationQuestionnaire.getIdentifier()
-            + "' AND a.'question'='" + clinicQuestion.getIdentifier() + "'";
+            + "' AND f.'questionnaire'='" + visitInformationQuestionnaire.getIdentifier() + "'";
 
         QueryResult results = session.getWorkspace().getQueryManager().createQuery(query, "JCR-SQL2").execute();
-        RowIterator rows = results.getRows();
+        NodeIterator rows = results.getNodes();
+
+        // Grab the answer to the Clinic question
         if (rows.hasNext()) {
-            return rows.nextRow().getValue("a.value").getString();
+            return this.formUtils.getValue(this.formUtils.getAnswer(rows.nextNode(), clinicQuestion)).toString();
         }
         return null;
     }
