@@ -43,6 +43,7 @@ import AppointmentIcon from '@mui/icons-material/Event';
 import ToUDialog from "./ToUDialog.jsx";
 
 import DropdownsDatePicker from "../components/DropdownsDatePicker.jsx";
+import FormattedText from "../components/FormattedText.jsx";
 
 const useStyles = makeStyles(theme => ({
   form : {
@@ -135,6 +136,7 @@ function PatientIdentification(props) {
   const [ touAccepted, setTouAccepted ] = useState(false);
   // Whether the Terms of Use dialog can be displayed after patient identification
   const [ showTou, setShowTou ] = useState(false);
+  const [ welcomeMessage, setWelcomeMessage ] = useState();
 
   const [ mrnHelperOpen, setMrnHelperOpen ] = useState(false);
 
@@ -197,6 +199,13 @@ function PatientIdentification(props) {
     setVisitListShown(false);
     identify();
   }, [visit,visitList]);
+
+  useEffect(() => {
+    fetch("/Proms/WelcomeMessage.json")
+      .then( response => response.ok ? response.json() : Promise.reject(response) )
+      .then( setWelcomeMessage )
+      .catch( err => setWelcomeMessage("") );
+  }, []);
 
   // After the user has accepted the TOU, if they need to select from a list of visits present said
   useEffect(() => {
@@ -267,20 +276,11 @@ function PatientIdentification(props) {
          { (!visitList || showTou) ?
 
          <>
-         <Grid item xs={12} className={classes.description}>
-           <Typography variant="h6">
-             Welcome to {appName}
-           </Typography>
-           <Typography paragraph>
-             {appName} is designed to ask you the most important questions about your health and well being. Your responses will remain confidential and will help your provider determine how we can best help you.
-           </Typography>
-           <Typography paragraph>
-             Completing the questionnaire is voluntary, so if you would rather not complete it, you do not have to.
-           </Typography>
-           <Typography paragraph>
-             If routine service evaluations or research projects are undertaken, your responses may be analyzed in a completely anonymous way.
-           </Typography>
-         </Grid>
+         { welcomeMessage &&
+           <Grid item xs={12} className={classes.description}>
+             <FormattedText>{welcomeMessage?.text.replaceAll("APP_NAME", appName)}</FormattedText>
+           </Grid>
+         }
          <Grid item xs={12} className={classes.formFields}>
             <div className={classes.description}>
             { error ?

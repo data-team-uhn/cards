@@ -26,6 +26,7 @@ import MDEditor from '@uiw/react-md-editor';
 const useStyles = makeStyles(theme => ({
   markdown: {
       fontSize: "inherit",
+      fontFamily: "inherit"
   }
 }));
 
