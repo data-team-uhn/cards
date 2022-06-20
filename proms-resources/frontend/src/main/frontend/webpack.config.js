@@ -15,7 +15,9 @@ module.exports = {
     [module_name + 'VisitView']: './src/proms/VisitView.jsx',
     [module_name + 'clinicIcon']: '@mui/icons-material/Event.js',
     [module_name + 'Clinics']: './src/proms/Clinics.jsx',
-    [module_name + 'PrintHeader']: './src/proms/PrintHeader.jsx'
+    [module_name + 'PrintHeader']: './src/proms/PrintHeader.jsx',
+    [module_name + 'WelcomeMessageConfiguration']: './src/proms/WelcomeMessageConfiguration.jsx',
+    [module_name + 'WelcomeMessageConfigurationIcon']: '@mui/icons-material/ChromeReaderMode.js'
   },
   plugins: [
     new CleanWebpackPlugin(),

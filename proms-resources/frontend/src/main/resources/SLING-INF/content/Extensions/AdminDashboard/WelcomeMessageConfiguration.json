@@ -1,0 +1,9 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/admindashboard/entry",
+  "cards:extensionName": "Welcome Message Configuration Widget",
+  "cards:targetURL": "/content.html/admin/WelcomeMessageConfiguration",
+  "cards:icon": "asset:proms-homepage.WelcomeMessageConfigurationIcon.js",
+  "cards:hint": "Configure the welcome message text",
+  "cards:defaultOrder": 203
+}

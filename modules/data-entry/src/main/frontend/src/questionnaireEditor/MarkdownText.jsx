@@ -47,13 +47,14 @@ let MarkdownText = (props) => {
   cmd.push(infoButton);
 
   return (
-    <MDEditor className={classes.markdown} value={value} onChange={value => {setValue(value); onChange && onChange(value);}} extraCommands={cmd}/>
+    <MDEditor className={classes.markdown} value={value} height={props.height || 200} onChange={value => {setValue(value); onChange && onChange(value);}} extraCommands={cmd}/>
   )
 }
 
 MarkdownText.propTypes = {
   value: PropTypes.string,
-  onChange: PropTypes.func
+  onChange: PropTypes.func,
+  height: PropTypes.number
 };
 
 export default withStyles(QuestionnaireStyle)(MarkdownText);

@@ -1,0 +1,7 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/view",
+  "cards:extensionName": "Welcome Message Configuration",
+  "cards:targetURL": "/content.html/admin/WelcomeMessageConfiguration",
+  "cards:extensionRenderURL": "asset:proms-homepage.WelcomeMessageConfiguration.js"
+}
