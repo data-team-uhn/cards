@@ -36,6 +36,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 
 import Answer, {LABEL_POS, VALUE_POS, DESC_POS, IS_DEFAULT_OPTION_POS, IS_DEFAULT_ANSWER_POS} from "./Answer";
 import AnswerInstructions from "./AnswerInstructions";
+import { hasWarningFlags } from "./AnswerInstructions";
 import Question from "./Question";
 import FormattedText from "../components/FormattedText.jsx";
 import QuestionnaireStyle from './QuestionnaireStyle';
@@ -185,7 +186,7 @@ let QuestionMatrix = (props) => {
 
   // Adapt the section / answerSection info to pass to the Question component
 
-  let existingAnswerMock = [sectionAnswerPath, {displayedValue: existingAnswers, statusFlags: existingSectionAnswer ? existingSectionAnswer[1].statusFlags : null}];
+  let existingAnswerMock = [sectionAnswerPath, {displayedValue: existingAnswers, statusFlags: existingSectionAnswer?.[1]?.statusFlags || null}];
   let questionMatrixDefinition = { ...sectionDefinition, text: sectionDefinition.label};
   let currentAnswers = subquestions.reduce((min, item) => {return Math.min(min, selection[item[0]]?.length || 0);}, minAnswers);
 
@@ -240,7 +241,7 @@ let QuestionMatrix = (props) => {
 
   let renderViewMode = () => {
     return (<>
-      { existingAnswers.map((answer, idx) => (answer[1].displayedValue || answer[1].statusFlags?.length > 0) && (
+      { existingAnswers.map((answer, idx) => (answer[1].displayedValue || hasWarningFlags(answer)) && (
         <TableRow key={answer[0] + idx} className={enableVerticalLayout ? classes.questionMatrixStackedAnswer : ''}>
           { renderQuestion(answer[1].question, answer[1].statusFlags) }
           { !enableVerticalLayout && <TableCell>—</TableCell> }

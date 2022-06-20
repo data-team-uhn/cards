@@ -60,6 +60,7 @@ import FormPagination from "./FormPagination";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import FormattedText from "../components/FormattedText.jsx";
 import ResourceHeader from "./ResourceHeader.jsx";
+import { hasWarningFlags } from "./AnswerInstructions";
 
 // TODO Once components from the login module can be imported, open the login Dialog in-page instead of opening a popup window
 
@@ -320,15 +321,11 @@ function Form (props) {
   }, [data])
 
   let getIncompleteAnswers = (obj, results) => {
-    for (var property in obj) {
-      if (obj.hasOwnProperty(property)) {
-        if (obj[property]["jcr:primaryType"] == "cards:AnswerSection" && (obj[property].statusFlags.includes('INCOMPLETE') || obj[property].statusFlags.includes('INVALID'))) {
-          getIncompleteAnswers(obj[property], results);
-        } else {
-          if (obj[property]["sling:resourceSuperType"] == "cards/Answer" && (obj[property].statusFlags.includes('INCOMPLETE') || obj[property].statusFlags.includes('INVALID'))) {
-            results.push(obj[property]);
-          }
-        }
+    for (var entry in Object.entries(obj || {})) {
+      if (entry[1]?.["jcr:primaryType"] == "cards:AnswerSection" && hasWarningFlags(entry)) {
+        getIncompleteAnswers(entry[1], results);
+      } else if (entry[1]?.["sling:resourceSuperType"] == "cards/Answer" && hasWarningFlags(entry)) {
+        results.push(entry[1]);
       }
     }
     return results;

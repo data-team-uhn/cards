@@ -43,6 +43,8 @@ import DicomQuestion from "./DicomQuestion";
 
 import FormattedText from "../components/FormattedText";
 
+import { hasWarningFlags } from "./AnswerInstructions";
+
 export const QUESTION_TYPES = ["cards:Question"];
 export const SECTION_TYPES = ["cards:Section"];
 export const INFO_TYPES = ["cards:Information"];
@@ -64,7 +66,7 @@ let displayQuestion = (questionDefinition, path, existingAnswer, key, classes, o
       && value["question"]["jcr:uuid"] === questionDefinition["jcr:uuid"]);
 
   // View mode should display all mandatory questions whether or not they have an answer
-  if (!existingQuestionAnswer?.[1].statusFlags.includes('INCOMPLETE') && (!(existingQuestionAnswer?.[1]["displayedValue"] || existingQuestionAnswer?.[1]["note"]) && !isEdit)) {
+  if (!hasWarningFlags(existingQuestionAnswer) && (!(existingQuestionAnswer?.[1]["displayedValue"] || existingQuestionAnswer?.[1]["note"]) && !isEdit)) {
     return null;
   }
 
@@ -173,8 +175,7 @@ let displayMatrix = (sectionDefinition, path, existingAnswer, key, classes, page
       && answer[1]["sling:resourceSuperType"] === "cards/Answer");
 
   // Determine if the section is flagged as incomplete/invalid
-  // Note: may be better to explicitly check <statusFlags.includes('INCOMPLETE')>, and same for INVALID
-  const isFlagged = (existingSectionAnswer?.[1]?.statusFlags?.length > 0);
+  const isFlagged = hasWarningFlags(existingSectionAnswer);
   // View mode should display all mandatory questions whether or not they have an answer
   const hasAnswers = existingAnswers?.filter(answer => answer[1]["displayedValue"]).length > 0;
   if (!isEdit && !isFlagged && !hasAnswers) {

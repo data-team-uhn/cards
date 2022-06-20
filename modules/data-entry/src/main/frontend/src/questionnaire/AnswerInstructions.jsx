@@ -26,6 +26,11 @@ import withStyles from '@mui/styles/withStyles';
 
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
+// Check if an answer has been automatically flagged as incomplete or invalid
+export function hasWarningFlags (data) {
+  return data?.[1]?.statusFlags?.includes('INCOMPLETE') || data?.[1]?.statusFlags?.includes('INVALID')
+}
+
 // Display instructions regarding how many answers must be provided to a question,
 // based on minAnswers and maxAnswers from the question definition
 
@@ -34,7 +39,7 @@ function AnswerInstructions (props) {
   let { isEdit, existingAnswer } = props;
   let [ answerIsAcceptable, setAnswerAcceptable] = useState();
 
-  const instructionsExist = (minAnswers > 0 || maxAnswers > 1) && (isEdit || existingAnswer?.[1]?.statusFlags?.length > 0);
+  const instructionsExist = (minAnswers > 0 || maxAnswers > 1) && (isEdit || hasWarningFlags(existingAnswer));
   const isMandatory = minAnswers == 1 && !(maxAnswers > minAnswers);
   const isAtLeast = !(minAnswers < maxAnswers);
   const isExactly = minAnswers == maxAnswers;
@@ -49,7 +54,7 @@ function AnswerInstructions (props) {
   }
 
   useEffect(() => {
-    setAnswerAcceptable((currentAnswers >= minAnswers) && (!(maxAnswers >= minAnswers) || currentAnswers <= maxAnswers) || !isEdit && existingAnswer?.[1]?.statusFlags?.length == 0)
+    setAnswerAcceptable((currentAnswers >= minAnswers) && (!(maxAnswers >= minAnswers) || currentAnswers <= maxAnswers) || !isEdit && !hasWarningFlags(existingAnswer))
   }, [currentAnswers]);
 
   return (instructionsExist && (
