@@ -1,0 +1,54 @@
+name: SMTPS CI Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  smtpstest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Code Checkout
+        uses: actions/checkout@v2
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update && sudo apt-get -y install openjdk-11-jre maven python3 curl
+      - name: Build CARDS
+        run: |
+          mvn clean install
+      - name: Build The Test Email Server
+        run: |
+          cd Utilities/Development/EmailServer
+          docker build -t cards/postfix-docker .
+      - name: Create The smtps-ci-mail Directory
+        run: |
+          mkdir ~/smtps-ci-mail
+      - name: Start CARDS
+        run: |
+          cd compose-cluster
+          ./quick-environments/smtps-ci.sh ~/smtps-ci-mail
+      - name: Send Plain Text Email
+        run: |
+          curl -u admin:admin "http://localhost:8080/content.emailtest?fromEmail=datapro@uhn.ca&fromName=UHN%20DATAPRO&toEmail=testuser@mail.com&toName=Test%20User"
+          sleep 10
+      - name: Verify Mailfile For Plain Text
+        run: |
+          cd Utilities/Development
+          python3 verify_mbox_file.py ~/smtps-ci-mail/runner text
+      - name: Clean Mailfile
+        run: |
+          echo -ne "" > ~/smtps-ci-mail/runner
+      - name: Send HTML Email
+        run: |
+          curl -u admin:admin "http://localhost:8080/content.emailtest?fromEmail=datapro@uhn.ca&fromName=UHN%20DATAPRO&toEmail=testuser@mail.com&toName=Test%20User&isHtml=true"
+          sleep 10
+      - name: Verify Mailfile For HTML
+        run: |
+          cd Utilities/Development
+          python3 verify_mbox_file.py ~/smtps-ci-mail/runner html
+      - name: Shutdown
+        run: |
+          cd compose-cluster
+          docker-compose down
+          docker-compose rm
+          docker volume prune -f
+          ./cleanup.sh
