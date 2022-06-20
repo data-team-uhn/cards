@@ -51,4 +51,3 @@ jobs:
           docker-compose down
           docker-compose rm
           docker volume prune -f
-          ./cleanup.sh
