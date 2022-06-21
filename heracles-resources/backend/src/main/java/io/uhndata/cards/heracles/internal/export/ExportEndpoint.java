@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.uhndata.cards.cardiacrehab.internal.export;
+package io.uhndata.cards.heracles.internal.export;
 
 import java.io.IOException;
 import java.io.Writer;

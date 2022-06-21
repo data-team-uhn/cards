@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package io.uhndata.cards.cardiacrehab.internal.export;
+package io.uhndata.cards.heracles.internal.export;
 
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.commons.scheduler.ScheduleOptions;

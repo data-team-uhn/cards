@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.uhndata.cards.cardiacrehab.internal.serialize;
+package io.uhndata.cards.heracles.internal.serialize;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

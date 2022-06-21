@@ -42,7 +42,7 @@ fi
 PROJECT_ARTIFACTID=$1
 PROJECT_VERSION=$2
 
-VALID_CARDS_PROJECTS="||cards4care|cards4kids|cards4lfs|cards4proms|cards4heracles|"
+VALID_CARDS_PROJECTS="||cards4kids|cards4lfs|cards4proms|cards4heracles|"
 echo "${VALID_CARDS_PROJECTS}" | grep -q "|${CARDS_PROJECT}|" || { echo "Invalid project specified - defaulting to generic CARDS."; unset CARDS_PROJECT; }
 
 featureFlagString=""
@@ -89,9 +89,6 @@ do
   elif [[ ${legacyRunMode} == 'dev' ]]
   then
     featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards/${PROJECT_VERSION}/slingosgifeature/composum"
-  elif [[ ${legacyRunMode} == 'cardiac_rehab' ]]
-  then
-    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4care/${PROJECT_VERSION}/slingosgifeature"
   elif [[ ${legacyRunMode} == 'kids' ]]
   then
     featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards4kids/${PROJECT_VERSION}/slingosgifeature"

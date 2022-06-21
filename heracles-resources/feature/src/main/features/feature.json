@@ -18,12 +18,71 @@
 {
   "bundles":[
     {
+      "id":"com.amazonaws:aws-java-sdk-osgi:1.12.158",
+      "start-order":"26"
+    },
+    {
+      "id":"com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:2.13.1",
+      "start-order":"26"
+    },
+    {
+      "id":"io.netty:netty-tcnative-classes:2.0.46.Final",
+      "start-order":"26"
+    },
+    {
+      "id":"io.netty:netty-codec-http:4.1.74.Final",
+      "start-order":"26"
+    },
+    {
+      "id":"io.netty:netty-codec:4.1.74.Final",
+      "start-order":"26"
+    },
+    {
+      "id":"io.netty:netty-handler:4.1.74.Final",
+      "start-order":"26"
+    },
+    {
+      "id":"io.netty:netty-buffer:4.1.74.Final",
+      "start-order":"26"
+    },
+    {
+      "id":"io.netty:netty-common:4.1.74.Final",
+      "start-order":"26"
+    },
+    {
+      "id":"io.netty:netty-transport:4.1.74.Final",
+      "start-order":"26"
+    },
+    {
+      "id":"io.netty:netty-resolver:4.1.74.Final",
+      "start-order":"26"
+    },
+    {
+      "id":"software.amazon.ion:ion-java:1.5.1",
+      "start-order":"26"
+    },
+    {
+      "id":"joda-time:joda-time:2.10.14",
+      "start-order":"26"
+    },
+    {
       "id":"${project.groupId}:cards-patient-subject-type:${project.version}",
       "start-order":"25"
+    },
+    {
+      "id":"${project.groupId}:heracles-backend:${project.version}",
+      "start-order":"26"
     },
     {
       "id":"${project.groupId}:heracles-resources-clinical-data:${project.version}",
       "start-order":"26"
     }
-  ]
+  ],
+  "configurations":{
+    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~cards-export":{
+      "user.mapping":[
+        "io.uhndata.cards.heracles-backend=[sling-readall]"
+      ]
+    }
+  }
 }

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package io.uhndata.cards.cardiacrehab.internal.export;
+package io.uhndata.cards.heracles.internal.export;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
