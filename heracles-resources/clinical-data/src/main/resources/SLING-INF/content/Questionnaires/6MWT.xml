@@ -811,6 +811,11 @@
 					<type>String</type>
 				</property>
 				<property>
+					<name>description</name>
+					<value>Computed</value>
+					<type>String</type>
+				</property>
+				<property>
 					<name>dataType</name>
 					<value>text</value>
 					<type>String</type>
@@ -889,88 +894,133 @@
 			</node>
 		</node>
 		<node>
-			<name>6mwt_triggerreason</name>
-			<primaryNodeType>cards:Question</primaryNodeType>
-			<property>
-				<name>text</name>
-				<value>Reason for Triggered CPET</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>text</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>minAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
+			<name>6mwt_triggerreasonSection</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
 			<node>
-				<name>A clinically relevant change in functional capacity and-or a change in health metrics captured via watch sensor</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>6mwt_triggerreason</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>A clinically relevant change in functional capacity and/or a change in health metrics captured via watch sensor</value>
+					<name>text</name>
+					<value>Reason for Triggered 6MWT</value>
 					<type>String</type>
 				</property>
 				<property>
-					<name>value</name>
-					<value>A clinically relevant change in functional capacity and/or a change in health metrics captured via watch sensor</value>
+					<name>dataType</name>
+					<value>text</value>
 					<type>String</type>
 				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<node>
+					<name>A clinically relevant change in functional capacity and-or a change in health metrics captured via watch sensor</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>A clinically relevant change in functional capacity and/or a change in health metrics captured via watch sensor</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>A clinically relevant change in functional capacity and/or a change in health metrics captured via watch sensor</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>A self-reported and-or objective change in total time spent pursuing MVPA</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>A self-reported and/or objective change in total time spent pursuing MVPA</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>A self-reported and/or objective change in total time spent pursuing MVPA</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>A self-reported change in health status.</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>A self-reported change in health status.</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>A self-reported change in health status.</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>A matched control</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>A matched control</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>A matched control</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 			<node>
-				<name>A self-reported and-or objective change in total time spent pursuing MVPA</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<name>condition</name>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
 				<property>
-					<name>label</name>
-					<value>A self-reported and/or objective change in total time spent pursuing MVPA</value>
+					<name>comparator</name>
+					<value>=</value>
 					<type>String</type>
 				</property>
-				<property>
-					<name>value</name>
-					<value>A self-reported and/or objective change in total time spent pursuing MVPA</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>A self-reported change in health status.</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>A self-reported change in health status.</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>A self-reported change in health status.</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
-				<name>A matched control</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>A matched control</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>A matched control</value>
-					<type>String</type>
-				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>6mwt_reason</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>Triggered Assessment</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
 			</node>
 		</node>
 	</node>
@@ -1058,6 +1108,166 @@
 			<value>Vitals</value>
 			<type>String</type>
 		</property>
+		<node>
+			<name>brachial_systolic_bp</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Brachial Systolic BP</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>resting</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>mmHg</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+		</node>
+		<node>
+			<name>brachial_diastolic_bp</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Brachial Diastolic BP</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>resting</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>mmHg</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+		</node>
+		<node>
+			<name>achial_systolic_bp</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Achial Systolic BP</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>mmHg</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+		</node>
+		<node>
+			<name>achial_diastolic_bp</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Achial Diastolic BP</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>mmHg</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+		</node>
+		<node>
+			<name>ankle_brachial_index</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Ankle Brachial Index</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>resting</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>decimal</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>unitOfMeasurement</name>
+				<value>mmHg</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+		</node>
 		<node>
 			<name>hr</name>
 			<primaryNodeType>cards:Question</primaryNodeType>

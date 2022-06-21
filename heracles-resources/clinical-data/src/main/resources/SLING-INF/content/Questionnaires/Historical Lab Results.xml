@@ -71,7 +71,7 @@
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Cholesterol</value>
+			<value>Total Cholesterol</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -81,7 +81,7 @@
 		</property>
 		<property>
 			<name>unitOfMeasurement</name>
-			<value>mg/dL</value>
+			<value>mmol/L</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -110,7 +110,7 @@
 		</property>
 		<property>
 			<name>unitOfMeasurement</name>
-			<value>mg/dL</value>
+			<value>mmol/L</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -139,7 +139,7 @@
 		</property>
 		<property>
 			<name>unitOfMeasurement</name>
-			<value>mg/dL</value>
+			<value>mmol/L</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -168,7 +168,7 @@
 		</property>
 		<property>
 			<name>unitOfMeasurement</name>
-			<value>mg/dL</value>
+			<value>mmol/L</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -187,7 +187,7 @@
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Glucose</value>
+			<value>Fasting Blood Glucose</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -197,7 +197,7 @@
 		</property>
 		<property>
 			<name>unitOfMeasurement</name>
-			<value>mg/dL</value>
+			<value>mmol/L</value>
 			<type>String</type>
 		</property>
 		<property>

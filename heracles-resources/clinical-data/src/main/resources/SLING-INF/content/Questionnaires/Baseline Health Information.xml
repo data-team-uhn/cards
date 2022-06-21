@@ -165,20 +165,6 @@
 				</property>
 			</node>
 			<node>
-				<name>Primary Prevention</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Primary Prevention</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Primary Prevention</value>
-					<type>String</type>
-				</property>
-			</node>
-			<node>
 				<name>CHF</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>

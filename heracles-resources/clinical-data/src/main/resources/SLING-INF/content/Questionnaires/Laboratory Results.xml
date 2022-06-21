@@ -43,16 +43,16 @@
 		<type>Reference</type>
 	</property>
 	<node>
-		<name>lab_visit</name>
+		<name>study_stream</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Visit Number</value>
+			<value>Study Stream</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>long</value>
+			<value>text</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -65,99 +65,303 @@
 			<value>1</value>
 			<type>Long</type>
 		</property>
-		<property>
-			<name>compact</name>
-			<value>True</value>
-			<type>Boolean</type>
-		</property>
-		<property>
-			<name>minAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
 		<node>
-			<name>1</name>
+			<name>High Touch</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
+				<value>High Touch</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>High Touch</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>Low Touch</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>label</name>
+				<value>Low Touch</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>Low Touch</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>lab_results_highSection</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<node>
+			<name>lab_results_high</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Visit Number</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>long</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
 				<value>1</value>
-				<type>String</type>
+				<type>Long</type>
 			</property>
 			<property>
-				<name>value</name>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
 				<value>1</value>
-				<type>String</type>
+				<type>Long</type>
 			</property>
+			<node>
+				<name>1</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>1</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>1</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>3</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>3</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>3</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>5</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>5</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>5</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>7</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>7</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>7</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>9</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>9</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>9</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>11</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>11</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>11</value>
+					<type>String</type>
+				</property>
+			</node>
 		</node>
 		<node>
-			<name>3</name>
-			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<name>condition</name>
+			<primaryNodeType>cards:Conditional</primaryNodeType>
 			<property>
-				<name>label</name>
-				<value>3</value>
+				<name>comparator</name>
+				<value>=</value>
+				<type>String</type>
+			</property>
+			<node>
+				<name>operandA</name>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>study_stream</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>operandB</name>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>High Touch</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>False</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+		</node>
+	</node>
+	<node>
+		<name>lab_results_lowSection</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<node>
+			<name>lab_results_low</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Visit Number</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>value</name>
-				<value>3</value>
+				<name>dataType</name>
+				<value>long</value>
 				<type>String</type>
 			</property>
+			<property>
+				<name>displayMode</name>
+				<value>list</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>compact</name>
+				<value>True</value>
+				<type>Boolean</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<node>
+				<name>1</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>1</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>1</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>3</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>3</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>3</value>
+					<type>String</type>
+				</property>
+			</node>
 		</node>
 		<node>
-			<name>5</name>
-			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<name>condition</name>
+			<primaryNodeType>cards:Conditional</primaryNodeType>
 			<property>
-				<name>label</name>
-				<value>5</value>
+				<name>comparator</name>
+				<value>=</value>
 				<type>String</type>
 			</property>
-			<property>
-				<name>value</name>
-				<value>5</value>
-				<type>String</type>
-			</property>
-		</node>
-		<node>
-			<name>7</name>
-			<primaryNodeType>cards:AnswerOption</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>7</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>value</name>
-				<value>7</value>
-				<type>String</type>
-			</property>
-		</node>
-		<node>
-			<name>9</name>
-			<primaryNodeType>cards:AnswerOption</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>9</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>value</name>
-				<value>9</value>
-				<type>String</type>
-			</property>
-		</node>
-		<node>
-			<name>11</name>
-			<primaryNodeType>cards:AnswerOption</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>11</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>value</name>
-				<value>11</value>
-				<type>String</type>
-			</property>
+			<node>
+				<name>operandA</name>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>study_stream</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>operandB</name>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>Low Touch</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>False</value>
+					<type>Boolean</type>
+				</property>
+			</node>
 		</node>
 	</node>
 	<node>
@@ -209,7 +413,7 @@
 		</property>
 		<property>
 			<name>unitOfMeasurement</name>
-			<value>mg/dL</value>
+			<value>mmol/L</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -238,7 +442,7 @@
 		</property>
 		<property>
 			<name>unitOfMeasurement</name>
-			<value>mg/dL</value>
+			<value>mmol/L</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -267,7 +471,7 @@
 		</property>
 		<property>
 			<name>unitOfMeasurement</name>
-			<value>mg/dL</value>
+			<value>mmol/L</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -296,7 +500,7 @@
 		</property>
 		<property>
 			<name>unitOfMeasurement</name>
-			<value>mg/dL</value>
+			<value>mmol/L</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -325,7 +529,7 @@
 		</property>
 		<property>
 			<name>unitOfMeasurement</name>
-			<value>mg/dL</value>
+			<value>mmol/L</value>
 			<type>String</type>
 		</property>
 		<property>
