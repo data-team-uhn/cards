@@ -36,7 +36,7 @@ for i in range(1, len(sys.argv)):
 
 subject_types_query = requests.get(CARDS_URL + "/query?query=SELECT * FROM [cards:SubjectType] as n order by n.'cards:defaultOrder'", auth=('admin', ADMIN_PASSWORD))
 if subject_types_query.status_code != 200:
-  print("FAIL")
+  print("FAIL: Could not obtain the list of Subject types. Exiting.")
   sys.exit(-1)
 
 visit_type_uuid = None
@@ -46,12 +46,12 @@ for subjectType in subject_types_list:
     visit_type_uuid = subjectType['jcr:uuid']
 
 if visit_type_uuid is None:
-  print("FAIL")
+  print("FAIL: Could not obtain the jcr:uuid for the \"Visit\" Subject type. Exiting.")
   sys.exit(-1)
 
 visits_query = requests.get(CARDS_URL + "/Subjects.paginate?fieldname=type&fieldvalue=" + visit_type_uuid + "&offset=0&limit=1000000000000000&req=0", auth=('admin', ADMIN_PASSWORD))
 if visits_query.status_code != 200:
-  print("FAIL")
+  print("FAIL: Could not obtain the list of Visits. Exiting.")
   sys.exit(-1)
 
 visits_list = visits_query.json()['rows']
