@@ -72,6 +72,86 @@
 		</property>
 	</node>
 	<node>
+		<name>ce_class</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Class of Clinical Event</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>text</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>list</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<node>
+			<name>Hospitalization</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>label</name>
+				<value>Hospitalization</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>Hospitalization</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>Emergency department, urgent care visit</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>label</name>
+				<value>Emergency department, urgent care visit</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>Emergency department, urgent care visit</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>Outpatient test</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>label</name>
+				<value>Outpatient test</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>Outpatient test</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>Outpatient procedure</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>label</name>
+				<value>Outpatient procedure</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>Outpatient procedure</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
 		<name>ce_cc</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>

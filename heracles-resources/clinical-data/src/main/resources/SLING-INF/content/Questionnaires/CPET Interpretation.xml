@@ -710,7 +710,7 @@
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Assessment Number</value>
+					<value>Triggered Assessment Number</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -832,6 +832,11 @@
 				<property>
 					<name>text</name>
 					<value>Triggered Assessment Number</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>description</name>
+					<value>Computed</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -3286,7 +3291,7 @@ Normal = less than 34 at anaerobic threshold
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Baseline: ST depression?</value>
+				<value><![CDATA[Baseline: ST depression >1?]]></value>
 				<type>String</type>
 			</property>
 			<property>
@@ -3502,7 +3507,7 @@ Normal = less than 34 at anaerobic threshold
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Baseline: ST elevation?</value>
+				<value><![CDATA[Baseline: ST elevation >1?]]></value>
 				<type>String</type>
 			</property>
 			<property>
@@ -4157,12 +4162,7 @@ See Fletcher, Circulation 2013:
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value><![CDATA[Maximal exercise: ST elevation change >1mm from baseline]]></value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>description</name>
-				<value>check all leads that apply</value>
+				<value><![CDATA[Maximal exercise: ST elevation change >1mm from baseline (check all leads that apply)?]]></value>
 				<type>String</type>
 			</property>
 			<property>
