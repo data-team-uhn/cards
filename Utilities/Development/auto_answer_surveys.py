@@ -23,7 +23,12 @@ import sys
 import requests
 
 CARDS_URL = "http://localhost:8080"
+if "CARDS_URL" in os.environ:
+  CARDS_URL = os.environ["CARDS_URL"].rstrip('/')
+
 ADMIN_PASSWORD = "admin"
+if "ADMIN_PASSWORD" in os.environ:
+  ADMIN_PASSWORD = os.environ["ADMIN_PASSWORD"]
 
 RESPONSES_CSV_FILEPATHS = []
 for i in range(1, len(sys.argv)):
