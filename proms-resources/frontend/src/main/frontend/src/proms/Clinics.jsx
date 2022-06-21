@@ -29,7 +29,7 @@ import {
   Typography
 } from "@mui/material";
 
-import Fields, { formatString } from "../questionnaireEditor/Fields.jsx";
+import Fields from "../questionnaireEditor/Fields.jsx";
 import LiveTable from "../dataHomepage/LiveTable.jsx";
 import NewItemButton from "../components/NewItemButton.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog.jsx";
@@ -55,7 +55,7 @@ function Clinics(props) {
     .map((stat) => {
       return {
         key: stat,
-        label: (stat in formattedNames) ? formattedNames[stat] : formatString(stat),
+        label: (stat in formattedNames) ? formattedNames[stat] : camelCaseToWords(stat),
         format: clinicsSpecs[stat]
       };
     });
