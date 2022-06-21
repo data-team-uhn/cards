@@ -37,6 +37,7 @@ import {
   CardContent,
   Chip,
   Grid,
+  IconButton,
   Tooltip,
   Tab,
   Tabs,
@@ -44,6 +45,10 @@ import {
 } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import FileIcon from "@mui/icons-material/InsertDriveFile";
+import CollapsedIcon from "@mui/icons-material/ChevronRight";
+import ExpandedIcon from "@mui/icons-material/ExpandMore";
+import FormIcon from "@mui/icons-material/Description";
+import SubjectIcon from "@mui/icons-material/AssignmentInd";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 import EditButton from "../dataHomepage/EditButton.jsx";
 import PrintButton from "../dataHomepage/PrintButton.jsx";
@@ -402,6 +407,9 @@ function SubjectMemberInternal (props) {
   let { classes, data, history, id, level, maxDisplayed, onDelete, pageSize, hasChildren } = props;
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
+  // Whether a subject is expanded and displaying its forms
+  // The root subject is always expanded. Child subjects are collapsed by default.
+  let [ expanded, setExpanded ] = useState(level == 0);
   let [ subjectGroups, setSubjectGroups ] = useState();
 
   let globalLoginDisplay = useContext(GlobalLoginContext);
@@ -458,7 +466,14 @@ function SubjectMemberInternal (props) {
   let label = data?.type?.label || "Subject";
   let title = `${label} ${identifier}`;
   let path = data ? data["@path"] : "/Subjects/" + id;
-  let avatar = <Avatar className={classes.subjectAvatar}>{label.split(' ').map(s => s?.charAt(0)).join('').toUpperCase()}</Avatar>;
+  let avatar = <Avatar className={classes.subjectAvatar}><SubjectIcon/></Avatar>;
+  let expandAction = (
+    <Tooltip title={`Data for ${title}`}>
+      <IconButton onClick={()=> setExpanded(!expanded)}>
+      { expanded ? <ExpandedIcon/> : <CollapsedIcon /> }
+      </IconButton>
+    </Tooltip>
+  )
   let action = <>
                  <PrintButton
                    resourcePath={path}
@@ -476,21 +491,14 @@ function SubjectMemberInternal (props) {
                    buttonClass={classes.childSubjectHeaderButton}
                  />
                </>
-  // If this is the top-level subject and we have no data to display for it, inform the user:
-  if (data && level == 0 && !(Object.keys(subjectGroups || {}).length) && !hasChildren) {
-    return (
-      <Grid item>
-        <Typography color="textSecondary" variant="caption">{`No data associated with this ${label.toLowerCase()} was found.`}</Typography>
-      </Grid>
-    )
-  }
 
   return ( data &&
     <>
     {
       level > 0 &&
-        <Grid item className={classes.subjectTitleWithAvatar}>
+        <Grid item className={classes.childSubjectHeader}>
           <Grid container direction="row" spacing={1} justifyContent="flex-start">
+            <Grid item xs={false}>{expandAction}</Grid>
             <Grid item xs={false}>{avatar}</Grid>
             <Grid item>
               <Typography variant="h6">
@@ -501,10 +509,11 @@ function SubjectMemberInternal (props) {
           </Grid>
         </Grid>
       }
-      { subjectGroups && Object.keys(subjectGroups).length > 0 && <>
+      { expanded && (
+        Object.keys(subjectGroups || {}).length > 0 ? <>
         {
-          Object.keys(subjectGroups).map( (questionnaireTitle, j) => {
-            return(<Grid item key={questionnaireTitle}>
+          Object.keys(subjectGroups).map( (questionnaireTitle, j) => (
+            <Grid item key={questionnaireTitle}>
               <MaterialTable
                 data={subjectGroups[questionnaireTitle]}
                 style={{ boxShadow : 'none' }}
@@ -524,6 +533,12 @@ function SubjectMemberInternal (props) {
                     render: rowData => <FormData formID={rowData["@name"]} maxDisplayed={maxDisplayed} classes={classes}/> },
                 ]}
                 columns={[
+                  { title: 'Avatar',
+                    cellStyle: {
+                      paddingLeft: 0,
+                      paddingTop: "10px",
+                    },
+                    render: rowData => <Avatar className={classes.subjectFormAvatar}><FormIcon/></Avatar> },
                   { title: 'Questionnaire',
                     cellStyle: {
                       paddingLeft: 0,
@@ -580,11 +595,17 @@ function SubjectMemberInternal (props) {
                                        </React.Fragment> },
                 ]}
                />
-            </Grid>)
-          })
+            </Grid>
+          ))
         }
         </>
-      }
+        :
+        ( !hasChildren && // If we have no data to display for this subject, inform the user
+          <Grid item>
+            <Typography color="textSecondary" variant="caption">{`No data associated with this ${label.toLowerCase()} was found.`}</Typography>
+          </Grid>
+        )
+      )}
     </>
   );
 };

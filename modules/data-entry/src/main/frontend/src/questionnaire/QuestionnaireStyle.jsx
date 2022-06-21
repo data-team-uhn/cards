@@ -215,18 +215,20 @@ const questionnaireStyle = theme => ({
     },
     subjectAvatar : {
         backgroundColor: theme.palette.secondary.main,
-        fontWeight: 800,
+        marginLeft: theme.spacing(-1),
+        marginRight: theme.spacing(1.5),
         zoom: .75,
     },
-    subjectTitleWithAvatar: {
+    subjectFormAvatar : {
+        backgroundColor: theme.palette.primary.main,
+        marginTop: theme.spacing(-.5),
+        zoom: .75,
+    },
+    childSubjectHeader: {
         marginLeft: theme.spacing(-5),
         "& > *" : {
           alignItems: "center",
         },
-        "& a": {
-          color: theme.palette.primary.main,
-          textDecoration: "none",
-        }
     },
     subjectContainer: {
         flexWrap: "nowrap" ,
