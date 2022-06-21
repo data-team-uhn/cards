@@ -505,7 +505,6 @@ function SubjectMemberInternal (props) {
         {
           Object.keys(subjectGroups).map( (questionnaireTitle, j) => {
             return(<Grid item key={questionnaireTitle}>
-              <Typography variant="h6">{questionnaireTitle}</Typography>
               <MaterialTable
                 data={subjectGroups[questionnaireTitle]}
                 style={{ boxShadow : 'none' }}
@@ -520,21 +519,33 @@ function SubjectMemberInternal (props) {
                     verticalAlign: 'top',
                   }
                 }}
+                detailPanel={[
+                  { tooltip: 'Excerpt',
+                    render: rowData => <FormData formID={rowData["@name"]} maxDisplayed={maxDisplayed} classes={classes}/> },
+                ]}
                 columns={[
-                  { title: 'Created',
+                  { title: 'Questionnaire',
                     cellStyle: {
                       paddingLeft: 0,
                       fontWeight: "bold",
-                      width: '1%',
+                      paddingTop: "10px",
                       whiteSpace: 'nowrap',
                     },
-                    render: rowData => <Link to={"/content.html" + rowData["@path"]} underline="hover">
-                                         {DateTime.fromISO(rowData['jcr:created']).toFormat("yyyy-MM-dd")}
-                                       </Link> },
+                    render: rowData => <><Link to={"/content.html" + rowData["@path"]} underline="hover">
+                                           {questionnaireTitle} {subjectGroups[questionnaireTitle].length > 1 ? `#${rowData.tableData.id + 1}` : ''}
+                                         </Link>
+                                         <Typography variant="caption" component="div" color="textSecondary">
+                                           Created {DateTime.fromISO(rowData['jcr:created']).toFormat("yyyy-MM-dd HH:mm")}
+                                         </Typography>
+                                         <Typography variant="caption" component="div" color="textSecondary">
+                                           Last modified {DateTime.fromISO(rowData['jcr:lastModified']).toFormat("yyyy-MM-dd HH:mm")}
+                                         </Typography>
+                                       </> },
                   { title: 'Status',
                     cellStyle: {
-                      width: '1%',
-                      whiteSpace: 'pre-wrap',
+                      width: '99%',
+                      whiteSpace: 'nowrap',
+                      paddingTop: "10px",
                       paddingBottom: "8px",
                     },
                     render: rowData => <React.Fragment>
@@ -548,12 +559,10 @@ function SubjectMemberInternal (props) {
                                            />
                                          })}
                                        </React.Fragment> },
-                  { title: 'Summary',
-                    render: rowData => <FormData className={classes.formData} formID={rowData["@name"]} maxDisplayed={maxDisplayed} classes={classes}/> },
                   { title: 'Actions',
                     cellStyle: {
                       padding: '0',
-                      width: '20px',
+                      whiteSpace: 'nowrap',
                       textAlign: 'end'
                     },
                     render: rowData => <React.Fragment>
@@ -640,13 +649,14 @@ function FormData(props) {
 
   if (data && data.questionnaire) {
     return (
-      <React.Fragment>
+      <div className={classes.formPreview}>
         {
           Object.entries(data.questionnaire)
           .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
           .map(([key, entryDefinition]) => handleDisplay(entryDefinition, data, key, handleDisplayQuestion))
         }
-      </React.Fragment>
+        { !displayed && <Typography variant="caption" color="textSecondary">There is no data in this form</Typography> }
+      </div>
     );
   }
   else return;

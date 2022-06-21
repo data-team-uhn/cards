@@ -573,6 +573,10 @@ const questionnaireStyle = theme => ({
     },
     DefaultChip: {
     },
+    formPreview: {
+        padding: theme.spacing(1, 1, 1, 5.25),
+        background: theme.palette.action.hover,
+    },
     formPreviewQuestion: {
         display: "flex",
     },
