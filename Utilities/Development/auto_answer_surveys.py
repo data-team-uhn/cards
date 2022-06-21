@@ -56,7 +56,6 @@ if visits_query.status_code != 200:
 
 visits_list = visits_query.json()['rows']
 for visit in visits_list:
-  #print(visit['fullIdentifier'])
   patientIdentifier = visit['fullIdentifier'].split(' / ')[0]
   visitIdentifier = visit['fullIdentifier'].split(' / ')[1]
   print("Handling Visit subject: {} / {}".format(patientIdentifier, visitIdentifier))
