@@ -17,6 +17,7 @@
 package io.uhndata.cards.internal;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.jackrabbit.oak.api.CommitFailedException;
@@ -42,6 +43,7 @@ public class MaxFormsOfTypePerSubjectValidator implements Validator
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(MaxFormsOfTypePerSubjectValidator.class);
 
+    private static final String END = "'";
     private final ResourceResolverFactory rrf;
 
     public MaxFormsOfTypePerSubjectValidator(final ResourceResolverFactory rrf)
@@ -75,6 +77,7 @@ public class MaxFormsOfTypePerSubjectValidator implements Validator
     }
 
     @Override
+    @SuppressWarnings("checkstyle:NestedIfDepth")
     public Validator childNodeAdded(String name, NodeState after) throws CommitFailedException
     {
         String childNodeType = after.getName("jcr:primaryType");
@@ -90,17 +93,57 @@ public class MaxFormsOfTypePerSubjectValidator implements Validator
                 Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, "maxFormsOfTypePerSubjectValidator");
             try (ResourceResolver serviceResolver = this.rrf.getServiceResourceResolver(parameters)) {
                 LOGGER.warn("Yay! We were able to get a ResourceResolver");
-                Resource someQuestionnaire = serviceResolver.resolve("/Questionnaires/Patient information");
-                LOGGER.warn("Resolved /Questionnaires/Patient information --> {}", someQuestionnaire);
-                if (someQuestionnaire != null) {
-                    long maxPerSubject = someQuestionnaire.getValueMap().get("maxPerSubject", -1);
+                Resource questionnaire = getQuestionnairesResourceByUuid(serviceResolver, questionnaireUUID);
+                LOGGER.warn("Resolved /Questionnaires/Patient information --> {}", questionnaire);
+                if (questionnaire != null) {
+                    long maxPerSubject = questionnaire.getValueMap().get("maxPerSubject", -1);
                     LOGGER.warn("/Questionnaires/Patient information/maxPerSubject = {}", maxPerSubject);
+                    if (maxPerSubject > 0) {
+                        long formNumber = countFormsPerSubject(subjectUUID,
+                                questionnaire.getValueMap().get("title", "any"), serviceResolver);
+                        LOGGER.warn("The number of existing forms is {} and allowed is {}", formNumber, maxPerSubject);
+                        if (formNumber > maxPerSubject) {
+                            throw new CommitFailedException(CommitFailedException.STATE, 400,
+                                    "The number of created forms is bigger then is allowed");
+                        }
+                    }
                 }
             } catch (LoginException e) {
                 // Should not happen
             }
         }
         return this;
+    }
+
+    /**
+     * Counts the number of created forms per subject with specific questionnaire title.
+     *
+     * @param subjectUUID subject to be checked id
+     * @param excludeFormQuestionnaireType type of questionnaire to be count per subject
+     * @return a long
+     */
+    private long countFormsPerSubject(String subjectUUID, String excludeFormQuestionnaireType,
+                                      ResourceResolver serviceResolver)
+    {
+        long count = 0;
+        Iterator<Resource> results = serviceResolver.findResources(
+                "SELECT f.* FROM [cards:Form] AS f INNER JOIN [cards:Questionnaire] AS q ON "
+                        + "f.'questionnaire'=q.'jcr:uuid' WHERE f.'subject'='" + subjectUUID + END
+                        + " AND q.'title'='" + excludeFormQuestionnaireType + END,
+                "JCR-SQL2"
+        );
+
+        while (results.hasNext()) {
+            count += 1;
+            results.next();
+        }
+        return count;
+    }
+
+    private Resource getQuestionnairesResourceByUuid(ResourceResolver serviceResolver, String uuid)
+    {
+        return serviceResolver.findResources(
+                "SELECT * FROM [cards:Questionnaire] as q WHERE q.'jcr:uuid'='" + uuid + END, "JCR-SQL2").next();
     }
 
     @Override
