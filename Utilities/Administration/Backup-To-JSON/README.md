@@ -35,4 +35,10 @@ properly set, computed answer fields will be duplicated.
 
 2. Restore the backup by running `python3 restore_json_backup.py /path/to/backup/directory /path/to/backup/directory/FormListBackup_TIMESTAMP.json /path/to/backup/directory/SubjectListBackup_TIMESTAMP.json`.
 
+2.1. By default, `restore_json_backup.py` will use `http://localhost:8080`
+as the CARDS server address and `admin` as the CARDS `admin` user password.
+To set these values to something else, set the `CARDS_URL` environment
+variable to the address of the CARDS server and set the `ADMIN_PASSWORD`
+environment variable to the `admin` password for the CARDS server.
+
 3. Restart CARDS without the `COMPUTED_ANSWERS_DISABLED` environment variable.
