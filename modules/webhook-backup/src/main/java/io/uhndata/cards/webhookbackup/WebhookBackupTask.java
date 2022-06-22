@@ -244,6 +244,10 @@ public class WebhookBackupTask implements Runnable
     private void output(String input, String filename) throws IOException
     {
         final String backupWebhookUrl = System.getenv("BACKUP_WEBHOOK_URL");
+        if (backupWebhookUrl == null) {
+            LOGGER.error("BACKUP_WEBHOOK_URL is undefined. Cannot run webhook backup.");
+            return;
+        }
         HttpResponse webhookResp = HttpRequests.doHttpPost(backupWebhookUrl + filename, input, "application/json");
         if (webhookResp.getStatusCode() < 200 || webhookResp.getStatusCode() > 299) {
             throw new IOException("Backup server responded with a non-ok status code");
