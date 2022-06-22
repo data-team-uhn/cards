@@ -22,21 +22,18 @@ import {
     Card,
     CardContent,
     CardHeader,
+    Grid,
     List,
     ListItem,
     Typography
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import MarkdownText from "../questionnaireEditor/MarkdownText";
 import FormattedText from "../components/FormattedText.jsx";
 
 const useStyles = makeStyles(theme => ({
-  editorBlock: {
-    width: "45%",
-    margin: theme.spacing(1),
-    display: "inline-grid",
-    verticalAlign: "top"
-  },
   previewHeader: {
     borderBottom: "1px solid #dfdfe0",
     backgroundColor: "#fbfbfb",
@@ -60,6 +57,9 @@ function WelcomeMessageConfiguration() {
   const [ fetched, setFetched ] = useState(false);
 
   const appName = document.querySelector('meta[name="title"]')?.content;
+
+  const theme = useTheme();
+  const breakpoint = useMediaQuery(theme.breakpoints.down("sm"));
 
   // Fetch saved admin config settings
   let getWelcomeMessage = () => {
@@ -128,23 +128,31 @@ function WelcomeMessageConfiguration() {
           <List>
             <ListItem key="form">
               { welcomeMessage != undefined &&
-                <div className={classes.editorContainer}>
-                  <div className={classes.editorBlock}>
+                <Grid
+                  container
+                  spacing={2}
+                  direction={breakpoint ? "column" : "row"}
+                  justifyContent="center"
+                  alignItems="flex-start"
+                >
+                  <Grid item xs={12} sm={8} md={6}>
                     <MarkdownText value={welcomeMessage} height={350} preview="edit" onChange={value => { event.preventDefault(); setWelcomeMessage(value); }} />
-                  </div>
-                  <Card className={classes.editorBlock}>
-                    <CardHeader
-                      className={classes.previewHeader}
-                      title="Preview"
-                      titleTypographyProps={{variant: "overline"}}
-                    />
-                    <CardContent>
-                      <FormattedText>
-                        { welcomeMessage?.replaceAll("APP_NAME", appName) }
-                      </FormattedText>
-                    </CardContent>
-                  </Card>
-                </div>
+                  </Grid>
+                  <Grid item xs={12} sm={8} md={6}>
+                    <Card>
+                      <CardHeader
+                        className={classes.previewHeader}
+                        title="Preview"
+                        titleTypographyProps={{variant: "overline"}}
+                      />
+                      <CardContent>
+                        <FormattedText>
+                          { welcomeMessage?.replaceAll("APP_NAME", appName) }
+                        </FormattedText>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                </Grid>
               }
             </ListItem>
             <ListItem key="button">
