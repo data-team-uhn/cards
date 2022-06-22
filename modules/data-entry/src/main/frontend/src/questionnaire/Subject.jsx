@@ -276,18 +276,7 @@ function SubjectContainer(props) {
 
   return (
     subject && <React.Fragment>
-      <SubjectMember classes={classes} id={id} level={currentLevel} data={subject} maxDisplayed={maxDisplayed} pageSize={pageSize} onDelete={() => {setDeleted(true)}} hasChildren={!!(relatedSubjects?.length)}/>
-      {relatedSubjects && relatedSubjects.length > 0 ?
-        (<Grid item xs={12} className={classes.subjectNestedContainer}>
-          {relatedSubjects.map( (subject, i) => {
-            // Render component again for each related subject
-            return(
-              <SubjectContainer key={i} classes={classes} path={subject["@path"]} level={currentLevel+1} maxDisplayed={maxDisplayed} pageSize={pageSize} subject={subject}/>
-            )
-          })}
-        </Grid>
-        ) : ""
-      }
+      <SubjectMember classes={classes} id={id} level={currentLevel} data={subject} maxDisplayed={maxDisplayed} pageSize={pageSize} onDelete={() => {setDeleted(true)}} childSubjects={relatedSubjects}/>
     </React.Fragment>
   );
 }
@@ -404,7 +393,7 @@ function SubjectHeader(props) {
  * Component that displays all forms related to a Subject. Do not use directly, use SubjectMember instead.
  */
 function SubjectMemberInternal (props) {
-  let { classes, data, history, id, level, maxDisplayed, onDelete, pageSize, hasChildren } = props;
+  let { classes, data, history, id, level, maxDisplayed, onDelete, pageSize, childSubjects } = props;
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
   // Whether a subject is expanded and displaying its forms
@@ -600,12 +589,25 @@ function SubjectMemberInternal (props) {
         }
         </>
         :
-        ( !hasChildren && // If we have no data to display for this subject, inform the user
+        ( !childSubjects?.length && // If we have no data to display for this subject, inform the user
           <Grid item>
             <Typography color="textSecondary" variant="caption">{`No data associated with this ${label.toLowerCase()} was found.`}</Typography>
           </Grid>
         )
       )}
+      { /* Render child subjects at the bottom when the current subject is expanded */ }
+      { expanded && childSubjects?.length ?
+        (<Grid item xs={12} className={classes.subjectNestedContainer}>
+          {childSubjects.map( (subject, i) => {
+            // Render the container again for each child subject
+            return(
+              <SubjectContainer key={i} classes={classes} path={subject["@path"]} level={level+1} maxDisplayed={maxDisplayed} pageSize={pageSize} subject={subject}/>
+            )
+          })}
+        </Grid>
+        )
+        : ""
+      }
     </>
   );
 };
