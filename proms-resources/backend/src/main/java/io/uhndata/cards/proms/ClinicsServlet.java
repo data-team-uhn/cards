@@ -97,50 +97,52 @@ public class ClinicsServlet extends SlingAllMethodsServlet
     public void doPost(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
         throws IOException
     {
-        // Create all of the necessary nodes
-        final ResourceResolver resolver = request.getResourceResolver();
-        this.getArguments(request);
         try {
-            final Session session = resolver.adaptTo(Session.class);
-            this.displayName.set(getUniqueDisplayName(resolver, this.displayName.get()));
-            this.createClinicMapping(resolver);
-            this.createGroup(resolver);
-            this.createSidebar(resolver);
-            this.createDashboardExtension(resolver);
-            session.save();
-        } catch (RepositoryException e) {
-            this.returnError(response, e.getMessage());
-        } catch (NullPointerException e) {
-            this.returnError(response, e.getMessage());
-        }
+            // Create all of the necessary nodes
+            final ResourceResolver resolver = request.getResourceResolver();
+            this.parseArguments(request);
+            try {
+                final Session session = resolver.adaptTo(Session.class);
+                this.displayName.set(getUniqueDisplayName(resolver, this.displayName.get()));
+                this.createClinicMapping(resolver);
+                final Group clinicGroup = this.createGroup(resolver);
+                this.createSidebar(resolver, clinicGroup);
+                this.createDashboardExtension(resolver);
+                session.save();
+            } catch (final RepositoryException e) {
+                this.returnError(response, e.getMessage());
+            } catch (final NullPointerException e) {
+                this.returnError(response, e.getMessage());
+            }
 
-        // Grab the configuration to edit
-        try {
-            Configuration[] configs = this.configAdmin.listConfigurations(
+            // Grab the configuration to edit
+            final Configuration[] configs = this.configAdmin.listConfigurations(
                 "(service.factoryPid=" + IMPORT_FACTORY_PID + ")");
 
             if (configs != null) {
-                for (Configuration config : configs) {
+                for (final Configuration config : configs) {
                     this.insertNewClinic(config, this.clinicName.get());
                 }
             }
-        } catch (InvalidSyntaxException e) {
+        } catch (final InvalidSyntaxException e) {
             // This can happen when the filter given to the listConfigurations call above is wrong
             // This shouldn't happen unless a typo was made in the value of IMPORT_FACTORY_PID
             this.returnError(response, "Invalid syntax in config search.");
-        } catch (IOException e) {
+        } catch (final IOException e) {
             // This can happen while updating the properties of a configuration
             // Unknown how to handle this
             this.returnError(response, "Updating clinic configurations failed.");
+        } finally {
+            cleanup();
         }
     }
 
     /**
-     * Parse out the arguments from the SlingHttpServletRequest into threadlocal variables for parsing.
+     * Parse out the arguments from the request into threadlocal variables for later usage.
      *
      * @param request servlet request whose arguments we need to parse
      */
-    private boolean getArguments(final SlingHttpServletRequest request)
+    private boolean parseArguments(final SlingHttpServletRequest request)
     {
         this.clinicName.set(request.getParameter("clinicName"));
         this.displayName.set(request.getParameter("displayName"));
@@ -316,5 +318,19 @@ public class ClinicsServlet extends SlingAllMethodsServlet
         Dictionary<String, Object> updateDictionary = new Hashtable<String, Object>();
         updateDictionary.put("clinic.names", updatedClinicNames);
         config.update(updateDictionary);
+    }
+
+    /**
+     * Remove any data from the ThreadLocal state.
+     */
+    private void cleanup()
+    {
+        this.clinicName.remove();
+        this.description.remove();
+        this.displayName.remove();
+        this.emergencyContact.remove();
+        this.idHash.remove();
+        this.sidebarLabel.remove();
+        this.surveyID.remove();
     }
 }
