@@ -130,6 +130,11 @@ CARDS_TYPE_TO_SLING_TYPE_HINT['cards:PedigreeAnswer'] = "string"
 CARDS_TYPE_TO_SLING_TYPE_HINT['cards:VocabularyAnswer'] = "string"
 CARDS_TYPE_TO_SLING_TYPE_HINT['cards:ChromosomeAnswer'] = "string"
 CARDS_TYPE_TO_SLING_TYPE_HINT['cards:FileAnswer'] = "string"
+CARDS_TYPE_TO_SLING_TYPE_HINT['cards:DicomAnswer'] = "string"
+
+FILE_LIKE_ANSWER_TYPES = []
+FILE_LIKE_ANSWER_TYPES.append("cards:FileAnswer")
+FILE_LIKE_ANSWER_TYPES.append("cards:DicomAnswer")
 
 def createAnswerInJcr(answerNodePath, questionNodePath, primaryType, value, extraValues={}, fileDataSha256=None):
   params = []
@@ -147,7 +152,7 @@ def createAnswerInJcr(answerNodePath, questionNodePath, primaryType, value, extr
   for extraValueKey in extraValues:
     params.append((extraValueKey, (None, str(extraValues[extraValueKey]))))
 
-  if primaryType == "cards:FileAnswer" and type(fileDataSha256) == dict:
+  if primaryType in FILE_LIKE_ANSWER_TYPES and type(fileDataSha256) == dict:
     for jcrFilename in fileDataSha256:
       blobFilePath = os.path.join(BACKUP_DIRECTORY, "blobs", fileDataSha256[jcrFilename] + ".blob")
       f_blob = open(blobFilePath, 'rb')

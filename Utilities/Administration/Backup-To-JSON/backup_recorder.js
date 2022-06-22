@@ -58,6 +58,12 @@ const RESPONSE_KEEP_PROPERTIES = [
   "image"
 ];
 
+// CARDS Answer nodes that contain one or more nt:file children
+const FILE_LIKE_ANSWER_TYPES = [
+  "cards:FileAnswer",
+  "cards:DicomAnswer"
+];
+
 const isNtFile = (obj) => {
   if (typeof(obj) !== "object") {
     return false;
@@ -78,7 +84,7 @@ const simplifyAnswerProperties = (answer) => {
       simplifiedAnswer[key] = answer[key];
     }
   }
-  if (answer["jcr:primaryType"] === "cards:FileAnswer") {
+  if (FILE_LIKE_ANSWER_TYPES.indexOf(answer["jcr:primaryType"]) >= 0) {
     // Extract the file contents
     simplifiedAnswer["fileDataSha256"] = {};
     for (let key in answer) {
