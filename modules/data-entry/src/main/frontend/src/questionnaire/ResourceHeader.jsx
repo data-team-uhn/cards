@@ -97,7 +97,7 @@ const useStyles = makeStyles(theme => ({
  *   the title and titleAction line
  */
 function ResourceHeader (props) {
-  let { title, breadcrumbs, separator, action, children } = props;
+  let { title, breadcrumbs, separator, tags, action, children } = props;
 
   const classes = useStyles();
 
@@ -126,9 +126,12 @@ function ResourceHeader (props) {
       </Grid>
     </Grid>
     <Grid item xs={12} className={classes.resourceTitle}>
-       <Grid container direction="row" justifyContent="space-between" alignItems="start">
+       <Grid container direction="row" justifyContent="space-between" alignItems="start" spacing={1}>
           <Grid item>
-            <Typography component="h2" variant="h4">{title}</Typography>
+            <Grid container direction="row" spacing={1} alignItems="center">
+              <Grid item><Typography component="h2" variant="h4">{title}</Typography></Grid>
+              {tags?.map((t, i) => <Grid item key={`resource-tag-${i}`}>{t}</Grid>)}
+            </Grid>
           </Grid>
           {action && !fullBreadcrumbTrigger && <Grid item>{action}</Grid>}
        </Grid>
@@ -145,6 +148,10 @@ ResourceHeader.propTypes = {
     PropTypes.node
   ]),
   separator: PropTypes.string,
+  tags: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ]),
   action: PropTypes.node,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),

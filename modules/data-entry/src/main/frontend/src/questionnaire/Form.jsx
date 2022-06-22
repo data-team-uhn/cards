@@ -444,6 +444,14 @@ function Form (props) {
         <ResourceHeader
           title={title}
           breadcrumbs={[<Breadcrumbs separator="/">{getHierarchyAsList(data?.subject).map(a => <Typography variant="overline" key={a}>{a}</Typography>)}</Breadcrumbs>]}
+          tags={ data.statusFlags?.map( item => (
+            <Chip
+              label={item[0].toUpperCase() + item.slice(1).toLowerCase()}
+              variant="outlined"
+              className={`${classes[item + "Chip"] || classes.DefaultChip}`}
+              size="small"
+            />
+          ))}
           separator=":"
           action={formMenu}
           contentOffset={contentOffset}
@@ -452,15 +460,6 @@ function Form (props) {
           <FormattedText variant="subtitle1" color="textSecondary">
             {data?.questionnaire?.description}
           </FormattedText>
-          {data.statusFlags.map( item => {
-               return <Chip
-                 key={item}
-                 label={item[0].toUpperCase() + item.slice(1).toLowerCase()}
-                 variant="outlined"
-                 className={`${classes.subjectChip} ${classes[item + "Chip"] || classes.DefaultChip}`}
-                 size="small"
-               />
-          })}
           <Breadcrumbs separator="·">
           {
             data && data['jcr:createdBy'] && data['jcr:created'] ?
