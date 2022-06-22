@@ -73,7 +73,7 @@ function Subjects(props) {
   ];
 
   return (
-    <Grid container class={classes.dashboardContainer}>
+    <Grid container className={classes.dashboardContainer}>
       <Grid item className={classes.dashboardEntry}>
         <SubjectView
           expanded
