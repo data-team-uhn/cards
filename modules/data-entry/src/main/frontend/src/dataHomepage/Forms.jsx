@@ -75,7 +75,7 @@ function Forms(props) {
   ]
 
   return (
-    <Grid container direction="column" spacing={4}>
+    <Grid container class={classes.dashboardContainer}>
       <Grid item className={classes.dashboardEntry}>
         <FormView
           expanded
