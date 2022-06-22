@@ -26,9 +26,6 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
-import javax.jcr.security.AccessControlException;
-import javax.jcr.security.AccessControlManager;
-import javax.jcr.security.Privilege;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 
@@ -70,7 +67,7 @@ public class PermissionsManagerServlet extends SlingAllMethodsServlet
 
     @Override
     protected void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response)
-            throws ServletException
+        throws ServletException
     {
         // Get request parameters
         String rule = request.getParameter(":rule");
@@ -85,15 +82,15 @@ public class PermissionsManagerServlet extends SlingAllMethodsServlet
         // Alter this node's permissions
         try {
             boolean isAllow = parseRule(rule);
-            Privilege[] privileges = parsePrivileges(privilegesText, session.getAccessControlManager());
+            String[] privileges = parsePrivileges(privilegesText);
             Map<String, Value> restrictions = parseRestriction(restrictionText, session.getValueFactory());
             Principal principal = session.getPrincipalManager().getPrincipal(principalName);
             if (remove == null) {
                 this.permissionsChangeServiceHandler.addAccessControlEntry(
-                        target, isAllow, principal, privileges, restrictions, session);
+                    target, isAllow, principal, privileges, restrictions, session);
             } else {
                 this.permissionsChangeServiceHandler.removeAccessControlEntry(
-                        target, isAllow, principal, privileges, restrictions, session);
+                    target, isAllow, principal, privileges, restrictions, session);
             }
             session.save();
         } catch (RepositoryException e) {
@@ -103,6 +100,7 @@ public class PermissionsManagerServlet extends SlingAllMethodsServlet
 
     /**
      * Parse the rule from input string.
+     *
      * @param rule either "allow" or "deny"
      * @return true if the rule is "allow", false if it is "deny"
      * @throws RepositoryException if the rule is null or neither "allow" or "deny"
@@ -121,33 +119,10 @@ public class PermissionsManagerServlet extends SlingAllMethodsServlet
     }
 
     /**
-     * Parse privileges from input string.
-     * @param toParse a comma delimited list of privileges
-     * @param acm a reference to the AccessControlManager
-     * @return an array of Privileges
-     * @throws AccessControlException if no privilege with the specified name exists.
-     * @throws RepositoryException if another error occurs
-     */
-    private static Privilege[] parsePrivileges(String toParse, AccessControlManager acm)
-            throws AccessControlException, RepositoryException
-    {
-        // Typecheck the parameters
-        if (toParse == null) {
-            throw new IllegalArgumentException("Required parameter \":privileges\" missing");
-        }
-        String[] privilegeNames = toParse.split(",");
-        Privilege[] retval = new Privilege[privilegeNames.length];
-        for (int i = 0; i < privilegeNames.length; i++)
-        {
-            retval[i] = acm.privilegeFromName(privilegeNames[i]);
-        }
-        return retval;
-    }
-
-    /**
      * Parse restrictions from input string.
-     * @param toParse a string of form name=value, where name is the name of the restriction (e.g.
-     *        cards:answer) and value is the value (e.g. 4c32f6cb-ad5d-4e45-ab0a-8d27f5ba8211)
+     *
+     * @param toParse a string of form name=value, where name is the name of the restriction (e.g. cards:answer) and
+     *            value is the value (e.g. 4c32f6cb-ad5d-4e45-ab0a-8d27f5ba8211)
      * @param valueFactory a value factory to work with
      * @return a map with one string-value pair
      */
@@ -163,5 +138,20 @@ public class PermissionsManagerServlet extends SlingAllMethodsServlet
         String restrictionValue = toParse.substring(splitPos + 1);
         restriction.put(restrictionName, valueFactory.createValue(restrictionValue));
         return restriction;
+    }
+
+    /**
+     * Parse a list of privilege names from a comma-separated string.
+     *
+     * @param toParse a list of privilege names separated by commas
+     * @return an array of strings
+     * @throws IllegalArgumentException if the input string is empty or null
+     */
+    private static String[] parsePrivileges(String toParse)
+    {
+        if (toParse == null) {
+            throw new IllegalArgumentException("Required parameter \":privileges\" missing");
+        }
+        return toParse.split(",");
     }
 }

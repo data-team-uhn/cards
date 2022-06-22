@@ -33,12 +33,15 @@ import java.util.regex.Pattern;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.security.Privilege;
 import javax.json.Json;
 import javax.json.stream.JsonGenerator;
 import javax.servlet.Servlet;
 
 import org.apache.jackrabbit.api.JackrabbitSession;
+import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.UserManager;
+import org.apache.jackrabbit.oak.spi.security.principal.EveryonePrincipal;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.PersistenceException;
@@ -53,6 +56,8 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.uhndata.cards.permissions.spi.PermissionsManager;
 
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(resourceTypes = { "cards/ClinicMappingFolder" }, methods = { "POST" })
@@ -84,6 +89,9 @@ public class ClinicsServlet extends SlingAllMethodsServlet
 
     @Reference
     private ConfigurationAdmin configAdmin;
+
+    @Reference
+    private PermissionsManager permissionsManager;
 
     @Override
     public void doPost(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
@@ -233,33 +241,48 @@ public class ClinicsServlet extends SlingAllMethodsServlet
             ClinicsServlet.PRIMARY_TYPE_FIELD, "cards:ClinicMapping"));
     }
 
-    private void createGroup(final ResourceResolver resolver) throws RepositoryException
+    /**
+     * Create a Group with access to the clinic.
+     *
+     * @param resolver Resource resolver to use
+     * @return the created Group
+     * @throws RepositoryException if accessing the repository fails
+     */
+    private Group createGroup(final ResourceResolver resolver) throws RepositoryException
     {
         final Session session = resolver.adaptTo(Session.class);
         if (!(session instanceof JackrabbitSession)) {
-            return;
+            return null;
         }
-        JackrabbitSession jsession = (JackrabbitSession) session;
-        UserManager um = jsession.getUserManager();
-        um.createGroup(this.clinicName.get());
+        final JackrabbitSession jsession = (JackrabbitSession) session;
+        final UserManager um = jsession.getUserManager();
+        return um.createGroup(this.clinicName.get());
     }
 
     /**
      * Create a cards:Extension node for the sidebar.
      *
      * @param resolver Resource resolver to use
+     * @param clinicGroup the Group corresponding to this clinic
      */
-    private void createSidebar(final ResourceResolver resolver)
+    private void createSidebar(final ResourceResolver resolver, final Group clinicGroup)
         throws RepositoryException, PersistenceException
     {
         final Resource parentResource = resolver.getResource("/Extensions/Sidebar");
-        resolver.create(parentResource, this.idHash.get(), Map.of(
+        final Resource sidebarEntry = resolver.create(parentResource, this.idHash.get(), Map.of(
             "cards:extensionPointId", "cards/coreUI/sidebar/entry",
             "cards:extensionName", this.sidebarLabel.get(),
             "cards:targetURL", "/content.html/Dashboard/" + this.idHash.get(),
             "cards:icon", "asset:proms-homepage.clinicIcon.js",
             "cards:defaultOrder", 10,
             ClinicsServlet.PRIMARY_TYPE_FIELD, "cards:Extension"));
+        if (clinicGroup != null) {
+            Session session = resolver.adaptTo(Session.class);
+            this.permissionsManager.addAccessControlEntry(sidebarEntry.getPath(), false,
+                EveryonePrincipal.getInstance(), new String[] { Privilege.JCR_ALL }, null, session);
+            this.permissionsManager.addAccessControlEntry(sidebarEntry.getPath(), true, clinicGroup.getPrincipal(),
+                new String[] { Privilege.JCR_READ }, null, session);
+        }
     }
 
     /**
@@ -274,8 +297,7 @@ public class ClinicsServlet extends SlingAllMethodsServlet
         resolver.create(parentResource, "DashboardViews" + this.idHash.get(), Map.of(
             ClinicsServlet.PRIMARY_TYPE_FIELD, "cards:ExtensionPoint",
             "cards:extensionPointId", "proms/dashboard/" + this.idHash.get(),
-            "cards:extensionPointName", this.displayName.get() + " questionnaires dashboard"
-            ));
+            "cards:extensionPointName", this.displayName.get() + " questionnaires dashboard"));
     }
 
     /**
