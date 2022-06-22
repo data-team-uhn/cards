@@ -236,7 +236,6 @@ const questionnaireStyle = theme => ({
     },
     subjectNestedContainer: {
         marginLeft: theme.spacing(5),
-        marginTop: theme.spacing(4),
         "& .MuiGrid-container:last-child" : {
           marginBottom: "0 !important",
         }
