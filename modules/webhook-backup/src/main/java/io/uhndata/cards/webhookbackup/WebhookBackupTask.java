@@ -258,7 +258,9 @@ public class WebhookBackupTask implements Runnable
     {
         final String slackNotificationsUrl = System.getenv("SLACK_BACKUP_NOTIFICATIONS_URL");
         if (slackNotificationsUrl == null) {
-            LOGGER.warn("SLACK_BACKUP_NOTIFICATIONS_URL environment variable is not defined. Skipping Slack notification.");
+            LOGGER.warn(
+                "SLACK_BACKUP_NOTIFICATIONS_URL environment variable is not defined. Skipping Slack notification."
+            );
             return;
         }
         try {
