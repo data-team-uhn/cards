@@ -24,16 +24,24 @@ import {
     CardHeader,
     List,
     ListItem,
-	Typography
+    Typography
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import MarkdownText from "../questionnaireEditor/MarkdownText";
 import FormattedText from "../components/FormattedText.jsx";
 
 const useStyles = makeStyles(theme => ({
-  textField: {
-    minWidth: "250px",
-    paddingBottom: theme.spacing(2),
+  editorBlock: {
+    width: "45%",
+    margin: theme.spacing(1),
+    display: "inline-grid",
+    verticalAlign: "top"
+  },
+  previewHeader: {
+    borderBottom: "1px solid #dfdfe0",
+    backgroundColor: "#fbfbfb",
+    padding: theme.spacing(0, 0, 0, 2),
+    height: "30px"
   },
   saveButton: {
     marginTop: theme.spacing(3),
@@ -51,6 +59,8 @@ function WelcomeMessageConfiguration() {
   const [ isSaved, setIsSaved ] = useState(false);
   const [ fetched, setFetched ] = useState(false);
 
+  const appName = document.querySelector('meta[name="title"]')?.content;
+
   // Fetch saved admin config settings
   let getWelcomeMessage = () => {
     fetch('/Proms/WelcomeMessage.json')
@@ -60,7 +70,7 @@ function WelcomeMessageConfiguration() {
         setPath(json["@path"]);
         setWelcomeMessage(json.text || "");
       })
-	  .catch(setError);
+      .catch(setError);
   }
 
   // Submit function
@@ -110,10 +120,32 @@ function WelcomeMessageConfiguration() {
       />
       <CardContent>
         {error && <Typography color='error'>{error}</Typography>}
+        <Typography>
+          In the welcome message, use APP_NAME to refer to the name configured for the application.
+          On the Patient identification screen, all occurrences of APP_NAME will appear as {appName}.
+        </Typography>
         <form onSubmit={handleSubmit}>
           <List>
             <ListItem key="form">
-              {welcomeMessage != undefined && <MarkdownText value={welcomeMessage} height={350} onChange={value => { event.preventDefault(); setWelcomeMessage(value); }} />}
+              { welcomeMessage != undefined &&
+                <div className={classes.editorContainer}>
+                  <div className={classes.editorBlock}>
+                    <MarkdownText value={welcomeMessage} height={350} preview="edit" onChange={value => { event.preventDefault(); setWelcomeMessage(value); }} />
+                  </div>
+                  <Card className={classes.editorBlock}>
+                    <CardHeader
+                      className={classes.previewHeader}
+                      title="Preview"
+                      titleTypographyProps={{variant: "overline"}}
+                    />
+                    <CardContent>
+                      <FormattedText>
+                        { welcomeMessage?.replaceAll("APP_NAME", appName) }
+                      </FormattedText>
+                    </CardContent>
+                  </Card>
+                </div>
+              }
             </ListItem>
             <ListItem key="button">
               <Button
