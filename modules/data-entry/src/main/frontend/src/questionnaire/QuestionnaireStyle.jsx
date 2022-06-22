@@ -151,6 +151,7 @@ const questionnaireStyle = theme => ({
     },
     dashboardContainer: {
         marginTop: theme.spacing(2),
+        marginBottom: theme.spacing(6),
     },
     dashboardEntry: {
         "& > *": {
