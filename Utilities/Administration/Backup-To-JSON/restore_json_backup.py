@@ -22,17 +22,19 @@
 
 import io
 import os
-import sys
 import json
+import argparse
 import requests
 
-if len(sys.argv) < 4:
-  print("Usage: python3 restore_json_backup.py BACKUP_DIRECTORY FORM_LIST_FILE SUBJECT_LIST_FILE")
-  sys.exit(1)
+argparser = argparse.ArgumentParser()
+argparser.add_argument('--backup_directory', help='Path to backup directory', type=str, required=True)
+argparser.add_argument('--form_list_file', help='Path to the Form list file', type=str, required=True)
+argparser.add_argument('--subject_list_file', help='Path to the Subject list file', type=str, required=True)
+args = argparser.parse_args()
 
-BACKUP_DIRECTORY = sys.argv[1]
-FORM_LIST_FILE = sys.argv[2]
-SUBJECT_LIST_FILE = sys.argv[3]
+BACKUP_DIRECTORY = args.backup_directory
+FORM_LIST_FILE = args.form_list_file
+SUBJECT_LIST_FILE = args.subject_list_file
 
 CARDS_URL = "http://localhost:8080"
 if "CARDS_URL" in os.environ:
