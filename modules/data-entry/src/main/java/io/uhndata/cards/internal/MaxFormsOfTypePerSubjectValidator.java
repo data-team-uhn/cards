@@ -77,40 +77,41 @@ public class MaxFormsOfTypePerSubjectValidator implements Validator
     }
 
     @Override
-    @SuppressWarnings("checkstyle:NestedIfDepth")
     public Validator childNodeAdded(String name, NodeState after) throws CommitFailedException
     {
         String childNodeType = after.getName("jcr:primaryType");
-        if ("cards:Form".equals(childNodeType)) {
-            String questionnaireUUID = after.getProperty("questionnaire").getValue(Type.REFERENCE).toString();
-            String subjectUUID = after.getProperty("subject").getValue(Type.REFERENCE).toString();
-            LOGGER.warn("Added this --> {}", after);
-            LOGGER.warn("A cards:Form node was just added with questionnaire={} and subject={} !!!",
-                questionnaireUUID,
-                subjectUUID
-            );
-            final Map<String, Object> parameters =
-                Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, "maxFormsOfTypePerSubjectValidator");
-            try (ResourceResolver serviceResolver = this.rrf.getServiceResourceResolver(parameters)) {
-                LOGGER.warn("Yay! We were able to get a ResourceResolver");
-                Resource questionnaire = getQuestionnairesResourceByUuid(serviceResolver, questionnaireUUID);
-                LOGGER.warn("Resolved /Questionnaires/Patient information --> {}", questionnaire);
-                if (questionnaire != null) {
-                    long maxPerSubject = questionnaire.getValueMap().get("maxPerSubject", -1);
-                    LOGGER.warn("/Questionnaires/Patient information/maxPerSubject = {}", maxPerSubject);
-                    if (maxPerSubject > 0) {
-                        long formNumber = countFormsPerSubject(subjectUUID,
-                                questionnaire.getValueMap().get("title", "any"), serviceResolver);
-                        LOGGER.warn("The number of existing forms is {} and allowed is {}", formNumber, maxPerSubject);
-                        if (formNumber > maxPerSubject) {
-                            throw new CommitFailedException(CommitFailedException.STATE, 400,
-                                    "The number of created forms is bigger then is allowed");
-                        }
-                    }
-                }
-            } catch (LoginException e) {
-                // Should not happen
+        if (!("cards:Form".equals(childNodeType))) {
+            return this;
+        }
+        String questionnaireUUID = after.getProperty("questionnaire").getValue(Type.REFERENCE).toString();
+        String subjectUUID = after.getProperty("subject").getValue(Type.REFERENCE).toString();
+        LOGGER.warn("Added this --> {}", after);
+        LOGGER.warn("A cards:Form node was just added with questionnaire={} and subject={} !!!",
+            questionnaireUUID,
+            subjectUUID
+        );
+        final Map<String, Object> parameters =
+            Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, "maxFormsOfTypePerSubjectValidator");
+        try (ResourceResolver serviceResolver = this.rrf.getServiceResourceResolver(parameters)) {
+            LOGGER.warn("Yay! We were able to get a ResourceResolver");
+            Resource questionnaire = getQuestionnaireResourceByUuid(serviceResolver, questionnaireUUID);
+            LOGGER.warn("Resolved /Questionnaires/Patient information --> {}", questionnaire);
+            if (questionnaire == null) {
+                return this;
             }
+            long maxPerSubject = questionnaire.getValueMap().get("maxPerSubject", -1);
+            LOGGER.warn("/Questionnaires/Patient information/maxPerSubject = {}", maxPerSubject);
+            if (maxPerSubject > 0) {
+                long formNumber = countFormsPerSubject(subjectUUID,
+                        questionnaire.getValueMap().get("jcr:uuid", "any"), serviceResolver) + 1;
+                LOGGER.warn("The number of existing forms is {} and allowed is {}", formNumber, maxPerSubject);
+                if (formNumber > maxPerSubject) {
+                    throw new CommitFailedException(CommitFailedException.STATE, 400,
+                            "The number of created forms is bigger then is allowed");
+                }
+            }
+        } catch (LoginException e) {
+            // Should not happen
         }
         return this;
     }
@@ -119,17 +120,16 @@ public class MaxFormsOfTypePerSubjectValidator implements Validator
      * Counts the number of created forms per subject with specific questionnaire title.
      *
      * @param subjectUUID subject to be checked id
-     * @param excludeFormQuestionnaireType type of questionnaire to be count per subject
+     * @param questionnaireUUID type of questionnaire to be count per subject
      * @return a long
      */
-    private long countFormsPerSubject(String subjectUUID, String excludeFormQuestionnaireType,
+    private long countFormsPerSubject(String subjectUUID, String questionnaireUUID,
                                       ResourceResolver serviceResolver)
     {
         long count = 0;
         Iterator<Resource> results = serviceResolver.findResources(
-                "SELECT f.* FROM [cards:Form] AS f INNER JOIN [cards:Questionnaire] AS q ON "
-                        + "f.'questionnaire'=q.'jcr:uuid' WHERE f.'subject'='" + subjectUUID + END
-                        + " AND q.'title'='" + excludeFormQuestionnaireType + END,
+                "SELECT f.* FROM [cards:Form] AS f WHERE f.'subject'='" + subjectUUID + END
+                        + " AND f.'questionnaire'='" + questionnaireUUID + END,
                 "JCR-SQL2"
         );
 
@@ -140,10 +140,14 @@ public class MaxFormsOfTypePerSubjectValidator implements Validator
         return count;
     }
 
-    private Resource getQuestionnairesResourceByUuid(ResourceResolver serviceResolver, String uuid)
+    private Resource getQuestionnaireResourceByUuid(ResourceResolver serviceResolver, String uuid)
     {
-        return serviceResolver.findResources(
-                "SELECT * FROM [cards:Questionnaire] as q WHERE q.'jcr:uuid'='" + uuid + END, "JCR-SQL2").next();
+        Iterator<Resource> resourceIterator = serviceResolver.findResources(
+                "SELECT * FROM [cards:Questionnaire] as q WHERE q.'jcr:uuid'='" + uuid + END, "JCR-SQL2");
+        if (!resourceIterator.hasNext()) {
+            return null;
+        }
+        return resourceIterator.next();
     }
 
     @Override
