@@ -19,9 +19,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import {
   Button,
-  Card,
-  CardContent,
-  CardHeader,
   DialogActions,
   DialogContent,
   DialogTitle,
@@ -30,8 +27,7 @@ import {
 } from "@mui/material";
 
 import Fields from "../questionnaireEditor/Fields.jsx";
-import LiveTable from "../dataHomepage/LiveTable.jsx";
-import NewItemButton from "../components/NewItemButton.jsx";
+import ResourceListing from "../dataHomepage/ResourceListing.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import { camelCaseToWords } from "../questionnaireEditor/LabeledField.jsx";
@@ -71,30 +67,21 @@ function Clinics(props) {
 
   return (
     <>
-      <Card>
-        <CardHeader
-          title={
-            <Button>
-              Clinics
-          </Button>
-          }
-          action={
-            <NewItemButton
-              title="On-board a new clinic"
-              onClick={() => { setDialogOpen(true); setIsNewClinic(true); }}
-              inProgress={dialogOpen}
-            />
-          }
-        />
-        <CardContent>
-          <LiveTable
-            columns={columns}
-            entryType={"Proms/ClinicMapping"}
-            customUrl={"Proms/ClinicMapping.paginate"}
-            admin={true}
-          />
-        </CardContent>
-      </Card>
+      <ResourceListing
+        title="Clinics"
+        buttonProps={{
+          title: "On-board a new clinic",
+          onClick: () => {
+            setDialogOpen(true);
+            setIsNewClinic(true);
+          },
+          inProgress: (dialogOpen && isNewClinic)
+        }}
+        columns={columns}
+        entryType={"Proms/ClinicMapping"}
+        customUrl={"Proms/ClinicMapping.paginate"}
+        admin={true}
+      />
       <OnboardNewClinicDialog currentClinicName={currentClinicName} open={dialogOpen} onClose={dialogClose} onSuccess={dialogSuccess} isNewClinic={isNewClinic} />
     </>
   );

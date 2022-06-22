@@ -17,18 +17,14 @@
 //  under the License.
 //
 import React from "react";
-import LiveTable from "./LiveTable.jsx";
 import Questionnaire from "../questionnaire/Questionnaire.jsx";
-import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle";
+import ResourceListing from "../dataHomepage/ResourceListing.jsx";
 import NewQuestionnaireDialog from "../questionnaireEditor/NewQuestionnaireDialog.jsx";
-import { Button, Card, CardHeader, CardContent } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
 import DeleteButton from "./DeleteButton.jsx";
 import EditButton from "./EditButton.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
 function Questionnaires(props) {
-  const { classes } = props;
   const entry = /Questionnaires\/([^.]+)/.exec(location.pathname);
 
   if (entry) {
@@ -59,32 +55,19 @@ function Questionnaires(props) {
   ]
 
   return (
-    <React.Fragment>
-      <Card>
-       <CardHeader
-        title={
-          <Button className={classes.cardHeaderButton}>
-            Questionnaires
-          </Button>
-        }
+    <>
+      <ResourceListing
+        title="Questionnaires"
         action={
           <NewQuestionnaireDialog />
         }
-        classes={{
-          action: classes.newFormButtonHeader
-        }}
-        />
-        <CardContent>
-          <LiveTable
-            columns={columns}
-            actions={actions}
-            entryType={"Questionnaire"}
-            admin={true}
-            />
-        </CardContent>
-      </Card>
-    </React.Fragment>
+        columns={columns}
+        actions={actions}
+        entryType={"Questionnaire"}
+        admin={true}
+      />
+    </>
   );
 }
 
-export default withStyles(QuestionnaireStyle)(Questionnaires);
+export default Questionnaires;

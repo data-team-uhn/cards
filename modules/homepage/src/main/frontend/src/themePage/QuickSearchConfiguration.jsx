@@ -24,12 +24,11 @@ import {
     Tooltip,
     Typography,
     FormControlLabel,
-    Card,
-    CardContent,
-    CardHeader,
     List,
     ListItem,
 } from '@mui/material';
+
+import AdminScreen from "../adminDashboard/AdminScreen.jsx";
 
 function QuickSearchConfiguration(props) {
   const { match, location, classes } = props;
@@ -114,13 +113,7 @@ function QuickSearchConfiguration(props) {
   }
 
   return (
-    <Card>
-      <CardHeader
-        title={
-          <Typography variant="h6" gutterBottom>Quick search settings</Typography>
-        }
-      />
-      <CardContent>
+    <AdminScreen title="Quick Search Settings">
         <form onSubmit={handleSubmit}>
           <List>
             <ListItem key="h1">
@@ -135,9 +128,9 @@ function QuickSearchConfiguration(props) {
                 label="Limit"
                 value={limit}
                 onChange={(event) => { setOnSuccess(false); setLimit(event.target.value); }}
-                style={{'width' : '10%'}}
+                style={{'width' : '250px'}}
+                helperText="How many results should be displayed"
               />
-              <Typography variant="body1">How many results should be displayed</Typography>
             </ListItem>
             <ListItem key="showTotalRows">
               <FormControlLabel
@@ -181,8 +174,7 @@ function QuickSearchConfiguration(props) {
             </ListItem>
           </List>
         </form>
-      </CardContent>
-    </Card>
+    </AdminScreen>
   );
 }
 

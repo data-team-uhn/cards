@@ -338,7 +338,7 @@ function LiveTable(props) {
   const paginationControls = tableData && (
     <TablePagination
       component="div"
-      rowsPerPageOptions={[10, 50, 100, 1000]}
+      rowsPerPageOptions={[10, 20, 50, 100, 1000]}
       count={paginationData.totalIsApproximate ? -1 : paginationData.total}
       rowsPerPage={paginationData.limit}
       page={paginationData.page}
@@ -422,7 +422,7 @@ function LiveTable(props) {
 }
 
 LiveTable.defaultProps = {
-  defaultLimit: 50
+  defaultLimit: 20
 }
 
 export default withStyles(LiveTableStyle)(LiveTable);

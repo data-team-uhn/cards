@@ -30,6 +30,7 @@ import makeStyles from '@mui/styles/makeStyles';
 
 import React, {useEffect} from "react";
 
+import AdminScreen from "./adminDashboard/AdminScreen.jsx";
 import VocabularyDirectory from "./vocabularyDirectory";
 import OwlInstaller from "./owlInstaller";
 import { BioPortalApiKey } from "./bioportalApiKey";
@@ -201,12 +202,8 @@ export default function VocabulariesAdminPage() {
   }
 
   return (
+    <AdminScreen title="Vocabularies">
     <Grid container direction="column" spacing={6} justifyContent="space-around">
-      <Grid item>
-        <Typography variant="h2">
-          Vocabularies
-        </Typography>
-      </Grid>
 
       {wrapSection(<>
       <Grid item>
@@ -259,5 +256,6 @@ export default function VocabulariesAdminPage() {
       /> }
       </>)}
     </Grid>
+    </AdminScreen>
   );
 }
