@@ -490,8 +490,8 @@ function SubjectMemberInternal (props) {
             <Grid item xs={false}>{expandAction}</Grid>
             <Grid item xs={false}>{avatar}</Grid>
             <Grid item>
-              <Typography variant="h6">
-                 <Link to={"/content.html" + path} underline="hover">{title}</Link>
+              <Typography variant="overline">
+                 {label} <Link to={"/content.html" + path} underline="hover">{identifier}</Link>
                  {action}
               </Typography>
             </Grid>
