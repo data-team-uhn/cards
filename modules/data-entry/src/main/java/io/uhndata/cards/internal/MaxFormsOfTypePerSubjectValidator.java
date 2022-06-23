@@ -94,8 +94,7 @@ public class MaxFormsOfTypePerSubjectValidator implements Validator
             }
             long maxPerSubject = questionnaire.getValueMap().get("maxPerSubject", -1);
             if (maxPerSubject > 0) {
-                long formNumber = countFormsPerSubject(subjectUUID,
-                        questionnaire.getValueMap().get("jcr:uuid", "any"), serviceResolver) + 1;
+                long formNumber = countFormsPerSubject(subjectUUID, questionnaireUUID, serviceResolver) + 1;
                 LOGGER.warn("The number of existing forms is {} and allowed is {}", formNumber, maxPerSubject);
                 if (formNumber > maxPerSubject) {
                     throw new CommitFailedException(CommitFailedException.STATE, 400,
