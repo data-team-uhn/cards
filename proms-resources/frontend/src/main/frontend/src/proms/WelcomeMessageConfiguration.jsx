@@ -115,13 +115,13 @@ function WelcomeMessageConfiguration() {
   return (
     <Card>
       <CardHeader
-        title="Welcome Message text"
+        title="Patient Portal Welcome Message"
         titleTypographyProps={{variant: "h6"}}
       />
       <CardContent>
-        {error && <Typography color='error'>{error}</Typography>}
-        <Typography>
-          In the welcome message, use APP_NAME to refer to the name configured for the application.
+        {error && <Typography paragraph color='error'>{error}</Typography>}
+        <Typography paragraph variant="body2">
+          Use APP_NAME to refer to the name configured for the application.
           On the Patient identification screen, all occurrences of APP_NAME will appear as {appName}.
         </Typography>
         <form onSubmit={handleSubmit}>
