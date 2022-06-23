@@ -243,7 +243,7 @@ let QuestionMatrix = (props) => {
     return (<>
       { existingAnswers.map((answer, idx) => (answer[1].displayedValue || hasWarningFlags(answer)) && (
         <TableRow key={answer[0] + idx} className={enableVerticalLayout ? classes.questionMatrixStackedAnswer : ''}>
-          { renderQuestion(answer[1].question, answer[1].statusFlags) }
+          { renderQuestion(answer[1].question, hasWarningFlags(answer)) }
           { !enableVerticalLayout && <TableCell>—</TableCell> }
           { renderAnswer(answer[1], (enableVerticalLayout ? '-' : '')) }
         </TableRow>
@@ -251,10 +251,10 @@ let QuestionMatrix = (props) => {
     </>);
   };
 
-  let renderQuestion = (question, flags) => {
+  let renderQuestion = (question, hasWarningFlags) => {
     return (
       <TableCell component="th" >
-        <Typography color={ flags?.length > 0 ? 'error' : 'inherit'}>{question.text}</Typography>
+        <Typography color={ hasWarningFlags ? 'error' : 'inherit'}>{question.text}</Typography>
         { question.description &&
           <FormattedText variant="caption" display="block" color="textSecondary">
             { question.description }
