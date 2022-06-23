@@ -88,14 +88,11 @@ public class MaxFormsOfTypePerSubjectValidator implements Validator
         final Map<String, Object> parameters =
             Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, "maxFormsOfTypePerSubjectValidator");
         try (ResourceResolver serviceResolver = this.rrf.getServiceResourceResolver(parameters)) {
-            LOGGER.warn("Yay! We were able to get a ResourceResolver");
             Resource questionnaire = getQuestionnaireResourceByUuid(serviceResolver, questionnaireUUID);
-            LOGGER.warn("Resolved /Questionnaires/Patient information --> {}", questionnaire);
             if (questionnaire == null) {
                 return this;
             }
             long maxPerSubject = questionnaire.getValueMap().get("maxPerSubject", -1);
-            LOGGER.warn("/Questionnaires/Patient information/maxPerSubject = {}", maxPerSubject);
             if (maxPerSubject > 0) {
                 long formNumber = countFormsPerSubject(subjectUUID,
                         questionnaire.getValueMap().get("jcr:uuid", "any"), serviceResolver) + 1;
