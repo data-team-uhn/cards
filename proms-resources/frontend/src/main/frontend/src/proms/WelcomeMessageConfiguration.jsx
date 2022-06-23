@@ -146,7 +146,7 @@ function WelcomeMessageConfiguration() {
                         titleTypographyProps={{variant: "overline"}}
                       />
                       <CardContent>
-                        <FormattedText>
+                        <FormattedText variant="body2">
                           { welcomeMessage?.replaceAll("APP_NAME", appName) }
                         </FormattedText>
                       </CardContent>
