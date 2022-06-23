@@ -32,6 +32,17 @@ import MarkdownText from "../questionnaireEditor/MarkdownText";
 import FormattedText from "../components/FormattedText.jsx";
 
 const useStyles = makeStyles(theme => ({
+  editorContainer: {
+    "& > .MuiGrid-item > *": {
+      height: "100% !important",
+    },
+    "& .w-md-editor-content": {
+      height: "calc(100% - 29px) !important",
+    },
+    "& .w-md-editor-toolbar ul:last-child > li:not(:last-child), .w-md-editor-bar": {
+      display: "none",
+    },
+  },
   previewHeader: {
     borderBottom: "1px solid #dfdfe0",
     backgroundColor: "#fbfbfb",
@@ -127,10 +138,11 @@ function WelcomeMessageConfiguration() {
                   container
                   spacing={2}
                   justifyContent="center"
-                  alignItems="flex-start"
+                  alignItems="stretch"
+                  className={classes.editorContainer}
                 >
                   <Grid item xs={12} md={6}>
-                    <MarkdownText value={welcomeMessage} height={350} preview="edit" onChange={value => { event.preventDefault(); setWelcomeMessage(value); }} />
+                    <MarkdownText value={welcomeMessage} height={350} preview="edit" visiableDragbar="false" onChange={setWelcomeMessage} />
                   </Grid>
                   <Grid item xs={12} md={6}>
                     <Card>
