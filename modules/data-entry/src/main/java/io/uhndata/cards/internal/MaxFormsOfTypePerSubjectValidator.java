@@ -43,7 +43,6 @@ public class MaxFormsOfTypePerSubjectValidator implements Validator
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(MaxFormsOfTypePerSubjectValidator.class);
 
-    private static final String END = "'";
     private final ResourceResolverFactory rrf;
 
     public MaxFormsOfTypePerSubjectValidator(final ResourceResolverFactory rrf)
@@ -119,8 +118,8 @@ public class MaxFormsOfTypePerSubjectValidator implements Validator
     {
         long count = 0;
         Iterator<Resource> results = serviceResolver.findResources(
-                "SELECT f.* FROM [cards:Form] AS f WHERE f.'subject'='" + subjectUUID + END
-                        + " AND f.'questionnaire'='" + questionnaireUUID + END,
+                "SELECT f.* FROM [cards:Form] AS f WHERE f.'subject'='" + subjectUUID + "'"
+                        + " AND f.'questionnaire'='" + questionnaireUUID + "'",
                 "JCR-SQL2"
         );
 
@@ -134,7 +133,7 @@ public class MaxFormsOfTypePerSubjectValidator implements Validator
     private Resource getQuestionnaireResourceByUuid(ResourceResolver serviceResolver, String uuid)
     {
         Iterator<Resource> resourceIterator = serviceResolver.findResources(
-                "SELECT * FROM [cards:Questionnaire] as q WHERE q.'jcr:uuid'='" + uuid + END, "JCR-SQL2");
+                "SELECT * FROM [cards:Questionnaire] as q WHERE q.'jcr:uuid'='" + uuid + "'", "JCR-SQL2");
         if (!resourceIterator.hasNext()) {
             return null;
         }
