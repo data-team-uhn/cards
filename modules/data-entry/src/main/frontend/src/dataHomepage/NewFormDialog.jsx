@@ -309,16 +309,18 @@ function NewFormDialog(props) {
                     let acceptableSubjectTypes = [" IS NULL", `='${currentSubject["type"]["jcr:uuid"]}'`];
 
                     let findProgeny = (subjectType) => {
-                      let progeny = Object.values(subjectType)?.filter((property) => property["jcr:primaryType"] === "cards:SubjectType");
-                      let retVal = [].concat.apply([], progeny.map(subject => findProgeny(subject)));
-                      retVal.push(subjectType);
+                      // Recursively find child subject types
+                      // Make sure to exclude the `parents` field, which will match ["jcr:primaryType"] == "cards:SubjectType"
+                      // but should obviously not be counted as progeny
+                      let progeny = Object.entries(subjectType || {})
+                        .filter(([key, val]) => (val?.["jcr:primaryType"] == "cards:SubjectType" && key != 'parents'))
+                        .map(([_, type]) => type);
+                      let retVal = [...progeny, ...(progeny.map(findProgeny))].flat();
                       return retVal;
                     }
 
                     let progenyTypes = findProgeny(currentSubject["type"]);
-                    if (progenyTypes) {
-                      acceptableSubjectTypes = acceptableSubjectTypes.concat(progenyTypes.map((subject) => `='${subject["jcr:uuid"]}'`));
-                    }
+                    acceptableSubjectTypes = acceptableSubjectTypes.concat(progenyTypes.map((type) => `='${type["jcr:uuid"]}'`));
 
                     // Join the conditions together with an OR, and wrap it in brackets
                     conditions.push(
