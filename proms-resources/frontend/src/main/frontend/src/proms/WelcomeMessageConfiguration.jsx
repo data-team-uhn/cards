@@ -28,8 +28,6 @@ import {
     Typography
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import MarkdownText from "../questionnaireEditor/MarkdownText";
 import FormattedText from "../components/FormattedText.jsx";
 
@@ -57,9 +55,6 @@ function WelcomeMessageConfiguration() {
   const [ fetched, setFetched ] = useState(false);
 
   const appName = document.querySelector('meta[name="title"]')?.content;
-
-  const theme = useTheme();
-  const breakpoint = useMediaQuery(theme.breakpoints.down("sm"));
 
   // Fetch saved admin config settings
   let getWelcomeMessage = () => {
@@ -131,14 +126,13 @@ function WelcomeMessageConfiguration() {
                 <Grid
                   container
                   spacing={2}
-                  direction={breakpoint ? "column" : "row"}
                   justifyContent="center"
                   alignItems="flex-start"
                 >
-                  <Grid item xs={12} sm={8} md={6}>
+                  <Grid item xs={12} md={6}>
                     <MarkdownText value={welcomeMessage} height={350} preview="edit" onChange={value => { event.preventDefault(); setWelcomeMessage(value); }} />
                   </Grid>
-                  <Grid item xs={12} sm={8} md={6}>
+                  <Grid item xs={12} md={6}>
                     <Card>
                       <CardHeader
                         className={classes.previewHeader}
