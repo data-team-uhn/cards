@@ -85,11 +85,6 @@ public class MaxFormsOfTypePerSubjectValidator implements Validator
         }
         String questionnaireUUID = after.getProperty("questionnaire").getValue(Type.REFERENCE).toString();
         String subjectUUID = after.getProperty("subject").getValue(Type.REFERENCE).toString();
-        LOGGER.warn("Added this --> {}", after);
-        LOGGER.warn("A cards:Form node was just added with questionnaire={} and subject={} !!!",
-            questionnaireUUID,
-            subjectUUID
-        );
         final Map<String, Object> parameters =
             Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, "maxFormsOfTypePerSubjectValidator");
         try (ResourceResolver serviceResolver = this.rrf.getServiceResourceResolver(parameters)) {
