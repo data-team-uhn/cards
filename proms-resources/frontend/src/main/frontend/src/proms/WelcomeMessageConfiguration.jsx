@@ -57,7 +57,6 @@ const useStyles = makeStyles(theme => ({
 function WelcomeMessageConfiguration() {
   const classes = useStyles();
 
-  const [ path, setPath ] = useState();
   const [ welcomeMessage, setWelcomeMessage ] = useState();
 
   // Status tracking values of fetching/posting the data from/to the server
@@ -73,7 +72,6 @@ function WelcomeMessageConfiguration() {
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         setFetched(true);
-        setPath(json["@path"]);
         setWelcomeMessage(json.text || "");
       })
       .catch(setError);
