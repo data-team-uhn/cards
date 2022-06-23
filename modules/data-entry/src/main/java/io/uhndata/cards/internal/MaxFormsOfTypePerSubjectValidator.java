@@ -29,8 +29,6 @@ import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A {@link Validator} that ensures that the number of created Forms of
@@ -41,8 +39,6 @@ import org.slf4j.LoggerFactory;
  */
 public class MaxFormsOfTypePerSubjectValidator implements Validator
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(MaxFormsOfTypePerSubjectValidator.class);
-
     private final ResourceResolverFactory rrf;
 
     public MaxFormsOfTypePerSubjectValidator(final ResourceResolverFactory rrf)
@@ -94,7 +90,6 @@ public class MaxFormsOfTypePerSubjectValidator implements Validator
             long maxPerSubject = questionnaire.getValueMap().get("maxPerSubject", -1);
             if (maxPerSubject > 0) {
                 long formNumber = countFormsPerSubject(subjectUUID, questionnaireUUID, serviceResolver) + 1;
-                LOGGER.warn("The number of existing forms is {} and allowed is {}", formNumber, maxPerSubject);
                 if (formNumber > maxPerSubject) {
                     throw new CommitFailedException(CommitFailedException.STATE, 400,
                             "The number of created forms is bigger then is allowed");
