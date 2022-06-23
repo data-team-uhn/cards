@@ -216,18 +216,20 @@ const questionnaireStyle = theme => ({
     },
     subjectAvatar : {
         backgroundColor: theme.palette.secondary.main,
-        fontWeight: 800,
+        marginLeft: theme.spacing(-1),
+        marginRight: theme.spacing(1.5),
         zoom: .75,
     },
-    subjectTitleWithAvatar: {
+    subjectFormAvatar : {
+        backgroundColor: theme.palette.primary.main,
+        marginTop: theme.spacing(-.5),
+        zoom: .75,
+    },
+    childSubjectHeader: {
         marginLeft: theme.spacing(-5),
         "& > *" : {
           alignItems: "center",
         },
-        "& a": {
-          color: theme.palette.primary.main,
-          textDecoration: "none",
-        }
     },
     subjectContainer: {
         flexWrap: "nowrap" ,
@@ -235,7 +237,6 @@ const questionnaireStyle = theme => ({
     },
     subjectNestedContainer: {
         marginLeft: theme.spacing(5),
-        marginTop: theme.spacing(4),
         "& .MuiGrid-container:last-child" : {
           marginBottom: "0 !important",
         }
@@ -573,6 +574,10 @@ const questionnaireStyle = theme => ({
         color: theme.palette.error.main,
     },
     DefaultChip: {
+    },
+    formPreview: {
+        padding: theme.spacing(1, 1, 1, 5.25),
+        background: theme.palette.action.hover,
     },
     formPreviewQuestion: {
         display: "flex",

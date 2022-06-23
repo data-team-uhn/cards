@@ -37,6 +37,7 @@ import {
   CardContent,
   Chip,
   Grid,
+  IconButton,
   Tooltip,
   Tab,
   Tabs,
@@ -44,6 +45,10 @@ import {
 } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import FileIcon from "@mui/icons-material/InsertDriveFile";
+import CollapsedIcon from "@mui/icons-material/ChevronRight";
+import ExpandedIcon from "@mui/icons-material/ExpandMore";
+import FormIcon from "@mui/icons-material/Description";
+import SubjectIcon from "@mui/icons-material/AssignmentInd";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 import EditButton from "../dataHomepage/EditButton.jsx";
 import PrintButton from "../dataHomepage/PrintButton.jsx";
@@ -271,18 +276,7 @@ function SubjectContainer(props) {
 
   return (
     subject && <React.Fragment>
-      <SubjectMember classes={classes} id={id} level={currentLevel} data={subject} maxDisplayed={maxDisplayed} pageSize={pageSize} onDelete={() => {setDeleted(true)}} hasChildren={!!(relatedSubjects?.length)}/>
-      {relatedSubjects && relatedSubjects.length > 0 ?
-        (<Grid item xs={12} className={classes.subjectNestedContainer}>
-          {relatedSubjects.map( (subject, i) => {
-            // Render component again for each related subject
-            return(
-              <SubjectContainer key={i} classes={classes} path={subject["@path"]} level={currentLevel+1} maxDisplayed={maxDisplayed} pageSize={pageSize} subject={subject}/>
-            )
-          })}
-        </Grid>
-        ) : ""
-      }
+      <SubjectMember classes={classes} id={id} level={currentLevel} data={subject} maxDisplayed={maxDisplayed} pageSize={pageSize} onDelete={() => {setDeleted(true)}} childSubjects={relatedSubjects}/>
     </React.Fragment>
   );
 }
@@ -399,9 +393,12 @@ function SubjectHeader(props) {
  * Component that displays all forms related to a Subject. Do not use directly, use SubjectMember instead.
  */
 function SubjectMemberInternal (props) {
-  let { classes, data, history, id, level, maxDisplayed, onDelete, pageSize, hasChildren } = props;
+  let { classes, data, history, id, level, maxDisplayed, onDelete, pageSize, childSubjects } = props;
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
+  // Whether a subject is expanded and displaying its forms
+  // The root subject is always expanded. Child subjects are collapsed by default.
+  let [ expanded, setExpanded ] = useState(level == 0);
   let [ subjectGroups, setSubjectGroups ] = useState();
 
   let globalLoginDisplay = useContext(GlobalLoginContext);
@@ -458,7 +455,14 @@ function SubjectMemberInternal (props) {
   let label = data?.type?.label || "Subject";
   let title = `${label} ${identifier}`;
   let path = data ? data["@path"] : "/Subjects/" + id;
-  let avatar = <Avatar className={classes.subjectAvatar}>{label.split(' ').map(s => s?.charAt(0)).join('').toUpperCase()}</Avatar>;
+  let avatar = <Avatar className={classes.subjectAvatar}><SubjectIcon/></Avatar>;
+  let expandAction = (
+    <Tooltip title={`Data for ${title}`}>
+      <IconButton onClick={()=> setExpanded(!expanded)}>
+      { expanded ? <ExpandedIcon/> : <CollapsedIcon /> }
+      </IconButton>
+    </Tooltip>
+  )
   let action = <>
                  <PrintButton
                    resourcePath={path}
@@ -476,36 +480,29 @@ function SubjectMemberInternal (props) {
                    buttonClass={classes.childSubjectHeaderButton}
                  />
                </>
-  // If this is the top-level subject and we have no data to display for it, inform the user:
-  if (data && level == 0 && !(Object.keys(subjectGroups || {}).length) && !hasChildren) {
-    return (
-      <Grid item>
-        <Typography color="textSecondary" variant="caption">{`No data associated with this ${label.toLowerCase()} was found.`}</Typography>
-      </Grid>
-    )
-  }
 
   return ( data &&
     <>
     {
       level > 0 &&
-        <Grid item className={classes.subjectTitleWithAvatar}>
+        <Grid item className={classes.childSubjectHeader}>
           <Grid container direction="row" spacing={1} justifyContent="flex-start">
+            <Grid item xs={false}>{expandAction}</Grid>
             <Grid item xs={false}>{avatar}</Grid>
             <Grid item>
-              <Typography variant="h6">
-                 <Link to={"/content.html" + path} underline="hover">{title}</Link>
+              <Typography variant="overline">
+                 {label} <Link to={"/content.html" + path} underline="hover">{identifier}</Link>
                  {action}
               </Typography>
             </Grid>
           </Grid>
         </Grid>
       }
-      { subjectGroups && Object.keys(subjectGroups).length > 0 && <>
+      { expanded && (
+        Object.keys(subjectGroups || {}).length > 0 ? <>
         {
-          Object.keys(subjectGroups).map( (questionnaireTitle, j) => {
-            return(<Grid item key={questionnaireTitle}>
-              <Typography variant="h6">{questionnaireTitle}</Typography>
+          Object.keys(subjectGroups).map( (questionnaireTitle, j) => (
+            <Grid item key={questionnaireTitle}>
               <MaterialTable
                 data={subjectGroups[questionnaireTitle]}
                 style={{ boxShadow : 'none' }}
@@ -520,21 +517,39 @@ function SubjectMemberInternal (props) {
                     verticalAlign: 'top',
                   }
                 }}
+                detailPanel={[
+                  { tooltip: 'Excerpt',
+                    render: rowData => <FormData formID={rowData["@name"]} maxDisplayed={maxDisplayed} classes={classes}/> },
+                ]}
                 columns={[
-                  { title: 'Created',
+                  { title: 'Avatar',
+                    cellStyle: {
+                      paddingLeft: 0,
+                      paddingTop: "10px",
+                    },
+                    render: rowData => <Avatar className={classes.subjectFormAvatar}><FormIcon/></Avatar> },
+                  { title: 'Questionnaire',
                     cellStyle: {
                       paddingLeft: 0,
                       fontWeight: "bold",
-                      width: '1%',
+                      paddingTop: "10px",
                       whiteSpace: 'nowrap',
                     },
-                    render: rowData => <Link to={"/content.html" + rowData["@path"]} underline="hover">
-                                         {DateTime.fromISO(rowData['jcr:created']).toFormat("yyyy-MM-dd")}
-                                       </Link> },
+                    render: rowData => <><Link to={"/content.html" + rowData["@path"]} underline="hover">
+                                           {questionnaireTitle} {subjectGroups[questionnaireTitle].length > 1 ? `#${rowData.tableData.id + 1}` : ''}
+                                         </Link>
+                                         <Typography variant="caption" component="div" color="textSecondary">
+                                           Created {DateTime.fromISO(rowData['jcr:created']).toFormat("yyyy-MM-dd HH:mm")}
+                                         </Typography>
+                                         <Typography variant="caption" component="div" color="textSecondary">
+                                           Last modified {DateTime.fromISO(rowData['jcr:lastModified']).toFormat("yyyy-MM-dd HH:mm")}
+                                         </Typography>
+                                       </> },
                   { title: 'Status',
                     cellStyle: {
-                      width: '1%',
-                      whiteSpace: 'pre-wrap',
+                      width: '99%',
+                      whiteSpace: 'nowrap',
+                      paddingTop: "10px",
                       paddingBottom: "8px",
                     },
                     render: rowData => <React.Fragment>
@@ -548,12 +563,10 @@ function SubjectMemberInternal (props) {
                                            />
                                          })}
                                        </React.Fragment> },
-                  { title: 'Summary',
-                    render: rowData => <FormData className={classes.formData} formID={rowData["@name"]} maxDisplayed={maxDisplayed} classes={classes}/> },
                   { title: 'Actions',
                     cellStyle: {
                       padding: '0',
-                      width: '20px',
+                      whiteSpace: 'nowrap',
                       textAlign: 'end'
                     },
                     render: rowData => <React.Fragment>
@@ -571,10 +584,29 @@ function SubjectMemberInternal (props) {
                                        </React.Fragment> },
                 ]}
                />
-            </Grid>)
-          })
+            </Grid>
+          ))
         }
         </>
+        :
+        ( !childSubjects?.length && // If we have no data to display for this subject, inform the user
+          <Grid item>
+            <Typography color="textSecondary" variant="caption">{`No data associated with this ${label.toLowerCase()} was found.`}</Typography>
+          </Grid>
+        )
+      )}
+      { /* Render child subjects at the bottom when the current subject is expanded */ }
+      { expanded && childSubjects?.length ?
+        (<Grid item xs={12} className={classes.subjectNestedContainer}>
+          {childSubjects.map( (subject, i) => {
+            // Render the container again for each child subject
+            return(
+              <SubjectContainer key={i} classes={classes} path={subject["@path"]} level={level+1} maxDisplayed={maxDisplayed} pageSize={pageSize} subject={subject}/>
+            )
+          })}
+        </Grid>
+        )
+        : ""
       }
     </>
   );
@@ -640,13 +672,14 @@ function FormData(props) {
 
   if (data && data.questionnaire) {
     return (
-      <React.Fragment>
+      <div className={classes.formPreview}>
         {
           Object.entries(data.questionnaire)
           .filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']))
           .map(([key, entryDefinition]) => handleDisplay(entryDefinition, data, key, handleDisplayQuestion))
         }
-      </React.Fragment>
+        { !displayed && <Typography variant="caption" color="textSecondary">There is no data in this form</Typography> }
+      </div>
     );
   }
   else return;
