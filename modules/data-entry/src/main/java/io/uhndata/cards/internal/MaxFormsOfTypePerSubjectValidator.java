@@ -74,20 +74,31 @@ public class MaxFormsOfTypePerSubjectValidator implements Validator
     @Override
     public Validator childNodeAdded(String name, NodeState after) throws CommitFailedException
     {
+        // Get the type of this node. Return immediately if it's not a cards:Form node
         String childNodeType = after.getName("jcr:primaryType");
         if (!("cards:Form".equals(childNodeType))) {
             return this;
         }
+
+        // Get the jcr:uuid values for the Form's associated Questionnaire and Subject
         String questionnaireUUID = after.getProperty("questionnaire").getValue(Type.REFERENCE).toString();
         String subjectUUID = after.getProperty("subject").getValue(Type.REFERENCE).toString();
+
+        // Obtain a ResourceResolver for querying the JCR
         final Map<String, Object> parameters =
             Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, "maxFormsOfTypePerSubjectValidator");
         try (ResourceResolver serviceResolver = this.rrf.getServiceResourceResolver(parameters)) {
+
+            // Get the Questionnaire Resource associated with this Form
             Resource questionnaire = getQuestionnaireResourceByUuid(serviceResolver, questionnaireUUID);
             if (questionnaire == null) {
                 return this;
             }
+
+            // Get the maxPerSubject value for the Questionnaire
             long maxPerSubject = questionnaire.getValueMap().get("maxPerSubject", -1);
+
+            // Should this commit be allowed or does it exceed the maxPerSubject constraint?
             if (maxPerSubject > 0) {
                 long formNumber = countFormsPerSubject(subjectUUID, questionnaireUUID, serviceResolver) + 1;
                 if (formNumber > maxPerSubject) {
@@ -102,11 +113,12 @@ public class MaxFormsOfTypePerSubjectValidator implements Validator
     }
 
     /**
-     * Counts the number of created forms per subject with specific questionnaire title.
+     * Counts the number of created Forms per Subject with a specific Questionnaire UUID.
      *
-     * @param subjectUUID subject to be checked id
-     * @param questionnaireUUID type of questionnaire to be count per subject
-     * @return a long
+     * @param subjectUUID subject UUID that must match with the Form's subject
+     * @param questionnaireUUID questionnaire that must match with the Form's questionnaire
+     * @param ResourceResolver a ResourceResolver that can be used for querying the JCR
+     * @return a long-typed number of the number of Forms with the specified questionnaire and subject
      */
     private long countFormsPerSubject(String subjectUUID, String questionnaireUUID,
                                       ResourceResolver serviceResolver)
@@ -125,6 +137,13 @@ public class MaxFormsOfTypePerSubjectValidator implements Validator
         return count;
     }
 
+    /**
+     * Obtains the Questionnaire Resource that has a specified jcr:uuid.
+     *
+     * @param ResourceResolver a ResourceResolver that can be used for querying the JCR
+     * @param uuid the jcr:uuid of the Questionnaire Resource which we wish to obtain
+     * @return the matching Questionnaire Resource or null if none can be found
+     */
     private Resource getQuestionnaireResourceByUuid(ResourceResolver serviceResolver, String uuid)
     {
         Iterator<Resource> resourceIterator = serviceResolver.findResources(
