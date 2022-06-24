@@ -8,41 +8,48 @@ runs:
         echo "::group::Create The smtps-ci-mail Directory"
         mkdir ~/smtps-ci-mail
         echo "::endgroup::"
+      shell: bash
     - name: Start CARDS
       run: |
         echo "::group::Start CARDS"
         cd compose-cluster
         ./quick-environments/smtps-ci.sh ~/smtps-ci-mail
         echo "::endgroup::"
+      shell: bash
     - name: Send Plain Text Email
       run: |
         echo "::group::Send Plain Text Email"
         curl -u admin:admin "http://localhost:8080/content.emailtest?fromEmail=datapro@uhn.ca&fromName=UHN%20DATAPRO&toEmail=testuser@mail.com&toName=Test%20User"
         sleep 10
         echo "::endgroup::"
+      shell: bash
     - name: Verify Mailfile For Plain Text
       run: |
         echo "::group::Verify Mailfile For Plain Text"
         cd Utilities/Development
         python3 verify_mbox_file.py ~/smtps-ci-mail/runner text
         echo "::endgroup::"
+      shell: bash
     - name: Clean Mailfile
       run: |
         echo "::group::Clean Mailfile"
         echo -ne "" > ~/smtps-ci-mail/runner
         echo "::endgroup::"
+      shell: bash
     - name: Send HTML Email
       run: |
         echo "::group::Send HTML Email"
         curl -u admin:admin "http://localhost:8080/content.emailtest?fromEmail=datapro@uhn.ca&fromName=UHN%20DATAPRO&toEmail=testuser@mail.com&toName=Test%20User&isHtml=true"
         sleep 10
         echo "::endgroup::"
+      shell: bash
     - name: Verify Mailfile For HTML
       run: |
         echo "::group::Verify Mailfile For HTML"
         cd Utilities/Development
         python3 verify_mbox_file.py ~/smtps-ci-mail/runner html
         echo "::endgroup::"
+      shell: bash
     - name: Shutdown
       run: |
         echo "::group::Shutdown"
@@ -53,3 +60,4 @@ runs:
         sudo rm -rf SLING
         rm -rf ~/smtps-ci-mail
         echo "::endgroup::"
+      shell: bash
