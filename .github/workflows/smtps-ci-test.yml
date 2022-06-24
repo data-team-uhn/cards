@@ -10,8 +10,7 @@ jobs:
       - name: Code Checkout
         uses: actions/checkout@v2
       - name: Install Dependencies
-        run: |
-          sudo apt-get update && sudo apt-get -y install openjdk-11-jre maven python3 curl
+        uses: ./.github/actions/install-ci-dependencies
       - name: Build CARDS
         run: |
           mvn clean install
