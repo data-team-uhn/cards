@@ -1,0 +1,7 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/view",
+  "cards:extensionName": "Terms of use configuration",
+  "cards:targetURL": "/content.html/admin/ToUConfiguration",
+  "cards:extensionRenderURL": "asset:proms-homepage.ToUConfiguration.js"
+}

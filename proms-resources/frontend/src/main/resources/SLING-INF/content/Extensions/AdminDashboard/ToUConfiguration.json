@@ -1,0 +1,9 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/admindashboard/entry",
+  "cards:extensionName": "Terms of use configuration",
+  "cards:targetURL": "/content.html/admin/ToUConfiguration",
+  "cards:icon": "asset:proms-homepage.ToUConfigurationIcon.js",
+  "cards:hint": "Configuration for whether patients need to accept ToU before proceeding",
+  "cards:defaultOrder": 204
+}
