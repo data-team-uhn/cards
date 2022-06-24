@@ -26,6 +26,7 @@ import java.util.Map;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
+import javax.jcr.security.AccessControlException;
 import javax.jcr.security.AccessControlManager;
 import javax.jcr.security.Privilege;
 
@@ -40,14 +41,21 @@ import io.uhndata.cards.permissions.spi.PermissionsManager;
  * Permission changing service for altering/creating ACLs on arbitrary nodes.
  *
  * @version $Id$
- *
  */
 @Component(service = { PermissionsManager.class })
 public class PermissionsManagerService implements PermissionsManager
 {
     @Override
+    public void addAccessControlEntry(String target, boolean isAllow, Principal principal, String[] privileges,
+        Map<String, Value> restrictions, Session session) throws RepositoryException
+    {
+        AccessControlManager acm = session.getAccessControlManager();
+        addAccessControlEntry(target, isAllow, principal, parsePrivileges(privileges, acm), restrictions, session);
+    }
+
+    @Override
     public void addAccessControlEntry(String target, boolean isAllow, Principal principal, Privilege[] privileges,
-            Map<String, Value> restrictions, Session session) throws RepositoryException
+        Map<String, Value> restrictions, Session session) throws RepositoryException
     {
         AccessControlManager acm = session.getAccessControlManager();
         JackrabbitAccessControlList acl = AccessControlUtils.getAccessControlList(acm, target);
@@ -60,8 +68,16 @@ public class PermissionsManagerService implements PermissionsManager
     }
 
     @Override
+    public void removeAccessControlEntry(String target, boolean isAllow, Principal principal, String[] privileges,
+        Map<String, Value> restrictions, Session session) throws RepositoryException
+    {
+        AccessControlManager acm = session.getAccessControlManager();
+        removeAccessControlEntry(target, isAllow, principal, parsePrivileges(privileges, acm), restrictions, session);
+    }
+
+    @Override
     public void removeAccessControlEntry(String target, boolean isAllow, Principal principal, Privilege[] privileges,
-            Map<String, Value> restrictions, Session session) throws RepositoryException
+        Map<String, Value> restrictions, Session session) throws RepositoryException
     {
         // Find the necessary ACL to remove
         AccessControlManager acm = session.getAccessControlManager();
@@ -90,6 +106,7 @@ public class PermissionsManagerService implements PermissionsManager
 
     /**
      * Determine if the given JackrabbitAccessControlEntry fits the given criteria.
+     *
      * @param entry entry to determine sameness of
      * @param isAllow whether the request is to allow (true) or deny (false) access
      * @param principal the Principal for the rule (i.e. target users to affect)
@@ -99,18 +116,19 @@ public class PermissionsManagerService implements PermissionsManager
      * @throws RepositoryException if an error occurs while obtaining restrictions from the entry
      */
     private boolean entryHasDetails(JackrabbitAccessControlEntry entry, boolean isAllow,
-            Principal principal, Privilege[] privileges, Map<String, Value> restrictions) throws RepositoryException
+        Principal principal, Privilege[] privileges, Map<String, Value> restrictions) throws RepositoryException
     {
         // Ensure the principal and rules match
         // Note that using getPrivileges().equals() fails to detect matches
         return (entry.isAllow() == isAllow
-                && entry.getPrincipal().equals(principal)
-                && entryHasPrivileges(entry, privileges)
-                && entryHasRestrictions(entry, restrictions));
+            && entry.getPrincipal().equals(principal)
+            && entryHasPrivileges(entry, privileges)
+            && entryHasRestrictions(entry, restrictions));
     }
 
     /**
      * Check that the given privilege array is present in the given entry.
+     *
      * @param entry entry to check
      * @param privileges privileges to check
      * @return true if the given entry's privileges are exactly equal to the given ones.
@@ -135,13 +153,14 @@ public class PermissionsManagerService implements PermissionsManager
 
     /**
      * Check that the given restrictions map is present in the given entry.
+     *
      * @param entry entry to check
      * @param restrictions map of restrictions names to {@code javax.jcr.Value} to check
      * @return true if the entry's restrictions are exactly equal to the given restrictions.
      * @throws RepositoryException if the restrictions could not be obtained from the entry
      */
     private boolean entryHasRestrictions(JackrabbitAccessControlEntry entry, Map<String, Value> restrictions)
-            throws RepositoryException
+        throws RepositoryException
     {
         // Note that we cannot easily obtain the restriction map from the entry
         String[] entryRestrictions = entry.getRestrictionNames();
@@ -158,5 +177,24 @@ public class PermissionsManagerService implements PermissionsManager
             }
         }
         return true;
+    }
+
+    /**
+     * Parse privileges from their names.
+     *
+     * @param privilegeNames a list of privilege names
+     * @param acm a reference to the AccessControlManager
+     * @return an array of Privileges
+     * @throws AccessControlException if no privilege with the specified name exists.
+     * @throws RepositoryException if another error occurs
+     */
+    private static Privilege[] parsePrivileges(String[] privilegeNames, AccessControlManager acm)
+        throws AccessControlException, RepositoryException
+    {
+        Privilege[] retval = new Privilege[privilegeNames.length];
+        for (int i = 0; i < privilegeNames.length; i++) {
+            retval[i] = acm.privilegeFromName(privilegeNames[i]);
+        }
+        return retval;
     }
 }

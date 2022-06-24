@@ -33,12 +33,15 @@ import java.util.regex.Pattern;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.security.Privilege;
 import javax.json.Json;
 import javax.json.stream.JsonGenerator;
 import javax.servlet.Servlet;
 
 import org.apache.jackrabbit.api.JackrabbitSession;
+import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.UserManager;
+import org.apache.jackrabbit.oak.spi.security.principal.EveryonePrincipal;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.PersistenceException;
@@ -53,6 +56,8 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.uhndata.cards.permissions.spi.PermissionsManager;
 
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(resourceTypes = { "cards/ClinicMappingFolder" }, methods = { "POST" })
@@ -85,54 +90,59 @@ public class ClinicsServlet extends SlingAllMethodsServlet
     @Reference
     private ConfigurationAdmin configAdmin;
 
+    @Reference
+    private PermissionsManager permissionsManager;
+
     @Override
     public void doPost(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
         throws IOException
     {
-        // Create all of the necessary nodes
-        final ResourceResolver resolver = request.getResourceResolver();
-        this.getArguments(request);
         try {
-            final Session session = resolver.adaptTo(Session.class);
-            this.displayName.set(getUniqueDisplayName(resolver, this.displayName.get()));
-            this.createClinicMapping(resolver);
-            this.createGroup(resolver);
-            this.createSidebar(resolver);
-            this.createDashboardExtension(resolver);
-            session.save();
-        } catch (RepositoryException e) {
-            this.returnError(response, e.getMessage());
-        } catch (NullPointerException e) {
-            this.returnError(response, e.getMessage());
-        }
+            // Create all of the necessary nodes
+            final ResourceResolver resolver = request.getResourceResolver();
+            this.parseArguments(request);
+            try {
+                final Session session = resolver.adaptTo(Session.class);
+                this.displayName.set(getUniqueDisplayName(resolver, this.displayName.get()));
+                this.createClinicMapping(resolver);
+                final Group clinicGroup = this.createGroup(resolver);
+                this.createSidebar(resolver, clinicGroup);
+                this.createDashboardExtension(resolver);
+                session.save();
+            } catch (final RepositoryException e) {
+                this.returnError(response, e.getMessage());
+            } catch (final NullPointerException e) {
+                this.returnError(response, e.getMessage());
+            }
 
-        // Grab the configuration to edit
-        try {
-            Configuration[] configs = this.configAdmin.listConfigurations(
+            // Grab the configuration to edit
+            final Configuration[] configs = this.configAdmin.listConfigurations(
                 "(service.factoryPid=" + IMPORT_FACTORY_PID + ")");
 
             if (configs != null) {
-                for (Configuration config : configs) {
+                for (final Configuration config : configs) {
                     this.insertNewClinic(config, this.clinicName.get());
                 }
             }
-        } catch (InvalidSyntaxException e) {
+        } catch (final InvalidSyntaxException e) {
             // This can happen when the filter given to the listConfigurations call above is wrong
             // This shouldn't happen unless a typo was made in the value of IMPORT_FACTORY_PID
             this.returnError(response, "Invalid syntax in config search.");
-        } catch (IOException e) {
+        } catch (final IOException e) {
             // This can happen while updating the properties of a configuration
             // Unknown how to handle this
             this.returnError(response, "Updating clinic configurations failed.");
+        } finally {
+            cleanup();
         }
     }
 
     /**
-     * Parse out the arguments from the SlingHttpServletRequest into threadlocal variables for parsing.
+     * Parse out the arguments from the request into threadlocal variables for later usage.
      *
      * @param request servlet request whose arguments we need to parse
      */
-    private boolean getArguments(final SlingHttpServletRequest request)
+    private boolean parseArguments(final SlingHttpServletRequest request)
     {
         this.clinicName.set(request.getParameter("clinicName"));
         this.displayName.set(request.getParameter("displayName"));
@@ -233,33 +243,48 @@ public class ClinicsServlet extends SlingAllMethodsServlet
             ClinicsServlet.PRIMARY_TYPE_FIELD, "cards:ClinicMapping"));
     }
 
-    private void createGroup(final ResourceResolver resolver) throws RepositoryException
+    /**
+     * Create a Group with access to the clinic.
+     *
+     * @param resolver Resource resolver to use
+     * @return the created Group
+     * @throws RepositoryException if accessing the repository fails
+     */
+    private Group createGroup(final ResourceResolver resolver) throws RepositoryException
     {
         final Session session = resolver.adaptTo(Session.class);
         if (!(session instanceof JackrabbitSession)) {
-            return;
+            return null;
         }
-        JackrabbitSession jsession = (JackrabbitSession) session;
-        UserManager um = jsession.getUserManager();
-        um.createGroup(this.clinicName.get());
+        final JackrabbitSession jsession = (JackrabbitSession) session;
+        final UserManager um = jsession.getUserManager();
+        return um.createGroup(this.clinicName.get());
     }
 
     /**
      * Create a cards:Extension node for the sidebar.
      *
      * @param resolver Resource resolver to use
+     * @param clinicGroup the Group corresponding to this clinic
      */
-    private void createSidebar(final ResourceResolver resolver)
+    private void createSidebar(final ResourceResolver resolver, final Group clinicGroup)
         throws RepositoryException, PersistenceException
     {
         final Resource parentResource = resolver.getResource("/Extensions/Sidebar");
-        resolver.create(parentResource, this.idHash.get(), Map.of(
+        final Resource sidebarEntry = resolver.create(parentResource, this.idHash.get(), Map.of(
             "cards:extensionPointId", "cards/coreUI/sidebar/entry",
             "cards:extensionName", this.sidebarLabel.get(),
             "cards:targetURL", "/content.html/Dashboard/" + this.idHash.get(),
             "cards:icon", "asset:proms-homepage.clinicIcon.js",
             "cards:defaultOrder", 10,
             ClinicsServlet.PRIMARY_TYPE_FIELD, "cards:Extension"));
+        if (clinicGroup != null) {
+            Session session = resolver.adaptTo(Session.class);
+            this.permissionsManager.addAccessControlEntry(sidebarEntry.getPath(), false,
+                EveryonePrincipal.getInstance(), new String[] { Privilege.JCR_ALL }, null, session);
+            this.permissionsManager.addAccessControlEntry(sidebarEntry.getPath(), true, clinicGroup.getPrincipal(),
+                new String[] { Privilege.JCR_READ }, null, session);
+        }
     }
 
     /**
@@ -274,8 +299,7 @@ public class ClinicsServlet extends SlingAllMethodsServlet
         resolver.create(parentResource, "DashboardViews" + this.idHash.get(), Map.of(
             ClinicsServlet.PRIMARY_TYPE_FIELD, "cards:ExtensionPoint",
             "cards:extensionPointId", "proms/dashboard/" + this.idHash.get(),
-            "cards:extensionPointName", this.displayName.get() + " questionnaires dashboard"
-            ));
+            "cards:extensionPointName", this.displayName.get() + " questionnaires dashboard"));
     }
 
     /**
@@ -294,5 +318,19 @@ public class ClinicsServlet extends SlingAllMethodsServlet
         Dictionary<String, Object> updateDictionary = new Hashtable<String, Object>();
         updateDictionary.put("clinic.names", updatedClinicNames);
         config.update(updateDictionary);
+    }
+
+    /**
+     * Remove any data from the ThreadLocal state.
+     */
+    private void cleanup()
+    {
+        this.clinicName.remove();
+        this.description.remove();
+        this.displayName.remove();
+        this.emergencyContact.remove();
+        this.idHash.remove();
+        this.sidebarLabel.remove();
+        this.surveyID.remove();
     }
 }
