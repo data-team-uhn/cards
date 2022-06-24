@@ -14,9 +14,7 @@ jobs:
       - name: Build CARDS
         uses: ./.github/actions/build-cards
       - name: Build The Test Email Server
-        run: |
-          cd Utilities/Development/EmailServer
-          docker build -t cards/postfix-docker .
+        uses: ./.github/actions/build-postfix-docker
       - name: Create The smtps-ci-mail Directory
         run: |
           mkdir ~/smtps-ci-mail
