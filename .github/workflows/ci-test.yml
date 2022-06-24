@@ -1,4 +1,4 @@
-name: SMTPS CI Test
+name: Run all CI tests
 
 on:
   workflow_dispatch:
@@ -15,5 +15,6 @@ jobs:
         uses: ./.github/actions/build-cards
       - name: Build The Test Email Server
         uses: ./.github/actions/build-postfix-docker
+
       - name: Perform SMTPS Tests
         uses: ./.github/actions/smtps-test
