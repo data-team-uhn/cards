@@ -15,35 +15,5 @@ jobs:
         uses: ./.github/actions/build-cards
       - name: Build The Test Email Server
         uses: ./.github/actions/build-postfix-docker
-      - name: Create The smtps-ci-mail Directory
-        run: |
-          mkdir ~/smtps-ci-mail
-      - name: Start CARDS
-        run: |
-          cd compose-cluster
-          ./quick-environments/smtps-ci.sh ~/smtps-ci-mail
-      - name: Send Plain Text Email
-        run: |
-          curl -u admin:admin "http://localhost:8080/content.emailtest?fromEmail=datapro@uhn.ca&fromName=UHN%20DATAPRO&toEmail=testuser@mail.com&toName=Test%20User"
-          sleep 10
-      - name: Verify Mailfile For Plain Text
-        run: |
-          cd Utilities/Development
-          python3 verify_mbox_file.py ~/smtps-ci-mail/runner text
-      - name: Clean Mailfile
-        run: |
-          echo -ne "" > ~/smtps-ci-mail/runner
-      - name: Send HTML Email
-        run: |
-          curl -u admin:admin "http://localhost:8080/content.emailtest?fromEmail=datapro@uhn.ca&fromName=UHN%20DATAPRO&toEmail=testuser@mail.com&toName=Test%20User&isHtml=true"
-          sleep 10
-      - name: Verify Mailfile For HTML
-        run: |
-          cd Utilities/Development
-          python3 verify_mbox_file.py ~/smtps-ci-mail/runner html
-      - name: Shutdown
-        run: |
-          cd compose-cluster
-          docker-compose down
-          docker-compose rm
-          docker volume prune -f
+      - name: Perform SMTPS Tests
+        uses: ./.github/actions/smtps-test
