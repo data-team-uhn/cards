@@ -12,8 +12,7 @@ jobs:
       - name: Install Dependencies
         uses: ./.github/actions/install-ci-dependencies
       - name: Build CARDS
-        run: |
-          mvn clean install
+        uses: ./.github/actions/build-cards
       - name: Build The Test Email Server
         run: |
           cd Utilities/Development/EmailServer
