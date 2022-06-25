@@ -1,0 +1,9 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/admindashboard/entry",
+  "cards:extensionName": "Patient Portal Welcome Message",
+  "cards:targetURL": "/content.html/admin/WelcomeMessageConfiguration",
+  "cards:icon": "asset:proms-homepage.WelcomeMessageConfigurationIcon.js",
+  "cards:hint": "Configure the message displayed to Patient users on their login screen",
+  "cards:defaultOrder": 203
+}

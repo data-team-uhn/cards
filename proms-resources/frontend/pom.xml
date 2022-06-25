@@ -42,6 +42,8 @@
               SLING-INF/content/libs/cards/PromsHomepage/;path:=/libs/cards/PromsHomepage/;overwrite:=true,
               SLING-INF/content/apps/cards/ExtensionPoints/;path:=/apps/cards/ExtensionPoints/;overwriteProperties:=true;uninstall:=true,
               SLING-INF/content/Extensions/;path:=/Extensions/;overwriteProperties:=true;uninstall:=true,
+              SLING-INF/content/Extensions/AdminDashboard/;path:=/Extensions/AdminDashboard/;overwriteProperties:=true;uninstall:=true,
+              SLING-INF/content/Extensions/Views/;path:=/Extensions/Views/;overwriteProperties:=true;uninstall:=true,
             </Sling-Initial-Content>
           </instructions>
         </configuration>

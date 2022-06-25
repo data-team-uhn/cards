@@ -276,7 +276,7 @@ function PatientIdentification(props) {
          { (!visitList || showTou) ?
 
          <>
-         { welcomeMessage &&
+         { welcomeMessage?.text &&
            <Grid item xs={12} className={classes.description}>
              <FormattedText>{welcomeMessage?.text.replaceAll("APP_NAME", appName)}</FormattedText>
            </Grid>
