@@ -140,7 +140,7 @@ function WelcomeMessageConfiguration() {
                   className={classes.editorContainer}
                 >
                   <Grid item xs={12} md={6}>
-                    <MarkdownText value={welcomeMessage} height={350} preview="edit" visiableDragbar="false" onChange={setWelcomeMessage} />
+                    <MarkdownText value={welcomeMessage} height={350} preview="edit" visiableDragbar="false" onChange={ (newText) => { setWelcomeMessage(newText); setIsSaved(false); } } />
                   </Grid>
                   <Grid item xs={12} md={6}>
                     <Card>
