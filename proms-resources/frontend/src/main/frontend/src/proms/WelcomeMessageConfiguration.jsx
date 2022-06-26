@@ -18,6 +18,7 @@
 //
 import React, { useState } from 'react';
 import {
+    Alert,
     Button,
     Card,
     CardContent,
@@ -25,11 +26,11 @@ import {
     Grid,
     List,
     ListItem,
-    Typography
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import MarkdownText from "../questionnaireEditor/MarkdownText";
 import FormattedText from "../components/FormattedText.jsx";
+import AdminScreen from "../adminDashboard/AdminScreen.jsx";
 
 const useStyles = makeStyles(theme => ({
   editorContainer: {
@@ -117,17 +118,14 @@ function WelcomeMessageConfiguration() {
   }
 
   return (
-    <Card>
-      <CardHeader
+      <AdminScreen
         title="Patient Portal Welcome Message"
-        titleTypographyProps={{variant: "h6"}}
-      />
-      <CardContent>
-        {error && <Typography paragraph color='error'>{error}</Typography>}
-        <Typography paragraph variant="body2">
+      >
+        {error && <Alert severity="error">{error}</Alert>}
+        <Alert severity="info">
           Use APP_NAME to refer to the name configured for the application.
           On the Patient identification screen, all occurrences of APP_NAME will appear as {appName}.
-        </Typography>
+        </Alert>
         <form onSubmit={handleSubmit}>
           <List>
             <ListItem key="form">
@@ -173,8 +171,7 @@ function WelcomeMessageConfiguration() {
             </ListItem>
           </List>
         </form>
-      </CardContent>
-    </Card>
+      </AdminScreen>
   );
 }
 
