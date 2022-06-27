@@ -183,7 +183,7 @@ public class ClinicRestrictionPattern implements RestrictionPattern
 
         // Perform a query for any Visit Information form for this subject
         String query = "SELECT f.* FROM [cards:Form] AS f"
-            + " WHERE f.'subject'='" + subjectID
+            + " WHERE f.'relatedSubjects'='" + subjectID
             + "' AND f.'questionnaire'='" + visitInformationQuestionnaire.getIdentifier() + "'";
 
         QueryResult results = session.getWorkspace().getQueryManager().createQuery(query, "JCR-SQL2").execute();
