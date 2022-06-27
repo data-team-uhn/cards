@@ -73,13 +73,9 @@
         "create path (cards:dataQuery) /query \n\n # Allow all users to query; the actual results will obey their access rights \n set ACL for everyone \n   allow  jcr:read  on /query \n end \n\n create path (cards:QuestionnairesHomepage) /Questionnaires \n create path (cards:FormsHomepage) /Forms \n create path (cards:SubjectsHomepage) /Subjects \n create path (cards:SubjectTypesHomepage) /SubjectTypes "
       ]
     },
-    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~computedAnswers":{
+    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~cards-data-entry":{
       "user.mapping":[
-        "io.uhndata.cards.dataentry:computedAnswers=[sling-readall]"
-      ]
-    },
-    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~maxFormsOfTypePerSubjectValidator":{
-      "user.mapping":[
+        "io.uhndata.cards.dataentry:computedAnswers=[sling-readall]",
         "io.uhndata.cards.dataentry:maxFormsOfTypePerSubjectValidator=[sling-readall]"
       ]
     }
