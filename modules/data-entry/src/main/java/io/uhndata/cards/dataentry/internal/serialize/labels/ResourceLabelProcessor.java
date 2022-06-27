@@ -30,6 +30,7 @@ import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
@@ -75,6 +76,12 @@ public class ResourceLabelProcessor extends AbstractResourceLabelProcessor imple
             // Find the property of the resource that should be used as the label
             String labelPropertyName = getLabelPropertyName(question);
             ResourceResolver resolver = this.resolverFactory.getThreadResourceResolver();
+            if (resolver == null) {
+                resolver = this.resolverFactory.getServiceResourceResolver(null);
+                if (resolver == null) {
+                    return null;
+                }
+            }
             // The value property is either one resource path or an array of resource paths
             Property valueProperty = node.getProperty(PROP_VALUE);
             if (valueProperty.isMultiple()) {
@@ -88,6 +95,9 @@ public class ResourceLabelProcessor extends AbstractResourceLabelProcessor imple
                 String label = getLabelForResource(valueProperty.getString(), resolver, labelPropertyName);
                 return Json.createValue(label);
             }
+        } catch (LoginException e) {
+            // Shouldn't be happening
+            return null;
         } catch (final RepositoryException ex) {
             // Shouldn't be happening
         }
