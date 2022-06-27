@@ -34,7 +34,7 @@ const useStyles = makeStyles(theme => ({
     marginBottom: theme.spacing(4),
   },
   title: {
-    fontWeight: 300,
+    fontWeight: "normal",
   },
 }));
 
