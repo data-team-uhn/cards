@@ -38,6 +38,15 @@
               "hidden": {},
               "summary": {}
             }
+          },
+          "reference": {
+            "questionnaire": "string",
+            "question": "string",
+            "displayMode" : {
+              "input" : {},
+              "formatted" : {},
+              "hidden": {}
+            }
           }
         }
       },
@@ -69,6 +78,15 @@
           },
           "computed": {
             "expression": "code",
+            "displayMode" : {
+              "input" : {},
+              "formatted" : {},
+              "hidden": {}
+            }
+          },
+          "reference": {
+            "questionnaire": "string",
+            "question": "string",
             "displayMode" : {
               "input" : {},
               "formatted" : {},
@@ -121,6 +139,15 @@
               "formatted" : {},
               "hidden": {}
             }
+          },
+          "reference": {
+            "questionnaire": "string",
+            "question": "string",
+            "displayMode" : {
+              "input" : {},
+              "formatted" : {},
+              "hidden": {}
+            }
           }
         }
       },
@@ -168,6 +195,15 @@
               "formatted" : {},
               "hidden": {}
             }
+          },
+          "reference": {
+            "questionnaire": "string",
+            "question": "string",
+            "displayMode" : {
+              "input" : {},
+              "formatted" : {},
+              "hidden": {}
+            }
           }
         }
       },
@@ -196,6 +232,15 @@
           "computed": {
             "minAnswers": {"0":{}, "1":{}},
             "expression": "code",
+            "displayMode" : {
+              "input" : {},
+              "formatted" : {},
+              "hidden": {}
+            }
+          },
+          "reference": {
+            "questionnaire": "string",
+            "question": "string",
             "displayMode" : {
               "input" : {},
               "formatted" : {},
@@ -251,6 +296,15 @@
               "formatted" : {},
               "hidden": {}
             }
+          },
+          "reference": {
+            "questionnaire": "string",
+            "question": "string",
+            "displayMode" : {
+              "input" : {},
+              "formatted" : {},
+              "hidden": {}
+            }
           }
         }
       },
@@ -284,6 +338,15 @@
               "formatted" : {},
               "hidden": {}
             }
+          },
+          "reference": {
+            "questionnaire": "string",
+            "question": "string",
+            "displayMode" : {
+              "input" : {},
+              "formatted" : {},
+              "hidden": {}
+            }
           }
         }
       },
@@ -298,6 +361,15 @@
           },
           "computed": {
             "expression": "code",
+            "displayMode" : {
+              "input" : {},
+              "formatted" : {},
+              "hidden": {}
+            }
+          },
+          "reference": {
+            "questionnaire": "string",
+            "question": "string",
             "displayMode" : {
               "input" : {},
               "formatted" : {},
