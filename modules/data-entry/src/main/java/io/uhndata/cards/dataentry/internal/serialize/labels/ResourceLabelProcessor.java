@@ -75,6 +75,9 @@ public class ResourceLabelProcessor extends AbstractResourceLabelProcessor imple
             // Find the property of the resource that should be used as the label
             String labelPropertyName = getLabelPropertyName(question);
             ResourceResolver resolver = this.resolverFactory.getThreadResourceResolver();
+            if (resolver == null) {
+                return null;
+            }
             // The value property is either one resource path or an array of resource paths
             Property valueProperty = node.getProperty(PROP_VALUE);
             if (valueProperty.isMultiple()) {
