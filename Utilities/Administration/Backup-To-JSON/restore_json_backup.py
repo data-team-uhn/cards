@@ -133,6 +133,7 @@ CARDS_TYPE_TO_SLING_TYPE_HINT['cards:VocabularyAnswer'] = "string"
 CARDS_TYPE_TO_SLING_TYPE_HINT['cards:ChromosomeAnswer'] = "string"
 CARDS_TYPE_TO_SLING_TYPE_HINT['cards:FileAnswer'] = "string"
 CARDS_TYPE_TO_SLING_TYPE_HINT['cards:DicomAnswer'] = "string"
+CARDS_TYPE_TO_SLING_TYPE_HINT['cards:ResourceAnswer'] = "string"
 
 FILE_LIKE_ANSWER_TYPES = []
 FILE_LIKE_ANSWER_TYPES.append("cards:FileAnswer")
