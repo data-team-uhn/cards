@@ -100,10 +100,12 @@ public class ResourceOptionsLabelProcessor extends AbstractResourceLabelProcesso
             }
 
             ResourceResolver resolver = this.resolverFactory.getThreadResourceResolver();
-            // Populate the labels in the map
-            for (String value : new LinkedHashSet<>(valueLabelMap.keySet())) {
-                if (value.startsWith("/")) {
-                    valueLabelMap.put(value, getLabelForResource(value, resolver, labelPropertyName));
+            if (resolver != null) {
+                // Populate the labels in the map
+                for (String value : new LinkedHashSet<>(valueLabelMap.keySet())) {
+                    if (value.startsWith("/")) {
+                        valueLabelMap.put(value, getLabelForResource(value, resolver, labelPropertyName));
+                    }
                 }
             }
 
