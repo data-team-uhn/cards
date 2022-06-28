@@ -22,8 +22,10 @@ package io.uhndata.cards.webhookbackup;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import javax.json.Json;
@@ -97,12 +99,12 @@ public class WebhookBackupTask implements Runnable
 
         // Get lists of the paths to all cards:Subject and cards:Form JCR nodes
         try {
-            Set<String> subjectList = getUuidPathList("cards:Subject");
-            Set<String> formList = getUuidPathList("cards:Form");
+            Set<List<String>> subjectList = getUuidPathList("cards:Subject");
+            Set<List<String>> formList = getUuidPathList("cards:Form");
 
             // Send these lists over to the backup server
-            sendStringSet(subjectList, "SubjectListBackup");
-            sendStringSet(formList, "FormListBackup");
+            sendStringListSet(subjectList, "SubjectListBackup");
+            sendStringListSet(formList, "FormListBackup");
 
             // Iterate through all Form nodes that were changed within the given timeframe and back them up
             Set<String> changedFormList = getChangedFormsBounded(requestDateStringLower, requestDateStringUpper);
@@ -182,16 +184,20 @@ public class WebhookBackupTask implements Runnable
         }
     }
 
-    private Set<String> getUuidPathList(String cardsType) throws IOException
+    private Set<List<String>> getUuidPathList(String cardsType) throws IOException
     {
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
-            Set<String> uuidPaths = new HashSet<>();
+            Set<List<String>> uuidPaths = new HashSet<>();
             String query = "SELECT * FROM [" + cardsType + "] as n order by n.'jcr:created'";
             Iterator<Resource> results = resolver.findResources(query, "JCR-SQL2");
             while (results.hasNext()) {
                 Resource resource = results.next();
+                List<String> formDescription = new ArrayList<>();
                 String uuidPath = resource.getPath();
-                uuidPaths.add(uuidPath);
+                String lastModified = resource.getValueMap().get("jcr:lastModified", "");
+                formDescription.add(uuidPath);
+                formDescription.add(lastModified);
+                uuidPaths.add(formDescription);
             }
             return uuidPaths;
         } catch (LoginException e) {
@@ -223,13 +229,19 @@ public class WebhookBackupTask implements Runnable
         }
     }
 
-    private void sendStringSet(Set<String> set, String pathname) throws IOException
+    private void sendStringListSet(Set<List<String>> set, String pathname) throws IOException
     {
         final String backupWebhookUrl = System.getenv("BACKUP_WEBHOOK_URL");
         JsonArrayBuilder jsonSetBuilder = Json.createArrayBuilder();
-        Iterator<String> setIterator = set.iterator();
+        Iterator<List<String>> setIterator = set.iterator();
         while (setIterator.hasNext()) {
-            jsonSetBuilder.add(setIterator.next());
+            List<String> thisElement = setIterator.next();
+            Iterator<String> listIterator = thisElement.iterator();
+            JsonArrayBuilder jsonInnerSetBuilder = Json.createArrayBuilder();
+            while (listIterator.hasNext()) {
+                jsonInnerSetBuilder.add(listIterator.next());
+            }
+            jsonSetBuilder.add(jsonInnerSetBuilder);
         }
         HttpResponse webhookResp = HttpRequests.doHttpPost(
             backupWebhookUrl + "/" + pathname,

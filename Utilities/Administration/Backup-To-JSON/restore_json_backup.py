@@ -46,9 +46,11 @@ if "ADMIN_PASSWORD" in os.environ:
 
 with open(FORM_LIST_FILE, 'r') as f:
   FORM_LIST = json.loads(f.read())
+FORM_LIST = [f[0] for f in FORM_LIST]
 
 with open(SUBJECT_LIST_FILE, 'r') as f:
   SUBJECT_LIST = json.loads(f.read())
+SUBJECT_LIST = [s[0] for s in SUBJECT_LIST]
 
 def getSubject(subjectPath):
   subjectBasename = os.path.basename(subjectPath)
