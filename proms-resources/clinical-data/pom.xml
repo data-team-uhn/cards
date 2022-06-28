@@ -46,6 +46,8 @@
               SLING-INF/content/Homepage/Proms.json;path:=/Proms;overwrite:=true,
               SLING-INF/content/Homepage/Proms/Cardio.xml;path:=/Proms/Cardio;overwrite:=true,
               SLING-INF/content/Homepage/Proms/Mood.xml;path:=/Proms/Mood;overwrite:=true,
+              SLING-INF/content/Homepage/Proms/ED.xml;path:=/Proms/ED;overwrite:=true,
+              SLING-INF/content/Homepage/Proms/AIP.xml;path:=/Proms/AIP;overwrite:=true,
               SLING-INF/content/Homepage/Proms/ClinicMapping.xml;path:=/Proms/ClinicMapping;overwrite:=true,
               SLING-INF/content/Homepage/Proms/TermsOfUse.xml;path:=/Proms/TermsOfUse;overwrite:=true,
               SLING-INF/content/Homepage/Proms/SurveyInstructions.xml;path:=/Proms/SurveyInstructions;overwrite:=true,
