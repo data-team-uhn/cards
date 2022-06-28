@@ -162,23 +162,23 @@ public class WebhookBackupTask implements Runnable
         String requestDateStringLower, String requestDateStringUpper) throws IOException
     {
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
-            Set<String> changedForms = new HashSet<>();
+            Set<String> changedNodes = new HashSet<>();
             String query = String.format(
-                "SELECT * FROM [" + cardsType + "] AS form"
-                    + " WHERE form.[jcr:lastModified] >= '%s'"
-                    + ((requestDateStringUpper != null) ? " AND form.[jcr:lastModified] < '%s'" : ""),
+                "SELECT * FROM [" + cardsType + "] AS node"
+                    + " WHERE node.[jcr:lastModified] >= '%s'"
+                    + ((requestDateStringUpper != null) ? " AND node.[jcr:lastModified] < '%s'" : ""),
                 requestDateStringLower, requestDateStringUpper
             );
             Iterator<Resource> results = resolver.findResources(query, "JCR-SQL2");
             while (results.hasNext()) {
-                Resource form = results.next();
-                String formPath = form.getPath();
-                changedForms.add(formPath);
+                Resource node = results.next();
+                String nodePath = node.getPath();
+                changedNodes.add(nodePath);
             }
-            return changedForms;
+            return changedNodes;
         } catch (LoginException e) {
-            LOGGER.warn("LoginException in getFormsChangedBounded: {}", e);
-            throw new IOException("LoginException in getFormsChangedBounded");
+            LOGGER.warn("LoginException in getChangedNodesBounded: {}", e);
+            throw new IOException("LoginException in getChangedNodesBounded");
         }
     }
 
