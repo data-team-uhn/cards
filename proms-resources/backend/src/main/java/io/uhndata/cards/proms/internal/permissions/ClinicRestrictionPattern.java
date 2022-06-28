@@ -90,6 +90,12 @@ public class ClinicRestrictionPattern implements RestrictionPattern
             return true;
         }
 
+        // Determine if this is a subject
+        if (tree.hasProperty("sling:resourceType")
+            && tree.getProperty("sling:resourceType").getValue(Type.STRING).equals("cards/Subject")) {
+            return appliesToSubject(tree.getProperty("jcr:uuid").getValue(Type.STRING));
+        }
+
         // This Node might not be the parent tree, find it among this tree's ancestors if possible
         Tree formNode = getFormNodeParent(tree);
 
@@ -128,12 +134,12 @@ public class ClinicRestrictionPattern implements RestrictionPattern
     }
 
     /**
-     * Returns whether or not this restriction pattern applies to the given form.
+     * Returns whether or not this restriction pattern applies to the given subject.
      *
-     * @param tree A Jackrabbit {@code Tree} object corresponding to a {@code Form} resource.
+     * @param subjectId The jcr:uuid of the subject node
      * @return If true, this restriction pattern applies to the given input.
      */
-    private boolean appliesToForm(final Tree tree)
+    private boolean appliesToSubject(final String subjectId)
     {
         try (ResourceResolver srr = this.rrf.getServiceResourceResolver(
             Map.of(ResourceResolverFactory.SUBSERVICE, "ClinicFormsRestriction"))) {
@@ -142,7 +148,7 @@ public class ClinicRestrictionPattern implements RestrictionPattern
             final JackrabbitSession serviceSession = (JackrabbitSession) srr.adaptTo(Session.class);
             final JackrabbitSession userSession = (JackrabbitSession) trr.adaptTo(Session.class);
 
-            final String clinic = getClinic(tree.getProperty("subject").getValue(Type.STRING), serviceSession);
+            final String clinic = getClinic(subjectId, serviceSession);
             if (StringUtils.isBlank(clinic)) {
                 return false;
             }
@@ -164,6 +170,17 @@ public class ClinicRestrictionPattern implements RestrictionPattern
                 e);
             return false;
         }
+    }
+
+    /**
+     * Returns whether or not this restriction pattern applies to the given form.
+     *
+     * @param tree A Jackrabbit {@code Tree} object corresponding to a {@code Form} resource.
+     * @return If true, this restriction pattern applies to the given input.
+     */
+    private boolean appliesToForm(final Tree tree)
+    {
+        return appliesToSubject(tree.getProperty("subject").getValue(Type.STRING));
     }
 
     /**
