@@ -28,7 +28,7 @@ import QuestionnaireStyle from "./QuestionnaireStyle";
 
 // Check if an answer has been automatically flagged as incomplete or invalid
 export function hasWarningFlags (data) {
-  return data?.[1]?.statusFlags?.includes('INCOMPLETE') || data?.[1]?.statusFlags?.includes('INVALID')
+  return !!(data?.[1]?.statusFlags?.includes('INCOMPLETE') || data?.[1]?.statusFlags?.includes('INVALID'))
 }
 
 // Display instructions regarding how many answers must be provided to a question,
