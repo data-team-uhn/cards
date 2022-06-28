@@ -127,6 +127,10 @@ function PatientIdentification(props) {
   // and will be returned back to the rest of the PROMS UI through the onSuccess callback
   const [ patientDetails, setPatientDetails ] = useState();
   const [ visit, setVisit ] = useState();
+  const [ identified, setIdentified ] = useState();
+  // Tou configuration related
+  const [ toUEnabled, setToUEnabled ] = useState(false);
+  const [ configFetched, setConfigFetched ] = useState();
   // Returned from the server after partial validation of the authentication.
   const [ visitList, setVisitList ] = useState();
   const [ visitListShown, setVisitListShown ] = useState(false);
@@ -171,12 +175,29 @@ function PatientIdentification(props) {
           setPatientDetails(json.patientInformation);
           setVisit(json.sessionSubject);
         }
-        setShowTou(true);
+        setIdentified(true);
       })
       .catch((error) => {
         setError(error.statusText ? error.statusText : error);
       });
   }
+
+  // Fetch the configuration for whether patients need to accept ToU before proceeding
+  useEffect(() => {
+    if (!identified) return;
+    // Fetch ToU admin config settings
+    fetch('/Proms/TermsOfUse.json')
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((json) => {
+        setToUEnabled(json.enabled);
+        setConfigFetched(true);
+        // If ToU is not enabled, do not display the Terms of Use after identification
+        json.enabled && setShowTou(true);
+      })
+      .catch((error) => {
+        setError(error.statusText ? error.statusText : error);
+      });
+  }, [identified]);
 
   // On submitting the patient login form, make a request to identify the patient
   const onSubmit = (event) => {
@@ -207,12 +228,12 @@ function PatientIdentification(props) {
       .catch( err => setWelcomeMessage("") );
   }, []);
 
-  // After the user has accepted the TOU, if they need to select from a list of visits present said
+  // After the user has accepted the TOU (if TOU are enabled), if they need to select from a list of visits present said
   useEffect(() => {
-    if (!visitListShown && touAccepted && visitList && visitList.length > 1 ) {
+    if (!visitListShown && (touAccepted || (configFetched && !toUEnabled)) && visitList && visitList.length > 1 ) {
       setVisitListShown(true);
     }
-  }, [visitList, touAccepted]);
+  }, [visitList, touAccepted, toUEnabled]);
 
   // When the visit is successfully obtained and the latest version of Terms of Use accepted, pass it along with the identification data
   // to the parent component
@@ -226,7 +247,7 @@ function PatientIdentification(props) {
   let appName = document.querySelector('meta[name="title"]')?.content;
 
   return (<>
-    <ToUDialog
+    { toUEnabled && <ToUDialog
       open={showTou}
       actionRequired={true}
       onClose={() => setShowTou(false)}
@@ -239,7 +260,7 @@ function PatientIdentification(props) {
         setPatientDetails(null);
         setVisit(null);
       }}
-    />
+    /> }
 
     {/* MRN hint dialog*/}
 
