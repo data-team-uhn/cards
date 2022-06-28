@@ -867,25 +867,6 @@
 				<type>String</type>
 			</property>
 		</node>
-		<node>
-			<name>na</name>
-			<primaryNodeType>cards:AnswerOption</primaryNodeType>
-			<property>
-				<name>defaultOrder</name>
-				<value>5</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>label</name>
-				<value>Not applicable</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>value</name>
-				<value>-1</value>
-				<type>String</type>
-			</property>
-		</node>
 	</node>
 	<node>
 		<name>oaip_8</name>
