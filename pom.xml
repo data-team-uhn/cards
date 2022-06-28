@@ -507,6 +507,8 @@
             <exclude>**/yarn.lock</exclude>
             <!-- Exclude JSON files since comments are not supported -->
             <exclude>**/*.json</exclude>
+            <!-- Exclude CSV files since comments are not supported -->
+            <exclude>**/*.csv</exclude>
             <!-- Documentation files in markdown format -->
             <exclude>**/*.md</exclude>
             <!-- Ignore "hidden" files and folders -->

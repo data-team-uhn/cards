@@ -1,0 +1,2 @@
+Patient ID	Visit ID	gad7_1	gad7_2	gad7_3	gad7_4	gad7_5	gad7_6	gad7_7	gad7_8
+{{PATIENT_IDENTIFIER}}	{{VISIT_IDENTIFIER}}	2	1	3	0	2	1	2	3
