@@ -202,7 +202,7 @@ public class WebhookBackupTask implements Runnable
 
     private String getFormAsJson(String formPath) throws IOException
     {
-        String formDataUrl = String.format("%s.data.deep", formPath);
+        String formDataUrl = String.format("%s.deep", formPath);
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
             Resource formData = resolver.resolve(formDataUrl);
             return formData.adaptTo(JsonObject.class).toString();
