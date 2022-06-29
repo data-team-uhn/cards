@@ -230,7 +230,7 @@ function PatientIdentification(props) {
       open={showTou}
       actionRequired={true}
       onClose={() => setShowTou(false)}
-      onAccept={() => {
+      onCleared={() => {
         setShowTou(false);
         setTouCleared(true);
       }}
