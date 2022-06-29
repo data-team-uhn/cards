@@ -72,6 +72,30 @@
 		</property>
 	</node>
 	<node>
+		<name>has_surveys</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Surveys scheduled</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>hidden</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>boolean</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+	</node>
+	<node>
 		<name>surveys_complete</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
@@ -96,30 +120,6 @@
 		<property>
 			<name>text</name>
 			<value>Surveys submitted</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>boolean</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-	</node>
-	<node>
-		<name>has_surveys</name>
-		<primaryNodeType>cards:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>Surveys scheduled</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>displayMode</name>
-			<value>hidden</value>
 			<type>String</type>
 		</property>
 		<property>
