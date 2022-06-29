@@ -99,7 +99,7 @@ class UsersManager extends React.Component {
 
     return (
       <AdminScreen
-        title="Groups"
+        title="Users"
         action={
           <NewItemButton
             title="Create new user"
