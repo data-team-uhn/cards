@@ -76,7 +76,7 @@
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>The patient completed the pre-appointment surveys</value>
+			<value>Surveys completed</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -95,7 +95,7 @@
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>The patient submitted the pre-appointment surveys</value>
+			<value>Surveys submitted</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -114,7 +114,7 @@
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Answered when generating surveys for the visit.</value>
+			<value>Surveys scheduled</value>
 			<type>String</type>
 		</property>
 		<property>
