@@ -20,12 +20,9 @@ import React, { useState, useEffect } from "react";
 import { loadExtensions } from "../uiextension/extensionManager";
 import { NavLink, Route } from "react-router-dom";
 import adminStyle from "./AdminDashboardStyle.jsx";
+import AdminScreen from "./AdminScreen.jsx";
 
 import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
   CircularProgress,
   Grid,
   List,
@@ -64,15 +61,7 @@ function AdminDashboard(props) {
   }
 
   return (
-    <Card>
-      <CardHeader
-        title={
-          <Button>
-            Administration
-          </Button>
-        }
-      />
-      <CardContent>
+    <AdminScreen disableBreadcrumb>
         <List>
           {
             adminRoutes.map((route) => {
@@ -99,8 +88,7 @@ function AdminDashboard(props) {
             })
           }
         </List>
-      </CardContent>
-    </Card>
+    </AdminScreen>
   );
 }
 

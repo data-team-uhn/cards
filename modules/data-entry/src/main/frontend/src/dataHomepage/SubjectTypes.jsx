@@ -19,11 +19,10 @@
 import React, { useState, useEffect } from "react";
 import LiveTable from "./LiveTable.jsx";
 
-import { Button, Card, CardContent, CardHeader, IconButton, Tooltip } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { IconButton, Tooltip } from "@mui/material";
 import { Link } from 'react-router-dom';
-import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import SubjectTypeDialog from "../questionnaire/SubjectTypeDialog.jsx";
+import AdminResourceListing from "../adminDashboard/AdminResourceListing.jsx";
 import NewItemButton from "../components/NewItemButton.jsx";
 import DeleteButton from "./DeleteButton.jsx";
 import EditIcon from "@mui/icons-material/Edit";
@@ -51,7 +50,6 @@ function EditSubjectTypeButton(props) {
 }
 
 function SubjectTypes(props) {
-  const { classes } = props;
   const [ dialogOpen, setDialogOpen ] = useState(false);
   const [ updateData, setUpdateData ] = useState(false);
   const [ subjectTypeData, setSubjectTypeData ] = useState([]);
@@ -117,29 +115,19 @@ function SubjectTypes(props) {
 
   return (
   <>
-    <Card>
-      <CardHeader
-        title={
-          <Button className={classes.cardHeaderButton}>
-            Subject Types
-          </Button>
-        }
-      />
-      <CardContent>
-        <LiveTable
-          columns={columns}
-          entryType={"Subject Type"}
-          admin={true}
-          disableTopPagination={true}
-          updateData={updateData}
-          onDataReceived={setSubjectTypeData}
-        />
-      </CardContent>
-    </Card>
-    <NewItemButton
-      title="New subject type"
-      onClick={() => { setDialogOpen(true); }}
-    />
+    <AdminResourceListing
+      title="Subject Types"
+      buttonProps={{
+        title: "New subject type",
+        onClick: () => setDialogOpen(true)
+      }}
+      columns={columns}
+      entryType={"Subject Type"}
+      admin={true}
+      disableTopPagination={true}
+      updateData={updateData}
+      onDataReceived={setSubjectTypeData}
+    />
     { dialogOpen &&
         <SubjectTypeDialog
           onClose={() => { onClose(); }}
@@ -154,4 +142,4 @@ function SubjectTypes(props) {
   );
 }
 
-export default withStyles(QuestionnaireStyle)(SubjectTypes);
+export default SubjectTypes;

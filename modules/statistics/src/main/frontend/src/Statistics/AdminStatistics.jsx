@@ -20,10 +20,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 import { 
-  Button, 
-  Card, 
-  CardContent,
-  CardHeader,
+  Button,
   Dialog, 
   DialogActions, 
   DialogContent, 
@@ -35,9 +32,8 @@ import {
 } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import statisticsStyle from "./statisticsStyle.jsx";
-import NewItemButton from "../components/NewItemButton.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog.jsx";
-import LiveTable from "../dataHomepage/LiveTable.jsx";
+import AdminResourceListing from "../adminDashboard/AdminResourceListing.jsx";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 import Fields from "../questionnaireEditor/Fields.jsx";
 import EditIcon from "@mui/icons-material/Edit";
@@ -153,30 +149,22 @@ function AdminStatistics(props) {
 
   return (
     <>
-      <Card>
-       <CardHeader
-        title={
-          <Button className={classes.cardHeaderButton}>
-            Statistics
-          </Button>
-        }
-        action={
-          <NewItemButton
-            title="Create new statistic"
-            onClick={() => {setDialogOpen(true); setNewStat(true); setCurrentId();}}
-            inProgress={dialogOpen && newStat}
-            />
-        }
-        />
-        <CardContent>
-          <LiveTable
-            columns={columns}
-            entryType={"Statistic"}
-            admin={true}
-            updateData={numNewEntries}
-            />
-        </CardContent>
-      </Card>
+      <AdminResourceListing
+        title="Statistics"
+        buttonProps={{
+          title: "Create new statistic",
+          onClick: () => {
+            setDialogOpen(true);
+            setNewStat(true);
+            setCurrentId();
+          },
+          inProgress: (dialogOpen && newStat)
+        }}
+        columns={columns}
+        entryType={"Statistic"}
+        admin={true}
+        updateData={numNewEntries}
+      />
       <StatisticDialog open={dialogOpen} onClose={dialogClose} classes={classes} onSuccess={dialogSuccess} isNewStatistic={newStat} currentId={currentId}/>
     </>
   );

@@ -18,6 +18,12 @@
 // Taken from https://www.creative-tim.com/product/material-dashboard-react
 
 const userboardStyle = theme => ({
+    root: {
+      marginTop: theme.spacing(-6),
+      "& .MuiPaper-root" : {
+        backgroundColor: "transparent",
+      },
+    },
     containerButton: {
       marginRight: theme.spacing(1),
     },

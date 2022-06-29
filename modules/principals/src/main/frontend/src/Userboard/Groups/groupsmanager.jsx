@@ -26,6 +26,7 @@ import CreateGroupDialogue from "./creategroupdialogue.jsx";
 import DeletePrincipalDialogue from "../deleteprincipaldialogue.jsx";
 import AddUserToGroupDialogue from "./addusertogroupdialogue.jsx";
 import NewItemButton from "../../components/NewItemButton.jsx"
+import AdminScreen from "../../adminDashboard/AdminScreen.jsx";
 
 import MaterialTable from 'material-table';
 
@@ -151,11 +152,18 @@ class GroupsManager extends React.Component {
     const { classes } = this.props;
     const headerBackground = this.props.theme.palette.grey['200'];
     return (
-      <div>
+      <AdminScreen
+        title="Groups"
+        action={
+          <NewItemButton
+            title="Create new group"
+            onClick={(event) => this.setState({deployCreateGroup: true})}
+          />
+        }>
         <CreateGroupDialogue isOpen={this.state.deployCreateGroup} handleClose={() => {this.setState({deployCreateGroup: false});}} reload={() => this.handleReload(true)} />
         <DeletePrincipalDialogue isOpen={this.state.deployDeleteGroup} handleClose={() => {this.setState({deployDeleteGroup: false});}} name={this.state.currentGroupName} reload={() => this.handleReload(true)} url={GROUP_URL} type={"group"} />
         <AddUserToGroupDialogue isOpen={this.state.deployAddGroupUsers} handleClose={() => {this.setState({deployAddGroupUsers: false});}} name={this.state.currentGroupName} groupUsers={this.state.currentGroupUsers} allUsers={this.props.users}  reload={() => this.handleReload()} />
-        <div>
+        <div className={classes.root}>
           <MaterialTable
             tableRef={this.tableRef}
             title=""
@@ -242,11 +250,7 @@ class GroupsManager extends React.Component {
             }}
           />
         </div>
-        <NewItemButton
-          title="Create new group"
-          onClick={(event) => this.setState({deployCreateGroup: true})}
-        />
-      </div>
+      </AdminScreen>
     );
   }
 }

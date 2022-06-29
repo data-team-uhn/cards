@@ -26,6 +26,7 @@ import CreateUserDialogue from "./createuserdialogue.jsx";
 import DeletePrincipalDialogue from "../deleteprincipaldialogue.jsx";
 import ChangeUserPasswordDialogue from "./changeuserpassworddialogue.jsx";
 import NewItemButton from "../../components/NewItemButton.jsx";
+import AdminScreen from "../../adminDashboard/AdminScreen.jsx";
 
 import MaterialTable from 'material-table';
 
@@ -97,12 +98,19 @@ class UsersManager extends React.Component {
     const headerBackground = this.props.theme.palette.grey['200'];
 
     return (
-      <div>
+      <AdminScreen
+        title="Users"
+        action={
+          <NewItemButton
+            title="Create new user"
+            onClick={(event) => this.setState({deployCreateUser: true})}
+          />
+        }>
         <CreateUserDialogue isOpen={this.state.deployCreateUser} handleClose={() => {this.setState({deployCreateUser: false});}} reload={() => this.handleReload()}/>
         <DeletePrincipalDialogue isOpen={this.state.deployDeleteUser} handleClose={() => {this.setState({deployDeleteUser: false});}} name={this.state.currentUserName} reload={() => this.handleReload()} url={USER_URL} type={"user"} />
         <ChangeUserPasswordDialogue isOpen={this.state.deployChangeUserPassword} handleClose={() => {this.setState({deployChangeUserPassword: false});}} name={this.state.currentUserName}/>
 
-        <div>
+        <div className={classes.root}>
             <MaterialTable
               title=""
               style={{ boxShadow : 'none' }}
@@ -166,11 +174,7 @@ class UsersManager extends React.Component {
               }}
             />
         </div>
-        <NewItemButton
-          title="Create new user"
-          onClick={(event) => this.setState({deployCreateUser: true})}
-        />
-      </div>
+      </AdminScreen>
     );
   }
 }

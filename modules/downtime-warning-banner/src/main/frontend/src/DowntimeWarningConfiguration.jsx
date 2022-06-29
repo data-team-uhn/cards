@@ -24,13 +24,12 @@ import {
     Tooltip,
     Typography,
     FormControlLabel,
-    Card,
-    CardContent,
-    CardHeader,
     List,
     ListItem,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+
+import AdminScreen from "./adminDashboard/AdminScreen.jsx";
 
 const useStyles = makeStyles(theme => ({
   textField: {
@@ -131,12 +130,7 @@ function DowntimeWarningConfiguration() {
   }
 
   return (
-    <Card>
-      <CardHeader
-        title="Downtime warning banner settings"
-        titleTypographyProps={{variant: "h6"}}
-      />
-      <CardContent>
+    <AdminScreen title="Downtime Warning Banner Settings">
         {error && <Typography color='error'>{errorText}</Typography>}
         <form onSubmit={handleSubmit}>
           <List>
@@ -194,8 +188,7 @@ function DowntimeWarningConfiguration() {
             </ListItem>
           </List>
         </form>
-      </CardContent>
-    </Card>
+    </AdminScreen>
   );
 }
 
