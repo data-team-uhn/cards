@@ -123,21 +123,17 @@ function PatientIdentification(props) {
   // Internal state
   // Holds an error message for display
   const [ error, setError ] = useState();
-  // Returned from the server after successul validation of the authentication,
+  // Returned from the server after successful validation of the authentication,
   // and will be returned back to the rest of the PROMS UI through the onSuccess callback
   const [ patientDetails, setPatientDetails ] = useState();
   const [ visit, setVisit ] = useState();
-  const [ identified, setIdentified ] = useState();
-  // Tou configuration related
-  const [ toUEnabled, setToUEnabled ] = useState(false);
-  const [ configFetched, setConfigFetched ] = useState();
   // Returned from the server after partial validation of the authentication.
   const [ visitList, setVisitList ] = useState();
   const [ visitListShown, setVisitListShown ] = useState(false);
   // Visit list page size
   const [ pageSize, setPageSize ] = useState(5);
   // Whether the patient user has accepted the latest version of the Terms of Use
-  const [ touAccepted, setTouAccepted ] = useState(false);
+  const [ touCleared, setTouCleared ] = useState(false);
   // Whether the Terms of Use dialog can be displayed after patient identification
   const [ showTou, setShowTou ] = useState(false);
   const [ welcomeMessage, setWelcomeMessage ] = useState();
@@ -175,29 +171,12 @@ function PatientIdentification(props) {
           setPatientDetails(json.patientInformation);
           setVisit(json.sessionSubject);
         }
-        setIdentified(true);
+        setShowTou(true);
       })
       .catch((error) => {
         setError(error.statusText ? error.statusText : error);
       });
   }
-
-  // Fetch the configuration for whether patients need to accept ToU before proceeding
-  useEffect(() => {
-    if (!identified) return;
-    // Fetch ToU admin config settings
-    fetch('/Proms/TermsOfUse.json')
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => {
-        setToUEnabled(json.enabled);
-        setConfigFetched(true);
-        // If ToU is not enabled, do not display the Terms of Use after identification
-        json.enabled && setShowTou(true);
-      })
-      .catch((error) => {
-        setError(error.statusText ? error.statusText : error);
-      });
-  }, [identified]);
 
   // On submitting the patient login form, make a request to identify the patient
   const onSubmit = (event) => {
@@ -230,16 +209,16 @@ function PatientIdentification(props) {
 
   // After the user has accepted the TOU (if TOU are enabled), if they need to select from a list of visits present said
   useEffect(() => {
-    if (!visitListShown && (touAccepted || (configFetched && !toUEnabled)) && visitList && visitList.length > 1 ) {
+    if (!visitListShown && touCleared && visitList && visitList.length > 1 ) {
       setVisitListShown(true);
     }
-  }, [visitList, touAccepted, toUEnabled]);
+  }, [visitList, touCleared]);
 
   // When the visit is successfully obtained and the latest version of Terms of Use accepted, pass it along with the identification data
   // to the parent component
   useEffect(() => {
-    visit && touAccepted && patientDetails && onSuccess && onSuccess(Object.assign({subject: visit}, patientDetails));
-  }, [visit, touAccepted, !!patientDetails]);
+    visit && touCleared && patientDetails && onSuccess && onSuccess(Object.assign({subject: visit}, patientDetails));
+  }, [visit, touCleared, !!patientDetails]);
 
   // -----------------------------------------------------------------------------------------------------
   // Rendering
@@ -247,20 +226,20 @@ function PatientIdentification(props) {
   let appName = document.querySelector('meta[name="title"]')?.content;
 
   return (<>
-    { toUEnabled && <ToUDialog
+    <ToUDialog
       open={showTou}
       actionRequired={true}
       onClose={() => setShowTou(false)}
       onAccept={() => {
         setShowTou(false);
-        setTouAccepted(true);
+        setTouCleared(true);
       }}
       onDecline={() => {
         setShowTou(false)
         setPatientDetails(null);
         setVisit(null);
       }}
-    /> }
+    />
 
     {/* MRN hint dialog*/}
 

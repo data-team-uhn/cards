@@ -120,7 +120,7 @@ function ToUConfiguration() {
                     name="enabled"
                   />
                 }
-                label="Patients need to accept ToU before proceeding"
+                label="Patients must accept the Terms of Use before using the portal"
               />
             </ListItem>
             <ListItem key="button">
