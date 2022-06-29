@@ -19,7 +19,7 @@ module.exports = {
     [module_name + 'WelcomeMessageConfiguration']: './src/proms/WelcomeMessageConfiguration.jsx',
     [module_name + 'WelcomeMessageConfigurationIcon']: '@mui/icons-material/ChromeReaderMode.js',
     [module_name + 'ToUConfiguration']: './src/proms/ToUConfiguration.jsx',
-    [module_name + 'ToUConfigurationIcon']: '@mui/icons-material/HelpCenter.js'
+    [module_name + 'ToUConfigurationIcon']: '@mui/icons-material/Handshake.js'
   },
   plugins: [
     new CleanWebpackPlugin(),
