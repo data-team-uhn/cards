@@ -18,11 +18,11 @@
 //
 import React from "react";
 
-import AdminScreen from "../adminDashboard/AdminScreen.jsx";
+import AdminScreen from "./AdminScreen.jsx";
 import LiveTable from "../dataHomepage/LiveTable.jsx";
 import NewItemButton from "../components/NewItemButton.jsx";
 
-function ResourceListing(props) {
+function AdminResourceListing(props) {
   const { title, action, buttonProps, ...rest } = props;
 
   return (
@@ -38,4 +38,4 @@ function ResourceListing(props) {
   );
 }
 
-export default ResourceListing;
+export default AdminResourceListing;

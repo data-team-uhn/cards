@@ -27,7 +27,7 @@ import {
 } from "@mui/material";
 
 import Fields from "../questionnaireEditor/Fields.jsx";
-import ResourceListing from "../dataHomepage/ResourceListing.jsx";
+import AdminResourceListing from "../adminDashboard/AdminResourceListing.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import { camelCaseToWords } from "../questionnaireEditor/LabeledField.jsx";
@@ -67,7 +67,7 @@ function Clinics(props) {
 
   return (
     <>
-      <ResourceListing
+      <AdminResourceListing
         title="Clinics"
         buttonProps={{
           title: "On-board a new clinic",

@@ -33,7 +33,7 @@ import {
 import withStyles from '@mui/styles/withStyles';
 import statisticsStyle from "./statisticsStyle.jsx";
 import ResponsiveDialog from "../components/ResponsiveDialog.jsx";
-import ResourceListing from "../dataHomepage/ResourceListing.jsx";
+import AdminResourceListing from "../adminDashboard/AdminResourceListing.jsx";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
 import Fields from "../questionnaireEditor/Fields.jsx";
 import EditIcon from "@mui/icons-material/Edit";
@@ -149,7 +149,7 @@ function AdminStatistics(props) {
 
   return (
     <>
-      <ResourceListing
+      <AdminResourceListing
         title="Statistics"
         buttonProps={{
           title: "Create new statistic",

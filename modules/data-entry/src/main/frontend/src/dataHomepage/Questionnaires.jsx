@@ -18,7 +18,7 @@
 //
 import React from "react";
 import Questionnaire from "../questionnaire/Questionnaire.jsx";
-import ResourceListing from "../dataHomepage/ResourceListing.jsx";
+import AdminResourceListing from "../adminDashboard/AdminResourceListing.jsx";
 import NewQuestionnaireDialog from "../questionnaireEditor/NewQuestionnaireDialog.jsx";
 import DeleteButton from "./DeleteButton.jsx";
 import EditButton from "./EditButton.jsx";
@@ -56,7 +56,7 @@ function Questionnaires(props) {
 
   return (
     <>
-      <ResourceListing
+      <AdminResourceListing
         title="Questionnaires"
         action={
           <NewQuestionnaireDialog />
