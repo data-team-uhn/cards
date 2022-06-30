@@ -113,8 +113,8 @@ public class DataProcessor implements ResourceJsonProcessor
 
         final Map<String, String> optionsMap = new HashMap<>();
         Arrays.asList(this.selectors.get().split("(?<!\\\\)(?:\\\\\\\\)*\\.")).stream()
-            .filter(s -> StringUtils.startsWith(s, "dataOptions:"))
-            .map(s -> StringUtils.substringAfter(s, "dataOptions:"))
+            .filter(s -> StringUtils.startsWith(s, "dataOption:"))
+            .map(s -> StringUtils.substringAfter(s, "dataOption:"))
             .forEach(s -> optionsMap.put(StringUtils.substringBefore(s, "="),
                 StringUtils.substringAfter(s, "=").replaceAll("\\\\\\.", ".")));
         this.options.set(optionsMap);
