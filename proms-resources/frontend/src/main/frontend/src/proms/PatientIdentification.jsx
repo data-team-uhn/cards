@@ -276,6 +276,7 @@ function PatientIdentification(props) {
          </Grid>
 
          {/* If we haven't authenticated and retrieved the visit list for this patient yet,
+             or if the Terms of Use were declined after identification,
              display the identification form */}
 
          { (!visitList || showTou || touCleared === false) ?
