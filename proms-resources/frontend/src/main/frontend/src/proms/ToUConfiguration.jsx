@@ -18,6 +18,7 @@
 //
 import React, { useState } from 'react';
 import {
+    Alert,
     Button,
     Checkbox,
     FormControlLabel,
@@ -25,8 +26,7 @@ import {
     CardContent,
     CardHeader,
     List,
-    ListItem,
-    Typography
+    ListItem
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
@@ -105,10 +105,7 @@ function ToUConfiguration() {
         titleTypographyProps={{variant: "h6"}}
       />
       <CardContent>
-        {error && <Typography paragraph color='error'>{error}</Typography>}
-        <Typography paragraph variant="body2">
-          Configuration for whether patients need to accept ToU before proceeding.
-        </Typography>
+        {error && <Alert severity="error">{error}</Alert>}
         <form onSubmit={handleSubmit}>
           <List>
             <ListItem key="enabled">
