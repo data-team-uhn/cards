@@ -37,8 +37,6 @@ const useStyles = makeStyles(theme => ({
 function ToUConfiguration() {
   const classes = useStyles();
 
-  const [ path, setPath ] = useState();
-
   // Status tracking values of fetching/posting the data from/to the server
   const [ error, setError ] = useState();
   const [ enabled, setEnabled ] = useState(false);
@@ -51,7 +49,6 @@ function ToUConfiguration() {
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         setFetched(true);
-        setPath(json["@path"]);
         setEnabled(json.enabled);
       })
       .catch(setError);
