@@ -29,6 +29,7 @@ import {
     ListItem
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+import AdminScreen from "../adminDashboard/AdminScreen.jsx";
 
 const useStyles = makeStyles(theme => ({
   saveButton: {
@@ -99,12 +100,7 @@ function ToUConfiguration() {
   }
 
   return (
-    <Card>
-      <CardHeader
-        title="Terms of Use configuration"
-        titleTypographyProps={{variant: "h6"}}
-      />
-      <CardContent>
+      <AdminScreen title="Patient Portal Terms of Use">
         {error && <Alert severity="error">{error}</Alert>}
         <form onSubmit={handleSubmit}>
           <List>
@@ -133,8 +129,7 @@ function ToUConfiguration() {
             </ListItem>
           </List>
         </form>
-      </CardContent>
-    </Card>
+      </AdminScreen>
   );
 }
 
