@@ -18,43 +18,47 @@
 {
   "bundles":[
     {
-      "id":"com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:2.6.7",
+      "id":"com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:2.13.1",
       "start-order":"25"
     },
     {
-      "id":"io.netty:netty-codec-http:4.1.17.Final",
+      "id":"io.netty:netty-codec-http:4.1.74.Final",
       "start-order":"25"
     },
     {
-      "id":"io.netty:netty-codec:4.1.17.Final",
+      "id":"io.netty:netty-codec:4.1.74.Final",
       "start-order":"25"
     },
     {
-      "id":"io.netty:netty-handler:4.1.17.Final",
+      "id":"io.netty:netty-handler:4.1.74.Final",
       "start-order":"25"
     },
     {
-      "id":"io.netty:netty-buffer:4.1.17.Final",
+      "id":"io.netty:netty-buffer:4.1.74.Final",
       "start-order":"25"
     },
     {
-      "id":"io.netty:netty-common:4.1.17.Final",
+      "id":"io.netty:netty-common:4.1.74.Final",
       "start-order":"25"
     },
     {
-      "id":"io.netty:netty-transport:4.1.17.Final",
+      "id":"io.netty:netty-transport:4.1.74.Final",
       "start-order":"25"
     },
     {
-      "id":"io.netty:netty-resolver:4.1.17.Final",
+      "id":"io.netty:netty-resolver:4.1.74.Final",
       "start-order":"25"
     },
     {
-      "id":"software.amazon.ion:ion-java:1.0.2",
+      "id":"software.amazon.ion:ion-java:1.5.1",
       "start-order":"25"
     },
     {
-      "id":"joda-time:joda-time:2.8.1",
+      "id":"joda-time:joda-time:2.10.14",
+      "start-order":"25"
+    },
+    {
+      "id":"io.netty:netty-tcnative-classes:2.0.46.Final",
       "start-order":"25"
     },
     {
