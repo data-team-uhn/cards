@@ -22,9 +22,6 @@ import {
     Button,
     Checkbox,
     FormControlLabel,
-    Card,
-    CardContent,
-    CardHeader,
     List,
     ListItem
 } from '@mui/material';
