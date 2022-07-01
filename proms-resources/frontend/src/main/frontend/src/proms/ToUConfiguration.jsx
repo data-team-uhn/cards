@@ -132,7 +132,7 @@ function ToUConfiguration() {
                 type="text"
                 label="Title"
                 value={title}
-                onChange={(event) => { setTitle(event.target.value); }}
+                onChange={(event) => { setIsSaved(false); setTitle(event.target.value); }}
                 style={{'width' : '350px'}}
                 helperText="Terms of use title"
               />
@@ -146,7 +146,7 @@ function ToUConfiguration() {
                 type="version"
                 label="Version"
                 value={version}
-                onChange={(event) => { setVersion(event.target.value); }}
+                onChange={(event) => { setIsSaved(false); setVersion(event.target.value); }}
                 style={{'width' : '250px'}}
                 helperText="Terms of use version"
               />
@@ -159,7 +159,7 @@ function ToUConfiguration() {
               <MarkdownText
                 value={text}
                 height={450}
-                onChange={value => { event.preventDefault(); setText(value); }}
+                onChange={value => { setIsSaved(false); setText(value); }}
               /> }
             </ListItem>
             <ListItem key="button">
