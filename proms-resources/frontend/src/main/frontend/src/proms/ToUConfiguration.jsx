@@ -103,7 +103,7 @@ function ToUConfiguration() {
     getToUConfig();
   }, []);
 
-  return (<>
+  return (
       <AdminScreen title="Patient Portal Terms of Use">
         {error && <Alert severity="error">{error}</Alert>}
         <form onSubmit={handleSubmit}>
@@ -176,7 +176,6 @@ function ToUConfiguration() {
           </List>
         </form>
       </AdminScreen>
-    </>
   );
 }
 
