@@ -1,0 +1,9 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/admindashboard/entry",
+  "cards:extensionName": "Patient Portal Terms of Use",
+  "cards:targetURL": "/content.html/admin/ToUConfiguration",
+  "cards:icon": "asset:proms-homepage.ToUConfigurationIcon.js",
+  "cards:hint": "Configuration for whether patient users need to accept the Terms of Use before using the Patient Portal",
+  "cards:defaultOrder": 204
+}

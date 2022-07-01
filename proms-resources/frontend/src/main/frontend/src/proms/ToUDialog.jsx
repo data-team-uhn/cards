@@ -62,7 +62,7 @@ const useStyles = makeStyles(theme => ({
 // actionRequired: Boolean specifying whether the user has yet to accept the terms.
 //   If true, Accept/Decline action buttons will be displayed at the bottom
 //   If false, a Close action will be displayed at the bottom
-// onAccept: Callback specifying what happens when the user accepts the terms
+// onCleared: Callback specifying what happens when the user accepts the terms
 // onDecline: Callback specifying what happens when the user declines the terms
 //
 // Sample usage:
@@ -70,7 +70,7 @@ const useStyles = makeStyles(theme => ({
 //   open={open}
 //   actionRequired={true}
 //   onClose={onClose}
-//   onAccept={onAccept}
+//   onCleared={onCleared}
 //   onDecline={onDecline}
 /// />
 //
@@ -78,7 +78,7 @@ const useStyles = makeStyles(theme => ({
 const TOU_ACCEPTED_VARNAME = 'tou_accepted';
 
 function ToUDialog(props) {
-  const { open, actionRequired, onAccept, onDecline, onClose, ...rest } = props;
+  const { open, actionRequired, onCleared, onDecline, onClose, ...rest } = props;
 
   const [ showConfirmationTou, setShowConfirmationTou ] = useState(false);
   const [ touAcceptedVersion, setTouAcceptedVersion ] = useState();
@@ -122,8 +122,8 @@ function ToUDialog(props) {
     return null;
   }
 
-  if (tou && touAcceptedVersion && tou.version == touAcceptedVersion) {
-    onAccept && onAccept();
+  if (tou && (!tou.enabled || touAcceptedVersion && tou.version == touAcceptedVersion) ) {
+    onCleared && onCleared();
   }
 
   // When the patient user accepts the terms of use, save their preference and hide the ToU dialog
@@ -135,7 +135,7 @@ function ToUDialog(props) {
     // Update the Patient information form
     fetch("/Proms.termsOfUse", { method: 'POST', body: request_data })
       .then( (response) => response.ok ? response.json() : Promise.reject(response) )
-      .then( json => json.status == "success" ? onAccept && onAccept() : Promise.reject(json.error))
+      .then( json => json.status == "success" ? onCleared && onCleared() : Promise.reject(json.error))
       .catch((response) => {
         let errMsg = "Recording acceptance of Terms of Use failed";
         setError(errMsg + (response.status ? ` with error code ${response.status}: ${response.statusText}` : response));
@@ -217,7 +217,7 @@ ToUDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   actionRequired: PropTypes.bool,
-  onAccept: PropTypes.func,
+  onCleared: PropTypes.func,
   onDecline: PropTypes.func,
 }
 

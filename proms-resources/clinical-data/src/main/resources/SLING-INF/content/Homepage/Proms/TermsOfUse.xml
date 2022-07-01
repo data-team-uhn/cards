@@ -30,6 +30,11 @@
         <type>String</type>
     </property>
     <property>
+        <name>enabled</name>
+        <value>True</value>
+        <type>Boolean</type>
+    </property>
+    <property>
         <name>text</name>
         <value>
 
