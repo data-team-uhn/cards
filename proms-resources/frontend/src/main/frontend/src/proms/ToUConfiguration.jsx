@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Alert,
     Button,
@@ -40,7 +40,6 @@ function ToUConfiguration() {
   // Status tracking values of fetching/posting the data from/to the server
   const [ error, setError ] = useState();
   const [ enabled, setEnabled ] = useState(false);
-  const [ fetched, setFetched ] = useState(false);
   const [ isSaved, setIsSaved ] = useState(false);
 
   // Fetch saved admin config settings
@@ -48,7 +47,6 @@ function ToUConfiguration() {
     fetch('/Proms/TermsOfUse.json')
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
-        setFetched(true);
         setEnabled(json.enabled);
       })
       .catch(setError);
@@ -89,9 +87,9 @@ function ToUConfiguration() {
       .catch(setError);
   }
 
-  if (!fetched) {
+  useEffect(() => {
     getToUConfig();
-  }
+  }, []);
 
   return (
       <AdminScreen title="Patient Portal Terms of Use">
