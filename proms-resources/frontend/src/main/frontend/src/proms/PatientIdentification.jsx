@@ -151,12 +151,11 @@ function PatientIdentification(props) {
       return null;
     }
     let requestData = new FormData();
-    requestData.append("date_of_birth", dob);
-    requestData.append("mrn", mrn);
-    requestData.append("health_card", hc);
-    if (visit) {
-      requestData.append("visit", visit);
-    }
+    dob && requestData.append("date_of_birth", dob);
+    mrn && requestData.append("mrn", mrn);
+    hc && requestData.append("health_card", hc);
+    visit && requestData.append("visit", visit);
+
     fetch("/Proms.validateCredentials", {
       "method": "POST",
       "body": requestData
