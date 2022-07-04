@@ -177,6 +177,34 @@
 				<type>String</type>
 			</property>
 		</node>
+		<node>
+			<name>23</name>
+			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<property>
+				<name>label</name>
+				<value>23</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>23</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>24</name>
+			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+			<property>
+				<name>label</name>
+				<value>24</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>24</value>
+				<type>String</type>
+			</property>
+		</node>
 	</node>
 	<node>
 		<name>source</name>
