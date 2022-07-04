@@ -178,30 +178,30 @@
 			</property>
 		</node>
 		<node>
-			<name>23</name>
+			<name>20</name>
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
-				<value>23</value>
+				<value>20</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>value</name>
-				<value>23</value>
+				<value>20</value>
 				<type>String</type>
 			</property>
 		</node>
 		<node>
-			<name>24</name>
+			<name>21</name>
 			<primaryNodeType>lfs:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
-				<value>24</value>
+				<value>21</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>value</name>
-				<value>24</value>
+				<value>21</value>
 				<type>String</type>
 			</property>
 		</node>
