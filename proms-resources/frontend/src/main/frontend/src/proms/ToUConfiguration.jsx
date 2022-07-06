@@ -47,7 +47,7 @@ function ToUConfiguration() {
 
   // Status tracking values of fetching/posting the data from/to the server
   const [ error, setError ] = useState();
-  const [ enabled, setEnabled ] = useState(false);
+  const [ enforceAccept, setEnforceAccept ] = useState(false);
   const [ title, setTitle ] = useState();
   const [ text, setText ] = useState();
   const [ version, setVersion ] = useState();
@@ -58,7 +58,7 @@ function ToUConfiguration() {
     fetch('/Proms/TermsOfUse.json')
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
-        setEnabled(json.enabled);
+        setEnforceAccept(json.enforceAccept);
         setTitle(json.title);
         setVersion(json.version);
         setText(json.text || "");
@@ -75,7 +75,7 @@ function ToUConfiguration() {
     // Build formData object.
     // We need to do this because sling does not accept JSON, need url encoded data
     let formData = new URLSearchParams();
-    formData.append('enabled', enabled);
+    formData.append('enforceAccept', enforceAccept);
     formData.append('title', title);
     formData.append('version', version);
     formData.append('text', text);
@@ -148,13 +148,13 @@ function ToUConfiguration() {
                 onChange={value => { setIsSaved(false); setText(value); }}
               />
             </ListItem>
-            <ListItem key="enabled">
+            <ListItem key="enforceAccept">
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={enabled}
-                    onChange={(event) => { event.preventDefault(); setIsSaved(false); setEnabled(event.target.checked); }}
-                    name="enabled"
+                    checked={enforceAccept}
+                    onChange={(event) => { event.preventDefault(); setIsSaved(false); setEnforceAccept(event.target.checked); }}
+                    name="enforceAccept"
                   />
                 }
                 label="Patients must accept the Terms of Use before using the portal"
