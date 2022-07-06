@@ -20,20 +20,15 @@ package io.uhndata.cards.proms.internal.permissions;
 
 import java.util.Map;
 
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.query.QueryResult;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.JackrabbitSession;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Tree;
-import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.security.authorization.restriction.RestrictionPattern;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -65,19 +60,24 @@ public class ClinicRestrictionPattern implements RestrictionPattern
     /** For questionnaire management. **/
     private final QuestionnaireUtils questionnaireUtils;
 
+    /** Value we were set to. **/
+    private final String clinic;
+
     /**
      * Constructor which receives the configured restriction.
      *
      * @param rrf resource resolver factory providing access to resources
      * @param formUtils a reference to a FormUtils object
      * @param questionnaireUtils a reference to a QuestionnaireUtils object
+     * @param clinic a clinic to match against
      */
     public ClinicRestrictionPattern(final ResourceResolverFactory rrf, final FormUtils formUtils,
-        final QuestionnaireUtils questionnaireUtils)
+        final QuestionnaireUtils questionnaireUtils, final String clinic)
     {
         this.formUtils = formUtils;
         this.questionnaireUtils = questionnaireUtils;
         this.rrf = rrf;
+        this.clinic = clinic;
     }
 
     @Override
@@ -86,78 +86,18 @@ public class ClinicRestrictionPattern implements RestrictionPattern
         // If this is being called on a property, the user already has access to the node
         // In most cases, we want to apply the same rule to it
         // However, since this restriction pattern is costly to apply, we shortcut to applying to it
-        if (property != null) {
+        if (property != null || this.rrf == null) {
             return true;
         }
 
-        // Determine if this is a subject
-        if (tree.hasProperty("sling:resourceType")
-            && tree.getProperty("sling:resourceType").getValue(Type.STRING).equals("cards/Subject")) {
-            return appliesToSubject(tree.getProperty("jcr:uuid").getValue(Type.STRING));
-        }
-
-        // This Node might not be the parent tree, find it among this tree's ancestors if possible
-        Tree formNode = getFormNodeParent(tree);
-
-        if (formNode != null) {
-            return appliesToForm(formNode);
-        } else {
-            // Not a child of a form: ignore
-            return false;
-        }
-    }
-
-    /**
-     * Returns the form node corresponding to this tree, or null if none exists.
-     *
-     * @param tree Tree which might be a form node
-     * @return The form node parent, or null if none exists
-     */
-    public Tree getFormNodeParent(final Tree tree)
-    {
-        if (tree.hasProperty("sling:resourceType")
-            && tree.getProperty("sling:resourceType").getValue(Type.STRING).equals("cards/Form")) {
-            return tree;
-        } else {
-            // Recurse upwards
-            if (!tree.isRoot()) {
-                try {
-                    return getFormNodeParent(tree.getParent());
-                } catch (IllegalStateException e) {
-                    // Should not happen, since we check for root
-                    return null;
-                }
-            } else {
-                return null;
-            }
-        }
-    }
-
-    /**
-     * Returns whether or not this restriction pattern applies to the given subject.
-     *
-     * @param subjectId The jcr:uuid of the subject node
-     * @return If true, this restriction pattern applies to the given input.
-     */
-    private boolean appliesToSubject(final String subjectId)
-    {
+        // Grab the group named after this clinic, and see if the user is part of it
         try (ResourceResolver srr = this.rrf.getServiceResourceResolver(
             Map.of(ResourceResolverFactory.SUBSERVICE, "ClinicFormsRestriction"))) {
-            // The thread resolver must not be closed, so it's outside the try-with-resources block
             ResourceResolver trr = this.rrf.getThreadResourceResolver();
             final JackrabbitSession serviceSession = (JackrabbitSession) srr.adaptTo(Session.class);
             final JackrabbitSession userSession = (JackrabbitSession) trr.adaptTo(Session.class);
-
-            final String clinic = getClinic(subjectId, serviceSession);
-            if (StringUtils.isBlank(clinic)) {
-                return false;
-            }
-            final Node clinicMapping = serviceSession.getNode(clinic);
-
-            // Check if the current session user belongs to the group specified
-            final String groupName = clinicMapping.getProperty("clinicName").getString();
             final UserManager userManager = serviceSession.getUserManager();
-            Group group = (Group) userManager.getAuthorizable(groupName);
+            Group group = (Group) userManager.getAuthorizable(this.clinic);
             User user = (User) userManager.getAuthorizable(userSession.getUserID());
             return group != null && group.isMember(user);
         } catch (LoginException | RepositoryException e) {
@@ -170,47 +110,6 @@ public class ClinicRestrictionPattern implements RestrictionPattern
                 e);
             return false;
         }
-    }
-
-    /**
-     * Returns whether or not this restriction pattern applies to the given form.
-     *
-     * @param tree A Jackrabbit {@code Tree} object corresponding to a {@code Form} resource.
-     * @return If true, this restriction pattern applies to the given input.
-     */
-    private boolean appliesToForm(final Tree tree)
-    {
-        return appliesToSubject(tree.getProperty("subject").getValue(Type.STRING));
-    }
-
-    /**
-     * Return the clinic name in the visit information form for a given subject, or null if it is inaccessible or none
-     * exists.
-     *
-     * @param subjectID The ID of the subject
-     * @param session a service session with read access to the repository
-     * @return A Visit Information form for the given subject, or null if none exists. If multiple exist, returns the
-     *         first one found.
-     */
-    public String getClinic(String subjectID, Session session) throws RepositoryException
-    {
-        // Grab the uuid for the visit information questionnaire
-        final Node visitInformationQuestionnaire = session.getNode(ClinicRestrictionPattern.VISIT_INFORMATION_PATH);
-        final Node clinicQuestion = this.questionnaireUtils.getQuestion(visitInformationQuestionnaire, "clinic");
-
-        // Perform a query for any Visit Information form for this subject
-        String query = "SELECT f.* FROM [cards:Form] AS f"
-            + " WHERE f.'relatedSubjects'='" + subjectID
-            + "' AND f.'questionnaire'='" + visitInformationQuestionnaire.getIdentifier() + "'";
-
-        QueryResult results = session.getWorkspace().getQueryManager().createQuery(query, "JCR-SQL2").execute();
-        NodeIterator rows = results.getNodes();
-
-        // Grab the answer to the Clinic question
-        if (rows.hasNext()) {
-            return this.formUtils.getValue(this.formUtils.getAnswer(rows.nextNode(), clinicQuestion)).toString();
-        }
-        return null;
     }
 
     @Override
