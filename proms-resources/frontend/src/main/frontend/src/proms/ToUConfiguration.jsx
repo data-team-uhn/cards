@@ -21,7 +21,9 @@ import {
     Alert,
     Button,
     Checkbox,
+    CircularProgress,
     FormControlLabel,
+    FormHelperText,
     List,
     ListItem,
     TextField,
@@ -32,6 +34,9 @@ import AdminScreen from "../adminDashboard/AdminScreen.jsx";
 import MarkdownText from "../questionnaireEditor/MarkdownText";
 
 const useStyles = makeStyles(theme => ({
+  text: {
+    display: "block",
+  },
   saveButton: {
     marginTop: theme.spacing(3),
   },
@@ -104,37 +109,22 @@ function ToUConfiguration() {
   }, []);
 
   return (
-      <AdminScreen title="Patient Portal Terms of Use">
-        {error && <Alert severity="error">{error}</Alert>}
+    <AdminScreen title="Patient Portal Terms of Use">
+      { error && <Alert severity="error">{error}</Alert> }
+      { typeof(text) == 'undefined' ? <CircularProgress /> :
         <form onSubmit={handleSubmit}>
           <List>
-            <ListItem key="enabled">
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={enabled}
-                    onChange={(event) => { event.preventDefault(); setIsSaved(false); setEnabled(event.target.checked); }}
-                    name="enabled"
-                  />
-                }
-                label="Patients must accept the Terms of Use before using the portal"
-              />
-            </ListItem>
-            <ListItem key="h5">
-              <Typography variant="h5">Terms of Use</Typography>
-            </ListItem>
             <ListItem key="title">
               <TextField
                 InputLabelProps={{ shrink: true }}
                 variant="standard"
+                fullWidth
                 id="title"
                 name="title"
                 type="text"
                 label="Title"
                 value={title}
                 onChange={(event) => { setIsSaved(false); setTitle(event.target.value); }}
-                style={{'width' : '350px'}}
-                helperText="Terms of use title"
               />
             </ListItem>
             <ListItem key="version">
@@ -148,19 +138,27 @@ function ToUConfiguration() {
                 value={version}
                 onChange={(event) => { setIsSaved(false); setVersion(event.target.value); }}
                 style={{'width' : '250px'}}
-                helperText="Terms of use version"
               />
             </ListItem>
-            <ListItem key="h6">
-              <Typography variant="h6">Text:</Typography>
-            </ListItem>
-            <ListItem key="text">
-              { text != undefined &&
+            <ListItem key="text" className={classes.text}>
+              <FormHelperText>Text</FormHelperText>
               <MarkdownText
                 value={text}
-                height={450}
+                height={350}
                 onChange={value => { setIsSaved(false); setText(value); }}
-              /> }
+              />
+            </ListItem>
+            <ListItem key="enabled">
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={enabled}
+                    onChange={(event) => { event.preventDefault(); setIsSaved(false); setEnabled(event.target.checked); }}
+                    name="enabled"
+                  />
+                }
+                label="Patients must accept the Terms of Use before using the portal"
+              />
             </ListItem>
             <ListItem key="button">
               <Button
@@ -175,7 +173,8 @@ function ToUConfiguration() {
             </ListItem>
           </List>
         </form>
-      </AdminScreen>
+      }
+    </AdminScreen>
   );
 }
 
