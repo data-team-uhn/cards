@@ -56,7 +56,8 @@ public class ClinicRestrictionFactory implements RestrictionFactory
     @Override
     public RestrictionPattern forValue(PropertyState value)
     {
-        return new ClinicRestrictionPattern(this.rrf, this.formUtils, this.questionnaireUtils);
+        return new ClinicRestrictionPattern(this.rrf, this.formUtils, this.questionnaireUtils,
+            value.getValue(Type.STRING));
     }
 
     @Override
@@ -68,9 +69,7 @@ public class ClinicRestrictionFactory implements RestrictionFactory
     @Override
     public Type<?> getType()
     {
-        // This doesn't actually support any type, since it is only a marker restriction. However, specifying a type is
-        // mandatory, and a single-value type enforces that a single value is provided, while a multi-value type happily
-        // accepts no value at all.
-        return Type.STRINGS;
+        // This should correspond to the name of a group that was generated as part of a clinic
+        return Type.STRING;
     }
 }
