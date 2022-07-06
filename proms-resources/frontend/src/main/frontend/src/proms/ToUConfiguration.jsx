@@ -153,7 +153,7 @@ function ToUConfiguration() {
                 control={
                   <Checkbox
                     checked={enforceAccept}
-                    onChange={(event) => { event.preventDefault(); setIsSaved(false); setEnforceAccept(event.target.checked); }}
+                    onChange={(event) => { setIsSaved(false); setEnforceAccept(event.target.checked); }}
                     name="enforceAccept"
                   />
                 }
