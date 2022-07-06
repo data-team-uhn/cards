@@ -47,7 +47,7 @@ function ToUConfiguration() {
 
   // Status tracking values of fetching/posting the data from/to the server
   const [ error, setError ] = useState();
-  const [ enforceAccept, setEnforceAccept ] = useState(false);
+  const [ acceptanceRequired, setAcceptanceRequired ] = useState(false);
   const [ title, setTitle ] = useState();
   const [ text, setText ] = useState();
   const [ version, setVersion ] = useState();
@@ -58,9 +58,9 @@ function ToUConfiguration() {
     fetch('/Proms/TermsOfUse.json')
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
-        setEnforceAccept(json.enforceAccept);
-        setTitle(json.title);
-        setVersion(json.version);
+        setAcceptanceRequired(json.acceptanceRequired || false);
+        setTitle(json.title || "");
+        setVersion(json.version || "");
         setText(json.text || "");
       })
       .catch(setError);
@@ -75,7 +75,7 @@ function ToUConfiguration() {
     // Build formData object.
     // We need to do this because sling does not accept JSON, need url encoded data
     let formData = new URLSearchParams();
-    formData.append('enforceAccept', enforceAccept);
+    formData.append('acceptanceRequired', acceptanceRequired);
     formData.append('title', title);
     formData.append('version', version);
     formData.append('text', text);
@@ -148,13 +148,13 @@ function ToUConfiguration() {
                 onChange={value => { setIsSaved(false); setText(value); }}
               />
             </ListItem>
-            <ListItem key="enforceAccept">
+            <ListItem key="acceptanceRequired">
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={enforceAccept}
-                    onChange={(event) => { setIsSaved(false); setEnforceAccept(event.target.checked); }}
-                    name="enforceAccept"
+                    checked={acceptanceRequired}
+                    onChange={(event) => { setIsSaved(false); setAcceptanceRequired(event.target.checked); }}
+                    name="acceptanceRequired"
                   />
                 }
                 label="Patients must accept the Terms of Use before using the portal"

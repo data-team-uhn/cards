@@ -30,7 +30,7 @@
         <type>String</type>
     </property>
     <property>
-        <name>enforceAccept</name>
+        <name>acceptanceRequired</name>
         <value>True</value>
         <type>Boolean</type>
     </property>
