@@ -20,10 +20,11 @@ import React, { useState, useEffect, useContext } from "react";
 
 import { useHistory } from 'react-router-dom';
 
-import { Alert, Button, CardActions, CircularProgress } from "@mui/material";
+import { Alert, Button, CardActions, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@mui/material";
 import { makeStyles } from '@mui/styles';
 
 import AdminScreen from "./AdminScreen.jsx";
+import FormattedText from "../components/FormattedText.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
 const useStyles = makeStyles(theme => ({
@@ -38,29 +39,40 @@ const useStyles = makeStyles(theme => ({
       padding: theme.spacing(2, 1, 0),
     },
   },
+  confirmationDialog: {
+    "& .MuiDialogContent-root > *": {
+      margin: theme.spacing(2, 0),
+    },
+    "& .MuiDialogActions-root .MuiButton-root:last-child": {
+      marginLeft: "auto",
+    },
+  },
 }));
 
 function AdminConfigScreen(props) {
   const { title, configPath, onConfigFetched, hasChanges, configError, buildConfigData, onConfigSaved, children } = props;
-  const [ fetched, setFetched ] = useState();
+  const [ config, setConfig ] = useState();
+  const [ configIsInitial, setConfigIsInitial ] = useState(true);
   const [ error, setError ] = useState();
+  const [ resetConfirmationPending, setResetConfirmationPending ] = useState(false);
 
   const globalContext = useContext(GlobalLoginContext);
   const history = useHistory();
   const classes = useStyles();
 
   useEffect(() => getConfig(), []);
+  useEffect(() => hasChanges && setConfigIsInitial(false), [hasChanges]);
 
   // Loading the existing configuration
   const getConfig = () => {
     fetchWithReLogin(globalContext, `${configPath}.json`)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then(json => {
-         setFetched(true);
+         setConfig(json);
          onConfigFetched?.(json);
 	  })
       .catch(err => {
-         setFetched(false);
+         setConfig(null);
          setError("The configuration could not be loaded.")
       });
   }
@@ -104,11 +116,22 @@ function AdminConfigScreen(props) {
       .catch(err => setError("The configuration could not be saved."));
   }
 
+  const handleReset = (event) => {
+    // This stops the click event from reaching the parent form
+    event && event.preventDefault();
+    // Record the fact that we're back to the initial config
+    setConfigIsInitial(true);
+    // Load the initial config in the form (dropping any changes)
+    onConfigFetched?.(config);
+    // Save the initial config, overwriting any previously saved changes
+    handleSubmit();
+  }
+
   return (
     <AdminScreen title={title} className={classes.root}>
       { (configError || error) && <Alert severity="error">{configError || error}</Alert> }
-      { typeof(fetched) == 'undefined' ? <CircularProgress/> :
-        !fetched ? "" :
+      { typeof(config) == 'undefined' ? <CircularProgress/> :
+        !config ? "" :
         <form onSubmit={handleSubmit}>
           { children }
           <CardActions>
@@ -123,13 +146,37 @@ function AdminConfigScreen(props) {
             </Button>
             <Button
               variant="outlined"
-              color="primary"
+              color="error"
               size="small"
-              onClick={() => history.push("/content.html/admin/") }
+              disabled={configIsInitial}
+              onClick={() => setResetConfirmationPending(true)}
             >
-              Cancel
+              Reset to initial settings
             </Button>
           </CardActions>
+
+          { /* Confirmation dialog for resetting the changes */ }
+          <Dialog className={classes.confirmationDialog} open={resetConfirmationPending}>
+            <DialogTitle>
+              <Typography variant="h6" color="error" className={classes.dialogTitle}>Confirm configuration reset</Typography>
+            </DialogTitle>
+            <DialogContent>
+              <FormattedText>
+                This will revert **all** the changes made since opening this pagem **including the ones that you may have already saved**.
+              </FormattedText>
+              <FormattedText>
+                If you wish to keep the saved changes and discard the unsaved ones, you can simply navigate away from this page, for example by clicking on the link to Administration at the top.
+              </FormattedText>
+              <FormattedText>
+                **Are you sure you wish to proceed with resetting the configuration?**
+              </FormattedText>
+            </DialogContent>
+            <DialogActions>
+              <Button size="small" variant="contained" onClick={handleReset}>Yes, Reset</Button>
+              <Button size="small" variant="outlined" onClick={() => setResetConfirmationPending(false)}>No, Cancel</Button>
+              <Button size="small" variant="text" onClick={() => history.push("/content.html/admin/")}>No, go to Administration</Button>
+            </DialogActions>
+          </Dialog>
         </form>
       }
     </AdminScreen>
