@@ -263,7 +263,7 @@ webServer.listen(LISTEN_PORT, LISTEN_HOST, (err) => {
   if (err) {
     console.log("Backup Recorder server failed to start");
   } else {
-    console.log("Backup Recorder server listening on port " + LISTEN_PORT);
+    console.log("Backup Recorder server listening on " + LISTEN_HOST + ":" + LISTEN_PORT);
     console.log("Backups will be saved to " + BACKUP_DIRECTORY);
     console.log("")
     console.log("===");
