@@ -59,7 +59,7 @@ function WelcomeMessageConfiguration() {
   const appName = document.querySelector('meta[name="title"]')?.content;
 
   // Read the welcome message from the saved configuration
-  let getWelcomeMessage = (configJson) => {
+  let readWelcomeMessage = (configJson) => {
     setWelcomeMessage(configJson.text || "");
   }
 
@@ -75,7 +75,7 @@ function WelcomeMessageConfiguration() {
       <AdminConfigScreen
         title="Patient Portal Welcome Message"
         configPath="/Proms/WelcomeMessage"
-        onConfigFetched={getWelcomeMessage}
+        onConfigFetched={readWelcomeMessage}
         hasChanges={hasChanges}
         buildConfigData={buildConfigData}
         onConfigSaved={() => setHasChanges(false)}

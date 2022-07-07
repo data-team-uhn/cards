@@ -39,19 +39,19 @@ const useStyles = makeStyles(theme => ({
 function DowntimeWarningConfiguration() {
   const classes = useStyles();
 
-  // The the configuration values
+  // The configuration values
   const [ enabled, setEnabled ] = useState(false);
   const [ fromDate, setFromDate ] = useState();
   const [ toDate, setToDate ] = useState();
-  const [ isDateRangeInvalid, setIsDateRangeInvalid ] = useState(false);
+  const [ dateRangeIsInvalid, setDateRangeIsInvalid ] = useState(false);
 
   // Tracking unsaved changes
-  const [ hasChanges, setHasChanges ] = useState(true);
+  const [ hasChanges, setHasChanges ] = useState();
 
   const dateFormat = "yyyy-MM-dd hh:mm";
 
   // Read the settings from the saved configuration
-  let getDowntimeWarningSettings = (json) => {
+  let readDowntimeWarningSettings = (json) => {
     setEnabled(json.enabled == 'true');
     setFromDate(json.fromDate);
     setToDate(json.toDate);
@@ -65,7 +65,7 @@ function DowntimeWarningConfiguration() {
 
   useEffect(() => {
     // Determine if the end date is earlier than the start date
-    setIsDateRangeInvalid(fromDate && toDate && new Date(toDate).valueOf() < new Date(fromDate).valueOf());
+    setDateRangeIsInvalid(fromDate && toDate && new Date(toDate).valueOf() < new Date(fromDate).valueOf());
   }, [fromDate, toDate]);
 
   useEffect(() => {
@@ -76,9 +76,9 @@ function DowntimeWarningConfiguration() {
     <AdminConfigScreen
         title="Downtime Warning Banner Settings"
         configPath="/apps/cards/config/DowntimeWarning"
-        onConfigFetched={getDowntimeWarningSettings}
+        onConfigFetched={readDowntimeWarningSettings}
         hasChanges={hasChanges}
-        configError={isDateRangeInvalid ? "Invalid date range" : undefined}
+        configError={dateRangeIsInvalid ? "Invalid date range" : undefined}
         buildConfigData={buildConfigData}
         onConfigSaved={() => setHasChanges(false)}
       >
@@ -119,8 +119,8 @@ function DowntimeWarningConfiguration() {
                 onBlur={(event) => setToDate(event.target.value) }
                 placeholder={dateFormat.toLowerCase()}
                 value={toDate || ""}
-                error={isDateRangeInvalid}
-                helperText={isDateRangeInvalid ? "The end date should be after the start date." : ""}
+                error={dateRangeIsInvalid}
+                helperText={dateRangeIsInvalid ? "The end date should be after the start date." : ""}
               />
             </ListItem>
           </List>

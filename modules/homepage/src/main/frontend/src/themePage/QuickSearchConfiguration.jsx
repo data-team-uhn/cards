@@ -40,7 +40,7 @@ function QuickSearchConfiguration(props) {
   const resourceTypes = ["cards:Form", "cards:Subject", "cards:Questionnaire"];
 
   // Read the settings from the saved configuration
-  let getQuickSearchSettings = (json) => {
+  let readQuickSearchSettings = (json) => {
     setLimit(json["limit"]);
     setAllowedResourceTypes(json["allowedResourceTypes"]);
     setShowTotalRows(json["showTotalRows"]  == 'true');
@@ -55,7 +55,6 @@ function QuickSearchConfiguration(props) {
   }
 
   let onSourceTypeChange  = (checked, resourceName) => {
-    event.preventDefault();
     setHasChanges(true);
     let types = allowedResourceTypes.slice();
     if (checked) {
@@ -74,7 +73,7 @@ function QuickSearchConfiguration(props) {
     <AdminConfigScreen
         title="Quick Search Settings"
         configPath="/apps/cards/config/QuickSearch"
-        onConfigFetched={getQuickSearchSettings}
+        onConfigFetched={readQuickSearchSettings}
         hasChanges={hasChanges}
         buildConfigData={buildConfigData}
         onConfigSaved={() => setHasChanges(false)}

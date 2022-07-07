@@ -44,7 +44,7 @@ function ToUConfiguration() {
   const [ hasChanges, setHasChanges ] = useState(true);
 
   // Read the ToU properties from the saved configuration
-  let getToUData = (json) => {
+  let readToUData = (json) => {
     setAcceptanceRequired(json.acceptanceRequired || false);
     setTitle(json.title || "");
     setVersion(json.version || "");
@@ -66,7 +66,7 @@ function ToUConfiguration() {
     <AdminConfigScreen
       title="Patient Portal Terms of Use"
       configPath="/Proms/TermsOfUse"
-      onConfigFetched={getToUData}
+      onConfigFetched={readToUData}
       hasChanges={hasChanges}
       buildConfigData={buildConfigData}
       onConfigSaved={() => setHasChanges(false)}
