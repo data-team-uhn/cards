@@ -40,7 +40,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function AdminScreen(props) {
-  const { title, action, disableBreadcrumb, children } = props;
+  const { title, action, disableBreadcrumb, className, children } = props;
 
   const classes = useStyles();
   const appName = document.querySelector('meta[name="title"]')?.content;
@@ -54,6 +54,9 @@ function AdminScreen(props) {
   );
 
   let classNames = [classes.root];
+  if (className) {
+    classNames.push(className);
+  }
   if (!!action) {
     classNames.push(classes.withMainAction);
   }

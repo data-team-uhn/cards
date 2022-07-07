@@ -18,101 +18,61 @@
 //
 import React, { useEffect, useState } from 'react';
 import {
-    Alert,
-    Button,
     Checkbox,
-    CircularProgress,
     FormControlLabel,
     FormHelperText,
     List,
     ListItem,
     TextField,
-    Typography
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import AdminScreen from "../adminDashboard/AdminScreen.jsx";
+import AdminConfigScreen from "../adminDashboard/AdminConfigScreen.jsx";
 import MarkdownText from "../questionnaireEditor/MarkdownText";
 
 const useStyles = makeStyles(theme => ({
   text: {
     display: "block",
   },
-  saveButton: {
-    marginTop: theme.spacing(3),
-  },
 }));
 
 function ToUConfiguration() {
   const classes = useStyles();
-
-  // Status tracking values of fetching/posting the data from/to the server
-  const [ error, setError ] = useState();
   const [ acceptanceRequired, setAcceptanceRequired ] = useState(false);
   const [ title, setTitle ] = useState();
   const [ text, setText ] = useState();
   const [ version, setVersion ] = useState();
-  const [ isSaved, setIsSaved ] = useState(false);
+  const [ hasChanges, setHasChanges ] = useState(true);
 
-  // Fetch saved admin config settings
-  let getToUConfig = () => {
-    fetch('/Proms/TermsOfUse.json')
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => {
-        setAcceptanceRequired(json.acceptanceRequired || false);
-        setTitle(json.title || "");
-        setVersion(json.version || "");
-        setText(json.text || "");
-      })
-      .catch(setError);
+  // Read the ToU properties from the saved configuration
+  let getToUData = (json) => {
+    setAcceptanceRequired(json.acceptanceRequired || false);
+    setTitle(json.title || "");
+    setVersion(json.version || "");
+    setText(json.text || "");
   }
 
-  // Submit function
-  let handleSubmit = (event) => {
-
-    // This stops the normal browser form submission
-    event && event.preventDefault();
-
-    // Build formData object.
-    // We need to do this because sling does not accept JSON, need url encoded data
-    let formData = new URLSearchParams();
+  let buildConfigData = (formData) => {
     formData.append('acceptanceRequired', acceptanceRequired);
     formData.append('title', title);
     formData.append('version', version);
     formData.append('text', text);
-
-    // Use native fetch, sort like the XMLHttpRequest so no need for other libraries.
-    fetch('/Proms/TermsOfUse',
-      {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: formData
-      })
-      .then((response) => {
-
-        // Important note about native fetch, it does not reject failed
-        // HTTP codes, it'll only fail when network error
-        // Therefore, you must handle the error code yourself.
-        if (!response.ok) {
-          throw Error(response.statusText);
-        }
-
-        setIsSaved(true);
-      })
-      .catch(setError);
   }
 
   useEffect(() => {
-    getToUConfig();
-  }, []);
+    setHasChanges(true);
+  }, [title, version, text, acceptanceRequired]);
 
   return (
-    <AdminScreen title="Patient Portal Terms of Use">
-      { error && <Alert severity="error">{error}</Alert> }
-      { typeof(text) == 'undefined' ? <CircularProgress /> :
-        <form onSubmit={handleSubmit}>
+    <AdminConfigScreen
+      title="Patient Portal Terms of Use"
+      configPath="/Proms/TermsOfUse"
+      onConfigFetched={getToUData}
+      hasChanges={hasChanges}
+      buildConfigData={buildConfigData}
+      onConfigSaved={() => setHasChanges(false)}
+      >
+       { /* Wait for the text state to be set before displaying anything, as MDEditor sometimes gets stuck with an empty value */ }
+       { typeof(text) != 'undefined' &&
           <List>
             <ListItem key="title">
               <TextField
@@ -124,7 +84,7 @@ function ToUConfiguration() {
                 type="text"
                 label="Title"
                 value={title}
-                onChange={(event) => { setIsSaved(false); setTitle(event.target.value); }}
+                onChange={(event) => { setTitle(event.target.value); }}
               />
             </ListItem>
             <ListItem key="version">
@@ -136,7 +96,7 @@ function ToUConfiguration() {
                 type="version"
                 label="Version"
                 value={version}
-                onChange={(event) => { setIsSaved(false); setVersion(event.target.value); }}
+                onChange={(event) => { setVersion(event.target.value); }}
                 style={{'width' : '250px'}}
               />
             </ListItem>
@@ -145,7 +105,7 @@ function ToUConfiguration() {
               <MarkdownText
                 value={text}
                 height={350}
-                onChange={value => { setIsSaved(false); setText(value); }}
+                onChange={value => { setText(value); }}
               />
             </ListItem>
             <ListItem key="acceptanceRequired">
@@ -153,28 +113,16 @@ function ToUConfiguration() {
                 control={
                   <Checkbox
                     checked={acceptanceRequired}
-                    onChange={(event) => { setIsSaved(false); setAcceptanceRequired(event.target.checked); }}
+                    onChange={(event) => { setAcceptanceRequired(event.target.checked); }}
                     name="acceptanceRequired"
                   />
                 }
                 label="Patients must accept the Terms of Use before using the portal"
               />
             </ListItem>
-            <ListItem key="button">
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                size="small"
-                className={classes.saveButton}
-              >
-                { isSaved ? "Saved" : "Save" }
-              </Button>
-            </ListItem>
           </List>
-        </form>
-      }
-    </AdminScreen>
+	    }
+    </AdminConfigScreen>
   );
 }
 

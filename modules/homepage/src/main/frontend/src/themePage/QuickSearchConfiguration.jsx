@@ -16,9 +16,8 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-    Button,
     Checkbox,
     TextField,
     Tooltip,
@@ -28,77 +27,36 @@ import {
     ListItem,
 } from '@mui/material';
 
-import AdminScreen from "../adminDashboard/AdminScreen.jsx";
+import AdminConfigScreen from "../adminDashboard/AdminConfigScreen.jsx";
 
 function QuickSearchConfiguration(props) {
   const { match, location, classes } = props;
 
-  const [ path, setPath ] = useState();
   const [ limit, setLimit ] = useState(5);
   const [ allowedResourceTypes, setAllowedResourceTypes ] = useState([]);
   const [ showTotalRows, setShowTotalRows ] = useState(true);
-  const [ onSuccess, setOnSuccess ] = useState(false);
-  const [ fetched, setFetched ] = useState(false);
+  const [ hasChanges, setHasChanges ] = useState(true);
 
   const resourceTypes = ["cards:Form", "cards:Subject", "cards:Questionnaire"];
 
-  // Fetch saved admin config settings
-  let getQuickSearchSettings = () => {
-    fetch('/apps/cards/config/QuickSearch.deep.json')
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => {
-        setFetched(true);
-        setPath(json["@path"]);
-        setLimit(json["limit"]);
-        setAllowedResourceTypes(json["allowedResourceTypes"]);
-        setShowTotalRows(json["showTotalRows"]  == 'true');
-      });
+  // Read the settings from the saved configuration
+  let getQuickSearchSettings = (json) => {
+    setLimit(json["limit"]);
+    setAllowedResourceTypes(json["allowedResourceTypes"]);
+    setShowTotalRows(json["showTotalRows"]  == 'true');
   }
 
-  // submit function
-  let handleSubmit = (event) => {
-
-    // This stops the normal browser form submission
-    event && event.preventDefault();
-
-    // Build formData object.
-    // We need to do this because sling does not accept JSON, need url encoded data
-    let formData = new URLSearchParams();
+  let buildConfigData = (formData) => {
     formData.append('limit', limit);
     formData.append('showTotalRows', showTotalRows);
     for (var i in allowedResourceTypes) {
       formData.append('allowedResourceTypes', allowedResourceTypes[i]);
     }
-
-    // Use native fetch, sort like the XMLHttpRequest so no need for other libraries.
-    fetch(path,
-      {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: formData
-      })
-      .then((response) => {
-
-        // Important note about native fetch, it does not reject failed
-        // HTTP codes, it'll only fail when network error
-        // Therefore, you must handle the error code yourself.
-        if (!response.ok) {
-          throw Error(response.statusText);
-        }
-
-        setOnSuccess(true);
-      })
-      .catch(error => {
-        console.log(error);
-      });
   }
 
   let onSourceTypeChange  = (checked, resourceName) => {
     event.preventDefault();
-    setOnSuccess(false);
+    setHasChanges(true);
     let types = allowedResourceTypes.slice();
     if (checked) {
       types.push(resourceName);
@@ -108,13 +66,19 @@ function QuickSearchConfiguration(props) {
     setAllowedResourceTypes(types);
   }
 
-  if (!fetched) {
-    getQuickSearchSettings();
-  }
+  useEffect(() => {
+    setHasChanges(true);
+  }, [limit, showTotalRows]);
 
   return (
-    <AdminScreen title="Quick Search Settings">
-        <form onSubmit={handleSubmit}>
+    <AdminConfigScreen
+        title="Quick Search Settings"
+        configPath="/apps/cards/config/QuickSearch"
+        onConfigFetched={getQuickSearchSettings}
+        hasChanges={hasChanges}
+        buildConfigData={buildConfigData}
+        onConfigSaved={() => setHasChanges(false)}
+      >
           <List>
             <ListItem key="h1">
               <Typography variant="h6">Search results controls:</Typography>
@@ -127,7 +91,7 @@ function QuickSearchConfiguration(props) {
                 type="number"
                 label="Limit"
                 value={limit}
-                onChange={(event) => { setOnSuccess(false); setLimit(event.target.value); }}
+                onChange={ event => setLimit(event.target.value) }
                 style={{'width' : '250px'}}
                 helperText="How many results should be displayed"
               />
@@ -137,7 +101,7 @@ function QuickSearchConfiguration(props) {
                 control={
                   <Checkbox
                     checked={showTotalRows}
-                    onChange={(event) => { event.preventDefault(); setOnSuccess(false); setShowTotalRows(event.target.checked); }}
+                    onChange={ event => setShowTotalRows(event.target.checked) }
                     name="showTotalRows"
                   />
                 }
@@ -165,16 +129,8 @@ function QuickSearchConfiguration(props) {
                 )
               })
             }
-            <ListItem key="button">
-            { !onSuccess ?
-              <Button type="submit" variant="contained" color="primary" size="small">Save</Button>
-              :
-              <Button type="submit" variant="contained" color="primary" size="small">Saved</Button>
-            }
-            </ListItem>
           </List>
-        </form>
-    </AdminScreen>
+    </AdminConfigScreen>
   );
 }
 
