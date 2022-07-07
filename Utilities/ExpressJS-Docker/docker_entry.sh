@@ -20,7 +20,7 @@
 if [[ ! -z $HOST_USER  && ! -z $HOST_UID ]]
 then
   adduser --uid $HOST_UID --disabled-password --gecos "" $HOST_USER
-  exec sudo -u $HOST_USER "$@"
+  exec sudo -E -u $HOST_USER "$@"
 else
   exec "$@"
 fi
