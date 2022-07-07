@@ -122,7 +122,7 @@ function ToUDialog(props) {
     return null;
   }
 
-  if (tou && (!tou.enabled || touAcceptedVersion && tou.version == touAcceptedVersion) ) {
+  if (tou && (!tou.acceptanceRequired || touAcceptedVersion && tou.version == touAcceptedVersion) ) {
     onCleared && onCleared();
   }
 

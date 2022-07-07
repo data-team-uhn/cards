@@ -21,14 +21,22 @@ import {
     Alert,
     Button,
     Checkbox,
+    CircularProgress,
     FormControlLabel,
+    FormHelperText,
     List,
-    ListItem
+    ListItem,
+    TextField,
+    Typography
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import AdminScreen from "../adminDashboard/AdminScreen.jsx";
+import MarkdownText from "../questionnaireEditor/MarkdownText";
 
 const useStyles = makeStyles(theme => ({
+  text: {
+    display: "block",
+  },
   saveButton: {
     marginTop: theme.spacing(3),
   },
@@ -39,7 +47,10 @@ function ToUConfiguration() {
 
   // Status tracking values of fetching/posting the data from/to the server
   const [ error, setError ] = useState();
-  const [ enabled, setEnabled ] = useState(false);
+  const [ acceptanceRequired, setAcceptanceRequired ] = useState(false);
+  const [ title, setTitle ] = useState();
+  const [ text, setText ] = useState();
+  const [ version, setVersion ] = useState();
   const [ isSaved, setIsSaved ] = useState(false);
 
   // Fetch saved admin config settings
@@ -47,7 +58,10 @@ function ToUConfiguration() {
     fetch('/Proms/TermsOfUse.json')
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
-        setEnabled(json.enabled);
+        setAcceptanceRequired(json.acceptanceRequired || false);
+        setTitle(json.title || "");
+        setVersion(json.version || "");
+        setText(json.text || "");
       })
       .catch(setError);
   }
@@ -61,7 +75,10 @@ function ToUConfiguration() {
     // Build formData object.
     // We need to do this because sling does not accept JSON, need url encoded data
     let formData = new URLSearchParams();
-    formData.append('enabled', enabled);
+    formData.append('acceptanceRequired', acceptanceRequired);
+    formData.append('title', title);
+    formData.append('version', version);
+    formData.append('text', text);
 
     // Use native fetch, sort like the XMLHttpRequest so no need for other libraries.
     fetch('/Proms/TermsOfUse',
@@ -92,17 +109,52 @@ function ToUConfiguration() {
   }, []);
 
   return (
-      <AdminScreen title="Patient Portal Terms of Use">
-        {error && <Alert severity="error">{error}</Alert>}
+    <AdminScreen title="Patient Portal Terms of Use">
+      { error && <Alert severity="error">{error}</Alert> }
+      { typeof(text) == 'undefined' ? <CircularProgress /> :
         <form onSubmit={handleSubmit}>
           <List>
-            <ListItem key="enabled">
+            <ListItem key="title">
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                variant="standard"
+                fullWidth
+                id="title"
+                name="title"
+                type="text"
+                label="Title"
+                value={title}
+                onChange={(event) => { setIsSaved(false); setTitle(event.target.value); }}
+              />
+            </ListItem>
+            <ListItem key="version">
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                variant="standard"
+                id="version"
+                name="version"
+                type="version"
+                label="Version"
+                value={version}
+                onChange={(event) => { setIsSaved(false); setVersion(event.target.value); }}
+                style={{'width' : '250px'}}
+              />
+            </ListItem>
+            <ListItem key="text" className={classes.text}>
+              <FormHelperText>Text</FormHelperText>
+              <MarkdownText
+                value={text}
+                height={350}
+                onChange={value => { setIsSaved(false); setText(value); }}
+              />
+            </ListItem>
+            <ListItem key="acceptanceRequired">
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={enabled}
-                    onChange={(event) => { event.preventDefault(); setIsSaved(false); setEnabled(event.target.checked); }}
-                    name="enabled"
+                    checked={acceptanceRequired}
+                    onChange={(event) => { setIsSaved(false); setAcceptanceRequired(event.target.checked); }}
+                    name="acceptanceRequired"
                   />
                 }
                 label="Patients must accept the Terms of Use before using the portal"
@@ -121,7 +173,8 @@ function ToUConfiguration() {
             </ListItem>
           </List>
         </form>
-      </AdminScreen>
+      }
+    </AdminScreen>
   );
 }
 
