@@ -103,9 +103,6 @@
       <id>docker</id>
       <activation>
         <activeByDefault>false</activeByDefault>
-        <file>
-          <exists>/var/run/docker.sock</exists>
-        </file>
       </activation>
       <build>
         <plugins>
