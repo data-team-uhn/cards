@@ -13,7 +13,7 @@
 `mvn clean install`
 
 #### To build a self-contained Docker image:
-`MAVEN_OPTS="-Ddocker.verbose -Ddocker.buildArg.build_jars=true" mvn clean install`
+`MAVEN_OPTS="-Ddocker.verbose -Ddocker.buildArg.build_jars=true" mvn clean install -Pdocker`
 
 Additional options include:
 
@@ -33,7 +33,7 @@ To specify a different URL, use `-Dsling.url=https://cards.server:8443/system/co
 
 `mvn install -PintegrationTests` to run integration tests
 
-A docker image is automatically built when docker is detected. This slows down the build, and may fail if the current user does not have the right to access docker. Docker builds can be disabled with `mvn install -P-docker`.
+A docker image can optionally be built with `mvn install -Pdocker`, if docker is installed, running, and the current user has access to the docker agent.
 
 ## Run:
 `./start_cards.sh` => the app will run at `http://localhost:8080` (default port)
@@ -59,7 +59,7 @@ In order to use "Vocabularies" section and load vocabularies from BioPortal (bio
 
 ## Running with Docker
 
-If Docker is installed, then the build will also create a new image named `cards/cards:latest`
+If Docker is installed, then the build can also create a new image named `cards/cards:latest` if building with `mvn install -Pdocker`.
 
 ### Test/Development Environments
 
@@ -123,7 +123,7 @@ Docker-Compose can be employed to create a cluster of *N* MongoDB Shards, *M* Mo
 1. Before proceeding, ensure that the `cards/cards` Docker image has been built.
 
 ```bash
-mvn clean install
+mvn clean install -Pdocker
 ```
 
 2. The `ccmsk/neuralcr` image is also required. Please build it based on
