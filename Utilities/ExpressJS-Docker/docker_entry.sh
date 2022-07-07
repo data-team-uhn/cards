@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,16 +17,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
-FROM debian:11-slim
-
-RUN apt-get update
-RUN apt-get -y install \
-	nodejs \
-	node-express \
-	node-body-parser \
-	sudo
-
-COPY docker_entry.sh /
-RUN chmod u+x /docker_entry.sh
-
-ENTRYPOINT ["/docker_entry.sh"]
+if [[ ! -z $HOST_USER  && ! -z $HOST_UID ]]
+then
+  adduser --uid $HOST_UID --disabled-password --gecos "" $HOST_USER
+  exec sudo -u $HOST_USER "$@"
+else
+  exec "$@"
+fi
