@@ -143,9 +143,11 @@ public class DataProcessor implements ResourceJsonProcessor
 
             final Map<String, JsonArrayBuilder> formsJsons = new HashMap<>();
             final ResourceResolver currentResolver = this.resolver.get();
-            final String currentSelectors = this.selectors.get();
-            forms.forEachRemaining(f ->
-                storeForm(currentResolver.resolve(f.getPath() + currentSelectors), formsJsons, isQuestionnaire));
+
+            final String currentSelectors = getCurrentSelectors();
+            forms.forEachRemaining(f -> {
+                storeForm(currentResolver.resolve(f.getPath() + currentSelectors), formsJsons, isQuestionnaire);
+            });
             // The data JSONs have been collected, add them to the subject's JSON
             formsJsons.forEach(json::add);
             final JsonObjectBuilder filtersJson = Json.createObjectBuilder();
@@ -159,6 +161,14 @@ public class DataProcessor implements ResourceJsonProcessor
         } catch (RepositoryException e) {
             // Really shouldn't happen
         }
+    }
+
+    private String getCurrentSelectors()
+    {
+        if (this.options.get().containsKey("formSelectors")) {
+            return "." + this.options.get().get("formSelectors") + ".json";
+        }
+        return this.selectors.get();
     }
 
     @Override
