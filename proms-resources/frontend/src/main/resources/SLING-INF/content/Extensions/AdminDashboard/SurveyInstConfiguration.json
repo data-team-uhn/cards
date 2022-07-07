@@ -1,0 +1,9 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/admindashboard/entry",
+  "cards:extensionName": "Patient Portal Survey Instructions",
+  "cards:targetURL": "/content.html/admin/SurveyInstConfiguration",
+  "cards:icon": "asset:proms-homepage.SurveyInstConfigurationIcon.js",
+  "cards:hint": "Configuration for Patient Portal Survey Instructions UI texts",
+  "cards:defaultOrder": 205
+}

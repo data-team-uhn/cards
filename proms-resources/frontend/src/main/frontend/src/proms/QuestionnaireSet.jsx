@@ -142,6 +142,8 @@ function QuestionnaireSet(props) {
   const [ error, setError ] = useState("");
   // Screen layout props
   const [ screenType, setScreenType ] = useState();
+  // Patient Survey UI texts from Patient Portal Survey Instructions
+  const [ surveyInstructions, setSurveyInstructions ] = useState();
 
   const classes = useStyles();
 
@@ -214,12 +216,24 @@ function QuestionnaireSet(props) {
     }
   }, [subjectDataLoadCount]);
 
-  // When the user lands on a completed visit that has not been submited, proceed to reviewing their forms
+  // When the user lands on a completed visit that has not been submitted, proceed to reviewing their forms
   useEffect(() => {
     if(isComplete && !isSubmitted && questionnaireIds?.length > 0 && crtStep == -1) {
       setCrtStep(questionnaireIds.length)
     }
   }, [isComplete, isSubmitted])
+
+  // Fetch saved settings for Patient Portal Survey Instructions
+  useEffect(() => {
+    fetch('/Proms/SurveyInstructions.json')
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((json) => {
+        setSurveyInstructions(json);
+      })
+      .catch((response) => {
+        setError(`Loading the Patient Portal Survey Instructions failed with error code ${response.status}: ${response.statusText}`);
+      });
+  }, []);
 
   const loadExistingData = () => {
     setComplete(undefined);
@@ -363,7 +377,7 @@ function QuestionnaireSet(props) {
   if (!id) {
     return (
       <QuestionnaireSetScreen className={classes.screen}>
-        <Typography variant="h4" color="textSecondary">You do not have any pending surverys</Typography>
+        <Typography variant="h4" color="textSecondary">You do not have any pending surveys</Typography>
       </QuestionnaireSetScreen>
     );
   }
@@ -482,9 +496,9 @@ function QuestionnaireSet(props) {
     let location = getVisitInformation("location");
     let provider = getVisitInformation("provider");
     provider = provider && provider.length > 1 ? provider.join(", ") : provider;
-    return (time || location || provider) ?
+    return (time || location || provider) && surveyInstructions.eventLabel ?
       <Alert severity="info">
-        <AlertTitle>Upcoming appointment</AlertTitle>
+        <AlertTitle>{surveyInstructions.eventLabel}</AlertTitle>
         {time ? <> {time} </> : null}
         {location ? <> at {location}</> : null}
         {provider ? <> with {provider}</> : null}
@@ -533,15 +547,15 @@ function QuestionnaireSet(props) {
   let welcomeScreen = (isComplete && isSubmitted || questionnaireIds?.length == 0) ? [
     <Typography variant="h4" key="welcome-greeting">{ greet(username) }</Typography>,
     appointmentAlert(),
-    <Typography color="textSecondary" variant="subtitle1" key="welcome-message">
-        You have no pending surveys to fill out for your next appointment.
-    </Typography>
+    surveyInstructions.noSurveysMessage ? <Typography color="textSecondary" variant="subtitle1" key="welcome-message">
+        {surveyInstructions.noSurveysMessage}
+    </Typography> : null
   ] : [
     <Typography variant="h4" key="welcome-greeting">{ greet(username) }</Typography>,
     appointmentAlert(),
-    <Typography paragraph key="welcome-message">
-        Tell us about your symptoms prior to your appointment.
-    </Typography>,
+    surveyInstructions.surveyIntro ? <Typography paragraph key="welcome-message">
+        {surveyInstructions.surveyIntro}
+    </Typography> : null,
     <List key="welcome-surveys">
     { (questionnaireIds || []).map((q, i) => (
       <ListItem key={q+"Welcome"}>
@@ -608,22 +622,19 @@ function QuestionnaireSet(props) {
   let hasInterpretations = (questionnaireIds || []).some(q => questionnaires?.[q]?.hasInterpretation);
 
   let disclaimer = (
-      <Alert severity="warning">
-Please note that your responses may not be reviewed by your care team until the day of your next appointment. If your symptoms are
-worsening while waiting for your next appointment, please proceed to your nearest Emergency Department today, or call 911.
-      </Alert>
+      surveyInstructions.disclaimer ? <Alert severity="warning">
+        {surveyInstructions.disclaimer}
+      </Alert> : null
   )
 
   let summaryScreen = hasInterpretations ? [
       <Typography variant="h4">Thank you for your submission</Typography>,
-      <Typography color="textSecondary">
-For your privacy and security, once this screen is closed the information below will not be accessible until the day of
-your appointment with your provider. Please print or note this information for your reference.
-      </Typography>,
+      surveyInstructions.summaryInstructions ? <Typography color="textSecondary">
+        {surveyInstructions.summaryInstructions}
+      </Typography> : null,
       disclaimer,
       <Typography variant="h4">Interpreting your results</Typography>,
-      <Typography color="textSecondary">There are different actions you can take now depending on how you have scored
-your symptoms. Please see below for a summary of your scores and suggested actions.</Typography>,
+      surveyInstructions.interpretationInstructions ? <Typography color="textSecondary">{surveyInstructions.interpretationInstructions}</Typography> : null,
       <Grid container direction="column" spacing={3}>
       { (questionnaireIds || []).map((q, i) => (
         <Grid item>
