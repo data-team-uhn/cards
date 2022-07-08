@@ -46,6 +46,7 @@ import PromsHeader from "./Header.jsx";
 import DateQuestionUtilities from "../questionnaire/DateQuestionUtilities";
 import FormattedText from "../components/FormattedText.jsx";
 import { ENTRY_TYPES } from "../questionnaire/FormEntry.jsx"
+import { DEFAULT_INSTRUCTIONS } from ".SurveyInstConfiguration.jsx"
 
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
@@ -228,7 +229,7 @@ function QuestionnaireSet(props) {
     fetch('/Proms/SurveyInstructions.json')
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
-        setSurveyInstructions(Object.assign(defaultInstructions, json));
+        setSurveyInstructions(Object.assign(DEFAULT_INSTRUCTIONS, json));
       })
       .catch((response) => {
         setError(`Loading the Patient Portal Survey Instructions failed with error code ${response.status}: ${response.statusText}`);

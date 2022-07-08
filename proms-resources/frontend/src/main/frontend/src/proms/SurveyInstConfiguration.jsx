@@ -26,6 +26,10 @@ import {
 import { makeStyles } from '@mui/styles';
 import AdminConfigScreen from "../adminDashboard/AdminConfigScreen.jsx";
 
+export const DEFAULT_INSTRUCTIONS = {
+  noSurveysMessage: "You have no pending surveys to fill out"
+};
+
 const useStyles = makeStyles(theme => ({
   header: {
     marginTop: theme.spacing(3),
@@ -38,10 +42,6 @@ function SurveyInstConfiguration() {
   const [ surveyInstructions, setSurveyInstructions ] = useState();
   const [ hasChanges, setHasChanges ] = useState(false);
 
- export const defaultInstructions = {
-    noSurveysMessage: "You have no pending surveys to fill out"
-  };
-
   // Fetch saved settings for Patient Portal Survey Instructions from the saved configuration
   let readSurveyInstructions = (json) => {
     setSurveyInstructions(json);
@@ -49,7 +49,7 @@ function SurveyInstConfiguration() {
 
   let buildConfigData = (formData) => {
     for (let key of Object.keys(surveyInstructions)) {
-      !key.startsWith("jcr:") && formData.append(key, surveyInstructions[key] || defaults[key] || "");
+      !key.startsWith("jcr:") && formData.append(key, surveyInstructions[key] || "");
     }
   }
 
