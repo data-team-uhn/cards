@@ -1,3 +1,4 @@
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -16,7 +17,10 @@
  */
 package io.uhndata.cards.forms.internal;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.jackrabbit.oak.api.CommitFailedException;
 import org.apache.jackrabbit.oak.api.Type;
@@ -28,13 +32,9 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class RequiredSubjectTypesValidator extends DefaultValidator
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(RequiredSubjectTypesValidator.class);
-
     private final ResourceResolverFactory rrf;
 
     public RequiredSubjectTypesValidator(ResourceResolverFactory rrf)
@@ -43,7 +43,7 @@ public class RequiredSubjectTypesValidator extends DefaultValidator
     }
 
     @Override
-    public @Nullable Validator childNodeAdded(String s, NodeState after) throws CommitFailedException
+    public @Nullable Validator childNodeAdded(String name, NodeState after) throws CommitFailedException
     {
         // Get the type of this node. Return immediately if it's not a cards:Form node
         final String childNodeType = after.getName("jcr:primaryType");
@@ -54,9 +54,6 @@ public class RequiredSubjectTypesValidator extends DefaultValidator
         // Get the jcr:uuid values for the Form's associated Questionnaire and Subject
         final String questionnaireUUID = after.getProperty("questionnaire").getValue(Type.REFERENCE).toString();
         final String subjectUUID = after.getProperty("subject").getValue(Type.REFERENCE).toString();
-        LOGGER.warn("Added this --> {}", after);
-        LOGGER.warn("A cards:Form node was just added with questionnaire={} and subject={} !!!", questionnaireUUID,
-                subjectUUID);
         // Obtain a ResourceResolver for querying the JCR
         final Map<String, Object> parameters =
             Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, "requiredSubjectTypesValidator");
@@ -64,25 +61,21 @@ public class RequiredSubjectTypesValidator extends DefaultValidator
 
             // Get the Subject Resource associated with this Form
             final Resource subject = getSubjectResourceByUuid(serviceResolver, subjectUUID);
-            LOGGER.warn("Resolved /Subjects/{} --> {}", subjectUUID, subject);
             if (subject == null) {
                 return this;
             }
 
             // Get the type value for the Subject
-            final String type = subject.getValueMap().get("type", "null");
-            LOGGER.warn("Questionnaire type --> {}", type);
+            final String type = subject.getValueMap().get("type", "");
             // Get the Questionnaire Resource associated with this Form
             final Resource questionnaire = getQuestionnaireResourceByUuid(serviceResolver, questionnaireUUID);
-            LOGGER.warn("Resolved /Questionnaires/{} --> {}", questionnaireUUID, questionnaire);
             if (questionnaire == null) {
                 return this;
             }
 
             // Get the requiredSubjectTypes value for the Questionnaire
-            final String requiredSubjectTypes = questionnaire.getValueMap().get("requiredSubjectTypes", "null");
-            final List<String> allRequiredSubjectTypes = Arrays.asList(requiredSubjectTypes.split(","));
-            LOGGER.warn("Listened by the Questionnaire types --> {}", allRequiredSubjectTypes);
+            final List<String> allRequiredSubjectTypes = questionnaire.getValueMap().get("requiredSubjectTypes",
+                    List.of());
 
             if (!allRequiredSubjectTypes.contains(type)) {
                 throw new CommitFailedException(CommitFailedException.STATE, 400,
