@@ -38,7 +38,7 @@ function SurveyInstConfiguration() {
   const [ surveyInstructions, setSurveyInstructions ] = useState();
   const [ hasChanges, setHasChanges ] = useState(false);
 
-  const defaults = {
+ export const defaultInstructions = {
     noSurveysMessage: "You have no pending surveys to fill out"
   };
 
