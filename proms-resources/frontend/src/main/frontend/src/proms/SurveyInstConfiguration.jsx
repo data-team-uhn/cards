@@ -72,8 +72,10 @@ function SurveyInstConfiguration() {
             </ListItem>
             <ListItem key="eventLabel">
               <TextField
+                multiline
+                minRows={2}
                 InputLabelProps={{ shrink: true }}
-                variant="standard"
+                variant="outlined"
                 id="eventLabel"
                 name="eventLabel"
                 type="text"
@@ -85,8 +87,10 @@ function SurveyInstConfiguration() {
             </ListItem>
             <ListItem key="noSurveysMessage">
               <TextField
+                multiline
+                minRows={2}
                 InputLabelProps={{ shrink: true }}
-                variant="standard"
+                variant="outlined"
                 id="noSurveysMessage"
                 name="noSurveysMessage"
                 type="text"
@@ -98,8 +102,10 @@ function SurveyInstConfiguration() {
             </ListItem>
             <ListItem key="surveyIntro">
               <TextField
+                multiline
+                minRows={2}
                 InputLabelProps={{ shrink: true }}
-                variant="standard"
+                variant="outlined"
                 id="surveyIntro"
                 name="surveyIntro"
                 type="text"
@@ -117,7 +123,7 @@ function SurveyInstConfiguration() {
                 multiline
                 minRows={4}
                 InputLabelProps={{ shrink: true }}
-                variant="standard"
+                variant="outlined"
                 id="disclaimer"
                 name="disclaimer"
                 type="text"
@@ -132,7 +138,7 @@ function SurveyInstConfiguration() {
                 multiline
                 minRows={4}
                 InputLabelProps={{ shrink: true }}
-                variant="standard"
+                variant="outlined"
                 id="summaryInstructions"
                 name="summaryInstructions"
                 type="text"
@@ -147,7 +153,7 @@ function SurveyInstConfiguration() {
                 multiline
                 minRows={4}
                 InputLabelProps={{ shrink: true }}
-                variant="standard"
+                variant="outlined"
                 id="interpretationInstructions"
                 name="interpretationInstructions"
                 type="text"
