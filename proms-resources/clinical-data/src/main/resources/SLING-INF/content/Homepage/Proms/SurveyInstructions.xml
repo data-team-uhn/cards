@@ -21,7 +21,7 @@
     <name>SurveyInstructions</name>
     <property>
         <name>eventLabel</name>
-        <value>Upcoming appointment.</value>
+        <value>Upcoming appointment</value>
         <type>String</type>
     </property>
     <property>
