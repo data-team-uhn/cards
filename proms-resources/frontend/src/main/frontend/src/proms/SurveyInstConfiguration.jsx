@@ -109,7 +109,7 @@ function SurveyInstConfiguration() {
                 fullWidth
               />
             </ListItem>
-            <ListItem key="h52" >
+            <ListItem key="summaryScreen" >
               <Typography variant="h5" className={classes.header}>Summary screen</Typography>
             </ListItem>
             <ListItem key="disclaimer">
