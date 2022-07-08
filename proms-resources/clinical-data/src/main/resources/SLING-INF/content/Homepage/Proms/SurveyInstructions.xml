@@ -36,7 +36,7 @@
     </property>
     <property>
         <name>disclaimer</name>
-        <value>Please note that your responses may not be reviewed by your care team until the day of your next appointment. If your symptoms areworsening while waiting for your next appointment, please proceed to your nearest Emergency Department today, or call 911.</value>
+        <value>Please note that your responses may not be reviewed by your care team until the day of your next appointment. If your symptoms are worsening while waiting for your next appointment, please proceed to your nearest Emergency Department today, or call 911.</value>
         <type>String</type>
     </property>
     <property>
