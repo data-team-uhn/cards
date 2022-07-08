@@ -23,6 +23,7 @@
 import os
 import sys
 import json
+import hashlib
 import argparse
 
 argparser = argparse.ArgumentParser()
@@ -34,6 +35,12 @@ args = argparser.parse_args()
 BACKUP_DIRECTORY = args.backup_directory
 FORM_LIST_FILE = args.form_list_file
 SUBJECT_LIST_FILE = args.subject_list_file
+
+def calculateFileSha256(filepath):
+  h = hashlib.sha256()
+  with open(filepath, 'rb') as f:
+    h.update(f.read())
+  return h.hexdigest()
 
 with open(FORM_LIST_FILE, 'r') as f:
   FORM_LIST = json.loads(f.read())
@@ -62,6 +69,22 @@ for form in FORM_LIST:
   if form_last_modified != form_data['jcr:lastModified']:
     print("ERROR: The backup is incomplete due to an invalid jcr:lastModified property in {}.".format(form_path))
     sys.exit(-1)
+
+  # If this Form JSON file makes reference to any binary files (blobs), do we have them?
+  for response_path in form_data["responses"]:
+    response = form_data["responses"][response_path]
+    if "fileDataSha256" in response:
+      for filename in response["fileDataSha256"]:
+        filehash = response["fileDataSha256"][filename]
+        blobpath = os.path.join(BACKUP_DIRECTORY, "blobs", filehash + ".blob")
+        if not os.path.isfile(blobpath):
+          print("ERROR: The backup is incomplete due to missing file: {}".format(blobpath))
+          sys.exit(-1)
+
+        # Verify the integrity of this file
+        if filehash != calculateFileSha256(blobpath):
+          print("ERROR: The backup is incomplete because {} is corrupt.".format(blobpath))
+          sys.exit(-1)
 
 for subject in SUBJECT_LIST:
   subject_path = subject[0]
