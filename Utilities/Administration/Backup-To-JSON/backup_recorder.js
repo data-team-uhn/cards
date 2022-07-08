@@ -138,6 +138,10 @@ const cleanupForm = (formObject) => {
       cleanForm["jcr:lastModified"] = formObject["jcr:lastModified"];
       continue;
     }
+    if (key === "@path") {
+      cleanForm["@path"] = formObject["@path"];
+      continue;
+    }
     if (typeof(formObject[key]) !== "object") {
       continue;
     }
