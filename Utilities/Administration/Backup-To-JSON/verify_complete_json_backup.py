@@ -86,6 +86,11 @@ for form in FORM_LIST:
           print("ERROR: The backup is incomplete because {} is corrupt.".format(blobpath))
           sys.exit(-1)
 
+  # Verify that this Form belongs to a Subject that is included in the backup
+  if form_data["subject"] not in [x[0] for x in SUBJECT_LIST]:
+    print("ERROR: The backup is incomplete because {} makes reference to {} which is not included in the backup.".format(form_path, form_data["subject"]))
+    sys.exit(-1)
+
 for subject in SUBJECT_LIST:
   subject_path = subject[0]
   subject_last_modified = subject[1]
