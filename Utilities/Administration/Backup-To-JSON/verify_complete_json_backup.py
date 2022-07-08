@@ -110,4 +110,11 @@ for subject in SUBJECT_LIST:
     print("ERROR: The backup is incomplete due to a missing {} JCR node.".format(subject_path))
     sys.exit(-1)
 
+  # If this Subject is a non-root Subject (eg. not a child of /Subjects/), check that its parent Subject is included in the list
+  if ("/Subjects/" + subject_uuid_name) != subject_path:
+    subject_parent_path = "/".join(subject_path.split('/')[0:-1])
+    if subject_parent_path not in [x[0] for x in SUBJECT_LIST]:
+      print("ERROR: The backup is incomplete as the parent of {} is not included in the Subject list backup.".format(subject_path))
+      sys.exit(-1)
+
 print("OK: Backup is valid.")
