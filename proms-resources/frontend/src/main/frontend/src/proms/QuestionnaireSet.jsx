@@ -228,7 +228,7 @@ function QuestionnaireSet(props) {
     fetch('/Proms/SurveyInstructions.json')
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
-        setSurveyInstructions(json);
+        setSurveyInstructions(Object.assign(defaultInstructions, json));
       })
       .catch((response) => {
         setError(`Loading the Patient Portal Survey Instructions failed with error code ${response.status}: ${response.statusText}`);
