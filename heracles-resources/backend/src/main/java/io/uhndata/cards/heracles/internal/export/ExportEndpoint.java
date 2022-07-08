@@ -40,6 +40,7 @@ import org.osgi.service.component.annotations.Reference;
     selectors = { "s3push" })
 public class ExportEndpoint extends SlingSafeMethodsServlet
 {
+    private static final long serialVersionUID = -1615592669184694095L;
     @Reference
     private ResourceResolverFactory resolverFactory;
 

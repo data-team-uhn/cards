@@ -83,7 +83,7 @@ public class BioOntologyIndexer implements VocabularyIndexer
     /** The vocabulary node where the indexed data must be placed. */
     private InheritableThreadLocal<Node> vocabularyNode = new InheritableThreadLocal<>();
 
-    private InheritableThreadLocal<List> vocabularyIgnoreURIs = new InheritableThreadLocal<>();
+    private InheritableThreadLocal<List<String>> vocabularyIgnoreURIs = new InheritableThreadLocal<>();
 
     @Override
     public boolean canIndex(String source)
@@ -170,7 +170,7 @@ public class BioOntologyIndexer implements VocabularyIndexer
     private boolean shouldIncludeVocabularyTermNode(VocabularyTermSource term)
     {
         String termURI = term.getURI();
-        for (String ignoreTerm : (List<String>) this.vocabularyIgnoreURIs.get()) {
+        for (String ignoreTerm : this.vocabularyIgnoreURIs.get()) {
             if (termURI.startsWith(ignoreTerm)) {
                 return false;
             }

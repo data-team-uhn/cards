@@ -35,6 +35,7 @@ import org.osgi.service.component.annotations.Reference;
 @SlingServletPaths(value = { "/ncr/annotate" })
 public class MockNCREndpoint extends SlingSafeMethodsServlet
 {
+    private static final long serialVersionUID = -7548643624429561469L;
     private static final String MOCK_NCR_INPUT_1 = "The patient has heart disease and diabetes";
     private static final String MOCK_NCR_INPUT_2 = "The patient has renal cancer and myopia";
     private static final String MOCK_NCR_INPUT_3 = "The patient has experienced chest pain and shortness of breath";

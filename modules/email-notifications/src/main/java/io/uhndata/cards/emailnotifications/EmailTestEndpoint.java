@@ -38,6 +38,8 @@ import jakarta.mail.internet.MimeMessage;
     selectors = { "emailtest" })
 public final class EmailTestEndpoint extends SlingSafeMethodsServlet
 {
+    private static final long serialVersionUID = -3886647765025375822L;
+
     @Reference
     private MailService mailService;
 

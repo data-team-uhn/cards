@@ -45,8 +45,11 @@ import org.osgi.service.component.annotations.Reference;
     )
 public class VocabularyBioPortalApiKeyServlet extends SlingSafeMethodsServlet
 {
-    /** The response from this service is a JSON object with this key holding the BioPortal API key as its value. */
+    /**
+     * The response from this service is a JSON object with this key holding the BioPortal API key as its value.
+     */
     private static final String RESPONSE_JSON_KEY = "apikey";
+    private static final long serialVersionUID = -574543232589675813L;
 
     @Reference
     private BioPortalApiKeyManager apiKeyManager;
