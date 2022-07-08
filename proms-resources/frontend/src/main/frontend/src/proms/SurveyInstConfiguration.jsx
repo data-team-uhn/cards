@@ -67,7 +67,7 @@ function SurveyInstConfiguration() {
         onConfigSaved={() => setHasChanges(false)}
         >
           <List>
-            <ListItem key="h5">
+            <ListItem key="startScreen">
               <Typography variant="h5">Start screen</Typography>
             </ListItem>
             <ListItem key="eventLabel">
