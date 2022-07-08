@@ -25,6 +25,7 @@ import {
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import AdminConfigScreen from "../adminDashboard/AdminConfigScreen.jsx";
+import { camelCaseToWords } from "../questionnaireEditor/LabeledField.jsx";
 
 export const DEFAULT_INSTRUCTIONS = {
   noSurveysMessage: "You have no pending surveys to fill out"
@@ -41,6 +42,11 @@ function SurveyInstConfiguration() {
 
   const [ surveyInstructions, setSurveyInstructions ] = useState();
   const [ hasChanges, setHasChanges ] = useState(false);
+
+  const labels = {
+    startScreen: [ "eventLabel", "noSurveysMessage", "surveyIntro" ],
+    summaryScreen: [ "disclaimer", "summaryInstructions", "interpretationInstructions" ]
+  };
 
   // Fetch saved settings for Patient Portal Survey Instructions from the saved configuration
   let readSurveyInstructions = (json) => {
@@ -67,103 +73,30 @@ function SurveyInstConfiguration() {
         onConfigSaved={() => setHasChanges(false)}
         >
           <List>
-            <ListItem key="startScreen">
-              <Typography variant="h5">Start screen</Typography>
-            </ListItem>
-            <ListItem key="eventLabel">
-              <TextField
-                multiline
-                minRows={2}
-                InputLabelProps={{ shrink: true }}
-                variant="outlined"
-                id="eventLabel"
-                name="eventLabel"
-                type="text"
-                label="Event Label"
-                value={surveyInstructions?.eventLabel}
-                onChange={(event) => { setSurveyInstructions({...surveyInstructions, eventLabel: event.target.value}); }}
-                fullWidth
-              />
-            </ListItem>
-            <ListItem key="noSurveysMessage">
-              <TextField
-                multiline
-                minRows={2}
-                InputLabelProps={{ shrink: true }}
-                variant="outlined"
-                id="noSurveysMessage"
-                name="noSurveysMessage"
-                type="text"
-                label="No Surveys Message Label"
-                value={surveyInstructions?.noSurveysMessage || "You have no pending surveys to fill out"}
-                onChange={(event) => { setSurveyInstructions({...surveyInstructions, noSurveysMessage: event.target.value || "You have no pending surveys to fill out"}); }}
-                fullWidth
-              />
-            </ListItem>
-            <ListItem key="surveyIntro">
-              <TextField
-                multiline
-                minRows={2}
-                InputLabelProps={{ shrink: true }}
-                variant="outlined"
-                id="surveyIntro"
-                name="surveyIntro"
-                type="text"
-                label="Survey Intro"
-                value={surveyInstructions?.surveyIntro}
-                onChange={(event) => { setSurveyInstructions({...surveyInstructions, surveyIntro: event.target.value}); }}
-                fullWidth
-              />
-            </ListItem>
-            <ListItem key="summaryScreen" >
-              <Typography variant="h5" className={classes.header}>Summary screen</Typography>
-            </ListItem>
-            <ListItem key="disclaimer">
-              <TextField
-                multiline
-                minRows={4}
-                InputLabelProps={{ shrink: true }}
-                variant="outlined"
-                id="disclaimer"
-                name="disclaimer"
-                type="text"
-                label="Disclaimer"
-                value={surveyInstructions?.disclaimer}
-                onChange={(event) => { setSurveyInstructions({...surveyInstructions, disclaimer: event.target.value}); }}
-                fullWidth
-              />
-            </ListItem>
-            <ListItem key="summaryInstructions">
-              <TextField
-                multiline
-                minRows={4}
-                InputLabelProps={{ shrink: true }}
-                variant="outlined"
-                id="summaryInstructions"
-                name="summaryInstructions"
-                type="text"
-                label="Summary Instructions"
-                value={surveyInstructions?.summaryInstructions}
-                onChange={(event) => { setSurveyInstructions({...surveyInstructions, summaryInstructions: event.target.value}); }}
-                fullWidth
-              />
-            </ListItem>
-            <ListItem key="interpretationInstructions">
-              <TextField
-                multiline
-                minRows={4}
-                InputLabelProps={{ shrink: true }}
-                variant="outlined"
-                id="interpretationInstructions"
-                name="interpretationInstructions"
-                type="text"
-                label="Interpretation Instructions"
-                value={surveyInstructions?.interpretationInstructions}
-                onChange={(event) => { setSurveyInstructions({...surveyInstructions, interpretationInstructions: event.target.value}); }}
-                fullWidth
-              />
-            </ListItem>
-          </List>
+            { Object.keys(labels).map(category => { return (<>
+              <ListItem key={category}>
+                <Typography variant="h5" className={category == "summaryScreen" ? classes.header : ""}>{camelCaseToWords(category)}</Typography>
+              </ListItem>
+              { labels[category].map(key => { return (
+                <ListItem key={key}>
+	              <TextField
+	                multiline
+	                minRows={category == "startScreen" ? 2 : 4}
+	                InputLabelProps={{ shrink: true }}
+	                variant="outlined"
+	                id={key}
+	                name={key}
+	                type="text"
+	                label={camelCaseToWords(key)}
+	                value={surveyInstructions ? surveyInstructions[key]|| "" : DEFAULT_INSTRUCTIONS[key] || ""}
+	                onChange={(event) => { setSurveyInstructions({...surveyInstructions, [key]: event.target.value}); }}
+	                fullWidth
+	              />
+                </ListItem>)
+              })}
+            </>)
+          })}
+        </List>
       </AdminConfigScreen>
   );
 }

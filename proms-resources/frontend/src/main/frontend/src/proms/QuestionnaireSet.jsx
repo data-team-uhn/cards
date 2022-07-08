@@ -46,7 +46,7 @@ import PromsHeader from "./Header.jsx";
 import DateQuestionUtilities from "../questionnaire/DateQuestionUtilities";
 import FormattedText from "../components/FormattedText.jsx";
 import { ENTRY_TYPES } from "../questionnaire/FormEntry.jsx"
-import { DEFAULT_INSTRUCTIONS } from ".SurveyInstConfiguration.jsx"
+import { DEFAULT_INSTRUCTIONS } from "../proms/SurveyInstConfiguration.jsx"
 
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
@@ -497,9 +497,9 @@ function QuestionnaireSet(props) {
     let location = getVisitInformation("location");
     let provider = getVisitInformation("provider");
     provider = provider && provider.length > 1 ? provider.join(", ") : provider;
-    return (time || location || provider) && surveyInstructions.eventLabel ?
+    return (time || location || provider) &&
       <Alert severity="info">
-        <AlertTitle>{surveyInstructions.eventLabel}</AlertTitle>
+        {surveyInstructions.eventLabel && <AlertTitle>{surveyInstructions.eventLabel}</AlertTitle>}
         {time ? <> {time} </> : null}
         {location ? <> at {location}</> : null}
         {provider ? <> with {provider}</> : null}
