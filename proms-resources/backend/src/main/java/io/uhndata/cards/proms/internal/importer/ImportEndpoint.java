@@ -44,6 +44,7 @@ import io.uhndata.cards.utils.ThreadResourceResolverProvider;
     methods = { "GET" })
 public class ImportEndpoint extends SlingSafeMethodsServlet
 {
+    private static final long serialVersionUID = -2727980234215527292L;
     @Reference
     private volatile ResourceResolverFactory resolverFactory;
 

@@ -30,11 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import javax.jcr.Node;
-import javax.jcr.Property;
-import javax.jcr.PropertyIterator;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
+import javax.jcr.*;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
@@ -273,9 +269,9 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
         } else if (patientSubject == null) {
             LOGGER.warn("Patient not found for form {}", patientInformationForm.getPath());
         } else {
-            final Iterator<Node> visits = patientSubject.getNodes();
+            final NodeIterator visits = patientSubject.getNodes();
             while (visits.hasNext()) {
-                Node visitSubject = visits.next();
+                Node visitSubject = visits.nextNode();
                 Node visitInformationForm = getVisitInformationForm(session, visitSubject);
                 if (isVisitUpcoming(session, visitInformationForm)) {
                     validVisitForms.add(visitInformationForm);
@@ -366,9 +362,9 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
     {
         Node visitQuestionnaire = getVisitInformationQuestionnaire(session);
 
-        final Iterator<Property> references = visitSubject.getReferences();
+        final PropertyIterator references = visitSubject.getReferences();
         while (references.hasNext()) {
-            Property reference = references.next();
+            Property reference = references.nextProperty();
             Node form = reference.getParent();
 
             if (this.formUtils.isForm(form)

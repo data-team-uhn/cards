@@ -201,7 +201,7 @@ public class DataImportServlet extends SlingAllMethodsServlet
         }
         this.questionnaire.set(this.resolver.get().getResource(questionnaireName).adaptTo(Node.class));
 
-        CSVFormat format = CSVFormat.TDF.withFirstRecordAsHeader();
+        CSVFormat format = CSVFormat.Builder.create().setHeader().setSkipHeaderRecord(true).build();
         try (CSVParser data = CSVParser.parse(dataFile.getInputStream(), StandardCharsets.UTF_8, format)) {
             data.forEach(row -> {
                 try {
