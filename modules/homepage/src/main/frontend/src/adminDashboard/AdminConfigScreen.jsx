@@ -125,6 +125,8 @@ function AdminConfigScreen(props) {
     onConfigFetched?.(config);
     // Save the initial config, overwriting any previously saved changes
     handleSubmit();
+    // Close the confirmation dialog
+    setResetConfirmationPending(false);
   }
 
   return (
