@@ -156,6 +156,18 @@ function QuestionnaireSet(props) {
     return subjectData?.[questionnaireId] && !subjectData[questionnaireId].statusFlags?.includes("INCOMPLETE");
   }
 
+  // Fetch saved settings for Patient Portal Survey Instructions
+  useEffect(() => {
+    fetch('/Proms/SurveyInstructions.json')
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((json) => {
+        setSurveyInstructions(Object.assign(DEFAULT_INSTRUCTIONS, json));
+      })
+      .catch((response) => {
+        setError(`Loading the Patient Portal Survey Instructions failed with error code ${response.status}: ${response.statusText}`);
+      });
+  }, []);
+
   // Determine the screen type (and style) based on the step number
   useEffect(() => {
     setScreenType(crtStep >= 0 && crtStep < questionnaireIds.length ? "survey" : "screen");
@@ -223,18 +235,6 @@ function QuestionnaireSet(props) {
       setCrtStep(questionnaireIds.length)
     }
   }, [isComplete, isSubmitted])
-
-  // Fetch saved settings for Patient Portal Survey Instructions
-  useEffect(() => {
-    fetch('/Proms/SurveyInstructions.json')
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => {
-        setSurveyInstructions(Object.assign(DEFAULT_INSTRUCTIONS, json));
-      })
-      .catch((response) => {
-        setError(`Loading the Patient Portal Survey Instructions failed with error code ${response.status}: ${response.statusText}`);
-      });
-  }, []);
 
   const loadExistingData = () => {
     setComplete(undefined);
