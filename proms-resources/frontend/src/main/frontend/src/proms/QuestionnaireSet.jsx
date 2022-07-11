@@ -497,7 +497,7 @@ function QuestionnaireSet(props) {
     let location = getVisitInformation("location");
     let provider = getVisitInformation("provider");
     provider = provider && provider.length > 1 ? provider.join(", ") : provider;
-    return (time || location || provider) &&
+    return (time || location || provider) ?
       <Alert severity="info">
         {surveyInstructions.eventLabel && <AlertTitle>{surveyInstructions.eventLabel}</AlertTitle>}
         {time ? <> {time} </> : null}
