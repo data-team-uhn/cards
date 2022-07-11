@@ -24,12 +24,16 @@ import os
 import sys
 import json
 import hashlib
+import datetime
 import argparse
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument('--backup_directory', help='Path to backup directory', type=str, required=True)
 argparser.add_argument('--form_list_file', help='Path to the Form list file', type=str, required=True)
 argparser.add_argument('--subject_list_file', help='Path to the Subject list file', type=str, required=True)
+argparser.add_argument('--relax_timestamp_constraint', help='Instead of requiring that timestamps match, compute \
+  the difference between compared timestamps and print the smallest and largest difference values before the \
+  program exits.', action='store_true')
 args = argparser.parse_args()
 
 BACKUP_DIRECTORY = args.backup_directory
@@ -41,6 +45,31 @@ def calculateFileSha256(filepath):
   with open(filepath, 'rb') as f:
     h.update(f.read())
   return h.hexdigest()
+
+largest_time_delta = None
+smallest_time_delta = None
+def compareTimestamps(ts_1, ts_2):
+  global largest_time_delta
+  global smallest_time_delta
+  if args.relax_timestamp_constraint:
+    time_format_string = "%Y-%m-%dT%H:%M:%S.%f%z"
+    time_delta = datetime.datetime.strptime(ts_2, time_format_string) - datetime.datetime.strptime(ts_1, time_format_string)
+    time_delta = time_delta.total_seconds()
+    if largest_time_delta is None:
+      largest_time_delta = time_delta
+    if smallest_time_delta is None:
+      smallest_time_delta = time_delta
+    if time_delta > largest_time_delta:
+      largest_time_delta = time_delta
+    if time_delta < smallest_time_delta:
+      smallest_time_delta = time_delta
+    return True
+  else:
+    # Timestamps MUST be an exact match
+    if ts_1 == ts_2:
+      return True
+    else:
+      return False
 
 with open(FORM_LIST_FILE, 'r') as f:
   FORM_LIST = json.loads(f.read())
@@ -66,7 +95,7 @@ for form in FORM_LIST:
   if form_path != form_data['@path']:
     print("ERROR: The backup is incomplete due to a missing {} JCR node.".format(form_path))
     sys.exit(-1)
-  if form_last_modified != form_data['jcr:lastModified']:
+  if not compareTimestamps(form_last_modified, form_data['jcr:lastModified']):
     print("ERROR: The backup is incomplete due to an invalid jcr:lastModified property in {}.".format(form_path))
     sys.exit(-1)
 
@@ -116,5 +145,17 @@ for subject in SUBJECT_LIST:
     if subject_parent_path not in [x[0] for x in SUBJECT_LIST]:
       print("ERROR: The backup is incomplete as the parent of {} is not included in the Subject list backup.".format(subject_path))
       sys.exit(-1)
+
+if args.relax_timestamp_constraint:
+  time_delta_message = ""
+  if smallest_time_delta <= 0:
+    time_delta_message += "Maximum time before snapshot: {} seconds. ".format(abs(smallest_time_delta))
+  else:
+    time_delta_message += "Minimum time after snapshot: {} seconds. ".format(smallest_time_delta)
+  if largest_time_delta <= 0:
+    time_delta_message += "Minimum time before snapshot: {} seconds. ".format(abs(largest_time_delta))
+  else:
+    time_delta_message += "Maximum time after snapshot: {} seconds.".format(largest_time_delta)
+  print(time_delta_message)
 
 print("OK: Backup is valid.")
