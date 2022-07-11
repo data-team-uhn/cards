@@ -33,7 +33,9 @@ export const DEFAULT_INSTRUCTIONS = {
 
 const useStyles = makeStyles(theme => ({
   header: {
-    marginTop: theme.spacing(3),
+    "& .MuiListItem-root:not(:first-child) .MuiTypography-root": {
+      marginTop: theme.spacing(3),
+    },
   },
 }));
 
@@ -72,10 +74,10 @@ function SurveyInstConfiguration() {
         buildConfigData={buildConfigData}
         onConfigSaved={() => setHasChanges(false)}
         >
-          <List>
+          <List className={classes.header}>
             { Object.keys(labels).map(category => { return (<>
               <ListItem key={category}>
-                <Typography variant="h5" className={category == "summaryScreen" ? classes.header : ""}>{camelCaseToWords(category)}</Typography>
+                <Typography variant="h5">{camelCaseToWords(category)}</Typography>
               </ListItem>
               { labels[category].map(key => { return (
                 <ListItem key={key}>
