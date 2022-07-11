@@ -491,6 +491,15 @@
 						<type>String</type>
 					</property>
 				</node>
+				<node>
+					<name>not_available</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>value</name>
+						<value>Not Available</value>
+						<type>String</type>
+					</property>
+				</node>				
 			</node>
 			<node>
 				<name>condition</name>
