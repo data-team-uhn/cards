@@ -90,7 +90,8 @@ function SurveyInstConfiguration() {
 	                name={key}
 	                type="text"
 	                label={camelCaseToWords(key)}
-	                value={surveyInstructions ? surveyInstructions[key]|| "" : DEFAULT_INSTRUCTIONS[key] || ""}
+	                value={surveyInstructions?.[key]|| ""}
+	                placeholder={DEFAULT_INSTRUCTIONS[key] || ""}
 	                onChange={(event) => { setSurveyInstructions({...surveyInstructions, [key]: event.target.value}); }}
 	                fullWidth
 	              />
