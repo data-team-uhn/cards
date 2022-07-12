@@ -22,15 +22,27 @@
             "start-order":"2"
         },
         {
+            "id":"${project.groupId}:cards-data-model-subjects-api:${project.version}",
+            "start-order":"25"
+        },
+        {
+            "id":"${project.groupId}:cards-data-model-subjects-impl:${project.version}",
+            "start-order":"25"
+        },
+        {
+            "id":"${project.groupId}:cards-data-model-forms-api:${project.version}",
+            "start-order":"25"
+        },
+        {
+            "id":"${project.groupId}:cards-data-model-forms-impl:${project.version}",
+            "start-order":"25"
+        },
+        {
             "id":"io.uhndata.cards:cards-form-completion-status:${project.version}",
             "start-order":"25"
         },
         {
             "id":"io.uhndata.cards:cards-versioning:${project.version}",
-            "start-order":"25"
-        },
-        {
-            "id":"io.uhndata.cards:cards-subjects:${project.version}",
             "start-order":"25"
         },
         {

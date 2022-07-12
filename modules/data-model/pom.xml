@@ -31,9 +31,7 @@
   <name>CARDS Data Model elements</name>
 
   <modules>
-    <module>patient</module>
-    <module>tumor</module>
-    <module>tumor-region</module>
-    <module>visit</module>
+    <module>forms</module>
+    <module>subjects</module>
   </modules>
 </project>
