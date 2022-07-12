@@ -492,6 +492,14 @@ function QuestionnaireSet(props) {
     return !date?.isValid ? "" : date.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY);
   }
 
+  let displayText = (key, Component, props) => (
+    surveyInstructions?.[key] ?
+      Component ?
+        <Component {...props}>{surveyInstructions[key]}</Component>
+      : surveyInstructions[key]
+    : null
+  );
+
   let appointmentAlert = () => {
     const time = appointmentDate();
     let location = getVisitInformation("location");
@@ -499,7 +507,7 @@ function QuestionnaireSet(props) {
     provider = provider && provider.length > 1 ? provider.join(", ") : provider;
     return (time || location || provider) ?
       <Alert severity="info">
-        {surveyInstructions.eventLabel && <AlertTitle>{surveyInstructions.eventLabel}</AlertTitle>}
+        {displayText("eventLabel", AlertTitle)}
         {time ? <> {time} </> : null}
         {location ? <> at {location}</> : null}
         {provider ? <> with {provider}</> : null}
@@ -548,15 +556,11 @@ function QuestionnaireSet(props) {
   let welcomeScreen = (isComplete && isSubmitted || questionnaireIds?.length == 0) ? [
     <Typography variant="h4" key="welcome-greeting">{ greet(username) }</Typography>,
     appointmentAlert(),
-    surveyInstructions.noSurveysMessage ? <Typography color="textSecondary" variant="subtitle1" key="welcome-message">
-        {surveyInstructions.noSurveysMessage}
-    </Typography> : null
+    displayText("noSurveysMessage", Typography, {color: "textSecondary", variant: "subtitle1", key: "welcome-message"})
   ] : [
     <Typography variant="h4" key="welcome-greeting">{ greet(username) }</Typography>,
     appointmentAlert(),
-    surveyInstructions.surveyIntro ? <Typography paragraph key="welcome-message">
-        {surveyInstructions.surveyIntro}
-    </Typography> : null,
+    displayText("surveyIntro", Typography, {paragraph: true, key: "welcome-message"}),
     <List key="welcome-surveys">
     { (questionnaireIds || []).map((q, i) => (
       <ListItem key={q+"Welcome"}>
@@ -623,19 +627,15 @@ function QuestionnaireSet(props) {
   let hasInterpretations = (questionnaireIds || []).some(q => questionnaires?.[q]?.hasInterpretation);
 
   let disclaimer = (
-      surveyInstructions.disclaimer ? <Alert severity="warning">
-        {surveyInstructions.disclaimer}
-      </Alert> : null
+      displayText("disclaimer", Alert, {severity: "warning"})
   )
 
   let summaryScreen = hasInterpretations ? [
       <Typography variant="h4">Thank you for your submission</Typography>,
-      surveyInstructions.summaryInstructions ? <Typography color="textSecondary">
-        {surveyInstructions.summaryInstructions}
-      </Typography> : null,
+      displayText("summaryInstructions", Typography, {color: "textSecondary"}),
       disclaimer,
       <Typography variant="h4">Interpreting your results</Typography>,
-      surveyInstructions.interpretationInstructions ? <Typography color="textSecondary">{surveyInstructions.interpretationInstructions}</Typography> : null,
+      displayText("interpretationInstructions", Typography, {color: "textSecondary"}),
       <Grid container direction="column" spacing={3}>
       { (questionnaireIds || []).map((q, i) => (
         <Grid item>
