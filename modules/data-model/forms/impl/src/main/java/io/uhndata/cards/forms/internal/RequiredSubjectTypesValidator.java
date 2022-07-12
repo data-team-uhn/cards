@@ -17,6 +17,7 @@
  */
 package io.uhndata.cards.forms.internal;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -31,7 +32,6 @@ import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.jetbrains.annotations.Nullable;
 
 public class RequiredSubjectTypesValidator extends DefaultValidator
 {
@@ -43,7 +43,7 @@ public class RequiredSubjectTypesValidator extends DefaultValidator
     }
 
     @Override
-    public @Nullable Validator childNodeAdded(String name, NodeState after) throws CommitFailedException
+    public Validator childNodeAdded(String name, NodeState after) throws CommitFailedException
     {
         // Get the type of this node. Return immediately if it's not a cards:Form node
         final String childNodeType = after.getName("jcr:primaryType");
@@ -74,10 +74,11 @@ public class RequiredSubjectTypesValidator extends DefaultValidator
             }
 
             // Get the requiredSubjectTypes value for the Questionnaire
-            final List<String> allRequiredSubjectTypes = questionnaire.getValueMap().get("requiredSubjectTypes",
-                    List.of());
-
-            if (!allRequiredSubjectTypes.contains(type)) {
+            final String[] allRequiredSubjectTypes = questionnaire.getValueMap().get("requiredSubjectTypes",
+                    String[].class);
+            final List<String> allRequiredSubjectTypesList = Arrays.asList(allRequiredSubjectTypes != null
+                    ? allRequiredSubjectTypes : new String[0]);
+            if (!allRequiredSubjectTypesList.contains(type)) {
                 throw new CommitFailedException(CommitFailedException.STATE, 400,
                     "The type is not listed by the associated Questionnaire’s requiredSubjectTypes property");
             }
@@ -124,7 +125,7 @@ public class RequiredSubjectTypesValidator extends DefaultValidator
     }
 
     @Override
-    public @Nullable Validator childNodeChanged(String s, NodeState before, NodeState after)
+    public Validator childNodeChanged(String s, NodeState before, NodeState after)
     {
         return this;
     }
