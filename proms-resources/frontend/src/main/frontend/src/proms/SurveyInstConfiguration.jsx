@@ -32,7 +32,7 @@ export const DEFAULT_INSTRUCTIONS = {
 };
 
 const useStyles = makeStyles(theme => ({
-  header: {
+  formEntries: {
     "& .MuiListItem-root:not(:first-child) .MuiTypography-root": {
       marginTop: theme.spacing(3),
     },
@@ -74,7 +74,7 @@ function SurveyInstConfiguration() {
         buildConfigData={buildConfigData}
         onConfigSaved={() => setHasChanges(false)}
         >
-          <List className={classes.header}>
+          <List className={classes.formEntries}>
             { Object.keys(labels).map(category => { return (<>
               <ListItem key={category}>
                 <Typography variant="h5">{camelCaseToWords(category)}</Typography>
