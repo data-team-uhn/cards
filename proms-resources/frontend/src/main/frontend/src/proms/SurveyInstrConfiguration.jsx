@@ -53,11 +53,6 @@ function SurveyInstrConfiguration() {
     summaryScreen: [ "disclaimer", "summaryInstructions", "interpretationInstructions" ]
   };
 
-  // Fetch saved settings for Patient Portal Survey Instructions from the saved configuration
-  let readSurveyInstructions = (json) => {
-    setSurveyInstructions(json);
-  }
-
   let buildConfigData = (formData) => {
     for (let key of Object.keys(surveyInstructions)) {
       !key.startsWith("jcr:") && formData.append(key, surveyInstructions[key] || "");
@@ -72,7 +67,7 @@ function SurveyInstrConfiguration() {
       <AdminConfigScreen
         title="Patient Portal Survey Instructions"
         configPath={SURVEY_INSTRUCTIONS_PATH}
-        onConfigFetched={readSurveyInstructions}
+        onConfigFetched={setSurveyInstructions}
         hasChanges={hasChanges}
         buildConfigData={buildConfigData}
         onConfigSaved={() => setHasChanges(false)}
