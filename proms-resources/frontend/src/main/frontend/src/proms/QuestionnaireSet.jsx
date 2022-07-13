@@ -46,7 +46,7 @@ import PromsHeader from "./Header.jsx";
 import DateQuestionUtilities from "../questionnaire/DateQuestionUtilities";
 import FormattedText from "../components/FormattedText.jsx";
 import { ENTRY_TYPES } from "../questionnaire/FormEntry.jsx"
-import { DEFAULT_INSTRUCTIONS } from "../proms/SurveyInstConfiguration.jsx"
+import { DEFAULT_INSTRUCTIONS, SURVEY_INSTRUCTIONS_PATH } from "../proms/SurveyInstrConfiguration.jsx"
 
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
@@ -158,7 +158,7 @@ function QuestionnaireSet(props) {
 
   // Fetch saved settings for Patient Portal Survey Instructions
   useEffect(() => {
-    fetch('/Proms/SurveyInstructions.json')
+    fetch(`${SURVEY_INSTRUCTIONS_PATH}.json`)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         setSurveyInstructions(Object.assign(DEFAULT_INSTRUCTIONS, json));

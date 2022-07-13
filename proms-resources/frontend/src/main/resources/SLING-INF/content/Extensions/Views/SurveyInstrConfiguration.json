@@ -2,6 +2,6 @@
   "jcr:primaryType": "cards:Extension",
   "cards:extensionPointId": "cards/coreUI/view",
   "cards:extensionName": "Patient Portal Survey Instructions",
-  "cards:targetURL": "/content.html/admin/SurveyInstConfiguration",
-  "cards:extensionRenderURL": "asset:proms-homepage.SurveyInstConfiguration.js"
+  "cards:targetURL": "/content.html/admin/SurveyInstrConfiguration",
+  "cards:extensionRenderURL": "asset:proms-homepage.SurveyInstrConfiguration.js"
 }

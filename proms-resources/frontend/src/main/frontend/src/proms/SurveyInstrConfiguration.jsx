@@ -27,8 +27,9 @@ import { makeStyles } from '@mui/styles';
 import AdminConfigScreen from "../adminDashboard/AdminConfigScreen.jsx";
 import { camelCaseToWords } from "../questionnaireEditor/LabeledField.jsx";
 
+export const SURVEY_INSTRUCTIONS_PATH = "/Proms/SurveyInstructions";
 export const DEFAULT_INSTRUCTIONS = {
-  noSurveysMessage: "You have no pending surveys to fill out"
+  noSurveysMessage: "You have no pending surveys to fill out."
 };
 
 const useStyles = makeStyles(theme => ({
@@ -39,7 +40,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function SurveyInstConfiguration() {
+function SurveyInstrConfiguration() {
   const classes = useStyles();
 
   const [ surveyInstructions, setSurveyInstructions ] = useState();
@@ -68,7 +69,7 @@ function SurveyInstConfiguration() {
   return (
       <AdminConfigScreen
         title="Patient Portal Survey Instructions"
-        configPath="/Proms/SurveyInstructions"
+        configPath={SURVEY_INSTRUCTIONS_PATH}
         onConfigFetched={readSurveyInstructions}
         hasChanges={hasChanges}
         buildConfigData={buildConfigData}
@@ -77,13 +78,13 @@ function SurveyInstConfiguration() {
           <List className={classes.formEntries}>
             { Object.keys(labels).map(category => { return (<>
               <ListItem key={category}>
-                <Typography variant="h5">{camelCaseToWords(category)}</Typography>
+                <Typography variant="h6">{camelCaseToWords(category)}</Typography>
               </ListItem>
               { labels[category].map(key => { return (
                 <ListItem key={key}>
 	              <TextField
 	                multiline
-	                minRows={category == "startScreen" ? 2 : 4}
+	                minRows={3}
 	                InputLabelProps={{ shrink: true }}
 	                variant="outlined"
 	                id={key}
@@ -104,4 +105,4 @@ function SurveyInstConfiguration() {
   );
 }
 
-export default SurveyInstConfiguration;
+export default SurveyInstrConfiguration;

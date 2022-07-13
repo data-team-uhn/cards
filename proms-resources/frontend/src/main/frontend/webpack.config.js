@@ -20,8 +20,8 @@ module.exports = {
     [module_name + 'WelcomeMessageConfigurationIcon']: '@mui/icons-material/ChromeReaderMode.js',
     [module_name + 'ToUConfiguration']: './src/proms/ToUConfiguration.jsx',
     [module_name + 'ToUConfigurationIcon']: '@mui/icons-material/Handshake.js',
-    [module_name + 'SurveyInstConfiguration']: './src/proms/SurveyInstConfiguration.jsx',
-    [module_name + 'SurveyInstConfigurationIcon']: '@mui/icons-material/Quiz.js'
+    [module_name + 'SurveyInstrConfiguration']: './src/proms/SurveyInstrConfiguration.jsx',
+    [module_name + 'SurveyInstrConfigurationIcon']: '@mui/icons-material/Quiz.js'
   },
   plugins: [
     new CleanWebpackPlugin(),
