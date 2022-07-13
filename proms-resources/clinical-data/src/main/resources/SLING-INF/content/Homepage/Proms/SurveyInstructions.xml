@@ -20,6 +20,16 @@
 <node>
     <name>SurveyInstructions</name>
     <property>
+        <name>noEventsMessage</name>
+        <value>We could not find any upcoming appointments that require survey responses.</value>
+        <type>String</type>
+    </property>
+    <property>
+        <name>eventSelectionMessage</name>
+        <value>To fill out pre-appointment surveys, please select one of the clinics where your upcoming appointments will take place.</value>
+        <type>String</type>
+    </property>
+    <property>
         <name>eventLabel</name>
         <value>Upcoming appointment</value>
         <type>String</type>

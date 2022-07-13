@@ -46,7 +46,6 @@ import PromsHeader from "./Header.jsx";
 import DateQuestionUtilities from "../questionnaire/DateQuestionUtilities";
 import FormattedText from "../components/FormattedText.jsx";
 import { ENTRY_TYPES } from "../questionnaire/FormEntry.jsx"
-import { DEFAULT_INSTRUCTIONS, SURVEY_INSTRUCTIONS_PATH } from "../proms/SurveyInstrConfiguration.jsx"
 
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
@@ -97,7 +96,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function QuestionnaireSet(props) {
-  const { subject, username, contentOffset } = props;
+  const { subject, username, displayText, contentOffset } = props;
 
   // Identifier of the questionnaire set used for the visit
   const [ id, setId ] = useState();
@@ -143,8 +142,6 @@ function QuestionnaireSet(props) {
   const [ error, setError ] = useState("");
   // Screen layout props
   const [ screenType, setScreenType ] = useState();
-  // Patient Survey UI texts from Patient Portal Survey Instructions
-  const [ surveyInstructions, setSurveyInstructions ] = useState();
 
   const classes = useStyles();
 
@@ -155,18 +152,6 @@ function QuestionnaireSet(props) {
   const isFormComplete = (questionnaireId) => {
     return subjectData?.[questionnaireId] && !subjectData[questionnaireId].statusFlags?.includes("INCOMPLETE");
   }
-
-  // Fetch saved settings for Patient Portal Survey Instructions
-  useEffect(() => {
-    fetch(`${SURVEY_INSTRUCTIONS_PATH}.json`)
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => {
-        setSurveyInstructions(Object.assign(DEFAULT_INSTRUCTIONS, json));
-      })
-      .catch((response) => {
-        setError(`Loading the Patient Portal Survey Instructions failed with error code ${response.status}: ${response.statusText}`);
-      });
-  }, []);
 
   // Determine the screen type (and style) based on the step number
   useEffect(() => {
@@ -491,14 +476,6 @@ function QuestionnaireSet(props) {
     let date = getVisitDate();
     return !date?.isValid ? "" : date.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY);
   }
-
-  let displayText = (key, Component, props) => (
-    surveyInstructions?.[key] ?
-      Component ?
-        <Component {...props}>{surveyInstructions[key]}</Component>
-      : surveyInstructions[key]
-    : null
-  );
 
   let appointmentAlert = () => {
     const time = appointmentDate();

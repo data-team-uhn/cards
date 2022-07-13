@@ -29,6 +29,7 @@ import { camelCaseToWords } from "../questionnaireEditor/LabeledField.jsx";
 
 export const SURVEY_INSTRUCTIONS_PATH = "/Proms/SurveyInstructions";
 export const DEFAULT_INSTRUCTIONS = {
+  noEventsMessage: "We could not find any pending surveys to fill out.",
   noSurveysMessage: "You have no pending surveys to fill out."
 };
 
@@ -47,6 +48,7 @@ function SurveyInstrConfiguration() {
   const [ hasChanges, setHasChanges ] = useState(false);
 
   const labels = {
+    eventSelectionScreen: ["noEventsMessage", "eventSelectionMessage"],
     startScreen: [ "eventLabel", "noSurveysMessage", "surveyIntro" ],
     summaryScreen: [ "disclaimer", "summaryInstructions", "interpretationInstructions" ]
   };

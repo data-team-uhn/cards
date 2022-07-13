@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { Router, Route, Redirect, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
@@ -27,10 +27,34 @@ import PatientIdentification from "./PatientIdentification.jsx";
 import PromsFooter from "./Footer.jsx";
 import ErrorPage from "../components/ErrorPage.jsx";
 
+import { DEFAULT_INSTRUCTIONS, SURVEY_INSTRUCTIONS_PATH } from "./SurveyInstrConfiguration.jsx"
+
 function PromsHomepage (props) {
   // Current user and associated subject
   const [ username, setUsername ] = useState("");
   const [ subject, setSubject ] = useState();
+  // Patient Survey UI texts from Patient Portal Survey Instructions
+  const [ surveyInstructions, setSurveyInstructions ] = useState();
+
+  // Fetch saved settings for Patient Portal Survey Instructions
+  useEffect(() => {
+    fetch(`${SURVEY_INSTRUCTIONS_PATH}.json`)
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((json) => {
+        setSurveyInstructions(Object.assign(DEFAULT_INSTRUCTIONS, json));
+      })
+      .catch((response) => {
+        setError(`Loading the Patient Portal Survey Instructions failed with error code ${response.status}: ${response.statusText}`);
+      });
+  }, []);
+
+  let displayText = (key, Component, props) => (
+    surveyInstructions?.[key] ?
+      Component ?
+        <Component {...props}>{surveyInstructions[key]}</Component>
+      : surveyInstructions[key]
+    : null
+  );
 
   let onPatientIdentified = (p) => {
     setUsername(`${p?.first_name || ""} ${p?.last_name || ""}`.trim());
@@ -39,13 +63,13 @@ function PromsHomepage (props) {
 
   if (!subject) {
     return (<>
-      <PatientIdentification onSuccess={onPatientIdentified} />
+      <PatientIdentification onSuccess={onPatientIdentified} displayText={displayText}/>
       <PromsFooter />
     </>);
   }
 
   return (<>
-    <QuestionnaireSet subject={subject} username={username}/>
+    <QuestionnaireSet subject={subject} username={username} displayText={displayText}/>
     <PromsFooter />
   </>);
 }
