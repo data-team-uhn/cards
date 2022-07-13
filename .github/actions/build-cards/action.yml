@@ -6,6 +6,6 @@ runs:
     - name: Build CARDS
       run: |
         echo "::group::Build CARDS"
-        mvn clean install
+        mvn clean install -Pdocker
         echo "::endgroup::"
       shell: bash
