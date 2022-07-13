@@ -18,6 +18,8 @@
 //
 import React, { useState, useEffect, useContext } from "react";
 
+import PropTypes from "prop-types";
+
 import { useHistory } from 'react-router-dom';
 
 import { Alert, Button, CardActions, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@mui/material";
@@ -48,6 +50,51 @@ const useStyles = makeStyles(theme => ({
     },
   },
 }));
+
+/**
+ * Component that displays an administration screen allowing for a configuration node to be
+ * updated by an admin user.
+ *
+ * Given the path of the configuration node (specified by the `configPath` prop), it generates
+ * a form with two buttons, SAVE and RESET. The actual contents of the form are rendered
+ * by the parent component as the `children`. `AdminConfigScreen` loads the configuration
+ * from the backend and passes it on to the parent component via the `onConfigFetched` handler.
+ * It gets notified if any changes have been made to the form via the `hasChanges` prop.
+ * In case of data sanity issues as the user fills out a form (for example, a start date which
+ * is later than an end date), it receives an error to display via the `configError` prop.
+ * Data sanity errors will prevent the form from being saved by disabling the button.
+ * When the save button is pressed, the parent component is notified via the `buildConfigData`
+ * handler to build the form data, which is then sent to the server by `AdminConfigScreen`. Once
+ * successfully saved, the parent component is notified via the `onConfigSaved` handler.
+ * Resetting is done by reverting to the configuration that was first loaded when rendering
+ * this component, both on the frontend (the parent component is notified to populate the form
+ * with the original values) and on the backend (whatever has been saved in the current session
+ * is overwritted with the original values). The user is informed of the effects of resetting
+ * and is asked to confirm before actually performing it.
+ *
+ * @example
+ * <AdminConfigScreen
+ *  title="My feature's configuration"
+ *  configPath="/path/to/jcr/node"
+ *  onConfigFetched={readConfig}
+ *  hasChanges={hasChanges}
+ *  configError={error}
+ *  buildConfigData={buildConfigData}
+ *  onConfigSaved={resetHasChanges}
+ *  >
+ *    { renderConfigFormEntries() }
+ * </AdminConfigScreen>
+ *
+ * @param {string} title  - the title of the administration screen, required
+ * @param {string} configPath  - the path of the configuration node; will be used for loading and saving the data
+ * @param {function} onConfigFetched  - handler to pass the loaded configuration json to the parent component
+ * @param {boolean} hasChanges  - how the parent component notifies that the user changed the form values
+ * @param {string} configError  - how the parent component notifies that there's a data sanity issue
+ * @param {function} buildConfigData  - handler to pass the formData to be populated by the parent component before saving
+ * @param {function} onConfigSaved  - handler to notify the parent component that the data has been saved (no params passed)
+ * @param {node or Array.<node>} children - any content that will be displayed in the form, typically
+ *   labeled form controls for each property of the configuration node
+ */
 
 function AdminConfigScreen(props) {
   const { title, configPath, onConfigFetched, hasChanges, configError, buildConfigData, onConfigSaved, children } = props;
@@ -183,6 +230,20 @@ function AdminConfigScreen(props) {
       }
     </AdminScreen>
   );
+}
+
+AdminConfigScreen.propTypes = {
+  title: PropTypes.string.isRequired,
+  configPath: PropTypes.string,
+  onConfigFetched: PropTypes.func,
+  hasChanges: PropTypes.bool,
+  configError: PropTypes.string,
+  buildConfigData: PropTypes.func,
+  onConfigSaved: PropTypes.func,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ]),
 }
 
 export default AdminConfigScreen;
