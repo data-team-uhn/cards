@@ -178,16 +178,8 @@ public class DataProcessor implements ResourceJsonProcessor
 
     private int depthLevelCounter(Node currentNode) throws RepositoryException
     {
-        final String currentNodeIdentifier = currentNode.getIdentifier();
-        if (this.depthLevels.get().containsKey(currentNodeIdentifier)) {
-            return this.depthLevels.get().get(currentNodeIdentifier);
-        }
-
-        int depthLevel = 1;
-        while (!currentNode.getParent().getPath().equals(this.rootNode.get())) {
-            depthLevel += depthLevelCounter(currentNode.getParent());
-        }
-        this.depthLevels.get().put(currentNodeIdentifier, depthLevel);
+        final int depthLevel = StringUtils.countMatches(currentNode.getPath(), "/") - 2;
+        this.depthLevels.get().put(currentNode.getIdentifier(), depthLevel);
         return depthLevel;
     }
 
