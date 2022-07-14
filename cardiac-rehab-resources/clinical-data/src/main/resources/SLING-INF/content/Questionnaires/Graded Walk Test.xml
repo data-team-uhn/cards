@@ -410,7 +410,7 @@
 				</property>
 				<property>
 					<name>minAnswers</name>
-					<value>0</value>
+					<value>1</value>
 					<type>Long</type>
 				</property>
 				<property>
@@ -492,6 +492,15 @@
 					<property>
 						<name>value</name>
 						<value>PL8888888</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>not_available</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>value</name>
+						<value>Not Available</value>
 						<type>String</type>
 					</property>
 				</node>
