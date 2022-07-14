@@ -61,7 +61,7 @@ const useStyles = color => makeStyles(theme => ({
 
 
 function PromsViewInternal (props) {
-  const { color, title, avatar, query, dateField, columns, questionnaireId, className } = props;
+  const { color, title, avatar, query, dateField, columns, questionnaireId, enableTimeTabs, className } = props;
 
   let toMidnight = (date) => {
      date.setHours(0);
@@ -71,6 +71,7 @@ function PromsViewInternal (props) {
      return date;
   }
 
+  let noTabDateFilter = `${dateField}.value IS NOT NULL`;
   let today = new Date(), tomorrow = new Date();
   tomorrow.setDate(today.getDate() + 1);
   today = toMidnight(today).toISOString();
@@ -95,8 +96,8 @@ function PromsViewInternal (props) {
 
   const [ activeTab, setActiveTab ] = useState(1); // Today
 
-  let finalQuery = query.replaceAll("__DATE_FILTER_PLACEHOLDER__", tabFilter[tabs[activeTab]].dateFilter)
-                        .replaceAll("__SORT_ORDER_PLACEHOLDER__", tabFilter[tabs[activeTab]].order);
+  let finalQuery = query.replaceAll("__DATE_FILTER_PLACEHOLDER__", enableTimeTabs ? tabFilter[tabs[activeTab]].dateFilter : noTabDateFilter)
+                        .replaceAll("__SORT_ORDER_PLACEHOLDER__", enableTimeTabs ? tabFilter[tabs[activeTab]].order : "desc");
 
   const classes = useStyles(color)();
 
@@ -107,9 +108,10 @@ function PromsViewInternal (props) {
         avatar={<Avatar className={classes.promsViewAvatar}>{avatar}</Avatar>}
         title={<Typography variant="overline" className={classes.promsViewTitle}>{title}</Typography>}
       /> }
+      { enableTimeTabs &&
       <Tabs value={activeTab} onChange={(event, value) => setActiveTab(value)} indicatorColor="primary" textColor="inherit" >
         { tabs.map((value, index) => <Tab label={value}  key={"form-" + questionnaireId + index} />) }
-      </Tabs>
+      </Tabs> }
       <Divider />
       <CardContent>
         <LiveTable
