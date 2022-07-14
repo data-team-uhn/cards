@@ -38,7 +38,6 @@
     <module>login</module>
     <module>homepage</module>
     <module>pedigree</module>
-    <module>subjects</module>
     <module>data-entry</module>
     <module>data-model</module>
     <module>ldap-support</module>

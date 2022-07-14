@@ -36,7 +36,7 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js"
 
 const NO_RESULTS_TEXT = "No results, use:";
 const NONE_OF_ABOVE_TEXT = "None of the above, use:";
-const MAX_RESULTS = 10;
+export const MAX_RESULTS = 10;
 
 // Component that renders a search bar for resources.
 //

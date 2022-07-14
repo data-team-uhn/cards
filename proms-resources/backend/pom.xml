@@ -123,6 +123,16 @@
     </dependency>
     <dependency>
       <groupId>io.uhndata.cards</groupId>
+      <artifactId>cards-data-model-subjects-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.uhndata.cards</groupId>
+      <artifactId>cards-data-model-forms-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.uhndata.cards</groupId>
       <artifactId>cards-permissions</artifactId>
       <version>${project.version}</version>
     </dependency>
