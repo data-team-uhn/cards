@@ -16,18 +16,17 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import { blackColor, grayColor } from "../themeStyle.jsx"
 
 const adminStyle = theme => ({
   listButton: {
-    color: grayColor[3]
+    color: theme.palette.text.secondary
   },
   listItem: {
     textDecoration: "none",
   },
   listText: {
     "&:hover,&:focus,&:visited,&": {
-      color: blackColor
+      color: theme.palette.text.primary
     }
   }
 })
