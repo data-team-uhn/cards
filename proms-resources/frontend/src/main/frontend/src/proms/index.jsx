@@ -44,7 +44,7 @@ function PromsHomepage (props) {
         setSurveyInstructions(Object.assign(DEFAULT_INSTRUCTIONS, json));
       })
       .catch((response) => {
-        setError(`Loading the Patient Portal Survey Instructions failed with error code ${response.status}: ${response.statusText}`);
+        console.error(`Loading the Patient Portal Survey Instructions failed with error code ${response.status}: ${response.statusText}`);
       });
   }, []);
 
