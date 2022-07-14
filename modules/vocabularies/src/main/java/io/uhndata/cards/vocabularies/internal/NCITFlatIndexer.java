@@ -115,7 +115,7 @@ public class NCITFlatIndexer extends AbstractNCITIndexer
         // The NCIT source is an unquoted tab-delimited file
         // We need withQuote(null) to keep all quotes as part of the text, and not interpreted as special chars
         try (CSVParser csvParser = CSVParser.parse(source, DEFAULT_CHARSET,
-                CSVFormat.Builder.create().setQuote(null).build())) {
+                CSVFormat.TDF.builder().setQuote(null).build())) {
             Iterator<CSVRecord> csvIterator = csvParser.iterator();
 
             while (csvIterator.hasNext()) {
@@ -162,7 +162,7 @@ public class NCITFlatIndexer extends AbstractNCITIndexer
         // The NCIT source is an unquoted tab-delimited file
         // We need withQuote(null) to keep all quotes as part of the text, and not interpreted as special chars
         try (CSVParser csvParser = CSVParser.parse(source, DEFAULT_CHARSET,
-                CSVFormat.Builder.create().setQuote(null).build())) {
+                CSVFormat.TDF.builder().setQuote(null).build())) {
             Iterator<CSVRecord> csvIterator = csvParser.iterator();
 
             Map<String, String[]> parents = new HashMap<>();
