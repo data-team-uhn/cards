@@ -1,0 +1,7 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/view",
+  "cards:extensionName": "Staff dashboard",
+  "cards:targetURL": "/content.html/admin/DashboardSettingsConfiguration",
+  "cards:extensionRenderURL": "asset:proms-homepage.DashboardSettingsConfiguration.js"
+}

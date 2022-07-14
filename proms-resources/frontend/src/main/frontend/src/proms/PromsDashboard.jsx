@@ -98,9 +98,24 @@ function PromsDashboard(props) {
   let [ defaultsLoading, setDefaultsLoading ] = useState(true);
   let [ extensionsLoading, setExtensionsLoading ] = useState(true);
   let [ visitInfo, setVisitInfo ] = useState();
+  let [ error, setError ] = useState();
+
+  const [ enableTimeTabs, setEnableTimeTabs ] = useState();
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
   const location = useLocation();
+
+  // Fetch saved settings for time grouping tabs of dashboard boxes
+  useEffect(() => {
+    fetch(`/Proms/DashboardSettings.json`)
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((json) => {
+        setEnableTimeTabs(json.enableTimeTabs);
+      })
+      .catch((response) => {
+        setError(`Loading the dashboard settings failed with error code ${response.status}: ${response.statusText}`);
+      });
+  }, []);
 
   // If there's an extra path segment, we use it to obtain the extension point
   // Otherwise default to "DashboardViews" (main dashboard)
@@ -184,12 +199,12 @@ function PromsDashboard(props) {
       <Grid container spacing={4} className={classes.dashboardContainer}>
         {/* Appointments view */}
         <Grid item xs={12} xl={6} key={`view-appointments-${clinicId}`} className={classes.dashboardEntry}>
-          <VisitView color={getColor(0)} visitInfo={visitInfo} clinicId={clinicId} />
+          <VisitView color={getColor(0)} visitInfo={visitInfo} clinicId={clinicId} enableTimeTabs={enableTimeTabs}/>
         </Grid>
         {/* Survey views */}
         { surveys?.map((s, index) => (
             <Grid item xs={12} xl={6} key={`view-survey-${clinicId}-${s["@name"]}`} className={classes.dashboardEntry}>
-              <PromsView data={s} color={getColor(index + 1)} visitInfo={visitInfo} clinicId={clinicId} />
+              <PromsView data={s} color={getColor(index + 1)} visitInfo={visitInfo} clinicId={clinicId} enableTimeTabs={enableTimeTabs}/>
             </Grid>
           ))
         }
@@ -198,7 +213,7 @@ function PromsDashboard(props) {
           dashboardExtensions.map((extension, index) => {
             let Extension = extension["cards:extensionRender"];
             return <Grid item xs={12} xl={6} key={`extension-${clinicId}-${index}`} className={classes.dashboardEntry}>
-              <Extension data={extension["cards:data"]} color={getColor(index)} visitInfo={visitInfo} clinicId={clinicId} />
+              <Extension data={extension["cards:data"]} color={getColor(index)} visitInfo={visitInfo} clinicId={clinicId} enableTimeTabs={enableTimeTabs}/>
             </Grid>
           })
         }

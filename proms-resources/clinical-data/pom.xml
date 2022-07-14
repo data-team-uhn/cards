@@ -50,6 +50,7 @@
               SLING-INF/content/Homepage/Proms/TermsOfUse.xml;path:=/Proms/TermsOfUse;overwrite:=true,
               SLING-INF/content/Homepage/Proms/SurveyInstructions.xml;path:=/Proms/SurveyInstructions;overwrite:=true,
               SLING-INF/content/Homepage/Proms/WelcomeMessage.xml;path:=/Proms/WelcomeMessage;overwrite:=true,
+              SLING-INF/content/Homepage/Proms/DashboardSettings.xml;path:=/Proms/DashboardSettings;overwrite:=true,
               SLING-INF/content/Questionnaires/;path:=/Questionnaires/;overwriteProperties:=true;uninstall:=true;checkin:=true,
               SLING-INF/content/libs/cards/resources/media/proms/;path:=/libs/cards/resources/media/proms/;overwrite:=true;uninstall:=true,
               SLING-INF/content/libs/cards/conf/Media.json;path:=/libs/cards/conf/Media;overwriteProperties:=true,

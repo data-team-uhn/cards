@@ -46,7 +46,7 @@ const useStyles = color => makeStyles(theme => ({
 
 
 function VisitView(props) {
-  const { clinicId, color, visitInfo } = props;
+  const { clinicId, color, visitInfo, enableTimeTabs } = props;
 
   const classes = useStyles(color)();
 
@@ -111,6 +111,7 @@ function VisitView(props) {
       query={query}
       dateField="visitDate"
       questionnaireId={visitInfo?.["jcr:uuid"]}
+      enableTimeTabs={enableTimeTabs}
     />
   );
 }
