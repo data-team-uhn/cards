@@ -16,130 +16,79 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-    Button,
     Checkbox,
     TextField,
     Tooltip,
-    Typography,
     FormControlLabel,
     List,
     ListItem,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
-import AdminScreen from "./adminDashboard/AdminScreen.jsx";
+import AdminConfigScreen from "./adminDashboard/AdminConfigScreen.jsx";
 
 const useStyles = makeStyles(theme => ({
   textField: {
     minWidth: "250px",
     paddingBottom: theme.spacing(2),
   },
-  saveButton: {
-    marginTop: theme.spacing(3),
-  },
 }));
 
 function DowntimeWarningConfiguration() {
   const classes = useStyles();
 
-  const [ path, setPath ] = useState();
-
-  // The the configuration values specified by the Administration
+  // The configuration values
   const [ enabled, setEnabled ] = useState(false);
   const [ fromDate, setFromDate ] = useState();
   const [ toDate, setToDate ] = useState();
-  const [ isInvalidDateRange, setIsInvalidDateRange ] = useState(false);
+  const [ dateRangeIsInvalid, setDateRangeIsInvalid ] = useState(false);
 
-  // Status tracking values of fetching/posting the data from/to the server
-  const [ error, setError ] = useState();
-  const [ isSaved, setIsSaved ] = useState(false);
-  const [ fetched, setFetched ] = useState(false);
+  // Tracking unsaved changes
+  const [ hasChanges, setHasChanges ] = useState();
 
   const dateFormat = "yyyy-MM-dd hh:mm";
 
-  // Fetch saved admin config settings
-  let getDowntimeWarningSettings = () => {
-    fetch('/apps/cards/config/DowntimeWarning.deep.json')
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => {
-        setFetched(true);
-        setPath(json["@path"]);
-        setEnabled(json.enabled == 'true');
-        setFromDate(json.fromDate);
-        setToDate(json.toDate);
-      });
+  // Read the settings from the saved configuration
+  let readDowntimeWarningSettings = (json) => {
+    setEnabled(json.enabled == 'true');
+    setFromDate(json.fromDate);
+    setToDate(json.toDate);
   }
 
-  // Submit function
-  let handleSubmit = (event) => {
-
-    // This stops the normal browser form submission
-    event && event.preventDefault();
-
-    // Build formData object.
-    // We need to do this because sling does not accept JSON, need url encoded data
-    let formData = new URLSearchParams();
+  let buildConfigData = (formData) => {
     formData.append('enabled', enabled);
     formData.append('fromDate', fromDate);
     formData.append('toDate', toDate);
-
-    // Use native fetch, sort like the XMLHttpRequest so no need for other libraries.
-    fetch(path,
-      {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: formData
-      })
-      .then((response) => {
-
-        // Important note about native fetch, it does not reject failed
-        // HTTP codes, it'll only fail when network error
-        // Therefore, you must handle the error code yourself.
-        if (!response.ok) {
-          throw Error(response.statusText);
-        }
-
-        setIsSaved(true);
-      })
-      .catch(error => {
-        console.log(error);
-      });
   }
 
-  let updateFromDate  = (event) => {
-    event.preventDefault();
-    setIsSaved(false);
-    setFromDate(event.target.value);
-  }
+  useEffect(() => {
+    // Determine if the end date is earlier than the start date
+    setDateRangeIsInvalid(fromDate && toDate && new Date(toDate).valueOf() < new Date(fromDate).valueOf());
+  }, [fromDate, toDate]);
 
-  let updateToDate  = (event) => {
-    event.preventDefault();
-    setIsSaved(false);
-    setToDate(event.target.value);
-    // Determine the end date is earlier than the start date
-    setIsInvalidDateRange(fromDate && event.target.value && new Date(event.target.value).valueOf() < new Date(fromDate).valueOf());
-  }
-
-  if (!fetched) {
-    getDowntimeWarningSettings();
-  }
+  useEffect(() => {
+    setHasChanges(true);
+  }, [enabled, fromDate, toDate]);
 
   return (
-    <AdminScreen title="Downtime Warning Banner Settings">
-        {error && <Typography color='error'>{errorText}</Typography>}
-        <form onSubmit={handleSubmit}>
+    <AdminConfigScreen
+        title="Downtime Warning Banner Settings"
+        configPath="/apps/cards/config/DowntimeWarning"
+        onConfigFetched={readDowntimeWarningSettings}
+        hasChanges={hasChanges}
+        configError={dateRangeIsInvalid ? "Invalid date range" : undefined}
+        buildConfigData={buildConfigData}
+        onConfigSaved={() => setHasChanges(false)}
+      >
           <List>
             <ListItem key="enabled">
               <FormControlLabel
                 control={
                   <Checkbox
                     checked={enabled}
-                    onChange={(event) => { event.preventDefault(); setIsSaved(false); setEnabled(event.target.checked); }}
+                    onChange={ event => setEnabled(event.target.checked) }
                     name="enabled"
                   />
                 }
@@ -153,8 +102,8 @@ function DowntimeWarningConfiguration() {
                 type="datetime-local"
                 InputLabelProps={{ shrink: true }}
                 className={classes.textField}
-                onChange={(event) => { updateFromDate(event) }}
-                onBlur={(event) => { updateFromDate(event) }}
+                onChange={(event) => setFromDate(event.target.value) }
+                onBlur={(event) => setFromDate(event.target.value) }
                 placeholder={dateFormat.toLowerCase()}
                 value={fromDate || ""}
               />
@@ -166,29 +115,16 @@ function DowntimeWarningConfiguration() {
                 type="datetime-local"
                 InputLabelProps={{ shrink: true }}
                 className={classes.textField}
-                onChange={(event) => { updateToDate(event) }}
-                onBlur={(event) => { updateToDate(event) }}
+                onChange={(event) => setToDate(event.target.value) }
+                onBlur={(event) => setToDate(event.target.value) }
                 placeholder={dateFormat.toLowerCase()}
                 value={toDate || ""}
-                error={isInvalidDateRange}
-                helperText={isInvalidDateRange ? "End date should be after the start date." : ""}
+                error={dateRangeIsInvalid}
+                helperText={dateRangeIsInvalid ? "The end date should be after the start date." : ""}
               />
             </ListItem>
-            <ListItem key="button">
-              <Button
-                type="submit"
-                disabled={isInvalidDateRange}
-                variant="contained"
-                color="primary"
-                size="small"
-                className={classes.saveButton}
-              >
-                { isSaved ? "Saved" : "Save" }
-              </Button>
-            </ListItem>
           </List>
-        </form>
-    </AdminScreen>
+    </AdminConfigScreen>
   );
 }
 

@@ -16,24 +16,22 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Alert,
-    Button,
     Card,
     CardContent,
     CardHeader,
     Grid,
-    List,
-    ListItem,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import MarkdownText from "../questionnaireEditor/MarkdownText";
 import FormattedText from "../components/FormattedText.jsx";
-import AdminScreen from "../adminDashboard/AdminScreen.jsx";
+import AdminConfigScreen from "../adminDashboard/AdminConfigScreen.jsx";
 
 const useStyles = makeStyles(theme => ({
   editorContainer: {
+    padding: theme.spacing(2, 1),
     "& > .MuiGrid-item > *": {
       height: "100% !important",
     },
@@ -50,128 +48,71 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(0, 0, 0, 2),
     height: "30px"
   },
-  saveButton: {
-    marginTop: theme.spacing(3),
-  },
 }));
 
 function WelcomeMessageConfiguration() {
   const classes = useStyles();
 
   const [ welcomeMessage, setWelcomeMessage ] = useState();
-
-  // Status tracking values of fetching/posting the data from/to the server
-  const [ error, setError ] = useState();
-  const [ isSaved, setIsSaved ] = useState(false);
-  const [ fetched, setFetched ] = useState(false);
+  const [ hasChanges, setHasChanges ] = useState(false);
 
   const appName = document.querySelector('meta[name="title"]')?.content;
 
-  // Fetch saved admin config settings
-  let getWelcomeMessage = () => {
-    fetch('/Proms/WelcomeMessage.json')
-      .then((response) => response.ok ? response.json() : Promise.reject(response))
-      .then((json) => {
-        setFetched(true);
-        setWelcomeMessage(json.text || "");
-      })
-      .catch(setError);
+  // Read the welcome message from the saved configuration
+  let readWelcomeMessage = (configJson) => {
+    setWelcomeMessage(configJson.text || "");
   }
 
-  // Submit function
-  let handleSubmit = (event) => {
-
-    // This stops the normal browser form submission
-    event && event.preventDefault();
-
-    // Build formData object.
-    // We need to do this because sling does not accept JSON, need url encoded data
-    let formData = new URLSearchParams();
+  let buildConfigData = (formData) => {
     formData.append('text', welcomeMessage);
-
-    // Use native fetch, sort like the XMLHttpRequest so no need for other libraries.
-    fetch("/Proms/WelcomeMessage",
-      {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: formData
-      })
-      .then((response) => {
-
-        // Important note about native fetch, it does not reject failed
-        // HTTP codes, it'll only fail when network error
-        // Therefore, you must handle the error code yourself.
-        if (!response.ok) {
-          throw Error(response.statusText);
-        }
-
-        setIsSaved(true);
-      })
-      .catch(setError);
   }
 
-  if (!fetched) {
-    getWelcomeMessage();
-  }
+  useEffect(() => {
+    setHasChanges(true);
+  }, [welcomeMessage]);
 
   return (
-      <AdminScreen
+      <AdminConfigScreen
         title="Patient Portal Welcome Message"
+        configPath="/Proms/WelcomeMessage"
+        onConfigFetched={readWelcomeMessage}
+        hasChanges={hasChanges}
+        buildConfigData={buildConfigData}
+        onConfigSaved={() => setHasChanges(false)}
       >
-        {error && <Alert severity="error">{error}</Alert>}
         <Alert severity="info">
           Use APP_NAME to refer to the name configured for the application.
           On the Patient identification screen, all occurrences of APP_NAME will appear as {appName}.
         </Alert>
-        <form onSubmit={handleSubmit}>
-          <List>
-            <ListItem key="form">
-              { welcomeMessage != undefined &&
-                <Grid
-                  container
-                  spacing={2}
-                  justifyContent="center"
-                  alignItems="stretch"
-                  className={classes.editorContainer}
-                >
-                  <Grid item xs={12} md={6}>
-                    <MarkdownText value={welcomeMessage} height={350} preview="edit" visiableDragbar="false" onChange={ (newText) => { setWelcomeMessage(newText); setIsSaved(false); } } />
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <Card>
-                      <CardHeader
-                        className={classes.previewHeader}
-                        title="Preview"
-                        titleTypographyProps={{variant: "overline"}}
-                      />
-                      <CardContent>
-                        <FormattedText variant="body2">
-                          { welcomeMessage?.replaceAll("APP_NAME", appName) }
-                        </FormattedText>
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                </Grid>
-              }
-            </ListItem>
-            <ListItem key="button">
-              <Button
-                type="submit"
-                disabled={welcomeMessage == undefined}
-                variant="contained"
-                color="primary"
-                size="small"
-                className={classes.saveButton}
-              >
-                { isSaved ? "Saved" : "Save" }
-              </Button>
-            </ListItem>
-          </List>
-        </form>
-      </AdminScreen>
+        { /* Wait for the welcomeMessage state to be set before displaying anything, as MDEditor sometimes gets stuck with an empty value */ }
+        { typeof(welcomeMessage) != 'undefined' &&
+          <Grid
+            container
+            spacing={2}
+            justifyContent="center"
+            alignItems="stretch"
+            className={classes.editorContainer}
+          >
+            <Grid item xs={12} md={6}>
+              <MarkdownText value={welcomeMessage} height={350} preview="edit" visiableDragbar="false" onChange={setWelcomeMessage} />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Card>
+                <CardHeader
+                  className={classes.previewHeader}
+                  title="Preview"
+                  titleTypographyProps={{variant: "overline"}}
+                />
+                <CardContent>
+                  <FormattedText variant="body2">
+                    { welcomeMessage?.replaceAll("APP_NAME", appName) }
+                  </FormattedText>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
+        }
+      </AdminConfigScreen>
   );
 }
 
