@@ -133,7 +133,7 @@ function PatientIdentification(props) {
   // Visit list page size
   const [ pageSize, setPageSize ] = useState(5);
   // Whether the patient user has accepted the latest version of the Terms of Use
-  const [ touCleared, setTouCleared ] = useState(false);
+  const [ touCleared, setTouCleared ] = useState();
   // Whether the Terms of Use dialog can be displayed after patient identification
   const [ showTou, setShowTou ] = useState(false);
   const [ welcomeMessage, setWelcomeMessage ] = useState();
@@ -216,8 +216,12 @@ function PatientIdentification(props) {
   // When the visit is successfully obtained and the latest version of Terms of Use accepted, pass it along with the identification data
   // to the parent component
   useEffect(() => {
-    visit && touCleared && patientDetails && onSuccess && onSuccess(Object.assign({subject: visit}, patientDetails));
+    visit && patientDetails && touCleared && authenticate();
   }, [visit, touCleared, !!patientDetails]);
+
+  let authenticate = () => {
+    onSuccess && onSuccess(Object.assign({subject: visit}, patientDetails));
+  }
 
   // -----------------------------------------------------------------------------------------------------
   // Rendering
@@ -236,7 +240,9 @@ function PatientIdentification(props) {
       onDecline={() => {
         setShowTou(false)
         setPatientDetails(null);
+        setTouCleared(false);
         setVisit(null);
+        window.location.href = "/system/sling/logout?resource=" + encodeURIComponent(window.location.pathname);
       }}
     />
 
@@ -270,9 +276,10 @@ function PatientIdentification(props) {
          </Grid>
 
          {/* If we haven't authenticated and retrieved the visit list for this patient yet,
+             or if the Terms of Use were declined after identification,
              display the identification form */}
 
-         { (!visitList || showTou) ?
+         { (!visitList || showTou || touCleared === false) ?
 
          <>
          { welcomeMessage?.text &&
