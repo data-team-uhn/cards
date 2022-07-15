@@ -56,7 +56,7 @@
     </property>
     <property>
         <name>interpretationInstructions</name>
-        <value>There are different actions you can take now depending on how you have scoredyour symptoms. Please see below for a summary of your scores and suggested actions.</value>
+        <value>There are different actions you can take now depending on how you have scored your symptoms. Please see below for a summary of your scores and suggested actions.</value>
         <type>String</type>
     </property>
 </node>
