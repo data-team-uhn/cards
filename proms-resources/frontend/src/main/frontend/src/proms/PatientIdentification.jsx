@@ -243,6 +243,7 @@ function PatientIdentification(props) {
         setPatientDetails(null);
         setTouCleared(false);
         setVisit(null);
+        window.location.href = "/system/sling/logout?resource=" + encodeURIComponent(window.location.pathname);
       }}
     />
 
