@@ -192,6 +192,7 @@ class SignIn extends React.Component {
                       color="primary"
                       className={classes.submit}
                       onClick={nextButtonCallback}
+                      disabled={this.state.username.length == 0}
                     >
                       Next
                     </Button>
