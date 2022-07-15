@@ -220,13 +220,9 @@ class SignIn extends React.Component {
                       }
                     />
                   </FormControl>
-                  <Grid container direction="row" justifyContent="center" alignItems="center">
+                  <Grid container direction="row" justifyContent="center" alignItems="center" columns={15}>
                     {  (!this.state.singleStepEntry) &&
-                      <Grid item xs={3}>
-                      </Grid>
-                    }
-                    {  (!this.state.singleStepEntry) &&
-                      <Grid item xs={3}>
+                      <Grid item xs={7} style={{textAlign: "right"}}>
                         <Button
                           fullWidth
                           variant="contained"
@@ -245,7 +241,15 @@ class SignIn extends React.Component {
                         </Button>
                       </Grid>
                     }
-                    <Grid item xs={this.state.singleStepEntry ? 12: 3}>
+                    {  (!this.state.singleStepEntry) &&
+                      <Grid item xs={1}>
+                      </Grid>
+                    }
+                    <Grid
+                      item
+                      xs={this.state.singleStepEntry ? 15: 7}
+                      style={{textAlign: this.state.singleStepEntry ? "center" : "left"}}
+                    >
                       <Button
                         type="submit"
                         fullWidth
@@ -256,10 +260,6 @@ class SignIn extends React.Component {
                         Sign in
                       </Button>
                     </Grid>
-                    {  (!this.state.singleStepEntry) &&
-                      <Grid item xs={3}>
-                      </Grid>
-                    }
                   </Grid>
                 </React.Fragment>
               }
