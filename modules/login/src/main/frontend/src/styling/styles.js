@@ -18,7 +18,7 @@
 //
 const styles = theme => ({
   main: {
-    width: 'auto',
+    width: '400px',
     display: 'block', // Fix IE 11 issue.
     marginLeft: theme.spacing(3),
     marginRight: theme.spacing(3),
