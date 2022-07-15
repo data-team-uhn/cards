@@ -102,7 +102,7 @@ public class VocabularyIndexerServletTest
         this.slingBundleContext = this.context.bundleContext();
         this.resourceResolver = this.slingBundleContext
             .getService(this.slingBundleContext.getServiceReference(ResourceResolverFactory.class))
-            .getAdministrativeResourceResolver(null);
+            .getServiceResourceResolver(null);
     }
 
     /**

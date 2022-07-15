@@ -42,6 +42,7 @@ import org.slf4j.LoggerFactory;
 public class WebhookBackupEndpoint extends SlingSafeMethodsServlet
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebhookBackupEndpoint.class);
+    private static final long serialVersionUID = -6489305069446929017L;
 
     @Reference
     private ResourceResolverFactory resolverFactory;

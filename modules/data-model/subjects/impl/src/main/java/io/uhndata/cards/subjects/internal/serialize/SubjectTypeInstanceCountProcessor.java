@@ -19,6 +19,7 @@
 package io.uhndata.cards.subjects.internal.serialize;
 
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import javax.jcr.Node;
@@ -94,7 +95,10 @@ public class SubjectTypeInstanceCountProcessor implements ResourceJsonProcessor
                 // Getting the count directly fails for some index types, so we have to manually count the number of
                 // items returned.
                 AtomicLong atomicCount = new AtomicLong();
-                queryResult.forEachRemaining(i -> atomicCount.incrementAndGet());
+                Consumer<Object> consumer = i -> atomicCount.incrementAndGet();
+                while (queryResult.hasNext()) {
+                    consumer.accept(queryResult.next());
+                }
                 count = atomicCount.get();
             }
             json.add(NAME, count);
