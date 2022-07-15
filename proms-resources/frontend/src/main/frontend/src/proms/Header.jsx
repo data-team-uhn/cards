@@ -105,7 +105,10 @@ function PromsHeader (props) {
           </div>
           <Breadcrumbs separator = "·">
             {greeting && <span className={classes.greeting}>{ greeting }</span>}
-            <Link href="/system/sling/logout" underline="hover">Sign out</Link>
+            <Link href="#" onClick={(event) => {
+              event.preventDefault();
+              window.location.href = "/system/sling/logout?resource=" + encodeURIComponent(window.location.pathname);
+            }}>Sign out</Link>
           </Breadcrumbs>
         </Toolbar>
       </Collapse>
