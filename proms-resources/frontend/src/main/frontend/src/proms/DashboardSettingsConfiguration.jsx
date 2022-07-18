@@ -63,7 +63,7 @@ function DashboardSettingsConfiguration() {
                     name="enableTimeTabs"
                   />
                 }
-                label="Configure how data is displayed on the dashboard"
+                label="Enable time tabs"
               />
             </ListItem>
         </List>

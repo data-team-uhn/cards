@@ -77,7 +77,7 @@ function PromsViewInternal (props) {
   today = toMidnight(today).toISOString();
   tomorrow = toMidnight(tomorrow).toISOString();
 
-  const tabFilter = {
+  const timeFilter = enableTimeTabs ? {
     "Past" : {
       dateFilter :  `${dateField}.value < '${today}' `,
       order : "desc"
@@ -90,14 +90,19 @@ function PromsViewInternal (props) {
       dateFilter :  `${dateField}.value >= '${tomorrow}' `,
       order: ""
     },
+  } : {
+    "All" : {
+      dateFilter :  `${dateField}.value IS NOT NULL`,
+      order: "desc"
+    },
   };
 
-  const tabs = Object.keys(tabFilter);
+  const tabs = Object.keys(timeFilter);
 
-  const [ activeTab, setActiveTab ] = useState(1); // Today
+  const [ activeTab, setActiveTab ] = useState(enableTimeTabs ? 1 : 0); // Today if time tabs enabled
 
-  let finalQuery = query.replaceAll("__DATE_FILTER_PLACEHOLDER__", enableTimeTabs ? tabFilter[tabs[activeTab]].dateFilter : noTabDateFilter)
-                        .replaceAll("__SORT_ORDER_PLACEHOLDER__", enableTimeTabs ? tabFilter[tabs[activeTab]].order : "desc");
+  let finalQuery = query.replaceAll("__DATE_FILTER_PLACEHOLDER__", timeFilter[tabs[activeTab]].dateFilter)
+                        .replaceAll("__SORT_ORDER_PLACEHOLDER__", timeFilter[tabs[activeTab]].order);
 
   const classes = useStyles(color)();
 
