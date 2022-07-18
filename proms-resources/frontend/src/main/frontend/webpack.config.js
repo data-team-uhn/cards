@@ -22,7 +22,7 @@ module.exports = {
     [module_name + 'ToUConfigurationIcon']: '@mui/icons-material/Handshake.js',
     [module_name + 'SurveyInstrConfiguration']: './src/proms/SurveyInstrConfiguration.jsx',
     [module_name + 'SurveyInstrConfigurationIcon']: '@mui/icons-material/Quiz.js',
-	[module_name + 'DashboardSettingsConfiguration']: './src/proms/DashboardSettingsConfiguration.jsx',
+    [module_name + 'DashboardSettingsConfiguration']: './src/proms/DashboardSettingsConfiguration.jsx',
     [module_name + 'DashboardSettingsConfigurationIcon']: '@mui/icons-material/Quiz.js'
   },
   plugins: [
