@@ -22,25 +22,44 @@ import {
     FormControlLabel,
     List,
     ListItem,
+    TextField,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import AdminConfigScreen from "../adminDashboard/AdminConfigScreen.jsx";
+import { camelCaseToWords } from "../questionnaireEditor/LabeledField.jsx";
 
 function DashboardSettingsConfiguration() {
 
   const [ enableTimeTabs, setEnableTimeTabs ] = useState(true);
   const [ hasChanges, setHasChanges ] = useState(false);
+  const [ eventsLabel, setEventsLabel ] = useState("");
+  const [ eventTimeLabel, setEventTimeLabel ] = useState("");
+
+  const props = [{
+    label : "eventsLabel",
+    setter: setEventsLabel,
+    value: eventsLabel
+  },
+  {
+    label : "eventTimeLabel",
+    setter: setEventTimeLabel,
+    value: eventTimeLabel
+  }];
 
   useEffect(() => {
     setHasChanges(true);
-  }, [enableTimeTabs]);
+  }, [enableTimeTabs, eventsLabel, eventTimeLabel]);
 
   let buildConfigData = (formData) => {
     formData.append('enableTimeTabs', enableTimeTabs);
+    formData.append('eventsLabel', eventsLabel);
+    formData.append('eventTimeLabel', eventTimeLabel);
   }
 
   // Read the settings from the saved configuration
   let readDashboardSettings = (json) => {
+    setEventsLabel(json.eventsLabel);
+    setEventTimeLabel(json.eventTimeLabel);
     setEnableTimeTabs(json.enableTimeTabs);
   }
 
@@ -54,6 +73,21 @@ function DashboardSettingsConfiguration() {
         onConfigSaved={() => setHasChanges(false)}
         >
           <List>
+            { props.map(prop => { return (
+            <ListItem key={prop.label}>
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                variant="standard"
+                fullWidth
+                id={prop.label}
+                name={prop.label}
+                type="text"
+                label={camelCaseToWords(prop.label)}
+                value={prop.value}
+                onChange={(event) => { prop.setter(event.target.value); }}
+              />
+            </ListItem>)
+            })}
             <ListItem key="enableTimeTabs">
               <FormControlLabel
                 control={

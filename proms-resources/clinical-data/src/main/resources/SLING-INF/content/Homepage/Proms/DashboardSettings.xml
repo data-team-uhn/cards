@@ -24,4 +24,14 @@
         <value>True</value>
         <type>Boolean</type>
     </property>
+    <property>
+        <name>eventsLabel</name>
+        <value>Appointments</value>
+        <type>String</type>
+    </property>
+    <property>
+        <name>eventTimeLabel</name>
+        <value>Visit time</value>
+        <type>String</type>
+    </property>
 </node>

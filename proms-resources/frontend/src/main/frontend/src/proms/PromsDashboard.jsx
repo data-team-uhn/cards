@@ -101,6 +101,8 @@ function PromsDashboard(props) {
   let [ error, setError ] = useState();
 
   const [ enableTimeTabs, setEnableTimeTabs ] = useState();
+  const [ eventsLabel, setEventsLabel ] = useState("");
+  const [ eventTimeLabel, setEventTimeLabel ] = useState("");
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
   const location = useLocation();
@@ -110,6 +112,8 @@ function PromsDashboard(props) {
     fetch(`/Proms/DashboardSettings.json`)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
+        setEventsLabel(json.eventsLabel);
+        setEventTimeLabel(json.eventTimeLabel);
         setEnableTimeTabs(json.enableTimeTabs);
       })
       .catch((response) => {
@@ -199,7 +203,7 @@ function PromsDashboard(props) {
       <Grid container spacing={4} className={classes.dashboardContainer}>
         {/* Appointments view */}
         <Grid item xs={12} xl={6} key={`view-appointments-${clinicId}`} className={classes.dashboardEntry}>
-          <VisitView color={getColor(0)} visitInfo={visitInfo} clinicId={clinicId} enableTimeTabs={enableTimeTabs}/>
+          <VisitView color={getColor(0)} visitInfo={visitInfo} clinicId={clinicId} enableTimeTabs={enableTimeTabs} eventsLabel={eventsLabel} eventTimeLabel={eventTimeLabel}/>
         </Grid>
         {/* Survey views */}
         { surveys?.map((s, index) => (
