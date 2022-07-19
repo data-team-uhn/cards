@@ -96,7 +96,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function QuestionnaireSet(props) {
-  const { subject, username, contentOffset } = props;
+  const { subject, username, displayText, contentOffset } = props;
 
   // Identifier of the questionnaire set used for the visit
   const [ id, setId ] = useState();
@@ -214,7 +214,7 @@ function QuestionnaireSet(props) {
     }
   }, [subjectDataLoadCount]);
 
-  // When the user lands on a completed visit that has not been submited, proceed to reviewing their forms
+  // When the user lands on a completed visit that has not been submitted, proceed to reviewing their forms
   useEffect(() => {
     if(isComplete && !isSubmitted && questionnaireIds?.length > 0 && crtStep == -1) {
       setCrtStep(questionnaireIds.length)
@@ -363,7 +363,7 @@ function QuestionnaireSet(props) {
   if (!id) {
     return (
       <QuestionnaireSetScreen className={classes.screen}>
-        <Typography variant="h4" color="textSecondary">You do not have any pending surverys</Typography>
+        <Typography variant="h4" color="textSecondary">You do not have any pending surveys</Typography>
       </QuestionnaireSetScreen>
     );
   }
@@ -484,7 +484,7 @@ function QuestionnaireSet(props) {
     provider = provider && provider.length > 1 ? provider.join(", ") : provider;
     return (time || location || provider) ?
       <Alert severity="info">
-        <AlertTitle>Upcoming appointment</AlertTitle>
+        {displayText("eventLabel", AlertTitle)}
         {time ? <> {time} </> : null}
         {location ? <> at {location}</> : null}
         {provider ? <> with {provider}</> : null}
@@ -533,15 +533,11 @@ function QuestionnaireSet(props) {
   let welcomeScreen = (isComplete && isSubmitted || questionnaireIds?.length == 0) ? [
     <Typography variant="h4" key="welcome-greeting">{ greet(username) }</Typography>,
     appointmentAlert(),
-    <Typography color="textSecondary" variant="subtitle1" key="welcome-message">
-        You have no pending surveys to fill out for your next appointment.
-    </Typography>
+    displayText("noSurveysMessage", Typography, {color: "textSecondary", variant: "subtitle1", key: "welcome-message"})
   ] : [
     <Typography variant="h4" key="welcome-greeting">{ greet(username) }</Typography>,
     appointmentAlert(),
-    <Typography paragraph key="welcome-message">
-        Tell us about your symptoms prior to your appointment.
-    </Typography>,
+    displayText("surveyIntro", Typography, {paragraph: true, key: "welcome-message"}),
     <List key="welcome-surveys">
     { (questionnaireIds || []).map((q, i) => (
       <ListItem key={q+"Welcome"}>
@@ -608,22 +604,15 @@ function QuestionnaireSet(props) {
   let hasInterpretations = (questionnaireIds || []).some(q => questionnaires?.[q]?.hasInterpretation);
 
   let disclaimer = (
-      <Alert severity="warning">
-Please note that your responses may not be reviewed by your care team until the day of your next appointment. If your symptoms are
-worsening while waiting for your next appointment, please proceed to your nearest Emergency Department today, or call 911.
-      </Alert>
+      displayText("disclaimer", Alert, {severity: "warning"})
   )
 
   let summaryScreen = hasInterpretations ? [
       <Typography variant="h4">Thank you for your submission</Typography>,
-      <Typography color="textSecondary">
-For your privacy and security, once this screen is closed the information below will not be accessible until the day of
-your appointment with your provider. Please print or note this information for your reference.
-      </Typography>,
+      displayText("summaryInstructions", Typography, {color: "textSecondary"}),
       disclaimer,
       <Typography variant="h4">Interpreting your results</Typography>,
-      <Typography color="textSecondary">There are different actions you can take now depending on how you have scored
-your symptoms. Please see below for a summary of your scores and suggested actions.</Typography>,
+      displayText("interpretationInstructions", Typography, {color: "textSecondary"}),
       <Grid container direction="column" spacing={3}>
       { (questionnaireIds || []).map((q, i) => (
         <Grid item>

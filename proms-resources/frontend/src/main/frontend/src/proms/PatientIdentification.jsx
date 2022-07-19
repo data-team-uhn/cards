@@ -113,7 +113,7 @@ const useStyles = makeStyles(theme => ({
 // This just makes sure that the correct person accessed the application.
 function PatientIdentification(props) {
   // Callback for reporting successful authentication
-  const { onSuccess, theme } = props;
+  const { onSuccess, displayText, theme } = props;
 
   // The values entered by the user
   const [ dob, setDob ] = useState();
@@ -346,7 +346,7 @@ function PatientIdentification(props) {
           { visitListShown ?
             <>
             <Grid item className={classes.description}>
-              <Typography>To fill out pre-appointment surveys, please select one of the clinics where your upcoming appointments will take place.</Typography>
+              {displayText("eventSelectionMessage", Typography)}
             </Grid>
             <Grid item>
               <List>{ visitList.map((v,i) =>
@@ -375,9 +375,7 @@ function PatientIdentification(props) {
             <>
             {/* Otherwise inform the user there are no known upcoming appointments that need survery responses */}
             <Grid item className={classes.description}>
-              <Typography variant="h6" color="textSecondary">
-                We could not find any upcoming appointments that require survey responses.
-              </Typography>
+              {displayText("noEventsMessage", Typography, {variant: "h6", color: "textSecondary"})}
             </Grid>
             <Grid item>
               <Button
