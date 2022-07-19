@@ -25,7 +25,6 @@ import AdminScreen from "./AdminScreen.jsx";
 import {
   CircularProgress,
   Grid,
-  List,
   ListItem,
   ListItemIcon,
   ListItemText, 
@@ -62,14 +61,16 @@ function AdminDashboard(props) {
 
   return (
     <AdminScreen disableBreadcrumb>
-        <List>
-          {
-            adminRoutes.map((route) => {
-              const EntryIcon = route["cards:icon"];
-              return (
+      <Grid container spacing={2}>
+        { adminRoutes.map((route) => {
+            const EntryIcon = route["cards:icon"];
+            return (
+              <Grid item
+                key={route["cards:targetURL"]}
+                xs={12} md={6} xl={4}
+              >
                 <NavLink
                   to={route["cards:targetURL"]}
-                  key={route["cards:targetURL"]}
                   className={classes.listItem}
                 >
                   <ListItem button className={classes.listButton}>
@@ -78,16 +79,16 @@ function AdminDashboard(props) {
                     </ListItemIcon>
                     <ListItemText
                       className={classes.listText}
-                      primary={<Typography variant="body1">{route["cards:extensionName"]}</Typography>}
-                      secondary={<Typography variant="body2">{route["cards:hint"]}</Typography>}
-                      disableTypography={true}
+                      primary={route["cards:extensionName"]}
+                      secondary={route["cards:hint"]}
                     />
                   </ListItem>
                 </NavLink>
-              )
-            })
-          }
-        </List>
+              </Grid>
+            )
+          })
+        }
+      </Grid>
     </AdminScreen>
   );
 }
