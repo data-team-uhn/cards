@@ -27,7 +27,7 @@ import PatientIdentification from "./PatientIdentification.jsx";
 import PromsFooter from "./Footer.jsx";
 import ErrorPage from "../components/ErrorPage.jsx";
 
-import { DEFAULT_INSTRUCTIONS, SURVEY_INSTRUCTIONS_PATH } from "./SurveyInstrConfiguration.jsx"
+import { DEFAULT_INSTRUCTIONS, SURVEY_INSTRUCTIONS_PATH } from "./SurveyInstructionsConfiguration.jsx"
 
 function PromsHomepage (props) {
   // Current user and associated subject

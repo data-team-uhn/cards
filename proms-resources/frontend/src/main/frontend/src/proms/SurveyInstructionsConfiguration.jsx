@@ -41,7 +41,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function SurveyInstrConfiguration() {
+function SurveyInstructionsConfiguration() {
   const classes = useStyles();
 
   const [ surveyInstructions, setSurveyInstructions ] = useState();
@@ -102,4 +102,4 @@ function SurveyInstrConfiguration() {
   );
 }
 
-export default SurveyInstrConfiguration;
+export default SurveyInstructionsConfiguration;
