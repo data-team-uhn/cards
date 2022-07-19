@@ -20,6 +20,7 @@ package io.uhndata.cards.permissions.spi;
 
 import java.security.Principal;
 import java.util.Map;
+import java.util.Set;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -89,4 +90,17 @@ public interface PermissionsManager
      */
     void removeAccessControlEntry(String target, boolean isAllow, Principal principal, Privilege[] privileges,
         Map<String, Value> restrictions, Session session) throws RepositoryException;
+
+    /**
+     * Removes the ACE matching the parameters from the {@code target} node, if any such ACE exists.
+     *
+     * @param target the target node to alter permissions for
+     * @param isAllow whether the request is to allow (true) or deny (false) access
+     * @param principal the Principal for the rule (i.e. target users to affect)
+     * @param restrictionNames a set of names used for the restriction
+     * @param session the {@code javax.jcr.Session} to commit changes to.
+     * @throws RepositoryException if an error occurs while obtaining repository entries, or illegal arguments occur
+     */
+    void removeAccessControlEntry(String target, boolean isAllow, Principal principal, Set<String> restrictionNames,
+        Session session) throws RepositoryException;
 }
