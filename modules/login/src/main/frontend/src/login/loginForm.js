@@ -19,6 +19,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
+    Alert,
     Button,
     FormControl,
     Grid,
@@ -27,7 +28,6 @@ import {
     InputAdornment,
     InputLabel,
     Tooltip,
-    Typography
 } from '@mui/material';
 import withStyles from '@mui/styles/withStyles';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -166,7 +166,7 @@ class SignIn extends React.Component {
 
     return (
         <div className={classes.main}>
-            {this.state.failedLogin && <Typography component="h2" className={classes.errorMessage}>{this.state.failedLogin}</Typography>}
+            {this.state.failedLogin && <Alert severity="error">{this.state.failedLogin}</Alert>}
 
             <form
               className={classes.form}
@@ -225,7 +225,7 @@ class SignIn extends React.Component {
                       <Grid item>
                         <Button
                           fullWidth
-                          variant="contained"
+                          variant="outlined"
                           color="primary"
                           className={classes.submit}
                           onClick={() => {
