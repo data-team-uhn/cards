@@ -190,7 +190,7 @@ class SignIn extends React.Component {
                       fullWidth
                       variant="contained"
                       color="primary"
-                      className={classes.submit}
+                      className={`${classes.actions} ${classes.submit}`}
                       onClick={nextButtonCallback}
                       disabled={this.state.username.length == 0}
                     >
@@ -220,9 +220,9 @@ class SignIn extends React.Component {
                       }
                     />
                   </FormControl>
-                  <Grid container direction="row" justifyContent="center" alignItems="center" columns={15}>
+                  <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2} className={classes.actions}>
                     {  (!this.state.singleStepEntry) &&
-                      <Grid item xs={7} style={{textAlign: "right"}}>
+                      <Grid item>
                         <Button
                           fullWidth
                           variant="contained"
@@ -241,15 +241,7 @@ class SignIn extends React.Component {
                         </Button>
                       </Grid>
                     }
-                    {  (!this.state.singleStepEntry) &&
-                      <Grid item xs={1}>
-                      </Grid>
-                    }
-                    <Grid
-                      item
-                      xs={this.state.singleStepEntry ? 15: 7}
-                      style={{textAlign: this.state.singleStepEntry ? "center" : "left"}}
-                    >
+                    <Grid item>
                       <Button
                         type="submit"
                         fullWidth

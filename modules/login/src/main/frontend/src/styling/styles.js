@@ -51,8 +51,11 @@ const styles = theme => ({
     marginTop: theme.spacing(3),
     marginLeft: theme.spacing(2)
   },
-  submit: {
+  actions: {
     marginTop: theme.spacing(4),
+  },
+  submit: {
+    whiteSpace: "pre",
     width: "auto !important",
   },
   appInfo: {
