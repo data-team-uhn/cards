@@ -18,8 +18,10 @@ package io.uhndata.cards.proms.internal.permissions;
 
 import java.security.Principal;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -29,11 +31,12 @@ import javax.jcr.Session;
 import javax.jcr.query.QueryResult;
 import javax.jcr.security.AccessControlManager;
 import javax.jcr.security.Privilege;
+import javax.jcr.version.VersionManager;
 
+import org.apache.jackrabbit.api.JackrabbitSession;
 import org.apache.jackrabbit.api.security.JackrabbitAccessControlEntry;
 import org.apache.jackrabbit.api.security.JackrabbitAccessControlList;
 import org.apache.jackrabbit.commons.jackrabbit.authorization.AccessControlUtils;
-import org.apache.jackrabbit.oak.spi.security.principal.EveryonePrincipal;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -52,19 +55,15 @@ import io.uhndata.cards.permissions.spi.PermissionsManager;
 import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 
 /**
- * Change listener looking for new or modified forms related to a Visit subject. Initially, when a new Visit Information
- * form is created, it also creates any forms in the specified survey set that need to be created, based on the survey
- * set's specified frequency. Then, when all the forms required for a visit are completed, it also marks in the Visit
- * Information that the patient has completed the surveys.
+ * Change listener that applies the cards:clinicForms to all forms related to a visit, as well as the visit and its
+ * parent. This restriction will selectively allow users to access the those forms based on whether or not they
+ * belong to the given clinic.
  *
  * @version $Id$
  */
-// Temporary while testing, please flag if it's still here
 @SuppressWarnings("checkstyle:ClassFanOutComplexity")
 @Component(immediate = true, property = {
-    ResourceChangeListener.PATHS + "=/Forms",
-    ResourceChangeListener.CHANGES + "=ADDED",
-    ResourceChangeListener.CHANGES + "=CHANGED"
+    ResourceChangeListener.PATHS + "=/Forms"
 })
 public class ClinicRestrictionListener implements ResourceChangeListener
 {
@@ -94,10 +93,12 @@ public class ClinicRestrictionListener implements ResourceChangeListener
     @Reference
     private PermissionsManager permissionsManager;
 
+    /** List of nodes to checkin after finishing commits. */
+    private Set<String> nodesToCheckin;
+
     @Override
     public void onChange(final List<ResourceChange> changes)
     {
-        LOGGER.warn("onChange called");
         changes.forEach(this::handleEvent);
     }
 
@@ -112,36 +113,47 @@ public class ClinicRestrictionListener implements ResourceChangeListener
     {
         // Acquire a service session with the right privileges for accessing visits and their forms
         try (ResourceResolver localResolver = this.resolverFactory
-            .getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "ClinicRestriction"))) {
+            .getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "ClinicFormsRestriction"))) {
             // Get the information needed from the triggering form
             final Session session = localResolver.adaptTo(Session.class);
             if (!session.nodeExists(event.getPath())) {
                 return;
             }
             final String path = event.getPath();
+
             // Only affect forms and their children
             if (!path.startsWith("/Forms/")) {
                 return;
             }
 
             // Grab the parent form
-            LOGGER.warn("New thing: {} {}", event.getType(), path);
             final String formPath = "/Forms/" + path.split("/", 4)[2];
             final Node form = session.getNode(formPath);
             this.rrp.push(localResolver);
             final Node subject = this.formUtils.getSubject(form);
             final String subjectType = this.subjectTypeUtils.getLabel(this.subjectUtils.getType(subject));
             final Node questionnaire = this.formUtils.getQuestionnaire(form);
+            VersionManager versionManager = session.getWorkspace().getVersionManager();
+            this.nodesToCheckin = new HashSet<String>();
 
             if (isVisitInformation(questionnaire)) {
-                handleVisitInformationForm(form, subject, questionnaire, session);
+                handleVisitInformationForm(form, subject, questionnaire, session, versionManager);
             } else if ("Visit".equals(subjectType) && event.getType() == ResourceChange.ChangeType.ADDED
                 || event.getType() == ResourceChange.ChangeType.CHANGED) {
                 // The form has a new thing
                 // Check if there exists a Visit Information form to apply an ACL
-                handleVisitDataForm(form, subject, session);
+                handleVisitDataForm(form, subject, session, versionManager);
             }
+
+            // Finish all commits
             session.save();
+            this.nodesToCheckin.forEach(node -> {
+                try {
+                    versionManager.checkin(node);
+                } catch (final RepositoryException e) {
+                    LOGGER.warn("Failed to check in node {}: {}", node, e.getMessage(), e);
+                }
+            });
             this.rrp.pop();
         } catch (final LoginException e) {
             LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
@@ -157,10 +169,11 @@ public class ClinicRestrictionListener implements ResourceChangeListener
      * @param visit the Visit that is the subject for the triggering form
      * @param questionnaire the Visit Information questionnaire
      * @param session a service session providing access to the repository
+     * @param versionManager a version manager for checking out nodes
      * @throws RepositoryException if any required data could not be checked
      */
     private void handleVisitInformationForm(final Node form, final Node visit, final Node questionnaire,
-        final Session session) throws RepositoryException
+        final Session session, final VersionManager versionManager) throws RepositoryException
     {
         String clinicPath;
         try {
@@ -171,25 +184,25 @@ public class ClinicRestrictionListener implements ResourceChangeListener
             return;
         }
 
-        LOGGER.warn("clinic path found: " + clinicPath);
-
         // Find every form who belongs to this visit
-        // Add or remove their ACL
         String query = "SELECT f.* FROM [cards:Form] AS f WHERE f.'relatedSubjects'='"
             + visit.getProperty(JCR_UUID).getString() + "'";
         QueryResult results = session.getWorkspace().getQueryManager().createQuery(query, "JCR-SQL2").execute();
-        NodeIterator rows = results.getNodes();
-        final Principal trustedUsers = EveryonePrincipal.getInstance();
-        //final Principal trustedUsers =
-        //    ((JackrabbitSession) session).getPrincipalManager().getPrincipal("TrustedUsers");
-        while (rows.hasNext()) {
-            // Apply to the root level node, and everything should inherit it
-            Node node = rows.nextNode();
-            this.removeClinicFormsRestriction(node.getPath(), session);
-            this.permissionsManager.addAccessControlEntry(node.getPath(), true,
-                trustedUsers, new String[] { Privilege.JCR_ALL },
-                Map.of("cards:clinicForms", session.getValueFactory().createValue(clinicPath)), session);
+        NodeIterator nodeiter = results.getNodes();
+        final Principal trustedUsers =
+            ((JackrabbitSession) session).getPrincipalManager().getPrincipal("TrustedUsers");
+        final String clinicGroupName = session.getNode(clinicPath).getProperty("clinicName").getString();
+        while (nodeiter.hasNext()) {
+            // Apply ACL to the root level node, and everything should inherit it
+            Node node = nodeiter.nextNode();
+            this.resetClinicFormsRestriction(node.getPath(), clinicGroupName, session, trustedUsers, versionManager,
+                false);
         }
+        // Also apply to the visit and its parent subject
+        this.resetClinicFormsRestriction(visit.getPath(), clinicGroupName, session, trustedUsers, versionManager,
+            true);
+        this.resetClinicFormsRestriction(visit.getParent().getPath(), clinicGroupName, session, trustedUsers,
+            versionManager, true);
     }
 
     private void recursiveAlterClinicACL(final Node node, final String clinicPath, final Session session,
@@ -197,7 +210,7 @@ public class ClinicRestrictionListener implements ResourceChangeListener
         throws RepositoryException
     {
         // Reset the cards:clinicForms ACL on the given node
-        this.removeClinicFormsRestriction(node.getPath(), session);
+        this.removeClinicFormsRestriction(node.getName(), session);
         this.permissionsManager.addAccessControlEntry(node.getPath(), true,
             principal, new String[] { Privilege.JCR_ALL },
             Map.of("cards:clinicForms", session.getValueFactory().createValue(clinicPath)), session);
@@ -243,9 +256,11 @@ public class ClinicRestrictionListener implements ResourceChangeListener
      * @param form the form that has changed
      * @param visit the visit subject which should have all forms checked for completion
      * @param session a service session providing access to the repository
+     * @param versionManager a version manager for checking out nodes
      * @throws RepositoryException if any required data could not be retrieved
      */
-    private void handleVisitDataForm(final Node form, final Node visit, final Session session)
+    private void handleVisitDataForm(final Node form, final Node visit, final Session session,
+        final VersionManager versionManager)
         throws RepositoryException
     {
         // Grab the Visit information questionnaire for this visit
@@ -254,25 +269,47 @@ public class ClinicRestrictionListener implements ResourceChangeListener
             + visit.getProperty(JCR_UUID).getString() + "' AND f.'questionnaire'='"
             + visitInformationQuestionnaire.getProperty(JCR_UUID).getString() + "'";
         QueryResult results = session.getWorkspace().getQueryManager().createQuery(query, "JCR-SQL2").execute();
-        NodeIterator nodes = results.getNodes();
-        if (nodes.hasNext()) {
-            Node visitForm = nodes.nextNode();
-            final Principal trustedUsers = EveryonePrincipal.getInstance();
-            //final Principal trustedUsers =
-            //    ((JackrabbitSession) session).getPrincipalManager().getPrincipal("TrustedUsers");
+        NodeIterator nodeiter = results.getNodes();
+        if (nodeiter.hasNext()) {
+            Node visitForm = nodeiter.nextNode();
+            final Principal trustedUsers =
+                ((JackrabbitSession) session).getPrincipalManager().getPrincipal("TrustedUsers");
             try {
                 final Node clinicQuestion = visitInformationQuestionnaire.getNode("clinic");
                 final String clinicPath =
                     (String) this.formUtils.getValue(this.formUtils.getAnswer(visitForm, clinicQuestion));
-                this.removeClinicFormsRestriction(form.getPath(), session);
-                this.permissionsManager.addAccessControlEntry(form.getPath(), true,
-                    trustedUsers, new String[] { Privilege.JCR_ALL },
-                    Map.of("cards:clinicForms", session.getValueFactory().createValue(clinicPath)), session);
+                final String clinicGroupName = session.getNode(clinicPath).getProperty("clinicName").getString();
+                this.resetClinicFormsRestriction(form.getPath(), clinicGroupName, session, trustedUsers,
+                    versionManager, false);
             } catch (PathNotFoundException e) {
                 // The clinic cannot be found -- do not continue
                 return;
             }
         }
+    }
+
+    /**
+     * Remove any {@code cards:clinicForms} restriction currently on the given path and replace it with a new one.
+     *
+     * @param path path to apply the {@code cards:clinicForms} restriction to
+     * @param clinicGroupName the clinic group name
+     * @param session session to use
+     * @param principal principal to apply to
+     * @param checkout whether or not to checkout the node beforehand. Be careful not to apply this to anything under
+     *     /Forms, as that will form an infinite loop
+     */
+    private void resetClinicFormsRestriction(final String path, final String clinicGroupName, final Session session,
+        final Principal principal, final VersionManager versionManager, final boolean checkout)
+        throws RepositoryException
+    {
+        if (checkout) {
+            versionManager.checkout(path);
+            this.nodesToCheckin.add(path);
+        }
+        this.removeClinicFormsRestriction(path, session);
+        this.permissionsManager.addAccessControlEntry(path, true,
+            principal, new String[] { Privilege.JCR_ALL },
+            Map.of("cards:clinicForms", session.getValueFactory().createValue(clinicGroupName)), session);
     }
 
     /**
@@ -283,22 +320,10 @@ public class ClinicRestrictionListener implements ResourceChangeListener
      */
     private static boolean isVisitInformation(final Node questionnaire)
     {
-        return isSpecificQuestionnaire(questionnaire, "/Questionnaires/Visit information");
-    }
-
-    /**
-     * Check if a questionnaire is the specified questionnaire.
-     *
-     * @param questionnaire the questionnaire to check
-     * @param questionnairePath the path to the desired questionnaire
-     * @return {@code true} if the questionnaire is indeed the questionnaire specified by path
-     */
-    private static boolean isSpecificQuestionnaire(final Node questionnaire, final String questionnairePath)
-    {
         try {
-            return questionnaire != null && questionnairePath.equals(questionnaire.getPath());
+            return questionnaire != null && "/Questionnaires/Visit information".equals(questionnaire.getPath());
         } catch (final RepositoryException e) {
-            LOGGER.warn("Failed check if form is of questionnaire type {}: {}", questionnairePath, e.getMessage(), e);
+            LOGGER.warn("Failed check if questionnaire is Visit information: {}", e.getMessage(), e);
             return false;
         }
     }

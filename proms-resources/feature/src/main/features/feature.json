@@ -87,7 +87,7 @@
         // Enforcing Terms Of Use acceptance
         "create service user proms-patient-tou \n set ACL for proms-patient-tou \n   allow jcr:read,rep:write,jcr:versionManagement on /Forms \n   allow jcr:read on /Questionnaires,/Subjects \n end",
         // Creating the Clinics permissions ACL
-        "create service user proms-clinic-backend \n set ACL on /Questionnaires,/Subjects,/SubjectTypes \n   allow jcr:read for proms-clinic-backend \n end \n set ACL on /Forms \n   allow jcr:read,rep:write,jcr:versionManagement,jcr:readAccessControl,jcr:modifyAccessControl for proms-clinic-backend \n end",
+        "create service user proms-clinic-backend \n set ACL on /Questionnaires,/SubjectTypes,/home \n   allow jcr:read for proms-clinic-backend \n end \n set ACL on /Forms,/Subjects \n   allow jcr:read,rep:write,jcr:versionManagement,jcr:readAccessControl,jcr:modifyAccessControl for proms-clinic-backend \n end",
         // Unsubscribe from email notifications
         "create service user proms-patient-unsubscribe \n set ACL for proms-patient-unsubscribe \n   allow jcr:read,rep:write,jcr:versionManagement on /Forms \n   allow jcr:read on /Questionnaires,/Subjects \n end",
         // Trusted users can only access forms submitted by their patients, and delete forms that they created
@@ -119,12 +119,11 @@
         "io.uhndata.cards.proms-backend:tou=[proms-patient-tou]",
         "io.uhndata.cards.proms-backend:unsubscribe=[proms-patient-unsubscribe]",
         "io.uhndata.cards.proms-backend:EmailNotifications=[sling-readall]",
-        "io.uhndata.cards.proms-backend:ClinicFormsRestriction=[sling-readall]",
+        "io.uhndata.cards.proms-backend:ClinicFormsRestriction=[proms-clinic-backend]",
         "io.uhndata.cards.proms-permissions:UnsubmittedFormsRestriction=[sling-readall]",
         "io.uhndata.cards.proms-backend:TorchImporter=[proms-import-backend]",
         "io.uhndata.cards.proms-backend:MetricLogger=[cards-metrics]",
-        "io.uhndata.cards.proms-backend:SlackNotifications=[cards-metrics]",
-        "io.uhndata.cards.proms-backend:ClinicRestriction=[proms-clinic-backend]"
+        "io.uhndata.cards.proms-backend:SlackNotifications=[cards-metrics]"
       ]
     },
     "io.uhndata.cards.proms.emailnotifications.AppointmentEmailNotificationsFactory~InitialNotificationsTask":{
