@@ -71,7 +71,6 @@ function PromsViewInternal (props) {
      return date;
   }
 
-  let noTabDateFilter = `${dateField}.value IS NOT NULL`;
   let today = new Date(), tomorrow = new Date();
   tomorrow.setDate(today.getDate() + 1);
   today = toMidnight(today).toISOString();
