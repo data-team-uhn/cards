@@ -42,11 +42,11 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.uhndata.cards.dataentry.api.FormUtils;
-import io.uhndata.cards.dataentry.api.QuestionnaireUtils;
-import io.uhndata.cards.dataentry.api.SubjectTypeUtils;
-import io.uhndata.cards.dataentry.api.SubjectUtils;
+import io.uhndata.cards.forms.api.FormUtils;
+import io.uhndata.cards.forms.api.QuestionnaireUtils;
 import io.uhndata.cards.permissions.spi.PermissionsManager;
+import io.uhndata.cards.subjects.api.SubjectTypeUtils;
+import io.uhndata.cards.subjects.api.SubjectUtils;
 import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 
 /**
@@ -255,7 +255,7 @@ public class ClinicRestrictionListener implements ResourceChangeListener
             versionManager.checkout(path);
             this.nodesToCheckin.add(path);
         }
-        Set restrictionSet = new HashSet<String>();
+        Set<String> restrictionSet = new HashSet<String>();
         restrictionSet.add("cards:clinicForms");
 
         try {
