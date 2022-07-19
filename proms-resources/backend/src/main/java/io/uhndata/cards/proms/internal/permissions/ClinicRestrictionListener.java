@@ -17,7 +17,6 @@
 package io.uhndata.cards.proms.internal.permissions;
 
 import java.security.Principal;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -29,14 +28,10 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.query.QueryResult;
-import javax.jcr.security.AccessControlManager;
 import javax.jcr.security.Privilege;
 import javax.jcr.version.VersionManager;
 
 import org.apache.jackrabbit.api.JackrabbitSession;
-import org.apache.jackrabbit.api.security.JackrabbitAccessControlEntry;
-import org.apache.jackrabbit.api.security.JackrabbitAccessControlList;
-import org.apache.jackrabbit.commons.jackrabbit.authorization.AccessControlUtils;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -61,7 +56,6 @@ import io.uhndata.cards.utils.ThreadResourceResolverProvider;
  *
  * @version $Id$
  */
-@SuppressWarnings("checkstyle:ClassFanOutComplexity")
 @Component(immediate = true, property = {
     ResourceChangeListener.PATHS + "=/Forms"
 })
@@ -205,51 +199,6 @@ public class ClinicRestrictionListener implements ResourceChangeListener
             versionManager, true);
     }
 
-    private void recursiveAlterClinicACL(final Node node, final String clinicPath, final Session session,
-        final Principal principal)
-        throws RepositoryException
-    {
-        // Reset the cards:clinicForms ACL on the given node
-        this.removeClinicFormsRestriction(node.getName(), session);
-        this.permissionsManager.addAccessControlEntry(node.getPath(), true,
-            principal, new String[] { Privilege.JCR_ALL },
-            Map.of("cards:clinicForms", session.getValueFactory().createValue(clinicPath)), session);
-
-        // Recurse downward
-        NodeIterator results = node.getNodes();
-        while (results.hasNext()) {
-            recursiveAlterClinicACL(results.nextNode(), clinicPath, session, principal);
-        }
-    }
-
-    /***
-     * Modified version of {@code PermissionsManager.removeAccessControlEntry()} that only looks at the type.
-     */
-    private void removeClinicFormsRestriction(String target, Session session) throws RepositoryException
-    {
-        AccessControlManager acm = session.getAccessControlManager();
-        JackrabbitAccessControlList acl = AccessControlUtils.getAccessControlList(acm, target);
-        if (acl != null) {
-            // Find the necessary AccessControlEntry to remove
-            JackrabbitAccessControlEntry[] entries = (JackrabbitAccessControlEntry[]) acl.getAccessControlEntries();
-            JackrabbitAccessControlEntry toRemove = null;
-            for (JackrabbitAccessControlEntry entry : entries) {
-                // Find the ACL entry we care about
-                if (Arrays.asList(entry.getRestrictionNames()).contains("cards:clinicForms")) {
-                    // We've found the correct entry, make a note of it
-                    toRemove = entry;
-                    break;
-                }
-            }
-
-            // Remove it if it was found
-            if (toRemove != null) {
-                acl.removeAccessControlEntry(toRemove);
-                acm.setPolicy(target, acl);
-            }
-        }
-    }
-
     /**
      * Given a form related to a subject, apply the appropriate ACL entry to it.
      *
@@ -306,7 +255,15 @@ public class ClinicRestrictionListener implements ResourceChangeListener
             versionManager.checkout(path);
             this.nodesToCheckin.add(path);
         }
-        this.removeClinicFormsRestriction(path, session);
+        Set restrictionSet = new HashSet<String>();
+        restrictionSet.add("cards:clinicForms");
+
+        try {
+            this.permissionsManager.removeAccessControlEntry(path, true, principal, restrictionSet, session);
+        } catch (RepositoryException e) {
+            // Restriction does not exist, continue
+        }
+
         this.permissionsManager.addAccessControlEntry(path, true,
             principal, new String[] { Privilege.JCR_ALL },
             Map.of("cards:clinicForms", session.getValueFactory().createValue(clinicGroupName)), session);
