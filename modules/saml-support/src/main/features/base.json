@@ -44,7 +44,7 @@
       "start-order":"15"
     },
     {
-      "id":"org.codehaus.woodstox:stax2-api:3.1.4",
+      "id":"org.codehaus.woodstox:stax2-api:4.2.1",
       "start-order":"15"
     },
     {
