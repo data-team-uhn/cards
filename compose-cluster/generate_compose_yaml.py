@@ -38,7 +38,7 @@ argparser.add_argument('--composum', help='Enable Composum for the CARDS admin a
 argparser.add_argument('--enable_ncr', help='Add a Neural Concept Recognizer service to the cluster', action='store_true')
 argparser.add_argument('--oak_filesystem', help='Use the filesystem (instead of MongoDB) as the back-end for Oak/JCR', action='store_true')
 argparser.add_argument('--external_mongo', help='Use an external MongoDB instance instead of providing our own', action='store_true')
-argparser.add_argument('--external_mongo_address', help='Address/Hostname of the external MongoDB instance. Only valid if --external_mongo is specified.')
+argparser.add_argument('--external_mongo_uri', help='URI of the external MongoDB instance. Only valid if --external_mongo is specified.')
 argparser.add_argument('--external_mongo_dbname', help='Database name of the external MongoDB instance. Only valid if --external_mongo is specified.')
 argparser.add_argument('--saml', help='Make the Apache Sling SAML2 Handler OSGi bundle available for SAML-based logins', action='store_true')
 argparser.add_argument('--saml_idp_destination', help='URL to redirect to for SAML logins')
@@ -447,12 +447,12 @@ if ENABLE_NCR:
   yaml_obj['services']['neuralcr']['networks']['internalnetwork']['aliases'] = ['neuralcr']
 
 if args.external_mongo:
-  if args.external_mongo_address:
-    ext_mongo_address = args.external_mongo_address
+  if args.external_mongo_uri:
+    ext_mongo_uri = args.external_mongo_uri
   else:
-    ext_mongo_address = input("Enter the address of the MongoDB server (ip, hostname, or domain name, optionally followed by port, e.g. mongo.localdomain:27017): ")
+    ext_mongo_uri = input("Enter the URI of the MongoDB server (ip, hostname, or domain name, optionally followed by port, e.g. mongo.localdomain:27017): ")
 
-  if args.external_mongo_address and 'CARDS_EXT_MONGO_AUTH' in os.environ:
+  if args.external_mongo_uri and 'CARDS_EXT_MONGO_AUTH' in os.environ:
     ext_mongo_credentials = os.environ['CARDS_EXT_MONGO_AUTH']
   else:
     ext_mongo_credentials = input("Enter the username:password for the MongoDB server (leave blank for no password): ")
@@ -462,7 +462,7 @@ if args.external_mongo:
   else:
     ext_mongo_db_name = input("Enter the Sling storage database name on the MongoDB server (default: sling): ")
 
-  yaml_obj['services']['cardsinitial']['environment'].append("EXTERNAL_MONGO_ADDRESS={}".format(ext_mongo_address))
+  yaml_obj['services']['cardsinitial']['environment'].append("EXTERNAL_MONGO_URI={}".format(ext_mongo_uri))
   if len(ext_mongo_credentials) != 0:
     yaml_obj['services']['cardsinitial']['environment'].append("MONGO_AUTH={}".format(ext_mongo_credentials))
 
