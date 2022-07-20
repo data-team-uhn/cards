@@ -20,8 +20,6 @@ const styles = theme => ({
   main: {
     width: 'auto',
     display: 'block', // Fix IE 11 issue.
-    marginLeft: theme.spacing(3),
-    marginRight: theme.spacing(3),
     [theme.breakpoints.up(400 + theme.spacing(6))]: {
       width: 400,
       marginLeft: 'auto',
@@ -51,12 +49,19 @@ const styles = theme => ({
     marginTop: theme.spacing(3),
     marginLeft: theme.spacing(2)
   },
-  submit: {
+  actions: {
     marginTop: theme.spacing(4),
+  },
+  submit: {
+    whiteSpace: "pre",
     width: "auto !important",
   },
   appInfo: {
     marginTop: theme.spacing(6),
+    textAlign: "center",
+    "& ol, li": {
+      display: "inline-block",
+    },
   },
   closeButton: {
     float: 'right',
@@ -75,11 +80,6 @@ const styles = theme => ({
     top: theme.spacing(1),
     color: theme.palette.grey[500]
   },
-  errorMessage: {
-    background: theme.palette.error.dark,
-    padding: theme.spacing(1, 2),
-    color: theme.palette.error.contrastText,
-  }
 });
 
 export default styles;
