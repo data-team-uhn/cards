@@ -1,0 +1,11 @@
+name: 'Build CARDS'
+description: 'Builds the current branch of CARDS using mvn clean install -Pdocker'
+runs:
+  using: "composite"
+  steps:
+    - name: Build CARDS
+      run: |
+        echo "::group::Build CARDS"
+        mvn clean install -Pdocker
+        echo "::endgroup::"
+      shell: bash
