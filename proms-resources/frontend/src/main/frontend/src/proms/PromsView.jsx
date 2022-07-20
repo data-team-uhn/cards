@@ -29,7 +29,7 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js"
 import PromsViewInternal from "./PromsViewInternal.jsx";
 
 function PromsView(props) {
-  const { data, clinicId, color, visitInfo, enableTimeTabs } = props;
+  const { data, clinicId, color, visitInfo, dashboardConfig } = props;
 
   const [ columns, setColumns ] = useState();
   const [ questionnaireId, setQuestionnaireId ] = useState();
@@ -82,7 +82,7 @@ function PromsView(props) {
       dateField="visitDate"
       questionnaireId={questionnaireId}
       key={data?.["@path"]}
-      enableTimeTabs={enableTimeTabs}
+      enableTimeTabs={dashboardConfig?.enableTimeTabs}
     />
   );
 }
