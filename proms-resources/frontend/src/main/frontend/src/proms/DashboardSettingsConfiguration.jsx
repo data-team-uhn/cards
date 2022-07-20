@@ -30,20 +30,26 @@ import { camelCaseToWords } from "../questionnaireEditor/LabeledField.jsx";
 
 function DashboardSettingsConfiguration() {
 
-  const [ enableTimeTabs, setEnableTimeTabs ] = useState(true);
-  const [ hasChanges, setHasChanges ] = useState(false);
   const [ eventsLabel, setEventsLabel ] = useState("");
   const [ eventTimeLabel, setEventTimeLabel ] = useState("");
+  const [ enableTimeTabs, setEnableTimeTabs ] = useState(true);
+  const [ hasChanges, setHasChanges ] = useState(false);
 
-  const config = [{
-    label : "eventsLabel",
+  const fields = [{
+    key : "eventsLabel",
     setter: setEventsLabel,
     value: eventsLabel
   },
   {
-    label : "eventTimeLabel",
+    key : "eventTimeLabel",
     setter: setEventTimeLabel,
     value: eventTimeLabel
+  },
+  {
+    key : "enableTimeTabs",
+    setter: setEnableTimeTabs,
+    value: enableTimeTabs,
+    type: "boolean"
   }];
 
   useEffect(() => {
@@ -73,34 +79,36 @@ function DashboardSettingsConfiguration() {
         onConfigSaved={() => setHasChanges(false)}
         >
           <List>
-            { config.map(prop => { return (
-            <ListItem key={prop.label}>
+          { fields.map(field => { return (
+            <ListItem key={field.key}>
+            { field.type != "boolean" ?
               <TextField
                 InputLabelProps={{ shrink: true }}
                 variant="standard"
                 fullWidth
-                id={prop.label}
-                name={prop.label}
+                id={field.key}
+                name={field.key}
                 type="text"
-                label={camelCaseToWords(prop.label)}
-                value={prop.value}
-                onChange={(event) => { prop.setter(event.target.value); }}
+                label={camelCaseToWords(field.key)}
+                value={field.value}
+                onChange={(event) => { field.setter(event.target.value); }}
               />
-            </ListItem>)
-            })}
-            <ListItem key="enableTimeTabs">
+              :
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={enableTimeTabs}
-                    onChange={ event => setEnableTimeTabs(event.target.checked) }
-                    name="enableTimeTabs"
+                    checked={field.value}
+                    onChange={ event => field.setter(event.target.checked) }
+                    name={field.key}
                   />
                 }
-                label="Enable time tabs"
+                label={camelCaseToWords(field.key)}
               />
-            </ListItem>
-        </List>
+            }
+            </ListItem>)
+            })
+          }
+          </List>
       </AdminConfigScreen>
   );
 }
