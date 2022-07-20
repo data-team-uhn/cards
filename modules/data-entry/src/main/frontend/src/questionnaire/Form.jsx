@@ -90,6 +90,7 @@ function Form (props) {
   // FIXME Replace this with a proper formState {unmodified, modified, saving, saved, saveFailed}
   let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
   let [ lastSaveTimestamp, setLastSaveTimestamp ] = useState(null);
+  let [ statusFlags, setStatusFlags ] = useState([]);
   let [ selectorDialogOpen, setSelectorDialogOpen ] = useState(false);
   let [ selectorDialogError, setSelectorDialogError ] = useState("");
   let [ changedSubject, setChangedSubject ] = useState();
@@ -175,6 +176,7 @@ function Form (props) {
       });
     }
     setData(json);
+    setStatusFlags(json.statusFlags);
     setPaginationEnabled(!!json?.['questionnaire']?.['paginate'] && isEdit);
     if (isEdit) {
       //Perform a JCR check-out of the Form
@@ -221,7 +223,13 @@ function Form (props) {
       if (response.ok) {
         setLastSaveStatus(true);
         setLastSaveTimestamp(new Date());
-        onSuccess && onSuccess();
+        if (!disableHeader) {
+          fetchWithReLogin(globalLoginDisplay, `${formURL}.-dereference.json`)
+            .then((response) => response.ok ? response.json() : Promise.reject(response))
+            .then(json => setStatusFlags(json.statusFlags))
+            .catch(err => console.log("The form status flags could not be updated after saving"));
+        }
+        onSuccess?.();
       } else if (response.status === 500) {
         response.json().then((json) => {
             setErrorCode(json["status.code"]);
@@ -441,7 +449,7 @@ function Form (props) {
         <ResourceHeader
           title={title}
           breadcrumbs={[<Breadcrumbs separator="/">{getHierarchyAsList(data?.subject).map(a => <Typography variant="overline" key={a}>{a}</Typography>)}</Breadcrumbs>]}
-          tags={ data.statusFlags?.map( item => (
+          tags={ statusFlags?.map( item => (
             <Chip
               label={item[0].toUpperCase() + item.slice(1).toLowerCase()}
               variant="outlined"
