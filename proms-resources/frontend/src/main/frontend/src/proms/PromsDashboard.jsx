@@ -98,7 +98,6 @@ function PromsDashboard(props) {
   let [ defaultsLoading, setDefaultsLoading ] = useState(true);
   let [ extensionsLoading, setExtensionsLoading ] = useState(true);
   let [ visitInfo, setVisitInfo ] = useState();
-  let [ error, setError ] = useState();
 
   const [ dashboardConfig, setDashboardConfig ] = useState();
 
@@ -113,7 +112,7 @@ function PromsDashboard(props) {
         setDashboardConfig(json);
       })
       .catch((response) => {
-        setError(`Loading the dashboard settings failed with error code ${response.status}: ${response.statusText}`);
+        console.log(`Loading the dashboard settings failed with error code ${response.status}: ${response.statusText}`);
       });
   }, []);
 
@@ -169,7 +168,7 @@ function PromsDashboard(props) {
   const classes = useStyles();
 
   // Colors assigned to the dashboard widgets
-  // If we have more widgets than colors, start reusing golors from the top
+  // If we have more widgets than colors, start reusing colors from the top
   const colors = [
     "#003366",
     "#f94900",

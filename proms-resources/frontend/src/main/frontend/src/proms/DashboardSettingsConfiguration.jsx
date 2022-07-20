@@ -35,7 +35,7 @@ function DashboardSettingsConfiguration() {
   const [ eventsLabel, setEventsLabel ] = useState("");
   const [ eventTimeLabel, setEventTimeLabel ] = useState("");
 
-  const props = [{
+  const config = [{
     label : "eventsLabel",
     setter: setEventsLabel,
     value: eventsLabel
@@ -73,7 +73,7 @@ function DashboardSettingsConfiguration() {
         onConfigSaved={() => setHasChanges(false)}
         >
           <List>
-            { props.map(prop => { return (
+            { config.map(prop => { return (
             <ListItem key={prop.label}>
               <TextField
                 InputLabelProps={{ shrink: true }}
