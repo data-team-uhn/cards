@@ -50,7 +50,8 @@ public class ResourceToTextAdapterFactory
     @Override
     public <A> A getAdapter(final Object adaptable, final Class<A> type)
     {
-        if (adaptable == null) {
+        if (adaptable == null || adaptable.getClass().getName()
+            .equals("org.apache.sling.jcr.resource.internal.helper.jcr.JcrPropertyResource")) {
             return null;
         }
         final Resource resource = (Resource) adaptable;
