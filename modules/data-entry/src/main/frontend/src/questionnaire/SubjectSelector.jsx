@@ -380,7 +380,7 @@ export function NewSubjectDialog (props) {
       // HTTP Conflict occurs when the given user does not have permission to create a subject
       setError("You do not have permissions to create this subject.");
     } else {
-      setError("Error while creating subject: " + error.statusText);
+      setError(error.statusText || "The subject could not be created due to an unknown error.");
     }
 
     // Since the error will always be during the creation of a subject, we'll revert back to the create subject page and remove all details
@@ -766,7 +766,7 @@ export function createSubjects(globalLoginDisplay, newSubjects, subjectType, sub
             error_msg += ` for ${parentType} ${id}.`;
           }
 
-          return Promise.reject(error_msg);
+          return Promise.reject({statusText: error_msg});
         }
       });
 
