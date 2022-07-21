@@ -224,7 +224,7 @@ function Form (props) {
         setLastSaveStatus(true);
         setLastSaveTimestamp(new Date());
         if (!disableHeader) {
-          fetchWithReLogin(globalLoginDisplay, `${formURL}.-dereference.json`)
+          fetchWithReLogin(globalLoginDisplay, `${formURL}/statusFlags.json`)
             .then((response) => response.ok ? response.json() : Promise.reject(response))
             .then(json => setStatusFlags(json.statusFlags))
             .catch(err => console.log("The form status flags could not be updated after saving"));
