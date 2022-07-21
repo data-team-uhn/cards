@@ -60,7 +60,7 @@ public class RequiredSubjectTypesValidator extends DefaultValidator
         try (ResourceResolver serviceResolver = this.rrf.getServiceResourceResolver(parameters)) {
 
             // Get the Subject Resource associated with this Form
-            final Resource subject = getSubjectResourceByUuid(serviceResolver, subjectUUID);
+            final Resource subject = getResourceByUuid(serviceResolver, subjectUUID, "Subject");
             if (subject == null) {
                 return this;
             }
@@ -68,7 +68,7 @@ public class RequiredSubjectTypesValidator extends DefaultValidator
             // Get the type value for the Subject
             final String type = subject.getValueMap().get("type", "");
             // Get the Questionnaire Resource associated with this Form
-            final Resource questionnaire = getQuestionnaireResourceByUuid(serviceResolver, questionnaireUUID);
+            final Resource questionnaire = getResourceByUuid(serviceResolver, questionnaireUUID, "Questionnaire");
             if (questionnaire == null) {
                 return this;
             }
@@ -90,34 +90,19 @@ public class RequiredSubjectTypesValidator extends DefaultValidator
     }
 
     /**
-     * Obtains the Questionnaire Resource that has a specified jcr:uuid.
+     * Obtains the Resource that has a specified jcr:uuid and jcr:primaryType.
      *
-     * @param ResourceResolver a ResourceResolver that can be used for querying the JCR
-     * @param uuid the jcr:uuid of the Questionnaire Resource which we wish to obtain
-     * @return the matching Questionnaire Resource or null if none can be found
+     * @param serviceResolver a ResourceResolver that can be used for querying the JCR
+     * @param uuid the jcr:uuid of the Resource which we wish to obtain
+     * @param primaryType the jcr:primaryType of the Resource which we wish to obtain
+     * @return the matching Resource or null if none can be found
      */
-    private Resource getQuestionnaireResourceByUuid(final ResourceResolver serviceResolver, final String uuid)
+    private Resource getResourceByUuid(final ResourceResolver serviceResolver, final String uuid,
+        final String primaryType)
     {
         final Iterator<Resource> resourceIterator = serviceResolver.findResources(
-                "SELECT * FROM [cards:Questionnaire] AS q WHERE q.'jcr:uuid'='" + uuid + "'", "JCR-SQL2");
+                "SELECT * FROM [cards:"+ primaryType + "] AS q WHERE q.'jcr:uuid'='" + uuid + "'", "JCR-SQL2");
 
-        if (!resourceIterator.hasNext()) {
-            return null;
-        }
-        return resourceIterator.next();
-    }
-
-    /**
-     * Obtains the Subject Resource that has a specified jcr:uuid.
-     *
-     * @param ResourceResolver a ResourceResolver that can be used for querying the JCR
-     * @param uuid the jcr:uuid of the Subject Resource which we wish to obtain
-     * @return the matching Subject Resource or null if none can be found
-     */
-    private Resource getSubjectResourceByUuid(final ResourceResolver serviceResolver, final String uuid)
-    {
-        final Iterator<Resource> resourceIterator = serviceResolver.findResources(
-                "SELECT * FROM [cards:Subject] as s WHERE s.'jcr:uuid'='" + uuid + "'", "JCR-SQL2");
         if (!resourceIterator.hasNext()) {
             return null;
         }
