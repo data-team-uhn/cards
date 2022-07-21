@@ -71,7 +71,7 @@ function DashboardSettingsConfiguration() {
 
   return (
       <AdminConfigScreen
-        title="Staff dashboard"
+        title="Clinic dashboard"
         configPath={"/Proms/DashboardSettings"}
         onConfigFetched={readDashboardSettings}
         hasChanges={hasChanges}
