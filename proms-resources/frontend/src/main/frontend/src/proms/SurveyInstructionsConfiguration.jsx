@@ -40,9 +40,6 @@ const useStyles = makeStyles(theme => ({
       marginTop: theme.spacing(3),
     },
   },
-  formEntry: {
-    display: "contents"
-  }
 }));
 
 function SurveyInstructionsConfiguration() {
@@ -83,7 +80,7 @@ function SurveyInstructionsConfiguration() {
                 <Typography variant="h6">{camelCaseToWords(category)}</Typography>
               </ListItem>
               { labels[category].map(key => { return (
-                <ListItem key={key+category} className={key == "welcomeMessage" ? classes.formEntry : ""}>
+                <ListItem key={key+category}>
                   { key == "welcomeMessage"
                   ?
                     <WelcomeMessageConfiguration

@@ -19,6 +19,7 @@
 import React from 'react';
 import {
     Alert,
+    Box,
     Card,
     CardContent,
     CardHeader,
@@ -56,7 +57,7 @@ function WelcomeMessageConfiguration(props) {
   const appName = document.querySelector('meta[name="title"]')?.content;
 
   return (
-      <>
+      <Box>
         <Alert severity="info">
           Use APP_NAME to refer to the name configured for the application.
           On the Patient identification screen, all occurrences of APP_NAME will appear as {appName}.
@@ -89,7 +90,7 @@ function WelcomeMessageConfiguration(props) {
             </Grid>
           </Grid>
         }
-      </>
+      </Box>
   );
 }
 
