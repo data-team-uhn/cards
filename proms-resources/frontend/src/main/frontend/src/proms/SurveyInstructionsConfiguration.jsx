@@ -81,28 +81,27 @@ function SurveyInstructionsConfiguration() {
               </ListItem>
               { labels[category].map(key => { return (
                 <ListItem key={key+category}>
-                  { key == "welcomeMessage"
-                  ?
-                    <WelcomeMessageConfiguration
-                      welcomeMessage={surveyInstructions?.[key]}
-                      onChange={(text) => { setSurveyInstructions({...surveyInstructions, [key]: text}); }}
-                    />
-                  :
-	                <TextField
-                      multiline
-	                  minRows={3}
-	                  InputLabelProps={{ shrink: true }}
-	                  variant="outlined"
-	                  id={key}
-	                  name={key}
-	                  type="text"
-	                  label={camelCaseToWords(key)}
-	                  value={surveyInstructions?.[key] || ""}
-	                  placeholder={DEFAULT_INSTRUCTIONS[key] || ""}
-	                  onChange={(event) => { setSurveyInstructions({...surveyInstructions, [key]: event.target.value}); }}
-	                  fullWidth
-	                />
-	              }
+                  { key == "welcomeMessage" ?
+                      <WelcomeMessageConfiguration
+                        welcomeMessage={surveyInstructions?.[key]}
+                        onChange={(text) => { setSurveyInstructions({...surveyInstructions, [key]: text}); }}
+                      />
+                    :
+                      <TextField
+                        multiline
+                        minRows={3}
+                        InputLabelProps={{ shrink: true }}
+                        variant="outlined"
+                        id={key}
+                        name={key}
+                        type="text"
+                        label={camelCaseToWords(key)}
+                        value={surveyInstructions?.[key] || ""}
+                        placeholder={DEFAULT_INSTRUCTIONS[key] || ""}
+                        onChange={(event) => { setSurveyInstructions({...surveyInstructions, [key]: event.target.value}); }}
+                        fullWidth
+                      />
+                  }
                 </ListItem>)
               })}
             </>)
