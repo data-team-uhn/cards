@@ -18,8 +18,7 @@
 //
 import React, { useState, useEffect } from "react";
 import { loadExtensions } from "../uiextension/extensionManager";
-import { NavLink, Route } from "react-router-dom";
-import adminStyle from "./AdminDashboardStyle.jsx";
+import { Route, useHistory } from "react-router-dom";
 import AdminScreen from "./AdminScreen.jsx";
 
 import {
@@ -31,8 +30,6 @@ import {
   Typography,
 } from "@mui/material";
 
-import withStyles from '@mui/styles/withStyles';
-
 // function to get the routes for the admin dashboard, also used in the navbar
 async function getAdminRoutes() {
   return loadExtensions("AdminDashboard")
@@ -42,9 +39,10 @@ async function getAdminRoutes() {
 }
 
 function AdminDashboard(props) {
-  const { classes } = props;
   let [ adminRoutes, setAdminRoutes ] = useState([]);
   let [ loading, setLoading ] = useState(true);
+
+  let history = useHistory();
 
   useEffect(() => {
     getAdminRoutes()
@@ -69,21 +67,17 @@ function AdminDashboard(props) {
                 key={route["cards:targetURL"]}
                 xs={12} md={6} xl={4}
               >
-                <NavLink
-                  to={route["cards:targetURL"]}
-                  className={classes.listItem}
+                <ListItem button
+                  onClick={() => history.push(route["cards:targetURL"])}
                 >
-                  <ListItem button className={classes.listButton}>
                     <ListItemIcon>
                       <EntryIcon fontSize="large"/>
                     </ListItemIcon>
                     <ListItemText
-                      className={classes.listText}
                       primary={route["cards:extensionName"]}
                       secondary={route["cards:hint"]}
                     />
-                  </ListItem>
-                </NavLink>
+                </ListItem>
               </Grid>
             )
           })
@@ -93,4 +87,4 @@ function AdminDashboard(props) {
   );
 }
 
-export default withStyles(adminStyle)(AdminDashboard);
+export default AdminDashboard;
