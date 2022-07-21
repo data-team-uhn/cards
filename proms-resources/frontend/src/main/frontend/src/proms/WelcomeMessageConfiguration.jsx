@@ -30,7 +30,7 @@ import FormattedText from "../components/FormattedText.jsx";
 
 const useStyles = makeStyles(theme => ({
   editorContainer: {
-    padding: theme.spacing(1, 1, 0, 1),
+    padding: theme.spacing(2, 0, 0),
     "& > .MuiGrid-item > *": {
       height: "100% !important",
     },

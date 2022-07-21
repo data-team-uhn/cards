@@ -29,8 +29,8 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js"
 
 const useStyles = makeStyles(theme => ({
   root: {
-    "& .MuiAlert-root": {
-      margin: theme.spacing(0, 1, 2),
+    "& .MuiCardContent-root > .MuiAlert-root": {
+      margin: theme.spacing(0, 1, 1),
     },
     "& .MuiListItem-root": {
       padding: theme.spacing(1),
