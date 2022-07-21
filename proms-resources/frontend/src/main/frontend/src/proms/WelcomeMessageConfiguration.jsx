@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
     Alert,
     Card,
@@ -27,11 +27,10 @@ import {
 import { makeStyles } from '@mui/styles';
 import MarkdownText from "../questionnaireEditor/MarkdownText";
 import FormattedText from "../components/FormattedText.jsx";
-import AdminConfigScreen from "../adminDashboard/AdminConfigScreen.jsx";
 
 const useStyles = makeStyles(theme => ({
   editorContainer: {
-    padding: theme.spacing(2, 1),
+    padding: theme.spacing(1, 1, 0, 1),
     "& > .MuiGrid-item > *": {
       height: "100% !important",
     },
@@ -50,36 +49,14 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function WelcomeMessageConfiguration() {
+function WelcomeMessageConfiguration(props) {
+  const { welcomeMessage, onChange } = props;
   const classes = useStyles();
-
-  const [ welcomeMessage, setWelcomeMessage ] = useState();
-  const [ hasChanges, setHasChanges ] = useState(false);
 
   const appName = document.querySelector('meta[name="title"]')?.content;
 
-  // Read the welcome message from the saved configuration
-  let readWelcomeMessage = (configJson) => {
-    setWelcomeMessage(configJson.text || "");
-  }
-
-  let buildConfigData = (formData) => {
-    formData.append('text', welcomeMessage);
-  }
-
-  useEffect(() => {
-    setHasChanges(true);
-  }, [welcomeMessage]);
-
   return (
-      <AdminConfigScreen
-        title="Patient Portal Welcome Message"
-        configPath="/Proms/WelcomeMessage"
-        onConfigFetched={readWelcomeMessage}
-        hasChanges={hasChanges}
-        buildConfigData={buildConfigData}
-        onConfigSaved={() => setHasChanges(false)}
-      >
+      <>
         <Alert severity="info">
           Use APP_NAME to refer to the name configured for the application.
           On the Patient identification screen, all occurrences of APP_NAME will appear as {appName}.
@@ -94,7 +71,7 @@ function WelcomeMessageConfiguration() {
             className={classes.editorContainer}
           >
             <Grid item xs={12} md={6}>
-              <MarkdownText value={welcomeMessage} height={350} preview="edit" visiableDragbar="false" onChange={setWelcomeMessage} />
+              <MarkdownText value={welcomeMessage} height={350} preview="edit" visiableDragbar="false" onChange={onChange} />
             </Grid>
             <Grid item xs={12} md={6}>
               <Card>
@@ -112,7 +89,7 @@ function WelcomeMessageConfiguration() {
             </Grid>
           </Grid>
         }
-      </AdminConfigScreen>
+      </>
   );
 }
 
