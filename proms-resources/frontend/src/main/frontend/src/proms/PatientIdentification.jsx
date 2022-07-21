@@ -113,7 +113,7 @@ const useStyles = makeStyles(theme => ({
 // This just makes sure that the correct person accessed the application.
 function PatientIdentification(props) {
   // Callback for reporting successful authentication
-  const { onSuccess, displayText, theme, welcomeMessage } = props;
+  const { onSuccess, displayText, theme } = props;
 
   // The values entered by the user
   const [ dob, setDob ] = useState();
@@ -215,6 +215,7 @@ function PatientIdentification(props) {
   // Rendering
 
   let appName = document.querySelector('meta[name="title"]')?.content;
+  let welcomeMessage = displayText('welcomeMessage')?.replaceAll("APP_NAME", appName);
 
   return (<>
     <ToUDialog
@@ -269,7 +270,7 @@ function PatientIdentification(props) {
          <>
          { welcomeMessage &&
            <Grid item xs={12} className={classes.description}>
-             <FormattedText>{welcomeMessage.replaceAll("APP_NAME", appName)}</FormattedText>
+             <FormattedText>{welcomeMessage}</FormattedText>
            </Grid>
          }
          <Grid item xs={12} className={classes.formFields}>

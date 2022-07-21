@@ -63,7 +63,7 @@ function PromsHomepage (props) {
 
   if (!subject) {
     return (<>
-      <PatientIdentification onSuccess={onPatientIdentified} displayText={displayText} welcomeMessage={surveyInstructions?.welcomeMessage}/>
+      <PatientIdentification onSuccess={onPatientIdentified} displayText={displayText}/>
       <PromsFooter />
     </>);
   }
