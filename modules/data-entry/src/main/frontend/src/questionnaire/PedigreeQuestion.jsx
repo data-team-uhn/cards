@@ -138,7 +138,6 @@ function PedigreeQuestion(props) {
                 <DeleteButton
                   entryName={"pedigree"}
                   entryType={"Pedigree"}
-                  shouldGoBack={false}
                   onComplete={() => {setPedigree({});}}
                 />
               </Grid>

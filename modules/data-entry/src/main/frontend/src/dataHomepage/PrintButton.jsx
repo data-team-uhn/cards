@@ -40,7 +40,7 @@ import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
  * date: String displayed with breadcrumb in the preview header above the title, providing the time context for the printed resource  
  * variant: String defining the render component and view of the print action button, default "icon"
  * size: String regulating the size of an icon button, default "medium"
- * buttonClass: String of class name that applies to the button element if the IconButton when variant == "icon"
+ * className: String of class name that applies to the button element if the IconButton when variant == "icon"
  * buttonText: String specifying the text to be displayed on the button or the tooltip, default "Print preview"
  * fullScreen: Boolean specifying if the preview is full screen or displayed as a modal, default true
  * disableShortcut: Boolean specifying if Ctrl+P should activate this button or not. Default is false, meaning the shortcut is active.
@@ -57,7 +57,7 @@ import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
  *
  */
 function PrintButton(props) {
-  const { resourcePath, resourceData, title, date, breadcrumb, onOpen, onClose, size, variant, label, buttonClass, disablePreview, fullScreen, disableShortcut } = props;
+  const { resourcePath, resourceData, title, date, breadcrumb, onOpen, onClose, size, variant, label, className, disablePreview, fullScreen, disableShortcut } = props;
 
   const [ open, setOpen ] = useState(false);
 
@@ -106,7 +106,7 @@ function PrintButton(props) {
     />
     { variant == "icon" ?
         <Tooltip title={buttonText}>
-          <IconButton component="span" onClick={onOpenView} className={buttonClass} size={size}>
+          <IconButton component="span" onClick={onOpenView} className={className} size={size}>
             <PrintIcon fontSize={size == "small" ? size : undefined}/>
           </IconButton>
         </Tooltip>
@@ -128,7 +128,7 @@ PrintButton.propTypes = {
   resourcePath: PropTypes.string.isRequired,
   resourceData: PropTypes.object,
   buttonText: PropTypes.string,
-  buttonClass: PropTypes.string,
+  className: PropTypes.string,
   breadcrumb: PropTypes.string,
   fullScreen: PropTypes.bool,
   disableShortcut: PropTypes.bool,
