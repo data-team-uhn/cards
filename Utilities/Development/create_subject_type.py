@@ -59,4 +59,3 @@ if __name__ == '__main__':
   args = argparser.parse_args()
   create_subject_type(args.parent, args.name)
   print("OK")
-  
