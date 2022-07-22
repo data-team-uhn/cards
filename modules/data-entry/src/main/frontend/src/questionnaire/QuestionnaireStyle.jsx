@@ -209,6 +209,7 @@ const questionnaireStyle = theme => ({
         "& > h5" : {
           padding: theme.spacing(1, GRID_SPACE_UNIT),
           background: theme.palette.action.hover,
+          borderBottom: "1px solid transparent",
         },
         "& > .MuiTypography-caption" : {
           padding: theme.spacing(0, GRID_SPACE_UNIT),
@@ -396,59 +397,19 @@ const questionnaireStyle = theme => ({
         borderColor: "transparent",
       },
     },
-    addSectionButton: {
-        marginTop: theme.spacing(GRID_SPACE_UNIT * 2)
-    },
-    childSection: {
-        paddingLeft: theme.spacing(GRID_SPACE_UNIT)
-    },
     entryActionIcon: {
-        padding: theme.spacing(1),
-        verticalAlign: "baseline",
-        marginRight: theme.spacing(-1),
         float: "right",
-        color: theme.palette.text.primary
-    },
-    recurrentSection: {
-        marginLeft: theme.spacing(GRID_SPACE_UNIT),
-        paddingLeft: "0 !important",
-        width: "auto"
-    },
-    recurrentHeader: {
-        marginLeft: theme.spacing(-GRID_SPACE_UNIT) + " !important",
-        paddingLeft: "0 !important"
-    },
-    collapseWrapper: {
-        // Select only questions that occur immediately after padded sections,
-        // and add a large margin before them
-        "& +.questionContainer": {
-            marginTop: theme.spacing(GRID_SPACE_UNIT * 2)
-        },
-        "& .recurrentSectionInstance:not(:first-child)": {
-            marginTop: theme.spacing(GRID_SPACE_UNIT * 3)
-        }
+        marginRight: theme.spacing(1),
     },
     recurrentSectionInstance: {
-        // Select the add section button that occurs immediately after padded sections,
-        // and add a large margin before it
-        "& +.addSectionContainer": {
-            marginTop: theme.spacing(GRID_SPACE_UNIT * 2)
-        }
+        marginBottom: theme.spacing(2*GRID_SPACE_UNIT),
     },
-    // When the user is deleting a section, highlight it via a border on the left
-
+    // When the user is deleting a section, highlight it with a border
     highlightedSection: {
-        borderLeftWidth: theme.spacing(GRID_SPACE_UNIT),
-        borderLeftColor: theme.palette.primary.light,
-        borderLeftStyle: "solid",
-        marginLeft: theme.spacing(-GRID_SPACE_UNIT),
-        marginTop: theme.spacing(GRID_SPACE_UNIT),
-        marginBottom: theme.spacing(GRID_SPACE_UNIT),
-        paddingTop: theme.spacing(0) + " !important",
-        paddingBottom: theme.spacing(0) + " !important"
-    },
-    highlightedTitle: {
-        color: theme.palette.primary.light,
+        "& .MuiGrid-item > .MuiCard-root, .MuiGrid-item > .MuiTypography-h5": {
+          borderColor: theme.palette.warning.main,
+          boxShadow: `1px 1px 2px ${theme.palette.warning.main}`,
+        },
     },
     notesContainer: {
         whiteSpace: "pre-wrap",

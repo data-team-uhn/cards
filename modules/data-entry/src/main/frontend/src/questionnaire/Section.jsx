@@ -50,7 +50,7 @@ const MIN_HEADING_LEVEL = 4;
  * @param {int} idx Zero-indexed section number
  */
 function createTitle(label, idx, isRecurrent) {
-  return (`${label}${isRecurrent ? (" #" + (idx+1)) : ""}`);
+  return (`${label || ""}${isRecurrent ? (" #" + (idx+1)) : ""}`);
 }
 
 /**
@@ -74,7 +74,7 @@ function Section(props) {
   const headerVariant = "h5";
   const titleEl = sectionDefinition["label"] &&
     ((idx, uuid) =>
-      <Typography variant={headerVariant} className={uuid == selectedUUID ? classes.highlightedTitle: undefined}>
+      <Typography variant={headerVariant}>
         {createTitle(sectionDefinition["label"], idx, isRecurrent)}
       </Typography>
     );
@@ -200,9 +200,12 @@ function Section(props) {
           const sectionPath = path + "/" + uuid;
           const existingSectionAnswer = existingAnswer?.find((answer) => answer[0] == uuid)?.[1];
           const hiddenSection = conditionIsMet && labelsToHide[uuid];
+          const classNames = [];
+          if (isRecurrent) classNames.push(classes.recurrentSectionInstance);
+          if (uuid == selectedUUID) classNames.push(classes.highlightedSection);
           return <div
             key={uuid}
-            className={"recurrentSectionInstance " + classes.recurrentSectionInstance}
+            className={classNames.join(" ")}
             >
             <input type="hidden" name={`${sectionPath}/jcr:primaryType`} value={"cards:AnswerSection"}></input>
             <input type="hidden" name={`${sectionPath}/section`} value={sectionDefinition['jcr:uuid']}></input>
@@ -210,14 +213,11 @@ function Section(props) {
 
             <Grid
               container
-              className={
-                (isRecurrent ? classes.recurrentSection : undefined)
-              }
               {...FORM_ENTRY_CONTAINER_PROPS}
               >
               {/* Section header */
                 (hasHeader || isRecurrent) &&
-                  <Grid item className={classes.sectionHeader + " " + (isRecurrent ? classes.recurrentHeader : "")}>
+                  <Grid item className={classes.sectionHeader}>
                     {/* Delete this entry and expand this entry button */}
                     {isEdit && isRecurrent &&
                       <Tooltip title="Delete section" aria-label="Delete section" >
@@ -260,7 +260,6 @@ function Section(props) {
                 unmountOnExit
                 in={!hiddenSection}
                 component={Grid}
-                className={(uuid == selectedUUID ? classes.highlightedSection : undefined)}
                 item
                 >
                 <Grid container {...FORM_ENTRY_CONTAINER_PROPS}>
