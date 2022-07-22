@@ -40,8 +40,6 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
@@ -54,8 +52,6 @@ import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 @Component(immediate = true)
 public class DataProcessor implements ResourceJsonProcessor
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DataProcessor.class);
-
     private ThreadLocal<ResourceResolver> resolver = new ThreadLocal<>();
 
     private ThreadLocal<String> selectors = new ThreadLocal<>();
@@ -184,7 +180,7 @@ public class DataProcessor implements ResourceJsonProcessor
 
     private boolean checkNodeToBeSubNodeAndNodeDepthLevel(Node currentNode) throws RepositoryException
     {
-        if (!currentNode.getPath().contains(this.rootNode.get())) {
+        if (!currentNode.getPath().startsWith(this.rootNode.get() + "/")) {
             return false;
         }
 
