@@ -61,7 +61,7 @@ const useStyles = color => makeStyles(theme => ({
 
 
 function PromsViewInternal (props) {
-  const { color, title, avatar, query, dateField, columns, questionnaireId, className } = props;
+  const { color, title, avatar, query, dateField, columns, questionnaireId, enableTimeTabs, className } = props;
 
   let toMidnight = (date) => {
      date.setHours(0);
@@ -76,7 +76,7 @@ function PromsViewInternal (props) {
   today = toMidnight(today).toISOString();
   tomorrow = toMidnight(tomorrow).toISOString();
 
-  const tabFilter = {
+  const timeFilter = enableTimeTabs ? {
     "Past" : {
       dateFilter :  `${dateField}.value < '${today}' `,
       order : "desc"
@@ -89,14 +89,19 @@ function PromsViewInternal (props) {
       dateFilter :  `${dateField}.value >= '${tomorrow}' `,
       order: ""
     },
+  } : {
+    "All" : {
+      dateFilter :  `${dateField}.value IS NOT NULL`,
+      order: "desc"
+    },
   };
 
-  const tabs = Object.keys(tabFilter);
+  const tabs = Object.keys(timeFilter);
 
-  const [ activeTab, setActiveTab ] = useState(1); // Today
+  const [ activeTab, setActiveTab ] = useState(enableTimeTabs ? 1 : 0); // Today if time tabs enabled
 
-  let finalQuery = query.replaceAll("__DATE_FILTER_PLACEHOLDER__", tabFilter[tabs[activeTab]].dateFilter)
-                        .replaceAll("__SORT_ORDER_PLACEHOLDER__", tabFilter[tabs[activeTab]].order);
+  let finalQuery = query.replaceAll("__DATE_FILTER_PLACEHOLDER__", timeFilter[tabs[activeTab]].dateFilter)
+                        .replaceAll("__SORT_ORDER_PLACEHOLDER__", timeFilter[tabs[activeTab]].order);
 
   const classes = useStyles(color)();
 
@@ -107,9 +112,10 @@ function PromsViewInternal (props) {
         avatar={<Avatar className={classes.promsViewAvatar}>{avatar}</Avatar>}
         title={<Typography variant="overline" className={classes.promsViewTitle}>{title}</Typography>}
       /> }
+      { enableTimeTabs &&
       <Tabs value={activeTab} onChange={(event, value) => setActiveTab(value)} indicatorColor="primary" textColor="inherit" >
         { tabs.map((value, index) => <Tab label={value}  key={"form-" + questionnaireId + index} />) }
-      </Tabs>
+      </Tabs> }
       <Divider />
       <CardContent>
         <LiveTable

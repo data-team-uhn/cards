@@ -21,7 +21,9 @@ module.exports = {
     [module_name + 'ToUConfiguration']: './src/proms/ToUConfiguration.jsx',
     [module_name + 'ToUConfigurationIcon']: '@mui/icons-material/Handshake.js',
     [module_name + 'SurveyInstructionsConfiguration']: './src/proms/SurveyInstructionsConfiguration.jsx',
-    [module_name + 'SurveyInstructionsConfigurationIcon']: '@mui/icons-material/Quiz.js'
+    [module_name + 'SurveyInstructionsConfigurationIcon']: '@mui/icons-material/Quiz.js',
+    [module_name + 'DashboardSettingsConfiguration']: './src/proms/DashboardSettingsConfiguration.jsx',
+    [module_name + 'DashboardSettingsConfigurationIcon']: '@mui/icons-material/Dashboard.js'
   },
   plugins: [
     new CleanWebpackPlugin(),

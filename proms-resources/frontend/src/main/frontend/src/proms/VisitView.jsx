@@ -46,7 +46,7 @@ const useStyles = color => makeStyles(theme => ({
 
 
 function VisitView(props) {
-  const { clinicId, color, visitInfo } = props;
+  const { clinicId, color, visitInfo, enableTimeTabs, eventsLabel, dashboardConfig } = props;
 
   const classes = useStyles(color)();
 
@@ -83,7 +83,7 @@ function VisitView(props) {
     },
     {
       "key": "time",
-      "label": "Visit time",
+      "label": dashboardConfig?.eventTimeLabel,
       "format": "date:yyyy-MM-dd HH:mm"
     },
     {
@@ -106,11 +106,12 @@ function VisitView(props) {
       className={classes.visitView}
       color={color}
       avatar={<EventIcon />}
-      title="Appointments"
+      title={dashboardConfig?.eventsLabel}
       columns={columns}
       query={query}
       dateField="visitDate"
       questionnaireId={visitInfo?.["jcr:uuid"]}
+      enableTimeTabs={dashboardConfig?.enableTimeTabs}
     />
   );
 }
