@@ -21,15 +21,9 @@
 """
 
 import os
-import sys
 import json
 import argparse
 import requests
-
-argparser = argparse.ArgumentParser()
-argparser.add_argument('--parent', help='JCR node that this Subject Type node should be a child of', required=True)
-argparser.add_argument('--name', help='Name of this Subject Type', required=True)
-args = argparser.parse_args()
 
 CARDS_URL = "http://localhost:8080"
 if "CARDS_URL" in os.environ:
@@ -39,25 +33,30 @@ ADMIN_PASSWORD = "admin"
 if "ADMIN_PASSWORD" in os.environ:
   ADMIN_PASSWORD = os.environ["ADMIN_PASSWORD"]
 
-subject_type_parent = args.parent
-subject_type_name = args.name
+def create_subject_type(subject_type_parent, subject_type_name):
+  subject_type_properties = {}
+  subject_type_properties["jcr:primaryType"] = "cards:SubjectType"
+  subject_type_properties["label"] = subject_type_name
+  subject_type_properties["cards:defaultOrder"] = 0
+  subject_type_properties["subjectListLabel"] = ""
 
-subject_type_properties = {}
-subject_type_properties["jcr:primaryType"] = "cards:SubjectType"
-subject_type_properties["label"] = subject_type_name
-subject_type_properties["cards:defaultOrder"] = 0
-subject_type_properties["subjectListLabel"] = ""
+  creation_form_data = []
+  creation_form_data.append((":contentType", (None, "json")))
+  creation_form_data.append((":operation", (None, "import")))
+  creation_form_data.append((":nameHint", (None, subject_type_name)))
+  creation_form_data.append((":content", (None, json.dumps(subject_type_properties))))
 
-creation_form_data = []
-creation_form_data.append((":contentType", (None, "json")))
-creation_form_data.append((":operation", (None, "import")))
-creation_form_data.append((":nameHint", (None, subject_type_name)))
-creation_form_data.append((":content", (None, json.dumps(subject_type_properties))))
+  resp = requests.post(CARDS_URL + subject_type_parent, auth=('admin', ADMIN_PASSWORD), files=tuple(creation_form_data))
+  if resp.status_code in range(200, 300):
+    return
+  else:
+    raise Exception("Error occurred when creating {}/{}".format(subject_type_parent, subject_type_name))
 
-resp = requests.post(CARDS_URL + subject_type_parent, auth=('admin', ADMIN_PASSWORD), files=tuple(creation_form_data))
-if resp.status_code in range(200, 300):
+if __name__ == '__main__':
+  argparser = argparse.ArgumentParser()
+  argparser.add_argument('--parent', help='JCR node that this Subject Type node should be a child of', required=True)
+  argparser.add_argument('--name', help='Name of this Subject Type', required=True)
+  args = argparser.parse_args()
+  create_subject_type(args.parent, args.name)
   print("OK")
-  sys.exit(0)
-else:
-  print("ERROR")
-  sys.exit(1)
+  
