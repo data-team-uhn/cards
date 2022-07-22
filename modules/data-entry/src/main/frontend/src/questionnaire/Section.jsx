@@ -19,14 +19,14 @@
 
 import React, { useCallback, useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Button, Collapse, Dialog, DialogActions, DialogTitle, Grid, IconButton, Tooltip, Typography } from "@mui/material";
+import { Button, Collapse, Grid, IconButton, Tooltip, Typography } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import Add from "@mui/icons-material/Add";
-import Delete from '@mui/icons-material/Delete';
 import UnfoldLess from '@mui/icons-material/UnfoldLess';
 import UnfoldMore from '@mui/icons-material/UnfoldMore';
 
 import ConditionalComponentManager from "./ConditionalComponentManager";
+import DeleteButton from "../dataHomepage/DeleteButton";
 import FormEntry, { ENTRY_TYPES } from "./FormEntry";
 import { useFormReaderContext } from "./FormContext";
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
@@ -96,7 +96,6 @@ function Section(props) {
   // Keep a list of UUIDs whose contents we should hide
   const [ labelsToHide, setLabelsToHide ] = useState({});
   const formContext = useFormReaderContext();
-  const [ dialogOpen, setDialogOpen ] = useState(false);
   const [ selectedUUID, setSelectedUUID ] = useState();
   const [ uuid ] = useState(uuidv4());  // To keep our IDs separate from any other sections
   const [ removableAnswers, setRemovableAnswers ] = useState({[ID_STATE_KEY]: 1});
@@ -147,11 +146,6 @@ function Section(props) {
     && (isSummary && "summary" === displayMode || !isSummary && displayMode !== "summary");
 
   if (visibleCallback) visibleCallback(conditionIsMet);
-
-  let closeDialog = () => {
-    setSelectedUUID(undefined);
-    setDialogOpen(false);
-  }
 
   const sectionEntries = Object.entries(sectionDefinition).filter(([key, value]) => ENTRY_TYPES.includes(value['jcr:primaryType']));
 
@@ -220,19 +214,23 @@ function Section(props) {
                   <Grid item className={classes.sectionHeader}>
                     {/* Delete this entry and expand this entry button */}
                     {isEdit && isRecurrent &&
-                      <Tooltip title="Delete section" aria-label="Delete section" >
-                        <IconButton
-                          autoFocus={focus && (idx == instanceLabels.length - 1)}
-                          className={classes.entryActionIcon}
-                          onClick={() => {
-                            setDialogOpen(true);
-                            setSelectedUUID(uuid);
-                          }}
-                          size="large"
-                          >
-                          <Delete fontSize="small" />
-                        </IconButton>
-                      </Tooltip>}
+                      <DeleteButton
+                        size="large"
+                        className={classes.entryActionIcon}
+                        entryName={createTitle(sectionDefinition.label, idx, isRecurrent)}
+                        entryType="section"
+                        onClick={() => {
+                          setSelectedUUID(uuid);
+                        }}
+                        onClose={() => {
+                          setSelectedUUID(undefined);
+                        }}
+                        onComplete={() => {
+                          setInstanceLabels((oldLabels) => oldLabels.filter((label) => label != selectedUUID));
+                          setUUIDsToRemove((old_uuids_to_remove) => [...old_uuids_to_remove, selectedUUID]);
+                        }}
+                      />
+                    }
                     {pageActive !== true  &&
                       <Tooltip title="Expand section" aria-label="Expand section" >
                         <IconButton
@@ -319,30 +317,8 @@ function Section(props) {
         <input type="hidden" name={`${path + "/" + uuid}@Delete`} value="0" key={uuid}></input>
       )
       }
-    <Dialog
-      open={dialogOpen}
-      onClose={closeDialog}
-      aria-labelledby={uuid + "-delete-dialog-title"}
-      >
-      <DialogTitle id={uuid + "-delete-dialog-title"}>Are you sure you want to delete this section?</DialogTitle>
-      <DialogActions>
-        <Button onClick={closeDialog} variant="outlined">
-          Cancel
-        </Button>
-        <Button
-          onClick={() => {
-            closeDialog();
-            setInstanceLabels((oldLabels) => oldLabels.filter((label) => label != selectedUUID));
-            setUUIDsToRemove((old_uuids_to_remove) => [...old_uuids_to_remove, selectedUUID]);
-          }}
-          color="error"
-          >
-          Delete
-        </Button>
-      </DialogActions>
-    </Dialog>
     </React.Fragment>
-    , [conditionIsMet, instanceLabels, labelsToHide, dialogOpen, removableAnswers[ID_STATE_KEY], pageActive]);
+    , [conditionIsMet, instanceLabels, labelsToHide, selectedUUID, removableAnswers[ID_STATE_KEY], pageActive]);
 }
 
 Section.propTypes = {
