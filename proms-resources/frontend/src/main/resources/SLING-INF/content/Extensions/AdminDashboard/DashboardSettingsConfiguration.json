@@ -4,6 +4,6 @@
   "cards:extensionName": "Clinic dashboard",
   "cards:targetURL": "/content.html/admin/DashboardSettingsConfiguration",
   "cards:icon": "asset:proms-homepage.DashboardSettingsConfigurationIcon.js",
-  "cards:hint": "Configure how data is displayed on the dashboard",
+  "cards:hint": "Configure how data is displayed on the clinic dashboard",
   "cards:defaultOrder": 206
 }
