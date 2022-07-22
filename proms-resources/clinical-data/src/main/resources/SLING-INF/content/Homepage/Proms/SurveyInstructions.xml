@@ -20,6 +20,21 @@
 <node>
     <name>SurveyInstructions</name>
     <property>
+        <name>welcomeMessage</name>
+        <value>
+
+### Welcome to APP_NAME
+
+APP_NAME is designed to ask you the most important questions about your health and well being. Your responses will remain confidential and will help your provider determine how we can best help you.
+
+Completing the questionnaire is voluntary, so if you would rather not complete it, you do not have to.
+
+If routine service evaluations or research projects are undertaken, your responses may be analyzed in a completely anonymous way.
+
+        </value>
+        <type>String</type>
+    </property>
+    <property>
         <name>noEventsMessage</name>
         <value>We could not find any upcoming appointments that require survey responses.</value>
         <type>String</type>

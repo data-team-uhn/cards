@@ -24,6 +24,7 @@ import {
     Typography
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+import WelcomeMessageConfiguration from "./WelcomeMessageConfiguration.jsx";
 import AdminConfigScreen from "../adminDashboard/AdminConfigScreen.jsx";
 import { camelCaseToWords } from "../questionnaireEditor/LabeledField.jsx";
 
@@ -35,7 +36,7 @@ export const DEFAULT_INSTRUCTIONS = {
 
 const useStyles = makeStyles(theme => ({
   formEntries: {
-    "& .MuiListItem-root:not(:first-child) .MuiTypography-root": {
+    "& .MuiListItem-root:not(:first-child) .MuiTypography-h6": {
       marginTop: theme.spacing(3),
     },
   },
@@ -48,6 +49,7 @@ function SurveyInstructionsConfiguration() {
   const [ hasChanges, setHasChanges ] = useState(false);
 
   const labels = {
+    welcomeMessage: ["welcomeMessage"],
     eventSelectionScreen: ["noEventsMessage", "eventSelectionMessage"],
     startScreen: [ "eventLabel", "noSurveysMessage", "surveyIntro" ],
     summaryScreen: [ "disclaimer", "summaryInstructions", "interpretationInstructions" ]
@@ -78,21 +80,28 @@ function SurveyInstructionsConfiguration() {
                 <Typography variant="h6">{camelCaseToWords(category)}</Typography>
               </ListItem>
               { labels[category].map(key => { return (
-                <ListItem key={key}>
-	              <TextField
-	                multiline
-	                minRows={3}
-	                InputLabelProps={{ shrink: true }}
-	                variant="outlined"
-	                id={key}
-	                name={key}
-	                type="text"
-	                label={camelCaseToWords(key)}
-	                value={surveyInstructions?.[key]|| ""}
-	                placeholder={DEFAULT_INSTRUCTIONS[key] || ""}
-	                onChange={(event) => { setSurveyInstructions({...surveyInstructions, [key]: event.target.value}); }}
-	                fullWidth
-	              />
+                <ListItem key={key+category}>
+                  { key == "welcomeMessage" ?
+                      <WelcomeMessageConfiguration
+                        welcomeMessage={surveyInstructions?.[key]}
+                        onChange={(text) => { setSurveyInstructions({...surveyInstructions, [key]: text}); }}
+                      />
+                    :
+                      <TextField
+                        multiline
+                        minRows={3}
+                        InputLabelProps={{ shrink: true }}
+                        variant="outlined"
+                        id={key}
+                        name={key}
+                        type="text"
+                        label={camelCaseToWords(key)}
+                        value={surveyInstructions?.[key] || ""}
+                        placeholder={DEFAULT_INSTRUCTIONS[key] || ""}
+                        onChange={(event) => { setSurveyInstructions({...surveyInstructions, [key]: event.target.value}); }}
+                        fullWidth
+                      />
+                  }
                 </ListItem>)
               })}
             </>)

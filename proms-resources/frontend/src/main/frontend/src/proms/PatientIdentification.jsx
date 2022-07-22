@@ -136,7 +136,6 @@ function PatientIdentification(props) {
   const [ touCleared, setTouCleared ] = useState();
   // Whether the Terms of Use dialog can be displayed after patient identification
   const [ showTou, setShowTou ] = useState(false);
-  const [ welcomeMessage, setWelcomeMessage ] = useState();
 
   const [ mrnHelperOpen, setMrnHelperOpen ] = useState(false);
 
@@ -199,13 +198,6 @@ function PatientIdentification(props) {
     identify();
   }, [visit,visitList]);
 
-  useEffect(() => {
-    fetch("/Proms/WelcomeMessage.json")
-      .then( response => response.ok ? response.json() : Promise.reject(response) )
-      .then( setWelcomeMessage )
-      .catch( err => setWelcomeMessage("") );
-  }, []);
-
   // After the user has accepted the TOU (if TOU are enabled), if they need to select from a list of visits present said
   useEffect(() => {
     if (!visitListShown && touCleared && visitList && visitList.length > 1 ) {
@@ -227,6 +219,7 @@ function PatientIdentification(props) {
   // Rendering
 
   let appName = document.querySelector('meta[name="title"]')?.content;
+  let welcomeMessage = displayText('welcomeMessage')?.replaceAll("APP_NAME", appName);
 
   return (<>
     <ToUDialog
@@ -282,9 +275,9 @@ function PatientIdentification(props) {
          { (!visitList || showTou || touCleared === false) ?
 
          <>
-         { welcomeMessage?.text &&
+         { welcomeMessage &&
            <Grid item xs={12} className={classes.description}>
-             <FormattedText>{welcomeMessage?.text.replaceAll("APP_NAME", appName)}</FormattedText>
+             <FormattedText>{welcomeMessage}</FormattedText>
            </Grid>
          }
          <Grid item xs={12} className={classes.formFields}>

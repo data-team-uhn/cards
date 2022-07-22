@@ -1,7 +1,0 @@
-{
-  "jcr:primaryType": "cards:Extension",
-  "cards:extensionPointId": "cards/coreUI/view",
-  "cards:extensionName": "Patient Portal Welcome Message",
-  "cards:targetURL": "/content.html/admin/WelcomeMessageConfiguration",
-  "cards:extensionRenderURL": "asset:proms-homepage.WelcomeMessageConfiguration.js"
-}

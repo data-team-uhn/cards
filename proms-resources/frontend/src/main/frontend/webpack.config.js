@@ -16,8 +16,6 @@ module.exports = {
     [module_name + 'clinicIcon']: '@mui/icons-material/Event.js',
     [module_name + 'Clinics']: './src/proms/Clinics.jsx',
     [module_name + 'PrintHeader']: './src/proms/PrintHeader.jsx',
-    [module_name + 'WelcomeMessageConfiguration']: './src/proms/WelcomeMessageConfiguration.jsx',
-    [module_name + 'WelcomeMessageConfigurationIcon']: '@mui/icons-material/ChromeReaderMode.js',
     [module_name + 'ToUConfiguration']: './src/proms/ToUConfiguration.jsx',
     [module_name + 'ToUConfigurationIcon']: '@mui/icons-material/Handshake.js',
     [module_name + 'SurveyInstructionsConfiguration']: './src/proms/SurveyInstructionsConfiguration.jsx',
