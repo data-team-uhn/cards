@@ -1,9 +1,7 @@
 {
     "variables": {
-        "mongo.host":"mongo",
-        "mongo.port":"27017",
-        "mongo.db":"sling",
-        "mongo.auth":""
+        "mongo.uri":"mongo:27017",
+        "mongo.db":"sling"
     },
     "bundles":[
          {
@@ -18,7 +16,7 @@
     "configurations":{
         "org.apache.jackrabbit.oak.plugins.document.DocumentNodeStoreService":{
             "db":"${mongo.db}",
-            "mongouri":"mongodb://${mongo.auth}${mongo.host}:${mongo.port}"
+            "mongouri":"mongodb://${mongo.uri}"
          }
     }
 }
