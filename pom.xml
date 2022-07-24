@@ -1146,5 +1146,6 @@
     <module>proms-resources</module>
     <module>test-resources</module>
     <module>distribution</module>
+    <module>Utilities</module>
   </modules>
 </project>
