@@ -18,6 +18,7 @@
 //
 import React from "react";
 import { withRouter } from "react-router-dom";
+import PropTypes from "prop-types";
 
 import { IconButton, Tooltip } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
@@ -30,16 +31,29 @@ import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
  * A component that renders an icon to open the edit URL for an entry.
  */
 function EditButton(props) {
-  const { entryPath, entryType, buttonClass, admin } = props;
+  const { entryPath, entryType, size, className, admin } = props;
   return(
     <Link to={(admin ? "/content.html/admin" : "/content.html") + entryPath + ".edit"} underline="hover">
       <Tooltip title={entryType ? "Edit " + entryType : "Edit"}>
-        <IconButton className={buttonClass} size="large">
+        <IconButton className={className} size={size}>
           <EditIcon />
         </IconButton>
       </Tooltip>
     </Link>
   )
+}
+
+EditButton.propTypes = {
+  entryPath: PropTypes.string,
+  entryType: PropTypes.string,
+  size: PropTypes.oneOf(["small", "medium", "large"]),
+  className: PropTypes.string,
+  admin: PropTypes.bool,
+}
+
+EditButton.defaultProps = {
+  entryType: "",
+  size: "large",
 }
 
 export default withStyles(QuestionnaireStyle)(withRouter(EditButton));

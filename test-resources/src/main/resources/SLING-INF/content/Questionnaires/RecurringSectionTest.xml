@@ -1,0 +1,192 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+
+<node>
+	<name>RecurringSectionTest</name>
+	<primaryNodeType>cards:Questionnaire</primaryNodeType>
+	<property>
+		<name>title</name>
+		<value>Recurring Section Test</value>
+		<type>String</type>
+	</property>
+	<property>
+		<name>description</name>
+		<value>CARDS-1876</value>
+		<type>String</type>
+	</property>
+	<property>
+		<name>requiredSubjectTypes</name>
+		<values>
+			<value>/SubjectTypes/Patient</value>
+		</values>
+		<type>Reference</type>
+	</property>
+    <node>
+		<name>section_0</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Not a recurring section</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>This section is one of a kind</value>
+			<type>String</type>
+		</property>
+		<node>
+			<name>question_0</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>First question</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>section_1</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Recurring section</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>description</name>
+			<value>This section can have multiple instances: #1, 2, #3, ...</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>recurrent</name>
+			<value>True</value>
+			<type>Boolean</type>
+		</property>
+		<node>
+			<name>question_1</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Outer question</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+		</node>
+		<node>
+			<name>section_1_1</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
+			<property>
+				<name>label</name>
+				<value>Inner section</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>This section is inside the recurring one</value>
+				<type>String</type>
+			</property>
+			<node>
+				<name>info_1</name>
+				<primaryNodeType>cards:Information</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Info</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>question_2</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Inner question</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>text</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+			</node>
+		</node>
+	</node>
+	<node>
+		<name>question_3</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Last question</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>text</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+	</node>
+</node>

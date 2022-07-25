@@ -32,7 +32,7 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js"
  * A component that renders an icon to open a dialog to delete an entry.
  */
 function DeleteButton(props) {
-  const { classes, entryPath, entryName, onComplete, entryType, entryLabel, size, shouldGoBack, buttonClass, variant, label } = props;
+  const { classes, entryPath, entryName, onClick, onClose, onComplete, entryType, entryLabel, size, navigateBack, className, variant, label } = props;
 
   const [ open, setOpen ] = useState(false);
   const [ errorOpen, setErrorOpen ] = useState(false);
@@ -44,7 +44,7 @@ function DeleteButton(props) {
 
   const buttonText = label || ("Delete " + (entryType?.toLowerCase() || '')).trim();
   const defaultDialogAction = `Are you sure you want to delete ${entryType} ${entryName}?`;
-  const defaultErrorMessage = entryName + " could not be removed.";
+  const defaultErrorMessage = `${entryName || "The item"} could not be removed.`;
   const history = useHistory();
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
@@ -56,6 +56,7 @@ function DeleteButton(props) {
 
   let closeDialog = () => {
     if (open) {setOpen(false);}
+    onClose?.();
   }
 
   let openError = () => {
@@ -70,7 +71,7 @@ function DeleteButton(props) {
     if (entryNotFound) {
       // Can't delete. Assume already deleted and exit if required
       if (onComplete) {onComplete();}
-      if (shouldGoBack) {goBack();}
+      if (navigateBack) {goBack();}
     }
   }
 
@@ -118,9 +119,9 @@ function DeleteButton(props) {
     // If no path is provided, display the button but don't do any delete calls
     // and consider deletion successful since there's nothing to do
     if (!entryPath) {
-      closeDialog();
       if (onComplete) {onComplete();}
-      if (shouldGoBack) {goBack();}
+      closeDialog();
+      if (navigateBack) {goBack();}
       return;
     }
     let url = new URL(entryPath, window.location.origin);
@@ -134,9 +135,9 @@ function DeleteButton(props) {
       }
     }).then((response) => {
       if (response.ok)  {
-        closeDialog();
         if (onComplete) {onComplete();}
-        if (shouldGoBack) {goBack();}
+        closeDialog();
+        if (navigateBack) {goBack();}
       } else {
         handleError(response.status, response);
       }
@@ -144,6 +145,7 @@ function DeleteButton(props) {
   }
 
   let handleClick = () => {
+    onClick?.();
     setDialogMessage(null);
     setDialogAction(defaultDialogAction);
     setDeleteRecursive(false);
@@ -188,7 +190,7 @@ function DeleteButton(props) {
       </Dialog>
       {variant == "icon" ?
         <Tooltip title={buttonText}>
-          <IconButton component="span" onClick={handleClick} className={buttonClass} size={size}>
+          <IconButton component="span" onClick={handleClick} className={className} size={size}>
             <Delete fontSize={size == "small" ? size : undefined}/>
           </IconButton>
         </Tooltip>
@@ -207,12 +209,24 @@ function DeleteButton(props) {
 }
 
 DeleteButton.propTypes = {
+  entryPath: PropTypes.string,
+  entryName: PropTypes.string,
+  entryType: PropTypes.string,
+  entryLabel: PropTypes.string,
+  onClick: PropTypes.func,
+  onClose: PropTypes.func,
+  onComplete: PropTypes.func,
+  navigateBack: PropTypes.bool,
   variant: PropTypes.oneOf(["icon", "text", "extended"]), // "extended" means both icon and text
   label: PropTypes.string,
   size: PropTypes.oneOf(["small", "medium", "large"]),
+  className: PropTypes.string,
 }
 
 DeleteButton.defaultProps = {
+  entryName: "",
+  entryType: "",
+  entryLabel: "",
   variant: "icon",
   size: "large",
 }

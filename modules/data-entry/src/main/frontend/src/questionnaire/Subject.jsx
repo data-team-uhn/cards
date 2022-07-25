@@ -469,7 +469,7 @@ function SubjectMemberInternal (props) {
                    resourceData={data}
                    breadcrumb={getTextHierarchy(data, true)}
                    date={DateTime.fromISO(data['jcr:created']).toLocaleString(DateTime.DATE_MED)}
-                   buttonClass={classes.childSubjectHeaderButton}
+                   className={classes.childSubjectHeaderButton}
                    disableShortcut
                  />
                  <DeleteButton
@@ -477,7 +477,7 @@ function SubjectMemberInternal (props) {
                    entryName={title}
                    entryType={label}
                    onComplete={onDelete}
-                   buttonClass={classes.childSubjectHeaderButton}
+                   className={classes.childSubjectHeaderButton}
                  />
                </>
 

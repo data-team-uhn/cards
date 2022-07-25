@@ -324,7 +324,6 @@ function FileQuestion(props) {
                   size="small"
                   entryName={filepath}
                   entryType={"file"}
-                  shouldGoBack={false}
                   onComplete={() => deletePath(idx)}
                 />
                 { previewRenderer && previewRenderer(fixFileURL(uploadedFiles[filepath], filepath), filepath, idx) }
