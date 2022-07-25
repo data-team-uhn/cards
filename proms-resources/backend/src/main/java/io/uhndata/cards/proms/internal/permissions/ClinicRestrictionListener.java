@@ -27,7 +27,6 @@ import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.query.QueryResult;
 import javax.jcr.security.Privilege;
 import javax.jcr.version.VersionManager;
 
@@ -51,7 +50,7 @@ import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 
 /**
  * Change listener that applies the cards:clinicForms to all forms related to a visit, as well as the visit and its
- * parent. This restriction will selectively allow users to access the those forms based on whether or not they
+ * parent. This restriction will selectively allow users to access those forms based on whether or not they
  * belong to the given clinic.
  *
  * @version $Id$
@@ -88,7 +87,7 @@ public class ClinicRestrictionListener implements ResourceChangeListener
     private PermissionsManager permissionsManager;
 
     /** List of nodes to checkin after finishing commits. */
-    private Set<String> nodesToCheckin;
+    private final ThreadLocal<Set<String>> nodesToCheckin = ThreadLocal.withInitial(HashSet::new);
 
     @Override
     public void onChange(final List<ResourceChange> changes)
@@ -128,20 +127,18 @@ public class ClinicRestrictionListener implements ResourceChangeListener
             final String subjectType = this.subjectTypeUtils.getLabel(this.subjectUtils.getType(subject));
             final Node questionnaire = this.formUtils.getQuestionnaire(form);
             VersionManager versionManager = session.getWorkspace().getVersionManager();
-            this.nodesToCheckin = new HashSet<String>();
 
             if (isVisitInformation(questionnaire)) {
                 handleVisitInformationForm(form, subject, questionnaire, session, versionManager);
             } else if ("Visit".equals(subjectType) && event.getType() == ResourceChange.ChangeType.ADDED
                 || event.getType() == ResourceChange.ChangeType.CHANGED) {
-                // The form has a new thing
                 // Check if there exists a Visit Information form to apply an ACL
                 handleVisitDataForm(form, subject, session, versionManager);
             }
 
             // Finish all commits
             session.save();
-            this.nodesToCheckin.forEach(node -> {
+            this.nodesToCheckin.get().forEach(node -> {
                 try {
                     versionManager.checkin(node);
                 } catch (final RepositoryException e) {
@@ -149,6 +146,7 @@ public class ClinicRestrictionListener implements ResourceChangeListener
                 }
             });
             this.rrp.pop();
+            this.nodesToCheckin.remove();
         } catch (final LoginException e) {
             LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
         } catch (final RepositoryException e) {
@@ -181,14 +179,14 @@ public class ClinicRestrictionListener implements ResourceChangeListener
         // Find every form who belongs to this visit
         String query = "SELECT f.* FROM [cards:Form] AS f WHERE f.'relatedSubjects'='"
             + visit.getProperty(JCR_UUID).getString() + "'";
-        QueryResult results = session.getWorkspace().getQueryManager().createQuery(query, "JCR-SQL2").execute();
-        NodeIterator nodeiter = results.getNodes();
+        NodeIterator results = session.getWorkspace().getQueryManager().createQuery(query, "JCR-SQL2").execute()
+            .getNodes();
         final Principal trustedUsers =
             ((JackrabbitSession) session).getPrincipalManager().getPrincipal("TrustedUsers");
         final String clinicGroupName = session.getNode(clinicPath).getProperty("clinicName").getString();
-        while (nodeiter.hasNext()) {
+        while (results.hasNext()) {
             // Apply ACL to the root level node, and everything should inherit it
-            Node node = nodeiter.nextNode();
+            Node node = results.nextNode();
             this.resetClinicFormsRestriction(node.getPath(), clinicGroupName, session, trustedUsers, versionManager,
                 false);
         }
@@ -217,10 +215,10 @@ public class ClinicRestrictionListener implements ResourceChangeListener
         String query = "SELECT f.* FROM [cards:Form] AS f WHERE f.'subject'='"
             + visit.getProperty(JCR_UUID).getString() + "' AND f.'questionnaire'='"
             + visitInformationQuestionnaire.getProperty(JCR_UUID).getString() + "'";
-        QueryResult results = session.getWorkspace().getQueryManager().createQuery(query, "JCR-SQL2").execute();
-        NodeIterator nodeiter = results.getNodes();
-        if (nodeiter.hasNext()) {
-            Node visitForm = nodeiter.nextNode();
+        NodeIterator results = session.getWorkspace().getQueryManager().createQuery(query, "JCR-SQL2").execute()
+            .getNodes();
+        if (results.hasNext()) {
+            Node visitForm = results.nextNode();
             final Principal trustedUsers =
                 ((JackrabbitSession) session).getPrincipalManager().getPrincipal("TrustedUsers");
             try {
@@ -253,7 +251,7 @@ public class ClinicRestrictionListener implements ResourceChangeListener
     {
         if (checkout) {
             versionManager.checkout(path);
-            this.nodesToCheckin.add(path);
+            this.nodesToCheckin.get().add(path);
         }
         Set<String> restrictionSet = new HashSet<String>();
         restrictionSet.add("cards:clinicForms");
