@@ -42,3 +42,25 @@ variable to the address of the CARDS server and set the `ADMIN_PASSWORD`
 environment variable to the `admin` password for the CARDS server.
 
 3. Restart CARDS without the `COMPUTED_ANSWERS_DISABLED` environment variable.
+
+Verification Of Archived Data
+=============================
+
+To verify that a data backup is valid, that is:
+
+- Every Subject listed in a Subjects list points to an existing and valid JSON file with a matching timestamp.
+- Every Form listed in a Forms list points to an existing and valid JSON file with a matching timestamp.
+  - The matching timestamp constraint can be relaxed with the `--relax_timestamp_constraint` flag and the maximum
+  and minimum times before and after the backup snapshot will be printed at the end of the verification.
+- Every Form's Subject is included in the backup Subjects list.
+- Every file-like response in every Form is included in the backup.
+- Every non-root Subject listed in a Subjects list file has its parent Subject also listed in the Subjects list file.
+
+run:
+
+```bash
+python3 verify_complete_json_backup.py \
+	--backup_directory /path/to/backup/directory \
+	--form_list_file /path/to/backup/directory/form-list-file.json \
+	--subject_list_file /path/to/backup/directory/subject-list-file.json
+```
