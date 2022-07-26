@@ -63,9 +63,6 @@ public abstract class AnswersEditor extends DefaultEditor
     /** The current user session. **/
     protected Session currentSession;
 
-    /** A session that has access to all the questionnaire questions and can access restricted questions. */
-    protected Session serviceSession;
-
     protected final QuestionnaireUtils questionnaireUtils;
 
     protected final FormUtils formUtils;
@@ -77,6 +74,12 @@ public abstract class AnswersEditor extends DefaultEditor
     protected AbstractAnswerChangeTracker answerChangeTracker;
 
     private final String serviceName;
+
+    /**
+     * A session that has access to all the questionnaire questions and can access restricted questions.
+     * This session should not be used for accessing any user data.
+    */
+    private Session serviceSession;
 
     /**
      * Simple constructor.

@@ -123,7 +123,7 @@ public interface QuestionnaireUtils
      * Check if the given node is a Question node for a reference question.
      *
      * @param node the node to check, a JCR Node, may be {@code null}
-     * @return {@code true} if the node is not {@code null}, is computed and is of type {@code cards:Question},
+     * @return {@code true} if the node is not {@code null}, is of type {@code cards:Question} and is a reference,
      *         {@code false} otherwise
      */
     boolean isReferenceQuestion(Node node);

@@ -148,4 +148,28 @@ Then, verify that all the answers have been copied over successfully</value>
 			<type>Long</type>
 		</property>
     </node>
+    <!-- <node>
+        <name>dateQuestion</name>
+        <primaryNodeType>cards:Question</primaryNodeType>
+        <property>
+            <name>text</name>
+            <value>Date question</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>dataType</name>
+            <value>date</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>compact</name>
+            <value>True</value>
+            <type>Boolean</type>
+        </property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+    </node> -->
 </node>

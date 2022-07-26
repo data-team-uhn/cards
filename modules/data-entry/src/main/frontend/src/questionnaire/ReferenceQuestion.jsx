@@ -19,48 +19,34 @@
 
 import React, { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
-import { InputAdornment, TextField, Typography } from "@mui/material";
+import { InputAdornment, TextField } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
 
-import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
 import DateQuestionUtilities from "./DateQuestionUtilities";
 import Question from "./Question";
 import {Time} from "./TimeQuestion";
 import FormattedText from "../components/FormattedText";
 import QuestionnaireStyle from './QuestionnaireStyle';
-import { useFormReaderContext } from "./FormContext";
-import { MakeRequest } from "../vocabQuery/util.jsx";
 
 
-// Component that renders a computed value as a question field
-// Computed value is placed in a <input type="hidden"> tag for submission.
+// Component that displays a reference question of any type.
 //
 // Mandatory props:
 // text: the question to be displayed
-// expression: the javascript run to determine the value.
-//   Values between the tags `@{` and `}` will be interpreted as input variables.
-//   These tags will be removed and the value of the question named by the
-//     input variable will be provided as a function argument.
+// dataType: the type of answer to be displayed
 //
 // Other options are passed to the <question> widget
-//
-// Sample usage, given question_a and question_b are number questions:
-//<ReferenceQuestion
-//  />
 let ReferenceQuestion = (props) => {
   const { existingAnswer, classes, pageActive, questionDefinition, ...rest} = props;
-  const { text, unitOfMeasurement, dataType, displayMode, dateFormat } = {...props.questionDefinition, ...props};
+  const { unitOfMeasurement, dataType, displayMode, dateFormat } = {...props.questionDefinition, ...props};
 
   let initialValue = existingAnswer?.[1].value || "";
   const [displayValue, changeDisplayValue] = useState(initialValue);
-  const [answer, changeAnswer] = useState(initialValue === "" ? [] : [["value", initialValue]]);
   const [fieldType, changeFieldType] = useState("string")
   const [muiInputProps, changeMuiInputProps] = useState({});
   const [isFormatted, changeIsFormatted] = useState(false);
-
-  const form = useFormReaderContext();
 
   let setFieldType = (value) => {
     if (fieldType !== value) {
@@ -147,15 +133,6 @@ let ReferenceQuestion = (props) => {
           }
         </>
       }
-      <Answer
-        answers={answer}
-        questionDefinition={props.questionDefinition}
-        existingAnswer={existingAnswer}
-        answerNodeType={answerNodeType}
-        valueType={answerType}
-        pageActive={pageActive}
-        {...rest}
-        />
     </Question>
   )
 }

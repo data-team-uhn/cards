@@ -37,7 +37,7 @@ import io.uhndata.cards.forms.api.QuestionnaireUtils;
 import io.uhndata.cards.subjects.api.SubjectUtils;
 
 /**
- * An {@link Editor} that calculates any computed answers that were not submitted by the client.
+ * An {@link Editor} that fills out any reference answers for a new form.
  *
  * @version $Id$
  */
