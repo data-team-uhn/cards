@@ -66,7 +66,7 @@ public class ReferenceAnswersEditor extends AnswersEditor
     @Override
     protected Logger getLogger()
     {
-        return this.LOGGER;
+        return LOGGER;
     }
 
     @Override

@@ -71,7 +71,7 @@ public class ComputedAnswersEditor extends AnswersEditor
     @Override
     protected Logger getLogger()
     {
-        return this.LOGGER;
+        return LOGGER;
     }
 
     @Override
