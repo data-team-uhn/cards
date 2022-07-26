@@ -18,12 +18,12 @@
 package io.uhndata.cards.forms.internal;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.jackrabbit.oak.api.CommitFailedException;
+import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.commit.DefaultValidator;
 import org.apache.jackrabbit.oak.spi.commit.Validator;
@@ -33,13 +33,27 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 
+import io.uhndata.cards.forms.api.FormUtils;
+
+/**
+ * A {@link Validator} that ensures that a Form has a Subject compatible with the Questionnaire that the form answers.
+ *
+ * @version $Id$
+ */
 public class RequiredSubjectTypesValidator extends DefaultValidator
 {
     private final ResourceResolverFactory rrf;
 
-    public RequiredSubjectTypesValidator(ResourceResolverFactory rrf)
+    private final NodeState currentNode;
+
+    private final FormUtils formUtils;
+
+    public RequiredSubjectTypesValidator(final ResourceResolverFactory rrf, final FormUtils formUtils,
+        final NodeState currentNode)
     {
         this.rrf = rrf;
+        this.formUtils = formUtils;
+        this.currentNode = currentNode;
     }
 
     @Override
@@ -48,45 +62,65 @@ public class RequiredSubjectTypesValidator extends DefaultValidator
         // Get the type of this node. Return immediately if it's not a cards:Form node
         final String childNodeType = after.getName("jcr:primaryType");
         if (!("cards:Form".equals(childNodeType))) {
-            return this;
+            return new RequiredSubjectTypesValidator(this.rrf, this.formUtils, after);
         }
 
+        return isFormValid(after);
+    }
+
+    @Override
+    public Validator childNodeChanged(final String name, final NodeState before, final NodeState after)
+    {
+        return new RequiredSubjectTypesValidator(this.rrf, this.formUtils, after);
+    }
+
+    @Override
+    public void propertyChanged(PropertyState before, PropertyState after) throws CommitFailedException
+    {
+        // Get the type of this node. Return immediately if it's not a cards:Form node
+        final String childNodeType = this.currentNode.getName("jcr:primaryType");
+        if ("cards:Form".equals(childNodeType) && "subject".equals(after.getName())) {
+            isFormValid(this.currentNode);
+        }
+    }
+
+    public Validator isFormValid(NodeState after) throws CommitFailedException
+    {
         // Get the jcr:uuid values for the Form's associated Questionnaire and Subject
         final String questionnaireUUID = after.getProperty("questionnaire").getValue(Type.REFERENCE).toString();
         final String subjectUUID = after.getProperty("subject").getValue(Type.REFERENCE).toString();
         // Obtain a ResourceResolver for querying the JCR
-        final Map<String, Object> parameters =
-            Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, "requiredSubjectTypesValidator");
-        try (ResourceResolver serviceResolver = this.rrf.getServiceResourceResolver(parameters)) {
-
+        try (ResourceResolver serviceResolver = this.rrf
+            .getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "requiredSubjectTypesValidator"))) {
             // Get the Subject Resource associated with this Form
             final Resource subject = getResourceByUuid(serviceResolver, subjectUUID, "Subject");
-            if (subject == null) {
-                return this;
+            // Get the Questionnaire Resource associated with this Form
+            final Resource questionnaire = getResourceByUuid(serviceResolver, questionnaireUUID, "Questionnaire");
+            if (subject == null || questionnaire == null) {
+                // Should not happen, these are mandatory properties. However, we cannot proceed without them, and since
+                // we're already in the form, there's no need to go deeper with the validation.
+                return null;
             }
 
             // Get the type value for the Subject
             final String type = subject.getValueMap().get("type", "");
-            // Get the Questionnaire Resource associated with this Form
-            final Resource questionnaire = getResourceByUuid(serviceResolver, questionnaireUUID, "Questionnaire");
-            if (questionnaire == null) {
-                return this;
-            }
-
             // Get the requiredSubjectTypes value for the Questionnaire
             final String[] allRequiredSubjectTypes = questionnaire.getValueMap().get("requiredSubjectTypes",
-                    String[].class);
+                String[].class);
             final List<String> allRequiredSubjectTypesList = Arrays.asList(allRequiredSubjectTypes != null
-                    ? allRequiredSubjectTypes : new String[0]);
-            if (!allRequiredSubjectTypesList.contains(type)) {
+                ? allRequiredSubjectTypes : new String[0]);
+            // No required subject types means that any subject type is allowed.
+            // Otherwise, the subject type must be one of the required ones
+            if (allRequiredSubjectTypesList.size() > 0 && !allRequiredSubjectTypesList.contains(type)) {
                 throw new CommitFailedException(CommitFailedException.STATE, 400,
                     "The type is not listed by the associated Questionnaire’s requiredSubjectTypes property");
             }
-
+            // We already processed the form, no need to go deeper
+            return null;
         } catch (final LoginException e) {
             // Should not happen
         }
-        return this;
+        return new RequiredSubjectTypesValidator(this.rrf, this.formUtils, after);
     }
 
     /**
@@ -101,17 +135,11 @@ public class RequiredSubjectTypesValidator extends DefaultValidator
         final String primaryType)
     {
         final Iterator<Resource> resourceIterator = serviceResolver.findResources(
-                "SELECT * FROM [cards:"+ primaryType + "] AS q WHERE q.'jcr:uuid'='" + uuid + "'", "JCR-SQL2");
+            "SELECT * FROM [cards:" + primaryType + "] AS q WHERE q.'jcr:uuid'='" + uuid + "'", "JCR-SQL2");
 
         if (!resourceIterator.hasNext()) {
             return null;
         }
         return resourceIterator.next();
-    }
-
-    @Override
-    public Validator childNodeChanged(String s, NodeState before, NodeState after)
-    {
-        return this;
     }
 }

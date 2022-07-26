@@ -31,8 +31,8 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 
 /**
- * A {@link Validator} that ensures that the number of created Forms of a specifc type does not exceed the maximum value
- * allowed for a Subject.
+ * A {@link Validator} that ensures that the number of created Forms of a specific type does not exceed the maximum
+ * value allowed for a Subject.
  *
  * @version $Id$
  */

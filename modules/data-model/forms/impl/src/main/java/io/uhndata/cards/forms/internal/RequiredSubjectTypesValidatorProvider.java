@@ -25,17 +25,27 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import io.uhndata.cards.forms.api.FormUtils;
+
+/**
+ * A {@link ValidatorProvider} returning {@link RequiredSubjectTypesValidator}.
+ *
+ * @version $Id$
+ */
 @Component(name = "RequiredSubjectTypesValidatorProvider", service = EditorProvider.class)
 public class RequiredSubjectTypesValidatorProvider extends ValidatorProvider
 {
     @Reference
     private ResourceResolverFactory rrf;
 
+    @Reference
+    private FormUtils formUtils;
+
     @Override
     protected Validator getRootValidator(NodeState before, NodeState after, CommitInfo info)
     {
         if (this.rrf != null) {
-            return new RequiredSubjectTypesValidator(this.rrf);
+            return new RequiredSubjectTypesValidator(this.rrf, this.formUtils, after);
         }
         return null;
     }
