@@ -35,6 +35,8 @@ argparser.add_argument('--custom_env_file', help='Enable a custom file with envi
 argparser.add_argument('--cards_project', help='The CARDS project to deploy (eg. cards4proms, cards4lfs, etc...')
 argparser.add_argument('--dev_docker_image', help='Indicate that the CARDS Docker image being used was built for development, not production.', action='store_true')
 argparser.add_argument('--composum', help='Enable Composum for the CARDS admin account', action='store_true')
+argparser.add_argument('--enable_backup_server', help='Add a cards/backup_recorder service to the cluster', action='store_true')
+argparser.add_argument('--backup_server_path', help='Host OS path where the backup_recorder container should store its backup files')
 argparser.add_argument('--enable_ncr', help='Add a Neural Concept Recognizer service to the cluster', action='store_true')
 argparser.add_argument('--oak_filesystem', help='Use the filesystem (instead of MongoDB) as the back-end for Oak/JCR', action='store_true')
 argparser.add_argument('--external_mongo', help='Use an external MongoDB instance instead of providing our own', action='store_true')
@@ -55,6 +57,7 @@ args = argparser.parse_args()
 MONGO_SHARD_COUNT = args.shards
 MONGO_REPLICA_COUNT = args.replicas
 CONFIGDB_REPLICA_COUNT = args.config_replicas
+ENABLE_BACKUP_SERVER = args.enable_backup_server
 ENABLE_NCR = args.enable_ncr
 SSL_PROXY = args.ssl_proxy
 
@@ -75,6 +78,11 @@ if args.smtps_localhost_proxy:
 if args.smtps_test_container:
   if not args.smtps_test_mail_path:
     print("ERROR: A --smtps_test_mail_path must be specified when using --smtps_test_container")
+    sys.exit(-1)
+
+if ENABLE_BACKUP_SERVER:
+  if not args.backup_server_path:
+    print("ERROR A --backup_server_path must be specified with using --enable_backup_server")
     sys.exit(-1)
 
 def getDockerHostIP(subnet):
@@ -433,6 +441,28 @@ if args.smtps_localhost_proxy:
 if args.smtps_test_container:
   yaml_obj['services']['cardsinitial']['environment'].append("SMTPS_HOST=smtps_test_container")
   yaml_obj['services']['cardsinitial']['environment'].append("SMTPS_LOCAL_TEST_CONTAINER=true")
+
+if ENABLE_BACKUP_SERVER:
+  print("Configuring service: backup_recorder")
+
+  yaml_obj['services']['cardsinitial']['environment'].append("BACKUP_WEBHOOK_URL=http://backup_recorder:8012")
+
+  yaml_obj['services']['backup_recorder'] = {}
+  yaml_obj['services']['backup_recorder']['image'] = "cards/expressjs"
+
+  yaml_obj['services']['backup_recorder']['volumes'] = ["{}:/backup".format(args.backup_server_path)]
+  yaml_obj['services']['backup_recorder']['volumes'].append("{}:/backup_recorder.js:ro".format(os.path.realpath("../Utilities/Administration/Backup-To-JSON/backup_recorder.js")))
+
+  yaml_obj['services']['backup_recorder']['environment'] = ["LISTEN_HOST=0.0.0.0"]
+  yaml_obj['services']['backup_recorder']['environment'].append("HOST_USER={}".format(os.environ['USER']))
+  yaml_obj['services']['backup_recorder']['environment'].append("HOST_UID={}".format(os.getuid()))
+
+  yaml_obj['services']['backup_recorder']['networks'] = {}
+  yaml_obj['services']['backup_recorder']['networks']['internalnetwork'] = {}
+  yaml_obj['services']['backup_recorder']['networks']['internalnetwork']['aliases'] = ['backup_recorder']
+
+  yaml_obj['services']['backup_recorder']['depends_on'] = ['cardsinitial']
+  yaml_obj['services']['backup_recorder']['command'] = ["nodejs", "/backup_recorder.js", "/backup"]
 
 #Configure the NCR container (if enabled) - only one for now
 if ENABLE_NCR:

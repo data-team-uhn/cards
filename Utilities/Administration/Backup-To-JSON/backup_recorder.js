@@ -15,9 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const LISTEN_HOST = '127.0.0.1';
-const LISTEN_PORT = 8012;
-
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
@@ -27,6 +24,9 @@ const express = require('express');
 const webApp = express();
 webApp.use(bodyParser.json({type: 'application/json', limit: '10mb'}));
 const webServer = require('http').createServer(webApp);
+
+const LISTEN_HOST = process.env.LISTEN_HOST || "127.0.0.1";
+const LISTEN_PORT = process.env.LISTEN_PORT || 8012;
 
 if (process.argv.length < 3) {
   console.error("Please specify a backup directory location.");
@@ -267,7 +267,7 @@ webServer.listen(LISTEN_PORT, LISTEN_HOST, (err) => {
   if (err) {
     console.log("Backup Recorder server failed to start");
   } else {
-    console.log("Backup Recorder server listening on port " + LISTEN_PORT);
+    console.log("Backup Recorder server listening on " + LISTEN_HOST + ":" + LISTEN_PORT);
     console.log("Backups will be saved to " + BACKUP_DIRECTORY);
     console.log("")
     console.log("===");
