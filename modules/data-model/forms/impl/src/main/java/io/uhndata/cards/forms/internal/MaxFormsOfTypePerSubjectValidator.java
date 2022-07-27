@@ -77,7 +77,7 @@ public class MaxFormsOfTypePerSubjectValidator extends DefaultValidator
                 final long formNumber = countFormsPerSubject(subjectUUID, questionnaireUUID, serviceResolver) + 1;
                 if (formNumber > maxPerSubject) {
                     throw new CommitFailedException(CommitFailedException.STATE, 400,
-                        "The number of created forms is bigger then is allowed");
+                        "The number of created forms is bigger than is allowed");
                 }
             }
         } catch (final LoginException e) {
