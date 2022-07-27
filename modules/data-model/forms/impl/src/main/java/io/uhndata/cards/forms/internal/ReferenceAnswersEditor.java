@@ -16,6 +16,10 @@
  */
 package io.uhndata.cards.forms.internal;
 
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.List;
 import java.util.Map;
 
 import javax.jcr.Node;
@@ -98,8 +102,7 @@ public class ReferenceAnswersEditor extends AnswersEditor
     @Override
     public void propertyAdded(final PropertyState after)
     {
-        if (this.isFormNode && "questionnaire".equals(after.getName()))
-        {
+        if (this.isFormNode && "questionnaire".equals(after.getName())) {
             // Only run on a newly created questionnaire
             this.shouldRunOnLeave = true;
         }
@@ -152,7 +155,8 @@ public class ReferenceAnswersEditor extends AnswersEditor
                     // Type erasure makes the actual type irrelevant, there's only one real implementation method
                     // The implementation can extract the right type from the type object
                     @SuppressWarnings("unchecked")
-                    Type<Object> untypedResultType = (Type<Object>) resultType;
+                    Type<Object> untypedResultType =
+                        (Type<Object>) (result instanceof List ? resultType.getArrayType() : resultType);
                     answer.setProperty(FormUtils.VALUE_PROPERTY, result, untypedResultType);
                 }
 
@@ -166,8 +170,7 @@ public class ReferenceAnswersEditor extends AnswersEditor
         Node subject = this.formUtils.getSubject(form);
         try {
             if (this.subjectUtils.isSubject(subject)) {
-                for (final PropertyIterator subjectReferences = subject.getReferences();
-                    subjectReferences.hasNext();) {
+                for (final PropertyIterator subjectReferences = subject.getReferences(); subjectReferences.hasNext();) {
                     Node subjectForm = subjectReferences.nextProperty().getParent();
                     if (this.formUtils.isForm(subjectForm)) {
                         Node subjectQuestionnaire = this.formUtils.getQuestionnaire(subjectForm);
@@ -175,7 +178,7 @@ public class ReferenceAnswersEditor extends AnswersEditor
                             && questionnaireName.equals(subjectQuestionnaire.getName())) {
                             Object value = getAnswerFromParentNode(subjectForm, questionName);
                             if (value != null) {
-                                return value;
+                                return serializeValue(value);
                             }
                         }
                     }
@@ -200,13 +203,27 @@ public class ReferenceAnswersEditor extends AnswersEditor
                 }
             }
         } else if (this.formUtils.isAnswer(currentNode)) {
-            String currentQuestionName
-                = this.questionnaireUtils.getQuestionName(this.formUtils.getQuestion(currentNode));
+            String currentQuestionName =
+                this.questionnaireUtils.getQuestionName(this.formUtils.getQuestion(currentNode));
             if (questionName.equals(currentQuestionName)) {
                 return this.formUtils.getValue(currentNode);
             }
         }
         return null;
+    }
+
+    private Object serializeValue(final Object rawValue)
+    {
+        if (rawValue instanceof Calendar) {
+            final Calendar value = (Calendar) rawValue;
+            // Use the ISO 8601 date+time format
+            final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+            sdf.setTimeZone(value.getTimeZone());
+            return sdf.format(value.getTime());
+        } else if (rawValue instanceof Object[]) {
+            return Arrays.asList((Object[]) rawValue);
+        }
+        return rawValue;
     }
 
     private final class ReferenceAnswerChangeTracker extends AbstractAnswerChangeTracker
