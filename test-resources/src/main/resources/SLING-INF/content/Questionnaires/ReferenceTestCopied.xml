@@ -83,6 +83,80 @@ Then, verify that all the answers have been copied over successfully</value>
 		</property>
     </node>
     <node>
+        <name>testComputed</name>
+        <primaryNodeType>cards:Question</primaryNodeType>
+        <property>
+            <name>text</name>
+            <value>Computed question, returns value of Referenced Text question</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>dataType</name>
+            <value>text</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>entryMode</name>
+            <value>computed</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>dateType</name>
+            <value>text</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>expression</name>
+            <value>return @{textQuestion}</value>
+            <type>String</type>
+        </property>
+    </node>
+    <node>
+        <name>conditionalSection</name>
+        <primaryNodeType>cards:Section</primaryNodeType>
+        <property>
+            <name>label</name>
+            <value>Test Conditional Section. Displayed if text question != "hello"</value>
+            <type>String</type>
+        </property>
+		<node>
+			<name>condition</name>
+			<primaryNodeType>cards:Conditional</primaryNodeType>
+			<property>
+				<name>comparator</name>
+				<value><![CDATA[<>]]></value>
+				<type>String</type>
+			</property>
+			<node>
+				<name>operandA</name>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>textQuestion</value>
+					</values>
+					<type>String</type>
+				</property>
+				<property>
+					<name>isReference</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+			<node>
+				<name>operandB</name>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>hello</value>
+					</values>
+					<type>String</type>
+				</property>
+			</node>
+		</node>
+    </node>
+    <node>
         <name>section</name>
         <primaryNodeType>cards:Section</primaryNodeType>
         <property>

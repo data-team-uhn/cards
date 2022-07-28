@@ -23,6 +23,7 @@ import { InputAdornment, TextField } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
 
+import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
 import DateQuestionUtilities from "./DateQuestionUtilities";
 import Question from "./Question";
@@ -44,6 +45,7 @@ let ReferenceQuestion = (props) => {
 
   let initialValue = existingAnswer?.[1].value || "";
   const [displayValue, changeDisplayValue] = useState(initialValue);
+  const [answer, changeAnswer] = useState(initialValue === "" ? [] : [["value", initialValue]]);
   const [fieldType, changeFieldType] = useState("string")
   const [muiInputProps, changeMuiInputProps] = useState({});
   const [isFormatted, changeIsFormatted] = useState(false);
@@ -104,9 +106,9 @@ let ReferenceQuestion = (props) => {
       setFieldType(newFieldType);
       break;
     case "text":
-    default: // Fallthrough default to string reference
+      default:
       answerType = "String";
-      answerNodeType = "cards:TextAnswer"
+      answerNodeType = "cards:TextAnswer";
       break;
   }
 
@@ -133,6 +135,19 @@ let ReferenceQuestion = (props) => {
           }
         </>
       }
+      {/*
+       * Need to generate an answer so this question can be used for computations and conditional sections.
+       * This will never be editable by the user.
+       */}
+      <Answer
+        answers={answer}
+        questionDefinition={props.questionDefinition}
+        existingAnswer={existingAnswer}
+        answerNodeType={answerNodeType}
+        valueType={answerType}
+        pageActive={pageActive}
+        {...rest}
+        />
     </Question>
   )
 }
@@ -142,8 +157,7 @@ ReferenceQuestion.propTypes = {
   questionDefinition: PropTypes.shape({
     text: PropTypes.string.isRequired,
     description: PropTypes.string,
-    questionnaire: PropTypes.string.isRequired,
-    question: PropTypes.string.isRequired,
+    // displayValue: PropTypes.string.isRequired,
     displayMode: PropTypes.oneOf(['input', 'formatted', 'hidden', 'summary']),
     unitOfMeasurement: PropTypes.string
   }).isRequired
