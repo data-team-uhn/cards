@@ -207,4 +207,12 @@ export default class DateQuestionUtilities {
     }
     return result;
   }
+
+  static formatIsMinuteSeconds(dateFormat) {
+    return typeof(dateFormat) === "string" && dateFormat.toLowerCase() === "mm:ss";
+  }
+
+  static timeQuestionFieldType(dateFormat) {
+    return this.formatIsMinuteSeconds(dateFormat) ? "string" : "time";
+  }
 }

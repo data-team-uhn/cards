@@ -27,7 +27,7 @@ import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
 import DateQuestionUtilities from "./DateQuestionUtilities";
 import Question from "./Question";
-import {Time} from "./TimeQuestion";
+
 import FormattedText from "../components/FormattedText";
 import QuestionnaireStyle from './QuestionnaireStyle';
 import { useFormReaderContext } from "./FormContext";
@@ -284,7 +284,7 @@ let ComputedQuestion = (props) => {
       break;
     case "time":
       answerType = "String";
-      newFieldType = Time.timeQuestionFieldType(dateFormat);
+      newFieldType = DateQuestionUtilities.timeQuestionFieldType(dateFormat);
       setFieldType(newFieldType);
       break;
     case "text":
