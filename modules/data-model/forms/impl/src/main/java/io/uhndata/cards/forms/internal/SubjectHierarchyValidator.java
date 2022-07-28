@@ -40,7 +40,7 @@ public class SubjectHierarchyValidator extends DefaultValidator
 {
 
     private final SubjectTypeUtils subjectTypeUtils;
-    private ThreadLocal<LinkedList<NodeState>> parentNodes = new ThreadLocal<>();
+    private ThreadLocal<LinkedList<NodeState>> parentNodes = ThreadLocal.withInitial(LinkedList::new);
 
     public SubjectHierarchyValidator(SubjectTypeUtils subjectTypeUtils)
     {

@@ -21,7 +21,6 @@ import org.apache.jackrabbit.oak.spi.commit.EditorProvider;
 import org.apache.jackrabbit.oak.spi.commit.Validator;
 import org.apache.jackrabbit.oak.spi.commit.ValidatorProvider;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
-import org.jetbrains.annotations.Nullable;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -41,7 +40,7 @@ public class SubjectHierarchyValidatorProvider extends ValidatorProvider
     private SubjectTypeUtils subjectTypeUtils;
 
     @Override
-    protected @Nullable Validator getRootValidator(NodeState before, NodeState after, CommitInfo info)
+    protected Validator getRootValidator(NodeState before, NodeState after, CommitInfo info)
     {
         return new SubjectHierarchyValidator(this.subjectTypeUtils);
     }
