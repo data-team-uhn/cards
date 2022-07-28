@@ -1633,7 +1633,7 @@ return result;
 			</property>
 			<property>
 				<name>dateFormat</name>
-				<value>hh:mm:ss</value>
+				<value>HH:mm:ss</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -1667,7 +1667,7 @@ return result;
 			</property>
 			<property>
 				<name>dateFormat</name>
-				<value>hh:mm:ss</value>
+				<value>HH:mm:ss</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -1706,7 +1706,7 @@ return result;
 			</property>
 			<property>
 				<name>dateFormat</name>
-				<value>hh:mm:ss</value>
+				<value>HH:mm:ss</value>
 				<type>String</type>
 			</property>
 		</node>

@@ -23,7 +23,7 @@ import PropTypes from "prop-types";
 import { checkPropTypes } from "../../propTypes";
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS, VALUE_COMPARATORS } from "./FilterComparators.jsx";
-import DateQuestionUtilities from "../../questionnaire/DateQuestionUtilities.jsx";
+import DateTimeUtilities from "../../questionnaire/DateTimeUtilities.jsx";
 import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
 
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
@@ -46,12 +46,12 @@ const DateFilter = forwardRef((props, ref) => {
   checkPropTypes(DateFilter, props);
   const { classes, initial, onChangeInput, questionDefinition } = props;
 
-  const [ displayedDate, setDisplayedDate ] = useState(DateQuestionUtilities.toPrecision(DateQuestionUtilities.stripTimeZone(initial?.value)));
+  const [ displayedDate, setDisplayedDate ] = useState(DateTimeUtilities.toPrecision(DateTimeUtilities.stripTimeZone(initial?.value)));
 
   // Dates should have a dateFormat, or default to "yyyy/MM/dd"
-  const dateFormat = questionDefinition["dateFormat"] || DateQuestionUtilities.VIEW_DATE_FORMAT;
-  const views = DateQuestionUtilities.getPickerViews(dateFormat);
-  const isMeridiem = DateQuestionUtilities.formatIsMeridiem(dateFormat);
+  const dateFormat = questionDefinition["dateFormat"] || DateTimeUtilities.VIEW_DATE_FORMAT;
+  const views = DateTimeUtilities.getPickerViews(dateFormat);
+  const isMeridiem = DateTimeUtilities.formatIsMeridiem(dateFormat);
 
   return (
     <LocalizationProvider dateAdapter={AdapterLuxon}>
@@ -63,7 +63,7 @@ const DateFilter = forwardRef((props, ref) => {
         value={displayedDate}
         onChange={(value) => {
           setDisplayedDate(value);
-          onChangeInput(value ? DateQuestionUtilities.toPrecision(value, dateFormat).toISO() : null, value ? value.toFormat(dateFormat) : null);
+          onChangeInput(value ? DateTimeUtilities.toPrecision(value, dateFormat).toISO() : null, value ? value.toFormat(dateFormat) : null);
         }}
         slotProps={{ textField: {
                        variant: 'standard',

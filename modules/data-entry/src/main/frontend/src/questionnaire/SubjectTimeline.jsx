@@ -36,7 +36,7 @@ import {
   TimelineOppositeContent
 } from "@mui/lab";
 
-import DateQuestionUtilities from "./DateQuestionUtilities.jsx";
+import DateTimeUtilities from "./DateTimeUtilities.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/ReLoginDialog.js";
 import QuestionnaireStyle from "./QuestionnaireStyle.jsx";
 import { displayQuestion } from "./Subject.jsx";
@@ -102,8 +102,8 @@ function CustomTimelineConnector(props) {
 }
 
 function TimelineEntry(classes, dateEntry, index, length, nextEntry) {
-  let dateText = DateQuestionUtilities.formatDateAnswer("yyyy-MM-dd", dateEntry.date);
-  let diff = DateQuestionUtilities.dateDifference(dateEntry.date, nextEntry && nextEntry.date);
+  let dateText = DateTimeUtilities.formatDateAnswer(DateTimeUtilities.VIEW_DATE_FORMAT, dateEntry.date);
+  let diff = DateTimeUtilities.dateDifference(dateEntry.date, nextEntry && nextEntry.date);
 
   let paperClasses = [classes.timelinePaper];
   if (dateEntry.level < 0) {
@@ -329,7 +329,7 @@ function SubjectTimeline(props) {
     let previousDate = null;
 
     for (const dateAnswer of dateAnswers) {
-      let diff = DateQuestionUtilities.dateDifference(previousDate, dateAnswer.date.value);
+      let diff = DateTimeUtilities.dateDifference(previousDate, dateAnswer.date.value);
       if (newDateEntries.length === 0 || diff.short) {
         // Create a new paper
         newDateEntries.push({

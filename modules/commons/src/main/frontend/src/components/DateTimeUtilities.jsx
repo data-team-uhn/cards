@@ -20,7 +20,7 @@
 import PropTypes from "prop-types";
 import { DateTime } from "luxon";
 
-export default class DateQuestionUtilities {
+export default class DateTimeUtilities {
 
   static TIMESTAMP_TYPE = "timestamp";
   static INTERVAL_TYPE = "interval";
@@ -33,17 +33,19 @@ export default class DateQuestionUtilities {
   static DATETIME_TYPE = "datetime";
   static DEFAULT_DATE_TYPE = this.FULL_DATE_TYPE;
 
-  static yearTag = "yyyy";
-  static monthTag = "MM";
-  static dayTag = "dd";
-  static hourTag = "hh";
-  static minuteTag = "mm";
+  static yearTag = "y";
+  static monthTag = "M";
+  static dayTag = "d";
+  static hourTag = "H";
+  static hourMeridiemTag = "h";
+  static minuteTag = "m";
+  static secondTag = "s";
 
   static PROP_TYPES = {
     questionDefinition: PropTypes.shape({
       text: PropTypes.string,
       dateFormat: PropTypes.string,
-      type: PropTypes.oneOf([DateQuestionUtilities.TIMESTAMP_TYPE, DateQuestionUtilities.INTERVAL_TYPE]),
+      type: PropTypes.oneOf([DateTimeUtilities.TIMESTAMP_TYPE, DateTimeUtilities.INTERVAL_TYPE]),
       lowerLimit: PropTypes.string,
       upperLimit: PropTypes.string,
     })
@@ -105,7 +107,6 @@ export default class DateQuestionUtilities {
 
     // Determine the coarsest measure to truncate the input to
     const truncate = {
-      'S':'second',
       's':'minute',
       'm':'hour',
       'H':'day',
@@ -114,7 +115,7 @@ export default class DateQuestionUtilities {
     };
     let truncateTo = 'millisecond';
     for (let [formatSpecifier, targetPrecision] of Object.entries(truncate)) {
-      if (toFormat.indexOf(formatSpecifier) < 0) {
+      if (toFormat.indexOf(formatSpecifier) < 0 && ("H" != formatSpecifier || toFormat.indexOf("h") < 0)) {
         truncateTo = targetPrecision;
       }
     }
@@ -124,7 +125,7 @@ export default class DateQuestionUtilities {
 
   static dateToFormattedString(date, textFieldType) {
     return (!date?.isValid) ? "" :
-    textFieldType === "date" ? date.toFormat("yyyy-MM-dd") : date.toFormat("yyyy-MM-dd\'T\'HH:mm");
+    textFieldType === "date" ? date.toFormat(this.VIEW_DATE_FORMAT) : date.toFormat("yyyy-MM-dd\'T\'HH:mm");
   }
 
   // Convert a moment string to a month display
@@ -148,7 +149,7 @@ export default class DateQuestionUtilities {
     if (Array.isArray(value)) {
       return `${this.formatDateAnswer(dateFormat, value[0])} to ${this.formatDateAnswer(dateFormat, value[1])}`;
     }
-    dateFormat = dateFormat || "yyyy-MM-dd";
+    dateFormat = dateFormat || this.VIEW_DATE_FORMAT;
     let dateType = this.getDateType(dateFormat);
     if (dateType === this.YEAR_DATE_TYPE) {
       // Year-only dates are displayed like a number
@@ -168,17 +169,6 @@ export default class DateQuestionUtilities {
   static stripTimeZone(dateString) {
     // Remove the time zone (eg. "-05:00") from the end of a sling provided date string
     return dateString?.replace(/[-+][0-9]{2}:[0-9]{2}$/gm, '');
-  }
-
-  static stripFrom(dateString, delimiter) {
-    // Remove everything after the delimiter
-    return (dateString?.includes(delimiter) ? dateString?.substring(0, dateString?.indexOf(delimiter)) : dateString)
-  }
-
-  static strip(dateAsISO, textFieldType) {
-    if (textFieldType == 'datetime-local') return this.stripFrom(dateAsISO, '.');
-    if (textFieldType == 'date') return this.stripFrom(dateAsISO, 'T');
-    return dateAsISO;
   }
 
   static isAnswerComplete(answers, type) {
@@ -204,8 +194,8 @@ export default class DateQuestionUtilities {
     // Compute the displayed difference
     let result = {long:""}
     if (startDateInput && endDateInput) {
-      let startDate = this.toPrecision(startDateInput, "yyyy-MM-dd");
-      let endDate = this.toPrecision(endDateInput, "yyyy-MM-dd");
+      let startDate = this.toPrecision(startDateInput, this.VIEW_DATE_FORMAT);
+      let endDate = this.toPrecision(endDateInput, this.VIEW_DATE_FORMAT);
 
       let diff = [];
       let longDiff = [];
@@ -245,6 +235,40 @@ export default class DateQuestionUtilities {
       dateFormat.includes(this.secondTag) && views.push('seconds');
     }
     return views;
+  }
+
+  static formatIsMeridiem(dateFormat) {
+    return typeof(dateFormat) === "string" && dateFormat.toLowerCase().includes(this.hourMeridiemTag) && dateFormat.includes("a");
+  }
+
+  static formatIsMinuteSeconds(dateFormat) {
+    return typeof(dateFormat) === "string" && dateFormat.toLowerCase() === "mm:ss";
+  }
+
+  static formatIsHourMinuteSeconds(dateFormat) {
+    return typeof(dateFormat) === "string" && dateFormat.toLowerCase() === "HH:mm:ss";
+  }
+
+  static timeQuestionFieldType(dateFormat) {
+    return this.formatIsMinuteSeconds(dateFormat) ? "string" : "time";
+  }
+
+  static getPickerViews(dateFormat) {
+    let views = [];
+    if (typeof(dateFormat) === "string") {
+      dateFormat.toLowerCase().includes(this.yearTag) && views.push('year');
+      dateFormat.includes(this.monthTag) && views.push('month');
+      dateFormat.includes(this.dayTag) && views.push('day');
+      dateFormat.toLowerCase().includes(this.hourMeridiemTag) && views.push('hours');
+      dateFormat.includes(this.minuteTag) && views.push('minutes');
+      dateFormat.includes(this.secondTag) && views.push('seconds');
+    }
+    return views;
+  }
+
+  static formatHasTime(dateFormat) {
+    return typeof(dateFormat) === "string" &&
+      (dateFormat.toLowerCase().includes(this.hourMeridiemTag) || dateFormat.includes(this.minuteTag) || dateFormat.includes(this.secondTag));
   }
 
   static formatIsMeridiem(dateFormat) {

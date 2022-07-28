@@ -45,6 +45,7 @@ import { DateTime } from "luxon";
 import DragAndDrop from "./components/DragAndDrop";
 import { escapeJQL } from "./escape.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "./login/ReLoginDialog.js";
+import DateTimeUtilities from "./questionnaire/DateTimeUtilities";
 
 const useStyles = makeStyles()(theme => ({
   root: {
@@ -934,8 +935,8 @@ export default function VariantFilesContainer() {
                 })
               },
               Cell: ({ row }) => <Link href={row.original["@path"]} underline="hover">
-                                  {DateTime.fromISO(row.original['jcr:created']).toFormat("yyyy-MM-dd")}
-                                </Link>
+                                  {DateTime.fromISO(row.original['jcr:created']).toFormat(DateTimeUtilities.VIEW_DATE_FORMAT)}
+                                 </Link>
             },
             { header: 'Uploaded By',
               muiTableBodyCellProps: {
