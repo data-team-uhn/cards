@@ -224,4 +224,12 @@ export default class DateQuestionUtilities {
   static formatIsMeridiem(dateFormat) {
     return typeof(dateFormat) === "string" && dateFormat.includes(this.hourMeridiemTag) && dateFormat.includes("a");
   }
+
+  static formatIsMinuteSeconds(dateFormat) {
+    return typeof(dateFormat) === "string" && dateFormat.toLowerCase() === "mm:ss";
+  }
+
+  static timeQuestionFieldType(dateFormat) {
+    return this.formatIsMinuteSeconds(dateFormat) ? "string" : "time";
+  }
 }

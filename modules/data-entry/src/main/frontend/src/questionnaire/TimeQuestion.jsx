@@ -31,46 +31,10 @@ import QuestionnaireStyle from "./QuestionnaireStyle";
 
 import AnswerComponentManager from "./AnswerComponentManager";
 
-export class Time {
-  constructor (timeString, isMinuteSeconds = true) {
-    if (typeof(timeString) === "string" && timeString.length === 5 && timeString.charAt(2) === ':') {
-      let values = timeString.split(":");
-      this.isMinuteSeconds = isMinuteSeconds;
-      this.first = parseInt(values[0]);
-      this.second = parseInt(values[1]);
-      this.isValid = this.checkValid();
-    } else {
-      this.isValid = false;
-    }
-  }
-
-  checkValid() {
-    let firstValid = typeof(this.first) === "number" && this.first >= 0 && this.first < (this.isMinuteSeconds ? 60 : 24)
-    let secondValid = typeof(this.second) === "number" && this.second < 60 && this.second >= 0;
-    return firstValid && secondValid;
-  }
-
-  numberToDoubleDigit(num) {
-    num = num.toFixed(0);
-    return `${num}`.padStart(2, "0");
-  }
-
-  toString() {
-    return this.isValid ? `${this.numberToDoubleDigit(this.first)}:${this.numberToDoubleDigit(this.second)}` : ""
-  }
-
-  valueOf() {
-    return this.isValid ? (this.first*60 + this.second) * (this.isMinuteSeconds ? 1 : 60) : undefined;
-  }
-
-  static formatIsMinuteSeconds(dateFormat) {
-    return typeof(dateFormat) === "string" && dateFormat.toLowerCase() === "mm:ss";
-  }
-
-  static timeQuestionFieldType(dateFormat) {
-    return this.formatIsMinuteSeconds(dateFormat) ? "string" : "time";
-  }
-}
+import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { DateTime } from "luxon";
 
 // Component that renders a time question
 // Selected answers are placed in a series of <input type="hidden"> tags for
@@ -92,66 +56,87 @@ export class Time {
 function TimeQuestion(props) {
   let {existingAnswer, classes, pageActive, ...rest} = props;
   let {text, lowerLimit, upperLimit, errorText, minAnswers, dateFormat} = {...props.questionDefinition, ...props};
-  let currentStartValue = (existingAnswer && existingAnswer[1].value && new Time(existingAnswer[1].value).isValid)
-    ? existingAnswer[1].value : "";
+  let currentStartValue = (existingAnswer && existingAnswer[1].value && DateTime.fromFormat(existingAnswer[1].value, dateFormat).isValid)
+    ? DateTime.fromFormat(existingAnswer[1].value, dateFormat) : undefined;
   const [selectedTime, changeTime] = useState(currentStartValue);
   const [error, setError] = useState(undefined);
   const defaultErrorMessage = errorText || "Please enter a valid time";
   const [errorMessage, setErrorMessage] = useState(defaultErrorMessage);
-  const isMinuteSeconds = Time.formatIsMinuteSeconds(dateFormat);
-  const lowerTime = new Time(lowerLimit, isMinuteSeconds);
-  const upperTime = new Time(upperLimit, isMinuteSeconds);
-  const minuteSecondTest = new RegExp(/([0-5]\d):([0-5]\d)/);
-
-  let checkError = (timeString) => {
-    let time = new Time(timeString, isMinuteSeconds);
-    if (isMinuteSeconds && !minuteSecondTest.test(timeString)) {
-      setError(true);
-      setErrorMessage("Please enter a time in the format mm:ss, such as 01:23");
-    } else if ((minAnswers > 0 && !time.isValid) || (upperLimit && upperTime < time) || (lowerLimit && lowerTime > time)) {
-      setError(true);
-      setErrorMessage(defaultErrorMessage)
-    } else {
-      setError(false);
-    }
-  }
+  const isMinuteSeconds = typeof(dateFormat) === "string" && dateFormat.toLowerCase() === "mm:ss";
+  const maxTime = DateTime.fromFormat(upperLimit, dateFormat).invalid ? null : DateTime.fromFormat(upperLimit, dateFormat);
+  const minTime = DateTime.fromFormat(lowerLimit, dateFormat).invalid ? null : DateTime.fromFormat(lowerLimit, dateFormat);
 
   // Error check existing answers when first loading the page
-  if (typeof(error) === "undefined" && selectedTime !== "") {
-    checkError(selectedTime);
+  if (existingAnswer && existingAnswer[1].value && DateTime.fromFormat(existingAnswer[1].value, dateFormat).invalid) {
+    setError(true);
+    setErrorMessage(DateTime.fromFormat(existingAnswer[1].value, dateFormat).invalidExplanation);
   }
 
-  let outputAnswers = [["time", selectedTime]];
+  let outputAnswers = [["time", selectedTime && selectedTime.isValid ? selectedTime.toFormat(dateFormat) : null]];
   return (
     <Question
-      currentAnswers={!!selectedTime ? 1 : 0}
+      currentAnswers={!!selectedTime?.toFormat(dateFormat) ? 1 : 0}
       {...props}
       >
       {
         pageActive && <>
-          {error && <Typography color='error'>{errorMessage}</Typography>}
-          <TextField
-            variant="standard"
-            /* time input is hh:mm or hh:mm:ss only */
-            type={Time.timeQuestionFieldType(dateFormat)}
-            className={classes.textField + " " + classes.answerField}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            InputProps={{
-              className: classes.textField
-            }}
-            inputProps={{
-              max: upperLimit,
-              min: lowerLimit
-            }}
-            onChange={(event) => {
-              checkError(event.target.value);
-              changeTime(event.target.value);
-            }}
+          {error && <Typography color='error' className={classes.datePickerError}>{errorMessage}</Typography>}
+          <LocalizationProvider dateAdapter={AdapterLuxon}>
+            <TimePicker
+              ampm={false}
+              label={dateFormat}
+              views={isMinuteSeconds ? ['minutes', 'seconds'] : ['hours', 'minutes', 'seconds']}
+              className={classes.textField + " " + classes.answerField}
+              inputFormat={dateFormat}
+              mask={isMinuteSeconds ? "__:__" : "__:__:__"}
+              openTo={isMinuteSeconds ? "minutes" : "hours"}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              InputProps={{
+                className: classes.textField
+              }}
+              maxTime={maxTime}
+              minTime={minTime}
+              onChange={(newValue) => {
+                newValue.isValid && changeTime(newValue);
+              }}
+              onError={(reason, value) => {
+                setError(false);
+                if (!reason) return;
 
-            value={selectedTime}
-          />
+                setError(true);
+                switch (reason) {
+                  case "invalidDate":
+                    setErrorMessage("Invalid time format");
+                    break;
+
+                  case "disablePast":
+                    setErrorMessage("Values in the past are not allowed");
+                    break;
+
+                  case "maxTime":
+                    setErrorMessage(`Time should not be after ${upperLimit}`);
+                    break;
+
+                  case "minTime":
+                    setErrorMessage(`Time should not be before ${lowerLimit}`);
+                    break;
+
+                  case "shouldDisableDate":
+                    // shouldDisableDate returned true, render custom message according to the `shouldDisableDate` logic
+                    setErrorMessage(getShouldDisableDateError(value));
+                    break;
+
+                  default:
+                    setErrorMessage(defaultErrorMessage);
+                }
+              }}
+              value={selectedTime}
+              variant="standard"
+              renderInput={(params) => <TextField {...params} />}
+            />
+          </LocalizationProvider>
         </>
       }
       <Answer
