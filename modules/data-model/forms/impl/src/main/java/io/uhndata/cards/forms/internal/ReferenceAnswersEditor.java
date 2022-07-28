@@ -128,10 +128,8 @@ public class ReferenceAnswersEditor extends AnswersEditor
             // Retrieve all the referenced answers
             answersToFinish.entrySet().stream().forEach(entry -> {
                 Node question = entry.getKey().getNode();
-                final String referencedQuestionnaire;
                 final String referencedQuestion;
                 try {
-                    referencedQuestionnaire = question.getProperty("questionnaire").getString();
                     referencedQuestion = question.getProperty("question").getString();
                 } catch (final RepositoryException e) {
                     LOGGER.warn("Skipping referenced question due to missing property");
@@ -147,7 +145,7 @@ public class ReferenceAnswersEditor extends AnswersEditor
                     LOGGER.warn("Error typing value for question. " + e.getMessage());
                 }
 
-                Object result = getAnswer(form, referencedQuestionnaire, referencedQuestion);
+                Object result = getAnswer(form, referencedQuestion);
 
                 if (result == null) {
                     answer.removeProperty(FormUtils.VALUE_PROPERTY);
@@ -165,7 +163,7 @@ public class ReferenceAnswersEditor extends AnswersEditor
     }
 
     @SuppressWarnings("checkstyle:NestedIfDepth")
-    private Object getAnswer(NodeState form, String questionnaireName, String questionName)
+    private Object getAnswer(NodeState form, String questionPath)
     {
         Node subject = this.formUtils.getSubject(form);
         try {
@@ -175,8 +173,8 @@ public class ReferenceAnswersEditor extends AnswersEditor
                     if (this.formUtils.isForm(subjectForm)) {
                         Node subjectQuestionnaire = this.formUtils.getQuestionnaire(subjectForm);
                         if (this.questionnaireUtils.isQuestionnaire(subjectQuestionnaire)
-                            && questionnaireName.equals(subjectQuestionnaire.getName())) {
-                            Object value = getAnswerFromParentNode(subjectForm, questionName);
+                            && questionPath.startsWith(subjectQuestionnaire.getPath())) {
+                            Object value = getAnswerFromParentNode(subjectForm, questionPath);
                             if (value != null) {
                                 return serializeValue(value);
                             }
@@ -191,23 +189,23 @@ public class ReferenceAnswersEditor extends AnswersEditor
         return null;
     }
 
-    private Object getAnswerFromParentNode(Node currentNode, String questionName) throws RepositoryException
+    private Object getAnswerFromParentNode(Node currentNode, String questionPath) throws RepositoryException
     {
         if (this.formUtils.isAnswerSection(currentNode) || this.formUtils.isForm(currentNode)) {
-            // Found a section: Recursively get all of this section's answers
-            for (final NodeIterator childNodes = currentNode.getNodes(); childNodes.hasNext();) {
-                Node childNode = childNodes.nextNode();
-                Object value = getAnswerFromParentNode(childNode, questionName);
-                if (value != null) {
-                    return value;
+            if (questionPath.startsWith(currentNode.getProperty(
+                    this.formUtils.isAnswerSection(currentNode) ? "section" : "questionnaire").getNode().getPath())) {
+                // Found a section in the specified path: Recursively get all of this section's answers
+                for (final NodeIterator childNodes = currentNode.getNodes(); childNodes.hasNext();) {
+                    Node childNode = childNodes.nextNode();
+                    Object value = getAnswerFromParentNode(childNode, questionPath);
+                    if (value != null) {
+                        return value;
+                    }
                 }
             }
-        } else if (this.formUtils.isAnswer(currentNode)) {
-            String currentQuestionName =
-                this.questionnaireUtils.getQuestionName(this.formUtils.getQuestion(currentNode));
-            if (questionName.equals(currentQuestionName)) {
-                return this.formUtils.getValue(currentNode);
-            }
+        } else if (this.formUtils.isAnswer(currentNode)
+            && questionPath.equals(this.formUtils.getQuestion(currentNode).getPath())) {
+            return this.formUtils.getValue(currentNode);
         }
         return null;
     }

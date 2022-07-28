@@ -40,7 +40,6 @@
             }
           },
           "reference": {
-            "questionnaire": "string",
             "question": "string",
             "displayMode" : {
               "input" : {},
@@ -85,7 +84,6 @@
             }
           },
           "reference": {
-            "questionnaire": "string",
             "question": "string",
             "displayMode" : {
               "input" : {},
@@ -141,7 +139,6 @@
             }
           },
           "reference": {
-            "questionnaire": "string",
             "question": "string",
             "displayMode" : {
               "input" : {},
@@ -197,7 +194,6 @@
             }
           },
           "reference": {
-            "questionnaire": "string",
             "question": "string",
             "displayMode" : {
               "input" : {},
@@ -239,7 +235,6 @@
             }
           },
           "reference": {
-            "questionnaire": "string",
             "question": "string",
             "displayMode" : {
               "input" : {},
@@ -298,7 +293,6 @@
             }
           },
           "reference": {
-            "questionnaire": "string",
             "question": "string",
             "displayMode" : {
               "input" : {},
@@ -340,7 +334,6 @@
             }
           },
           "reference": {
-            "questionnaire": "string",
             "question": "string",
             "displayMode" : {
               "input" : {},
@@ -368,7 +361,6 @@
             }
           },
           "reference": {
-            "questionnaire": "string",
             "question": "string",
             "displayMode" : {
               "input" : {},

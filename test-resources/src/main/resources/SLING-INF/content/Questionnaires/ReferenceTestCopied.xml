@@ -67,13 +67,8 @@ Then, verify that all the answers have been copied over successfully</value>
             <type>String</type>
         </property>
         <property>
-            <name>questionnaire</name>
-            <value>ReferenceTestUser</value>
-            <type>String</type>
-        </property>
-        <property>
             <name>question</name>
-            <value>textQuestion</value>
+            <value>/Questionnaires/ReferenceTestUser/textQuestion</value>
             <type>String</type>
         </property>
 		<property>
@@ -188,13 +183,8 @@ Then, verify that all the answers have been copied over successfully</value>
                 <type>String</type>
             </property>
             <property>
-                <name>questionnaire</name>
-                <value>ReferenceTestUser</value>
-                <type>String</type>
-            </property>
-            <property>
                 <name>question</name>
-                <value>sectionTextQuestion</value>
+                <value>/Questionnaires/ReferenceTestUser/section/sectionTextQuestion</value>
                 <type>String</type>
             </property>
             <property>
@@ -233,13 +223,8 @@ Then, verify that all the answers have been copied over successfully</value>
             <type>String</type>
         </property>
         <property>
-            <name>questionnaire</name>
-            <value>ReferenceTestUser</value>
-            <type>String</type>
-        </property>
-        <property>
             <name>question</name>
-            <value>longQuestion</value>
+            <value>/Questionnaires/ReferenceTestUser/longQuestion</value>
             <type>String</type>
         </property>
     </node>
@@ -272,13 +257,8 @@ Then, verify that all the answers have been copied over successfully</value>
             <type>String</type>
         </property>
         <property>
-            <name>questionnaire</name>
-            <value>ReferenceTestUser</value>
-            <type>String</type>
-        </property>
-        <property>
             <name>question</name>
-            <value>doubleQuestion</value>
+            <value>/Questionnaires/ReferenceTestUser/doubleQuestion</value>
             <type>String</type>
         </property>
     </node>
@@ -311,13 +291,8 @@ Then, verify that all the answers have been copied over successfully</value>
             <type>String</type>
         </property>
         <property>
-            <name>questionnaire</name>
-            <value>ReferenceTestUser</value>
-            <type>String</type>
-        </property>
-        <property>
             <name>question</name>
-            <value>dateQuestion</value>
+            <value>/Questionnaires/ReferenceTestUser/dateQuestion</value>
             <type>String</type>
         </property>
     </node> -->
