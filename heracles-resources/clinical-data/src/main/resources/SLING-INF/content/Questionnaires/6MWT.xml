@@ -1089,6 +1089,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>unitOfMeasurement</name>
+				<value>years</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -2605,16 +2610,16 @@
 					</property>
 				</node>
 				<node>
-					<name>Cruthches (left)</name>
+					<name>Crutches (left)</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Cruthches (left)</value>
+						<value>Crutches (left)</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>Cruthches (left)</value>
+						<value>Crutches (left)</value>
 						<type>String</type>
 					</property>
 				</node>

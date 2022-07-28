@@ -94,6 +94,11 @@
 			<value>1</value>
 			<type>Long</type>
 		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
 		<node>
 			<name>Hospitalization</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
