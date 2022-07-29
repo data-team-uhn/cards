@@ -61,11 +61,11 @@ Then, verify that all the answers have been copied over successfully</value>
             <value>True</value>
             <type>Boolean</type>
         </property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
+        <property>
+            <name>maxAnswers</name>
+            <value>1</value>
+            <type>Long</type>
+        </property>
     </node>
     <node>
         <name>section</name>
@@ -118,11 +118,11 @@ Then, verify that all the answers have been copied over successfully</value>
             <value>True</value>
             <type>Boolean</type>
         </property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
+        <property>
+            <name>maxAnswers</name>
+            <value>1</value>
+            <type>Long</type>
+        </property>
     </node>
     <node>
         <name>doubleQuestion</name>
@@ -142,13 +142,13 @@ Then, verify that all the answers have been copied over successfully</value>
             <value>True</value>
             <type>Boolean</type>
         </property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
+        <property>
+            <name>maxAnswers</name>
+            <value>1</value>
+            <type>Long</type>
+        </property>
     </node>
-    <!-- <node>
+    <node>
         <name>dateQuestion</name>
         <primaryNodeType>cards:Question</primaryNodeType>
         <property>
@@ -166,10 +166,10 @@ Then, verify that all the answers have been copied over successfully</value>
             <value>True</value>
             <type>Boolean</type>
         </property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-    </node> -->
+        <property>
+            <name>maxAnswers</name>
+            <value>1</value>
+            <type>Long</type>
+        </property>
+    </node>
 </node>

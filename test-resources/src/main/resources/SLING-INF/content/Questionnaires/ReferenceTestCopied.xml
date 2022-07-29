@@ -71,11 +71,11 @@ Then, verify that all the answers have been copied over successfully</value>
             <value>/Questionnaires/ReferenceTestUser/textQuestion</value>
             <type>String</type>
         </property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
+        <property>
+            <name>maxAnswers</name>
+            <value>1</value>
+            <type>Long</type>
+        </property>
     </node>
     <node>
         <name>testComputed</name>
@@ -114,42 +114,42 @@ Then, verify that all the answers have been copied over successfully</value>
             <value>Test Conditional Section. Displayed if text question != "hello"</value>
             <type>String</type>
         </property>
-		<node>
-			<name>condition</name>
-			<primaryNodeType>cards:Conditional</primaryNodeType>
-			<property>
-				<name>comparator</name>
-				<value><![CDATA[<>]]></value>
-				<type>String</type>
-			</property>
-			<node>
-				<name>operandA</name>
-				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-				<property>
-					<name>value</name>
-					<values>
-						<value>textQuestion</value>
-					</values>
-					<type>String</type>
-				</property>
-				<property>
-					<name>isReference</name>
-					<value>True</value>
-					<type>Boolean</type>
-				</property>
-			</node>
-			<node>
-				<name>operandB</name>
-				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-				<property>
-					<name>value</name>
-					<values>
-						<value>hello</value>
-					</values>
-					<type>String</type>
-				</property>
-			</node>
-		</node>
+        <node>
+            <name>condition</name>
+            <primaryNodeType>cards:Conditional</primaryNodeType>
+            <property>
+                <name>comparator</name>
+                <value><![CDATA[<>]]></value>
+                <type>String</type>
+            </property>
+            <node>
+                <name>operandA</name>
+                <primaryNodeType>cards:ConditionalValue</primaryNodeType>
+                <property>
+                    <name>value</name>
+                    <values>
+                        <value>textQuestion</value>
+                    </values>
+                    <type>String</type>
+                </property>
+                <property>
+                    <name>isReference</name>
+                    <value>True</value>
+                    <type>Boolean</type>
+                </property>
+            </node>
+            <node>
+                <name>operandB</name>
+                <primaryNodeType>cards:ConditionalValue</primaryNodeType>
+                <property>
+                    <name>value</name>
+                    <values>
+                        <value>hello</value>
+                    </values>
+                    <type>String</type>
+                </property>
+            </node>
+        </node>
     </node>
     <node>
         <name>section</name>
@@ -212,11 +212,11 @@ Then, verify that all the answers have been copied over successfully</value>
             <value>True</value>
             <type>Boolean</type>
         </property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
+        <property>
+            <name>maxAnswers</name>
+            <value>1</value>
+            <type>Long</type>
+        </property>
         <property>
             <name>entryMode</name>
             <value>reference</value>
@@ -246,11 +246,11 @@ Then, verify that all the answers have been copied over successfully</value>
             <value>True</value>
             <type>Boolean</type>
         </property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
+        <property>
+            <name>maxAnswers</name>
+            <value>1</value>
+            <type>Long</type>
+        </property>
         <property>
             <name>entryMode</name>
             <value>reference</value>
@@ -262,7 +262,7 @@ Then, verify that all the answers have been copied over successfully</value>
             <type>String</type>
         </property>
     </node>
-    <!-- <node>
+    <node>
         <name>dateQuestion</name>
         <primaryNodeType>cards:Question</primaryNodeType>
         <property>
@@ -280,11 +280,11 @@ Then, verify that all the answers have been copied over successfully</value>
             <value>True</value>
             <type>Boolean</type>
         </property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
+        <property>
+            <name>maxAnswers</name>
+            <value>1</value>
+            <type>Long</type>
+        </property>
         <property>
             <name>entryMode</name>
             <value>reference</value>
@@ -295,5 +295,5 @@ Then, verify that all the answers have been copied over successfully</value>
             <value>/Questionnaires/ReferenceTestUser/dateQuestion</value>
             <type>String</type>
         </property>
-    </node> -->
+    </node>
 </node>
