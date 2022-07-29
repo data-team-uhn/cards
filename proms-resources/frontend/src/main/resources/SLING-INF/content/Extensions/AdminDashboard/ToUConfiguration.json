@@ -5,5 +5,5 @@
   "cards:targetURL": "/content.html/admin/ToUConfiguration",
   "cards:icon": "asset:proms-homepage.ToUConfigurationIcon.js",
   "cards:hint": "Configure the Patient Portal Terms of Use contents and acceptance requirements",
-  "cards:defaultOrder": 204
+  "cards:defaultOrder": 440
 }

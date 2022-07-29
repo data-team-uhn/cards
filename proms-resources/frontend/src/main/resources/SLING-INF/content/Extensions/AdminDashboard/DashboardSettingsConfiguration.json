@@ -5,5 +5,5 @@
   "cards:targetURL": "/content.html/admin/DashboardSettingsConfiguration",
   "cards:icon": "asset:proms-homepage.DashboardSettingsConfigurationIcon.js",
   "cards:hint": "Configure how data is displayed on the clinic dashboard",
-  "cards:defaultOrder": 206
+  "cards:defaultOrder": 420
 }

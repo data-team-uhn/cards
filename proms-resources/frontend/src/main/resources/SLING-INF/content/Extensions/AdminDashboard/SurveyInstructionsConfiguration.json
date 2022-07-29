@@ -4,6 +4,6 @@
   "cards:extensionName": "Patient Portal Survey Instructions",
   "cards:targetURL": "/content.html/admin/SurveyInstructionsConfiguration",
   "cards:icon": "asset:proms-homepage.SurveyInstructionsConfigurationIcon.js",
-  "cards:hint": "Configuration for Patient Portal Survey Instructions UI texts",
-  "cards:defaultOrder": 205
+  "cards:hint": "Configure the instructions that guide patient users through completing their surveys on the Patient Portal",
+  "cards:defaultOrder": 450
 }
