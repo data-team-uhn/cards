@@ -162,23 +162,18 @@ public class ReferenceAnswersEditor extends AnswersEditor
         }
     }
 
-    @SuppressWarnings("checkstyle:NestedIfDepth")
     private Object getAnswer(NodeState form, String questionPath)
     {
         Node subject = this.formUtils.getSubject(form);
         try {
-            if (this.subjectUtils.isSubject(subject)) {
-                for (final PropertyIterator subjectReferences = subject.getReferences(); subjectReferences.hasNext();) {
-                    Node subjectForm = subjectReferences.nextProperty().getParent();
-                    if (this.formUtils.isForm(subjectForm)) {
-                        Node subjectQuestionnaire = this.formUtils.getQuestionnaire(subjectForm);
-                        if (this.questionnaireUtils.isQuestionnaire(subjectQuestionnaire)
-                            && questionPath.startsWith(subjectQuestionnaire.getPath())) {
-                            Object value = getAnswerFromParentNode(subjectForm, questionPath);
-                            if (value != null) {
-                                return serializeValue(value);
-                            }
-                        }
+            for (final PropertyIterator subjectReferences = subject.getReferences(); subjectReferences.hasNext();) {
+                Node subjectForm = subjectReferences.nextProperty().getParent();
+                Node subjectQuestionnaire = this.formUtils.getQuestionnaire(subjectForm);
+                if (this.questionnaireUtils.isQuestionnaire(subjectQuestionnaire)
+                    && questionPath.startsWith(subjectQuestionnaire.getPath())) {
+                    Object value = getAnswerFromParentNode(subjectForm, questionPath);
+                    if (value != null) {
+                        return serializeValue(value);
                     }
                 }
             }
