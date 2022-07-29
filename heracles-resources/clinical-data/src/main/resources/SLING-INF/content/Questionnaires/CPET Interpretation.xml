@@ -1767,7 +1767,7 @@
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Is the participant curently prescribed beta-blockers?</value>
+				<value>Is the participant currently prescribed beta-blockers?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1824,7 +1824,7 @@
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Is the participant curently prescribed calcium-channel blockers?</value>
+				<value>Is the participant currently prescribed calcium-channel blockers?</value>
 				<type>String</type>
 			</property>
 			<property>
