@@ -4,6 +4,6 @@
   "cards:extensionName": "Clinics",
   "cards:targetURL": "/content.html/admin/Clinics",
   "cards:icon": "asset:proms-homepage.clinicIcon.js",
-  "cards:hint": "Configure clinics to be queried.",
-  "cards:defaultOrder": 30
+  "cards:hint": "Configure the registered clinics",
+  "cards:defaultOrder": 410
 }
