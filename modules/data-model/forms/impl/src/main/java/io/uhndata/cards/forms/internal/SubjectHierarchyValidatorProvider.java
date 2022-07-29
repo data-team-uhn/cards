@@ -25,7 +25,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import io.uhndata.cards.subjects.api.SubjectTypeUtils;
-
+import io.uhndata.cards.subjects.api.SubjectUtils;
 
 /**
  * A {@link ValidatorProvider} returning {@link SubjectHierarchyValidatorProvider}.
@@ -35,13 +35,15 @@ import io.uhndata.cards.subjects.api.SubjectTypeUtils;
 @Component(name = "SubjectHierarchyValidatorProvider", service = EditorProvider.class)
 public class SubjectHierarchyValidatorProvider extends ValidatorProvider
 {
-
     @Reference
     private SubjectTypeUtils subjectTypeUtils;
+
+    @Reference
+    private SubjectUtils subjectUtils;
 
     @Override
     protected Validator getRootValidator(NodeState before, NodeState after, CommitInfo info)
     {
-        return new SubjectHierarchyValidator(this.subjectTypeUtils);
+        return new SubjectHierarchyValidator(this.subjectTypeUtils, this.subjectUtils);
     }
 }
