@@ -19,24 +19,32 @@
 import React, { useEffect, useState } from 'react';
 import {
     Checkbox,
-    FormGroup,
     FormControlLabel,
+    FormGroup,
+    FormLabel,
+    InputAdornment,
     List,
     ListItem,
+    TextField,
     Typography
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import AdminConfigScreen from "../adminDashboard/AdminConfigScreen.jsx";
-import { camelCaseToWords } from "../questionnaireEditor/LabeledField.jsx";
 
 export const PATIENT_IDENTIFICATION_PATH = "/Proms/PatientIdentification";
-export const DEFAULT_PLACEHOLDER = {
+export const DEFAULT_PATIENT_ID_CONFIG = {
+    enableTokenlessAuth: false,
+    requirePIIAuth: false,
+    tokenLifetime: "0"
 };
 
 const useStyles = makeStyles(theme => ({
-  formEntries: {
-    "& .MuiListItem-root:not(:first-child) .MuiTypography-root": {
-      marginTop: theme.spacing(3),
+  textField: {
+    "& .MuiFormLabel-root" : {
+      color: theme.palette.text.primary,
+    },
+    "& .MuiTextField-root" : {
+      maxWidth: "250px",
     },
   },
 }));
@@ -50,12 +58,12 @@ function PatientIdentificationConfiguration() {
   const labels = {
     enableTokenlessAuth: "Patients can answer surveys without a personalized link",
     requirePIIAuth: "Patients must confirm their identity by providing their date of birth and either MRN or HCN",
-    tokenLifetime: "The authentication token is valid after the associated event for"
+    tokenLifetime: "The authentication token is valid after the associated event for:"
   };
 
   let buildConfigData = (formData) => {
     for (let key of Object.keys(patientIdentification)) {
-      !key.startsWith("jcr:") && formData.append(key, patientIdentification[key] || "");
+      !key.startsWith("jcr:") && formData.append(key, patientIdentification[key] || DEFAULT_PATIENT_ID_CONFIG[key]);
     }
   }
 
@@ -63,43 +71,52 @@ function PatientIdentificationConfiguration() {
     setHasChanges(true);
   }, [patientIdentification]);
 
-  function ConfigCheckbox(props) {
-    const { id } = props;
-  
-    return(
+  let renderConfigCheckbox = (key, valueOverride) => (
       <ListItem>
-          <FormGroup>
-              <FormControlLabel control={
-                  <Checkbox
-                      id={id}
-                      name={id}
-                      value={patientIdentification?.[id] || false}
-                      onChange={(event) => { setPatientIdentification({...patientIdentification, [id]: event.target.value}); }}
-                  />
-                  }
-                  label={labels[id]}
-              />
-          </FormGroup>
+        <FormControlLabel control={
+          <Checkbox
+            name={key}
+            checked={patientIdentification?.[key] || DEFAULT_PATIENT_ID_CONFIG[key]}
+            disabled={valueOverride}
+            onChange={event => setPatientIdentification({...patientIdentification, [key]: valueOverride || event.target.checked})}
+          />}
+          label={labels[key]}
+        />
       </ListItem>
     );
-  }
+
+  let renderConfigInput = (key, unit) => (
+      <ListItem>
+        <FormGroup className={classes.textField}>
+          <FormLabel>{labels[key]}</FormLabel>
+          <TextField
+            variant="standard"
+            type="number"
+            onChange={event => setPatientIdentification({...patientIdentification, [key]: event.target.value})}
+            onBlur={event => setPatientIdentification({...patientIdentification, [key]: event.target.value})}
+            placeholder={DEFAULT_PATIENT_ID_CONFIG[key] || ""}
+            value={patientIdentification?.[key]}
+            InputProps={{
+              endAdornment: unit && <InputAdornment position="end">{unit}</InputAdornment>,
+            }}
+          />
+        </FormGroup>
+      </ListItem>
+    );
 
   return (
       <AdminConfigScreen
-          title="Patient Identification Configuration"
+          title="Patient Identification"
           configPath={PATIENT_IDENTIFICATION_PATH}
           onConfigFetched={setPatientIdentification}
           hasChanges={hasChanges}
           buildConfigData={buildConfigData}
           onConfigSaved={() => setHasChanges(false)}
           >
-          <List className={classes.formEntries}>
-              <ListItem>
-                  <Typography variant="h6">{camelCaseToWords("Configuration")}</Typography>
-              </ListItem>
-              <ConfigCheckbox id="enableTokenlessAuth" />
-              <ConfigCheckbox id="requirePIIAuth" />
-              <ConfigCheckbox id="tokenLifetime" />
+          <List>
+            { renderConfigCheckbox("enableTokenlessAuth") }
+            { renderConfigCheckbox("requirePIIAuth", patientIdentification?.enableTokenlessAuth) }
+            { renderConfigInput("tokenLifetime", "hours") }
           </List>
       </AdminConfigScreen>
   );
