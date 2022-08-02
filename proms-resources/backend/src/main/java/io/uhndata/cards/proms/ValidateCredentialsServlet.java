@@ -85,6 +85,10 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
 
     private static final String VALUE = "value";
 
+    private static final String CONFIG_NODE = "/Proms/PatientIdentification";
+
+    private static final String TOKENLESS_AUTH_ENABLED_PROP = "enableTokenlessAuth";
+
     @Reference
     private ResourceResolverFactory resolverFactory;
 
@@ -145,7 +149,7 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
         Node patientInformationForm = findMatchingPatientInformation(request, session, rr);
         final Node patientSubject = this.formUtils.getSubject(patientInformationForm);
 
-        if (patientSubject == null) {
+        if (patientSubject == null || !this.tokenlessAuthEnabled(session)) {
             writeInvalidCredentialsError(response);
             return;
         }
@@ -166,6 +170,25 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
             generateAndApplyToken(request, response, "tou-patient", patientSubject.getPath());
             writeVisitSelection(response, validVisitForms, visitLocationQuestion);
         }
+    }
+
+    /***
+     * Returns true if tokenless authentication is enabled. The resource resolver must have {@code jcr:read} access to
+     * the Proms configuration node. Returns false if the configuration cannot be found.
+     *
+     * @param session Session to use when finding the configuration node.
+     * @return Whether the tokenless authentication is enabled. If the configuration cannot be found, returns false.
+     */
+    private boolean tokenlessAuthEnabled(final Session session) throws RepositoryException
+    {
+        Node config = session.getNode(CONFIG_NODE);
+        if (config == null) {
+            // If we cannot find the config, assume the most restrictive setting (false).
+            LOGGER.error("Could not find configuration node while evaluating credentials servlet");
+            return false;
+        }
+
+        return config.getProperty(TOKENLESS_AUTH_ENABLED_PROP).getBoolean();
     }
 
     private void generateAndApplyToken(final SlingHttpServletRequest request,
