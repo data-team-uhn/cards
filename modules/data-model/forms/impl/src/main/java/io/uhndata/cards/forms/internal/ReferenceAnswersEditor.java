@@ -19,12 +19,12 @@ package io.uhndata.cards.forms.internal;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 
 import org.apache.jackrabbit.oak.api.PropertyState;
@@ -166,41 +166,18 @@ public class ReferenceAnswersEditor extends AnswersEditor
     {
         Node subject = this.formUtils.getSubject(form);
         try {
-            for (final PropertyIterator subjectReferences = subject.getReferences(); subjectReferences.hasNext();) {
-                Node subjectForm = subjectReferences.nextProperty().getParent();
-                Node subjectQuestionnaire = this.formUtils.getQuestionnaire(subjectForm);
-                if (this.questionnaireUtils.isQuestionnaire(subjectQuestionnaire)
-                    && questionPath.startsWith(subjectQuestionnaire.getPath())) {
-                    Object value = getAnswerFromParentNode(subjectForm, questionPath);
-                    if (value != null) {
-                        return serializeValue(value);
-                    }
+            Collection<Node> answers =
+                this.formUtils.findAllSubjectRelatedAnswers(subject, this.serviceSession.getNode(questionPath),
+                    EnumSet.allOf(FormUtils.SearchType.class));
+            if (!answers.isEmpty()) {
+                Object value = this.formUtils.getValue(answers.iterator().next());
+                if (value != null) {
+                    return serializeValue(value);
                 }
             }
         } catch (RepositoryException e) {
             LOGGER.error("Skipping referenced question due to error finding the referenced answer. "
                 + e.getMessage());
-        }
-        return null;
-    }
-
-    private Object getAnswerFromParentNode(Node currentNode, String questionPath) throws RepositoryException
-    {
-        if (this.formUtils.isAnswerSection(currentNode) || this.formUtils.isForm(currentNode)) {
-            if (questionPath.startsWith(currentNode.getProperty(
-                    this.formUtils.isAnswerSection(currentNode) ? "section" : "questionnaire").getNode().getPath())) {
-                // Found a section in the specified path: Recursively get all of this section's answers
-                for (final NodeIterator childNodes = currentNode.getNodes(); childNodes.hasNext();) {
-                    Node childNode = childNodes.nextNode();
-                    Object value = getAnswerFromParentNode(childNode, questionPath);
-                    if (value != null) {
-                        return value;
-                    }
-                }
-            }
-        } else if (this.formUtils.isAnswer(currentNode)
-            && questionPath.equals(this.formUtils.getQuestion(currentNode).getPath())) {
-            return this.formUtils.getValue(currentNode);
         }
         return null;
     }

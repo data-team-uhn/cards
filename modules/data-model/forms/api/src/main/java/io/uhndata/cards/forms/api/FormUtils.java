@@ -16,6 +16,9 @@
  */
 package io.uhndata.cards.forms.api;
 
+import java.util.Collection;
+import java.util.EnumSet;
+
 import javax.jcr.Node;
 
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
@@ -41,6 +44,9 @@ public interface FormUtils
 
     /** The name of the property of a Form node that links to the Subject the form belongs to. */
     String SUBJECT_PROPERTY = "subject";
+
+    /** The name of the property of a Form node that links to other Subjects the form relates to. */
+    String RELATED_SUBJECTS_PROPERTY = "relatedSubjects";
 
     /**
      * The primary node type for an Answer Section, a group of related answers and subsections in a Form, corresponding
@@ -69,6 +75,14 @@ public interface FormUtils
 
     /** The name of the property of an Answer node that holds the actual value. */
     String VALUE_PROPERTY = "value";
+
+    enum SearchType
+    {
+        FORM,
+        SUBJECT_FORMS,
+        ANCESTORS_FORMS,
+        DESCENDANTS_FORMS
+    }
 
     // Form methods
 
@@ -279,6 +293,42 @@ public interface FormUtils
      * @return an Answer node, may be {@code null}
      */
     Node getAnswer(Node form, Node question);
+
+    /**
+     * Get all the answers for a specific question, if any.
+     *
+     * @param form a Form node
+     * @param question a question node, part of the questionnaire that the form is answering
+     * @return a series of Answer nodes, may be empty list
+     */
+    Collection<Node> getAllAnswers(Node form, Node question);
+
+    /**
+     * Get all the answers for a specific question related to a form. This may be answers in the form itself, or answers
+     * in other forms belonging to the same subject or a related subject.
+     *
+     * @param startingForm the form which is the basis of the answer search, does not need to be answering the same
+     *            questionnaire as the target question
+     * @param question the question being answered
+     * @param scope where to search for answers
+     * @return a collection of answers, may be empty if no answers are found, containing answers sorter by how close to
+     *         the target form they are: first answers from the form, then from its subject's other forms, then
+     *         descendant subjects, then ancestor subjects
+     */
+    Collection<Node> findAllFormRelatedAnswers(Node startingForm, Node question, EnumSet<SearchType> scope);
+
+    /**
+     * Get all the answers for a specific question related to a subject. This may be answers for the subject itself, or
+     * answers in descendant or ancestor subjects.
+     *
+     * @param startingSubject the subject which is the basis of the answer search
+     * @param question the question being answered
+     * @param scope where to search for answers
+     * @return a collection of answers, may be empty if no answers are found, containing answers sorter by how close to
+     *         the target subject they are: first answers from the subject's own forms, then descendant subjects, then
+     *         ancestor subjects
+     */
+    Collection<Node> findAllSubjectRelatedAnswers(Node startingSubject, Node question, EnumSet<SearchType> scope);
 
     /**
      * Check if the given node is an Answer node.

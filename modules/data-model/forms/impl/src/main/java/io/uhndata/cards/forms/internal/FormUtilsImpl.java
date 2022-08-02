@@ -16,9 +16,18 @@
  */
 package io.uhndata.cards.forms.internal;
 
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Queue;
+import java.util.function.Consumer;
+
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
@@ -367,6 +376,80 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
         return null;
     }
 
+    @Override
+    public Collection<Node> getAllAnswers(final Node form, final Node question)
+    {
+        return findAllFormRelatedAnswers(form, question, EnumSet.of(SearchType.FORM));
+    }
+
+    @Override
+    public Collection<Node> findAllFormRelatedAnswers(final Node startingForm, final Node question,
+        final EnumSet<SearchType> scope)
+    {
+        final Map<String, Node> result = new LinkedHashMap<>();
+        final Consumer<Node> consumer = node -> {
+            try {
+                result.put(node.getIdentifier(), node);
+            } catch (final RepositoryException e) {
+                // Ignore
+            }
+        };
+        final Node targetQuestionnaire = this.questionnaires.getOwnerQuestionnaire(question);
+        if (targetQuestionnaire == null) {
+            return result.values();
+        }
+        try {
+            if (scope.contains(SearchType.FORM)) {
+                findAnswersInForm(startingForm, question, consumer);
+            }
+            final Node subject = getSubject(startingForm);
+            if (scope.contains(SearchType.SUBJECT_FORMS)) {
+                findAnswersInSubject(subject, question, scope, consumer);
+            }
+            if (scope.contains(SearchType.DESCENDANTS_FORMS)) {
+                findAnswersInDescendants(subject, question, consumer);
+            }
+            if (scope.contains(SearchType.ANCESTORS_FORMS)) {
+                findAnswersInAncestors(subject, question, scope, consumer);
+            }
+        } catch (final RepositoryException e) {
+            // Not expected
+        }
+        return result.values();
+    }
+
+    @Override
+    public Collection<Node> findAllSubjectRelatedAnswers(final Node startingSubject, final Node question,
+        final EnumSet<SearchType> scope)
+    {
+        final Map<String, Node> result = new LinkedHashMap<>();
+        final Consumer<Node> consumer = node -> {
+            try {
+                result.put(node.getIdentifier(), node);
+            } catch (final RepositoryException e) {
+                // Ignore
+            }
+        };
+        final Node targetQuestionnaire = this.questionnaires.getOwnerQuestionnaire(question);
+        if (targetQuestionnaire == null) {
+            return result.values();
+        }
+        try {
+            if (scope.contains(SearchType.SUBJECT_FORMS)) {
+                findAnswersInSubject(startingSubject, question, scope, consumer);
+            }
+            if (scope.contains(SearchType.DESCENDANTS_FORMS)) {
+                findAnswersInDescendants(startingSubject, question, consumer);
+            }
+            if (scope.contains(SearchType.ANCESTORS_FORMS)) {
+                findAnswersInAncestors(startingSubject, question, scope, consumer);
+            }
+        } catch (final RepositoryException e) {
+            // Not expected
+        }
+        return result.values();
+    }
+
     private Node findNode(final Node parent, final String property, final String value)
     {
         try {
@@ -388,4 +471,82 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
         return null;
     }
 
+    private void findAllNodes(final Node parent, final String property, final String value, final Consumer<Node> result)
+    {
+        try {
+            if (parent.hasProperty(property)
+                && StringUtils.equals(parent.getProperty(property).getValue().getString(), value)) {
+                result.accept(parent);
+            }
+            final NodeIterator children = parent.getNodes();
+            while (children.hasNext()) {
+                final Node child = children.nextNode();
+                findAllNodes(child, property, value, result);
+            }
+        } catch (IllegalStateException | RepositoryException e) {
+            // Not found or not accessible, just return null
+        }
+    }
+
+    private void findAnswersInForm(final Node startingForm, final Node question, final Consumer<Node> result)
+        throws RepositoryException
+    {
+        findAllNodes(startingForm, QUESTION_PROPERTY, question.getIdentifier(), result);
+    }
+
+    private void findAnswersInSubject(final Node subject, final Node question, final EnumSet<SearchType> scope,
+        final Consumer<Node> result) throws RepositoryException
+    {
+        if (this.subjects.isSubject(subject)) {
+            findAnswersInSubjectForms(subject, question, result);
+        }
+    }
+
+    private void findAnswersInAncestors(final Node startingSubject, final Node question,
+        final EnumSet<SearchType> scope, final Consumer<Node> result) throws RepositoryException
+    {
+        Node nextSubject = startingSubject.getParent();
+        // We stop when we've reached the top of the subjects hierarchy
+        while (this.subjects.isSubject(nextSubject)) {
+            findAnswersInSubjectForms(nextSubject, question, result);
+            nextSubject = nextSubject.getParent();
+        }
+    }
+
+    private void findAnswersInDescendants(final Node startingSubject, final Node question, final Consumer<Node> result)
+        throws RepositoryException
+    {
+        Queue<Node> descendants = new LinkedList<>();
+        NodeIterator children = startingSubject.getNodes();
+        while (children.hasNext()) {
+            descendants.add(children.nextNode());
+        }
+        // BFS search in all descendant subjects
+        while (!descendants.isEmpty()) {
+            final Node nextSubject = descendants.poll();
+            if (this.subjects.isSubject(nextSubject)) {
+                // Look for answers for this subject
+                findAnswersInSubjectForms(nextSubject, question, result);
+                // Add the child nodes next in queue
+                children = nextSubject.getNodes();
+                while (children.hasNext()) {
+                    descendants.add(children.nextNode());
+                }
+            }
+        }
+    }
+
+    private void findAnswersInSubjectForms(final Node subject, final Node question, final Consumer<Node> result)
+        throws RepositoryException
+    {
+        final Node targetQuestionnaire = this.questionnaires.getOwnerQuestionnaire(question);
+        // Look for a form answering the right questionnaire for this subject
+        final PropertyIterator otherForms = subject.getReferences(SUBJECT_PROPERTY);
+        while (otherForms.hasNext()) {
+            final Node otherForm = otherForms.nextProperty().getParent();
+            if (targetQuestionnaire.isSame(getQuestionnaire(otherForm))) {
+                findAnswersInForm(otherForm, question, result);
+            }
+        }
+    }
 }

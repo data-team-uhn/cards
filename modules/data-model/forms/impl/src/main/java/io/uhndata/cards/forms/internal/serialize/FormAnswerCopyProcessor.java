@@ -18,9 +18,11 @@
  */
 package io.uhndata.cards.forms.internal.serialize;
 
+import java.util.Collection;
+import java.util.EnumSet;
+
 import javax.jcr.Node;
 import javax.jcr.Property;
-import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 
 import org.apache.sling.api.resource.Resource;
@@ -74,35 +76,12 @@ public class FormAnswerCopyProcessor extends AbstractAnswerCopyProcessor
     }
 
     @Override
-    protected Node findForm(final Node source, final Node question)
+    protected Node getAnswer(Node source, Node question)
     {
-        Node targetQuestionnaire = this.questionnaireUtils.getOwnerQuestionnaire(question);
-        if (targetQuestionnaire == null) {
-            return null;
-        }
-        try {
-            // If the question belongs to the current form's questionnaire, then the source itself is the target form
-            if (targetQuestionnaire.isSame(this.formUtils.getQuestionnaire(source))) {
-                return source;
-            }
-            // If the questionnaire answered by the current form is not the target one,
-            // look for a related form answering that questionnaire belonging to the form's related subjects.
-            Node nextSubject = this.formUtils.getSubject(source);
-            // We stop when we've reached the end of the subjects hierarchy
-            while (this.subjectUtils.isSubject(nextSubject)) {
-                // Look for a form answering the right questionnaire
-                final PropertyIterator otherForms = nextSubject.getReferences(FormUtils.SUBJECT_PROPERTY);
-                while (otherForms.hasNext()) {
-                    final Node otherForm = otherForms.nextProperty().getParent();
-                    if (targetQuestionnaire.isSame(this.formUtils.getQuestionnaire(otherForm))) {
-                        return otherForm;
-                    }
-                }
-                // Not found among the subject's forms, next look in the parent subject's forms
-                nextSubject = nextSubject.getParent();
-            }
-        } catch (RepositoryException e) {
-            LOGGER.warn("Failed to look for the right answer to copy: {}", e.getMessage(), e);
+        Collection<Node> answers =
+            this.formUtils.findAllFormRelatedAnswers(source, question, EnumSet.allOf(FormUtils.SearchType.class));
+        if (!answers.isEmpty()) {
+            return answers.iterator().next();
         }
         return null;
     }
