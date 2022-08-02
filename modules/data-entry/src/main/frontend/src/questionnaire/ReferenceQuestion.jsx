@@ -23,13 +23,11 @@ import { InputAdornment, TextField } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
 
-import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
-import DateQuestionUtilities from "./DateQuestionUtilities";
 import Question from "./Question";
-import {Time} from "./TimeQuestion";
 import FormattedText from "../components/FormattedText";
 import QuestionnaireStyle from './QuestionnaireStyle';
+import { useFormWriterContext } from "./FormContext";
 
 
 // Component that displays a reference question of any type.
@@ -40,21 +38,24 @@ import QuestionnaireStyle from './QuestionnaireStyle';
 //
 // Other options are passed to the <question> widget
 let ReferenceQuestion = (props) => {
-  const { existingAnswer, classes, pageActive, questionDefinition, ...rest} = props;
-  const { unitOfMeasurement, dataType, displayMode, dateFormat } = {...props.questionDefinition, ...props};
+  const { existingAnswer, classes, pageActive, questionName} = props;
+  const { unitOfMeasurement, displayMode } = {...props.questionDefinition, ...props};
 
   let initialValue = existingAnswer?.[1].value || "";
   const [displayValue, changeDisplayValue] = useState(initialValue);
   const [answer, changeAnswer] = useState(initialValue === "" ? [] : [["value", initialValue]]);
-  const [fieldType, changeFieldType] = useState("string")
   const [muiInputProps, changeMuiInputProps] = useState({});
   const [isFormatted, changeIsFormatted] = useState(false);
 
-  let setFieldType = (value) => {
-    if (fieldType !== value) {
-      changeFieldType(value);
+  // Hooks must be pulled from the top level, so this cannot be moved to inside the useEffect()
+  const changeFormContext = useFormWriterContext();
+
+  // When the answers change, we inform the FormContext
+  useEffect(() => {
+    if (answer) {
+      changeFormContext((oldContext) => ({...oldContext, [questionName]: answer}));
     }
-  }
+  }, [answer]);
 
   useEffect(() => {
     if (unitOfMeasurement) {
@@ -71,47 +72,6 @@ let ReferenceQuestion = (props) => {
     };
   }, [displayMode])
 
-  let capitalizedDataType = dataType.substring(0, 1).toUpperCase() + dataType.substring(1);
-  let answerType, answerNodeType = `cards:${capitalizedDataType}Answer`, newFieldType;
-  switch (dataType) {
-    case "boolean":
-      answerType = "Long"; // Long, not Boolean
-      break;
-    case "date":
-      newFieldType = DateQuestionUtilities.getFieldType(dateFormat);
-      setFieldType(newFieldType);
-      switch (newFieldType) {
-        case "long":
-          answerType = "Long";
-          break;
-        case "string":
-          answerType = "Date";
-          break;
-        default:
-          answerType = "Date";
-          break;
-      }
-      break;
-    case "long":
-    case "double":
-    case "decimal":
-      answerType = capitalizedDataType;
-      break;
-    case "vocabulary":
-      answerType = "String";
-      break;
-    case "time":
-      answerType = "String";
-      newFieldType = Time.timeQuestionFieldType(dateFormat);
-      setFieldType(newFieldType);
-      break;
-    case "text":
-      default:
-      answerType = "String";
-      answerNodeType = "cards:TextAnswer";
-      break;
-  }
-
   return (
     <Question
       defaultDisplayFormatter={isFormatted ? (label, idx) => <FormattedText>{label}</FormattedText> : undefined}
@@ -126,7 +86,6 @@ let ReferenceQuestion = (props) => {
           :
           <TextField
             variant="standard"
-            type={fieldType}
             disabled={true}
             className={classes.textField + " " + classes.answerField}
             value={displayValue}
@@ -135,19 +94,6 @@ let ReferenceQuestion = (props) => {
           }
         </>
       }
-      {/*
-       * Need to generate an answer so this question can be used for computations and conditional sections.
-       * This will never be editable by the user.
-       */}
-      <Answer
-        answers={answer}
-        questionDefinition={props.questionDefinition}
-        existingAnswer={existingAnswer}
-        answerNodeType={answerNodeType}
-        valueType={answerType}
-        pageActive={pageActive}
-        {...rest}
-        />
     </Question>
   )
 }
