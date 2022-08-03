@@ -81,13 +81,13 @@ function Statistic(props) {
 
   if (xVar["dataType"] == "date") {
     // Date sort -- first convert string->moment to compare
-    let dateFormat = xVar["dateFormat"] || "yyyy-MM-dd";
+    let dateFormat = xVar["dateFormat"] || DateQuestionUtilities.defaultDateFormat;
     rechartsData.sort((a, b) => {
         return DateQuestionUtilities.toPrecision(a["x"], dateFormat).diff(DateQuestionUtilities.toPrecision(b["x"], dateFormat))
     });
     // Reformat to a human readable format
     rechartsData = rechartsData.map((field) => {
-      field["x"] = DateTime.fromISO(field["x"]).toFormat("yyyy-MM-dd");
+      field["x"] = DateTime.fromISO(field["x"]).toFormat(DateQuestionUtilities.defaultDateFormat);
       return field;
     })
   } else {

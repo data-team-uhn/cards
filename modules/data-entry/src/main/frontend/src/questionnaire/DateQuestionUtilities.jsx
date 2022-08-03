@@ -25,6 +25,7 @@ export default class DateQuestionUtilities {
   static TIMESTAMP_TYPE = "timestamp";
   static INTERVAL_TYPE = "interval";
   static slingDateFormat = "yyyy-MM-dd\'T\'HH:mm:ss";
+  static defaultDateFormat = "yyyy-MM-dd";
 
   static YEAR_DATE_TYPE = "year";
   static MONTH_DATE_TYPE = "month";
@@ -37,6 +38,7 @@ export default class DateQuestionUtilities {
   static dayTag = "dd";
   static hourTag = "HH";
   static minuteTag = "mm";
+  static secondTag = "ss";
 
   static PROP_TYPES = {
     classes: PropTypes.object.isRequired,
@@ -124,7 +126,7 @@ export default class DateQuestionUtilities {
 
   static dateToFormattedString(date, textFieldType) {
     return (!date?.isValid) ? "" :
-    textFieldType === "date" ? date.toFormat("yyyy-MM-dd") : date.toFormat("yyyy-MM-dd\'T\'HH:mm");
+    textFieldType === "date" ? date.toFormat(this.defaultDateFormat) : date.toFormat("yyyy-MM-dd\'T\'HH:mm");
   }
 
   // Convert a moment string to a month display
@@ -148,7 +150,7 @@ export default class DateQuestionUtilities {
     if (Array.isArray(value)) {
       return `${this.formatDateAnswer(dateFormat, value[0])} to ${this.formatDateAnswer(dateFormat, value[1])}`;
     }
-    dateFormat = dateFormat || "yyyy-MM-dd";
+    dateFormat = dateFormat || this.defaultDateFormat;
     let dateType = this.getDateType(dateFormat);
     if (dateType === this.YEAR_DATE_TYPE) {
       // Year-only dates are displayed like a number
@@ -178,8 +180,8 @@ export default class DateQuestionUtilities {
     // Compute the displayed difference
     let result = {long:""}
     if (startDateInput && endDateInput) {
-      let startDate = this.toPrecision(startDateInput, "yyyy-MM-dd");
-      let endDate = this.toPrecision(endDateInput, "yyyy-MM-dd");
+      let startDate = this.toPrecision(startDateInput, this.defaultDateFormat);
+      let endDate = this.toPrecision(endDateInput, this.defaultDateFormat);
 
       let diff = [];
       let longDiff = [];
@@ -214,5 +216,18 @@ export default class DateQuestionUtilities {
 
   static timeQuestionFieldType(dateFormat) {
     return this.formatIsMinuteSeconds(dateFormat) ? "string" : "time";
+  }
+
+  static getPickerViews(dateFormat) {
+    let views = [];
+    if (typeof(dateFormat) === "string") {
+      dateFormat.includes(this.yearTag) && views.push('year');
+      dateFormat.includes(this.monthTag) && views.push('month');
+      dateFormat.includes(this.dayTag) && views.push('day');
+      dateFormat.includes(this.hourTag) && views.push('hours');
+      dateFormat.includes(this.minuteTag) && views.push('minutes');
+      dateFormat.includes(this.secondTag) && views.push('seconds');
+    }
+    return views;
   }
 }

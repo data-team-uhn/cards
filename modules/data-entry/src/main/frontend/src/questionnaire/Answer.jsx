@@ -85,7 +85,7 @@ function Answer (props) {
           <input type="hidden" name={`${answerPath}/value@TypeHint`} value={valueType + (isMultivalued ? '[]' : '')}></input>
           {answers.map( (element, index) => {
             return (
-              <input type="hidden" name={`${answerPath}/value`} key={element[VALUE_POS] === undefined ? index : element[VALUE_POS] + "" + index} value={element[VALUE_POS]}></input>
+              <input type="hidden" name={`${answerPath}/value`} key={element[VALUE_POS] === undefined ? index : element[VALUE_POS] + "" + index} value={element[VALUE_POS] || undefined}></input>
               );
           })}
           {
@@ -96,7 +96,7 @@ function Answer (props) {
                     type="hidden"
                     name={`${answerPath}/${key}`}
                     key={value === undefined ? index + (answers ? answers.length : 0) : value}
-                    value={value}></input>
+                    value={value || undefined}></input>
                 );
               })
           }

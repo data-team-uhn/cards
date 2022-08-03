@@ -25,6 +25,7 @@
     "@mui/material": "5.8.0",
     "@mui/styles": "5.8.0",
     "@mui/lab": "5.0.0-alpha.81",
+    "@mui/x-date-pickers": "5.0.0-beta.3",
     "react": "^17.0.0"
   },
   "devDependencies": {
