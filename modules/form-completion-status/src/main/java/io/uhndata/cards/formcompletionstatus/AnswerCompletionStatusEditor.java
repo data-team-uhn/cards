@@ -110,9 +110,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
             final Iterable<String> nodeAnswers = after.getValue(Type.STRINGS);
             final int numAnswers = iterableLength(nodeAnswers);
             final Set<String> statusFlags = new TreeSet<>();
-            if (before != null) {
-                before.getValue(Type.STRINGS).forEach(statusFlags::add);
-            }
+            this.currentNodeBuilder.getProperty(STATUS_FLAGS).getValue(Type.STRINGS).forEach(statusFlags::add);
             if (checkInvalidAnswer(questionNode, numAnswers)) {
                 statusFlags.add(STATUS_FLAG_INVALID);
                 statusFlags.add(STATUS_FLAG_INCOMPLETE);
@@ -146,7 +144,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         if (questionNode != null) {
             if (PROP_VALUE.equals(before.getName())) {
                 final Set<String> statusFlags = new TreeSet<>();
-                before.getValue(Type.STRINGS).forEach(statusFlags::add);
+                this.currentNodeBuilder.getProperty(STATUS_FLAGS).getValue(Type.STRINGS).forEach(statusFlags::add);
                 // Only add the INVALID,INCOMPLETE flags if the given question requires more than zero answers
                 if (checkInvalidAnswer(questionNode, 0)) {
                     statusFlags.add(STATUS_FLAG_INVALID);
