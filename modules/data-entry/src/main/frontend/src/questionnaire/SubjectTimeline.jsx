@@ -101,7 +101,7 @@ function CustomTimelineConnector(props) {
 }
 
 function TimelineEntry(classes, dateEntry, index, length, nextEntry) {
-  let dateText = DateQuestionUtilities.formatDateAnswer("yyyy-MM-dd", dateEntry.date);
+  let dateText = DateQuestionUtilities.formatDateAnswer(DateQuestionUtilities.VIEW_DATE_FORMAT, dateEntry.date);
   let diff = DateQuestionUtilities.dateDifference(dateEntry.date, nextEntry && nextEntry.date);
 
   let paperClasses = [classes.timelinePaper];

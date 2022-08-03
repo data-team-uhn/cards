@@ -32,13 +32,13 @@ import QuestionnaireStyle from "./QuestionnaireStyle";
 import AnswerComponentManager from "./AnswerComponentManager";
 
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { LocalizationProvider } from '@mui/x-date-pickers';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { DateTime } from "luxon";
+import DateQuestionUtilities from "./DateQuestionUtilities";
 
 // Component that renders a time question
-// Selected answers are placed in a series of <input type="hidden"> tags for
-// submission.
+// Selected answers are placed in a series of <input type="hidden"> tags for submission.
 //
 // Optional props:
 // text: the question to be displayed
@@ -55,16 +55,16 @@ import { DateTime } from "luxon";
 //  />
 function TimeQuestion(props) {
   let {existingAnswer, classes, pageActive, ...rest} = props;
-  let {text, lowerLimit, upperLimit, errorText, minAnswers, dateFormat} = {...props.questionDefinition, ...props};
+  let {text, lowerLimit, upperLimit, errorText, minAnswers, dateFormat} = {dateFormat: "mm:ss", ...props.questionDefinition, ...props};
   let currentStartValue = (existingAnswer && existingAnswer[1].value && DateTime.fromFormat(existingAnswer[1].value, dateFormat).isValid)
     ? DateTime.fromFormat(existingAnswer[1].value, dateFormat) : undefined;
   const [selectedTime, changeTime] = useState(currentStartValue);
   const [error, setError] = useState(undefined);
   const defaultErrorMessage = errorText || "Please enter a valid time";
   const [errorMessage, setErrorMessage] = useState(defaultErrorMessage);
-  const isMinuteSeconds = typeof(dateFormat) === "string" && dateFormat.toLowerCase() === "mm:ss";
-  const maxTime = DateTime.fromFormat(upperLimit, dateFormat).invalid ? null : DateTime.fromFormat(upperLimit, dateFormat);
-  const minTime = DateTime.fromFormat(lowerLimit, dateFormat).invalid ? null : DateTime.fromFormat(lowerLimit, dateFormat);
+  const isMinuteSeconds = DateQuestionUtilities.formatIsMinuteSeconds(dateFormat);
+  const maxTime = !upperLimit || DateTime.fromFormat(upperLimit, dateFormat).invalid ? undefined : DateTime.fromFormat(upperLimit, dateFormat);
+  const minTime = !lowerLimit || DateTime.fromFormat(lowerLimit, dateFormat).invalid ? undefined : DateTime.fromFormat(lowerLimit, dateFormat);
 
   // Error check existing answers when first loading the page
   if (existingAnswer && existingAnswer[1].value && DateTime.fromFormat(existingAnswer[1].value, dateFormat).invalid) {
