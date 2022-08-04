@@ -289,6 +289,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
      *
      * @throws RepositoryException if accessing the repository fails
      */
+    @SuppressWarnings("checkstyle:CyclomaticComplexity")
     private void summarize() throws RepositoryException
     {
         // Iterate through all children of this node
@@ -321,7 +322,10 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
             }
         }
         // Set the flags in selectedNodeBuilder accordingly
-        final List<String> statusFlags = new ArrayList<>();
+        final Set<String> statusFlags = new TreeSet<>();
+        if (this.currentNodeBuilder.hasProperty(STATUS_FLAGS)) {
+            this.currentNodeBuilder.getProperty(STATUS_FLAGS).getValue(Type.STRINGS).forEach(statusFlags::add);
+        }
         if (isInvalid) {
             statusFlags.add(STATUS_FLAG_INVALID);
         }
