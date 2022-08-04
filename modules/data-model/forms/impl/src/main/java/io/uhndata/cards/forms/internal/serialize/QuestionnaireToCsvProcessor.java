@@ -223,8 +223,7 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
             processFormSubjects(form.getJsonObject("subject"), csvData);
         }
         csvData.get(CREATED_HEADER).put(0, form.getString("jcr:created"));
-        csvData.get(LAST_MODIFIED_HEADER).put(0, form.getString("jcr:lastModified")
-                .substring(0, form.getString("jcr:lastModified").lastIndexOf(".")));
+        csvData.get(LAST_MODIFIED_HEADER).put(0, form.getString("jcr:lastModified"));
 
         // Compute on which row each answer is supposed to be.
         // Without repeatable sections, this would be easy, since everything in a flat form is on the same row.
