@@ -206,10 +206,10 @@ public class ClinicRestrictionListener implements ResourceChangeListener
         while (results.hasNext()) {
             // Apply ACL to the root level node, and everything should inherit it
             Node node = results.nextNode();
-            this.resetClinicFormsRestriction(node.getPath(), clinicGroupName, session, trustedUsers, false);
+            this.resetClinicFormsRestriction(node.getPath(), clinicGroupName, session, trustedUsers);
         }
         // Also apply to the visit and its parent patient subject
-        this.resetClinicFormsRestriction(visit.getPath(), clinicGroupName, session, trustedUsers, true);
+        this.resetClinicFormsRestriction(visit.getPath(), clinicGroupName, session, trustedUsers);
         this.recalculatePatientACLs(visit.getParent(), session);
     }
 
@@ -240,8 +240,7 @@ public class ClinicRestrictionListener implements ResourceChangeListener
                 final String clinicPath =
                     (String) this.formUtils.getValue(this.formUtils.getAnswer(visitForm, clinicQuestion));
                 final String clinicGroupName = session.getNode(clinicPath).getProperty("clinicName").getString();
-                this.resetClinicFormsRestriction(form.getPath(), clinicGroupName, session, trustedUsers,
-                    false);
+                this.resetClinicFormsRestriction(form.getPath(), clinicGroupName, session, trustedUsers);
             } catch (PathNotFoundException e) {
                 // The clinic cannot be found -- do not continue
                 return;
@@ -256,14 +255,12 @@ public class ClinicRestrictionListener implements ResourceChangeListener
      * @param clinicGroupName the clinic group name to apply to the new ACL entry
      * @param session session to use
      * @param principal principal to apply to
-     * @param checkout whether or not to checkout the node beforehand. Be careful not to apply this to anything under
-     *     /Forms, as that will form an infinite loop
      */
     private void resetClinicFormsRestriction(final String path, final String clinicGroupName, final Session session,
-        final Principal principal, final boolean checkout)
+        final Principal principal)
         throws RepositoryException
     {
-        this.removeClinicFormsRestriction(path, session, principal, checkout);
+        this.removeClinicFormsRestriction(path, session, principal);
 
         this.permissionsManager.addAccessControlEntry(path, true,
             principal, new String[] { Privilege.JCR_ALL },
@@ -276,14 +273,12 @@ public class ClinicRestrictionListener implements ResourceChangeListener
      * @param path path to apply the {@code cards:clinicForms} restriction to
      * @param session session to use
      * @param principal principal to apply to
-     * @param checkout whether or not to checkout the node beforehand. Be careful not to apply this to anything under
-     *     /Forms, as that will form an infinite loop
      */
     private void removeClinicFormsRestriction(final String path, final Session session,
-        final Principal principal, final boolean checkout)
+        final Principal principal)
         throws RepositoryException
     {
-        if (checkout) {
+        if (!this.versionManager.get().isCheckedOut(path)) {
             this.versionManager.get().checkout(path);
             this.nodesToCheckin.get().add(path);
         }
@@ -378,7 +373,7 @@ public class ClinicRestrictionListener implements ResourceChangeListener
 
         // Reset the clinic forms restriction on the patient
         String patientPath = patient.getPath();
-        this.removeClinicFormsRestriction(patientPath, session, trustedUsers, true);
+        this.removeClinicFormsRestriction(patientPath, session, trustedUsers);
         clinics.forEach(clinic -> this.safeAddACE(patientPath, trustedUsers, clinic, session));
 
         // Reset the clinic forms restriction on any form that uses this patient as its subject
@@ -389,7 +384,7 @@ public class ClinicRestrictionListener implements ResourceChangeListener
         while (results.hasNext()) {
             Node form = results.nextNode();
             String formPath = form.getPath();
-            this.removeClinicFormsRestriction(formPath, session, trustedUsers, true);
+            this.removeClinicFormsRestriction(formPath, session, trustedUsers);
             clinics.forEach(clinic -> this.safeAddACE(formPath, trustedUsers, clinic, session));
         }
     }
@@ -408,7 +403,7 @@ public class ClinicRestrictionListener implements ResourceChangeListener
             ((JackrabbitSession) session).getPrincipalManager().getPrincipal("TrustedUsers");
         Set<String> clinics = getPatientClinics(patient, session);
         String formPath = form.getPath();
-        this.removeClinicFormsRestriction(formPath, session, trustedUsers, true);
+        this.removeClinicFormsRestriction(formPath, session, trustedUsers);
         clinics.forEach(clinic -> this.safeAddACE(formPath, trustedUsers, clinic, session));
     }
 }
