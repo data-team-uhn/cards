@@ -57,16 +57,16 @@ public class DataProcessor implements ResourceJsonProcessor
     private ThreadLocal<String> selectors = new ThreadLocal<>();
 
     private ThreadLocal<String> rootNode = new ThreadLocal<>();
+
+    // Max depth level of children whose data will be included in the output
     private ThreadLocal<Object> displayLevel = ThreadLocal.withInitial(() -> 0);
 
     private ThreadLocal<Map<String, String>> filters = new ThreadLocal<>();
 
     private ThreadLocal<Map<String, String>> options = new ThreadLocal<>();
 
-    // Node uuid and its type either questionnaire or subject
+    // Node uuid and its type, either questionnaire or subject
     private ThreadLocal<Map<String, String>> uuidsWithEntityFilter = ThreadLocal.withInitial(HashMap::new);
-
-    // Max depth level of the root node
 
     @Override
     public String getName()
@@ -113,8 +113,7 @@ public class DataProcessor implements ResourceJsonProcessor
                 StringUtils.substringAfter(s, "=").replaceAll("\\\\\\.", ".")));
         this.options.set(optionsMap);
 
-        setDisplayLevel(this.options.get().get("descendantData"));
-
+        setDisplayLevel(optionsMap.get("descendantData"));
     }
 
     @Override
@@ -180,7 +179,8 @@ public class DataProcessor implements ResourceJsonProcessor
 
     private boolean checkNodeToBeSubNodeAndNodeDepthLevel(Node currentNode) throws RepositoryException
     {
-        if (!currentNode.getPath().startsWith(this.rootNode.get() + "/")) {
+        if (!(currentNode.getPath().equals(this.rootNode.get())
+            || currentNode.getPath().startsWith(this.rootNode.get() + "/"))) {
             return false;
         }
 
