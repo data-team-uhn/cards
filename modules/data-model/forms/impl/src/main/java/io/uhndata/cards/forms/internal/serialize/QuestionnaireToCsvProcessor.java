@@ -61,6 +61,7 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
     private static final String IDENTIFIER_HEADER = "Identifier";
 
     private static final String CREATED_HEADER = "Created";
+    private static final String LAST_MODIFIED_HEADER = "Last modified";
 
     private static final String PRIMARY_TYPE_PROP = "jcr:primaryType";
 
@@ -108,7 +109,9 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
                 getSubjectTypes(resolver, csvData, columns);
             }
             csvData.put(CREATED_HEADER, new HashMap<>());
+            csvData.put(LAST_MODIFIED_HEADER, new HashMap<>());
             columns.add(CREATED_HEADER);
+            columns.add(LAST_MODIFIED_HEADER);
 
             // Get header titles from the questionnaire question objects
             processSectionToHeaderRow(questionnaire, csvData, columns);
@@ -220,6 +223,7 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
             processFormSubjects(form.getJsonObject("subject"), csvData);
         }
         csvData.get(CREATED_HEADER).put(0, form.getString("jcr:created"));
+        csvData.get(LAST_MODIFIED_HEADER).put(0, form.getString("jcr:lastModified"));
 
         // Compute on which row each answer is supposed to be.
         // Without repeatable sections, this would be easy, since everything in a flat form is on the same row.
