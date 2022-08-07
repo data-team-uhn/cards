@@ -146,20 +146,14 @@ public abstract class AbstractAnswerCopyProcessor implements ResourceJsonProcess
         }
     }
 
-    private Node getAnswer(final Node source, final Node question)
-    {
-        final Node targetForm = findForm(source, question);
-        return this.formUtils.getAnswer(targetForm, question);
-    }
-
     /**
-     * Find a form related to the target {@code source}, answering the target {@code question}.
+     * Find the first answer related to the target {@code source}, answering the target {@code question}.
      *
      * @param source the resource being serialized
      * @param question a question whose answer needs to be copied
-     * @return a relevant form or {@code null}
+     * @return a relevant answer node or {@code null}
      */
-    protected abstract Node findForm(Node source, Node question);
+    protected abstract Node getAnswer(Node source, Node question);
 
     /**
      * Compute the relative path to the copy configuration that applies to the resource being serialized, excluding the

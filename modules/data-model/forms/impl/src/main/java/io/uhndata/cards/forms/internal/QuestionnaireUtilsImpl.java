@@ -127,6 +127,17 @@ public final class QuestionnaireUtilsImpl extends AbstractNodeUtils implements Q
     }
 
     @Override
+    public boolean isReferenceQuestion(final Node node)
+    {
+        try {
+            return isQuestion(node)
+                && ("reference".equals(node.getProperty("entryMode").getString()));
+        } catch (final RepositoryException e) {
+            return false;
+        }
+    }
+
+    @Override
     public Node getQuestion(final String identifier)
     {
         final Node result = getNodeByIdentifier(identifier, getSession(this.rrf));

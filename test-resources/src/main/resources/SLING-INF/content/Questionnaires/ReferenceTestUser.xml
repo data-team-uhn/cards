@@ -1,0 +1,175 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+
+<node>
+    <name>ReferenceTestUser</name>
+    <primaryNodeType>cards:Questionnaire</primaryNodeType>
+    <property>
+        <name>title</name>
+        <value>Reference Test - User Answers</value>
+        <type>String</type>
+    </property>
+    <property>
+        <name>description</name>
+        <value>CARDS-1103</value>
+        <type>String</type>
+    </property>
+    <node>
+        <name>testing-instructions</name>
+        <primaryNodeType>cards:Information</primaryNodeType>
+        <property>
+            <name>text</name>
+            <value>This form is designed to test reference questions.
+
+To test these questions, fill out this form for a subject (`Reference Test - User Answers`) then create a new `Reference Test - Copied Answers` form for the same subject.
+Then, verify that all the answers have been copied over successfully</value>
+            <type>String</type>
+        </property>
+    </node>
+
+    <node>
+        <name>textQuestion</name>
+        <primaryNodeType>cards:Question</primaryNodeType>
+        <property>
+            <name>text</name>
+            <value>Text question</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>dataType</name>
+            <value>text</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>compact</name>
+            <value>True</value>
+            <type>Boolean</type>
+        </property>
+        <property>
+            <name>maxAnswers</name>
+            <value>1</value>
+            <type>Long</type>
+        </property>
+    </node>
+    <node>
+        <name>section</name>
+        <primaryNodeType>cards:Section</primaryNodeType>
+        <property>
+            <name>label</name>
+            <value>Section</value>
+            <type>String</type>
+        </property>
+        <node>
+            <name>sectionTextQuestion</name>
+            <primaryNodeType>cards:Question</primaryNodeType>
+            <property>
+                <name>text</name>
+                <value>Text question in section</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>dataType</name>
+                <value>text</value>
+                <type>String</type>
+            </property>
+            <property>
+                <name>compact</name>
+                <value>True</value>
+                <type>Boolean</type>
+            </property>
+            <property>
+                <name>maxAnswers</name>
+                <value>1</value>
+                <type>Long</type>
+            </property>
+        </node>
+    </node>
+    <node>
+        <name>longQuestion</name>
+        <primaryNodeType>cards:Question</primaryNodeType>
+        <property>
+            <name>text</name>
+            <value>Long question</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>dataType</name>
+            <value>long</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>compact</name>
+            <value>True</value>
+            <type>Boolean</type>
+        </property>
+        <property>
+            <name>maxAnswers</name>
+            <value>1</value>
+            <type>Long</type>
+        </property>
+    </node>
+    <node>
+        <name>doubleQuestion</name>
+        <primaryNodeType>cards:Question</primaryNodeType>
+        <property>
+            <name>text</name>
+            <value>Double question</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>dataType</name>
+            <value>double</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>compact</name>
+            <value>True</value>
+            <type>Boolean</type>
+        </property>
+        <property>
+            <name>maxAnswers</name>
+            <value>1</value>
+            <type>Long</type>
+        </property>
+    </node>
+    <node>
+        <name>dateQuestion</name>
+        <primaryNodeType>cards:Question</primaryNodeType>
+        <property>
+            <name>text</name>
+            <value>Date question</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>dataType</name>
+            <value>date</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>compact</name>
+            <value>True</value>
+            <type>Boolean</type>
+        </property>
+        <property>
+            <name>maxAnswers</name>
+            <value>1</value>
+            <type>Long</type>
+        </property>
+    </node>
+</node>

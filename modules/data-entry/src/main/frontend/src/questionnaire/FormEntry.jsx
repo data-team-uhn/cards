@@ -40,6 +40,7 @@ import FileQuestion from "./FileQuestion";
 import QuestionMatrix from "./QuestionMatrix";
 import ResourceQuestion from "./ResourceQuestion";
 import DicomQuestion from "./DicomQuestion";
+import ReferenceQuestion from "./ReferenceQuestion";
 
 import FormattedText from "../components/FormattedText";
 

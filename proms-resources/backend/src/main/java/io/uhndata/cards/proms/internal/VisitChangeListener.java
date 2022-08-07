@@ -713,7 +713,8 @@ public class VisitChangeListener implements ResourceChangeListener
                 VisitChangeListener.this.questionnaireUtils.getQuestion(questionnaire, "clinic");
             final String clinicName = (String) VisitChangeListener.this.formUtils
                 .getValue(VisitChangeListener.this.formUtils.getAnswer(form, this.clinicQuestion));
-            final Node clinicNode = session.nodeExists(clinicName) ? session.getNode(clinicName) : null;
+            final Node clinicNode = StringUtils.isNotBlank(clinicName) && session.nodeExists(clinicName)
+                ? session.getNode(clinicName) : null;
             if (clinicNode != null) {
                 this.questionnaireSet = session.nodeExists("/Proms/" + clinicNode.getProperty("survey").getString())
                     ? clinicNode.getProperty("survey").getString() : null;

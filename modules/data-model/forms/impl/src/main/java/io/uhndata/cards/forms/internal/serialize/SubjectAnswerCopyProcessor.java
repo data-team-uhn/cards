@@ -18,11 +18,12 @@
  */
 package io.uhndata.cards.forms.internal.serialize;
 
+import java.util.Collection;
 import java.util.Deque;
+import java.util.EnumSet;
 import java.util.LinkedList;
 
 import javax.jcr.Node;
-import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 
 import org.apache.sling.api.resource.Resource;
@@ -87,30 +88,13 @@ public class SubjectAnswerCopyProcessor extends AbstractAnswerCopyProcessor
     }
 
     @Override
-    protected Node findForm(final Node source, final Node question)
+    protected Node getAnswer(Node source, Node question)
     {
-        Node targetQuestionnaire = this.questionnaireUtils.getOwnerQuestionnaire(question);
-        if (targetQuestionnaire == null) {
-            return null;
-        }
-        try {
-            Node currentSource = source;
-            while (this.subjectUtils.isSubject(currentSource)) {
-                // Look for all forms answering the right questionnaire belonging to the subject
-                final PropertyIterator forms = currentSource.getReferences(FormUtils.SUBJECT_PROPERTY);
-                while (forms.hasNext()) {
-                    final Node form = forms.nextProperty().getParent();
-                    final Node formQuestionnaire = this.formUtils.getQuestionnaire(form);
-                    if (targetQuestionnaire.isSame(formQuestionnaire)) {
-                        return form;
-                    }
-                }
-                currentSource = currentSource.getParent();
-            }
-        } catch (RepositoryException e) {
-            LOGGER.warn("Failed to look for the right answer to copy: {}", e.getMessage(), e);
+        Collection<Node> answers =
+            this.formUtils.findAllSubjectRelatedAnswers(source, question, EnumSet.allOf(FormUtils.SearchType.class));
+        if (!answers.isEmpty()) {
+            return answers.iterator().next();
         }
         return null;
     }
-
 }
