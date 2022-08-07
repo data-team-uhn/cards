@@ -155,7 +155,7 @@ public class DataProcessor implements ResourceJsonProcessor
             this.filters.get().forEach(filtersJson::add);
             this.options.get().forEach(optionsJson::add);
             json.add("dataFilters", filtersJson);
-            json.add("option", optionsJson);
+            json.add("dataOptions", optionsJson);
             json.add("exportDate",
                 new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").format(Calendar.getInstance().getTime()));
         } catch (RepositoryException e) {
@@ -224,7 +224,7 @@ public class DataProcessor implements ResourceJsonProcessor
     private String generateDataQuery(String currentNodeIdentifier) throws RepositoryException
     {
         StringBuilder result = new StringBuilder("select * from [cards:Form] as n where n."
-                + this.uuidsWithEntityFilter.get().get(currentNodeIdentifier) + " = '" + currentNodeIdentifier + "'");
+            + this.uuidsWithEntityFilter.get().get(currentNodeIdentifier) + " = '" + currentNodeIdentifier + "'");
         this.uuidsWithEntityFilter.get().remove(currentNodeIdentifier);
         this.uuidsWithEntityFilter.get().forEach((key, value) ->
             result.append(" or n.").append(value).append(" = '").append(key).append("'"));
