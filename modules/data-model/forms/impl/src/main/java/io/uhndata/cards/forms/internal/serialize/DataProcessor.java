@@ -36,6 +36,7 @@ import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
@@ -57,7 +58,15 @@ public class DataProcessor implements ResourceJsonProcessor
 
     private ThreadLocal<String> rootNode = new ThreadLocal<>();
 
+    // Max depth level of children whose data will be included in the output
+    private ThreadLocal<Object> displayLevel = ThreadLocal.withInitial(() -> 0);
+
     private ThreadLocal<Map<String, String>> filters = new ThreadLocal<>();
+
+    private ThreadLocal<Map<String, String>> options = new ThreadLocal<>();
+
+    // Node uuid and its type, either questionnaire or subject
+    private ThreadLocal<Map<String, String>> uuidsWithEntityFilter = ThreadLocal.withInitial(HashMap::new);
 
     @Override
     public String getName()
@@ -96,6 +105,15 @@ public class DataProcessor implements ResourceJsonProcessor
                 StringUtils.substringAfter(s, "=").replaceAll("\\\\\\.", ".")));
         this.filters.set(filtersMap);
 
+        final Map<String, String> optionsMap = new HashMap<>();
+        Arrays.asList(this.selectors.get().split("(?<!\\\\)(?:\\\\\\\\)*\\.")).stream()
+            .filter(s -> StringUtils.startsWith(s, "dataOption:"))
+            .map(s -> StringUtils.substringAfter(s, "dataOption:"))
+            .forEach(s -> optionsMap.put(StringUtils.substringBefore(s, "="),
+                StringUtils.substringAfter(s, "=").replaceAll("\\\\\\.", ".")));
+        this.options.set(optionsMap);
+
+        setDisplayLevel(optionsMap.get("descendantData"));
     }
 
     @Override
@@ -108,13 +126,19 @@ public class DataProcessor implements ResourceJsonProcessor
     public void leave(Node node, JsonObjectBuilder json, Function<Node, JsonValue> serializeNode)
     {
         try {
-            // Only the original subject or questionnaire node will have its data appended
-            if (!node.getPath().equals(this.rootNode.get())) {
+            // Only the original subject or questionnaire node or their children will have its data appended
+            if (!checkNodeToBeSubNodeAndNodeDepthLevel(node)) {
                 return;
             }
 
             boolean isQuestionnaire = node.isNodeType(QuestionnaireUtils.QUESTIONNAIRE_NODETYPE);
-            final String query = generateDataQuery(node, isQuestionnaire);
+            this.uuidsWithEntityFilter.get().put(node.getIdentifier(), isQuestionnaire ? "questionnaire" : "subject");
+
+            if (!node.getPath().equals(this.rootNode.get())) {
+                return;
+            }
+
+            final String query = generateDataQuery(node.getIdentifier());
             Iterator<Resource> forms = this.resolver.get().findResources(query, Query.JCR_SQL2);
 
             final Map<String, JsonArrayBuilder> formsJsons = new HashMap<>();
@@ -125,13 +149,49 @@ public class DataProcessor implements ResourceJsonProcessor
             // The data JSONs have been collected, add them to the subject's JSON
             formsJsons.forEach(json::add);
             final JsonObjectBuilder filtersJson = Json.createObjectBuilder();
+            final JsonObjectBuilder optionsJson = Json.createObjectBuilder();
             this.filters.get().forEach(filtersJson::add);
+            this.options.get().forEach(optionsJson::add);
             json.add("dataFilters", filtersJson);
+            json.add("option", optionsJson);
             json.add("exportDate",
                 new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").format(Calendar.getInstance().getTime()));
         } catch (RepositoryException e) {
             // Really shouldn't happen
         }
+    }
+
+    @Override
+    public void end(Resource resource)
+    {
+        this.displayLevel.remove();
+        this.uuidsWithEntityFilter.remove();
+    }
+
+    private void setDisplayLevel(String descendantDataValue)
+    {
+        if (NumberUtils.isParsable(descendantDataValue)) {
+            this.displayLevel.set(Integer.parseInt(descendantDataValue));
+        } else if ("true".equals(descendantDataValue)) {
+            this.displayLevel.set(true);
+        }
+    }
+
+    private boolean checkNodeToBeSubNodeAndNodeDepthLevel(Node currentNode) throws RepositoryException
+    {
+        if (!(currentNode.getPath().equals(this.rootNode.get())
+            || currentNode.getPath().startsWith(this.rootNode.get() + "/"))) {
+            return false;
+        }
+
+        if (this.displayLevel.get().equals(true)) {
+            return true;
+        }
+
+        // The depth level is equal the number of "/" in path of node without the root path prefix
+        final String pathWithoutRoot = currentNode.getPath().replace(this.rootNode.get(), "");
+        final int depthLevel = StringUtils.countMatches(pathWithoutRoot, "/");
+        return depthLevel <= (int) this.displayLevel.get();
     }
 
     private void storeForm(final Resource form, final Map<String, JsonArrayBuilder> formsJsons,
@@ -151,11 +211,14 @@ public class DataProcessor implements ResourceJsonProcessor
         }
     }
 
-    private String generateDataQuery(final Node entity, final boolean isQuestionnaire) throws RepositoryException
+    private String generateDataQuery(String currentNodeIdentifier) throws RepositoryException
     {
-        final String entityFilter = isQuestionnaire ? "questionnaire" : "subject";
-        final StringBuilder result = new StringBuilder("select * from [cards:Form] as n where n." + entityFilter
-            + " = '" + entity.getIdentifier() + "'");
+        StringBuilder result = new StringBuilder("select * from [cards:Form] as n where n."
+                + this.uuidsWithEntityFilter.get().get(currentNodeIdentifier) + " = '" + currentNodeIdentifier + "'");
+        this.uuidsWithEntityFilter.get().remove(currentNodeIdentifier);
+        this.uuidsWithEntityFilter.get().forEach((key, value) ->
+            result.append(" or n.").append(value).append(" = '").append(key).append("'"));
+
         this.filters.get().forEach((key, value) -> {
             switch (key) {
                 case "createdAfter":
