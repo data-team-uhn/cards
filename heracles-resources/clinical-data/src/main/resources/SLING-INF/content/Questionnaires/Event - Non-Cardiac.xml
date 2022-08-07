@@ -267,7 +267,7 @@
 		</property>
 		<property>
 			<name>displayMode</name>
-			<value>list</value>
+			<value>list+input</value>
 			<type>String</type>
 		</property>
 		<property>

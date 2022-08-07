@@ -84,9 +84,9 @@ def insert_conditional(conditional_string, parent, title):
         if 'all' in operand_b:
             operand_b = operand_b[:-3]
             parent['conditionalGroup'].update({'requireAll': True})
-        operand_b_list = list(operand_b.replace(' ', '').split(','))
+        operand_b_list = list(operand_b.split(','))
         for index, item in enumerate(operand_b_list):
-            parent['conditionalGroup'].update(create_conditional(operand_a, operator, item, 'condition' + str(index)))
+            parent['conditionalGroup'].update(create_conditional(operand_a, operator, item.strip(), 'condition' + str(index)))
     else:
         parent.update(create_conditional(operand_a, operator, operand_b, 'condition' + title))
 
@@ -435,7 +435,7 @@ def csv_to_json(title):
         title = q['title'].replace(": ", " - ")
         with open(title + '.json', 'w') as jsonFile:
             json.dump(q, jsonFile, indent='\t')
-        print('python3 cards/Utilities/JSON-to-XML/json_to_xml.py "' + title +'.json" > "' + title + '.xml";\\')
+        print('python3 ../../cards/Utilities/JSON-to-XML/json_to_xml.py "' + title +'.json" > "' + title + '.xml";\\')
 
 
 titles = ['CPET_ External Files', '6MWT', 'CPET Interpretation', 'Historical CPET Test', 'Ad Hoc Lab Results',

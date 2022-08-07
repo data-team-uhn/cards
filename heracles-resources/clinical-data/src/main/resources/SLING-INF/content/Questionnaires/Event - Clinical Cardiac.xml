@@ -94,6 +94,11 @@
 			<value>1</value>
 			<type>Long</type>
 		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
 		<node>
 			<name>Hospitalization</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
@@ -591,7 +596,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>Exercisestresstest</value>
+								<value>Exercise stress test</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -632,7 +637,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>Nuclearstresstest</value>
+								<value>Nuclear stress test</value>
 							</values>
 							<type>String</type>
 						</property>
@@ -673,7 +678,7 @@
 						<property>
 							<name>value</name>
 							<values>
-								<value>Nuclearpharmocologicstresstest</value>
+								<value>Nuclear pharmacologic stress test</value>
 							</values>
 							<type>String</type>
 						</property>

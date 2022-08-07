@@ -1089,6 +1089,11 @@
 				<type>String</type>
 			</property>
 			<property>
+				<name>unitOfMeasurement</name>
+				<value>years</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>maxAnswers</name>
 				<value>1</value>
 				<type>Long</type>
@@ -2605,16 +2610,16 @@
 					</property>
 				</node>
 				<node>
-					<name>Cruthches (left)</name>
+					<name>Crutches (left)</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>Cruthches (left)</value>
+						<value>Crutches (left)</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>Cruthches (left)</value>
+						<value>Crutches (left)</value>
 						<type>String</type>
 					</property>
 				</node>
@@ -2903,6 +2908,234 @@
 					<property>
 						<name>value</name>
 						<value>General fatigue</value>
+						<type>String</type>
+					</property>
+				</node>
+			</node>
+			<node>
+				<name>condition</name>
+				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<property>
+					<name>comparator</name>
+					<value>=</value>
+					<type>String</type>
+				</property>
+				<node>
+					<name>operandA</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>wd_symp</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>True</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+				<node>
+					<name>operandB</name>
+					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+					<property>
+						<name>value</name>
+						<values>
+							<value>1</value>
+						</values>
+						<type>String</type>
+					</property>
+					<property>
+						<name>isReference</name>
+						<value>False</value>
+						<type>Boolean</type>
+					</property>
+				</node>
+			</node>
+		</node>
+		<node>
+			<name>wd_symp3Section</name>
+			<primaryNodeType>cards:Section</primaryNodeType>
+			<node>
+				<name>wd_symp3</name>
+				<primaryNodeType>cards:Question</primaryNodeType>
+				<property>
+					<name>text</name>
+					<value>Rate the severity of the symptom</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>dataType</name>
+					<value>long</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>displayMode</name>
+					<value>list</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>maxAnswers</name>
+					<value>1</value>
+					<type>Long</type>
+				</property>
+				<property>
+					<name>compact</name>
+					<value>True</value>
+					<type>Boolean</type>
+				</property>
+				<node>
+					<name>0</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>0</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>0</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>1</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>1</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>1</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>2</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>2</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>2</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>3</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>3</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>3</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>4</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>4</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>4</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>5</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>5</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>5</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>6</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>6</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>6</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>7</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>7</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>7</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>8</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>8</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>8</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>9</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>9</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>9</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>10</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>10</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>10</value>
 						<type>String</type>
 					</property>
 				</node>
