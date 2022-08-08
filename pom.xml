@@ -22,7 +22,7 @@
 
   <groupId>io.uhndata.cards</groupId>
   <artifactId>cards-parent</artifactId>
-  <version>0.9-SNAPSHOT</version>
+  <version>0.9.5</version>
   <packaging>pom</packaging>
 
   <name>CARDS - Parent POM</name>
@@ -42,7 +42,7 @@
     <connection>scm:git:git://github.com/data-team-uhn/cards.git</connection>
     <developerConnection>scm:git:git@github.com:data-team-uhn/cards.git</developerConnection>
     <url>https://github.com/data-team-uhn/cards/tree/master/</url>
-    <tag>HEAD</tag>
+    <tag>cards-0.9.5</tag>
   </scm>
 
   <organization>
