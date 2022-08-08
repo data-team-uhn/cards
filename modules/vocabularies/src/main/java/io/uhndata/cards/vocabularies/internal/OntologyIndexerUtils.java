@@ -61,7 +61,6 @@ public final class OntologyIndexerUtils
      *
      * @param term the term data
      * @param vocabularyNode must be passed from the calling class
-     * @throws VocabularyIndexException when a node cannot be created
      */
     @SuppressWarnings({"checkstyle:CyclomaticComplexity"})
     public static void createVocabularyTermNode(VocabularyTermSource term, InheritableThreadLocal<Node> vocabularyNode)

@@ -244,7 +244,8 @@ public abstract class AbstractNCITIndexer implements VocabularyIndexer
      * Parses the temporary NCIT source file and creates <code>VocabularyTerm</code> nodes for each term. The new term
      * nodes must be children of the given <code>Vocabulary</code> node representing the NCIT vocabulary instance.
      *
-     * @param vocabularyNode <code>Vocabulary</code> node being indexed
+     * @param sourceFile the source file for the vocabulary
+     * @param vocabularyNode <code>Vocabulary</code> node representing the NCIT vocabulary where new terms will be added
      * @throws VocabularyIndexException when an error occurs with parsing
      */
     protected abstract void parseNCIT(File sourceFile, Node vocabularyNode) throws VocabularyIndexException;
