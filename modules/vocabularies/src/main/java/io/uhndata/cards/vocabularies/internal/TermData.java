@@ -24,7 +24,7 @@ import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
 
 /**
- * A datatype that contains a LinkedHashMap object which maps: String -> Collection[String]. It is used to store the
+ * A datatype that contains a LinkedHashMap object which maps: (String : Collection[String]). It is used to store the
  * information of a Vocabulary Term prior to ancestor propagation. The below is copied from OboParser.java .
  *
  * @version $Id$
