@@ -19,6 +19,8 @@ package io.uhndata.cards.formcompletionstatus;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -107,11 +109,16 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         if (questionNode != null && PROP_VALUE.equals(after.getName())) {
             final Iterable<String> nodeAnswers = after.getValue(Type.STRINGS);
             final int numAnswers = iterableLength(nodeAnswers);
-            final List<String> statusFlags = new ArrayList<>();
+            final Set<String> statusFlags = new TreeSet<>();
+            if (this.currentNodeBuilder.hasProperty(STATUS_FLAGS)) {
+                this.currentNodeBuilder.getProperty(STATUS_FLAGS).getValue(Type.STRINGS).forEach(statusFlags::add);
+            }
             if (checkInvalidAnswer(questionNode, numAnswers)) {
                 statusFlags.add(STATUS_FLAG_INVALID);
                 statusFlags.add(STATUS_FLAG_INCOMPLETE);
             } else {
+                statusFlags.remove(STATUS_FLAG_INVALID);
+                statusFlags.remove(STATUS_FLAG_INCOMPLETE);
                 /*
                  * We are here because:
                  *     - minAnswers == 0 && maxAnswers == 0
@@ -124,11 +131,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
                  *         (eg. at most M (inclusive) checkboxes must be selected)
                  *     - minAnswers == N && maxAnswers == M && numAnswers in range [N,M]
                  *         (eg. between N (inclusive) and M (inclusive) checkboxes must be selected)
-                 */
-
-                /*
-                 * TODO: Implement validation rules and check them here
-                 * Remove INVALID and INCOMPLETE flags if all validation rules pass
                  */
             }
             this.currentNodeBuilder.setProperty(STATUS_FLAGS, statusFlags, Type.STRINGS);
@@ -143,11 +145,17 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         final Node questionNode = getQuestionNode(this.currentNodeBuilder);
         if (questionNode != null) {
             if (PROP_VALUE.equals(before.getName())) {
-                final List<String> statusFlags = new ArrayList<>();
+                final Set<String> statusFlags = new TreeSet<>();
+                if (this.currentNodeBuilder.hasProperty(STATUS_FLAGS)) {
+                    this.currentNodeBuilder.getProperty(STATUS_FLAGS).getValue(Type.STRINGS).forEach(statusFlags::add);
+                }
                 // Only add the INVALID,INCOMPLETE flags if the given question requires more than zero answers
                 if (checkInvalidAnswer(questionNode, 0)) {
                     statusFlags.add(STATUS_FLAG_INVALID);
                     statusFlags.add(STATUS_FLAG_INCOMPLETE);
+                } else {
+                    statusFlags.remove(STATUS_FLAG_INVALID);
+                    statusFlags.remove(STATUS_FLAG_INCOMPLETE);
                 }
                 this.currentNodeBuilder.setProperty(STATUS_FLAGS, statusFlags, Type.STRINGS);
             }
@@ -164,10 +172,15 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     {
         final Node questionNode = getQuestionNode(this.currentNodeBuilder.getChildNode(name));
         if (questionNode != null) {
-            final List<String> statusFlags = new ArrayList<>();
+            final Set<String> statusFlags = new TreeSet<>();
+            if (after.hasProperty(STATUS_FLAGS)) {
+                after.getProperty(STATUS_FLAGS).getValue(Type.STRINGS).forEach(statusFlags::add);
+            }
             // Only add the INCOMPLETE flag if the given question requires more than zero answers
             if (checkInvalidAnswer(questionNode, 0)) {
                 statusFlags.add(STATUS_FLAG_INCOMPLETE);
+            } else {
+                statusFlags.remove(STATUS_FLAG_INCOMPLETE);
             }
             this.currentNodeBuilder.getChildNode(name).setProperty(STATUS_FLAGS, statusFlags, Type.STRINGS);
         }
@@ -280,6 +293,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
      *
      * @throws RepositoryException if accessing the repository fails
      */
+    @SuppressWarnings("checkstyle:CyclomaticComplexity")
     private void summarize() throws RepositoryException
     {
         // Iterate through all children of this node
@@ -312,12 +326,20 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
             }
         }
         // Set the flags in selectedNodeBuilder accordingly
-        final List<String> statusFlags = new ArrayList<>();
+        final Set<String> statusFlags = new TreeSet<>();
+        if (this.currentNodeBuilder.hasProperty(STATUS_FLAGS)) {
+            this.currentNodeBuilder.getProperty(STATUS_FLAGS).getValue(Type.STRINGS).forEach(statusFlags::add);
+        }
         if (isInvalid) {
             statusFlags.add(STATUS_FLAG_INVALID);
+        } else {
+            statusFlags.remove(STATUS_FLAG_INVALID);
         }
+
         if (isIncomplete) {
             statusFlags.add(STATUS_FLAG_INCOMPLETE);
+        } else {
+            statusFlags.remove(STATUS_FLAG_INCOMPLETE);
         }
         // Write these statusFlags to the JCR repo
         this.currentNodeBuilder.setProperty(STATUS_FLAGS, statusFlags, Type.STRINGS);
