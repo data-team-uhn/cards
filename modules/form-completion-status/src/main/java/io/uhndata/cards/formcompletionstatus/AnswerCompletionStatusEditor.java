@@ -110,7 +110,9 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
             final Iterable<String> nodeAnswers = after.getValue(Type.STRINGS);
             final int numAnswers = iterableLength(nodeAnswers);
             final Set<String> statusFlags = new TreeSet<>();
-            this.currentNodeBuilder.getProperty(STATUS_FLAGS).getValue(Type.STRINGS).forEach(statusFlags::add);
+            if (this.currentNodeBuilder.hasProperty(STATUS_FLAGS)) {
+                this.currentNodeBuilder.getProperty(STATUS_FLAGS).getValue(Type.STRINGS).forEach(statusFlags::add);
+            }
             if (checkInvalidAnswer(questionNode, numAnswers)) {
                 statusFlags.add(STATUS_FLAG_INVALID);
                 statusFlags.add(STATUS_FLAG_INCOMPLETE);
@@ -144,7 +146,9 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         if (questionNode != null) {
             if (PROP_VALUE.equals(before.getName())) {
                 final Set<String> statusFlags = new TreeSet<>();
-                this.currentNodeBuilder.getProperty(STATUS_FLAGS).getValue(Type.STRINGS).forEach(statusFlags::add);
+                if (this.currentNodeBuilder.hasProperty(STATUS_FLAGS)) {
+                    this.currentNodeBuilder.getProperty(STATUS_FLAGS).getValue(Type.STRINGS).forEach(statusFlags::add);
+                }
                 // Only add the INVALID,INCOMPLETE flags if the given question requires more than zero answers
                 if (checkInvalidAnswer(questionNode, 0)) {
                     statusFlags.add(STATUS_FLAG_INVALID);
@@ -328,9 +332,14 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         }
         if (isInvalid) {
             statusFlags.add(STATUS_FLAG_INVALID);
+        } else {
+            statusFlags.remove(STATUS_FLAG_INVALID);
         }
+
         if (isIncomplete) {
             statusFlags.add(STATUS_FLAG_INCOMPLETE);
+        } else {
+            statusFlags.remove(STATUS_FLAG_INCOMPLETE);
         }
         // Write these statusFlags to the JCR repo
         this.currentNodeBuilder.setProperty(STATUS_FLAGS, statusFlags, Type.STRINGS);
