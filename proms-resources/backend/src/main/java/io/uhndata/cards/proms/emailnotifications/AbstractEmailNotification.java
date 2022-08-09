@@ -37,10 +37,10 @@ import io.uhndata.cards.auth.token.TokenManager;
 import io.uhndata.cards.emailnotifications.EmailUtils;
 import jakarta.mail.MessagingException;
 
-abstract class AbstractPromsNotification
+abstract class AbstractEmailNotification
 {
     /** Default log. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractPromsNotification.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractEmailNotification.class);
 
     private static final String CARDS_HOST_AND_PORT =
         StringUtils.defaultIfEmpty(System.getenv("CARDS_HOST_AND_PORT"), "localhost:8080");
@@ -54,7 +54,7 @@ abstract class AbstractPromsNotification
 
     private final MailService mailService;
 
-    AbstractPromsNotification(final ResourceResolverFactory resolverFactory,
+    AbstractEmailNotification(final ResourceResolverFactory resolverFactory,
         final TokenManager tokenManager, final MailService mailService)
     {
         this.resolverFactory = resolverFactory;

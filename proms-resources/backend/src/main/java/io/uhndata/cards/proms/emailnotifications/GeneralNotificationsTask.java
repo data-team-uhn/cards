@@ -25,7 +25,7 @@ import org.apache.sling.commons.messaging.mail.MailService;
 import io.uhndata.cards.auth.token.TokenManager;
 import io.uhndata.cards.metrics.Metrics;
 
-public class GeneralNotificationsTask extends AbstractPromsNotification implements Runnable
+public class GeneralNotificationsTask extends AbstractEmailNotification implements Runnable
 {
     private String taskName;
     private String clinicId;
