@@ -82,8 +82,12 @@ public final class UpcomingNotificationsFactory
         @AttributeDefinition(name = "HTML Email Template JCR Path", description = "HTML Email Template JCR Path")
         String htmlEmailTemplatePath();
 
-        @AttributeDefinition(name = "Days before upcoming visit", description = "Days before upcoming visit")
-        int daysBeforeUpcomingVisit();
+        @AttributeDefinition(
+            name = "Days to the visit",
+            description =
+                "Days to the visit - positive if the visit is in the future, negative if the visit is in the past"
+        )
+        int daysToVisit();
     }
 
     @Activate
@@ -104,7 +108,7 @@ public final class UpcomingNotificationsFactory
         final Runnable notificationsJob = new GeneralNotificationsTask(this.resolverFactory, this.tokenManager,
             this.mailService, config.name(), config.clinicId(), config.emailSubject(),
             config.plainTextEmailTemplatePath(), config.htmlEmailTemplatePath(),
-            config.daysBeforeUpcomingVisit());
+            config.daysToVisit());
 
         try {
             this.scheduler.schedule(notificationsJob, notificationsOptions);
