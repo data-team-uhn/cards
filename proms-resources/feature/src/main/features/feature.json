@@ -119,7 +119,7 @@
         "io.uhndata.cards.proms-backend:SlackNotifications=[cards-metrics]"
       ]
     },
-    "io.uhndata.cards.proms.emailnotifications.UpcomingNotificationsFactory~InitialNotificationsTask":{
+    "io.uhndata.cards.proms.emailnotifications.AppointmentEmailNotificationsFactory~InitialNotificationsTask":{
       "name": "InitialNotificationsTask",
       "metricName": "Initial Emails Sent",
       "clinicId": "/Proms/ClinicMapping/853703519",
@@ -128,7 +128,7 @@
       "htmlEmailTemplatePath": "/apps/cards/proms/clinics/Cardio/mailTemplates/72h.html",
       "daysBeforeUpcomingVisit": 3
     },
-    "io.uhndata.cards.proms.emailnotifications.UpcomingNotificationsFactory~ReminderNotificationsTask":{
+    "io.uhndata.cards.proms.emailnotifications.AppointmentEmailNotificationsFactory~ReminderNotificationsTask":{
       "name": "ReminderNotificationsTask",
       "metricName": "Reminder Emails Sent",
       "clinicId": "/Proms/ClinicMapping/853703519",
