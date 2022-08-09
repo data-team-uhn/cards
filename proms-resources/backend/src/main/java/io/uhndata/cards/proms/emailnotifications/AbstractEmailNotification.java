@@ -62,18 +62,45 @@ abstract class AbstractEmailNotification
         this.mailService = mailService;
     }
 
-    public long sendNotification(final int daysInTheFuture, final String emailTextTemplateName,
+    /*
+     * Sends notification emails based on clinic-associated templates for appointments in the past or future.
+     *
+     * @param differenceInDays the difference in days between now and the day of the appointment.
+     * Positive values if the appointment is in the future, negative values if the appointment is in the past.
+     *
+     * @param emailTextTemplateName the name of the plain text email template associated with the Visit's clinic.
+     * @param emailHtmlTemplateName the name of the HTML email template associated with the Visit's clinic.
+     * @param emailSubject The subject line of the notification email
+     * @return the number of notification emails that have been sent
+     */
+    public long sendNotification(final int differenceInDays, final String emailTextTemplateName,
         final String emailHtmlTemplateName, final String emailSubject)
     {
-        return sendNotification(daysInTheFuture, emailTextTemplateName, emailHtmlTemplateName, emailSubject, null);
+        return sendNotification(differenceInDays, emailTextTemplateName, emailHtmlTemplateName, emailSubject, null);
     }
 
+    /*
+     * Sends notification emails based on templates for appointments in the past or future.
+     *
+     * @param differenceInDays the difference in days between now and the day of the appointment.
+     * Positive values if the appointment is in the future, negative values if the appointment is in the past.
+     *
+     * @param emailTextTemplateName the name of the plain text email template associated with the Visit's clinic,
+     * if clinicId is null, otherwise the absolute JCR path to the template.
+     *
+     * @param emailHtmlTemplateName the name of the HTML email template associated with the Visit's clinic,
+     * if clinicId is null, otherwise the absolute JCR path to the template.
+     *
+     * @param emailSubject The subject line of the notification email
+     * @param clinicId only send notifications for appointments with a clinic specified by this ID.
+     * @return the number of notification emails that have been sent
+     */
     @SuppressWarnings("checkstyle:ExecutableStatementCount")
-    public long sendNotification(final int daysInTheFuture, final String emailTextTemplateName,
+    public long sendNotification(final int differenceInDays, final String emailTextTemplateName,
         final String emailHtmlTemplateName, final String emailSubject, final String clinicId)
     {
         final Calendar dateToQuery = Calendar.getInstance();
-        dateToQuery.add(Calendar.DATE, daysInTheFuture);
+        dateToQuery.add(Calendar.DATE, differenceInDays);
         final Map<String, Object> parameters =
             Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, "EmailNotifications");
         long emailsSent = 0;
