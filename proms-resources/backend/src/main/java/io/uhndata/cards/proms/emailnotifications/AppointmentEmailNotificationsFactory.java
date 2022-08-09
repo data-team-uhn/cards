@@ -35,12 +35,12 @@ import org.slf4j.LoggerFactory;
 import io.uhndata.cards.auth.token.TokenManager;
 import io.uhndata.cards.metrics.Metrics;
 
-@Designate(ocd = UpcomingNotificationsFactory.Config.class, factory = true)
+@Designate(ocd = AppointmentEmailNotificationsFactory.Config.class, factory = true)
 @Component(configurationPolicy = ConfigurationPolicy.REQUIRE)
-public final class UpcomingNotificationsFactory
+public final class AppointmentEmailNotificationsFactory
 {
     /** Default log. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(UpcomingNotificationsFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppointmentEmailNotificationsFactory.class);
 
     /** Provides access to resources. */
     @Reference
@@ -58,8 +58,8 @@ public final class UpcomingNotificationsFactory
     @Reference
     private TokenManager tokenManager;
 
-    @ObjectClassDefinition(name = "Upcoming appointment notification",
-        description = "Send emails for upcoming appointments")
+    @ObjectClassDefinition(name = "Appointment email notification",
+        description = "Send emails for past and future appointments")
     public static @interface Config
     {
         @AttributeDefinition(name = "Name", description = "Name")
@@ -93,7 +93,7 @@ public final class UpcomingNotificationsFactory
     @Activate
     private void activate(final Config config)
     {
-        LOGGER.info("Activating upcoming email notifications: {}", config.name());
+        LOGGER.info("Activating appointment email notifications: {}", config.name());
         final String nightlyNotificationsSchedule =
             StringUtils.defaultIfEmpty(System.getenv("NIGHTLY_NOTIFICATIONS_SCHEDULE"), "0 0 6 * * ? *");
 
@@ -112,16 +112,21 @@ public final class UpcomingNotificationsFactory
 
         try {
             this.scheduler.schedule(notificationsJob, notificationsOptions);
-            LOGGER.info("Scheduled Upcoming Notifications Task: {}", config.name());
+            LOGGER.info("Scheduled Appointment Email Notifications Task: {}", config.name());
         } catch (Exception e) {
-            LOGGER.error("Failed to schedule Upcoming Notifications Task: {}. {}", config.name(), e.getMessage(), e);
+            LOGGER.error(
+                "Failed to schedule Appointment Email Notifications Task: {}. {}",
+                config.name(),
+                e.getMessage(),
+                e
+            );
         }
     }
 
     @Deactivate
     private void deactivate(final Config config)
     {
-        LOGGER.info("Deactivating upcoming email notifications: {}", config.name());
+        LOGGER.info("Deactivating appointment email notifications: {}", config.name());
         String jobName = "NightlyNotifications-" + config.name();
         if (this.scheduler.unschedule(jobName)) {
             LOGGER.info("Sucessfully unscheduled {}", jobName);
