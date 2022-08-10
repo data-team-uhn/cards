@@ -2012,7 +2012,7 @@
 				</property>
 				<property>
 					<name>dataType</name>
-					<value>long</value>
+					<value>text</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2194,7 +2194,7 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>-1</value>
+						<value>N/A</value>
 						<type>String</type>
 					</property>
 				</node>
