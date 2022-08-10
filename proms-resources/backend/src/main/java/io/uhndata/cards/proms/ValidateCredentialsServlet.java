@@ -85,9 +85,15 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
 
     private static final String VALUE = "value";
 
+    /** The following parameters are used to grab patient identification configuration for validation bypass. */
     private static final String CONFIG_NODE = "/Proms/PatientIdentification";
 
     private static final String TOKENLESS_AUTH_ENABLED_PROP = "enableTokenlessAuth";
+
+    private static final String PATIENT_IDENTIFICATION_ENABLED_PROP = "requirePIIAuth";
+
+    /** The name of the request parameter that may hold a login token. */
+    private static final String TOKEN_REQUEST_PARAMETER = "auth_token";
 
     @Reference
     private ResourceResolverFactory resolverFactory;
@@ -114,6 +120,7 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
         try (ResourceResolver rr = this.resolverFactory.getServiceResourceResolver(
             Map.of(ResourceResolverFactory.SUBSERVICE, "validateCredentials"))) {
             final Session session = rr.adaptTo(Session.class);
+
             // Check if this is a token-authenticated session
             String sessionSubjectIdentifier =
                 (String) this.resolverFactory.getThreadResourceResolver().getAttribute("cards:sessionSubject");
@@ -130,9 +137,10 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
             }
 
             if (sessionSubjectIdentifier == null) {
-                // Not a token authenticated session. Verify based on provided patient details
+                LOGGER.warn("Tokenless session");
                 handleTokenlessAuthentication(request, response, session, rr);
             } else {
+                LOGGER.warn("Token session");
                 handleTokenAuthentication(request, response, session, sessionSubjectIdentifier);
             }
         } catch (final LoginException e) {
@@ -146,6 +154,7 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
         final SlingHttpServletResponse response, final Session session, final ResourceResolver rr)
         throws IOException, RepositoryException
     {
+        // TODO: Check to see if patient authentication is enabled in the first place
         Node patientInformationForm = findMatchingPatientInformation(request, session, rr);
         final Node patientSubject = this.formUtils.getSubject(patientInformationForm);
 
@@ -160,16 +169,28 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
             Node visitSubject = this.formUtils.getSubject(validVisitForms.get(0));
             String visitSubjectPath = visitSubject.getPath();
 
-            generateAndApplyToken(request, response, "guest-patient", visitSubjectPath);
+            generateAndApplyToken(request, session, response, "guest-patient", visitSubjectPath);
             writeSuccess(response, visitSubjectPath, visitSubject, session, false);
         } else {
             // Patient has zero or multiple possible visits: Send back to the client to continue
             Node visitQuestionnaire = getVisitInformationQuestionnaire(session);
             Node visitLocationQuestion = this.questionnaireUtils.getQuestion(visitQuestionnaire, "location");
 
-            generateAndApplyToken(request, response, "tou-patient", patientSubject.getPath());
+            generateAndApplyToken(request, session, response, "tou-patient", patientSubject.getPath());
             writeVisitSelection(response, validVisitForms, visitLocationQuestion);
         }
+    }
+
+    private Property getConfig(final Session session, final String prop) throws RepositoryException
+    {
+        if (!session.nodeExists(CONFIG_NODE)) {
+            // If we cannot find the config, assume the most restrictive setting (false).
+            LOGGER.error("Could not find configuration node while evaluating credentials servlet");
+            return null;
+        }
+
+        Node config = session.getNode(CONFIG_NODE);
+        return config.getProperty(prop);
     }
 
     /***
@@ -181,17 +202,11 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
      */
     private boolean tokenlessAuthEnabled(final Session session) throws RepositoryException
     {
-        Node config = session.getNode(CONFIG_NODE);
-        if (config == null) {
-            // If we cannot find the config, assume the most restrictive setting (false).
-            LOGGER.error("Could not find configuration node while evaluating credentials servlet");
-            return false;
-        }
-
-        return config.getProperty(TOKENLESS_AUTH_ENABLED_PROP).getBoolean();
+        Property enabled = getConfig(session, TOKENLESS_AUTH_ENABLED_PROP);
+        return enabled == null ? false : enabled.getBoolean();
     }
 
-    private void generateAndApplyToken(final SlingHttpServletRequest request,
+    private void generateAndApplyToken(final SlingHttpServletRequest request, final Session session,
         final SlingHttpServletResponse response, String tokenUser, String subjectPath)
     {
         // Generate token
@@ -226,22 +241,30 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
         throws IOException, RepositoryException
     {
         final Node visitSubject = session.getNodeByIdentifier(sessionSubjectIdentifier);
-        // Look for the patient's information in the repository
-        final Node patientInformationQuestionniare = getPatientInformationQuestionnaire(session);
-        final Node patientInformationForm = getPatientInformationForm(visitSubject,
-            patientInformationQuestionniare, session);
-        if (patientInformationForm == null) {
-            LOGGER.warn("Patient Information not found for visit {}", visitSubject.getPath());
-            return;
-        }
 
-        if (!validatePatient(request, response, session,
-            patientInformationForm, patientInformationQuestionniare))
-        {
-            return;
+        if (isPatientIdentificationEnabled(session)) {
+            // Look for the patient's information in the repository
+            final Node patientInformationQuestionniare = getPatientInformationQuestionnaire(session);
+            final Node patientInformationForm = getPatientInformationForm(visitSubject,
+                patientInformationQuestionniare, session);
+            if (patientInformationForm == null) {
+                LOGGER.warn("Patient Information not found for visit {}", visitSubject.getPath());
+                return;
+            }
+
+            if (!validatePatient(request, response, session,
+                patientInformationForm, patientInformationQuestionniare)) {
+                return;
+            }
         }
 
         writeSuccess(response, sessionSubjectIdentifier, visitSubject, session, true);
+    }
+
+    private boolean isPatientIdentificationEnabled(final Session session) throws RepositoryException
+    {
+        Property enabled = getConfig(session, PATIENT_IDENTIFICATION_ENABLED_PROP);
+        return enabled == null ? false : enabled.getBoolean();
     }
 
     private Node findMatchingPatientInformation(final SlingHttpServletRequest request, final Session session,

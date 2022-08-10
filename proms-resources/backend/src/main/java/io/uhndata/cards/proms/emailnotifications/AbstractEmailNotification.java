@@ -24,6 +24,10 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
@@ -46,6 +50,11 @@ abstract class AbstractEmailNotification
         StringUtils.defaultIfEmpty(System.getenv("CARDS_HOST_AND_PORT"), "localhost:8080");
 
     private static final String CLINIC_SLING_PATH = "/Proms.html";
+
+    /** The following parameters are used to grab token lifetime configuration. */
+    private static final String CONFIG_NODE = "/Proms/PatientIdentification";
+
+    private static final String TOKEN_LIFETIME_PROP = "tokenLifetime";
 
     /** Provides access to resources. */
     protected final ResourceResolverFactory resolverFactory;
@@ -107,6 +116,7 @@ abstract class AbstractEmailNotification
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(parameters)) {
             Iterator<Resource> appointmentResults = AppointmentUtils.getAppointmentsForDay(resolver,
                 dateToQuery, clinicId);
+            final Session session = resolver.adaptTo(Session.class);
             while (appointmentResults.hasNext()) {
                 Resource appointmentDate = appointmentResults.next();
                 Resource appointmentForm = AppointmentUtils.getFormForAnswer(resolver, appointmentDate);
@@ -152,6 +162,7 @@ abstract class AbstractEmailNotification
 
                 String patientFullName = AppointmentUtils.getPatientFullName(resolver, patientSubject);
                 Calendar tokenExpiryDate = AppointmentUtils.parseDate(appointmentDate.getValueMap().get("value", ""));
+                tokenExpiryDate.add(Calendar.DATE, getTokenExpiryInDays(session));
                 atMidnight(tokenExpiryDate);
                 final String token = this.tokenManager.create(
                     "patient",
@@ -179,6 +190,25 @@ abstract class AbstractEmailNotification
             LOGGER.warn("Failed to results.next().getPath()");
         }
         return emailsSent;
+    }
+
+    private int getTokenExpiryInDays(final Session session)
+    {
+        try
+        {
+            if (!session.nodeExists(CONFIG_NODE)) {
+                // If we cannot find the config, assume the most restrictive setting (false).
+                LOGGER.error("Could not find configuration node while evaluating credentials servlet");
+                return 0;
+            }
+
+            Node config = session.getNode(CONFIG_NODE);
+            return (int) config.getProperty(TOKEN_LIFETIME_PROP).getLong();
+        } catch (RepositoryException e)
+        {
+            LOGGER.error("Exception while grabbing config for token expiry: {}", e.getMessage(), e);
+            return 1;
+        }
     }
 
     private void atMidnight(final Calendar c)

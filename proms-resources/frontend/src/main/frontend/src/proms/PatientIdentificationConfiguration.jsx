@@ -116,7 +116,7 @@ function PatientIdentificationConfiguration() {
           <List>
             { renderConfigCheckbox("enableTokenlessAuth") }
             { renderConfigCheckbox("requirePIIAuth", patientIdentification?.enableTokenlessAuth) }
-            { renderConfigInput("tokenLifetime", "hours") }
+            { renderConfigInput("tokenLifetime", "days") }
           </List>
       </AdminConfigScreen>
   );
