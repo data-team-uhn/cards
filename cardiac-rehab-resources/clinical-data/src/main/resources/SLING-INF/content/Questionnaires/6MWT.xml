@@ -2184,6 +2184,20 @@
 						<type>String</type>
 					</property>
 				</node>
+				<node>
+					<name>NA</name>
+					<primaryNodeType>lfs:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>N/A</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>-1</value>
+						<type>String</type>
+					</property>
+				</node>
 			</node>
 			<node>
 				<name>condition</name>
