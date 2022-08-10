@@ -2007,7 +2007,7 @@
 				<primaryNodeType>lfs:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Rate the severity of the symptom</value>
+					<value>Specify symptom severity</value>
 					<type>String</type>
 				</property>
 				<property>
