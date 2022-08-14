@@ -66,14 +66,13 @@ const DateFilter = forwardRef((props, ref) => {
         value={displayedDate}
         onChange={(value) => {
           setDisplayedDate(value);
-          onChangeInput(value.toFormat(DateQuestionUtilities.slingDateFormat));
+          onChangeInput(value.toFormat(dateFormat));
         }}
         renderInput={(params) =>
           <TextField
             variant="standard"
             inputRef={ref}
             className={classes.answerField}
-            defaultValue={defaultValue}
             InputLabelProps={{
               shrink: true,
             }}
