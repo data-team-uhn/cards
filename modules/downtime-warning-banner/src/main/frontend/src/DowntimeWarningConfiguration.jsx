@@ -31,6 +31,8 @@ import AdminConfigScreen from "./adminDashboard/AdminConfigScreen.jsx";
 
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { LocalizationProvider } from '@mui/x-date-pickers';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { DateTime } from "luxon";
 import DateQuestionUtilities from "./questionnaire/DateQuestionUtilities";
 
 const useStyles = makeStyles(theme => ({
@@ -58,8 +60,8 @@ function DowntimeWarningConfiguration() {
   // Read the settings from the saved configuration
   let readDowntimeWarningSettings = (json) => {
     setEnabled(json.enabled == 'true');
-    setFromDate(DateQuestionUtilities.toPrecision(DateQuestionUtilities.stripTimeZone(json.fromDate)));
-    setToDate(DateQuestionUtilities.toPrecision(DateQuestionUtilities.stripTimeZone(json.toDate)));
+    json.fromDate && setFromDate(DateTime.fromFormat(json.fromDate, dateFormat));
+    json.toDate && setToDate(DateTime.fromFormat(json.toDate));
   }
 
   let buildConfigData = (formData) => {
@@ -80,12 +82,10 @@ function DowntimeWarningConfiguration() {
   let getDateField = (label, value, onDateChange) => {
     return (
     <LocalizationProvider dateAdapter={AdapterLuxon}>
-      <DatePicker
+      <DateTimePicker
         inputFormat={dateFormat}
         views={views}
         label={label}
-        minDate={lowerLimitLuxon || undefined}
-        maxDate={upperLimitLuxon || undefined}
         value={value}
         onChange={onDateChange}
         renderInput={ (params) =>
