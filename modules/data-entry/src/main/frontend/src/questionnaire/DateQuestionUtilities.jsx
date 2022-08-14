@@ -171,6 +171,20 @@ export default class DateQuestionUtilities {
     return dateString?.replace(/[-+][0-9]{2}:[0-9]{2}$/gm, '');
   }
 
+  static getClientTimezoneOffset = () => {
+    const padTwo = (s) => {
+      if (s.length < 2) {
+        return '0' + s;
+      }
+      return s;
+    };
+    let totalOffsetMinutes = new Date().getTimezoneOffset();
+    let offsetSign = (totalOffsetMinutes < 0) ? '+' : '-';
+    let offsetMinute = Math.abs(totalOffsetMinutes) % 60;
+    let offsetHour = Math.floor(Math.abs(totalOffsetMinutes) / 60);
+    return offsetSign + padTwo(offsetHour.toString()) + ":" + padTwo(offsetMinute.toString());
+  };
+
   static isAnswerComplete(answers, type) {
     return type == this.INTERVAL_TYPE && answers.length == 2 || answers.length == 1;
   }
