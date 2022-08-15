@@ -37,6 +37,7 @@ public final class Metrics
     private static final String LABEL_TODAY = "today";
     private static final String LABEL_TOTAL = "total";
     private static final String METRICS_PATH = "/Metrics/";
+    private static final String PROP_VALUE = "value";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Metrics.class);
 
@@ -64,7 +65,7 @@ public final class Metrics
 
         ValueMap statMapPrevTotal = statResourcePrevTotal.getValueMap();
         ValueMap statMapTotal = statResourceTotal.getValueMap();
-        long prevTotalCount = statMapPrevTotal.get("value", (long) (-1));
+        long prevTotalCount = statMapPrevTotal.get(PROP_VALUE, (long) (-1));
         long totalCount = statMapTotal.get("oak:counter", (long) (-1));
         if (prevTotalCount < 0 || totalCount < 0) {
             return null;
@@ -95,6 +96,62 @@ public final class Metrics
     }
 
     /**
+     * Creates the performance metric node and its child nodes - total, prevTotal and name in the JCR.
+     *
+     * @param resolverFactory a ResourceResolverFactory that can be used for inserting nodes into the JCR under /Metrics
+     * @param statName the name of this performace metric to be placed in the JCR as /Metrics/{statName}
+     * @param statHumanName the human readable description of this metric to be stored as the "value" property
+     *     for /Metrics/{statName}/name
+     */
+    public static void createStatistic(final ResourceResolverFactory resolverFactory,
+        final String statName, final String statHumanName)
+    {
+        Map<String, Object> params = new HashMap<>();
+        params.put(ResourceResolverFactory.SUBSERVICE, "MetricLogger");
+        try (ResourceResolver resolver = resolverFactory.getServiceResourceResolver(params)) {
+            // Get the /Metrics sling:Folder JCR Resource
+            Resource metricsFolderResource = resolver.getResource(METRICS_PATH);
+            if (metricsFolderResource == null) {
+                return;
+            }
+
+            // Create the statistic sling:Folder under /Metrics and get a reference to it
+            final Map<String, Object> statNodeProperties = new HashMap<>();
+            statNodeProperties.put("jcr:primaryType", "sling:Folder");
+            resolver.create(metricsFolderResource, statName, statNodeProperties);
+            Resource thisFolderResource = resolver.getResource(METRICS_PATH + statName);
+            if (thisFolderResource == null) {
+                return;
+            }
+
+            // Create the /Metrics/<STAT NAME>/name JCR node
+            final Map<String, Object> metricNameProperties = new HashMap<>();
+            metricNameProperties.put("jcr:primaryType", "nt:unstructured");
+            metricNameProperties.put(PROP_VALUE, statHumanName);
+            resolver.create(thisFolderResource, "name", metricNameProperties);
+
+            // Create the /Metrics/<STAT NAME>/prevTotal JCR node
+            final Map<String, Object> prevTotalProperties = new HashMap<>();
+            prevTotalProperties.put("jcr:primaryType", "nt:unstructured");
+            prevTotalProperties.put(PROP_VALUE, 0);
+            resolver.create(thisFolderResource, "prevTotal", prevTotalProperties);
+
+            // Create the /Metrics/<STAT NAME>/total JCR node
+            final Map<String, Object> totalProperties = new HashMap<>();
+            totalProperties.put("jcr:primaryType", "nt:unstructured");
+            final String[] jcrMixinTypes = {"mix:atomicCounter"};
+            totalProperties.put("jcr:mixinTypes", jcrMixinTypes);
+            resolver.create(thisFolderResource, "total", totalProperties);
+
+            // Commit these changes to JCR
+            resolver.commit();
+        } catch (LoginException | PersistenceException e) {
+            LOGGER.error("createStatistic failed for {}", statName);
+            return;
+        }
+    }
+
+    /**
      * Gets a Map of the "today" and "total" values for a performance statistic and
      * sets the previous read value of the performance statistic to the current read
      * of the performance statistic's total value. This function should be used for
@@ -119,12 +176,32 @@ public final class Metrics
             Resource statResourcePrevTotal = resolver.getResource(
                 METRICS_PATH + statName + "/prevTotal");
             ModifiableValueMap statMapPrevTotal = statResourcePrevTotal.adaptTo(ModifiableValueMap.class);
-            statMapPrevTotal.put("value", totalCount);
+            statMapPrevTotal.put(PROP_VALUE, totalCount);
             resolver.commit();
         } catch (PersistenceException e) {
             return null;
         }
         return statsMap;
+    }
+
+    /**
+     * Gets the human-readable name associated with a performance metric.
+     *
+     * @param resolver a ResourceResolver for querying the /Metrics/ JCR nodes
+     * @param statName the name of the performance statistic to obtain its human-readable name
+     * @return the human-readable name associated with the performance metric or null
+     */
+    public static String getHumanName(ResourceResolver resolver, String statName)
+    {
+        Resource statResourceName = resolver.getResource(METRICS_PATH + statName + "/name");
+        if (statResourceName == null) {
+            return null;
+        }
+        String humanName = statResourceName.getValueMap().get(PROP_VALUE, "");
+        if ("".equals(humanName)) {
+            return null;
+        }
+        return humanName;
     }
 
     private static void increment(ResourceResolver resolver, String statName, long incrementBy)

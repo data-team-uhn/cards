@@ -37,10 +37,10 @@ import io.uhndata.cards.auth.token.TokenManager;
 import io.uhndata.cards.emailnotifications.EmailUtils;
 import jakarta.mail.MessagingException;
 
-abstract class AbstractPromsNotification
+abstract class AbstractEmailNotification
 {
     /** Default log. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractPromsNotification.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractEmailNotification.class);
 
     private static final String CARDS_HOST_AND_PORT =
         StringUtils.defaultIfEmpty(System.getenv("CARDS_HOST_AND_PORT"), "localhost:8080");
@@ -54,7 +54,7 @@ abstract class AbstractPromsNotification
 
     private final MailService mailService;
 
-    AbstractPromsNotification(final ResourceResolverFactory resolverFactory,
+    AbstractEmailNotification(final ResourceResolverFactory resolverFactory,
         final TokenManager tokenManager, final MailService mailService)
     {
         this.resolverFactory = resolverFactory;
@@ -62,17 +62,51 @@ abstract class AbstractPromsNotification
         this.mailService = mailService;
     }
 
-    @SuppressWarnings("checkstyle:ExecutableStatementCount")
-    public long sendNotification(final int daysInTheFuture, final String emailTextTemplateName,
+    /*
+     * Sends notification emails based on clinic-associated templates for appointments in the past or future.
+     *
+     * @param differenceInDays the difference in days between now and the day of the appointment.
+     * Positive values if the appointment is in the future, negative values if the appointment is in the past.
+     *
+     * @param emailTextTemplateName the name of the plain text email template associated with the Visit's clinic.
+     * @param emailHtmlTemplateName the name of the HTML email template associated with the Visit's clinic.
+     * @param emailSubject The subject line of the notification email
+     * @return the number of notification emails that have been sent
+     */
+    public long sendNotification(final int differenceInDays, final String emailTextTemplateName,
         final String emailHtmlTemplateName, final String emailSubject)
     {
+        return sendNotification(differenceInDays, emailTextTemplateName, emailHtmlTemplateName, emailSubject, null);
+    }
+
+    /*
+     * Sends notification emails based on templates for appointments in the past or future.
+     *
+     * @param differenceInDays the difference in days between now and the day of the appointment.
+     * Positive values if the appointment is in the future, negative values if the appointment is in the past.
+     *
+     * @param emailTextTemplateName the name of the plain text email template associated with the Visit's clinic,
+     * if clinicId is null, otherwise the absolute JCR path to the template.
+     *
+     * @param emailHtmlTemplateName the name of the HTML email template associated with the Visit's clinic,
+     * if clinicId is null, otherwise the absolute JCR path to the template.
+     *
+     * @param emailSubject The subject line of the notification email
+     * @param clinicId only send notifications for appointments with a clinic specified by this ID.
+     * @return the number of notification emails that have been sent
+     */
+    @SuppressWarnings("checkstyle:ExecutableStatementCount")
+    public long sendNotification(final int differenceInDays, final String emailTextTemplateName,
+        final String emailHtmlTemplateName, final String emailSubject, final String clinicId)
+    {
         final Calendar dateToQuery = Calendar.getInstance();
-        dateToQuery.add(Calendar.DATE, daysInTheFuture);
+        dateToQuery.add(Calendar.DATE, differenceInDays);
         final Map<String, Object> parameters =
             Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, "EmailNotifications");
         long emailsSent = 0;
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(parameters)) {
-            Iterator<Resource> appointmentResults = AppointmentUtils.getAppointmentsForDay(resolver, dateToQuery);
+            Iterator<Resource> appointmentResults = AppointmentUtils.getAppointmentsForDay(resolver,
+                dateToQuery, clinicId);
             while (appointmentResults.hasNext()) {
                 Resource appointmentDate = appointmentResults.next();
                 Resource appointmentForm = AppointmentUtils.getFormForAnswer(resolver, appointmentDate);
@@ -94,16 +128,28 @@ abstract class AbstractPromsNotification
                 if (patientEmailAddress == null) {
                     continue;
                 }
-                String emailTextTemplate =
-                    AppointmentUtils.getVisitEmailTemplate(resolver, visitSubject, emailTextTemplateName);
-                if (emailTextTemplate == null) {
+
+                /* If a clinicId is specified, then emailTextTemplateName and emailHtmlTemplateName are JCR
+                 * paths to the plaintext and HTML email templates, respectively. Otherwise, if clinicId is null,
+                 * then we need to resolve the full JCR path to the email templates based on the clinic specified
+                 * in the Visit information Form and the given emailTextTemplateName, and emailHtmlTemplateName values.
+                 */
+                String emailTextTemplate = null;
+                String emailHtmlTemplate = null;
+                if (clinicId != null) {
+                    emailTextTemplate = AppointmentUtils.getEmailTemplateFromPath(resolver, emailTextTemplateName);
+                    emailHtmlTemplate = AppointmentUtils.getEmailTemplateFromPath(resolver, emailHtmlTemplateName);
+                } else {
+                    emailTextTemplate = AppointmentUtils.getVisitEmailTemplate(resolver,
+                        visitSubject, emailTextTemplateName);
+                    emailHtmlTemplate = AppointmentUtils.getVisitEmailTemplate(resolver,
+                        visitSubject, emailHtmlTemplateName);
+                }
+
+                if (emailTextTemplate == null || emailHtmlTemplate == null) {
                     continue;
                 }
-                String emailHtmlTemplate =
-                    AppointmentUtils.getVisitEmailTemplate(resolver, visitSubject, emailHtmlTemplateName);
-                if (emailHtmlTemplate == null) {
-                    continue;
-                }
+
                 String patientFullName = AppointmentUtils.getPatientFullName(resolver, patientSubject);
                 Calendar tokenExpiryDate = AppointmentUtils.parseDate(appointmentDate.getValueMap().get("value", ""));
                 atMidnight(tokenExpiryDate);
