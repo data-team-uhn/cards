@@ -191,7 +191,11 @@ public class VisitChangeListener implements ResourceChangeListener
             return;
         }
 
-        pruneQuestionnaireSet(visit, visitInformation, questionnaireSetInfo);
+        // Prune the quesionnaires to be created based on frequency.
+        // If all the frequencies are 0, skip this step.
+        if (!questionnaireSetInfo.values().stream().allMatch(value -> 0 == value.getFrequency())) {
+            pruneQuestionnaireSet(visit, visitInformation, questionnaireSetInfo);
+        }
 
         if (questionnaireSetInfo.size() < 1) {
             // No questionnaires were created as all missing questionnaires from the questionnaire set
