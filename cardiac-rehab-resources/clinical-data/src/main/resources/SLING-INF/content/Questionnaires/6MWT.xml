@@ -2007,7 +2007,7 @@
 				<primaryNodeType>lfs:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Specify symptom severity</value>
+					<value>Rate the severity of the symptom</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -2019,6 +2019,11 @@
 					<name>displayMode</name>
 					<value>list</value>
 					<type>String</type>
+				</property>
+				<property>
+					<name>minAnswers</name>
+					<value>1</value>
+					<type>Long</type>
 				</property>
 				<property>
 					<name>maxAnswers</name>
