@@ -30,6 +30,10 @@
       "start-order":"26"
     },
     {
+      "id":"${project.groupId}:proms-permissions:${project.version}",
+      "start-order":"15"
+    },
+    {
       "id":"${project.groupId}:proms-frontend:${project.version}",
       "start-order":"26"
     },
