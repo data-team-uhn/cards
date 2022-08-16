@@ -411,14 +411,21 @@ if [ $CLOUD_IAM_DEMO = true ]
 then
   # Run the Utilities/Administration/SAML/setup_saml_cloud-iam_demo.sh script
   (cd Utilities/Administration/SAML/ && ./setup_saml_cloud-iam_demo.sh && message_setup_cloud_iam_ok || message_setup_cloud_iam_error)
+  KEYCLOAK_HEADERMOD_HTTP_PROXY_KEYCLOAK_ENDPOINT="https://lemur-15.cloud-iam.com/auth/realms/cards-saml-test/protocol/saml"
 fi
 
 #Check if we are using SAML
 if [ $SAML_IN_USE = true ]
 then
   # Start a keycloak_headermod_http_proxy.js in the background
-  nodejs Utilities/Development/keycloak_headermod_http_proxy.js &
-  KEYCLOAK_HEADERMOD_HTTP_PROXY_PID=$!
+  if [ -z $KEYCLOAK_HEADERMOD_HTTP_PROXY_KEYCLOAK_ENDPOINT ]
+  then
+    nodejs Utilities/Development/keycloak_headermod_http_proxy.js &
+    KEYCLOAK_HEADERMOD_HTTP_PROXY_PID=$!
+  else
+    nodejs Utilities/Development/keycloak_headermod_http_proxy.js --keycloak-endpoint=$KEYCLOAK_HEADERMOD_HTTP_PROXY_KEYCLOAK_ENDPOINT &
+    KEYCLOAK_HEADERMOD_HTTP_PROXY_PID=$!
+  fi
 fi
 
 message_started_cards
