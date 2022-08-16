@@ -28,6 +28,12 @@ TERMINAL_YELLOW='\033[0;33m'
 #CTRL+C should stop everything started by this script
 trap ctrl_c INT
 function ctrl_c() {
+  if [ ! -z $KEYCLOAK_HEADERMOD_HTTP_PROXY_PID ]
+  then
+    echo "Shutting down keycloak_headermod_http_proxy.js"
+    kill $KEYCLOAK_HEADERMOD_HTTP_PROXY_PID
+    wait $KEYCLOAK_HEADERMOD_HTTP_PROXY_PID
+  fi
   echo "Shutting down CARDS"
   kill $CARDS_PID
   wait $CARDS_PID
@@ -199,6 +205,8 @@ declare PERMISSIONS="open"
 declare PERMISSIONS_EXPLICITLY_SET="false"
 # Are we using the Cloud-IAM.com Keycloak demo instance?
 declare CLOUD_IAM_DEMO="false"
+# Is SAML authentication enabled?
+declare SAML_IN_USE="false"
 get_cards_version
 
 for ((i=0; i<${ARGS_LENGTH}; ++i));
@@ -273,6 +281,7 @@ do
     then
       PERMISSIONS="trusted"
     fi
+    SAML_IN_USE="true"
     unset ARGS[$i]
     ARGS[$ARGS_LENGTH]=-f
     ARGS_LENGTH=${ARGS_LENGTH}+1
@@ -404,7 +413,20 @@ then
   (cd Utilities/Administration/SAML/ && ./setup_saml_cloud-iam_demo.sh && message_setup_cloud_iam_ok || message_setup_cloud_iam_error)
 fi
 
+#Check if we are using SAML
+if [ $SAML_IN_USE = true ]
+then
+  # Start a keycloak_headermod_http_proxy.js in the background
+  nodejs Utilities/Development/keycloak_headermod_http_proxy.js &
+  KEYCLOAK_HEADERMOD_HTTP_PROXY_PID=$!
+fi
+
 message_started_cards
 #Stop this script if the CARDS process terminates in failure
 wait $CARDS_PID
+if [ ! -z $KEYCLOAK_HEADERMOD_HTTP_PROXY_PID ]
+then
+  kill $KEYCLOAK_HEADERMOD_HTTP_PROXY_PID
+  wait $KEYCLOAK_HEADERMOD_HTTP_PROXY_PID
+fi
 handle_cards_java_fail
