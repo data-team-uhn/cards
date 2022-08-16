@@ -137,6 +137,23 @@ function message_hancestro_install_fail() {
   echo -e "${TERMINAL_RED}****************************${TERMINAL_NOCOLOR}"
 }
 
+function message_setup_cloud_iam_ok() {
+  echo -e "${TERMINAL_GREEN}****************************************************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}*                                                  *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}* Setup Cloud-IAM.com Demo as a SAML IdP for CARDS *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}*                                                  *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}****************************************************${TERMINAL_NOCOLOR}"
+}
+
+function message_setup_cloud_iam_error() {
+  echo -e "${TERMINAL_YELLOW}****************************************************************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}*                                                              *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}* Error setting up Cloud-IAM.com Demo as a SAML IdP for CARDS. *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}* SAML authentication via Cloud-IAM.com IdP may not work.      *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}*                                                              *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}****************************************************************${TERMINAL_NOCOLOR}"
+}
+
 function message_started_cards() {
   echo -e "${TERMINAL_GREEN}**************************$(print_length_of $BIND_PORT '*' 4)${TERMINAL_NOCOLOR}"
   echo -e "${TERMINAL_GREEN}*                         $(print_length_of $BIND_PORT ' ' 3)*${TERMINAL_NOCOLOR}"
@@ -180,6 +197,8 @@ declare OAK_STORAGE="tar"
 # Permissions scheme: default is open, allow switching to something else
 declare PERMISSIONS="open"
 declare PERMISSIONS_EXPLICITLY_SET="false"
+# Are we using the Cloud-IAM.com Keycloak demo instance?
+declare CLOUD_IAM_DEMO="false"
 get_cards_version
 
 for ((i=0; i<${ARGS_LENGTH}; ++i));
@@ -276,6 +295,7 @@ do
     ARGS_LENGTH=${ARGS_LENGTH}+1
   elif [[ ${ARGS[$i]} == '--cloud-iam_demo' ]]
   then
+    CLOUD_IAM_DEMO="true"
     unset ARGS[$i]
     ARGS[$ARGS_LENGTH]=-f
     ARGS_LENGTH=${ARGS_LENGTH}+1
@@ -377,8 +397,14 @@ then
   fi
 fi
 
-message_started_cards
+#Check if we are using the Cloud-IAM.com demo
+if [ $CLOUD_IAM_DEMO = true ]
+then
+  # Run the Utilities/Administration/SAML/setup_saml_cloud-iam_demo.sh script
+  (cd Utilities/Administration/SAML/ && ./setup_saml_cloud-iam_demo.sh && message_setup_cloud_iam_ok || message_setup_cloud_iam_error)
+fi
 
+message_started_cards
 #Stop this script if the CARDS process terminates in failure
 wait $CARDS_PID
 handle_cards_java_fail
