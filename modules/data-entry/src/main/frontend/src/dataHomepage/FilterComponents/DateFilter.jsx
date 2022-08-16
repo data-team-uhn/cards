@@ -73,9 +73,6 @@ const DateFilter = forwardRef((props, ref) => {
             variant="standard"
             inputRef={ref}
             className={classes.answerField}
-            InputLabelProps={{
-              shrink: true,
-            }}
             InputProps={{
               className: classes.answerField
             }}

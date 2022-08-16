@@ -146,9 +146,6 @@ function DateQuestion(props) {
         renderInput={ (params) =>
           <TextField
             variant="standard"
-            InputLabelProps={{
-              shrink: true,
-            }}
             InputProps={{
               className: classes.textField
             }}
@@ -166,15 +163,26 @@ function DateQuestion(props) {
       {...props}
       >
       {pageActive && <>
-        { error && <Typography color='error'>{errorMessage}</Typography> }
-        {getDateField(false, displayedDate)}
-        { /* If this is an interval, allow the user to select a second date */
-        type === DateQuestionUtilities.INTERVAL_TYPE &&
-        <React.Fragment>
-          <span className={classes.mdash}>&mdash;</span>
-          {getDateField(true, displayedEndDate)}
-        </React.Fragment>
+        { error &&
+          <Typography
+            component="p"
+            color='error'
+            className={classes.answerInstructions}
+            variant="caption"
+          >
+          { errorMessage }
+        </Typography>
         }
+        <div className={classes.range}>
+          {getDateField(false, displayedDate)}
+          { /* If this is an interval, allow the user to select a second date */
+          type === DateQuestionUtilities.INTERVAL_TYPE &&
+          <React.Fragment>
+            <span className="separator">&mdash;</span>
+            {getDateField(true, displayedEndDate)}
+          </React.Fragment>
+          }
+        </div>
       </>}
       <Answer
         answers={outputAnswers}

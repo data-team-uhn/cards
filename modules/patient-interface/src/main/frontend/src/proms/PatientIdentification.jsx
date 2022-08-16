@@ -34,6 +34,7 @@ import {
   List,
   ListItem,
   Link,
+  TextField,
   Typography,
 } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
@@ -42,7 +43,11 @@ import AppointmentIcon from '@mui/icons-material/Event';
 
 import ToUDialog from "./ToUDialog.jsx";
 
-import DropdownsDatePicker from "../components/DropdownsDatePicker.jsx";
+import DateQuestionUtilities from "../questionnaire/DateQuestionUtilities";
+
+import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import FormattedText from "../components/FormattedText.jsx";
 
 const useStyles = makeStyles(theme => ({
@@ -116,7 +121,7 @@ function PatientIdentification(props) {
   const { onSuccess, displayText, theme } = props;
 
   // The values entered by the user
-  const [ dob, setDob ] = useState();
+  const [ dob, setDob ] = useState(null);
   const [ mrn, setMrn ] = useState();
   const [ hc, setHc ] = useState();
 
@@ -138,6 +143,9 @@ function PatientIdentification(props) {
   const [ showTou, setShowTou ] = useState(false);
 
   const [ mrnHelperOpen, setMrnHelperOpen ] = useState(false);
+
+  const dateFormat = DateQuestionUtilities.defaultDateFormat;
+  const views = DateQuestionUtilities.getPickerViews(dateFormat);
 
   const classes = useStyles();
 
@@ -307,8 +315,27 @@ function PatientIdentification(props) {
               <Typography>Enter the following information for identification</Typography>
             }
             </div>
-            <InputLabel htmlFor="j_dob" shrink={true} className={classes.dateLabel}>Date of birth</InputLabel>
-            <DropdownsDatePicker id="j_dob" name="j_dob" formatDate onDateChange={setDob} autoFocus fullWidth/>
+            <LocalizationProvider dateAdapter={AdapterLuxon}>
+              <DateTimePicker
+                id="j_dob"
+                name="j_dob"
+                views={views}
+                inputFormat={dateFormat}
+                label="Date of birth"
+                value={dob}
+                onChange={(value) => setDob(value.toFormat(dateFormat))}
+                renderInput={ (params) =>
+                  <TextField
+                    variant="standard"
+                    InputProps={{
+                      className: classes.textField
+                    }}
+                    helperText={null}
+                    {...params}
+                  />
+                }
+              />
+            </LocalizationProvider>
             <Grid container direction="row" alignItems="flex-end" spacing={3} wrap="nowrap" justifyContent="space-between" className={classes.identifierContainer}>
               <Grid item>
                 <FormControl variant="standard" margin="normal" fullWidth>
