@@ -274,6 +274,13 @@ do
     ARGS_LENGTH=${ARGS_LENGTH}+1
     ARGS[$ARGS_LENGTH]=mvn:io.uhndata.cards/cards-keycloakdemo-saml-support/${CARDS_VERSION}/slingosgifeature
     ARGS_LENGTH=${ARGS_LENGTH}+1
+  elif [[ ${ARGS[$i]} == '--cloud-iam_demo' ]]
+  then
+    unset ARGS[$i]
+    ARGS[$ARGS_LENGTH]=-f
+    ARGS_LENGTH=${ARGS_LENGTH}+1
+    ARGS[$ARGS_LENGTH]=mvn:io.uhndata.cards/cards-cloud-iam-demo-saml-support/${CARDS_VERSION}/slingosgifeature
+    ARGS_LENGTH=${ARGS_LENGTH}+1
   elif [[ ${ARGS[$i]} == '--uhn_ad_fs' ]]
   then
     unset ARGS[$i]

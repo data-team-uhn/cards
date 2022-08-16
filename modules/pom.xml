@@ -64,5 +64,6 @@
     <module>http-requests</module>
     <module>page-start-header</module>
     <module>webhook-backup</module>
+    <module>cloud-iam-demo-saml</module>
   </modules>
 </project>
