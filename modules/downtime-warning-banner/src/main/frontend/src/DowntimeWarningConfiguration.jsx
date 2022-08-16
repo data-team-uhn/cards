@@ -46,8 +46,8 @@ function DowntimeWarningConfiguration() {
 
   // The configuration values
   const [ enabled, setEnabled ] = useState(false);
-  const [ fromDate, setFromDate ] = useState();
-  const [ toDate, setToDate ] = useState();
+  const [ fromDate, setFromDate ] = useState(null);
+  const [ toDate, setToDate ] = useState(null);
   const [ dateRangeIsInvalid, setDateRangeIsInvalid ] = useState(false);
 
   // Tracking unsaved changes
@@ -60,7 +60,7 @@ function DowntimeWarningConfiguration() {
   let readDowntimeWarningSettings = (json) => {
     setEnabled(json.enabled == 'true');
     json.fromDate && setFromDate(DateTime.fromFormat(json.fromDate, dateFormat));
-    json.toDate && setToDate(DateTime.fromFormat(json.toDate));
+    json.toDate && setToDate(DateTime.fromFormat(json.toDate, dateFormat));
   }
 
   let buildConfigData = (formData) => {
@@ -90,9 +90,6 @@ function DowntimeWarningConfiguration() {
         renderInput={ (params) =>
           <TextField
             variant="standard"
-            InputLabelProps={{
-              shrink: true,
-            }}
             InputProps={{
               className: classes.textField
             }}
@@ -129,10 +126,10 @@ function DowntimeWarningConfiguration() {
               />
             </ListItem>
             <ListItem key="fromDate">
-              {getDateField("Start of maintenance", fromDate || undefined, setFromDate)}
+              {getDateField("Start of maintenance", fromDate, setFromDate)}
             </ListItem>
             <ListItem key="toDate">
-              {getDateField("End of maintenance", toDate || undefined, setToDate)}
+              {getDateField("End of maintenance", toDate, setToDate)}
             </ListItem>
           </List>
     </AdminConfigScreen>

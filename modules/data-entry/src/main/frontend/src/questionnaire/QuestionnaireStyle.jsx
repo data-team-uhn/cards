@@ -140,13 +140,14 @@ const questionnaireStyle = theme => ({
     },
     range: {
         display: "flex",
-        alignItems: "flex-start",
+        alignItems: "baseline",
         "& .MuiInputBase-root" : {
             minWidth: "110px !important",
             width: "110px",
         },
         "& .separator" : {
             padding: theme.spacing(0.5, 1),
+            margin: theme.spacing(0, 1),
         }
     },
     cardHeaderButton: {

@@ -408,4 +408,76 @@
 			<type>String</type>
 		</property>
 	</node>
+	<node>
+		<name>timeminutesseconds</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Minute Second</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>time</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dateFormat</name>
+			<value>mm:ss</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+	</node>
+	<node>
+		<name>timehoursminutes</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Hour Minute</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>time</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dateFormat</name>
+			<value>HH:mm</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+	</node>
+	<node>
+		<name>timehoursminutesseconds</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Hour Minute Second</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>time</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dateFormat</name>
+			<value>HH:mm:ss</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+	</node>
 </node>

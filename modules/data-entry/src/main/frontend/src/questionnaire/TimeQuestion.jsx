@@ -57,7 +57,7 @@ function TimeQuestion(props) {
   let {existingAnswer, classes, pageActive, ...rest} = props;
   let {text, lowerLimit, upperLimit, errorText, minAnswers, dateFormat} = {dateFormat: "mm:ss", ...props.questionDefinition, ...props};
   let currentStartValue = (existingAnswer && existingAnswer[1].value && DateTime.fromFormat(existingAnswer[1].value, dateFormat).isValid)
-    ? DateTime.fromFormat(existingAnswer[1].value, dateFormat) : undefined;
+    ? DateTime.fromFormat(existingAnswer[1].value, dateFormat) : null;
   const [selectedTime, changeTime] = useState(currentStartValue);
   const [error, setError] = useState(undefined);
   const defaultErrorMessage = errorText || "Please enter a valid time";
@@ -80,7 +80,7 @@ function TimeQuestion(props) {
       >
       {
         pageActive && <>
-          {error && <Typography color='error' className={classes.datePickerError}>{errorMessage}</Typography>}
+          {error && <Typography component="p" color='error' className={classes.datePickerError}>{errorMessage}</Typography>}
           <LocalizationProvider dateAdapter={AdapterLuxon}>
             <TimePicker
               ampm={false}
@@ -90,9 +90,6 @@ function TimeQuestion(props) {
               inputFormat={dateFormat}
               mask={isMinuteSeconds ? "__:__" : "__:__:__"}
               openTo={isMinuteSeconds ? "minutes" : "hours"}
-              InputLabelProps={{
-                shrink: true,
-              }}
               InputProps={{
                 className: classes.textField
               }}
