@@ -25,7 +25,7 @@ import withStyles from '@mui/styles/withStyles';
 
 import Answer from "./Answer";
 import AnswerComponentManager from "./AnswerComponentManager";
-import DateQuestionUtilities from "./DateQuestionUtilities";
+import DateTimeUtilities from "./DateTimeUtilities";
 import Question from "./Question";
 
 import FormattedText from "../components/FormattedText";
@@ -101,12 +101,12 @@ let ComputedQuestion = (props) => {
           break;
       }
     } else if (dataType === "date") {
-      let dateType = DateQuestionUtilities.getDateType(dateFormat);
-      if (dateType === DateQuestionUtilities.MONTH_DATE_TYPE) {
-        newDisplayedValue = DateQuestionUtilities.formatDateAnswer(dateFormat, DateQuestionUtilities.stripTimeZone(newDisplayedValue));
-      } else if (dateType === DateQuestionUtilities.DATETIME_TYPE || dateType === DateQuestionUtilities.FULL_DATE_TYPE) {
+      let dateType = DateTimeUtilities.getDateType(dateFormat);
+      if (dateType === DateTimeUtilities.MONTH_DATE_TYPE) {
+        newDisplayedValue = DateTimeUtilities.formatDateAnswer(dateFormat, DateTimeUtilities.stripTimeZone(newDisplayedValue));
+      } else if (dateType === DateTimeUtilities.DATETIME_TYPE || dateType === DateTimeUtilities.FULL_DATE_TYPE) {
         newDisplayedValue = typeof(newDisplayedValue) === "string" && newDisplayedValue.length > 0
-          ? DateQuestionUtilities.dateToFormattedString(DateQuestionUtilities.toPrecision(DateQuestionUtilities.stripTimeZone(newDisplayedValue || ""), dateFormat), dateType)
+          ? DateTimeUtilities.dateToFormattedString(DateTimeUtilities.toPrecision(DateTimeUtilities.stripTimeZone(newDisplayedValue || ""), dateFormat), dateType)
           : "";
       }
     } else if (dataType === "vocabulary") {
@@ -260,7 +260,7 @@ let ComputedQuestion = (props) => {
       answerType = "Long"; // Long, not Boolean
       break;
     case "date":
-      newFieldType = DateQuestionUtilities.getFieldType(dateFormat);
+      newFieldType = DateTimeUtilities.getFieldType(dateFormat);
       setFieldType(newFieldType);
       switch (newFieldType) {
         case "long":
@@ -284,7 +284,7 @@ let ComputedQuestion = (props) => {
       break;
     case "time":
       answerType = "String";
-      newFieldType = DateQuestionUtilities.timeQuestionFieldType(dateFormat);
+      newFieldType = DateTimeUtilities.timeQuestionFieldType(dateFormat);
       setFieldType(newFieldType);
       break;
     case "text":

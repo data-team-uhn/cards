@@ -37,7 +37,7 @@ import TextFilter from "./FilterComponents/TextFilter.jsx";
 import SubjectFilter from "./FilterComponents/SubjectFilter.jsx";
 import QuestionnaireFilter from "./FilterComponents/QuestionnaireFilter.jsx";
 import ResourceFilter from "./FilterComponents/ResourceFilter.jsx";
-import DateQuestionUtilities from "../questionnaire/DateQuestionUtilities.jsx";
+import DateTimeUtilities from "../questionnaire/DateTimeUtilities.jsx";
 import { UNARY_COMPARATORS, TEXT_COMPARATORS } from "./FilterComponents/FilterComparators.jsx";
 
 const ALL_QUESTIONNAIRES_URL = "/Questionnaires.deep.json";
@@ -232,7 +232,7 @@ function Filters(props) {
     let newFilters = [];
     filters.forEach( (filter) => {
       if (filter.type === "createddate") {
-        newFilters.push({ ...filter, value: filter.value + "T00:00:00" + DateQuestionUtilities.getClientTimezoneOffset() });
+        newFilters.push({ ...filter, value: filter.value + "T00:00:00" + DateTimeUtilities.getClientTimezoneOffset() });
       } else {
         newFilters.push({ ...filter });
       }

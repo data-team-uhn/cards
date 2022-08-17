@@ -43,7 +43,7 @@ import AppointmentIcon from '@mui/icons-material/Event';
 
 import ToUDialog from "./ToUDialog.jsx";
 
-import DateQuestionUtilities from "../questionnaire/DateQuestionUtilities";
+import DateTimeUtilities from "../questionnaire/DateTimeUtilities";
 
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { LocalizationProvider } from '@mui/x-date-pickers';
@@ -144,8 +144,8 @@ function PatientIdentification(props) {
 
   const [ mrnHelperOpen, setMrnHelperOpen ] = useState(false);
 
-  const dateFormat = DateQuestionUtilities.defaultDateFormat;
-  const views = DateQuestionUtilities.getPickerViews(dateFormat);
+  const dateFormat = DateTimeUtilities.defaultDateFormat;
+  const views = DateTimeUtilities.getPickerViews(dateFormat);
 
   const classes = useStyles();
 
@@ -326,6 +326,8 @@ function PatientIdentification(props) {
                 onChange={(value) => setDob(value.toFormat(dateFormat))}
                 renderInput={ (params) =>
                   <TextField
+                    autoFocus
+                    fullWidth
                     variant="standard"
                     InputProps={{
                       className: classes.textField
@@ -334,6 +336,8 @@ function PatientIdentification(props) {
                     {...params}
                   />
                 }
+                showToolbar
+                ToolbarComponent={() => <Button variant="contained" color="primary" className={classes.datepickerCalcelButton} onClick={() => setDob(null)}>Clear</Button>}
               />
             </LocalizationProvider>
             <Grid container direction="row" alignItems="flex-end" spacing={3} wrap="nowrap" justifyContent="space-between" className={classes.identifierContainer}>

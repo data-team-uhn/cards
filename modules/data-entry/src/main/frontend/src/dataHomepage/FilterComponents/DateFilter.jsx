@@ -18,13 +18,13 @@
 //
 
 import React, { useState, forwardRef } from "react";
-import { TextField } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import PropTypes from "prop-types";
 
 import FilterComponentManager from "./FilterComponentManager.jsx";
 import { DEFAULT_COMPARATORS, UNARY_COMPARATORS, VALUE_COMPARATORS } from "./FilterComparators.jsx";
-import DateQuestionUtilities from "../../questionnaire/DateQuestionUtilities.jsx";
+import DateTimeUtilities from "../../questionnaire/DateTimeUtilities.jsx";
 import QuestionnaireStyle from "../../questionnaire/QuestionnaireStyle.jsx";
 
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
@@ -48,13 +48,13 @@ const DateFilter = forwardRef((props, ref) => {
   // DefaultLabel intentionally unused, since it needs to not be passed to TextField
   const { classes, defaultLabel, defaultValue, onChangeInput, questionDefinition, ...rest } = props;
 
-  const [ displayedDate, setDisplayedDate ] = useState(DateQuestionUtilities.toPrecision(DateQuestionUtilities.stripTimeZone(defaultValue)));
+  const [ displayedDate, setDisplayedDate ] = useState(DateTimeUtilities.toPrecision(DateTimeUtilities.stripTimeZone(defaultValue)));
 
   // Dates should have a dateFormat or default
-  const dateFormat = questionDefinition["dateFormat"] || DateQuestionUtilities.defaultDateFormat;
-  const dateType = DateQuestionUtilities.getDateType(dateFormat);
-  const textFieldType = DateQuestionUtilities.getFieldType(dateFormat);
-  const views = DateQuestionUtilities.getPickerViews(dateFormat);
+  const dateFormat = questionDefinition["dateFormat"] || DateTimeUtilities.defaultDateFormat;
+  const dateType = DateTimeUtilities.getDateType(dateFormat);
+  const textFieldType = DateTimeUtilities.getFieldType(dateFormat);
+  const views = DateTimeUtilities.getPickerViews(dateFormat);
 
   return (
     <LocalizationProvider dateAdapter={AdapterLuxon}>
@@ -80,6 +80,8 @@ const DateFilter = forwardRef((props, ref) => {
             {...params}
           />
         }
+        showToolbar
+        ToolbarComponent={() => <Button variant="contained" color="primary" className={classes.datepickerCalcelButton} onClick={() => {setDisplayedDate(null); onChangeInput(value.toFormat(dateFormat));}}>Clear</Button>}
       />
     </LocalizationProvider>
   )

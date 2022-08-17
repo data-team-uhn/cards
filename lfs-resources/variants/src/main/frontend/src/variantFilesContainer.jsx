@@ -47,7 +47,7 @@ import { DateTime } from "luxon";
 import DragAndDrop from "./components/dragAndDrop.jsx";
 import { escapeJQL } from "./escape.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
-import DateQuestionUtilities from "./questionnaire/DateQuestionUtilities";
+import DateTimeUtilities from "./questionnaire/DateTimeUtilities";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -939,7 +939,7 @@ export default function VariantFilesContainer() {
                 whiteSpace: 'nowrap',
               },
               render: rowData => <Link href={rowData["@path"]} underline="hover">
-                                  {DateTime.fromISO(rowData['jcr:created']).toFormat(DateQuestionUtilities.defaultDateFormat)}
+                                  {DateTime.fromISO(rowData['jcr:created']).toFormat(DateTimeUtilities.defaultDateFormat)}
                                 </Link> },
             { title: 'Uploaded By',
               cellStyle: {

@@ -39,7 +39,7 @@ import {
 } from "recharts";
 
 import statisticsStyle from "./statisticsStyle.jsx";
-import DateQuestionUtilities from "../questionnaire/DateQuestionUtilities";
+import DateTimeUtilities from "../questionnaire/DateTimeUtilities";
 
 // A single statistic, displayed as a chart
 function Statistic(props) {
@@ -81,13 +81,13 @@ function Statistic(props) {
 
   if (xVar["dataType"] == "date") {
     // Date sort -- first convert string->moment to compare
-    let dateFormat = xVar["dateFormat"] || DateQuestionUtilities.defaultDateFormat;
+    let dateFormat = xVar["dateFormat"] || DateTimeUtilities.defaultDateFormat;
     rechartsData.sort((a, b) => {
-        return DateQuestionUtilities.toPrecision(a["x"], dateFormat).diff(DateQuestionUtilities.toPrecision(b["x"], dateFormat))
+        return DateTimeUtilities.toPrecision(a["x"], dateFormat).diff(DateTimeUtilities.toPrecision(b["x"], dateFormat))
     });
     // Reformat to a human readable format
     rechartsData = rechartsData.map((field) => {
-      field["x"] = DateTime.fromISO(field["x"]).toFormat(DateQuestionUtilities.defaultDateFormat);
+      field["x"] = DateTime.fromISO(field["x"]).toFormat(DateTimeUtilities.defaultDateFormat);
       return field;
     })
   } else {

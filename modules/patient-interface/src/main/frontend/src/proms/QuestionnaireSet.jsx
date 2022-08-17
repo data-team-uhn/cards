@@ -43,7 +43,7 @@ import { DateTime } from "luxon";
 
 import Form from "../questionnaire/Form.jsx";
 import PromsHeader from "./Header.jsx";
-import DateQuestionUtilities from "../questionnaire/DateQuestionUtilities";
+import DateTimeUtilities from "../questionnaire/DateTimeUtilities";
 import FormattedText from "../components/FormattedText.jsx";
 import { ENTRY_TYPES } from "../questionnaire/FormEntry.jsx"
 
@@ -466,7 +466,7 @@ function QuestionnaireSet(props) {
 
   const getVisitDate = () => {
     let dateAnswer = getVisitInformation("time");
-    return DateQuestionUtilities.toPrecision(DateQuestionUtilities.stripTimeZone(dateAnswer));
+    return DateTimeUtilities.toPrecision(DateTimeUtilities.stripTimeZone(dateAnswer));
   }
 
   const appointmentDate = () => {
