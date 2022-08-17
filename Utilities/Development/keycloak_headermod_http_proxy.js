@@ -34,7 +34,7 @@ const readCliParam = (paramName) => {
 };
 
 const SERVER_PORT = 9090;
-const CLIENT_PORT = 8080;
+const CLIENT_PORT = (readCliParam("cards-port") !== undefined) ? parseInt(readCliParam("cards-port")) : 8080;
 const CLIENT_HOSTNAME = 'localhost';
 const KEYCLOAK_ENDPOINT = (readCliParam("keycloak-endpoint") !== undefined) ?
 	readCliParam("keycloak-endpoint") : 'http://localhost:8484/auth/realms/myrealm/protocol/saml';

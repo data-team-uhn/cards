@@ -434,10 +434,10 @@ then
   # Start a keycloak_headermod_http_proxy.js in the background
   if [ -z $KEYCLOAK_HEADERMOD_HTTP_PROXY_KEYCLOAK_ENDPOINT ]
   then
-    nodejs Utilities/Development/keycloak_headermod_http_proxy.js &
+    nodejs Utilities/Development/keycloak_headermod_http_proxy.js --cards-port=$BIND_PORT &
     KEYCLOAK_HEADERMOD_HTTP_PROXY_PID=$!
   else
-    nodejs Utilities/Development/keycloak_headermod_http_proxy.js --keycloak-endpoint=$KEYCLOAK_HEADERMOD_HTTP_PROXY_KEYCLOAK_ENDPOINT &
+    nodejs Utilities/Development/keycloak_headermod_http_proxy.js --cards-port=$BIND_PORT --keycloak-endpoint=$KEYCLOAK_HEADERMOD_HTTP_PROXY_KEYCLOAK_ENDPOINT &
     KEYCLOAK_HEADERMOD_HTTP_PROXY_PID=$!
   fi
 fi
