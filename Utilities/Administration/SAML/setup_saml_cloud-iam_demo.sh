@@ -20,6 +20,6 @@
 # Check that we're using the correct samlKeystore.p12 file
 sha256sum -c cloud-iam_demo_samlKeystore.p12.sha256sum || { echo "Invalid samlKeystore.p12 file. Please ensure that the correct samlKeystore.p12 file is in the CARDS root directory."; exit -1; }
 
-python3 add_saml_sp_config.py --saml2IDPDestination https://lemur-15.cloud-iam.com/auth/realms/cards-saml-test/protocol/saml || { echo "Failed to add SAML SP configuration"; exit -1; }
+python3 add_saml_sp_config.py --saml2IDPDestination https://lemur-15.cloud-iam.com/auth/realms/cards-saml-test/protocol/saml --saml2LogoutURL http://localhost:8080/ || { echo "Failed to add SAML SP configuration"; exit -1; }
 
 echo "CARDS login via SAML now enabled for https://lemur-15.cloud-iam.com using the realm \"cards-saml-test\""

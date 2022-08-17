@@ -164,6 +164,14 @@ function message_setup_cloud_iam_error() {
   echo -e "${TERMINAL_YELLOW}****************************************************************${TERMINAL_NOCOLOR}"
 }
 
+function message_saml_proxy_port_conflict_fail() {
+  echo -e "${TERMINAL_RED}***************************************************************************************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*                                                                                     *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}* Error: CARDS and keycloak_headermod_http_proxy.js cannot be bound to the same port. *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*                                                                                     *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}***************************************************************************************${TERMINAL_NOCOLOR}"
+}
+
 function message_started_cards() {
   if [ -z $KEYCLOAK_HEADERMOD_HTTP_PROXY_PID ]
   then
@@ -176,7 +184,7 @@ function message_started_cards() {
     echo -e "${TERMINAL_GREEN}***************************************************${TERMINAL_NOCOLOR}"
     echo -e "${TERMINAL_GREEN}*                                                 *${TERMINAL_NOCOLOR}"
     echo -e "${TERMINAL_GREEN}*   Started CARDS at port $(print_pad_right ${BIND_PORT} 21)   *${TERMINAL_NOCOLOR}"
-    echo -e "${TERMINAL_GREEN}*   Use port 9090 for SAML + local Sling login.   *${TERMINAL_NOCOLOR}"
+    echo -e "${TERMINAL_GREEN}*   Use port ${HEADERMOD_PROXY_LISTEN_PORT} for SAML + local Sling login.   *${TERMINAL_NOCOLOR}"
     echo -e "${TERMINAL_GREEN}*                                                 *${TERMINAL_NOCOLOR}"
     echo -e "${TERMINAL_GREEN}***************************************************${TERMINAL_NOCOLOR}"
   fi
@@ -353,6 +361,22 @@ then
   diff -q ~/.mailcap distribution/mailcap || warn_different_mailcap
 fi
 
+if [ $SAML_IN_USE = true ]
+then
+  if [ $CLOUD_IAM_DEMO = true ]
+  then
+    HEADERMOD_PROXY_LISTEN_PORT=8080
+  else
+    HEADERMOD_PROXY_LISTEN_PORT=9090
+  fi
+fi
+
+if [ $HEADERMOD_PROXY_LISTEN_PORT = $BIND_PORT ]
+then
+  message_saml_proxy_port_conflict_fail
+  exit -1
+fi
+
 #Start CARDS in the background
 java -Djdk.xml.entityExpansionLimit=0 -Dorg.osgi.service.http.port=${BIND_PORT} -jar distribution/target/dependency/org.apache.sling.feature.launcher.jar -u "file://$(realpath .mvnrepo),file://$(realpath "${HOME}/.m2/repository"),https://nexus.phenotips.org/nexus/content/groups/public,https://repo.maven.apache.org/maven2,https://repository.apache.org/content/groups/snapshots" -p .cards-data -c .cards-data/cache -f mvn:io.uhndata.cards/cards/${CARDS_VERSION}/slingosgifeature/core_${OAK_STORAGE} -f mvn:io.uhndata.cards/cards-dataentry/${CARDS_VERSION}/slingosgifeature/permissions_${PERMISSIONS} "${ARGS[@]}" &
 CARDS_PID=$!
@@ -434,10 +458,15 @@ then
   # Start a keycloak_headermod_http_proxy.js in the background
   if [ -z $KEYCLOAK_HEADERMOD_HTTP_PROXY_KEYCLOAK_ENDPOINT ]
   then
-    nodejs Utilities/Development/keycloak_headermod_http_proxy.js --cards-port=$BIND_PORT &
+    nodejs Utilities/Development/keycloak_headermod_http_proxy.js \
+      --listen-port=$HEADERMOD_PROXY_LISTEN_PORT \
+      --cards-port=$BIND_PORT &
     KEYCLOAK_HEADERMOD_HTTP_PROXY_PID=$!
   else
-    nodejs Utilities/Development/keycloak_headermod_http_proxy.js --cards-port=$BIND_PORT --keycloak-endpoint=$KEYCLOAK_HEADERMOD_HTTP_PROXY_KEYCLOAK_ENDPOINT &
+    nodejs Utilities/Development/keycloak_headermod_http_proxy.js \
+      --listen-port=$HEADERMOD_PROXY_LISTEN_PORT \
+      --cards-port=$BIND_PORT \
+      --keycloak-endpoint=$KEYCLOAK_HEADERMOD_HTTP_PROXY_KEYCLOAK_ENDPOINT &
     KEYCLOAK_HEADERMOD_HTTP_PROXY_PID=$!
   fi
 fi
