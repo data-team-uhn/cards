@@ -23,9 +23,11 @@ import sys
 import yaml
 import json
 import shutil
+import hashlib
 import argparse
 from OpenSSL import crypto, SSL
 from CardsDockerTagProperty import CARDS_DOCKER_TAG
+from CloudIAMdemoKeystoreSha256Property import CLOUD_IAM_DEMO_KEYSTORE_SHA256
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument('--shards', help='Number of MongoDB shards', default=1, type=int)
@@ -62,6 +64,12 @@ ENABLE_BACKUP_SERVER = args.enable_backup_server
 ENABLE_NCR = args.enable_ncr
 SSL_PROXY = args.ssl_proxy
 
+def sha256FileHash(filepath):
+  hasher = hashlib.sha256()
+  with open(filepath, 'rb') as f:
+    hasher.update(f.read())
+    return hasher.hexdigest()
+
 #Validate before doing anything else
 if (MONGO_REPLICA_COUNT % 2) != 1:
   print("ERROR: Replica count must be *odd* to achieve distributed consensus")
@@ -83,8 +91,22 @@ if args.smtps_test_container:
 
 if ENABLE_BACKUP_SERVER:
   if not args.backup_server_path:
-    print("ERROR A --backup_server_path must be specified with using --enable_backup_server")
+    print("ERROR: A --backup_server_path must be specified with using --enable_backup_server")
     sys.exit(-1)
+
+if args.saml:
+  if "samlKeystore.p12" not in os.listdir('.'):
+    print("ERROR: samlKeystore.p12 is required but not found.")
+    sys.exit(-1)
+
+if args.saml_cloud_iam_demo:
+  if CLOUD_IAM_DEMO_KEYSTORE_SHA256 != sha256FileHash("samlKeystore.p12"):
+    print("")
+    print("=============================== Warning ==============================")
+    print("The SHA256 hash of samlKeystore.p12 does not match the expected value.")
+    print("SAML authentication with Cloud-IAM.com may not work.")
+    print("======================================================================")
+    print("")
 
 def getDockerHostIP(subnet):
   network_address = subnet.split('/')[0]
