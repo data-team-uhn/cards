@@ -57,6 +57,10 @@ function print_length_of() {
   done
 }
 
+function print_pad_right() {
+  printf "%-$2s" "$1"
+}
+
 function handle_missing_sling_commons_crypto_warning() {
   echo -e "${TERMINAL_YELLOW}*************************************************************************${TERMINAL_NOCOLOR}"
   echo -e "${TERMINAL_YELLOW}*                                                                       *${TERMINAL_NOCOLOR}"
@@ -161,11 +165,21 @@ function message_setup_cloud_iam_error() {
 }
 
 function message_started_cards() {
-  echo -e "${TERMINAL_GREEN}**************************$(print_length_of $BIND_PORT '*' 4)${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_GREEN}*                         $(print_length_of $BIND_PORT ' ' 3)*${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_GREEN}*   Started CARDS at port ${BIND_PORT}   *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_GREEN}*                         $(print_length_of $BIND_PORT ' ' 3)*${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_GREEN}**************************$(print_length_of $BIND_PORT '*' 4)${TERMINAL_NOCOLOR}"
+  if [ -z $KEYCLOAK_HEADERMOD_HTTP_PROXY_PID ]
+  then
+    echo -e "${TERMINAL_GREEN}**************************$(print_length_of $BIND_PORT '*' 4)${TERMINAL_NOCOLOR}"
+    echo -e "${TERMINAL_GREEN}*                         $(print_length_of $BIND_PORT ' ' 3)*${TERMINAL_NOCOLOR}"
+    echo -e "${TERMINAL_GREEN}*   Started CARDS at port ${BIND_PORT}   *${TERMINAL_NOCOLOR}"
+    echo -e "${TERMINAL_GREEN}*                         $(print_length_of $BIND_PORT ' ' 3)*${TERMINAL_NOCOLOR}"
+    echo -e "${TERMINAL_GREEN}**************************$(print_length_of $BIND_PORT '*' 4)${TERMINAL_NOCOLOR}"
+  else
+    echo -e "${TERMINAL_GREEN}***************************************************${TERMINAL_NOCOLOR}"
+    echo -e "${TERMINAL_GREEN}*                                                 *${TERMINAL_NOCOLOR}"
+    echo -e "${TERMINAL_GREEN}*   Started CARDS at port $(print_pad_right ${BIND_PORT} 21)   *${TERMINAL_NOCOLOR}"
+    echo -e "${TERMINAL_GREEN}*   Use port 9090 for SAML + local Sling login.   *${TERMINAL_NOCOLOR}"
+    echo -e "${TERMINAL_GREEN}*                                                 *${TERMINAL_NOCOLOR}"
+    echo -e "${TERMINAL_GREEN}***************************************************${TERMINAL_NOCOLOR}"
+  fi
 }
 
 function get_cards_version() {
