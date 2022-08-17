@@ -162,7 +162,8 @@ abstract class AbstractEmailNotification
 
                 String patientFullName = AppointmentUtils.getPatientFullName(resolver, patientSubject);
                 Calendar tokenExpiryDate = AppointmentUtils.parseDate(appointmentDate.getValueMap().get("value", ""));
-                tokenExpiryDate.add(Calendar.DATE, getTokenExpiryInDays(session));
+                // Note the tokenExpiry-1, since atMidnight will go to the next day
+                tokenExpiryDate.add(Calendar.DATE, getTokenExpiryInDays(session) - 1);
                 atMidnight(tokenExpiryDate);
                 final String token = this.tokenManager.create(
                     "patient",
