@@ -33,7 +33,7 @@ const readCliParam = (paramName) => {
   return undefined;
 };
 
-const SERVER_PORT = 9090;
+const SERVER_PORT = (readCliParam("listen-port") !== undefined) ? parseInt(readCliParam("listen-port")) : 9090;
 const CLIENT_PORT = (readCliParam("cards-port") !== undefined) ? parseInt(readCliParam("cards-port")) : 8080;
 const CLIENT_HOSTNAME = 'localhost';
 const KEYCLOAK_ENDPOINT = (readCliParam("keycloak-endpoint") !== undefined) ?
