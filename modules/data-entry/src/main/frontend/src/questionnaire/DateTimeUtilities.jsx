@@ -20,7 +20,7 @@
 import PropTypes from "prop-types";
 import { DateTime } from "luxon";
 
-export default class DateQuestionUtilities {
+export default class DateTimeUtilities {
 
   static TIMESTAMP_TYPE = "timestamp";
   static INTERVAL_TYPE = "interval";
@@ -44,7 +44,7 @@ export default class DateQuestionUtilities {
     questionDefinition: PropTypes.shape({
       text: PropTypes.string,
       dateFormat: PropTypes.string,
-      type: PropTypes.oneOf([DateQuestionUtilities.TIMESTAMP_TYPE, DateQuestionUtilities.INTERVAL_TYPE]),
+      type: PropTypes.oneOf([DateTimeUtilities.TIMESTAMP_TYPE, DateTimeUtilities.INTERVAL_TYPE]),
       lowerLimit: PropTypes.object,
       upperLimit: PropTypes.object,
     })

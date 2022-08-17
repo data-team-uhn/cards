@@ -32,7 +32,7 @@ import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { DateTime } from "luxon";
-import DateQuestionUtilities from "./questionnaire/DateQuestionUtilities";
+import DateTimeUtilities from "./questionnaire/DateTimeUtilities";
 
 const useStyles = makeStyles(theme => ({
   textField: {
@@ -54,7 +54,7 @@ function DowntimeWarningConfiguration() {
   const [ hasChanges, setHasChanges ] = useState();
 
   const dateFormat = "yyyy-MM-dd hh:mm";
-  const views = DateQuestionUtilities.getPickerViews(dateFormat);
+  const views = DateTimeUtilities.getPickerViews(dateFormat);
 
   // Read the settings from the saved configuration
   let readDowntimeWarningSettings = (json) => {

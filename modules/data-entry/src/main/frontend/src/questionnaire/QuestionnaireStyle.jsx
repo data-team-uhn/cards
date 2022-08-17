@@ -142,12 +142,10 @@ const questionnaireStyle = theme => ({
         display: "flex",
         alignItems: "baseline",
         "& .MuiInputBase-root" : {
-            minWidth: "110px !important",
-            width: "110px",
+            minWidth: "250px",
         },
         "& .separator" : {
             padding: theme.spacing(0.5, 1),
-            margin: theme.spacing(0, 1),
         }
     },
     cardHeaderButton: {
@@ -693,9 +691,11 @@ const questionnaireStyle = theme => ({
         paddingTop: theme.spacing(4),
       },
     },
-    datePickerError: {
-        paddingBottom: theme.spacing(2),
-    },
+    datepickerCalcelButton: {
+      alignSelf: "center",
+      order: 2,
+      margin: theme.spacing(1),
+    }
 });
 
 export default questionnaireStyle;

@@ -19,7 +19,7 @@
 
 import React, { useState } from "react";
 
-import { TextField, Typography } from "@mui/material";
+import { Button, TextField, Typography } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
 
@@ -35,7 +35,7 @@ import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { DateTime } from "luxon";
-import DateQuestionUtilities from "./DateQuestionUtilities";
+import DateTimeUtilities from "./DateTimeUtilities";
 
 // Component that renders a time question
 // Selected answers are placed in a series of <input type="hidden"> tags for submission.
@@ -62,7 +62,7 @@ function TimeQuestion(props) {
   const [error, setError] = useState(undefined);
   const defaultErrorMessage = errorText || "Please enter a valid time";
   const [errorMessage, setErrorMessage] = useState(defaultErrorMessage);
-  const isMinuteSeconds = DateQuestionUtilities.formatIsMinuteSeconds(dateFormat);
+  const isMinuteSeconds = DateTimeUtilities.formatIsMinuteSeconds(dateFormat);
   const maxTime = !upperLimit || DateTime.fromFormat(upperLimit, dateFormat).invalid ? undefined : DateTime.fromFormat(upperLimit, dateFormat);
   const minTime = !lowerLimit || DateTime.fromFormat(lowerLimit, dateFormat).invalid ? undefined : DateTime.fromFormat(lowerLimit, dateFormat);
 
@@ -80,7 +80,16 @@ function TimeQuestion(props) {
       >
       {
         pageActive && <>
-          {error && <Typography component="p" color='error' className={classes.datePickerError}>{errorMessage}</Typography>}
+          {error &&
+            <Typography
+              component="p"
+              color='error'
+              className={classes.answerInstructions}
+              variant="caption"
+            >
+              {errorMessage}
+            </Typography>
+          }
           <LocalizationProvider dateAdapter={AdapterLuxon}>
             <TimePicker
               ampm={false}
@@ -132,6 +141,8 @@ function TimeQuestion(props) {
               value={selectedTime}
               variant="standard"
               renderInput={(params) => <TextField {...params} />}
+              showToolbar
+              ToolbarComponent={() => <Button variant="contained" color="primary" className={classes.datepickerCalcelButton} onClick={() => changeTime(null)}>Clear</Button>}
             />
           </LocalizationProvider>
         </>

@@ -19,7 +19,7 @@
 
 import React, { useState, useEffect } from "react";
 
-import { Box, TextField, Typography } from "@mui/material";
+import { Box, Button, TextField, Typography } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
 
@@ -30,7 +30,7 @@ import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 
 import AnswerComponentManager from "./AnswerComponentManager";
-import DateQuestionUtilities from "./DateQuestionUtilities";
+import DateTimeUtilities from "./DateTimeUtilities";
 
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { LocalizationProvider } from '@mui/x-date-pickers';
@@ -65,24 +65,25 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 //  />
 function DateQuestion(props) {
   let {existingAnswer, classes, pageActive, ...rest} = props;
-  let {text, dateFormat, minAnswers, type, lowerLimit, upperLimit} = {dateFormat: DateQuestionUtilities.defaultDateFormat, minAnswers: 0, type: DateQuestionUtilities.TIMESTAMP_TYPE, ...props.questionDefinition, ...props};
+  let {text, dateFormat, minAnswers, type, lowerLimit, upperLimit} = {dateFormat: DateTimeUtilities.defaultDateFormat, minAnswers: 0, type: DateTimeUtilities.TIMESTAMP_TYPE, ...props.questionDefinition, ...props};
 
   const existingValues = existingAnswer && existingAnswer[1].value || "";
-  const upperLimitLuxon = DateQuestionUtilities.toPrecision(upperLimit);
-  const lowerLimitLuxon = DateQuestionUtilities.toPrecision(lowerLimit);
+  const upperLimitLuxon = DateTimeUtilities.toPrecision(upperLimit);
+  const lowerLimitLuxon = DateTimeUtilities.toPrecision(lowerLimit);
 
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("Invalid date");
 
-  const dateType = DateQuestionUtilities.getDateType(dateFormat);
+  const dateType = DateTimeUtilities.getDateType(dateFormat);
   // Determine the granularity of the input textfield
-  const textFieldType = DateQuestionUtilities.getFieldType(dateFormat);
-  const views = DateQuestionUtilities.getPickerViews(dateFormat);
+  const textFieldType = DateTimeUtilities.getFieldType(dateFormat);
+  const views = DateTimeUtilities.getPickerViews(dateFormat);
 
-  const [ displayedDate, setDisplayedDate ] = useState(DateQuestionUtilities.toPrecision(
-    DateQuestionUtilities.stripTimeZone(typeof(existingValues) === "object" ? existingValues[0] : existingValues)));
-  const [ displayedEndDate, setDisplayedEndDate ] = useState(DateQuestionUtilities.toPrecision(
-    DateQuestionUtilities.stripTimeZone(typeof(existingValues) === "object" ? existingValues[1] : "")));
+  const [ displayedDate, setDisplayedDate ] = useState(DateTimeUtilities.toPrecision(
+    DateTimeUtilities.stripTimeZone(typeof(existingValues) === "object" ? existingValues[0] : existingValues)));
+  const [ displayedEndDate, setDisplayedEndDate ] = useState(DateTimeUtilities.toPrecision(
+    DateTimeUtilities.stripTimeZone(typeof(existingValues) === "object" ? existingValues[1] : "")));
+  const isRange = (type === DateTimeUtilities.INTERVAL_TYPE);
 
   useEffect(() => {
     // Determine if the end date is earlier than the start date
@@ -96,7 +97,7 @@ function DateQuestion(props) {
     let lowerBoundDate = isEnd ? startDate : "";
     let parsedDate = boundDate(value, lowerBoundDate);
     setDate(parsedDate, isEnd);
-    if (!isEnd && type === DateQuestionUtilities.INTERVAL_TYPE && endDate) {
+    if (!isEnd && isRange && endDate) {
       // Fix the end date if it is earlier than the start date
       setDate(boundDate(endDate, parsedDate), true);
     }
@@ -119,7 +120,7 @@ function DateQuestion(props) {
   let getSlingDate = (isEnd) => {
     let date = isEnd ? displayedEndDate : displayedDate;
     if (date) {
-      date = date.toFormat(DateQuestionUtilities.slingDateFormat) || "";
+      date = date.toFormat(DateTimeUtilities.slingDateFormat) || "";
     }
     return date;
   }
@@ -127,7 +128,7 @@ function DateQuestion(props) {
   let outputStart = getSlingDate(false);
   let outputEnd = getSlingDate(true);
   let outputAnswers = outputStart && outputStart !== "Invalid DateTime" && outputStart.length > 0 ? [["date", outputStart]] : [];
-  if (type === DateQuestionUtilities.INTERVAL_TYPE && outputEnd && outputEnd !== "Invalid DateTime" && outputEnd.length > 0) {
+  if (isRange && outputEnd && outputEnd !== "Invalid DateTime" && outputEnd.length > 0) {
     outputAnswers.push(["endDate", outputEnd]);
   }
 
@@ -146,20 +147,35 @@ function DateQuestion(props) {
         renderInput={ (params) =>
           <TextField
             variant="standard"
-            InputProps={{
-              className: classes.textField
-            }}
             helperText={null}
             {...params}
           />
         }
+        showToolbar
+        ToolbarComponent={() => <Button variant="contained" color="primary" className={classes.datepickerCalcelButton} onClick={() => setDate(null)}>Clear</Button>}
       />
     </LocalizationProvider>);
   }
 
+  let rangeDisplayFormatter = function(label, idx) {
+	const initialValue = Array.from(existingAnswer?.[1]?.value || []);
+    if (idx > 0 || !(initialValue?.length)) return '';
+    let limits = initialValue.slice(0, 2);
+    limits[0] = label;
+    // In case of invalid data (only one limit of the range is available)
+    if (limits.length == 1) {
+      limits.push("");
+    } else {
+	  limits[1] = DateTimeUtilities.toPrecision(DateTimeUtilities.stripTimeZone(limits[1])).toFormat(dateFormat);
+    }
+    return limits.join(' - ');
+  }
+
   return (
     <Question
-      currentAnswers={DateQuestionUtilities.isAnswerComplete(outputAnswers, type) ? 1 : 0}
+      defaultDisplayFormatter={isRange? rangeDisplayFormatter : undefined}
+      compact={isRange}
+      currentAnswers={DateTimeUtilities.isAnswerComplete(outputAnswers, type) ? 1 : 0}
       {...props}
       >
       {pageActive && <>
@@ -176,7 +192,7 @@ function DateQuestion(props) {
         <div className={classes.range}>
           {getDateField(false, displayedDate)}
           { /* If this is an interval, allow the user to select a second date */
-          type === DateQuestionUtilities.INTERVAL_TYPE &&
+          isRange &&
           <React.Fragment>
             <span className="separator">&mdash;</span>
             {getDateField(true, displayedEndDate)}
@@ -197,15 +213,15 @@ function DateQuestion(props) {
   );
 }
 
-DateQuestion.propTypes = DateQuestionUtilities.PROP_TYPES;
+DateQuestion.propTypes = DateTimeUtilities.PROP_TYPES;
 
 const StyledDateQuestion = withStyles(QuestionnaireStyle)(DateQuestion);
 export default StyledDateQuestion;
 
 AnswerComponentManager.registerAnswerComponent((questionDefinition) => {
   if (questionDefinition.dataType === "date") {
-    let dateType = DateQuestionUtilities.getDateType(questionDefinition.dateFormat);
-    if ( [DateQuestionUtilities.FULL_DATE_TYPE, DateQuestionUtilities.DATETIME_TYPE, DateQuestionUtilities.MONTH_DATE_TYPE].includes(dateType)) {
+    let dateType = DateTimeUtilities.getDateType(questionDefinition.dateFormat);
+    if ( [DateTimeUtilities.FULL_DATE_TYPE, DateTimeUtilities.DATETIME_TYPE, DateTimeUtilities.MONTH_DATE_TYPE].includes(dateType)) {
       return [StyledDateQuestion, 60];
     } else {
       // Default date handler
