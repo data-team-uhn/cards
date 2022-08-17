@@ -21,5 +21,24 @@
       "id":"${project.groupId}:${project.artifactId}:${project.version}",
       "start-order":"25"
     }
-  ]
+  ],
+  "configurations":{
+    "org.apache.sling.auth.saml2.AuthenticationHandlerSAML2~CloudIAMdemo": {
+      "path": "/",
+      "entityID": "http://localhost:8080/",
+      "acsPath": "/sp/consumer",
+      "saml2userIDAttr": "urn:oid:1.2.840.113549.1.9.1",
+      "saml2userHome": "/home/users/saml",
+      "saml2SessionAttr": "saml2AuthInfo",
+      "saml2IDPDestination": "https://lemur-15.cloud-iam.com/auth/realms/cards-saml-test/protocol/saml",
+      "saml2LogoutURL": "http://localhost:8080/",
+      "saml2SPEnabled": true,
+      "saml2SPEncryptAndSign": true,
+      "jksFileLocation": "./samlKeystore.p12",
+      "jksStorePassword": "changeit",
+      "idpCertAlias": "idpsigningalias",
+      "spKeysAlias": "1",
+      "spKeysPassword": "changeit"
+    }
+  }
 }

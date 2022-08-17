@@ -147,7 +147,7 @@ function message_hancestro_install_fail() {
   echo -e "${TERMINAL_RED}****************************${TERMINAL_NOCOLOR}"
 }
 
-function message_setup_cloud_iam_ok() {
+function message_sha256_cloud_iam_ok() {
   echo -e "${TERMINAL_GREEN}****************************************************${TERMINAL_NOCOLOR}"
   echo -e "${TERMINAL_GREEN}*                                                  *${TERMINAL_NOCOLOR}"
   echo -e "${TERMINAL_GREEN}* Setup Cloud-IAM.com Demo as a SAML IdP for CARDS *${TERMINAL_NOCOLOR}"
@@ -155,13 +155,13 @@ function message_setup_cloud_iam_ok() {
   echo -e "${TERMINAL_GREEN}****************************************************${TERMINAL_NOCOLOR}"
 }
 
-function message_setup_cloud_iam_error() {
-  echo -e "${TERMINAL_YELLOW}****************************************************************${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_YELLOW}*                                                              *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_YELLOW}* Error setting up Cloud-IAM.com Demo as a SAML IdP for CARDS. *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_YELLOW}* SAML authentication via Cloud-IAM.com IdP may not work.      *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_YELLOW}*                                                              *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_YELLOW}****************************************************************${TERMINAL_NOCOLOR}"
+function message_sha256_cloud_iam_error() {
+  echo -e "${TERMINAL_YELLOW}********************************************************************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}*                                                                  *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}* Invalid Sha256 hash for samlKeystore.p12 for Cloud-IAM.com demo. *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}* SAML authentication via Cloud-IAM.com IdP may not work.          *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}*                                                                  *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}********************************************************************${TERMINAL_NOCOLOR}"
 }
 
 function message_saml_proxy_port_conflict_fail() {
@@ -447,8 +447,7 @@ fi
 #Check if we are using the Cloud-IAM.com demo
 if [ $CLOUD_IAM_DEMO = true ]
 then
-  # Run the Utilities/Administration/SAML/setup_saml_cloud-iam_demo.sh script
-  (cd Utilities/Administration/SAML/ && ./setup_saml_cloud-iam_demo.sh && message_setup_cloud_iam_ok || message_setup_cloud_iam_error)
+  (cd Utilities/Administration/SAML/ && sha256sum -c cloud-iam_demo_samlKeystore.p12.sha256sum && message_sha256_cloud_iam_ok || message_sha256_cloud_iam_error)
   KEYCLOAK_HEADERMOD_HTTP_PROXY_KEYCLOAK_ENDPOINT="https://lemur-15.cloud-iam.com/auth/realms/cards-saml-test/protocol/saml"
 fi
 
