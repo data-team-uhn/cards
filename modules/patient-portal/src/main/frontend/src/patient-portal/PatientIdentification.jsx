@@ -176,7 +176,7 @@ function PatientIdentification(props) {
     }
     let requestData = new FormData();
     authToken && requestData.append("auth_token", authToken);
-    dob && requestData.append("date_of_birth", dob);
+    dob && requestData.append("date_of_birth", dob.toFormat(dateFormat));
     mrn && requestData.append("mrn", mrn);
     hc && requestData.append("health_card", hc);
     visit && requestData.append("visit", visit);
@@ -187,7 +187,7 @@ function PatientIdentification(props) {
   // On submitting the patient login form, make a request to identify the patient
   const onSubmit = (event) => {
     event?.preventDefault();
-    if (!dob || !mrn && !hc) {
+    if (!dob || !dob.isValid || !mrn && !hc) {
       setError("Date of birth and either MRN or Health Card Number are required for patient identification");
       return;
     }
@@ -346,7 +346,7 @@ function PatientIdentification(props) {
                 inputFormat={dateFormat}
                 label="Date of birth"
                 value={dob}
-                onChange={(value) => setDob(value.toFormat(dateFormat))}
+                onChange={(value) => setDob(value)}
                 renderInput={ (params) =>
                   <TextField
                     autoFocus
@@ -355,12 +355,15 @@ function PatientIdentification(props) {
                     InputProps={{
                       className: classes.textField
                     }}
-                    helperText={null}
                     {...params}
+                    helperText={dateFormat}
+                    inputProps={{
+                      ...params.inputProps,
+                      placeholder: dateFormat
+                    }}
                   />
                 }
                 showToolbar
-                ToolbarComponent={() => <Button variant="contained" color="primary" className={classes.datepickerCalcelButton} onClick={() => setDob(null)}>Clear</Button>}
               />
             </LocalizationProvider>
             <Grid container direction="row" alignItems="flex-end" spacing={3} wrap="nowrap" justifyContent="space-between" className={classes.identifierContainer}>

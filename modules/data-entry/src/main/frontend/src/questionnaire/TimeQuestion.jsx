@@ -105,7 +105,7 @@ function TimeQuestion(props) {
               maxTime={maxTime}
               minTime={minTime}
               onChange={(newValue) => {
-                newValue.isValid && changeTime(newValue);
+                newValue?.isValid && changeTime(newValue);
               }}
               onError={(reason, value) => {
                 setError(false);
@@ -139,10 +139,8 @@ function TimeQuestion(props) {
                 }
               }}
               value={selectedTime}
-              variant="standard"
-              renderInput={(params) => <TextField {...params} />}
+              renderInput={(params) => <TextField variant="standard" {...params} />}
               showToolbar
-              ToolbarComponent={() => <Button variant="contained" color="primary" className={classes.datepickerCalcelButton} onClick={() => changeTime(null)}>Clear</Button>}
             />
           </LocalizationProvider>
         </>
