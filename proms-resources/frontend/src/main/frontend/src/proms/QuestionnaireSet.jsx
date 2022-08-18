@@ -475,15 +475,22 @@ function QuestionnaireSet(props) {
   }
 
   async function getVisitExpiry() {
+    // Memoize expiryOffset so we don't poll it more often than necessary
     if (expiryOffset) {
       return expiryOffset;
     } else {
       return await fetch("/Proms/PatientIdentification")
         .then((response) =>
-          response.ok ? response.json() : 24 * 60 * 60 // Use 1 day as the default
+          response.ok ? response.json() : Promise.reject(response) // Tonight at midnight by default
         ).then((json) => {
-          setExpiryOffset(json["tokenLifetime"]);
-          return json["tokenLifetime"];
+          // Convert that number of days from now into midnight
+          let lifetime = DateTime.utc().plus({days: json["tokenLifetime"]}).startOf('day').diff(DateTime.now()).hours;
+          setExpiryOffset(lifetime);
+          return lifetime;
+        }).catch((error) => {
+          let lifetime = DateTime.utc().startOf('day').diff(DateTime.now()).hours;
+          setExpiryOffset(lifetime);
+          return lifetime;
         });
     }
   }
