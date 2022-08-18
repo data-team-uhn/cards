@@ -43,6 +43,7 @@ import ToUDialog from "./ToUDialog.jsx";
 
 import DateTimeUtilities from "../questionnaire/DateTimeUtilities";
 
+import { DateTime } from "luxon";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
@@ -356,10 +357,10 @@ function PatientIdentification(props) {
                       className: classes.textField
                     }}
                     {...params}
-                    helperText={dateFormat}
+                    helperText={null}
                     inputProps={{
                       ...params.inputProps,
-                      placeholder: dateFormat
+                      placeholder: `${dateFormat}, for example ${DateTime.fromISO("1970-12-31").toFormat(dateFormat)}`
                     }}
                   />
                 }
