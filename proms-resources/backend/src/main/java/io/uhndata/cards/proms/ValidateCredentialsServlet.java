@@ -137,10 +137,9 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
             }
 
             if (sessionSubjectIdentifier == null) {
-                LOGGER.warn("Tokenless session");
+                // Not a token authenticated session. Verify based on provided patient details
                 handleTokenlessAuthentication(request, response, session, rr);
             } else {
-                LOGGER.warn("Token session");
                 handleTokenAuthentication(request, response, session, sessionSubjectIdentifier);
             }
         } catch (final LoginException e) {
@@ -181,10 +180,17 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
         }
     }
 
+    /**
+     * Returns the property specified in the configuration node. The resource resolver must have {@code jcr:read}
+     * access to the Proms configuration node. Returns null if the configuration cannot be found.
+     *
+     * @param session Session to use when finding the configuration node.
+     * @param prop Name of the property to use.
+     * @return The property specified in the configuration. If the configuration cannot be found, returns null.
+     */
     private Property getConfig(final Session session, final String prop) throws RepositoryException
     {
         if (!session.nodeExists(CONFIG_NODE)) {
-            // If we cannot find the config, assume the most restrictive setting (false).
             LOGGER.error("Could not find configuration node while evaluating credentials servlet");
             return null;
         }

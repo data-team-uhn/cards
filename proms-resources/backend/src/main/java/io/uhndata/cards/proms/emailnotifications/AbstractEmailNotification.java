@@ -198,7 +198,7 @@ abstract class AbstractEmailNotification
         try
         {
             if (!session.nodeExists(CONFIG_NODE)) {
-                // If we cannot find the config, assume the most restrictive setting (false).
+                // If we cannot find the config, assume the most restrictive setting (0 days).
                 LOGGER.error("Could not find configuration node while evaluating credentials servlet");
                 return 0;
             }
