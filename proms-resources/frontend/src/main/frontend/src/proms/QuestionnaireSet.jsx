@@ -474,25 +474,16 @@ function QuestionnaireSet(props) {
     return DateQuestionUtilities.toPrecision(DateQuestionUtilities.stripTimeZone(dateAnswer));
   }
 
-  async function getVisitExpiry() {
+  function fetchVisitExpiry() {
     // Memoize expiryOffset so we don't poll it more often than necessary
-    if (expiryOffset) {
-      return expiryOffset;
-    } else {
-      return await fetch("/Proms/PatientIdentification")
-        .then((response) =>
-          response.ok ? response.json() : Promise.reject(response) // Tonight at midnight by default
-        ).then((json) => {
-          // Convert that number of days from now into midnight
-          let lifetime = DateTime.utc().plus({days: json["tokenLifetime"]}).startOf('day').diff(DateTime.now()).hours;
-          setExpiryOffset(lifetime);
-          return lifetime;
-        }).catch((error) => {
-          let lifetime = DateTime.utc().startOf('day').diff(DateTime.now()).hours;
-          setExpiryOffset(lifetime);
-          return lifetime;
-        });
-    }
+    return fetch("/Proms/PatientIdentification.json")
+      .then((response) =>
+        response.ok ? response.json() : Promise.resolve({tokenLifetime: 0}) // At midnight the day-of by default
+      ).then((json) => {
+        // Convert that number of days from now into midnight
+        let lifetime = DateTime.utc().plus({days: json["tokenLifetime"]}).endOf('day').diff(DateTime.utc(), 'hours').hours;
+        setExpiryOffset(lifetime);
+      });
   }
   const appointmentDate = () => {
     let date = getVisitDate();
@@ -525,10 +516,14 @@ function QuestionnaireSet(props) {
 
   const expiryDate = () => {
     let result = "";
-    const date = getVisitDate();
+    let date = getVisitDate();
     if (date?.isValid) {
       // If the visit date could be retrieved, this is an emailed token and will expire hours after the visit
-      date.plus({hours: getVisitExpiry()});
+      if (!expiryOffset) {
+        fetchVisitExpiry();
+        return "";
+      }
+      date = date.plus({hours: expiryOffset});
 
       // Get the date difference in the format: X days, Y hours and Z minutes,
       // skipping any time division that has a value of 0
