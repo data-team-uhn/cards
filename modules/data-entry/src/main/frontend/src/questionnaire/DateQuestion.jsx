@@ -152,7 +152,6 @@ function DateQuestion(props) {
           />
         }
         showToolbar
-        ToolbarComponent={() => <Button variant="contained" color="primary" className={classes.datepickerCalcelButton} onClick={() => setDate(null)}>Clear</Button>}
       />
     </LocalizationProvider>);
   }
@@ -189,7 +188,7 @@ function DateQuestion(props) {
           { errorMessage }
         </Typography>
         }
-        <div className={classes.range}>
+        <div className={isRange ? classes.range : ''}>
           {getDateField(false, displayedDate)}
           { /* If this is an interval, allow the user to select a second date */
           isRange &&
