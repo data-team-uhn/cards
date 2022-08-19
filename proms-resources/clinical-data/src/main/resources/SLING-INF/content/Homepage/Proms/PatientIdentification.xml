@@ -31,7 +31,7 @@
     </property>
     <property>
         <name>tokenLifetime</name>
-        <value>2</value>
+        <value>0</value>
         <type>Long</type>
     </property>
 </node>
