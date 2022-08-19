@@ -27,7 +27,7 @@
 	</property>
 	<property>
 		<name>description</name>
-		<value>Visits 1</value>
+		<value>Visit 1</value>
 		<type>String</type>
 	</property>
 	<property>

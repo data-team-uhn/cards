@@ -22,12 +22,12 @@
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>maxPerSubject</name>
-		<value>5</value>
+		<value>6</value>
 		<type>Long</type>
 	</property>
 	<property>
 		<name>description</name>
-		<value>Visits 3, 5, 7, 9, 11</value>
+		<value>Visits 1, 3, 5, 7, 9, 11</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -2111,7 +2111,7 @@
 				</property>
 				<property>
 					<name>expression</name>
-					<value>return (@{wd_laps} * @{wd_lap_dist}) + @{wd_part_lap}</value>
+					<value>return (@{wd_laps:-0} * @{wd_lap_dist:-0}) + @{wd_part_lap:-0}</value>
 					<type>String</type>
 				</property>
 				<property>

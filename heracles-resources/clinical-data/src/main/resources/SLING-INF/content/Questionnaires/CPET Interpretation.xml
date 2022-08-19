@@ -22,12 +22,12 @@
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>maxPerSubject</name>
-		<value>5</value>
+		<value>6</value>
 		<type>Long</type>
 	</property>
 	<property>
 		<name>description</name>
-		<value>Visits 2,4,6,8,10</value>
+		<value>Visits 0, 2, 4, 6, 8, 10</value>
 		<type>String</type>
 	</property>
 	<property>
@@ -153,11 +153,6 @@
 					<type>String</type>
 				</property>
 				<property>
-					<name>maxValue</name>
-					<value>11.0</value>
-					<type>Double</type>
-				</property>
-				<property>
 					<name>maxAnswers</name>
 					<value>1</value>
 					<type>Long</type>
@@ -201,72 +196,58 @@
 					</property>
 				</node>
 				<node>
-					<name>3</name>
+					<name>4</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>3</value>
+						<value>4</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>3</value>
+						<value>4</value>
 						<type>String</type>
 					</property>
 				</node>
 				<node>
-					<name>5</name>
+					<name>6</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>5</value>
+						<value>6</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>5</value>
+						<value>6</value>
 						<type>String</type>
 					</property>
 				</node>
 				<node>
-					<name>7</name>
+					<name>8</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>7</value>
+						<value>8</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>7</value>
+						<value>8</value>
 						<type>String</type>
 					</property>
 				</node>
 				<node>
-					<name>9</name>
+					<name>10</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
 						<name>label</name>
-						<value>9</value>
+						<value>10</value>
 						<type>String</type>
 					</property>
 					<property>
 						<name>value</name>
-						<value>9</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>11</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>11</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>11</value>
+						<value>10</value>
 						<type>String</type>
 					</property>
 				</node>
@@ -2566,7 +2547,7 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>long</value>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -2595,7 +2576,7 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>long</value>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -2619,7 +2600,7 @@ Heart failure CI = (peak HR - resting HR)/(119+(resting HR/2) - (age/2) - 5 - re
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>long</value>
+				<value>decimal</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -3383,7 +3364,7 @@ Normal = less than 34 at anaerobic threshold
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value><![CDATA[Baseline: ST depression >1?]]></value>
+				<value><![CDATA[Baseline: ST depression >1mm?]]></value>
 				<type>String</type>
 			</property>
 			<property>
