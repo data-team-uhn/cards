@@ -18,7 +18,7 @@
 //
 
 import React, { useState, forwardRef } from "react";
-import { Button, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import PropTypes from "prop-types";
 
@@ -52,8 +52,6 @@ const DateFilter = forwardRef((props, ref) => {
 
   // Dates should have a dateFormat or default
   const dateFormat = questionDefinition["dateFormat"] || DateTimeUtilities.defaultDateFormat;
-  const dateType = DateTimeUtilities.getDateType(dateFormat);
-  const textFieldType = DateTimeUtilities.getFieldType(dateFormat);
   const views = DateTimeUtilities.getPickerViews(dateFormat);
 
   return (
@@ -80,8 +78,6 @@ const DateFilter = forwardRef((props, ref) => {
             {...params}
           />
         }
-        showToolbar
-        ToolbarComponent={() => <Button variant="contained" color="primary" className={classes.datepickerCalcelButton} onClick={() => {setDisplayedDate(null); onChangeInput(value.toFormat(dateFormat));}}>Clear</Button>}
       />
     </LocalizationProvider>
   )

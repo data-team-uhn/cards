@@ -16,13 +16,11 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState, useEffect, useContext }  from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import React, { useState, useEffect }  from 'react';
 
 import {
   Button,
   Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
   FormControl,
@@ -341,7 +339,6 @@ function PatientIdentification(props) {
                     }}
                   />
                 }
-                showToolbar
               />
             </LocalizationProvider>
             <Grid container direction="row" alignItems="flex-end" spacing={3} wrap="nowrap" justifyContent="space-between" className={classes.identifierContainer}>
