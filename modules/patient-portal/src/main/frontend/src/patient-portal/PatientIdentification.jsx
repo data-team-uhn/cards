@@ -46,7 +46,7 @@ import DateTimeUtilities from "../questionnaire/DateTimeUtilities";
 import { DateTime } from "luxon";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { LocalizationProvider } from '@mui/x-date-pickers';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import FormattedText from "../components/FormattedText.jsx";
 
 const useStyles = makeStyles(theme => ({
@@ -340,22 +340,26 @@ function PatientIdentification(props) {
             }
             </div>
             <LocalizationProvider dateAdapter={AdapterLuxon}>
-              <DateTimePicker
+              <DatePicker
                 id="j_dob"
                 name="j_dob"
                 views={views}
                 inputFormat={dateFormat}
                 label="Date of birth"
                 value={dob}
-                onChange={setDob}
+                onChange={(value) => {
+                  setError(false);
+                  value?.isValid && setDob(value);
+                  if (value?.invalid) {
+                    setError(value.invalid.explanation);
+                  }
+                }}
                 renderInput={ (params) =>
                   <TextField
                     autoFocus
                     fullWidth
                     variant="standard"
-                    InputProps={{
-                      className: classes.textField
-                    }}
+                    className={classes.textField}
                     {...params}
                     helperText={null}
                     inputProps={{

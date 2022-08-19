@@ -62,9 +62,13 @@ function TimeQuestion(props) {
   const [error, setError] = useState(undefined);
   const defaultErrorMessage = errorText || "Please enter a valid time";
   const [errorMessage, setErrorMessage] = useState(defaultErrorMessage);
+  const views = DateTimeUtilities.getPickerViews(dateFormat);
+  const isHourMinuteSeconds = DateTimeUtilities.formatIsHourMinuteSeconds(dateFormat);
   const isMinuteSeconds = DateTimeUtilities.formatIsMinuteSeconds(dateFormat);
-  const maxTime = !upperLimit || DateTime.fromFormat(upperLimit, dateFormat).invalid ? undefined : DateTime.fromFormat(upperLimit, dateFormat);
-  const minTime = !lowerLimit || DateTime.fromFormat(lowerLimit, dateFormat).invalid ? undefined : DateTime.fromFormat(lowerLimit, dateFormat);
+  const defaultLower = upperLimit || (isHourMinuteSeconds ? "00:00:00" : "00:00");
+  const defaultUpper = lowerLimit || (isHourMinuteSeconds ? "23:59:59" : isMinuteSeconds ? "59:59" : "23:59");
+  const maxTime = DateTime.fromFormat(defaultUpper, dateFormat);
+  const minTime = DateTime.fromFormat(defaultLower, dateFormat);
 
   // Error check existing answers when first loading the page
   if (existingAnswer && existingAnswer[1].value && DateTime.fromFormat(existingAnswer[1].value, dateFormat).invalid) {
@@ -94,52 +98,28 @@ function TimeQuestion(props) {
             <TimePicker
               ampm={false}
               label={dateFormat}
-              views={isMinuteSeconds ? ['minutes', 'seconds'] : ['hours', 'minutes', 'seconds']}
-              className={classes.answerField}
+              views={views}
               inputFormat={dateFormat}
-              mask={isMinuteSeconds ? "__:__" : "__:__:__"}
-              openTo={isMinuteSeconds ? "minutes" : "hours"}
-              InputProps={{
-                className: classes.textField
-              }}
+              mask={isHourMinuteSeconds ? "__:__:__" : "__:__"}
+              openTo={views.includes('hours') ? "hours" : "minutes"}
               maxTime={maxTime}
               minTime={minTime}
               onChange={(newValue) => {
-                newValue?.isValid && changeTime(newValue);
-              }}
-              onError={(reason, value) => {
                 setError(false);
-                if (!reason) return;
-
-                setError(true);
-                switch (reason) {
-                  case "invalidDate":
-                    setErrorMessage("Invalid time format");
-                    break;
-
-                  case "disablePast":
-                    setErrorMessage("Values in the past are not allowed");
-                    break;
-
-                  case "maxTime":
-                    setErrorMessage(`Time should not be after ${upperLimit}`);
-                    break;
-
-                  case "minTime":
-                    setErrorMessage(`Time should not be before ${lowerLimit}`);
-                    break;
-
-                  case "shouldDisableDate":
-                    // shouldDisableDate returned true, render custom message according to the `shouldDisableDate` logic
-                    setErrorMessage(getShouldDisableDateError(value));
-                    break;
-
-                  default:
-                    setErrorMessage(defaultErrorMessage);
+                newValue?.isValid && changeTime(newValue);
+                if (newValue?.invalid) {
+                  setError(true);
+                  setErrorMessage(newValue.invalid.explanation);
                 }
               }}
               value={selectedTime}
-              renderInput={(params) => <TextField variant="standard" {...params} />}
+              renderInput={(params) =>
+                <TextField
+                  variant="standard"
+                  className={classes.textField}
+                  {...params}
+                  InputProps={{error: error}}
+                />}
             />
           </LocalizationProvider>
         </>

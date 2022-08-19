@@ -252,7 +252,6 @@ function NumberQuestion(props) {
   };
   const muiInputProps = {
     inputComponent: NumberFormatCustom, // Used to override a TextField's type
-    className: classes.textField
   };
   if (props.questionDefinition && props.questionDefinition.unitOfMeasurement) {
     muiInputProps.endAdornment = <InputAdornment position="end">{props.questionDefinition.unitOfMeasurement}</InputAdornment>;
@@ -379,6 +378,7 @@ function NumberQuestion(props) {
           :
           <div className={classes.range}>
             <TextField
+              className="numberRange"
               variant="standard"
               helperText="Lower limit"
               value={lowerLimit}
@@ -389,6 +389,7 @@ function NumberQuestion(props) {
               />
             <span className="separator">&mdash;</span>
             <TextField
+              className="numberRange"
               variant="standard"
               helperText="Upper limit"
               value={upperLimit}
