@@ -228,6 +228,10 @@ export default class DateTimeUtilities {
     return typeof(dateFormat) === "string" && dateFormat.toLowerCase() === "mm:ss";
   }
 
+  static formatIsHourMinuteSeconds(dateFormat) {
+    return typeof(dateFormat) === "string" && dateFormat.toLowerCase() === "hh:mm:ss";
+  }
+
   static timeQuestionFieldType(dateFormat) {
     return this.formatIsMinuteSeconds(dateFormat) ? "string" : "time";
   }
@@ -243,5 +247,10 @@ export default class DateTimeUtilities {
       dateFormat.includes(this.secondTag) && views.push('seconds');
     }
     return views;
+  }
+
+  static formatHasTime(dateFormat) {
+    return typeof(dateFormat) === "string" &&
+      (dateFormat.includes(this.hourTag) || dateFormat.includes(this.minuteTag) || dateFormat.includes(this.secondTag));
   }
 }

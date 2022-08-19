@@ -33,6 +33,7 @@ import DateTimeUtilities from "./DateTimeUtilities";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 // Component that renders a date/time question
 // Selected answers are placed in a series of <input type="hidden"> tags for submission.
@@ -79,6 +80,8 @@ function DateQuestion(props) {
   const [ displayedEndDate, setDisplayedEndDate ] = useState(DateTimeUtilities.toPrecision(
     DateTimeUtilities.stripTimeZone(typeof(existingValues) === "object" ? existingValues[1] : "")));
   const isRange = (type === DateTimeUtilities.INTERVAL_TYPE);
+  const hasTime = DateTimeUtilities.formatHasTime(dateFormat);
+  const Component = hasTime ? DateTimePicker : DatePicker;
 
   useEffect(() => {
     // Determine if the end date is earlier than the start date
@@ -115,7 +118,7 @@ function DateQuestion(props) {
   let getDateField = (isEnd, date) => {
     return (
     <LocalizationProvider dateAdapter={AdapterLuxon}>
-      <DateTimePicker
+      <Component
         ampm={false}
         views={views}
         inputFormat={dateFormat}
@@ -123,12 +126,21 @@ function DateQuestion(props) {
         minDate={lowerLimitLuxon || undefined}
         maxDate={upperLimitLuxon || undefined}
         value={date}
-        onChange={(value) => setDate(value, isEnd)}
+        onChange={(value) => {
+          setError(false);
+          value?.isValid && setDate(value, isEnd);
+          if (value?.invalid) {
+            setError(true);
+            setErrorMessage(value.invalid.explanation);
+          }
+        }}
         renderInput={ (params) =>
           <TextField
             variant="standard"
+            className={classes.textField}
             helperText={null}
             {...params}
+            InputProps={{error: error}}
           />
         }
       />
@@ -136,17 +148,17 @@ function DateQuestion(props) {
   }
 
   let rangeDisplayFormatter = function(label, idx) {
-	const initialValue = Array.from(existingAnswer?.[1]?.value || []);
-    if (idx > 0 || !(initialValue?.length)) return '';
+    const initialValue = Array.from(existingAnswer?.[1]?.value || []);
     let limits = initialValue.slice(0, 2);
+    if (idx > 0 || !(initialValue?.length) || limits.length == 0) return '';
     limits[0] = label;
     // In case of invalid data (only one limit of the range is available)
     if (limits.length == 1) {
       limits.push("");
     } else {
-	  limits[1] = DateTimeUtilities.toPrecision(DateTimeUtilities.stripTimeZone(limits[1])).toFormat(dateFormat);
+      limits[1] = DateTimeUtilities.toPrecision(DateTimeUtilities.stripTimeZone(limits[1]))?.toFormat(dateFormat);
     }
-    return limits.join(' - ');
+    return limits[1] ? limits.join(' - ') : limits[0];
   }
 
   return (
