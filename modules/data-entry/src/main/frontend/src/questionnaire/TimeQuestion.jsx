@@ -19,7 +19,7 @@
 
 import React, { useState } from "react";
 
-import { Button, TextField, Typography } from "@mui/material";
+import { TextField, Typography } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
 
@@ -95,7 +95,7 @@ function TimeQuestion(props) {
               ampm={false}
               label={dateFormat}
               views={isMinuteSeconds ? ['minutes', 'seconds'] : ['hours', 'minutes', 'seconds']}
-              className={classes.textField + " " + classes.answerField}
+              className={classes.answerField}
               inputFormat={dateFormat}
               mask={isMinuteSeconds ? "__:__" : "__:__:__"}
               openTo={isMinuteSeconds ? "minutes" : "hours"}
@@ -140,7 +140,6 @@ function TimeQuestion(props) {
               }}
               value={selectedTime}
               renderInput={(params) => <TextField variant="standard" {...params} />}
-              showToolbar
             />
           </LocalizationProvider>
         </>

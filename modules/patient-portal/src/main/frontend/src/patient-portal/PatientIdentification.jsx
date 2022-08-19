@@ -364,7 +364,6 @@ function PatientIdentification(props) {
                     }}
                   />
                 }
-                showToolbar
               />
             </LocalizationProvider>
             <Grid container direction="row" alignItems="flex-end" spacing={3} wrap="nowrap" justifyContent="space-between" className={classes.identifierContainer}>

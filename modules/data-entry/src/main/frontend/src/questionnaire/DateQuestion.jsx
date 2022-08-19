@@ -19,11 +19,9 @@
 
 import React, { useState, useEffect } from "react";
 
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { TextField, Typography } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
-
-import { DateTime } from "luxon";
 
 import Answer from "./Answer";
 import Question from "./Question";
@@ -65,7 +63,7 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 //  />
 function DateQuestion(props) {
   let {existingAnswer, classes, pageActive, ...rest} = props;
-  let {text, dateFormat, minAnswers, type, lowerLimit, upperLimit} = {dateFormat: DateTimeUtilities.defaultDateFormat, minAnswers: 0, type: DateTimeUtilities.TIMESTAMP_TYPE, ...props.questionDefinition, ...props};
+  let {dateFormat, type, lowerLimit, upperLimit} = {dateFormat: DateTimeUtilities.defaultDateFormat, type: DateTimeUtilities.TIMESTAMP_TYPE, ...props.questionDefinition, ...props};
 
   const existingValues = existingAnswer && existingAnswer[1].value || "";
   const upperLimitLuxon = DateTimeUtilities.toPrecision(upperLimit);
@@ -74,9 +72,6 @@ function DateQuestion(props) {
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("Invalid date");
 
-  const dateType = DateTimeUtilities.getDateType(dateFormat);
-  // Determine the granularity of the input textfield
-  const textFieldType = DateTimeUtilities.getFieldType(dateFormat);
   const views = DateTimeUtilities.getPickerViews(dateFormat);
 
   const [ displayedDate, setDisplayedDate ] = useState(DateTimeUtilities.toPrecision(
@@ -93,16 +88,6 @@ function DateQuestion(props) {
     }
   }, [displayedDate, displayedEndDate]);
 
-  let processBlur = (value, isEnd) => {
-    let lowerBoundDate = isEnd ? startDate : "";
-    let parsedDate = boundDate(value, lowerBoundDate);
-    setDate(parsedDate, isEnd);
-    if (!isEnd && isRange && endDate) {
-      // Fix the end date if it is earlier than the start date
-      setDate(boundDate(endDate, parsedDate), true);
-    }
-  }
-
   let setDate = (value, isEnd) => {
     setError(false);
     if (isEnd) {
@@ -110,11 +95,6 @@ function DateQuestion(props) {
     } else {
       setDisplayedDate(value);
     }
-  }
-
-  let setRangeDates = (range) => {
-    setDisplayedEndDate(range[1]);
-    setDisplayedDate(range[0]);
   }
 
   let getSlingDate = (isEnd) => {
@@ -151,7 +131,6 @@ function DateQuestion(props) {
             {...params}
           />
         }
-        showToolbar
       />
     </LocalizationProvider>);
   }

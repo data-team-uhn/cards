@@ -691,11 +691,6 @@ const questionnaireStyle = theme => ({
         paddingTop: theme.spacing(4),
       },
     },
-    datepickerCalcelButton: {
-      alignSelf: "center",
-      order: 2,
-      margin: theme.spacing(1),
-    }
 });
 
 export default questionnaireStyle;
