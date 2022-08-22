@@ -19,7 +19,7 @@
 
 import React, { useState } from "react";
 
-import { TextField, Typography } from "@mui/material";
+import { TextField } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
 
@@ -65,10 +65,10 @@ function TimeQuestion(props) {
   const views = DateTimeUtilities.getPickerViews(dateFormat);
   const isHourMinuteSeconds = DateTimeUtilities.formatIsHourMinuteSeconds(dateFormat);
   const isMinuteSeconds = DateTimeUtilities.formatIsMinuteSeconds(dateFormat);
-  const defaultLower = upperLimit || (isHourMinuteSeconds ? "00:00:00" : "00:00");
-  const defaultUpper = lowerLimit || (isHourMinuteSeconds ? "23:59:59" : isMinuteSeconds ? "59:59" : "23:59");
-  const maxTime = DateTime.fromFormat(defaultUpper, dateFormat);
-  const minTime = DateTime.fromFormat(defaultLower, dateFormat);
+  const defaultLower = isHourMinuteSeconds ? "00:00:00" : "00:00";
+  const defaultUpper = isHourMinuteSeconds ? "23:59:59" : isMinuteSeconds ? "59:59" : "23:59";
+  const maxTime = DateTime.fromFormat(upperLimit || defaultUpper, dateFormat);
+  const minTime = DateTime.fromFormat(lowerLimit || defaultLower, dateFormat);
 
   // Error check existing answers when first loading the page
   if (existingAnswer && existingAnswer[1].value && DateTime.fromFormat(existingAnswer[1].value, dateFormat).invalid) {
@@ -84,16 +84,6 @@ function TimeQuestion(props) {
       >
       {
         pageActive && <>
-          {error &&
-            <Typography
-              component="p"
-              color='error'
-              className={classes.answerInstructions}
-              variant="caption"
-            >
-              {errorMessage}
-            </Typography>
-          }
           <LocalizationProvider dateAdapter={AdapterLuxon}>
             <TimePicker
               ampm={false}
@@ -106,11 +96,7 @@ function TimeQuestion(props) {
               minTime={minTime}
               onChange={(newValue) => {
                 setError(false);
-                newValue?.isValid && changeTime(newValue);
-                if (newValue?.invalid) {
-                  setError(true);
-                  setErrorMessage(newValue.invalid.explanation);
-                }
+                changeTime(newValue);
               }}
               value={selectedTime}
               renderInput={(params) =>
@@ -118,7 +104,16 @@ function TimeQuestion(props) {
                   variant="standard"
                   className={classes.textField}
                   {...params}
-                  InputProps={{error: error}}
+                  helperText={error ? errorMessage : null}
+                  onBlur={(event) => { if (selectedTime?.invalid) {
+                                          setError(true);
+                                          setErrorMessage("Invalid date: "  + selectedTime.invalid.explanation);
+                                       }
+                         }}
+                  InputProps={{
+                    ...params.InputProps,
+                    error: error
+                  }}
                 />}
             />
           </LocalizationProvider>

@@ -344,24 +344,26 @@ function PatientIdentification(props) {
                 id="j_dob"
                 name="j_dob"
                 views={views}
+                openTo="year"
                 inputFormat={dateFormat}
                 label="Date of birth"
                 value={dob}
                 onChange={(value) => {
                   setError(false);
-                  value?.isValid && setDob(value);
-                  if (value?.invalid) {
-                    setError(value.invalid.explanation);
-                  }
+                  setDob(value);
                 }}
                 renderInput={ (params) =>
                   <TextField
                     autoFocus
                     fullWidth
                     variant="standard"
-                    className={classes.textField}
                     {...params}
                     helperText={null}
+                    onBlur={(event) => { if (dob?.invalid) {
+                                          setError(true);
+                                          setErrorMessage("Invalid date: "  + dob.invalid.explanation);
+                                       }
+                         }}
                     inputProps={{
                       ...params.inputProps,
                       placeholder: `${dateFormat}, for example ${DateTime.fromISO("1970-12-31").toFormat(dateFormat)}`

@@ -19,7 +19,7 @@
 
 import React, { useState, useEffect } from "react";
 
-import { TextField, Typography } from "@mui/material";
+import { TextField } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
 
@@ -81,7 +81,7 @@ function DateQuestion(props) {
     DateTimeUtilities.stripTimeZone(typeof(existingValues) === "object" ? existingValues[1] : "")));
   const isRange = (type === DateTimeUtilities.INTERVAL_TYPE);
   const hasTime = DateTimeUtilities.formatHasTime(dateFormat);
-  const Component = hasTime ? DateTimePicker : DatePicker;
+  const PickerComponent = hasTime ? DateTimePicker : DatePicker;
 
   useEffect(() => {
     // Determine if the end date is earlier than the start date
@@ -118,7 +118,7 @@ function DateQuestion(props) {
   let getDateField = (isEnd, date) => {
     return (
     <LocalizationProvider dateAdapter={AdapterLuxon}>
-      <Component
+      <PickerComponent
         ampm={false}
         views={views}
         inputFormat={dateFormat}
@@ -128,19 +128,23 @@ function DateQuestion(props) {
         value={date}
         onChange={(value) => {
           setError(false);
-          value?.isValid && setDate(value, isEnd);
-          if (value?.invalid) {
-            setError(true);
-            setErrorMessage(value.invalid.explanation);
-          }
+          setDate(value, isEnd);
         }}
         renderInput={ (params) =>
           <TextField
             variant="standard"
             className={classes.textField}
-            helperText={null}
             {...params}
-            InputProps={{error: error}}
+            helperText={error ? errorMessage : null}
+            onBlur={(event) => { if (date?.invalid) {
+                                   setError(true);
+                                   setErrorMessage("Invalid date: "  + date.invalid.explanation);
+                                 }
+                    }}
+            InputProps={{
+              ...params.InputProps,
+              error: error
+            }}
           />
         }
       />
@@ -150,7 +154,7 @@ function DateQuestion(props) {
   let rangeDisplayFormatter = function(label, idx) {
     const initialValue = Array.from(existingAnswer?.[1]?.value || []);
     let limits = initialValue.slice(0, 2);
-    if (idx > 0 || !(initialValue?.length) || limits.length == 0) return '';
+    if (idx > 0 || limits.length == 0) return '';
     limits[0] = label;
     // In case of invalid data (only one limit of the range is available)
     if (limits.length == 1) {
@@ -158,7 +162,7 @@ function DateQuestion(props) {
     } else {
       limits[1] = DateTimeUtilities.toPrecision(DateTimeUtilities.stripTimeZone(limits[1]))?.toFormat(dateFormat);
     }
-    return limits[1] ? limits.join(' - ') : limits[0];
+    return limits.join(' - ');
   }
 
   return (
@@ -168,17 +172,7 @@ function DateQuestion(props) {
       currentAnswers={DateTimeUtilities.isAnswerComplete(outputAnswers, type) ? 1 : 0}
       {...props}
       >
-      {pageActive && <>
-        { error &&
-          <Typography
-            component="p"
-            color='error'
-            className={classes.answerInstructions}
-            variant="caption"
-          >
-          { errorMessage }
-        </Typography>
-        }
+      {pageActive &&
         <div className={isRange ? classes.range : ''}>
           {getDateField(false, displayedDate)}
           { /* If this is an interval, allow the user to select a second date */
@@ -189,7 +183,7 @@ function DateQuestion(props) {
           </React.Fragment>
           }
         </div>
-      </>}
+      }
       <Answer
         answers={outputAnswers}
         questionDefinition={props.questionDefinition}
