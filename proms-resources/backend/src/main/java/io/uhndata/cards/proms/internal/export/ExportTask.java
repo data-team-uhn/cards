@@ -25,14 +25,16 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.ListIterator;
+import java.util.Set;
 
 import org.apache.sling.api.resource.LoginException;
+import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.slf4j.Logger;
@@ -42,6 +44,9 @@ import io.uhndata.cards.serialize.CSVString;
 
 public class ExportTask implements Runnable
 {
+
+    private static final long DAY_IN_MS = 1000 * 60 * 60 * 24;
+
     /** Default log. */
     private static final Logger LOGGER = LoggerFactory.getLogger(ExportTask.class);
 
@@ -63,41 +68,56 @@ public class ExportTask implements Runnable
     @Override
     public void run()
     {
+        Set<Resource> questionnaires = this.getQuestionnaires(generateRequestedIdsQueryEnding());
+        final Date lastExportDate = new Date(System.currentTimeMillis() - (this.frequencyInDays * DAY_IN_MS));
         final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        final String modifiedAfterDate = simpleDateFormat.format(getPastDate(this.frequencyInDays));
-        final String modifiedBeforeDate = simpleDateFormat.format(new Date());
-        final String timePeriod;
-        if (this.frequencyInDays == 1) {
-            timePeriod = simpleDateFormat.format(getPastDate(1));
-        } else {
-            final String endModificationDate = simpleDateFormat.format(getPastDate(1));
-            timePeriod = modifiedAfterDate + "_" + endModificationDate;
-        }
-        Map<String, Object> params = new HashMap<>();
-        params.put(ResourceResolverFactory.SUBSERVICE, "CsvExport");
-        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(params)) {
-            for (String questionnaire : this.questionnairesToBeExported) {
-                final File csvFile = new File(this.savePath + "/ExportedForms_" + questionnaire + "_"
-                        + timePeriod + ".csv");
-                try (FileWriter writer = new FileWriter(csvFile)) {
-                    final String csvPath = String.format(
-                            "/Questionnaires/" + questionnaire + ".data.dataFilter:modifiedAfter=%s.dataFilter:"
-                                    + "modifiedBefore=%s.csv", modifiedAfterDate, modifiedBeforeDate);
+        final String modifiedAfterDate = simpleDateFormat.format(lastExportDate);
+        final File csvFile = new File(this.savePath + "/ExportedForms_" + modifiedAfterDate + ".csv");
+        try (FileWriter writer = new FileWriter(csvFile)) {
+            for (Resource questionnaire : questionnaires) {
+                final String csvPath = String.format(questionnaire.getPath() + ".data.dataFilter:modifiedAfter=%s.csv",
+                        modifiedAfterDate);
+                try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
                     final CSVString csv = resolver.resolve(csvPath).adaptTo(CSVString.class);
                     writer.write(csv.toString());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+                } catch (LoginException | IOException e) {
+                    LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
                 }
             }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    private String generateRequestedIdsQueryEnding()
+    {
+        String requestIdsQueryEnding = "";
+        if (this.questionnairesToBeExported != null && !this.questionnairesToBeExported.isEmpty()) {
+            ListIterator<String> export = this.questionnairesToBeExported.listIterator();
+            StringBuilder conditionQuery = new StringBuilder(" WHERE q.[jcr:uuid] = '" + export.next() + "'");
+            while (export.hasNext()) {
+                conditionQuery.append(" or q.[jcr:uuid] = '").append(export.next()).append("'");
+            }
+            requestIdsQueryEnding = conditionQuery.toString();
+        }
+        return requestIdsQueryEnding;
+    }
+
+    private Set<Resource> getQuestionnaires(String requestedIdsQuery)
+    {
+        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
+            String query = "SELECT * FROM [cards:Questionnaire] AS q" + requestedIdsQuery;
+            Iterator<Resource> results = resolver.findResources(query, "JCR-SQL2");
+            Set<Resource> questionnaires = new HashSet<>();
+            while (results.hasNext()) {
+                Resource obj = results.next();
+                questionnaires.add(obj);
+            }
+            return questionnaires;
         } catch (LoginException e) {
             LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
         }
-    }
-
-    private Date getPastDate(int numberOfDaysAgo)
-    {
-        Calendar date = new GregorianCalendar();
-        date.add(Calendar.DAY_OF_MONTH, -numberOfDaysAgo);
-        return date.getTime();
+        return Collections.emptySet();
     }
 }
