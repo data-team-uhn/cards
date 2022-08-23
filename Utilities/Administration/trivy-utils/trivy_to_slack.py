@@ -30,7 +30,6 @@ for vulnerabilityIndex in range(0, len(detected_vulnerabilities)):
 	installedVersion = detected_vulnerabilities[vulnerabilityIndex]['InstalledVersion']
 	vulnerabilityID = detected_vulnerabilities[vulnerabilityIndex]['VulnerabilityID']
 	severity = detected_vulnerabilities[vulnerabilityIndex]['Severity']
-	#slackMessages.append(":package:    *{}* - `{} ({})` is affected by _{}_    :warning:".format(severity, pkgName, installedVersion, vulnerabilityID))
 	slackMessages.append(":package:    *{}* - `{}` is affected by _{}_    :warning:".format(severity, pkgName, vulnerabilityID))
 
 slack_block = {}
