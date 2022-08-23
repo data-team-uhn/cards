@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 public class ScheduledExport
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ScheduledExport.class);
-    private static final String SCHEDULER_JOB_PREFIX = "ScheduledExport-CSV-";
+    private static final String SCHEDULER_JOB_PREFIX = "ScheduledExport-";
 
     @Reference
     private ResourceResolverFactory resolverFactory;
@@ -55,17 +55,19 @@ public class ScheduledExport
             // If the scheduler is not bound, it's OK to do nothing now, the method will be called during activation.
             return;
         }
-        final String schedule = newConfig.getConfig().export_schedule();
+
+        final String schedule = "0 0 */" + 24 * newConfig.getConfig().frequency_in_days() + " ? * *";
         final ScheduleOptions options = this.scheduler.EXPR(schedule);
-        options.name(SCHEDULER_JOB_PREFIX + newConfig.getConfig().name());
+        options.name(SCHEDULER_JOB_PREFIX + newConfig.getConfig());
         options.canRunConcurrently(true);
 
-        final Runnable csvExportJob;
-        csvExportJob =
+        final Runnable importJob;
+        importJob =
                 new ExportTask(this.resolverFactory, newConfig.getConfig().frequency_in_days(),
-                        newConfig.getConfig().questionnaires_to_be_exported(), newConfig.getConfig().save_path());
+                        newConfig.getConfig().questionnaires_to_be_exported(),
+                        newConfig.getConfig().save_path());
         try {
-            this.scheduler.schedule(csvExportJob, options);
+            this.scheduler.schedule(importJob, options);
         } catch (final Exception e) {
             LOGGER.error("ScheduledExport Failed to schedule: {}", e.getMessage(), e);
         }
@@ -73,8 +75,8 @@ public class ScheduledExport
 
     public void configRemoved(final ExportConfig removedConfig)
     {
-        LOGGER.debug("Removed CSV exporter config {}", removedConfig.getConfig().name());
-        this.scheduler.unschedule(SCHEDULER_JOB_PREFIX + removedConfig.getConfig().name());
+        LOGGER.debug("Removed torch importer config {}", removedConfig.getConfig());
+        this.scheduler.unschedule(SCHEDULER_JOB_PREFIX + removedConfig.getConfig());
     }
 
     @Activate
