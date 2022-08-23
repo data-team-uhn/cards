@@ -20,6 +20,13 @@
 
 import sys
 import json
+import argparse
+
+argparser = argparse.ArgumentParser()
+argparser.add_argument('--package_emoji', help='Software package icon [default: :package:]', default=':package:')
+args = argparser.parse_args()
+
+SOFTWARE_PACKAGE_EMOJI = args.package_emoji
 
 trivy_report = json.load(sys.stdin)
 detected_vulnerabilities = trivy_report['Results'][0]['Vulnerabilities']
@@ -30,7 +37,7 @@ for vulnerabilityIndex in range(0, len(detected_vulnerabilities)):
 	installedVersion = detected_vulnerabilities[vulnerabilityIndex]['InstalledVersion']
 	vulnerabilityID = detected_vulnerabilities[vulnerabilityIndex]['VulnerabilityID']
 	severity = detected_vulnerabilities[vulnerabilityIndex]['Severity']
-	slackMessages.append(":package:    *{}* - `{}` is affected by _{}_    :warning:".format(severity, pkgName, vulnerabilityID))
+	slackMessages.append(SOFTWARE_PACKAGE_EMOJI + "    *{}* - `{}` is affected by _{}_    :warning:".format(severity, pkgName, vulnerabilityID))
 
 slack_block = {}
 slack_block['type'] = 'section'
