@@ -25,29 +25,20 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
         description = "Configuration for the Surveys csv exporter")
 public @interface ExportConfigDefinition
 {
-    /** Default value of how often the task should be invoked. */
+    /** How often should the task be invoked. */
     int FREQUENCY_IN_DAYS = 1;
 
-    /** Cron-readable export schedule. */
-    String NIGHTLY_EXPORT_SCHEDULE = "0 0 0 * * ? *";
+    /** The local path where you want to save file with exported surveys. */
+    String SAVE_PATH = "";
 
-    /** Default value of the local path where exported survey CSV files should be saved to. */
-    String SAVE_PATH = ".";
-
-    @AttributeDefinition(name = "Name", description = "Configuration name")
-    String name();
-
-    @AttributeDefinition(name = "Frequency in days", description = "Time interval (days) between task invocations")
+    @AttributeDefinition(name = "Frequency in days", description = "Count of days how often should the task be invoked")
     int frequency_in_days() default FREQUENCY_IN_DAYS;
 
-    @AttributeDefinition(name = "Export schedule", description = "Cron-readable export schedule")
-    String export_schedule() default NIGHTLY_EXPORT_SCHEDULE;
-
-    @AttributeDefinition(name = "Questionnaires to be exported",
+    @AttributeDefinition(name = "Questionnaires to be export",
             description = "List of questionnaires specified to be exported periodically")
     String[] questionnaires_to_be_exported();
 
     @AttributeDefinition(name = "Save path",
-            description = "The local path to the directory where exported survey CSV files are to be saved")
+            description = "The local path where it is specified to save file with exported surveys")
     String save_path() default SAVE_PATH;
 }
