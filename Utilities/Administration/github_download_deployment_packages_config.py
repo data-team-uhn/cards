@@ -19,6 +19,7 @@
 # under the License.
 
 import os
+import sys
 import jwt
 import time
 import string
@@ -34,8 +35,42 @@ argparser.add_argument('--deployment_hostname', help='Directory name of the host
 argparser.add_argument('--download_dir', help='Directory to save the downloaded files to')
 args = argparser.parse_args()
 
-with open(args.private_key, 'r') as f:
-	PRIVATE_KEY = f.read()
+if args.private_key is None:
+	# Try to load it via environment variable
+	if 'GITHUB_API_PRIVATE_KEY' not in os.environ:
+		print("Error: --private_key was not specified and GITHUB_API_PRIVATE_KEY environment variable does not exist.")
+		sys.exit(-1)
+	PRIVATE_KEY = os.environ['GITHUB_API_PRIVATE_KEY']
+else:
+	with open(args.private_key, 'r') as f:
+		PRIVATE_KEY = f.read()
+
+if args.app_id is None:
+	# Try to set it via environment variable
+	if 'GITHUB_API_APP_ID' not in os.environ:
+		print("Error: --app_id was not specified and GITHUB_API_APP_ID environment variable does not exist.")
+		sys.exit(-1)
+	APP_ID = os.environ['GITHUB_API_APP_ID']
+else:
+	APP_ID = args.app_id
+
+if args.installation_id is None:
+	# Try to set it via environment variable
+	if 'GITHUB_API_INSTALLATION_ID' not in os.environ:
+		print("Error: --installation_id was not specified and GITHUB_API_INSTALLATION_ID environment variable does not exist.")
+		sys.exit(-1)
+	INSTALLATION_ID = os.environ['GITHUB_API_INSTALLATION_ID']
+else:
+	INSTALLATION_ID = args.installation_id
+
+if args.repository is None:
+	# Try to set it via environment variable
+	if 'GITHUB_REPOSITORY' not in os.environ:
+		print("Error: --repository was not specified and GITHUB_REPOSITORY environment variable does not exist.")
+		sys.exit(-1)
+	REPOSITORY = os.environ['GITHUB_REPOSITORY']
+else:
+	REPOSITORY = args.repository
 
 def isValidFilename(filename):
 	validChars = string.ascii_letters + string.digits + '-' + '_' + ' '
@@ -49,7 +84,7 @@ def downloadFile(path, save_path, installation_token):
 	installation_headers['Accept'] = 'application/vnd.github.raw'
 	installation_headers['Authorization'] = 'token ' + installation_token
 
-	resp = requests.get("https://api.github.com/repos/" + args.repository + "/contents/" + path, headers=installation_headers)
+	resp = requests.get("https://api.github.com/repos/" + REPOSITORY + "/contents/" + path, headers=installation_headers)
 	if resp.status_code != 200:
 		raise Exception("HTTP {} was returned when attempting to download {}.".format(resp.status_code, path))
 	with open(save_path, 'wb') as f_save:
@@ -60,7 +95,7 @@ def listDirectory(path, installation_token):
 	installation_headers['Accept'] = 'application/vnd.github+json'
 	installation_headers['Authorization'] = 'token ' + installation_token
 
-	resp = requests.get("https://api.github.com/repos/" + args.repository + "/contents/" + path, headers=installation_headers)
+	resp = requests.get("https://api.github.com/repos/" + REPOSITORY + "/contents/" + path, headers=installation_headers)
 	if resp.status_code != 200:
 		raise Exception("HTTP {} was returned when attempting to list {}.".format(resp.status_code, path))
 
@@ -70,7 +105,7 @@ def listDirectory(path, installation_token):
 payload = {}
 payload['iat'] = int(time.time())
 payload['exp'] = payload['iat'] + (60 * 10)
-payload['iss'] = args.app_id
+payload['iss'] = APP_ID
 
 github_jwt = jwt.encode(payload, PRIVATE_KEY, algorithm='RS256')
 
@@ -78,7 +113,7 @@ application_headers = {}
 application_headers['Accept'] = 'application/vnd.github+json'
 application_headers['Authorization'] = 'Bearer ' + github_jwt.decode()
 
-installation_token_resp = requests.post("https://api.github.com/app/installations/" + args.installation_id + "/access_tokens", headers=application_headers)
+installation_token_resp = requests.post("https://api.github.com/app/installations/" + INSTALLATION_ID + "/access_tokens", headers=application_headers)
 installation_token = installation_token_resp.json()['token']
 
 # Create the {{args.download_dir}}/{{args.deployment_hostname}}/vm directory structure
