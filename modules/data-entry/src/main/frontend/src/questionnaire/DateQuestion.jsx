@@ -135,7 +135,7 @@ function DateQuestion(props) {
             variant="standard"
             className={classes.textField}
             {...params}
-            helperText={error ? errorMessage : null}
+            helperText={date?.invalid && error ? errorMessage : null}
             onBlur={(event) => { if (date?.invalid) {
                                    setError(true);
                                    setErrorMessage("Invalid date: "  + date.invalid.explanation);
