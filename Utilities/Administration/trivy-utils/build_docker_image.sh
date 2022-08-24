@@ -20,31 +20,31 @@
 PACKAGE_CONFIGURATION_DIRECTORY=$1
 EXPORT_TAR_PATH=$2
 
-mkdir _docker-build
-echo "FROM scratch" > _docker-build/Dockerfile
+mkdir _docker-build || exit -1
+echo "FROM scratch" > _docker-build/Dockerfile || exit -1
 
-cp -v $PACKAGE_CONFIGURATION_DIRECTORY/vm/os-release _docker-build/
-echo "COPY os-release /etc/os-release" >> _docker-build/Dockerfile
+cp -v $PACKAGE_CONFIGURATION_DIRECTORY/vm/os-release _docker-build/ || exit -1
+echo "COPY os-release /etc/os-release" >> _docker-build/Dockerfile || exit -1
 
-cp -v $PACKAGE_CONFIGURATION_DIRECTORY/vm/status _docker-build/
-echo "COPY status /var/lib/dpkg/status" >> _docker-build/Dockerfile
+cp -v $PACKAGE_CONFIGURATION_DIRECTORY/vm/status _docker-build/ || exit -1
+echo "COPY status /var/lib/dpkg/status" >> _docker-build/Dockerfile || exit -1
 
 if [ -f $PACKAGE_CONFIGURATION_DIRECTORY/vm/debian_version ]
 then
-  cp -v $PACKAGE_CONFIGURATION_DIRECTORY/vm/debian_version _docker-build/
-  echo "COPY debian_version /etc/debian_version" >> _docker-build/Dockerfile
+  cp -v $PACKAGE_CONFIGURATION_DIRECTORY/vm/debian_version _docker-build/ || exit -1
+  echo "COPY debian_version /etc/debian_version" >> _docker-build/Dockerfile || exit -1
 fi
 
 if [ -f $PACKAGE_CONFIGURATION_DIRECTORY/vm/lsb-release ]
 then
-  cp -v $PACKAGE_CONFIGURATION_DIRECTORY/vm/lsb-release _docker-build/
-  echo "COPY lsb-release /etc/lsb-release" >> _docker-build/Dockerfile
+  cp -v $PACKAGE_CONFIGURATION_DIRECTORY/vm/lsb-release _docker-build/ || exit -1
+  echo "COPY lsb-release /etc/lsb-release" >> _docker-build/Dockerfile || exit -1
 fi
 
 DOCKER_IMAGE_TAG=$(cat /proc/sys/kernel/random/uuid)
-cd _docker-build
-docker build -t $DOCKER_IMAGE_TAG .
-cd ..
-docker save $DOCKER_IMAGE_TAG --output $EXPORT_TAR_PATH
-docker rmi $DOCKER_IMAGE_TAG
-rm -rf _docker-build
+cd _docker-build || exit -1
+docker build -t $DOCKER_IMAGE_TAG . || exit -1
+cd .. || exit -1
+docker save $DOCKER_IMAGE_TAG --output $EXPORT_TAR_PATH || exit -1
+docker rmi $DOCKER_IMAGE_TAG || exit -1
+rm -rf _docker-build || exit -1
