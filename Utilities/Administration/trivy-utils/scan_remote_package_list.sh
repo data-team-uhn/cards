@@ -28,11 +28,11 @@ SLACK_MESSAGES_FILE=$2
 
 # Download the package configuration data for the deployment from GitHub
 PACKAGE_CONF_DIR=$(mktemp -d -p .)
-python3 ../github_download_deployment_packages_config.py --deployment_hostname $DEPLOYMENT_HOSTNAME --download_dir $PACKAGE_CONF_DIR
+python3 ../github_download_deployment_packages_config.py --deployment_hostname $DEPLOYMENT_HOSTNAME --download_dir $PACKAGE_CONF_DIR || exit -1
 
 # Build a Docker image with the APT or APK installed packages listing files
 TAR_UUID="$(cat /proc/sys/kernel/random/uuid).tar"
-./build_docker_image.sh "${PACKAGE_CONF_DIR}/${DEPLOYMENT_HOSTNAME}" $TAR_UUID
+./build_docker_image.sh "${PACKAGE_CONF_DIR}/${DEPLOYMENT_HOSTNAME}" $TAR_UUID || exit -1
 rm -rf $PACKAGE_CONF_DIR
 
 # Scan with Trivy and format the results to a Slack message
