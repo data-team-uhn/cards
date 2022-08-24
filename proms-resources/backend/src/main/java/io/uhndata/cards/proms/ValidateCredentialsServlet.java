@@ -60,6 +60,7 @@ import org.slf4j.LoggerFactory;
 import io.uhndata.cards.auth.token.TokenManager;
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
+import io.uhndata.cards.proms.api.PatientAuthConfigUtils;
 import io.uhndata.cards.subjects.api.SubjectTypeUtils;
 import io.uhndata.cards.subjects.api.SubjectUtils;
 
@@ -113,6 +114,9 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
     @Reference
     private TokenManager tokenManager;
 
+    @Reference
+    private PatientAuthConfigUtils patientAuthConfigUtils;
+
     @Override
     public void doPost(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
         throws IOException
@@ -157,7 +161,7 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
         Node patientInformationForm = findMatchingPatientInformation(request, session, rr);
         final Node patientSubject = this.formUtils.getSubject(patientInformationForm);
 
-        if (patientSubject == null || !this.tokenlessAuthEnabled(session)) {
+        if (patientSubject == null || !this.patientAuthConfigUtils.tokenlessAuthEnabled()) {
             writeInvalidCredentialsError(response);
             return;
         }
@@ -178,38 +182,6 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
             generateAndApplyToken(request, session, response, "tou-patient", patientSubject.getPath());
             writeVisitSelection(response, validVisitForms, visitLocationQuestion);
         }
-    }
-
-    /**
-     * Returns the property specified in the configuration node. The resource resolver must have {@code jcr:read}
-     * access to the Proms configuration node. Returns null if the configuration cannot be found.
-     *
-     * @param session Session to use when finding the configuration node.
-     * @param prop Name of the property to use.
-     * @return The property specified in the configuration. If the configuration cannot be found, returns null.
-     */
-    private Property getConfig(final Session session, final String prop) throws RepositoryException
-    {
-        if (!session.nodeExists(CONFIG_NODE)) {
-            LOGGER.error("Could not find configuration node while evaluating credentials servlet");
-            return null;
-        }
-
-        Node config = session.getNode(CONFIG_NODE);
-        return config.getProperty(prop);
-    }
-
-    /***
-     * Returns true if tokenless authentication is enabled. The resource resolver must have {@code jcr:read} access to
-     * the Proms configuration node. Returns false if the configuration cannot be found.
-     *
-     * @param session Session to use when finding the configuration node.
-     * @return Whether the tokenless authentication is enabled. If the configuration cannot be found, returns false.
-     */
-    private boolean tokenlessAuthEnabled(final Session session) throws RepositoryException
-    {
-        Property enabled = getConfig(session, TOKENLESS_AUTH_ENABLED_PROP);
-        return enabled == null ? false : enabled.getBoolean();
     }
 
     private void generateAndApplyToken(final SlingHttpServletRequest request, final Session session,
@@ -248,7 +220,7 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
     {
         final Node visitSubject = session.getNodeByIdentifier(sessionSubjectIdentifier);
 
-        if (isPatientIdentificationEnabled(session)) {
+        if (this.patientAuthConfigUtils.patientIdentificationRequired()) {
             // Look for the patient's information in the repository
             final Node patientInformationQuestionniare = getPatientInformationQuestionnaire(session);
             final Node patientInformationForm = getPatientInformationForm(visitSubject,
@@ -265,12 +237,6 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
         }
 
         writeSuccess(response, sessionSubjectIdentifier, visitSubject, session, true);
-    }
-
-    private boolean isPatientIdentificationEnabled(final Session session) throws RepositoryException
-    {
-        Property enabled = getConfig(session, PATIENT_IDENTIFICATION_ENABLED_PROP);
-        return enabled == null ? false : enabled.getBoolean();
     }
 
     private Node findMatchingPatientInformation(final SlingHttpServletRequest request, final Session session,

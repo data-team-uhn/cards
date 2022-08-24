@@ -24,10 +24,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
@@ -39,6 +35,7 @@ import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.auth.token.TokenManager;
 import io.uhndata.cards.emailnotifications.EmailUtils;
+import io.uhndata.cards.proms.api.PatientAuthConfigUtils;
 import jakarta.mail.MessagingException;
 
 abstract class AbstractEmailNotification
@@ -63,12 +60,17 @@ abstract class AbstractEmailNotification
 
     private final MailService mailService;
 
+    private final PatientAuthConfigUtils patientAuthConfigUtils;
+
     AbstractEmailNotification(final ResourceResolverFactory resolverFactory,
-        final TokenManager tokenManager, final MailService mailService)
+        final TokenManager tokenManager, final MailService mailService,
+        final PatientAuthConfigUtils patientAuthConfigUtils)
     {
         this.resolverFactory = resolverFactory;
         this.tokenManager = tokenManager;
         this.mailService = mailService;
+        this.patientAuthConfigUtils = patientAuthConfigUtils;
+
     }
 
     /*
@@ -116,7 +118,6 @@ abstract class AbstractEmailNotification
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(parameters)) {
             Iterator<Resource> appointmentResults = AppointmentUtils.getAppointmentsForDay(resolver,
                 dateToQuery, clinicId);
-            final Session session = resolver.adaptTo(Session.class);
             while (appointmentResults.hasNext()) {
                 Resource appointmentDate = appointmentResults.next();
                 Resource appointmentForm = AppointmentUtils.getFormForAnswer(resolver, appointmentDate);
@@ -163,7 +164,7 @@ abstract class AbstractEmailNotification
                 String patientFullName = AppointmentUtils.getPatientFullName(resolver, patientSubject);
                 Calendar tokenExpiryDate = AppointmentUtils.parseDate(appointmentDate.getValueMap().get("value", ""));
                 // Note the tokenExpiry-1, since atMidnight will go to the next day
-                tokenExpiryDate.add(Calendar.DATE, getTokenExpiryInDays(session) - 1);
+                tokenExpiryDate.add(Calendar.DATE, this.patientAuthConfigUtils.tokenLifetime() - 1);
                 atMidnight(tokenExpiryDate);
                 final String token = this.tokenManager.create(
                     "patient",
@@ -191,25 +192,6 @@ abstract class AbstractEmailNotification
             LOGGER.warn("Failed to results.next().getPath()");
         }
         return emailsSent;
-    }
-
-    private int getTokenExpiryInDays(final Session session)
-    {
-        try
-        {
-            if (!session.nodeExists(CONFIG_NODE)) {
-                // If we cannot find the config, assume the most restrictive setting (0 days).
-                LOGGER.error("Could not find configuration node while evaluating credentials servlet");
-                return 0;
-            }
-
-            Node config = session.getNode(CONFIG_NODE);
-            return (int) config.getProperty(TOKEN_LIFETIME_PROP).getLong();
-        } catch (RepositoryException e)
-        {
-            LOGGER.error("Exception while grabbing config for token expiry: {}", e.getMessage(), e);
-            return 1;
-        }
     }
 
     private void atMidnight(final Calendar c)
