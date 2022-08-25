@@ -26,44 +26,11 @@
     <version>0.9-SNAPSHOT</version>
   </parent>
 
-  <artifactId>cards-modules</artifactId>
+  <artifactId>cards-saml-modules</artifactId>
   <packaging>pom</packaging>
-  <name>CARDS Modules</name>
+  <name>CARDS SAML Modules</name>
 
   <modules>
-    <module>startup-customization</module>
-    <module>form-completion-status</module>
-    <module>commons</module>
-    <module>ui-extension</module>
-    <module>login</module>
-    <module>homepage</module>
-    <module>pedigree</module>
-    <module>data-entry</module>
-    <module>data-model</module>
-    <module>ldap-support</module>
-    <module>saml-support</module>
-    <module>utils</module>
-    <module>principals</module>
-    <module>permissions</module>
-    <module>permissions-ownership</module>
-    <module>permissions-trusted</module>
-    <module>vocabularies</module>
-    <module>demo-banner</module>
-    <module>downtime-warning-banner</module>
-    <module>versioning</module>
-    <module>favicon</module>
-    <module>upgrade-marker</module>
-    <module>vocabularies-ignore</module>
-    <module>statistics</module>
-    <module>email-notifications</module>
-    <module>token-authentication</module>
-    <module>keycloakdemo-saml</module>
-    <module>uhn-saml</module>
-    <module>fetch-requires-saml-login</module>
-    <module>metrics</module>
-    <module>http-requests</module>
-    <module>page-start-header</module>
-    <module>webhook-backup</module>
-    <module>saml</module>
+    <module>cloud-iam-demo-saml</module>
   </modules>
 </project>
