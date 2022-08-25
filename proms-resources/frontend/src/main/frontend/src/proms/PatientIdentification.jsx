@@ -170,7 +170,6 @@ function PatientIdentification(props) {
   const checkBypass = () => {
     // Check if we are given a token and can bypass patient identification
     let authToken = window.location.search ? new URLSearchParams(window.location.search).get("auth_token") : "";
-    console.log(document.cookie);
     if (authToken) {
       let requestData = new FormData();
       requestData.append("auth_token", authToken);

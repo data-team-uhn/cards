@@ -29,12 +29,17 @@ import ErrorPage from "../components/ErrorPage.jsx";
 
 import { DEFAULT_INSTRUCTIONS, SURVEY_INSTRUCTIONS_PATH } from "./SurveyInstructionsConfiguration.jsx"
 
+const CONFIG = "/Proms/PatientIdentification.json";
+const ENABLED_PROP = "enableTokenlessAuth";
+const AUTH_TOKEN_PARAM = "auth_token";
+
 function PromsHomepage (props) {
   // Current user and associated subject
   const [ username, setUsername ] = useState("");
   const [ subject, setSubject ] = useState();
   // Patient Survey UI texts from Patient Portal Survey Instructions
   const [ surveyInstructions, setSurveyInstructions ] = useState();
+  const [ unableToProceed, setUnableToProceed ] = useState();
 
   // Fetch saved settings for Patient Portal Survey Instructions
   useEffect(() => {
@@ -45,6 +50,19 @@ function PromsHomepage (props) {
       })
       .catch((response) => {
         console.error(`Loading the Patient Portal Survey Instructions failed with error code ${response.status}: ${response.statusText}`);
+      });
+  }, []);
+
+  // Fetch tokenless auth
+  useEffect(() => {
+    fetch(CONFIG)
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((json) => {
+        let auth_token = new URLSearchParams(window.location.search).get(AUTH_TOKEN_PARAM);
+        if (!(json[ENABLED_PROP] || auth_token)) {
+          // The user cannot continue without an authentication token
+          setUnableToProceed(true);
+        }
       });
   }, []);
 
@@ -59,6 +77,14 @@ function PromsHomepage (props) {
   let onPatientIdentified = (p) => {
     setUsername(`${p?.first_name || ""} ${p?.last_name || ""}`.trim());
     setSubject(p?.subject);
+  }
+
+  if (unableToProceed) {
+    return (
+      <ErrorPage
+        title="Invalid link"
+        message="This link is invalid, please use the personalized link that was emailed to you to proceed"
+      />)
   }
 
   if (!subject) {
