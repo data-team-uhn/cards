@@ -20,7 +20,7 @@
 
   <parent>
     <groupId>io.uhndata.cards</groupId>
-    <artifactId>cards-modules</artifactId>
+    <artifactId>cards-saml-modules</artifactId>
     <version>0.9-SNAPSHOT</version>
   </parent>
 
