@@ -17,17 +17,19 @@
 package io.uhndata.cards.formcompletionstatus;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.apache.jackrabbit.oak.api.CommitFailedException;
-import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.commit.DefaultEditor;
 import org.apache.jackrabbit.oak.spi.commit.Editor;
@@ -36,17 +38,18 @@ import org.apache.jackrabbit.oak.spi.state.NodeState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.formcompletionstatus.spi.AnswerValidator;
+import io.uhndata.cards.forms.api.FormUtils;
+
 /**
  * An {@link Editor} that verifies the correctness and completeness of submitted questionnaire answers and sets the
- * INVALID and INCOMPLETE status flags accordingly.
+ * {@code INVALID} and {@code INCOMPLETE} status flags accordingly.
  *
  * @version $Id$
  */
 public class AnswerCompletionStatusEditor extends DefaultEditor
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(AnswerCompletionStatusEditor.class);
-
-    private static final String PROP_VALUE = "value";
 
     private static final String PROP_QUESTION = "question";
 
@@ -64,6 +67,11 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
 
     private final Session session;
 
+    private final FormUtils formUtils;
+
+    // Validators list to be called in sequence, in ascending order of their priority, and each can add or remove flags.
+    private final List<AnswerValidator> allValidators;
+
     // This holds a list of NodeBuilders with the first item corresponding to the root of the JCR tree
     // and the last item corresponding to the current node. By keeping this list, one is capable of
     // moving up the tree and setting status flags of ancestor nodes based on the status flags of a
@@ -78,87 +86,21 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
      * @param form the form node found up the tree, if any; may be {@code null} if no form node has been encountered so
      *            far
      * @param session the current JCR session
+     * @param formUtils for working with form data
+     * @param allValidators all available AnswerValidator services
      */
     public AnswerCompletionStatusEditor(final List<NodeBuilder> nodeBuilder, final NodeBuilder form,
-        final Session session)
+        final Session session, final FormUtils formUtils, List<AnswerValidator> allValidators)
     {
         this.currentNodeBuilderPath = nodeBuilder;
         this.currentNodeBuilder = nodeBuilder.get(nodeBuilder.size() - 1);
         this.session = session;
-        if (isForm(this.currentNodeBuilder)) {
+        this.formUtils = formUtils;
+        this.allValidators = allValidators;
+        if (this.formUtils.isForm(this.currentNodeBuilder)) {
             this.form = this.currentNodeBuilder;
         } else {
             this.form = form;
-        }
-    }
-
-    // Called when a new property is added
-    @Override
-    public void propertyAdded(final PropertyState after)
-        throws CommitFailedException
-    {
-        propertyChanged(null, after);
-    }
-
-    // Called when the value of an existing property gets changed
-    @Override
-    public void propertyChanged(final PropertyState before, final PropertyState after)
-        throws CommitFailedException
-    {
-        final Node questionNode = getQuestionNode(this.currentNodeBuilder);
-        if (questionNode != null && PROP_VALUE.equals(after.getName())) {
-            final Iterable<String> nodeAnswers = after.getValue(Type.STRINGS);
-            final int numAnswers = iterableLength(nodeAnswers);
-            final Set<String> statusFlags = new TreeSet<>();
-            if (this.currentNodeBuilder.hasProperty(STATUS_FLAGS)) {
-                this.currentNodeBuilder.getProperty(STATUS_FLAGS).getValue(Type.STRINGS).forEach(statusFlags::add);
-            }
-            if (checkInvalidAnswer(questionNode, numAnswers)) {
-                statusFlags.add(STATUS_FLAG_INVALID);
-                statusFlags.add(STATUS_FLAG_INCOMPLETE);
-            } else {
-                statusFlags.remove(STATUS_FLAG_INVALID);
-                statusFlags.remove(STATUS_FLAG_INCOMPLETE);
-                /*
-                 * We are here because:
-                 *     - minAnswers == 0 && maxAnswers == 0
-                 *     - minAnswers == 0 && maxAnswers == 1 && numAnswers in range [0,1] (eg. optional radio button)
-                 *     - minAnswers == 1 && maxAnswers == 0 && numAnswers in range [1,+INF) (eg. mandatory checkboxes)
-                 *     - minAnswers == 1 && maxAnswers == 1 && numAnswers == 1 (eg. mandatory radio button)
-                 *     - minAnswers == N && maxAnswers == 0 && numAnswers in range [N,+INF)
-                 *         (eg. at least N (inclusive) checkboxes must be selected)
-                 *     - minAnswers == 0 && maxAnswers == M && numAnswers in range [0, M]
-                 *         (eg. at most M (inclusive) checkboxes must be selected)
-                 *     - minAnswers == N && maxAnswers == M && numAnswers in range [N,M]
-                 *         (eg. between N (inclusive) and M (inclusive) checkboxes must be selected)
-                 */
-            }
-            this.currentNodeBuilder.setProperty(STATUS_FLAGS, statusFlags, Type.STRINGS);
-        }
-    }
-
-    // Called when a property is deleted
-    @Override
-    public void propertyDeleted(final PropertyState before)
-        throws CommitFailedException
-    {
-        final Node questionNode = getQuestionNode(this.currentNodeBuilder);
-        if (questionNode != null) {
-            if (PROP_VALUE.equals(before.getName())) {
-                final Set<String> statusFlags = new TreeSet<>();
-                if (this.currentNodeBuilder.hasProperty(STATUS_FLAGS)) {
-                    this.currentNodeBuilder.getProperty(STATUS_FLAGS).getValue(Type.STRINGS).forEach(statusFlags::add);
-                }
-                // Only add the INVALID,INCOMPLETE flags if the given question requires more than zero answers
-                if (checkInvalidAnswer(questionNode, 0)) {
-                    statusFlags.add(STATUS_FLAG_INVALID);
-                    statusFlags.add(STATUS_FLAG_INCOMPLETE);
-                } else {
-                    statusFlags.remove(STATUS_FLAG_INVALID);
-                    statusFlags.remove(STATUS_FLAG_INCOMPLETE);
-                }
-                this.currentNodeBuilder.setProperty(STATUS_FLAGS, statusFlags, Type.STRINGS);
-            }
         }
     }
 
@@ -170,39 +112,29 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     public Editor childNodeAdded(final String name, final NodeState after)
         throws CommitFailedException
     {
-        final Node questionNode = getQuestionNode(this.currentNodeBuilder.getChildNode(name));
-        if (questionNode != null) {
-            final Set<String> statusFlags = new TreeSet<>();
-            if (after.hasProperty(STATUS_FLAGS)) {
-                after.getProperty(STATUS_FLAGS).getValue(Type.STRINGS).forEach(statusFlags::add);
-            }
-            // Only add the INCOMPLETE flag if the given question requires more than zero answers
-            if (checkInvalidAnswer(questionNode, 0)) {
-                statusFlags.add(STATUS_FLAG_INCOMPLETE);
-            } else {
-                statusFlags.remove(STATUS_FLAG_INCOMPLETE);
-            }
-            this.currentNodeBuilder.getChildNode(name).setProperty(STATUS_FLAGS, statusFlags, Type.STRINGS);
-        }
+        validateAnswer(after, true);
+
         final List<NodeBuilder> tmpList = new ArrayList<>(this.currentNodeBuilderPath);
         tmpList.add(this.currentNodeBuilder.getChildNode(name));
-        return new AnswerCompletionStatusEditor(tmpList, this.form, this.session);
+        return new AnswerCompletionStatusEditor(tmpList, this.form, this.session, this.formUtils, this.allValidators);
     }
 
     @Override
     public Editor childNodeChanged(final String name, final NodeState before, final NodeState after)
         throws CommitFailedException
     {
+        validateAnswer(after, false);
+
         final List<NodeBuilder> tmpList = new ArrayList<>(this.currentNodeBuilderPath);
         tmpList.add(this.currentNodeBuilder.getChildNode(name));
-        return new AnswerCompletionStatusEditor(tmpList, this.form, this.session);
+        return new AnswerCompletionStatusEditor(tmpList, this.form, this.session, this.formUtils, this.allValidators);
     }
 
     @Override
     public void leave(NodeState before, NodeState after)
         throws CommitFailedException
     {
-        if (isForm(this.currentNodeBuilder) || isSection(this.currentNodeBuilder)) {
+        if (this.formUtils.isForm(this.currentNodeBuilder) || this.formUtils.isAnswerSection(this.currentNodeBuilder)) {
             try {
                 summarize();
             } catch (RepositoryException e) {
@@ -210,6 +142,45 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
                 LOGGER.warn("Unexpected exception while checking the completion status of form {}",
                     this.currentNodeBuilder.getString("jcr:uuid"));
             }
+        }
+    }
+
+    /**
+     * If the node is indeed an answer node,
+     * - populate the flags map with the old flags all set to false,
+     * - get the question node from answer, and call each validator;
+     * - then gather all the keys from the flags map and set the statusFlags property on the answer node.
+     * @param answer answer
+     * @param initialAnswer initialAnswer
+     */
+    public void validateAnswer(NodeState answer, boolean initialAnswer)
+    {
+        if (!this.formUtils.isAnswer(answer)) {
+            return;
+        }
+
+        final Node questionNode = getQuestionNode(this.currentNodeBuilder);
+
+        if (questionNode != null) {
+            final Set<String> statusFlags = new TreeSet<>();
+            if (this.currentNodeBuilder.hasProperty(STATUS_FLAGS)) {
+                this.currentNodeBuilder.getProperty(STATUS_FLAGS).getValue(Type.STRINGS).forEach(statusFlags::add);
+            }
+            Map<String, Boolean> flags = new HashMap<>();
+            // populate the flags map with the old flags all set to false
+            statusFlags.forEach(flag -> flags.remove(flag));
+
+            // call each validator
+            this.allValidators.forEach(validator -> {
+                validator.validate(this.currentNodeBuilder, questionNode, initialAnswer, flags);
+            });
+
+            // then gather all the keys from the flags map and set the statusFlags property on the answer node
+            final Set<String> newFlags = flags.entrySet().stream()
+                .map(entry -> entry.getKey())
+                .collect(Collectors.toSet());
+            // Write these statusFlags to the JCR repo
+            this.currentNodeBuilder.setProperty(STATUS_FLAGS, newFlags, Type.STRINGS);
         }
     }
 
@@ -234,52 +205,12 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     }
 
     /**
-     * Counts the number of items in an Iterable.
-     *
-     * @param iterable the Iterable object to be counted
-     * @return the number of objects in the Iterable
-     */
-    private int iterableLength(final Iterable<?> iterable)
-    {
-        int len = 0;
-        final Iterator<?> iterator = iterable.iterator();
-        while (iterator.hasNext()) {
-            iterator.next();
-            len++;
-        }
-        return len;
-    }
-
-    /**
-     * Reports if a given number of answers is invalid for a given question.
-     *
-     * @param questionNode the Node to provide the minAnswers and maxAnswers properties
-     * @return true if the number of answers is valid, false if it is not
-     */
-    private boolean checkInvalidAnswer(final Node questionNode, final int numAnswers)
-    {
-        try {
-            final long minAnswers =
-                questionNode.hasProperty("minAnswers") ? questionNode.getProperty("minAnswers").getLong() : 0;
-            final long maxAnswers =
-                questionNode.hasProperty("maxAnswers") ? questionNode.getProperty("maxAnswers").getLong() : 0;
-            if ((numAnswers < minAnswers && minAnswers != 0) || (numAnswers > maxAnswers && maxAnswers != 0)) {
-                return true;
-            }
-        } catch (final RepositoryException ex) {
-            // If something goes wrong then we definitely cannot have a valid answer
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Checks if a NodeBuilder represents an empty Form and returns true if that is the case. Otherwise, this method
      * returns false.
      */
     private boolean isEmptyForm(NodeBuilder n)
     {
-        if (isForm(n)) {
+        if (this.formUtils.isForm(n)) {
             if (!(n.getChildNodeNames().iterator().hasNext())) {
                 return true;
             }
@@ -304,7 +235,7 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         while (childrenNames.hasNext()) {
             final String selectedChildName = childrenNames.next();
             final NodeBuilder selectedChild = this.currentNodeBuilder.getChildNode(selectedChildName);
-            if (isSection(selectedChild)) {
+            if (this.formUtils.isAnswerSection(selectedChild)) {
                 if (!ConditionalSectionUtils.isConditionSatisfied(this.session, selectedChild, this.form)) {
                     continue;
                 }
@@ -343,38 +274,5 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
         }
         // Write these statusFlags to the JCR repo
         this.currentNodeBuilder.setProperty(STATUS_FLAGS, statusFlags, Type.STRINGS);
-    }
-
-    /**
-     * Checks if the given node is a Form node.
-     *
-     * @param node the JCR Node to check
-     * @return {@code true} if the node is a Form node, {@code false} otherwise
-     */
-    private boolean isForm(NodeBuilder node)
-    {
-        return "cards:Form".equals(getNodeType(node));
-    }
-
-    /**
-     * Checks if the given node is an AnswerSection node.
-     *
-     * @param node the JCR Node to check
-     * @return {@code true} if the node is an AnswerSection node, {@code false} otherwise
-     */
-    private boolean isSection(NodeBuilder node)
-    {
-        return "cards:AnswerSection".equals(getNodeType(node));
-    }
-
-    /**
-     * Retrieves the primary node type of a node, as a String.
-     *
-     * @param node the node whose type to retrieve
-     * @return a string
-     */
-    private String getNodeType(NodeBuilder node)
-    {
-        return node.getProperty("jcr:primaryType").getValue(Type.STRING);
     }
 }
