@@ -18,6 +18,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import os
 import jwt
 import sys
 import time
@@ -25,6 +26,8 @@ import base64
 import distro
 import argparse
 import requests
+
+import os_file_management
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument('--private_key', help='File path the to private key used for JWT signing')
@@ -72,14 +75,11 @@ application_headers['Authorization'] = 'Bearer ' + github_jwt.decode()
 installation_token_resp = requests.post("https://api.github.com/app/installations/" + args.installation_id + "/access_tokens", headers=application_headers)
 installation_token = installation_token_resp.json()['token']
 
-if THIS_DISTRO == 'debian':
-	updateFile(args.deployment_hostname + "/vm/os-release", "/usr/lib/os-release", installation_token)
-	updateFile(args.deployment_hostname + "/vm/debian_version", "/etc/debian_version", installation_token)
-	updateFile(args.deployment_hostname + "/vm/status", "/var/lib/dpkg/status", installation_token)
-elif THIS_DISTRO == 'ubuntu':
-	updateFile(args.deployment_hostname + "/vm/os-release", "/usr/lib/os-release", installation_token)
-	updateFile(args.deployment_hostname + "/vm/lsb-release", "/etc/lsb-release", installation_token)
-	updateFile(args.deployment_hostname + "/vm/status", "/var/lib/dpkg/status", installation_token)
-else:
+try:
+	for system_file_path in os_file_management.OS_FILE_SET[THIS_DISTRO]:
+		system_file_name = os.path.basename(system_file_path)
+		github_path = os.path.join(args.deployment_hostname, 'vm', system_file_name)
+		updateFile(github_path, system_file_path, installation_token)
+except KeyError:
 	print("Error: Unable to handle this Linux distribution.")
 	sys.exit(-1)
