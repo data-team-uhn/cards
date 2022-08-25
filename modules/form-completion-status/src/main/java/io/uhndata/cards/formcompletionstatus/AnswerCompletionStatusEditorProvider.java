@@ -29,8 +29,13 @@ import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.FieldOption;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 
+import io.uhndata.cards.formcompletionstatus.spi.AnswerValidator;
+import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 
 /**
@@ -44,6 +49,14 @@ public class AnswerCompletionStatusEditorProvider implements EditorProvider
     @Reference
     private ThreadResourceResolverProvider rrp;
 
+    @Reference
+    private FormUtils formUtils;
+
+    /** A list of all available {@link AnswerValidator}s. */
+    @Reference(cardinality = ReferenceCardinality.MULTIPLE, fieldOption = FieldOption.REPLACE,
+        policy = ReferencePolicy.DYNAMIC)
+    private volatile List<AnswerValidator> allValidators;
+
     @Override
     public Editor getRootEditor(final NodeState before, final NodeState after, final NodeBuilder builder,
         final CommitInfo info)
@@ -51,10 +64,12 @@ public class AnswerCompletionStatusEditorProvider implements EditorProvider
     {
         ResourceResolver resolver = this.rrp.getThreadResourceResolver();
         if (resolver != null) {
+            this.allValidators.sort((o1, o2) -> o2.getPriority() - o1.getPriority());
             // Each AnswerCompletionStatusEditor maintains a state, so a new instance must be returned each time
             final List<NodeBuilder> tmpList = new ArrayList<>();
             tmpList.add(builder);
-            return new AnswerCompletionStatusEditor(tmpList, null, resolver.adaptTo(Session.class));
+            return new AnswerCompletionStatusEditor(tmpList, null, resolver.adaptTo(Session.class), this.formUtils,
+                this.allValidators);
         }
         return null;
     }
