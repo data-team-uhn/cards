@@ -30,7 +30,7 @@ import ErrorPage from "../components/ErrorPage.jsx";
 import { DEFAULT_INSTRUCTIONS, SURVEY_INSTRUCTIONS_PATH } from "./SurveyInstructionsConfiguration.jsx"
 
 const CONFIG = "/Proms/PatientIdentification.json";
-const ENABLED_PROP = "enableTokenlessAuth";
+const TOKENLESS_AUTH_ENABLED_PROP = "enableTokenlessAuth";
 const AUTH_TOKEN_PARAM = "auth_token";
 
 function PromsHomepage (props) {
@@ -59,7 +59,7 @@ function PromsHomepage (props) {
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         let auth_token = new URLSearchParams(window.location.search).get(AUTH_TOKEN_PARAM);
-        if (!(json[ENABLED_PROP] || auth_token)) {
+        if (!(json[TOKENLESS_AUTH_ENABLED_PROP] || auth_token)) {
           // The user cannot continue without an authentication token
           setUnableToProceed(true);
         }
