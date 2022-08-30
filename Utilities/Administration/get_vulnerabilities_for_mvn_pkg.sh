@@ -32,4 +32,5 @@ docker run \
 	aquasec/trivy fs \
 	--security-checks vuln \
 	--ignore-unfixed \
+	--format json \
 	/my-app
