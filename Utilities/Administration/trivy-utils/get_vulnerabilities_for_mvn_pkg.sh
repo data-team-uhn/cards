@@ -34,3 +34,5 @@ docker run \
 	--ignore-unfixed \
 	--format json \
 	/my-app
+
+rm pom.xml
