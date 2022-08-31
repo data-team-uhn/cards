@@ -20,4 +20,4 @@
 DOCKER_IMAGE=$1
 OUTPUT_JSON_FILE=$2
 
-docker run --rm --entrypoint /bin/sh $DOCKER_IMAGE -c "cd /root/.m2 && find . -type f" | python3 build_maven_package_list.py $OUTPUT_JSON_FILE
+docker run --rm --entrypoint /bin/sh $DOCKER_IMAGE -c "cd /root/.m2/repository && find . -type f" | python3 build_maven_package_list.py $OUTPUT_JSON_FILE
