@@ -26,18 +26,42 @@ argparser = argparse.ArgumentParser()
 argparser.add_argument('--maven_package_list', help='Path to the JSON file listing the Maven packages to scan')
 argparser.add_argument('--package_emoji', help='Software package icon [default: :java:]', default=':java:')
 argparser.add_argument('--verbose', help='Verbose logging', action='store_true')
+argparser.add_argument('--truncate_results', help='', type=int, default=-1)
 args = argparser.parse_args()
 
 with open(args.maven_package_list, 'r') as f_json:
 	MAVEN_PACKAGE_LIST = json.load(f_json)
 
-slackMessages = []
+criticalServerity = []
+highSeverity = []
+mediumSeverity = []
+lowSeverity = []
+
 for mvnpkg in MAVEN_PACKAGE_LIST:
 	if args.verbose:
 		print("Processing {}...".format(mvnpkg))
 	package_vulnerabilities = getVulnerabilities(mvnpkg['groupId'], mvnpkg['artifactId'], mvnpkg['version'])
 	for vulnerability in package_vulnerabilities:
-		slackMessages.append(args.package_emoji + "    *{}* - `{}:{}` is affected by _{}_    :warning:".format(vulnerability['Severity'], vulnerability['PkgName'], vulnerability['InstalledVersion'], vulnerability['VulnerabilityID']))
+		# Sort vulnerabilities in order of severity: CRITICAL, HIGH, MEDIUM, LOW
+		if vulnerability['Severity'] == "CRITICAL":
+			selected_message_list = criticalServerity
+		elif vulnerability['Severity'] == "HIGH":
+			selected_message_list = highSeverity
+		elif vulnerability['Severity'] == "MEDIUM":
+			selected_message_list = mediumSeverity
+		elif vulnerability['Severity'] == "LOW":
+			selected_message_list = lowSeverity
+		else:
+			continue
+		selected_message_list.append(args.package_emoji + "    *{}* - `{}:{}` is affected by _{}_    :warning:".format(vulnerability['Severity'], vulnerability['PkgName'], vulnerability['InstalledVersion'], vulnerability['VulnerabilityID']))
+
+slackMessages = criticalServerity + highSeverity + mediumSeverity + lowSeverity
+
+if args.truncate_results >= 0:
+	total_slack_messages = len(slackMessages)
+	slackMessages = slackMessages[0:args.truncate_results]
+	if total_slack_messages > args.truncate_results:
+		slackMessages.append("    ... and {} more".format(total_slack_messages - args.truncate_results))
 
 slack_block = {}
 slack_block['type'] = 'section'
