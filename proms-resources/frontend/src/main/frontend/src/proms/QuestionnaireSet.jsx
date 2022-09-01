@@ -480,11 +480,10 @@ function QuestionnaireSet(props) {
       .then((response) =>
         response.ok ? response.json() : Promise.resolve({tokenLifetime: 0}) // At midnight the day-of by default
       ).then((json) => {
-        // Convert that number of days from now into midnight
-        let lifetime = DateTime.utc().plus({days: json["tokenLifetime"]}).endOf('day').diff(DateTime.utc(), 'hours').hours;
-        setExpiryOffset(lifetime);
+        setExpiryOffset(json.tokenLifetime);
       });
   }
+
   const appointmentDate = () => {
     let date = getVisitDate();
     return !date?.isValid ? "" : date.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY);
@@ -518,12 +517,13 @@ function QuestionnaireSet(props) {
     let result = "";
     let date = getVisitDate();
     if (date?.isValid) {
-      // If the visit date could be retrieved, this is an emailed token and will expire hours after the visit
-      if (!expiryOffset) {
+      // If the visit date could be retrieved, this is an emailed token and will expire a configured number of days after the visit day
+      if (typeof(expiryOffset) == "undefined") {
         fetchVisitExpiry();
         return "";
       }
-      date = date.plus({hours: expiryOffset});
+      // Compute the moment the token expired: the configured number of days after the visit, at midnight
+      date = date.plus({days: expiryOffset}).endOf('day');
 
       // Get the date difference in the format: X days, Y hours and Z minutes,
       // skipping any time division that has a value of 0
