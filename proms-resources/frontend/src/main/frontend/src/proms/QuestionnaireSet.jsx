@@ -645,11 +645,11 @@ function QuestionnaireSet(props) {
         </Grid>
       ))}
       </Grid>,
-      <Fab variant="extended" color="primary" onClick={() => window.location = "/system/sling/logout"}>Close</Fab>
+      <Fab variant="extended" color="primary" onClick={() => window.location = "/system/sling/logout?resource=" + encodeURIComponent(window.location.pathname)}>Close</Fab>
     ] : [
       <Typography variant="h4">Thank you for your submission</Typography>,
       disclaimer,
-      <Fab variant="extended" color="primary" onClick={() => window.location = "/system/sling/logout"}>Close</Fab>
+      <Fab variant="extended" color="primary" onClick={() => window.location = "/system/sling/logout?resource=" + encodeURIComponent(window.location.pathname)}>Close</Fab>
     ];
 
   let loadingScreen = [ <CircularProgress /> ];
