@@ -80,10 +80,15 @@ function PromsHomepage (props) {
   }
 
   if (unableToProceed) {
+    let appName = document.querySelector('meta[name="title"]')?.content;
+    let message = (surveyInstructions.welcomeMessage)?.replaceAll("APP_NAME", appName) || '';
+    message = `${message}\n\n### To fill out surveys, please follow the personalized link that was emailed to you.`;
     return (
       <ErrorPage
-        title="Invalid link"
-        message="This link is invalid, please use the personalized link that was emailed to you to proceed"
+        sx={{maxWidth: 500, margin: "0 auto"}}
+        title=""
+        message={message}
+        messageColor="textPrimary"
       />)
   }
 

@@ -60,9 +60,6 @@ const useStyles = makeStyles(theme => ({
     "& #cards-resource-footer .MuiMobileStepper-progress" : {
       width: "100%",
     },
-    "& .wmde-markdown .anchor" : {
-      display: "none",
-    },
   },
   screen : {
     alignItems: "center",
