@@ -112,19 +112,16 @@ public class FormsRestrictionProvider extends AbstractRestrictionProvider
 
     private RestrictionPattern processRestriction(Restriction restriction)
     {
-        String name = restriction.getDefinition().getName();
-        RestrictionFactory factory = getFactory(name);
-        if (factory != null) {
-            return factory.forValue(restriction.getProperty());
-        } else {
-            LOGGER.debug("Ignoring unsupported restriction {}", name);
-        }
-        return null;
+        return processRestriction(restriction.getDefinition().getName(), restriction.getProperty());
     }
 
     private RestrictionPattern processRestriction(PropertyState property)
     {
-        String name = property.getName();
+        return processRestriction(property.getName(), property);
+    }
+
+    private RestrictionPattern processRestriction(String name, PropertyState property)
+    {
         RestrictionFactory factory = getFactory(name);
         if (factory != null) {
             return factory.forValue(property);
