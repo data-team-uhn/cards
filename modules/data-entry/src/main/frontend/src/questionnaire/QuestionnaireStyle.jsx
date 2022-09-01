@@ -115,7 +115,7 @@ const questionnaireStyle = theme => ({
     textField: {
         // Differing input types have differing widths, so setting width:100%
         // is insufficient in making sure all components are the same size
-        minWidth: "250px",
+        width: "250px",
     },
     selectMultiValues: {
         whiteSpace: "normal",

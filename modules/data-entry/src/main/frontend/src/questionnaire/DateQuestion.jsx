@@ -143,7 +143,7 @@ function DateQuestion(props) {
                     }}
             InputProps={{
               ...params.InputProps,
-              error: date?.invalid ? error : ''
+              error: error && !!(date?.invalid)
             }}
           />
         }
