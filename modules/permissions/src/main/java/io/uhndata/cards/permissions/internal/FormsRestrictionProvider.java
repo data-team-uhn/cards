@@ -128,6 +128,6 @@ public class FormsRestrictionProvider extends AbstractRestrictionProvider
         } else {
             LOGGER.debug("Ignoring unsupported restriction {}", name);
         }
-        return RestrictionPattern.EMPTY;
+        return null;
     }
 }
