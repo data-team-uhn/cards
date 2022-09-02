@@ -23,7 +23,9 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
+import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Tree;
 import org.apache.jackrabbit.oak.spi.security.authorization.restriction.AbstractRestrictionProvider;
 import org.apache.jackrabbit.oak.spi.security.authorization.restriction.CompositePattern;
@@ -88,9 +90,18 @@ public class FormsRestrictionProvider extends AbstractRestrictionProvider
     @Override
     public RestrictionPattern getPattern(String oakPath, Tree tree)
     {
-        // This method is never actually called, since up in the call stack all potential calls are transformed into
-        // calls to the other getPattern method above.
-        return RestrictionPattern.EMPTY;
+        if (oakPath == null) {
+            return RestrictionPattern.EMPTY;
+        }
+
+        // NB: tree.getProperties() returns more than just restrictions
+        // processRestriction should return null on non-restrictions e.g.
+        // PropertyState jcr:primaryType
+        return CompositePattern.create(
+            StreamSupport.stream(tree.getProperties().spliterator(), false)
+                .map(this::processRestriction)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList()));
     }
 
     private RestrictionFactory getFactory(String restrictionName)
@@ -101,10 +112,19 @@ public class FormsRestrictionProvider extends AbstractRestrictionProvider
 
     private RestrictionPattern processRestriction(Restriction restriction)
     {
-        String name = restriction.getDefinition().getName();
+        return processRestriction(restriction.getDefinition().getName(), restriction.getProperty());
+    }
+
+    private RestrictionPattern processRestriction(PropertyState property)
+    {
+        return processRestriction(property.getName(), property);
+    }
+
+    private RestrictionPattern processRestriction(String name, PropertyState property)
+    {
         RestrictionFactory factory = getFactory(name);
         if (factory != null) {
-            return factory.forValue(restriction.getProperty());
+            return factory.forValue(property);
         } else {
             LOGGER.debug("Ignoring unsupported restriction {}", name);
         }
