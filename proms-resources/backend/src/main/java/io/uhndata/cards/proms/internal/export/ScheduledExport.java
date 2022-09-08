@@ -58,7 +58,7 @@ public class ScheduledExport
 
         final String schedule = "0 0 */" + 24 * newConfig.getConfig().frequency_in_days() + " ? * *";
         final ScheduleOptions options = this.scheduler.EXPR(schedule);
-        options.name(SCHEDULER_JOB_PREFIX + newConfig.getConfig());
+        options.name(SCHEDULER_JOB_PREFIX + newConfig.getConfig().name());
         options.canRunConcurrently(true);
 
         final Runnable importJob;
@@ -75,8 +75,8 @@ public class ScheduledExport
 
     public void configRemoved(final ExportConfig removedConfig)
     {
-        LOGGER.debug("Removed torch importer config {}", removedConfig.getConfig());
-        this.scheduler.unschedule(SCHEDULER_JOB_PREFIX + removedConfig.getConfig());
+        LOGGER.debug("Removed torch importer config {}", removedConfig.getConfig().name());
+        this.scheduler.unschedule(SCHEDULER_JOB_PREFIX + removedConfig.getConfig().name());
     }
 
     @Activate
