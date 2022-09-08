@@ -162,7 +162,7 @@ abstract class AbstractEmailNotification
                 tokenExpiryDate.add(
                     Calendar.DATE,
                     this.patientAccessConfiguration.getAllowedPostVisitCompletionTime() - 1
-                    );
+                );
                 atMidnight(tokenExpiryDate);
                 final String token = this.tokenManager.create(
                     "patient",
