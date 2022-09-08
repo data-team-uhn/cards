@@ -25,6 +25,7 @@ import java.util.List;
 
 import javax.servlet.Servlet;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -36,7 +37,8 @@ import org.osgi.service.component.annotations.Reference;
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(
         resourceTypes = { "cards/SubjectsHomepage" },
-        methods = { "GET" })
+        methods = { "GET" },
+        selectors = {"csvExport"})
 public class ExportEndpoint extends SlingSafeMethodsServlet
 {
 
@@ -62,9 +64,16 @@ public class ExportEndpoint extends SlingSafeMethodsServlet
             out.write("Only admin can perform this operation.");
             return;
         }
-
-        final ExportConfigDefinition config = this.configs.stream().map(ExportConfig::getConfig).findFirst()
-                .orElse(null);
+        final String configName = request.getParameter("config");
+        if (StringUtils.isBlank(configName)) {
+            response.setStatus(400);
+            out.write("Configuration name must be specified");
+            return;
+        }
+        final ExportConfigDefinition config = this.configs.stream()
+                .filter(c -> configName.equals(c.getConfig().name()))
+                .map(ExportConfig::getConfig)
+                .findFirst().orElse(null);
         final Runnable exportJob = new ExportTask(this.resolverFactory, config.frequency_in_days(),
                 config.questionnaires_to_be_exported(), config.save_path());
         final Thread thread = new Thread(exportJob);
