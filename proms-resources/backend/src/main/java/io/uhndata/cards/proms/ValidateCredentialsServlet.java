@@ -60,7 +60,7 @@ import org.slf4j.LoggerFactory;
 import io.uhndata.cards.auth.token.TokenManager;
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
-import io.uhndata.cards.proms.api.PatientAuthConfigUtils;
+import io.uhndata.cards.proms.api.PatientAccessConfiguration;
 import io.uhndata.cards.subjects.api.SubjectTypeUtils;
 import io.uhndata.cards.subjects.api.SubjectUtils;
 
@@ -108,7 +108,7 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
     private TokenManager tokenManager;
 
     @Reference
-    private PatientAuthConfigUtils patientAuthConfigUtils;
+    private PatientAccessConfiguration patientAccessConfiguration;
 
     @Override
     public void doPost(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
@@ -153,7 +153,7 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
         Node patientInformationForm = findMatchingPatientInformation(request, session, rr);
         final Node patientSubject = this.formUtils.getSubject(patientInformationForm);
 
-        if (patientSubject == null || !this.patientAuthConfigUtils.isTokenlessAuthEnabled()) {
+        if (patientSubject == null || !this.patientAccessConfiguration.isTokenlessAuthEnabled()) {
             writeInvalidCredentialsError(response);
             return;
         }
@@ -212,7 +212,7 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
     {
         final Node visitSubject = session.getNodeByIdentifier(sessionSubjectIdentifier);
 
-        if (this.patientAuthConfigUtils.isPatientIdentificationRequired()) {
+        if (this.patientAccessConfiguration.isPatientIdentificationRequired()) {
             // Look for the patient's information in the repository
             final Node patientInformationQuestionniare = getPatientInformationQuestionnaire(session);
             final Node patientInformationForm = getPatientInformationForm(visitSubject,

@@ -30,7 +30,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
-import io.uhndata.cards.proms.api.PatientAuthConfigUtils;
+import io.uhndata.cards.proms.api.PatientAccessConfiguration;
 import io.uhndata.cards.spi.AbstractNodeUtils;
 
 /**
@@ -39,7 +39,7 @@ import io.uhndata.cards.spi.AbstractNodeUtils;
  * @version $Id$
  */
 @Component
-public class PatientAuthConfigUtilsImpl extends AbstractNodeUtils implements PatientAuthConfigUtils
+public class PatientAccessConfigurationImpl extends AbstractNodeUtils implements PatientAccessConfiguration
 {
     /** The location of the configuration node for patient auth. */
     private static final String CONFIG_NODE = "/Proms/PatientIdentification";

@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.auth.token.TokenManager;
 import io.uhndata.cards.emailnotifications.EmailUtils;
-import io.uhndata.cards.proms.api.PatientAuthConfigUtils;
+import io.uhndata.cards.proms.api.PatientAccessConfiguration;
 import jakarta.mail.MessagingException;
 
 abstract class AbstractEmailNotification
@@ -55,16 +55,16 @@ abstract class AbstractEmailNotification
 
     private final MailService mailService;
 
-    private final PatientAuthConfigUtils patientAuthConfigUtils;
+    private final PatientAccessConfiguration patientAccessConfiguration;
 
     AbstractEmailNotification(final ResourceResolverFactory resolverFactory,
         final TokenManager tokenManager, final MailService mailService,
-        final PatientAuthConfigUtils patientAuthConfigUtils)
+        final PatientAccessConfiguration patientAccessConfiguration)
     {
         this.resolverFactory = resolverFactory;
         this.tokenManager = tokenManager;
         this.mailService = mailService;
-        this.patientAuthConfigUtils = patientAuthConfigUtils;
+        this.patientAccessConfiguration = patientAccessConfiguration;
 
     }
 
@@ -159,7 +159,10 @@ abstract class AbstractEmailNotification
                 String patientFullName = AppointmentUtils.getPatientFullName(resolver, patientSubject);
                 Calendar tokenExpiryDate = AppointmentUtils.parseDate(appointmentDate.getValueMap().get("value", ""));
                 // Note the tokenExpiry-1, since atMidnight will go to the next day
-                tokenExpiryDate.add(Calendar.DATE, this.patientAuthConfigUtils.getAllowedPostVisitCompletionTime() - 1);
+                tokenExpiryDate.add(
+                    Calendar.DATE,
+                    this.patientAccessConfiguration.getAllowedPostVisitCompletionTime() - 1
+                    );
                 atMidnight(tokenExpiryDate);
                 final String token = this.tokenManager.create(
                     "patient",

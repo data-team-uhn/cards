@@ -23,7 +23,7 @@ package io.uhndata.cards.proms.api;
  *
  * @version $Id$
  */
-public interface PatientAuthConfigUtils
+public interface PatientAccessConfiguration
 {
     /**
      * Check if tokenless authentication is enabled.
