@@ -93,7 +93,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function QuestionnaireSet(props) {
-  const { subject, username, displayText, contentOffset } = props;
+  const { subject, username, displayText, contentOffset, expiryOffset } = props;
 
   // Identifier of the questionnaire set used for the visit
   const [ id, setId ] = useState();
@@ -126,8 +126,6 @@ function QuestionnaireSet(props) {
   const [ isSubmitted, setSubmitted ] = useState(false);
   // Has everything been filled out?
   const [ isComplete, setComplete ] = useState();
-  // When do tokens generally expire?
-  const [ expiryOffset, setExpiryOffset ] = useState();
 
   // Step -1: haven't started yet, welcome screen
   // Step i = 0 ... # of questionnaires-1 : filling out questionnaire #i
@@ -471,16 +469,6 @@ function QuestionnaireSet(props) {
     return DateQuestionUtilities.toPrecision(DateQuestionUtilities.stripTimeZone(dateAnswer));
   }
 
-  function fetchVisitExpiry() {
-    // Memoize expiryOffset so we don't poll it more often than necessary
-    return fetch("/Proms/PatientIdentification.json")
-      .then((response) =>
-        response.ok ? response.json() : Promise.resolve({tokenLifetime: 0}) // At midnight the day-of by default
-      ).then((json) => {
-        setExpiryOffset(json.tokenLifetime);
-      });
-  }
-
   const appointmentDate = () => {
     let date = getVisitDate();
     return !date?.isValid ? "" : date.toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY);
@@ -514,11 +502,6 @@ function QuestionnaireSet(props) {
     let result = "";
     let date = getVisitDate();
     if (date?.isValid) {
-      // If the visit date could be retrieved, this is an emailed token and will expire a configured number of days after the visit day
-      if (typeof(expiryOffset) == "undefined") {
-        fetchVisitExpiry();
-        return "";
-      }
       // Compute the moment the token expired: the configured number of days after the visit, at midnight
       date = date.plus({days: expiryOffset}).endOf('day');
 

@@ -19,40 +19,19 @@
 package io.uhndata.cards.proms.api;
 
 /**
- * Basic utilities for grabbing configuration details from the patient identification node.
+ * Configuration for how the patient can access the patient-facing UI.
  *
  * @version $Id$
  */
 public interface PatientAuthConfigUtils
 {
-    /** The location of the configuration node for patient auth. */
-    String CONFIG_NODE = "/Proms/PatientIdentification";
-
-    /** Property on config node for whether or not tokenless auth is enabled. */
-    String TOKENLESS_AUTH_ENABLED_PROP = "enableTokenlessAuth";
-
-    /** Property on config node for whether or not patient identification is required. */
-    String PATIENT_IDENTIFICATION_REQUIRED_PROP = "requirePIIAuth";
-
-    /** Property on config node for the number of days a token is valid for. */
-    String TOKEN_LIFETIME_PROP = "tokenLifetime";
-
-    /** Whether or not tokenless auth is enabled by default (used in case of errors). */
-    Boolean TOKENLESS_AUTH_ENABLED_DEFAULT = false;
-
-    /** Whether or not patient identification is required by default (used in case of errors). */
-    Boolean PATIENT_IDENTIFICATION_REQUIRED_DEFAULT = true;
-
-    /** The number of days a token is valid for by default (used in case of errors). */
-    int TOKEN_LIFETIME_DEFAULT = 0;
-
     /**
      * Check if tokenless authentication is enabled.
      *
      * @return True if tokenless authentication is enabled, {@code false} if the configuration could not be found or
      *         it is disabled
      */
-    boolean tokenlessAuthEnabled();
+    boolean isTokenlessAuthEnabled();
 
     /**
      * Check if patient self-identification is required.
@@ -60,12 +39,14 @@ public interface PatientAuthConfigUtils
      * @return True if patient identification is required or if the configuration could not be found,
      *         {@code false} otherwise
      */
-    boolean patientIdentificationRequired();
+    boolean isPatientIdentificationRequired();
 
     /**
-     * Obtain the amount of time after an appointment ends that tokens to questionnaires should be valid for.
+     * Get the configured amount of time, in days, after an appointment ends that the patient can still fill in the
+     * visit surveys. {@code -1} means the patient can fill in the forms until the midnight right before the visit,
+     * {@code 0} means until the midnight right after the visit, {@code 7} means until one week after the visit.
      *
-     * @return The amount of time after an appointment ends that tokens to questionnaires should be valid for
+     * @return A number of days
      */
-    int tokenLifetime();
+    int getAllowedPostVisitCompletionTime();
 }

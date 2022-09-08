@@ -65,7 +65,7 @@ function PromsLandingPage(props) {
   const USER_TYPE_PARAM = "usertype";
   const USER_TYPE_HCP = "hcp";
   const CONFIG = "/Proms/PatientIdentification.json";
-  const ENABLED_PROP = "enableTokenlessAuth";
+  const ENABLED_PROP = "tokenlessAuthEnabled";
 
   useEffect(() => {
     let userType = (new URLSearchParams(window.location.search || ""))?.get(USER_TYPE_PARAM);

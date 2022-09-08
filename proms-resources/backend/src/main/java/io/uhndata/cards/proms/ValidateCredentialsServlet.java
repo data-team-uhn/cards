@@ -86,13 +86,6 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
 
     private static final String VALUE = "value";
 
-    /** The following parameters are used to grab patient identification configuration for validation bypass. */
-    private static final String CONFIG_NODE = "/Proms/PatientIdentification";
-
-    private static final String TOKENLESS_AUTH_ENABLED_PROP = "enableTokenlessAuth";
-
-    private static final String PATIENT_IDENTIFICATION_ENABLED_PROP = "requirePIIAuth";
-
     /** The name of the request parameter that may hold a login token. */
     private static final String TOKEN_REQUEST_PARAMETER = "auth_token";
 
@@ -157,11 +150,10 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
         final SlingHttpServletResponse response, final Session session, final ResourceResolver rr)
         throws IOException, RepositoryException
     {
-        // TODO: Check to see if patient authentication is enabled in the first place
         Node patientInformationForm = findMatchingPatientInformation(request, session, rr);
         final Node patientSubject = this.formUtils.getSubject(patientInformationForm);
 
-        if (patientSubject == null || !this.patientAuthConfigUtils.tokenlessAuthEnabled()) {
+        if (patientSubject == null || !this.patientAuthConfigUtils.isTokenlessAuthEnabled()) {
             writeInvalidCredentialsError(response);
             return;
         }
@@ -172,19 +164,19 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
             Node visitSubject = this.formUtils.getSubject(validVisitForms.get(0));
             String visitSubjectPath = visitSubject.getPath();
 
-            generateAndApplyToken(request, session, response, "guest-patient", visitSubjectPath);
+            generateAndApplyToken(request, response, "guest-patient", visitSubjectPath);
             writeSuccess(response, visitSubjectPath, visitSubject, session, false);
         } else {
             // Patient has zero or multiple possible visits: Send back to the client to continue
             Node visitQuestionnaire = getVisitInformationQuestionnaire(session);
             Node visitLocationQuestion = this.questionnaireUtils.getQuestion(visitQuestionnaire, "location");
 
-            generateAndApplyToken(request, session, response, "tou-patient", patientSubject.getPath());
+            generateAndApplyToken(request, response, "tou-patient", patientSubject.getPath());
             writeVisitSelection(response, validVisitForms, visitLocationQuestion);
         }
     }
 
-    private void generateAndApplyToken(final SlingHttpServletRequest request, final Session session,
+    private void generateAndApplyToken(final SlingHttpServletRequest request,
         final SlingHttpServletResponse response, String tokenUser, String subjectPath)
     {
         // Generate token
@@ -220,7 +212,7 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
     {
         final Node visitSubject = session.getNodeByIdentifier(sessionSubjectIdentifier);
 
-        if (this.patientAuthConfigUtils.patientIdentificationRequired()) {
+        if (this.patientAuthConfigUtils.isPatientIdentificationRequired()) {
             // Look for the patient's information in the repository
             final Node patientInformationQuestionniare = getPatientInformationQuestionnaire(session);
             final Node patientInformationForm = getPatientInformationForm(visitSubject,

@@ -48,11 +48,6 @@ abstract class AbstractEmailNotification
 
     private static final String CLINIC_SLING_PATH = "/Proms.html";
 
-    /** The following parameters are used to grab token lifetime configuration. */
-    private static final String CONFIG_NODE = "/Proms/PatientIdentification";
-
-    private static final String TOKEN_LIFETIME_PROP = "tokenLifetime";
-
     /** Provides access to resources. */
     protected final ResourceResolverFactory resolverFactory;
 
@@ -164,7 +159,7 @@ abstract class AbstractEmailNotification
                 String patientFullName = AppointmentUtils.getPatientFullName(resolver, patientSubject);
                 Calendar tokenExpiryDate = AppointmentUtils.parseDate(appointmentDate.getValueMap().get("value", ""));
                 // Note the tokenExpiry-1, since atMidnight will go to the next day
-                tokenExpiryDate.add(Calendar.DATE, this.patientAuthConfigUtils.tokenLifetime() - 1);
+                tokenExpiryDate.add(Calendar.DATE, this.patientAuthConfigUtils.getAllowedPostVisitCompletionTime() - 1);
                 atMidnight(tokenExpiryDate);
                 final String token = this.tokenManager.create(
                     "patient",

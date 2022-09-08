@@ -20,17 +20,17 @@
 <node>
     <name>PatientIdentification</name>
     <property>
-        <name>enableTokenlessAuth</name>
+        <name>tokenlessAuthEnabled</name>
         <value>True</value>
         <type>Boolean</type>
     </property>
     <property>
-        <name>requirePIIAuth</name>
+        <name>PIIAuthRequired</name>
         <value>True</value>
         <type>Boolean</type>
     </property>
     <property>
-        <name>tokenLifetime</name>
+        <name>allowedPostVisitCompletionTime</name>
         <value>0</value>
         <type>Long</type>
     </property>

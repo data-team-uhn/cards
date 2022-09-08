@@ -41,6 +41,27 @@ import io.uhndata.cards.spi.AbstractNodeUtils;
 @Component
 public class PatientAuthConfigUtilsImpl extends AbstractNodeUtils implements PatientAuthConfigUtils
 {
+    /** The location of the configuration node for patient auth. */
+    private static final String CONFIG_NODE = "/Proms/PatientIdentification";
+
+    /** Property on config node for whether or not tokenless auth is enabled. */
+    private static final String TOKENLESS_AUTH_ENABLED_PROP = "tokenlessAuthEnabled";
+
+    /** Property on config node for whether or not patient identification is required. */
+    private static final String PATIENT_IDENTIFICATION_REQUIRED_PROP = "PIIAuthRequired";
+
+    /** Property on config node for the number of days a token is valid for. */
+    private static final String TOKEN_LIFETIME_PROP = "allowedPostVisitCompletionTime";
+
+    /** Whether or not tokenless auth is enabled by default (used in case of errors). */
+    private static final Boolean TOKENLESS_AUTH_ENABLED_DEFAULT = false;
+
+    /** Whether or not patient identification is required by default (used in case of errors). */
+    private static final Boolean PATIENT_IDENTIFICATION_REQUIRED_DEFAULT = true;
+
+    /** The number of days a token is valid for by default (used in case of errors). */
+    private static final int TOKEN_LIFETIME_DEFAULT = 0;
+
     @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,
         policyOption = ReferencePolicyOption.GREEDY)
     private ResourceResolverFactory rrf;
@@ -64,7 +85,7 @@ public class PatientAuthConfigUtilsImpl extends AbstractNodeUtils implements Pat
     }
 
     @Override
-    public boolean tokenlessAuthEnabled()
+    public boolean isTokenlessAuthEnabled()
     {
         try
         {
@@ -76,7 +97,7 @@ public class PatientAuthConfigUtilsImpl extends AbstractNodeUtils implements Pat
     }
 
     @Override
-    public boolean patientIdentificationRequired()
+    public boolean isPatientIdentificationRequired()
     {
         try
         {
@@ -88,7 +109,7 @@ public class PatientAuthConfigUtilsImpl extends AbstractNodeUtils implements Pat
     }
 
     @Override
-    public int tokenLifetime()
+    public int getAllowedPostVisitCompletionTime()
     {
         try
         {

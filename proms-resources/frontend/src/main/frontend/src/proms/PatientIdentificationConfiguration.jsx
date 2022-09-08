@@ -33,9 +33,9 @@ import AdminConfigScreen from "../adminDashboard/AdminConfigScreen.jsx";
 
 export const PATIENT_IDENTIFICATION_PATH = "/Proms/PatientIdentification";
 export const DEFAULT_PATIENT_ID_CONFIG = {
-    enableTokenlessAuth: false,
-    requirePIIAuth: false,
-    tokenLifetime: "0"
+    tokenlessAuthEnabled: false,
+    PIIAuthRequired: false,
+    allowedPostVisitCompletionTime: "0"
 };
 
 const useStyles = makeStyles(theme => ({
@@ -56,9 +56,9 @@ function PatientIdentificationConfiguration() {
   const [ hasChanges, setHasChanges ] = useState(false);
 
   const labels = {
-    enableTokenlessAuth: "Patients can answer surveys without a personalized link",
-    requirePIIAuth: "Patients must confirm their identity by providing their date of birth and either MRN or HCN",
-    tokenLifetime: "The authentication token is valid after the associated event for:"
+    tokenlessAuthEnabled: "Patients can answer surveys without a personalized link",
+    PIIAuthRequired: "Patients must confirm their identity by providing their date of birth and either MRN or HCN",
+    allowedPostVisitCompletionTime: "Patients can fill out forms after their associated appointment for:"
   };
 
   let buildConfigData = (formData) => {
@@ -114,9 +114,9 @@ function PatientIdentificationConfiguration() {
           onConfigSaved={() => setHasChanges(false)}
           >
           <List>
-            { renderConfigCheckbox("enableTokenlessAuth") }
-            { renderConfigCheckbox("requirePIIAuth", patientIdentification?.enableTokenlessAuth) }
-            { renderConfigInput("tokenLifetime", "days") }
+            { renderConfigCheckbox("tokenlessAuthEnabled") }
+            { renderConfigCheckbox("PIIAuthRequired", patientIdentification?.tokenlessAuthEnabled) }
+            { renderConfigInput("allowedPostVisitCompletionTime", "days") }
           </List>
       </AdminConfigScreen>
   );

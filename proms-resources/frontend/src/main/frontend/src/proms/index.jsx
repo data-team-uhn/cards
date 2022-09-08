@@ -30,8 +30,9 @@ import ErrorPage from "../components/ErrorPage.jsx";
 import { DEFAULT_INSTRUCTIONS, SURVEY_INSTRUCTIONS_PATH } from "./SurveyInstructionsConfiguration.jsx"
 
 const CONFIG = "/Proms/PatientIdentification.json";
-const TOKENLESS_AUTH_ENABLED_PROP = "enableTokenlessAuth";
+const TOKENLESS_AUTH_ENABLED_PROP = "tokenlessAuthEnabled";
 const AUTH_TOKEN_PARAM = "auth_token";
+const EXPIRY_OFFSET_PARAM = "allowedPostVisitCompletionTime";
 
 function PromsHomepage (props) {
   // Current user and associated subject
@@ -40,6 +41,7 @@ function PromsHomepage (props) {
   // Patient Survey UI texts from Patient Portal Survey Instructions
   const [ surveyInstructions, setSurveyInstructions ] = useState();
   const [ unableToProceed, setUnableToProceed ] = useState();
+  const [ expiryOffset, setExpiryOffset ] = useState();
 
   // Fetch saved settings for Patient Portal Survey Instructions
   useEffect(() => {
@@ -58,6 +60,8 @@ function PromsHomepage (props) {
     fetch(CONFIG)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
+        setExpiryOffset(json[EXPIRY_OFFSET_PARAM]);
+
         let auth_token = new URLSearchParams(window.location.search).get(AUTH_TOKEN_PARAM);
         if (!(json[TOKENLESS_AUTH_ENABLED_PROP] || auth_token)) {
           // The user cannot continue without an authentication token
@@ -100,7 +104,7 @@ function PromsHomepage (props) {
   }
 
   return (<>
-    <QuestionnaireSet subject={subject} username={username} displayText={displayText}/>
+    <QuestionnaireSet subject={subject} username={username} displayText={displayText} expiryOffset={expiryOffset}/>
     <PromsFooter />
   </>);
 }
