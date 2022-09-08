@@ -78,7 +78,7 @@ installation_token = installation_token_resp.json()['token']
 try:
 	for system_file_path in os_file_management.OS_FILE_SET[THIS_DISTRO]:
 		system_file_name = os.path.basename(system_file_path)
-		github_path = os.path.join(args.deployment_hostname, 'vm', system_file_name)
+		github_path = os.path.join('hosts', args.deployment_hostname, 'vm', system_file_name)
 		updateFile(github_path, system_file_path, installation_token)
 except KeyError:
 	print("Error: Unable to handle this Linux distribution.")
