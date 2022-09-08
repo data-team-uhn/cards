@@ -31,14 +31,17 @@ public @interface ExportConfigDefinition
     /** The local path where you want to save file with exported surveys. */
     String SAVE_PATH = "";
 
-    @AttributeDefinition(name = "Frequency in days", description = "Count of days how often should the task be invoked")
+    @AttributeDefinition(name = "Name", description = "Configuration name")
+    String name();
+
+    @AttributeDefinition(name = "Frequency in days", description = "Time interval (days) between task invocations")
     int frequency_in_days() default FREQUENCY_IN_DAYS;
 
-    @AttributeDefinition(name = "Questionnaires to be export",
+    @AttributeDefinition(name = "Questionnaires to be exported",
             description = "List of questionnaires specified to be exported periodically")
     String[] questionnaires_to_be_exported();
 
     @AttributeDefinition(name = "Save path",
-            description = "The local path where it is specified to save file with exported surveys")
+            description = "The local path to the directory where exported survey CSV files are to be saved")
     String save_path() default SAVE_PATH;
 }
