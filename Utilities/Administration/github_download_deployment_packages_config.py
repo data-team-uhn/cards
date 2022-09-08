@@ -121,6 +121,6 @@ os.mkdir(os.path.join(args.download_dir, args.deployment_hostname))
 os.mkdir(os.path.join(args.download_dir, args.deployment_hostname, 'vm'))
 
 # Use the installation_token to download everything in the repository under the args.deployment_hostname directory
-for filename in listDirectory(args.deployment_hostname + '/vm', installation_token):
+for filename in listDirectory('hosts' + args.deployment_hostname + '/vm', installation_token):
 	if isValidFilename(filename):
-		downloadFile(args.deployment_hostname + '/vm/' + filename, os.path.join(args.download_dir, args.deployment_hostname, 'vm', filename), installation_token)
+		downloadFile('hosts' + args.deployment_hostname + '/vm/' + filename, os.path.join(args.download_dir, args.deployment_hostname, 'vm', filename), installation_token)
