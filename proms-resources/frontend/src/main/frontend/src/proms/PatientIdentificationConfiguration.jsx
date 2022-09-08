@@ -58,7 +58,7 @@ function PatientIdentificationConfiguration() {
   const labels = {
     tokenlessAuthEnabled: "Patients can answer surveys without a personalized link",
     PIIAuthRequired: "Patients must confirm their identity by providing their date of birth and either MRN or HCN",
-    allowedPostVisitCompletionTime: "Patients can fill out forms after their associated appointment for:"
+    allowedPostVisitCompletionTime: "Patients can fill out surveys after the associated event for:"
   };
 
   let buildConfigData = (formData) => {
@@ -76,7 +76,7 @@ function PatientIdentificationConfiguration() {
         <FormControlLabel control={
           <Checkbox
             name={key}
-            checked={patientIdentification?.[key] || DEFAULT_PATIENT_ID_CONFIG[key]}
+            checked={valueOverride || patientIdentification?.[key] || DEFAULT_PATIENT_ID_CONFIG[key]}
             disabled={valueOverride}
             onChange={event => setPatientIdentification({...patientIdentification, [key]: valueOverride || event.target.checked})}
           />}
