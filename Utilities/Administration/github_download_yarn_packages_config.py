@@ -127,7 +127,7 @@ installation_token_resp = requests.post("https://api.github.com/app/installation
 installation_token = installation_token_resp.json()['token']
 
 # Get the Docker image hash ID that is being used in this deployment
-cards_image_hash = readGitHubTextFile(args.deployment_hostname + '/docker/cards', installation_token).rstrip()
+cards_image_hash = readGitHubTextFile('hosts/' + args.deployment_hostname + '/docker/cards', installation_token).rstrip()
 
 cards_image_hash_type = cards_image_hash.split(':')[0]
 cards_image_hash_value = cards_image_hash.split(':')[1]
