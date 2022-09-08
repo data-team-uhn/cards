@@ -32,7 +32,7 @@ import { DEFAULT_INSTRUCTIONS, SURVEY_INSTRUCTIONS_PATH } from "./SurveyInstruct
 const CONFIG = "/Proms/PatientIdentification.json";
 const TOKENLESS_AUTH_ENABLED_PROP = "tokenlessAuthEnabled";
 const AUTH_TOKEN_PARAM = "auth_token";
-const EXPIRY_OFFSET_PARAM = "allowedPostVisitCompletionTime";
+const ALLOWED_POST_VISIT_COMPLETION_TIME_PROP = "allowedPostVisitCompletionTime";
 
 function PromsHomepage (props) {
   // Current user and associated subject
@@ -41,7 +41,7 @@ function PromsHomepage (props) {
   // Patient Survey UI texts from Patient Portal Survey Instructions
   const [ surveyInstructions, setSurveyInstructions ] = useState();
   const [ unableToProceed, setUnableToProceed ] = useState();
-  const [ expiryOffset, setExpiryOffset ] = useState();
+  const [ allowedPostVisitCompletionTime, setAllowedPostVisitCompletionTime ] = useState();
 
   // Fetch saved settings for Patient Portal Survey Instructions
   useEffect(() => {
@@ -60,7 +60,7 @@ function PromsHomepage (props) {
     fetch(CONFIG)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
-        setExpiryOffset(json[EXPIRY_OFFSET_PARAM]);
+        setAllowedPostVisitCompletionTime(json[ALLOWED_POST_VISIT_COMPLETION_TIME_PROP]);
 
         let auth_token = new URLSearchParams(window.location.search).get(AUTH_TOKEN_PARAM);
         if (!(json[TOKENLESS_AUTH_ENABLED_PROP] || auth_token)) {
@@ -104,7 +104,7 @@ function PromsHomepage (props) {
   }
 
   return (<>
-    <QuestionnaireSet subject={subject} username={username} displayText={displayText} expiryOffset={expiryOffset}/>
+    <QuestionnaireSet subject={subject} username={username} displayText={displayText} allowedPostVisitCompletionTime={allowedPostVisitCompletionTime}/>
     <PromsFooter />
   </>);
 }
