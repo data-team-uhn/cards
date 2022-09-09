@@ -24,7 +24,7 @@ import argparse
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument('--package_emoji', help='Software package icon [default: :package:]', default=':package:')
-argparser.add_argument('--truncate_results', help='', type=int, default=-1)
+argparser.add_argument('--truncate_results', help='Truncate the list of vulnerabilities to this length', type=int, default=-1)
 args = argparser.parse_args()
 
 SOFTWARE_PACKAGE_EMOJI = args.package_emoji
