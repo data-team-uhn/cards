@@ -25,6 +25,7 @@ import argparse
 argparser = argparse.ArgumentParser()
 argparser.add_argument('--package_emoji', help='Software package icon [default: :package:]', default=':package:')
 argparser.add_argument('--truncate_results', help='Truncate the list of vulnerabilities to this length', type=int, default=-1)
+argparser.add_argument('--markdown_report_file', help='Store the Markdown formatted list of all detected vulnerabilities (in order of decreasing severity) to this file')
 args = argparser.parse_args()
 
 SOFTWARE_PACKAGE_EMOJI = args.package_emoji
@@ -55,15 +56,23 @@ for vulnerabilityIndex in range(0, len(detected_vulnerabilities)):
 	else:
 		continue
 
-	selected_message_list.append(SOFTWARE_PACKAGE_EMOJI + "    *{}* - `{}` is affected by _{}_    :warning:".format(severity, pkgName, vulnerabilityID))
+	slack_message = SOFTWARE_PACKAGE_EMOJI + "    *{}* - `{}` is affected by _{}_    :warning:".format(severity, pkgName, vulnerabilityID)
+	md_report_message = SOFTWARE_PACKAGE_EMOJI + "    **{}** - `{}` is affected by _{}_    :warning:".format(severity, pkgName, vulnerabilityID)
+	selected_message_list.append((slack_message, md_report_message))
 
-slackMessages = criticalServerity + highSeverity + mediumSeverity + lowSeverity
+ordered_vulnerabilities = criticalServerity + highSeverity + mediumSeverity + lowSeverity
+slackMessages = [v[0] for v in ordered_vulnerabilities]
+mdReportMessages = [v[1] for v in ordered_vulnerabilities]
 
 if args.truncate_results >= 0:
 	total_slack_messages = len(slackMessages)
 	slackMessages = slackMessages[0:args.truncate_results]
 	if total_slack_messages > args.truncate_results:
 		slackMessages.append("    ... and {} more".format(total_slack_messages - args.truncate_results))
+
+if args.markdown_report_file:
+	with open(args.markdown_report_file, 'w') as f_markdown_report:
+		f_markdown_report.write('\n\n'.join(mdReportMessages))
 
 slack_block = {}
 slack_block['type'] = 'section'
