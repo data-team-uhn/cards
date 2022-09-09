@@ -102,7 +102,7 @@ public class PatientAccessConfigurationImpl extends AbstractNodeUtils implements
         try
         {
             Property required = getConfig(PATIENT_IDENTIFICATION_REQUIRED_PROP);
-            return (!isTokenlessAuthEnabled())
+            return isTokenlessAuthEnabled()
                 || (required == null ? PATIENT_IDENTIFICATION_REQUIRED_DEFAULT : required.getBoolean());
         } catch (RepositoryException e) {
             return PATIENT_IDENTIFICATION_REQUIRED_DEFAULT;
