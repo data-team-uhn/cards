@@ -24,20 +24,46 @@ import argparse
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument('--package_emoji', help='Software package icon [default: :package:]', default=':package:')
+argparser.add_argument('--truncate_results', help='', type=int, default=-1)
 args = argparser.parse_args()
 
 SOFTWARE_PACKAGE_EMOJI = args.package_emoji
 
 trivy_report = json.load(sys.stdin)
 detected_vulnerabilities = trivy_report['Results'][0]['Vulnerabilities']
-slackMessages = []
+
+criticalServerity = []
+highSeverity = []
+mediumSeverity = []
+lowSeverity = []
 
 for vulnerabilityIndex in range(0, len(detected_vulnerabilities)):
 	pkgName = detected_vulnerabilities[vulnerabilityIndex]['PkgName']
 	installedVersion = detected_vulnerabilities[vulnerabilityIndex]['InstalledVersion']
 	vulnerabilityID = detected_vulnerabilities[vulnerabilityIndex]['VulnerabilityID']
 	severity = detected_vulnerabilities[vulnerabilityIndex]['Severity']
-	slackMessages.append(SOFTWARE_PACKAGE_EMOJI + "    *{}* - `{}` is affected by _{}_    :warning:".format(severity, pkgName, vulnerabilityID))
+
+	# Sort vulnerabilities in order of severity: CRITICAL, HIGH, MEDIUM, LOW
+	if severity == "CRITICAL":
+		selected_message_list = criticalServerity
+	elif severity == "HIGH":
+		selected_message_list = highSeverity
+	elif severity == "MEDIUM":
+		selected_message_list = mediumSeverity
+	elif severity == "LOW":
+		selected_message_list = lowSeverity
+	else:
+		continue
+
+	selected_message_list.append(SOFTWARE_PACKAGE_EMOJI + "    *{}* - `{}` is affected by _{}_    :warning:".format(severity, pkgName, vulnerabilityID))
+
+slackMessages = criticalServerity + highSeverity + mediumSeverity + lowSeverity
+
+if args.truncate_results >= 0:
+	total_slack_messages = len(slackMessages)
+	slackMessages = slackMessages[0:args.truncate_results]
+	if total_slack_messages > args.truncate_results:
+		slackMessages.append("    ... and {} more".format(total_slack_messages - args.truncate_results))
 
 slack_block = {}
 slack_block['type'] = 'section'
