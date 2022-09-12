@@ -24,10 +24,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.json.JsonValue;
+import javax.json.JsonValue.ValueType;
 
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
@@ -51,8 +56,11 @@ public class ExportTask implements Runnable
 
     /** Provides access to resources. */
     private final ResourceResolverFactory resolverFactory;
+
     private final String exportRunMode;
+
     private final LocalDate exportLowerBound;
+
     private final LocalDate exportUpperBound;
 
     ExportTask(final ResourceResolverFactory resolverFactory, final String exportRunMode)
@@ -93,14 +101,12 @@ public class ExportTask implements Runnable
             ? upper.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
             : null;
 
-        Set<SubjectIdentifier> changedSubjects = (upper != null)
-            ? this.getChangedSubjectsBounded(requestDateStringLower, requestDateStringUpper)
-            : this.getChangedSubjects(requestDateStringLower);
+        Set<SubjectIdentifier> changedSubjects =
+            this.getChangedSubjects(requestDateStringLower, requestDateStringUpper);
 
         for (SubjectIdentifier identifier : changedSubjects) {
-            SubjectContents subjectContents = (upper != null)
-                ? getSubjectContentsBounded(identifier.getPath(), requestDateStringLower, requestDateStringUpper)
-                : getSubjectContents(identifier.getPath(), requestDateStringLower);
+            SubjectContents subjectContents =
+                getSubjectContents(identifier.getPath(), requestDateStringLower, requestDateStringUpper);
             if (subjectContents != null) {
                 String filename = String.format(
                     "%s_formData_%s.json",
@@ -118,10 +124,10 @@ public class ExportTask implements Runnable
         String fileDateString = today.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         String requestDateString = today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-        Set<SubjectIdentifier> changedSubjects = this.getChangedSubjects(requestDateString);
+        Set<SubjectIdentifier> changedSubjects = this.getChangedSubjects(requestDateString, null);
 
         for (SubjectIdentifier identifier : changedSubjects) {
-            SubjectContents subjectContents = getSubjectContents(identifier.getPath(), requestDateString);
+            SubjectContents subjectContents = getSubjectContents(identifier.getPath(), requestDateString, null);
             if (subjectContents != null) {
                 String filename = String.format(
                     "%s_formData_%s.json",
@@ -188,13 +194,16 @@ public class ExportTask implements Runnable
 
     private static final class SubjectContents
     {
-        private String data;
+        private final String data;
 
-        private String url;
+        private final JsonObject summary;
 
-        SubjectContents(String data, String url)
+        private final String url;
+
+        SubjectContents(final String data, final JsonObject summary, final String url)
         {
             this.data = data;
+            this.summary = summary;
             this.url = url;
         }
 
@@ -203,38 +212,26 @@ public class ExportTask implements Runnable
             return this.data;
         }
 
+        public List<String> getSummary()
+        {
+            return this.summary.values().stream()
+                .filter(v -> v.getValueType() == ValueType.ARRAY)
+                .map(JsonValue::asJsonArray)
+                .flatMap(JsonArray::stream)
+                .filter(v -> v.getValueType() == ValueType.OBJECT)
+                .map(JsonValue::asJsonObject)
+                .filter(v -> v.containsKey("@path"))
+                .map(v -> v.getString("@path"))
+                .collect(Collectors.toList());
+        }
+
         public String getUrl()
         {
             return this.url;
         }
     }
 
-    private Set<SubjectIdentifier> getChangedSubjects(String requestDateString)
-    {
-        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
-            Set<SubjectIdentifier> subjects = new HashSet<>();
-            String query = String.format(
-                "SELECT subject.* FROM [lfs:Form] AS form INNER JOIN [lfs:Subject] AS subject"
-                    + " ON form.'subject'=subject.[jcr:uuid]"
-                    + " WHERE form.[jcr:lastModified] >= '%s' AND NOT form.[statusFlags] = 'INCOMPLETE'",
-                requestDateString
-            );
-
-            Iterator<Resource> results = resolver.findResources(query, "JCR-SQL2");
-            while (results.hasNext()) {
-                Resource subject = results.next();
-                String path = subject.getPath();
-                String participantId = subject.getValueMap().get("identifier", String.class);
-                subjects.add(new SubjectIdentifier(path, participantId));
-            }
-            return subjects;
-        } catch (LoginException e) {
-            LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
-        }
-        return Collections.emptySet();
-    }
-
-    private Set<SubjectIdentifier> getChangedSubjectsBounded(String requestDateStringLower,
+    private Set<SubjectIdentifier> getChangedSubjects(String requestDateStringLower,
         String requestDateStringUpper)
     {
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
@@ -243,10 +240,9 @@ public class ExportTask implements Runnable
                 "SELECT subject.* FROM [lfs:Form] AS form INNER JOIN [lfs:Subject] AS subject"
                     + " ON form.'subject'=subject.[jcr:uuid]"
                     + " WHERE form.[jcr:lastModified] >= '%s'"
-                    + " AND form.[jcr:lastModified] < '%s'"
+                    + (requestDateStringUpper != null ? " AND form.[jcr:lastModified] < '%s'" : "")
                     + " AND NOT form.[statusFlags] = 'INCOMPLETE'",
-                requestDateStringLower, requestDateStringUpper
-            );
+                requestDateStringLower, requestDateStringUpper);
 
             Iterator<Resource> results = resolver.findResources(query, "JCR-SQL2");
             while (results.hasNext()) {
@@ -262,28 +258,22 @@ public class ExportTask implements Runnable
         return Collections.emptySet();
     }
 
-    private SubjectContents getSubjectContents(String path, String requestDateString)
-    {
-        String subjectDataUrl = String.format("%s.data.deep.bare.-labels.-identify.relativeDates"
-            + ".dataFilter:modifiedAfter=%s.dataFilter:statusNot=INCOMPLETE", path, requestDateString);
-        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
-            Resource subjectData = resolver.resolve(subjectDataUrl);
-            return new SubjectContents(subjectData.adaptTo(JsonObject.class).toString(), subjectDataUrl);
-        } catch (LoginException e) {
-            LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
-            return null;
-        }
-    }
-
-    private SubjectContents getSubjectContentsBounded(String path, String requestDateStringLower,
+    private SubjectContents getSubjectContents(String path, String requestDateStringLower,
         String requestDateStringUpper)
     {
         String subjectDataUrl = String.format("%s.data.deep.bare.-labels.-identify.relativeDates"
-            + ".dataFilter:modifiedAfter=%s.dataFilter:modifiedBefore=%s.dataFilter:statusNot=INCOMPLETE",
+            + ".dataFilter:modifiedAfter=%s" + (requestDateStringUpper != null ? ".dataFilter:modifiedBefore=%s" : "")
+            + ".dataFilter:statusNot=INCOMPLETE",
+            path, requestDateStringLower, requestDateStringUpper);
+        String identifiedSubjectDataUrl = String.format("%s.data.identify.-properties.-dereference"
+            + ".dataFilter:modifiedAfter=%s" + (requestDateStringUpper != null ? ".dataFilter:modifiedBefore=%s" : "")
+            + ".dataFilter:statusNot=INCOMPLETE",
             path, requestDateStringLower, requestDateStringUpper);
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
             Resource subjectData = resolver.resolve(subjectDataUrl);
-            return new SubjectContents(subjectData.adaptTo(JsonObject.class).toString(), subjectDataUrl);
+            Resource identifiedSubjectData = resolver.resolve(identifiedSubjectDataUrl);
+            return new SubjectContents(subjectData.adaptTo(JsonObject.class).toString(),
+                identifiedSubjectData.adaptTo(JsonObject.class), subjectDataUrl);
         } catch (LoginException e) {
             LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
             return null;
@@ -307,6 +297,7 @@ public class ExportTask implements Runnable
             .build();
         try {
             s3.putObject(s3BucketName, filename, input.getData());
+            input.getSummary().forEach(form -> LOGGER.info("Exported {}", form));
             LOGGER.info("Exported {} to {}", input.getUrl(), filename);
         } catch (AmazonServiceException e) {
             LOGGER.error("Failed to perform the nightly export", e.getMessage(), e);
