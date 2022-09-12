@@ -19,6 +19,7 @@
 
 DEPLOYMENT_HOSTNAME=$1
 SLACK_MESSAGES_FILE=$2
+TRIVY_TO_SLACK_ARGS="${@:3}"
 
 # The following environment variables should be configured:
 # - GITHUB_API_PRIVATE_KEY
@@ -36,4 +37,4 @@ TAR_UUID="$(cat /proc/sys/kernel/random/uuid).tar"
 rm -rf $PACKAGE_CONF_DIR
 
 # Scan with Trivy and format the results to a Slack message
-docker run --rm -v $(realpath ~/trivy-cache):/root/.cache -v $(realpath $TAR_UUID):/image.tar aquasec/trivy image --security-checks vuln --ignore-unfixed --input /image.tar --format json | python3 trivy_to_slack.py > $SLACK_MESSAGES_FILE
+docker run --rm -v $(realpath ~/trivy-cache):/root/.cache -v $(realpath $TAR_UUID):/image.tar aquasec/trivy image --security-checks vuln --ignore-unfixed --input /image.tar --format json | python3 trivy_to_slack.py $TRIVY_TO_SLACK_ARGS > $SLACK_MESSAGES_FILE
