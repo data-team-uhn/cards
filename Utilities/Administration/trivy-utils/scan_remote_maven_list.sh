@@ -19,6 +19,7 @@
 
 DEPLOYMENT_HOSTNAME=$1
 SLACK_MESSAGES_FILE=$2
+TRIVY_TO_SLACK_ARGS="${@:3}"
 
 # The following environment variables should be configured:
 # - GITHUB_API_PRIVATE_KEY
@@ -33,7 +34,7 @@ python3 ../github_download_maven_packages_config.py --deployment_hostname $DEPLO
 # Run the scan and prepare the Slack report message
 python scan_maven_package_list.py \
 	--maven_package_list $PACKAGE_CONF_DIR/$DEPLOYMENT_HOSTNAME/docker/cards/maven.json \
-	--truncate_results 10 \
+	$TRIVY_TO_SLACK_ARGS \
 	> $SLACK_MESSAGES_FILE
 
 rm -rf $PACKAGE_CONF_DIR
