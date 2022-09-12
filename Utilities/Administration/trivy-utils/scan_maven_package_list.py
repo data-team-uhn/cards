@@ -27,6 +27,7 @@ argparser.add_argument('--maven_package_list', help='Path to the JSON file listi
 argparser.add_argument('--package_emoji', help='Software package icon [default: :java:]', default=':java:')
 argparser.add_argument('--verbose', help='Verbose logging', action='store_true')
 argparser.add_argument('--truncate_results', help='', type=int, default=-1)
+argparser.add_argument('--markdown_report_file', help='Store the Markdown formatted list of all detected vulnerabilities (in order of decreasing severity) to this file')
 args = argparser.parse_args()
 
 with open(args.maven_package_list, 'r') as f_json:
@@ -53,15 +54,23 @@ for mvnpkg in MAVEN_PACKAGE_LIST:
 			selected_message_list = lowSeverity
 		else:
 			continue
-		selected_message_list.append(args.package_emoji + "    *{}* - `{}:{}` is affected by _{}_    :warning:".format(vulnerability['Severity'], vulnerability['PkgName'], vulnerability['InstalledVersion'], vulnerability['VulnerabilityID']))
+		slack_message = args.package_emoji + "    *{}* - `{}:{}` is affected by _{}_    :warning:".format(vulnerability['Severity'], vulnerability['PkgName'], vulnerability['InstalledVersion'], vulnerability['VulnerabilityID'])
+		md_report_message = args.package_emoji + "    **{}** - `{}:{}` is affected by _{}_    :warning:".format(vulnerability['Severity'], vulnerability['PkgName'], vulnerability['InstalledVersion'], vulnerability['VulnerabilityID'])
+		selected_message_list.append((slack_message, md_report_message))
 
-slackMessages = criticalServerity + highSeverity + mediumSeverity + lowSeverity
+ordered_vulnerabilities = criticalServerity + highSeverity + mediumSeverity + lowSeverity
+slackMessages = [v[0] for v in ordered_vulnerabilities]
+mdReportMessages = [v[1] for v in ordered_vulnerabilities]
 
 if args.truncate_results >= 0:
 	total_slack_messages = len(slackMessages)
 	slackMessages = slackMessages[0:args.truncate_results]
 	if total_slack_messages > args.truncate_results:
 		slackMessages.append("    ... and {} more".format(total_slack_messages - args.truncate_results))
+
+if args.markdown_report_file:
+	with open(args.markdown_report_file, 'w') as f_markdown_report:
+		f_markdown_report.write('\n\n'.join(mdReportMessages))
 
 slack_block = {}
 slack_block['type'] = 'section'
