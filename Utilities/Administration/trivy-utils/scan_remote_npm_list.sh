@@ -19,6 +19,7 @@
 
 DEPLOYMENT_HOSTNAME=$1
 SLACK_MESSAGES_FILE=$2
+TRIVY_TO_SLACK_ARGS="${@:3}"
 
 # The following environment variables should be configured:
 # - GITHUB_API_PRIVATE_KEY
@@ -31,6 +32,6 @@ PACKAGE_CONF_DIR=$(mktemp -d -p .)
 python3 ../github_download_yarn_packages_config.py --deployment_hostname $DEPLOYMENT_HOSTNAME --download_dir $PACKAGE_CONF_DIR || exit -1
 
 # Scan with Trivy and format the results to a Slack message
-docker run --rm -v $(realpath ~/trivy-cache):/root/.cache -v $(realpath $PACKAGE_CONF_DIR)/$DEPLOYMENT_HOSTNAME/docker/cards/yarn.lock:/yarn.lock aquasec/trivy fs --security-checks vuln --ignore-unfixed /yarn.lock --format json | python3 trivy_to_slack.py --package_emoji :octocat: > $SLACK_MESSAGES_FILE
+docker run --rm -v $(realpath ~/trivy-cache):/root/.cache -v $(realpath $PACKAGE_CONF_DIR)/$DEPLOYMENT_HOSTNAME/docker/cards/yarn.lock:/yarn.lock aquasec/trivy fs --security-checks vuln --ignore-unfixed /yarn.lock --format json | python3 trivy_to_slack.py $TRIVY_TO_SLACK_ARGS > $SLACK_MESSAGES_FILE
 
 rm -rf $PACKAGE_CONF_DIR
