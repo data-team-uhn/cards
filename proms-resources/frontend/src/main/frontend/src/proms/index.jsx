@@ -29,12 +29,19 @@ import ErrorPage from "../components/ErrorPage.jsx";
 
 import { DEFAULT_INSTRUCTIONS, SURVEY_INSTRUCTIONS_PATH } from "./SurveyInstructionsConfiguration.jsx"
 
+const CONFIG = "/Proms/PatientIdentification.json";
+const TOKENLESS_AUTH_ENABLED_PROP = "tokenlessAuthEnabled";
+const AUTH_TOKEN_PARAM = "auth_token";
+const ALLOWED_POST_VISIT_COMPLETION_TIME_PROP = "allowedPostVisitCompletionTime";
+
 function PromsHomepage (props) {
   // Current user and associated subject
   const [ username, setUsername ] = useState("");
   const [ subject, setSubject ] = useState();
   // Patient Survey UI texts from Patient Portal Survey Instructions
   const [ surveyInstructions, setSurveyInstructions ] = useState();
+  const [ unableToProceed, setUnableToProceed ] = useState();
+  const [ allowedPostVisitCompletionTime, setAllowedPostVisitCompletionTime ] = useState();
 
   // Fetch saved settings for Patient Portal Survey Instructions
   useEffect(() => {
@@ -45,6 +52,21 @@ function PromsHomepage (props) {
       })
       .catch((response) => {
         console.error(`Loading the Patient Portal Survey Instructions failed with error code ${response.status}: ${response.statusText}`);
+      });
+  }, []);
+
+  // Fetch tokenless auth
+  useEffect(() => {
+    fetch(CONFIG)
+      .then((response) => response.ok ? response.json() : Promise.reject(response))
+      .then((json) => {
+        setAllowedPostVisitCompletionTime(json[ALLOWED_POST_VISIT_COMPLETION_TIME_PROP]);
+
+        let auth_token = new URLSearchParams(window.location.search).get(AUTH_TOKEN_PARAM);
+        if (!(json[TOKENLESS_AUTH_ENABLED_PROP] || auth_token)) {
+          // The user cannot continue without an authentication token
+          setUnableToProceed(true);
+        }
       });
   }, []);
 
@@ -61,6 +83,19 @@ function PromsHomepage (props) {
     setSubject(p?.subject);
   }
 
+  if (unableToProceed) {
+    let appName = document.querySelector('meta[name="title"]')?.content;
+    let message = (surveyInstructions.welcomeMessage)?.replaceAll("APP_NAME", appName) || '';
+    message = `${message}\n\n### To fill out surveys, please follow the personalized link that was emailed to you.`;
+    return (
+      <ErrorPage
+        sx={{maxWidth: 500, margin: "0 auto"}}
+        title=""
+        message={message}
+        messageColor="textPrimary"
+      />)
+  }
+
   if (!subject) {
     return (<>
       <PatientIdentification onSuccess={onPatientIdentified} displayText={displayText}/>
@@ -69,7 +104,7 @@ function PromsHomepage (props) {
   }
 
   return (<>
-    <QuestionnaireSet subject={subject} username={username} displayText={displayText}/>
+    <QuestionnaireSet subject={subject} username={username} displayText={displayText} allowedPostVisitCompletionTime={allowedPostVisitCompletionTime}/>
     <PromsFooter />
   </>);
 }

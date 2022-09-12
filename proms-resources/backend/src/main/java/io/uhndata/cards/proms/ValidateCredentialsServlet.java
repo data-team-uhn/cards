@@ -60,6 +60,7 @@ import org.slf4j.LoggerFactory;
 import io.uhndata.cards.auth.token.TokenManager;
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
+import io.uhndata.cards.proms.api.PatientAccessConfiguration;
 import io.uhndata.cards.subjects.api.SubjectTypeUtils;
 import io.uhndata.cards.subjects.api.SubjectUtils;
 
@@ -85,6 +86,9 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
 
     private static final String VALUE = "value";
 
+    /** The name of the request parameter that may hold a login token. */
+    private static final String TOKEN_REQUEST_PARAMETER = "auth_token";
+
     @Reference
     private ResourceResolverFactory resolverFactory;
 
@@ -103,6 +107,9 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
     @Reference
     private TokenManager tokenManager;
 
+    @Reference
+    private PatientAccessConfiguration patientAccessConfiguration;
+
     @Override
     public void doPost(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
         throws IOException
@@ -110,6 +117,7 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
         try (ResourceResolver rr = this.resolverFactory.getServiceResourceResolver(
             Map.of(ResourceResolverFactory.SUBSERVICE, "validateCredentials"))) {
             final Session session = rr.adaptTo(Session.class);
+
             // Check if this is a token-authenticated session
             String sessionSubjectIdentifier =
                 (String) this.resolverFactory.getThreadResourceResolver().getAttribute("cards:sessionSubject");
@@ -145,7 +153,7 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
         Node patientInformationForm = findMatchingPatientInformation(request, session, rr);
         final Node patientSubject = this.formUtils.getSubject(patientInformationForm);
 
-        if (patientSubject == null) {
+        if (patientSubject == null || !this.patientAccessConfiguration.isTokenlessAuthEnabled()) {
             writeInvalidCredentialsError(response);
             return;
         }
@@ -203,19 +211,21 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
         throws IOException, RepositoryException
     {
         final Node visitSubject = session.getNodeByIdentifier(sessionSubjectIdentifier);
-        // Look for the patient's information in the repository
-        final Node patientInformationQuestionniare = getPatientInformationQuestionnaire(session);
-        final Node patientInformationForm = getPatientInformationForm(visitSubject,
-            patientInformationQuestionniare, session);
-        if (patientInformationForm == null) {
-            LOGGER.warn("Patient Information not found for visit {}", visitSubject.getPath());
-            return;
-        }
 
-        if (!validatePatient(request, response, session,
-            patientInformationForm, patientInformationQuestionniare))
-        {
-            return;
+        if (this.patientAccessConfiguration.isPatientIdentificationRequired()) {
+            // Look for the patient's information in the repository
+            final Node patientInformationQuestionniare = getPatientInformationQuestionnaire(session);
+            final Node patientInformationForm = getPatientInformationForm(visitSubject,
+                patientInformationQuestionniare, session);
+            if (patientInformationForm == null) {
+                LOGGER.warn("Patient Information not found for visit {}", visitSubject.getPath());
+                return;
+            }
+
+            if (!validatePatient(request, response, session,
+                patientInformationForm, patientInformationQuestionniare)) {
+                return;
+            }
         }
 
         writeSuccess(response, sessionSubjectIdentifier, visitSubject, session, true);

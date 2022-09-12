@@ -145,16 +145,7 @@ function PatientIdentification(props) {
     return str?.toUpperCase().replaceAll(/[^A-Z0-9]*/g, "") || "";
   }
 
-  const identify = () => {
-    if (!dob || !mrn && !hc) {
-      return null;
-    }
-    let requestData = new FormData();
-    dob && requestData.append("date_of_birth", dob);
-    mrn && requestData.append("mrn", mrn);
-    hc && requestData.append("health_card", hc);
-    visit && requestData.append("visit", visit);
-
+  const sendFetch = (requestData, onError) => {
     fetch("/Proms.validateCredentials", {
       "method": "POST",
       "body": requestData
@@ -172,8 +163,31 @@ function PatientIdentification(props) {
         setShowTou(true);
       })
       .catch((error) => {
-        setError(error.statusText ? error.statusText : error);
+        onError(error);
       });
+  }
+
+  const checkBypass = () => {
+    // Check if we are given a token and can bypass patient identification
+    let authToken = window.location.search ? new URLSearchParams(window.location.search).get("auth_token") : "";
+    if (authToken) {
+      let requestData = new FormData();
+      requestData.append("auth_token", authToken);
+      sendFetch(requestData, () => {});
+    }
+  }
+
+  const identify = () => {
+    if (!dob || !mrn && !hc) {
+      return null;
+    }
+    let requestData = new FormData();
+    dob && requestData.append("date_of_birth", dob);
+    mrn && requestData.append("mrn", mrn);
+    hc && requestData.append("health_card", hc);
+    visit && requestData.append("visit", visit);
+
+    sendFetch(requestData, (error) => {setError(error.statusText ? error.statusText : error);});
   }
 
   // On submitting the patient login form, make a request to identify the patient
@@ -188,6 +202,11 @@ function PatientIdentification(props) {
     setVisit(null);
     identify();
   }
+
+  useEffect(() => {
+    // When we first load, check to see if the user is authenticated and the patient identification check is disabled
+    checkBypass();
+  }, []);
 
   useEffect(() => {
     if (!visit || !visitList) return;

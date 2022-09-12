@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.auth.token.TokenManager;
 import io.uhndata.cards.metrics.Metrics;
+import io.uhndata.cards.proms.api.PatientAccessConfiguration;
 
 @Designate(ocd = AppointmentEmailNotificationsFactory.Config.class, factory = true)
 @Component(configurationPolicy = ConfigurationPolicy.REQUIRE)
@@ -57,6 +58,10 @@ public final class AppointmentEmailNotificationsFactory
     /** The TokenManager for generating patient-access tokens. */
     @Reference
     private TokenManager tokenManager;
+
+    /** Grab details on patient authentication for token lifetime purposes. */
+    @Reference
+    private PatientAccessConfiguration patientAccessConfiguration;
 
     @ObjectClassDefinition(name = "Appointment email notification",
         description = "Send emails for past and future appointments")
@@ -106,7 +111,7 @@ public final class AppointmentEmailNotificationsFactory
 
         // Instantiate the Runnable
         final Runnable notificationsJob = new GeneralNotificationsTask(this.resolverFactory, this.tokenManager,
-            this.mailService, config.name(), config.clinicId(), config.emailSubject(),
+            this.mailService, this.patientAccessConfiguration, config.name(), config.clinicId(), config.emailSubject(),
             config.plainTextEmailTemplatePath(), config.htmlEmailTemplatePath(),
             config.daysToVisit());
 

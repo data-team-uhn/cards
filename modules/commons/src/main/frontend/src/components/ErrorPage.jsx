@@ -23,6 +23,8 @@ import makeStyles from '@mui/styles/makeStyles';
 
 import NavigationIcon from '@mui/icons-material/Navigation';
 
+import FormattedText from "./FormattedText";
+
 const useStyles = makeStyles(theme => ({
   paper: {
     display: 'flex',
@@ -43,11 +45,11 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function ErrorPage(props) {
-  const { errorCode, errorCodeColor, title, titleColor, message, buttonLink, buttonLabel } = props;
+  const { errorCode, errorCodeColor, title, titleColor, message, messageColor, buttonLink, buttonLabel, ...rest } = props;
   const classes = useStyles();
 
   return (
-      <Paper className={classes.paper} elevation={0}>
+      <Paper className={classes.paper} elevation={0} {...rest}>
         <Grid
           container
           direction="column"
@@ -62,12 +64,12 @@ export default function ErrorPage(props) {
             {errorCode && <Typography variant="h1" color={errorCodeColor || "primary"}>
               {errorCode}
             </Typography> }
-            <Typography variant="h1" color={titleColor || "primary"} gutterBottom>
+            {title && <Typography variant="h1" color={titleColor || "primary"} gutterBottom>
               {title}
-            </Typography>
-            {message && <Typography variant="subtitle1" color="textSecondary">
-              {message}
             </Typography> }
+            {message && <FormattedText variant="subtitle1" color={messageColor || "textSecondary"}>
+              {message}
+            </FormattedText> }
           </Grid>
           { buttonLabel &&
             <Grid item>

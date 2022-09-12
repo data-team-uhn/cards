@@ -60,9 +60,6 @@ const useStyles = makeStyles(theme => ({
     "& #cards-resource-footer .MuiMobileStepper-progress" : {
       width: "100%",
     },
-    "& .wmde-markdown .anchor" : {
-      display: "none",
-    },
   },
   screen : {
     alignItems: "center",
@@ -96,7 +93,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function QuestionnaireSet(props) {
-  const { subject, username, displayText, contentOffset } = props;
+  const { subject, username, displayText, contentOffset, allowedPostVisitCompletionTime } = props;
 
   // Identifier of the questionnaire set used for the visit
   const [ id, setId ] = useState();
@@ -503,10 +500,10 @@ function QuestionnaireSet(props) {
 
   const expiryDate = () => {
     let result = "";
-    const date = getVisitDate();
+    let date = getVisitDate();
     if (date?.isValid) {
-      // If the visit date could be retrieved, this is an emailed token and will expire 2 hours after the visit
-      date.plus({hours: 2});
+      // Compute the moment the token expired: the configured number of days after the visit, at midnight
+      date = date.plus({days: allowedPostVisitCompletionTime}).endOf('day');
 
       // Get the date difference in the format: X days, Y hours and Z minutes,
       // skipping any time division that has a value of 0
@@ -631,11 +628,11 @@ function QuestionnaireSet(props) {
         </Grid>
       ))}
       </Grid>,
-      <Fab variant="extended" color="primary" onClick={() => window.location = "/system/sling/logout"}>Close</Fab>
+      <Fab variant="extended" color="primary" onClick={() => window.location = "/system/sling/logout?resource=" + encodeURIComponent(window.location.pathname)}>Close</Fab>
     ] : [
       <Typography variant="h4">Thank you for your submission</Typography>,
       disclaimer,
-      <Fab variant="extended" color="primary" onClick={() => window.location = "/system/sling/logout"}>Close</Fab>
+      <Fab variant="extended" color="primary" onClick={() => window.location = "/system/sling/logout?resource=" + encodeURIComponent(window.location.pathname)}>Close</Fab>
     ];
 
   let loadingScreen = [ <CircularProgress /> ];

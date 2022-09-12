@@ -64,10 +64,18 @@ function PromsLandingPage(props) {
 
   const USER_TYPE_PARAM = "usertype";
   const USER_TYPE_HCP = "hcp";
+  const CONFIG = "/Proms/PatientIdentification.json";
+  const ENABLED_PROP = "tokenlessAuthEnabled";
 
   useEffect(() => {
     let userType = (new URLSearchParams(window.location.search || ""))?.get(USER_TYPE_PARAM);
-    setIsOpen(!(userType == USER_TYPE_HCP));
+
+    // If tokenless auth is disabled or if the USER_TYPE_PARAM is set, we do not display ourselves
+    fetch(CONFIG)
+      .then((response) => response.ok ? response.json() : undefined)
+      .then((data) => {
+        setIsOpen((data ? data[ENABLED_PROP] : true) && !(userType == USER_TYPE_HCP));
+      });
   }, [window.location]);
 
   return (
