@@ -1,5 +1,0 @@
-{
-  "jcr:primaryType": "cards:ExtensionPoint",
-  "cards:extensionPointId": "proms/dashboard/pmcc-achd",
-  "cards:extensionPointName": "PMCC-ACHD pre-appointment questionnaires dashboard"
-}
