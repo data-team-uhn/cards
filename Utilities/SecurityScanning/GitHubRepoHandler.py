@@ -93,3 +93,26 @@ class GitHubRepoHandler:
 		r = requests.put("https://api.github.com/repos/" + self.repository + "/contents/" + path, headers=installation_headers, json=commit)
 		if r.status_code not in range(200, 300):
 			raise Exception("Failed to update " + path)
+
+	def downloadGitHubFile(self, path, save_path):
+		installation_headers = {}
+		installation_headers['Accept'] = 'application/vnd.github.raw'
+		installation_headers['Authorization'] = 'token ' + self.installation_token
+
+		resp = requests.get("https://api.github.com/repos/" + self.repository + "/contents/" + path, headers=installation_headers)
+		if resp.status_code != 200:
+			raise Exception("HTTP {} was returned when attempting to download {}.".format(resp.status_code, path))
+		with open(save_path, 'wb') as f_save:
+			f_save.write(resp.content)
+
+	def listGitHubDirectory(self, path):
+		installation_headers = {}
+		installation_headers['Accept'] = 'application/vnd.github+json'
+		installation_headers['Authorization'] = 'token ' + self.installation_token
+
+		resp = requests.get("https://api.github.com/repos/" + self.repository + "/contents/" + path, headers=installation_headers)
+		if resp.status_code != 200:
+			raise Exception("HTTP {} was returned when attempting to list {}.".format(resp.status_code, path))
+
+		directory_contents = [ str(n['name']) for n in resp.json() ]
+		return directory_contents
