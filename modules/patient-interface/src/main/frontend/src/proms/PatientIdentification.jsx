@@ -244,7 +244,7 @@ function PatientIdentification(props) {
     <ToUDialog
       open={showTou}
       actionRequired={true}
-      onClose={() => setShowTou(false)}
+      onClose={(withError) => withError ? window.location.href = window.location.pathname : setShowTou(false)}
       onCleared={() => {
         setShowTou(false);
         setTouCleared(true);

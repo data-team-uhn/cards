@@ -47,6 +47,10 @@ const useStyles = makeStyles(theme => ({
       fontStyle: "italic",
     }
   },
+  actionErrorMessage: {
+    marginLeft: theme.spacing(2),
+    marginRight: "auto",
+  },
   reviewButton : {
     marginRight: "auto",
   }
@@ -84,6 +88,7 @@ function ToUDialog(props) {
   const [ touAcceptedVersion, setTouAcceptedVersion ] = useState();
   const [ tou, setTou ] = useState();
   const [ error, setError ] = useState();
+  const [ actionError, setActionError ] = useState();
 
   const classes = useStyles();
 
@@ -138,7 +143,8 @@ function ToUDialog(props) {
       .then( json => json.status == "success" ? onCleared && onCleared() : Promise.reject(json.error))
       .catch((response) => {
         let errMsg = "Recording acceptance of Terms of Use failed";
-        setError(errMsg + (response.status ? ` with error code ${response.status}: ${response.statusText}` : response));
+        console.log(errMsg + (response.status ? ` with error code ${response.status}: ${response.statusText}` : response));
+        setActionError("Error: your preference could not be recorded.");
       });
   }
 
@@ -176,7 +182,7 @@ function ToUDialog(props) {
       }
       </DialogContent>
       <DialogActions>
-      { actionRequired && !error ?
+      { actionRequired && !error && !actionError ?
         <>
           <Button color="primary" onClick={() => saveTouAccepted(tou.version)} variant="contained">
             Accept
@@ -186,9 +192,14 @@ function ToUDialog(props) {
           </Button>
         </>
         :
-        <Button color="primary" onClick={onClose} variant="outlined">
-          Close
-        </Button>
+        <>
+          { actionError &&
+            <FormattedText color="error" className={classes.actionErrorMessage}>{actionError}</FormattedText>
+          }
+          <Button color="primary" onClick={() => onClose(!!actionError)} variant="outlined">
+            Close
+          </Button>
+        </>
       }
       </DialogActions>
     </ResponsiveDialog>
