@@ -105,6 +105,16 @@ class GitHubRepoHandler:
 		with open(save_path, 'wb') as f_save:
 			f_save.write(resp.content)
 
+	def readGitHubTextFile(self, path):
+		installation_headers = {}
+		installation_headers['Accept'] = 'application/vnd.github.raw'
+		installation_headers['Authorization'] = 'token ' + self.installation_token
+
+		resp = requests.get("https://api.github.com/repos/" + self.repository + "/contents/" + path, headers=installation_headers)
+		if resp.status_code != 200:
+			raise Exception("HTTP {} was returned when attempting to download {}.".format(resp.status_code, path))
+		return resp.text
+
 	def listGitHubDirectory(self, path):
 		installation_headers = {}
 		installation_headers['Accept'] = 'application/vnd.github+json'
