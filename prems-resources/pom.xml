@@ -34,5 +34,6 @@
   <modules>
     <module>clinical-data</module>
     <module>feature</module>
+    <module>clarity-import</module>
   </modules>
 </project>

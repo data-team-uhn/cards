@@ -1,0 +1,117 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+
+<node>
+	<name>mapping</name>
+	<primaryNodeType>cards:clarityMapping</primaryNodeType>
+  <property>
+		<name>name</name>
+		<value></value>
+		<type>String</type>
+	</property>
+	<property>
+		<name>subjectType</name>
+		<value>/SubjectTypes/Patient</value>
+		<type>Reference</type>
+	</property>
+	<property>
+		<name>PAT_MRN</name>
+		<value>/Questionnaires/Patient information/mrn</value>
+		<type>String</type>
+	</property>
+  <property>
+		<name>PAT_ENC_CSN_ID</name>
+		<value>/Questionnaires/Patient information/mrn</value>
+		<type>Path</type>
+	</property>
+  <property>
+		<name>HSP_DIS_EVENT_ID</name>
+		<value>/Questionnaires/Patient information/mrn</value>
+		<type>Path</type>
+	</property>
+  <property>
+		<name>PAT_FIRST_NAME</name>
+		<value>/Questionnaires/Patient information/first_name</value>
+		<type>Path</type>
+	</property>
+  <property>
+		<name>PAT_LAST_NAME</name>
+		<value>/Questionnaires/Patient information/last_name</value>
+		<type>Path</type>
+	</property>
+  <property>
+		<name>EMAIL_ADDRESS</name>
+		<value>/Questionnaires/Patient information/email</value>
+		<type>Path</type>
+	</property>
+  <!--<property>
+		<name>HOSP_ADMISSION_DTTM</name>
+		<value>/Questionnaires/Visit information/time</value>
+		<type>Path</type>
+	</property>-->
+  <node>
+    <name>visit</name>
+    <primaryNodeType>cards:clarityMapping</primaryNodeType>
+    <property>
+      <name>name</name>
+      <value></value>
+      <type>String</type>
+    </property>
+    <property>
+      <name>subjectType</name>
+      <value>/SubjectTypes/Patient/Visit</value>
+      <type>Reference</type>
+    </property>
+    <property>
+      <name>DISCH_DEPT_NAME</name>
+      <value>/Questionnaires/Visit information/clinic</value>
+      <type>Path</type>
+    </property>
+    <!--<property>
+      <name>DISCH_LOC_NAME</name>
+      <value>/Questionnaires/Patient information/mrn</value>
+      <type>Path</type>
+    </property>
+    <property>
+      <name>ED_IP_TRANSFER_YN</name>
+      <value>/Questionnaires/Patient information/mrn</value>
+      <type>Path</type>
+    </property>-->
+    <property>
+      <name>ENTRY_TIME</name>
+      <value>/Questionnaires/Visit information/time</value>
+      <type>Path</type>
+    </property>
+    <!--<property>
+      <name>DISCH_DISPOSITION</name>
+      <value>/Questionnaires/Patient information/mrn</value>
+      <type>Path</type>
+    </property>
+    <property>
+      <name>PATIENT_CLASS_NAME</name>
+      <value>/Questionnaires/Patient information/mrn</value>
+      <type>Path</type>
+    </property>
+    <property>
+      <name>PATIENT_STAUS</name>
+      <value>/Questionnaires/Patient information/mrn</value>
+      <type>Path</type>
+    </property>-->
+  </node>
+</node>
