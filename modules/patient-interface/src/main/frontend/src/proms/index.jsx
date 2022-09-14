@@ -85,7 +85,7 @@ function PromsHomepage (props) {
 
   if (unableToProceed) {
     let appName = document.querySelector('meta[name="title"]')?.content;
-    let message = (surveyInstructions.welcomeMessage)?.replaceAll("APP_NAME", appName) || '';
+    let message = surveyInstructions?.welcomeMessage?.replaceAll("APP_NAME", appName) || '';
     message = `${message}\n\n### To fill out surveys, please follow the personalized link that was emailed to you.`;
     return (
       <ErrorPage
