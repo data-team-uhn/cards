@@ -67,3 +67,8 @@ yarn.lock
 
 # SAML Keys
 samlKeystore.p12
+
+# Form import byproducts
+/Utilities/FormImport/*.csv
+/Utilities/FormImport/*.json
+/Utilities/FormImport/*.xml
