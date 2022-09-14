@@ -39,7 +39,7 @@ class TrivyToSlackConverter:
 
 			selected_message_list = self.vulnerability_lists[severity]
 			slack_message = self.software_package_emoji + "    *{}* - `{}` is affected by _{}_    :warning:".format(severity, pkgName, vulnerabilityID)
-			md_report_message = self.software_package_emoji + "    **{}** - `{}` is affected by _{}_    :warning:".format(severity, pkgName, vulnerabilityID)
+			md_report_message = self.software_package_emoji + "    **{}** - `{} ({})` is affected by _{}_    :warning:".format(severity, pkgName, installedVersion, vulnerabilityID)
 			selected_message_list.append((slack_message, md_report_message))
 
 	def getSortedVulnerabilityList(self):
