@@ -26,12 +26,12 @@
     </property>
     <property>
         <name>eventsLabel</name>
-        <value>Appointments</value>
+        <value>Hospital discharge</value>
         <type>String</type>
     </property>
     <property>
         <name>eventTimeLabel</name>
-        <value>Discharge time</value>
+        <value>Time</value>
         <type>String</type>
     </property>
 </node>
