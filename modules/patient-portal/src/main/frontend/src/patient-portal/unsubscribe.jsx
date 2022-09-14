@@ -26,7 +26,7 @@ import AlertTitle from '@mui/material/AlertTitle';
 import { createBrowserHistory } from "history";
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { appTheme } from "../themePalette.jsx";
-import PatientPortalFooter from "./Footer.jsx";
+import Footer from "./Footer.jsx";
 import ErrorPage from "../components/ErrorPage.jsx";
 
 const useStyles = makeStyles(theme => ({
