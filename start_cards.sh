@@ -201,7 +201,7 @@ do
       # Support both "cards4project" and just "project": make sure the PROJECT starts with "cards4"
       PROJECT="cards4${PROJECT#cards4}"
       ARGS[$i]=${ARGS[$i]},mvn:io.uhndata.cards/${PROJECT}/${CARDS_VERSION}/slingosgifeature
-      if [[ ${PROJECT} == 'cards4proms' ]]
+      if [[ ${PROJECT} == 'cards4proms' || ${PROJECT} == 'cards4prems' ]]
       then
         # cards4proms requires the email module, make sure it's enabled
         ARGS[$ARGS_LENGTH]=-f

@@ -1,0 +1,6 @@
+{
+  "jcr:primaryType": "nt:unstructured",
+  "logoDark": "/libs/cards/resources/media/prems/logo.png",
+  "logoLight": "/libs/cards/resources/media/prems/logo_light_bg.png",
+  "sidebarBackground": "/libs/cards/resources/media/default/background.jpg"
+}

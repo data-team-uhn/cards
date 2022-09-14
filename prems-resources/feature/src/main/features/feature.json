@@ -1,0 +1,69 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+{
+  "prototype":{
+    "id": "io.uhndata.cards:cards-patient-portal:slingosgifeature:${project.version}"
+  },
+  "bundles":[
+    {
+      "id":"${project.groupId}:cards-patient-subject-type:${project.version}",
+      "start-order":"20"
+    },
+    {
+      "id":"${project.groupId}:cards-visit-subject-type:${project.version}",
+      "start-order":"21"
+    },
+    {
+      "id":"${project.groupId}:prems-resources-clinical-data:${project.version}",
+      "start-order":"26"
+    }
+  ],
+  "configurations":{
+    "org.apache.sling.jcr.repoinit.RepositoryInitializer~prems":{
+      "service.ranking:Integer":300,
+      "scripts": [
+        // In certain environments, this script gets executed before the main forms repoinit does, so we must make sure the paths we reference are created.
+        "create path (cards:QuestionnairesHomepage) /Questionnaires \n create path (cards:FormsHomepage) /Forms \n create path (cards:SubjectsHomepage) /Subjects \n create path (cards:SubjectTypesHomepage) /SubjectTypes \n create path (cards:Homepage) /content",
+        // Access rights for the special "patient" user: only allow access to the session subject data, excluding certain clinician-only sections/questions
+        "create user patient \n set ACL for patient \n     deny jcr:all on /Questionnaires restriction(rep:itemNames,audit_intro,audit_results,eq5d_results,gad7_intro,gad7_results,phq9_intro,phq9_results) \n     deny jcr:read on /Forms restriction(cards:question,/Questionnaires/AUDITC/audit_results/audit_score,/Questionnaires/AUDITC/audit_results/audit_interpretation,/Questionnaires/EQ5D/eq5d_results/eq5d_score,/Questionnaires/GAD7/gad7_results/gad7_score,/Questionnaires/GAD7/gad7_results/gad7_classification,/Questionnaires/GAD7/gad7_results/gad7_interpretation,/Questionnaires/PHQ9/phq9_results/phq9_score,/Questionnaires/PHQ9/phq9_results/phq9_classification,/Questionnaires/PHQ9/phq9_results/phq9_interpretation) \n end",
+        // Access rights for the special "guest-patient" user (not using a link from the notification email): only allow access to the session subject data, excluding certain clinician-only sections/questions and PII
+        "create user guest-patient \n set ACL for guest-patient \n     deny jcr:all on /Questionnaires restriction(rep:itemNames,time,location,provider,audit_intro,audit_results,audit_sex,eq5d_results,gad7_intro,gad7_results,phq9_intro,phq9_results) \n     deny jcr:read on /Forms restriction(cards:question,/Questionnaires/Visit*information/time,/Questionnaires/Visit*information/location,/Questionnaires/Visit*information/provider,/Questionnaires/AUDITC/audit_results/audit_score,/Questionnaires/AUDITC/audit_sex,/Questionnaires/AUDITC/audit_results/audit_interpretation,/Questionnaires/EQ5D/eq5d_results/eq5d_score,/Questionnaires/GAD7/gad7_results/gad7_score,/Questionnaires/GAD7/gad7_results/gad7_classification,/Questionnaires/GAD7/gad7_results/gad7_interpretation,/Questionnaires/PHQ9/phq9_results/phq9_score,/Questionnaires/PHQ9/phq9_results/phq9_classification,/Questionnaires/PHQ9/phq9_results/phq9_interpretation) \n     deny jcr:all on /Forms restriction(cards:questionnaire,/Questionnaires/Patient*information) \n end",
+        // This isn't actually used, but Patient.json references it; needs to be removed along with the torch import
+        "create service user proms-import-backend"
+      ]
+    },
+    "io.uhndata.cards.proms.emailnotifications.AppointmentEmailNotificationsFactory~InitialNotificationsTask":{
+      "name": "InitialNotificationsTask",
+      "metricName": "Initial Emails Sent",
+      "clinicId": "/Proms/ClinicMapping/853703519",
+      "emailSubject": "Welcome to DATAPRO: Answer your Pre-Appointment Questions",
+      "plainTextEmailTemplatePath": "/apps/cards/proms/clinics/Cardio/mailTemplates/72h.txt",
+      "htmlEmailTemplatePath": "/apps/cards/proms/clinics/Cardio/mailTemplates/72h.html",
+      "daysToVisit": 3
+    },
+    "io.uhndata.cards.proms.emailnotifications.AppointmentEmailNotificationsFactory~ReminderNotificationsTask":{
+      "name": "ReminderNotificationsTask",
+      "metricName": "Reminder Emails Sent",
+      "clinicId": "/Proms/ClinicMapping/853703519",
+      "emailSubject": "Reminder: You have 24 hours left to complete your pre-appointment questions",
+      "plainTextEmailTemplatePath": "/apps/cards/proms/clinics/Cardio/mailTemplates/24h.txt",
+      "htmlEmailTemplatePath": "/apps/cards/proms/clinics/Cardio/mailTemplates/24h.html",
+      "daysToVisit": 1
+    }
+  }
+}
