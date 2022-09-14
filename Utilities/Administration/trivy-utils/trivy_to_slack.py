@@ -18,70 +18,79 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import sys
-import json
-import argparse
+class TrivyToSlackConverter:
+	def __init__(self, software_package_emoji=':package:'):
+		self.software_package_emoji = software_package_emoji
+		self.vulnerability_lists = {}
+		self.vulnerability_lists['CRITICAL'] = []
+		self.vulnerability_lists['HIGH'] = []
+		self.vulnerability_lists['MEDIUM'] = []
+		self.vulnerability_lists['LOW'] = []
 
-argparser = argparse.ArgumentParser()
-argparser.add_argument('--package_emoji', help='Software package icon [default: :package:]', default=':package:')
-argparser.add_argument('--truncate_results', help='Truncate the list of vulnerabilities to this length', type=int, default=-1)
-argparser.add_argument('--markdown_report_file', help='Store the Markdown formatted list of all detected vulnerabilities (in order of decreasing severity) to this file')
-args = argparser.parse_args()
+	def processVulnerabilities(self, detected_vulnerabilities):
+		for vulnerabilityIndex in range(0, len(detected_vulnerabilities)):
+			pkgName = detected_vulnerabilities[vulnerabilityIndex]['PkgName']
+			installedVersion = detected_vulnerabilities[vulnerabilityIndex]['InstalledVersion']
+			vulnerabilityID = detected_vulnerabilities[vulnerabilityIndex]['VulnerabilityID']
+			severity = detected_vulnerabilities[vulnerabilityIndex]['Severity']
 
-SOFTWARE_PACKAGE_EMOJI = args.package_emoji
+			if severity not in self.vulnerability_lists:
+				continue
 
-trivy_report = json.load(sys.stdin)
-detected_vulnerabilities = trivy_report['Results'][0]['Vulnerabilities']
+			selected_message_list = self.vulnerability_lists[severity]
+			slack_message = self.software_package_emoji + "    *{}* - `{}` is affected by _{}_    :warning:".format(severity, pkgName, vulnerabilityID)
+			md_report_message = self.software_package_emoji + "    **{}** - `{}` is affected by _{}_    :warning:".format(severity, pkgName, vulnerabilityID)
+			selected_message_list.append((slack_message, md_report_message))
 
-criticalServerity = []
-highSeverity = []
-mediumSeverity = []
-lowSeverity = []
+	def getSortedVulnerabilityList(self):
+		ordered_vulnerabilities = []
+		for severity in ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW']:
+			ordered_vulnerabilities += self.vulnerability_lists[severity]
+		return ordered_vulnerabilities
 
-for vulnerabilityIndex in range(0, len(detected_vulnerabilities)):
-	pkgName = detected_vulnerabilities[vulnerabilityIndex]['PkgName']
-	installedVersion = detected_vulnerabilities[vulnerabilityIndex]['InstalledVersion']
-	vulnerabilityID = detected_vulnerabilities[vulnerabilityIndex]['VulnerabilityID']
-	severity = detected_vulnerabilities[vulnerabilityIndex]['Severity']
+	def getSlackMessages(self, truncate=-1):
+		slackMessages = [v[0] for v in self.getSortedVulnerabilityList()]
+		if truncate >= 0:
+			original_length = len(slackMessages)
+			slackMessages = slackMessages[0:truncate]
+			if original_length > truncate:
+				slackMessages.append("    ... and {} more".format(original_length - truncate))
+		return slackMessages
 
-	# Sort vulnerabilities in order of severity: CRITICAL, HIGH, MEDIUM, LOW
-	if severity == "CRITICAL":
-		selected_message_list = criticalServerity
-	elif severity == "HIGH":
-		selected_message_list = highSeverity
-	elif severity == "MEDIUM":
-		selected_message_list = mediumSeverity
-	elif severity == "LOW":
-		selected_message_list = lowSeverity
-	else:
-		continue
+	def getSlackBlock(self, truncate=-1):
+		slack_block = {}
+		slack_block['type'] = 'section'
+		slack_block['text'] = {}
+		slack_block['text']['type'] = 'mrkdwn'
 
-	slack_message = SOFTWARE_PACKAGE_EMOJI + "    *{}* - `{}` is affected by _{}_    :warning:".format(severity, pkgName, vulnerabilityID)
-	md_report_message = SOFTWARE_PACKAGE_EMOJI + "    **{}** - `{}` is affected by _{}_    :warning:".format(severity, pkgName, vulnerabilityID)
-	selected_message_list.append((slack_message, md_report_message))
+		slackMessages = self.getSlackMessages(truncate)
+		if len(slackMessages) > 0:
+			slack_block['text']['text'] = '\n'.join(slackMessages)
+		else:
+			slack_block['text']['text'] = ":white_check_mark:    No vulnerabilities detected!    :white_check_mark:"
+		return slack_block
 
-ordered_vulnerabilities = criticalServerity + highSeverity + mediumSeverity + lowSeverity
-slackMessages = [v[0] for v in ordered_vulnerabilities]
-mdReportMessages = [v[1] for v in ordered_vulnerabilities]
+	def getMarkdownReportMessages(self):
+		return [v[1] for v in self.getSortedVulnerabilityList()]
 
-if args.truncate_results >= 0:
-	total_slack_messages = len(slackMessages)
-	slackMessages = slackMessages[0:args.truncate_results]
-	if total_slack_messages > args.truncate_results:
-		slackMessages.append("    ... and {} more".format(total_slack_messages - args.truncate_results))
+if __name__ == '__main__':
+	import sys
+	import json
+	import argparse
 
-if args.markdown_report_file:
-	with open(args.markdown_report_file, 'w') as f_markdown_report:
-		f_markdown_report.write('\n\n'.join(mdReportMessages))
+	argparser = argparse.ArgumentParser()
+	argparser.add_argument('--package_emoji', help='Software package icon [default: :package:]', default=':package:')
+	argparser.add_argument('--truncate_results', help='Truncate the list of vulnerabilities to this length', type=int, default=-1)
+	argparser.add_argument('--markdown_report_file', help='Store the Markdown formatted list of all detected vulnerabilities (in order of decreasing severity) to this file')
+	args = argparser.parse_args()
 
-slack_block = {}
-slack_block['type'] = 'section'
-slack_block['text'] = {}
-slack_block['text']['type'] = 'mrkdwn'
+	trivy_report = json.load(sys.stdin)
+	detected_vulnerabilities = trivy_report['Results'][0]['Vulnerabilities']
+	trivy_to_slack_converter = TrivyToSlackConverter(software_package_emoji=args.package_emoji)
+	trivy_to_slack_converter.processVulnerabilities(detected_vulnerabilities)
 
-if len(slackMessages) > 0:
-	slack_block['text']['text'] = '\n'.join(slackMessages)
-else:
-	slack_block['text']['text'] = ":white_check_mark:    No vulnerabilities detected!    :white_check_mark:"
+	if args.markdown_report_file:
+		with open(args.markdown_report_file, 'w') as f_markdown_report:
+			f_markdown_report.write('\n\n'.join(trivy_to_slack_converter.getMarkdownReportMessages()))
 
-print(json.dumps(slack_block))
+	print(json.dumps(trivy_to_slack_converter.getSlackBlock(truncate=args.truncate_results)))
