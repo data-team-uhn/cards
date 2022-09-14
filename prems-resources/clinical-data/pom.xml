@@ -57,7 +57,6 @@
               SLING-INF/content/apps/cards/config/CopyAnswers;path:=/apps/cards/config/CopyAnswers;overwriteProperties:=true;uninstall:=true,
               SLING-INF/content/apps/cards/clinics/AIP/mailTemplates;path:=/apps/cards/clinics/AIP/mailTemplates;overwrite:=true,
               SLING-INF/content/apps/cards/clinics/ED/mailTemplates;path:=/apps/cards/clinics/ED/mailTemplates;overwrite:=true,
-              SLING-INF/content/Statistics/;path:=/Statistics/;overwrite:=false;overwriteProperties:=true;uninstall:=true,
             </Sling-Initial-Content>
           </instructions>
         </configuration>
