@@ -219,6 +219,7 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
                 patientInformationQuestionniare, session);
             if (patientInformationForm == null) {
                 LOGGER.warn("Patient Information not found for visit {}", visitSubject.getPath());
+                writeError(response, SlingHttpServletResponse.SC_UNAUTHORIZED, "Missing user data");
                 return;
             }
 
