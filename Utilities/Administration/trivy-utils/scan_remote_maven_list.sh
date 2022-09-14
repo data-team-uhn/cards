@@ -29,7 +29,10 @@ TRIVY_TO_SLACK_ARGS="${@:3}"
 
 # Download the NPM/Yarn package configuration data for the deployment from GitHub
 PACKAGE_CONF_DIR=$(mktemp -d -p .)
-python3 ../github_download_maven_packages_config.py --deployment_hostname $DEPLOYMENT_HOSTNAME --download_dir $PACKAGE_CONF_DIR || exit -1
+python3 ../github_download_docker_related_resource.py \
+	--deployment_hostname $DEPLOYMENT_HOSTNAME \
+	--resource_name maven.json \
+	--download_dir $PACKAGE_CONF_DIR || exit -1
 
 # Run the scan and prepare the Slack report message
 python scan_maven_package_list.py \
