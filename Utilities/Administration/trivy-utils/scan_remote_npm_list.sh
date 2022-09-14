@@ -29,7 +29,7 @@ TRIVY_TO_SLACK_ARGS="${@:3}"
 
 # Download the NPM/Yarn package configuration data for the deployment from GitHub
 PACKAGE_CONF_DIR=$(mktemp -d -p .)
-python3 ../github_download_yarn_packages_config.py --deployment_hostname $DEPLOYMENT_HOSTNAME --download_dir $PACKAGE_CONF_DIR || exit -1
+python3 ../github_download_docker_related_resource.py --deployment_hostname $DEPLOYMENT_HOSTNAME  --resource_name yarn.lock --download_dir $PACKAGE_CONF_DIR || exit -1
 
 # Scan with Trivy and format the results to a Slack message
 docker run --rm -v $(realpath ~/trivy-cache):/root/.cache -v $(realpath $PACKAGE_CONF_DIR)/$DEPLOYMENT_HOSTNAME/docker/cards/yarn.lock:/yarn.lock aquasec/trivy fs --security-checks vuln --ignore-unfixed /yarn.lock --format json | python3 trivy_to_slack.py $TRIVY_TO_SLACK_ARGS > $SLACK_MESSAGES_FILE
