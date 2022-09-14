@@ -31,7 +31,7 @@ import {
 import { makeStyles } from '@mui/styles';
 import AdminConfigScreen from "../adminDashboard/AdminConfigScreen.jsx";
 
-export const PATIENT_IDENTIFICATION_PATH = "/Patient/PatientIdentification";
+export const PATIENT_IDENTIFICATION_PATH = "/Survey/PatientIdentification";
 export const DEFAULT_PATIENT_ID_CONFIG = {
     tokenlessAuthEnabled: false,
     PIIAuthRequired: false,

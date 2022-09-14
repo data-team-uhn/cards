@@ -93,7 +93,7 @@ function ToUDialog(props) {
   const classes = useStyles();
 
   const fetchTouAccepted = () => {
-    fetch("/Patient.termsOfUse")
+    fetch("/Survey.termsOfUse")
       .then( response => response.ok ? response.json() : Promise.reject(response) )
       .then( json => json.status == "success" ? json[TOU_ACCEPTED_VARNAME] : Promise.reject(json.error) )
       .then( setTouAcceptedVersion )
@@ -117,7 +117,7 @@ function ToUDialog(props) {
   }), [actionRequired, open]
 
   useEffect(() => {
-    fetch("/Patient/TermsOfUse.json")
+    fetch("/Survey/TermsOfUse.json")
       .then( response => response.ok ? response.json() : Promise.reject(response) )
       .then( setTou )
       .catch( err => setError("Loading the Terms of Use failed, please try again later") );
@@ -138,7 +138,7 @@ function ToUDialog(props) {
     request_data.append(TOU_ACCEPTED_VARNAME, version);
 
     // Update the Patient information form
-    fetch("/Patient.termsOfUse", { method: 'POST', body: request_data })
+    fetch("/Survey.termsOfUse", { method: 'POST', body: request_data })
       .then( (response) => response.ok ? response.json() : Promise.reject(response) )
       .then( json => json.status == "success" ? onCleared && onCleared() : Promise.reject(json.error))
       .catch((response) => {

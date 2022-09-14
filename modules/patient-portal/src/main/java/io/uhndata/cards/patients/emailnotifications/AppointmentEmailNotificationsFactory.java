@@ -74,7 +74,7 @@ public final class AppointmentEmailNotificationsFactory
         String metricName();
 
         @AttributeDefinition(name = "Clinic Mapping Path",
-            description = "Clinic mapping path for this clinic (eg. /Patient/ClinicMapping/123456789)")
+            description = "Clinic mapping path for this clinic (eg. /Survey/ClinicMapping/123456789)")
         String clinicId();
 
         @AttributeDefinition(name = "Email Subject Line", description = "Email Subject Line")

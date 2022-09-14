@@ -175,7 +175,7 @@ abstract class AbstractEmailNotification
                 Map<String, String> valuesMap = Map.of(
                     "surveysLink", "https://" + CARDS_HOST_AND_PORT + CLINIC_SLING_PATH + "?auth_token=" + token,
                     "unsubscribeLink",
-                    "https://" + CARDS_HOST_AND_PORT + "/Patient.unsubscribe.html?auth_token=" + token);
+                    "https://" + CARDS_HOST_AND_PORT + "/Survey.unsubscribe.html?auth_token=" + token);
                 String emailTextBody = EmailUtils.renderEmailTemplate(emailTextTemplate, valuesMap);
                 String emailHtmlBody = EmailUtils.renderEmailTemplate(emailHtmlTemplate, valuesMap);
                 try {

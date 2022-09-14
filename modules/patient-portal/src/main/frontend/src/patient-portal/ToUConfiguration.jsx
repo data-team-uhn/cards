@@ -65,7 +65,7 @@ function ToUConfiguration() {
   return (
     <AdminConfigScreen
       title="Patient Portal Terms of Use"
-      configPath="/Patient/TermsOfUse"
+      configPath="/Survey/TermsOfUse"
       onConfigFetched={readToUData}
       hasChanges={hasChanges}
       buildConfigData={buildConfigData}

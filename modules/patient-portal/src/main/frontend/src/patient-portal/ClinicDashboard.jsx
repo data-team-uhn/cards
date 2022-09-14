@@ -106,7 +106,7 @@ function ClinicDashboard(props) {
 
   // Fetch saved settings for time grouping tabs of dashboard boxes
   useEffect(() => {
-    fetch(`/Patient/DashboardSettings.json`)
+    fetch(`/Survey/DashboardSettings.json`)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         setDashboardConfig(json);
@@ -139,7 +139,7 @@ function ClinicDashboard(props) {
   // Also load the clinic configuration...
   useEffect(() => {
     if (!clinicId) return;
-    fetchWithReLogin(globalLoginDisplay, `/Patient/ClinicMapping/${clinicId}.deep.json`)
+    fetchWithReLogin(globalLoginDisplay, `/Survey/ClinicMapping/${clinicId}.deep.json`)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         setTitle(json.displayName || json.clinicName || clinicId);
@@ -155,7 +155,7 @@ function ClinicDashboard(props) {
       setDefaultsLoading(!!!clinicId);
       return;
     }
-    fetchWithReLogin(globalLoginDisplay, `/Patient/${surveysId}.deep.json`)
+    fetchWithReLogin(globalLoginDisplay, `/Survey/${surveysId}.deep.json`)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => setSurveys(
         Object.values(json || {})

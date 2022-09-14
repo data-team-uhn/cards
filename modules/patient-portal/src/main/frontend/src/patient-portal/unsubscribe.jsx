@@ -55,7 +55,7 @@ function Unsubscribe (props) {
   let unsubscribe = (value) => {
     let request_data = new FormData();
     request_data.append("unsubscribe", value);
-    fetch("/Patient.unsubscribe", { method: 'POST', body: request_data })
+    fetch("/Survey.unsubscribe", { method: 'POST', body: request_data })
       .then( (response) => response.ok ? response.json() : Promise.reject(response) )
       .then( json => json.status == "success" ? (setConfirmed(json.unsubscribed), setAlreadyUnsubscribed(null)) : Promise.reject(json.error))
       .catch((response) => {
@@ -76,7 +76,7 @@ function Unsubscribe (props) {
   }
 
   useEffect(() => {
-    fetch("/Patient.unsubscribe", {method: 'GET'})
+    fetch("/Survey.unsubscribe", {method: 'GET'})
       .then( (response) => response.ok ? response.json() : Promise.reject(response) )
       .then( json => json.status == "success" ? setAlreadyUnsubscribed(json.unsubscribed) : Promise.reject(json.error))
       .catch((response) => {

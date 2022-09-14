@@ -29,7 +29,7 @@ import ErrorPage from "../components/ErrorPage.jsx";
 
 import { DEFAULT_INSTRUCTIONS, SURVEY_INSTRUCTIONS_PATH } from "./SurveyInstructionsConfiguration.jsx"
 
-const CONFIG = "/Patient/PatientIdentification.json";
+const CONFIG = "/Survey/PatientIdentification.json";
 const TOKENLESS_AUTH_ENABLED_PROP = "tokenlessAuthEnabled";
 const AUTH_TOKEN_PARAM = "auth_token";
 

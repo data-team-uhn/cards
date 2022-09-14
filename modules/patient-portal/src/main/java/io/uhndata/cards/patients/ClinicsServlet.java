@@ -232,7 +232,7 @@ public class ClinicsServlet extends SlingAllMethodsServlet
     private void createClinicMapping(final ResourceResolver resolver)
         throws RepositoryException, PersistenceException
     {
-        final Resource parentResource = resolver.getResource("/Patient/ClinicMapping");
+        final Resource parentResource = resolver.getResource("/Survey/ClinicMapping");
 
         resolver.create(parentResource, this.idHash.get(), Map.of(
             "clinicName", this.clinicName.get(),

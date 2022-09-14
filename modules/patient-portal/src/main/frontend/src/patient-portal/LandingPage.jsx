@@ -64,7 +64,7 @@ function LandingPage(props) {
 
   const USER_TYPE_PARAM = "usertype";
   const USER_TYPE_HCP = "hcp";
-  const CONFIG = "/Patient/PatientIdentification.json";
+  const CONFIG = "/Survey/PatientIdentification.json";
   const ENABLED_PROP = "tokenlessAuthEnabled";
 
   useEffect(() => {
@@ -99,7 +99,7 @@ function LandingPage(props) {
                       variant="contained"
                       className={classes.button}
                       onClick={() => {
-                        window.location = "/Patient";
+                        window.location = "/Survey";
                       }}
                      >
                       <Typography variant="h6">Patient</Typography>

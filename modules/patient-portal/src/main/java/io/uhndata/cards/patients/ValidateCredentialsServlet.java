@@ -64,7 +64,7 @@ import io.uhndata.cards.patients.api.PatientAccessConfiguration;
 import io.uhndata.cards.subjects.api.SubjectTypeUtils;
 import io.uhndata.cards.subjects.api.SubjectUtils;
 
-@Component(service = { Servlet.class }, property = { "sling.auth.requirements=-/Patient" })
+@Component(service = { Servlet.class }, property = { "sling.auth.requirements=-/Survey" })
 @SlingServletResourceTypes(resourceTypes = { "cards/PatientHomepage" }, extensions = {
     "validateCredentials" }, methods = { "POST" })
 

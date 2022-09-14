@@ -127,7 +127,7 @@ function OnboardNewClinicDialog(props) {
     if (!isNewClinic && currentClinicName) {
       let fetchExistingData = () => {
         // We want to keep references the way they are, since reference inputs will expect their UUIDs
-        fetchWithReLogin(globalLoginDisplay, `/Patient/ClinicData/${hashCode(currentClinicName)}.-dereference.json`)
+        fetchWithReLogin(globalLoginDisplay, `/Survey/ClinicData/${hashCode(currentClinicName)}.-dereference.json`)
           .then((response) => response.ok ? response.json() : Promise.reject(response))
           .then(setExistingData)
           .then(() => setInitialized(true))
@@ -158,7 +158,7 @@ function OnboardNewClinicDialog(props) {
     }
 
     // Add this new clinic mapping
-    let url = new URL("/Patient/ClinicMapping", window.location.origin);
+    let url = new URL("/Survey/ClinicMapping", window.location.origin);
     setSaveInProgress(true);
     fetchWithReLogin(globalLoginDisplay, url,
       {
@@ -179,7 +179,7 @@ function OnboardNewClinicDialog(props) {
   }
 
   return (
-    <form action='/Patient/ClinicMapping' method='POST' onSubmit={saveData}>
+    <form action='/Survey/ClinicMapping' method='POST' onSubmit={saveData}>
       <ResponsiveDialog disablePortal open={open} onClose={onClose}>
         <DialogTitle>{isNewClinic ? "Create New Clinic Mapping" : "Edit Clinic Mapping"}</DialogTitle>
         <DialogContent>

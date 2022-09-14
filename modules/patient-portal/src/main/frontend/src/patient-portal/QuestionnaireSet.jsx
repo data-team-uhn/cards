@@ -244,7 +244,7 @@ function QuestionnaireSet(props) {
     if (!!!id) {
       return;
     }
-    fetchWithReLogin(globalLoginDisplay, `/Patient/${id}.deep.json`)
+    fetchWithReLogin(globalLoginDisplay, `/Survey/${id}.deep.json`)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         parseQuestionnaireSet(json);

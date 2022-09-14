@@ -91,7 +91,7 @@ public final class EmailFormAlerts
         String clinicIdLink() default "/Questionnaires/Visit information/surveys";
 
         @AttributeDefinition(name = "Clinics JCR Path")
-        String clinicsJcrPath() default "/Patient";
+        String clinicsJcrPath() default "/Survey";
 
         @AttributeDefinition(name = "Clinic Email Property",
             description = "Property of the Clinic definition where the emergency contact is stored")

@@ -72,7 +72,7 @@ function DashboardSettingsConfiguration() {
   return (
       <AdminConfigScreen
         title="Clinic dashboard"
-        configPath={"/Patient/DashboardSettings"}
+        configPath={"/Survey/DashboardSettings"}
         onConfigFetched={readDashboardSettings}
         hasChanges={hasChanges}
         buildConfigData={buildConfigData}

@@ -30,7 +30,7 @@ import WelcomeMessageConfiguration from "./WelcomeMessageConfiguration.jsx";
 import AdminConfigScreen from "../adminDashboard/AdminConfigScreen.jsx";
 import { camelCaseToWords } from "../questionnaireEditor/LabeledField.jsx";
 
-export const SURVEY_INSTRUCTIONS_PATH = "/Patient/SurveyInstructions";
+export const SURVEY_INSTRUCTIONS_PATH = "/Survey/SurveyInstructions";
 export const DEFAULT_INSTRUCTIONS = {
   noEventsMessage: "We could not find any pending surveys to fill out.",
   noSurveysMessage: "You have no pending surveys to fill out."

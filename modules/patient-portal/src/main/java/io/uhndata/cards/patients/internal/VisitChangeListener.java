@@ -313,7 +313,7 @@ public class VisitChangeListener implements ResourceChangeListener
     {
         final Map<String, QuestionnaireFrequency> result = new HashMap<>();
         try {
-            for (final NodeIterator questionnaireSet = session.getNode("/Patient/"
+            for (final NodeIterator questionnaireSet = session.getNode("/Survey/"
                 + visitInformation.getQuestionnaireSet()).getNodes(); questionnaireSet.hasNext();) {
                 final Node questionnaireRef = questionnaireSet.nextNode();
                 if (!questionnaireRef.isNodeType("cards:QuestionnaireRef")
@@ -720,7 +720,7 @@ public class VisitChangeListener implements ResourceChangeListener
             final Node clinicNode = StringUtils.isNotBlank(clinicName) && session.nodeExists(clinicName)
                 ? session.getNode(clinicName) : null;
             if (clinicNode != null) {
-                this.questionnaireSet = session.nodeExists("/Patient/" + clinicNode.getProperty("survey").getString())
+                this.questionnaireSet = session.nodeExists("/Survey/" + clinicNode.getProperty("survey").getString())
                     ? clinicNode.getProperty("survey").getString() : null;
                 this.clinicPath = clinicNode.getPath();
             } else {

@@ -146,7 +146,7 @@ function PatientIdentification(props) {
   }
 
   const sendFetch = (requestData, onError) => {
-    fetch("/Patient.validateCredentials", {
+    fetch("/Survey.validateCredentials", {
       "method": "POST",
       "body": requestData
       })

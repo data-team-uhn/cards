@@ -318,7 +318,7 @@ public final class AppointmentUtils
      * @param resolver a ResourceResolver that can be used to query the JCR
      * @param formRelatedSubject the JCR Subject Resource for which the Clinic is associated with
      * @param clinicIdLink the question linking the Subject to a clinic (eg. /Questionnaires/Visit information/surveys)
-     * @param clinicsJcrPath the JCR path for information on the clinics (eg. /Patient)
+     * @param clinicsJcrPath the JCR path for information on the clinics (eg. /Survey)
      * @return the associated cards:QuestionnaireSet JCR Resource or null
      */
     public static Resource getValidClinicNode(ResourceResolver resolver, Resource formRelatedSubject,
@@ -353,7 +353,7 @@ public final class AppointmentUtils
      * @param resolver a ResourceResolver that can be used to query the JCR
      * @param formRelatedSubject the JCR Subject Resource for which the Clinic is associated with
      * @param clinicIdLink the question linking the Subject to a clinic (eg. /Questionnaires/Visit information/surveys)
-     * @param clinicsJcrPath clinicsJcrPath the JCR path for information on the clinics (eg. /Patient)
+     * @param clinicsJcrPath clinicsJcrPath the JCR path for information on the clinics (eg. /Survey)
      * @param clinicEmailProperty the JCR node property holding the email address (eg. "emergencyContact")
      * @return the contact email address associated with a subject
      */

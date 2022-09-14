@@ -711,7 +711,7 @@ public class PatientLocalStorage
             // Resolve this name from our mapping
             final String clinic = locations.getString(i);
             // TODO: What do we do in case of a collision?
-            final String mapPath = "/Patient/ClinicMapping/" + String.valueOf(clinic.hashCode());
+            final String mapPath = "/Survey/ClinicMapping/" + String.valueOf(clinic.hashCode());
             final Resource mapping = this.resolver.getResource(mapPath);
 
             if (mapping == null) {
