@@ -22,56 +22,58 @@
     <property>
         <name>welcomeMessage</name>
         <value>
-
-### Welcome to APP_NAME
-
-APP_NAME is designed to ask you the most important questions about your health and well being. Your responses will remain confidential and will help your provider determine how we can best help you.
+APP_NAME is designed to ask you the most important questions about how you percieved your interactions with your health care providers during your latest hospital stay.
 
 Completing the questionnaire is voluntary, so if you would rather not complete it, you do not have to.
 
-If routine service evaluations or research projects are undertaken, your responses may be analyzed in a completely anonymous way.
+Your responses remain confidential. They will be analyzed in a completely anonymous way and used to improve our services and enhance future experience for you and other patients.
 
         </value>
         <type>String</type>
     </property>
     <property>
         <name>noEventsMessage</name>
-        <value>We could not find any upcoming appointments that require survey responses.</value>
+        <value></value>
         <type>String</type>
     </property>
     <property>
         <name>eventSelectionMessage</name>
-        <value>To fill out pre-appointment surveys, please select one of the clinics where your upcoming appointments will take place.</value>
+        <value></value>
         <type>String</type>
     </property>
     <property>
         <name>eventLabel</name>
-        <value>Upcoming appointment</value>
+        <value></value>
         <type>String</type>
     </property>
     <property>
         <name>noSurveysMessage</name>
-        <value>You have no pending surveys to fill out for your next appointment.</value>
+        <value></value>
         <type>String</type>
     </property>
     <property>
+        <name>enableStartScreen</name>
+        <value>False</value>
+        <type>Boolean</type>
+    </property>
+    <property>
         <name>surveyIntro</name>
-        <value>Tell us about your symptoms prior to your appointment.</value>
+        <value></value>
         <type>String</type>
     </property>
     <property>
         <name>disclaimer</name>
-        <value>Please note that your responses may not be reviewed by your care team until the day of your next appointment. If your symptoms are worsening while waiting for your next appointment, please proceed to your nearest Emergency Department today, or call 911.</value>
+        <value></value>
         <type>String</type>
     </property>
     <property>
         <name>summaryInstructions</name>
-        <value>For your privacy and security, once this screen is closed the information below will not be accessible until the day of your appointment with your provider. Please print or note this information for your reference.</value>
+        <value></value>
         <type>String</type>
     </property>
     <property>
         <name>interpretationInstructions</name>
-        <value>There are different actions you can take now depending on how you have scored your symptoms. Please see below for a summary of your scores and suggested actions.</value>
+        <value></value>
         <type>String</type>
     </property>
 </node>
