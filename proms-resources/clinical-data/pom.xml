@@ -41,13 +41,13 @@
           <instructions>
             <Include-Resource>{maven-resources},src/main/media</Include-Resource>
             <Sling-Initial-Content>
-              SLING-INF/content/Homepage/Proms/Cardio.xml;path:=/Proms/Cardio;overwrite:=true,
-              SLING-INF/content/Homepage/Proms/Mood.xml;path:=/Proms/Mood;overwrite:=true,
-              SLING-INF/content/Homepage/Proms/ClinicMapping.xml;path:=/Proms/ClinicMapping;overwrite:=true,
-              SLING-INF/content/Homepage/Proms/PatientIdentification.xml;path:=/Proms/PatientIdentification;overwrite:=true,
-              SLING-INF/content/Homepage/Proms/TermsOfUse.xml;path:=/Proms/TermsOfUse;overwrite:=true,
-              SLING-INF/content/Homepage/Proms/SurveyInstructions.xml;path:=/Proms/SurveyInstructions;overwrite:=true,
-              SLING-INF/content/Homepage/Proms/DashboardSettings.xml;path:=/Proms/DashboardSettings;overwrite:=true,
+              SLING-INF/content/Patient/Cardio.xml;path:=/Patient/Cardio;overwrite:=true,
+              SLING-INF/content/Patient/Mood.xml;path:=/Patient/Mood;overwrite:=true,
+              SLING-INF/content/Patient/ClinicMapping.xml;path:=/Patient/ClinicMapping;overwrite:=true,
+              SLING-INF/content/Patient/PatientIdentification.xml;path:=/Patient/PatientIdentification;overwrite:=true,
+              SLING-INF/content/Patient/TermsOfUse.xml;path:=/Patient/TermsOfUse;overwrite:=true,
+              SLING-INF/content/Patient/SurveyInstructions.xml;path:=/Patient/SurveyInstructions;overwrite:=true,
+              SLING-INF/content/Patient/DashboardSettings.xml;path:=/Patient/DashboardSettings;overwrite:=true,
               SLING-INF/content/Questionnaires/;path:=/Questionnaires/;overwriteProperties:=true;uninstall:=true;checkin:=true,
               SLING-INF/content/libs/cards/resources/media/proms/;path:=/libs/cards/resources/media/proms/;overwrite:=true;uninstall:=true,
               SLING-INF/content/libs/cards/conf/Media.json;path:=/libs/cards/conf/Media;overwriteProperties:=true,

@@ -1,0 +1,5 @@
+{
+  "jcr:primaryType": "cards:ExtensionPoint",
+  "cards:extensionPointId": "patient-portal/footer",
+  "cards:extensionPointName": "Patient Portal footer links"
+}

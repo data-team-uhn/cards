@@ -1,7 +1,0 @@
-{
-  "jcr:primaryType": "cards:Extension",
-  "cards:extensionPointId": "cards/coreUI/print/header",
-  "cards:extensionName": "Print header with patient information",
-  "cards:extensionRenderURL": "asset:proms-homepage.PrintHeader.js",
-  "cards:defaultOrder": 10
-}

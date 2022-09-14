@@ -1,0 +1,7 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/view",
+  "cards:extensionName": "Clinics",
+  "cards:targetURL": "/content.html/admin/Clinics",
+  "cards:extensionRenderURL": "asset:patient-portal.Clinics.js"
+}

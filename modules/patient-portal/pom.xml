@@ -22,24 +22,39 @@
 
   <parent>
     <groupId>io.uhndata.cards</groupId>
-    <artifactId>proms-resources</artifactId>
+    <artifactId>cards-modules</artifactId>
     <version>0.9-SNAPSHOT</version>
   </parent>
 
-  <artifactId>proms-backend</artifactId>
+  <artifactId>cards-patient-portal</artifactId>
   <packaging>bundle</packaging>
-  <name>Proms Resources - Backend code</name>
+  <name>CARDS - Patient Portal</name>
+  <description>Support for patients to fill in their forms</description>
 
   <build>
     <plugins>
-      <!-- This is an OSGi bundle -->
+      <plugin>
+        <groupId>org.apache.sling</groupId>
+        <artifactId>slingfeature-maven-plugin</artifactId>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Sling-Initial-Content>SLING-INF/content/apps/cards/clinics/Cardio/mailTemplates;path:=/apps/cards/clinics/Cardio/mailTemplates;overwrite:=true</Sling-Initial-Content>
+            <Include-Resource>{maven-resources},src/main/media</Include-Resource>
+            <Sling-Nodetypes>SLING-INF/nodetypes/patient-portal.cnd</Sling-Nodetypes>
+            <Sling-Initial-Content>
+              SLING-INF/content/libs/cards/resources/media/patient-portal/;path:=/libs/cards/resources/media/patient-portal/;overwrite:=true;uninstall:=true,
+              SLING-INF/content/Patient.json;path:=/Patient;overwrite:=true,
+              SLING-INF/content/libs/cards/PatientHomepage/;path:=/libs/cards/PatientHomepage/;overwrite:=true,
+              SLING-INF/content/apps/cards/ExtensionPoints/;path:=/apps/cards/ExtensionPoints/;overwriteProperties:=true;uninstall:=true,
+              SLING-INF/content/Extensions/;path:=/Extensions/;overwriteProperties:=true;uninstall:=true,
+              SLING-INF/content/Extensions/AdminDashboard/;path:=/Extensions/AdminDashboard/;overwriteProperties:=true;uninstall:=true,
+              SLING-INF/content/Extensions/Views/;path:=/Extensions/Views/;overwriteProperties:=true;uninstall:=true,
+            </Sling-Initial-Content>
           </instructions>
         </configuration>
       </plugin>

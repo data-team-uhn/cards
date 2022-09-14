@@ -1,0 +1,9 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/admindashboard/entry",
+  "cards:extensionName": "Patient Portal Terms of Use",
+  "cards:targetURL": "/content.html/admin/ToUConfiguration",
+  "cards:icon": "asset:patient-portal.ToUConfigurationIcon.js",
+  "cards:hint": "Configure the Patient Portal Terms of Use contents and acceptance requirements",
+  "cards:defaultOrder": 440
+}

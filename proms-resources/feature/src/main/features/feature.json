@@ -17,7 +17,7 @@
 
 {
   "prototype":{
-    "id": "io.uhndata.cards:cards-patient-interface:slingosgifeature:${project.version}"
+    "id": "io.uhndata.cards:cards-patient-portal:slingosgifeature:${project.version}"
   },
   "bundles":[
     {
@@ -63,7 +63,7 @@
     },
     "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~proms":{
       "user.mapping":[
-        "io.uhndata.cards.proms-backend:VisitFormsPreparation=[proms-visit-backend]",
+        "io.uhndata.cards.proms-backend:VisitFormsPreparation=[patient-visit-backend]",
         "io.uhndata.cards.proms-permissions:UnsubmittedFormsRestriction=[sling-readall]",
         "io.uhndata.cards.proms-backend:TorchImporter=[proms-import-backend]",
         "io.uhndata.cards.proms-backend:MetricLogger=[cards-metrics]"
