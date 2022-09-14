@@ -32,7 +32,6 @@ import { DEFAULT_INSTRUCTIONS, SURVEY_INSTRUCTIONS_PATH } from "./SurveyInstruct
 const CONFIG = "/Proms/PatientIdentification.json";
 const TOKENLESS_AUTH_ENABLED_PROP = "tokenlessAuthEnabled";
 const AUTH_TOKEN_PARAM = "auth_token";
-const ALLOWED_POST_VISIT_COMPLETION_TIME_PROP = "allowedPostVisitCompletionTime";
 
 function PromsHomepage (props) {
   // Current user and associated subject
@@ -40,8 +39,8 @@ function PromsHomepage (props) {
   const [ subject, setSubject ] = useState();
   // Patient Survey UI texts from Patient Portal Survey Instructions
   const [ surveyInstructions, setSurveyInstructions ] = useState();
+  const [ accessConfig, setAccessConfig ] = useState({});
   const [ unableToProceed, setUnableToProceed ] = useState();
-  const [ allowedPostVisitCompletionTime, setAllowedPostVisitCompletionTime ] = useState();
 
   // Fetch saved settings for Patient Portal Survey Instructions
   useEffect(() => {
@@ -60,7 +59,7 @@ function PromsHomepage (props) {
     fetch(CONFIG)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
-        setAllowedPostVisitCompletionTime(json[ALLOWED_POST_VISIT_COMPLETION_TIME_PROP]);
+        setAccessConfig(json);
 
         let auth_token = new URLSearchParams(window.location.search).get(AUTH_TOKEN_PARAM);
         if (!(json[TOKENLESS_AUTH_ENABLED_PROP] || auth_token)) {
@@ -104,7 +103,7 @@ function PromsHomepage (props) {
   }
 
   return (<>
-    <QuestionnaireSet subject={subject} username={username} displayText={displayText} allowedPostVisitCompletionTime={allowedPostVisitCompletionTime}/>
+    <QuestionnaireSet subject={subject} username={username} displayText={displayText} config={{...accessConfig, enableStartScreen: surveyInstructions?.enableStartScreen}} />
     <PromsFooter />
   </>);
 }

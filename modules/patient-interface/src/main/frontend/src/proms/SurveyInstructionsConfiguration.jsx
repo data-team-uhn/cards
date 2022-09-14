@@ -18,6 +18,8 @@
 //
 import React, { useEffect, useState } from 'react';
 import {
+    Checkbox,
+    FormControlLabel,
     List,
     ListItem,
     TextField,
@@ -51,15 +53,17 @@ function SurveyInstructionsConfiguration() {
   const labels = {
     welcomeMessage: ["welcomeMessage"],
     eventSelectionScreen: ["noEventsMessage", "eventSelectionMessage"],
-    startScreen: [ "eventLabel", "noSurveysMessage", "surveyIntro" ],
+    startScreen: [ "enableStartScreen", "eventLabel", "noSurveysMessage", "surveyIntro" ],
     summaryScreen: [ "disclaimer", "summaryInstructions", "interpretationInstructions" ]
   };
 
   let buildConfigData = (formData) => {
     for (let key of Object.keys(surveyInstructions)) {
-      !key.startsWith("jcr:") && formData.append(key, surveyInstructions[key] || "");
+      !key.startsWith("jcr:") && formData.append(key, surveyInstructions[key] || getUnsetValue(key));
     }
   }
+
+  let getUnsetValue = (key) => (key?.startsWith("enable") ? false : "");
 
   useEffect(() => {
     setHasChanges(true);
@@ -85,6 +89,15 @@ function SurveyInstructionsConfiguration() {
                       <WelcomeMessageConfiguration
                         welcomeMessage={surveyInstructions?.[key]}
                         onChange={(text) => { setSurveyInstructions({...surveyInstructions, [key]: text}); }}
+                      />
+                    :
+                    key.startsWith("enable") ?
+                      <FormControlLabel control={
+                        <Checkbox
+                          checked={!!(surveyInstructions?.[key])}
+                          onChange={event => setSurveyInstructions({...surveyInstructions, [key]: !!event.target.checked})}
+                        />}
+                        label={camelCaseToWords(key)}
                       />
                     :
                       <TextField

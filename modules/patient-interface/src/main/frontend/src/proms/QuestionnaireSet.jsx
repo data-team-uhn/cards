@@ -93,7 +93,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function QuestionnaireSet(props) {
-  const { subject, username, displayText, contentOffset, allowedPostVisitCompletionTime } = props;
+  const { subject, username, displayText, contentOffset, config } = props;
 
   // Identifier of the questionnaire set used for the visit
   const [ id, setId ] = useState();
@@ -152,7 +152,7 @@ function QuestionnaireSet(props) {
 
   // Determine the screen type (and style) based on the step number
   useEffect(() => {
-    setScreenType(crtStep >= 0 && crtStep < questionnaireIds.length ? "survey" : "screen");
+    setScreenType(crtStep >= 0 && crtStep < questionnaireIds?.length ? "survey" : "screen");
   }, [crtStep]);
 
   // Reset the crtFormId when returning to the welcome screen
@@ -171,7 +171,7 @@ function QuestionnaireSet(props) {
   // If we're back to the start because the user was directed to add missing answers,
   // dont't show the welcome screen and skip to the next step without them pressing start
   useEffect(() => {
-    if (crtStep == -1 && endReached) {
+    if (crtStep == -1 && (endReached || !config?.enableStartScreen)) {
       nextQuestionnaire && launchNextForm();
     }
   }, [crtStep, endReached, subjectDataLoadCount, nextQuestionnaire?.["@path"]]);
@@ -503,7 +503,7 @@ function QuestionnaireSet(props) {
     let date = getVisitDate();
     if (date?.isValid) {
       // Compute the moment the token expired: the configured number of days after the visit, at midnight
-      date = date.plus({days: allowedPostVisitCompletionTime}).endOf('day');
+      date = date.plus({days: config?.allowedPostVisitCompletionTime || 0}).endOf('day');
 
       // Get the date difference in the format: X days, Y hours and Z minutes,
       // skipping any time division that has a value of 0
@@ -527,12 +527,21 @@ function QuestionnaireSet(props) {
     return result;
   }
 
+  let withWelcomeMessage = !(config?.PIIAuthRequired);
+  let appName = document.querySelector('meta[name="title"]')?.content;
+  let welcomeMessageTemplate = displayText('welcomeMessage');
+  let welcomeMessage = withWelcomeMessage && welcomeMessageTemplate ?
+    <FormattedText>{ welcomeMessageTemplate.replaceAll("APP_NAME", appName) }</FormattedText>
+    : "";
+
   let welcomeScreen = (isComplete && isSubmitted || questionnaireIds?.length == 0) ? [
     <Typography variant="h4" key="welcome-greeting">{ greet(username) }</Typography>,
+    welcomeMessage,
     appointmentAlert(),
     displayText("noSurveysMessage", Typography, {color: "textSecondary", variant: "subtitle1", key: "welcome-message"})
   ] : [
     <Typography variant="h4" key="welcome-greeting">{ greet(username) }</Typography>,
+    welcomeMessage,
     appointmentAlert(),
     displayText("surveyIntro", Typography, {paragraph: true, key: "welcome-message"}),
     <List key="welcome-surveys">
