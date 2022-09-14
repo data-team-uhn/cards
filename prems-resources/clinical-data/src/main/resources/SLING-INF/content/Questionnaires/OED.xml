@@ -38,11 +38,11 @@
 		<type>Boolean</type>
 	</property>
 	<node>
-		<name>oed_instructions</name>
+		<name>oed_0</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Please answer the questions about your recent stay at the hospital named on the cover letter. Do not include any other hospital stays in your answers.</value>
+			<value>Please answer the questions about your recent stay at the hospital named below. Do not include any other hospital stays in your answers.</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -86,7 +86,7 @@
 		</property>
 	</node>
 	<node>
-		<name>oed_lomgwaitsexplained</name>
+		<name>oed_1</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
@@ -100,7 +100,7 @@
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>text</value>
+			<value>long</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -114,7 +114,7 @@
 			<type>Long</type>
 		</property>
 		<node>
-			<name>yes</name>
+			<name>3</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -123,7 +123,7 @@
 			</property>
 			<property>
 				<name>value</name>
-				<value>Yes</value>
+				<value>3</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -133,7 +133,7 @@
 			</property>
 		</node>
 		<node>
-			<name>nobutiwouldhavelikedareason</name>
+			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -142,7 +142,7 @@
 			</property>
 			<property>
 				<name>value</name>
-				<value>No, but I would have liked a reason</value>
+				<value>1</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -152,7 +152,7 @@
 			</property>
 		</node>
 		<node>
-			<name>nobutididnotmind</name>
+			<name>2</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -161,7 +161,7 @@
 			</property>
 			<property>
 				<name>value</name>
-				<value>No, but I did not mind</value>
+				<value>2</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -171,7 +171,7 @@
 			</property>
 		</node>
 		<node>
-			<name>don’tknow-can’tremember</name>
+			<name>-1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -180,7 +180,7 @@
 			</property>
 			<property>
 				<name>value</name>
-				<value>Don’t know  Can’t remember</value>
+				<value>-1</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -190,7 +190,7 @@
 			</property>
 		</node>
 		<node>
-			<name>ididnothavealongwait</name>
+			<name>4</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -199,7 +199,7 @@
 			</property>
 			<property>
 				<name>value</name>
-				<value>I did not have a long wait</value>
+				<value>4</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -210,7 +210,7 @@
 		</node>
 	</node>
 	<node>
-		<name>oed_patienttrreatedwell</name>
+		<name>oed_2</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
@@ -224,7 +224,7 @@
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>text</value>
+			<value>long</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -238,7 +238,7 @@
 			<type>Long</type>
 		</property>
 		<node>
-			<name>never</name>
+			<name>0</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -247,7 +247,7 @@
 			</property>
 			<property>
 				<name>value</name>
-				<value>Never</value>
+				<value>0</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -257,7 +257,7 @@
 			</property>
 		</node>
 		<node>
-			<name>sometimes</name>
+			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -266,7 +266,7 @@
 			</property>
 			<property>
 				<name>value</name>
-				<value>Sometimes</value>
+				<value>1</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -276,7 +276,7 @@
 			</property>
 		</node>
 		<node>
-			<name>usually</name>
+			<name>2</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -285,7 +285,7 @@
 			</property>
 			<property>
 				<name>value</name>
-				<value>Usually</value>
+				<value>2</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -295,7 +295,7 @@
 			</property>
 		</node>
 		<node>
-			<name>always</name>
+			<name>3</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -304,7 +304,7 @@
 			</property>
 			<property>
 				<name>value</name>
-				<value>Always</value>
+				<value>3</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -315,7 +315,7 @@
 		</node>
 	</node>
 	<node>
-		<name>oed_careteamexplainedwell</name>
+		<name>oed_3</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
@@ -329,7 +329,7 @@
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>text</value>
+			<value>long</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -343,7 +343,7 @@
 			<type>Long</type>
 		</property>
 		<node>
-			<name>never</name>
+			<name>0</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -352,7 +352,7 @@
 			</property>
 			<property>
 				<name>value</name>
-				<value>Never</value>
+				<value>0</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -362,7 +362,7 @@
 			</property>
 		</node>
 		<node>
-			<name>sometimes</name>
+			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -371,7 +371,7 @@
 			</property>
 			<property>
 				<name>value</name>
-				<value>Sometimes</value>
+				<value>1</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -381,7 +381,7 @@
 			</property>
 		</node>
 		<node>
-			<name>usually</name>
+			<name>2</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -390,7 +390,7 @@
 			</property>
 			<property>
 				<name>value</name>
-				<value>Usually</value>
+				<value>2</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -400,7 +400,7 @@
 			</property>
 		</node>
 		<node>
-			<name>always</name>
+			<name>3</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -409,7 +409,7 @@
 			</property>
 			<property>
 				<name>value</name>
-				<value>Always</value>
+				<value>3</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -420,7 +420,7 @@
 		</node>
 	</node>
 	<node>
-		<name>oed_careteamcommunication</name>
+		<name>oed_4</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
@@ -434,7 +434,7 @@
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>text</value>
+			<value>long</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -448,7 +448,7 @@
 			<type>Long</type>
 		</property>
 		<node>
-			<name>never</name>
+			<name>0</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -457,7 +457,7 @@
 			</property>
 			<property>
 				<name>value</name>
-				<value>Never</value>
+				<value>0</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -467,7 +467,7 @@
 			</property>
 		</node>
 		<node>
-			<name>sometimes</name>
+			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -476,7 +476,7 @@
 			</property>
 			<property>
 				<name>value</name>
-				<value>Sometimes</value>
+				<value>1</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -486,7 +486,7 @@
 			</property>
 		</node>
 		<node>
-			<name>usually</name>
+			<name>2</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -495,7 +495,7 @@
 			</property>
 			<property>
 				<name>value</name>
-				<value>Usually</value>
+				<value>2</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -505,7 +505,7 @@
 			</property>
 		</node>
 		<node>
-			<name>always</name>
+			<name>3</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -514,7 +514,7 @@
 			</property>
 			<property>
 				<name>value</name>
-				<value>Always</value>
+				<value>3</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -524,7 +524,7 @@
 			</property>
 		</node>
 		<node>
-			<name>don’tknow-notsure</name>
+			<name>-1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -533,7 +533,7 @@
 			</property>
 			<property>
 				<name>value</name>
-				<value>Don’t know  Not sure</value>
+				<value>-1</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -544,7 +544,7 @@
 		</node>
 	</node>
 	<node>
-		<name>oed_emotionalsupportprovided</name>
+		<name>oed_5</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
@@ -560,7 +560,7 @@ you had during this hospital visit?</value>
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>text</value>
+			<value>long</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -574,7 +574,7 @@ you had during this hospital visit?</value>
 			<type>Long</type>
 		</property>
 		<node>
-			<name>never</name>
+			<name>0</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -583,7 +583,7 @@ you had during this hospital visit?</value>
 			</property>
 			<property>
 				<name>value</name>
-				<value>Never</value>
+				<value>0</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -593,7 +593,7 @@ you had during this hospital visit?</value>
 			</property>
 		</node>
 		<node>
-			<name>sometimes</name>
+			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -602,7 +602,7 @@ you had during this hospital visit?</value>
 			</property>
 			<property>
 				<name>value</name>
-				<value>Sometimes</value>
+				<value>1</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -612,7 +612,7 @@ you had during this hospital visit?</value>
 			</property>
 		</node>
 		<node>
-			<name>usually</name>
+			<name>2</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -621,7 +621,7 @@ you had during this hospital visit?</value>
 			</property>
 			<property>
 				<name>value</name>
-				<value>Usually</value>
+				<value>2</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -631,7 +631,7 @@ you had during this hospital visit?</value>
 			</property>
 		</node>
 		<node>
-			<name>always</name>
+			<name>3</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -640,7 +640,7 @@ you had during this hospital visit?</value>
 			</property>
 			<property>
 				<name>value</name>
-				<value>Always</value>
+				<value>3</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -650,7 +650,7 @@ you had during this hospital visit?</value>
 			</property>
 		</node>
 		<node>
-			<name>notapplicable</name>
+			<name>-1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -659,7 +659,7 @@ you had during this hospital visit?</value>
 			</property>
 			<property>
 				<name>value</name>
-				<value>Not applicable</value>
+				<value>-1</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -675,7 +675,7 @@ you had during this hospital visit?</value>
 		</node>
 	</node>
 	<node>
-		<name>oed_careteamhelpfull</name>
+		<name>oed_6</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
@@ -690,7 +690,7 @@ to ease your discomfort or symptoms?</value>
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>text</value>
+			<value>long</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -704,7 +704,7 @@ to ease your discomfort or symptoms?</value>
 			<type>Long</type>
 		</property>
 		<node>
-			<name>no</name>
+			<name>0</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -713,7 +713,7 @@ to ease your discomfort or symptoms?</value>
 			</property>
 			<property>
 				<name>value</name>
-				<value>No</value>
+				<value>0</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -723,7 +723,7 @@ to ease your discomfort or symptoms?</value>
 			</property>
 		</node>
 		<node>
-			<name>yessomewhat</name>
+			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -732,7 +732,7 @@ to ease your discomfort or symptoms?</value>
 			</property>
 			<property>
 				<name>value</name>
-				<value>Yes, somewhat</value>
+				<value>1</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -742,7 +742,7 @@ to ease your discomfort or symptoms?</value>
 			</property>
 		</node>
 		<node>
-			<name>yesmostly</name>
+			<name>2</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -751,7 +751,7 @@ to ease your discomfort or symptoms?</value>
 			</property>
 			<property>
 				<name>value</name>
-				<value>Yes, mostly</value>
+				<value>2</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -761,7 +761,7 @@ to ease your discomfort or symptoms?</value>
 			</property>
 		</node>
 		<node>
-			<name>yes</name>
+			<name>3</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -770,7 +770,7 @@ to ease your discomfort or symptoms?</value>
 			</property>
 			<property>
 				<name>value</name>
-				<value>Yes</value>
+				<value>3</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -780,7 +780,7 @@ to ease your discomfort or symptoms?</value>
 			</property>
 		</node>
 		<node>
-			<name>notapplicable</name>
+			<name>-1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -789,7 +789,7 @@ to ease your discomfort or symptoms?</value>
 			</property>
 			<property>
 				<name>value</name>
-				<value>Not applicable</value>
+				<value>-1</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -805,7 +805,7 @@ to ease your discomfort or symptoms?</value>
 		</node>
 	</node>
 	<node>
-		<name>oed_patientinformed</name>
+		<name>oed_7</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
@@ -819,7 +819,7 @@ to ease your discomfort or symptoms?</value>
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>text</value>
+			<value>long</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -833,7 +833,7 @@ to ease your discomfort or symptoms?</value>
 			<type>Long</type>
 		</property>
 		<node>
-			<name>notatall</name>
+			<name>0</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -842,7 +842,7 @@ to ease your discomfort or symptoms?</value>
 			</property>
 			<property>
 				<name>value</name>
-				<value>Not at all</value>
+				<value>0</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -852,7 +852,7 @@ to ease your discomfort or symptoms?</value>
 			</property>
 		</node>
 		<node>
-			<name>partly</name>
+			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -861,7 +861,7 @@ to ease your discomfort or symptoms?</value>
 			</property>
 			<property>
 				<name>value</name>
-				<value>Partly</value>
+				<value>1</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -871,7 +871,7 @@ to ease your discomfort or symptoms?</value>
 			</property>
 		</node>
 		<node>
-			<name>quiteabit</name>
+			<name>2</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -880,7 +880,7 @@ to ease your discomfort or symptoms?</value>
 			</property>
 			<property>
 				<name>value</name>
-				<value>Quite a bit</value>
+				<value>2</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -890,7 +890,7 @@ to ease your discomfort or symptoms?</value>
 			</property>
 		</node>
 		<node>
-			<name>completely</name>
+			<name>3</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -899,7 +899,7 @@ to ease your discomfort or symptoms?</value>
 			</property>
 			<property>
 				<name>value</name>
-				<value>Completely</value>
+				<value>3</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -910,16 +910,16 @@ to ease your discomfort or symptoms?</value>
 		</node>
 	</node>
 	<node>
-		<name>oed_rateexperience</name>
+		<name>oed_8</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
-			<value>Overall, did you have a good emergency department experience? </value>
+			<value>Overall... </value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>maxAnswers</name>
-			<value>1</value>
+			<value>10</value>
 			<type>Long</type>
 		</property>
 		<property>
@@ -930,11 +930,6 @@ to ease your discomfort or symptoms?</value>
 		<property>
 			<name>description</name>
 			<value>Please answer on a scale where 0 is “I had a very poor experience” and 10 is “I had a very good experience.”</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>displayMode</name>
-			<value>slider</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -963,21 +958,80 @@ to ease your discomfort or symptoms?</value>
 			<type>String</type>
 		</property>
 		<property>
+			<name>displayMode</name>
+			<value>slider</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>sliderMarkStep</name>
 			<value>1</value>
 			<type>Long</type>
 		</property>
 		<property>
 			<name>sliderOrientation</name>
-			<value>vertical</value>
+			<value>horizontal</value>
 			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>oed_9</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>What else would you like to say about this
+emergency department experience?</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>text</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>textbox</value>
+			<type>String</type>
+		</property>
+	</node>
+	<node>
+		<name>oed_10</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Would you recommend this hospital to your friends and family?</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>long</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>list</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>minAnswers</name>
+			<value>1</value>
+			<type>Long</type>
 		</property>
 		<node>
 			<name>0</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
-				<value>I had a very poor experience</value>
+				<value>Definitely no</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -996,7 +1050,7 @@ to ease your discomfort or symptoms?</value>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
-				<value>1</value>
+				<value>Probably no</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1015,7 +1069,7 @@ to ease your discomfort or symptoms?</value>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
-				<value>2</value>
+				<value>Probably yes</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1034,270 +1088,12 @@ to ease your discomfort or symptoms?</value>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
-				<value>3</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>value</name>
-				<value>3</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>defaultOrder</name>
-				<value>4</value>
-				<type>Long</type>
-			</property>
-		</node>
-		<node>
-			<name>4</name>
-			<primaryNodeType>cards:AnswerOption</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>4</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>value</name>
-				<value>4</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>defaultOrder</name>
-				<value>5</value>
-				<type>Long</type>
-			</property>
-		</node>
-		<node>
-			<name>5</name>
-			<primaryNodeType>cards:AnswerOption</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>5</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>value</name>
-				<value>5</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>defaultOrder</name>
-				<value>6</value>
-				<type>Long</type>
-			</property>
-		</node>
-		<node>
-			<name>6</name>
-			<primaryNodeType>cards:AnswerOption</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>6</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>value</name>
-				<value>6</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>defaultOrder</name>
-				<value>7</value>
-				<type>Long</type>
-			</property>
-		</node>
-		<node>
-			<name>7</name>
-			<primaryNodeType>cards:AnswerOption</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>7</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>value</name>
-				<value>7</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>defaultOrder</name>
-				<value>8</value>
-				<type>Long</type>
-			</property>
-		</node>
-		<node>
-			<name>8</name>
-			<primaryNodeType>cards:AnswerOption</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>8</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>value</name>
-				<value>8</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>defaultOrder</name>
-				<value>9</value>
-				<type>Long</type>
-			</property>
-		</node>
-		<node>
-			<name>9</name>
-			<primaryNodeType>cards:AnswerOption</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>9</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>value</name>
-				<value>9</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>defaultOrder</name>
-				<value>10</value>
-				<type>Long</type>
-			</property>
-		</node>
-		<node>
-			<name>10</name>
-			<primaryNodeType>cards:AnswerOption</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>I had a very good experience</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>value</name>
-				<value>10</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>defaultOrder</name>
-				<value>11</value>
-				<type>Long</type>
-			</property>
-		</node>
-	</node>
-	<node>
-		<name>oed_additionalinfo</name>
-		<primaryNodeType>cards:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>What else would you like to say about this
-emergency department experience?</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>text</value>
-			<type>String</type>
-		</property>
-	</node>
-	<node>
-		<name>oed_recommend</name>
-		<primaryNodeType>cards:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>Would you recommend this hospital to your friends and family?</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>text</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>displayMode</name>
-			<value>list</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>minAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<node>
-			<name>definitelyno</name>
-			<primaryNodeType>cards:AnswerOption</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>Definitely no</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>value</name>
-				<value>Definitely no</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>defaultOrder</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-		</node>
-		<node>
-			<name>probablyno</name>
-			<primaryNodeType>cards:AnswerOption</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>Probably no</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>value</name>
-				<value>Probably no</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>defaultOrder</name>
-				<value>2</value>
-				<type>Long</type>
-			</property>
-		</node>
-		<node>
-			<name>probablyyes</name>
-			<primaryNodeType>cards:AnswerOption</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>Probably yes</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>value</name>
-				<value>Probably yes</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>defaultOrder</name>
-				<value>3</value>
-				<type>Long</type>
-			</property>
-		</node>
-		<node>
-			<name>definitelyyes</name>
-			<primaryNodeType>cards:AnswerOption</primaryNodeType>
-			<property>
-				<name>label</name>
 				<value>Definitely yes</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>value</name>
-				<value>Definitely yes</value>
+				<value>3</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1308,7 +1104,7 @@ emergency department experience?</value>
 		</node>
 	</node>
 	<node>
-		<name>oed_patienttreatedwell</name>
+		<name>oed_11</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
 			<name>text</name>
@@ -1322,7 +1118,7 @@ emergency department experience?</value>
 		</property>
 		<property>
 			<name>dataType</name>
-			<value>text</value>
+			<value>long</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -1336,7 +1132,7 @@ emergency department experience?</value>
 			<type>Long</type>
 		</property>
 		<node>
-			<name>never</name>
+			<name>0</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -1345,7 +1141,7 @@ emergency department experience?</value>
 			</property>
 			<property>
 				<name>value</name>
-				<value>Never</value>
+				<value>0</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1355,7 +1151,7 @@ emergency department experience?</value>
 			</property>
 		</node>
 		<node>
-			<name>sometimes</name>
+			<name>1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -1364,7 +1160,7 @@ emergency department experience?</value>
 			</property>
 			<property>
 				<name>value</name>
-				<value>Sometimes</value>
+				<value>1</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1374,7 +1170,7 @@ emergency department experience?</value>
 			</property>
 		</node>
 		<node>
-			<name>usually</name>
+			<name>2</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -1383,7 +1179,7 @@ emergency department experience?</value>
 			</property>
 			<property>
 				<name>value</name>
-				<value>Usually</value>
+				<value>2</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1393,7 +1189,7 @@ emergency department experience?</value>
 			</property>
 		</node>
 		<node>
-			<name>always</name>
+			<name>3</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -1402,7 +1198,7 @@ emergency department experience?</value>
 			</property>
 			<property>
 				<name>value</name>
-				<value>Always</value>
+				<value>3</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1412,7 +1208,7 @@ emergency department experience?</value>
 			</property>
 		</node>
 		<node>
-			<name>don’tknow-notsure</name>
+			<name>-1</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
@@ -1421,7 +1217,7 @@ emergency department experience?</value>
 			</property>
 			<property>
 				<name>value</name>
-				<value>Don’t knowNot sure</value>
+				<value>-1</value>
 				<type>String</type>
 			</property>
 			<property>
