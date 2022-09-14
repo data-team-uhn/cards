@@ -187,7 +187,7 @@ function PatientIdentification(props) {
     hc && requestData.append("health_card", hc);
     visit && requestData.append("visit", visit);
 
-    sendFetch(requestData, (error) => {setError(error.statusText ? error.statusText : error);});
+    sendFetch(requestData, (error) => setError(error.statusText || "Invalid credentials"));
   }
 
   // On submitting the patient login form, make a request to identify the patient
