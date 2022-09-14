@@ -16,6 +16,9 @@
 // under the License.
 
 {
+  "prototype":{
+    "id": "io.uhndata.cards:cards-patient-interface:slingosgifeature:${project.version}"
+  },
   "bundles":[
     {
       "id":"${project.groupId}:cards-patient-subject-type:${project.version}",
@@ -40,30 +43,6 @@
     {
       "id":"${project.groupId}:proms-backend:${project.version}",
       "start-order":"26"
-    },
-    {
-      "id":"commons-beanutils:commons-beanutils:1.9.4",
-      "start-order":"25"
-    },
-    {
-      "id":"commons-digester:commons-digester:2.1",
-      "start-order":"25"
-    },
-    {
-      "id":"commons-validator:commons-validator:1.7",
-      "start-order":"25"
-    },
-    {
-      "id":"${project.groupId}:cards-token-authentication:${project.version}",
-      "start-order":"25"
-    },
-    {
-      "id":"${project.groupId}:cards-metrics:${project.version}",
-      "start-order":"25"
-    },
-    {
-      "id":"${project.groupId}:cards-http-requests:${project.version}",
-      "start-order":"25"
     }
   ],
   "configurations":{
@@ -73,54 +52,21 @@
         // In certain environments, this script gets executed before the main forms repoinit does, so we must make sure the paths we reference are created.
         "create path (cards:QuestionnairesHomepage) /Questionnaires \n create path (cards:FormsHomepage) /Forms \n create path (cards:SubjectsHomepage) /Subjects \n create path (cards:SubjectTypesHomepage) /SubjectTypes \n create path (cards:Homepage) /content",
         // Access rights for the special "patient" user: only allow access to the session subject data, excluding certain clinician-only sections/questions
-        "create user patient \n set ACL for patient \n     allow jcr:read on /Questionnaires,/SubjectTypes \n     deny jcr:all on /Questionnaires restriction(rep:itemNames,audit_intro,audit_results,eq5d_results,gad7_intro,gad7_results,phq9_intro,phq9_results) \n     allow jcr:read,jcr:write,jcr:nodeTypeManagement,jcr:versionManagement on /Forms restriction(cards:sessionSubject) \n     deny jcr:read on /Forms restriction(cards:question,/Questionnaires/AUDITC/audit_results/audit_score,/Questionnaires/AUDITC/audit_results/audit_interpretation,/Questionnaires/EQ5D/eq5d_results/eq5d_score,/Questionnaires/GAD7/gad7_results/gad7_score,/Questionnaires/GAD7/gad7_results/gad7_classification,/Questionnaires/GAD7/gad7_results/gad7_interpretation,/Questionnaires/PHQ9/phq9_results/phq9_score,/Questionnaires/PHQ9/phq9_results/phq9_classification,/Questionnaires/PHQ9/phq9_results/phq9_interpretation) \n     allow jcr:read on /Subjects restriction(cards:sessionSubject) \n     deny jcr:modifyProperties on /Forms restriction(rep:itemNames,subject,questionnaire) \n     deny jcr:all on /content \n end",
+        "create user patient \n set ACL for patient \n     deny jcr:all on /Questionnaires restriction(rep:itemNames,audit_intro,audit_results,eq5d_results,gad7_intro,gad7_results,phq9_intro,phq9_results) \n     deny jcr:read on /Forms restriction(cards:question,/Questionnaires/AUDITC/audit_results/audit_score,/Questionnaires/AUDITC/audit_results/audit_interpretation,/Questionnaires/EQ5D/eq5d_results/eq5d_score,/Questionnaires/GAD7/gad7_results/gad7_score,/Questionnaires/GAD7/gad7_results/gad7_classification,/Questionnaires/GAD7/gad7_results/gad7_interpretation,/Questionnaires/PHQ9/phq9_results/phq9_score,/Questionnaires/PHQ9/phq9_results/phq9_classification,/Questionnaires/PHQ9/phq9_results/phq9_interpretation) \n end",
         // Access rights for the special "guest-patient" user (not using a link from the notification email): only allow access to the session subject data, excluding certain clinician-only sections/questions and PII
-        "create user guest-patient \n set ACL for guest-patient \n     allow jcr:read on /Questionnaires,/SubjectTypes \n     deny jcr:all on /Questionnaires restriction(rep:itemNames,time,location,provider,audit_intro,audit_results,audit_sex,eq5d_results,gad7_intro,gad7_results,phq9_intro,phq9_results) \n     allow jcr:read,jcr:write,jcr:nodeTypeManagement,jcr:versionManagement on /Forms restriction(cards:sessionSubject) \n     deny jcr:read on /Forms restriction(cards:question,/Questionnaires/Visit*information/time,/Questionnaires/Visit*information/location,/Questionnaires/Visit*information/provider,/Questionnaires/AUDITC/audit_results/audit_score,/Questionnaires/AUDITC/audit_sex,/Questionnaires/AUDITC/audit_results/audit_interpretation,/Questionnaires/EQ5D/eq5d_results/eq5d_score,/Questionnaires/GAD7/gad7_results/gad7_score,/Questionnaires/GAD7/gad7_results/gad7_classification,/Questionnaires/GAD7/gad7_results/gad7_interpretation,/Questionnaires/PHQ9/phq9_results/phq9_score,/Questionnaires/PHQ9/phq9_results/phq9_classification,/Questionnaires/PHQ9/phq9_results/phq9_interpretation) \n     deny jcr:all on /Forms restriction(cards:questionnaire,/Questionnaires/Patient*information) \n     allow jcr:read on /Subjects restriction(cards:sessionSubject) \n     deny jcr:modifyProperties on /Forms restriction(rep:itemNames,subject,questionnaire) \n     deny jcr:all on /content \n end",
-        // Access rights for the special "tou-patient" user (not using a link from the notification email): only allow read/write access to the patient's terms of use version
-        "create user tou-patient \n set ACL for tou-patient \n     allow jcr:read on /SubjectTypes \n     allow jcr:read on /Questionnaires restriction(rep:glob,/Patient*information) \n     deny jcr:all on /Questionnaires restriction(rep:itemNames,last_name,first_name,date_of_birth,sex,mrn,health_card,fhir_id,email_unsubscribed,email_ok,email) \n     allow jcr:read,jcr:write,jcr:nodeTypeManagement,jcr:versionManagement on /Forms restriction(cards:sessionSubject) restriction(cards:questionnaire,/Questionnaires/Patient*information) \n     deny jcr:all on /Forms restriction(cards:question,/Questionnaires/Patient*information/last_name,/Questionnaires/Patient*information/first_name,/Questionnaires/Patient*information/date_of_birth,/Questionnaires/Patient*information/sex,/Questionnaires/Patient*information/mrn,/Questionnaires/Patient*information/health_card,/Questionnaires/Patient*information/fhir_id,/Questionnaires/Patient*information/email_unsubscribed,/Questionnaires/Patient*information/email_ok,/Questionnaires/Patient*information/email) \n     allow jcr:read on /Subjects restriction(cards:sessionSubject) \n     deny jcr:modifyProperties on /Forms restriction(rep:itemNames,subject,questionnaire) \n     deny jcr:all on /content \n end",
-        // Service users handling different aspects of the data handling:
-        // Importing visits and generating forms
+        "create user guest-patient \n set ACL for guest-patient \n     deny jcr:all on /Questionnaires restriction(rep:itemNames,time,location,provider,audit_intro,audit_results,audit_sex,eq5d_results,gad7_intro,gad7_results,phq9_intro,phq9_results) \n     deny jcr:read on /Forms restriction(cards:question,/Questionnaires/Visit*information/time,/Questionnaires/Visit*information/location,/Questionnaires/Visit*information/provider,/Questionnaires/AUDITC/audit_results/audit_score,/Questionnaires/AUDITC/audit_sex,/Questionnaires/AUDITC/audit_results/audit_interpretation,/Questionnaires/EQ5D/eq5d_results/eq5d_score,/Questionnaires/GAD7/gad7_results/gad7_score,/Questionnaires/GAD7/gad7_results/gad7_classification,/Questionnaires/GAD7/gad7_results/gad7_interpretation,/Questionnaires/PHQ9/phq9_results/phq9_score,/Questionnaires/PHQ9/phq9_results/phq9_classification,/Questionnaires/PHQ9/phq9_results/phq9_interpretation) \n     deny jcr:all on /Forms restriction(cards:questionnaire,/Questionnaires/Patient*information) \n end",
+        // Importing visits
         "create service user proms-import-backend \n set ACL on /Questionnaires,/SubjectTypes \n   allow jcr:read for proms-import-backend \n end \n set ACL on /Forms,/Subjects \n   allow jcr:read,rep:write,jcr:versionManagement for proms-import-backend \n end",
-        "create service user proms-visit-backend \n set ACL on /Questionnaires,/Subjects,/SubjectTypes \n   allow jcr:read for proms-visit-backend \n end \n set ACL on /Forms \n   allow jcr:read,rep:write,jcr:versionManagement for proms-visit-backend \n end",
-        // Validating patient's credentials
-        "create service user proms-patient-validation \n set ACL for proms-patient-validation \n   allow jcr:read on /Questionnaires,/Subjects,/SubjectTypes,/Forms \n end",
-        // Enforcing Terms Of Use acceptance
-        "create service user proms-patient-tou \n set ACL for proms-patient-tou \n   allow jcr:read,rep:write,jcr:versionManagement on /Forms \n   allow jcr:read on /Questionnaires,/Subjects \n end",
-        // Unsubscribe from email notifications
-        "create service user proms-patient-unsubscribe \n set ACL for proms-patient-unsubscribe \n   allow jcr:read,rep:write,jcr:versionManagement on /Forms \n   allow jcr:read on /Questionnaires,/Subjects \n end",
         // Trusted users can only access forms submitted by their patients, and delete forms that they created
-        "create group TrustedUsers \n\n set ACL for TrustedUsers \n   deny rep:write on /Subjects \n   allow jcr:removeChildNodes on /Forms \n     deny jcr:removeNode on /Forms restriction(rep:ntNames,cards:Form,cards:Subject) \n     allow jcr:removeNode on /Forms restriction(cards:createdBy) \n    deny jcr:all on /Forms restriction(cards:unsubmittedForms) \n end ",
-        // Special handling of the 404 page button: patients go to the PROMS UI, all other users go to the dashboard
-        "create path (sling:Folder) /RedirectURL \n set ACL on /RedirectURL \n   deny jcr:read for everyone \n   allow jcr:read for patient \n   allow jcr:read for guest-patient \n end \n set properties on /RedirectURL \n   set RedirectURL to /Proms.html \n   set RedirectLabel to \"Go to my surveys\" \n end ",
-        // A /Metrics sling:Folder for storing performance info to be sent periodically via Slack
-        "create path (sling:Folder) /Metrics/TotalSurveysSubmitted/name(nt:unstructured)",
-        "create path (sling:Folder) /Metrics/TotalSurveysSubmitted/prevTotal(nt:unstructured)",
-        "create path (sling:Folder) /Metrics/TotalSurveysSubmitted/total(nt:unstructured mixin mix:atomicCounter)",
-        "create path (sling:Folder) /Metrics/AppointmentSurveysSubmitted/name(nt:unstructured)",
-        "create path (sling:Folder) /Metrics/AppointmentSurveysSubmitted/prevTotal(nt:unstructured)",
-        "create path (sling:Folder) /Metrics/AppointmentSurveysSubmitted/total(nt:unstructured mixin mix:atomicCounter)",
-        "create path (sling:Folder) /Metrics/ImportedAppointments/name(nt:unstructured)",
-        "create path (sling:Folder) /Metrics/ImportedAppointments/prevTotal(nt:unstructured)",
-        "create path (sling:Folder) /Metrics/ImportedAppointments/total(nt:unstructured mixin mix:atomicCounter)",
-        "set properties on /Metrics/TotalSurveysSubmitted/name \n   default value{String} to \"Total Surveys Submitted\" \n end",
-        "set properties on /Metrics/TotalSurveysSubmitted/prevTotal \n   default value{Long} to 0 \n end",
-        "set properties on /Metrics/AppointmentSurveysSubmitted/name \n   default value{String} to \"Appointment Surveys Submitted\" \n end",
-        "set properties on /Metrics/AppointmentSurveysSubmitted/prevTotal \n   default value{Long} to 0 \n end",
-        "set properties on /Metrics/ImportedAppointments/name \n   default value{String} to \"Imported Appointments\" \n end",
-        "set properties on /Metrics/ImportedAppointments/prevTotal \n   default value{Long} to 0 \n end"
+        "create group TrustedUsers \n\n set ACL for TrustedUsers \n   deny rep:write on /Subjects \n   allow jcr:removeChildNodes on /Forms \n     deny jcr:removeNode on /Forms restriction(rep:ntNames,cards:Form,cards:Subject) \n     allow jcr:removeNode on /Forms restriction(cards:createdBy) \n    deny jcr:all on /Forms restriction(cards:unsubmittedForms) \n end "
       ]
     },
     "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~proms":{
       "user.mapping":[
         "io.uhndata.cards.proms-backend:VisitFormsPreparation=[proms-visit-backend]",
-        "io.uhndata.cards.proms-backend:validateCredentials=[proms-patient-validation]",
-        "io.uhndata.cards.proms-backend:tou=[proms-patient-tou]",
-        "io.uhndata.cards.proms-backend:unsubscribe=[proms-patient-unsubscribe]",
-        "io.uhndata.cards.proms-backend:EmailNotifications=[sling-readall]",
         "io.uhndata.cards.proms-permissions:UnsubmittedFormsRestriction=[sling-readall]",
         "io.uhndata.cards.proms-backend:TorchImporter=[proms-import-backend]",
-        "io.uhndata.cards.proms-backend:MetricLogger=[cards-metrics]",
-        "io.uhndata.cards.proms-backend:SlackNotifications=[cards-metrics]"
+        "io.uhndata.cards.proms-backend:MetricLogger=[cards-metrics]"
       ]
     },
     "io.uhndata.cards.proms.emailnotifications.AppointmentEmailNotificationsFactory~InitialNotificationsTask":{

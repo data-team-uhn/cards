@@ -39,11 +39,8 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Sling-Nodetypes>SLING-INF/nodetypes/proms.cnd</Sling-Nodetypes>
             <Include-Resource>{maven-resources},src/main/media</Include-Resource>
             <Sling-Initial-Content>
-              SLING-INF/content/Extensions/;path:=/Extensions;overwriteProperties:=true;uninstall:=true,
-              SLING-INF/content/Homepage/Proms.json;path:=/Proms;overwrite:=true,
               SLING-INF/content/Homepage/Proms/Cardio.xml;path:=/Proms/Cardio;overwrite:=true,
               SLING-INF/content/Homepage/Proms/Mood.xml;path:=/Proms/Mood;overwrite:=true,
               SLING-INF/content/Homepage/Proms/ClinicMapping.xml;path:=/Proms/ClinicMapping;overwrite:=true,
