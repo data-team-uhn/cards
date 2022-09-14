@@ -37,7 +37,6 @@ export default class DateTimeUtilities {
   static dayTag = "dd";
   static hourTag = "hh";
   static minuteTag = "mm";
-  static secondTag = "ss";
 
   static PROP_TYPES = {
     classes: PropTypes.object.isRequired,
@@ -255,18 +254,22 @@ export default class DateTimeUtilities {
   static getPickerViews(dateFormat) {
     let views = [];
     if (typeof(dateFormat) === "string") {
-      dateFormat.includes(this.yearTag) && views.push('year');
-      dateFormat.includes(this.monthTag) && views.push('month');
-      dateFormat.includes(this.dayTag) && views.push('day');
-      dateFormat.includes(this.hourTag) && views.push('hours');
-      dateFormat.includes(this.minuteTag) && views.push('minutes');
-      dateFormat.includes(this.secondTag) && views.push('seconds');
+      dateFormat.toLowerCase().includes("y") && views.push('year');
+      dateFormat.includes("M") && views.push('month');
+      dateFormat.includes("d") && views.push('day');
+      dateFormat.toLowerCase().includes("h") && views.push('hours');
+      dateFormat.includes("m") && views.push('minutes');
+      dateFormat.includes("s") && views.push('seconds');
     }
     return views;
   }
 
   static formatHasTime(dateFormat) {
     return typeof(dateFormat) === "string" &&
-      (dateFormat.includes(this.hourTag) || dateFormat.includes(this.minuteTag) || dateFormat.includes(this.secondTag));
+      (dateFormat.toLowerCase().includes("h") || dateFormat.includes("m") || dateFormat.includes("s"));
+  }
+
+  static formatIsMeridiem(dateFormat) {
+	return typeof(dateFormat) === "string" && dateFormat.includes("h") && dateFormat.includes("a");
   }
 }

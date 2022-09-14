@@ -53,7 +53,7 @@ function DowntimeWarningConfiguration() {
   // Tracking unsaved changes
   const [ hasChanges, setHasChanges ] = useState();
 
-  const dateFormat = "yyyy-MM-dd hh:mm";
+  const dateFormat = "yyyy-MM-dd HH:mm";
   const views = DateTimeUtilities.getPickerViews(dateFormat);
 
   // Read the settings from the saved configuration
