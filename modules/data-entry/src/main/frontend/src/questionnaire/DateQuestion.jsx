@@ -81,6 +81,7 @@ function DateQuestion(props) {
     DateTimeUtilities.stripTimeZone(typeof(existingValues) === "object" ? existingValues[1] : "")));
   const isRange = (type === DateTimeUtilities.INTERVAL_TYPE);
   const hasTime = DateTimeUtilities.formatHasTime(dateFormat);
+  const isMeridiem = DateTimeUtilities.formatIsMeridiem(dateFormat);
   const PickerComponent = hasTime ? DateTimePicker : DatePicker;
 
   useEffect(() => {
@@ -119,7 +120,7 @@ function DateQuestion(props) {
     return (
     <LocalizationProvider dateAdapter={AdapterLuxon}>
       <PickerComponent
-        ampm={false}
+        ampm={isMeridiem}
         views={views}
         inputFormat={dateFormat}
         label={dateFormat.toLowerCase()}

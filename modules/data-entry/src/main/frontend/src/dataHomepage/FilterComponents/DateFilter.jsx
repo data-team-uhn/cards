@@ -53,11 +53,12 @@ const DateFilter = forwardRef((props, ref) => {
   // Dates should have a dateFormat or default
   const dateFormat = questionDefinition["dateFormat"] || DateTimeUtilities.defaultDateFormat;
   const views = DateTimeUtilities.getPickerViews(dateFormat);
+  const isMeridiem = DateTimeUtilities.formatIsMeridiem(dateFormat);
 
   return (
     <LocalizationProvider dateAdapter={AdapterLuxon}>
       <DateTimePicker
-        ampm={false}
+        ampm={isMeridiem}
         views={views}
         inputFormat={dateFormat}
         label={dateFormat.toLowerCase()}
