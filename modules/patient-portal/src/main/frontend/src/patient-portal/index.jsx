@@ -115,8 +115,9 @@ ReactDOM.render(
     <ThemeProvider theme={appTheme}>
       <Router history={hist}>
         <Switch color="secondary">
-          <Route path="/Patient.html/" component={PatientPortalHomepage} />
-          <Redirect from="/Patient" to="/Patient.html/"/>
+          <Route path="/Survey.html/" component={PatientPortalHomepage} />
+          <Redirect from="/Survey" to="/Survey.html/"/>
+          <Redirect from="/Patient" to="/Survey.html/"/>
         </Switch>
       </Router>
     </ThemeProvider>

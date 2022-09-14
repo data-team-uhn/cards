@@ -46,7 +46,7 @@ abstract class AbstractEmailNotification
     private static final String CARDS_HOST_AND_PORT =
         StringUtils.defaultIfEmpty(System.getenv("CARDS_HOST_AND_PORT"), "localhost:8080");
 
-    private static final String CLINIC_SLING_PATH = "/Patient.html";
+    private static final String CLINIC_SLING_PATH = "/Survey.html";
 
     /** Provides access to resources. */
     protected final ResourceResolverFactory resolverFactory;

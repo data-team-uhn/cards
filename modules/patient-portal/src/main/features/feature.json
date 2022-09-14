@@ -68,7 +68,7 @@
         // Unsubscribe from email notifications
         "create service user patient-unsubscribe \n set ACL for patient-unsubscribe \n   allow jcr:read,rep:write,jcr:versionManagement on /Forms \n   allow jcr:read on /Questionnaires,/Subjects \n end",
         // Special handling of the 404 page button: patients go to the Patient UI, all other users go to the dashboard
-        "create path (sling:Folder) /RedirectURL \n set ACL on /RedirectURL \n   deny jcr:read for everyone \n   allow jcr:read for patient \n   allow jcr:read for guest-patient \n end \n set properties on /RedirectURL \n   set RedirectURL to /Patient.html \n   set RedirectLabel to \"Go to my surveys\" \n end ",
+        "create path (sling:Folder) /RedirectURL \n set ACL on /RedirectURL \n   deny jcr:read for everyone \n   allow jcr:read for patient \n   allow jcr:read for guest-patient \n end \n set properties on /RedirectURL \n   set RedirectURL to /Survey.html \n   set RedirectLabel to \"Go to my surveys\" \n end ",
         // A /Metrics sling:Folder for storing performance info to be sent periodically via Slack
         "create path (sling:Folder) /Metrics/TotalSurveysSubmitted/name(nt:unstructured)",
         "create path (sling:Folder) /Metrics/TotalSurveysSubmitted/prevTotal(nt:unstructured)",
