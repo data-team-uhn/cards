@@ -49,6 +49,7 @@
               SLING-INF/content/Patient/SurveyInstructions.xml;path:=/Patient/SurveyInstructions;overwrite:=true,
               SLING-INF/content/Patient/DashboardSettings.xml;path:=/Patient/DashboardSettings;overwrite:=true,
               SLING-INF/content/Questionnaires/;path:=/Questionnaires/;overwriteProperties:=true;uninstall:=true;checkin:=true,
+              SLING-INF/content/Extensions/;path:=/Extensions/;overwriteProperties:=true;uninstall:=true,
               SLING-INF/content/libs/cards/resources/media/prems/;path:=/libs/cards/resources/media/prems/;overwrite:=true;uninstall:=true,
               SLING-INF/content/libs/cards/conf/Media.json;path:=/libs/cards/conf/Media;overwriteProperties:=true,
               SLING-INF/content/libs/cards/conf/AppName.json;path:=/libs/cards/conf/AppName;overwrite:=true,

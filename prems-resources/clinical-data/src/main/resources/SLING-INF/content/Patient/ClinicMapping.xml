@@ -26,11 +26,11 @@
         <type>String</type>
     </property>
     <node>
-        <name>2207</name>
+        <name>404535975</name>
         <primaryNodeType>cards:ClinicMapping</primaryNodeType>
         <property>
             <name>clinicName</name>
-            <value>ED</value>
+            <value>TW-EMERGENCY</value>
             <type>String</type>
         </property>
         <property>
@@ -40,21 +40,21 @@
         </property>
         <property>
             <name>displayName</name>
-            <value>Emergency Department</value>
+            <value>Toronto Western - Emergency Department</value>
             <type>String</type>
         </property>
         <property>
             <name>sidebarLabel</name>
-            <value>ED</value>
+            <value>TW - ED</value>
             <type>String</type>
         </property>
     </node>
     <node>
-        <name>64808</name>
+        <name>-89477290</name>
         <primaryNodeType>cards:ClinicMapping</primaryNodeType>
         <property>
             <name>clinicName</name>
-            <value>AIP</value>
+            <value>TW-INPATIENT</value>
             <type>String</type>
         </property>
         <property>
@@ -64,12 +64,60 @@
         </property>
         <property>
             <name>displayName</name>
-            <value>Adult Inpatient</value>
+            <value>Toronto Western - Inpatient</value>
             <type>String</type>
         </property>
         <property>
             <name>sidebarLabel</name>
+            <value>TW - IP</value>
+            <type>String</type>
+        </property>
+    </node>
+    <node>
+        <name>1034878425</name>
+        <primaryNodeType>cards:ClinicMapping</primaryNodeType>
+        <property>
+            <name>clinicName</name>
+            <value>TGH-EMERGENCY</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>survey</name>
+            <value>ED</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>displayName</name>
+            <value>Toronto General Hospital - Emergency Department</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>sidebarLabel</name>
+            <value>TGH - ED</value>
+            <type>String</type>
+        </property>
+    </node>
+    <node>
+        <name>540865160</name>
+        <primaryNodeType>cards:ClinicMapping</primaryNodeType>
+        <property>
+            <name>clinicName</name>
+            <value>TGH-INPATIENT</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>survey</name>
             <value>AIP</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>displayName</name>
+            <value>Toronto General Hospital - Inpatient</value>
+            <type>String</type>
+        </property>
+        <property>
+            <name>sidebarLabel</name>
+            <value>TGH - IP</value>
             <type>String</type>
         </property>
     </node>
