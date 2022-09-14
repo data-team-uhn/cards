@@ -41,13 +41,13 @@
           <instructions>
             <Include-Resource>{maven-resources},src/main/media</Include-Resource>
             <Sling-Initial-Content>
-              SLING-INF/content/Patient/ED.xml;path:=/Patient/ED;overwrite:=true,
-              SLING-INF/content/Patient/AIP.xml;path:=/Patient/AIP;overwrite:=true,
-              SLING-INF/content/Patient/ClinicMapping.xml;path:=/Patient/ClinicMapping;overwrite:=true,
-              SLING-INF/content/Patient/PatientIdentification.xml;path:=/Patient/PatientIdentification;overwrite:=true,
-              SLING-INF/content/Patient/TermsOfUse.xml;path:=/Patient/TermsOfUse;overwrite:=true,
-              SLING-INF/content/Patient/SurveyInstructions.xml;path:=/Patient/SurveyInstructions;overwrite:=true,
-              SLING-INF/content/Patient/DashboardSettings.xml;path:=/Patient/DashboardSettings;overwrite:=true,
+              SLING-INF/content/Survey/ED.xml;path:=/Survey/ED;overwrite:=true,
+              SLING-INF/content/Survey/AIP.xml;path:=/Survey/AIP;overwrite:=true,
+              SLING-INF/content/Survey/ClinicMapping.xml;path:=/Survey/ClinicMapping;overwrite:=true,
+              SLING-INF/content/Survey/PatientIdentification.xml;path:=/Survey/PatientIdentification;overwrite:=true,
+              SLING-INF/content/Survey/TermsOfUse.xml;path:=/Survey/TermsOfUse;overwrite:=true,
+              SLING-INF/content/Survey/SurveyInstructions.xml;path:=/Survey/SurveyInstructions;overwrite:=true,
+              SLING-INF/content/Survey/DashboardSettings.xml;path:=/Survey/DashboardSettings;overwrite:=true,
               SLING-INF/content/Questionnaires/;path:=/Questionnaires/;overwriteProperties:=true;uninstall:=true;checkin:=true,
               SLING-INF/content/Extensions/;path:=/Extensions/;overwriteProperties:=true;uninstall:=true,
               SLING-INF/content/libs/cards/resources/media/prems/;path:=/libs/cards/resources/media/prems/;overwrite:=true;uninstall:=true,
