@@ -42,7 +42,7 @@ import WarningIcon from '@mui/icons-material/Warning';
 import { DateTime } from "luxon";
 
 import Form from "../questionnaire/Form.jsx";
-import PatientPortalHeader from "./Header.jsx";
+import Header from "./Header.jsx";
 import DateQuestionUtilities from "../questionnaire/DateQuestionUtilities";
 import FormattedText from "../components/FormattedText.jsx";
 import { ENTRY_TYPES } from "../questionnaire/FormEntry.jsx"
@@ -667,7 +667,7 @@ function QuestionnaireSet(props) {
   const progress = 100.0 * (crtStep + 1) / ((questionnaireIds?.length || 0) + 1);
 
   return (<>
-      <PatientPortalHeader
+      <Header
         title={title}
         greeting={username}
         progress={progress}

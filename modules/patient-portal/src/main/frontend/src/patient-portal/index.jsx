@@ -24,7 +24,7 @@ import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { appTheme } from "../themePalette.jsx";
 import QuestionnaireSet from "./QuestionnaireSet.jsx";
 import PatientIdentification from "./PatientIdentification.jsx";
-import PatientPortalFooter from "./Footer.jsx";
+import Footer from "./Footer.jsx";
 import ErrorPage from "../components/ErrorPage.jsx";
 
 import { DEFAULT_INSTRUCTIONS, SURVEY_INSTRUCTIONS_PATH } from "./SurveyInstructionsConfiguration.jsx"
@@ -98,13 +98,13 @@ function PatientPortalHomepage (props) {
   if (!subject) {
     return (<>
       <PatientIdentification onSuccess={onPatientIdentified} displayText={displayText}/>
-      <PatientPortalFooter />
+      <Footer />
     </>);
   }
 
   return (<>
     <QuestionnaireSet subject={subject} username={username} displayText={displayText} config={{...accessConfig, enableStartScreen: surveyInstructions?.enableStartScreen}} />
-    <PatientPortalFooter />
+    <Footer />
   </>);
 }
 

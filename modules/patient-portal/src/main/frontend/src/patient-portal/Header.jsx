@@ -74,7 +74,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function PatientPortalHeader (props) {
+function Header (props) {
   const { title, greeting, progress, subtitle, step } = props;
 
   const classes = useStyles();
@@ -121,4 +121,4 @@ function PatientPortalHeader (props) {
   );
 }
 
-export default PatientPortalHeader;
+export default Header;

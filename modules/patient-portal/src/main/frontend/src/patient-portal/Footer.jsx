@@ -44,7 +44,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function PatientPortalFooter (props) {
+function Footer (props) {
   let [ footerExtensions, setFooterExtensions ] = useState([]);
 
   const classes = useStyles();
@@ -67,4 +67,4 @@ function PatientPortalFooter (props) {
   );
 }
 
-export default PatientPortalFooter;
+export default Footer;
