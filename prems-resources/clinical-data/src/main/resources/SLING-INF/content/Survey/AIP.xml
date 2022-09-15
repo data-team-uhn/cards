@@ -48,19 +48,14 @@
             <value>
 [
     {
-      "key": "last_name",
-      "label": "Last name",
-      "format": "string"
-    },
-    {
-      "key": "first_name",
-      "label": "First name",
+      "key": "mrn",
+      "label": "MRN",
       "format": "string"
     },
     {
       "key": "time",
       "label": "Discharge date",
-      "format": "date:YYYY-MM-DD hh:mm",
+      "format": "date:yyyy-MM-dd hh:mm",
       "link" : "dashboard+path"
     },
     {
