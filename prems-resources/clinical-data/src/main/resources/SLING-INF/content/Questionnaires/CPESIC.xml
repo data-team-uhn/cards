@@ -5490,7 +5490,7 @@ symptoms or health problems to look out for after you left the hospital?</value>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
-				<value>1</value>
+				<value>0</value>
 				<type>Long</type>
 			</property>
 			<property>
