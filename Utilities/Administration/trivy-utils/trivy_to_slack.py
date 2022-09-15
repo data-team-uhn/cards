@@ -18,6 +18,40 @@
 # specific language governing permissions and limitations
 # under the License.
 
+# Empirically determined (approximate) maximum width of text that can be
+# placed in between the :package: (or alternative) and :warning: emojis
+# plus the padding spaces without wrapping to a new line
+SLACK_MESSAGE_MAX_WIDTH = 70
+
+# Return the most verbose message possible describing a vulnerability
+# without exceeding SLACK_MESSAGE_MAX_WIDTH
+def getOptimalSlackMessage(pkgName, installedVersion, vulnerabilityID, severity):
+	# Message templates in order of decreasing optimality
+	message_templates = []
+	message_templates.append("*{severity}* - `{pkgName} ({installedVersion})` is affected by _{vulnerabilityID}_")
+	message_templates.append("*{severity}* - `{pkgName}` is affected by _{vulnerabilityID}_")
+	message_templates.append("*{severity}* - _{vulnerabilityID}_")
+	message_info = {}
+	message_info['pkgName'] = pkgName
+	message_info['installedVersion'] = installedVersion
+	message_info['vulnerabilityID'] = vulnerabilityID
+	message_info['severity'] = severity
+	for message_template in message_templates:
+		rendered_template = message_template.format(**message_info)
+		if len(rendered_template) <= SLACK_MESSAGE_MAX_WIDTH:
+			return rendered_template
+	return message_templates[-1].format(**message_info)
+
+# Returns a list containing only the unique elements from the input list
+# while preserving the order. Eg.
+# getUniqueElements([1,2,2,3,4,5,6,7,7,7,9]) => [1,2,3,4,5,6,7,9]
+def getUniqueElements(input_list):
+	output_list = []
+	for element in input_list:
+		if element not in output_list:
+			output_list.append(element)
+	return output_list
+
 class TrivyToSlackConverter:
 	def __init__(self, software_package_emoji=':package:'):
 		self.software_package_emoji = software_package_emoji
@@ -38,7 +72,7 @@ class TrivyToSlackConverter:
 				continue
 
 			selected_message_list = self.vulnerability_lists[severity]
-			slack_message = self.software_package_emoji + "    *{}* - `{}` is affected by _{}_    :warning:".format(severity, pkgName, vulnerabilityID)
+			slack_message = self.software_package_emoji + "    " + getOptimalSlackMessage(pkgName, installedVersion, vulnerabilityID, severity) + "    :warning:"
 			md_report_message = self.software_package_emoji + "    **{}** - `{} ({})` is affected by _{}_    :warning:".format(severity, pkgName, installedVersion, vulnerabilityID)
 			selected_message_list.append((slack_message, md_report_message))
 
@@ -50,6 +84,7 @@ class TrivyToSlackConverter:
 
 	def getSlackMessages(self, truncate=-1):
 		slackMessages = [v[0] for v in self.getSortedVulnerabilityList()]
+		slackMessages = getUniqueElements(slackMessages)
 		if truncate >= 0:
 			original_length = len(slackMessages)
 			slackMessages = slackMessages[0:truncate]
