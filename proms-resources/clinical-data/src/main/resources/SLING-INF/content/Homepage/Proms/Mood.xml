@@ -65,7 +65,7 @@
     {
       "key": "time",
       "label": "Visit time",
-      "format": "date:yyyy-MM-dd hh:mm",
+      "format": "date:yyyy-MM-dd HH:mm",
       "link" : "dashboard+path"
     }
 ]
@@ -113,7 +113,7 @@
     {
       "key": "time",
       "label": "Visit time",
-      "format": "date:yyyy-MM-dd hh:mm",
+      "format": "date:yyyy-MM-dd HH:mm",
       "link" : "dashboard+path"
     },
     {
@@ -251,7 +251,7 @@
     {
       "key": "time",
       "label": "Visit time",
-      "format": "date:yyyy-MM-dd hh:mm",
+      "format": "date:yyyy-MM-dd HH:mm",
       "link" : "dashboard+path"
     },
     {
@@ -338,7 +338,7 @@
     {
       "key": "time",
       "label": "Visit time",
-      "format": "date:yyyy-MM-dd hh:mm",
+      "format": "date:yyyy-MM-dd HH:mm",
       "link" : "dashboard+path"
     },
     {
