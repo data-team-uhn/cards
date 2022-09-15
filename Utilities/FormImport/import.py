@@ -104,7 +104,7 @@ def section_start_handler(self, questionnaire, row):
         label = "Section {}".format(questionnaire.section_index)
 
         # Do not automatically finish the previous section as section rows support nested sections
-        questionnaire.push_section(create_new_section(label))
+        questionnaire.push_section(create_new_section(label, False))
     return
 
 def recurrent_section_handler(self, questionnaire, row):

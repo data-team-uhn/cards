@@ -2469,7 +2469,7 @@ symptoms or health problems to look out for after you left the hospital?</value>
 		</property>
 		<node>
 			<name>cpesic_22</name>
-			<primaryNodeType>cards:Information</primaryNodeType>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
 				<value>1</value>
@@ -2477,12 +2477,27 @@ symptoms or health problems to look out for after you left the hospital?</value>
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>info</value>
+				<value>text</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>text</name>
-				<value>Please answer the following questions about your stay at the hospital named on the cover letter. Do not include any other hospital stays in your answers.</value>
+				<value>Please answer the following questions about your stay at the hospital named below. Do not include any other hospital stays in your answers.</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>formatted</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>reference</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>question</name>
+				<value>/Questionnaires/Visit information/location</value>
 				<type>String</type>
 			</property>
 		</node>
@@ -2665,6 +2680,11 @@ symptoms or health problems to look out for after you left the hospital?</value>
 			<type>String</type>
 		</property>
 		<property>
+			<name>description</name>
+			<value>In this next section, we ask several more questions about your stay at the hospital.</value>
+			<type>String</type>
+		</property>
+		<property>
 			<name>minAnswers</name>
 			<value>1</value>
 			<type>Long</type>
@@ -2676,25 +2696,6 @@ symptoms or health problems to look out for after you left the hospital?</value>
 		</property>
 		<node>
 			<name>cpesic_25</name>
-			<primaryNodeType>cards:Information</primaryNodeType>
-			<property>
-				<name>maxAnswers</name>
-				<value>1</value>
-				<type>Long</type>
-			</property>
-			<property>
-				<name>dataType</name>
-				<value>info</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>text</name>
-				<value>In this next section, we ask several more questions about your stay at the hospital.</value>
-				<type>String</type>
-			</property>
-		</node>
-		<node>
-			<name>cpesic_er</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>maxAnswers</name>
@@ -2777,7 +2778,7 @@ symptoms or health problems to look out for after you left the hospital?</value>
 					<property>
 						<name>value</name>
 						<values>
-							<value>cpesis_er</value>
+							<value>cpesis_25</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -2922,7 +2923,7 @@ symptoms or health problems to look out for after you left the hospital?</value>
 					<property>
 						<name>value</name>
 						<values>
-							<value>cpesis_er</value>
+							<value>cpesis_25</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -3067,7 +3068,7 @@ symptoms or health problems to look out for after you left the hospital?</value>
 					<property>
 						<name>value</name>
 						<values>
-							<value>cpesic_er</value>
+							<value>cpesic_25</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -3212,7 +3213,7 @@ symptoms or health problems to look out for after you left the hospital?</value>
 					<property>
 						<name>value</name>
 						<values>
-							<value>cpesic_er</value>
+							<value>cpesic_25</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -3357,7 +3358,7 @@ symptoms or health problems to look out for after you left the hospital?</value>
 					<property>
 						<name>value</name>
 						<values>
-							<value>cpesic_er</value>
+							<value>cpesic_25</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -3464,7 +3465,7 @@ symptoms or health problems to look out for after you left the hospital?</value>
 					<property>
 						<name>value</name>
 						<values>
-							<value>cpesic_er</value>
+							<value>cpesic_25</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -5408,7 +5409,7 @@ symptoms or health problems to look out for after you left the hospital?</value>
 			</property>
 			<property>
 				<name>description</name>
-				<value>Please write in; for example, “1934.”</value>
+				<value>Please write in; for example, “1934”.</value>
 				<type>String</type>
 			</property>
 			<property>
