@@ -182,7 +182,7 @@ let EditDialog = (props) => {
       let mainType = data["sling:resourceType"].replaceAll(/^cards\//g, "");
       let type = (data[newValue].dataType ? data[newValue].dataType + " " : "") + data[newValue]["sling:resourceType"].replaceAll(/^cards\//g, "");
       let label = data[newValue].label || data[newValue].text || newValue;
-      setVariableNameError(`The identifier ${newValue} is already in use in this ${mainType} for the ${formttedType} '${label}'. Please choose a different identifier.`);
+      setVariableNameError(`The identifier ${newValue} is already in use in this ${mainType} for the ${formattedType} '${label}'. Please choose a different identifier.`);
     }
   }
 
