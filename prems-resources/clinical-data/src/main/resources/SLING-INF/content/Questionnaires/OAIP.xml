@@ -672,7 +672,7 @@
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>
 				<name>label</name>
-				<value>-Not at all</value>
+				<value>Not at all</value>
 				<type>String</type>
 			</property>
 			<property>
