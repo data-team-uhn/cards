@@ -4768,11 +4768,11 @@ symptoms or health problems to look out for after you left the hospital?</value>
 		</node>
 	</node>
 	<node>
-		<name>Youroveralratings</name>
+		<name>Youroverallratings</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>Your overal ratings</value>
+			<value>Your overall ratings</value>
 			<type>String</type>
 		</property>
 		<node>
