@@ -32,11 +32,13 @@ export default class DateTimeUtilities {
   static DATETIME_TYPE = "datetime";
   static DEFAULT_DATE_TYPE = this.FULL_DATE_TYPE;
 
-  static yearTag = "yyyy";
-  static monthTag = "MM";
-  static dayTag = "dd";
-  static hourTag = "hh";
-  static minuteTag = "mm";
+  static yearTag = "y";
+  static monthTag = "M";
+  static dayTag = "d";
+  static hourTag = "H";
+  static hourMeridiemTag = "h";
+  static minuteTag = "m";
+  static secondTag = "s";
 
   static PROP_TYPES = {
     classes: PropTypes.object.isRequired,
@@ -105,18 +107,17 @@ export default class DateTimeUtilities {
 
     // Determine the coarsest measure to truncate the input to
     const truncate = {
-      'S':'second',
       's':'minute',
       'm':'hour',
       'H':'day',
       'd':'month',
       'M':'year'
     };
-    let truncateTo;
+    let truncateTo = 'second';
     for (let [formatSpecifier, targetPrecision] of Object.entries(truncate)) {
-      if (toFormat.indexOf(formatSpecifier) < 0) {
-        truncateTo = targetPrecision;
-      }
+      if (toFormat.indexOf(formatSpecifier) < 0 && ("H" != formatSpecifier || toFormat.indexOf("h") < 0)) {
+	    truncateTo = targetPrecision;
+	  }
     }
 
     return(new_date.startOf(truncateTo));
@@ -244,7 +245,7 @@ export default class DateTimeUtilities {
   }
 
   static formatIsHourMinuteSeconds(dateFormat) {
-    return typeof(dateFormat) === "string" && dateFormat.toLowerCase() === "hh:mm:ss";
+    return typeof(dateFormat) === "string" && dateFormat.toLowerCase() === "HH:mm:ss";
   }
 
   static timeQuestionFieldType(dateFormat) {
@@ -254,22 +255,22 @@ export default class DateTimeUtilities {
   static getPickerViews(dateFormat) {
     let views = [];
     if (typeof(dateFormat) === "string") {
-      dateFormat.toLowerCase().includes("y") && views.push('year');
-      dateFormat.includes("M") && views.push('month');
-      dateFormat.includes("d") && views.push('day');
-      dateFormat.toLowerCase().includes("h") && views.push('hours');
-      dateFormat.includes("m") && views.push('minutes');
-      dateFormat.includes("s") && views.push('seconds');
+      dateFormat.toLowerCase().includes(this.yearTag) && views.push('year');
+      dateFormat.includes(this.monthTag) && views.push('month');
+      dateFormat.includes(this.dayTag) && views.push('day');
+      dateFormat.toLowerCase().includes(this.hourMeridiemTag) && views.push('hours');
+      dateFormat.includes(this.minuteTag) && views.push('minutes');
+      dateFormat.includes(this.secondTag) && views.push('seconds');
     }
     return views;
   }
 
   static formatHasTime(dateFormat) {
     return typeof(dateFormat) === "string" &&
-      (dateFormat.toLowerCase().includes("h") || dateFormat.includes("m") || dateFormat.includes("s"));
+      (dateFormat.toLowerCase().includes(this.hourMeridiemTag) || dateFormat.includes(this.minuteTag) || dateFormat.includes(this.secondTag));
   }
 
   static formatIsMeridiem(dateFormat) {
-	return typeof(dateFormat) === "string" && dateFormat.includes("h") && dateFormat.includes("a");
+	return typeof(dateFormat) === "string" && dateFormat.includes(this.hourMeridiemTag) && dateFormat.includes("a");
   }
 }
