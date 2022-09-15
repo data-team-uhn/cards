@@ -479,7 +479,7 @@ def create_new_questionnaire(title):
     new_questionnaire['title'] = clean_title(title)
     new_questionnaire['jcr:reference:requiredSubjectTypes'] = [Options.SUBJECT_TYPES]
     new_questionnaire['paginate'] = Options.PAGINATE
-    if Options.MAX_PER_SUBJECT >  1:
+    if Options.MAX_PER_SUBJECT >  0:
         new_questionnaire['maxPerSubject'] = Options.MAX_PER_SUBJECT
     return new_questionnaire
 

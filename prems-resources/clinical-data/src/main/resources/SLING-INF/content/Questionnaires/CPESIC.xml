@@ -37,6 +37,11 @@
 		<value>True</value>
 		<type>Boolean</type>
 	</property>
+	<property>
+		<name>maxPerSubject</name>
+		<value>1</value>
+		<type>Long</type>
+	</property>
 	<node>
 		<name>Section1</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
