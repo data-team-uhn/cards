@@ -78,8 +78,8 @@ function Clinics(props) {
           inProgress: (dialogOpen && isNewClinic)
         }}
         columns={columns}
-        entryType={"Patient/ClinicMapping"}
-        customUrl={"Patient/ClinicMapping.paginate"}
+        entryType={"Survey/ClinicMapping"}
+        customUrl={"Survey/ClinicMapping.paginate"}
         admin={true}
       />
       <OnboardNewClinicDialog currentClinicName={currentClinicName} open={dialogOpen} onClose={dialogClose} onSuccess={dialogSuccess} isNewClinic={isNewClinic} />
