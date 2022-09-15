@@ -38,36 +38,31 @@
 		<type>Boolean</type>
 	</property>
 	<node>
-		<name>cpesic_0</name>
-		<primaryNodeType>cards:Information</primaryNodeType>
-		<property>
-			<name>maxAnswers</name>
-			<value>1</value>
-			<type>Long</type>
-		</property>
-		<property>
-			<name>dataType</name>
-			<value>info</value>
-			<type>String</type>
-		</property>
-		<property>
-			<name>text</name>
-			<value>You should fill out this questionnaire only if you the patient who received the invitation email. You may need to get help from a family member or friend to answer the questions. That’s okay.
+		<name>Section1</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<node>
+			<name>cpesic_0</name>
+			<primaryNodeType>cards:Information</primaryNodeType>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>info</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>You should fill out this questionnaire only if you the patient who received the invitation email. You may need to get help from a family member or friend to answer the questions. That’s okay.
 
-Answer all the questions by selecting the circle to the left of your answer.
+Answer **all** the questions by selecting the circle to the left of your answer.
 
 Your response to this survey is voluntary but will provide us with important information.</value>
-			<type>String</type>
-		</property>
-	</node>
-	<node>
-		<name>YourCareFromNurses</name>
-		<primaryNodeType>cards:Section</primaryNodeType>
-		<property>
-			<name>label</name>
-			<value>Your Care From Nurses</value>
-			<type>String</type>
-		</property>
+				<type>String</type>
+			</property>
+		</node>
 		<node>
 			<name>cpesic_1</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
@@ -87,6 +82,11 @@ Your response to this survey is voluntary but will provide us with important inf
 				<type>String</type>
 			</property>
 			<property>
+				<name>displayMode</name>
+				<value>formatted</value>
+				<type>String</type>
+			</property>
+			<property>
 				<name>entryMode</name>
 				<value>reference</value>
 				<type>String</type>
@@ -97,6 +97,15 @@ Your response to this survey is voluntary but will provide us with important inf
 				<type>String</type>
 			</property>
 		</node>
+	</node>
+	<node>
+		<name>YourCareFromNurses</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<property>
+			<name>label</name>
+			<value>Your Care From Nurses</value>
+			<type>String</type>
+		</property>
 		<node>
 			<name>cpesic_2</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
@@ -1168,11 +1177,6 @@ Your response to this survey is voluntary but will provide us with important inf
 		<node>
 			<name>cpesic_12section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>cpesic_12section</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>condition0</name>
 				<primaryNodeType>cards:Conditional</primaryNodeType>
@@ -1385,11 +1389,6 @@ Your response to this survey is voluntary but will provide us with important inf
 		<node>
 			<name>cpesic_14section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>cpesic_14section</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>condition0</name>
 				<primaryNodeType>cards:Conditional</primaryNodeType>
@@ -1535,11 +1534,6 @@ Your response to this survey is voluntary but will provide us with important inf
 		<node>
 			<name>cpesic_15section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>cpesic_15section</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>condition0</name>
 				<primaryNodeType>cards:Conditional</primaryNodeType>
@@ -1752,11 +1746,6 @@ Your response to this survey is voluntary but will provide us with important inf
 		<node>
 			<name>cpesic_17section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>cpesic_17section</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>condition0</name>
 				<primaryNodeType>cards:Conditional</primaryNodeType>
@@ -1902,11 +1891,6 @@ Your response to this survey is voluntary but will provide us with important inf
 		<node>
 			<name>cpesic_18section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>cpesic_18section</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>condition0</name>
 				<primaryNodeType>cards:Conditional</primaryNodeType>
@@ -2157,11 +2141,6 @@ Your response to this survey is voluntary but will provide us with important inf
 		<node>
 			<name>cpesic_20section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>cpesic_20section</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>conditionalGroup0</name>
 				<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
@@ -2319,11 +2298,6 @@ Your response to this survey is voluntary but will provide us with important inf
 		<node>
 			<name>cpesic_21section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>cpesic_21section</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>conditionalGroup0</name>
 				<primaryNodeType>cards:ConditionalGroup</primaryNodeType>
@@ -2784,11 +2758,6 @@ symptoms or health problems to look out for after you left the hospital?</value>
 		<node>
 			<name>cpesic_26section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>cpesic_26section</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>condition0</name>
 				<primaryNodeType>cards:Conditional</primaryNodeType>
@@ -2934,11 +2903,6 @@ symptoms or health problems to look out for after you left the hospital?</value>
 		<node>
 			<name>cpesic_27section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>cpesic_27section</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>condition0</name>
 				<primaryNodeType>cards:Conditional</primaryNodeType>
@@ -3084,11 +3048,6 @@ symptoms or health problems to look out for after you left the hospital?</value>
 		<node>
 			<name>cpesic_28section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>cpesic_28section</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>condition0</name>
 				<primaryNodeType>cards:Conditional</primaryNodeType>
@@ -3234,11 +3193,6 @@ symptoms or health problems to look out for after you left the hospital?</value>
 		<node>
 			<name>cpesic_29section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>cpesic_29section</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>condition0</name>
 				<primaryNodeType>cards:Conditional</primaryNodeType>
@@ -3384,11 +3338,6 @@ symptoms or health problems to look out for after you left the hospital?</value>
 		<node>
 			<name>cpesic_30section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>cpesic_30section</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>condition0</name>
 				<primaryNodeType>cards:Conditional</primaryNodeType>
@@ -3496,11 +3445,6 @@ symptoms or health problems to look out for after you left the hospital?</value>
 		<node>
 			<name>cpesic_31section</name>
 			<primaryNodeType>cards:Section</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>cpesic_31section</value>
-				<type>String</type>
-			</property>
 			<node>
 				<name>condition0</name>
 				<primaryNodeType>cards:Conditional</primaryNodeType>
@@ -5373,7 +5317,7 @@ symptoms or health problems to look out for after you left the hospital?</value>
 			</property>
 			<property>
 				<name>displayMode</name>
-				<value>list+input</value>
+				<value>list</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -5382,7 +5326,7 @@ symptoms or health problems to look out for after you left the hospital?</value>
 				<type>Long</type>
 			</property>
 			<node>
-				<name>male</name>
+				<name>m</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -5391,7 +5335,7 @@ symptoms or health problems to look out for after you left the hospital?</value>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Male</value>
+					<value>M</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -5401,7 +5345,7 @@ symptoms or health problems to look out for after you left the hospital?</value>
 				</property>
 			</node>
 			<node>
-				<name>female</name>
+				<name>f</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
@@ -5410,12 +5354,31 @@ symptoms or health problems to look out for after you left the hospital?</value>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Female</value>
+					<value>F</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>defaultOrder</name>
 					<value>2</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>o</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Other</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>O</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>3</value>
 					<type>Long</type>
 				</property>
 			</node>

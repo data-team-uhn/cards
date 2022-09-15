@@ -65,6 +65,7 @@ class DefaultOptions:
     LOGGING = Logging.WARNING
     SUBJECT_TYPES = "/SubjectTypes/Patient/Visit"
     MAX_ANSWERS = 1
+    MAX_PER_SUBJECT = 1
 
 SECTION_TYPES = [RowTypes.SECTION_START, RowTypes.SECTION_RECURRENT, RowTypes.SECTION_END]
 MATRIX_TYPES = [RowTypes.MATRIX_START, RowTypes.MATRIX_END]
@@ -122,10 +123,6 @@ def section_end_handler(self, questionnaire, row):
 def matrix_start_handler(self, questionnaire, row):
     # No nested matrixes: Complete the previous matrix if present
     matrix_end_handler(self, questionnaire, row)
-
-    # # Create a new section if needed
-    # if (not Headers["SECTION"].has_value(row)):
-    #     questionnaire.push_section(create_new_section(questionnaire.question['text'] + "matrix"))
 
     # Set the new section to be a matrix section
     questionnaire.parent['displayMode'] = 'matrix'
@@ -233,21 +230,27 @@ class QuestionnaireState:
 
     # Finish off the current questionnaire and any children
     def complete_questionnaire(self):
+        self.complete_question()
         while len(self.parents) > 1:
             self.complete_section()
 
     # Push a new section into the current questionnaire/section stack
-    def push_section(self, section):
+    def push_section(self, section, complete_question=True):
+        if complete_question:
+            self.complete_question()
         self.parents.append(section)
         self.parent = section
-        self.question = section
+        if complete_question:
+            self.question = section
 
     # Complete the current section and remove it from the currently active questionnaire/section stack.
     # Adds the current section as a child node of the object above it in the stack.
     def complete_section(self):
         if (is_section(self.parent)):
+            self.complete_question()
             section = self.parents.pop()
-            # TODO: is this label/title check still needed?
+
+            # Sections defined with a section text and the start section row type may not have a title
             title = clean_name(section.pop('title') if 'title' in section else section['label'])
             if title in self.section_title_list:
                 tag = 2
@@ -265,10 +268,15 @@ class QuestionnaireState:
 
     # Add a question to the current active questionnaire/section
     def add_question(self, name, question):
-        self.parent[name] = question
+        self.complete_question()
         self.question = question
+        question['name'] = name
 
-
+    def complete_question(self):
+        if is_question(self.question):
+            name = self.question.pop('name')
+            self.parent[name] = self.question
+            self.question = self.parent
 
 #=====================
 # Column Data Handlers
@@ -338,7 +346,7 @@ def create_question(questionnaire, name):
 
     question = {
         'jcr:primaryType': 'cards:Question',
-        'text': question_title,
+        'name': question_title,
         'maxAnswers': 1
     }
     questionnaire.add_question(question_title, question)
@@ -442,6 +450,10 @@ def split_ignore_strings(input, splitters, limit = -1):
         pass
     return results
 
+# Determine if an object is a question based on primary type
+def is_question(parent):
+    return 'jcr:primaryType' in parent and ('cards:Question' == parent['jcr:primaryType'] or 'cards:Information' == parent['jcr:primaryType'])
+
 # Determine if an object is a section based on primary type
 def is_section(parent):
     return 'cards:Section' == parent['jcr:primaryType']
@@ -467,14 +479,16 @@ def create_new_questionnaire(title):
     new_questionnaire['title'] = clean_title(title)
     new_questionnaire['jcr:reference:requiredSubjectTypes'] = [Options.SUBJECT_TYPES]
     new_questionnaire['paginate'] = Options.PAGINATE
+    if Options.MAX_PER_SUBJECT >  1:
+        new_questionnaire['maxPerSubject'] = Options.MAX_PER_SUBJECT
     return new_questionnaire
 
 # Create a questionnaire object containing a title and all the default quetionnaire properties
-def create_new_section(label):
+def create_new_section(title, title_as_label=True):
     new_section = {}
     new_section['jcr:primaryType'] = 'cards:Section'
     if(len(title) > 0):
-        new_section['label'] = clean_title(label)
+        new_section['label' if title_as_label else 'title'] = clean_title(title)
     return new_section
 
 # Determine what question type a row should be
@@ -557,19 +571,24 @@ def add_option_properties(option, label):
 #=====================
 
 def process_conditional(self, questionnaire, row):
+    needs_section = get_row_type_map(row).row_type not in (SECTION_TYPES + MATRIX_TYPES)
+    if needs_section:
+        questionnaire.push_section(create_new_section(questionnaire.question['name'] + "section", False), False)
+
     conditional_string = self.get_value(row)
     log(Logging.INFO, "Processing conditional " + conditional_string)
-    condition_handle_brackets(questionnaire, questionnaire.question, conditional_string)
-    # pop section from parents
+    condition_handle_brackets(questionnaire, questionnaire.parent, conditional_string)
 
-def condition_handle_brackets(questionnaire, question, conditional_string, index=0):
+    questionnaire.complete_section()
+
+def condition_handle_brackets(questionnaire, condition_parent, conditional_string, index=0):
     log(Logging.INFO, "Handling brackets      " + conditional_string)
     if conditional_string.startswith("(") and conditional_string.endswith(")"):
         conditional_string = conditional_string[1:-1].strip()
-    condition_handle_block(questionnaire, question, conditional_string, index)
+    condition_handle_block(questionnaire, condition_parent, conditional_string, index)
 
 # TODO: Better name?
-def condition_handle_block(questionnaire, question, conditional_string, index=0):
+def condition_handle_block(questionnaire, condition_parent, conditional_string, index=0):
     log(Logging.INFO, "Handling block         " + conditional_string)
     or_list = split_ignore_strings(conditional_string, [" or "])
     and_list = split_ignore_strings(conditional_string, [" and "])
@@ -585,23 +604,23 @@ def condition_handle_block(questionnaire, question, conditional_string, index=0)
         return
 
     if len(or_list) > 1:
-        condition_handle_multiple(questionnaire, question, or_list, False, index)
+        condition_handle_multiple(questionnaire, condition_parent, or_list, False, index)
     elif len(and_list) > 1:
-        condition_handle_multiple(questionnaire, question, and_list, True, index)
+        condition_handle_multiple(questionnaire, condition_parent, and_list, True, index)
     else:
-        condition_handle_single(questionnaire, question, conditional_string, index)
+        condition_handle_single(questionnaire, condition_parent, conditional_string, index)
 
-def condition_handle_multiple(questionnaire, question, conditionals, require_all, index=0):
+def condition_handle_multiple(questionnaire, condition_parent, conditionals, require_all, index=0):
     log(Logging.INFO, "Handling multiple      " + str(conditionals))
-    question.update({'conditionalGroup' + str(index): {
+    condition_parent.update({'conditionalGroup' + str(index): {
         'jcr:primaryType': 'cards:ConditionalGroup',
         'requireAll': require_all
     }})
 
     for i, condition in enumerate(conditionals):
-        condition_handle_brackets(questionnaire, question['conditionalGroup' + str(index)], condition, i)
+        condition_handle_brackets(questionnaire, condition_parent['conditionalGroup' + str(index)], condition, i)
 
-def condition_handle_single(questionnaire, question, conditional_string, index):
+def condition_handle_single(questionnaire, condition_parent, conditional_string, index):
     log(Logging.INFO, "Handling single        " + conditional_string)
     OPERATORS_SINGLE = [
         "is empty",
@@ -626,12 +645,12 @@ def condition_handle_single(questionnaire, question, conditional_string, index):
             # Found a single operand conditional
             for operator in OPERATORS_SINGLE:
                 if conditional_string.endswith(operator):
-                    create_condition(questionnaire, question, index, terms[0], operator, terms[0])
+                    create_condition(questionnaire, condition_parent, index, terms[0], operator, terms[0])
         else:
             operator = conditional_string[len(terms[0]):-len(terms[1])].strip()
-            create_condition(questionnaire, question, index, terms[0], operator, terms[1])
+            create_condition(questionnaire, condition_parent, index, terms[0], operator, terms[1])
 
-def create_condition(questionnaire, question, index, operand_a, operator, operand_b):
+def create_condition(questionnaire, condition_parent, index, operand_a, operator, operand_b):
     log(Logging.INFO, "Creating condition     " + operand_a + " " + operator + " " + operand_b)
     if operand_a[0] == "\"" and operand_a[-1] == "\"":
         operand_a = operand_a[1:-1]
@@ -663,7 +682,7 @@ def create_condition(questionnaire, question, index, operand_a, operator, operan
     # # If the operator is <>, make sure that all entries for operand_a meet that requirement
     # if (operator == "<>"):result['operandA']['requireAll'] = True
 
-    question["condition" + str(index)] = result
+    condition_parent["condition" + str(index)] = result
 
 
 
@@ -694,8 +713,6 @@ def csv_to_json(title):
 # Specify the titles of each csv file and which set of column titles and options should be used
 titles = [
     "prems questionnaires - CPESIC",
-    "prems questionnaires - CPESIC ver 2",
-    "prems questionnaires - CPESIC ver 3",
     "prems questionnaires - OAIP",
     "prems questionnaires - OED"
 ]

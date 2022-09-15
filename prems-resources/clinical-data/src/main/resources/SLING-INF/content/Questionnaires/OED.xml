@@ -41,11 +41,6 @@
 		<name>oed_0</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
-			<name>text</name>
-			<value>Please answer the questions about your recent stay at the hospital named below. Do not include any other hospital stays in your answers.</value>
-			<type>String</type>
-		</property>
-		<property>
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
@@ -53,6 +48,16 @@
 		<property>
 			<name>dataType</name>
 			<value>text</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>Please answer the questions about your recent stay at the hospital named below. Do not include any other hospital stays in your answers.</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>formatted</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -70,11 +75,6 @@
 		<name>oed_title</name>
 		<primaryNodeType>cards:Information</primaryNodeType>
 		<property>
-			<name>text</name>
-			<value>During this emergency department visit...</value>
-			<type>String</type>
-		</property>
-		<property>
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
@@ -84,15 +84,15 @@
 			<value>info</value>
 			<type>String</type>
 		</property>
+		<property>
+			<name>text</name>
+			<value>## During this emergency department visit...</value>
+			<type>String</type>
+		</property>
 	</node>
 	<node>
 		<name>oed_1</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
-		<property>
-			<name>text</name>
-			<value>If you had a long wait, were you told why?</value>
-			<type>String</type>
-		</property>
 		<property>
 			<name>maxAnswers</name>
 			<value>1</value>
@@ -101,6 +101,11 @@
 		<property>
 			<name>dataType</name>
 			<value>long</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>If you had a long wait, were you told why?</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -213,11 +218,6 @@
 		<name>oed_2</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
-			<name>text</name>
-			<value>How often did care providers treat you with courtesy and respect?</value>
-			<type>String</type>
-		</property>
-		<property>
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
@@ -225,6 +225,11 @@
 		<property>
 			<name>dataType</name>
 			<value>long</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>How often did care providers treat you with courtesy and respect?</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -318,11 +323,6 @@
 		<name>oed_3</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
-			<name>text</name>
-			<value>How often did care providers explain things in a way you could understand?</value>
-			<type>String</type>
-		</property>
-		<property>
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
@@ -330,6 +330,11 @@
 		<property>
 			<name>dataType</name>
 			<value>long</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>How often did care providers explain things in a way you could understand?</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -423,11 +428,6 @@
 		<name>oed_4</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
-			<name>text</name>
-			<value>Do you feel that there was good communication about your care between doctors, nurses and other hospital staff?</value>
-			<type>String</type>
-		</property>
-		<property>
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
@@ -435,6 +435,11 @@
 		<property>
 			<name>dataType</name>
 			<value>long</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>Do you feel that there was good communication about your care between doctors, nurses and other hospital staff?</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -547,13 +552,6 @@
 		<name>oed_5</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
-			<name>text</name>
-			<value>Did you get the emotional support you needed
-to help you with any anxieties, fears or worries
-you had during this hospital visit?</value>
-			<type>String</type>
-		</property>
-		<property>
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
@@ -561,6 +559,13 @@ you had during this hospital visit?</value>
 		<property>
 			<name>dataType</name>
 			<value>long</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>Did you get the emotional support you needed
+to help you with any anxieties, fears or worries
+you had during this hospital visit?</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -678,12 +683,6 @@ you had during this hospital visit?</value>
 		<name>oed_6</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
-			<name>text</name>
-			<value>Did care providers do everything they could do
-to ease your discomfort or symptoms?</value>
-			<type>String</type>
-		</property>
-		<property>
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
@@ -691,6 +690,12 @@ to ease your discomfort or symptoms?</value>
 		<property>
 			<name>dataType</name>
 			<value>long</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>Did care providers do everything they could do
+to ease your discomfort or symptoms?</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -808,11 +813,6 @@ to ease your discomfort or symptoms?</value>
 		<name>oed_7</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
-			<name>text</name>
-			<value>Did you receive enough information from hospital staff about what to do if you were worried about your condition or treatment after you left the hospital?</value>
-			<type>String</type>
-		</property>
-		<property>
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
@@ -820,6 +820,11 @@ to ease your discomfort or symptoms?</value>
 		<property>
 			<name>dataType</name>
 			<value>long</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>Did you receive enough information from hospital staff about what to do if you were worried about your condition or treatment after you left the hospital?</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -913,11 +918,6 @@ to ease your discomfort or symptoms?</value>
 		<name>oed_8</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
-			<name>text</name>
-			<value>Overall... </value>
-			<type>String</type>
-		</property>
-		<property>
 			<name>maxAnswers</name>
 			<value>10</value>
 			<type>Long</type>
@@ -925,6 +925,11 @@ to ease your discomfort or symptoms?</value>
 		<property>
 			<name>dataType</name>
 			<value>long</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>Overall... </value>
 			<type>String</type>
 		</property>
 		<property>
@@ -977,12 +982,6 @@ to ease your discomfort or symptoms?</value>
 		<name>oed_9</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
-			<name>text</name>
-			<value>What else would you like to say about this
-emergency department experience?</value>
-			<type>String</type>
-		</property>
-		<property>
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
@@ -990,6 +989,12 @@ emergency department experience?</value>
 		<property>
 			<name>dataType</name>
 			<value>text</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>What else would you like to say about this
+emergency department experience?</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -1002,11 +1007,6 @@ emergency department experience?</value>
 		<name>oed_10</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
-			<name>text</name>
-			<value>Would you recommend this hospital to your friends and family?</value>
-			<type>String</type>
-		</property>
-		<property>
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
@@ -1014,6 +1014,11 @@ emergency department experience?</value>
 		<property>
 			<name>dataType</name>
 			<value>long</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>Would you recommend this hospital to your friends and family?</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -1107,11 +1112,6 @@ emergency department experience?</value>
 		<name>oed_11</name>
 		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
-			<name>text</name>
-			<value>Do you feel that you were treated with kindness, compassion and concern?</value>
-			<type>String</type>
-		</property>
-		<property>
 			<name>maxAnswers</name>
 			<value>1</value>
 			<type>Long</type>
@@ -1119,6 +1119,11 @@ emergency department experience?</value>
 		<property>
 			<name>dataType</name>
 			<value>long</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>text</name>
+			<value>Do you feel that you were treated with kindness, compassion and concern?</value>
 			<type>String</type>
 		</property>
 		<property>
