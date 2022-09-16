@@ -466,6 +466,8 @@ public final class AppointmentUtils
         final String visitTimeUUID = visitTimeResult.getValueMap().get(JCR_UUID, "");
         final String statusUUID =
             resolver.getResource("/Questionnaires/Visit information/status").getValueMap().get(JCR_UUID, "");
+        final String clinicUUID =
+            resolver.getResource("/Questionnaires/Visit information/clinic").getValueMap().get(JCR_UUID, "");
         final Calendar lowerBoundDate = (Calendar) dateToQuery.clone();
         lowerBoundDate.set(Calendar.HOUR_OF_DAY, 0);
         lowerBoundDate.set(Calendar.MINUTE, 0);
@@ -481,14 +483,15 @@ public final class AppointmentUtils
             "SELECT d.* FROM [cards:DateAnswer] AS d "
                 + "  INNER JOIN [cards:Form] AS f ON isdescendantnode(d, f) "
                 + "  INNER JOIN [cards:TextAnswer] AS s ON isdescendantnode(s, f) "
-                + ((clinicId != null) ? "  INNER JOIN [cards:TextAnswer] AS c ON isdescendantnode(c, f) " : "")
+                + ((clinicId != null) ? "  INNER JOIN [cards:ResourceAnswer] AS c ON isdescendantnode(c, f) " : "")
                 + "WHERE d.'question'='" + visitTimeUUID + "' "
                 + "  AND d.'value' >= cast('" + formatter.format(lowerBoundDate.getTime()) + "' AS date)"
                 + "  AND d.'value' < cast('" + formatter.format(upperBoundDate.getTime()) + "' AS date)"
                 + "  AND s.'question' = '" + statusUUID + "' "
                 + "  AND s.'value' <> 'cancelled'"
                 + "  AND s.'value' <> 'entered-in-error'"
-                + ((clinicId != null) ? ("  AND c.'value' = '" + clinicId + "'") : ""),
+                + ((clinicId != null) ? ("  AND c.'question' = '" + clinicUUID + "' AND c.'value' = '" + clinicId + "'")
+                    : ""),
             "JCR-SQL2");
         return results;
     }
