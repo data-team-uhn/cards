@@ -78,6 +78,7 @@ const useSliderStyles = makeStyles(theme => ({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
     "& > .MuiTypography-root:first-child" : {
       marginRight: theme.spacing(1.5),
       textAlign: "right",
