@@ -69,22 +69,22 @@
         "io.uhndata.cards.proms-backend:MetricLogger=[cards-metrics]"
       ]
     },
-    "io.uhndata.cards.proms.emailnotifications.AppointmentEmailNotificationsFactory~InitialNotificationsTask":{
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~InitialNotificationsTask":{
       "name": "InitialNotificationsTask",
       "metricName": "Initial Emails Sent",
       "clinicId": "/Proms/ClinicMapping/853703519",
       "emailSubject": "Welcome to DATAPRO: Answer your Pre-Appointment Questions",
-      "plainTextEmailTemplatePath": "/apps/cards/proms/clinics/Cardio/mailTemplates/72h.txt",
-      "htmlEmailTemplatePath": "/apps/cards/proms/clinics/Cardio/mailTemplates/72h.html",
+      "plainTextEmailTemplatePath": "/apps/cards/clinics/Cardio/mailTemplates/72h.txt",
+      "htmlEmailTemplatePath": "/apps/cards/clinics/Cardio/mailTemplates/72h.html",
       "daysToVisit": 3
     },
-    "io.uhndata.cards.proms.emailnotifications.AppointmentEmailNotificationsFactory~ReminderNotificationsTask":{
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~ReminderNotificationsTask":{
       "name": "ReminderNotificationsTask",
       "metricName": "Reminder Emails Sent",
       "clinicId": "/Proms/ClinicMapping/853703519",
       "emailSubject": "Reminder: You have 24 hours left to complete your pre-appointment questions",
-      "plainTextEmailTemplatePath": "/apps/cards/proms/clinics/Cardio/mailTemplates/24h.txt",
-      "htmlEmailTemplatePath": "/apps/cards/proms/clinics/Cardio/mailTemplates/24h.html",
+      "plainTextEmailTemplatePath": "/apps/cards/clinics/Cardio/mailTemplates/24h.txt",
+      "htmlEmailTemplatePath": "/apps/cards/clinics/Cardio/mailTemplates/24h.html",
       "daysToVisit": 1
     }
   }
