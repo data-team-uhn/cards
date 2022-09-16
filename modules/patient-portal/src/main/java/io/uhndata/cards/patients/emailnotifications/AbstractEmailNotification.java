@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 import io.uhndata.cards.auth.token.TokenManager;
 import io.uhndata.cards.emailnotifications.EmailUtils;
 import io.uhndata.cards.patients.api.PatientAccessConfiguration;
+import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 import jakarta.mail.MessagingException;
 
 abstract class AbstractEmailNotification
@@ -51,6 +52,8 @@ abstract class AbstractEmailNotification
     /** Provides access to resources. */
     protected final ResourceResolverFactory resolverFactory;
 
+    protected final ThreadResourceResolverProvider resolverProvider;
+
     private final TokenManager tokenManager;
 
     private final MailService mailService;
@@ -58,10 +61,12 @@ abstract class AbstractEmailNotification
     private final PatientAccessConfiguration patientAccessConfiguration;
 
     AbstractEmailNotification(final ResourceResolverFactory resolverFactory,
+        final ThreadResourceResolverProvider resolverProvider,
         final TokenManager tokenManager, final MailService mailService,
         final PatientAccessConfiguration patientAccessConfiguration)
     {
         this.resolverFactory = resolverFactory;
+        this.resolverProvider = resolverProvider;
         this.tokenManager = tokenManager;
         this.mailService = mailService;
         this.patientAccessConfiguration = patientAccessConfiguration;
@@ -111,6 +116,7 @@ abstract class AbstractEmailNotification
             Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, "EmailNotifications");
         long emailsSent = 0;
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(parameters)) {
+            this.resolverProvider.push(resolver);
             Iterator<Resource> appointmentResults = AppointmentUtils.getAppointmentsForDay(resolver,
                 dateToQuery, clinicId);
             while (appointmentResults.hasNext()) {
@@ -188,6 +194,8 @@ abstract class AbstractEmailNotification
             }
         } catch (LoginException e) {
             LOGGER.warn("Failed to results.next().getPath()");
+        } finally {
+            this.resolverProvider.pop();
         }
         return emailsSent;
     }

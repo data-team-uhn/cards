@@ -25,6 +25,7 @@ import org.apache.sling.commons.messaging.mail.MailService;
 import io.uhndata.cards.auth.token.TokenManager;
 import io.uhndata.cards.metrics.Metrics;
 import io.uhndata.cards.patients.api.PatientAccessConfiguration;
+import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 
 public class GeneralNotificationsTask extends AbstractEmailNotification implements Runnable
 {
@@ -59,12 +60,13 @@ public class GeneralNotificationsTask extends AbstractEmailNotification implemen
      */
     @SuppressWarnings({ "checkstyle:ParameterNumber" })
     GeneralNotificationsTask(final ResourceResolverFactory resolverFactory,
+        final ThreadResourceResolverProvider resolverProvider,
         final TokenManager tokenManager, final MailService mailService,
         final PatientAccessConfiguration patientAccessConfiguration, final String taskName,
         final String clinicId, final String emailSubject, final String plainTemplatePath,
         final String htmlTemplatePath, final int daysToVisit)
     {
-        super(resolverFactory, tokenManager, mailService, patientAccessConfiguration);
+        super(resolverFactory, resolverProvider, tokenManager, mailService, patientAccessConfiguration);
         this.taskName = taskName;
         this.clinicId = clinicId;
         this.emailSubject = emailSubject;

@@ -23,7 +23,7 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.FieldOption;
 import org.osgi.service.component.annotations.Reference;
@@ -32,6 +32,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import io.uhndata.cards.patients.api.PatientAccessConfiguration;
 import io.uhndata.cards.spi.AbstractNodeUtils;
+import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 
 /**
  * Basic utilities for grabbing patient authentication config details.
@@ -64,7 +65,7 @@ public class PatientAccessConfigurationImpl extends AbstractNodeUtils implements
 
     @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,
         policyOption = ReferencePolicyOption.GREEDY)
-    private ResourceResolverFactory rrf;
+    private ThreadResourceResolverProvider rrp;
 
     /**
      * Returns the property specified in the configuration node. The resource resolver must have {@code jcr:read}
@@ -75,7 +76,11 @@ public class PatientAccessConfigurationImpl extends AbstractNodeUtils implements
      */
     private Property getConfig(final String prop) throws RepositoryException
     {
-        Session session = getSession(this.rrf);
+        ResourceResolver rr = this.rrp.getThreadResourceResolver();
+        if (rr == null) {
+            return null;
+        }
+        Session session = rr.adaptTo(Session.class);
         if (!session.nodeExists(CONFIG_NODE)) {
             return null;
         }

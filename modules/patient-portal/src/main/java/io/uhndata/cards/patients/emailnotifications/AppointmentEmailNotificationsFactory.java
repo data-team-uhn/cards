@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
 import io.uhndata.cards.auth.token.TokenManager;
 import io.uhndata.cards.metrics.Metrics;
 import io.uhndata.cards.patients.api.PatientAccessConfiguration;
+import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 
 @Designate(ocd = AppointmentEmailNotificationsFactory.Config.class, factory = true)
 @Component(configurationPolicy = ConfigurationPolicy.REQUIRE)
@@ -46,6 +47,10 @@ public final class AppointmentEmailNotificationsFactory
     /** Provides access to resources. */
     @Reference
     private ResourceResolverFactory resolverFactory;
+
+    /** Shares the resolver in use with other components. */
+    @Reference
+    private ThreadResourceResolverProvider resolverProvider;
 
     /** The scheduler for rescheduling jobs. */
     @Reference
@@ -110,7 +115,8 @@ public final class AppointmentEmailNotificationsFactory
         notificationsOptions.canRunConcurrently(true);
 
         // Instantiate the Runnable
-        final Runnable notificationsJob = new GeneralNotificationsTask(this.resolverFactory, this.tokenManager,
+        final Runnable notificationsJob = new GeneralNotificationsTask(this.resolverFactory, this.resolverProvider,
+            this.tokenManager,
             this.mailService, this.patientAccessConfiguration, config.name(), config.clinicId(), config.emailSubject(),
             config.plainTextEmailTemplatePath(), config.htmlEmailTemplatePath(),
             config.daysToVisit());
