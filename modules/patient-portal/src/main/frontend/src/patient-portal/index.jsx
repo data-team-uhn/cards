@@ -28,6 +28,7 @@ import Footer from "./Footer.jsx";
 import PatientIdentification from "./PatientIdentification.jsx";
 import { portalTheme } from "./portalTheme.jsx";
 import QuestionnaireSet from "./QuestionnaireSet.jsx";
+import PageStartWrapper from '../PageStartWrapper';
 import { DEFAULT_INSTRUCTIONS, SURVEY_INSTRUCTIONS_PATH } from "./SurveyInstructionsConfiguration.jsx"
 
 const CONFIG = "/Survey/PatientAccess.json";
@@ -81,17 +82,22 @@ function PatientPortalHomepage (props) {
 
   if (!subject) {
     return (<>
-      <PatientIdentification onSuccess={onPatientIdentified} displayText={displayText} config={accessConfig}/>
-      <Footer />
+      <PageStartWrapper extensionsName="SurveyPageStart">
+        <PatientIdentification onSuccess={onPatientIdentified} displayText={displayText} config={accessConfig}/>
+        <Footer />
+      </PageStartWrapper>
     </>);
   }
 
-  return (
-    <QuestionnaireSet subject={subject} username={username} displayText={displayText} config={{
-      ...accessConfig,
-      ...surveyInstructions
-    }} />
-  );
+  return (<>
+    <PageStartWrapper extensionsName="SurveyPageStart">
+      <QuestionnaireSet subject={subject} username={username} displayText={displayText} config={{
+        ...accessConfig,
+        ...surveyInstructions
+      }} />
+      <Footer />
+    </PageStartWrapper>
+  </>);
 }
 
 const router = createBrowserRouter([

@@ -29,11 +29,17 @@ import {
 } from "@mui/material";
 import { makeStyles } from 'tss-react/mui';
 
+import { useMediaQuery } from "@mui/material";
+import { useTheme } from '@mui/material/styles';
+
 import Logo from "../components/Logo";
 
 const useStyles = makeStyles()(theme => ({
   appbar : {
     margin: theme.spacing(-1, -1, 4),
+    [theme.breakpoints.down('md')]: {
+      margin: theme.spacing(0, -1),
+    },
     padding: theme.spacing(0, 1),
     boxSizing: "content-box",
     background: theme.palette.background.paper,
@@ -116,6 +122,10 @@ function Header (props) {
     threshold: 200,
   });
 
+  const theme = useTheme();
+  const appbarExpanded = useMediaQuery(theme.breakpoints.up('md'));
+  const contentOffset = document?.getElementById('page-start-wrapper-content')?.style.top || 0;
+
   let subtitleBar = subtitle ?
     <Toolbar variant="dense" className={classes.toolbar}>
       <Typography variant="h6" color="textPrimary">{ subtitle }</Typography>
@@ -130,7 +140,7 @@ function Header (props) {
 
   return (
     <>
-      <AppBar position="sticky" className={classes.appbar} id="patient-portal-header">
+      <AppBar position="sticky" className={classes.appbar} id="patient-portal-header" style={ { top: appbarExpanded ? contentOffset: 0 }}>
         <Collapse in={!subtitle || !(scrollTrigger)}>
           <Toolbar variant="dense" className={toolbarClassNames.join(' ')}>
             <Logo className={classes.logo} maxWidth="160px" />
