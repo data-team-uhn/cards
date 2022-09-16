@@ -55,7 +55,7 @@
     {
       "key": "time",
       "label": "Discharge date",
-      "format": "date:yyyy-MM-dd hh:mm",
+      "format": "date:yyyy-MM-dd HH:mm",
       "link" : "dashboard+path"
     },
     {
