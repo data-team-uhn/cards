@@ -1,26 +1,26 @@
-You are receiving this email because you have an upcoming appointment.
+You are receiving this email because you have recently been discharged from a UHN hospital.
 
-Make the most of your appointment by answering your Pre-Appointment Questions.
+Please answer a few questions about your recent stay at the hospital.
 
-Answer your Pre-Appointment Questions: ${surveysLink}
+Provide Feedback about Your Experience: ${surveysLink}
 
-Note: DATAPRO will not load if you're using Internet Explorer. Please go to `datapro.uhn.ca' on another browser, such as Edge, Chrome, or Firefox.
+Note: YOUR EXPERIENCE will not load if you're using Internet Explorer. Please go to ${surveysLink} on another browser, such as Edge, Chrome, or Firefox.
 
-The Pre-Appointment Questions are designed to ask the most important questions about your health and wellbeing. Your responses help your care team tailor your care to address your biggest concerns. Answer your Pre-Appointment Questions before your next appointment using DATAPRO!
+YOUR EXPERIENCE is designed to ask you the most important questions about how you percieved your interactions with your health care providers during your latest hospital stay.
 
-Please note that your responses may not be reviewed by your care team until the day of your appointment. If your symptoms are worsening while waiting for your next appointment, please proceed to your nearest Emergency Department today, or call 911.
+Completing the questionnaire is voluntary, so if you would rather not complete it, you do not have to.
 
-This link will expire the day after your appointment. For questions about the details of your appointment, please call the Peter Munk Cardiac Centre Info Line at 416-340-5309 between 8:00 am and 4:30 pm, Monday to Friday, to speak with an Information Specialist.
+Your responses remain confidential. They will be analyzed in a completely anonymous way and used to improve our services and enhance future experience for you and other patients.
 
 Instructions
 
-1. Visit ${surveysLink} and log-in to DATAPRO up to two days before your appointment
+1. Visit ${surveysLink} to navigate to your own YOUR EXPERIENCE survey
 
-2. Answer the Pre-Appointment Questions to tell us how you're doing
+2. Answer the Post-Discharge Questions to tell us how we did
 
-3. Make the most of your appointment by bringing up any concerns you have with your provider
+3. You can review and update your answers right after finishing the survey
 
-4. Note: If your appointment is cancelled or rescheduled and you've already submitted your responses, they will not be reviewed until the time of your new appointment. Make sure to contact your nurse triage line, proceed to the Emergency Department, or call 911 if your symptoms are severe or worsening.
+4. Submit your feedback and close the page.
 
 UHN is updating the way we obtain consent for emailing our patients. UHN may send you health and other information that pertains to you via email, including appointment information, requisitions, and other general information. All electronic communication carries some risk. Please read the information below on the risks of electronic communication and how to protect your privacy:
 
@@ -36,10 +36,8 @@ Please contact your care provider or the UHN Privacy Office at 416-340-4800 ext.
 
 Reviewed by UHN Digital, and Patient Engagement Teams/ Last Updated: November 1, 2021.
 
-DATAPRO
+YOUR EXPERIENCE
 
 University Health Network
 
-Peter Munk Cardiac Centre
-
-Unsubscribe from further emails from DATAPRO: ${unsubscribeLink}
+Unsubscribe from further emails from YOUR EXPERIENCE: ${unsubscribeLink}

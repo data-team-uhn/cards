@@ -56,8 +56,10 @@
               SLING-INF/content/libs/cards/conf/AppName.json;path:=/libs/cards/conf/AppName;overwrite:=true,
               SLING-INF/content/libs/cards/conf/ThemeColor.json;path:=/libs/cards/conf/ThemeColor;overwrite:=true,
               SLING-INF/content/apps/cards/config/CopyAnswers;path:=/apps/cards/config/CopyAnswers;overwriteProperties:=true;uninstall:=true,
-              SLING-INF/content/apps/cards/clinics/AIP/mailTemplates;path:=/apps/cards/clinics/AIP/mailTemplates;overwrite:=true,
-              SLING-INF/content/apps/cards/clinics/ED/mailTemplates;path:=/apps/cards/clinics/ED/mailTemplates;overwrite:=true,
+              SLING-INF/content/apps/cards/clinics/TGH-EMERGENCY/mailTemplates;path:=/apps/cards/clinics/TGH-EMERGENCY/mailTemplates;overwrite:=true,
+              SLING-INF/content/apps/cards/clinics/TGH-INPATIENT/mailTemplates;path:=/apps/cards/clinics/TGH-INPATIENT/mailTemplates;overwrite:=true,
+              SLING-INF/content/apps/cards/clinics/TW-EMERGENCY/mailTemplates;path:=/apps/cards/clinics/TW-EMERGENCY/mailTemplates;overwrite:=true,
+              SLING-INF/content/apps/cards/clinics/TW-INPATIENT/mailTemplates;path:=/apps/cards/clinics/TW-INPATIENT/mailTemplates;overwrite:=true,
             </Sling-Initial-Content>
           </instructions>
         </configuration>
