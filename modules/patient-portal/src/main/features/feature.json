@@ -50,6 +50,8 @@
     "org.apache.sling.jcr.repoinit.RepositoryInitializer~patientUI":{
       "service.ranking:Integer":300,
       "scripts": [
+        // Create the /Survey node
+        "create path (cards:PatientHomepage) /Survey",
         // In certain environments, this script gets executed before the main forms repoinit does, so we must make sure the paths we reference are created.
         "create path (cards:QuestionnairesHomepage) /Questionnaires \n create path (cards:FormsHomepage) /Forms \n create path (cards:SubjectsHomepage) /Subjects \n create path (cards:SubjectTypesHomepage) /SubjectTypes \n create path (cards:Homepage) /content",
         // Access rights for the special "patient" user: only allow access to the session subject data, excluding certain clinician-only sections/questions
