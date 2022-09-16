@@ -26,6 +26,7 @@ import QuestionnaireSet from "./QuestionnaireSet.jsx";
 import PatientIdentification from "./PatientIdentification.jsx";
 import Footer from "./Footer.jsx";
 import ErrorPage from "../components/ErrorPage.jsx";
+import PageStart from '../PageStart';
 
 import { DEFAULT_INSTRUCTIONS, SURVEY_INSTRUCTIONS_PATH } from "./SurveyInstructionsConfiguration.jsx"
 
@@ -113,16 +114,21 @@ function PatientPortalHomepage (props) {
 const hist = createBrowserHistory();
 hist.listen(({action, location}) => window.dispatchEvent(new Event("beforeunload")));
 ReactDOM.render(
-  <StyledEngineProvider injectFirst>
-    <ThemeProvider theme={appTheme}>
-      <Router history={hist}>
-        <Switch color="secondary">
-          <Route path="/Survey.html/" component={PatientPortalHomepage} />
-          <Redirect from="/Survey" to="/Survey.html/"/>
-        </Switch>
-      </Router>
-    </ThemeProvider>
-  </StyledEngineProvider>,
+  <React.Fragment>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={appTheme}>
+        <PageStart
+      extensionsName="SurveyPageStart"
+    />
+        <Router history={hist}>
+          <Switch color="secondary">
+            <Route path="/Survey.html/" component={PatientPortalHomepage} />
+            <Redirect from="/Survey" to="/Survey.html/"/>
+          </Switch>
+        </Router>
+      </ThemeProvider>
+    </StyledEngineProvider>
+  </React.Fragment>,
   document.querySelector('#patient-portal-container')
 );
 
