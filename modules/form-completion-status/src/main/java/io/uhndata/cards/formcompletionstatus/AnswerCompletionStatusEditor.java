@@ -18,12 +18,12 @@ package io.uhndata.cards.formcompletionstatus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -51,8 +51,6 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(AnswerCompletionStatusEditor.class);
 
-    private static final String PROP_QUESTION = "question";
-
     private static final String STATUS_FLAGS = "statusFlags";
 
     private static final String STATUS_FLAG_INCOMPLETE = "INCOMPLETE";
@@ -78,6 +76,8 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     // descendant node.
     private final List<NodeBuilder> currentNodeBuilderPath;
 
+    private final boolean newNode;
+
     /**
      * Simple constructor.
      *
@@ -85,15 +85,18 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
      *            the current node.
      * @param form the form node found up the tree, if any; may be {@code null} if no form node has been encountered so
      *            far
+     * @param newNode is this a newly created answer, or an existing answer being updated
      * @param session the current JCR session
      * @param formUtils for working with form data
      * @param allValidators all available AnswerValidator services
      */
     public AnswerCompletionStatusEditor(final List<NodeBuilder> nodeBuilder, final NodeBuilder form,
-        final Session session, final FormUtils formUtils, List<AnswerValidator> allValidators)
+        final boolean newNode, final Session session, final FormUtils formUtils,
+        final List<AnswerValidator> allValidators)
     {
         this.currentNodeBuilderPath = nodeBuilder;
         this.currentNodeBuilder = nodeBuilder.get(nodeBuilder.size() - 1);
+        this.newNode = newNode;
         this.session = session;
         this.formUtils = formUtils;
         this.allValidators = allValidators;
@@ -112,32 +115,34 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     public Editor childNodeAdded(final String name, final NodeState after)
         throws CommitFailedException
     {
-        validateAnswer(after, true);
-
         final List<NodeBuilder> tmpList = new ArrayList<>(this.currentNodeBuilderPath);
         tmpList.add(this.currentNodeBuilder.getChildNode(name));
-        return new AnswerCompletionStatusEditor(tmpList, this.form, this.session, this.formUtils, this.allValidators);
+        return new AnswerCompletionStatusEditor(tmpList, this.form, true, this.session, this.formUtils,
+            this.allValidators);
     }
 
     @Override
     public Editor childNodeChanged(final String name, final NodeState before, final NodeState after)
         throws CommitFailedException
     {
-        validateAnswer(after, false);
-
         final List<NodeBuilder> tmpList = new ArrayList<>(this.currentNodeBuilderPath);
         tmpList.add(this.currentNodeBuilder.getChildNode(name));
-        return new AnswerCompletionStatusEditor(tmpList, this.form, this.session, this.formUtils, this.allValidators);
+        return new AnswerCompletionStatusEditor(tmpList, this.form, false, this.session, this.formUtils,
+            this.allValidators);
     }
 
     @Override
-    public void leave(NodeState before, NodeState after)
+    public void leave(final NodeState before, final NodeState after)
         throws CommitFailedException
     {
-        if (this.formUtils.isForm(this.currentNodeBuilder) || this.formUtils.isAnswerSection(this.currentNodeBuilder)) {
+        if (this.formUtils.isAnswer(this.currentNodeBuilder)) {
+            validateAnswer();
+        } else if (this.formUtils.isForm(this.currentNodeBuilder)
+            || this.formUtils.isAnswerSection(this.currentNodeBuilder)) {
+
             try {
                 summarize();
-            } catch (RepositoryException e) {
+            } catch (final RepositoryException e) {
                 // This is not a fatal error, the form status is not required for a functional application
                 LOGGER.warn("Unexpected exception while checking the completion status of form {}",
                     this.currentNodeBuilder.getString("jcr:uuid"));
@@ -146,69 +151,33 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
     }
 
     /**
-     * If the node is indeed an answer node,
-     * - populate the flags map with the old flags all set to false,
-     * - get the question node from answer, and call each validator;
-     * - then gather all the keys from the flags map and set the statusFlags property on the answer node.
-     * @param answer answer
-     * @param initialAnswer initialAnswer
+     * Validate the current node, which must be an answer.
      */
-    public void validateAnswer(NodeState answer, boolean initialAnswer)
+    public void validateAnswer()
     {
-        if (!this.formUtils.isAnswer(answer)) {
-            return;
-        }
-
-        final Node questionNode = getQuestionNode(this.currentNodeBuilder);
+        final Node questionNode = this.formUtils.getQuestion(this.currentNodeBuilder);
 
         if (questionNode != null) {
-            final Set<String> statusFlags = new TreeSet<>();
-            if (this.currentNodeBuilder.hasProperty(STATUS_FLAGS)) {
-                this.currentNodeBuilder.getProperty(STATUS_FLAGS).getValue(Type.STRINGS).forEach(statusFlags::add);
-            }
-            Map<String, Boolean> flags = new HashMap<>();
             // populate the flags map with the old flags all set to false
-            statusFlags.forEach(flag -> flags.remove(flag));
-
+            final Map<String, Boolean> flags = new HashMap<>();
+            if (this.currentNodeBuilder.hasProperty(STATUS_FLAGS)) {
+                this.currentNodeBuilder.getProperty(STATUS_FLAGS).getValue(Type.STRINGS)
+                    .forEach(flag -> flags.put(flag, Boolean.FALSE));
+            }
             // call each validator
             this.allValidators.forEach(validator -> {
-                validator.validate(this.currentNodeBuilder, questionNode, initialAnswer, flags);
+                validator.validate(this.currentNodeBuilder, questionNode, this.newNode, flags);
             });
-
-            // then gather all the keys from the flags map and set the statusFlags property on the answer node
-            final Set<String> newFlags = flags.entrySet().stream()
-                .map(entry -> entry.getKey())
-                .collect(Collectors.toSet());
             // Write these statusFlags to the JCR repo
-            this.currentNodeBuilder.setProperty(STATUS_FLAGS, newFlags, Type.STRINGS);
+            this.currentNodeBuilder.setProperty(STATUS_FLAGS, flags.keySet(), Type.STRINGS);
         }
-    }
-
-    /**
-     * Gets the question node associated with the answer for which this AnswerCompletionStatusEditor is an editor
-     * thereof.
-     *
-     * @return the question Node object associated with this answer
-     */
-    private Node getQuestionNode(final NodeBuilder nb)
-    {
-        try {
-            if (nb.hasProperty(PROP_QUESTION)) {
-                final String questionNodeReference = nb.getProperty(PROP_QUESTION).getValue(Type.REFERENCE);
-                final Node questionNode = this.session.getNodeByIdentifier(questionNodeReference);
-                return questionNode;
-            }
-        } catch (final RepositoryException ex) {
-            return null;
-        }
-        return null;
     }
 
     /**
      * Checks if a NodeBuilder represents an empty Form and returns true if that is the case. Otherwise, this method
      * returns false.
      */
-    private boolean isEmptyForm(NodeBuilder n)
+    private boolean isEmptyForm(final NodeBuilder n)
     {
         if (this.formUtils.isForm(n)) {
             if (!(n.getChildNodeNames().iterator().hasNext())) {
@@ -224,50 +193,44 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
      *
      * @throws RepositoryException if accessing the repository fails
      */
-    @SuppressWarnings("checkstyle:CyclomaticComplexity")
     private void summarize() throws RepositoryException
     {
-        // Iterate through all children of this node
-        final Iterator<String> childrenNames = this.currentNodeBuilder.getChildNodeNames().iterator();
-        boolean isInvalid = false;
-        // If this Form has no children yet, the form is brand new, thus incomplete
-        boolean isIncomplete = isEmptyForm(this.currentNodeBuilder);
-        while (childrenNames.hasNext()) {
-            final String selectedChildName = childrenNames.next();
-            final NodeBuilder selectedChild = this.currentNodeBuilder.getChildNode(selectedChildName);
-            if (this.formUtils.isAnswerSection(selectedChild)) {
-                if (!ConditionalSectionUtils.isConditionSatisfied(this.session, selectedChild, this.form)) {
-                    continue;
+        this.currentNodeBuilder.getChildNodeNames().iterator();
+        isEmptyForm(this.currentNodeBuilder);
+        final Set<String> flags = StreamSupport.stream(this.currentNodeBuilder.getChildNodeNames().spliterator(), false)
+            .map(childName -> this.currentNodeBuilder.getChildNode(childName))
+            .filter(child -> {
+                try {
+                    return !(this.formUtils.isAnswerSection(child)
+                        && !ConditionalSectionUtils.isConditionSatisfied(this.session, child, this.form));
+                } catch (final RepositoryException e) {
+                    return true;
                 }
-            }
-            // Is selectedChild - invalid? , incomplete?
-            if (selectedChild.hasProperty(STATUS_FLAGS)) {
-                final Iterable<String> selectedProps =
-                    selectedChild.getProperty(STATUS_FLAGS).getValue(Type.STRINGS);
-                final Iterator<String> selectedPropsIter = selectedProps.iterator();
-                while (selectedPropsIter.hasNext()) {
-                    final String thisStr = selectedPropsIter.next();
-                    if (STATUS_FLAG_INVALID.equals(thisStr)) {
-                        isInvalid = true;
-                    }
-                    if (STATUS_FLAG_INCOMPLETE.equals(thisStr)) {
-                        isIncomplete = true;
-                    }
-                }
-            }
-        }
+            })
+            .filter(child -> child.hasProperty(STATUS_FLAGS))
+            .map(child -> child.getProperty(STATUS_FLAGS).getValue(Type.STRINGS))
+            .<Set<String>>reduce(new HashSet<>(), (oldFlags, newFlags) -> {
+                newFlags.forEach(flag -> oldFlags.add(flag));
+                return oldFlags;
+            },
+                (l, r) -> {
+                    final Set<String> u = new HashSet<>();
+                    u.addAll(l);
+                    u.addAll(r);
+                    return u;
+                });
         // Set the flags in selectedNodeBuilder accordingly
         final Set<String> statusFlags = new TreeSet<>();
         if (this.currentNodeBuilder.hasProperty(STATUS_FLAGS)) {
             this.currentNodeBuilder.getProperty(STATUS_FLAGS).getValue(Type.STRINGS).forEach(statusFlags::add);
         }
-        if (isInvalid) {
+        if (flags.contains(STATUS_FLAG_INVALID)) {
             statusFlags.add(STATUS_FLAG_INVALID);
         } else {
             statusFlags.remove(STATUS_FLAG_INVALID);
         }
 
-        if (isIncomplete) {
+        if (flags.contains(STATUS_FLAG_INCOMPLETE)) {
             statusFlags.add(STATUS_FLAG_INCOMPLETE);
         } else {
             statusFlags.remove(STATUS_FLAG_INCOMPLETE);
