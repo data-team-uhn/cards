@@ -16,14 +16,11 @@
  */
 package io.uhndata.cards.formcompletionstatus.internal;
 
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import org.apache.jackrabbit.oak.api.PropertyState;
-import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.osgi.service.component.annotations.Component;
 
@@ -35,7 +32,7 @@ import io.uhndata.cards.formcompletionstatus.spi.AnswerValidator;
  * @version $Id$
  */
 @Component(immediate = true)
-public class DateRangeMinMaxAnswersValidator implements AnswerValidator
+public class DateRangeMinMaxAnswersValidator extends MinMaxAnswersValidator implements AnswerValidator
 {
     @Override
     public int getPriority()
@@ -44,61 +41,25 @@ public class DateRangeMinMaxAnswersValidator implements AnswerValidator
     }
 
     @Override
-    @SuppressWarnings({ "checkstyle:CyclomaticComplexity", "checkstyle:NPathComplexity" })
-    public void validate(NodeBuilder answer, Node question, boolean initialAnswer, Map<String, Boolean> flags)
+    public void validate(final NodeBuilder answer, final Node question, final boolean initialAnswer,
+        final Map<String, Boolean> flags)
     {
         try {
+            // This only checks the number of values for date range answers
             final String dataType = question.getProperty("dataType").getString();
             final boolean isDate = "date".equals(dataType);
-            final String type = question.getProperty("type").getString();
+            final String type = question.hasProperty("type") ? question.getProperty("type").getString() : "";
             final boolean isInterval = "interval".equals(type);
 
             if (!isDate || !isInterval) {
                 return;
             }
 
-            final long minAnswers =
-                question.hasProperty("minAnswers") ? question.getProperty("minAnswers").getLong() : 0;
-            final long maxAnswers =
-                question.hasProperty("maxAnswers") ? question.getProperty("maxAnswers").getLong() : 0;
-            if (minAnswers == 0 && maxAnswers == 0) {
-                return;
-            }
-
-            final PropertyState answerProp = answer.getProperty(PROP_VALUE);
-            if (answerProp == null) {
-                return;
-            }
-            final Iterable<String> nodeAnswers = answerProp.getValue(Type.STRINGS);
-            final int numAnswers = iterableLength(nodeAnswers) / 2;
-            // Checks if the number of values divided by two is within the specified minAnswers ... maxAnswers range,
-            // then set the required flags to true, else remove them
-            if ((numAnswers < minAnswers && minAnswers != 0) || (numAnswers > maxAnswers && maxAnswers != 0)) {
-                flags.put(FLAG_INCOMPLETE, true);
-                flags.put(FLAG_INVALID, true);
-            } else {
-                flags.remove(FLAG_INCOMPLETE);
-                flags.remove(FLAG_INVALID);
-            }
+            // Ranges are stored as pairs of values, so the true number of values is half of the number of actual values
+            final long valuesCount = getNumberOfValues(answer) / 2;
+            checkNumberOfValues(valuesCount, question, initialAnswer, flags);
         } catch (final RepositoryException ex) {
-            // If something goes wrong then we definitely cannot have a valid answer
+            // If something goes wrong then we cannot verify the answer, leave it as it was before
         }
-    }
-
-    /**
-     * Counts the number of items in an Iterable.
-     *
-     * @param iterable the Iterable object to be counted
-     * @return the number of objects in the Iterable
-     */
-    private int iterableLength(final Iterable<?> iterable)
-    {
-        int len = 0;
-        final Iterator<?> iterator = iterable.iterator();
-        while (iterator.hasNext()) {
-            iterator.next();
-            len++;
-        }
-        return len;
     }
 }

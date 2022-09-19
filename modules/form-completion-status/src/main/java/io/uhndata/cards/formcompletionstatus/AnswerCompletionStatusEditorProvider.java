@@ -62,13 +62,14 @@ public class AnswerCompletionStatusEditorProvider implements EditorProvider
         final CommitInfo info)
         throws CommitFailedException
     {
-        ResourceResolver resolver = this.rrp.getThreadResourceResolver();
+        final ResourceResolver resolver = this.rrp.getThreadResourceResolver();
         if (resolver != null) {
             this.allValidators.sort((o1, o2) -> o2.getPriority() - o1.getPriority());
             // Each AnswerCompletionStatusEditor maintains a state, so a new instance must be returned each time
             final List<NodeBuilder> tmpList = new ArrayList<>();
             tmpList.add(builder);
-            return new AnswerCompletionStatusEditor(tmpList, null, resolver.adaptTo(Session.class), this.formUtils,
+            return new AnswerCompletionStatusEditor(tmpList, null, false, resolver.adaptTo(Session.class),
+                this.formUtils,
                 this.allValidators);
         }
         return null;
