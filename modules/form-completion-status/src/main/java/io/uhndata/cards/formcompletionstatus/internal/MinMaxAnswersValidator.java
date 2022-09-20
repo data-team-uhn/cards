@@ -65,15 +65,9 @@ public class MinMaxAnswersValidator implements AnswerValidator
 
         // Checks if the number of values is within the specified minAnswers ... maxAnswers range,
         if ((valuesCount < minAnswers && minAnswers != 0) || (valuesCount > maxAnswers && maxAnswers != 0)) {
-            // If yes, set FLAG_INCOMPLETE
             flags.put(FLAG_INCOMPLETE, true);
-            if (!initialAnswer) {
-                // And iff this is not the first time the answer is set, also FLAG_INVALID
-                flags.put(FLAG_INVALID, true);
-            }
         } else {
             flags.remove(FLAG_INCOMPLETE);
-            flags.remove(FLAG_INVALID);
         }
     }
 
