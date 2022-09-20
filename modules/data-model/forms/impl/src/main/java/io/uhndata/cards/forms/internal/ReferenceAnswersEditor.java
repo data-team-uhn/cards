@@ -212,7 +212,7 @@ public class ReferenceAnswersEditor extends AnswersEditor
                 Node questionNode = ReferenceAnswersEditor.this.questionnaireUtils.getQuestion(questionId);
                 try {
                     if (questionNode != null && questionNode.hasProperty("entryMode")
-                        && "refernce".equals(questionNode.getProperty("entryMode").getString())) {
+                        && "reference".equals(questionNode.getProperty("entryMode").getString())) {
                         return true;
                     }
                 } catch (RepositoryException e) {
