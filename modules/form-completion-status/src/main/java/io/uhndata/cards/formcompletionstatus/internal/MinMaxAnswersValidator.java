@@ -64,10 +64,15 @@ public class MinMaxAnswersValidator implements AnswerValidator
             question.hasProperty("maxAnswers") ? question.getProperty("maxAnswers").getLong() : 0;
 
         // Checks if the number of values is within the specified minAnswers ... maxAnswers range,
-        if ((valuesCount < minAnswers && minAnswers != 0) || (valuesCount > maxAnswers && maxAnswers != 0)) {
+        if (valuesCount < minAnswers && minAnswers != 0) {
             flags.put(FLAG_INCOMPLETE, true);
         } else {
             flags.remove(FLAG_INCOMPLETE);
+        }
+        if (valuesCount > maxAnswers && maxAnswers != 0) {
+            flags.put(FLAG_INVALID, true);
+        } else {
+            flags.remove(FLAG_INVALID);
         }
     }
 
