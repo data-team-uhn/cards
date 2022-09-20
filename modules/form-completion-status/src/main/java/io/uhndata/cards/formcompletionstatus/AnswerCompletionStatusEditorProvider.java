@@ -64,7 +64,7 @@ public class AnswerCompletionStatusEditorProvider implements EditorProvider
     {
         final ResourceResolver resolver = this.rrp.getThreadResourceResolver();
         if (resolver != null) {
-            this.allValidators.sort((o1, o2) -> o2.getPriority() - o1.getPriority());
+            this.allValidators.sort((o1, o2) -> o1.getPriority() - o2.getPriority());
             // Each AnswerCompletionStatusEditor maintains a state, so a new instance must be returned each time
             final List<NodeBuilder> tmpList = new ArrayList<>();
             tmpList.add(builder);
