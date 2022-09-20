@@ -27,6 +27,8 @@ import argparse
 from OpenSSL import crypto, SSL
 from CardsDockerTagProperty import CARDS_DOCKER_TAG
 
+MINIO_DOCKER_RELEASE_TAG = "RELEASE.2022-09-17T00-09-45Z"
+
 argparser = argparse.ArgumentParser()
 argparser.add_argument('--shards', help='Number of MongoDB shards', default=1, type=int)
 argparser.add_argument('--replicas', help='Number of MongoDB replicas per shard (must be an odd number)', default=3, type=int)
@@ -49,6 +51,7 @@ argparser.add_argument('--smtps', help='Enable SMTPS emailing functionality', ac
 argparser.add_argument('--smtps_localhost_proxy', help='Run an SSL termination proxy so that the CARDS container may connect to the host\'s SMTP server at localhost:25', action='store_true')
 argparser.add_argument('--smtps_test_container', help='Enable the mock SMTPS (cards/postfix-docker) container for viewing CARDS-sent emails.', action='store_true')
 argparser.add_argument('--smtps_test_mail_path', help='Host OS path where the email mbox file from smtps_test_container is stored')
+argparser.add_argument('--s3_test_container', help='Add a MinIO S3 Bucket Docker container for testing S3 data exports', action='store_true')
 argparser.add_argument('--ssl_proxy', help='Protect this service with SSL/TLS (use https:// instead of http://)', action='store_true')
 argparser.add_argument('--sling_admin_port', help='The localhost TCP port which should be forwarded to cardsinitial:8080', type=int)
 argparser.add_argument('--subnet', help='Manually specify the subnet of IP addresses to be used by the containers in this docker-compose environment (eg. --subnet 172.99.0.0/16)')
@@ -442,6 +445,13 @@ if args.smtps_test_container:
   yaml_obj['services']['cardsinitial']['environment'].append("SMTPS_HOST=smtps_test_container")
   yaml_obj['services']['cardsinitial']['environment'].append("SMTPS_LOCAL_TEST_CONTAINER=true")
 
+if args.s3_test_container:
+  yaml_obj['services']['cardsinitial']['environment'].append("S3_ENDPOINT_URL=http://minio:9000")
+  yaml_obj['services']['cardsinitial']['environment'].append("S3_ENDPOINT_REGION=us-west-1")
+  yaml_obj['services']['cardsinitial']['environment'].append("S3_BUCKET_NAME=uhn")
+  yaml_obj['services']['cardsinitial']['environment'].append("AWS_KEY=minioadmin")
+  yaml_obj['services']['cardsinitial']['environment'].append("AWS_SECRET=minioadmin")
+
 if ENABLE_BACKUP_SERVER:
   print("Configuring service: backup_recorder")
 
@@ -591,6 +601,19 @@ if args.smtps_test_container:
     f_smtps_key.write(smtps_key)
   with open("./SSL_CONFIG/cards_certs/smtps_certificate.crt", 'w') as f_smtps_cert:
     f_smtps_cert.write(smtps_cert)
+
+if args.s3_test_container:
+  print("Configuring service: s3_test_container")
+  yaml_obj['services']['s3_test_container'] = {}
+  yaml_obj['services']['s3_test_container']['image'] = "minio/minio:" + MINIO_DOCKER_RELEASE_TAG
+  yaml_obj['services']['s3_test_container']['networks'] = {}
+  yaml_obj['services']['s3_test_container']['networks']['internalnetwork'] = {}
+  yaml_obj['services']['s3_test_container']['networks']['internalnetwork']['aliases'] = ['minio']
+  yaml_obj['services']['s3_test_container']['ports'] = ["127.0.0.1:9001:9001"]
+  yaml_obj['services']['s3_test_container']['environment'] = []
+  yaml_obj['services']['s3_test_container']['environment'].append("MINIO_ROOT_USER=minioadmin")
+  yaml_obj['services']['s3_test_container']['environment'].append("MINIO_ROOT_PASSWORD=minioadmin")
+  yaml_obj['services']['s3_test_container']['command'] = ["server", "/data", "--console-address", ":9001"]
 
 #Setup the internal network
 print("Configuring the internal network")
