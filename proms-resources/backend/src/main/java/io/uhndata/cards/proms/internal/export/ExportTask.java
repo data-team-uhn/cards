@@ -25,8 +25,10 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -68,15 +70,16 @@ public class ExportTask implements Runnable
     @Override
     public void run()
     {
-        Set<Resource> questionnaires = this.getQuestionnaires(generateRequestedIdsQueryEnding());
-        final Date lastExportDate = new Date(System.currentTimeMillis() - (this.frequencyInDays * DAY_IN_MS));
+        Set<Resource> questionnaires = this.getQuestionnaires(generateQuestionnairesQuery());
         final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        final String modifiedAfterDate = simpleDateFormat.format(lastExportDate);
+        final String modifiedAfterDate = simpleDateFormat.format(getLastExportDate());
+        final String modifiedBeforeDate = simpleDateFormat.format(new Date());
         final File csvFile = new File(this.savePath + "/ExportedForms_" + modifiedAfterDate + ".csv");
         try (FileWriter writer = new FileWriter(csvFile)) {
             for (Resource questionnaire : questionnaires) {
-                final String csvPath = String.format(questionnaire.getPath() + ".data.dataFilter:modifiedAfter=%s.csv",
-                        modifiedAfterDate);
+                final String csvPath = String.format(
+                        questionnaire.getPath() + ".data.dataFilter:modifiedAfter=%s.dataFilter:modifiedBefore=%s.csv",
+                        modifiedAfterDate, modifiedBeforeDate);
                 try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
                     final CSVString csv = resolver.resolve(csvPath).adaptTo(CSVString.class);
                     writer.write(csv.toString());
@@ -90,34 +93,43 @@ public class ExportTask implements Runnable
 
     }
 
-    private String generateRequestedIdsQueryEnding()
+    private String generateQuestionnairesQuery()
     {
-        String requestIdsQueryEnding = "";
+        String query = null;
         if (this.questionnairesToBeExported != null && !this.questionnairesToBeExported.isEmpty()) {
             ListIterator<String> export = this.questionnairesToBeExported.listIterator();
-            StringBuilder conditionQuery = new StringBuilder(" WHERE q.[jcr:uuid] = '" + export.next() + "'");
+            StringBuilder conditionQuery = new StringBuilder("SELECT * FROM [cards:Questionnaire] AS q "
+                    + "WHERE q.[jcr:uuid] = '" + export.next() + "'");
             while (export.hasNext()) {
                 conditionQuery.append(" or q.[jcr:uuid] = '").append(export.next()).append("'");
             }
-            requestIdsQueryEnding = conditionQuery.toString();
+            query = conditionQuery.toString();
         }
-        return requestIdsQueryEnding;
+        return query;
     }
 
-    private Set<Resource> getQuestionnaires(String requestedIdsQuery)
+    private Set<Resource> getQuestionnaires(String query)
     {
-        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
-            String query = "SELECT * FROM [cards:Questionnaire] AS q" + requestedIdsQuery;
-            Iterator<Resource> results = resolver.findResources(query, "JCR-SQL2");
-            Set<Resource> questionnaires = new HashSet<>();
-            while (results.hasNext()) {
-                Resource obj = results.next();
-                questionnaires.add(obj);
+        if (query != null) {
+            try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
+                Iterator<Resource> results = resolver.findResources(query, "JCR-SQL2");
+                Set<Resource> questionnaires = new HashSet<>();
+                while (results.hasNext()) {
+                    Resource obj = results.next();
+                    questionnaires.add(obj);
+                }
+                return questionnaires;
+            } catch (LoginException e) {
+                LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
             }
-            return questionnaires;
-        } catch (LoginException e) {
-            LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
         }
         return Collections.emptySet();
+    }
+
+    public Date getLastExportDate()
+    {
+        Calendar date = new GregorianCalendar();
+        date.add(Calendar.DAY_OF_MONTH, (-(this.frequencyInDays + 1)));
+        return date.getTime();
     }
 }
