@@ -57,6 +57,8 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
 
     private static final String STATUS_FLAG_INVALID = "INVALID";
 
+    private static final String STATUS_FLAG_DRAFT = "DRAFT";
+
     // This holds the builder for the current node. The methods called for editing specific properties don't receive the
     // actual parent node of those properties, so we must manually keep track of the current node.
     private final NodeBuilder currentNodeBuilder;
@@ -234,6 +236,11 @@ public class AnswerCompletionStatusEditor extends DefaultEditor
             statusFlags.add(STATUS_FLAG_INCOMPLETE);
         } else {
             statusFlags.remove(STATUS_FLAG_INCOMPLETE);
+        }
+        if (statusFlags.contains(STATUS_FLAG_INCOMPLETE) || statusFlags.contains(STATUS_FLAG_INVALID)) {
+            statusFlags.add(STATUS_FLAG_DRAFT);
+        } else {
+            statusFlags.remove(STATUS_FLAG_DRAFT);
         }
         // Write these statusFlags to the JCR repo
         this.currentNodeBuilder.setProperty(STATUS_FLAGS, statusFlags, Type.STRINGS);
