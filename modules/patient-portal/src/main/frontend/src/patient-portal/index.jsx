@@ -42,6 +42,7 @@ function PatientPortalHomepage (props) {
   const [ surveyInstructions, setSurveyInstructions ] = useState();
   const [ accessConfig, setAccessConfig ] = useState({});
   const [ unableToProceed, setUnableToProceed ] = useState();
+  const [ contentOffset, setContentOffset ] = useState(0);
 
   // Fetch saved settings for Patient Portal Survey Instructions
   useEffect(() => {
@@ -100,13 +101,35 @@ function PatientPortalHomepage (props) {
 
   if (!subject) {
     return (<>
-      <PatientIdentification onSuccess={onPatientIdentified} displayText={displayText}/>
+      <PageStart
+        extensionsName="SurveyPageStart"
+        setTotalHeight={(th) => {
+              if (contentOffset != th) {
+                setContentOffset(th);
+              }
+            }
+        }
+      />
+        <div style={ { position: 'relative', top: contentOffset + 'px' } }>
+          <PatientIdentification onSuccess={onPatientIdentified} displayText={displayText}/>
+        </div>
       <Footer />
     </>);
   }
 
   return (<>
-    <QuestionnaireSet subject={subject} username={username} displayText={displayText} config={{...accessConfig, enableStartScreen: surveyInstructions?.enableStartScreen}} />
+    <PageStart
+      extensionsName="SurveyPageStart"
+      setTotalHeight={(th) => {
+              if (contentOffset != th) {
+                setContentOffset(th);
+              }
+            }
+      }
+    />
+      <div style={ { position: 'relative', top: contentOffset + 'px' } }>
+        <QuestionnaireSet subject={subject} username={username} displayText={displayText} config={{...accessConfig, enableStartScreen: surveyInstructions?.enableStartScreen}} />
+      </div>
     <Footer />
   </>);
 }
@@ -116,7 +139,6 @@ hist.listen(({action, location}) => window.dispatchEvent(new Event("beforeunload
 ReactDOM.render(
   <StyledEngineProvider injectFirst>
     <ThemeProvider theme={appTheme}>
-      <PageStart extensionsName="SurveyPageStart" />
       <Router history={hist}>
         <Switch color="secondary">
           <Route path="/Survey.html/" component={PatientPortalHomepage} />
