@@ -28,6 +28,12 @@ TERMINAL_YELLOW='\033[0;33m'
 #CTRL+C should stop everything started by this script
 trap ctrl_c INT
 function ctrl_c() {
+  if [ ! -z $KEYCLOAK_HEADERMOD_HTTP_PROXY_PID ]
+  then
+    echo "Shutting down keycloak_headermod_http_proxy.js"
+    kill $KEYCLOAK_HEADERMOD_HTTP_PROXY_PID
+    wait $KEYCLOAK_HEADERMOD_HTTP_PROXY_PID
+  fi
   echo "Shutting down CARDS"
   kill $CARDS_PID
   wait $CARDS_PID
@@ -49,6 +55,10 @@ function print_length_of() {
   do
     echo -n "$2"
   done
+}
+
+function print_pad_right() {
+  printf "%-$2s" "$1"
 }
 
 function handle_missing_sling_commons_crypto_warning() {
@@ -137,12 +147,47 @@ function message_hancestro_install_fail() {
   echo -e "${TERMINAL_RED}****************************${TERMINAL_NOCOLOR}"
 }
 
+function message_sha256_cloud_iam_ok() {
+  echo -e "${TERMINAL_GREEN}****************************************************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}*                                                  *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}* Setup Cloud-IAM.com Demo as a SAML IdP for CARDS *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}*                                                  *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}****************************************************${TERMINAL_NOCOLOR}"
+}
+
+function message_sha256_cloud_iam_error() {
+  echo -e "${TERMINAL_YELLOW}********************************************************************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}*                                                                  *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}* Invalid Sha256 hash for samlKeystore.p12 for Cloud-IAM.com demo. *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}* SAML authentication via Cloud-IAM.com IdP may not work.          *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}*                                                                  *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}********************************************************************${TERMINAL_NOCOLOR}"
+}
+
+function message_saml_proxy_port_conflict_fail() {
+  echo -e "${TERMINAL_RED}***************************************************************************************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*                                                                                     *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}* Error: CARDS and keycloak_headermod_http_proxy.js cannot be bound to the same port. *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*                                                                                     *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}***************************************************************************************${TERMINAL_NOCOLOR}"
+}
+
 function message_started_cards() {
-  echo -e "${TERMINAL_GREEN}**************************$(print_length_of $BIND_PORT '*' 4)${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_GREEN}*                         $(print_length_of $BIND_PORT ' ' 3)*${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_GREEN}*   Started CARDS at port ${BIND_PORT}   *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_GREEN}*                         $(print_length_of $BIND_PORT ' ' 3)*${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_GREEN}**************************$(print_length_of $BIND_PORT '*' 4)${TERMINAL_NOCOLOR}"
+  if [ -z $KEYCLOAK_HEADERMOD_HTTP_PROXY_PID ]
+  then
+    echo -e "${TERMINAL_GREEN}**************************$(print_length_of $BIND_PORT '*' 4)${TERMINAL_NOCOLOR}"
+    echo -e "${TERMINAL_GREEN}*                         $(print_length_of $BIND_PORT ' ' 3)*${TERMINAL_NOCOLOR}"
+    echo -e "${TERMINAL_GREEN}*   Started CARDS at port ${BIND_PORT}   *${TERMINAL_NOCOLOR}"
+    echo -e "${TERMINAL_GREEN}*                         $(print_length_of $BIND_PORT ' ' 3)*${TERMINAL_NOCOLOR}"
+    echo -e "${TERMINAL_GREEN}**************************$(print_length_of $BIND_PORT '*' 4)${TERMINAL_NOCOLOR}"
+  else
+    echo -e "${TERMINAL_GREEN}***************************************************${TERMINAL_NOCOLOR}"
+    echo -e "${TERMINAL_GREEN}*                                                 *${TERMINAL_NOCOLOR}"
+    echo -e "${TERMINAL_GREEN}*   Started CARDS at port $(print_pad_right ${BIND_PORT} 21)   *${TERMINAL_NOCOLOR}"
+    echo -e "${TERMINAL_GREEN}*   Use port ${HEADERMOD_PROXY_LISTEN_PORT} for SAML + local Sling login.   *${TERMINAL_NOCOLOR}"
+    echo -e "${TERMINAL_GREEN}*                                                 *${TERMINAL_NOCOLOR}"
+    echo -e "${TERMINAL_GREEN}***************************************************${TERMINAL_NOCOLOR}"
+  fi
 }
 
 function get_cards_version() {
@@ -180,6 +225,10 @@ declare OAK_STORAGE="tar"
 # Permissions scheme: default is open, allow switching to something else
 declare PERMISSIONS="open"
 declare PERMISSIONS_EXPLICITLY_SET="false"
+# Are we using the Cloud-IAM.com Keycloak demo instance?
+declare CLOUD_IAM_DEMO="false"
+# Is SAML authentication enabled?
+declare SAML_IN_USE="false"
 get_cards_version
 
 for ((i=0; i<${ARGS_LENGTH}; ++i));
@@ -254,6 +303,7 @@ do
     then
       PERMISSIONS="trusted"
     fi
+    SAML_IN_USE="true"
     unset ARGS[$i]
     ARGS[$ARGS_LENGTH]=-f
     ARGS_LENGTH=${ARGS_LENGTH}+1
@@ -273,6 +323,14 @@ do
     ARGS[$ARGS_LENGTH]=-f
     ARGS_LENGTH=${ARGS_LENGTH}+1
     ARGS[$ARGS_LENGTH]=mvn:io.uhndata.cards/cards-keycloakdemo-saml-support/${CARDS_VERSION}/slingosgifeature
+    ARGS_LENGTH=${ARGS_LENGTH}+1
+  elif [[ ${ARGS[$i]} == '--cloud-iam_demo' ]]
+  then
+    CLOUD_IAM_DEMO="true"
+    unset ARGS[$i]
+    ARGS[$ARGS_LENGTH]=-f
+    ARGS_LENGTH=${ARGS_LENGTH}+1
+    ARGS[$ARGS_LENGTH]=mvn:io.uhndata.cards/cards-cloud-iam-demo-saml-support/${CARDS_VERSION}/slingosgifeature
     ARGS_LENGTH=${ARGS_LENGTH}+1
   elif [[ ${ARGS[$i]} == '--uhn_ad_fs' ]]
   then
@@ -301,6 +359,22 @@ then
     handle_missing_mailcap_fail
   fi
   diff -q ~/.mailcap distribution/mailcap || warn_different_mailcap
+fi
+
+if [ $SAML_IN_USE = true ]
+then
+  if [ $CLOUD_IAM_DEMO = true ]
+  then
+    HEADERMOD_PROXY_LISTEN_PORT=8080
+  else
+    HEADERMOD_PROXY_LISTEN_PORT=9090
+  fi
+fi
+
+if [ $HEADERMOD_PROXY_LISTEN_PORT = $BIND_PORT ]
+then
+  message_saml_proxy_port_conflict_fail
+  exit -1
 fi
 
 #Start CARDS in the background
@@ -370,8 +444,38 @@ then
   fi
 fi
 
-message_started_cards
+#Check if we are using the Cloud-IAM.com demo
+if [ $CLOUD_IAM_DEMO = true ]
+then
+  (cd Utilities/Administration/SAML/ && sha256sum -c cloud-iam_demo_samlKeystore.p12.sha256sum && message_sha256_cloud_iam_ok || message_sha256_cloud_iam_error)
+  KEYCLOAK_HEADERMOD_HTTP_PROXY_KEYCLOAK_ENDPOINT="https://lemur-15.cloud-iam.com/auth/realms/cards-saml-test/protocol/saml"
+fi
 
+#Check if we are using SAML
+if [ $SAML_IN_USE = true ]
+then
+  # Start a keycloak_headermod_http_proxy.js in the background
+  if [ -z $KEYCLOAK_HEADERMOD_HTTP_PROXY_KEYCLOAK_ENDPOINT ]
+  then
+    nodejs Utilities/Development/keycloak_headermod_http_proxy.js \
+      --listen-port=$HEADERMOD_PROXY_LISTEN_PORT \
+      --cards-port=$BIND_PORT &
+    KEYCLOAK_HEADERMOD_HTTP_PROXY_PID=$!
+  else
+    nodejs Utilities/Development/keycloak_headermod_http_proxy.js \
+      --listen-port=$HEADERMOD_PROXY_LISTEN_PORT \
+      --cards-port=$BIND_PORT \
+      --keycloak-endpoint=$KEYCLOAK_HEADERMOD_HTTP_PROXY_KEYCLOAK_ENDPOINT &
+    KEYCLOAK_HEADERMOD_HTTP_PROXY_PID=$!
+  fi
+fi
+
+message_started_cards
 #Stop this script if the CARDS process terminates in failure
 wait $CARDS_PID
+if [ ! -z $KEYCLOAK_HEADERMOD_HTTP_PROXY_PID ]
+then
+  kill $KEYCLOAK_HEADERMOD_HTTP_PROXY_PID
+  wait $KEYCLOAK_HEADERMOD_HTTP_PROXY_PID
+fi
 handle_cards_java_fail

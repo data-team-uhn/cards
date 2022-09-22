@@ -65,5 +65,6 @@
     <module>http-requests</module>
     <module>page-start-header</module>
     <module>webhook-backup</module>
+    <module>saml</module>
   </modules>
 </project>

@@ -23,9 +23,11 @@ import sys
 import yaml
 import json
 import shutil
+import hashlib
 import argparse
 from OpenSSL import crypto, SSL
 from CardsDockerTagProperty import CARDS_DOCKER_TAG
+from CloudIAMdemoKeystoreSha256Property import CLOUD_IAM_DEMO_KEYSTORE_SHA256
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument('--shards', help='Number of MongoDB shards', default=1, type=int)
@@ -44,6 +46,7 @@ argparser.add_argument('--external_mongo_uri', help='URI of the external MongoDB
 argparser.add_argument('--external_mongo_dbname', help='Database name of the external MongoDB instance. Only valid if --external_mongo is specified.')
 argparser.add_argument('--saml', help='Make the Apache Sling SAML2 Handler OSGi bundle available for SAML-based logins', action='store_true')
 argparser.add_argument('--saml_idp_destination', help='URL to redirect to for SAML logins')
+argparser.add_argument('--saml_cloud_iam_demo', help='Enable SAML authentication with CARDS via the Cloud-IAM.com demo', action='store_true')
 argparser.add_argument('--server_address', help='Domain name (or Domain name:port) that the public will use for accessing this CARDS deployment')
 argparser.add_argument('--smtps', help='Enable SMTPS emailing functionality', action='store_true')
 argparser.add_argument('--smtps_localhost_proxy', help='Run an SSL termination proxy so that the CARDS container may connect to the host\'s SMTP server at localhost:25', action='store_true')
@@ -60,6 +63,12 @@ CONFIGDB_REPLICA_COUNT = args.config_replicas
 ENABLE_BACKUP_SERVER = args.enable_backup_server
 ENABLE_NCR = args.enable_ncr
 SSL_PROXY = args.ssl_proxy
+
+def sha256FileHash(filepath):
+  hasher = hashlib.sha256()
+  with open(filepath, 'rb') as f:
+    hasher.update(f.read())
+    return hasher.hexdigest()
 
 #Validate before doing anything else
 if (MONGO_REPLICA_COUNT % 2) != 1:
@@ -82,8 +91,22 @@ if args.smtps_test_container:
 
 if ENABLE_BACKUP_SERVER:
   if not args.backup_server_path:
-    print("ERROR A --backup_server_path must be specified with using --enable_backup_server")
+    print("ERROR: A --backup_server_path must be specified with using --enable_backup_server")
     sys.exit(-1)
+
+if args.saml:
+  if "samlKeystore.p12" not in os.listdir('.'):
+    print("ERROR: samlKeystore.p12 is required but not found.")
+    sys.exit(-1)
+
+if args.saml_cloud_iam_demo:
+  if CLOUD_IAM_DEMO_KEYSTORE_SHA256 != sha256FileHash("samlKeystore.p12"):
+    print("")
+    print("=============================== Warning ==============================")
+    print("The SHA256 hash of samlKeystore.p12 does not match the expected value.")
+    print("SAML authentication with Cloud-IAM.com may not work.")
+    print("======================================================================")
+    print("")
 
 def getDockerHostIP(subnet):
   network_address = subnet.split('/')[0]
@@ -427,6 +450,9 @@ if args.saml:
   yaml_obj['services']['cardsinitial']['environment'].append("SAML_AUTH_ENABLED=true")
   yaml_obj['services']['cardsinitial']['volumes'].append("./samlKeystore.p12:/opt/cards/samlKeystore.p12:ro")
 
+if args.saml_cloud_iam_demo:
+  yaml_obj['services']['cardsinitial']['environment'].append("SAML_CLOUD_IAM_DEMO=true")
+
 if args.smtps:
   yaml_obj['services']['cardsinitial']['environment'].append("SMTPS_ENABLED=true")
   yaml_obj['services']['cardsinitial']['environment'].append("SLING_COMMONS_CRYPTO_PASSWORD=password")
@@ -545,6 +571,8 @@ else:
 if args.saml:
   if args.saml_idp_destination:
     idp_url = args.saml_idp_destination
+  elif args.saml_cloud_iam_demo:
+    idp_url = "https://lemur-15.cloud-iam.com/auth/realms/cards-saml-test/protocol/saml"
   else:
     idp_url = input("Enter the SAML2 IdP destination: ")
 

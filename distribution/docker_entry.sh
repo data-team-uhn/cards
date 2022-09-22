@@ -70,6 +70,11 @@ then
   featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-modules-test-forms/${PROJECT_VERSION}/slingosgifeature"
 fi
 
+if [ ! -z $SAML_CLOUD_IAM_DEMO ]
+then
+  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-cloud-iam-demo-saml-support/${PROJECT_VERSION}/slingosgifeature"
+fi
+
 if [ ! -z $ADDITIONAL_SLING_FEATURES ]
 then
   featureFlagString="$featureFlagString -f $ADDITIONAL_SLING_FEATURES"

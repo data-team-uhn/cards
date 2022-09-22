@@ -21,12 +21,23 @@
  * container running the Apache HTTP reverse proxy.
  */
 
-const SERVER_PORT = 9090;
-const CLIENT_PORT = 8080;
-const CLIENT_HOSTNAME = 'localhost';
-const KEYCLOAK_ENDPOINT = 'http://localhost:8484/auth/realms/myrealm/protocol/saml';
-
+const process = require('process');
 const http = require('http');
+
+const readCliParam = (paramName) => {
+  for (let i = 0; i < process.argv.length; i++) {
+    if (process.argv[i].startsWith("--" + paramName + "=")) {
+      return process.argv[i].split("=")[1];
+    }
+  }
+  return undefined;
+};
+
+const SERVER_PORT = (readCliParam("listen-port") !== undefined) ? parseInt(readCliParam("listen-port")) : 9090;
+const CLIENT_PORT = (readCliParam("cards-port") !== undefined) ? parseInt(readCliParam("cards-port")) : 8080;
+const CLIENT_HOSTNAME = 'localhost';
+const KEYCLOAK_ENDPOINT = (readCliParam("keycloak-endpoint") !== undefined) ?
+	readCliParam("keycloak-endpoint") : 'http://localhost:8484/auth/realms/myrealm/protocol/saml';
 
 var server = new http.Server();
 server.on('request', (s_req, s_res) => {
