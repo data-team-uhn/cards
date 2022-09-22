@@ -61,6 +61,10 @@ function print_pad_right() {
   printf "%-$2s" "$1"
 }
 
+function get_error_log_last_modified() {
+  echo "$((stat --format="%.Y" .cards-data/logs/error.log 2>/dev/null) || echo 0.00)"
+}
+
 function handle_missing_sling_commons_crypto_warning() {
   echo -e "${TERMINAL_YELLOW}*************************************************************************${TERMINAL_NOCOLOR}"
   echo -e "${TERMINAL_YELLOW}*                                                                       *${TERMINAL_NOCOLOR}"
@@ -392,6 +396,8 @@ then
   fi
 fi
 
+ERROR_LOG_LAST_MODIFIED_TIME_ORIGIN=$(get_error_log_last_modified)
+
 #Start CARDS in the background
 java ${JAVA_DEBUGGING_FLAGS} -Djdk.xml.entityExpansionLimit=0 -Dorg.osgi.service.http.port=${BIND_PORT} -jar distribution/target/dependency/org.apache.sling.feature.launcher.jar -u "file://$(realpath .mvnrepo),file://$(realpath "${HOME}/.m2/repository"),https://nexus.phenotips.org/nexus/content/groups/public,https://repo.maven.apache.org/maven2,https://repository.apache.org/content/groups/snapshots" -p .cards-data -c .cards-data/cache -f mvn:io.uhndata.cards/cards/${CARDS_VERSION}/slingosgifeature/core_${OAK_STORAGE} -f mvn:io.uhndata.cards/cards-dataentry/${CARDS_VERSION}/slingosgifeature/permissions_${PERMISSIONS} "${ARGS[@]}" &
 CARDS_PID=$!
@@ -399,6 +405,13 @@ CARDS_PID=$!
 if [ ! -z "$JAVA_DEBUGGING_FLAGS" ]
 then
   message_connect_jdb
+  # As soon as we see CARDS writing to .cards-data/logs/error.log, we
+  # can conclude that JDB has attached to the Java process.
+  while (( $(echo "$(get_error_log_last_modified) <= $ERROR_LOG_LAST_MODIFIED_TIME_ORIGIN" | bc -l) ))
+  do
+    sleep 5
+    echo "Waiting for JDB attachment..."
+  done
 fi
 
 #Check to see if CARDS was able to bind to the TCP port
