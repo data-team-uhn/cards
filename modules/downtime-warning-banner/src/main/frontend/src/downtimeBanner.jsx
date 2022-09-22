@@ -85,7 +85,7 @@ export default function DowntimeWarning(props) {
   }
 
   return (
-    <StyledAppBar position="fixed" style={props.style} ref={props.onRender}>
+    <StyledAppBar position="absolute" style={props.style} ref={props.onRender}>
       <Toolbar>
       {error && <Typography color='error'>{errorText}</Typography>}
       <Grid container spacing={1} direction="row" alignItems="center" wrap="nowrap">

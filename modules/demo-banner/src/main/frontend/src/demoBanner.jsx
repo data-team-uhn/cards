@@ -40,7 +40,7 @@ export default function DemoBanner(props) {
   const StyledAppBar = withStyles(appbarStyle)(AppBar);
 
   return (
-    <StyledAppBar position="fixed" style={props.style} ref={props.onRender}>
+    <StyledAppBar position="absolute" style={props.style} ref={props.onRender}>
       <Toolbar>
       <Grid container spacing={1} direction="row" justifyContent="center" alignItems="center" wrap="nowrap">
         <Grid item><WarningIcon/></Grid>

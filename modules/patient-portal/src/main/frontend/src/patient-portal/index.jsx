@@ -112,8 +112,8 @@ function PatientPortalHomepage (props) {
       />
         <div style={ { position: 'relative', top: contentOffset + 'px' } }>
           <PatientIdentification onSuccess={onPatientIdentified} displayText={displayText}/>
+          <Footer />
         </div>
-      <Footer />
     </>);
   }
 
@@ -129,8 +129,8 @@ function PatientPortalHomepage (props) {
     />
       <div style={ { position: 'relative', top: contentOffset + 'px' } }>
         <QuestionnaireSet subject={subject} username={username} displayText={displayText} config={{...accessConfig, enableStartScreen: surveyInstructions?.enableStartScreen}} />
+        <Footer />
       </div>
-    <Footer />
   </>);
 }
 
