@@ -369,12 +369,12 @@ then
   else
     HEADERMOD_PROXY_LISTEN_PORT=9090
   fi
-fi
 
-if [ $HEADERMOD_PROXY_LISTEN_PORT = $BIND_PORT ]
-then
-  message_saml_proxy_port_conflict_fail
-  exit -1
+  if [ $HEADERMOD_PROXY_LISTEN_PORT = $BIND_PORT ]
+  then
+    message_saml_proxy_port_conflict_fail
+    exit -1
+  fi
 fi
 
 #Start CARDS in the background
