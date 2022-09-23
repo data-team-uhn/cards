@@ -22,11 +22,11 @@
     <property>
         <name>welcomeMessage</name>
         <value>
-APP_NAME is designed to ask you the most important questions about how you percieved your interactions with your health care providers during your latest hospital stay.
+We ask for your assistance in evaluating the care and service that you received during your recent visit to a University Health Network hospital.
 
-Completing the questionnaire is voluntary, so if you would rather not complete it, you do not have to.
+Your opinions are valuable to us. At University Health Network we want to provide the best possible service to our patients. In order to do so, we need to know what we are doing right and what may need improvement. **Your feedback will be used to improve how we provide care.**
 
-Your responses remain confidential. They will be analyzed in a completely anonymous way and used to improve our services and enhance future experience for you and other patients.
+Completing this survey is voluntary, and your name and contact information will be kept confidential.
 
         </value>
         <type>String</type>
