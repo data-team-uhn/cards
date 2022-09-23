@@ -90,16 +90,6 @@ function PatientPortalHomepage (props) {
     let appName = document.querySelector('meta[name="title"]')?.content;
     let message = surveyInstructions?.welcomeMessage?.replaceAll("APP_NAME", appName) || '';
     message = `${message}\n\n### To fill out surveys, please follow the personalized link that was emailed to you.`;
-    return (
-      <ErrorPage
-        sx={{maxWidth: 500, margin: "0 auto"}}
-        title=""
-        message={message}
-        messageColor="textPrimary"
-      />)
-  }
-
-  if (!subject) {
     return (<>
       <PageStart
         extensionsName="SurveyPageStart"
@@ -110,10 +100,33 @@ function PatientPortalHomepage (props) {
             }
         }
       />
-        <div style={ { position: 'relative', top: contentOffset + 'px' } }>
-          <PatientIdentification onSuccess={onPatientIdentified} displayText={displayText}/>
-          <Footer />
-        </div>
+      <div style={ { position: 'relative', top: contentOffset + 'px' } }>
+        <ErrorPage
+          sx={{maxWidth: 500, margin: "0 auto"}}
+          title=""
+          message={message}
+          messageColor="textPrimary"
+        />
+      </div>
+    </>)
+  }
+
+  if (!subject) {
+    return (<>
+      <PageStart
+        extensionsName="SurveyPageStart"
+        zIndex="1300"
+        setTotalHeight={(th) => {
+              if (contentOffset != th) {
+                setContentOffset(th);
+              }
+            }
+        }
+      />
+      <div style={ { position: 'relative', top: contentOffset + 'px' } }>
+        <PatientIdentification onSuccess={onPatientIdentified} displayText={displayText} />
+        <Footer />
+      </div>
     </>);
   }
 
@@ -127,10 +140,10 @@ function PatientPortalHomepage (props) {
             }
       }
     />
-      <div style={ { position: 'relative', top: contentOffset + 'px' } }>
-        <QuestionnaireSet subject={subject} username={username} displayText={displayText} config={{...accessConfig, enableStartScreen: surveyInstructions?.enableStartScreen}} />
-        <Footer />
-      </div>
+    <div style={ { position: 'relative', top: contentOffset + 'px' } }>
+      <QuestionnaireSet subject={subject} username={username} displayText={displayText} config={{...accessConfig, enableStartScreen: surveyInstructions?.enableStartScreen}} />
+      <Footer />
+    </div>
   </>);
 }
 

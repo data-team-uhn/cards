@@ -34,6 +34,7 @@ import BuildIcon from '@mui/icons-material/Build';
 const appbarStyle = theme => ({
   root: {
     backgroundColor: theme.palette.info.main,
+    boxShadow: "none",
     "& .MuiAvatar-root" : {
       backgroundColor: theme.palette.background.paper,
       color: theme.palette.info.main
@@ -85,10 +86,10 @@ export default function DowntimeWarning(props) {
   }
 
   return (
-    <StyledAppBar position="absolute" style={props.style} ref={props.onRender}>
+    <StyledAppBar position="fixed" style={props.style} ref={props.onRender}>
       <Toolbar>
       {error && <Typography color='error'>{errorText}</Typography>}
-      <Grid container spacing={1} direction="row" alignItems="center" wrap="nowrap">
+      <Grid container spacing={1} direction="row" justifyContent="center" alignItems="center" wrap="nowrap">
         <Grid item><Avatar><BuildIcon/></Avatar></Grid>
         <Grid item>
         <Typography variant="body2">

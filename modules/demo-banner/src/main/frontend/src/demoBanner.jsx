@@ -32,7 +32,8 @@ import WarningIcon from '@mui/icons-material/Warning';
 
 const appbarStyle = theme => ({
   root: {
-    backgroundColor: theme.palette.warning.main
+    backgroundColor: theme.palette.warning.main,
+    boxShadow: "none",
   }
 });
 
@@ -40,7 +41,7 @@ export default function DemoBanner(props) {
   const StyledAppBar = withStyles(appbarStyle)(AppBar);
 
   return (
-    <StyledAppBar position="absolute" style={props.style} ref={props.onRender}>
+    <StyledAppBar position="fixed" style={props.style} ref={props.onRender}>
       <Toolbar>
       <Grid container spacing={1} direction="row" justifyContent="center" alignItems="center" wrap="nowrap">
         <Grid item><WarningIcon/></Grid>
