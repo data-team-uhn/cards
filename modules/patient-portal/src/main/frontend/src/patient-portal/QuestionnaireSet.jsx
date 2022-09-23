@@ -534,11 +534,16 @@ function QuestionnaireSet(props) {
     <FormattedText>{ welcomeMessageTemplate.replaceAll("APP_NAME", appName) }</FormattedText>
     : "";
 
+  let closeButton = <Fab key="close-button" variant="extended" color="primary" onClick={
+      () => window.location = "/system/sling/logout?resource=" + encodeURIComponent(window.location.pathname)
+    }>Close</Fab>;
+
+
   let welcomeScreen = (isComplete && isSubmitted || questionnaireIds?.length == 0) ? [
     <Typography variant="h4" key="welcome-greeting">{ greet(username) }</Typography>,
-    welcomeMessage,
     appointmentAlert(),
-    displayText("noSurveysMessage", Typography, {color: "textSecondary", variant: "subtitle1", key: "welcome-message"})
+    displayText("noSurveysMessage", Typography, {color: "textSecondary", variant: "subtitle1", key: "survey-info"}),
+    closeButton,
   ] : [
     <Typography variant="h4" key="welcome-greeting">{ greet(username) }</Typography>,
     welcomeMessage,
@@ -637,11 +642,11 @@ function QuestionnaireSet(props) {
         </Grid>
       ))}
       </Grid>,
-      <Fab variant="extended" color="primary" onClick={() => window.location = "/system/sling/logout?resource=" + encodeURIComponent(window.location.pathname)}>Close</Fab>
+      closeButton,
     ] : [
       <Typography variant="h4">Thank you for your submission</Typography>,
       disclaimer,
-      <Fab variant="extended" color="primary" onClick={() => window.location = "/system/sling/logout?resource=" + encodeURIComponent(window.location.pathname)}>Close</Fab>
+      closeButton,
     ];
 
   let loadingScreen = [ <CircularProgress /> ];
