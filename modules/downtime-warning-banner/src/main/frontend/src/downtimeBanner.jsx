@@ -35,6 +35,9 @@ const appbarStyle = theme => ({
   root: {
     backgroundColor: theme.palette.info.main,
     boxShadow: "none",
+    [theme.breakpoints.down('md')]: {
+      position: 'absolute',
+    },
     "& .MuiAvatar-root" : {
       backgroundColor: theme.palette.background.paper,
       color: theme.palette.info.main

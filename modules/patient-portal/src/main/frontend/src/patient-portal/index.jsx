@@ -26,7 +26,7 @@ import QuestionnaireSet from "./QuestionnaireSet.jsx";
 import PatientIdentification from "./PatientIdentification.jsx";
 import Footer from "./Footer.jsx";
 import ErrorPage from "../components/ErrorPage.jsx";
-import PageStart from '../PageStart';
+import PageStartWrapper from '../PageStartWrapper';
 
 import { DEFAULT_INSTRUCTIONS, SURVEY_INSTRUCTIONS_PATH } from "./SurveyInstructionsConfiguration.jsx"
 
@@ -42,7 +42,6 @@ function PatientPortalHomepage (props) {
   const [ surveyInstructions, setSurveyInstructions ] = useState();
   const [ accessConfig, setAccessConfig ] = useState({});
   const [ unableToProceed, setUnableToProceed ] = useState();
-  const [ contentOffset, setContentOffset ] = useState(0);
 
   // Fetch saved settings for Patient Portal Survey Instructions
   useEffect(() => {
@@ -91,59 +90,31 @@ function PatientPortalHomepage (props) {
     let message = surveyInstructions?.welcomeMessage?.replaceAll("APP_NAME", appName) || '';
     message = `${message}\n\n### To fill out surveys, please follow the personalized link that was emailed to you.`;
     return (<>
-      <PageStart
-        extensionsName="SurveyPageStart"
-        setTotalHeight={(th) => {
-              if (contentOffset != th) {
-                setContentOffset(th);
-              }
-            }
-        }
-      />
-      <div style={ { position: 'relative', top: contentOffset + 'px' } }>
+      <PageStartWrapper extensionsName="SurveyPageStart">
         <ErrorPage
           sx={{maxWidth: 500, margin: "0 auto"}}
           title=""
           message={message}
           messageColor="textPrimary"
         />
-      </div>
+      </PageStartWrapper>
     </>)
   }
 
   if (!subject) {
     return (<>
-      <PageStart
-        extensionsName="SurveyPageStart"
-        zIndex="1300"
-        setTotalHeight={(th) => {
-              if (contentOffset != th) {
-                setContentOffset(th);
-              }
-            }
-        }
-      />
-      <div style={ { position: 'relative', top: contentOffset + 'px' } }>
+      <PageStartWrapper extensionsName="SurveyPageStart">
         <PatientIdentification onSuccess={onPatientIdentified} displayText={displayText} />
         <Footer />
-      </div>
+      </PageStartWrapper>
     </>);
   }
 
   return (<>
-    <PageStart
-      extensionsName="SurveyPageStart"
-      setTotalHeight={(th) => {
-              if (contentOffset != th) {
-                setContentOffset(th);
-              }
-            }
-      }
-    />
-    <div style={ { position: 'relative', top: contentOffset + 'px' } }>
+    <PageStartWrapper extensionsName="SurveyPageStart">
       <QuestionnaireSet subject={subject} username={username} displayText={displayText} config={{...accessConfig, enableStartScreen: surveyInstructions?.enableStartScreen}} />
       <Footer />
-    </div>
+    </PageStartWrapper>
   </>);
 }
 

@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState } from "react";
+import React from "react";
 import {
   AppBar,
   Breadcrumbs,
@@ -34,6 +34,9 @@ import makeStyles from '@mui/styles/makeStyles';
 const useStyles = makeStyles(theme => ({
   appbar : {
     margin: theme.spacing(-1, -1, 4),
+    [theme.breakpoints.down('md')]: {
+      margin: theme.spacing(0, -1),
+    },
     padding: theme.spacing(0, 1),
     boxSizing: "content-box",
     background: "transparent",

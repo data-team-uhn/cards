@@ -19,7 +19,6 @@
 
 import React, { useEffect, useState } from "react";
 import { loadExtensions } from "./uiextension/extensionManager";
-import { Collapse, useScrollTrigger } from '@mui/material';
 
 export default function PageStart(props) {
 
@@ -34,12 +33,6 @@ export default function PageStart(props) {
   const [ pageStartHeight, setPageStartHeight ] = useState(0);
 
   const extensionsName = props.extensionsName || "PageStart";
-  
-  const fullBannerTrigger = useScrollTrigger({
-    target: window,
-    disableHysteresis: true,
-    threshold: 100,
-  });
 
   useEffect(() => {
     props.setTotalHeight && props.setTotalHeight(pageStartHeight);
@@ -111,14 +104,13 @@ export default function PageStart(props) {
 
   return (
     <React.Fragment>
-    <Collapse in={!fullBannerTrigger}>
     {
       visualComponents.map((ThisComp, index) => {
         return (
           <ThisComp
             {...props}
             key={index}
-            style={{ top: (componentPositions[index]) + 'px', zIndex: props.zIndex || "1301" }}
+            style={{ top: (componentPositions[index]) + 'px' }}
             onRender={(node) => {
                 if (node != null) {
                   let n = node.getBoundingClientRect().height;
@@ -134,7 +126,6 @@ export default function PageStart(props) {
         );
       })
     }
-    </Collapse>
     </React.Fragment>
   );
 }
