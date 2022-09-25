@@ -61,6 +61,10 @@ function print_pad_right() {
   printf "%-$2s" "$1"
 }
 
+function get_error_log_last_modified() {
+  echo "$((stat --format="%.Y" .cards-data/logs/error.log 2>/dev/null) || echo 0.00)"
+}
+
 function handle_missing_sling_commons_crypto_warning() {
   echo -e "${TERMINAL_YELLOW}*************************************************************************${TERMINAL_NOCOLOR}"
   echo -e "${TERMINAL_YELLOW}*                                                                       *${TERMINAL_NOCOLOR}"
@@ -190,6 +194,15 @@ function message_started_cards() {
   fi
 }
 
+function message_connect_jdb() {
+  echo -e "${TERMINAL_YELLOW}******************************************************************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}*                                                                *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}* Please connect JDB to localhost:5005 to continue with startup. *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}* jdb -attach 5005                                               *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}*                                                                *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}******************************************************************${TERMINAL_NOCOLOR}"
+}
+
 function get_cards_version() {
   CARDS_VERSION=$(cat pom.xml | grep --max-count=1 '<version>' | cut '-d>' -f2 | cut '-d<' -f1)
   echo CARDS_VERSION $CARDS_VERSION
@@ -229,6 +242,8 @@ declare PERMISSIONS_EXPLICITLY_SET="false"
 declare CLOUD_IAM_DEMO="false"
 # Is SAML authentication enabled?
 declare SAML_IN_USE="false"
+# Should any flags be passed to Java to enable debugging with JDB?
+declare JAVA_DEBUGGING_FLAGS=""
 get_cards_version
 
 for ((i=0; i<${ARGS_LENGTH}; ++i));
@@ -282,6 +297,10 @@ do
     ARGS_LENGTH=${ARGS_LENGTH}+1
     ARGS[$ARGS_LENGTH]=mvn:io.uhndata.cards/cards/${CARDS_VERSION}/slingosgifeature/composum
     ARGS_LENGTH=${ARGS_LENGTH}+1
+  elif [[ ${ARGS[$i]} == '--debug' ]]
+  then
+    unset ARGS[$i]
+    JAVA_DEBUGGING_FLAGS="-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005"
   elif [[ ${ARGS[$i]} == '--demo' ]]
   then
     unset ARGS[$i]
@@ -377,9 +396,23 @@ then
   fi
 fi
 
+ERROR_LOG_LAST_MODIFIED_TIME_ORIGIN=$(get_error_log_last_modified)
+
 #Start CARDS in the background
-java -Djdk.xml.entityExpansionLimit=0 -Dorg.osgi.service.http.port=${BIND_PORT} -jar distribution/target/dependency/org.apache.sling.feature.launcher.jar -u "file://$(realpath .mvnrepo),file://$(realpath "${HOME}/.m2/repository"),https://nexus.phenotips.org/nexus/content/groups/public,https://repo.maven.apache.org/maven2,https://repository.apache.org/content/groups/snapshots" -p .cards-data -c .cards-data/cache -f mvn:io.uhndata.cards/cards/${CARDS_VERSION}/slingosgifeature/core_${OAK_STORAGE} -f mvn:io.uhndata.cards/cards-dataentry/${CARDS_VERSION}/slingosgifeature/permissions_${PERMISSIONS} "${ARGS[@]}" &
+java ${JAVA_DEBUGGING_FLAGS} -Djdk.xml.entityExpansionLimit=0 -Dorg.osgi.service.http.port=${BIND_PORT} -jar distribution/target/dependency/org.apache.sling.feature.launcher.jar -u "file://$(realpath .mvnrepo),file://$(realpath "${HOME}/.m2/repository"),https://nexus.phenotips.org/nexus/content/groups/public,https://repo.maven.apache.org/maven2,https://repository.apache.org/content/groups/snapshots" -p .cards-data -c .cards-data/cache -f mvn:io.uhndata.cards/cards/${CARDS_VERSION}/slingosgifeature/core_${OAK_STORAGE} -f mvn:io.uhndata.cards/cards-dataentry/${CARDS_VERSION}/slingosgifeature/permissions_${PERMISSIONS} "${ARGS[@]}" &
 CARDS_PID=$!
+
+if [ ! -z "$JAVA_DEBUGGING_FLAGS" ]
+then
+  message_connect_jdb
+  # As soon as we see CARDS writing to .cards-data/logs/error.log, we
+  # can conclude that JDB has attached to the Java process.
+  while (( $(echo "$(get_error_log_last_modified) <= $ERROR_LOG_LAST_MODIFIED_TIME_ORIGIN" | bc -l) ))
+  do
+    sleep 5
+    echo "Waiting for JDB attachment..."
+  done
+fi
 
 #Check to see if CARDS was able to bind to the TCP port
 #This is the more robust test that works only if psutil is installed
