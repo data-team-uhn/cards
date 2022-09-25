@@ -47,7 +47,9 @@ function PatientPortalHomepage (props) {
     fetch(`${SURVEY_INSTRUCTIONS_PATH}.json`)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
-        setSurveyInstructions(Object.assign(DEFAULT_INSTRUCTIONS, json));
+        let instructions = {...json};
+        Object.entries(instructions).forEach(([k,v]) => !v && delete instructions[k]);
+        setSurveyInstructions({...DEFAULT_INSTRUCTIONS, ...instructions});
       })
       .catch((response) => {
         console.error(`Loading the Patient Portal Survey Instructions failed with error code ${response.status}: ${response.statusText}`);

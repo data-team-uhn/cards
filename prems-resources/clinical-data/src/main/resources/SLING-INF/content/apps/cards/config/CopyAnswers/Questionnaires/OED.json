@@ -1,0 +1,6 @@
+{
+  "jcr:primaryType": "nt:unstructured",
+  "jcr:reference:oed_8": "/Questionnaires/OED/oed_8",
+  "jcr:reference:time": "/Questionnaires/Visit information/time",
+  "jcr:reference:mrn": "/Questionnaires/Patient information/mrn"
+}

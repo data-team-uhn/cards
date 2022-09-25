@@ -1,0 +1,121 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+{
+  "prototype":{
+    "id": "io.uhndata.cards:cards-patient-portal:slingosgifeature:${project.version}"
+  },
+  "bundles":[
+    {
+      "id":"${project.groupId}:cards-patient-subject-type:${project.version}",
+      "start-order":"20"
+    },
+    {
+      "id":"${project.groupId}:cards-visit-subject-type:${project.version}",
+      "start-order":"21"
+    },
+    {
+      "id":"${project.groupId}:prems-resources-clinical-data:${project.version}",
+      "start-order":"26"
+    }
+  ],
+  "configurations":{
+    "org.apache.sling.jcr.repoinit.RepositoryInitializer~prems":{
+      "service.ranking:Integer":300,
+      "scripts": [
+        // In certain environments, this script gets executed before the main forms repoinit does, so we must make sure the paths we reference are created.
+        "create path (cards:QuestionnairesHomepage) /Questionnaires \n create path (cards:FormsHomepage) /Forms \n create path (cards:SubjectsHomepage) /Subjects \n create path (cards:SubjectTypesHomepage) /SubjectTypes \n create path (cards:Homepage) /content",
+        // Access rights for the special "patient" user: do not allow access to PII
+        "create user patient \n set ACL for patient \n     deny jcr:all on /Questionnaires restriction(rep:itemNames,time,location,provider) \n     deny jcr:read on /Forms restriction(cards:question,/Questionnaires/Visit*information/time,/Questionnaires/Visit*information/location,/Questionnaires/Visit*information/provider) \n     deny jcr:all on /Forms restriction(cards:questionnaire,/Questionnaires/Patient*information) \n end",
+        // This isn't actually used, but Patient.json references it; needs to be removed along with the torch import
+        "create service user proms-import-backend"
+      ]
+    },
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~TWEDInitialInvitationTask":{
+      "name": "TWEDInitialNotificationsTask",
+      "metricName": "Initial Emails Sent",
+      "clinicId": "/Survey/ClinicMapping/404535975",
+      "emailSubject": "YOUR EXPERIENCE at UHN - Tell us how we did",
+      "plainTextEmailTemplatePath": "/apps/cards/clinics/TW-EMERGENCY/mailTemplates/invitation.txt",
+      "htmlEmailTemplatePath": "/apps/cards/clinics/TW-EMERGENCY/mailTemplates/invitation.html",
+      "daysToVisit": -7
+    },
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~TWEDReminderNotificationsTask":{
+      "name": "TWEDReminderNotificationsTask",
+      "metricName": "Reminder Emails Sent",
+      "clinicId": "/Survey/ClinicMapping/404535975",
+      "emailSubject": "Reminder: YOUR EXPERIENCE at UHN - Tell us how we did",
+      "plainTextEmailTemplatePath": "/apps/cards/clinics/TW-EMERGENCY/mailTemplates/reminder.txt",
+      "htmlEmailTemplatePath": "/apps/cards/clinics/TW-EMERGENCY/mailTemplates/reminder.html",
+      "daysToVisit": -14
+    },
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~TWIPInitialInvitationTask":{
+      "name": "TWIPInitialNotificationsTask",
+      "metricName": "Initial Emails Sent",
+      "clinicId": "/Survey/ClinicMapping/-89477290",
+      "emailSubject": "YOUR EXPERIENCE at UHN - Tell us how we did",
+      "plainTextEmailTemplatePath": "/apps/cards/clinics/TW-INPATIENT/mailTemplates/invitation.txt",
+      "htmlEmailTemplatePath": "/apps/cards/clinics/TW-INPATIENT/mailTemplates/invitation.html",
+      "daysToVisit": -7
+    },
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~TWIPReminderNotificationsTask":{
+      "name": "TWIPReminderNotificationsTask",
+      "metricName": "Reminder Emails Sent",
+      "clinicId": "/Survey/ClinicMapping/-89477290",
+      "emailSubject": "Reminder: YOUR EXPERIENCE at UHN - Tell us how we did",
+      "plainTextEmailTemplatePath": "/apps/cards/clinics/TW-INPATIENT/mailTemplates/reminder.txt",
+      "htmlEmailTemplatePath": "/apps/cards/clinics/TW-INPATIENT/mailTemplates/reminder.html",
+      "daysToVisit": -14
+    },
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~TGHEDInitialInvitationTask":{
+      "name": "TGHEDInitialNotificationsTask",
+      "metricName": "Initial Emails Sent",
+      "clinicId": "/Survey/ClinicMapping/1034878425",
+      "emailSubject": "YOUR EXPERIENCE at UHN - Tell us how we did",
+      "plainTextEmailTemplatePath": "/apps/cards/clinics/TGH-EMERGENCY/mailTemplates/invitation.txt",
+      "htmlEmailTemplatePath": "/apps/cards/clinics/TGH-EMERGENCY/mailTemplates/invitation.html",
+      "daysToVisit": -7
+    },
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~TGHEDReminderNotificationsTask":{
+      "name": "TGHEDReminderNotificationsTask",
+      "metricName": "Reminder Emails Sent",
+      "clinicId": "/Survey/ClinicMapping/1034878425",
+      "emailSubject": "Reminder: YOUR EXPERIENCE at UHN - Tell us how we did",
+      "plainTextEmailTemplatePath": "/apps/cards/clinics/TGH-EMERGENCY/mailTemplates/reminder.txt",
+      "htmlEmailTemplatePath": "/apps/cards/clinics/TGH-EMERGENCY/mailTemplates/reminder.html",
+      "daysToVisit": -14
+    },
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~TGHIPInitialInvitationTask":{
+      "name": "TGHIPInitialNotificationsTask",
+      "metricName": "Initial Emails Sent",
+      "clinicId": "/Survey/ClinicMapping/540865160",
+      "emailSubject": "YOUR EXPERIENCE at UHN - Tell us how we did",
+      "plainTextEmailTemplatePath": "/apps/cards/clinics/TGH-INPATIENT/mailTemplates/invitation.txt",
+      "htmlEmailTemplatePath": "/apps/cards/clinics/TGH-INPATIENT/mailTemplates/invitation.html",
+      "daysToVisit": -7
+    },
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~TGHIPReminderNotificationsTask":{
+      "name": "TGHIPReminderNotificationsTask",
+      "metricName": "Reminder Emails Sent",
+      "clinicId": "/Survey/ClinicMapping/540865160",
+      "emailSubject": "Reminder: YOUR EXPERIENCE at UHN - Tell us how we did",
+      "plainTextEmailTemplatePath": "/apps/cards/clinics/TGH-INPATIENT/mailTemplates/reminder.txt",
+      "htmlEmailTemplatePath": "/apps/cards/clinics/TGH-INPATIENT/mailTemplates/reminder.html",
+      "daysToVisit": -14
+    }
+  }
+}
