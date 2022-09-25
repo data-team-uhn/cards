@@ -40,7 +40,7 @@
     <module>pedigree</module>
     <module>data-entry</module>
     <module>data-model</module>
-    <module>patient-interface</module>
+    <module>patient-portal</module>
     <module>ldap-support</module>
     <module>saml-support</module>
     <module>utils</module>

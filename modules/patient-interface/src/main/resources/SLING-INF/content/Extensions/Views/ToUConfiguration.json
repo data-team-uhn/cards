@@ -1,7 +1,0 @@
-{
-  "jcr:primaryType": "cards:Extension",
-  "cards:extensionPointId": "cards/coreUI/view",
-  "cards:extensionName": "Patient Portal Terms of Use",
-  "cards:targetURL": "/content.html/admin/ToUConfiguration",
-  "cards:extensionRenderURL": "asset:proms-homepage.ToUConfiguration.js"
-}

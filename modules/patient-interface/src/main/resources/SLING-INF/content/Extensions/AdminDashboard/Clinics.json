@@ -1,9 +1,0 @@
-{
-  "jcr:primaryType": "cards:Extension",
-  "cards:extensionPointId": "cards/coreUI/admindashboard/entry",
-  "cards:extensionName": "Clinics",
-  "cards:targetURL": "/content.html/admin/Clinics",
-  "cards:icon": "asset:proms-homepage.clinicIcon.js",
-  "cards:hint": "Configure the registered clinics",
-  "cards:defaultOrder": 150
-}

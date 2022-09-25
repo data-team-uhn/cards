@@ -1,0 +1,104 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+{
+  "bundles":[
+    {
+      "id":"${project.groupId}:${project.artifactId}:${project.version}",
+      "start-order":"26"
+    },
+    {
+      "id":"commons-beanutils:commons-beanutils:1.9.4",
+      "start-order":"25"
+    },
+    {
+      "id":"commons-digester:commons-digester:2.1",
+      "start-order":"25"
+    },
+    {
+      "id":"commons-validator:commons-validator:1.7",
+      "start-order":"25"
+    },
+    {
+      "id":"${project.groupId}:cards-token-authentication:${project.version}",
+      "start-order":"25"
+    },
+    {
+      "id":"${project.groupId}:cards-metrics:${project.version}",
+      "start-order":"25"
+    },
+    {
+      "id":"${project.groupId}:cards-http-requests:${project.version}",
+      "start-order":"25"
+    }
+  ],
+  "configurations":{
+    "org.apache.sling.jcr.repoinit.RepositoryInitializer~patientUI":{
+      "service.ranking:Integer":300,
+      "scripts": [
+        // Create the /Survey node
+        "create path (cards:PatientHomepage) /Survey",
+        // In certain environments, this script gets executed before the main forms repoinit does, so we must make sure the paths we reference are created.
+        "create path (cards:QuestionnairesHomepage) /Questionnaires \n create path (cards:FormsHomepage) /Forms \n create path (cards:SubjectsHomepage) /Subjects \n create path (cards:SubjectTypesHomepage) /SubjectTypes \n create path (cards:Homepage) /content",
+        // Access rights for the special "patient" user: only allow access to the session subject data, excluding certain clinician-only sections/questions
+        "create user patient \n set ACL for patient \n     allow jcr:read on /Questionnaires,/SubjectTypes \n      allow jcr:read,jcr:write,jcr:nodeTypeManagement,jcr:versionManagement on /Forms restriction(cards:sessionSubject) \n     allow jcr:read on /Subjects restriction(cards:sessionSubject) \n     deny jcr:modifyProperties on /Forms restriction(rep:itemNames,subject,questionnaire) \n     deny jcr:all on /content \n end",
+        // Access rights for the special "guest-patient" user (not using a link from the notification email): only allow access to the session subject data, excluding certain clinician-only sections/questions and PII
+        "create user guest-patient \n set ACL for guest-patient \n     allow jcr:read on /Questionnaires,/SubjectTypes \n     allow jcr:read,jcr:write,jcr:nodeTypeManagement,jcr:versionManagement on /Forms restriction(cards:sessionSubject) \n     allow jcr:read on /Subjects restriction(cards:sessionSubject) \n     deny jcr:modifyProperties on /Forms restriction(rep:itemNames,subject,questionnaire) \n     deny jcr:all on /content \n end",
+        // Access rights for the special "tou-patient" user (not using a link from the notification email): only allow read/write access to the patient's terms of use version
+        "create user tou-patient \n set ACL for tou-patient \n     allow jcr:read on /SubjectTypes \n     allow jcr:read on /Questionnaires restriction(rep:glob,/Patient*information) \n     deny jcr:all on /Questionnaires restriction(rep:itemNames,last_name,first_name,date_of_birth,sex,mrn,health_card,fhir_id,email_unsubscribed,email_ok,email) \n     allow jcr:read,jcr:write,jcr:nodeTypeManagement,jcr:versionManagement on /Forms restriction(cards:sessionSubject) restriction(cards:questionnaire,/Questionnaires/Patient*information) \n     deny jcr:all on /Forms restriction(cards:question,/Questionnaires/Patient*information/last_name,/Questionnaires/Patient*information/first_name,/Questionnaires/Patient*information/date_of_birth,/Questionnaires/Patient*information/sex,/Questionnaires/Patient*information/mrn,/Questionnaires/Patient*information/health_card,/Questionnaires/Patient*information/fhir_id,/Questionnaires/Patient*information/email_unsubscribed,/Questionnaires/Patient*information/email_ok,/Questionnaires/Patient*information/email) \n     allow jcr:read on /Subjects restriction(cards:sessionSubject) \n     deny jcr:modifyProperties on /Forms restriction(rep:itemNames,subject,questionnaire) \n     deny jcr:all on /content \n end",
+        // Service users handling different aspects of the data handling:
+        // Generating forms
+        "create service user patient-visit-backend \n set ACL on /Questionnaires,/Subjects,/SubjectTypes \n   allow jcr:read for patient-visit-backend \n end \n set ACL on /Forms \n   allow jcr:read,rep:write,jcr:versionManagement for patient-visit-backend \n end",
+        // Validating patient's credentials
+        "create service user patient-validation \n set ACL for patient-validation \n   allow jcr:read on /Questionnaires,/Subjects,/SubjectTypes,/Forms \n end",
+        // Enforcing Terms Of Use acceptance
+        "create service user patient-tou \n set ACL for patient-tou \n   allow jcr:read,rep:write,jcr:versionManagement on /Forms \n   allow jcr:read on /Questionnaires,/Subjects \n end",
+        // Unsubscribe from email notifications
+        "create service user patient-unsubscribe \n set ACL for patient-unsubscribe \n   allow jcr:read,rep:write,jcr:versionManagement on /Forms \n   allow jcr:read on /Questionnaires,/Subjects \n end",
+        // Special handling of the 404 page button: patients go to the Patient UI, all other users go to the dashboard
+        "create path (sling:Folder) /RedirectURL \n set ACL on /RedirectURL \n   deny jcr:read for everyone \n   allow jcr:read for patient \n   allow jcr:read for guest-patient \n end \n set properties on /RedirectURL \n   set RedirectURL to /Survey.html \n   set RedirectLabel to \"Go to my surveys\" \n end ",
+        // A /Metrics sling:Folder for storing performance info to be sent periodically via Slack
+        "create path (sling:Folder) /Metrics/TotalSurveysSubmitted/name(nt:unstructured)",
+        "create path (sling:Folder) /Metrics/TotalSurveysSubmitted/prevTotal(nt:unstructured)",
+        "create path (sling:Folder) /Metrics/TotalSurveysSubmitted/total(nt:unstructured mixin mix:atomicCounter)",
+        "create path (sling:Folder) /Metrics/AppointmentSurveysSubmitted/name(nt:unstructured)",
+        "create path (sling:Folder) /Metrics/AppointmentSurveysSubmitted/prevTotal(nt:unstructured)",
+        "create path (sling:Folder) /Metrics/AppointmentSurveysSubmitted/total(nt:unstructured mixin mix:atomicCounter)",
+        "create path (sling:Folder) /Metrics/ImportedAppointments/name(nt:unstructured)",
+        "create path (sling:Folder) /Metrics/ImportedAppointments/prevTotal(nt:unstructured)",
+        "create path (sling:Folder) /Metrics/ImportedAppointments/total(nt:unstructured mixin mix:atomicCounter)",
+        "set properties on /Metrics/TotalSurveysSubmitted/name \n   default value{String} to \"Total Surveys Submitted\" \n end",
+        "set properties on /Metrics/TotalSurveysSubmitted/prevTotal \n   default value{Long} to 0 \n end",
+        "set properties on /Metrics/AppointmentSurveysSubmitted/name \n   default value{String} to \"Appointment Surveys Submitted\" \n end",
+        "set properties on /Metrics/AppointmentSurveysSubmitted/prevTotal \n   default value{Long} to 0 \n end",
+        "set properties on /Metrics/ImportedAppointments/name \n   default value{String} to \"Imported Appointments\" \n end",
+        "set properties on /Metrics/ImportedAppointments/prevTotal \n   default value{Long} to 0 \n end"
+      ]
+    },
+    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~patientUi":{
+      "user.mapping":[
+        "io.uhndata.cards.patient-portal:VisitFormsPreparation=[patient-visit-backend]",
+        "io.uhndata.cards.patient-portal:validateCredentials=[patient-validation]",
+        "io.uhndata.cards.patient-portal:tou=[patient-tou]",
+        "io.uhndata.cards.patient-portal:unsubscribe=[patient-unsubscribe]",
+        "io.uhndata.cards.patient-portal:EmailNotifications=[sling-readall]",
+        "io.uhndata.cards.patient-portal:MetricLogger=[cards-metrics]",
+        "io.uhndata.cards.patient-portal:SlackNotifications=[cards-metrics]"
+      ]
+    }
+  }
+}

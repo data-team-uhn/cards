@@ -1,9 +1,0 @@
-{
-  "jcr:primaryType": "cards:Extension",
-  "cards:extensionPointId": "cards/coreUI/admindashboard/entry",
-  "cards:extensionName": "Clinic dashboard",
-  "cards:targetURL": "/content.html/admin/DashboardSettingsConfiguration",
-  "cards:icon": "asset:proms-homepage.DashboardSettingsConfigurationIcon.js",
-  "cards:hint": "Configure how data is displayed on the clinic dashboard",
-  "cards:defaultOrder": 420
-}

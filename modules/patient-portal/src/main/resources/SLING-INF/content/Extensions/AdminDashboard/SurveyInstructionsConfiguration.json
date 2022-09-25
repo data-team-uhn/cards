@@ -1,0 +1,9 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "cards/coreUI/admindashboard/entry",
+  "cards:extensionName": "Patient Portal Survey Instructions",
+  "cards:targetURL": "/content.html/admin/SurveyInstructionsConfiguration",
+  "cards:icon": "asset:patient-portal.SurveyInstructionsConfigurationIcon.js",
+  "cards:hint": "Configure the instructions that guide patient users through completing their surveys on the Patient Portal",
+  "cards:defaultOrder": 450
+}

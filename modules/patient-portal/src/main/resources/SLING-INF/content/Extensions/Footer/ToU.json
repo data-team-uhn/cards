@@ -1,0 +1,7 @@
+{
+  "jcr:primaryType": "cards:Extension",
+  "cards:extensionPointId": "patient-portal/footer",
+  "cards:extensionName": "Terms of Use",
+  "cards:extensionRenderURL": "asset:patient-portal.ToULink.js",
+  "cards:defaultOrder": 10
+}
