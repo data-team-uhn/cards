@@ -30,7 +30,7 @@ if (time.hasNext()) {
         time = time.getProperty("value").getDate();
         var config = sling.getService(Packages.io.uhndata.cards.patients.api.PatientAccessConfiguration);
         var days = config.getAllowedPostVisitCompletionTime();
-        time.add(java.util.Calendar.DATE, days);
+        time.add(java.util.Calendar.DATE, days + 1);
         time.set(java.util.Calendar.HOUR_OF_DAY, 0);
         time.set(java.util.Calendar.MINUTE, 0);
         time.set(java.util.Calendar.SECOND, 0);
