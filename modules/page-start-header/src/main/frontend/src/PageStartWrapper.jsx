@@ -41,7 +41,7 @@ let PageStartWrapper = (props) => {
             }
         }
       />
-      <div style={ { position: appbarExpanded ? 'relative' : 'absolute', top: contentOffset + 'px' } }>
+      <div id="page-start-wrapper-content" style={ { position: appbarExpanded ? 'relative' : 'absolute', top: contentOffset + 'px' } }>
        { children }
      </div>
    </>

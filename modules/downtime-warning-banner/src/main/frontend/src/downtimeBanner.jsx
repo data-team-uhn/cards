@@ -72,11 +72,11 @@ export default function DowntimeWarning(props) {
         setEnabled(json.enabled == 'true');
         if (json.fromDate) {
           let date = new Date(json.fromDate);
-          setFromDate(date.toDateString() + " " + date.toLocaleTimeString().replace(":00 ", " "));
+          (date != "Invalid Date") && setFromDate(date.toDateString() + " " + date.toLocaleTimeString().replace(":00 ", " "));
         }
         if (json.toDate) {
           let date = new Date(json.toDate);
-          setToDate(date.toDateString() + " " + date.toLocaleTimeString().replace(":00 ", " "));
+          (date != "Invalid Date") && setToDate(date.toDateString() + " " + date.toLocaleTimeString().replace(":00 ", " "));
         }
       })
       .catch((error) => {

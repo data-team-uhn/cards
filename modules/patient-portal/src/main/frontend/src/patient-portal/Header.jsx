@@ -29,6 +29,8 @@ import {
   useScrollTrigger,
 } from "@mui/material";
 
+import { useMediaQuery } from "@mui/material";
+import { useTheme } from '@mui/material/styles';
 import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles(theme => ({
@@ -88,6 +90,10 @@ function Header (props) {
     threshold: 250,
   });
 
+  const theme = useTheme();
+  const appbarExpanded = useMediaQuery(theme.breakpoints.up('md'));
+  const contentOffset = document?.getElementById('page-start-wrapper-content')?.style.top || 0;
+
   let subtitleBar = subtitle ?
     <Toolbar variant="dense" className={classes.toolbar}>
       <Typography variant="h6" color="textPrimary">{ subtitle }</Typography>
@@ -97,7 +103,7 @@ function Header (props) {
 
   return (
     <>
-    <AppBar position="sticky" className={classes.appbar}>
+    <AppBar position="sticky" className={classes.appbar} style={ { top: appbarExpanded ? contentOffset: 0 }}>
       <Collapse in={!subtitle || !(scrollTrigger)}>
         <Toolbar variant="dense" className={classes.toolbar}>
           <div className={classes.titleLine}>
