@@ -70,9 +70,9 @@ public class ExportTask implements Runnable
     @Override
     public void run()
     {
-        Set<Resource> questionnaires = this.getQuestionnaires(generateQuestionnairesQuery());
+        Set<Resource> questionnaires = this.getQuestionnaires();
         final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        final String modifiedAfterDate = simpleDateFormat.format(getLastExportDate());
+        final String modifiedAfterDate = simpleDateFormat.format(getExportStartDate());
         final String modifiedBeforeDate = simpleDateFormat.format(new Date());
         final File csvFile = new File(this.savePath + "/ExportedForms_" + modifiedAfterDate + ".csv");
         try (FileWriter writer = new FileWriter(csvFile)) {
@@ -108,8 +108,9 @@ public class ExportTask implements Runnable
         return query;
     }
 
-    private Set<Resource> getQuestionnaires(String query)
+    private Set<Resource> getQuestionnaires()
     {
+        String query = generateQuestionnairesQuery();
         if (query != null) {
             try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
                 Iterator<Resource> results = resolver.findResources(query, "JCR-SQL2");
@@ -126,7 +127,7 @@ public class ExportTask implements Runnable
         return Collections.emptySet();
     }
 
-    public Date getLastExportDate()
+    private Date getExportStartDate()
     {
         Calendar date = new GregorianCalendar();
         date.add(Calendar.DAY_OF_MONTH, (-(this.frequencyInDays + 1)));
