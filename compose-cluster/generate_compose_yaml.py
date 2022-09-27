@@ -267,6 +267,15 @@ def getWiredTigerCacheSizeGB():
 
   return memory_per_shard_replica_gb
 
+def getCardsJavaMemoryLimitMB():
+  total_system_memory_bytes = psutil.virtual_memory().total
+  total_system_memory_mb = total_system_memory_bytes / (1024 * 1024)
+
+  cards_java_memory_limit_mb = MEMORY_SPLIT_CARDS_JAVA * total_system_memory_mb
+
+  # Floor down to the nearest integer MB
+  return math.floor(cards_java_memory_limit_mb)
+
 OUTPUT_FILENAME = "docker-compose.yml"
 
 yaml_obj = {}
@@ -463,6 +472,9 @@ if args.oak_filesystem:
 
 if not (args.oak_filesystem or args.external_mongo):
   yaml_obj['services']['cardsinitial']['depends_on'] = ['router']
+  # We must also limit the memory given to the CARDS Java process as the
+  # internal MongoDB setup will also use a significant amount of memory.
+  yaml_obj['services']['cardsinitial']['environment'].append("CARDS_JAVA_MEMORY_LIMIT_MB={}".format(getCardsJavaMemoryLimitMB()))
 
 if args.sling_admin_port:
   yaml_obj['services']['cardsinitial']['ports'] = ["127.0.0.1:{}:8080".format(args.sling_admin_port)]
