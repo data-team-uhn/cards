@@ -17,8 +17,7 @@
 //  under the License.
 //
 
-import React, { useState, useRef } from "react";
-import PropTypes from "prop-types";
+import React, { useState } from "react";
 
 import { CircularProgress, Chip, Tooltip, Typography } from "@mui/material";
 

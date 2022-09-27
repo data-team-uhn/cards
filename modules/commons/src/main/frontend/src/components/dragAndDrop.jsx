@@ -104,7 +104,7 @@ export default function DragAndDrop(props) {
   let onChangeFile = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    let chosenFiles = event.target.files;
+    let chosenFiles = e.target.files;
     handleDrop(chosenFiles);
   };
 

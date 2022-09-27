@@ -22,7 +22,7 @@ import SubjectView from "./SubjectView.jsx";
 import { getHierarchy, getSubjectIdFromPath } from "../questionnaire/Subject.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 
-import { Button, Grid, Typography } from "@mui/material";
+import { Grid } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";

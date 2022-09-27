@@ -311,10 +311,10 @@ let AnswerOptions = (props) => {
           />
       </Tooltip>
       <Tooltip title={option.tooltip}>
-        <TextField
+        <TextFields
           variant="standard"
           disabled={!option.data[option.label]}
-          label={option.tootltip}
+          label={option.tooltip}
           error={option.data[option.label] && option.isDuplicate}
           helperText={option.isDuplicate ? 'duplicated value or label' : ''}
           className={classes.answerOptionInput}

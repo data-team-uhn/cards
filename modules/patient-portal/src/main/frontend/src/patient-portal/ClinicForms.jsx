@@ -16,16 +16,13 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 
 import {
   CircularProgress,
   Typography
 } from "@mui/material";
 
-import makeStyles from '@mui/styles/makeStyles';
-
-import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 import ClinicFormList from "./ClinicFormList.jsx";
 
 function ClinicForms(props) {
@@ -35,8 +32,6 @@ function ClinicForms(props) {
   const [ questionnaireId, setQuestionnaireId ] = useState();
   const [ title, setTitle ] = useState(props.title);
   const [ acronym, setAcronym ] = useState();
-
-  const globalLoginDisplay = useContext(GlobalLoginContext);
 
   // At startup, load questionnaire
   useEffect(() => {

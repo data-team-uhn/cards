@@ -17,14 +17,12 @@
 //  under the License.
 //
 
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from 'react-router-dom';
-import PropTypes from "prop-types";
 
 import {
   CircularProgress,
-  Grid,
-  Typography
+  Grid
 } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
@@ -48,8 +46,6 @@ function QuestionnairePreview (props) {
   let { classes, data, title } = props;
 
   let [ pages, setPages ] = useState(null);
-  let [ removeWindowHandlers, setRemoveWindowHandlers ] = useState();
-  let [ actionsMenu, setActionsMenu ] = useState(null);
   let [ contentOffsetTop, setContentOffsetTop ] = useState(props.contentOffset);
   let [ contentOffsetBottom, setContentOffsetBottom ] = useState(0);
   let paginationEnabled = !!data?.paginate;

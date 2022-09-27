@@ -17,8 +17,7 @@
 
 import React from "react";
 import withStyles from '@mui/styles/withStyles';
-import { Button, Grid, Dialog, DialogTitle, DialogContent, Typography } from "@mui/material";
-import ClearIcon from '@mui/icons-material/Clear';
+import { Grid, Dialog, DialogContent, Typography } from "@mui/material";
 import userboardStyle from '../userboardStyle.jsx';
 
 import SignUpForm from "../../login/signUpForm.js";

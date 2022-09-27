@@ -26,7 +26,7 @@ import {
   DialogContent,
   DialogTitle,
   CircularProgress,
-  List, ListItem, ListItemText,
+  ListItemText,
   Typography,
   Tooltip
 } from "@mui/material";

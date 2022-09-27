@@ -62,7 +62,7 @@ let ComputedQuestion = (props) => {
   const [baseValue, changeBaseValue] = useState(initialValue);
   const [answer, changeAnswer] = useState(initialValue === "" ? [] : [["value", initialValue]]);
   const [fieldType, changeFieldType] = useState("string")
-  const [muiInputProps, changeMuiInputProps] = useState({});
+  let muiInputProps = {};
   const [isFormatted, changeIsFormatted] = useState(false);
 
   const form = useFormReaderContext();

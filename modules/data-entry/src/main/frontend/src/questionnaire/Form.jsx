@@ -18,8 +18,7 @@
 //
 
 import React, { useEffect, useState, useContext } from "react";
-import { withRouter, useHistory } from "react-router-dom";
-import PropTypes from "prop-types";
+import { withRouter } from "react-router-dom";
 
 import {
   Breadcrumbs,
@@ -42,13 +41,12 @@ import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from '@mui/icons-material/Edit';
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DoneIcon from "@mui/icons-material/Done";
-import WarningIcon from '@mui/icons-material/Warning';
 import MoreIcon from '@mui/icons-material/MoreVert';
 
 import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
-import FormEntry, { QUESTION_TYPES, ENTRY_TYPES } from "./FormEntry";
+import FormEntry, { ENTRY_TYPES } from "./FormEntry";
 import { DateTime } from "luxon";
-import { getHierarchy, getTextHierarchy, getHierarchyAsList } from "./Subject";
+import { getTextHierarchy, getHierarchyAsList } from "./Subject";
 import { SelectorDialog, parseToArray } from "./SubjectSelector";
 import { FormProvider } from "./FormContext";
 import { FormUpdateProvider } from "./FormUpdateContext";
@@ -94,7 +92,6 @@ function Form (props) {
   let [ selectorDialogOpen, setSelectorDialogOpen ] = useState(false);
   let [ selectorDialogError, setSelectorDialogError ] = useState("");
   let [ changedSubject, setChangedSubject ] = useState();
-  let [ saveDataPending, setSaveDataPending ] = useState(false);
   let [ errorCode, setErrorCode ] = useState();
   let [ errorMessage, setErrorMessage ] = useState("");
   let [ errorDialogDisplayed, setErrorDialogDisplayed ] = useState(false);
@@ -105,7 +102,6 @@ function Form (props) {
   let [ actionsMenu, setActionsMenu ] = useState(null);
   let [ formContentOffsetTop, setFormContentOffsetTop ] = useState(contentOffset);
   let [ formContentOffsetBottom, setFormContentOffsetBottom ] = useState(0);
-  let [ incompleteAnswers, setIncompleteAnswers ] = useState([]);
 
   // Whether we reached the of the form (as opposed to a page that is not the last on a paginated form)
   let [ endReached, setEndReached ] = useState();
@@ -124,7 +120,6 @@ function Form (props) {
 
   let formNode = React.useRef();
   let pageNameWriter = usePageNameWriterContext();
-  const history = useHistory();
   const formURL = `/Forms/${id}`;
   const urlBase = "/content.html";
   const isEdit = window.location.pathname.endsWith(".edit") || mode == "edit";
@@ -275,12 +270,6 @@ function Form (props) {
   }
 
   let handleSubmit = (event) => {
-    // Do not save when login in progress
-    // Prevents issue where submitting login dialog would try to save twice,
-    // once before login complete and once after
-    if (saveDataPending === true) {
-      return;
-    }
     saveData(event);
   }
 
@@ -303,7 +292,6 @@ function Form (props) {
     props.history.push(urlBase + (data?.subject?.['@path'] || ''));
   }
 
-  let parentDetails = data?.subject && getHierarchy(data.subject);
   let title = data?.questionnaire?.title || id || "";
   let subjectName = data?.subject && getTextHierarchy(data?.subject);
   useEffect(() => {
@@ -320,13 +308,6 @@ function Form (props) {
   useEffect(() => {
     fetchData();
   }, []);
-
-  useEffect(() => {
-    if (data) {
-      let incompletes = getIncompleteAnswers(data, []);
-      setIncompleteAnswers(incompletes);
-    }
-  }, [data])
 
   let getIncompleteAnswers = (obj, results) => {
     for (var entry in Object.entries(obj || {})) {

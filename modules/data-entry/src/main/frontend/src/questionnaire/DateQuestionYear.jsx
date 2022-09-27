@@ -52,7 +52,7 @@ function DateQuestionYear(props) {
   let {text, dateFormat, minAnswers, type, lowerLimit, upperLimit} = {dateFormat: "yyyy", minAnswers: 0, type: DateQuestionUtilities.TIMESTAMP_TYPE, ...props.questionDefinition, ...props};
   return (
     <NumberQuestion
-      minValue={0}
+      minAnswers={minAnswers || 0}
       maxAnswers={1}
       dataType="long"
       errorText="Please insert a valid year."

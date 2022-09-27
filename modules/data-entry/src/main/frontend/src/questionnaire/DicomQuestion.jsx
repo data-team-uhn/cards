@@ -22,11 +22,7 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  DialogActions,
   DialogContent,
-  FormControlLabel,
-  FormGroup,
-  Switch,
   Typography,
 } from "@mui/material";
 import { makeStyles, withStyles } from '@mui/styles';

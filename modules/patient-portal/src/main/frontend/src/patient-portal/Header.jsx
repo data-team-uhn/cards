@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState } from "react";
+import React from "react";
 import {
   AppBar,
   Breadcrumbs,
@@ -105,7 +105,7 @@ function Header (props) {
           </div>
           <Breadcrumbs separator = "·">
             {greeting && <span className={classes.greeting}>{ greeting }</span>}
-            <Link href="/system/sling/logout" underline="hover" onClick={() => {event.preventDefault(); window.location = "/system/sling/logout?resource=" + encodeURIComponent(window.location.pathname);}}>Sign out</Link>
+            <Link href="/system/sling/logout" underline="hover" onClick={(event) => {event.preventDefault(); window.location = "/system/sling/logout?resource=" + encodeURIComponent(window.location.pathname);}}>Sign out</Link>
           </Breadcrumbs>
         </Toolbar>
       </Collapse>

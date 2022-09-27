@@ -64,7 +64,6 @@ export default function VocabularyDirectory(props) {
 
     let filteredVocabs = null;
     setCurStatus(Status["Loading"]);
-    var badResponse = false;
     fetch(props.listLink)
     .then((response) => response.ok ? response.json() : Promise.reject(response))
     .then(function(data) {

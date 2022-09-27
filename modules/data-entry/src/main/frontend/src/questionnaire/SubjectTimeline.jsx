@@ -156,10 +156,8 @@ function TimelineEntry(classes, dateEntry, index, length, nextEntry) {
  * @param {string} id the identifier of a subject; this is the JCR node name
  */
 function SubjectTimeline(props) {
-  let { id, classes, subject } = props;
+  let { classes, subject } = props;
   let [dateEntries, setDateEntries] = useState(null);
-  // Error message set when fetching the data from the server fails
-  let [ error, setError ] = useState();
 
   let globalLoginDisplay = useContext(GlobalLoginContext);
 

@@ -32,8 +32,6 @@ import makeStyles from '@mui/styles/makeStyles';
 
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
-const Status = require("./statusCodes.json");
-
 const useStyles = makeStyles(theme => ({
   buttonProgress: {
     top: "50%",

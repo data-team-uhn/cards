@@ -385,11 +385,6 @@ function ResourceQuery(props) {
     }
   }
 
-  // Event handler for clicking away from the info window while it is open
-  let closeInfo = (event) => {
-    setResourcePath("");
-  }
-
   let closeSuggestions = () => {
     if (clearOnClick && anchorEl?.current) {
       anchorEl.current.value = "";

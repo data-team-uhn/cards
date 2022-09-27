@@ -20,7 +20,6 @@ import React, { useState, useEffect } from 'react';
 import {
     Checkbox,
     TextField,
-    Tooltip,
     Typography,
     FormControlLabel,
     List,
@@ -30,7 +29,6 @@ import {
 import AdminConfigScreen from "../adminDashboard/AdminConfigScreen.jsx";
 
 function QuickSearchConfiguration(props) {
-  const { match, location, classes } = props;
 
   const [ limit, setLimit ] = useState(5);
   const [ allowedResourceTypes, setAllowedResourceTypes ] = useState([]);

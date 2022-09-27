@@ -39,7 +39,7 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js"
 let EditDialog = (props) => {
   const { data, type, targetExists, isOpen, onSaved, onCancel, id, model } = props;
   let [ targetId, setTargetId ] = useState('');
-  let [ dialogData, setDialogData ] = useState(targetExists ? data : {});
+  const dialogData = targetExists ? data : {};
   // Marks that a save operation is in progress
   let [ saveInProgress, setSaveInProgress ] = useState();
   // Indicates whether the form has been saved or not. This has three possible values:
@@ -49,7 +49,7 @@ let EditDialog = (props) => {
   // FIXME Replace this with a proper formState {unmodified, modified, saving, saved, saveFailed}
   let [ open, setOpen ] = useState(isOpen);
   let [ lastSaveStatus, setLastSaveStatus ] = useState(undefined);
-  let [ primaryType, setPrimaryType ] = useState(`cards:${type}`);
+  const primaryType = `cards:${type}`;
   let [ error, setError ] = useState('');
   let [ variableNameError, setVariableNameError ] = useState('');
 
@@ -187,9 +187,8 @@ let EditDialog = (props) => {
     // The path with this variable name exists
     if (newValue && Object.keys(data).includes(newValue) && data[newValue]["@path"]) {
       let mainType = data["sling:resourceType"].replaceAll(/^cards\//g, "");
-      let type = (data[newValue].dataType ? data[newValue].dataType + " " : "") + data[newValue]["sling:resourceType"].replaceAll(/^cards\//g, "");
       let label = data[newValue].label || data[newValue].text || newValue;
-      setVariableNameError(`The identifier ${newValue} is already in use in this ${mainType} for the ${formttedType} '${label}'. Please choose a different identifier.`);
+      setVariableNameError(`The identifier ${newValue} is already in use in this ${mainType} for the ${formattedType} '${label}'. Please choose a different identifier.`);
     }
   }
 

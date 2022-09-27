@@ -20,12 +20,10 @@
 import React, { useContext } from "react";
 
 import {
-  Button,
   CircularProgress,
   Grid,
   IconButton,
   InputAdornment,
-  LinearProgress,
   TextField,
 } from "@mui/material";
 
@@ -67,7 +65,6 @@ const useStyles = makeStyles(theme => ({
 export default function Search(props) {
   const [error, setError] = React.useState(false);
   const [keywords, setKeywords] = React.useState("");
-  const [lastSearch, setLastSearch] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const classes = useStyles();
 
@@ -80,7 +77,6 @@ export default function Search(props) {
       setError(false);
       setLoading(true);
       props.setLoading(true);
-      setLastSearch(keywords);
       props.setAcronymFilterList([]);
 
       fetchBioPortalApiKey(globalLoginDisplay, (apiKey) => {
@@ -134,7 +130,7 @@ export default function Search(props) {
       <Grid item>
         <TextField
           fullWidth
-          helperText={(error ? "Request Failed" : "")}
+          helperText={(error ? "Request Failed" : "Search BioPortal for vocabularies mentioning a specific concept, e.g. “Microcephaly”")}
           InputProps={{
             endAdornment: <InputAdornment position="end">
                             { keywords &&
@@ -151,7 +147,6 @@ export default function Search(props) {
                           </InputAdornment>
           }}
           label="Search BioPortal by keywords"
-          helperText="Search BioPortal for vocabularies mentioning a specific concept, e.g. “Microcephaly”"
           onChange={(event) => setKeywords(event.target.value)}
           onKeyDown={handleSearchInput}
           type="text"

@@ -28,7 +28,6 @@ import PropTypes from "prop-types";
 import Answer from "./Answer";
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
-import TextQuestion from "./TextQuestion";
 
 import AnswerComponentManager from "./AnswerComponentManager";
 

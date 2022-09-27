@@ -25,8 +25,7 @@ import {
     InputAdornment,
     List,
     ListItem,
-    TextField,
-    Typography
+    TextField
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import AdminConfigScreen from "../adminDashboard/AdminConfigScreen.jsx";

@@ -21,9 +21,8 @@ import { Link } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 import { 
   Button,
-  Dialog, 
-  DialogActions, 
-  DialogContent, 
+  DialogActions,
+  DialogContent,
   DialogTitle,
   Grid,
   IconButton,
@@ -179,7 +178,7 @@ function AdminStatistics(props) {
  * @param {string} currentId uuid of statistic to be edited (pre-existing)
  */
 function StatisticDialog(props) {
-  const { onClose, onSuccess, open, classes, isNewStatistic, currentId } = props;
+  const { onClose, onSuccess, open, isNewStatistic, currentId } = props;
   const [ existingData, setExistingData ] = useState(false);
   const [ error, setError ] = useState();
   const [ saveInProgress, setSaveInProgress ] = useState(false);

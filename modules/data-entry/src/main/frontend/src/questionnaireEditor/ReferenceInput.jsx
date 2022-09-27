@@ -18,8 +18,8 @@
 //
 
 import React, { useContext, useEffect, useState } from "react";
-import PropTypes, { object } from 'prop-types';
-import { Input, MenuItem, Select, Typography } from "@mui/material";
+import PropTypes from 'prop-types';
+import { Input, MenuItem, Select } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
 

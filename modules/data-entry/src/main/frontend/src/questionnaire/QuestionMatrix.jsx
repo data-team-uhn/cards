@@ -18,7 +18,6 @@
 //
 
 import React, { useState, useEffect } from "react";
-import PropTypes from 'prop-types';
 
 import {
   Checkbox,
@@ -34,8 +33,7 @@ import {
 import withStyles from '@mui/styles/withStyles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
-import Answer, {LABEL_POS, VALUE_POS, DESC_POS, IS_DEFAULT_OPTION_POS, IS_DEFAULT_ANSWER_POS} from "./Answer";
-import AnswerInstructions from "./AnswerInstructions";
+import Answer, {LABEL_POS, VALUE_POS, DESC_POS, IS_DEFAULT_ANSWER_POS} from "./Answer";
 import { hasWarningFlags } from "./AnswerInstructions";
 import Question from "./Question";
 import FormattedText from "../components/FormattedText.jsx";
