@@ -1570,6 +1570,20 @@
 					<type>Long</type>
 				</property>
 				<node>
+					<name>Not on patient</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Not on patient</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Not on patient</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
 					<name>Left waist hip clip</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
@@ -1650,6 +1664,34 @@
 					<property>
 						<name>value</name>
 						<value>Right front pocket</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>In pack around waist</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>In pack around waist</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>In pack around waist</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>In pack around chest</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>In pack around chest</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>In pack around chest</value>
 						<type>String</type>
 					</property>
 				</node>
