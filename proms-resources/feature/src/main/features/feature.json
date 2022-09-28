@@ -29,6 +29,10 @@
       "start-order":"21"
     },
     {
+      "id":"${project.groupId}:cards-statistics:${project.version}",
+      "start-order":"25"
+    },
+    {
       "id":"${project.groupId}:proms-resources-clinical-data:${project.version}",
       "start-order":"26"
     },
