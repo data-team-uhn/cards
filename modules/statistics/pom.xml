@@ -33,17 +33,11 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.sling</groupId>
-        <artifactId>slingfeature-maven-plugin</artifactId>
-      </plugin>
-
-      <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Include-Resource>{maven-resources}</Include-Resource>
             <Sling-Nodetypes>SLING-INF/nodetypes/statistics.cnd</Sling-Nodetypes>
             <!-- Initial content to be loaded on bundle installation -->
             <Sling-Initial-Content>SLING-INF/content</Sling-Initial-Content>

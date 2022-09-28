@@ -1,0 +1,6 @@
+{
+  "jcr:primaryType": "cards:StatisticsHomepage",
+  "security:acl": [
+    { "principal": "everyone", "granted": ["jcr:read"] }
+  ]
+}
