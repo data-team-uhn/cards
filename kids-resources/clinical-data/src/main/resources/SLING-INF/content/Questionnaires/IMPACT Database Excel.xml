@@ -265,7 +265,7 @@
 			</property>
 			<property>
 				<name>dateFormat</name>
-				<value>(MM/DD/yyyy) </value>
+				<value>MM/dd/yyyy</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1832,7 +1832,7 @@
 			</property>
 			<property>
 				<name>dateFormat</name>
-				<value>(MM/DD/yyyy) </value>
+				<value>MM/dd/yyyy</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -2563,7 +2563,7 @@
 				</property>
 				<property>
 					<name>dateFormat</name>
-					<value>(MM/DD/yyyy) </value>
+					<value>MM/dd/yyyy</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -3114,7 +3114,7 @@
 				</property>
 				<property>
 					<name>dateFormat</name>
-					<value>(MM/DD/yyyy) </value>
+					<value>MM/dd/yyyy</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -5287,7 +5287,7 @@
 				<primaryNodeType>cards:Question</primaryNodeType>
 				<property>
 					<name>text</name>
-					<value>Heart Failure - 
+					<value>Heart Failure -
 New York Heart Association (NYHA) Functional Classification</value>
 					<type>String</type>
 				</property>
@@ -8764,7 +8764,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 			</property>
 			<property>
 				<name>dateFormat</name>
-				<value>(MM/DD/yyyy) </value>
+				<value>MM/dd/yyyy</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -8812,7 +8812,7 @@ New York Heart Association (NYHA) Functional Classification</value>
 			</property>
 			<property>
 				<name>dateFormat</name>
-				<value>(MM/DD/yyyy) </value>
+				<value>MM/dd/yyyy</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -34921,7 +34921,7 @@ Other</value>
 				</property>
 				<property>
 					<name>dateFormat</name>
-					<value>(MM/DD/yyyy) </value>
+					<value>MM/dd/yyyy</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -35061,7 +35061,7 @@ Other</value>
 			</property>
 			<property>
 				<name>dateFormat</name>
-				<value>(MM/DD/yyyy) </value>
+				<value>MM/dd/yyyy</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -35606,7 +35606,7 @@ Other</value>
 			</property>
 			<property>
 				<name>dateFormat</name>
-				<value>(MM/DD/yyyy) </value>
+				<value>MM/dd/yyyy</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -35630,7 +35630,7 @@ Other</value>
 			</property>
 			<property>
 				<name>dateFormat</name>
-				<value>(MM/DD/yyyy) </value>
+				<value>MM/dd/yyyy</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -36158,7 +36158,7 @@ Other</value>
 				</property>
 				<property>
 					<name>dateFormat</name>
-					<value>(MM/DD/yyyy) </value>
+					<value>MM/dd/yyyy</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -36725,7 +36725,7 @@ Other</value>
 				</property>
 				<property>
 					<name>dateFormat</name>
-					<value>(MM/DD/yyyy) </value>
+					<value>MM/dd/yyyy</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -37300,7 +37300,7 @@ Other</value>
 				</property>
 				<property>
 					<name>dateFormat</name>
-					<value>(MM/DD/yyyy) </value>
+					<value>MM/dd/yyyy</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -38894,7 +38894,7 @@ Other</value>
 				</property>
 				<property>
 					<name>dateFormat</name>
-					<value>(MM/DD/yyyy) </value>
+					<value>MM/dd/yyyy</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -39060,7 +39060,7 @@ Other</value>
 				</property>
 				<property>
 					<name>dateFormat</name>
-					<value>(MM/DD/yyyy) </value>
+					<value>MM/dd/yyyy</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -39292,7 +39292,7 @@ Other</value>
 				</property>
 				<property>
 					<name>dateFormat</name>
-					<value>(MM/DD/yyyy) </value>
+					<value>MM/dd/yyyy</value>
 					<type>String</type>
 				</property>
 				<property>

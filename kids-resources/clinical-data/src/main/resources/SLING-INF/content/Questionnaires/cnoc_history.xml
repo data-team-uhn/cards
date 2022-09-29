@@ -5841,7 +5841,7 @@
 		</property>
 		<property>
 			<name>dateFormat</name>
-			<value>DD/MM/yyyy hh:MM:ss</value>
+			<value>dd/MM/yyyy hh:MM:ss</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -5865,7 +5865,7 @@
 		</property>
 		<property>
 			<name>dateFormat</name>
-			<value>DD/MM/yyyy hh:MM:ss</value>
+			<value>dd/MM/yyyy hh:MM:ss</value>
 			<type>String</type>
 		</property>
 		<property>
