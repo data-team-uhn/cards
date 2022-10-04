@@ -2474,7 +2474,7 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>75-100</value>
+						<value>75-100% of my day</value>
 						<type>String</type>
 					</property>
 				</node>
@@ -2488,7 +2488,7 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>50-74</value>
+						<value>50-74% of my day</value>
 						<type>String</type>
 					</property>
 				</node>
@@ -2502,7 +2502,7 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>25-49</value>
+						<value>25-49% of my day</value>
 						<type>String</type>
 					</property>
 				</node>
@@ -2516,84 +2516,10 @@
 					</property>
 					<property>
 						<name>value</name>
-						<value>0-24</value>
+						<value>Less than 25% of my day</value>
 						<type>String</type>
 					</property>
 				</node>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>bl_assist</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>1</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
-		</node>
-		<node>
-			<name>bl_assist_datesSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
-			<node>
-				<name>bl_assist_dates</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>On which dates was the assistive device used?</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>textbox</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>0</value>
-					<type>Long</type>
-				</property>
 			</node>
 			<node>
 				<name>condition</name>
@@ -2848,6 +2774,20 @@
 					</property>
 				</node>
 				<node>
+					<name>Feet</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Feet</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Feet</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
 					<name>Knee</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
@@ -2876,20 +2816,6 @@
 					</property>
 				</node>
 				<node>
-					<name>Feet</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Feet</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Feet</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
 					<name>Neck</name>
 					<primaryNodeType>cards:AnswerOption</primaryNodeType>
 					<property>
@@ -2900,6 +2826,34 @@
 					<property>
 						<name>value</name>
 						<value>Neck</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Shoulder</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Shoulder</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Shoulder</value>
+						<type>String</type>
+					</property>
+				</node>
+				<node>
+					<name>Back</name>
+					<primaryNodeType>cards:AnswerOption</primaryNodeType>
+					<property>
+						<name>label</name>
+						<value>Back</value>
+						<type>String</type>
+					</property>
+					<property>
+						<name>value</name>
+						<value>Back</value>
 						<type>String</type>
 					</property>
 				</node>
@@ -2942,34 +2896,6 @@
 					<property>
 						<name>value</name>
 						<value>Bi-lateral</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>Shoulder</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Shoulder</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Shoulder</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>Back</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Back</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Back</value>
 						<type>String</type>
 					</property>
 				</node>

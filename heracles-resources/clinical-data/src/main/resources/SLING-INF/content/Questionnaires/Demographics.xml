@@ -284,7 +284,7 @@
 		</property>
 		<property>
 			<name>displayMode</name>
-			<value>list</value>
+			<value>list+input</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -336,20 +336,6 @@
 			<property>
 				<name>value</name>
 				<value>Windows</value>
-				<type>String</type>
-			</property>
-		</node>
-		<node>
-			<name>Other</name>
-			<primaryNodeType>cards:AnswerOption</primaryNodeType>
-			<property>
-				<name>label</name>
-				<value>Other</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>value</name>
-				<value>Other</value>
 				<type>String</type>
 			</property>
 		</node>
