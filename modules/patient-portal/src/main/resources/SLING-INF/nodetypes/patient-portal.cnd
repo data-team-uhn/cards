@@ -27,6 +27,29 @@
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
+// QuestionnaireConflict: a reference to a questionnaire that should prevent a QuestionnaireSet from being generated
+[cards:QuestionnaireConflict] > sling:Folder, mix:referenceable, mix:versionable
+  // Attributes
+
+  // We can use questionnaire references in a query.
+  query
+
+  // Properties
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/QuestionnaireConflict" mandatory autocreated protected
+
+  // Hardcode the resource supertype.
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
+
+  // A questionnaire path
+  // Mandatory, each QuestionnaireRef must point to a questionnaire.
+  - questionnaire (reference) mandatory
+
+  // A frequency for how long the conflict should prevent the questionnaire set from being used for
+  - frequency (long) mandatory
+
+//-----------------------------------------------------------------------------
 // QuestionnaireRef: a reference to a questionnaire included in a QuestionnaireSet
 [cards:QuestionnaireRef] > sling:Folder, mix:referenceable, mix:versionable
   // Attributes
@@ -86,6 +109,12 @@
 
   // An emergency contact for the clinic
   - emergencyContact (string)
+
+  // If true, apply the questionnaire's frequency across all clinics for these questionnaires
+  - frequencyIgnoreClinic (boolean)
+
+  // Any forms which should prevent this questionnaire set from being created if present
+  + * (cards:QuestionnaireConflict) = cards:QuestionnaireConflict
 
   // Children
 
