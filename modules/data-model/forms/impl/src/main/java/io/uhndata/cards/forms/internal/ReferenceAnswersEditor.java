@@ -136,7 +136,7 @@ public class ReferenceAnswersEditor extends AnswersEditor
 
                     NodeBuilder answer = entry.getValue();
                     Type<?> resultType = getAnswerType(question);
-                    Object result = getAnswer(form, referencedQuestion);
+                    List<Object> result = getAnswer(form, referencedQuestion);
 
                     if (result == null) {
                         answer.removeProperty(FormUtils.VALUE_PROPERTY);
@@ -145,14 +145,15 @@ public class ReferenceAnswersEditor extends AnswersEditor
                         // The implementation can extract the right type from the type object
                         @SuppressWarnings("unchecked")
                         Type<Object> untypedResultType =
-                            (Type<Object>) (result instanceof List ? resultType.getArrayType() : resultType);
-                        answer.setProperty(FormUtils.VALUE_PROPERTY, result, untypedResultType);
+                            (Type<Object>) (result.get(0) instanceof List ? resultType.getArrayType() : resultType);
+                        answer.setProperty(FormUtils.VALUE_PROPERTY, result.get(0), untypedResultType);
+                        answer.setProperty("copiedFrom", result.get(1));
                     }
                 });
         }
     }
 
-    private Object getAnswer(NodeState form, String questionPath)
+    private List<Object> getAnswer(NodeState form, String questionPath)
     {
         Node subject = this.formUtils.getSubject(form);
         try {
@@ -160,9 +161,10 @@ public class ReferenceAnswersEditor extends AnswersEditor
                 this.formUtils.findAllSubjectRelatedAnswers(subject, this.serviceSession.getNode(questionPath),
                     EnumSet.allOf(FormUtils.SearchType.class));
             if (!answers.isEmpty()) {
-                Object value = this.formUtils.getValue(answers.iterator().next());
+                Node answer = answers.iterator().next();
+                Object value = this.formUtils.getValue(answer);
                 if (value != null) {
-                    return serializeValue(value);
+                    return Arrays.asList(serializeValue(value), answer.getPath());
                 }
             }
         } catch (RepositoryException e) {
