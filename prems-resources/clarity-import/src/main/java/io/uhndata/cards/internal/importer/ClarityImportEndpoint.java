@@ -21,7 +21,6 @@ package io.uhndata.cards.internal.importer;
 import java.io.IOException;
 import java.util.Locale;
 
-import javax.jcr.Node;
 import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 import javax.servlet.Servlet;
@@ -45,7 +44,7 @@ public class ClarityImportEndpoint extends SlingSafeMethodsServlet
 {
     private static final long serialVersionUID = -2727980234215527292L;
 
-    private static final String MAPPING_CONFIG = "/proms/mapping";
+    private static final String MAPPING_CONFIG = "/prems/mapping";
 
     @Reference
     private volatile ResourceResolverFactory resolverFactory;
@@ -67,7 +66,7 @@ public class ClarityImportEndpoint extends SlingSafeMethodsServlet
         // Load configuration from environment variables
         final Runnable importJob =
             new ClarityImportTask(this.resolverFactory,
-                this.rrp.getThreadResourceResolver().getResource(MAPPING_CONFIG).adaptTo(Node.class));
+                this.rrp.getThreadResourceResolver().getResource(MAPPING_CONFIG));
         final Thread thread = new Thread(importJob);
         thread.start();
         writeSuccess(response);

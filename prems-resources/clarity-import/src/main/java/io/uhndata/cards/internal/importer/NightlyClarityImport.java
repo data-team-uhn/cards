@@ -21,8 +21,6 @@ package io.uhndata.cards.internal.importer;
 
 import java.util.List;
 
-import javax.jcr.Node;
-
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.commons.scheduler.ScheduleOptions;
 import org.apache.sling.commons.scheduler.Scheduler;
@@ -44,7 +42,7 @@ public class NightlyClarityImport
 
     private static final String SCHEDULER_JOB_PREFIX = "NightlyClarityImport-";
 
-    private static final String MAPPING_CONFIG = "/proms/mapping";
+    private static final String MAPPING_CONFIG = "/prems/mapping";
 
     /** Provides access to resources. */
     @Reference
@@ -75,7 +73,7 @@ public class NightlyClarityImport
         final Runnable importJob;
         importJob =
             new ClarityImportTask(this.resolverFactory,
-                this.rrp.getThreadResourceResolver().getResource(MAPPING_CONFIG).adaptTo(Node.class));
+                this.rrp.getThreadResourceResolver().getResource(MAPPING_CONFIG));
         try {
             if (importJob != null) {
                 this.scheduler.schedule(importJob, options);

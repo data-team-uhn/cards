@@ -22,7 +22,7 @@
 
   <parent>
     <groupId>io.uhndata.cards</groupId>
-    <artifactId>cards-modules</artifactId>
+    <artifactId>prems-resources</artifactId>
     <version>0.9-SNAPSHOT</version>
   </parent>
 
@@ -48,6 +48,8 @@
             <Sling-Initial-Content>
               SLING-INF/content/mapping.xml;path:=/prems/mapping;overwrite:=true,
             </Sling-Initial-Content>
+            <!-- This is required to let the SQLDriver class actually be accessible from this module -->
+            <DynamicImport-Package>*</DynamicImport-Package>
           </instructions>
         </configuration>
       </plugin>
@@ -123,6 +125,11 @@
     <dependency>
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.service.metatype.annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.microsoft.sqlserver</groupId>
+      <artifactId>mssql-jdbc</artifactId>
+      <version>11.2.1.jre11</version>
     </dependency>
   </dependencies>
 </project>

@@ -17,7 +17,7 @@
 //  under the License.
 //
 
-<sling = 'http://sling.apache.org/jcr/sling/1.0'>
+<sling = 'http://sling.apache.org/jcr/sling/1.Bac0'>
 <cards = 'https://cards.uhndata.io/'>
 
 //-----------------------------------------------------------------------------
@@ -26,9 +26,14 @@
   // Attributes:
   query
 
-  - name (STRING) mandatory
+  - questionnaire (PATH) mandatory
 
-  - subjectType (REFERENCE) mandatory
+  // We can't determine the subject type from the questionnaire alone (questionnaries can have more than one subject type)
+  // so we make it explicit here
+  - subjectType (PATH) mandatory
+
+  // An optional string letting the importer know what column to use for the subject identifier.
+  - subjectIDColumn (STRING)
 
   // Properties:
   // Hardcode the resource type
