@@ -17,17 +17,21 @@
 package io.uhndata.cards.forms.internal;
 
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
-import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.version.VersionManager;
 
 import org.apache.sling.api.resource.LoginException;
+import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.observation.ResourceChange;
@@ -39,8 +43,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.forms.api.FormUtils;
-import io.uhndata.cards.utils.ThreadResourceResolverProvider;
+import io.uhndata.cards.forms.api.QuestionnaireUtils;
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
+/**
+ * Change listener looking for modified forms whose answers have references in others. Initially, when the form is
+ * changed, it goes through all the answers which belong to it and checks whether the answer has other references. If
+ * so - check if these values match. In such a case value of the property "value" is changed to the one as a source
+ * answer.
+ *
+ * @version $Id$
+ */
 @Component(immediate = true, property = {
         ResourceChangeListener.PATHS + "=/Forms",
         ResourceChangeListener.CHANGES + "=CHANGED"
@@ -60,6 +73,9 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
 
     @Reference
     private FormUtils formUtils;
+
+    @Reference
+    private QuestionnaireUtils questionnaireUtils;
 
     @Override
     public void onChange(@NotNull List<ResourceChange> changes)
@@ -89,9 +105,15 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
             if (!this.formUtils.isForm(form)) {
                 return;
             }
-            this.rrp.push(localResolver);
-            NodeIterator children = form.getNodes();
-            checkAndUpdateAnswersValues(children);
+            try {
+                this.rrp.push(localResolver);
+                NodeIterator children = form.getNodes();
+                checkAndUpdateAnswersValues(children, localResolver, session);
+            } catch (RepositoryException e) {
+                LOGGER.error(e.getMessage(), e);
+            } finally {
+                this.rrp.pop();
+            }
 
         } catch (final LoginException e) {
             LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
@@ -99,27 +121,97 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
             LOGGER.error(e.getMessage(), e);
         }
     }
-    private void checkAndUpdateAnswersValues(NodeIterator nodeIterator) throws RepositoryException
+
+    /**
+     * For every form change it goes through all answers composing the changed form and update values of all the
+     * reference answers according to changes in source answer.
+     *
+     * @param nodeIterator  an iterator of nodes of which consist the changed form of
+     * @param serviceResolver a ResourceResolver that can be used for querying the JC
+     * @param session a service session providing access to the repository
+     */
+    private void checkAndUpdateAnswersValues(final NodeIterator nodeIterator, final ResourceResolver serviceResolver,
+                                             final Session session) throws RepositoryException
     {
+        final VersionManager versionManager = session.getWorkspace().getVersionManager();
+        Set<String> checkoutPaths = new HashSet<>();
         while (nodeIterator.hasNext()) {
-            Node node = nodeIterator.nextNode();
+            final Node node = nodeIterator.nextNode();
             if (node.isNodeType("cards:AnswerSection")) {
-                checkAndUpdateAnswersValues(node.getNodes());
+                checkAndUpdateAnswersValues(node.getNodes(), serviceResolver, session);
             } else if (node.hasProperty("sling:resourceSuperType")
                         && "cards/Answer".equals(node.getProperty("sling:resourceSuperType").getString())) {
-                PropertyIterator references = node.getReferences();
-                while (references.hasNext()) {
-                    Node referenceAnswer = references.nextProperty().getParent();
-                    if (referenceAnswer.hasProperty(VALUE) && node.hasProperty(VALUE)) {
-                        Property sourceAnswerValue = node.getProperty(VALUE);
-                        Property referenceAnswerValue = referenceAnswer.getProperty(VALUE);
-                        if (!referenceAnswerValue.getString().equals(referenceAnswerValue.getString())) {
-                            referenceAnswer.setProperty(VALUE, sourceAnswerValue.getValue());
+                final Iterator<Resource> resourceIteratorAnswer = serviceResolver.findResources(
+                        "SELECT a.* FROM [cards:Answer] AS a WHERE a.copiedFrom = '" + node.getPath() + "'",
+                        "JCR-SQL2");
+                while (resourceIteratorAnswer.hasNext()) {
+                    final Resource referenceAnswer = resourceIteratorAnswer.next();
+
+                    if (referenceAnswer.getValueMap().containsKey(VALUE) && node.hasProperty(VALUE)) {
+                        final Property sourceAnswerValue = node.getProperty(VALUE);
+                        final Object referenceAnswerValue = referenceAnswer.getValueMap().get(VALUE);
+                        if (!referenceAnswerValue.toString().equals(sourceAnswerValue.getString())) {
+                            final String referenceFormPath = getParentFormPath(referenceAnswer);
+                            versionManager.checkout(referenceFormPath);
+                            checkoutPaths.add(referenceFormPath);
+                            final Node formNode = session.getNode(referenceFormPath);
+                            Node changingAnswer = this.formUtils.getAnswer(formNode,
+                                    getQuestionNode(formNode, referenceAnswer, session, serviceResolver));
+                            changingAnswer.setProperty(VALUE, sourceAnswerValue.getValue());
                         }
                     }
                 }
             }
         }
+        session.save();
+        for (String path : checkoutPaths) {
+            versionManager.checkin(path);
+        }
     }
 
+    /**
+     * Get the node of question for given reference answer and the form which it belongs to.
+     *
+     * @param formNode form which contains reference answer
+     * @param answer answer for which the question is sought
+     * @param session a service session providing access to the repository
+     * @param serviceResolver a ResourceResolver that can be used for querying the JCR
+     * @return node of question to reference answer
+     * @throws RepositoryException if the form data could not be accessed
+     */
+    private Node getQuestionNode(final Node formNode, final Resource answer, final Session session,
+                                 final ResourceResolver serviceResolver) throws RepositoryException
+    {
+        String questionnaireUUID = formNode.getProperty("questionnaire").getString();
+        final Iterator<Resource> resourceIteratorQuestionnaire = serviceResolver.findResources(
+                "SELECT q.* FROM [cards:Questionnaire] AS q WHERE q.'jcr:uuid' = '" + questionnaireUUID + "'",
+                "JCR-SQL2");
+
+        String questionUUID = answer.getValueMap().get("question").toString();
+        final Iterator<Resource> resourceIteratorQuestion = serviceResolver.findResources(
+                "SELECT q.* FROM [cards:Question] AS q WHERE q.'jcr:uuid' = '" + questionUUID + "'",
+                "JCR-SQL2");
+        if (!resourceIteratorQuestionnaire.hasNext() || !resourceIteratorQuestion.hasNext()) {
+            return null;
+        }
+        String questionnairePath = resourceIteratorQuestionnaire.next().getPath();
+        Node questionnaire = session.getNode(questionnairePath);
+        String questionName = resourceIteratorQuestion.next().getPath().substring(questionnairePath.length() + 1);
+        return this.questionnaireUtils.getQuestion(questionnaire, questionName);
+    }
+
+    /**
+     * Get path of parent form which consist of the given node.
+     *
+     * @param child node for which the parent form is sought
+     * @return string of path the parent form
+     */
+    private String getParentFormPath(Resource child)
+    {
+        Resource parent = child.getParent();
+        if (!parent.isResourceType("cards/Form")) {
+            return getParentFormPath(parent);
+        }
+        return parent.getPath();
+    }
 }
