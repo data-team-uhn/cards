@@ -38,6 +38,7 @@ argparser.add_argument('--config_replicas', help='Number of MongoDB cluster conf
 argparser.add_argument('--custom_env_file', help='Enable a custom file with environment variables')
 argparser.add_argument('--cards_project', help='The CARDS project to deploy (eg. cards4proms, cards4lfs, etc...')
 argparser.add_argument('--demo', help='Enable the Demo Banner, Upgrade Marker Flag, and Demo Forms', action='store_true')
+argparser.add_argument('--demo_banner', help='Enable only the Demo Banner', action='store_true')
 argparser.add_argument('--dev_docker_image', help='Indicate that the CARDS Docker image being used was built for development, not production.', action='store_true')
 argparser.add_argument('--composum', help='Enable Composum for the CARDS admin account', action='store_true')
 argparser.add_argument('--enable_backup_server', help='Add a cards/backup_recorder service to the cluster', action='store_true')
@@ -452,6 +453,9 @@ if args.composum:
 
 if args.demo:
   yaml_obj['services']['cardsinitial']['environment'].append("DEMO=true")
+
+if args.demo_banner:
+  yaml_obj['services']['cardsinitial']['environment'].append("DEMO_BANNER=true")
 
 if args.saml:
   yaml_obj['services']['cardsinitial']['environment'].append("SAML_AUTH_ENABLED=true")

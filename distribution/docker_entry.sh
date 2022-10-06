@@ -63,6 +63,11 @@ then
   featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-modules-demo-banner/${PROJECT_VERSION}/slingosgifeature,"
   featureFlagString="${featureFlagString}mvn:io.uhndata.cards/cards-modules-upgrade-marker/${PROJECT_VERSION}/slingosgifeature,"
   featureFlagString="${featureFlagString}mvn:io.uhndata.cards/cards-dataentry/${PROJECT_VERSION}/slingosgifeature/forms_demo"
+else
+  if [ ! -z $DEMO_BANNER ]
+  then
+    featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-modules-demo-banner/${PROJECT_VERSION}/slingosgifeature"
+  fi
 fi
 
 if [ ! -z $ENABLE_TEST_FEATURES ]
