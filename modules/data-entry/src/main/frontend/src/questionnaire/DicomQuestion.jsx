@@ -52,17 +52,17 @@ import DICOM_TAG_DICT from "../dicom/dicomDataDictionary";
 
 const useStyles = makeStyles(theme => ({
   advancedHelp : {
-	background: theme.palette.action.hover,
-	"&.Mui-expanded" : {
-	  margin: "0 !important",
-	},
-	"& .MuiAccordionSummary-root" : {
-	  flexDirection: "row-reverse",
-	},
-	"& .MuiAccordionDetails-root" : {
-	  background: "transparent",
-	  padding: theme.spacing(0, 3, 2),
-	},
+    background: theme.palette.action.hover,
+    "&.Mui-expanded" : {
+      margin: "0 !important",
+    },
+    "& .MuiAccordionSummary-root" : {
+      flexDirection: "row-reverse",
+    },
+    "& .MuiAccordionDetails-root" : {
+      background: "transparent",
+      padding: theme.spacing(0, 3, 2),
+    },
   }
 }));
 

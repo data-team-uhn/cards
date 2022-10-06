@@ -67,7 +67,7 @@ function AdminScreen(props) {
         action={action}
       />
       <CardContent>
-	  { children }
+        { children }
       </CardContent>
     </Card>
   );

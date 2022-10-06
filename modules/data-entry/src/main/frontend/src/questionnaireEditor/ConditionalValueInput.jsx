@@ -53,7 +53,7 @@ const useStyles = makeStyles(theme => ({
   variableDropdown: {
     "& > .MuiInputLabel-root" : {
       maxWidth: `calc(100% - ${theme.spacing(3)})`,
-	},
+    },
   },
   variableOption: {
     whiteSpace: "normal",
