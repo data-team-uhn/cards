@@ -99,10 +99,10 @@ function Header (props) {
         <Toolbar variant="dense" className={classes.toolbar}>
           <div className={classes.titleLine}>
             <img src={document.querySelector('meta[name="logoLight"]').content} alt="logo" className={classes.logo} />
-            { title &&
-              <Typography variant="overline" color="textPrimary">{ title }</Typography>
-            }
           </div>
+          { title &&
+            <Typography variant="overline" color="textPrimary">{ title }</Typography>
+          }
           <Breadcrumbs separator = "·">
             {greeting && <span className={classes.greeting}>{ greeting }</span>}
             <Link href="/system/sling/logout" underline="hover" onClick={() => {event.preventDefault(); window.location = "/system/sling/logout?resource=" + encodeURIComponent(window.location.pathname);}}>Sign out</Link>
