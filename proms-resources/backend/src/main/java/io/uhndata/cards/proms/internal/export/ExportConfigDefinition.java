@@ -33,7 +33,7 @@ public @interface ExportConfigDefinition
     String EXPORTING_TIME = "00:00:00";
 
     /** The local path where you want to save file with exported surveys. */
-    String SAVE_PATH = "";
+    String SAVE_PATH = ".";
 
     @AttributeDefinition(name = "Name", description = "Configuration name")
     String name();
