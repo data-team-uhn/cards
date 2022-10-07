@@ -78,7 +78,7 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
     private QuestionnaireUtils questionnaireUtils;
 
     @Override
-    public void onChange(@NotNull List<ResourceChange> changes)
+    public void onChange(List<ResourceChange> changes)
     {
         changes.forEach(this::handleEvent);
     }
