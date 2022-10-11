@@ -78,6 +78,8 @@ public class ExportEndpoint extends SlingSafeMethodsServlet
                 config.questionnaires_to_be_exported(), config.save_path());
         final Thread thread = new Thread(exportJob);
         thread.start();
+        response.setStatus(200);
+        out.write("CSV export started");
     }
 
 }
