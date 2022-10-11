@@ -62,12 +62,20 @@ public class ExportTask implements Runnable
     public void run()
     {
         final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        final String modifiedAfterDate = simpleDateFormat.format(getExportStartDate());
+        final String modifiedAfterDate = simpleDateFormat.format(getPastDate(this.frequencyInDays + 1));
         final String modifiedBeforeDate = simpleDateFormat.format(new Date());
+        final String timePeriod;
+        if (this.frequencyInDays == 1) {
+            timePeriod = simpleDateFormat.format(getPastDate(1));
+        } else {
+            final String startModificationDate = simpleDateFormat.format(getPastDate(this.frequencyInDays));
+            final String endModificationDate = simpleDateFormat.format(getPastDate(1));
+            timePeriod = startModificationDate + "_" + endModificationDate;
+        }
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
             for (String questionnaire : this.questionnairesToBeExported) {
                 final File csvFile = new File(this.savePath + "/ExportedForms_" + questionnaire + "_"
-                        + modifiedAfterDate + "_" + modifiedBeforeDate + ".csv");
+                        + timePeriod + ".csv");
                 try (FileWriter writer = new FileWriter(csvFile)) {
                     final String csvPath = String.format(
                             "/Questionnaires/" + questionnaire + ".data.dataFilter:modifiedAfter=%s.dataFilter:"
@@ -83,10 +91,10 @@ public class ExportTask implements Runnable
         }
     }
 
-    private Date getExportStartDate()
+    private Date getPastDate(int numberOfDaysAgo)
     {
         Calendar date = new GregorianCalendar();
-        date.add(Calendar.DAY_OF_MONTH, (-(this.frequencyInDays + 1)));
+        date.add(Calendar.DAY_OF_MONTH, -numberOfDaysAgo);
         return date.getTime();
     }
 }
