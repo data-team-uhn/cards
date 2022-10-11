@@ -25,14 +25,13 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
         description = "Configuration for the Surveys csv exporter")
 public @interface ExportConfigDefinition
 {
-    /** How often should the task be invoked. */
+    /** Default value of how often the task should be invoked. */
     int FREQUENCY_IN_DAYS = 1;
 
-    /** At which time should the task be invoked. */
-
+    /** Default value of the time which the task should be invoked. */
     String EXPORTING_TIME = "00:00:00";
 
-    /** The local path where you want to save file with exported surveys. */
+    /** Default value of the local path where exported survey CSV files should be saved to. */
     String SAVE_PATH = ".";
 
     @AttributeDefinition(name = "Name", description = "Configuration name")
@@ -40,6 +39,7 @@ public @interface ExportConfigDefinition
 
     @AttributeDefinition(name = "Frequency in days", description = "Time interval (days) between task invocations")
     int frequency_in_days() default FREQUENCY_IN_DAYS;
+
     @AttributeDefinition(name = "Exporting time", description = "Time of task invocations (in format hh:mm:ss)")
     String exporting_time() default EXPORTING_TIME;
 
