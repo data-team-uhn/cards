@@ -62,15 +62,14 @@ public class ExportTask implements Runnable
     public void run()
     {
         final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        final String modifiedAfterDate = simpleDateFormat.format(getPastDate(this.frequencyInDays + 1));
+        final String modifiedAfterDate = simpleDateFormat.format(getPastDate(this.frequencyInDays));
         final String modifiedBeforeDate = simpleDateFormat.format(new Date());
         final String timePeriod;
         if (this.frequencyInDays == 1) {
             timePeriod = simpleDateFormat.format(getPastDate(1));
         } else {
-            final String startModificationDate = simpleDateFormat.format(getPastDate(this.frequencyInDays));
             final String endModificationDate = simpleDateFormat.format(getPastDate(1));
-            timePeriod = startModificationDate + "_" + endModificationDate;
+            timePeriod = modifiedAfterDate + "_" + endModificationDate;
         }
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
             for (String questionnaire : this.questionnairesToBeExported) {
