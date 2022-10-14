@@ -37,7 +37,6 @@ public class ScheduledExport
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ScheduledExport.class);
     private static final String SCHEDULER_JOB_PREFIX = "ScheduledExport-CSV-";
-    private static final String SPACE = " ";
 
     @Reference
     private ResourceResolverFactory resolverFactory;
@@ -56,13 +55,7 @@ public class ScheduledExport
             // If the scheduler is not bound, it's OK to do nothing now, the method will be called during activation.
             return;
         }
-        final String exportingTime = newConfig.getConfig().exporting_time();
-        final String[] time = exportingTime.split(":");
-        final int hour = Integer.parseInt(time[0].trim());
-        final int min = Integer.parseInt(time[1].trim());
-        final int second = Integer.parseInt(time[2].trim());
-        final String schedule = second + SPACE + min + SPACE + hour + " */" + newConfig.getConfig().frequency_in_days()
-                + " * ?";
+        final String schedule = newConfig.getConfig().export_schedule();
         final ScheduleOptions options = this.scheduler.EXPR(schedule);
         options.name(SCHEDULER_JOB_PREFIX + newConfig.getConfig().name());
         options.canRunConcurrently(true);
@@ -70,8 +63,7 @@ public class ScheduledExport
         final Runnable csvExportJob;
         csvExportJob =
                 new ExportTask(this.resolverFactory, newConfig.getConfig().frequency_in_days(),
-                        newConfig.getConfig().questionnaires_to_be_exported(),
-                        newConfig.getConfig().save_path());
+                        newConfig.getConfig().questionnaires_to_be_exported(), newConfig.getConfig().save_path());
         try {
             this.scheduler.schedule(csvExportJob, options);
         } catch (final Exception e) {
