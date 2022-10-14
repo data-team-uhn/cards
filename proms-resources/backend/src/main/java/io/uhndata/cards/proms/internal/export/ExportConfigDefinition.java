@@ -28,8 +28,8 @@ public @interface ExportConfigDefinition
     /** Default value of how often the task should be invoked. */
     int FREQUENCY_IN_DAYS = 1;
 
-    /** Default value of the time which the task should be invoked. */
-    String EXPORTING_TIME = "00:00:00";
+    /** Cron-readable export schedule. */
+    String NIGHTLY_EXPORT_SCHEDULE = "0 0 0 * * ? *";
 
     /** Default value of the local path where exported survey CSV files should be saved to. */
     String SAVE_PATH = ".";
@@ -40,8 +40,8 @@ public @interface ExportConfigDefinition
     @AttributeDefinition(name = "Frequency in days", description = "Time interval (days) between task invocations")
     int frequency_in_days() default FREQUENCY_IN_DAYS;
 
-    @AttributeDefinition(name = "Exporting time", description = "Time of task invocations (in format hh:mm:ss)")
-    String exporting_time() default EXPORTING_TIME;
+    @AttributeDefinition(name = "Export schedule", description = "Cron-readable export schedule")
+    String export_schedule() default NIGHTLY_EXPORT_SCHEDULE;
 
     @AttributeDefinition(name = "Questionnaires to be exported",
             description = "List of questionnaires specified to be exported periodically")
