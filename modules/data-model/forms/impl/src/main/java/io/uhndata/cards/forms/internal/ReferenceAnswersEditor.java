@@ -136,7 +136,7 @@ public class ReferenceAnswersEditor extends AnswersEditor
 
                     NodeBuilder answer = entry.getValue();
                     Type<?> resultType = getAnswerType(question);
-                    List<Object> result = getAnswer(form, referencedQuestion);
+                    ReferenceAnswer result = getAnswer(form, referencedQuestion);
 
                     if (result == null) {
                         answer.removeProperty(FormUtils.VALUE_PROPERTY);
@@ -145,15 +145,15 @@ public class ReferenceAnswersEditor extends AnswersEditor
                         // The implementation can extract the right type from the type object
                         @SuppressWarnings("unchecked")
                         Type<Object> untypedResultType =
-                            (Type<Object>) (result.get(0) instanceof List ? resultType.getArrayType() : resultType);
-                        answer.setProperty(FormUtils.VALUE_PROPERTY, result.get(0), untypedResultType);
-                        answer.setProperty("copiedFrom", result.get(1));
+                            (Type<Object>) (result.getValue() instanceof List ? resultType.getArrayType() : resultType);
+                        answer.setProperty(FormUtils.VALUE_PROPERTY, result.getValue(), untypedResultType);
+                        answer.setProperty("copiedFrom", result.getPath());
                     }
                 });
         }
     }
 
-    private List<Object> getAnswer(NodeState form, String questionPath)
+    private ReferenceAnswer getAnswer(NodeState form, String questionPath)
     {
         Node subject = this.formUtils.getSubject(form);
         try {
@@ -164,7 +164,7 @@ public class ReferenceAnswersEditor extends AnswersEditor
                 Node answer = answers.iterator().next();
                 Object value = this.formUtils.getValue(answer);
                 if (value != null) {
-                    return Arrays.asList(serializeValue(value), answer.getPath());
+                    return new ReferenceAnswer(serializeValue(value), answer.getPath());
                 }
             }
         } catch (RepositoryException e) {
@@ -213,6 +213,28 @@ public class ReferenceAnswersEditor extends AnswersEditor
                 }
             }
             return false;
+        }
+    }
+
+    private static final class ReferenceAnswer
+    {
+        private final Object value;
+        private final String path;
+
+        ReferenceAnswer(Object value, String path)
+        {
+            this.value = value;
+            this.path = path;
+        }
+
+        public Object getValue()
+        {
+            return this.value;
+        }
+
+        public String getPath()
+        {
+            return this.path;
         }
     }
 }
