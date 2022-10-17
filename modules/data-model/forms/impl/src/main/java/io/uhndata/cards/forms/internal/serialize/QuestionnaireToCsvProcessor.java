@@ -94,9 +94,8 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
     {
         try {
             final StringBuilder output = new StringBuilder();
-            final String extension = resolutionPathInfo.substring(resolutionPathInfo.lastIndexOf(".") + 1);
             CSVFormat format = CSVFormat.DEFAULT;
-            if ("tsv".equals(extension)) {
+            if (resolutionPathInfo.endsWith(".tsv")) {
                 format = CSVFormat.TDF;
             }
             final CSVPrinter csvPrinter = new CSVPrinter(output, format);
