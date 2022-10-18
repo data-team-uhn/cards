@@ -20,14 +20,17 @@
 
 import os
 import sys
+import math
 import yaml
 import json
+import psutil
 import shutil
 import hashlib
 import argparse
 from OpenSSL import crypto, SSL
 from CardsDockerTagProperty import CARDS_DOCKER_TAG
 from CloudIAMdemoKeystoreSha256Property import CLOUD_IAM_DEMO_KEYSTORE_SHA256
+from ServerMemorySplitConfig import MEMORY_SPLIT_CARDS_JAVA, MEMORY_SPLIT_MONGO_SHARDS_REPLICAS
 
 MINIO_DOCKER_RELEASE_TAG = "RELEASE.2022-09-17T00-09-45Z"
 
@@ -245,6 +248,34 @@ def getCardsApplicationName(project_name):
   # If all else fails, use the generic CARDS name
   return "CARDS"
 
+def getWiredTigerCacheSizeGB():
+  total_system_memory_bytes = psutil.virtual_memory().total
+  total_system_memory_gb = total_system_memory_bytes / (1024 * 1024 * 1024)
+
+  # Total memory given to the complete set of MongoDB shards and replicas:
+  total_mongo_shard_replica_memory_gb = MEMORY_SPLIT_MONGO_SHARDS_REPLICAS * total_system_memory_gb
+
+  # Memory given to each MongoDB shard / replica
+  memory_per_shard_replica_gb = total_mongo_shard_replica_memory_gb / (MONGO_SHARD_COUNT * MONGO_REPLICA_COUNT)
+
+  # Floor to 2 decimal places
+  memory_per_shard_replica_gb = math.floor(100 * memory_per_shard_replica_gb) / 100.0
+
+  # The value of WiredTigerCacheSizeGB must range between 0.25GB and 10000GB as per MongoDB documentation
+  if (memory_per_shard_replica_gb < 0.25) or (memory_per_shard_replica_gb > 10000):
+    raise Exception("WiredTigerCacheSizeGB cannot be less than 0.25 or greater than 10000")
+
+  return memory_per_shard_replica_gb
+
+def getCardsJavaMemoryLimitMB():
+  total_system_memory_bytes = psutil.virtual_memory().total
+  total_system_memory_mb = total_system_memory_bytes / (1024 * 1024)
+
+  cards_java_memory_limit_mb = MEMORY_SPLIT_CARDS_JAVA * total_system_memory_mb
+
+  # Floor down to the nearest integer MB
+  return math.floor(cards_java_memory_limit_mb)
+
 OUTPUT_FILENAME = "docker-compose.yml"
 
 yaml_obj = {}
@@ -299,6 +330,8 @@ if not (args.oak_filesystem or args.external_mongo):
 
       yaml_obj['services'][service_name]['build'] = {}
       yaml_obj['services'][service_name]['build']['context'] = "shard{}".format(shard_index)
+
+      yaml_obj['services'][service_name]['environment'] = ["WIRED_TIGER_CACHE_SIZE_GB={}".format(getWiredTigerCacheSizeGB())]
 
       yaml_obj['services'][service_name]['expose'] = ['27017']
 
@@ -439,6 +472,9 @@ if args.oak_filesystem:
 
 if not (args.oak_filesystem or args.external_mongo):
   yaml_obj['services']['cardsinitial']['depends_on'] = ['router']
+  # We must also limit the memory given to the CARDS Java process as the
+  # internal MongoDB setup will also use a significant amount of memory.
+  yaml_obj['services']['cardsinitial']['environment'].append("CARDS_JAVA_MEMORY_LIMIT_MB={}".format(getCardsJavaMemoryLimitMB()))
 
 if args.sling_admin_port:
   yaml_obj['services']['cardsinitial']['ports'] = ["127.0.0.1:{}:8080".format(args.sling_admin_port)]

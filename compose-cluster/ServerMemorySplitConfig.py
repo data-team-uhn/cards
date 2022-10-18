@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,7 +18,13 @@
 # specific language governing permissions and limitations
 # under the License.
 
-FROM mongo:4.2-bionic
+# Let us allocate memory as follows:
 
-COPY mongo-shard.conf /etc/mongo.conf
-ENTRYPOINT mongod --config /etc/mongo.conf --wiredTigerCacheSizeGB $WIRED_TIGER_CACHE_SIZE_GB
+# 25% for the CARDS Java process
+MEMORY_SPLIT_CARDS_JAVA = 0.25
+
+# 60% for MongoDB shards and replicas
+MEMORY_SPLIT_MONGO_SHARDS_REPLICAS = 0.60
+
+# 15% for other processes
+MEMORY_SPLIT_OTHER_PROCESSES = 0.15
