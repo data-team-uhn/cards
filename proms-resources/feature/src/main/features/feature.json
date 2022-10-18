@@ -73,7 +73,7 @@
         "io.uhndata.cards.proms-permissions:UnsubmittedFormsRestriction=[sling-readall]",
         "io.uhndata.cards.proms-backend:TorchImporter=[proms-import-backend]",
         "io.uhndata.cards.proms-backend:MetricLogger=[cards-metrics]",
-        "io.uhndata.cards.proms-backend:CsvExport=[sling-readall]"
+        "io.uhndata.cards.proms-backend:CsvExport=[csv-export]"
       ]
     },
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~InitialNotificationsTask":{
