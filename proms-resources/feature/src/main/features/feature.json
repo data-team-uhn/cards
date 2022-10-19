@@ -64,7 +64,7 @@
         // Trusted users can only access forms submitted by their patients, and delete forms that they created
         "create group TrustedUsers \n\n set ACL for TrustedUsers \n   deny rep:write on /Subjects \n   allow jcr:removeChildNodes on /Forms \n     deny jcr:removeNode on /Forms restriction(rep:ntNames,cards:Form,cards:Subject) \n     allow jcr:removeNode on /Forms restriction(cards:createdBy) \n    deny jcr:all on /Forms restriction(cards:unsubmittedForms) \n end ",
         // Exporting forms in csv format
-        "create service user csv-export \n set ACL on /Questionnaires,/Forms \n   allow jcr:read for csv-export \n end"
+        "create service user csv-export \n set ACL on /Questionnaires,/Forms,/Subjects,/SubjectTypes \n   allow jcr:read for csv-export \n end"
       ]
     },
     "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~proms":{
