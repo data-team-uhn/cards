@@ -41,7 +41,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import PreviewIcon from '@mui/icons-material/FindInPage';
 import DeleteButton from "../dataHomepage/DeleteButton";
 import QuestionnaireStyle from "./QuestionnaireStyle";
-import { blue, blueGrey, cyan, deepPurple, indigo, orange } from '@mui/material/colors';
+import { blue, blueGrey, cyan, deepPurple, indigo, orange, teal } from '@mui/material/colors';
 import { ENTRY_TYPES } from "./FormEntry";
 import Fields from "../questionnaireEditor/Fields";
 import LabeledField from "../questionnaireEditor/LabeledField";
@@ -368,6 +368,24 @@ Information.defaultProps = {
   model: "Information.json"
 };
 
+// Details about an id mapping block displayed in a questionnaire
+let IdMapping = (props) => <QuestionnaireEntry {...props} />;
+
+IdMapping.propTypes = {
+  onActionDone: PropTypes.func,
+  data: PropTypes.object.isRequired,
+  type: PropTypes.string.isRequired,
+  avatar: PropTypes.string,
+  avatarColor: PropTypes.string,
+  model: PropTypes.string.isRequired
+};
+
+IdMapping.defaultProps = {
+  type: "IdMapping",
+  avatar: "link",
+  avatarColor: teal[700],
+  model: "IdMapping.json"
+};
 
 // Details about a particular question in a questionnaire.
 // Not to be confused with the public Question component responsible for rendering questions inside a Form.

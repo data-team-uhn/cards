@@ -1,5 +1,14 @@
 [
   {
+    "//CHILDREN" : {
+      "IdMappings" : {
+         "entries" : {
+           "IdMapping" : "IdMapping.json"
+         },
+         "max" : 1,
+         "defaultOrder" : 1
+      }
+    },
     "text": "string",
     "description": "markdown",
     "dataType": {

@@ -1,13 +1,20 @@
 [
   {
     "//CHILDREN" : {
+      "IdMappings" : {
+         "entries" : {
+           "IdMapping" : "IdMapping.json"
+         },
+         "max" : 1,
+         "defaultOrder" : 1
+      },
       "Condition" : {
          "entries" : {
            "Conditional" : "Conditional.json",
            "ConditionalGroup" : "ConditionalGroup.json"
          },
          "max" : 1,
-         "defaultOrder" : 1
+         "defaultOrder" : 2
       },
       "Question" : "Question.json",
       "Section" : "Section.json",
