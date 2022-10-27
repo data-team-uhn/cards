@@ -211,6 +211,9 @@ public class ComputedAnswersEditor extends AnswersEditor
                 @SuppressWarnings("unchecked")
                 Type<Object> untypedResultType = (Type<Object>) resultType;
                 answer.setProperty(FormUtils.VALUE_PROPERTY, result, untypedResultType);
+                Set<String> computedFromQuestionPaths =
+                    getQuestionPathsFromNames(this.expressionUtils.getQuestionsNames(question));
+                answer.setProperty("computedFrom", computedFromQuestionPaths, Type.STRINGS);
             }
             // Mark that this question has been updated
             changedQuestions.add(question.getName());
@@ -226,6 +229,23 @@ public class ComputedAnswersEditor extends AnswersEditor
             // Should not happen
             LOGGER.warn("Error calculating computing answer", e);
         }
+    }
+
+    private Set<String> getQuestionPathsFromNames(final Set<String> names)
+    {
+        Set<String> paths = new HashSet<>();
+        Node formNode = getForm();
+        Node questionnaire = getQuestionnaire();
+        try {
+            for (String computedFromQuestionName : names) {
+                Node questionNode = this.questionnaireUtils.getQuestion(questionnaire, computedFromQuestionName);
+                Node changingAnswer = this.formUtils.getAnswer(formNode, questionNode);
+                paths.add(changingAnswer.getPath());
+            }
+        } catch (RepositoryException e) {
+            LOGGER.error("Error getting path of question. " + e.getMessage());
+        }
+        return paths;
     }
 
     private List<String> sortDependencies(final Map<String, Set<String>> computedAnswerDependencies)

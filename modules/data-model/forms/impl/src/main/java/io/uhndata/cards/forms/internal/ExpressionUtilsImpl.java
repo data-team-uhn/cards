@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -114,6 +115,43 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
                 e.getMessage(), e);
         }
         return new ExpressionResult(false, false, null, 0);
+    }
+
+    @Override
+    public Set<String> getQuestionsNames(Node question)
+    {
+        return expressionInputs(getExpressionFromQuestion(question));
+    }
+
+    private Set<String> expressionInputs(final String expression)
+    {
+        String expr = expression;
+
+        Set<String> questionNames = new HashSet<>();
+
+        int start = expr.indexOf(START_MARKER_SINGLE);
+        int end = expr.indexOf(END_MARKER_SINGLE, start);
+
+        while (start > -1 && end > -1) {
+            int defaultStart = expr.indexOf(DEFAULT_MARKER, start);
+            boolean hasDefault = defaultStart > -1 && defaultStart < end;
+
+            String questionName;
+            if (hasDefault) {
+                questionName = expr.substring(start + START_MARKER_SINGLE.length(), defaultStart);
+            } else {
+                questionName = expr.substring(start + START_MARKER_SINGLE.length(), end);
+            }
+
+            questionNames.add(questionName);
+
+            // Remove the start and end tags
+            expr = expr.substring(0, start) + questionName + expr.substring(end + END_MARKER_SINGLE.length());
+
+            start = expr.indexOf(START_MARKER_SINGLE);
+            end = expr.indexOf(END_MARKER_SINGLE, start);
+        }
+        return questionNames;
     }
 
     private ExpressionUtilsImpl.ParsedExpression parseExpressionInputs(final String expression,

@@ -126,4 +126,11 @@ public interface ExpressionUtils
             return this.arguments;
         }
     }
+
+    /**
+     *
+     * @param question the question node
+     * @return list of all the questions names that is used to compute an answer
+     */
+    Set<String> getQuestionsNames(Node question);
 }

@@ -109,7 +109,14 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
             try {
                 this.rrp.push(localResolver);
                 NodeIterator children = form.getNodes();
-                checkAndUpdateAnswersValues(children, session);
+                final VersionManager versionManager = session.getWorkspace().getVersionManager();
+                Set<Node> nodesToBeDeleted = new HashSet<>();
+                Set<String> updatedReferenceAnswersPaths = checkAndUpdateAnswersValues(children, localResolver, session,
+                        versionManager);
+                for (String answerPath : updatedReferenceAnswersPaths) {
+                    nodesToBeDeleted.addAll(searchComputedReferenceAnswers(answerPath, session));
+                }
+                deleteComputedReferenceAnswersValues(nodesToBeDeleted, session, versionManager);
             } catch (RepositoryException e) {
                 LOGGER.error(e.getMessage(), e);
             } finally {
@@ -132,15 +139,16 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
      * @param serviceResolver a ResourceResolver that can be used for querying the JCR
      * @param session a service session providing access to the repository
      */
-    private void checkAndUpdateAnswersValues(final NodeIterator nodeIterator, final Session session)
-        throws RepositoryException
+    private Set<String> checkAndUpdateAnswersValues(final NodeIterator nodeIterator,
+        final ResourceResolver serviceResolver, final Session session, final VersionManager versionManager)
+            throws RepositoryException
     {
-        final VersionManager versionManager = session.getWorkspace().getVersionManager();
+        Set<String> changedReferenceAnswersPaths = new HashSet<>();
         final Set<String> checkoutPaths = new HashSet<>();
         while (nodeIterator.hasNext()) {
             final Node node = nodeIterator.nextNode();
             if (node.isNodeType("cards:AnswerSection")) {
-                checkAndUpdateAnswersValues(node.getNodes(), session);
+                checkAndUpdateAnswersValues(node.getNodes(), serviceResolver, session, versionManager);
             } else if (node.isNodeType("cards:Answer")) {
                 final String answerNodeType = node.getPrimaryNodeType().getName();
                 final String subject = this.formUtils.getSubject(this.formUtils.getForm(node)).getIdentifier();
@@ -192,8 +200,63 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
                 }
                 for (final Node referenceAnswer : answers.values()) {
                     updateAnswer(node, referenceAnswer, versionManager, checkoutPaths);
+                    changedReferenceAnswersPaths.add(referenceAnswer.getPath());
                 }
             }
+        }
+        session.save();
+        for (String path : checkoutPaths) {
+            versionManager.checkin(path);
+        }
+        return changedReferenceAnswersPaths;
+    }
+
+    private Set<Node> searchComputedReferenceAnswers(String computedFromAnswerPath, Session session)
+            throws RepositoryException
+    {
+        final Node formNode = getParentFormNode(session.getNode(computedFromAnswerPath));
+        final NodeIterator children = formNode.getNodes();
+        return searchForComputedReferencesAnswers(children, computedFromAnswerPath);
+    }
+
+    private Set<Node> searchForComputedReferencesAnswers(final NodeIterator nodes,
+                                                         final String changedReferenceAnswerPath)
+            throws RepositoryException
+    {
+        Set<Node> nodesToBeDeleted = new HashSet<>();
+        while (nodes.hasNext()) {
+            final Node node = nodes.nextNode();
+            if (node.isNodeType("cards:AnswerSection")) {
+                nodesToBeDeleted.addAll(
+                        searchForComputedReferencesAnswers(node.getNodes(), changedReferenceAnswerPath));
+                continue;
+            }
+
+            if (!node.hasProperty("computedFrom")) {
+                continue;
+            }
+            Value[] computedFromPropertyValues = node.getProperty("computedFrom").getValues();
+
+            for (Value computedFromPropertyValue : computedFromPropertyValues) {
+                if (!changedReferenceAnswerPath.equals(computedFromPropertyValue.getString())) {
+                    continue;
+                }
+                nodesToBeDeleted.add(node);
+                break;
+            }
+        }
+        return nodesToBeDeleted;
+    }
+
+    private void deleteComputedReferenceAnswersValues(final Set<Node> nodesToBeDeleted, final Session session,
+                                                      final VersionManager versionManager) throws RepositoryException
+    {
+        Set<String> checkoutPaths = new HashSet<>();
+        for (Node node : nodesToBeDeleted) {
+            final String formPath = getParentFormNode(node).getPath();
+            versionManager.checkout(formPath);
+            checkoutPaths.add(formPath);
+            node.remove();
         }
         session.save();
         for (String path : checkoutPaths) {
@@ -283,5 +346,24 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
     private String escape(final String value)
     {
         return value.replace("'", "''");
+    }
+
+    /**
+     * Gets the node of the parent Form for a given descendant node.
+     *
+     * @param child node for which the parent form is sought
+     * @return node of the parent form
+     */
+    private Node getParentFormNode(Node child) throws RepositoryException
+    {
+        Node parent = child.getParent();
+
+        if (parent == null) {
+            return null;
+        }
+        if (!parent.isNodeType("cards:Form")) {
+            return getParentFormNode(parent);
+        }
+        return parent;
     }
 }
