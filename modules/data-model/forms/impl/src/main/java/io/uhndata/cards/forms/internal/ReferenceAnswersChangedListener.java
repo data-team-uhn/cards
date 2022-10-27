@@ -17,6 +17,7 @@
 package io.uhndata.cards.forms.internal;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -28,6 +29,7 @@ import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.Value;
 import javax.jcr.version.VersionManager;
 
 import org.apache.sling.api.resource.LoginException;
@@ -62,6 +64,12 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
     /** Answer's property name. **/
     public static final String VALUE = "value";
     private static final Logger LOGGER = LoggerFactory.getLogger(ReferenceAnswersChangedListener.class);
+
+    /** Computed answers' paths that values need to be changed, with appropriate parent form path. **/
+    private final Map<String, String> toBeDeleted = new HashMap<>();
+
+    /** Set of changed reference answers' paths per form. **/
+    private final Map<Node, Set<String>> changedReferenceAnswers = new HashMap<>();
 
     /** Provides access to resources. */
     @Reference
@@ -107,7 +115,10 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
             try {
                 this.rrp.push(localResolver);
                 NodeIterator children = form.getNodes();
-                checkAndUpdateAnswersValues(children, localResolver, session);
+                final VersionManager versionManager = session.getWorkspace().getVersionManager();
+                checkAndUpdateAnswersValues(children, localResolver, session, versionManager);
+                searchComputedReferenceAnswers();
+                deleteComputedReferenceAnswersValues(session, versionManager);
             } catch (RepositoryException e) {
                 LOGGER.error(e.getMessage(), e);
             } finally {
@@ -131,14 +142,14 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
      * @param session a service session providing access to the repository
      */
     private void checkAndUpdateAnswersValues(final NodeIterator nodeIterator, final ResourceResolver serviceResolver,
-                                             final Session session) throws RepositoryException
+                                             final Session session, final VersionManager versionManager)
+            throws RepositoryException
     {
-        final VersionManager versionManager = session.getWorkspace().getVersionManager();
         Set<String> checkoutPaths = new HashSet<>();
         while (nodeIterator.hasNext()) {
             final Node node = nodeIterator.nextNode();
             if (node.isNodeType("cards:AnswerSection")) {
-                checkAndUpdateAnswersValues(node.getNodes(), serviceResolver, session);
+                checkAndUpdateAnswersValues(node.getNodes(), serviceResolver, session, versionManager);
             } else if (node.hasProperty("sling:resourceSuperType")
                         && "cards/Answer".equals(node.getProperty("sling:resourceSuperType").getString())) {
                 final Iterator<Resource> resourceIteratorReferencingAnswers = serviceResolver.findResources(
@@ -163,9 +174,62 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
                         Node changingAnswer = this.formUtils.getAnswer(formNode,
                                 getQuestionNode(referenceAnswer, session, serviceResolver));
                         changingAnswer.setProperty(VALUE, sourceAnswerValue.getValue());
+                        addChangedReferenceAnswer(formNode, referenceAnswer.getPath());
                     }
                 }
             }
+        }
+        session.save();
+        for (String path : checkoutPaths) {
+            versionManager.checkin(path);
+        }
+    }
+
+    private void searchComputedReferenceAnswers() throws RepositoryException
+    {
+        for (Map.Entry<Node, Set<String>> changedReferenceAnswersPerForm : this.changedReferenceAnswers.entrySet()) {
+            final Node formNode = changedReferenceAnswersPerForm.getKey();
+            final NodeIterator children = formNode.getNodes();
+            final Set<String> changedReferenceAnswersPaths = changedReferenceAnswersPerForm.getValue();
+            searchForComputedReferencesAnswers(formNode, children, changedReferenceAnswersPaths);
+        }
+    }
+
+    private void searchForComputedReferencesAnswers(final Node parentFormNode, final NodeIterator nodes,
+                                                    final Set<String> changedReferenceAnswersPaths)
+            throws RepositoryException
+    {
+        while (nodes.hasNext()) {
+            final Node node = nodes.nextNode();
+            if (node.isNodeType("cards:AnswerSection")) {
+                searchForComputedReferencesAnswers(parentFormNode, node.getNodes(), changedReferenceAnswersPaths);
+            }
+
+            if (!node.hasProperty("computedFrom")) {
+                continue;
+            }
+            Value[] computedFromPropertyValues = node.getProperty("computedFrom").getValues();
+
+            for (Value computedFromPropertyValue : computedFromPropertyValues) {
+                if (changedReferenceAnswersPaths.contains(computedFromPropertyValue.getString())) {
+                    continue;
+                }
+                this.toBeDeleted.put(node.getPath(), parentFormNode.getPath());
+                break;
+            }
+        }
+    }
+
+    private void deleteComputedReferenceAnswersValues(final Session session, final VersionManager versionManager)
+            throws RepositoryException
+    {
+        Set<String> checkoutPaths = new HashSet<>();
+        for (Map.Entry<String, String> changedComputedReferenceAnswer : this.toBeDeleted.entrySet()) {
+            final String formPath = changedComputedReferenceAnswer.getValue();
+            versionManager.checkout(formPath);
+            checkoutPaths.add(formPath);
+            Node changingComputerAnswer = session.getNode(changedComputedReferenceAnswer.getKey());
+            changingComputerAnswer.remove();
         }
         session.save();
         for (String path : checkoutPaths) {
@@ -212,5 +276,14 @@ public class ReferenceAnswersChangedListener implements ResourceChangeListener
             return getParentFormPath(parent);
         }
         return parent.getPath();
+    }
+
+    private void addChangedReferenceAnswer(final Node formNode, final String path)
+    {
+        if (this.changedReferenceAnswers.containsKey(formNode)) {
+            this.changedReferenceAnswers.get(formNode).add(path);
+        } else {
+            this.changedReferenceAnswers.put(formNode, Set.of(path));
+        }
     }
 }

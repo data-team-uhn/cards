@@ -39,6 +39,7 @@ import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
@@ -48,6 +49,7 @@ import io.uhndata.cards.forms.api.QuestionnaireUtils;
  */
 public abstract class AnswersEditor extends DefaultEditor
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AnswersEditor.class);
     // This holds the builder for the current node. The methods called for editing specific properties don't receive the
     // actual parent node of those properties, so we must manually keep track of the current node.
     protected final NodeBuilder currentNodeBuilder;
@@ -149,6 +151,16 @@ public abstract class AnswersEditor extends DefaultEditor
         final String questionnaireId = this.currentNodeBuilder.getProperty("questionnaire").getValue(Type.REFERENCE);
         try {
             return this.serviceSession.getNodeByIdentifier(questionnaireId);
+        } catch (RepositoryException e) {
+            return null;
+        }
+    }
+
+    protected Node getForm()
+    {
+        final String formId = this.currentNodeBuilder.getProperty("jcr:uuid").getValue(Type.STRING);
+        try {
+            return this.serviceSession.getNodeByIdentifier(formId);
         } catch (RepositoryException e) {
             return null;
         }
