@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
@@ -108,8 +109,17 @@ public class ToEpicFormProcessor implements ResourceJsonProcessor
                 // The `linkIds` for questions are not the same ids that are returned in a QuestionnaireResponse.Read
                 // request. Here we need the ID of the Question ID Type and the ID of the question. These are custom
                 // ids that need to manually be added to the questions when building the surveys in hyperspace.
-                answersObj.add("linkId", "<ID of the Question ID Type>|<ID of the question>");
-                answersObj.add("text", answer.getJsonObject("question").getString("text", ""));
+                //answersObj.add("linkId", "<ID of the Question ID Type>|<ID of the question>");
+                JsonObject question = answer.getJsonObject("question");
+                String guestionId = question.values().stream()
+                    .filter(value -> ValueType.OBJECT.equals(value.getValueType()))
+                    .map(JsonValue::asJsonObject)
+                    .filter(value -> value.containsKey("jcr:primaryType")
+                        && "cards:IdMapping".equals(value.getString("jcr:primaryType")))
+                    .map(value -> value.getString("value"))
+                    .findFirst().orElse("");
+                answersObj.add("linkId", "<ID of the Question ID Type>|" + guestionId);
+                answersObj.add("text", question.getString("text", ""));
                 final JsonArrayBuilder answers = Json.createArrayBuilder();
 
                 JsonValue value = answer.get("value");
@@ -153,7 +163,15 @@ public class ToEpicFormProcessor implements ResourceJsonProcessor
                 // The `questionnaire` field obtained from the `instantiatesCanonical` field in the CarePlan response.
                 // json.add("questionnaire", "Questionnaire/<FHIR ID>");
                 final Node questionnaire = node.getProperty("questionnaire").getNode();
-                result.add("questionnaire", "Questionnaire/" + questionnaire.getIdentifier());
+                // Set default to the questionnaire uuid
+                String fhirId = questionnaire.getIdentifier();
+                for (NodeIterator i = questionnaire.getNodes(); i.hasNext();) {
+                    Node child = i.nextNode();
+                    if ("cards:IdMapping".equals(child.getPrimaryNodeType().getName())) {
+                        fhirId = child.getProperty("value").getString();
+                    }
+                }
+                result.add("questionnaire", "Questionnaire/" + fhirId);
                 // The `subject` field references the `reference` field in the CarePlan.
                 // `system` is taken from the `reference.type` and `value` is taken from `reference.identifier.value`.
                 // The `value` is the CSN ID for an Appointment.
