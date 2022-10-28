@@ -32,7 +32,7 @@ import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.commit.Editor;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
-import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,15 +55,15 @@ public class ReferenceAnswersEditor extends AnswersEditor
      * Simple constructor.
      *
      * @param nodeBuilder the builder for the current node
-     * @param rrf the resource resolver factory which can provide access to JCR sessions
+     * @param resolver the resource resolver factory which can provide access to JCR sessions
      * @param questionnaireUtils for working with questionnaire data
      * @param formUtils for working with form data
      * @param subjectUtils for working with subject data
      */
-    public ReferenceAnswersEditor(final NodeBuilder nodeBuilder, final ResourceResolverFactory rrf,
+    public ReferenceAnswersEditor(final NodeBuilder nodeBuilder, final ResourceResolver resolver,
         final QuestionnaireUtils questionnaireUtils, final FormUtils formUtils, SubjectUtils subjectUtils)
     {
-        super(nodeBuilder, rrf, questionnaireUtils, formUtils, "referenceAnswers");
+        super(nodeBuilder, resolver, questionnaireUtils, formUtils);
         this.subjectUtils = subjectUtils;
     }
 
@@ -83,7 +83,7 @@ public class ReferenceAnswersEditor extends AnswersEditor
     protected ReferenceAnswersEditor getNewEditor(String name)
     {
         return new ReferenceAnswersEditor(this.currentNodeBuilder.getChildNode(name),
-            this.rrf, this.questionnaireUtils, this.formUtils, this.subjectUtils);
+            this.resolver, this.questionnaireUtils, this.formUtils, this.subjectUtils);
     }
 
     @Override
@@ -164,10 +164,10 @@ public class ReferenceAnswersEditor extends AnswersEditor
 
     private Object getAnswer(NodeState form, String questionPath)
     {
-        Node subject = this.formUtils.getSubject(form);
+        Node subject = this.getSubject(form);
         try {
             Collection<Node> answers =
-                this.formUtils.findAllSubjectRelatedAnswers(subject, this.serviceSession.getNode(questionPath),
+                this.formUtils.findAllSubjectRelatedAnswers(subject, this.currentSession.getNode(questionPath),
                     EnumSet.allOf(FormUtils.SearchType.class));
             if (!answers.isEmpty()) {
                 Object value = this.formUtils.getValue(answers.iterator().next());
@@ -229,6 +229,32 @@ public class ReferenceAnswersEditor extends AnswersEditor
         ReferenceAnswerNodeTypes(final Node questionNode) throws RepositoryException
         {
             super(questionNode, "cards:ReferenceAnswer", "cards/ReferenceAnswer");
+        }
+    }
+
+    // Ideally, formUtils would be used for getSubject.
+    // However, formUtils uses a ResourceResolverFactory not a ThreadResourceResolverProvider
+    // so is not reliable in this use case
+    private Node getSubject(final NodeState form)
+    {
+        String identifier = form.getProperty(FormUtils.SUBJECT_PROPERTY).getValue(Type.STRING);
+        try {
+            final Node result = this.currentSession.getNodeByIdentifier(identifier);
+            return this.isNodeType(result, SubjectUtils.SUBJECT_NODETYPE) ? result : null;
+        } catch (RepositoryException e) {
+            // SHould not happen
+            return null;
+        }
+    }
+    protected boolean isNodeType(final Node node, final String targetNodeType)
+    {
+        if (node == null) {
+            return false;
+        }
+        try {
+            return node.isNodeType(targetNodeType);
+        } catch (final RepositoryException e) {
+            return false;
         }
     }
 }
