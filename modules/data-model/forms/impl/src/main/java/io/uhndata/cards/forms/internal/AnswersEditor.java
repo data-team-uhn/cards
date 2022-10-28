@@ -39,9 +39,7 @@ import org.apache.jackrabbit.oak.spi.commit.DefaultEditor;
 import org.apache.jackrabbit.oak.spi.commit.Editor;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
-import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.slf4j.Logger;
 
 import io.uhndata.cards.forms.api.FormUtils;
@@ -58,7 +56,7 @@ public abstract class AnswersEditor extends DefaultEditor
     // actual parent node of those properties, so we must manually keep track of the current node.
     protected final NodeBuilder currentNodeBuilder;
 
-    protected final ResourceResolverFactory rrf;
+    protected final ResourceResolver resolver;
 
     /** The current user session. **/
     protected Session currentSession;
@@ -79,28 +77,28 @@ public abstract class AnswersEditor extends DefaultEditor
 
     protected AbstractAnswerChangeTracker answerChangeTracker;
 
-    private final String serviceName;
-
     /**
      * Simple constructor.
      *
      * @param nodeBuilder the builder for the current node
-     * @param rrf the resource resolver factory which can provide access to JCR sessions
+     * @param resolver the resource resolver which can provide access to JCR sessions
      * @param questionnaireUtils for working with questionnaire data
      * @param formUtils for working with form data
-     * @param serviceName the name of the service resource resolver that should be used to handle any changes
      */
-    public AnswersEditor(final NodeBuilder nodeBuilder, final ResourceResolverFactory rrf,
-        final QuestionnaireUtils questionnaireUtils, final FormUtils formUtils, final String serviceName)
+    public AnswersEditor(final NodeBuilder nodeBuilder, final ResourceResolver resolver,
+        final QuestionnaireUtils questionnaireUtils, final FormUtils formUtils)
     {
-        this.serviceName = serviceName;
         this.currentNodeBuilder = nodeBuilder;
-        this.rrf = rrf;
         this.questionnaireUtils = questionnaireUtils;
         this.formUtils = formUtils;
         this.answerChangeTracker = getAnswerChangeTracker();
-        this.isFormNode = this.formUtils.isForm(this.currentNodeBuilder);
         this.shouldRunOnLeave = false;
+
+        this.resolver = resolver;
+        if (this.resolver != null) {
+            this.currentSession = this.resolver.adaptTo(Session.class);
+            this.isFormNode = this.isFormNode(nodeBuilder);
+        }
     }
 
     protected abstract Logger getLogger();
@@ -137,17 +135,9 @@ public abstract class AnswersEditor extends DefaultEditor
             return;
         }
 
-        final Map<String, Object> parameters =
-            Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, this.serviceName);
-        final ResourceResolver sessionResolver = this.rrf.getThreadResourceResolver();
-        try (ResourceResolver serviceResolver = this.rrf.getServiceResourceResolver(parameters)) {
-            if (sessionResolver != null && serviceResolver != null) {
-                this.currentSession = sessionResolver.adaptTo(Session.class);
-                this.serviceSession = serviceResolver.adaptTo(Session.class);
-                handleLeave(after);
-            }
-        } catch (LoginException e) {
-            // Should not happen
+        if (this.resolver != null) {
+            this.currentSession = this.resolver.adaptTo(Session.class);
+            handleLeave(after);
         }
     }
 
@@ -157,7 +147,7 @@ public abstract class AnswersEditor extends DefaultEditor
     {
         final String questionnaireId = this.currentNodeBuilder.getProperty("questionnaire").getValue(Type.REFERENCE);
         try {
-            return this.serviceSession.getNodeByIdentifier(questionnaireId);
+            return this.currentSession.getNodeByIdentifier(questionnaireId);
         } catch (RepositoryException e) {
             return null;
         }
@@ -287,9 +277,9 @@ public abstract class AnswersEditor extends DefaultEditor
         for (String childNodeName : nodeBuilder.getChildNodeNames()) {
             NodeBuilder childNode = nodeBuilder.getChildNode(childNodeName);
             String childIdentifier;
-            if (this.formUtils.isAnswerSection(childNode)) {
+            if (this.isAnswerSection(childNode)) {
                 childIdentifier = this.formUtils.getSectionIdentifier(childNode);
-            } else if (this.formUtils.isAnswer(childNode)) {
+            } else if (this.isAnswer(childNode)) {
                 childIdentifier = this.formUtils.getQuestionIdentifier(childNode);
             } else {
                 continue;
@@ -304,6 +294,50 @@ public abstract class AnswersEditor extends DefaultEditor
         return result;
     }
 
+    // Ideally, formUtils would be used for isFormNode, isAnswerSection and isAnswer.
+    // However, formUtils uses a ResourceResolverFactory not a ThreadResourceResolverProvider
+    // so is not reliable in this use case
+    protected boolean isFormNode(NodeBuilder node)
+    {
+        return isFormNode(node.getNodeState());
+    }
+    protected boolean isFormNode(NodeState node)
+    {
+        return isNodeType(node, FormUtils.FORM_NODETYPE);
+    }
+
+    protected boolean isAnswerSection(NodeBuilder node)
+    {
+        return isAnswerSection(node.getNodeState());
+    }
+    protected boolean isAnswerSection(NodeState node)
+    {
+        return isNodeType(node, FormUtils.ANSWER_SECTION_NODETYPE);
+    }
+
+    protected boolean isAnswer(NodeBuilder node)
+    {
+        return isAnswer(node.getNodeState());
+    }
+    protected boolean isAnswer(NodeState node)
+    {
+        return isNodeType(node, FormUtils.ANSWER_NODETYPE);
+    }
+
+    protected boolean isNodeType(NodeState node, String nodeType)
+    {
+        final PropertyState primaryType = node.getProperty("jcr:primaryType");
+        if (primaryType != null) {
+            final String actualNodeType = primaryType.getValue(Type.NAME);
+            try {
+                return this.currentSession.getWorkspace().getNodeTypeManager()
+                    .getNodeType(actualNodeType).isNodeType(nodeType);
+            } catch (final RepositoryException e) {
+                // Shouldn't happen
+            }
+        }
+        return false;
+    }
 
 
 
