@@ -175,10 +175,10 @@ public class VisitChangeListener implements ResourceChangeListener
             return;
         }
 
-        final int baseQuestionnaireSetSize = questionnaireSetInfo.getFrequency().size();
+        final int baseQuestionnaireSetSize = questionnaireSetInfo.membersSize();
         // Remove the questionnaires already created for the current visit
         pruneQuestionnaireSetByVisit(visit, visitInformation, questionnaireSetInfo);
-        final int prunedQuestionnaireSetSize = questionnaireSetInfo.getFrequency().size();
+        final int prunedQuestionnaireSetSize = questionnaireSetInfo.membersSize();
 
         if (prunedQuestionnaireSetSize < 1) {
             // Visit already has all forms in the questionnaire set: end early
@@ -194,11 +194,11 @@ public class VisitChangeListener implements ResourceChangeListener
 
         // Prune the quesionnaires to be created based on frequency.
         // If all the frequencies are 0, skip this step.
-        if (!questionnaireSetInfo.getFrequency().values().stream().allMatch(value -> 0 == value.getFrequency())) {
+        if (!questionnaireSetInfo.getMembers().values().stream().allMatch(member -> 0 == member.getFrequency())) {
             pruneQuestionnaireSet(visit, visitInformation, questionnaireSetInfo);
         }
 
-        if (questionnaireSetInfo.getFrequency().size() < 1) {
+        if (questionnaireSetInfo.membersSize() < 1) {
             // No questionnaires were created as all missing questionnaires from the questionnaire set
             // have their frequencies met by other visits.
 
@@ -221,7 +221,7 @@ public class VisitChangeListener implements ResourceChangeListener
             // Record that this visit has forms
             changeVisitInformation(form, "has_surveys", true, session);
 
-            final List<String> createdForms = createForms(visit, questionnaireSetInfo.getFrequency(), session);
+            final List<String> createdForms = createForms(visit, questionnaireSetInfo.getMembers(), session);
             commitForms(createdForms, session);
         }
     }
@@ -307,7 +307,7 @@ public class VisitChangeListener implements ResourceChangeListener
      *
      * @param visitInformation the Visit Information form data for which the questionnaire set should be retrieved
      * @param session a service session providing access to the repository
-     * @return a map of all questionnaires with frequency in the questionnaire set, keyed by questionnaire uuid
+     * @return a QuestionnaireSetInfo containing all questionnaires and conflicts for this questionnaire set
      */
     private QuestionnaireSetInfo getQuestionnaireSetInformation(final VisitInformation visitInformation,
         final Session session)
@@ -325,12 +325,12 @@ public class VisitChangeListener implements ResourceChangeListener
                     if (questionnaireRef.hasProperty("frequency")) {
                         frequency = (int) questionnaireRef.getProperty("frequency").getLong();
                     }
-                    info.getFrequency().put(uuid, new QuestionnaireFrequency(questionnaire, frequency));
+                    info.putMember(uuid, new QuestionnaireRef(questionnaire, frequency));
                 } else if (questionnaireRef.isNodeType("cards:QuestionnaireConflict")
                     && questionnaireRef.hasProperty("questionnaire")) {
                     final String uuid = questionnaireRef.getProperty("questionnaire").getString();
                     final int frequency = (int) questionnaireRef.getProperty("frequency").getLong();
-                    info.getConflicts().put(uuid, frequency);
+                    info.putConflict(uuid, frequency);
                 }
             }
             for (final PropertyIterator childProperties = questionnaireSet.getProperties(); childProperties.hasNext();)
@@ -367,10 +367,9 @@ public class VisitChangeListener implements ResourceChangeListener
             // Check if visit is not the triggering visit, since the triggering visit has already been processed.
             if (!visit.isSame(otherVisit) && this.subjectUtils.isSubject(otherVisit)
                 && "Visit".equals(this.subjectTypeUtils.getLabel(this.subjectUtils.getType(otherVisit)))) {
-                pruneQuestionnaireSetByVisit(
-                    otherVisit, visitInformation, questionnaireSetInfo);
+                pruneQuestionnaireSetByVisit(otherVisit, visitInformation, questionnaireSetInfo);
             }
-            if (questionnaireSetInfo.getFrequency().size() == 0) {
+            if (questionnaireSetInfo.membersSize() == 0) {
                 return;
             }
         }
@@ -440,10 +439,10 @@ public class VisitChangeListener implements ResourceChangeListener
         // If they do, remove those forms' questionnaires from the set.
         for (final String questionnaireIdentifier : questionnaires.keySet()) {
             Integer frequencyPeriod = null;
-            if (questionnaireSetInfo.getConflicts().containsKey(questionnaireIdentifier)) {
-                frequencyPeriod = questionnaireSetInfo.getConflicts().get(questionnaireIdentifier);
-            } else if (questionnaireSetInfo.frequency.containsKey(questionnaireIdentifier)) {
-                frequencyPeriod = questionnaireSetInfo.frequency.get(questionnaireIdentifier).getFrequency();
+            if (questionnaireSetInfo.containsConflict(questionnaireIdentifier)) {
+                frequencyPeriod = questionnaireSetInfo.getConflict(questionnaireIdentifier);
+            } else if (questionnaireSetInfo.containsMember(questionnaireIdentifier)) {
+                frequencyPeriod = questionnaireSetInfo.getMember(questionnaireIdentifier).getFrequency();
             }
 
             if (frequencyPeriod != null) {
@@ -451,10 +450,10 @@ public class VisitChangeListener implements ResourceChangeListener
                 final boolean complete = questionnaires.get(questionnaireIdentifier);
 
                 if (isWithinDateRange(visitDate, triggeringDate, frequencyPeriod)) {
-                    if (questionnaireSetInfo.getConflicts().containsKey(questionnaireIdentifier)) {
-                        questionnaireSetInfo.getFrequency().clear();
+                    if (questionnaireSetInfo.containsConflict(questionnaireIdentifier)) {
+                        questionnaireSetInfo.clearMembers();
                     } else if (complete || isWithinVisitMargin) {
-                        questionnaireSetInfo.getFrequency().remove(questionnaireIdentifier);
+                        questionnaireSetInfo.removeMember(questionnaireIdentifier);
                     }
                 }
             }
@@ -470,15 +469,15 @@ public class VisitChangeListener implements ResourceChangeListener
      * @return a list of paths for all created forms
      * @throws RepositoryException if the form data could not be accessed
      */
-    private List<String> createForms(final Node visit, final Map<String, QuestionnaireFrequency> questionnaireFrequency,
+    private List<String> createForms(final Node visit, final Map<String, QuestionnaireRef> questionnaireRefs,
         final Session session) throws RepositoryException
     {
         final List<String> results = new LinkedList<>();
 
-        for (final String questionnaireIdentifier : questionnaireFrequency.keySet()) {
+        for (final String questionnaireIdentifier : questionnaireRefs.keySet()) {
             final String uuid = UUID.randomUUID().toString();
             final Node form = session.getNode("/Forms").addNode(uuid, FormUtils.FORM_NODETYPE);
-            final Node questionnaire = questionnaireFrequency.get(questionnaireIdentifier).getQuestionnaire();
+            final Node questionnaire = questionnaireRefs.get(questionnaireIdentifier).getQuestionnaire();
             form.setProperty(FormUtils.QUESTIONNAIRE_PROPERTY, questionnaire);
             form.setProperty(FormUtils.SUBJECT_PROPERTY, visit);
             results.add(form.getPath());
@@ -698,6 +697,7 @@ public class VisitChangeListener implements ResourceChangeListener
 
         public boolean hasRequiredInformation()
         {
+            // TODO: Test if !! is needed to convert to boolean
             return !!(this.visitDate != null && StringUtils.isNotBlank(this.questionnaireSet));
         }
 
@@ -735,24 +735,64 @@ public class VisitChangeListener implements ResourceChangeListener
     private static final class QuestionnaireSetInfo
     {
         private final Map<String, Integer> conflicts;
-        private final Map<String, QuestionnaireFrequency> frequency;
+        private final Map<String, QuestionnaireRef> members;
         private boolean ignoreClinic;
 
         QuestionnaireSetInfo()
         {
             this.conflicts = new HashMap<>();
             this.ignoreClinic = false;
-            this.frequency = new HashMap<>();
+            this.members = new HashMap<>();
         }
 
-        public Map<String, Integer> getConflicts()
+        public void putConflict(String uuid, int frequency)
         {
-            return this.conflicts;
+            this.conflicts.put(uuid, frequency);
         }
 
-        public Map<String, QuestionnaireFrequency> getFrequency()
+        public boolean containsConflict(String uuid)
         {
-            return this.frequency;
+            return this.conflicts.containsKey(uuid);
+        }
+
+        public int getConflict(String uuid)
+        {
+            return this.conflicts.get(uuid);
+        }
+
+        public void putMember(String uuid, QuestionnaireRef member)
+        {
+            this.members.put(uuid, member);
+        }
+
+        public Map<String, QuestionnaireRef> getMembers()
+        {
+            return this.members;
+        }
+
+        public QuestionnaireRef getMember(String uuid)
+        {
+            return this.members.get(uuid);
+        }
+
+        public int membersSize()
+        {
+            return this.members.size();
+        }
+
+        public boolean containsMember(String uuid)
+        {
+            return this.members.containsKey(uuid);
+        }
+
+        public void removeMember(String uuid)
+        {
+            this.members.remove(uuid);
+        }
+
+        public void clearMembers()
+        {
+            this.members.clear();
         }
 
         public boolean shouldIgnoreClinic()
@@ -766,13 +806,13 @@ public class VisitChangeListener implements ResourceChangeListener
         }
     }
 
-    private static final class QuestionnaireFrequency
+    private static final class QuestionnaireRef
     {
         private final Node questionnaire;
 
         private final Integer frequency;
 
-        QuestionnaireFrequency(final Node questionnaire, final int frequency)
+        QuestionnaireRef(final Node questionnaire, final int frequency)
         {
             this.questionnaire = questionnaire;
             this.frequency = frequency;
