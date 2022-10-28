@@ -26,6 +26,7 @@ import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
@@ -59,11 +60,13 @@ public class ReferenceAnswersEditor extends AnswersEditor
      * @param questionnaireUtils for working with questionnaire data
      * @param formUtils for working with form data
      * @param subjectUtils for working with subject data
+     * @param serviceSession a session with access to all questionnaires. Can be null
      */
     public ReferenceAnswersEditor(final NodeBuilder nodeBuilder, final ResourceResolver resolver,
-        final QuestionnaireUtils questionnaireUtils, final FormUtils formUtils, SubjectUtils subjectUtils)
+        final QuestionnaireUtils questionnaireUtils, final FormUtils formUtils, SubjectUtils subjectUtils,
+        Session serviceSession)
     {
-        super(nodeBuilder, resolver, questionnaireUtils, formUtils);
+        super(nodeBuilder, resolver, questionnaireUtils, formUtils, serviceSession);
         this.subjectUtils = subjectUtils;
     }
 
@@ -83,7 +86,7 @@ public class ReferenceAnswersEditor extends AnswersEditor
     protected ReferenceAnswersEditor getNewEditor(String name)
     {
         return new ReferenceAnswersEditor(this.currentNodeBuilder.getChildNode(name),
-            this.resolver, this.questionnaireUtils, this.formUtils, this.subjectUtils);
+            this.resolver, this.questionnaireUtils, this.formUtils, this.subjectUtils, this.serviceSession);
     }
 
     @Override
