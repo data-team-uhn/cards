@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.jackrabbit.oak.api.Type;
@@ -60,11 +61,13 @@ public class ComputedAnswersEditor extends AnswersEditor
      * @param questionnaireUtils for working with questionnaire data
      * @param formUtils for working with form data
      * @param expressionUtils for evaluating the computed questions
+     * @param serviceSession a session with access to all questionnaires. Can be null
      */
     public ComputedAnswersEditor(final NodeBuilder nodeBuilder, final ResourceResolver resolver,
-        final QuestionnaireUtils questionnaireUtils, final FormUtils formUtils, final ExpressionUtils expressionUtils)
+        final QuestionnaireUtils questionnaireUtils, final FormUtils formUtils, final ExpressionUtils expressionUtils,
+        final Session serviceSession)
     {
-        super(nodeBuilder, resolver, questionnaireUtils, formUtils);
+        super(nodeBuilder, resolver, questionnaireUtils, formUtils, serviceSession);
         this.expressionUtils = expressionUtils;
     }
 
@@ -84,7 +87,7 @@ public class ComputedAnswersEditor extends AnswersEditor
     protected ComputedAnswersEditor getNewEditor(String name)
     {
         return new ComputedAnswersEditor(this.currentNodeBuilder.getChildNode(name),
-            this.resolver, this.questionnaireUtils, this.formUtils, this.expressionUtils);
+            this.resolver, this.questionnaireUtils, this.formUtils, this.expressionUtils, this.serviceSession);
     }
 
     @Override

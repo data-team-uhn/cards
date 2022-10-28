@@ -84,9 +84,10 @@ public abstract class AnswersEditor extends DefaultEditor
      * @param resolver the resource resolver which can provide access to JCR sessions
      * @param questionnaireUtils for working with questionnaire data
      * @param formUtils for working with form data
+     * @param serviceSession a session with access to all questionnaires. Can be null
      */
     public AnswersEditor(final NodeBuilder nodeBuilder, final ResourceResolver resolver,
-        final QuestionnaireUtils questionnaireUtils, final FormUtils formUtils)
+        final QuestionnaireUtils questionnaireUtils, final FormUtils formUtils, final Session serviceSession)
     {
         this.currentNodeBuilder = nodeBuilder;
         this.questionnaireUtils = questionnaireUtils;
@@ -97,6 +98,7 @@ public abstract class AnswersEditor extends DefaultEditor
         this.resolver = resolver;
         if (this.resolver != null) {
             this.currentSession = this.resolver.adaptTo(Session.class);
+            this.serviceSession = serviceSession;
             this.isFormNode = this.isFormNode(nodeBuilder);
         }
     }
@@ -147,7 +149,9 @@ public abstract class AnswersEditor extends DefaultEditor
     {
         final String questionnaireId = this.currentNodeBuilder.getProperty("questionnaire").getValue(Type.REFERENCE);
         try {
-            return this.currentSession.getNodeByIdentifier(questionnaireId);
+            return this.serviceSession == null
+                ? this.currentSession.getNodeByIdentifier(questionnaireId)
+                : this.serviceSession.getNodeByIdentifier(questionnaireId);
         } catch (RepositoryException e) {
             return null;
         }
