@@ -59,7 +59,7 @@ public class ReferenceAnswersEditorProvider implements EditorProvider
         if (resolver != null) {
             // Each ReferenceEditor maintains a state, so a new instance must be returned each time
             return new ReferenceAnswersEditor(builder, resolver, this.questionnaireUtils, this.formUtils,
-                this.subjectUtils);
+                this.subjectUtils, null);
         }
         return null;
     }
