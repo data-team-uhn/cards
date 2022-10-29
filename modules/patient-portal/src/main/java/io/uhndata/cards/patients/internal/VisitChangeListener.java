@@ -703,8 +703,7 @@ public class VisitChangeListener implements ResourceChangeListener
 
         public boolean hasRequiredInformation()
         {
-            // TODO: Test if !! is needed to convert to boolean
-            return !!(this.visitDate != null && StringUtils.isNotBlank(this.questionnaireSet));
+            return this.visitDate != null && StringUtils.isNotBlank(this.questionnaireSet);
         }
 
         public Calendar getVisitDate()
