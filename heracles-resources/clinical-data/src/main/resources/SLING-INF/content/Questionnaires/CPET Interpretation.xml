@@ -3223,7 +3223,7 @@ Normal = less than 34 at anaerobic threshold
 			</property>
 			<property>
 				<name>displayMode</name>
-				<value>list</value>
+				<value>list+input</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -3251,6 +3251,20 @@ Normal = less than 34 at anaerobic threshold
 				</property>
 			</node>
 			<node>
+				<name>Atrial fibrillation</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Atrial fibrillation</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Atrial fibrillation</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
 				<name>Pace rhythm</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
@@ -3261,6 +3275,20 @@ Normal = less than 34 at anaerobic threshold
 				<property>
 					<name>value</name>
 					<value>Pace rhythm</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Normal sinus rhythm</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Normal sinus rhythm</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Normal sinus rhythm</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -3349,16 +3377,16 @@ Normal = less than 34 at anaerobic threshold
 				</property>
 			</node>
 			<node>
-				<name>Super ventricular ectopy</name>
+				<name>Supra ventricular ectopy</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Super ventricular ectopy</value>
+					<value>Supra ventricular ectopy</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Super ventricular ectopy</value>
+					<value>Supra ventricular ectopy</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -3848,7 +3876,7 @@ Normal = less than 34 at anaerobic threshold
 			</property>
 			<property>
 				<name>displayMode</name>
-				<value>list</value>
+				<value>list+input</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -3871,6 +3899,20 @@ Normal = less than 34 at anaerobic threshold
 				</property>
 			</node>
 			<node>
+				<name>Atrial fibrillation</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Atrial fibrillation</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Atrial fibrillation</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
 				<name>Pace rhythm</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
@@ -3881,6 +3923,20 @@ Normal = less than 34 at anaerobic threshold
 				<property>
 					<name>value</name>
 					<value>Pace rhythm</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Normal sinus rhythm</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Normal sinus rhythm</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Normal sinus rhythm</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -3969,16 +4025,16 @@ Normal = less than 34 at anaerobic threshold
 				</property>
 			</node>
 			<node>
-				<name>Super ventricular ectopy</name>
+				<name>Supra ventricular ectopy</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Super ventricular ectopy</value>
+					<value>Supra ventricular ectopy</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Super ventricular ectopy</value>
+					<value>Supra ventricular ectopy</value>
 					<type>String</type>
 				</property>
 			</node>
@@ -4532,6 +4588,25 @@ See Fletcher, Circulation 2013:
 					<name>value</name>
 					<value>Shortness of breath</value>
 					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>None of the above</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>None of the above</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>None of the above</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>noneOfTheAbove</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 			</node>
 		</node>
