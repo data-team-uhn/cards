@@ -32,6 +32,7 @@ from CardsDockerTagProperty import CARDS_DOCKER_TAG
 from CloudIAMdemoKeystoreSha256Property import CLOUD_IAM_DEMO_KEYSTORE_SHA256
 from ServerMemorySplitConfig import MEMORY_SPLIT_CARDS_JAVA, MEMORY_SPLIT_MONGO_SHARDS_REPLICAS
 
+ADMINER_DOCKER_RELEASE_TAG = "4.8.1"
 MINIO_DOCKER_RELEASE_TAG = "RELEASE.2022-09-17T00-09-45Z"
 
 argparser = argparse.ArgumentParser()
@@ -44,6 +45,8 @@ argparser.add_argument('--demo', help='Enable the Demo Banner, Upgrade Marker Fl
 argparser.add_argument('--demo_banner', help='Enable only the Demo Banner', action='store_true')
 argparser.add_argument('--dev_docker_image', help='Indicate that the CARDS Docker image being used was built for development, not production.', action='store_true')
 argparser.add_argument('--composum', help='Enable Composum for the CARDS admin account', action='store_true')
+argparser.add_argument('--adminer', help='Add an Adminer Docker container for database interaction via web browser', action='store_true')
+argparser.add_argument('--adminer_port', help='If --adminer is specified, bind it to this localhost port [default: 1435]', default=1435, type=int)
 argparser.add_argument('--enable_backup_server', help='Add a cards/backup_recorder service to the cluster', action='store_true')
 argparser.add_argument('--backup_server_path', help='Host OS path where the backup_recorder container should store its backup files')
 argparser.add_argument('--enable_ncr', help='Add a Neural Concept Recognizer service to the cluster', action='store_true')
@@ -686,6 +689,15 @@ if args.s3_test_container:
   yaml_obj['services']['s3_test_container']['environment'].append("MINIO_ROOT_USER=minioadmin")
   yaml_obj['services']['s3_test_container']['environment'].append("MINIO_ROOT_PASSWORD=minioadmin")
   yaml_obj['services']['s3_test_container']['command'] = ["server", "/data", "--console-address", ":9001"]
+
+if args.adminer:
+  print("Configuring service: adminer")
+  yaml_obj['services']['adminer'] = {}
+  yaml_obj['services']['adminer']['image'] = "adminer:" + ADMINER_DOCKER_RELEASE_TAG
+  yaml_obj['services']['adminer']['networks'] = {}
+  yaml_obj['services']['adminer']['networks']['internalnetwork'] = {}
+  yaml_obj['services']['adminer']['networks']['internalnetwork']['aliases'] = ['adminer']
+  yaml_obj['services']['adminer']['ports'] = ["127.0.0.1:{}:8080".format(args.adminer_port)]
 
 #Setup the internal network
 print("Configuring the internal network")
