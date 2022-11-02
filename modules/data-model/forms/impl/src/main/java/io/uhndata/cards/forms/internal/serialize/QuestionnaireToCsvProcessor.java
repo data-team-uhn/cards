@@ -83,16 +83,22 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
         final JsonObject result = resource.getResourceResolver().resolve(processedPath).adaptTo(JsonObject.class);
 
         if (result != null) {
-            return processQuestionnaire(result, resource.getResourceResolver());
+            return processQuestionnaire(result, resource.getResourceResolver(),
+                resource.getResourceMetadata().getResolutionPathInfo());
         }
         return null;
     }
 
-    private String processQuestionnaire(final JsonObject questionnaire, final ResourceResolver resolver)
+    private String processQuestionnaire(final JsonObject questionnaire, final ResourceResolver resolver,
+        final String resolutionPathInfo)
     {
         try {
             final StringBuilder output = new StringBuilder();
-            final CSVPrinter csvPrinter = new CSVPrinter(output, CSVFormat.DEFAULT);
+            CSVFormat format = CSVFormat.DEFAULT;
+            if (resolutionPathInfo.endsWith(".tsv")) {
+                format = CSVFormat.TDF;
+            }
+            final CSVPrinter csvPrinter = new CSVPrinter(output, format);
 
             // CSV data aggregator mapping Question UUIDs to pairs of corresponding row number to answer in the csv
             // [ question : [ row# : answer ] ]
