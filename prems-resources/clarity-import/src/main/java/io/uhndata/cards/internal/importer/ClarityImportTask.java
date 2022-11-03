@@ -21,12 +21,13 @@ package io.uhndata.cards.internal.importer;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,7 @@ import java.util.UUID;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.version.VersionManager;
 
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.PersistenceException;
@@ -65,8 +67,12 @@ public class ClarityImportTask implements Runnable
 
     private static final String VALUE_PROP = "value";
 
-    /* TODO: Replace all of these with a config task. */
-    //TODO: should be a list
+    /** Sling property name for the value field on an Answer node. */
+    private static final String STATUS_FIELD_PROP = "statusFlags";
+
+    /** Empty status flags value. */
+    private static final String[] STATUS_FLAGS = new String[0];
+
     private final List<String> columns;
 
     private final Map<String, List<QuestionInformation>> questionnaireToQuestions;
@@ -74,6 +80,10 @@ public class ClarityImportTask implements Runnable
     private final Map<String, String> questionnaireToSubjectType;
 
     private final Map<String, String> questionnaireToSubjectID;
+
+    private ThreadLocal<List<String>> nodesToCheckin = ThreadLocal.withInitial(LinkedList::new);
+
+    private ThreadLocal<VersionManager> versionManager = new ThreadLocal<>();
 
     enum QuestionType
     {
@@ -166,7 +176,7 @@ public class ClarityImportTask implements Runnable
 
             QuestionType qType = QuestionType.STRING;
             ValueMap questionProps = question.getValueMap();
-            String dataType = questionProps.containsKey(DATA_TYPE_PROP) ? "" : questionProps.get(DATA_TYPE_PROP, "");
+            String dataType = questionProps.containsKey(DATA_TYPE_PROP) ? questionProps.get(DATA_TYPE_PROP, "") : "";
             if ("date".equals(dataType)) {
                 qType = QuestionType.DATE;
             } else if ("boolean".equals(dataType)) {
@@ -198,24 +208,20 @@ public class ClarityImportTask implements Runnable
             + "password=" + System.getenv("SQL_PASSWORD") + ";"
             + "encrypt=false;";
 
-        // TODO: This is potentially vulnerable to a SQL injection attack
-        String queries = String.join(",", this.columns);
-
         // Connect via SQL to the server
-        // Perform the query
+        String query = "SELECT * FROM path.CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS"
+            + " WHERE CAST(LoadTime AS DATE) = CAST(GETDATE() AS DATE);";
         try (Connection connection = DriverManager.getConnection(connectionUrl);
-            Statement statement = connection.createStatement();
+            PreparedStatement statement = connection.prepareStatement(query);
             ResourceResolver resolver = this.resolverFactory
                 .getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "ClarityImport"))) {
             final Session session = resolver.adaptTo(Session.class);
-            //this.versionManager = session.getWorkspace().getVersionManager();
+            this.versionManager.set(session.getWorkspace().getVersionManager());
+
+            // Perform the query
+            ResultSet results = statement.executeQuery();
+
             Resource formsHomepage = resolver.resolve("/Forms");
-
-            statement.execute("SELECT " + queries + " FROM path.CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS"
-                + " WHERE CAST(LoadTime AS DATE) = CAST('2022-09-21' AS DATE);");
-            //    + " WHERE CAST(LoadTime AS DATE) = CAST(GETDATE() AS DATE);");
-            ResultSet results = statement.getResultSet();
-
             while (results.next()) {
                 LOGGER.info("Entry found: " + results.getString("PAT_MRN"));
                 Resource subjectParent = resolver.resolve("/Subjects");
@@ -228,6 +234,13 @@ public class ClarityImportTask implements Runnable
             }
 
             session.save();
+            this.nodesToCheckin.get().forEach(node -> {
+                try {
+                    this.versionManager.get().checkin(node);
+                } catch (final RepositoryException e) {
+                    LOGGER.warn("Failed to check in node {}: {}", node, e.getMessage(), e);
+                }
+            });
         } catch (SQLException e) {
             LOGGER.error("Failed to connect to SQL: {}", e.getMessage(), e);
         } catch (LoginException e) {
@@ -256,45 +269,45 @@ public class ClarityImportTask implements Runnable
         throws PersistenceException, RepositoryException, SQLException
     {
         // Create a new subject for the Form
-        Node subjectType = resolver.resolve(this.questionnaireToSubjectType.get(questionnairePath)).adaptTo(Node.class);
         String subjectID = this.questionnaireToSubjectID.get(questionnairePath);
         subjectID = "".equals(subjectID) ? UUID.randomUUID().toString() : result.getString(subjectID);
-        Resource newSubject = resolver.create(subjectParent, UUID.randomUUID().toString(), Map.of(
-                PRIMARY_TYPE_PROP, "cards:Subject",
-                "type", subjectType,
-                "identifier", subjectID));
+        Resource newSubject = getOrCreateSubject(subjectID, this.questionnaireToSubjectType.get(questionnairePath),
+            resolver, subjectParent);
 
         // Create a Node corresponding to the Form
         Resource questionnaire = resolver.resolve(questionnairePath);
         Resource newForm = resolver.create(formsHomepage, UUID.randomUUID().toString(), Map.of(
-                PRIMARY_TYPE_PROP, "cards:Form",
+                ClarityImportTask.PRIMARY_TYPE_PROP, "cards:Form",
                 "questionnaire", questionnaire.adaptTo(Node.class),
                 "subject", newSubject.adaptTo(Node.class)));
+        this.nodesToCheckin.get().add(newForm.getPath());
 
         // Create an Answer for each QuestionInformation in our result set
         for (QuestionInformation entry : questionnaireQuestions) {
             QuestionType qType = entry.type;
             Map<String, Object> props = new HashMap<>();
             props.put("question", resolver.resolve(entry.getQuestion()).adaptTo(Node.class));
+            props.put(ClarityImportTask.STATUS_FIELD_PROP, ClarityImportTask.STATUS_FLAGS);
             if (qType == QuestionType.STRING) {
+                props.put(ClarityImportTask.PRIMARY_TYPE_PROP, "cards:TextAnswer");
                 String thisEntry = result.getString(entry.getColName());
-                props.put(PRIMARY_TYPE_PROP, "cards:TextAnswer");
-                props.put(VALUE_PROP, thisEntry == null ? "" : thisEntry);
+                props.put(ClarityImportTask.VALUE_PROP, thisEntry == null ? "" : thisEntry);
             } else if (qType == QuestionType.DATE) {
+                props.put(ClarityImportTask.PRIMARY_TYPE_PROP, "cards:DateAnswer");
                 Date date = result.getDate(entry.getColName());
                 if (date != null) {
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTime(date);
-                    props.put(VALUE_PROP, calendar);
+                    props.put(ClarityImportTask.VALUE_PROP, calendar);
+                    props.put(ClarityImportTask.VALUE_PROP, calendar);
                 } else {
                     LOGGER.warn(entry.getColName() + " is null");
                 }
-                props.put(PRIMARY_TYPE_PROP, "cards:DateAnswer");
             } else if (qType == QuestionType.BOOLEAN) {
                 // Note that the MS-SQL database doesn't save booleans as true/false
                 // So instead we have to check if it is Yes or No
-                props.put(VALUE_PROP, "Yes".equals(result.getString(entry.getColName())));
-                props.put(PRIMARY_TYPE_PROP, "cards:BooleanAnswer");
+                props.put(ClarityImportTask.PRIMARY_TYPE_PROP, "cards:BooleanAnswer");
+                props.put(ClarityImportTask.VALUE_PROP, "Yes".equals(result.getString(entry.getColName())));
             } else {
                 LOGGER.warn("Unsupported question type: " + qType);
             }
@@ -309,31 +322,33 @@ public class ClarityImportTask implements Runnable
      *
      * @param identifier Identifier to use for the subject
      * @param subjectTypePath path to a SubjectType node for this subject
+     * @param resolver resource resolver to use
      * @param parent parent Resource if this is a child of that resource, or null
      * @return A Subject resource
-    Resource getOrCreateSubject(final String identifier, final String subjectTypePath, final Resource parent)
+     */
+    Resource getOrCreateSubject(final String identifier, final String subjectTypePath, final ResourceResolver resolver,
+        final Resource parent)
         throws RepositoryException, PersistenceException
     {
-        final Iterator<Resource> subjectResourceIter = this.resolver.findResources(String.format(
-            "SELECT * FROM [cards:Subject] WHERE identifier = \"%s\"", identifier), PatientLocalStorage.JCR_SQL);
+        final Iterator<Resource> subjectResourceIter = resolver.findResources(String.format(
+            "SELECT * FROM [cards:Subject] WHERE identifier = \"%s\"", identifier), "JCR-SQL2");
         if (subjectResourceIter.hasNext()) {
             final Resource subjectResource = subjectResourceIter.next();
-            this.versionManager.checkout(subjectResource.getPath());
-            this.nodesToCheckin.add(subjectResource.getPath());
+            this.versionManager.get().checkout(subjectResource.getPath());
+            this.nodesToCheckin.get().add(subjectResource.getPath());
             return subjectResource;
         } else {
             Resource parentResource = parent;
             if (parentResource == null) {
-                parentResource = this.resolver.getResource("/Subjects/");
+                parentResource = resolver.getResource("/Subjects/");
             }
-            final Resource patientType = this.resolver.getResource(subjectTypePath);
-            final Resource newSubject = this.resolver.create(parentResource, UUID.randomUUID().toString(), Map.of(
-                PatientLocalStorage.PRIMARY_TYPE, "cards:Subject",
+            final Resource patientType = resolver.getResource(subjectTypePath);
+            final Resource newSubject = resolver.create(parentResource, UUID.randomUUID().toString(), Map.of(
+                ClarityImportTask.PRIMARY_TYPE_PROP, "cards:Subject",
                 "identifier", identifier,
                 "type", patientType.adaptTo(Node.class)));
-            this.nodesToCheckin.add(newSubject.getPath());
+            this.nodesToCheckin.get().add(newSubject.getPath());
             return newSubject;
         }
     }
-     */
 }
