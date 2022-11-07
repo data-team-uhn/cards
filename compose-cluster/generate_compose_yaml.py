@@ -712,7 +712,6 @@ if args.mssql:
     'ports': ['127.0.0.1:1433:1433'],
     'environment': ['ACCEPT_EULA=Y', 'MSSQL_SA_PASSWORD=testPassword_']
   }
-  yaml_obj['services']['cardsinitial']['environment'].extend(['SQL_SERVER=127.0.0.1:1433', 'SQL_USERNAME=sa', 'SQL_PASSWORD=testPassword_'])
 
 #Setup the internal network
 print("Configuring the internal network")

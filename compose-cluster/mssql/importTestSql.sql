@@ -15,17 +15,19 @@
 -- specific language governing permissions and limitations
 -- under the License.
 
--- Create the database + table
-IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'path')
-    CREATE DATABASE path;
-
-USE path;
+-- Create the schema if it doesn't already exist
+-- Note about EXEC: CREATE SCHEMA must be the first statement
+-- but we can't combine that with a conditional unless we use EXEC
+IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = 'path')
+BEGIN
+    EXEC('CREATE SCHEMA path')
+END
 
 -- Remove the table if it already exists
-IF OBJECT_ID('CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS', 'U') IS NOT NULL 
-    DROP TABLE CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS;
+IF OBJECT_ID('path.CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS', 'U') IS NOT NULL 
+    DROP TABLE [path].[CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS];
 
-CREATE TABLE CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS (
+CREATE TABLE [path].[CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS] (
     PAT_MRN varchar(102) NULL,
     EMAIL_ADDRESS varchar(255) NULL,
     ENTRY_TIME datetime2 NULL,
@@ -35,17 +37,17 @@ CREATE TABLE CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS (
 );
 
 -- Insert test data
-INSERT INTO CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS
+INSERT INTO [path].[CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS]
     (PAT_MRN, EMAIL_ADDRESS, ENTRY_TIME, DISCH_DEPT_NAME, EMAIL_CONSENT_YN, LoadTime)
     VALUES
     (1234567, 'test@test.com', '2022-09-21T11:16:20.136Z', 'TG-EMERGENCY', 'Yes', CAST(GETDATE() AS DATE));
 
-INSERT INTO CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS
+INSERT INTO [path].[CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS]
     (PAT_MRN, EMAIL_ADDRESS, ENTRY_TIME, DISCH_DEPT_NAME, EMAIL_CONSENT_YN, LoadTime)
     VALUES
     (1234568, 'test2@test.com', '2022-09-21T11:16:20.136Z', 'TG-EMERGENCY', 'No', CAST(GETDATE() AS DATE))
 
-INSERT INTO CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS
+INSERT INTO [path].[CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS]
     (PAT_MRN, EMAIL_ADDRESS, ENTRY_TIME, DISCH_DEPT_NAME, EMAIL_CONSENT_YN, LoadTime)
     VALUES
     (1234568, 'test@test.com', '2022-09-21T11:16:20.136Z', 'TW-EMERGENCY', 'No', CAST(GETDATE() AS DATE))

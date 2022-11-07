@@ -89,7 +89,8 @@ public class ClarityImportTask implements Runnable
     {
         DATE,
         STRING,
-        BOOLEAN
+        BOOLEAN,
+        CLINIC
     }
 
     /** Storage class for information about a question. */
@@ -174,14 +175,7 @@ public class ClarityImportTask implements Runnable
                 continue;
             }
 
-            QuestionType qType = QuestionType.STRING;
-            ValueMap questionProps = question.getValueMap();
-            String dataType = questionProps.containsKey(DATA_TYPE_PROP) ? questionProps.get(DATA_TYPE_PROP, "") : "";
-            if ("date".equals(dataType)) {
-                qType = QuestionType.DATE;
-            } else if ("boolean".equals(dataType)) {
-                qType = QuestionType.BOOLEAN;
-            }
+            QuestionType qType = this.getQuestionType(question);
             LOGGER.info(propertyName + " found with question type: " + qType.name());
 
             QuestionInformation questionInformation =
@@ -197,6 +191,27 @@ public class ClarityImportTask implements Runnable
         for (Resource child : mapping.getChildren()) {
             getMappingRecursive(resolver, child);
         }
+    }
+
+    /***
+     * Identify the question type from a question Resource.
+     *
+     * @param question the cards:Question node to analyze
+     * @return A QuestionType corresponding to the given cards:Question node
+     */
+    QuestionType getQuestionType(Resource question)
+    {
+        ValueMap questionProps = question.getValueMap();
+        String dataType = questionProps.containsKey(DATA_TYPE_PROP) ? questionProps.get(DATA_TYPE_PROP, "") : "";
+        String primaryType = questionProps.containsKey("primaryType") ? questionProps.get("primaryType", "") : "";
+        if ("date".equals(dataType)) {
+            return QuestionType.DATE;
+        } else if ("boolean".equals(dataType)) {
+            return QuestionType.BOOLEAN;
+        } else if ("cards:ClinicMapping".equals(primaryType)) {
+            return QuestionType.CLINIC;
+        }
+        return QuestionType.STRING;
     }
 
     @Override
@@ -308,6 +323,12 @@ public class ClarityImportTask implements Runnable
                 // So instead we have to check if it is Yes or No
                 props.put(ClarityImportTask.PRIMARY_TYPE_PROP, "cards:BooleanAnswer");
                 props.put(ClarityImportTask.VALUE_PROP, "Yes".equals(result.getString(entry.getColName())));
+            } else if (qType == QuestionType.CLINIC) {
+                // This is similar to a string, except we transform the output to look at the ClinicMapping node
+                props.put(ClarityImportTask.PRIMARY_TYPE_PROP, "cards:TextAnswer");
+                String thisEntry = result.getString(entry.getColName());
+                props.put(ClarityImportTask.VALUE_PROP,
+                    thisEntry == null ? "" : "/Survey/ClinicMapping/" + String.valueOf(thisEntry.hashCode()));
             } else {
                 LOGGER.warn("Unsupported question type: " + qType);
             }

@@ -18,50 +18,40 @@
 -->
 
 <node>
-	<name>mapping</name>
-	<primaryNodeType>cards:clarityMapping</primaryNodeType>
-	<property>
-		<name>questionnaire</name>
-		<value>/Questionnaires/Patient information</value>
-		<type>Path</type>
-	</property>
-	<property>
-		<name>subjectType</name>
-		<value>/SubjectTypes/Patient</value>
-		<type>Path</type>
-	</property>
-	<property>
-		<name>subjectIDColumn</name>
-		<value>PAT_MRN</value>
-		<type>String</type>
-	</property>
-	<property>
-		<name>PAT_MRN</name>
-		<value>/Questionnaires/Patient information/mrn</value>
-		<type>Path</type>
-	</property>
-  <!--<property>
-		<name>PAT_ENC_CSN_ID</name>
-		<value>/Questionnaires/Patient information/mrn</value>
-		<type>Path</type>
-	</property>
+  <name>mapping</name>
+  <primaryNodeType>cards:clarityMapping</primaryNodeType>
   <property>
-		<name>HSP_DIS_EVENT_ID</name>
-		<value>/Questionnaires/Patient information/mrn</value>
-		<type>Path</type>
-	</property>-->
+    <name>questionnaire</name>
+    <value>/Questionnaires/Patient information</value>
+    <type>Path</type>
+  </property>
+  <property>
+    <name>subjectType</name>
+    <value>/SubjectTypes/Patient</value>
+    <type>Path</type>
+  </property>
+  <property>
+    <name>subjectIDColumn</name>
+    <value>PAT_MRN</value>
+    <type>String</type>
+  </property>
+  <property>
+    <name>PAT_MRN</name>
+    <value>/Questionnaires/Patient information/mrn</value>
+    <type>Path</type>
+  </property>
   <!-- Don't want to store the name of the patient-->
   <!--
   <property>
-		<name>PAT_FIRST_NAME</name>
-		<value>/Questionnaires/Patient information/first_name</value>
-		<type>Path</type>
-	</property>
+    <name>PAT_FIRST_NAME</name>
+    <value>/Questionnaires/Patient information/first_name</value>
+    <type>Path</type>
+  </property>
   <property>
-		<name>PAT_LAST_NAME</name>
-		<value>/Questionnaires/Patient information/last_name</value>
-		<type>Path</type>
-	</property>
+    <name>PAT_LAST_NAME</name>
+    <value>/Questionnaires/Patient information/last_name</value>
+    <type>Path</type>
+  </property>
   -->
   <property>
     <name>EMAIL_CONSENT_YN</name>
@@ -69,10 +59,10 @@
     <type>Path</type>
   </property>
   <property>
-		<name>EMAIL_ADDRESS</name>
-		<value>/Questionnaires/Patient information/email</value>
-		<type>Path</type>
-	</property>
+    <name>EMAIL_ADDRESS</name>
+    <value>/Questionnaires/Patient information/email</value>
+    <type>Path</type>
+  </property>
   <node>
     <name>visit</name>
     <primaryNodeType>cards:clarityMapping</primaryNodeType>
@@ -91,40 +81,10 @@
       <value>/Questionnaires/Visit information/clinic</value>
       <type>Path</type>
     </property>
-    <!--<property>
-		<name>HOSP_ADMISSION_DTTM</name>
-      <value>/Questionnaires/Visit information/time</value>
-      <type>Path</type>
-    </property>-->
-    <!--<property>
-      <name>DISCH_LOC_NAME</name>
-      <value>/Questionnaires/Patient information/mrn</value>
-      <type>Path</type>
-    </property>
-    <property>
-      <name>ED_IP_TRANSFER_YN</name>
-      <value>/Questionnaires/Patient information/mrn</value>
-      <type>Path</type>
-    </property>-->
     <property>
       <name>ENTRY_TIME</name>
       <value>/Questionnaires/Visit information/time</value>
       <type>Path</type>
     </property>
-    <!--<property>
-      <name>DISCH_DISPOSITION</name>
-      <value>/Questionnaires/Patient information/mrn</value>
-      <type>Path</type>
-    </property>
-    <property>
-      <name>PATIENT_CLASS_NAME</name>
-      <value>/Questionnaires/Patient information/mrn</value>
-      <type>Path</type>
-    </property>
-    <property>
-      <name>PATIENT_STAUS</name>
-      <value>/Questionnaires/Patient information/mrn</value>
-      <type>Path</type>
-    </property>-->
   </node>
 </node>
