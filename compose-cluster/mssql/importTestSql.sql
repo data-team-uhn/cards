@@ -15,10 +15,16 @@
 -- specific language governing permissions and limitations
 -- under the License.
 
--- Remove the table if it already exists
-DROP TABLE CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS;
+-- Create the database + table
+IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'path')
+    CREATE DATABASE path;
 
--- Create the schema
+USE path;
+
+-- Remove the table if it already exists
+IF OBJECT_ID('CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS', 'U') IS NOT NULL 
+    DROP TABLE CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS;
+
 CREATE TABLE CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS (
     PAT_MRN varchar(102) NULL,
     EMAIL_ADDRESS varchar(255) NULL,
