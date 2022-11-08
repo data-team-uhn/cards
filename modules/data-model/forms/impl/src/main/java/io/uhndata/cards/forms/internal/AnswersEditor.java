@@ -163,6 +163,16 @@ public abstract class AnswersEditor extends DefaultEditor
         }
     }
 
+    protected Node getForm()
+    {
+        final String formId = this.currentNodeBuilder.getProperty("jcr:uuid").getValue(Type.STRING);
+        try {
+            return this.serviceSession.getNodeByIdentifier(formId);
+        } catch (RepositoryException e) {
+            return null;
+        }
+    }
+
     // Returns a QuestionTree if any children of this node contains an unanswered matching question, else null
     protected QuestionTree getUnansweredMatchingQuestions(final Node currentNode)
     {
