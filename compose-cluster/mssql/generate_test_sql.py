@@ -25,6 +25,8 @@ import datetime
 argparser = argparse.ArgumentParser()
 argparser.add_argument('file', help='Output file name', type=argparse.FileType('w'))
 argparser.add_argument('-n', help='Number of patients discharges to generate [default: 3]', default=3, type=int)
+argparser.add_argument('--basedate', help='Date to generate patient discharge entries from [default: today] [format: YYYY-MM-dd]', default=datetime.date.today(), type=lambda s: datetime.datetime.strptime(s, '%Y-%m-%d'))
+argparser.add_argument('--time_spread_seconds', help='Number of seconds before the base date to generate patient discharge entries from [default: one week]', default=7*24*60*60, type=int)
 args = argparser.parse_args()
 
 # Preamble
@@ -76,7 +78,7 @@ CREATE TABLE [path].[CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS] (
 for i in range(args.n):
     mrn = random.randint(0, 9999999)
     email = 'test' + str(mrn) + '@test.com'
-    entry_time = datetime.date.today() - datetime.timedelta(seconds=random.randint(0, 7 * 24 * 60 * 60))
+    entry_time = args.basedate - datetime.timedelta(seconds=random.randint(0, args.time_spread_seconds))
     entry_time_str = entry_time.strftime('%Y-%m-%d %H:%M:%S')
     disch_dept_name = random.choice(['TG-EMERGENCY', 'TW-EMERGENCY'])
     email_consent_yn = random.choice(['Yes', 'No'])
