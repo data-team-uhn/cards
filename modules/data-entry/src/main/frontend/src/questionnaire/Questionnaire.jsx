@@ -41,7 +41,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import PreviewIcon from '@mui/icons-material/FindInPage';
 import DeleteButton from "../dataHomepage/DeleteButton";
 import QuestionnaireStyle from "./QuestionnaireStyle";
-import { blue, blueGrey, cyan, deepPurple, indigo, orange, teal } from '@mui/material/colors';
+import { blue, blueGrey, cyan, deepPurple, indigo, orange, purple } from '@mui/material/colors';
 import { ENTRY_TYPES } from "./FormEntry";
 import Fields from "../questionnaireEditor/Fields";
 import LabeledField from "../questionnaireEditor/LabeledField";
@@ -369,9 +369,9 @@ Information.defaultProps = {
 };
 
 // Details about an id mapping block displayed in a questionnaire
-let IdMapping = (props) => <QuestionnaireEntry {...props} />;
+let ExternalLink = (props) => <QuestionnaireEntry {...props} />;
 
-IdMapping.propTypes = {
+ExternalLink.propTypes = {
   onActionDone: PropTypes.func,
   data: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired,
@@ -380,11 +380,11 @@ IdMapping.propTypes = {
   model: PropTypes.string.isRequired
 };
 
-IdMapping.defaultProps = {
-  type: "IdMapping",
+ExternalLink.defaultProps = {
+  type: "ExternalLink",
   avatar: "link",
-  avatarColor: teal[700],
-  model: "IdMapping.json"
+  avatarColor: purple[300],
+  model: "ExternalLink.json"
 };
 
 // Details about a particular question in a questionnaire.
@@ -511,8 +511,9 @@ let QuestionnaireEntry = (props) => {
     Object.values(childModels)
       .filter(v => {
         if (typeof(v) != "object" || typeof(v?.entries) != "object") return false;
+        if (!v.hasOwnProperty("max")) return true;
         let entryTypes = Object.keys(v.entries).map(e => `cards:${e}`);
-        return (Object.values(data).filter(e => entryTypes?.includes(e['jcr:primaryType'])).length < v?.max);
+        return (Object.values(data).filter(e => entryTypes?.includes(e['jcr:primaryType'])).length < v.max);
       })
       .forEach(v => menuItems.push(...Object.keys(v.entries)));
   }

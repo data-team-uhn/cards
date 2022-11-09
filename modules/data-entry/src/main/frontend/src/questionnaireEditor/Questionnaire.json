@@ -1,11 +1,10 @@
 [
   {
     "//CHILDREN" : {
-      "IdMappings" : {
+      "ExternalLinks" : {
          "entries" : {
-           "IdMapping" : "IdMapping.json"
+           "ExternalLink" : "ExternalLink.json"
          },
-         "max" : 1,
          "defaultOrder" : 1
       },
       "Question" : "Question.json",
