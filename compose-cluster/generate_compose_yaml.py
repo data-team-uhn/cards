@@ -709,6 +709,10 @@ if args.mssql:
   yaml_obj['services']['mssql']['networks']['internalnetwork'] = {}
   yaml_obj['services']['mssql']['networks']['internalnetwork']['aliases'] = ['mssql']
   yaml_obj['services']['mssql']['environment'] = ['ACCEPT_EULA=Y', 'MSSQL_SA_PASSWORD=testPassword_']
+  yaml_obj['services']['cardsinitial']['environment'].append("CLARITY_SQL_SERVER=mssql:1433")
+  yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_SQL_USERNAME=sa')
+  yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_SQL_PASSWORD=testPassword_')
+  yaml_obj['services']['cardsinitial']['environment'].append('CLARITY_SQL_ENCRYPT=false')
   if args.expose_mssql:
     yaml_obj['services']['mssql']['ports'] = ['127.0.0.1:1433:1433']
 
