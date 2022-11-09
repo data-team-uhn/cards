@@ -115,7 +115,8 @@ public class ToEpicFormProcessor implements ResourceJsonProcessor
                     .filter(value -> ValueType.OBJECT.equals(value.getValueType()))
                     .map(JsonValue::asJsonObject)
                     .filter(value -> value.containsKey("jcr:primaryType")
-                        && "cards:IdMapping".equals(value.getString("jcr:primaryType")))
+                        && "cards:ExternalLink".equals(value.getString("jcr:primaryType"))
+                        && "epic".equals(value.getString("label")))
                     .map(value -> value.getString("value"))
                     .findFirst().orElse("");
                 answersObj.add("linkId", "<ID of the Question ID Type>|" + questionId);
@@ -167,7 +168,8 @@ public class ToEpicFormProcessor implements ResourceJsonProcessor
                 String questionnaireId = questionnaire.getIdentifier();
                 for (NodeIterator i = questionnaire.getNodes(); i.hasNext();) {
                     Node child = i.nextNode();
-                    if ("cards:IdMapping".equals(child.getPrimaryNodeType().getName())) {
+                    if ("cards:ExternalLink".equals(child.getPrimaryNodeType().getName())
+                        && "epic".equals(child.getProperty("label").getString())) {
                         questionnaireId = child.getProperty("value").getString();
                     }
                 }
