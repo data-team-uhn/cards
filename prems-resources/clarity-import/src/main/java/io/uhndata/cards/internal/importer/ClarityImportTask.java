@@ -218,10 +218,10 @@ public class ClarityImportTask implements Runnable
     public void run()
     {
         String connectionUrl =
-            "jdbc:sqlserver://" + System.getenv("SQL_SERVER") + ";"
-            + "user=" + System.getenv("SQL_USERNAME") + ";"
-            + "password=" + System.getenv("SQL_PASSWORD") + ";"
-            + "encrypt=false;";
+            "jdbc:sqlserver://" + System.getenv("CLARITY_SQL_SERVER") + ";"
+            + "user=" + System.getenv("CLARITY_SQL_USERNAME") + ";"
+            + "password=" + System.getenv("CLARITY_SQL_PASSWORD") + ";"
+            + "encrypt=" + System.getenv("CLARITY_SQL_ENCRYPT") + ";";
 
         // Connect via SQL to the server
         String query = "SELECT * FROM path.CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS"

@@ -55,6 +55,7 @@ argparser.add_argument('--external_mongo', help='Use an external MongoDB instanc
 argparser.add_argument('--external_mongo_uri', help='URI of the external MongoDB instance. Only valid if --external_mongo is specified.')
 argparser.add_argument('--external_mongo_dbname', help='Database name of the external MongoDB instance. Only valid if --external_mongo is specified.')
 argparser.add_argument('--mssql', help='Start up a MS-SQL instance with test data', action='store_true')
+argparser.add_argument('--expose_mssql', help='If --mssql is specified, forward the SQL service to the specified port [default: 1433]', default=1433, type=int)
 argparser.add_argument('--saml', help='Make the Apache Sling SAML2 Handler OSGi bundle available for SAML-based logins', action='store_true')
 argparser.add_argument('--saml_idp_destination', help='URL to redirect to for SAML logins')
 argparser.add_argument('--saml_cloud_iam_demo', help='Enable SAML authentication with CARDS via the Cloud-IAM.com demo', action='store_true')
@@ -702,16 +703,14 @@ if args.adminer:
 
 if args.mssql:
   print("Configuring service: ms-sql")  
-  yaml_obj['services']['mssql'] = {
-    'image': 'mcr.microsoft.com/mssql/server',
-    'networks': {
-      'internalnetwork': {
-        'aliases': ['mssql']
-      }
-    },
-    'ports': ['127.0.0.1:1433:1433'],
-    'environment': ['ACCEPT_EULA=Y', 'MSSQL_SA_PASSWORD=testPassword_']
-  }
+  yaml_obj['services']['mssql'] = {}
+  yaml_obj['services']['mssql']['image'] = 'mcr.microsoft.com/mssql/server:2022-latest'
+  yaml_obj['services']['mssql']['networks'] = {}
+  yaml_obj['services']['mssql']['networks']['internalnetwork'] = {}
+  yaml_obj['services']['mssql']['networks']['internalnetwork']['aliases'] = ['mssql']
+  yaml_obj['services']['mssql']['environment'] = ['ACCEPT_EULA=Y', 'MSSQL_SA_PASSWORD=testPassword_']
+  if args.expose_mssql:
+    yaml_obj['services']['mssql']['ports'] = ['127.0.0.1:1433:1433']
 
 #Setup the internal network
 print("Configuring the internal network")
