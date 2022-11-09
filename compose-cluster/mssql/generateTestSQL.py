@@ -24,7 +24,7 @@ import datetime
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument('file', help='Output file name', type=argparse.FileType('w'))
-argparser.add_argument('-n', help='Number of arguments [default: 3]', default=3, type=int)
+argparser.add_argument('-n', help='Number of patients discharges to generate [default: 3]', default=3, type=int)
 args = argparser.parse_args()
 
 # Preamble
@@ -78,8 +78,8 @@ for i in range(args.n):
     email = 'test' + str(mrn) + '@test.com'
     entry_time = datetime.date.today() - datetime.timedelta(seconds=random.randint(0, 7 * 24 * 60 * 60))
     entry_time_str = entry_time.strftime('%Y-%m-%d %H:%M:%S')
-    disch_dept_name = ('TG-EMERGENCY', 'TW-EMERGENCY')[random.randint(0, 1)]
-    email_consent_yn = ('Yes', 'No')[random.randint(0, 1)]
+    disch_dept_name = random.choice(['TG-EMERGENCY', 'TW-EMERGENCY'])
+    email_consent_yn = random.choice(['Yes', 'No'])
 
     args.file.write("INSERT INTO [path].[CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS]")
     args.file.write("\t(PAT_MRN, EMAIL_ADDRESS, ENTRY_TIME, DISCH_DEPT_NAME, EMAIL_CONSENT_YN, LoadTime)\n")
