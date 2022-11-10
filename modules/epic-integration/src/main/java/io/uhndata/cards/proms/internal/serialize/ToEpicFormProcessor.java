@@ -33,6 +33,7 @@ import javax.json.JsonString;
 import javax.json.JsonValue;
 import javax.json.JsonValue.ValueType;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
 import org.osgi.service.component.annotations.Component;
 
@@ -55,6 +56,8 @@ import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 @Component(immediate = true)
 public class ToEpicFormProcessor implements ResourceJsonProcessor
 {
+    private static final String PRIMARY_TYPE_PROP = "jcr:primaryType";
+
     /**
      * Saves all JSONs of nodes with type {@code cards:Answer}. This maps from the node's name to the JSON. A linked map
      * preserves the order of the answers, as encountered in a top-to-bottom DFS pass through the form.
@@ -114,8 +117,8 @@ public class ToEpicFormProcessor implements ResourceJsonProcessor
                 String questionId = question.values().stream()
                     .filter(value -> ValueType.OBJECT.equals(value.getValueType()))
                     .map(JsonValue::asJsonObject)
-                    .filter(value -> value.containsKey("jcr:primaryType")
-                        && "cards:ExternalLink".equals(value.getString("jcr:primaryType"))
+                    .filter(value -> value.containsKey(PRIMARY_TYPE_PROP)
+                        && "cards:ExternalLink".equals(value.getString(PRIMARY_TYPE_PROP))
                         && "epic".equals(value.getString("label")))
                     .map(value -> value.getString("value"))
                     .findFirst().orElse("");
@@ -123,19 +126,23 @@ public class ToEpicFormProcessor implements ResourceJsonProcessor
                 answersObj.add("text", question.getString("text", ""));
                 final JsonArrayBuilder answers = Json.createArrayBuilder();
 
-                JsonValue value = answer.get("value");
+                JsonValue value = answer.get("displayedValue");
+                if (value == null) {
+                    value = answer.get("value");
+                }
                 if (value == null) {
                     return null;
                 }
 
+                final String nodeType = answer.getString(PRIMARY_TYPE_PROP);
                 if (ValueType.ARRAY.equals(value.getValueType())) {
                     value.asJsonArray().stream()
                         .forEach(entry -> answers.add(Json.createObjectBuilder()
-                                                              .add("valueString", ((JsonString) entry).getString())
+                                                              .add("valueString", getStringValue(entry, nodeType))
                                                               .build()));
                 } else {
                     answers.add(Json.createObjectBuilder()
-                                        .add("valueString", ((JsonString) value).getString())
+                                        .add("valueString", getStringValue(value, nodeType))
                                         .build());
                 }
 
@@ -218,5 +225,18 @@ public class ToEpicFormProcessor implements ResourceJsonProcessor
     {
         // Cleanup the state
         this.childrenJsons.remove();
+    }
+
+    private String getStringValue(final JsonValue value, final String nodeType)
+    {
+        if (ValueType.STRING.equals(value.getValueType())) {
+            return ((JsonString) value).getString();
+        } else if ("cards:PedigreeAnswer".equals(nodeType)) {
+            return "yes";
+        } else if ("cards:VocabularyAnswer".equals(nodeType)) {
+            return StringUtils.substringAfterLast(((JsonString) value).getString(), "/");
+        } else {
+            return value.toString();
+        }
     }
 }
