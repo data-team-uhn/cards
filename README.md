@@ -114,6 +114,31 @@ To enable debug mode, also add `--env DEBUG=true` to the `docker run` command. N
 
 `docker run --network cardsbridge -d -p 8080:8080 -p 5005:5005 -e INITIAL_SLING_NODE=true --env DEV=true --env DEBUG=true --name cards-debug cards/cards`
 
+### Environment variables
+
+There are various environment variables that can be set in a production environment to enable different functionalities.
+
+| Environment Variable | Description | Sample |
+| ------------- | ----------: | -----: |
+| `S3_ENDPOINT_URL` | URL for an Amazon S3 endpoint to export data to | https://sns.us-west-1.amazonaws.com |
+| `S3_ENDPOINT_REGION` | The region to use with the above for SigV4 signing of requests | us-west-1 |
+| `S3_BUCKET_NAME` | S3 bucket to export to | uhn |
+| `AWS_KEY` | AWS access key | |
+| `AWS_SECRET` | AWS secdret access key | |
+| `NIGHTLY_EXPORT_SCHEDULE` | Crontab-readable schedule to perform nightly export | 0 0 6 \* \* ? \* |
+| `REFERENCE_DATE` | A reference data from which all dates are to be measured from (for more details, see DateObfuscationProcessor.java) | 2020-01-01 |
+| `COMPUTED_ANSWERS_DISABLED` | If set to `true`, computed answers are disabled | `true` |
+| `PATIENT_NOTIFICATION_FROM_ADDRESS` | The email address from which patient notifications are sent | `datapro@uhn.ca` |
+| `PATIENT_NOTIFICATION_FROM_NAME` | The name field used in patient notification emails | `UHN DATAPRO` |
+| `CARDS_HOST_AND_PORT` | The URL to CARDs, required when emails are enabled | `localhost:8080` |
+| `NIGHTLY_NOTIFICATIONS_SCHEDULE` | Crontab-readable schedule to perform nightly notification emails | `0 0 6 * * ? *` |
+| `NIGHTLY_SLACK_NOTIFICATIONS_SCHEDULE` | Crontab-readable schedule to perform Slack notification messages | `0 0 6 * * ? *` |
+| `SLACK_PERFORMANCE_URL` | !!TO BE FILLED OUT!! | !!TO BE FILLED OUT!! |
+| `SLACK_BACKUP_NOTIFICATIONS_URL` | !!TO BE FILLED OUT!! | !!TO BE FILLED OUT!! |
+| `BIOPORTAL_APIKEY` | API key [for Bioportal vocabularies](https://data.bioontology.org/documentation) | |
+| `NIGHTLY_WEBHOOK_BACKUP_SCHEDULE` | Crontab-readable schedule to perform a Webhook backup of CARDs | `0 0 6 * * ? *` |
+| `BACKUP_WEBHOOK_URL` | Webhook URL to perform backup of CARDs to | `http://localhost:8012` |
+
 ## Running with Docker-Compose
 
 Docker-Compose can be employed to create a cluster of *N* MongoDB Shards, *M* MongoDB Replicas, and *one* CARDS instance.
