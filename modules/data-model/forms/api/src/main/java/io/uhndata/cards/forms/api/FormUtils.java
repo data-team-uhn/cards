@@ -18,8 +18,11 @@ package io.uhndata.cards.forms.api;
 
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.Map;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
@@ -434,4 +437,22 @@ public interface FormUtils
      *         value is stored in the answer
      */
     Object getValue(NodeState answer);
+
+    /**
+     * Updates the value of a pre-existing answer using the same data type as the old answer.
+     *
+     * @param formNode the javax.jcr.Node for the Form that is to be modified
+     * @param questionNode the javax.jcr.Node for the Question node associated with the Answer node to be updated
+     * @param newValue the new value object that will be written to the JCR answer node value property
+     */
+    void updateAnswer(Node formNode, Node questionNode, Object newValue) throws RepositoryException;
+
+    /**
+     * Returns a single-entry (question name) --> (answer value) Map for the Answer node at answerPath.
+     *
+     * @param session a Session that can be used for querying the JCR
+     * @param answerPath the JCR path to the answer node
+     * @return a single-entry (question name) --> (answer value) Map for the Answer node at answerPath
+     */
+    Map<String, Object> getQuestionAnswerPair(Session session, String answerPath) throws RepositoryException;
 }

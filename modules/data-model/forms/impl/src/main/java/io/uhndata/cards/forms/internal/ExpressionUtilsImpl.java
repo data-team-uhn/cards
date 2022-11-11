@@ -97,6 +97,47 @@ public final class ExpressionUtilsImpl implements ExpressionUtils
         return expressionInputs(getExpressionFromQuestion(question));
     }
 
+    @SuppressWarnings("checkstyle:CyclomaticComplexity")
+    @Override
+    public Type<?> getTypeFromQuestion(Node question)
+    {
+        Type<?> dataType = Type.STRING;
+        try {
+            final String dataTypeString = question.getProperty("dataType").getString();
+            switch (dataTypeString) {
+                case "long":
+                    dataType = Type.LONG;
+                    break;
+                case "double":
+                    dataType = Type.DOUBLE;
+                    break;
+                case "decimal":
+                    dataType = Type.DECIMAL;
+                    break;
+                case "boolean":
+                    // Long, not boolean
+                    dataType = Type.LONG;
+                    break;
+                case "date":
+                    dataType = (question.hasProperty("dateFormat") && "yyyy".equals(
+                        question.getProperty("dateFormat").getString().toLowerCase()))
+                            ? Type.LONG
+                            : Type.DATE;
+                    break;
+                case "time":
+                case "vocabulary":
+                case "text":
+                    dataType = Type.STRING;
+                    break;
+                default:
+                    dataType = Type.STRING;
+            }
+        } catch (Exception e) {
+            LOGGER.warn("Error occurred inside of ExpressionUtils::getTypeFromQuestion");
+        }
+        return dataType;
+    }
+
     private Set<String> expressionInputs(final String expression)
     {
         String expr = expression;

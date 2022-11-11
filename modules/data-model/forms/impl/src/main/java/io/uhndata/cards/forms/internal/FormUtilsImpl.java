@@ -18,6 +18,7 @@ package io.uhndata.cards.forms.internal;
 
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -30,6 +31,7 @@ import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import javax.jcr.Value;
 
 import org.apache.commons.lang3.StringUtils;
@@ -324,6 +326,25 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
             }
         }
         return result;
+    }
+
+    @Override
+    public void updateAnswer(Node formNode, Node questionNode, Object newValue) throws RepositoryException
+    {
+        Node answerNode = getAnswer(formNode, questionNode);
+        int resultType = answerNode.getProperty(VALUE_PROPERTY).getType();
+        answerNode.setProperty(VALUE_PROPERTY, (String) newValue, resultType);
+    }
+
+    @Override
+    public Map<String, Object> getQuestionAnswerPair(Session session, String answerPath) throws RepositoryException
+    {
+        Map<String, Object> questionAnswerMap = new HashMap<String, Object>();
+        Node answerNode = session.getNode(answerPath);
+        String questionName = this.questionnaires.getQuestionName(getQuestion(answerNode));
+        Object answerValue = getValue(answerNode);
+        questionAnswerMap.put(questionName, answerValue);
+        return questionAnswerMap;
     }
 
     // Internal helper methods

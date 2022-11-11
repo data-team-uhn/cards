@@ -85,4 +85,11 @@ public interface ExpressionUtils
      * @return list of all the questions names that is used to compute an answer
      */
     Set<String> getQuestionsNames(Node question);
+
+    /**
+     *
+     * @param question the question node
+     * @return the Type object representing the data type of responses to that question
+     */
+    Type<?> getTypeFromQuestion(Node question);
 }
