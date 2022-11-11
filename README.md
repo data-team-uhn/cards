@@ -133,7 +133,7 @@ There are various environment variables that can be set in a production environm
 | `CARDS_HOST_AND_PORT` | The URL to CARDs, required when emails are enabled | `localhost:8080` |
 | `NIGHTLY_NOTIFICATIONS_SCHEDULE` | Crontab-readable schedule to perform nightly notification emails | `0 0 6 * * ? *` |
 | `NIGHTLY_SLACK_NOTIFICATIONS_SCHEDULE` | Crontab-readable schedule to perform Slack notification messages | `0 0 6 * * ? *` |
-| `SLACK_PERFORMANCE_URL` | !!TO BE FILLED OUT!! | !!TO BE FILLED OUT!! |
+| `SLACK_PERFORMANCE_URL` | The Slack incoming webhook URL which the performance logger (`io.uhndata.cards.patients.slacknotifications`) can write its performance update messages to | `https://hooks.slack.com/services/ery8974/342rUYEiue/KJHkggI8973130DddE3r` |
 | `SLACK_BACKUP_NOTIFICATIONS_URL` | !!TO BE FILLED OUT!! | !!TO BE FILLED OUT!! |
 | `BIOPORTAL_APIKEY` | API key [for Bioportal vocabularies](https://data.bioontology.org/documentation) | |
 | `NIGHTLY_WEBHOOK_BACKUP_SCHEDULE` | Crontab-readable schedule to perform a Webhook backup of CARDs | `0 0 6 * * ? *` |
