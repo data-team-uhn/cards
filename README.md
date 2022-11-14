@@ -142,6 +142,7 @@ There are various environment variables that can be set in a production environm
 | `DEMO_BANNER` | If specified, enables the _demo banner_ on the CARDS web interface | `true` |
 | `DEMO` | If specified, enables the _complete_ set of CARDS demo features (_demo banner_, _upgrade marker_, _demo forms_) | `true` |
 | `DEV` | If specified, enables the _Composum_ JCR explorer. | `true` |
+| `ENABLE_TEST_FEATURES` | If specified, enables the _complete_ set of CARDS _test_ Forms. | `true` |
 
 ## Running with Docker-Compose
 
