@@ -151,6 +151,7 @@ There are various environment variables that can be set in a production environm
 | `EXTERNAL_MONGO_URI` | The URI of a Mongo database to use for data persistence | `mongodb.example.com:27017` |
 | `MONGO_AUTH` | If specified, authenticates to the Mongo database as `<username>:<password>` | `mongouser:password` |
 | `CUSTOM_MONGO_DB_NAME` | If specified, uses the specified name as the Mongo database for JCR persistence instead of the default `oak`. | `sling` |
+| `SMTPS_ENABLED` | If set to `true`, enables the sending of _SMTPS_ email notifications from CARDS. | `true` |
 
 ## Running with Docker-Compose
 
