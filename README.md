@@ -146,6 +146,7 @@ There are various environment variables that can be set in a production environm
 | `SAML_AUTH_ENABLED` | If set to `true`, enables user authentication via SAML | `true` |
 | `SAML_CLOUD_IAM_DEMO` | If specified, allows SAML authentication via https://lemur-15.cloud-iam.com/auth/realms/cards-saml-test/protocol/saml. (Only useful for UHN DATA Team Developers) | `true` |
 | `OAK_FILESYSTEM` | If specified, the local file system, as opposed to a Mongo database, will be used for JCR data storage. | `true` |
+| `PERMISSIONS` | The _permissions mode_ to use for the data entered into CARDS | `open`, `trusted`, `ownership` |
 
 ## Running with Docker-Compose
 
