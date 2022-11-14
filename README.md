@@ -148,6 +148,9 @@ There are various environment variables that can be set in a production environm
 | `SAML_CLOUD_IAM_DEMO` | If specified, allows SAML authentication via https://lemur-15.cloud-iam.com/auth/realms/cards-saml-test/protocol/saml. (Only useful for UHN DATA Team Developers) | `true` |
 | `OAK_FILESYSTEM` | If specified, the local file system, as opposed to a Mongo database, will be used for JCR data storage. | `true` |
 | `PERMISSIONS` | The _permissions mode_ to use for the data entered into CARDS | `open`, `trusted`, `ownership` |
+| `EXTERNAL_MONGO_URI` | The URI of a Mongo database to use for data persistence | `mongodb.example.com:27017` |
+| `MONGO_AUTH` | If specified, authenticates to the Mongo database as `<username>:<password>` | `mongouser:password` |
+| `CUSTOM_MONGO_DB_NAME` | If specified, uses the specified name as the Mongo database for JCR persistence instead of the default `oak`. | `sling` |
 
 ## Running with Docker-Compose
 
