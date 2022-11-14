@@ -18,6 +18,8 @@
  */
 package io.uhndata.cards.proms.internal.serialize;
 
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -25,6 +27,7 @@ import java.util.function.Function;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
+import javax.jcr.query.Query;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
@@ -34,8 +37,14 @@ import javax.json.JsonValue;
 import javax.json.JsonValue.ValueType;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 
@@ -57,6 +66,13 @@ import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
 public class ToEpicFormProcessor implements ResourceJsonProcessor
 {
     private static final String PRIMARY_TYPE_PROP = "jcr:primaryType";
+
+    private static final String VALUE = "value";
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ToEpicFormProcessor.class);
+
+    @Reference
+    private ResourceResolverFactory rrf;
 
     /**
      * Saves all JSONs of nodes with type {@code cards:Answer}. This maps from the node's name to the JSON. A linked map
@@ -120,7 +136,7 @@ public class ToEpicFormProcessor implements ResourceJsonProcessor
                     .filter(value -> value.containsKey(PRIMARY_TYPE_PROP)
                         && "cards:ExternalLink".equals(value.getString(PRIMARY_TYPE_PROP))
                         && "epic".equals(value.getString("label")))
-                    .map(value -> value.getString("value"))
+                    .map(value -> value.getString(VALUE))
                     .findFirst().orElse("");
                 answersObj.add("linkId", "<ID of the Question ID Type>|" + questionId);
                 answersObj.add("text", question.getString("text", ""));
@@ -128,7 +144,7 @@ public class ToEpicFormProcessor implements ResourceJsonProcessor
 
                 JsonValue value = answer.get("displayedValue");
                 if (value == null) {
-                    value = answer.get("value");
+                    value = answer.get(VALUE);
                 }
                 if (value == null) {
                     return null;
@@ -177,7 +193,7 @@ public class ToEpicFormProcessor implements ResourceJsonProcessor
                     Node child = i.nextNode();
                     if ("cards:ExternalLink".equals(child.getPrimaryNodeType().getName())
                         && "epic".equals(child.getProperty("label").getString())) {
-                        questionnaireId = child.getProperty("value").getString();
+                        questionnaireId = child.getProperty(VALUE).getString();
                     }
                 }
                 result.add("questionnaire", "Questionnaire/" + questionnaireId);
@@ -196,12 +212,11 @@ public class ToEpicFormProcessor implements ResourceJsonProcessor
                 */
                 final JsonObjectBuilder identifier = Json.createObjectBuilder();
                 identifier.add("system", "CarePlan.activity.reference.type");
-                identifier.add("value", "CarePlan.activity.reference.identifier.value -> CSN ID for an Appointment");
+                identifier.add(VALUE, "CarePlan.activity.reference.identifier.value -> CSN ID for an Appointment");
                 result.add("subject", Json.createObjectBuilder()
                                         .add("identifier", identifier.build())
                                         .build());
-                // Add the answers to the root
-                result.add("status", "<in-progress|?>");
+                setStatus(result, node.getIdentifier());
                 // Add the answers to the root node
                 final JsonArrayBuilder answers = Json.createArrayBuilder();
                 this.childrenJsons.get().entrySet().stream()
@@ -215,8 +230,10 @@ public class ToEpicFormProcessor implements ResourceJsonProcessor
                 result.build().entrySet().stream()
                     .forEach(entry -> json.add(entry.getKey(), entry.getValue()));
             }
-        } catch (RepositoryException e) {
-            // Shouldn't happen
+        } catch (final LoginException e) {
+            LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
+        } catch (final RepositoryException e) {
+            LOGGER.error(e.getMessage(), e);
         }
     }
 
@@ -238,5 +255,50 @@ public class ToEpicFormProcessor implements ResourceJsonProcessor
         } else {
             return value.toString();
         }
+    }
+
+    private void setStatus(final JsonObjectBuilder result, final String formId) throws LoginException
+    {
+        final Map<String, Object> parameters =
+            Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, "ToEpicFormProcessor");
+        ResourceResolver serviceResolver = this.rrf.getServiceResourceResolver(parameters);
+        if (serviceResolver == null) {
+            return;
+        }
+
+        // Gather the needed UUIDs to place in the query
+        final String visitInformationQuestionnaire =
+            (String) serviceResolver.getResource("/Questionnaires/Visit information").getValueMap().get("jcr:uuid");
+        final String submittedId = (String) serviceResolver
+            .getResource("/Questionnaires/Visit information/surveys_submitted").getValueMap().get("jcr:uuid");
+
+        // Query: get all associated visit forms that are in progress
+        final Iterator<Resource> resources = serviceResolver.findResources(String.format(
+            // select the data forms
+            "select distinct dataForm.* from [cards:Form] as dataForm"
+                // belonging to a visit
+                + "  inner join [cards:Form] as visitInformation on visitInformation.subject = dataForm.subject"
+                + "  inner join [cards:Answer] as submitted on isdescendantnode(submitted, visitInformation)"
+                + " where"
+                // Link to the resource form
+                + "  dataForm.uuid='%1$s'"
+                // link to the correct Visit Information questionnaire
+                + "  and visitInformation.questionnaire = '%2$s'"
+                // the visit is not submitted
+                + "  and submitted.question = '%3$s'"
+                + "  and (submitted.value <> 1 OR submitted.value IS NULL)"
+                // exclude the Visit Information questionnaire form itself
+                + "  and dataForm.questionnaire <> '%1$s'",
+                formId, visitInformationQuestionnaire, submittedId),
+            Query.JCR_SQL2);
+
+        // No visit forms in progress
+        if (!resources.hasNext()) {
+            return;
+        }
+
+        // Add the status
+        result.add("status", "in-progress");
+        return;
     }
 }
