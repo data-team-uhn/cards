@@ -159,6 +159,7 @@ The following environment variables are read by the CARDS Docker container _entr
 | `MONGO_AUTH` | If specified, authenticates to the Mongo database as `<username>:<password>` | `mongouser:password` |
 | `CUSTOM_MONGO_DB_NAME` | If specified, uses the specified name as the Mongo database for JCR persistence instead of the default `oak`. | `sling` |
 | `SMTPS_ENABLED` | If set to `true`, enables the sending of _SMTPS_ email notifications from CARDS. | `true` |
+| `ADDITIONAL_SLING_FEATURES` | If set, enables the listed Sling features. | `mvn:io.uhndata.cards/some-other-sling-feature/0.9-SNAPSHOT/slingosgifeature` |
 
 ## Running with Docker-Compose
 
