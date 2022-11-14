@@ -138,6 +138,7 @@ There are various environment variables that can be set in a production environm
 | `BIOPORTAL_APIKEY` | API key [for Bioportal vocabularies](https://data.bioontology.org/documentation) | |
 | `NIGHTLY_WEBHOOK_BACKUP_SCHEDULE` | Crontab-readable schedule to perform a Webhook backup of CARDS | `0 0 6 * * ? *` |
 | `BACKUP_WEBHOOK_URL` | Webhook URL to perform backup of CARDS to | `http://localhost:8012` |
+| `CARDS_PROJECT` | The CARDS-based project to run (eg. CARDS4LFS, CARDS4HERACLES, etc...) | `cards4proms` |
 
 ## Running with Docker-Compose
 
