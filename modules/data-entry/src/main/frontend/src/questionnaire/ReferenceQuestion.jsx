@@ -43,7 +43,7 @@ let ReferenceQuestion = (props) => {
 
   let initialValue = existingAnswer?.[1].value || "";
   let answer = initialValue === "" ? [] : [["value", initialValue]];
-  let muiInputProps = {};
+  const [muiInputProps, changeMuiInputProps] = useState({});
   const [isFormatted, changeIsFormatted] = useState(false);
 
   // Hooks must be pulled from the top level, so this cannot be moved to inside the useEffect()
@@ -58,9 +58,9 @@ let ReferenceQuestion = (props) => {
 
   useEffect(() => {
     if (unitOfMeasurement) {
-      muiInputProps.endAdornment = <InputAdornment position="end">{unitOfMeasurement}</InputAdornment>;
+      changeMuiInputProps({ ...muiInputProps, endAdornment: <InputAdornment position="end">{unitOfMeasurement}</InputAdornment>});
     } else {
-      delete muiInputProps.endAdornment;
+      changeMuiInputProps({ ...muiInputProps, endAdornment: undefined});
     }
   }, [unitOfMeasurement])
 

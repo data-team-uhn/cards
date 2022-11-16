@@ -309,17 +309,6 @@ function Form (props) {
     fetchData();
   }, []);
 
-  let getIncompleteAnswers = (obj, results) => {
-    for (var entry in Object.entries(obj || {})) {
-      if (entry[1]?.["jcr:primaryType"] == "cards:AnswerSection" && hasWarningFlags(entry)) {
-        getIncompleteAnswers(entry[1], results);
-      } else if (entry[1]?.["sling:resourceSuperType"] == "cards/Answer" && hasWarningFlags(entry)) {
-        results.push(entry[1]);
-      }
-    }
-    return results;
-  }
-
   // If the data has not yet been fetched, return an in-progress symbol
   if (!data) {
     return (

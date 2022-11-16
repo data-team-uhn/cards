@@ -158,7 +158,8 @@ function TimelineEntry(classes, dateEntry, index, length, nextEntry) {
 function SubjectTimeline(props) {
   let { classes, subject } = props;
   let [dateEntries, setDateEntries] = useState(null);
-
+  // Error message set when fetching the data from the server fails
+  let [ error, setError ] = useState();
   let globalLoginDisplay = useContext(GlobalLoginContext);
 
   // Fetch the forms and answers for a specific subject

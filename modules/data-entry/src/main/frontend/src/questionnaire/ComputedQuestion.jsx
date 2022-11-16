@@ -62,7 +62,7 @@ let ComputedQuestion = (props) => {
   const [baseValue, changeBaseValue] = useState(initialValue);
   const [answer, changeAnswer] = useState(initialValue === "" ? [] : [["value", initialValue]]);
   const [fieldType, changeFieldType] = useState("string")
-  let muiInputProps = {};
+  const [muiInputProps, changeMuiInputProps] = useState({});
   const [isFormatted, changeIsFormatted] = useState(false);
 
   const form = useFormReaderContext();
@@ -237,9 +237,9 @@ let ComputedQuestion = (props) => {
 
   useEffect(() => {
     if (unitOfMeasurement) {
-      muiInputProps.endAdornment = <InputAdornment position="end">{unitOfMeasurement}</InputAdornment>;
+      changeMuiInputProps({ ...muiInputProps, endAdornment: <InputAdornment position="end">{unitOfMeasurement}</InputAdornment>});
     } else {
-      delete muiInputProps.endAdornment;
+      changeMuiInputProps({ ...muiInputProps, endAdornment: undefined});
     }
   }, [unitOfMeasurement])
 
