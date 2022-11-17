@@ -36,13 +36,13 @@ import QuestionComponentManager from "../questionnaireEditor/QuestionComponentMa
 // Object Input field used by Edit dialog component
 
 let ObjectInput = (props) => {
-  let { objectKey, value, data, hints, onHelpClick, onChange, ...rest } = props;
+  let { objectKey, value, data, hint, hints, onChange, ...rest } = props;
   const defaultValue = data[objectKey] || (Object.keys(value || {})[0] || '');
   let [ selectedValue, setSelectedValue ] = useState(defaultValue);
 
   return (
     <>
-    <EditorInput name={objectKey} hasHint={Boolean(hints?.[objectKey])} onHelpClick={onHelpClick}>
+    <EditorInput name={objectKey} hint={hint}>
       <Select
         variant="standard"
         id={objectKey}
@@ -60,7 +60,7 @@ let ObjectInput = (props) => {
       </Select>
     </EditorInput>
     { typeof(value) === 'object' && selectedValue != '' && typeof (value[selectedValue]) === 'object' ?
-        <Fields data={data} JSON={value[selectedValue]} edit={true} hints={hints} onHelpClick={onHelpClick} {...rest} />
+        <Fields data={data} JSON={value[selectedValue]} edit={true} hints={hints} {...rest} />
       :
       (selectedValue != '') && <Typography color="secondary" variant="subtitle2">Unsupported: {selectedValue}</Typography>
     }
@@ -72,8 +72,8 @@ ObjectInput.propTypes = {
   objectKey: PropTypes.string.isRequired,
   value: PropTypes.object.isRequired,
   data: PropTypes.object.isRequired,
+  hint: PropTypes.string,
   hints: PropTypes.object,
-  onHelpClick: PropTypes.func
 };
 
 const StyledObjectInput = withStyles(QuestionnaireStyle)(ObjectInput);

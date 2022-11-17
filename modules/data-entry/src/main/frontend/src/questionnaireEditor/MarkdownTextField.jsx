@@ -30,11 +30,11 @@ import FormattedText from "../components/FormattedText.jsx";
 
 // Markdown Text Input field used by Edit dialog component
 let MarkdownTextField = (props) => {
-  let { objectKey, data, onChange, hints, onHelpClick, classes } = props;
+  let { objectKey, data, onChange, hint, classes } = props;
   const [value, setValue] = useState(data[objectKey] || '');
 
   return (
-    <EditorInput name={objectKey} hasHint={Boolean(hints?.[objectKey])}  onHelpClick={onHelpClick}>
+    <EditorInput name={objectKey} hint={hint}>
       <MarkdownText value={value} onChange={value => {setValue(value); onChange && onChange(value);}} />
       <input type="hidden" name={objectKey} value={value} />
     </EditorInput>
@@ -45,8 +45,7 @@ MarkdownTextField.propTypes = {
   objectKey: PropTypes.string.isRequired,
   data: PropTypes.object.isRequired,
   onChange: PropTypes.func,
-  hints: PropTypes.object,
-  onHelpClick: PropTypes.func
+  hint: PropTypes.string,
 };
 
 const StyledMarkdownTextField = withStyles(QuestionnaireStyle)(MarkdownTextField);

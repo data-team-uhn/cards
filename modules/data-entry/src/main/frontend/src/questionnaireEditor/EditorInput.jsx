@@ -22,22 +22,28 @@ import makeStyles from '@mui/styles/makeStyles';
 import PropTypes from 'prop-types';
 import {
   Grid,
-  IconButton,
+  Tooltip,
   Typography
 } from "@mui/material";
 
 import Info from "@mui/icons-material/Info";
 
 import { camelCaseToWords } from "./LabeledField";
+import FormattedText from "../components/FormattedText.jsx";
 
 let EditorInput = (props) => {
-  let { children, name, hasHint, onHelpClick } = props;
+  let { children, name, hint } = props;
 
   const classes = makeStyles((theme) => ({
     labelContainer: {
       /* Match the input padding so the text of the label would appear aligned with the text of the input */
       /* To do: switch to a vertical layout in the future to avoid most alignment issues  */
       paddingTop: theme.spacing(1.75) + " !important",
+      /* Align the optional hint icon within the label */
+      "& .MuiTypography-root" : {
+         display: "flex",
+         alignItems: "flex-end",
+      },
     },
   }))();
 
@@ -47,16 +53,11 @@ let EditorInput = (props) => {
       <Grid item xs={4} className={classes.labelContainer}>
         <Typography variant="subtitle2">
           {camelCaseToWords(name?.concat(':')) || ''}
-          { hasHint &&
-              <IconButton
-                size="small"
-                color="primary"
-                onClick={(e) => {e.preventDefault(); e.stopPropagation(); onHelpClick && onHelpClick(e, name);}}
-                className={classes.infoButton}
-            >
+          { name && hint &&
+            <Tooltip title={<FormattedText>{hint}</FormattedText>} enterTouchDelay={200}>
               <Info color="primary" />
-            </IconButton>
-        }
+            </Tooltip>
+          }
         </Typography>
       </Grid>
       <Grid item xs={8}>
@@ -70,8 +71,7 @@ let EditorInput = (props) => {
 EditorInput.propTypes = {
   children: PropTypes.node.isRequired,
   name: PropTypes.string.isRequired,
-  hasHint: PropTypes.bool,
-  onHelpClick: PropTypes.func
+  hint: PropTypes.string,
 };
 
 export default EditorInput

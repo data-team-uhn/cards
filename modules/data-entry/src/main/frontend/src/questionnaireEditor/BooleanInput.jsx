@@ -35,11 +35,11 @@ import ValueComponentManager from "../questionnaireEditor/ValueComponentManager"
 // Boolean Input field used by Edit dialog component
 
 let BooleanInput = (props) => {
-  let { objectKey, data, hints, onHelpClick } = props;
+  let { objectKey, data, hint } = props;
   let [ checked, setChecked ] = useState(data?.[objectKey] == true);
 
   return (
-    <EditorInput name={objectKey} hasHint={Boolean(hints?.[objectKey])} onHelpClick={onHelpClick}>
+    <EditorInput name={objectKey} hint={hint}>
       <Switch
         color="secondary"
         edge="start"
@@ -56,8 +56,7 @@ let BooleanInput = (props) => {
 BooleanInput.propTypes = {
   objectKey: PropTypes.string.isRequired,
   data: PropTypes.object.isRequired,
-  hints: PropTypes.object,
-  onHelpClick: PropTypes.func
+  hint: PropTypes.string,
 };
 
 const StyledBooleanInput = withStyles(QuestionnaireStyle)(BooleanInput);
