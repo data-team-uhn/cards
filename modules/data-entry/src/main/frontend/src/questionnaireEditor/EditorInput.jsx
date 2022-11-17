@@ -54,7 +54,9 @@ let EditorInput = (props) => {
         <Typography variant="subtitle2">
           {camelCaseToWords(name?.concat(':')) || ''}
           { name && hint &&
-            <Tooltip title={<FormattedText>{hint}</FormattedText>} enterTouchDelay={200}>
+            <Tooltip enterTouchDelay={200} title={
+              <FormattedText variant="caption">{hint}</FormattedText>
+            }>
               <Info color="primary" />
             </Tooltip>
           }
