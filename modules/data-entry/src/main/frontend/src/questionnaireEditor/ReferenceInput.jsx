@@ -36,7 +36,7 @@ let SUBJECT_TYPE_URL = "/SubjectTypes.paginate?offset=0&limit=100&req=0";
 
 // Reference Input field used by Edit dialog component
 let ReferenceInput = (props) => {
-  const { classes, objectKey, data, value } = props;
+  const { classes, objectKey, data, value, hints, onHelpClick } = props;
   const fieldsReader = useFieldsReaderContext();
   const fieldsWriter = useFieldsWriterContext();
 
@@ -263,7 +263,7 @@ let ReferenceInput = (props) => {
   }
 
   return (
-    <EditorInput name={objectKey}>
+    <EditorInput name={objectKey} hasHint={Boolean(hints?.[objectKey])}  onHelpClick={onHelpClick}>
       <input type="hidden" name={objectKey + "@TypeHint"} value='Reference' />
       {hiddenInput}
       <Select
@@ -282,7 +282,9 @@ let ReferenceInput = (props) => {
 
 ReferenceInput.propTypes = {
   objectKey: PropTypes.string.isRequired,
-  data: PropTypes.object.isRequired
+  data: PropTypes.object.isRequired,
+  hints: PropTypes.object,
+  onHelpClick: PropTypes.func
 };
 
 const StyledReferenceInput = withStyles(LiveTableStyle)(ReferenceInput);

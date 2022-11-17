@@ -107,7 +107,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 let AnswerOptions = (props) => {
-  const { objectKey, value, data, path, saveButtonRef } = props;
+  const { objectKey, value, data, path, saveButtonRef, hints, onHelpClick } = props;
   const classes = useStyles();
   let [ options, setOptions ] = useState(extractSortedOptions(data));
   let [ deletedOptions, setDeletedOptions ] = useState([]);
@@ -380,7 +380,7 @@ let AnswerOptions = (props) => {
   }
 
   return (
-    <EditorInput name={objectKey}>
+    <EditorInput name={objectKey} hasHint={Boolean(hints?.[objectKey])} onHelpClick={onHelpClick}>
       { deletedOptions.map((value, index) =>
         <input type='hidden' name={`${value['@path']}@Delete`} value="0" key={value['@path']} />
       )}
@@ -521,7 +521,9 @@ let AnswerOptions = (props) => {
 }
 
 AnswerOptions.propTypes = {
-  data: PropTypes.object.isRequired
+  data: PropTypes.object.isRequired,
+  hints: PropTypes.object,
+  onHelpClick: PropTypes.func
 };
 
 export default AnswerOptions;

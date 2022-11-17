@@ -22,13 +22,16 @@ import makeStyles from '@mui/styles/makeStyles';
 import PropTypes from 'prop-types';
 import {
   Grid,
+  IconButton,
   Typography
 } from "@mui/material";
+
+import Info from "@mui/icons-material/Info";
 
 import { camelCaseToWords } from "./LabeledField";
 
 let EditorInput = (props) => {
-  let { children, name } = props;
+  let { children, name, hasHint, onHelpClick } = props;
 
   const classes = makeStyles((theme) => ({
     labelContainer: {
@@ -44,6 +47,16 @@ let EditorInput = (props) => {
       <Grid item xs={4} className={classes.labelContainer}>
         <Typography variant="subtitle2">
           {camelCaseToWords(name?.concat(':')) || ''}
+          { hasHint &&
+              <IconButton
+                size="small"
+                color="primary"
+                onClick={(e) => {e.preventDefault(); e.stopPropagation(); onHelpClick && onHelpClick(e, name);}}
+                className={classes.infoButton}
+            >
+              <Info color="primary" />
+            </IconButton>
+        }
         </Typography>
       </Grid>
       <Grid item xs={8}>
@@ -56,7 +69,9 @@ let EditorInput = (props) => {
 
 EditorInput.propTypes = {
   children: PropTypes.node.isRequired,
-  name: PropTypes.string.isRequired
+  name: PropTypes.string.isRequired,
+  hasHint: PropTypes.bool,
+  onHelpClick: PropTypes.func
 };
 
 export default EditorInput

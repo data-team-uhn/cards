@@ -40,7 +40,7 @@ import LabeledField from "./LabeledField";
 import { FieldsProvider } from "./FieldsContext.jsx";
 
 let Fields = (props) => {
-  let { data, JSON, edit, classes, condensed, ...rest } = props;
+  let { data, hints, JSON, edit, classes, condensed, onHelpClick, ...rest } = props;
 
   /**
    * Method responsible for displaying a question from the questionnaire
@@ -58,6 +58,8 @@ let Fields = (props) => {
           objectKey={key}
           value={value}
           data={data}
+          onHelpClick={onHelpClick}
+          hints={hints}
           {...rest}
           />
     );
@@ -102,7 +104,9 @@ Fields.propTypes = {
   JSON: PropTypes.object.isRequired,
   edit: PropTypes.bool.isRequired,
   condensed: PropTypes.bool,
-  onChange: PropTypes.func
+  hints: PropTypes.object,
+  onChange: PropTypes.func,
+  onHelpClick: PropTypes.func
 };
 
 export default withStyles(QuestionnaireStyle)(Fields);

@@ -21,17 +21,21 @@ import React, { useState, useContext } from "react";
 import PropTypes from 'prop-types';
 import {
   Button,
+  Card,
+  CardContent,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   Grid,
+  Popover,
   TextField,
   Typography,
 } from "@mui/material";
 
 import Fields from './Fields';
 import { camelCaseToWords } from './LabeledField';
+import FormattedText from "../components/FormattedText.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
 // Dialog for editing or creating questions or sections
@@ -52,8 +56,12 @@ let EditDialog = (props) => {
   let [ primaryType, setPrimaryType ] = useState(`cards:${type}`);
   let [ error, setError ] = useState('');
   let [ variableNameError, setVariableNameError ] = useState('');
+  // Variables holding the anchor and the content of the help info icon
+  let [ helpText, setHelpText ] = useState('');
+  let [ helpAnchorEl, setHelpAnchorEl ] = useState(null);
 
   let json = model ? require(`./${model}`) : require(`./${type}.json`);
+  let hints = require(`./${type}-hints.json`);
 
   let formattedType = camelCaseToWords(type);
 
@@ -186,6 +194,16 @@ let EditDialog = (props) => {
     }
   }
 
+  let onHelpClick = (event, key) => {
+    setHelpAnchorEl(event?.currentTarget);
+    setHelpText(hints?.[key]);
+  }
+
+  let handlePopoverClose = () => {
+    setHelpAnchorEl(null);
+    setHelpText('');
+  }
+
   return (
     <form action={data?.['@path']} method='POST' onSubmit={saveData} onChange={() => setLastSaveStatus(undefined) } key={id}>
        <Dialog disablePortal id='editDialog' open={open} onClose={() => { setOpen(false); onCancel && onCancel();} } fullWidth maxWidth='md'>
@@ -198,10 +216,12 @@ let EditDialog = (props) => {
               <Grid item>{targetIdField()}</Grid>
               <Fields
                 data={dialogData}
+                hints={hints}
                 JSON={json[0]}
                 edit={true}
                 path={data["@path"] + (targetExists ? "" : `/${targetId}`)}
                 saveButtontRef={saveButtonRef}
+                onHelpClick={onHelpClick}
                />
             </Grid>
           </DialogContent>
@@ -226,7 +246,28 @@ let EditDialog = (props) => {
             </Button>
           </DialogActions>
        </Dialog>
-    </form>
+       <Popover
+         open={Boolean(helpAnchorEl) && Boolean(helpText)}
+         anchorEl={helpAnchorEl}
+         onClose={() => {
+           handlePopoverClose();
+         }}
+         anchorOrigin={{
+           vertical: 'bottom',
+           horizontal: 'center',
+         }}
+         transformOrigin={{
+           vertical: 'top',
+           horizontal: 'center',
+         }}
+       >
+         <Card>
+           <CardContent>
+             <FormattedText>{helpText}</FormattedText>
+           </CardContent>
+         </Card>
+       </Popover>
+     </form>
   );
 };
 
