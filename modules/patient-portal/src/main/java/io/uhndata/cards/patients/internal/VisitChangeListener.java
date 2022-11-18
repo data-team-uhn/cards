@@ -43,6 +43,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.CommonImportConfig;
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
 import io.uhndata.cards.subjects.api.SubjectTypeUtils;
@@ -62,6 +63,7 @@ import io.uhndata.cards.utils.ThreadResourceResolverProvider;
     ResourceChangeListener.CHANGES + "=ADDED",
     ResourceChangeListener.CHANGES + "=CHANGED"
 })
+@SuppressWarnings("checkstyle:ClassFanOutComplexity")
 public class VisitChangeListener implements ResourceChangeListener
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(VisitChangeListener.class);
@@ -98,6 +100,9 @@ public class VisitChangeListener implements ResourceChangeListener
     @Reference
     private SubjectTypeUtils subjectTypeUtils;
 
+    @Reference
+    private volatile CommonImportConfig config;
+
     @Override
     public void onChange(final List<ResourceChange> changes)
     {
@@ -113,6 +118,13 @@ public class VisitChangeListener implements ResourceChangeListener
      */
     private void handleEvent(final ResourceChange event)
     {
+        if (!this.config.getConfig().survey_scheduling_enabled()) {
+            // Survey scheduling is disabled: skip
+            LOGGER.warn("Skipping survey scheduling");
+            return;
+        }
+        LOGGER.warn("Seen");
+
         // Acquire a service session with the right privileges for accessing visits and their forms
         try (ResourceResolver localResolver = this.resolverFactory
             .getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "VisitFormsPreparation"))) {
