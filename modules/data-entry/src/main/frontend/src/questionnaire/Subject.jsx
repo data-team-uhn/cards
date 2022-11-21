@@ -220,7 +220,7 @@ function SubjectContainer(props) {
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
   // hold related subjects
-  let [relatedSubjects, setRelatedSubjects] = useState();
+  let [relatedSubjects, setRelatedSubjects] = useState(null);
   // whether the subject has been deleted
   let [ deleted, setDeleted ] = useState();
 
@@ -232,6 +232,7 @@ function SubjectContainer(props) {
   // Callback method for the `fetchData` method, invoked when the request failed.
   let handleError = (response) => {
     setError(response);
+    setRelatedSubjects([]);
   };
 
   let check_url = createQueryURL(` WHERE n.'parents'='${subject?.['jcr:uuid']}' order by n.'jcr:created'`, "cards:Subject");
@@ -246,8 +247,6 @@ function SubjectContainer(props) {
   useEffect(() => {
     if (subject) {
       fetchRelated();
-    } else {
-      setRelatedSubjects(null);
     }
   }, [subject]);
 
@@ -256,9 +255,9 @@ function SubjectContainer(props) {
   }
 
   // If the data has not yet been fetched, return an in-progress symbol
-  if (!subject) {
+  if (!relatedSubjects) {
     return (
-      <Grid container justifyContent="center"><Grid item><CircularProgress/></Grid></Grid>
+      <Grid container justifyContent="center" className={classes.circularProgressContainer}><Grid item><CircularProgress/></Grid></Grid>
     );
   }
 

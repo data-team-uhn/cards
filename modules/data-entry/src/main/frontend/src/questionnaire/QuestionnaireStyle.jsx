@@ -242,6 +242,9 @@ const questionnaireStyle = theme => ({
           marginBottom: "0 !important",
         }
     },
+    circularProgressContainer: {
+        marginTop: theme.spacing(5),
+    },
     compactLayout : {
       "& .MuiList-root" : {
         [theme.breakpoints.up('sm')]: {
