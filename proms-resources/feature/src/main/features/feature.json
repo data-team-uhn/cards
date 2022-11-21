@@ -90,6 +90,9 @@
       "plainTextEmailTemplatePath": "/apps/cards/clinics/Cardio/mailTemplates/24h.txt",
       "htmlEmailTemplatePath": "/apps/cards/clinics/Cardio/mailTemplates/24h.html",
       "daysToVisit": 1
+    },
+    "io.uhndata.cards.CommonImportConfig~DefaultConfig":{
+      "survey_scheduling_enabled": false
     }
   }
 }

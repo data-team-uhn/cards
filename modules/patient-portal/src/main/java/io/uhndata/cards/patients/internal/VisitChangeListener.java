@@ -120,10 +120,8 @@ public class VisitChangeListener implements ResourceChangeListener
     {
         if (!this.config.getConfig().survey_scheduling_enabled()) {
             // Survey scheduling is disabled: skip
-            LOGGER.warn("Skipping survey scheduling");
             return;
         }
-        LOGGER.warn("Seen");
 
         // Acquire a service session with the right privileges for accessing visits and their forms
         try (ResourceResolver localResolver = this.resolverFactory

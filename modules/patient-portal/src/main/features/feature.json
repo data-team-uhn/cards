@@ -99,6 +99,9 @@
         "io.uhndata.cards.patient-portal:MetricLogger=[cards-metrics]",
         "io.uhndata.cards.patient-portal:SlackNotifications=[cards-metrics]"
       ]
+    },
+    "io.uhndata.cards.CommonImportConfig~DefaultConfig":{
+      "survey_scheduling_enabled": true
     }
   }
 }
