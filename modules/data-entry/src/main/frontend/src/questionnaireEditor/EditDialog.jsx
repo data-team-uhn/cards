@@ -32,7 +32,6 @@ import {
 
 import Fields from './Fields';
 import { camelCaseToWords } from './LabeledField';
-import FormattedText from "../components/FormattedText.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
 
 // Dialog for editing or creating questions or sections
@@ -55,7 +54,13 @@ let EditDialog = (props) => {
   let [ variableNameError, setVariableNameError ] = useState('');
 
   let json = model ? require(`./${model}`) : require(`./${type}.json`);
-  let hints = require(`./${type}-hints.json`);
+  let hints = null;
+  try {
+    hints = require(`./${type}-hints.json`);
+  } catch (e) {
+    console.log(`Failed to locate hints file ${type}-hints.json`)
+  }
+  
 
   let formattedType = camelCaseToWords(type);
 
