@@ -35,7 +35,7 @@ import ValueComponentManager from "./ValueComponentManager";
 // Number Input field used by Edit dialog component
 
 let NumberInput = (props) => {
-  let { objectKey, data } = props;
+  let { objectKey, data, hint } = props;
   const type = props.value?.charAt(0).toUpperCase() + props.value?.slice(1).toLowerCase();
   const defaultValue = type === "Long" ? 0 : '';
   const isMax = type === "Long" && objectKey.startsWith('max');
@@ -43,7 +43,7 @@ let NumberInput = (props) => {
   let [ value, setValue ] = useState(typeof data[objectKey] != 'undefined' ? data[objectKey] : defaultValue);
 
   return (
-    <EditorInput name={objectKey}>
+    <EditorInput name={objectKey} hint={hint}>
       <TextField
         variant="standard"
         fullWidth
@@ -68,7 +68,8 @@ let NumberInput = (props) => {
 
 NumberInput.propTypes = {
   objectKey: PropTypes.string.isRequired,
-  data: PropTypes.object.isRequired
+  data: PropTypes.object.isRequired,
+  hint: PropTypes.string,
 };
 
 const StyledNumberInput = withStyles(QuestionnaireStyle)(NumberInput);

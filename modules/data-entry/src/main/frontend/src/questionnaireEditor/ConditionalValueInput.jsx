@@ -74,7 +74,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 let ConditionalValueInput = (props) => {
-  let { objectKey, value, data, saveButtonRef } = props;
+  let { objectKey, value, data, saveButtonRef, hint } = props;
 
   let [ values, setValues ] = useState(data[objectKey]?.value || []);
   let [ isReference, setReference ] = useState(data[objectKey] ? data[objectKey].isReference : (objectKey == 'operandA'));
@@ -191,7 +191,7 @@ let ConditionalValueInput = (props) => {
   );
 
   return (
-    <EditorInput name={objectKey}>
+    <EditorInput name={objectKey} hint={hint}>
 
       {/* Is this a variable name or a value? */}
       <ToggleButtonGroup
@@ -274,6 +274,7 @@ let ConditionalValueInput = (props) => {
 ConditionalValueInput.propTypes = {
   objectKey: PropTypes.string.isRequired,
   data: PropTypes.object.isRequired,
+  hint: PropTypes.string,
 };
 
 export default ConditionalValueInput;

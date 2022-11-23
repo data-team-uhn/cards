@@ -29,7 +29,7 @@ import ValueComponentManager from "./ValueComponentManager";
 import { useFieldsWriterContext } from "./FieldsContext";
 
 let ListInput = (props) => {
-  let { objectKey, data, value: type } = props;
+  let { objectKey, data, value: type, hint } = props;
   let [ value, setValue ] = React.useState(Array.isArray(data[objectKey]) ? data[objectKey] : data[objectKey] ? [data[objectKey]] : []);
   const [ options, setOptions ] = React.useState([]);
   const changeFieldsContext = useFieldsWriterContext();
@@ -82,7 +82,7 @@ let ListInput = (props) => {
   };
 
   return (
-    <EditorInput name={objectKey}>
+    <EditorInput name={objectKey} hint={hint}>
       <input type="hidden" name={objectKey + "@TypeHint"} value={type.saveType + '[]'} />
       {
         // Maps each selected object to a reference type for submitting
@@ -119,7 +119,8 @@ let ListInput = (props) => {
 
 ListInput.propTypes = {
   objectKey: PropTypes.string.isRequired,
-  data: PropTypes.object.isRequired
+  data: PropTypes.object.isRequired,
+  hint: PropTypes.string,
 };
 
 var StyledListInput = withStyles(QuestionnaireStyle)(ListInput);

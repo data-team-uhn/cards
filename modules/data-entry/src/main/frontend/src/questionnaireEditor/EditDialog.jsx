@@ -54,6 +54,13 @@ let EditDialog = (props) => {
   let [ variableNameError, setVariableNameError ] = useState('');
 
   let json = model ? require(`./${model}`) : require(`./${type}.json`);
+  let hints = null;
+  try {
+    hints = require(`./${type}-hints.json`);
+  } catch (e) {
+    console.log(`Failed to locate hints file ${type}-hints.json`)
+  }
+  
 
   let formattedType = camelCaseToWords(type);
 
@@ -198,6 +205,7 @@ let EditDialog = (props) => {
               <Grid item>{targetIdField()}</Grid>
               <Fields
                 data={dialogData}
+                hints={hints}
                 JSON={json[0]}
                 edit={true}
                 path={data["@path"] + (targetExists ? "" : `/${targetId}`)}
