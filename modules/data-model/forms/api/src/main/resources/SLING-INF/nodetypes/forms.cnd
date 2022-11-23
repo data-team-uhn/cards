@@ -801,8 +801,8 @@
 [cards:ExternalLink] > sling:Folder
   // Properties:
 
-  // The label of the mapping, usually identifies the external system that we're mapping to.
-  - label (string)
+  // The type of the mapping, usually identifies the external system that we're mapping to.
+  - type (string)
 
   // Corresponding ID in the external system.
   - value (string)
