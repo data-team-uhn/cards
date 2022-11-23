@@ -220,7 +220,7 @@ function SubjectContainer(props) {
   // Error message set when fetching the data from the server fails
   let [ error, setError ] = useState();
   // hold related subjects
-  let [relatedSubjects, setRelatedSubjects] = useState();
+  let [relatedSubjects, setRelatedSubjects] = useState(null);
   // whether the subject has been deleted
   let [ deleted, setDeleted ] = useState();
 
@@ -232,6 +232,7 @@ function SubjectContainer(props) {
   // Callback method for the `fetchData` method, invoked when the request failed.
   let handleError = (response) => {
     setError(response);
+    setRelatedSubjects([]);
   };
 
   let check_url = createQueryURL(` WHERE n.'parents'='${subject?.['jcr:uuid']}' order by n.'jcr:created'`, "cards:Subject");
@@ -246,8 +247,6 @@ function SubjectContainer(props) {
   useEffect(() => {
     if (subject) {
       fetchRelated();
-    } else {
-      setRelatedSubjects(null);
     }
   }, [subject]);
 
@@ -256,9 +255,9 @@ function SubjectContainer(props) {
   }
 
   // If the data has not yet been fetched, return an in-progress symbol
-  if (!subject) {
+  if (!relatedSubjects) {
     return (
-      <Grid container justifyContent="center"><Grid item><CircularProgress/></Grid></Grid>
+      <Grid container justifyContent="center" className={classes.circularProgressContainer}><Grid item><CircularProgress/></Grid></Grid>
     );
   }
 
@@ -329,7 +328,7 @@ function SubjectHeader(props) {
     fetchSubjectData();
   }, [id]);
 
-  if (!subject?.data) {
+  if (!subject) {
     return (
       <Grid item><CircularProgress/></Grid>
     );
@@ -399,7 +398,7 @@ function SubjectMemberInternal (props) {
   // Whether a subject is expanded and displaying its forms
   // The root subject is always expanded. Child subjects are collapsed by default.
   let [ expanded, setExpanded ] = useState(level == 0);
-  let [ subjectGroups, setSubjectGroups ] = useState();
+  let [ subjectGroups, setSubjectGroups ] = useState(null);
 
   let globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -437,6 +436,13 @@ function SubjectMemberInternal (props) {
   useEffect(() => {
     fetchTableData();
   }, [data['jcr:uuid']]);
+
+  // If the subjectGroups data has not yet been fetched, return an in-progress symbol
+  if (!subjectGroups) {
+    return (
+      <Grid container justifyContent="center" className={classes.circularProgressContainer}><Grid item><CircularProgress/></Grid></Grid>
+    );
+  }
 
   // If an error was returned, do not display a subject at all, but report the error
   if (error) {
@@ -498,8 +504,13 @@ function SubjectMemberInternal (props) {
           </Grid>
         </Grid>
       }
-      { expanded && (
-        Object.keys(subjectGroups || {}).length > 0 ? <>
+      { /* If we finished all fetching and have no data or child subjects to display for this subject, inform the user */ }
+      { expanded && childSubjects && childSubjects.length == 0 && subjectGroups && Object.keys(subjectGroups).length == 0 &&
+        <Grid item>
+          <Typography color="textSecondary" variant="caption">{`No data associated with this ${label.toLowerCase()} was found.`}</Typography>
+        </Grid>
+      }
+      { expanded && subjectGroups && <>
         {
           Object.keys(subjectGroups).map( (questionnaireTitle, j) => (
             <Grid item key={questionnaireTitle}>
@@ -588,13 +599,7 @@ function SubjectMemberInternal (props) {
           ))
         }
         </>
-        :
-        ( !childSubjects?.length && // If we have no data to display for this subject, inform the user
-          <Grid item>
-            <Typography color="textSecondary" variant="caption">{`No data associated with this ${label.toLowerCase()} was found.`}</Typography>
-          </Grid>
-        )
-      )}
+      }
       { /* Render child subjects at the bottom when the current subject is expanded */ }
       { expanded && childSubjects?.length ?
         (<Grid item xs={12} className={classes.subjectNestedContainer}>
