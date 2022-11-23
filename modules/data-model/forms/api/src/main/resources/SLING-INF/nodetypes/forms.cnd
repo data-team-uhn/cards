@@ -798,7 +798,7 @@
   + * (cards:Form) = cards:Form
 
 // The mapping between local questionnaire / question IDs and the corresponsing IDs within EPIC.
-[cards:ExternalLink] > sling:Folder, mix:referenceable
+[cards:ExternalLink] > sling:Folder
   // Properties:
 
   // The label of the mapping, Identifies the external system that we're mapping to.
