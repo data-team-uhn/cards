@@ -11,9 +11,9 @@ The following environment variables are read by CARDS and thus can be used in bo
 | `S3_ENDPOINT_REGION` | The region to use with the above for SigV4 signing of requests | `us-west-1` |
 | `S3_BUCKET_NAME` | S3 bucket to export to | `uhn` |
 | `AWS_KEY` | AWS access key | |
-| `AWS_SECRET` | AWS secdret access key | |
+| `AWS_SECRET` | AWS secret access key | |
 | `NIGHTLY_EXPORT_SCHEDULE` | Crontab-readable (Quartz Job Scheduler) schedule to perform nightly export to the configured S3 bucket | `0 0 6 * * ? *` |
-| `REFERENCE_DATE` | A reference data from which all dates are to be measured from (for more details, see `DateObfuscationProcessor.java`) | `2020-01-01` |
+| `REFERENCE_DATE` | A reference date from which all dates are to be measured from (for more details, see `DateObfuscationProcessor.java`) | `2020-01-01` |
 | `COMPUTED_ANSWERS_DISABLED` | If set to `true`, computed answers are disabled | `true` |
 | `PATIENT_NOTIFICATION_FROM_ADDRESS` | The email address from which patient notifications are sent | `datapro@uhn.ca` |
 | `PATIENT_NOTIFICATION_FROM_NAME` | The name field used in patient notification emails | `UHN DATAPRO` |
@@ -26,7 +26,7 @@ The following environment variables are read by CARDS and thus can be used in bo
 | `NIGHTLY_WEBHOOK_BACKUP_SCHEDULE` | Crontab-readable schedule (Quartz Job Scheduler) for performing Webhook backups of CARDS | `0 0 6 * * ? *` |
 | `BACKUP_WEBHOOK_URL` | Webhook URL to perform backups of CARDS to | `http://localhost:8012` |
 
-### Envrionment variables read by the CARDS docker container entrypoint
+### Environment variables read by the CARDS docker container entrypoint
 The following environment variables are read by the CARDS Docker container _entrypoint_ script and thus are _only_ usable in Docker-based deployments.
 
 | Environment Variable | Description | Sample |
