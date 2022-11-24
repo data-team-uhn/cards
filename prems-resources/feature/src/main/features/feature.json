@@ -51,7 +51,7 @@
       "user.mapping":[
         "io.uhndata.cards.proms-backend:CsvExport=[csv-export]"
       ]
-    }
+    },
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~TWEDInitialInvitationTask":{
       "name": "CPESInitialNotificationsTask",
       "metricName": "Initial Emails Sent",
