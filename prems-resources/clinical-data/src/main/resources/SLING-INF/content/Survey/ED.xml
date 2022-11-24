@@ -22,7 +22,7 @@
     <primaryNodeType>cards:QuestionnaireSet</primaryNodeType>
     <property>
         <name>name</name>
-        <value>Emergency Department post-discharge survey</value>
+        <value></value>
         <type>String</type>
     </property>
     <node>
