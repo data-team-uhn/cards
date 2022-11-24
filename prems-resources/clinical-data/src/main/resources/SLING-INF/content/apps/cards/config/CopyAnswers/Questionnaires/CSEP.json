@@ -1,0 +1,7 @@
+{
+  "jcr:primaryType": "nt:unstructured",
+  "jcr:reference:cpesic_43": "/Questionnaires/OAIP/cpesic_43",
+  "jcr:reference:department": "/Questionnaires/OAIP/cpesic_department",
+  "jcr:reference:time": "/Questionnaires/Visit information/time",
+  "jcr:reference:mrn": "/Questionnaires/Patient information/mrn"
+}
