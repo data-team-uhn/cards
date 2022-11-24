@@ -88,13 +88,15 @@ function PatientPortalHomepage (props) {
     let appName = document.querySelector('meta[name="title"]')?.content;
     let message = surveyInstructions?.welcomeMessage?.replaceAll("APP_NAME", appName) || '';
     message = `${message}\n\n### To fill out surveys, please follow the personalized link that was emailed to you.`;
-    return (
+    return (<>
       <ErrorPage
         sx={{maxWidth: 500, margin: "0 auto"}}
         title=""
         message={message}
         messageColor="textPrimary"
-      />)
+      />
+      <Footer/>
+    </>)
   }
 
   if (!subject) {
