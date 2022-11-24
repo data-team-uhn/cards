@@ -12,7 +12,7 @@ The following environment variables are read by CARDS and thus can be used in bo
 | `S3_BUCKET_NAME` | S3 bucket to export to | `uhn` |
 | `AWS_KEY` | AWS access key | |
 | `AWS_SECRET` | AWS secdret access key | |
-| `NIGHTLY_EXPORT_SCHEDULE` | Crontab-readable (Quartz Job Scheduler) schedule to perform nightly export to the configured S3 bucket | `0 0 6 \* \* ? \*` |
+| `NIGHTLY_EXPORT_SCHEDULE` | Crontab-readable (Quartz Job Scheduler) schedule to perform nightly export to the configured S3 bucket | `0 0 6 * * ? *` |
 | `REFERENCE_DATE` | A reference data from which all dates are to be measured from (for more details, see `DateObfuscationProcessor.java`) | `2020-01-01` |
 | `COMPUTED_ANSWERS_DISABLED` | If set to `true`, computed answers are disabled | `true` |
 | `PATIENT_NOTIFICATION_FROM_ADDRESS` | The email address from which patient notifications are sent | `datapro@uhn.ca` |
