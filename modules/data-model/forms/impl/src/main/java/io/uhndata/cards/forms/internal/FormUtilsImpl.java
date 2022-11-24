@@ -43,6 +43,8 @@ import org.osgi.service.component.annotations.FieldOption;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
@@ -57,6 +59,8 @@ import io.uhndata.cards.subjects.api.SubjectUtils;
 @Component
 public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FormUtilsImpl.class);
+
     @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,
         policyOption = ReferencePolicyOption.GREEDY)
     private ResourceResolverFactory rrf;
@@ -320,7 +324,10 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
                     ((Object[]) result)[i] = valuePropertyState.getValue(valueType.getBaseType(), i);
                 }
             } else {
+                // !!! WHAT! IS! GOING! ON! OVER! HERE! ???
                 result = valuePropertyState.getValue(valueType);
+                LOGGER.warn("FormUtilsImpl L325 result = {} of type {} even though it should be of type {}",
+                    result, result.getClass(), valueType);
             }
         }
         return result;
