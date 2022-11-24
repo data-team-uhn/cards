@@ -59,6 +59,7 @@ export default function PageStart(props) {
     );
   };
 
+  useEffect(() => {
   if (!isInitialized) {
     loadExtensions(extensionsName)
       .then((resp) => {
@@ -74,6 +75,7 @@ export default function PageStart(props) {
         setIsInitialized(true);
       });
   }
+  }, [isInitialized]);
 
   if (!isInitialized) {
     return null;
