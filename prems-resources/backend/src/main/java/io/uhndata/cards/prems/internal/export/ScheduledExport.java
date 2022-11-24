@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package io.uhndata.cards.proms.internal.export;
+package io.uhndata.cards.prems.internal.export;
 
 import java.util.List;
 
