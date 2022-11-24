@@ -58,9 +58,9 @@ let ReferenceQuestion = (props) => {
 
   useEffect(() => {
     if (unitOfMeasurement) {
-      changeMuiInputProps({ ...muiInputProps, endAdornment: <InputAdornment position="end">{unitOfMeasurement}</InputAdornment>});
+      changeMuiInputProps(muiInputProps => ({ ...muiInputProps, endAdornment: <InputAdornment position="end">{unitOfMeasurement}</InputAdornment>}));
     } else {
-      changeMuiInputProps({ ...muiInputProps, endAdornment: undefined});
+      changeMuiInputProps(muiInputProps => ({ ...muiInputProps, endAdornment: undefined}));
     }
   }, [unitOfMeasurement])
 
