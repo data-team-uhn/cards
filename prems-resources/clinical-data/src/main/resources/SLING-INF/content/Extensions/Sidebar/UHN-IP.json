@@ -1,8 +1,8 @@
 {
   "jcr:primaryType": "cards:Extension",
   "cards:extensionPointId": "cards/coreUI/sidebar/entry",
-  "cards:extensionName": "TGH - ED",
-  "cards:targetURL": "/content.html/Dashboard/1034878425",
+  "cards:extensionName": "UHN IP",
+  "cards:targetURL": "/content.html/Dashboard/-1792626663",
   "cards:icon": "asset:patient-portal.clinicIcon.js",
-  "cards:defaultOrder": 10
+  "cards:defaultOrder": 11
 }

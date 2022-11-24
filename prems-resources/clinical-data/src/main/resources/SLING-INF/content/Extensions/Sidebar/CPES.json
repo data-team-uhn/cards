@@ -1,8 +1,8 @@
 {
   "jcr:primaryType": "cards:Extension",
   "cards:extensionPointId": "cards/coreUI/sidebar/entry",
-  "cards:extensionName": "TW - ED",
-  "cards:targetURL": "/content.html/Dashboard/404535975",
+  "cards:extensionName": "CPES",
+  "cards:targetURL": "/content.html/Dashboard/2075099",
   "cards:icon": "asset:patient-portal.clinicIcon.js",
-  "cards:defaultOrder":  12
+  "cards:defaultOrder": 10
 }
