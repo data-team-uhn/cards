@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package io.uhndata.cards.prems.internal.export;
+package io.uhndata.cards.scheduledcsvexport;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -28,9 +28,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -73,9 +71,7 @@ public class ExportTask implements Runnable
             final String endModificationDate = simpleDateFormat.format(getPastDate(1));
             timePeriod = modifiedAfterDate + "_" + endModificationDate;
         }
-        Map<String, Object> params = new HashMap<>();
-        params.put(ResourceResolverFactory.SUBSERVICE, "CsvExport");
-        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(params)) {
+        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
             for (String questionnaire : this.questionnairesToBeExported) {
                 final File csvFile = new File(this.savePath + "/ExportedForms_" + questionnaire + "_"
                         + timePeriod + ".csv");
