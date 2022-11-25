@@ -1,0 +1,41 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+{
+  "bundles":[
+    {
+      "id":"${project.groupId}:${project.artifactId}:${project.version}",
+      "start-order":"25"
+    }
+  ],
+  "configurations":{
+    "org.apache.sling.jcr.repoinit.RepositoryInitializer~scheduledCSVexport":{
+      "service.ranking:Integer":300,
+      "scripts": [
+        // In certain environments, this script gets executed before the main forms repoinit does, so we must make sure the paths we reference are created.
+        "create path (cards:QuestionnairesHomepage) /Questionnaires \n create path (cards:FormsHomepage) /Forms \n create path (cards:SubjectsHomepage) /Subjects \n create path (cards:SubjectTypesHomepage) /SubjectTypes",
+        // Exporting forms in csv format
+        "create service user csv-export \n set ACL on /Questionnaires,/Forms,/Subjects,/SubjectTypes \n   allow jcr:read for csv-export \n end"
+      ]
+    },
+    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~scheduledCSVexport":{
+      "user.mapping":[
+        "io.uhndata.cards.scheduled-csv-export=[csv-export]"
+      ]
+    }
+  }
+}
