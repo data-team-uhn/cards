@@ -1,5 +1,13 @@
 [
   {
+    "//CHILDREN" : {
+      "ExternalLinks" : {
+         "entries" : {
+           "ExternalLink" : "ExternalLink.json"
+         },
+         "defaultOrder" : 1
+      }
+    },
     "text": "string",
     "description": "markdown",
     "dataType": {

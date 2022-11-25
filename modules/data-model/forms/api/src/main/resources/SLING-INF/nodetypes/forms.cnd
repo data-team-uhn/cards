@@ -241,6 +241,7 @@
   // This applies mostly to text answers, but can also be used for the other answer types as well, for example as a list of dates to choose from, or a list of numbers, or a list of vocabulary terms.
   + * (cards:AnswerOption) = cards:AnswerOption
   + * (cards:VocabularyFilterGroup) = cards:VocabularyFilterGroup
+  + * (cards:ExternalLink) = cards:ExternalLink
 
 //-----------------------------------------------------------------------------
 // An informative formatted text (markdown) displayed in edit mode to guide
@@ -313,7 +314,7 @@
 
   // The questions and sub-sections that make up this section.
   // The conditions to display this section may also be listed as children
-  + * (cards:Question, cards:Section, cards:Information, cards:Conditional, cards:ConditionalGroup, cards:AnswerOption) = cards:Question
+  + * (cards:Question, cards:Section, cards:Information, cards:Conditional, cards:ConditionalGroup, cards:AnswerOption, cards:ExternalLink) = cards:Question
 
 //-----------------------------------------------------------------------------
 // A conditional group is a set of conditions that can be imposed on e.g. the display of a section.
@@ -447,7 +448,7 @@
   // Children
 
   // The sections and standalone questions that make up this questionnaire.
-  + * (cards:Section, cards:Question, cards:Information) = cards:Section
+  + * (cards:Section, cards:Question, cards:Information, cards:ExternalLink) = cards:Section
 
 //-----------------------------------------------------------------------------
 // The homepage for the questionnaires space.
@@ -795,3 +796,19 @@
 
   // The list of forms.
   + * (cards:Form) = cards:Form
+
+// The mapping between local questionnaire / question IDs and the corresponsing IDs within EPIC.
+[cards:ExternalLink] > sling:Folder
+  // Properties:
+
+  // The type of the mapping, usually identifies the external system that we're mapping to.
+  - type (string)
+
+  // Corresponding ID in the external system.
+  - value (string)
+
+  // Hardcode the resource type.
+  - sling:resourceType (STRING) = "cards/ExternalLink" mandatory autocreated protected
+
+  // Hardcode the resource supertype.
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
