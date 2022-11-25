@@ -138,11 +138,11 @@ Your response to this survey is voluntary but will provide us with important inf
 		</node>
 	</node>
 	<node>
-		<name>YourCareFromNurses</name>
+		<name>YourCarefromNurses</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>Your Care From Nurses</value>
+			<value>Your Care from Nurses</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -586,11 +586,11 @@ Your response to this survey is voluntary but will provide us with important inf
 		</node>
 	</node>
 	<node>
-		<name>YourCareFromDoctors</name>
+		<name>YourCarefromDoctors</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>Your Care From Doctors</value>
+			<value>Your Care from Doctors</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -2074,11 +2074,11 @@ Your response to this survey is voluntary but will provide us with important inf
 		</node>
 	</node>
 	<node>
-		<name>Whenyouleftthehospital</name>
+		<name>WhenYouLefttheHospital</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>When you left the hospital</value>
+			<value>When You Left the Hospital</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -2494,11 +2494,11 @@ symptoms or health problems to look out for after you left the hospital?</value>
 		</node>
 	</node>
 	<node>
-		<name>Overallratingofhospital</name>
+		<name>OverallRatingofHospital</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>Overall rating of hospital</value>
+			<value>Overall Rating of Hospital</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -2706,11 +2706,11 @@ symptoms or health problems to look out for after you left the hospital?</value>
 		</node>
 	</node>
 	<node>
-		<name>Yourarrivalatthehospital</name>
+		<name>YourArrivalattheHospital</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>Your arrival at the hospital</value>
+			<value>Your Arrival at the Hospital</value>
 			<type>String</type>
 		</property>
 		<property>
@@ -2812,7 +2812,7 @@ symptoms or health problems to look out for after you left the hospital?</value>
 					<property>
 						<name>value</name>
 						<values>
-							<value>cpesis_23</value>
+							<value>cpesic_23</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -2957,7 +2957,7 @@ symptoms or health problems to look out for after you left the hospital?</value>
 					<property>
 						<name>value</name>
 						<values>
-							<value>cpesis_23</value>
+							<value>cpesic_23</value>
 						</values>
 						<type>String</type>
 					</property>
@@ -3629,11 +3629,11 @@ symptoms or health problems to look out for after you left the hospital?</value>
 		</node>
 	</node>
 	<node>
-		<name>Duringyourhospitalstay</name>
+		<name>DuringYourHospitalStay</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>During your hospital stay</value>
+			<value>During Your Hospital Stay</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -4454,11 +4454,11 @@ symptoms or health problems to look out for after you left the hospital?</value>
 		</node>
 	</node>
 	<node>
-		<name>Leavingthehospital</name>
+		<name>LeavingtheHospital</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>Leaving the hospital</value>
+			<value>Leaving the Hospital</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -4802,11 +4802,11 @@ symptoms or health problems to look out for after you left the hospital?</value>
 		</node>
 	</node>
 	<node>
-		<name>Youroverallratings</name>
+		<name>YourOverallRatings</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>Your overall ratings</value>
+			<value>Your Overall Ratings</value>
 			<type>String</type>
 		</property>
 		<node>
@@ -4939,11 +4939,11 @@ symptoms or health problems to look out for after you left the hospital?</value>
 		</node>
 	</node>
 	<node>
-		<name>Aboutyou</name>
+		<name>AboutYou</name>
 		<primaryNodeType>cards:Section</primaryNodeType>
 		<property>
 			<name>label</name>
-			<value>About you</value>
+			<value>About You</value>
 			<type>String</type>
 		</property>
 		<node>
