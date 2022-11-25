@@ -16,13 +16,11 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState, useEffect, useContext }  from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import React, { useState, useEffect }  from 'react';
 
 import {
   Button,
   Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
   FormControl,
@@ -113,7 +111,7 @@ const useStyles = makeStyles(theme => ({
 // This just makes sure that the correct person accessed the application.
 function PatientIdentification(props) {
   // Callback for reporting successful authentication
-  const { onSuccess, displayText, theme } = props;
+  const { onSuccess, displayText } = props;
 
   // The values entered by the user
   const [ dob, setDob ] = useState();
@@ -130,8 +128,6 @@ function PatientIdentification(props) {
   // Returned from the server after partial validation of the authentication.
   const [ visitList, setVisitList ] = useState();
   const [ visitListShown, setVisitListShown ] = useState(false);
-  // Visit list page size
-  const [ pageSize, setPageSize ] = useState(5);
   // Whether the patient user has accepted the latest version of the Terms of Use
   const [ touCleared, setTouCleared ] = useState();
   // Whether the Terms of Use dialog can be displayed after patient identification

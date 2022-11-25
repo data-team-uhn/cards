@@ -318,7 +318,7 @@ function QuestionnaireSet(props) {
           newPreviews[formId] = text;
           return newPreviews;
         }))
-        .catch(error => setError(`Loading the survey response preview for ${formId} failed with error code ${response.status}: ${response.statusText}`));
+        .catch(response => setError(`Loading the survey response preview for ${formId} failed with error code ${response.status}: ${response.statusText}`));
     })
   }
 

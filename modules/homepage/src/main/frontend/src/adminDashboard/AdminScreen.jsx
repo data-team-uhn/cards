@@ -23,9 +23,6 @@ import { Link } from 'react-router-dom';
 import { Breadcrumbs, Card, CardContent, CardHeader, Typography } from "@mui/material";
 import { makeStyles } from '@mui/styles';
 
-import LiveTable from "../dataHomepage/LiveTable.jsx";
-import NewItemButton from "../components/NewItemButton.jsx";
-
 const useStyles = makeStyles(theme => ({
   root: {
     marginTop: theme.spacing(2),
@@ -70,7 +67,7 @@ function AdminScreen(props) {
         action={action}
       />
       <CardContent>
-	  { children }
+        { children }
       </CardContent>
     </Card>
   );

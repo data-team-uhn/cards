@@ -19,7 +19,7 @@
 
 import React, { useContext, useState } from "react";
 
-import { Grid, LinearProgress, Link, TextField, Typography } from "@mui/material";
+import { Grid, LinearProgress, Link, TextField } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 
 import PropTypes from "prop-types";
@@ -47,7 +47,7 @@ import AnswerComponentManager from "./AnswerComponentManager";
 // (TODO)
 function FileQuestion(props) {
   const { classes, existingAnswer, pageActive, ...rest } = props;
-  const { maxAnswers, minAnswers, namePattern } = { ...props.questionDefinition, ...props }
+  const { maxAnswers, namePattern } = { ...props.questionDefinition, ...props }
   const { onBeforeUpload, onAfterUpload, onDelete, previewRenderer, answerNodeType } = props;
   let initialValues =
     // Check whether or not we have an initial value

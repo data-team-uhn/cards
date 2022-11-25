@@ -17,13 +17,11 @@
 //  under the License.
 //
 import React, { useState, useEffect } from "react";
-import LiveTable from "./LiveTable.jsx";
 
 import { IconButton, Tooltip } from "@mui/material";
 import { Link } from 'react-router-dom';
 import SubjectTypeDialog from "../questionnaire/SubjectTypeDialog.jsx";
 import AdminResourceListing from "../adminDashboard/AdminResourceListing.jsx";
-import NewItemButton from "../components/NewItemButton.jsx";
 import DeleteButton from "./DeleteButton.jsx";
 import EditIcon from "@mui/icons-material/Edit";
 

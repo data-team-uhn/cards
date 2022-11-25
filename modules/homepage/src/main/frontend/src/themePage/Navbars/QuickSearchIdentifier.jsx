@@ -16,7 +16,6 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import PropTypes from "prop-types";
 import React from "react";
 
 import { useTheme } from '@mui/material/styles';
@@ -25,7 +24,6 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import OtherIcon from '@mui/icons-material/Reorder';
-import { Link } from "react-router-dom";
 import { getEntityIdentifier } from "../EntityIdentifier.jsx";
 
 // Location of the quick search result metadata in a node, outlining what needs to be highlighted

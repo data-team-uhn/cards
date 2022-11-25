@@ -22,7 +22,7 @@ import PropTypes from 'prop-types';
 import withStyles from '@mui/styles/withStyles';
 
 import QuestionnaireStyle from '../questionnaire/QuestionnaireStyle';
-import MDEditor, { commands, ICommand } from '@uiw/react-md-editor';
+import MDEditor, { commands } from '@uiw/react-md-editor';
 
 const infoButton = {
   name: "Markdown help button",

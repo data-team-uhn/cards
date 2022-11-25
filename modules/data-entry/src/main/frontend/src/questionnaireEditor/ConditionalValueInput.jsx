@@ -53,7 +53,7 @@ const useStyles = makeStyles(theme => ({
   variableDropdown: {
     "& > .MuiInputLabel-root" : {
       maxWidth: `calc(100% - ${theme.spacing(3)})`,
-	},
+    },
   },
   variableOption: {
     whiteSpace: "normal",
@@ -74,7 +74,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 let ConditionalValueInput = (props) => {
-  let { objectKey, value, data, saveButtonRef, hint } = props;
+  let { objectKey, data, saveButtonRef, hint } = props;
 
   let [ values, setValues ] = useState(data[objectKey]?.value || []);
   let [ isReference, setReference ] = useState(data[objectKey] ? data[objectKey].isReference : (objectKey == 'operandA'));
@@ -198,7 +198,7 @@ let ConditionalValueInput = (props) => {
         className={classes.referenceToggle}
         value={`${isReference}`}
         exclusive
-        onChange={(event, newSetting) => setReference(JSON.parse(newSetting))}>
+        onChange={(event, newSetting) => setReference(JSON.parse(newSetting))}
       >
         <ToggleButton value="true">Question id</ToggleButton>
         <ToggleButton value="false">Value</ToggleButton>
@@ -212,7 +212,6 @@ let ConditionalValueInput = (props) => {
           justifyContent="space-between"
           alignItems="stretch"
           className={classes.valueEntry}
-          key={value}
         >
           <Grid item xs={9}>
             <ListItemText primary={value} secondary={isReference && variables?.find(v => v.name == value)?.text} />

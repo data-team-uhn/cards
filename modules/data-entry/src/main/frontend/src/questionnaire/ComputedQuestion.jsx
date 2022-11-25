@@ -237,9 +237,9 @@ let ComputedQuestion = (props) => {
 
   useEffect(() => {
     if (unitOfMeasurement) {
-      muiInputProps.endAdornment = <InputAdornment position="end">{unitOfMeasurement}</InputAdornment>;
+      changeMuiInputProps(muiInputProps => ({ ...muiInputProps, endAdornment: <InputAdornment position="end">{unitOfMeasurement}</InputAdornment>}));
     } else {
-      delete muiInputProps.endAdornment;
+      changeMuiInputProps(muiInputProps => ({ ...muiInputProps, endAdornment: undefined}));
     }
   }, [unitOfMeasurement])
 

@@ -16,7 +16,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import React, { useState, useEffect, useContext } from "react";
+import React from "react";
 
 import makeStyles from '@mui/styles/makeStyles';
 import { Link } from 'react-router-dom';
@@ -46,7 +46,7 @@ const useStyles = color => makeStyles(theme => ({
 
 
 function ClinicVisits(props) {
-  const { clinicId, color, visitInfo, enableTimeTabs, eventsLabel, dashboardConfig } = props;
+  const { clinicId, color, visitInfo, dashboardConfig } = props;
 
   const classes = useStyles(color)();
 

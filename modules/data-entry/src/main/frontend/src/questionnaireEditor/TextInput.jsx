@@ -36,7 +36,6 @@ let TextInput = (props) => {
   return (
     <EditorInput name={objectKey} hint={hint}>
       <TextField
-        variant="standard"
         name={objectKey}
         id={objectKey}
         defaultValue={typeof(data[objectKey]) != 'undefined' ? data[objectKey] : ''}

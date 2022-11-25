@@ -25,15 +25,12 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  IconButton,
   Tooltip,
   Typography,
   Zoom,
 } from "@mui/material";
 
 import makeStyles from '@mui/styles/makeStyles';
-
-import CloseIcon from "@mui/icons-material/Close";
 
 import VocabularyAction from "./vocabularyAction";
 import VocabularyBrowser from "./vocabQuery/VocabularyBrowser.jsx";
@@ -73,7 +70,7 @@ const useStyles = makeStyles(theme => ({
 
 
 export default function VocabularyDetails(props) {
-  const { install, uninstall, phase, type, vocabulary } = props;
+  const { install, uninstall, phase, vocabulary } = props;
 
   const [displayPopup, setDisplayPopup] = React.useState(false);
   const handleOpen = () => {setDisplayPopup(true);}

@@ -17,9 +17,7 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
-
-import { Typography } from "@mui/material";
+import React from "react";
 
 import withStyles from '@mui/styles/withStyles';
 

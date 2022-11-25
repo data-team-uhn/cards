@@ -36,7 +36,6 @@ export const DEFAULT_MAX_RESULTS = 5;
 // Location of the quick search result metadata in a node, outlining what needs to be highlighted after redirect and where
 const CARDS_QUERY_MATCH_KEY = "cards:queryMatch";
 const CARDS_QUERY_MATCH_PATH_KEY = "@path";
-const CARDS_QUERY_TEXT_KEY = "text";
 
 /**
  * A component that renders a search bar, similar to autocomplete. It will fire off a query to /query, and parse the results as a selectable list.
@@ -266,7 +265,7 @@ function SearchBar(props) {
                       disabled={result["disabled"]}
                       onClick={(e) => {
                         disableDropdownItemLink && setSearch(result.entityIdentifier);
-                        onSelect(event, result, props);
+                        onSelect(e, result, props);
                         onSelectFinish && onSelectFinish();
                         setPopperOpen(false);
                         }}

@@ -453,7 +453,7 @@ function NumberQuestion(props) {
 }
 
 // Helper function to bridge react-number-format with @material-ui
-export const NumberFormatCustom = React.forwardRef(function NumberFormatCustom(
+export const NumberFormatCustom = forwardRef(function NumberFormatCustom(
     props,
     ref,
   ) {

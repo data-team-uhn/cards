@@ -22,8 +22,6 @@ import React, { useContext, useState } from "react";
 import {
   Box,
   Button,
-  Card,
-  CardContent,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -126,11 +124,8 @@ export default function VariantFilesContainer() {
   // To be fetch on page load
   let [ somaticVariantsUUID, setSomaticVariantsUUID ] = useState();
   let [ somaticVariantsTitle, setSomaticVariantsTitle ] = useState("");
-  let [ patientSubjectUUID, setPatientSubjectUUID ] = useState();
   let [ patientSubjectLabel, setPatientSubjectLabel ] = useState();
-  let [ tumorSubjectUUID, setTumorSubjectUUID ] = useState();
   let [ tumorSubjectLabel, setTumorSubjectLabel ] = useState();
-  let [ regionSubjectUUID, setRegionSubjectUUID ] = useState();
   let [ regionSubjectLabel, setRegionSubjectLabel ] = useState();
 
   let [ showVersionsDialog, setShowVersionsDialog ] = useState(false);
@@ -167,7 +162,6 @@ export default function VariantFilesContainer() {
     fetchWithReLogin(globalLoginDisplay, "/SubjectTypes/Patient.json")
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
-        setPatientSubjectUUID(json["jcr:uuid"]);
         setPatientSubjectLabel(json["label"]);
       })
       .catch(handleError);
@@ -175,7 +169,6 @@ export default function VariantFilesContainer() {
     fetchWithReLogin(globalLoginDisplay, "/SubjectTypes/Patient/Tumor.json")
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
-        setTumorSubjectUUID(json["jcr:uuid"]);
         setTumorSubjectLabel(json["label"]);
       })
       .catch(handleError);
@@ -183,7 +176,6 @@ export default function VariantFilesContainer() {
     fetchWithReLogin(globalLoginDisplay, "/SubjectTypes/Patient/Tumor/TumorRegion.json")
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
-        setRegionSubjectUUID(json["jcr:uuid"]);
         setRegionSubjectLabel(json["label"]);
       })
       .catch(handleError);

@@ -20,7 +20,7 @@ import React, { useEffect, useState } from "react";
 import Form from "../questionnaire/Form.jsx";
 import { getHierarchy } from "../questionnaire/Subject.jsx";
 
-import { Grid, Typography } from "@mui/material";
+import { Grid } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import questionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import FormView from "./FormView.jsx";

@@ -18,7 +18,7 @@
 //
 import React, { useState, useEffect } from "react";
 import { loadExtensions } from "../uiextension/extensionManager";
-import { Route, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import AdminScreen from "./AdminScreen.jsx";
 
 import {
@@ -26,8 +26,7 @@ import {
   Grid,
   ListItem,
   ListItemIcon,
-  ListItemText, 
-  Typography,
+  ListItemText
 } from "@mui/material";
 
 // function to get the routes for the admin dashboard, also used in the navbar

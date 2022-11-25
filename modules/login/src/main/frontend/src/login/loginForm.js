@@ -93,7 +93,6 @@ class SignIn extends React.Component {
     .then((response) => {
       if (!response.ok) {
         throw Error(response.statusText);
-        this.props.handleLogin && this.props.handleLogin(false);
       }
       this.setState({failedLogin: undefined});
       this.props.handleLogin && this.props.handleLogin(true);
@@ -109,13 +108,11 @@ class SignIn extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { passwordIsMasked } = this.state;
 
     const nextButtonCallback = () => {
       if (this.state.username.split("@").length - 1 == 0) {
         this.setState({phase: "PASSWORD_ENTRY"});
       } else if (this.state.username.split("@").length - 1 == 1) {
-        let remoteUser = this.state.username.split("@")[0];
         let remoteDomain = this.state.username.split("@")[1];
         // Do a fetch() to see if we have a SAML configuration for this domain
         fetch(window.location.origin + "/apps/cards/SAMLDomains/" + remoteDomain + ".json")

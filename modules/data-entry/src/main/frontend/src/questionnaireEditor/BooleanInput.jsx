@@ -19,11 +19,7 @@
 
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import {
-  Grid,
-  Switch,
-  Typography
-} from "@mui/material";
+import { Switch } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
 

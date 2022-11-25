@@ -19,7 +19,6 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Grid, Typography } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import QuestionComponentManager from "../questionnaireEditor/QuestionComponentManager";
 import ValueComponentManager from "../questionnaireEditor/ValueComponentManager";

@@ -19,11 +19,9 @@
 
 import React, { useState } from "react";
 
-import { TextField, Typography } from "@mui/material";
+import { TextField } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
-
-import { DateTime } from "luxon";
 
 import Answer from "./Answer";
 import Question from "./Question";
@@ -66,9 +64,6 @@ function DateQuestionFull(props) {
   );
   const upperLimitMoment = DateQuestionUtilities.toPrecision(upperLimit);
   const lowerLimitMoment = DateQuestionUtilities.toPrecision(lowerLimit);
-
-  const [error, setError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("Invalid date");
 
   let setDate = (value, isEnd) => {
     if (isEnd) {
@@ -158,7 +153,6 @@ function DateQuestionFull(props) {
       >
       {
         pageActive && <>
-          {error && <Typography color='error'>{errorMessage}</Typography>}
           {getTextField(false, DateQuestionUtilities.dateToFormattedString(startDate, textFieldType))}
           { /* If this is an interval, allow the user to select a second date */
           type === DateQuestionUtilities.INTERVAL_TYPE &&

@@ -48,7 +48,7 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js"
 import { loadExtensions } from "../uiextension/extensionManager";
 import { useReactToPrint } from 'react-to-print';
 
-async function getHeaderExtensions(name) {
+async function getHeaderExtensions() {
   return loadExtensions("PrintHeader")
     .then(extensions => extensions.slice()
       .sort((a, b) => a["cards:defaultOrder"] - b["cards:defaultOrder"])

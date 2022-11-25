@@ -25,10 +25,6 @@ import {
   CircularProgress,
   Grid,
   IconButton,
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -48,7 +44,6 @@ import LabeledField from "../questionnaireEditor/LabeledField";
 import CreationMenu from "../questionnaireEditor/CreationMenu";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import QuestionnaireItemCard from "../questionnaireEditor/QuestionnaireItemCard";
-import FormattedText from "../components/FormattedText.jsx";
 import ResourceHeader from "./ResourceHeader";
 import QuestionnairePreview from "./QuestionnairePreview";
 

@@ -30,7 +30,7 @@ import FormattedText from "../components/FormattedText.jsx";
 
 // Markdown Text Input field used by Edit dialog component
 let MarkdownTextField = (props) => {
-  let { objectKey, data, onChange, hint, classes } = props;
+  let { objectKey, data, onChange, hint } = props;
   const [value, setValue] = useState(data[objectKey] || '');
 
   return (

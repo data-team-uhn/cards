@@ -17,12 +17,11 @@
 //  under the License.
 //
 
-import React, { useState } from "react";
+import React from "react";
 import withStyles from '@mui/styles/withStyles';
 
 import PropTypes from "prop-types";
 
-import { LABEL_POS, VALUE_POS } from "../questionnaire/Answer";
 import Question from "./Question";
 import QuestionnaireStyle from "./QuestionnaireStyle";
 

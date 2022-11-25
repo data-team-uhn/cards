@@ -21,7 +21,7 @@ import React, { useRef, useEffect, useState, useContext } from "react";
 import { useHistory } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
-import { Avatar, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, ListItem, ListItemAvatar, TextField } from "@mui/material";
+import { Avatar, Button, CircularProgress, DialogActions, DialogContent, ListItem, ListItemAvatar, TextField } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import MaterialTable from "material-table";
@@ -924,9 +924,6 @@ function SubjectSelectorList(props) {
               onError("You cannot create a blank subject");
               return Promise.resolve();
             }
-
-            // Prevent the user from creating a user that already exists
-            let check_already_exists_url = new URL("/Subjects/" + newData["identifier"], window.location.origin);
 
             // Add the new data
             let url = new URL("/Subjects/" + uuidv4(), window.location.origin);
