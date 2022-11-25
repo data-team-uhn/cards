@@ -199,11 +199,6 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
         if ("cards:Section".equals(nodeType)) {
             processSectionToHeaderRow(nodeJson, csvData, columns);
         } else if ("cards:Question".equals(nodeType)) {
-            final String displayMode = getDisplayMode(nodeJson);
-            if ("hidden".equals(displayMode)) {
-                return;
-            }
-
             String label = nodeJson.getString("@name");
             if (nodeJson.containsKey("text")) {
                 label = nodeJson.getString("text");
