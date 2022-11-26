@@ -64,7 +64,7 @@
       "link" : "dashboard+path"
     },
     {
-      "key": "oed_8",
+      "key": "oed_9",
       "label": "Overall experience",
       "link" : "string"
     }
@@ -117,7 +117,7 @@
       "link" : "string"
     },
     {
-      "key": "oaip_8",
+      "key": "oaip_11",
       "label": "Overall experience",
       "link" : "string"
     }
