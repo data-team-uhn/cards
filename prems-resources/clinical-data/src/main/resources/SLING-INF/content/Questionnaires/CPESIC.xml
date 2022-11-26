@@ -1165,53 +1165,10 @@ Your response to this survey is voluntary but will provide us with important inf
 				<type>String</type>
 			</property>
 			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
 			</property>
-			<node>
-				<name>yes</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Yes</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Yes</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>no</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>No</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>No</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>2</value>
-					<type>Long</type>
-				</property>
-			</node>
 		</node>
 		<node>
 			<name>cpesic_11section</name>
@@ -1377,53 +1334,10 @@ Your response to this survey is voluntary but will provide us with important inf
 				<type>String</type>
 			</property>
 			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
 			</property>
-			<node>
-				<name>yes</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Yes</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Yes</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>no</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>No</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>No</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>2</value>
-					<type>Long</type>
-				</property>
-			</node>
 		</node>
 		<node>
 			<name>cpesic_13section</name>
@@ -1734,53 +1648,10 @@ Your response to this survey is voluntary but will provide us with important inf
 				<type>String</type>
 			</property>
 			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
 			</property>
-			<node>
-				<name>yes</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Yes</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Yes</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>no</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>No</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>No</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>2</value>
-					<type>Long</type>
-				</property>
-			</node>
 		</node>
 		<node>
 			<name>cpesic_16section</name>
@@ -2289,49 +2160,6 @@ Your response to this survey is voluntary but will provide us with important inf
 					<value>During this hospital stay, did doctors, nurses or other hospital staff talk with you about whether you would have the help you needed when you left the hospital?</value>
 					<type>String</type>
 				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>yes</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>no</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>No</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>No</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>2</value>
-						<type>Long</type>
-					</property>
-				</node>
 			</node>
 		</node>
 		<node>
@@ -2447,49 +2275,6 @@ Your response to this survey is voluntary but will provide us with important inf
 symptoms or health problems to look out for after you left the hospital?</value>
 					<type>String</type>
 				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>yes</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>no</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>No</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>No</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>2</value>
-						<type>Long</type>
-					</property>
-				</node>
 			</node>
 		</node>
 	</node>
@@ -2747,53 +2532,10 @@ symptoms or health problems to look out for after you left the hospital?</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
 			</property>
-			<node>
-				<name>yes</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Yes</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Yes</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>no</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>No</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>No</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>2</value>
-					<type>Long</type>
-				</property>
-			</node>
 		</node>
 		<node>
 			<name>cpesic_24section</name>
@@ -3437,49 +3179,6 @@ symptoms or health problems to look out for after you left the hospital?</value>
 					<value>After you knew that you needed to be admitted to a hospital bed, did you have to wait too long before getting there?</value>
 					<type>String</type>
 				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>yes</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Yes</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>1</value>
-						<type>Long</type>
-					</property>
-				</node>
-				<node>
-					<name>no</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>No</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>No</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>defaultOrder</name>
-						<value>2</value>
-						<type>Long</type>
-					</property>
-				</node>
 			</node>
 		</node>
 		<node>
@@ -5471,53 +5170,10 @@ symptoms or health problems to look out for after you left the hospital?</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
 				<name>minAnswers</name>
 				<value>1</value>
 				<type>Long</type>
 			</property>
-			<node>
-				<name>yes</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>Yes</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>Yes</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>no</name>
-				<primaryNodeType>cards:AnswerOption</primaryNodeType>
-				<property>
-					<name>label</name>
-					<value>No</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>value</name>
-					<value>No</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>defaultOrder</name>
-					<value>2</value>
-					<type>Long</type>
-				</property>
-			</node>
 		</node>
 		<node>
 			<name>cpesic_48</name>
