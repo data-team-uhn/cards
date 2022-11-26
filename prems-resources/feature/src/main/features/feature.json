@@ -46,7 +46,7 @@
       ]
     },
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~TWEDInitialInvitationTask":{
-      "name": "TWEDInitialNotificationsTask",
+      "name": "CPESInitialNotificationsTask",
       "metricName": "Initial Emails Sent",
       "clinicId": "/Survey/ClinicMapping/2075099",
       "emailSubject": "YOUR EXPERIENCE at UHN - Tell us how we did",
@@ -55,7 +55,7 @@
       "daysToVisit": -7
     },
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~TWEDReminderNotificationsTask":{
-      "name": "TWEDReminderNotificationsTask",
+      "name": "CPESReminderNotificationsTask",
       "metricName": "Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/2075099",
       "emailSubject": "Reminder: YOUR EXPERIENCE at UHN - Tell us how we did",
@@ -64,7 +64,7 @@
       "daysToVisit": -14
     },
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~TWIPInitialInvitationTask":{
-      "name": "TWIPInitialNotificationsTask",
+      "name": "UHNIPInitialNotificationsTask",
       "metricName": "Initial Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-1792626663",
       "emailSubject": "YOUR EXPERIENCE at UHN - Tell us how we did",
@@ -73,7 +73,7 @@
       "daysToVisit": -7
     },
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~TWIPReminderNotificationsTask":{
-      "name": "TWIPReminderNotificationsTask",
+      "name": "UHNIPReminderNotificationsTask",
       "metricName": "Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-1792626663",
       "emailSubject": "Reminder: YOUR EXPERIENCE at UHN - Tell us how we did",
@@ -82,7 +82,7 @@
       "daysToVisit": -14
     },
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~TGHEDInitialInvitationTask":{
-      "name": "TGHEDInitialNotificationsTask",
+      "name": "UHNEDInitialNotificationsTask",
       "metricName": "Initial Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-1792626799",
       "emailSubject": "YOUR EXPERIENCE at UHN - Tell us how we did",
@@ -91,7 +91,7 @@
       "daysToVisit": -7
     },
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~TGHEDReminderNotificationsTask":{
-      "name": "TGHEDReminderNotificationsTask",
+      "name": "UHNEDReminderNotificationsTask",
       "metricName": "Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-1792626799",
       "emailSubject": "Reminder: YOUR EXPERIENCE at UHN - Tell us how we did",
@@ -100,7 +100,7 @@
       "daysToVisit": -14
     },
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~TGHIPInitialInvitationTask":{
-      "name": "TGHIPInitialNotificationsTask",
+      "name": "UHNEDIPInitialNotificationsTask",
       "metricName": "Initial Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-432465800",
       "emailSubject": "YOUR EXPERIENCE at UHN - Tell us how we did",
@@ -109,7 +109,7 @@
       "daysToVisit": -7
     },
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~TGHIPReminderNotificationsTask":{
-      "name": "TGHIPReminderNotificationsTask",
+      "name": "UHNEDIPReminderNotificationsTask",
       "metricName": "Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-432465800",
       "emailSubject": "Reminder: YOUR EXPERIENCE at UHN - Tell us how we did",
