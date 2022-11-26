@@ -35,7 +35,7 @@
         </property>
         <property>
             <name>estimate</name>
-            <value>2</value>
+            <value>5</value>
             <type>Long</type>
         </property>
         <property>
