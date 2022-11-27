@@ -18,7 +18,7 @@
 -->
 
 <node>
-    <name>ED</name>
+    <name>CPES</name>
     <primaryNodeType>cards:QuestionnaireSet</primaryNodeType>
     <property>
         <name>name</name>
@@ -30,12 +30,12 @@
         <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
         <property>
             <name>questionnaire</name>
-            <value>/Questionnaires/OED</value>
+            <value>/Questionnaires/CPESIC</value>
             <type>Reference</type>
         </property>
         <property>
             <name>estimate</name>
-            <value>2</value>
+            <value>15</value>
             <type>Long</type>
         </property>
         <property>
@@ -64,7 +64,12 @@
       "link" : "dashboard+path"
     },
     {
-      "key": "oed_8",
+      "key": "cpesic_department",
+      "label": "Department",
+      "link" : "string"
+    },
+    {
+      "key": "cpesic_43",
       "label": "Overall experience",
       "link" : "string"
     }
@@ -73,4 +78,4 @@
             <type>String</type>
         </property>
     </node>
-</node>
+</node>.

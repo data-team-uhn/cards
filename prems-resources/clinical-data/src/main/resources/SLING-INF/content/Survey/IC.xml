@@ -18,7 +18,7 @@
 -->
 
 <node>
-    <name>ED</name>
+    <name>IC</name>
     <primaryNodeType>cards:QuestionnaireSet</primaryNodeType>
     <property>
         <name>name</name>
@@ -65,6 +65,59 @@
     },
     {
       "key": "oed_8",
+      "label": "Overall experience",
+      "link" : "string"
+    }
+]
+            </value>
+            <type>String</type>
+        </property>
+    </node>
+    <node>
+        <name>Step2</name>
+        <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
+        <property>
+            <name>questionnaire</name>
+            <value>/Questionnaires/OAIP</value>
+            <type>Reference</type>
+        </property>
+        <property>
+            <name>estimate</name>
+            <value>2</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>frequency</name>
+            <value>26</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>order</name>
+            <value>1</value>
+            <type>Long</type>
+        </property>
+        <property>
+            <name>view</name>
+            <value>
+[
+    {
+      "key": "mrn",
+      "label": "MRN",
+      "format": "string"
+    },
+    {
+      "key": "time",
+      "label": "Discharge date",
+      "format": "date:yyyy-MM-dd HH:mm",
+      "link" : "dashboard+path"
+    },
+    {
+      "key": "oaip_department",
+      "label": "Department",
+      "link" : "string"
+    },
+    {
+      "key": "oaip_8",
       "label": "Overall experience",
       "link" : "string"
     }
