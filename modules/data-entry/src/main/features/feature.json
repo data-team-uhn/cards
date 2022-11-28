@@ -70,7 +70,7 @@
     "org.apache.sling.jcr.repoinit.RepositoryInitializer~forms":{
       "service.ranking:Integer":150,
       "scripts":[
-        "create path (cards:dataQuery) /query \n\n # Allow all users to query; the actual results will obey their access rights \n set ACL for everyone \n   allow  jcr:read  on /query \n end \n\n create path (cards:QuestionnairesHomepage) /Questionnaires \n create path (cards:FormsHomepage) /Forms \n create path (cards:SubjectsHomepage) /Subjects \n create path (cards:SubjectTypesHomepage) /SubjectTypes ",
+        "create path (cards:dataQuery) /query \n\n # Allow all users to query; the actual results will obey their access rights \n set ACL for everyone \n   allow  jcr:read  on /query \n end \n\n create path (cards:QuestionnairesHomepage) /Questionnaires \n create path (cards:FormsHomepage) /Forms \n create path (cards:FormsQueryCacheHomepage) /FormsQueryCache \n create path (cards:SubjectsHomepage) /Subjects \n create path (cards:SubjectTypesHomepage) /SubjectTypes ",
         "create service user cards-answer-editor \n set ACL on /Questionnaires \n   allow jcr:read for cards-answer-editor \n end"
       ]
     },

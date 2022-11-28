@@ -99,7 +99,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
     /**
      * Various supported filter types.
      */
-    private enum FilterType
+    protected enum FilterType
     {
         /** Regular filters on child node values. */
         CHILD("child", "filternames", null, false),
@@ -133,7 +133,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      * A parsed filter, gathering together the field, comparator, value to compare against, type of the value, and
      * source name that the field belongs to.
      */
-    private static final class Filter
+    protected static final class Filter
     {
         /**
          * The field name, may be the jcr:uuid of a question being answered, or a special value like the subject,
@@ -171,6 +171,21 @@ public class PaginationServlet extends SlingSafeMethodsServlet
             this.value = value;
             this.type = type;
             this.comparator = comparator;
+        }
+
+        String getName()
+        {
+            return this.name;
+        }
+
+        String getValue()
+        {
+            return this.value;
+        }
+
+        String getComparator()
+        {
+            return this.comparator;
         }
     }
 
@@ -219,7 +234,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      * @return {@code true} if any mandatory special property has an "is empty" filter, {@code false} otherwise
      * @throws RepositoryException if accessing the repository fails
      */
-    private boolean checkForSpecialEmptyFilter(final SlingHttpServletRequest request,
+    protected boolean checkForSpecialEmptyFilter(final SlingHttpServletRequest request,
         final Map<FilterType, List<Filter>> filters, final SlingHttpServletResponse response)
         throws RepositoryException
     {
@@ -314,7 +329,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      * @return a query that takes into account the requested filters
      * @throws RepositoryException if accessing the repository fails
      */
-    private String createQuery(final SlingHttpServletRequest request, Session session,
+    protected String createQuery(final SlingHttpServletRequest request, Session session,
         final Map<FilterType, List<Filter>> filters) throws RepositoryException
     {
         // If we want this query to be fast, we need to use the exact nodetype requested.
@@ -388,7 +403,7 @@ public class PaginationServlet extends SlingSafeMethodsServlet
      *         only some types of filters, depending on which filters are specified in the request
      * @throws IllegalArgumentException when the number of request parameters are not equal
      */
-    private Map<FilterType, List<Filter>> parseFiltersFromRequest(final SlingHttpServletRequest request)
+    protected Map<FilterType, List<Filter>> parseFiltersFromRequest(final SlingHttpServletRequest request)
         throws IllegalArgumentException
     {
         final Map<FilterType, List<Filter>> result = new HashMap<>();
