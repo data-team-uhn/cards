@@ -31,14 +31,14 @@
       }
     ],
     "configurations":{
-      "org.apache.sling.jcr.repoinit.RepositoryInitializer~patientUI":{
+      "org.apache.sling.jcr.repoinit.RepositoryInitializer~clarityIntegration":{
         "service.ranking:Integer":300,
         "scripts": [
           "create path (sling:Folder) /prems",
           "create service user clarity-import \n set ACL on /Questionnaires,/Subjects,/prems \n   allow jcr:read for clarity-import \n end \n set ACL on /Forms \n   allow jcr:read,rep:write,jcr:versionManagement for clarity-import \n end"
         ]
       },
-      "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~patientUi":{
+      "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~clarityIntegration":{
         "user.mapping":[
           "io.uhndata.cards.clarityimport:ClarityImport=[clarity-import]"
         ]
