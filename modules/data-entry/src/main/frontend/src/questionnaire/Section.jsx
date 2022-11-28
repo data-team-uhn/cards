@@ -40,10 +40,6 @@ import { v4 as uuidv4 } from 'uuid';
 
 const ID_STATE_KEY = ":AccessCount";
 
-// The heading levels that @material-ui supports
-const MAX_HEADING_LEVEL = 6;
-const MIN_HEADING_LEVEL = 4;
-
 /**
  * Creates the title from the given section specification.
  * @param {String} label Label of the section
@@ -69,17 +65,16 @@ function Section(props) {
   const { classes, depth, existingAnswer, path, sectionDefinition, onChange, visibleCallback, pageActive, isEdit, isSummary, instanceId, contentOffset } = props;
   const isRecurrent = sectionDefinition['recurrent'];
   const { displayMode } = sectionDefinition;
-  const [ focus, setFocus ] = useState(false);
 
   const headerVariant = "h5";
   const titleEl = sectionDefinition["label"] &&
-    ((idx, uuid) =>
+    (idx =>
       <Typography variant={headerVariant}>
         {createTitle(sectionDefinition["label"], idx, isRecurrent)}
       </Typography>
     );
   const descEl = sectionDefinition["description"] &&
-    (idx =>
+    (() =>
       <FormattedText variant="caption" display="block" color="textSecondary">
         {sectionDefinition["description"]}
       </FormattedText>
@@ -97,7 +92,6 @@ function Section(props) {
   const [ labelsToHide, setLabelsToHide ] = useState({});
   const formContext = useFormReaderContext();
   const [ selectedUUID, setSelectedUUID ] = useState();
-  const [ uuid ] = useState(uuidv4());  // To keep our IDs separate from any other sections
   const [ removableAnswers, setRemovableAnswers ] = useState({[ID_STATE_KEY]: 1});
   const [ answersToDelete, setAnswersToDelete ] = useState([]);
 
@@ -249,8 +243,8 @@ function Section(props) {
                     }
 
                     {/* Title & description */}
-                    {titleEl && titleEl(idx, uuid)}
-                    {descEl && descEl(idx)}
+                    {titleEl && titleEl(idx)}
+                    {descEl && descEl()}
                   </Grid>
               }
               <Collapse
@@ -302,7 +296,6 @@ function Section(props) {
             className={classes.addSectionButton}
             onClick={() => {
               setInstanceLabels((oldLabels) => [...oldLabels, uuidv4()]);
-              setFocus(true);
             }}
             >
             <Add fontSize="small" /> {sectionDefinition["label"]}

@@ -20,12 +20,20 @@
 
 import os
 import sys
+import math
 import yaml
 import json
+import psutil
 import shutil
+import hashlib
 import argparse
 from OpenSSL import crypto, SSL
 from CardsDockerTagProperty import CARDS_DOCKER_TAG
+from CloudIAMdemoKeystoreSha256Property import CLOUD_IAM_DEMO_KEYSTORE_SHA256
+from ServerMemorySplitConfig import MEMORY_SPLIT_CARDS_JAVA, MEMORY_SPLIT_MONGO_SHARDS_REPLICAS
+
+ADMINER_DOCKER_RELEASE_TAG = "4.8.1"
+MINIO_DOCKER_RELEASE_TAG = "RELEASE.2022-09-17T00-09-45Z"
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument('--shards', help='Number of MongoDB shards', default=1, type=int)
@@ -33,8 +41,12 @@ argparser.add_argument('--replicas', help='Number of MongoDB replicas per shard 
 argparser.add_argument('--config_replicas', help='Number of MongoDB cluster configuration servers (must be an odd number)', default=3, type=int)
 argparser.add_argument('--custom_env_file', help='Enable a custom file with environment variables')
 argparser.add_argument('--cards_project', help='The CARDS project to deploy (eg. cards4proms, cards4lfs, etc...')
+argparser.add_argument('--demo', help='Enable the Demo Banner, Upgrade Marker Flag, and Demo Forms', action='store_true')
+argparser.add_argument('--demo_banner', help='Enable only the Demo Banner', action='store_true')
 argparser.add_argument('--dev_docker_image', help='Indicate that the CARDS Docker image being used was built for development, not production.', action='store_true')
 argparser.add_argument('--composum', help='Enable Composum for the CARDS admin account', action='store_true')
+argparser.add_argument('--adminer', help='Add an Adminer Docker container for database interaction via web browser', action='store_true')
+argparser.add_argument('--adminer_port', help='If --adminer is specified, bind it to this localhost port [default: 1435]', default=1435, type=int)
 argparser.add_argument('--enable_backup_server', help='Add a cards/backup_recorder service to the cluster', action='store_true')
 argparser.add_argument('--backup_server_path', help='Host OS path where the backup_recorder container should store its backup files')
 argparser.add_argument('--enable_ncr', help='Add a Neural Concept Recognizer service to the cluster', action='store_true')
@@ -44,11 +56,13 @@ argparser.add_argument('--external_mongo_uri', help='URI of the external MongoDB
 argparser.add_argument('--external_mongo_dbname', help='Database name of the external MongoDB instance. Only valid if --external_mongo is specified.')
 argparser.add_argument('--saml', help='Make the Apache Sling SAML2 Handler OSGi bundle available for SAML-based logins', action='store_true')
 argparser.add_argument('--saml_idp_destination', help='URL to redirect to for SAML logins')
+argparser.add_argument('--saml_cloud_iam_demo', help='Enable SAML authentication with CARDS via the Cloud-IAM.com demo', action='store_true')
 argparser.add_argument('--server_address', help='Domain name (or Domain name:port) that the public will use for accessing this CARDS deployment')
 argparser.add_argument('--smtps', help='Enable SMTPS emailing functionality', action='store_true')
 argparser.add_argument('--smtps_localhost_proxy', help='Run an SSL termination proxy so that the CARDS container may connect to the host\'s SMTP server at localhost:25', action='store_true')
 argparser.add_argument('--smtps_test_container', help='Enable the mock SMTPS (cards/postfix-docker) container for viewing CARDS-sent emails.', action='store_true')
 argparser.add_argument('--smtps_test_mail_path', help='Host OS path where the email mbox file from smtps_test_container is stored')
+argparser.add_argument('--s3_test_container', help='Add a MinIO S3 Bucket Docker container for testing S3 data exports', action='store_true')
 argparser.add_argument('--ssl_proxy', help='Protect this service with SSL/TLS (use https:// instead of http://)', action='store_true')
 argparser.add_argument('--sling_admin_port', help='The localhost TCP port which should be forwarded to cardsinitial:8080', type=int)
 argparser.add_argument('--subnet', help='Manually specify the subnet of IP addresses to be used by the containers in this docker-compose environment (eg. --subnet 172.99.0.0/16)')
@@ -60,6 +74,12 @@ CONFIGDB_REPLICA_COUNT = args.config_replicas
 ENABLE_BACKUP_SERVER = args.enable_backup_server
 ENABLE_NCR = args.enable_ncr
 SSL_PROXY = args.ssl_proxy
+
+def sha256FileHash(filepath):
+  hasher = hashlib.sha256()
+  with open(filepath, 'rb') as f:
+    hasher.update(f.read())
+    return hasher.hexdigest()
 
 #Validate before doing anything else
 if (MONGO_REPLICA_COUNT % 2) != 1:
@@ -82,8 +102,22 @@ if args.smtps_test_container:
 
 if ENABLE_BACKUP_SERVER:
   if not args.backup_server_path:
-    print("ERROR A --backup_server_path must be specified with using --enable_backup_server")
+    print("ERROR: A --backup_server_path must be specified with using --enable_backup_server")
     sys.exit(-1)
+
+if args.saml:
+  if "samlKeystore.p12" not in os.listdir('.'):
+    print("ERROR: samlKeystore.p12 is required but not found.")
+    sys.exit(-1)
+
+if args.saml_cloud_iam_demo:
+  if CLOUD_IAM_DEMO_KEYSTORE_SHA256 != sha256FileHash("samlKeystore.p12"):
+    print("")
+    print("=============================== Warning ==============================")
+    print("The SHA256 hash of samlKeystore.p12 does not match the expected value.")
+    print("SAML authentication with Cloud-IAM.com may not work.")
+    print("======================================================================")
+    print("")
 
 def getDockerHostIP(subnet):
   network_address = subnet.split('/')[0]
@@ -219,6 +253,34 @@ def getCardsApplicationName(project_name):
   # If all else fails, use the generic CARDS name
   return "CARDS"
 
+def getWiredTigerCacheSizeGB():
+  total_system_memory_bytes = psutil.virtual_memory().total
+  total_system_memory_gb = total_system_memory_bytes / (1024 * 1024 * 1024)
+
+  # Total memory given to the complete set of MongoDB shards and replicas:
+  total_mongo_shard_replica_memory_gb = MEMORY_SPLIT_MONGO_SHARDS_REPLICAS * total_system_memory_gb
+
+  # Memory given to each MongoDB shard / replica
+  memory_per_shard_replica_gb = total_mongo_shard_replica_memory_gb / (MONGO_SHARD_COUNT * MONGO_REPLICA_COUNT)
+
+  # Floor to 2 decimal places
+  memory_per_shard_replica_gb = math.floor(100 * memory_per_shard_replica_gb) / 100.0
+
+  # The value of WiredTigerCacheSizeGB must range between 0.25GB and 10000GB as per MongoDB documentation
+  if (memory_per_shard_replica_gb < 0.25) or (memory_per_shard_replica_gb > 10000):
+    raise Exception("WiredTigerCacheSizeGB cannot be less than 0.25 or greater than 10000")
+
+  return memory_per_shard_replica_gb
+
+def getCardsJavaMemoryLimitMB():
+  total_system_memory_bytes = psutil.virtual_memory().total
+  total_system_memory_mb = total_system_memory_bytes / (1024 * 1024)
+
+  cards_java_memory_limit_mb = MEMORY_SPLIT_CARDS_JAVA * total_system_memory_mb
+
+  # Floor down to the nearest integer MB
+  return math.floor(cards_java_memory_limit_mb)
+
 OUTPUT_FILENAME = "docker-compose.yml"
 
 yaml_obj = {}
@@ -273,6 +335,8 @@ if not (args.oak_filesystem or args.external_mongo):
 
       yaml_obj['services'][service_name]['build'] = {}
       yaml_obj['services'][service_name]['build']['context'] = "shard{}".format(shard_index)
+
+      yaml_obj['services'][service_name]['environment'] = ["WIRED_TIGER_CACHE_SIZE_GB={}".format(getWiredTigerCacheSizeGB())]
 
       yaml_obj['services'][service_name]['expose'] = ['27017']
 
@@ -413,6 +477,9 @@ if args.oak_filesystem:
 
 if not (args.oak_filesystem or args.external_mongo):
   yaml_obj['services']['cardsinitial']['depends_on'] = ['router']
+  # We must also limit the memory given to the CARDS Java process as the
+  # internal MongoDB setup will also use a significant amount of memory.
+  yaml_obj['services']['cardsinitial']['environment'].append("CARDS_JAVA_MEMORY_LIMIT_MB={}".format(getCardsJavaMemoryLimitMB()))
 
 if args.sling_admin_port:
   yaml_obj['services']['cardsinitial']['ports'] = ["127.0.0.1:{}:8080".format(args.sling_admin_port)]
@@ -423,9 +490,18 @@ if args.cards_project:
 if args.composum:
   yaml_obj['services']['cardsinitial']['environment'].append("DEV=true")
 
+if args.demo:
+  yaml_obj['services']['cardsinitial']['environment'].append("DEMO=true")
+
+if args.demo_banner:
+  yaml_obj['services']['cardsinitial']['environment'].append("DEMO_BANNER=true")
+
 if args.saml:
   yaml_obj['services']['cardsinitial']['environment'].append("SAML_AUTH_ENABLED=true")
   yaml_obj['services']['cardsinitial']['volumes'].append("./samlKeystore.p12:/opt/cards/samlKeystore.p12:ro")
+
+if args.saml_cloud_iam_demo:
+  yaml_obj['services']['cardsinitial']['environment'].append("SAML_CLOUD_IAM_DEMO=true")
 
 if args.smtps:
   yaml_obj['services']['cardsinitial']['environment'].append("SMTPS_ENABLED=true")
@@ -441,6 +517,13 @@ if args.smtps_localhost_proxy:
 if args.smtps_test_container:
   yaml_obj['services']['cardsinitial']['environment'].append("SMTPS_HOST=smtps_test_container")
   yaml_obj['services']['cardsinitial']['environment'].append("SMTPS_LOCAL_TEST_CONTAINER=true")
+
+if args.s3_test_container:
+  yaml_obj['services']['cardsinitial']['environment'].append("S3_ENDPOINT_URL=http://minio:9000")
+  yaml_obj['services']['cardsinitial']['environment'].append("S3_ENDPOINT_REGION=us-west-1")
+  yaml_obj['services']['cardsinitial']['environment'].append("S3_BUCKET_NAME=uhn")
+  yaml_obj['services']['cardsinitial']['environment'].append("AWS_KEY=minioadmin")
+  yaml_obj['services']['cardsinitial']['environment'].append("AWS_SECRET=minioadmin")
 
 if ENABLE_BACKUP_SERVER:
   print("Configuring service: backup_recorder")
@@ -545,6 +628,8 @@ else:
 if args.saml:
   if args.saml_idp_destination:
     idp_url = args.saml_idp_destination
+  elif args.saml_cloud_iam_demo:
+    idp_url = "https://lemur-15.cloud-iam.com/auth/realms/cards-saml-test/protocol/saml"
   else:
     idp_url = input("Enter the SAML2 IdP destination: ")
 
@@ -591,6 +676,28 @@ if args.smtps_test_container:
     f_smtps_key.write(smtps_key)
   with open("./SSL_CONFIG/cards_certs/smtps_certificate.crt", 'w') as f_smtps_cert:
     f_smtps_cert.write(smtps_cert)
+
+if args.s3_test_container:
+  print("Configuring service: s3_test_container")
+  yaml_obj['services']['s3_test_container'] = {}
+  yaml_obj['services']['s3_test_container']['image'] = "minio/minio:" + MINIO_DOCKER_RELEASE_TAG
+  yaml_obj['services']['s3_test_container']['networks'] = {}
+  yaml_obj['services']['s3_test_container']['networks']['internalnetwork'] = {}
+  yaml_obj['services']['s3_test_container']['networks']['internalnetwork']['aliases'] = ['minio']
+  yaml_obj['services']['s3_test_container']['ports'] = ["127.0.0.1:9001:9001"]
+  yaml_obj['services']['s3_test_container']['environment'] = []
+  yaml_obj['services']['s3_test_container']['environment'].append("MINIO_ROOT_USER=minioadmin")
+  yaml_obj['services']['s3_test_container']['environment'].append("MINIO_ROOT_PASSWORD=minioadmin")
+  yaml_obj['services']['s3_test_container']['command'] = ["server", "/data", "--console-address", ":9001"]
+
+if args.adminer:
+  print("Configuring service: adminer")
+  yaml_obj['services']['adminer'] = {}
+  yaml_obj['services']['adminer']['image'] = "adminer:" + ADMINER_DOCKER_RELEASE_TAG
+  yaml_obj['services']['adminer']['networks'] = {}
+  yaml_obj['services']['adminer']['networks']['internalnetwork'] = {}
+  yaml_obj['services']['adminer']['networks']['internalnetwork']['aliases'] = ['adminer']
+  yaml_obj['services']['adminer']['ports'] = ["127.0.0.1:{}:8080".format(args.adminer_port)]
 
 #Setup the internal network
 print("Configuring the internal network")

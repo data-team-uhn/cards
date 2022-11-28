@@ -39,7 +39,8 @@ import io.uhndata.cards.serialize.CSVString;
  * @version $Id$
  */
 @Component(service = { Servlet.class })
-@SlingServletResourceTypes(resourceTypes = { "cards/Questionnaire" }, extensions = { "csv" }, methods = { "GET" })
+@SlingServletResourceTypes(resourceTypes = { "cards/Questionnaire" }, extensions = { "csv", "tsv" },
+    methods = { "GET" })
 public class QuestionnaireCSVServlet extends SlingSafeMethodsServlet
 {
     private static final long serialVersionUID = -677311295300436475L;

@@ -102,6 +102,40 @@ Your response to this survey is voluntary but will provide us with important inf
 				<type>String</type>
 			</property>
 		</node>
+		<node>
+			<name>cpesic_department</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>text</name>
+				<value>Department</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>displayMode</name>
+				<value>hidden</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>entryMode</name>
+				<value>reference</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>question</name>
+				<value>/Questionnaires/Visit information/provider</value>
+				<type>String</type>
+			</property>
+		</node>
 	</node>
 	<node>
 		<name>YourCareFromNurses</name>

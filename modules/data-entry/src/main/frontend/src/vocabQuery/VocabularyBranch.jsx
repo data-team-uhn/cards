@@ -20,7 +20,7 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 import withStyles from '@mui/styles/withStyles';
-import { Button, CircularProgress, IconButton, Tooltip, Typography } from '@mui/material';
+import { CircularProgress, IconButton, Tooltip, Typography } from '@mui/material';
 
 import Info from "@mui/icons-material/Info";
 import ArrowDown from "@mui/icons-material/KeyboardArrowDown";
@@ -28,8 +28,8 @@ import ArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import More from "@mui/icons-material/MoreHoriz";
 
 import BrowseTheme from "./browseStyle.jsx";
-import { REST_URL, MakeRequest } from "./util.jsx";
-import { LABEL_POS, VALUE_POS } from "../questionnaire/Answer";
+import { MakeRequest } from "./util.jsx";
+import { VALUE_POS } from "../questionnaire/Answer";
 
 // Component that renders an element of the VocabularyTree, with expandable children.
 //

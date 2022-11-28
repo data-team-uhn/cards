@@ -16,15 +16,15 @@
 //  specific language governing permissions and limitations
 //  under the License.
 //
-import classNames from "classnames";
-import React, { useRef, useState, useEffect } from "react";
+
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Snackbar, SnackbarContent } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 
 import VocabularyTree from "./VocabularyTree.jsx";
 import InfoBox from "./InfoBox.jsx";
-import { REST_URL, MakeRequest } from "./util.jsx";
+import { MakeRequest } from "./util.jsx";
 import BrowseTheme from "./browseStyle.jsx";
 
 // Component that renders a vocabulary info box and browser.
@@ -61,11 +61,9 @@ function VocabularyBrowser(props) {
 
   // Info box properties
   const [infoAboveBackground, setInfoAboveBackground] = useState(false);
-  const [infoAnchor, setInfoAnchor] = useState(null);
 
   // References to the term info buttons generated in the vocabulary tree dialog
   const [buttonRefs, setButtonRefs] = useState({});
-  const [noResults, setNoResults] = useState(false);
 
   useEffect(() => {
     if (infoPath) {

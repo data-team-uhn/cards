@@ -121,7 +121,7 @@ function ToUConfiguration() {
               />
             </ListItem>
           </List>
-	    }
+        }
     </AdminConfigScreen>
   );
 }

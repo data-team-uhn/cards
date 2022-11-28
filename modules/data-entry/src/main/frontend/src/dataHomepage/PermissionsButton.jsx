@@ -19,7 +19,7 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
 
-import { IconButton, Tooltip, Typography } from "@mui/material";
+import { IconButton, Tooltip } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import { Lock } from "@mui/icons-material"
 
@@ -29,7 +29,7 @@ import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
  * A placeholder component that renders a lock icon.
  */
 function PermissionsButton(props) {
-  const { classes, entry, reload, entryType, size } = props;
+  const { classes, size } = props;
 
   return (
     <React.Fragment>

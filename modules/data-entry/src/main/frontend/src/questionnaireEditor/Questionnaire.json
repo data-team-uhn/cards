@@ -1,6 +1,12 @@
 [
   {
     "//CHILDREN" : {
+      "ExternalLinks" : {
+         "entries" : {
+           "ExternalLink" : "ExternalLink.json"
+         },
+         "defaultOrder" : 1
+      },
       "Question" : "Question.json",
       "Section" : "Section.json",
       "Information" : "Information.json"

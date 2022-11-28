@@ -28,6 +28,12 @@ TERMINAL_YELLOW='\033[0;33m'
 #CTRL+C should stop everything started by this script
 trap ctrl_c INT
 function ctrl_c() {
+  if [ ! -z $KEYCLOAK_HEADERMOD_HTTP_PROXY_PID ]
+  then
+    echo "Shutting down keycloak_headermod_http_proxy.js"
+    kill $KEYCLOAK_HEADERMOD_HTTP_PROXY_PID
+    wait $KEYCLOAK_HEADERMOD_HTTP_PROXY_PID
+  fi
   echo "Shutting down CARDS"
   kill $CARDS_PID
   wait $CARDS_PID
@@ -49,6 +55,14 @@ function print_length_of() {
   do
     echo -n "$2"
   done
+}
+
+function print_pad_right() {
+  printf "%-$2s" "$1"
+}
+
+function get_error_log_last_modified() {
+  echo "$((stat --format="%.Y" .cards-data/logs/error.log 2>/dev/null) || echo 0.00)"
 }
 
 function handle_missing_sling_commons_crypto_warning() {
@@ -137,12 +151,56 @@ function message_hancestro_install_fail() {
   echo -e "${TERMINAL_RED}****************************${TERMINAL_NOCOLOR}"
 }
 
+function message_sha256_cloud_iam_ok() {
+  echo -e "${TERMINAL_GREEN}****************************************************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}*                                                  *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}* Setup Cloud-IAM.com Demo as a SAML IdP for CARDS *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}*                                                  *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_GREEN}****************************************************${TERMINAL_NOCOLOR}"
+}
+
+function message_sha256_cloud_iam_error() {
+  echo -e "${TERMINAL_YELLOW}********************************************************************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}*                                                                  *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}* Invalid Sha256 hash for samlKeystore.p12 for Cloud-IAM.com demo. *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}* SAML authentication via Cloud-IAM.com IdP may not work.          *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}*                                                                  *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}********************************************************************${TERMINAL_NOCOLOR}"
+}
+
+function message_saml_proxy_port_conflict_fail() {
+  echo -e "${TERMINAL_RED}***************************************************************************************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*                                                                                     *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}* Error: CARDS and keycloak_headermod_http_proxy.js cannot be bound to the same port. *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}*                                                                                     *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_RED}***************************************************************************************${TERMINAL_NOCOLOR}"
+}
+
 function message_started_cards() {
-  echo -e "${TERMINAL_GREEN}**************************$(print_length_of $BIND_PORT '*' 4)${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_GREEN}*                         $(print_length_of $BIND_PORT ' ' 3)*${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_GREEN}*   Started CARDS at port ${BIND_PORT}   *${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_GREEN}*                         $(print_length_of $BIND_PORT ' ' 3)*${TERMINAL_NOCOLOR}"
-  echo -e "${TERMINAL_GREEN}**************************$(print_length_of $BIND_PORT '*' 4)${TERMINAL_NOCOLOR}"
+  if [ -z $KEYCLOAK_HEADERMOD_HTTP_PROXY_PID ]
+  then
+    echo -e "${TERMINAL_GREEN}**************************$(print_length_of $BIND_PORT '*' 4)${TERMINAL_NOCOLOR}"
+    echo -e "${TERMINAL_GREEN}*                         $(print_length_of $BIND_PORT ' ' 3)*${TERMINAL_NOCOLOR}"
+    echo -e "${TERMINAL_GREEN}*   Started CARDS at port ${BIND_PORT}   *${TERMINAL_NOCOLOR}"
+    echo -e "${TERMINAL_GREEN}*                         $(print_length_of $BIND_PORT ' ' 3)*${TERMINAL_NOCOLOR}"
+    echo -e "${TERMINAL_GREEN}**************************$(print_length_of $BIND_PORT '*' 4)${TERMINAL_NOCOLOR}"
+  else
+    echo -e "${TERMINAL_GREEN}***************************************************${TERMINAL_NOCOLOR}"
+    echo -e "${TERMINAL_GREEN}*                                                 *${TERMINAL_NOCOLOR}"
+    echo -e "${TERMINAL_GREEN}*   Started CARDS at port $(print_pad_right ${BIND_PORT} 21)   *${TERMINAL_NOCOLOR}"
+    echo -e "${TERMINAL_GREEN}*   Use port ${HEADERMOD_PROXY_LISTEN_PORT} for SAML + local Sling login.   *${TERMINAL_NOCOLOR}"
+    echo -e "${TERMINAL_GREEN}*                                                 *${TERMINAL_NOCOLOR}"
+    echo -e "${TERMINAL_GREEN}***************************************************${TERMINAL_NOCOLOR}"
+  fi
+}
+
+function message_connect_jdb() {
+  echo -e "${TERMINAL_YELLOW}******************************************************************${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}*                                                                *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}* Please connect JDB to localhost:5005 to continue with startup. *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}* jdb -attach 5005                                               *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}*                                                                *${TERMINAL_NOCOLOR}"
+  echo -e "${TERMINAL_YELLOW}******************************************************************${TERMINAL_NOCOLOR}"
 }
 
 function get_cards_version() {
@@ -180,6 +238,12 @@ declare OAK_STORAGE="tar"
 # Permissions scheme: default is open, allow switching to something else
 declare PERMISSIONS="open"
 declare PERMISSIONS_EXPLICITLY_SET="false"
+# Are we using the Cloud-IAM.com Keycloak demo instance?
+declare CLOUD_IAM_DEMO="false"
+# Is SAML authentication enabled?
+declare SAML_IN_USE="false"
+# Should any flags be passed to Java to enable debugging with JDB?
+declare JAVA_DEBUGGING_FLAGS=""
 get_cards_version
 
 for ((i=0; i<${ARGS_LENGTH}; ++i));
@@ -233,6 +297,10 @@ do
     ARGS_LENGTH=${ARGS_LENGTH}+1
     ARGS[$ARGS_LENGTH]=mvn:io.uhndata.cards/cards/${CARDS_VERSION}/slingosgifeature/composum
     ARGS_LENGTH=${ARGS_LENGTH}+1
+  elif [[ ${ARGS[$i]} == '--debug' ]]
+  then
+    unset ARGS[$i]
+    JAVA_DEBUGGING_FLAGS="-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005"
   elif [[ ${ARGS[$i]} == '--demo' ]]
   then
     unset ARGS[$i]
@@ -254,6 +322,7 @@ do
     then
       PERMISSIONS="trusted"
     fi
+    SAML_IN_USE="true"
     unset ARGS[$i]
     ARGS[$ARGS_LENGTH]=-f
     ARGS_LENGTH=${ARGS_LENGTH}+1
@@ -273,6 +342,14 @@ do
     ARGS[$ARGS_LENGTH]=-f
     ARGS_LENGTH=${ARGS_LENGTH}+1
     ARGS[$ARGS_LENGTH]=mvn:io.uhndata.cards/cards-keycloakdemo-saml-support/${CARDS_VERSION}/slingosgifeature
+    ARGS_LENGTH=${ARGS_LENGTH}+1
+  elif [[ ${ARGS[$i]} == '--cloud-iam_demo' ]]
+  then
+    CLOUD_IAM_DEMO="true"
+    unset ARGS[$i]
+    ARGS[$ARGS_LENGTH]=-f
+    ARGS_LENGTH=${ARGS_LENGTH}+1
+    ARGS[$ARGS_LENGTH]=mvn:io.uhndata.cards/cards-cloud-iam-demo-saml-support/${CARDS_VERSION}/slingosgifeature
     ARGS_LENGTH=${ARGS_LENGTH}+1
   elif [[ ${ARGS[$i]} == '--uhn_ad_fs' ]]
   then
@@ -303,9 +380,39 @@ then
   diff -q ~/.mailcap distribution/mailcap || warn_different_mailcap
 fi
 
+if [ $SAML_IN_USE = true ]
+then
+  if [ $CLOUD_IAM_DEMO = true ]
+  then
+    HEADERMOD_PROXY_LISTEN_PORT=8080
+  else
+    HEADERMOD_PROXY_LISTEN_PORT=9090
+  fi
+
+  if [ $HEADERMOD_PROXY_LISTEN_PORT = $BIND_PORT ]
+  then
+    message_saml_proxy_port_conflict_fail
+    exit -1
+  fi
+fi
+
+ERROR_LOG_LAST_MODIFIED_TIME_ORIGIN=$(get_error_log_last_modified)
+
 #Start CARDS in the background
-java -Djdk.xml.entityExpansionLimit=0 -Dorg.osgi.service.http.port=${BIND_PORT} -jar distribution/target/dependency/org.apache.sling.feature.launcher.jar -u "file://$(realpath .mvnrepo),file://$(realpath "${HOME}/.m2/repository"),https://nexus.phenotips.org/nexus/content/groups/public,https://repo.maven.apache.org/maven2,https://repository.apache.org/content/groups/snapshots" -p .cards-data -c .cards-data/cache -f mvn:io.uhndata.cards/cards/${CARDS_VERSION}/slingosgifeature/core_${OAK_STORAGE} -f mvn:io.uhndata.cards/cards-dataentry/${CARDS_VERSION}/slingosgifeature/permissions_${PERMISSIONS} "${ARGS[@]}" &
+java ${JAVA_DEBUGGING_FLAGS} -Djdk.xml.entityExpansionLimit=0 -Dorg.osgi.service.http.port=${BIND_PORT} -jar distribution/target/dependency/org.apache.sling.feature.launcher.jar -u "file://$(realpath .mvnrepo),file://$(realpath "${HOME}/.m2/repository"),https://nexus.phenotips.org/nexus/content/groups/public,https://repo.maven.apache.org/maven2,https://repository.apache.org/content/groups/snapshots" -p .cards-data -c .cards-data/cache -f mvn:io.uhndata.cards/cards/${CARDS_VERSION}/slingosgifeature/core_${OAK_STORAGE} -f mvn:io.uhndata.cards/cards-dataentry/${CARDS_VERSION}/slingosgifeature/permissions_${PERMISSIONS} "${ARGS[@]}" &
 CARDS_PID=$!
+
+if [ ! -z "$JAVA_DEBUGGING_FLAGS" ]
+then
+  message_connect_jdb
+  # As soon as we see CARDS writing to .cards-data/logs/error.log, we
+  # can conclude that JDB has attached to the Java process.
+  while (( $(echo "$(get_error_log_last_modified) <= $ERROR_LOG_LAST_MODIFIED_TIME_ORIGIN" | bc -l) ))
+  do
+    sleep 5
+    echo "Waiting for JDB attachment..."
+  done
+fi
 
 #Check to see if CARDS was able to bind to the TCP port
 #This is the more robust test that works only if psutil is installed
@@ -370,8 +477,38 @@ then
   fi
 fi
 
-message_started_cards
+#Check if we are using the Cloud-IAM.com demo
+if [ $CLOUD_IAM_DEMO = true ]
+then
+  (cd Utilities/Administration/SAML/ && sha256sum -c cloud-iam_demo_samlKeystore.p12.sha256sum && message_sha256_cloud_iam_ok || message_sha256_cloud_iam_error)
+  KEYCLOAK_HEADERMOD_HTTP_PROXY_KEYCLOAK_ENDPOINT="https://lemur-15.cloud-iam.com/auth/realms/cards-saml-test/protocol/saml"
+fi
 
+#Check if we are using SAML
+if [ $SAML_IN_USE = true ]
+then
+  # Start a keycloak_headermod_http_proxy.js in the background
+  if [ -z $KEYCLOAK_HEADERMOD_HTTP_PROXY_KEYCLOAK_ENDPOINT ]
+  then
+    nodejs Utilities/Development/keycloak_headermod_http_proxy.js \
+      --listen-port=$HEADERMOD_PROXY_LISTEN_PORT \
+      --cards-port=$BIND_PORT &
+    KEYCLOAK_HEADERMOD_HTTP_PROXY_PID=$!
+  else
+    nodejs Utilities/Development/keycloak_headermod_http_proxy.js \
+      --listen-port=$HEADERMOD_PROXY_LISTEN_PORT \
+      --cards-port=$BIND_PORT \
+      --keycloak-endpoint=$KEYCLOAK_HEADERMOD_HTTP_PROXY_KEYCLOAK_ENDPOINT &
+    KEYCLOAK_HEADERMOD_HTTP_PROXY_PID=$!
+  fi
+fi
+
+message_started_cards
 #Stop this script if the CARDS process terminates in failure
 wait $CARDS_PID
+if [ ! -z $KEYCLOAK_HEADERMOD_HTTP_PROXY_PID ]
+then
+  kill $KEYCLOAK_HEADERMOD_HTTP_PROXY_PID
+  wait $KEYCLOAK_HEADERMOD_HTTP_PROXY_PID
+fi
 handle_cards_java_fail

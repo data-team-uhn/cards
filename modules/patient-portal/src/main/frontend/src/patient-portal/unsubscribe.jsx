@@ -18,15 +18,12 @@
 //
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
-import { Router, Route, Redirect, Switch } from "react-router-dom";
 import { Paper, Grid, Button, Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
-import { createBrowserHistory } from "history";
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { appTheme } from "../themePalette.jsx";
-import Footer from "./Footer.jsx";
 import ErrorPage from "../components/ErrorPage.jsx";
 
 const useStyles = makeStyles(theme => ({

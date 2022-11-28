@@ -34,7 +34,6 @@ import {
 
 import makeStyles from '@mui/styles/makeStyles';
 
-import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from '@mui/icons-material/Edit';
 import ExpandIcon from '@mui/icons-material/UnfoldMore';
 import CollapseIcon from '@mui/icons-material/UnfoldLess';

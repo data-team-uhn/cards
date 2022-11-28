@@ -29,7 +29,6 @@ import {
   CircularProgress,
   Divider,
   IconButton,
-  Fab,
   Tab,
   Tabs,
   Tooltip,
@@ -39,7 +38,6 @@ import withStyles from '@mui/styles/withStyles';
 import { Link } from 'react-router-dom';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import LaunchIcon from '@mui/icons-material/Launch';
-import AddIcon from '@mui/icons-material/Add';
 import DeleteButton from "./DeleteButton.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
@@ -110,11 +108,6 @@ function SubjectView(props) {
     setTabsLoading(true);
   } else if (tabsLoading === false && !subjectTypes?.length) {
     return null;
-  }
-
-  let path;
-  if (hasSubjects) {
-    path = subjectTypes[activeTab]['@path'];
   }
 
   return (

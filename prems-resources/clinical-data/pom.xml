@@ -43,6 +43,8 @@
             <Sling-Initial-Content>
               SLING-INF/content/Survey/ED.xml;path:=/Survey/ED;overwrite:=true,
               SLING-INF/content/Survey/AIP.xml;path:=/Survey/AIP;overwrite:=true,
+              SLING-INF/content/Survey/IC.xml;path:=/Survey/IC;overwrite:=true,
+              SLING-INF/content/Survey/CPES.xml;path:=/Survey/CPES;overwrite:=true,
               SLING-INF/content/Survey/ClinicMapping.xml;path:=/Survey/ClinicMapping;overwrite:=true,
               SLING-INF/content/Survey/PatientIdentification.xml;path:=/Survey/PatientIdentification;overwrite:=true,
               SLING-INF/content/Survey/TermsOfUse.xml;path:=/Survey/TermsOfUse;overwrite:=true,
@@ -50,7 +52,6 @@
               SLING-INF/content/Survey/DashboardSettings.xml;path:=/Survey/DashboardSettings;overwrite:=true,
               SLING-INF/content/Questionnaires/;path:=/Questionnaires/;overwriteProperties:=true;uninstall:=true;checkin:=true,
               SLING-INF/content/Extensions/;path:=/Extensions/;overwriteProperties:=true;uninstall:=true,
-              SLING-INF/content/ExtensionsOverride/Sidebar/UserStatistics.json;path:=/Extensions/Sidebar/UserStatistics;overwrite:=true,
               SLING-INF/content/libs/cards/resources/media/prems/;path:=/libs/cards/resources/media/prems/;overwrite:=true;uninstall:=true,
               SLING-INF/content/libs/cards/conf/Media.json;path:=/libs/cards/conf/Media;overwriteProperties:=true,
               SLING-INF/content/libs/cards/conf/AppName.json;path:=/libs/cards/conf/AppName;overwrite:=true,

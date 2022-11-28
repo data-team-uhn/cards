@@ -31,12 +31,11 @@ import ValueComponentManager from "../questionnaireEditor/ValueComponentManager"
 
 // Text Input field used by Edit dialog component
 let TextInput = (props) => {
-  let { objectKey, data, multiline, variant } = props;
+  let { objectKey, data, multiline, variant, hint } = props;
 
   return (
-    <EditorInput name={objectKey}>
+    <EditorInput name={objectKey} hint={hint}>
       <TextField
-        variant="standard"
         name={objectKey}
         id={objectKey}
         defaultValue={typeof(data[objectKey]) != 'undefined' ? data[objectKey] : ''}
@@ -51,7 +50,8 @@ let TextInput = (props) => {
 
 TextInput.propTypes = {
   objectKey: PropTypes.string.isRequired,
-  data: PropTypes.object.isRequired
+  data: PropTypes.object.isRequired,
+  hint: PropTypes.string,
 };
 
 const StyledTextInput = withStyles(QuestionnaireStyle)(TextInput);

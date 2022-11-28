@@ -114,6 +114,10 @@ To enable debug mode, also add `--env DEBUG=true` to the `docker run` command. N
 
 `docker run --network cardsbridge -d -p 8080:8080 -p 5005:5005 -e INITIAL_SLING_NODE=true --env DEV=true --env DEBUG=true --name cards-debug cards/cards`
 
+# Environment variables
+
+Environment variables that can be set to enable CARDS functionality can be found [here](./environment.md).
+
 ## Running with Docker-Compose
 
 Docker-Compose can be employed to create a cluster of *N* MongoDB Shards, *M* MongoDB Replicas, and *one* CARDS instance.

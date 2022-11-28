@@ -335,7 +335,7 @@ function Filters(props) {
     })
   }
 
-  let getOutputChoices = (field, overridefilters) => {
+  let getOutputChoices = (field) => {
     let [comparators, component] = FilterComponentManager.getFilterComparatorsAndComponent(questionDefinitions[field]);
     if (questionDefinitions[field].enableNotes && !comparators.includes(notesComparator)) {
       comparators = comparators.slice();

@@ -107,7 +107,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 let AnswerOptions = (props) => {
-  const { objectKey, value, data, path, saveButtonRef } = props;
+  const { objectKey, value, data, path, saveButtonRef, hint } = props;
   const classes = useStyles();
   let [ options, setOptions ] = useState(extractSortedOptions(data));
   let [ deletedOptions, setDeletedOptions ] = useState([]);
@@ -232,7 +232,8 @@ let AnswerOptions = (props) => {
     }
   }
 
-  let handleInputOption = (optionInput) => {
+  let handleInputOption = (event) => {
+    let optionInput = event.target.value;
     if (optionInput && !isDuplicate) {
       // The text entered on each line should be split
       // by the first occurrence of the separator = if the separator exists
@@ -314,7 +315,6 @@ let AnswerOptions = (props) => {
         <TextField
           variant="standard"
           disabled={!option.data[option.label]}
-          label={option.tootltip}
           error={option.data[option.label] && option.isDuplicate}
           helperText={option.isDuplicate ? 'duplicated value or label' : ''}
           className={classes.answerOptionInput}
@@ -380,7 +380,7 @@ let AnswerOptions = (props) => {
   }
 
   return (
-    <EditorInput name={objectKey}>
+    <EditorInput name={objectKey} hint={hint}>
       { deletedOptions.map((value, index) =>
         <input type='hidden' name={`${value['@path']}@Delete`} value="0" key={value['@path']} />
       )}
@@ -471,14 +471,14 @@ let AnswerOptions = (props) => {
         label="value OR value=label (e.g. F=Female)"
         helperText={isDuplicate ? 'Duplicated value or label' : 'Press ENTER to add a new line'}
         onChange={(event) => { setTempValue(event.target.value); validateOption(event.target.value, setIsDuplicate); }}
-        onBlur={(event) => { handleInputOption(event.target.value); }}
+        onBlur={(event) => { handleInputOption(event); }}
         inputProps={Object.assign({
           onKeyDown: (event) => {
             if (event.key == 'Enter') {
               // We need to stop the event so that it doesn't trigger a form submission
               event.preventDefault();
               event.stopPropagation();
-              handleInputOption(event.target.value);
+              handleInputOption(event);
             }
           }
         })}
@@ -521,7 +521,8 @@ let AnswerOptions = (props) => {
 }
 
 AnswerOptions.propTypes = {
-  data: PropTypes.object.isRequired
+  data: PropTypes.object.isRequired,
+  hint: PropTypes.string,
 };
 
 export default AnswerOptions;

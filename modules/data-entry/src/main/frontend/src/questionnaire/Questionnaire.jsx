@@ -25,10 +25,6 @@ import {
   CircularProgress,
   Grid,
   IconButton,
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -41,14 +37,13 @@ import EditIcon from '@mui/icons-material/Edit';
 import PreviewIcon from '@mui/icons-material/FindInPage';
 import DeleteButton from "../dataHomepage/DeleteButton";
 import QuestionnaireStyle from "./QuestionnaireStyle";
-import { blue, blueGrey, cyan, deepPurple, indigo, orange } from '@mui/material/colors';
+import { blue, blueGrey, cyan, deepPurple, indigo, orange, purple } from '@mui/material/colors';
 import { ENTRY_TYPES } from "./FormEntry";
 import Fields from "../questionnaireEditor/Fields";
 import LabeledField from "../questionnaireEditor/LabeledField";
 import CreationMenu from "../questionnaireEditor/CreationMenu";
 import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import QuestionnaireItemCard from "../questionnaireEditor/QuestionnaireItemCard";
-import FormattedText from "../components/FormattedText.jsx";
 import ResourceHeader from "./ResourceHeader";
 import QuestionnairePreview from "./QuestionnairePreview";
 
@@ -368,6 +363,24 @@ Information.defaultProps = {
   model: "Information.json"
 };
 
+// Details about an id mapping block displayed in a questionnaire
+let ExternalLink = (props) => <QuestionnaireEntry {...props} />;
+
+ExternalLink.propTypes = {
+  onActionDone: PropTypes.func,
+  data: PropTypes.object.isRequired,
+  type: PropTypes.string.isRequired,
+  avatar: PropTypes.string,
+  avatarColor: PropTypes.string,
+  model: PropTypes.string.isRequired
+};
+
+ExternalLink.defaultProps = {
+  type: "ExternalLink",
+  avatar: "link",
+  avatarColor: purple[300],
+  model: "ExternalLink.json"
+};
 
 // Details about a particular question in a questionnaire.
 // Not to be confused with the public Question component responsible for rendering questions inside a Form.
@@ -493,8 +506,9 @@ let QuestionnaireEntry = (props) => {
     Object.values(childModels)
       .filter(v => {
         if (typeof(v) != "object" || typeof(v?.entries) != "object") return false;
+        if (!v.hasOwnProperty("max")) return true;
         let entryTypes = Object.keys(v.entries).map(e => `cards:${e}`);
-        return (Object.values(data).filter(e => entryTypes?.includes(e['jcr:primaryType'])).length < v?.max);
+        return (Object.values(data).filter(e => entryTypes?.includes(e['jcr:primaryType'])).length < v.max);
       })
       .forEach(v => menuItems.push(...Object.keys(v.entries)));
   }

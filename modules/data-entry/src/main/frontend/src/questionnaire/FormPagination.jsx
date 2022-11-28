@@ -30,7 +30,7 @@ import withStyles from '@mui/styles/withStyles';
 import { useTheme } from '@mui/material/styles';
 import PropTypes from "prop-types";
 import { SECTION_TYPES, ENTRY_TYPES } from "./FormEntry";
-import QuestionnaireStyle, { FORM_ENTRY_CONTAINER_PROPS } from "./QuestionnaireStyle";
+import QuestionnaireStyle from "./QuestionnaireStyle";
 
 class Page {
   constructor(visible) {

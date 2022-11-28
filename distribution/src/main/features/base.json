@@ -254,12 +254,6 @@
             "request.log.enabled":true,
             "access.log.outputtype:Integer":"0"
         },
-        "org.apache.sling.jcr.davex.impl.servlets.SlingDavExServlet":{
-            "alias":"/server"
-        },
-        "org.apache.sling.jcr.webdav.impl.servlets.SimpleWebDavServlet":{
-            "dav.root":"/dav"
-        },
         "org.apache.sling.commons.log.LogManager.factory.config~access.log":{
             "org.apache.sling.commons.log.pattern":"%msg%n",
             "org.apache.sling.commons.log.names":[

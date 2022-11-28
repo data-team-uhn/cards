@@ -78,6 +78,7 @@ const useSliderStyles = makeStyles(theme => ({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
     "& > .MuiTypography-root:first-child" : {
       marginRight: theme.spacing(1.5),
       textAlign: "right",
@@ -452,7 +453,7 @@ function NumberQuestion(props) {
 }
 
 // Helper function to bridge react-number-format with @material-ui
-export const NumberFormatCustom = React.forwardRef(function NumberFormatCustom(
+export const NumberFormatCustom = forwardRef(function NumberFormatCustom(
     props,
     ref,
   ) {

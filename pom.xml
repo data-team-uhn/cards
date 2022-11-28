@@ -512,6 +512,8 @@
             <exclude>**/*.csv</exclude>
             <!-- Documentation files in markdown format -->
             <exclude>**/*.md</exclude>
+            <!-- File hashes -->
+            <exclude>**/*.sha256sum</exclude>
             <!-- Ignore "hidden" files and folders -->
             <exclude>**/.*</exclude>
             <exclude>**/.*/**</exclude>

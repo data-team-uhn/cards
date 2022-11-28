@@ -35,6 +35,12 @@ ADD COMPLETE_SOURCE_CODE.tar /cards
 WORKDIR /cards
 RUN if [[ "$build_jars" == "true" ]] ; then /make_filled_m2.sh ; else mkdir /root/.m2 ; fi
 
+# Create a directory for storing basic metadata about the built image
+RUN mkdir /metadata
+
+# Copy in the yarn.lock file as metadata
+RUN if [[ "$build_jars" == "true" ]] ; then cp /cards/aggregated-frontend/src/main/frontend/yarn.lock /metadata/yarn.lock ; fi
+
 # Production Image: Start from a small Alpine Linux base image
 FROM alpine:3.14
 
@@ -72,6 +78,9 @@ EXPOSE 5005
 
 # Copy in the dependency JARs
 COPY --from=0 /root/.m2 /root/.m2
+
+# Copy in the build metadata
+COPY --from=0 /metadata /metadata
 
 # This is the default command executed when starting the container
 COPY docker_entry.sh /docker_entry.sh

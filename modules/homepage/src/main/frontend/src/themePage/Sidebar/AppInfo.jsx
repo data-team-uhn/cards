@@ -21,7 +21,7 @@ import React from "react";
 import { Tooltip, Typography } from "@mui/material";
 
 function AppInfo (props) {
-  const { classes, textVariant, showTeamInfo } = props;
+  const { textVariant, showTeamInfo } = props;
   let variant = textVariant || "subtitle2";
 
   let platformName = document.querySelector('meta[name="platformName"]')?.content;

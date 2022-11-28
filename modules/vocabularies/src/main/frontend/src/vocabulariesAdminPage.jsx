@@ -18,15 +18,9 @@
 //
 
 import {
-  Button,
-  Dialog,
-  DialogContent,
   Grid,
-  TextField,
   Typography
 } from "@mui/material";
-
-import makeStyles from '@mui/styles/makeStyles';
 
 import React, {useEffect} from "react";
 
@@ -172,11 +166,6 @@ export default function VocabulariesAdminPage() {
 
       setLocalVocabList(localVocabList.filter((vocabulary) => vocabulary.acronym != acronym));
     }
-  }
-
-  function handleErrorModal(isError) {
-    // show modal
-    setError(isError);
   }
 
   function updateBioPortalApiKey(apiKey) {

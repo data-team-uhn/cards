@@ -29,15 +29,11 @@ import { MODE_DIALOG } from "../dataHomepage/NewFormDialog.jsx";
 import {
   Button,
   CircularProgress,
-  Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle,
   Grid,
-  Typography,
 } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
-import AddIcon from "@mui/icons-material/Add";
 
 async function getDashboardExtensions() {
   return loadExtensions("DashboardViews")

@@ -1,6 +1,7 @@
 {
   "jcr:primaryType": "nt:unstructured",
   "jcr:reference:oaip_8": "/Questionnaires/OAIP/oaip_8",
+  "jcr:reference:department": "/Questionnaires/OAIP/oaip_department",
   "jcr:reference:time": "/Questionnaires/Visit information/time",
   "jcr:reference:mrn": "/Questionnaires/Patient information/mrn"
 }

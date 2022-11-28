@@ -219,6 +219,20 @@
 			<type>Long</type>
 		</property>
 		<node>
+			<name>No diagnosis</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>label</name>
+				<value>No diagnosis</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>No diagnosis</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
 			<name>CAD</name>
 			<primaryNodeType>cards:AnswerOption</primaryNodeType>
 			<property>

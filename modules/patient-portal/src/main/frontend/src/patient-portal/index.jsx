@@ -97,6 +97,7 @@ function PatientPortalHomepage (props) {
           message={message}
           messageColor="textPrimary"
         />
+        <Footer/>
       </PageStartWrapper>
     </>)
   }

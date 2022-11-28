@@ -117,7 +117,7 @@ function AdminConfigScreen(props) {
       .then(json => {
          setConfig(json);
          onConfigFetched?.(json);
-	  })
+      })
       .catch(err => {
          setConfig(null);
          setError("The configuration could not be loaded.")

@@ -22,19 +22,28 @@ import makeStyles from '@mui/styles/makeStyles';
 import PropTypes from 'prop-types';
 import {
   Grid,
+  Tooltip,
   Typography
 } from "@mui/material";
 
+import Info from "@mui/icons-material/Info";
+
 import { camelCaseToWords } from "./LabeledField";
+import FormattedText from "../components/FormattedText.jsx";
 
 let EditorInput = (props) => {
-  let { children, name } = props;
+  let { children, name, hint } = props;
 
   const classes = makeStyles((theme) => ({
     labelContainer: {
       /* Match the input padding so the text of the label would appear aligned with the text of the input */
       /* To do: switch to a vertical layout in the future to avoid most alignment issues  */
       paddingTop: theme.spacing(1.75) + " !important",
+      /* Align the optional hint icon within the label */
+      "& .MuiTypography-root" : {
+         display: "flex",
+         alignItems: "flex-end",
+      },
     },
   }))();
 
@@ -44,6 +53,13 @@ let EditorInput = (props) => {
       <Grid item xs={4} className={classes.labelContainer}>
         <Typography variant="subtitle2">
           {camelCaseToWords(name?.concat(':')) || ''}
+          { name && hint &&
+            <Tooltip enterTouchDelay={200} title={
+              <FormattedText variant="caption">{hint}</FormattedText>
+            }>
+              <Info color="primary" />
+            </Tooltip>
+          }
         </Typography>
       </Grid>
       <Grid item xs={8}>
@@ -56,7 +72,8 @@ let EditorInput = (props) => {
 
 EditorInput.propTypes = {
   children: PropTypes.node.isRequired,
-  name: PropTypes.string.isRequired
+  name: PropTypes.string.isRequired,
+  hint: PropTypes.string,
 };
 
 export default EditorInput

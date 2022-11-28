@@ -19,7 +19,7 @@ import React from "react";
 
 import withStyles from '@mui/styles/withStyles';
 
-import { Avatar, Button, Card, CardHeader, CardContent, Grid, Table, TableCell, TableBody, TableHead, TableRow } from "@mui/material";
+import { Avatar, Button, Card, CardContent, Grid } from "@mui/material";
 
 import userboardStyle from '../userboardStyle.jsx';
 import CreateGroupDialogue from "./creategroupdialogue.jsx";

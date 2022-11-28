@@ -5,8 +5,5 @@
   "jcr:reference:surveys_submitted": "/Questionnaires/Visit information/surveys_submitted",
   "jcr:reference:has_surveys": "/Questionnaires/Visit information/has_surveys",
   "jcr:reference:email_unsubscribed": "/Questionnaires/Patient information/email_unsubscribed",
-  "jcr:reference:date_of_birth": "/Questionnaires/Patient information/date_of_birth",
-  "jcr:reference:mrn": "/Questionnaires/Patient information/mrn",
-  "jcr:reference:first_name": "/Questionnaires/Patient information/first_name",
-  "jcr:reference:last_name": "/Questionnaires/Patient information/last_name"
+  "jcr:reference:mrn": "/Questionnaires/Patient information/mrn"
 }

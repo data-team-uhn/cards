@@ -42,8 +42,7 @@ let ReferenceQuestion = (props) => {
   const { unitOfMeasurement, displayMode } = {...props.questionDefinition, ...props};
 
   let initialValue = existingAnswer?.[1].value || "";
-  const [displayValue, changeDisplayValue] = useState(initialValue);
-  const [answer, changeAnswer] = useState(initialValue === "" ? [] : [["value", initialValue]]);
+  let answer = initialValue === "" ? [] : [["value", initialValue]];
   const [muiInputProps, changeMuiInputProps] = useState({});
   const [isFormatted, changeIsFormatted] = useState(false);
 
@@ -59,9 +58,9 @@ let ReferenceQuestion = (props) => {
 
   useEffect(() => {
     if (unitOfMeasurement) {
-      muiInputProps.endAdornment = <InputAdornment position="end">{unitOfMeasurement}</InputAdornment>;
+      changeMuiInputProps(muiInputProps => ({ ...muiInputProps, endAdornment: <InputAdornment position="end">{unitOfMeasurement}</InputAdornment>}));
     } else {
-      delete muiInputProps.endAdornment;
+      changeMuiInputProps(muiInputProps => ({ ...muiInputProps, endAdornment: undefined}));
     }
   }, [unitOfMeasurement])
 
@@ -75,20 +74,20 @@ let ReferenceQuestion = (props) => {
   return (
     <Question
       defaultDisplayFormatter={isFormatted ? (label, idx) => <FormattedText>{label}</FormattedText> : undefined}
-      currentAnswers={typeof(displayValue) !== "undefined" && displayValue !== "" ? 1 : 0}
+      currentAnswers={typeof(initialValue) !== "undefined" && initialValue !== "" ? 1 : 0}
       {...props}
       >
       {
         pageActive && <>
           { isFormatted ? <FormattedText>
-              {displayValue + (unitOfMeasurement ? (" " + unitOfMeasurement) : '')}
+              {initialValue + (unitOfMeasurement ? (" " + unitOfMeasurement) : '')}
             </FormattedText>
           :
           <TextField
             variant="standard"
             disabled={true}
             className={classes.textField + " " + classes.answerField}
-            value={displayValue}
+            value={initialValue}
             InputProps={muiInputProps}
           />
           }
@@ -103,7 +102,6 @@ ReferenceQuestion.propTypes = {
   questionDefinition: PropTypes.shape({
     text: PropTypes.string.isRequired,
     description: PropTypes.string,
-    // displayValue: PropTypes.string.isRequired,
     displayMode: PropTypes.oneOf(['input', 'formatted', 'hidden', 'summary']),
     unitOfMeasurement: PropTypes.string
   }).isRequired

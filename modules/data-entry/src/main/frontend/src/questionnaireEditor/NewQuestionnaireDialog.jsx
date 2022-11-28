@@ -19,15 +19,13 @@
 import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
 
-import { Avatar, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
-import AddIcon from "@mui/icons-material/Add";
 import { v4 as uuidv4 } from 'uuid';
 import NewItemButton from "../components/NewItemButton.jsx";
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 
 function NewQuestionnaireDialog(props) {
-  const { children, classes } = props;
   const [ open, setOpen ] = useState(false);
   const [ isFetching, setFetching ] = useState(false);
   const [ error, setError ] = useState("");

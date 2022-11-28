@@ -19,7 +19,6 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Grid, Typography } from "@mui/material";
 import withStyles from '@mui/styles/withStyles';
 import QuestionComponentManager from "../questionnaireEditor/QuestionComponentManager";
 import ValueComponentManager from "../questionnaireEditor/ValueComponentManager";
@@ -40,7 +39,7 @@ import LabeledField from "./LabeledField";
 import { FieldsProvider } from "./FieldsContext.jsx";
 
 let Fields = (props) => {
-  let { data, JSON, edit, classes, condensed, ...rest } = props;
+  let { data, hints, JSON, edit, classes, condensed, ...rest } = props;
 
   /**
    * Method responsible for displaying a question from the questionnaire
@@ -58,6 +57,8 @@ let Fields = (props) => {
           objectKey={key}
           value={value}
           data={data}
+          hint={hints?.[key]}
+          hints={hints}
           {...rest}
           />
     );
@@ -102,7 +103,8 @@ Fields.propTypes = {
   JSON: PropTypes.object.isRequired,
   edit: PropTypes.bool.isRequired,
   condensed: PropTypes.bool,
-  onChange: PropTypes.func
+  onChange: PropTypes.func,
+  hints: PropTypes.object,
 };
 
 export default withStyles(QuestionnaireStyle)(Fields);

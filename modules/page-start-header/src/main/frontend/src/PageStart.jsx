@@ -24,10 +24,6 @@ export default function PageStart(props) {
 
   const [ componentHeights, setComponentHeights ] = useState([]);
   const [ componentPositions, setComponentPositions ] = useState([]);
-  const [ windowDimensions, setWindowDimensions ] = useState([
-    window.innerWidth,
-    window.innerHeight
-  ]);
   const [ extensionData, setExtensionData ] = useState(null);
   const [ isInitialized, setIsInitialized ] = useState(false);
   const [ pageStartHeight, setPageStartHeight ] = useState(0);
@@ -38,19 +34,6 @@ export default function PageStart(props) {
     props.setTotalHeight && props.setTotalHeight(pageStartHeight);
   });
 
-  useEffect(() => {
-    //Redraw the top elements if the browser window is resized
-    let resizeHandler = () => {
-      setWindowDimensions([window.innerWidth, window.innerHeight]);
-    };
-
-    window.addEventListener('resize', resizeHandler);
-
-    return () => {
-      window.removeEventListener('resize', resizeHandler);
-    };
-  });
-
   const arrayEquals = (a, b) => {
     return (
       Array.isArray(a) && Array.isArray(b) &&
@@ -59,6 +42,7 @@ export default function PageStart(props) {
     );
   };
 
+  useEffect(() => {
   if (!isInitialized) {
     loadExtensions(extensionsName)
       .then((resp) => {
@@ -74,6 +58,7 @@ export default function PageStart(props) {
         setIsInitialized(true);
       });
   }
+  }, [isInitialized]);
 
   if (!isInitialized) {
     return null;

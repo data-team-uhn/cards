@@ -19,11 +19,7 @@
 
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import {
-  Grid,
-  Switch,
-  Typography
-} from "@mui/material";
+import { Switch } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
 
@@ -35,11 +31,11 @@ import ValueComponentManager from "../questionnaireEditor/ValueComponentManager"
 // Boolean Input field used by Edit dialog component
 
 let BooleanInput = (props) => {
-  let { objectKey, data } = props;
+  let { objectKey, data, hint } = props;
   let [ checked, setChecked ] = useState(data?.[objectKey] == true);
 
   return (
-    <EditorInput name={objectKey}>
+    <EditorInput name={objectKey} hint={hint}>
       <Switch
         color="secondary"
         edge="start"
@@ -55,7 +51,8 @@ let BooleanInput = (props) => {
 
 BooleanInput.propTypes = {
   objectKey: PropTypes.string.isRequired,
-  data: PropTypes.object.isRequired
+  data: PropTypes.object.isRequired,
+  hint: PropTypes.string,
 };
 
 const StyledBooleanInput = withStyles(QuestionnaireStyle)(BooleanInput);
