@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.uhndata.cards.internal.importer;
+package io.uhndata.cards.clarity.importer;
 
 import java.io.IOException;
 import java.util.Locale;

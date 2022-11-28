@@ -22,11 +22,11 @@
 
   <parent>
     <groupId>io.uhndata.cards</groupId>
-    <artifactId>prems-resources</artifactId>
+    <artifactId>cards-modules</artifactId>
     <version>0.9-SNAPSHOT</version>
   </parent>
 
-  <artifactId>cards-clarityimport</artifactId>
+  <artifactId>cards-clarity-integration</artifactId>
   <packaging>bundle</packaging>
   <name>CARDS - Clarity import module</name>
 

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package io.uhndata.cards.internal.importer;
+package io.uhndata.cards.clarity.importer;
 
 import java.util.List;
 

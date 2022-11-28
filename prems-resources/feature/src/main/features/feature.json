@@ -21,14 +21,6 @@
   },
   "bundles":[
     {
-      "id":"org.osgi:org.osgi.service.jdbc:1.0.1",
-      "start-order":"25"
-    },
-    {
-      "id":"com.microsoft.sqlserver:mssql-jdbc:11.2.1.jre11",
-      "start-order":"25"
-    },
-    {
       "id":"${project.groupId}:cards-patient-subject-type:${project.version}",
       "start-order":"20"
     },

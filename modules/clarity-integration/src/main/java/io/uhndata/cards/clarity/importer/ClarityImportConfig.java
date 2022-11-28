@@ -17,21 +17,28 @@
  * under the License.
  */
 
-package io.uhndata.cards.internal.importer;
+package io.uhndata.cards.clarity.importer;
 
-import org.osgi.service.metatype.annotations.AttributeDefinition;
-import org.osgi.service.metatype.annotations.ObjectClassDefinition;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.metatype.annotations.Designate;
 
-@ObjectClassDefinition(name = "Clarity import",
-    description = "Configuration for the Clarity importer")
-public @interface ClarityImportConfigDefinition
+@Component(immediate = true, service = ClarityImportConfig.class)
+@Designate(ocd = ClarityImportConfigDefinition.class, factory = true)
+public class ClarityImportConfig
 {
-    /** Cron-readable import schedule. */
-    String NIGHTLY_IMPORT_SCHEDULE = "0 0 0 * * ? *";
+    private ClarityImportConfigDefinition config;
 
-    @AttributeDefinition(name = "Name", description = "Configuration name")
-    String name();
+    @Activate
+    protected void activate(final ClarityImportConfigDefinition config, final ComponentContext componentContext)
+        throws Exception
+    {
+        this.config = config;
+    }
 
-    @AttributeDefinition(name = "Import schedule", description = "Cron-readable import schedule")
-    String nightly_import_schedule() default NIGHTLY_IMPORT_SCHEDULE;
+    public ClarityImportConfigDefinition getConfig()
+    {
+        return this.config;
+    }
 }
