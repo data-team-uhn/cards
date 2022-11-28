@@ -46,6 +46,7 @@ import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import QuestionnaireItemCard from "../questionnaireEditor/QuestionnaireItemCard";
 import ResourceHeader from "./ResourceHeader";
 import QuestionnairePreview from "./QuestionnairePreview";
+import { useQuestionnaireWriterContext } from "./QuestionnaireContext";
 
 let _stripCardsNamespace = str => str.replaceAll(/^cards:/g, "");
 
@@ -63,6 +64,7 @@ let Questionnaire = (props) => {
   let history = useHistory();
 
   let pageNameWriter = usePageNameWriterContext();
+  let changeQuestionnaireContext = useQuestionnaireWriterContext();
 
   let handleError = (response) => {
     setError(response);
@@ -76,9 +78,16 @@ let Questionnaire = (props) => {
       .catch(handleError);
   };
 
-  if (!data) {
-    fetchData();
-  }
+  // When the questionnaire data is fetched, we inform the QuestionnaireContext
+  useEffect(() => {
+    if (data) {
+	  let vars = [];
+      findQuestions(data, vars);
+      changeQuestionnaireContext(vars);
+    } else {
+      fetchData();
+    }
+  }, [data]);
 
   useEffect(() => {
     setQuestionnaireTitle(data?.title || decodeURI(id));
@@ -112,6 +121,16 @@ let Questionnaire = (props) => {
       window.removeEventListener("beforeunload", performCheckIn);
     });
   }, []);
+
+  let findQuestions = (json, result) =>  {
+    Object.entries(json || {}).forEach(([k,e]) => {
+      if (e?.['jcr:primaryType'] == "cards:Question") {
+        result.push({name: e['@name'], text: e['text']});
+      } else if (typeof(e) == 'object') {
+        findQuestions(e, result);
+      }
+    })
+  }
 
   let questionnaireMenu = (
       <div className={classes.actionsMenu}>

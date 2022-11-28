@@ -23,12 +23,15 @@ import NewQuestionnaireDialog from "../questionnaireEditor/NewQuestionnaireDialo
 import DeleteButton from "./DeleteButton.jsx";
 import EditButton from "./EditButton.jsx";
 import { getEntityIdentifier } from "../themePage/EntityIdentifier.jsx";
+import { QuestionnaireProvider } from "../questionnaire/QuestionnaireContext.jsx";
 
 function Questionnaires(props) {
   const entry = /Questionnaires\/([^.]+)/.exec(location.pathname);
 
   if (entry) {
-    return <Questionnaire id={entry[1]} key={location.pathname} contentOffset={props.contentOffset}/>;
+    return <QuestionnaireProvider>
+             <Questionnaire id={entry[1]} key={location.pathname} contentOffset={props.contentOffset}/>
+           </QuestionnaireProvider>;
   }
 
   let columns = [
