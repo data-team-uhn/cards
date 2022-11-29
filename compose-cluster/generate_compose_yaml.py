@@ -54,6 +54,7 @@ argparser.add_argument('--oak_filesystem', help='Use the filesystem (instead of 
 argparser.add_argument('--external_mongo', help='Use an external MongoDB instance instead of providing our own', action='store_true')
 argparser.add_argument('--external_mongo_uri', help='URI of the external MongoDB instance. Only valid if --external_mongo is specified.')
 argparser.add_argument('--external_mongo_dbname', help='Database name of the external MongoDB instance. Only valid if --external_mongo is specified.')
+argparser.add_argument('--clarity', help='Enable the clarity-integration CARDS module.', action='store_true')
 argparser.add_argument('--mssql', help='Start up a MS-SQL instance with test data', action='store_true')
 argparser.add_argument('--expose_mssql', help='If --mssql is specified, forward the SQL service to the specified port', type=int)
 argparser.add_argument('--saml', help='Make the Apache Sling SAML2 Handler OSGi bundle available for SAML-based logins', action='store_true')
@@ -497,6 +498,9 @@ if args.demo:
 
 if args.demo_banner:
   yaml_obj['services']['cardsinitial']['environment'].append("DEMO_BANNER=true")
+
+if args.clarity:
+  yaml_obj['services']['cardsinitial']['environment'].append("CLARITY_IMPORT_ENABLED=true")
 
 if args.saml:
   yaml_obj['services']['cardsinitial']['environment'].append("SAML_AUTH_ENABLED=true")
