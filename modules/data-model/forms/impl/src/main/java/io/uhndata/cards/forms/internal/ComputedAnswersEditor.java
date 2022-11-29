@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.jackrabbit.oak.api.Type;
@@ -35,6 +34,7 @@ import org.apache.jackrabbit.oak.spi.state.ChildNodeEntry;
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
 import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,13 +61,13 @@ public class ComputedAnswersEditor extends AnswersEditor
      * @param questionnaireUtils for working with questionnaire data
      * @param formUtils for working with form data
      * @param expressionUtils for evaluating the computed questions
-     * @param serviceSession a session with access to all questionnaires. Can be null
+     * @param rrf a resource resolver factory used to obtain access to service sessions. Can be null
      */
     public ComputedAnswersEditor(final NodeBuilder nodeBuilder, final ResourceResolver resolver,
         final QuestionnaireUtils questionnaireUtils, final FormUtils formUtils, final ExpressionUtils expressionUtils,
-        final Session serviceSession)
+        final ResourceResolverFactory rrf)
     {
-        super(nodeBuilder, resolver, questionnaireUtils, formUtils, serviceSession);
+        super(nodeBuilder, resolver, questionnaireUtils, formUtils, rrf);
         this.expressionUtils = expressionUtils;
     }
 
@@ -75,6 +75,12 @@ public class ComputedAnswersEditor extends AnswersEditor
     protected Logger getLogger()
     {
         return LOGGER;
+    }
+
+    @Override
+    protected String getServiceName()
+    {
+        return "computedAnswers";
     }
 
     @Override
@@ -87,7 +93,7 @@ public class ComputedAnswersEditor extends AnswersEditor
     protected ComputedAnswersEditor getNewEditor(String name)
     {
         return new ComputedAnswersEditor(this.currentNodeBuilder.getChildNode(name),
-            this.resolver, this.questionnaireUtils, this.formUtils, this.expressionUtils, this.serviceSession);
+            this.resolver, this.questionnaireUtils, this.formUtils, this.expressionUtils, this.rrf);
     }
 
     @Override
@@ -220,12 +226,12 @@ public class ComputedAnswersEditor extends AnswersEditor
     {
         final Map<String, Object> currentAnswers = new HashMap<>();
         if (currentNode.exists()) {
-            if (this.isAnswerSection(currentNode) || this.formUtils.isForm(currentNode)) {
+            if (this.formUtils.isAnswerSection(currentNode) || this.formUtils.isForm(currentNode)) {
                 // Found a section: Recursively get all of this section's answers
                 for (ChildNodeEntry childNode : currentNode.getChildNodeEntries()) {
                     currentAnswers.putAll(getNodeAnswers(childNode.getNodeState()));
                 }
-            } else if (this.isAnswer(currentNode)) {
+            } else if (this.formUtils.isAnswer(currentNode)) {
                 String questionName = this.questionnaireUtils.getQuestionName(this.formUtils.getQuestion(currentNode));
                 Object value = this.formUtils.getValue(currentNode);
                 if (questionName != null && value != null && !currentAnswers.containsKey(questionName)) {
