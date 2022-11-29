@@ -24,7 +24,8 @@ import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
+
+import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 
 /**
  * Some utilities for working with JCR nodes.
@@ -143,13 +144,13 @@ public abstract class AbstractNodeUtils
      * @param rrf the resource resolver factory service, may be {@code null}
      * @return the current session, or {@code null} if a session may not be obtained
      */
-    protected Session getSession(final ResourceResolverFactory rrf)
+    protected Session getSession(final ThreadResourceResolverProvider rrp)
     {
-        if (rrf == null) {
+        if (rrp == null) {
             return null;
         }
 
-        final ResourceResolver rr = rrf.getThreadResourceResolver();
+        final ResourceResolver rr = rrp.getThreadResourceResolver();
         if (rr == null) {
             return null;
         }
