@@ -197,6 +197,7 @@ public class ToEpicFormProcessor implements ResourceJsonProcessor
                     }
                 }
                 result.add("questionnaire", "Questionnaire/" + questionnaireId);
+
                 // The `subject` field references the `reference` field in the CarePlan.
                 // `system` is taken from the `reference.type` and `value` is taken from `reference.identifier.value`.
                 // The `value` is the CSN ID for an Appointment.
@@ -216,7 +217,9 @@ public class ToEpicFormProcessor implements ResourceJsonProcessor
                 result.add("subject", Json.createObjectBuilder()
                                         .add("identifier", identifier.build())
                                         .build());
-                setStatus(result, node.getIdentifier());
+                final String subjectUUID = node.getProperty("subject").getNode().getIdentifier();
+                setStatus(result, subjectUUID);
+
                 // Add the answers to the root node
                 final JsonArrayBuilder answers = Json.createArrayBuilder();
                 this.childrenJsons.get().entrySet().stream()
@@ -257,7 +260,8 @@ public class ToEpicFormProcessor implements ResourceJsonProcessor
         }
     }
 
-    private void setStatus(final JsonObjectBuilder result, final String formId) throws LoginException
+    private void setStatus(final JsonObjectBuilder result, final String subjectUUID)
+        throws LoginException
     {
         final Map<String, Object> parameters =
             Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, "ToEpicFormProcessor");
@@ -275,21 +279,21 @@ public class ToEpicFormProcessor implements ResourceJsonProcessor
         // Query: get all associated visit forms that are in progress
         final Iterator<Resource> resources = serviceResolver.findResources(String.format(
             // select the data forms
-            "select distinct dataForm.* from [cards:Form] as dataForm"
+            "select distinct visitInformation.* from [cards:Form] as visitInformation"
                 // belonging to a visit
-                + "  inner join [cards:Form] as visitInformation on visitInformation.subject = dataForm.subject"
+                + "  inner join [cards:Subject] as visitSubject on visitSubject.'jcr:uuid' = visitInformation.subject"
+                + "  inner join [cards:Subject] as dataSubject on isdescendantnode(visitSubject, dataSubject)"
                 + "  inner join [cards:Answer] as submitted on isdescendantnode(submitted, visitInformation)"
                 + " where"
-                // Link to the resource form
-                + "  dataForm.uuid='%1$s'"
+                + "  dataSubject.'jcr:uuid' = '%1$s'"
                 // link to the correct Visit Information questionnaire
                 + "  and visitInformation.questionnaire = '%2$s'"
                 // the visit is not submitted
                 + "  and submitted.question = '%3$s'"
                 + "  and (submitted.value <> 1 OR submitted.value IS NULL)"
                 // exclude the Visit Information questionnaire form itself
-                + "  and dataForm.questionnaire <> '%1$s'",
-                formId, visitInformationQuestionnaire, submittedId),
+                + "  and visitInformation.'jcr:uuid' <> '%2$s'",
+                subjectUUID, visitInformationQuestionnaire, submittedId),
             Query.JCR_SQL2);
 
         // No visit forms in progress
