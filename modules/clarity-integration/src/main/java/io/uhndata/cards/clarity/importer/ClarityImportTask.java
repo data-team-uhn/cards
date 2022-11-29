@@ -143,8 +143,7 @@ public class ClarityImportTask implements Runnable
         this.questionnaireToSubjectID = new HashMap<>();
 
         // Convert our input mapping node to a mapping from column->question
-        try (ResourceResolver resolver = this.resolverFactory
-            .getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "ClarityImport"))) {
+        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
             getMappingRecursive(resolver, mapping);
         } catch (RepositoryException e) {
             LOGGER.error("Error reading mapping: {}", e.getMessage(), e);
@@ -228,8 +227,7 @@ public class ClarityImportTask implements Runnable
             + " WHERE CAST(LoadTime AS DATE) = CAST(GETDATE() AS DATE);";
         try (Connection connection = DriverManager.getConnection(connectionUrl);
             PreparedStatement statement = connection.prepareStatement(query);
-            ResourceResolver resolver = this.resolverFactory
-                .getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "ClarityImport"))) {
+            ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
             final Session session = resolver.adaptTo(Session.class);
             this.versionManager.set(session.getWorkspace().getVersionManager());
 
