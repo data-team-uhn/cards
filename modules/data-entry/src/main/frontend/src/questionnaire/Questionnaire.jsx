@@ -78,14 +78,17 @@ let Questionnaire = (props) => {
       .catch(handleError);
   };
 
+  // First, fetch the questionnaire data
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   // When the questionnaire data is fetched, we inform the QuestionnaireContext
   useEffect(() => {
     if (data) {
-	  let vars = [];
+      let vars = [];
       findQuestions(data, vars);
       changeQuestionnaireContext(vars);
-    } else {
-      fetchData();
     }
   }, [data]);
 
