@@ -20,27 +20,23 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.FieldOption;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
 import io.uhndata.cards.spi.AbstractNodeUtils;
+import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 
 @Component
 public final class QuestionnaireUtilsImpl extends AbstractNodeUtils implements QuestionnaireUtils
 {
-    @Reference(fieldOption = FieldOption.REPLACE, cardinality = ReferenceCardinality.OPTIONAL,
-        policyOption = ReferencePolicyOption.GREEDY)
-    private ResourceResolverFactory rrf;
+    @Reference
+    private ThreadResourceResolverProvider rrp;
 
     @Override
     public Node getQuestionnaire(final String identifier)
     {
-        final Node result = getNodeByIdentifier(identifier, getSession(this.rrf));
+        final Node result = getNodeByIdentifier(identifier, getSession(this.rrp));
         return isQuestionnaire(result) ? result : null;
     }
 
@@ -81,7 +77,7 @@ public final class QuestionnaireUtilsImpl extends AbstractNodeUtils implements Q
     @Override
     public Node getSection(final String identifier)
     {
-        final Node result = getNodeByIdentifier(identifier, getSession(this.rrf));
+        final Node result = getNodeByIdentifier(identifier, getSession(this.rrp));
         return isSection(result) ? result : null;
     }
 
@@ -140,7 +136,7 @@ public final class QuestionnaireUtilsImpl extends AbstractNodeUtils implements Q
     @Override
     public Node getQuestion(final String identifier)
     {
-        final Node result = getNodeByIdentifier(identifier, getSession(this.rrf));
+        final Node result = getNodeByIdentifier(identifier, getSession(this.rrp));
         return isQuestion(result) ? result : null;
     }
 
