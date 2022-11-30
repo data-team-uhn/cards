@@ -89,6 +89,8 @@ public class ClarityImportTask implements Runnable
 
     private ThreadLocal<Resource> previousPatientResource = new ThreadLocal<>();
 
+    private ThreadLocal<Boolean> createdPatientInformation = new ThreadLocal<>();
+
     enum QuestionType
     {
         DATE,
@@ -281,7 +283,11 @@ public class ClarityImportTask implements Runnable
      * @param formsHomepage the /Forms node
      * @return The Subject resource created. The form and answers will point to this.
      */
-    @SuppressWarnings({"checkstyle:CyclomaticComplexity", "checkstyle:ExecutableStatementCount"})
+    @SuppressWarnings({
+        "checkstyle:CyclomaticComplexity",
+        "checkstyle:ExecutableStatementCount",
+        "checkstyle:JavaNCSS",
+        "checkstyle:NPathComplexity"})
     public Resource createNodeFromEntry(final ResourceResolver resolver, final ResultSet result,
         final List<QuestionInformation> questionnaireQuestions, final String questionnairePath,
         final Resource subjectParent, final Resource formsHomepage)
@@ -302,11 +308,17 @@ public class ClarityImportTask implements Runnable
             if ("/SubjectTypes/Patient".equals(newSubjectType)) {
                 this.previousPatientId.set(subjectID);
                 this.previousPatientResource.set(newSubject);
+                this.createdPatientInformation.set(false);
             }
+        }
+
+        if ("/Questionnaires/Patient information".equals(questionnairePath) && this.createdPatientInformation.get()) {
+            return newSubject;
         }
 
         // Create a Node corresponding to the Form
         Resource questionnaire = resolver.resolve(questionnairePath);
+
         Resource newForm = resolver.create(formsHomepage, UUID.randomUUID().toString(), Map.of(
                 ClarityImportTask.PRIMARY_TYPE_PROP, "cards:Form",
                 "questionnaire", questionnaire.adaptTo(Node.class),
@@ -350,6 +362,8 @@ public class ClarityImportTask implements Runnable
             }
             resolver.create(newForm, UUID.randomUUID().toString(), props);
         }
+
+        this.createdPatientInformation.set(true);
 
         return newSubject;
     }
