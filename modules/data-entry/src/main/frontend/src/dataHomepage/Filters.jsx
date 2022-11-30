@@ -114,22 +114,60 @@ function Filters(props) {
     setFilterRequestSent(true);
     let url;
 
+    let questionPromise;
+
     if (questionnaire) {
       // Setting the questionnaire prop will go through the fitler servlet (FilterServlet.java)
       url = new URL(FILTER_URL, window.location.origin);
       url.searchParams.set("questionnaire", questionnaire);
-      fetchWithReLogin(globalLoginDisplay, url)
+      questionPromise = fetchWithReLogin(globalLoginDisplay, url)
         .then((response) => response.ok ? response.json() : Promise.reject(response))
         .then(parseFilterData)
         .catch(setError);
     } else {
       // Otherwise, we need a structured output -- go through all Questionnaires.deep.json instead
       url = new URL(ALL_QUESTIONNAIRES_URL, window.location.origin);
-      fetchWithReLogin(globalLoginDisplay, url)
+      questionPromise = fetchWithReLogin(globalLoginDisplay, url)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then(parseQuestionnaireData)
       .catch(setError);
     }
+
+    let subject_url = new URL("/query", window.location.origin);
+    subject_url.searchParams.set("query", `SELECT * FROM [cards:SubjectType] as n order by n.'cards:defaultOrder'`);
+    let subjectPromise = fetchWithReLogin(globalLoginDisplay, subject_url)
+      .then(response => response.ok ? response.json() : Promise.reject(response))
+      .then(parseSubjectTypeData)
+      .catch(setError);
+
+    setFilters(questionPromise, subjectPromise);
+  }
+
+  // Parse the response from retrieving SubjectTypes
+  let parseSubjectTypeData = (subjectTypeJson) => {
+    let newFilterableFields = [];
+    let newFilterableUUIDs = {};
+    let newFilterableTitles = {};
+    let newQuestionDefinitions = {};
+
+    for (let index in subjectTypeJson.rows) {
+      const name = subjectTypeJson.rows[index]['@name'];
+      const label = subjectTypeJson.rows[index]['label'];
+      const uuid = subjectTypeJson.rows[index]['jcr:uuid'];
+      newFilterableFields.push(name);
+      newFilterableUUIDs[name] = "cards:Subject";
+      // newFilterableUUIDs[name] = uuid;
+      newFilterableTitles[name] = label;
+      newQuestionDefinitions[name] = {dataType: "subject", typeUuid: uuid};
+    }
+
+    return {
+      defaultOrder: 1,
+      filterableFields: newFilterableFields,
+      questionDefinitions: newQuestionDefinitions,
+      filterableTitles: newFilterableTitles,
+      filterableUUIDs: newFilterableUUIDs
+    };
   }
 
   // Parse the response from examining every questionnaire
@@ -138,14 +176,14 @@ function Filters(props) {
     // It is a list of either strings (for options) or recursive lists
     // Each recursive list must have a string for its 0th option, which
     // is taken to be its title
-    let newFilterableFields = ["Questionnaire", "Subject", "CreatedDate"];
+    let newFilterableFields = ["Questionnaire", "CreatedDate"];
     // newFilterableUUIDs is a mapping from a string in newFilterableFields to a jcr:uuid
-    let newFilterableUUIDs = {Questionnaire: "cards:Questionnaire", Subject: "cards:Subject", CreatedDate: "cards:CreatedDate"};
+    let newFilterableUUIDs = {Questionnaire: "cards:Questionnaire", CreatedDate: "cards:CreatedDate"};
     // newFilterableTitles is a mapping from a string in newFilterableFields to a human-readable title
-    let newFilterableTitles = {Questionnaire: "Questionnaire", Subject: "Subject", CreatedDate: "Created Date"};
+    let newFilterableTitles = {Questionnaire: "Questionnaire", CreatedDate: "Created Date"};
     // newQuestionDefinitions is normally the straight input from FilterServlet.java
     // Instead, we need to reconstruct this client-side
-    let newQuestionDefinitions = {Questionnaire: {dataType: "questionnaire"}, Subject: {dataType: "subject"}}
+    let newQuestionDefinitions = {Questionnaire: {dataType: "questionnaire"}, CreatedDate: {dataType: "createddate"}};
 
     // We'll need a helper recursive function to copy over data from sections/questions
     let parseSectionOrQuestionnaire = (sectionJson, path="") => {
@@ -177,42 +215,62 @@ function Filters(props) {
       newFilterableFields.push([thisQuestionnaire.title || title, ...parseSectionOrQuestionnaire(thisQuestionnaire, title+"/")]);
     }
 
-    newQuestionDefinitions["Subject"] = {
-      dataType: "subject"
-    };
-    newQuestionDefinitions["CreatedDate"] = {
-      dataType: "createddate"
-    };
-
     // We also need a filter over the subject
-    setFilterableFields(newFilterableFields);
-    setQuestionDefinitions(newQuestionDefinitions);
-    setFilterableTitles(newFilterableTitles);
-    setFilterableUUIDs(newFilterableUUIDs);
+
+    return {
+      defaultOrder: 2,
+      filterableFields: newFilterableFields,
+      questionDefinitions: newQuestionDefinitions,
+      filterableTitles: newFilterableTitles,
+      filterableUUIDs: newFilterableUUIDs
+    };
   }
 
   // Parse the response from our FilterServlet
   let parseFilterData = (filterJson) => {
     // Parse through, but keep a custom field for the subject
-    let fields = ["Subject", "CreatedDate"];
-    let uuids = {Subject: "cards:Subject", CreatedDate: "cards:CreatedDate"};
-    let titles = {Subject: "Subject", CreatedDate: "Created Date"};
+    let fields = ["CreatedDate"];
+    let uuids = {CreatedDate: "cards:CreatedDate"};
+    let titles = {CreatedDate: "Created Date"};
     for (let [questionName, question] of Object.entries(filterJson)) {
       // For each question, save the name, data type, and answers (if necessary)
       fields.push(questionName);
       uuids[questionName] = question["jcr:uuid"];
       titles[questionName] = question["text"];
     }
-    filterJson["Subject"] = {
-      dataType: "subject"
-    };
     filterJson["CreatedDate"] = {
       dataType: "createddate"
     };
-    setFilterableFields(fields);
-    setQuestionDefinitions(filterJson);
-    setFilterableTitles(titles);
-    setFilterableUUIDs(uuids);
+
+    return {
+      defaultOrder: 2,
+      filterableFields: fields,
+      questionDefinitions: filterJson,
+      filterableTitles: titles,
+      filterableUUIDs: uuids
+    };
+  }
+
+  let setFilters = async(...promises) => {
+    let results = await Promise.all(promises);
+    results.sort((a, b) => a.defaultOrder - b.defaultOrder)
+
+    let newFilterableFields = [];
+    let newFilterableUUIDs = {};
+    let newFilterableTitles = {};
+    let newQuestionDefinitions = {};
+
+    for(const index in results) {
+      newFilterableFields = newFilterableFields.concat(results[index].filterableFields);
+      newQuestionDefinitions = Object.assign(newQuestionDefinitions, results[index].questionDefinitions);
+      newFilterableTitles = Object.assign(newFilterableTitles, results[index].filterableTitles);
+      newFilterableUUIDs = Object.assign(newFilterableUUIDs, results[index].filterableUUIDs);
+    }
+
+    setFilterableFields(filterableFields.concat(newFilterableFields));
+    setQuestionDefinitions(Object.assign(newQuestionDefinitions, questionDefinitions));
+    setFilterableTitles(Object.assign(newFilterableTitles, filterableTitles));
+    setFilterableUUIDs(Object.assign(newFilterableUUIDs, filterableUUIDs));
   }
 
   let removeCreatedDateTimezone = (filters) => {
@@ -280,7 +338,7 @@ function Filters(props) {
 
   // Handle the user changing one of the active filter categories
   let handleChangeFilter = (index, event) => {
-    
+
     // Load up the comparators for this index, if not already loaded
     let [loadedComparators, component] = getOutputChoices(event.target.value);
 
