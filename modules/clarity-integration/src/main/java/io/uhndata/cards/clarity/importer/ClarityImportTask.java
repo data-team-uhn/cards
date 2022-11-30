@@ -85,6 +85,10 @@ public class ClarityImportTask implements Runnable
 
     private ThreadLocal<VersionManager> versionManager = new ThreadLocal<>();
 
+    private ThreadLocal<String> previousPatientId = new ThreadLocal<>();
+
+    private ThreadLocal<Resource> previousPatientResource = new ThreadLocal<>();
+
     enum QuestionType
     {
         DATE,
@@ -224,7 +228,8 @@ public class ClarityImportTask implements Runnable
 
         // Connect via SQL to the server
         String query = "SELECT * FROM path.CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS"
-            + " WHERE CAST(LoadTime AS DATE) = CAST(GETDATE() AS DATE);";
+            + " WHERE CAST(LoadTime AS DATE) = CAST(GETDATE() AS DATE)"
+            + " ORDER BY PAT_MRN ASC;";
         try (Connection connection = DriverManager.getConnection(connectionUrl);
             PreparedStatement statement = connection.prepareStatement(query);
             ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
@@ -276,6 +281,7 @@ public class ClarityImportTask implements Runnable
      * @param formsHomepage the /Forms node
      * @return The Subject resource created. The form and answers will point to this.
      */
+    @SuppressWarnings({"checkstyle:CyclomaticComplexity", "checkstyle:ExecutableStatementCount"})
     public Resource createNodeFromEntry(final ResourceResolver resolver, final ResultSet result,
         final List<QuestionInformation> questionnaireQuestions, final String questionnairePath,
         final Resource subjectParent, final Resource formsHomepage)
@@ -284,8 +290,20 @@ public class ClarityImportTask implements Runnable
         // Create a new subject for the Form
         String subjectID = this.questionnaireToSubjectID.get(questionnairePath);
         subjectID = "".equals(subjectID) ? UUID.randomUUID().toString() : result.getString(subjectID);
-        Resource newSubject = getOrCreateSubject(subjectID, this.questionnaireToSubjectType.get(questionnairePath),
-            resolver, subjectParent);
+
+        String newSubjectType = this.questionnaireToSubjectType.get(questionnairePath);
+        Resource newSubject = null;
+        if ("/SubjectTypes/Patient".equals(newSubjectType) && subjectID.equals(this.previousPatientId.get())) {
+            newSubject = this.previousPatientResource.get();
+        } else {
+            newSubject = getOrCreateSubject(subjectID, this.questionnaireToSubjectType.get(questionnairePath),
+                resolver, subjectParent);
+
+            if ("/SubjectTypes/Patient".equals(newSubjectType)) {
+                this.previousPatientId.set(subjectID);
+                this.previousPatientResource.set(newSubject);
+            }
+        }
 
         // Create a Node corresponding to the Form
         Resource questionnaire = resolver.resolve(questionnairePath);
@@ -349,8 +367,9 @@ public class ClarityImportTask implements Runnable
         final Resource parent)
         throws RepositoryException, PersistenceException
     {
-        final Iterator<Resource> subjectResourceIter = resolver.findResources(String.format(
-            "SELECT * FROM [cards:Subject] WHERE identifier = \"%s\"", identifier), "JCR-SQL2");
+        String subjectMatchQuery = String.format(
+            "SELECT * FROM [cards:Subject] as subject WHERE subject.'identifier'='%s'", identifier);
+        final Iterator<Resource> subjectResourceIter = resolver.findResources(subjectMatchQuery, "JCR-SQL2");
         if (subjectResourceIter.hasNext()) {
             final Resource subjectResource = subjectResourceIter.next();
             this.versionManager.get().checkout(subjectResource.getPath());
