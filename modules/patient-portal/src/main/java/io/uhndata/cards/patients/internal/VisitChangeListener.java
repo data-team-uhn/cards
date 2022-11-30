@@ -329,21 +329,19 @@ public class VisitChangeListener implements ResourceChangeListener
                         frequency = (int) node.getProperty("frequency").getLong();
                     }
                     info.putMember(uuid, new QuestionnaireRef(questionnaire, frequency));
-                } else if (node.isNodeType("cards:QuestionnaireConflict")
-                    && node.hasProperty("questionnaire")) {
-                    final String uuid = node.getProperty("questionnaire").getString();
-                    final int frequency = (int) node.getProperty("frequency").getLong();
-                    info.putConflict(uuid, frequency);
+                } else if (node.isNodeType("cards:QuestionnaireConflict")) {
+                    if (node.hasProperty("questionnaire")) {
+                        final String uuid = node.getProperty("questionnaire").getString();
+                        final int frequency = (int) node.getProperty("frequency").getLong();
+                        info.putConflict(uuid, frequency);
+                    }
                 }
             }
 
             // Retrieve property data
             for (final PropertyIterator childProperties = questionnaireSet.getProperties(); childProperties.hasNext();)
             {
-                final Property property = childProperties.nextProperty();
-                if ("frequencyIgnoreClinic".equals(property.getName())) {
-                    info.setShouldIgnoreClinic(property.getBoolean());
-                }
+                info.addProperty(childProperties.nextProperty());
             }
         } catch (final RepositoryException e) {
             LOGGER.warn("Failed to retrieve questionnaire frequency: {}", e.getMessage(), e);
@@ -445,26 +443,25 @@ public class VisitChangeListener implements ResourceChangeListener
         final Map<String, Boolean> questionnaires, final QuestionnaireSetInfo questionnaireSetInfo)
     {
         final Calendar triggeringDate = visitInformation.getVisitDate();
-        final boolean isWithinVisitMargin = isWithinDateRange(visitDate, triggeringDate, VISIT_CREATION_MARGIN_DAYS);
 
-        // Check if any of this visit's forms meet a frequency requirement for the current questionnaire set.
-        // If they do, remove those forms' questionnaires from the set.
-        for (final String questionnaireIdentifier : questionnaires.keySet()) {
-            Integer frequencyPeriod = null;
-            if (questionnaireSetInfo.containsConflict(questionnaireIdentifier)) {
-                frequencyPeriod = questionnaireSetInfo.getConflict(questionnaireIdentifier);
-            } else if (questionnaireSetInfo.containsMember(questionnaireIdentifier)) {
-                frequencyPeriod = questionnaireSetInfo.getMember(questionnaireIdentifier).getFrequency();
-            }
+        // Check if any of the provided questionnaires conflict with the desired Questionnaire Set
+        if (questionnaireSetInfo.containsConflict(questionnaires, triggeringDate, visitDate)) {
+            // If there is a conflict, do not create anything for this questionnaire set
+            questionnaireSetInfo.clearMembers();
+        } else {
+            // Otherwise, check if any of this visit's forms meet a frequency requirement for the questionnaire set.
+            // If they do, remove those forms' questionnaires from the set.
+            final boolean isWithinVisitMargin = isWithinDateRange(visitDate, triggeringDate,
+                VISIT_CREATION_MARGIN_DAYS);
 
-            if (frequencyPeriod != null) {
-                frequencyPeriod = frequencyPeriod * 7 - FREQUENCY_MARGIN_DAYS;
-                final boolean complete = questionnaires.get(questionnaireIdentifier);
+            for (final String questionnaireIdentifier : questionnaires.keySet()) {
+                if (questionnaireSetInfo.containsMember(questionnaireIdentifier)) {
+                    int frequencyPeriod = questionnaireSetInfo.getMember(questionnaireIdentifier).getFrequency();
+                    frequencyPeriod = frequencyPeriod * 7 - FREQUENCY_MARGIN_DAYS;
 
-                if (isWithinDateRange(visitDate, triggeringDate, frequencyPeriod)) {
-                    if (questionnaireSetInfo.containsConflict(questionnaireIdentifier)) {
-                        questionnaireSetInfo.clearMembers();
-                    } else if (complete || isWithinVisitMargin) {
+                    final boolean complete = questionnaires.get(questionnaireIdentifier);
+                    if (isWithinDateRange(visitDate, triggeringDate, frequencyPeriod)
+                        && (complete || isWithinVisitMargin)) {
                         questionnaireSetInfo.removeMember(questionnaireIdentifier);
                     }
                 }
@@ -739,15 +736,21 @@ public class VisitChangeListener implements ResourceChangeListener
 
     private static final class QuestionnaireSetInfo
     {
+        private static final String CONFLICT_ANY = "any";
+        private static final String CONFLICT_ANY_LISTED = "anyListed";
         private final Map<String, Integer> conflicts;
         private final Map<String, QuestionnaireRef> members;
         private boolean ignoreClinic;
+        private String conflictMode;
 
         QuestionnaireSetInfo()
         {
             this.conflicts = new HashMap<>();
             this.ignoreClinic = false;
             this.members = new HashMap<>();
+
+            // Default mode
+            this.conflictMode = CONFLICT_ANY_LISTED;
         }
 
         public void putConflict(String uuid, int frequency)
@@ -755,14 +758,32 @@ public class VisitChangeListener implements ResourceChangeListener
             this.conflicts.put(uuid, frequency);
         }
 
-        public boolean containsConflict(String uuid)
+        public boolean containsConflict(final Map<String, Boolean> questionnaires, final Calendar triggeringDate,
+            final Calendar visitDate)
         {
-            return this.conflicts.containsKey(uuid);
-        }
+            // Treat default as any listed case
+            for (final String questionnaireIdentifier : questionnaires.keySet()) {
+                int frequencyPeriod;
+                if (CONFLICT_ANY.equals(this.conflictMode)) {
+                    frequencyPeriod = 0;
+                    for (final QuestionnaireRef ref : this.members.values()) {
+                        if (ref.getFrequency() > frequencyPeriod) {
+                            frequencyPeriod = ref.getFrequency();
+                        }
+                    }
+                } else if (this.conflicts.containsKey(questionnaireIdentifier)) {
+                    frequencyPeriod = this.conflicts.get(questionnaireIdentifier);
+                } else {
+                    continue;
+                }
 
-        public int getConflict(String uuid)
-        {
-            return this.conflicts.get(uuid);
+                frequencyPeriod = frequencyPeriod * 7 - FREQUENCY_MARGIN_DAYS;
+
+                if (isWithinDateRange(visitDate, triggeringDate, frequencyPeriod)) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public void putMember(String uuid, QuestionnaireRef member)
@@ -805,9 +826,18 @@ public class VisitChangeListener implements ResourceChangeListener
             return this.ignoreClinic;
         }
 
-        public void setShouldIgnoreClinic(boolean ignoreClinic)
+        public void addProperty(Property property)
         {
-            this.ignoreClinic = ignoreClinic;
+            try {
+                if ("frequencyIgnoreClinic".equals(property.getName())) {
+                    this.ignoreClinic = property.getBoolean();
+                } else if ("conflictMode".equals(property.getName())) {
+                    this.conflictMode = property.getString();
+                }
+            } catch (RepositoryException e) {
+                // Could not retrieve property value: ignore
+                LOGGER.warn("Failed to retrieve property", e.getMessage());
+            }
         }
     }
 
@@ -815,7 +845,7 @@ public class VisitChangeListener implements ResourceChangeListener
     {
         private final Node questionnaire;
 
-        private final Integer frequency;
+        private final int frequency;
 
         QuestionnaireRef(final Node questionnaire, final int frequency)
         {

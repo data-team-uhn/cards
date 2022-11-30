@@ -30,34 +30,11 @@
         <value>True</value>
         <type>Boolean</type>
     </property>
-    <node>
-        <name>conflict1</name>
-        <primaryNodeType>cards:QuestionnaireConflict</primaryNodeType>
-        <property>
-            <name>questionnaire</name>
-            <value>/Questionnaires/OAIP</value>
-            <type>Reference</type>
-        </property>
-        <property>
-            <name>frequency</name>
-            <value>26</value>
-            <type>Long</type>
-        </property>
-    </node>
-    <node>
-        <name>conflict2</name>
-        <primaryNodeType>cards:QuestionnaireConflict</primaryNodeType>
-        <property>
-            <name>questionnaire</name>
-            <value>/Questionnaires/OED</value>
-            <type>Reference</type>
-        </property>
-        <property>
-            <name>frequency</name>
-            <value>26</value>
-            <type>Long</type>
-        </property>
-    </node>
+    <property>
+        <name>conflictMode</name>
+        <value>any</value>
+        <type>String</type>
+    </property>
     <node>
         <name>Step1</name>
         <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>

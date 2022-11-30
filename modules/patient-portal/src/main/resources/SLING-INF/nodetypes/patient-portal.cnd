@@ -43,7 +43,7 @@
   - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // A questionnaire path
-  // Mandatory, each QuestionnaireRef must point to a questionnaire.
+  // Mandatory, each QuestionnaireConflict must point to a questionnaire.
   - questionnaire (reference) mandatory
 
   // A frequency for how long the conflict should prevent the questionnaire set from being used for
@@ -112,6 +112,9 @@
 
   // If true, apply the questionnaire's frequency across all clinics for these questionnaires
   - frequencyIgnoreClinic (boolean)
+
+  // How any questionnaires not included in this set should be checked for conflicts
+  - conflictMode (STRING)
 
   // Any forms which should prevent this questionnaire set from being created if present
   + * (cards:QuestionnaireConflict) = cards:QuestionnaireConflict
