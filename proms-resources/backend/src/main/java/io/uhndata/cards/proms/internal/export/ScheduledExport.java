@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package io.uhndata.cards.scheduledcsvexport;
+package io.uhndata.cards.proms.internal.export;
 
 import java.util.List;
 
