@@ -252,9 +252,9 @@ function FileQuestion(props) {
       allowResave();
       onAfterUpload && onAfterUpload(file);
     }).catch((errorObj) => {
-      // Is the user logged out? Or did something else happen?
+      // Backend did not allow this file to be uploaded
       console.log(errorObj);
-      setError(String(errorObj));
+      setError("File could not be uploaded" + (errorObj.statusText ? ": " + errorObj.statusText : ""));
     });
   };
 
