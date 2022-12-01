@@ -254,7 +254,7 @@ function FileQuestion(props) {
     }).catch((errorObj) => {
       // Backend did not allow this file to be uploaded
       console.log(errorObj);
-      setError("File could not be uploaded" + (errorObj.statusText ? ": " + errorObj.statusText : ""));
+      setError("You are not allowed to upload this file");
     });
   };
 
