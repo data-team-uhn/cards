@@ -298,10 +298,10 @@ public class ToEpicFormProcessor implements ResourceJsonProcessor
 
         // No visit forms in progress
         if (!resources.hasNext()) {
+            result.add("status", "completed");
             return;
         }
 
-        // Add the status
         result.add("status", "in-progress");
         return;
     }
