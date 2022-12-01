@@ -33,7 +33,6 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js"
 import { camelCaseToWords } from "../questionnaireEditor/LabeledField.jsx";
 
 function Clinics(props) {
-  const [currentClinicName, setCurrentClinicName] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isNewClinic, setIsNewClinic] = useState(false);
 
@@ -82,15 +81,14 @@ function Clinics(props) {
         customUrl={"Survey/ClinicMapping.paginate"}
         admin={true}
       />
-      <OnboardNewClinicDialog currentClinicName={currentClinicName} open={dialogOpen} onClose={dialogClose} onSuccess={dialogSuccess} isNewClinic={isNewClinic} />
+      <OnboardNewClinicDialog open={dialogOpen} onClose={dialogClose} onSuccess={dialogSuccess} isNewClinic={isNewClinic} />
     </>
   );
 }
 
 function OnboardNewClinicDialog(props) {
-  let { currentClinicName, isNewClinic, open, onClose, onSuccess } = props;
+  let { isNewClinic, open, onClose, onSuccess } = props;
   let [error, setError] = useState("");
-  let [existingData, setExistingData] = useState(false);
   let [saveInProgress, setSaveInProgress] = useState(false);
   let [initialized, setInitialized] = useState(false);
 
@@ -101,22 +99,7 @@ function OnboardNewClinicDialog(props) {
   let reset = () => {
     // reset all fields
     setError();
-    setExistingData(false);
     setInitialized(false);
-  }
-
-  // Implementation of the Java hashcode function
-  // Code taken from https://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/
-  // This is used to determine the proper node name of a clinic mapping
-  let hashCode = (toConvert) => {
-    var hash = 0;
-    if (toConvert.length == 0) return hash;
-    for (let i = 0; i < toConvert.length; i++) {
-      let char = toConvert.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
-      hash = hash & hash; // Convert to 32bit integer
-    }
-    return hash;
   }
 
   useEffect(() => {
@@ -124,21 +107,7 @@ function OnboardNewClinicDialog(props) {
       reset();
       return;
     }
-    if (!isNewClinic && currentClinicName) {
-      let fetchExistingData = () => {
-        // We want to keep references the way they are, since reference inputs will expect their UUIDs
-        fetchWithReLogin(globalLoginDisplay, `/Survey/ClinicData/${hashCode(currentClinicName)}.-dereference.json`)
-          .then((response) => response.ok ? response.json() : Promise.reject(response))
-          .then(setExistingData)
-          .then(() => setInitialized(true))
-          .catch(handleError);
-      };
-      if (!existingData) {
-        fetchExistingData();
-      }
-    } else {
-      setInitialized(true);
-    }
+    setInitialized(true);
   }, [open]);
 
   let saveData = (event) => {
@@ -188,7 +157,7 @@ function OnboardNewClinicDialog(props) {
             {
               // We don't want to load the Fields component until we are fully initialized
               // since otherwise the default values will be empty and cannot be assigned
-              initialized && <Fields data={existingData || {}} JSON={clinicsSpecs} edit />
+              initialized && <Fields data={{}} JSON={clinicsSpecs} edit />
             }
           </Grid>
         </DialogContent>
