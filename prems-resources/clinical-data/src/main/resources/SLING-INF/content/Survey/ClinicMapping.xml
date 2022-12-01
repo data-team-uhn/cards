@@ -40,7 +40,7 @@
         </property>
         <property>
             <name>displayName</name>
-            <value>Long Form Inpatient</value>
+            <value>Canadian Patient Experience</value>
             <type>String</type>
         </property>
         <property>
