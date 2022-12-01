@@ -272,6 +272,35 @@ public class ClarityImportTask implements Runnable
         }
     }
 
+    private void replaceFormAnswer(final ResourceResolver resolver, final Resource form,
+        final Map<String, Object> props) throws RepositoryException
+    {
+        final String questionUUID = ((Node) props.get("question")).getIdentifier();
+        LOGGER.warn("Looking for an answer to this Form with a question jcr:uuid of {}", questionUUID);
+        //final Iterator<Resource> formAnswersIterator = form.getChildren();
+        //while (formAnswersIterator.hasNext()) {
+        for (Resource answer : form.getChildren()) {
+            //Resource answer = formAnswersIterator.next();
+            String thisAnswersQuestionUUID = answer.getValueMap().get("question", "");
+            //LOGGER.warn("This cards:Answer is for a cards:Question with jcr:uuid={}",
+            //    answer.getValueMap().get("question", ""));
+            if (questionUUID.equals(thisAnswersQuestionUUID)) {
+                LOGGER.warn("FOUND IT!");
+                // Now, copy the values from the props Map into the cards:Answer JCR node
+                //answer.adaptTo(Node.class).setProperty(ClarityImportTask.VALUE_PROP,
+                //    props.get(ClarityImportTask.VALUE_PROP));
+                Object newValue = props.get(ClarityImportTask.VALUE_PROP);
+                if (newValue instanceof String) {
+                    answer.adaptTo(Node.class).setProperty(ClarityImportTask.VALUE_PROP, (String) newValue);
+                } else if (newValue instanceof Calendar) {
+                    answer.adaptTo(Node.class).setProperty(ClarityImportTask.VALUE_PROP, (Calendar) newValue);
+                } else if (newValue instanceof Boolean) {
+                    answer.adaptTo(Node.class).setProperty(ClarityImportTask.VALUE_PROP, (Boolean) newValue);
+                }
+            }
+        }
+    }
+
     /**
      * Create a subject/Form/answer nodes for the given ResultSet.
      *
@@ -319,10 +348,52 @@ public class ClarityImportTask implements Runnable
         // Create a Node corresponding to the Form
         Resource questionnaire = resolver.resolve(questionnairePath);
 
-        Resource newForm = resolver.create(formsHomepage, UUID.randomUUID().toString(), Map.of(
+        // If we are here, it is because either:
+        // - A new Patient information Form needs to be created OR
+        // - An old Patient information Form needs to be updated OR
+        // - A Visit information Form needs to be created
+        // - Given that these are all Visits that happened in the past,
+        // we don't need to worry about handling cancelled visits
+        Resource newForm = null;
+        boolean updatingOldForm = false;
+        if ("/Questionnaires/Patient information".equals(questionnairePath)) {
+            // Let's see if there is a Patient information Form already in existance for this Patient subject
+            // TODO: Get the jcr:uuid value for `/Questionnaires/Patient information`
+            // TODO: Get the jcr:uuid value for the Resource newSubject
+            String questionnaireUUID = questionnaire.getValueMap().get("jcr:uuid", "");
+            String newSubjectUUID = newSubject.getValueMap().get("jcr:uuid", "");
+            LOGGER.warn(
+                "Seeing if a Patient information Form (jcr:uuid={}) exists for the Patient Subject (jcr:uuid={})",
+                questionnaireUUID,
+                newSubjectUUID
+            );
+
+            final Iterator<Resource> matchingFormResourceIter = resolver.findResources(
+                "SELECT * FROM [cards:Form] as form WHERE form.'questionnaire'='"
+                + questionnaireUUID + "' AND form.'subject'='" + newSubjectUUID + "'",
+                "JCR-SQL2");
+
+            if (matchingFormResourceIter.hasNext()) {
+                Resource matchingPatientInformation = matchingFormResourceIter.next();
+                LOGGER.warn("The Form at {} is the Patient information Form for this Patient subject.",
+                    matchingPatientInformation.getPath());
+
+                // Use matchingPatientInformation as newForm instead of creating a new one
+                matchingPatientInformation.adaptTo(Node.class).getSession().getWorkspace().getVersionManager().checkout(
+                    matchingPatientInformation.getPath());
+
+                newForm = matchingPatientInformation;
+                updatingOldForm = true;
+            }
+        }
+
+        if (newForm == null) {
+            newForm = resolver.create(formsHomepage, UUID.randomUUID().toString(), Map.of(
                 ClarityImportTask.PRIMARY_TYPE_PROP, "cards:Form",
                 "questionnaire", questionnaire.adaptTo(Node.class),
                 "subject", newSubject.adaptTo(Node.class)));
+        }
+
         this.nodesToCheckin.get().add(newForm.getPath());
 
         // Create an Answer for each QuestionInformation in our result set
@@ -360,7 +431,14 @@ public class ClarityImportTask implements Runnable
             } else {
                 LOGGER.warn("Unsupported question type: " + qType);
             }
-            resolver.create(newForm, UUID.randomUUID().toString(), props);
+
+            // If newForm is really a Form that should be updated, write these props to the appropriate child node
+            // of newForm.
+            if (updatingOldForm) {
+                replaceFormAnswer(resolver, newForm, props);
+            } else {
+                resolver.create(newForm, UUID.randomUUID().toString(), props);
+            }
         }
 
         this.createdPatientInformation.set(true);
