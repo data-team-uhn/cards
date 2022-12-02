@@ -284,18 +284,11 @@ public class ClarityImportTask implements Runnable
     {
         final String questionUUID = ((Node) props.get("question")).getIdentifier();
         LOGGER.warn("Looking for an answer to this Form with a question jcr:uuid of {}", questionUUID);
-        //final Iterator<Resource> formAnswersIterator = form.getChildren();
-        //while (formAnswersIterator.hasNext()) {
         for (Resource answer : form.getChildren()) {
-            //Resource answer = formAnswersIterator.next();
             String thisAnswersQuestionUUID = answer.getValueMap().get("question", "");
-            //LOGGER.warn("This cards:Answer is for a cards:Question with jcr:uuid={}",
-            //    answer.getValueMap().get("question", ""));
             if (questionUUID.equals(thisAnswersQuestionUUID)) {
                 LOGGER.warn("FOUND IT!");
-                // Now, copy the values from the props Map into the cards:Answer JCR node
-                //answer.adaptTo(Node.class).setProperty(ClarityImportTask.VALUE_PROP,
-                //    props.get(ClarityImportTask.VALUE_PROP));
+                // Now, copy the value from the props Map into the cards:Answer JCR node
                 Object newValue = props.get(ClarityImportTask.VALUE_PROP);
                 if (newValue instanceof String) {
                     answer.adaptTo(Node.class).setProperty(ClarityImportTask.VALUE_PROP, (String) newValue);
