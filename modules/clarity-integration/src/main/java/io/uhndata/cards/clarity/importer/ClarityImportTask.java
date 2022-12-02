@@ -366,8 +366,6 @@ public class ClarityImportTask implements Runnable
 
             if (matchingFormResourceIter.hasNext()) {
                 Resource matchingPatientInformation = matchingFormResourceIter.next();
-                LOGGER.warn("The Form at {} is the Patient information Form for this Patient subject.",
-                    matchingPatientInformation.getPath());
 
                 // Use matchingPatientInformation as newForm instead of creating a new one
                 matchingPatientInformation.adaptTo(Node.class).getSession().getWorkspace().getVersionManager().checkout(
