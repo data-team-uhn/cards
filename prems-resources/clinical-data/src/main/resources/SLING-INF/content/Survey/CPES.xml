@@ -64,11 +64,6 @@
       "link" : "dashboard+path"
     },
     {
-      "key": "cpesic_department",
-      "label": "Department",
-      "link" : "string"
-    },
-    {
       "key": "cpesic_41",
       "label": "Overall experience",
       "link" : "string"
