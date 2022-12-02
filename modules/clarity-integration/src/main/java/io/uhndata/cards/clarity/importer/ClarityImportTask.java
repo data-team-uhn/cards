@@ -356,8 +356,6 @@ public class ClarityImportTask implements Runnable
         boolean updatingOldForm = false;
         if ("/Questionnaires/Patient information".equals(questionnairePath)) {
             // Let's see if there is a Patient information Form already in existance for this Patient subject
-            // TODO: Get the jcr:uuid value for `/Questionnaires/Patient information`
-            // TODO: Get the jcr:uuid value for the Resource newSubject
             String questionnaireUUID = questionnaire.getValueMap().get("jcr:uuid", "");
             String newSubjectUUID = newSubject.getValueMap().get("jcr:uuid", "");
             LOGGER.warn(
