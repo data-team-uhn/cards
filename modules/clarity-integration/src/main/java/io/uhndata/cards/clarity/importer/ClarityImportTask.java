@@ -283,11 +283,9 @@ public class ClarityImportTask implements Runnable
         final Map<String, Object> props) throws RepositoryException
     {
         final String questionUUID = ((Node) props.get("question")).getIdentifier();
-        LOGGER.warn("Looking for an answer to this Form with a question jcr:uuid of {}", questionUUID);
         for (Resource answer : form.getChildren()) {
             String thisAnswersQuestionUUID = answer.getValueMap().get("question", "");
             if (questionUUID.equals(thisAnswersQuestionUUID)) {
-                LOGGER.warn("FOUND IT!");
                 // Now, copy the value from the props Map into the cards:Answer JCR node
                 Object newValue = props.get(ClarityImportTask.VALUE_PROP);
                 if (newValue instanceof String) {
