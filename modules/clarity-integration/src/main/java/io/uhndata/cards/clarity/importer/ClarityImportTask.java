@@ -300,6 +300,47 @@ public class ClarityImportTask implements Runnable
         }
     }
 
+    private Map<String, Object> generateAnswerNodeProperties(final ResourceResolver resolver,
+        final QuestionInformation entry, final ResultSet result) throws ParseException, SQLException
+    {
+        QuestionType qType = entry.type;
+        Map<String, Object> props = new HashMap<>();
+        props.put("question", resolver.resolve(entry.getQuestion()).adaptTo(Node.class));
+        props.put(ClarityImportTask.STATUS_FIELD_PROP, ClarityImportTask.STATUS_FLAGS);
+
+        if (qType == QuestionType.STRING) {
+            props.put(ClarityImportTask.PRIMARY_TYPE_PROP, "cards:TextAnswer");
+            String thisEntry = result.getString(entry.getColName());
+            props.put(ClarityImportTask.VALUE_PROP, thisEntry == null ? "" : thisEntry);
+        } else if (qType == QuestionType.DATE) {
+            props.put(ClarityImportTask.PRIMARY_TYPE_PROP, "cards:DateAnswer");
+            SimpleDateFormat clarityDateFormat = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
+            Date date = clarityDateFormat.parse(result.getString(entry.getColName()));
+            if (date != null) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(date);
+                props.put(ClarityImportTask.VALUE_PROP, calendar);
+            } else {
+                LOGGER.warn(entry.getColName() + " is null");
+            }
+        } else if (qType == QuestionType.BOOLEAN) {
+            // Note that the MS-SQL database doesn't save booleans as true/false
+            // So instead we have to check if it is Yes or No
+            props.put(ClarityImportTask.PRIMARY_TYPE_PROP, "cards:BooleanAnswer");
+            props.put(ClarityImportTask.VALUE_PROP, "Yes".equals(result.getString(entry.getColName())) ? 1 : 0);
+        } else if (qType == QuestionType.CLINIC) {
+            // This is similar to a string, except we transform the output to look at the ClinicMapping node
+            props.put(ClarityImportTask.PRIMARY_TYPE_PROP, "cards:TextAnswer");
+            String thisEntry = result.getString(entry.getColName());
+            props.put(ClarityImportTask.VALUE_PROP,
+                thisEntry == null ? "" : "/Survey/ClinicMapping/" + String.valueOf(thisEntry.hashCode()));
+        } else {
+            LOGGER.warn("Unsupported question type: " + qType);
+        }
+
+        return props;
+    }
+
     /**
      * Create a subject/Form/answer nodes for the given ResultSet.
      *
@@ -388,39 +429,7 @@ public class ClarityImportTask implements Runnable
 
         // Create an Answer for each QuestionInformation in our result set
         for (QuestionInformation entry : questionnaireQuestions) {
-            QuestionType qType = entry.type;
-            Map<String, Object> props = new HashMap<>();
-            props.put("question", resolver.resolve(entry.getQuestion()).adaptTo(Node.class));
-            props.put(ClarityImportTask.STATUS_FIELD_PROP, ClarityImportTask.STATUS_FLAGS);
-            if (qType == QuestionType.STRING) {
-                props.put(ClarityImportTask.PRIMARY_TYPE_PROP, "cards:TextAnswer");
-                String thisEntry = result.getString(entry.getColName());
-                props.put(ClarityImportTask.VALUE_PROP, thisEntry == null ? "" : thisEntry);
-            } else if (qType == QuestionType.DATE) {
-                props.put(ClarityImportTask.PRIMARY_TYPE_PROP, "cards:DateAnswer");
-                SimpleDateFormat clarityDateFormat = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
-                Date date = clarityDateFormat.parse(result.getString(entry.getColName()));
-                if (date != null) {
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTime(date);
-                    props.put(ClarityImportTask.VALUE_PROP, calendar);
-                } else {
-                    LOGGER.warn(entry.getColName() + " is null");
-                }
-            } else if (qType == QuestionType.BOOLEAN) {
-                // Note that the MS-SQL database doesn't save booleans as true/false
-                // So instead we have to check if it is Yes or No
-                props.put(ClarityImportTask.PRIMARY_TYPE_PROP, "cards:BooleanAnswer");
-                props.put(ClarityImportTask.VALUE_PROP, "Yes".equals(result.getString(entry.getColName())) ? 1 : 0);
-            } else if (qType == QuestionType.CLINIC) {
-                // This is similar to a string, except we transform the output to look at the ClinicMapping node
-                props.put(ClarityImportTask.PRIMARY_TYPE_PROP, "cards:TextAnswer");
-                String thisEntry = result.getString(entry.getColName());
-                props.put(ClarityImportTask.VALUE_PROP,
-                    thisEntry == null ? "" : "/Survey/ClinicMapping/" + String.valueOf(thisEntry.hashCode()));
-            } else {
-                LOGGER.warn("Unsupported question type: " + qType);
-            }
+            Map<String, Object> props = generateAnswerNodeProperties(resolver, entry, result);
 
             // If newForm is really a Form that should be updated, write these props to the appropriate child node
             // of newForm.
