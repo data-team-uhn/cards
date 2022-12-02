@@ -292,8 +292,9 @@ public class ClarityImportTask implements Runnable
                     answer.adaptTo(Node.class).setProperty(ClarityImportTask.VALUE_PROP, (String) newValue);
                 } else if (newValue instanceof Calendar) {
                     answer.adaptTo(Node.class).setProperty(ClarityImportTask.VALUE_PROP, (Calendar) newValue);
-                } else if (newValue instanceof Boolean) {
-                    answer.adaptTo(Node.class).setProperty(ClarityImportTask.VALUE_PROP, (Boolean) newValue);
+                } else if (newValue instanceof Integer) {
+                    answer.adaptTo(Node.class).setProperty(ClarityImportTask.VALUE_PROP,
+                        ((Integer) newValue).longValue());
                 }
             }
         }
@@ -410,7 +411,7 @@ public class ClarityImportTask implements Runnable
                 // Note that the MS-SQL database doesn't save booleans as true/false
                 // So instead we have to check if it is Yes or No
                 props.put(ClarityImportTask.PRIMARY_TYPE_PROP, "cards:BooleanAnswer");
-                props.put(ClarityImportTask.VALUE_PROP, "Yes".equals(result.getString(entry.getColName())));
+                props.put(ClarityImportTask.VALUE_PROP, "Yes".equals(result.getString(entry.getColName())) ? 1 : 0);
             } else if (qType == QuestionType.CLINIC) {
                 // This is similar to a string, except we transform the output to look at the ClinicMapping node
                 props.put(ClarityImportTask.PRIMARY_TYPE_PROP, "cards:TextAnswer");
