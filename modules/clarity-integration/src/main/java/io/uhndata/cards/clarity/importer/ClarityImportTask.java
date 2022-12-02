@@ -380,11 +380,6 @@ public class ClarityImportTask implements Runnable
      * @param formsHomepage the /Forms node
      * @return The Subject resource created. The form and answers will point to this.
      */
-    @SuppressWarnings({
-        "checkstyle:CyclomaticComplexity",
-        "checkstyle:ExecutableStatementCount",
-        "checkstyle:JavaNCSS",
-        "checkstyle:NPathComplexity"})
     private Resource createNodeFromEntry(final ResourceResolver resolver, final ResultSet result,
         final List<QuestionInformation> questionnaireQuestions, final String questionnairePath,
         final Resource subjectParent, final Resource formsHomepage)
