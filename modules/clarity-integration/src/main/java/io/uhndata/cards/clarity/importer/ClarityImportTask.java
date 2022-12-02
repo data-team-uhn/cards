@@ -24,6 +24,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -229,7 +231,8 @@ public class ClarityImportTask implements Runnable
             + "encrypt=" + System.getenv("CLARITY_SQL_ENCRYPT") + ";";
 
         // Connect via SQL to the server
-        String query = "SELECT * FROM path.CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS"
+        String query = "SELECT PAT_MRN, EMAIL_ADDRESS, FORMAT(ENTRY_TIME, 'yyyy-MM-dd HH:mm:ss') AS ENTRY_TIME,"
+            + " DISCH_DEPT_NAME, EMAIL_CONSENT_YN, LoadTime FROM path.CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS"
             + " WHERE CAST(LoadTime AS DATE) = CAST(GETDATE() AS DATE)"
             + " ORDER BY PAT_MRN ASC;";
         try (Connection connection = DriverManager.getConnection(connectionUrl);
@@ -248,8 +251,12 @@ public class ClarityImportTask implements Runnable
                 for (Map.Entry<String, List<QuestionInformation>> entry
                     : this.questionnaireToQuestions.entrySet()) {
                     String questionnaire = entry.getKey();
-                    subjectParent = createNodeFromEntry(resolver, results, entry.getValue(),
-                        questionnaire, subjectParent, formsHomepage);
+                    try {
+                        subjectParent = createNodeFromEntry(resolver, results, entry.getValue(),
+                            questionnaire, subjectParent, formsHomepage);
+                    } catch (ParseException e) {
+                        LOGGER.warn("Failed to process a Clarity SQL row.");
+                    }
                 }
             }
 
@@ -320,7 +327,7 @@ public class ClarityImportTask implements Runnable
     public Resource createNodeFromEntry(final ResourceResolver resolver, final ResultSet result,
         final List<QuestionInformation> questionnaireQuestions, final String questionnairePath,
         final Resource subjectParent, final Resource formsHomepage)
-        throws PersistenceException, RepositoryException, SQLException
+        throws ParseException, PersistenceException, RepositoryException, SQLException
     {
         // Create a new subject for the Form
         String subjectID = this.questionnaireToSubjectID.get(questionnairePath);
@@ -408,7 +415,8 @@ public class ClarityImportTask implements Runnable
                 props.put(ClarityImportTask.VALUE_PROP, thisEntry == null ? "" : thisEntry);
             } else if (qType == QuestionType.DATE) {
                 props.put(ClarityImportTask.PRIMARY_TYPE_PROP, "cards:DateAnswer");
-                Date date = result.getDate(entry.getColName());
+                SimpleDateFormat clarityDateFormat = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
+                Date date = clarityDateFormat.parse(result.getString(entry.getColName()));
                 if (date != null) {
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTime(date);
