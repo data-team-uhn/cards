@@ -40,7 +40,7 @@
         </property>
         <property>
             <name>displayName</name>
-            <value>Long Form Inpatient</value>
+            <value>Canadian Patient Experience</value>
             <type>String</type>
         </property>
         <property>
@@ -98,26 +98,26 @@
         </property>
     </node>
     <node>
-        <name>-1792626676</name>
+        <name>-432465800</name>
         <primaryNodeType>cards:ClinicMapping</primaryNodeType>
         <property>
             <name>clinicName</name>
-            <value>UHN-IC</value>
+            <value>UHN-EDIP</value>
             <type>String</type>
         </property>
         <property>
             <name>survey</name>
-            <value>IC</value>
+            <value>EDIP</value>
             <type>String</type>
         </property>
         <property>
             <name>displayName</name>
-            <value>UHN Integrated Care</value>
+            <value>UHN Emergency to Inpatient</value>
             <type>String</type>
         </property>
         <property>
             <name>sidebarLabel</name>
-            <value>UHN IC</value>
+            <value>UHN ED-IP</value>
             <type>String</type>
         </property>
     </node>

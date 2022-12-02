@@ -18,7 +18,7 @@
 -->
 
 <node>
-    <name>IC</name>
+    <name>EDIP</name>
     <primaryNodeType>cards:QuestionnaireSet</primaryNodeType>
     <property>
         <name>name</name>
@@ -35,7 +35,7 @@
         </property>
         <property>
             <name>estimate</name>
-            <value>2</value>
+            <value>5</value>
             <type>Long</type>
         </property>
         <property>
@@ -64,7 +64,7 @@
       "link" : "dashboard+path"
     },
     {
-      "key": "oed_8",
+      "key": "oed_9",
       "label": "Overall experience",
       "link" : "string"
     }
@@ -83,7 +83,7 @@
         </property>
         <property>
             <name>estimate</name>
-            <value>2</value>
+            <value>5</value>
             <type>Long</type>
         </property>
         <property>
@@ -112,12 +112,7 @@
       "link" : "dashboard+path"
     },
     {
-      "key": "oaip_department",
-      "label": "Department",
-      "link" : "string"
-    },
-    {
-      "key": "oaip_8",
+      "key": "oaip_11",
       "label": "Overall experience",
       "link" : "string"
     }

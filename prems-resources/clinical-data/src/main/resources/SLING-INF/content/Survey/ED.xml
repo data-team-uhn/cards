@@ -35,7 +35,7 @@
         </property>
         <property>
             <name>estimate</name>
-            <value>2</value>
+            <value>5</value>
             <type>Long</type>
         </property>
         <property>
@@ -64,7 +64,7 @@
       "link" : "dashboard+path"
     },
     {
-      "key": "oed_8",
+      "key": "oed_9",
       "label": "Overall experience",
       "link" : "string"
     }
