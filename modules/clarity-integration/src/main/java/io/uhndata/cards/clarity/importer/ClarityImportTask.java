@@ -421,7 +421,6 @@ public class ClarityImportTask implements Runnable
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTime(date);
                     props.put(ClarityImportTask.VALUE_PROP, calendar);
-                    props.put(ClarityImportTask.VALUE_PROP, calendar);
                 } else {
                     LOGGER.warn(entry.getColName() + " is null");
                 }
