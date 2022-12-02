@@ -358,11 +358,6 @@ public class ClarityImportTask implements Runnable
             // Let's see if there is a Patient information Form already in existance for this Patient subject
             String questionnaireUUID = questionnaire.getValueMap().get("jcr:uuid", "");
             String newSubjectUUID = newSubject.getValueMap().get("jcr:uuid", "");
-            LOGGER.warn(
-                "Seeing if a Patient information Form (jcr:uuid={}) exists for the Patient Subject (jcr:uuid={})",
-                questionnaireUUID,
-                newSubjectUUID
-            );
 
             final Iterator<Resource> matchingFormResourceIter = resolver.findResources(
                 "SELECT * FROM [cards:Form] as form WHERE form.'questionnaire'='"
