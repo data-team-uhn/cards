@@ -341,6 +341,34 @@ public class ClarityImportTask implements Runnable
         return props;
     }
 
+    private Resource getUpdatableForm(final ResourceResolver resolver, final Resource questionnaire,
+        final Resource subject) throws RepositoryException
+    {
+        final String questionnairePath = questionnaire.getPath();
+        Resource newForm = null;
+        if ("/Questionnaires/Patient information".equals(questionnairePath)) {
+            // Let's see if there is a Patient information Form already in existance for this Patient subject
+            String questionnaireUUID = questionnaire.getValueMap().get("jcr:uuid", "");
+            String newSubjectUUID = subject.getValueMap().get("jcr:uuid", "");
+
+            final Iterator<Resource> matchingFormResourceIter = resolver.findResources(
+                "SELECT * FROM [cards:Form] as form WHERE form.'questionnaire'='"
+                + questionnaireUUID + "' AND form.'subject'='" + newSubjectUUID + "'",
+                "JCR-SQL2");
+
+            if (matchingFormResourceIter.hasNext()) {
+                Resource matchingPatientInformation = matchingFormResourceIter.next();
+
+                // Use matchingPatientInformation as newForm instead of creating a new one
+                matchingPatientInformation.adaptTo(Node.class).getSession().getWorkspace().getVersionManager().checkout(
+                    matchingPatientInformation.getPath());
+
+                newForm = matchingPatientInformation;
+            }
+        }
+        return newForm;
+    }
+
     /**
      * Create a subject/Form/answer nodes for the given ResultSet.
      *
@@ -394,35 +422,17 @@ public class ClarityImportTask implements Runnable
         // - A Visit information Form needs to be created
         // - Given that these are all Visits that happened in the past,
         // we don't need to worry about handling cancelled visits
-        Resource newForm = null;
+
+        Resource newForm = getUpdatableForm(resolver, questionnaire, newSubject);
+
         boolean updatingOldForm = false;
-        if ("/Questionnaires/Patient information".equals(questionnairePath)) {
-            // Let's see if there is a Patient information Form already in existance for this Patient subject
-            String questionnaireUUID = questionnaire.getValueMap().get("jcr:uuid", "");
-            String newSubjectUUID = newSubject.getValueMap().get("jcr:uuid", "");
-
-            final Iterator<Resource> matchingFormResourceIter = resolver.findResources(
-                "SELECT * FROM [cards:Form] as form WHERE form.'questionnaire'='"
-                + questionnaireUUID + "' AND form.'subject'='" + newSubjectUUID + "'",
-                "JCR-SQL2");
-
-            if (matchingFormResourceIter.hasNext()) {
-                Resource matchingPatientInformation = matchingFormResourceIter.next();
-
-                // Use matchingPatientInformation as newForm instead of creating a new one
-                matchingPatientInformation.adaptTo(Node.class).getSession().getWorkspace().getVersionManager().checkout(
-                    matchingPatientInformation.getPath());
-
-                newForm = matchingPatientInformation;
-                updatingOldForm = true;
-            }
-        }
-
         if (newForm == null) {
             newForm = resolver.create(formsHomepage, UUID.randomUUID().toString(), Map.of(
                 ClarityImportTask.PRIMARY_TYPE_PROP, "cards:Form",
                 "questionnaire", questionnaire.adaptTo(Node.class),
                 "subject", newSubject.adaptTo(Node.class)));
+        } else {
+            updatingOldForm = true;
         }
 
         this.nodesToCheckin.get().add(newForm.getPath());
