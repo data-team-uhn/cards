@@ -93,7 +93,7 @@ public class ClarityImportTask implements Runnable
 
     private ThreadLocal<Boolean> createdPatientInformation = new ThreadLocal<>();
 
-    enum QuestionType
+    private enum QuestionType
     {
         DATE,
         STRING,
@@ -102,7 +102,7 @@ public class ClarityImportTask implements Runnable
     }
 
     /** Storage class for information about a question. */
-    class QuestionInformation
+    private class QuestionInformation
     {
         private String question;
         private QuestionType type;
@@ -206,7 +206,7 @@ public class ClarityImportTask implements Runnable
      * @param question the cards:Question node to analyze
      * @return A QuestionType corresponding to the given cards:Question node
      */
-    QuestionType getQuestionType(Resource question)
+    private QuestionType getQuestionType(Resource question)
     {
         ValueMap questionProps = question.getValueMap();
         String dataType = questionProps.containsKey(DATA_TYPE_PROP) ? questionProps.get(DATA_TYPE_PROP, "") : "";
@@ -316,7 +316,7 @@ public class ClarityImportTask implements Runnable
         "checkstyle:ExecutableStatementCount",
         "checkstyle:JavaNCSS",
         "checkstyle:NPathComplexity"})
-    public Resource createNodeFromEntry(final ResourceResolver resolver, final ResultSet result,
+    private Resource createNodeFromEntry(final ResourceResolver resolver, final ResultSet result,
         final List<QuestionInformation> questionnaireQuestions, final String questionnairePath,
         final Resource subjectParent, final Resource formsHomepage)
         throws ParseException, PersistenceException, RepositoryException, SQLException
@@ -445,9 +445,8 @@ public class ClarityImportTask implements Runnable
      * @param parent parent Resource if this is a child of that resource, or null
      * @return A Subject resource
      */
-    Resource getOrCreateSubject(final String identifier, final String subjectTypePath, final ResourceResolver resolver,
-        final Resource parent)
-        throws RepositoryException, PersistenceException
+    private Resource getOrCreateSubject(final String identifier, final String subjectTypePath,
+        final ResourceResolver resolver, final Resource parent) throws RepositoryException, PersistenceException
     {
         String subjectMatchQuery = String.format(
             "SELECT * FROM [cards:Subject] as subject WHERE subject.'identifier'='%s'", identifier);
