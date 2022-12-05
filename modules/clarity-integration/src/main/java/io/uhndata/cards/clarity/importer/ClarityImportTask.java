@@ -456,8 +456,7 @@ public class ClarityImportTask implements Runnable
         for (QuestionInformation entry : questionnaireQuestions) {
             Map<String, Object> props = generateAnswerNodeProperties(resolver, entry, result);
 
-            // If newForm is really a Form that should be updated, write these props to the appropriate child node
-            // of newForm.
+            // If a Form already existed, update its child answer nodes instead of creating new ones
             if (updatingOldForm) {
                 replaceFormAnswer(resolver, form, props);
             } else {
