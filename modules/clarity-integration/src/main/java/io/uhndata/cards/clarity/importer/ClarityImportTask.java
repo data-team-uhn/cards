@@ -419,31 +419,31 @@ public class ClarityImportTask implements Runnable
     {
 
         // Get a Subject Resource for this result - retrieving it if it exists, creating it if it doesn't
-        Resource newSubject = getSubjectForResult(resolver, result, questionnairePath, subjectParent);
+        Resource subject = getSubjectForResult(resolver, result, questionnairePath, subjectParent);
 
         /*
          * If a Form has already been created for this Subject (eg. this is another row for the same patient and we do
          * not (and should not!) create a new Patient information Form.
          */
-        if (formAlreadyCreated(newSubject, questionnairePath)) {
-            return newSubject;
+        if (formAlreadyCreated(subject, questionnairePath)) {
+            return subject;
         }
 
         // Create a Node corresponding to the Form
         Resource questionnaire = resolver.resolve(questionnairePath);
-        Resource newForm = getUpdatableForm(resolver, questionnaire, newSubject);
+        Resource form = getUpdatableForm(resolver, questionnaire, subject);
 
         boolean updatingOldForm = false;
-        if (newForm == null) {
-            newForm = resolver.create(formsHomepage, UUID.randomUUID().toString(), Map.of(
+        if (form == null) {
+            form = resolver.create(formsHomepage, UUID.randomUUID().toString(), Map.of(
                 ClarityImportTask.PRIMARY_TYPE_PROP, "cards:Form",
                 "questionnaire", questionnaire.adaptTo(Node.class),
-                "subject", newSubject.adaptTo(Node.class)));
+                "subject", subject.adaptTo(Node.class)));
         } else {
             updatingOldForm = true;
         }
 
-        this.nodesToCheckin.get().add(newForm.getPath());
+        this.nodesToCheckin.get().add(form.getPath());
 
         // Create an Answer for each QuestionInformation in our result set
         for (QuestionInformation entry : questionnaireQuestions) {
@@ -452,15 +452,15 @@ public class ClarityImportTask implements Runnable
             // If newForm is really a Form that should be updated, write these props to the appropriate child node
             // of newForm.
             if (updatingOldForm) {
-                replaceFormAnswer(resolver, newForm, props);
+                replaceFormAnswer(resolver, form, props);
             } else {
-                resolver.create(newForm, UUID.randomUUID().toString(), props);
+                resolver.create(form, UUID.randomUUID().toString(), props);
             }
         }
 
         this.createdPatientInformation.set(true);
 
-        return newSubject;
+        return subject;
     }
 
     /**
