@@ -431,14 +431,6 @@ public class ClarityImportTask implements Runnable
 
         // Create a Node corresponding to the Form
         Resource questionnaire = resolver.resolve(questionnairePath);
-
-        // If we are here, it is because either:
-        // - A new Patient information Form needs to be created OR
-        // - An old Patient information Form needs to be updated OR
-        // - A Visit information Form needs to be created
-        // - Given that these are all Visits that happened in the past,
-        // we don't need to worry about handling cancelled visits
-
         Resource newForm = getUpdatableForm(resolver, questionnaire, newSubject);
 
         boolean updatingOldForm = false;
