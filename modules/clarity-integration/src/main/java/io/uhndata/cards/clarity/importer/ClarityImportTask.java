@@ -401,6 +401,13 @@ public class ClarityImportTask implements Runnable
         return newSubject;
     }
 
+    private void markFormAsCreated(String questionnairePath)
+    {
+        if ("/Questionnaires/Patient information".equals(questionnairePath)) {
+            this.createdPatientInformation.set(true);
+        }
+    }
+
     /**
      * Create a subject/Form/answer nodes for the given ResultSet.
      *
@@ -458,7 +465,7 @@ public class ClarityImportTask implements Runnable
             }
         }
 
-        this.createdPatientInformation.set(true);
+        markFormAsCreated(questionnairePath);
 
         return subject;
     }
