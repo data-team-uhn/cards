@@ -369,6 +369,38 @@ public class ClarityImportTask implements Runnable
         return newForm;
     }
 
+    private boolean formAlreadyCreated(final Resource subject, final String questionnairePath)
+    {
+        if ("/Questionnaires/Patient information".equals(questionnairePath) && this.createdPatientInformation.get()) {
+            return true;
+        }
+        return false;
+    }
+
+    private Resource getSubjectForResult(final ResourceResolver resolver, final ResultSet result,
+        final String questionnairePath, final Resource subjectParent) throws PersistenceException, RepositoryException,
+        SQLException
+    {
+        String subjectID = this.questionnaireToSubjectID.get(questionnairePath);
+        subjectID = "".equals(subjectID) ? UUID.randomUUID().toString() : result.getString(subjectID);
+
+        Resource newSubject = null;
+        String newSubjectType = this.questionnaireToSubjectType.get(questionnairePath);
+        if ("/SubjectTypes/Patient".equals(newSubjectType) && subjectID.equals(this.previousPatientId.get())) {
+            newSubject = this.previousPatientResource.get();
+        } else {
+            newSubject = getOrCreateSubject(subjectID, this.questionnaireToSubjectType.get(questionnairePath),
+                resolver, subjectParent);
+
+            if ("/SubjectTypes/Patient".equals(newSubjectType)) {
+                this.previousPatientId.set(subjectID);
+                this.previousPatientResource.set(newSubject);
+                this.createdPatientInformation.set(false);
+            }
+        }
+        return newSubject;
+    }
+
     /**
      * Create a subject/Form/answer nodes for the given ResultSet.
      *
@@ -385,26 +417,15 @@ public class ClarityImportTask implements Runnable
         final Resource subjectParent, final Resource formsHomepage)
         throws ParseException, PersistenceException, RepositoryException, SQLException
     {
-        // Create a new subject for the Form
-        String subjectID = this.questionnaireToSubjectID.get(questionnairePath);
-        subjectID = "".equals(subjectID) ? UUID.randomUUID().toString() : result.getString(subjectID);
 
-        String newSubjectType = this.questionnaireToSubjectType.get(questionnairePath);
-        Resource newSubject = null;
-        if ("/SubjectTypes/Patient".equals(newSubjectType) && subjectID.equals(this.previousPatientId.get())) {
-            newSubject = this.previousPatientResource.get();
-        } else {
-            newSubject = getOrCreateSubject(subjectID, this.questionnaireToSubjectType.get(questionnairePath),
-                resolver, subjectParent);
+        // Get a Subject Resource for this result - retrieving it if it exists, creating it if it doesn't
+        Resource newSubject = getSubjectForResult(resolver, result, questionnairePath, subjectParent);
 
-            if ("/SubjectTypes/Patient".equals(newSubjectType)) {
-                this.previousPatientId.set(subjectID);
-                this.previousPatientResource.set(newSubject);
-                this.createdPatientInformation.set(false);
-            }
-        }
-
-        if ("/Questionnaires/Patient information".equals(questionnairePath) && this.createdPatientInformation.get()) {
+        /*
+         * If a Form has already been created for this Subject (eg. this is another row for the same patient and we do
+         * not (and should not!) create a new Patient information Form.
+         */
+        if (formAlreadyCreated(newSubject, questionnairePath)) {
             return newSubject;
         }
 
