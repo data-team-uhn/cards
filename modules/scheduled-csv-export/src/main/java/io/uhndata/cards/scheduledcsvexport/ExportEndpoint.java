@@ -22,6 +22,7 @@ package io.uhndata.cards.scheduledcsvexport;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.Servlet;
 
@@ -58,7 +59,7 @@ public class ExportEndpoint extends SlingSafeMethodsServlet
 
         //Ensure that this can only be run when logged in as admin
         final String remoteUser = request.getRemoteUser();
-        if (remoteUser == null || !remoteUser.equals(ADMIN)) {
+        if (remoteUser == null || !remoteUser.toLowerCase(Locale.ROOT).equals(ADMIN)) {
             //admin login required
             response.setStatus(403);
             out.write("Only admin can perform this operation.");
