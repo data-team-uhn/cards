@@ -1103,7 +1103,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>Would you recommend this hospital to your friends and family?</value>
+				<value>How likely are you to recommend this hospital to your friends and family?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1121,7 +1121,7 @@
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Definitely no</value>
+					<value>0 - Not at all likely</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1140,7 +1140,7 @@
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Probably no</value>
+					<value>1</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1159,7 +1159,7 @@
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Probably yes</value>
+					<value>2</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1178,7 +1178,7 @@
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Definitely yes</value>
+					<value>3</value>
 					<type>String</type>
 				</property>
 				<property>
@@ -1189,6 +1189,139 @@
 				<property>
 					<name>defaultOrder</name>
 					<value>4</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>4</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>4</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>4</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>5</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>5</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>5 - Neutral</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>5</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>6</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>6</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>6</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>6</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>7</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>7</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>7</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>7</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>8</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>8</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>8</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>8</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>9</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>9</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>9</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>9</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>10</value>
+					<type>Long</type>
+				</property>
+			</node>
+			<node>
+				<name>10</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>10 - Extremely likely</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>10</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>defaultOrder</name>
+					<value>11</value>
 					<type>Long</type>
 				</property>
 			</node>
