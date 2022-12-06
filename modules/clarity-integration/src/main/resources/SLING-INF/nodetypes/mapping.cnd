@@ -22,23 +22,29 @@
 
 //-----------------------------------------------------------------------------
 // Nodetype for data query handling
-[cards:clarityMapping] > sling:Folder
+[cards:clarityPatientMapping] > sling:Folder
   // Attributes:
   query
 
-  - questionnaire (PATH) mandatory
-
-  // We can't determine the subject type from the questionnaire alone (questionnaries can have more than one subject type)
-  // so we make it explicit here
-  - subjectType (PATH) mandatory
-
-  // An optional string letting the importer know what column to use for the subject identifier.
-  - subjectIDColumn (STRING)
+  - subjectIDColumn (STRING) mandatory
 
   // Properties:
   // Hardcode the resource type
-  - sling:resourceType (STRING) = "cards/dataQuery" mandatory autocreated protected
-  // Hardcode the resource supertype: the dataQuery is a resource
-  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
-  // Set a default title
-  - title (String) = "CARDS query" mandatory autocreated
+  - sling:resourceType (STRING) = "cards/clarityPatientMapping" mandatory autocreated protected
+
+  // Hardcode the resource supertype
+  - sling:resourceSuperType (STRING) = "cards/clarityMapping" mandatory autocreated protected
+
+[cards:clarityQuestionMapping] > nt:unstructured
+  // Attributes:
+  query
+
+  - sqlColumn (STRING) mandatory
+  - question (STRING) mandatory
+
+  // Properties:
+  // Hardcode the resource type
+  - sling:resourceType (STRING) = "cards/clarityQuestionMapping" mandatory autocreated protected
+
+  // Hardcode the resource supertype
+  - sling:resourceSuperType (STRING) = "cards/clarityMapping" mandatory autocreated protected
