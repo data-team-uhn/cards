@@ -552,9 +552,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>Did you get the emotional support you needed
-to help you with any anxieties, fears or worries
-you had during this hospital visit?</value>
+				<value>Did you get the emotional support you needed to help you with any anxieties, fears or worries you had during this hospital visit?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -807,8 +805,7 @@ you had during this hospital visit?</value>
 			</property>
 			<property>
 				<name>text</name>
-				<value>Did care providers do everything they could do
-to ease your discomfort or symptoms?</value>
+				<value>Did care providers do everything they could do to ease your discomfort or symptoms?</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -1211,8 +1208,7 @@ to ease your discomfort or symptoms?</value>
 			</property>
 			<property>
 				<name>text</name>
-				<value>What else would you like to say about this
-emergency department experience?</value>
+				<value>What else would you like to say about this emergency department experience?</value>
 				<type>String</type>
 			</property>
 			<property>

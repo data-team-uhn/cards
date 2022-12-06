@@ -2271,8 +2271,7 @@ Your response to this survey is voluntary but will provide us with important inf
 				</property>
 				<property>
 					<name>text</name>
-					<value>During this hospital stay, did you get information in writing about what
-symptoms or health problems to look out for after you left the hospital?</value>
+					<value>During this hospital stay, did you get information in writing about what symptoms or health problems to look out for after you left the hospital?</value>
 					<type>String</type>
 				</property>
 			</node>
