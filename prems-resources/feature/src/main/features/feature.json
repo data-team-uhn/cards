@@ -42,7 +42,14 @@
         // Access rights for the special "patient" user: do not allow access to PII
         "create user patient \n set ACL for patient \n     deny jcr:all on /Questionnaires restriction(rep:itemNames,time,location,provider) \n     deny jcr:read on /Forms restriction(cards:question,/Questionnaires/Visit*information/time,/Questionnaires/Visit*information/location,/Questionnaires/Visit*information/provider) \n     deny jcr:all on /Forms restriction(cards:questionnaire,/Questionnaires/Patient*information) \n end",
         // This isn't actually used, but Patient.json references it; needs to be removed along with the torch import
-        "create service user proms-import-backend"
+        "create service user proms-import-backend",
+        // Exporting forms in csv format
+        "create service user csv-export \n set ACL on /Questionnaires,/Forms,/Subjects,/SubjectTypes \n   allow jcr:read for csv-export \n end"
+      ]
+    },
+    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~prems":{
+      "user.mapping":[
+        "io.uhndata.cards.proms-backend:CsvExport=[csv-export]"
       ]
     },
     "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~TWEDInitialInvitationTask":{
