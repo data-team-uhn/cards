@@ -44,6 +44,7 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.version.VersionManager;
 import javax.servlet.Servlet;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -161,6 +162,8 @@ public class DataImportServlet extends SlingAllMethodsServlet
             this.subjectTypes.set(subjectTypesParam);
 
             parseData(request, StringUtils.equals("true", request.getParameter(":patch")));
+        } catch (IllegalArgumentException e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         } catch (RepositoryException e) {
             LOGGER.error("Failed to import data: {}", e.getMessage(), e);
         } finally {
@@ -199,7 +202,11 @@ public class DataImportServlet extends SlingAllMethodsServlet
         if (StringUtils.isBlank(questionnaireName)) {
             throw new IllegalArgumentException("Required parameter \":questionnaire\" missing");
         }
-        this.questionnaire.set(this.resolver.get().getResource(questionnaireName).adaptTo(Node.class));
+        try {
+            this.questionnaire.set(this.resolver.get().getResource(questionnaireName).adaptTo(Node.class));
+        } catch (NullPointerException e) {
+            throw new IllegalArgumentException("Invalid questionnaire name " + questionnaireName);
+        }
 
         CSVFormat format = CSVFormat.TDF.builder().setHeader().setSkipHeaderRecord(true).build();
         try (CSVParser data = CSVParser.parse(dataFile.getInputStream(), StandardCharsets.UTF_8, format)) {
