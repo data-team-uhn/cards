@@ -30,7 +30,7 @@ public class ExportConfig
     private ExportConfigDefinition config;
 
     @Activate
-    protected void activate(final ExportConfigDefinition config, ComponentContext componentContext)
+    protected void activate(final ExportConfigDefinition config, final ComponentContext componentContext)
     {
         this.config = config;
     }

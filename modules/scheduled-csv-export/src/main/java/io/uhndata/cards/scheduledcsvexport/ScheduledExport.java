@@ -55,7 +55,9 @@ public class ScheduledExport
             // If the scheduler is not bound, it's OK to do nothing now, the method will be called during activation.
             return;
         }
-        final String schedule = newConfig.getConfig().export_schedule();
+        final ExportConfigDefinition configDef = newConfig.getConfig();
+        LOGGER.debug("Added csv export configuration {}", configDef.name());
+        final String schedule = configDef.export_schedule();
         final ScheduleOptions options = this.scheduler.EXPR(schedule);
         options.name(SCHEDULER_JOB_PREFIX + newConfig.getConfig().name());
         options.canRunConcurrently(true);
