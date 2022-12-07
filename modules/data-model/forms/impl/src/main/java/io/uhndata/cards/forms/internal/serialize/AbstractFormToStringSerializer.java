@@ -18,9 +18,13 @@
  */
 package io.uhndata.cards.forms.internal.serialize;
 
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import javax.json.Json;
 import javax.json.JsonException;
 import javax.json.JsonObject;
 import javax.json.JsonString;
@@ -152,6 +156,15 @@ public abstract class AbstractFormToStringSerializer
     private void processSection(final JsonObject answerSectionJson, final StringBuilder result,
         final Map<String, Integer> sectionCounts)
     {
+        final JsonObject definition;
+        if (answerSectionJson.containsKey("questionnaire")) {
+            definition = answerSectionJson.getJsonObject("questionnaire");
+        } else if (answerSectionJson.containsKey("section")) {
+            definition = answerSectionJson.getJsonObject("section");
+        } else {
+            definition = Json.createObjectBuilder().build();
+        }
+
         final String displayMode = getDisplayMode("section", answerSectionJson);
         if ("summary".equals(displayMode)) {
             // Do not output summary sections
@@ -168,6 +181,7 @@ public abstract class AbstractFormToStringSerializer
             .filter(value -> ValueType.OBJECT.equals(value.getValueType()))
             .map(JsonValue::asJsonObject)
             .filter(value -> value.containsKey("jcr:primaryType"))
+            .sorted(new DefinitionComparator(definition))
             .forEach(value -> processElement(value, result, sectionCounts));
         if ("header".equals(displayMode)) {
             formatSectionSeparator(result);
@@ -326,4 +340,47 @@ public abstract class AbstractFormToStringSerializer
     abstract void formatPedigree(String value, StringBuilder result);
 
     abstract void formatNote(String note, StringBuilder result);
+
+    class DefinitionComparator implements Comparator<JsonObject>
+    {
+        private final List<String> definitionUuids;
+
+        DefinitionComparator(final JsonObject definition)
+        {
+            this.definitionUuids = definition.values().stream()
+                .filter(value -> ValueType.OBJECT.equals(value.getValueType()))
+                .map(JsonValue::asJsonObject)
+                .filter(value -> value.containsKey("jcr:primaryType")
+                    && ("cards:Section".equals(value.getString("jcr:primaryType"))
+                    || "cards:Question".equals(value.getString("jcr:primaryType"))))
+                .map(value -> value.getString("jcr:uuid"))
+                .collect(Collectors.toList());
+        }
+
+        @Override
+        public int compare(JsonObject json1, JsonObject json2)
+        {
+            final String uuid1 = this.getDefinitionUuid(json1);
+            final String uuid2 = this.getDefinitionUuid(json2);
+
+            if (this.definitionUuids.contains(uuid1) && this.definitionUuids.contains(uuid2)) {
+                return this.definitionUuids.indexOf(uuid1) - this.definitionUuids.indexOf(uuid2);
+            } else {
+                return 0;
+            }
+        }
+
+        private String getDefinitionUuid(JsonObject json)
+        {
+            final String uuid;
+            if (json.containsKey("section")) {
+                uuid = json.getJsonObject("section").getString("jcr:uuid");
+            } else if (json.containsKey("question")) {
+                uuid = json.getJsonObject("question").getString("jcr:uuid");
+            } else {
+                uuid = "";
+            }
+            return uuid;
+        }
+    }
 }
