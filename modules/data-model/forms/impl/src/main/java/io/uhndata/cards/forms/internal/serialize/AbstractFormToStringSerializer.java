@@ -41,6 +41,11 @@ import org.apache.sling.api.resource.Resource;
  */
 public abstract class AbstractFormToStringSerializer
 {
+    private static final String SECTION_KEY = "section";
+    private static final String QUESTION_KEY = "question";
+    private static final String PRIMARY_TYPE_KEY = "jcr:primaryType";
+    private static final String UUID_KEY = "jcr:uuid";
+
     protected String toString(final Resource originalResource)
     {
         // The proper serialization depends on "deep", "dereference" and "labels", but we may allow other JSON
@@ -137,7 +142,7 @@ public abstract class AbstractFormToStringSerializer
     private void processElement(final JsonObject nodeJson, final StringBuilder result,
         final Map<String, Integer> sectionCounts)
     {
-        final String nodeType = nodeJson.getString("jcr:primaryType");
+        final String nodeType = nodeJson.getString(PRIMARY_TYPE_KEY);
         if ("cards:AnswerSection".equals(nodeType)) {
             processSection(nodeJson, result, sectionCounts);
         } else if (nodeType.startsWith("cards:") && nodeType.endsWith("Answer")) {
@@ -159,13 +164,13 @@ public abstract class AbstractFormToStringSerializer
         final JsonObject definition;
         if (answerSectionJson.containsKey("questionnaire")) {
             definition = answerSectionJson.getJsonObject("questionnaire");
-        } else if (answerSectionJson.containsKey("section")) {
-            definition = answerSectionJson.getJsonObject("section");
+        } else if (answerSectionJson.containsKey(SECTION_KEY)) {
+            definition = answerSectionJson.getJsonObject(SECTION_KEY);
         } else {
             definition = Json.createObjectBuilder().build();
         }
 
-        final String displayMode = getDisplayMode("section", answerSectionJson);
+        final String displayMode = getDisplayMode(SECTION_KEY, answerSectionJson);
         if ("summary".equals(displayMode)) {
             // Do not output summary sections
             return;
@@ -180,7 +185,7 @@ public abstract class AbstractFormToStringSerializer
         answerSectionJson.values().stream()
             .filter(value -> ValueType.OBJECT.equals(value.getValueType()))
             .map(JsonValue::asJsonObject)
-            .filter(value -> value.containsKey("jcr:primaryType"))
+            .filter(value -> value.containsKey(PRIMARY_TYPE_KEY))
             .sorted(new DefinitionComparator(definition))
             .forEach(value -> processElement(value, result, sectionCounts));
         if ("header".equals(displayMode)) {
@@ -199,7 +204,7 @@ public abstract class AbstractFormToStringSerializer
      */
     private void processAnswer(final JsonObject answerJson, final String nodeType, final StringBuilder result)
     {
-        final String displayMode = getDisplayMode("question", answerJson);
+        final String displayMode = getDisplayMode(QUESTION_KEY, answerJson);
         if (displayMode == null || "hidden".equals(displayMode) || "summary".equals(displayMode)) {
             return;
         }
@@ -269,7 +274,7 @@ public abstract class AbstractFormToStringSerializer
     private String getQuestionText(final JsonObject answerJson)
     {
         try {
-            return answerJson.getJsonObject("question").getString("text");
+            return answerJson.getJsonObject(QUESTION_KEY).getString("text");
         } catch (JsonException | NullPointerException | ClassCastException ex) {
             // Not there, return
         }
@@ -308,10 +313,10 @@ public abstract class AbstractFormToStringSerializer
     private String getSectionInstanceSuffix(final JsonObject answerSectionJson,
         final Map<String, Integer> sectionCounts)
     {
-        final boolean recurrent = answerSectionJson.getJsonObject("section").getBoolean("recurrent");
+        final boolean recurrent = answerSectionJson.getJsonObject(SECTION_KEY).getBoolean("recurrent");
         if (recurrent) {
             final int instanceNumber =
-                sectionCounts.compute(answerSectionJson.getJsonObject("section").getString("jcr:uuid"),
+                sectionCounts.compute(answerSectionJson.getJsonObject(SECTION_KEY).getString(UUID_KEY),
                     (k, v) -> v == null ? 1 : v + 1);
             return " #" + instanceNumber;
         }
@@ -350,10 +355,10 @@ public abstract class AbstractFormToStringSerializer
             this.definitionUuids = definition.values().stream()
                 .filter(value -> ValueType.OBJECT.equals(value.getValueType()))
                 .map(JsonValue::asJsonObject)
-                .filter(value -> value.containsKey("jcr:primaryType")
-                    && ("cards:Section".equals(value.getString("jcr:primaryType"))
-                    || "cards:Question".equals(value.getString("jcr:primaryType"))))
-                .map(value -> value.getString("jcr:uuid"))
+                .filter(value -> value.containsKey(PRIMARY_TYPE_KEY)
+                    && ("cards:Section".equals(value.getString(PRIMARY_TYPE_KEY))
+                    || "cards:Question".equals(value.getString(PRIMARY_TYPE_KEY))))
+                .map(value -> value.getString(UUID_KEY))
                 .collect(Collectors.toList());
         }
 
@@ -373,10 +378,10 @@ public abstract class AbstractFormToStringSerializer
         private String getDefinitionUuid(JsonObject json)
         {
             final String uuid;
-            if (json.containsKey("section")) {
-                uuid = json.getJsonObject("section").getString("jcr:uuid");
-            } else if (json.containsKey("question")) {
-                uuid = json.getJsonObject("question").getString("jcr:uuid");
+            if (json.containsKey(SECTION_KEY)) {
+                uuid = json.getJsonObject(SECTION_KEY).getString(UUID_KEY);
+            } else if (json.containsKey(QUESTION_KEY)) {
+                uuid = json.getJsonObject(QUESTION_KEY).getString(UUID_KEY);
             } else {
                 uuid = "";
             }
