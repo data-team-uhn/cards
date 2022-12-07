@@ -42,7 +42,7 @@ public class NightlyClarityImport
 
     private static final String SCHEDULER_JOB_PREFIX = "NightlyClarityImport-";
 
-    private static final String MAPPING_CONFIG = "/prems/mapping";
+    private static final String MAPPING_CONFIG = "/apps/cards/clarityImport";
 
     /** Provides access to resources. */
     @Reference

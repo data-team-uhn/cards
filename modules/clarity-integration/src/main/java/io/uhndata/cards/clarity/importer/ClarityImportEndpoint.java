@@ -44,7 +44,7 @@ public class ClarityImportEndpoint extends SlingSafeMethodsServlet
 {
     private static final long serialVersionUID = -2727980234215527292L;
 
-    private static final String MAPPING_CONFIG = "/prems/mapping";
+    private static final String MAPPING_CONFIG = "/apps/cards/clarityImport";
 
     @Reference
     private volatile ResourceResolverFactory resolverFactory;
