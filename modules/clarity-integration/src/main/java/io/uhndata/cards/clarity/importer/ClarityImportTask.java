@@ -26,6 +26,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -152,7 +153,7 @@ public class ClarityImportTask implements Runnable
 
         // Convert our input mapping node to a mapping from column->question
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
-            getMappingRecursive(resolver, mapping);
+            processClarityToCardsMapping(resolver, mapping);
         } catch (RepositoryException e) {
             LOGGER.error("Error reading mapping: {}", e.getMessage(), e);
         } catch (LoginException e) {
@@ -160,43 +161,86 @@ public class ClarityImportTask implements Runnable
         }
     }
 
-    private void getMappingRecursive(ResourceResolver resolver, Resource mapping) throws RepositoryException
+    private String getSubjectTypePath(final ResourceResolver resolver, final String subjectTypeUuid)
     {
-        // Check for valid node
-        ValueMap properties = mapping.getValueMap();
-        if (!"cards:clarityMapping".equals(properties.get(PRIMARY_TYPE_PROP, ""))) {
-            return;
+        final Iterator<Resource> iter = resolver.findResources(
+            "SELECT * FROM [cards:SubjectType] as st WHERE st.'jcr:uuid'='" + subjectTypeUuid + "'", "JCR-SQL2");
+        if (iter.hasNext()) {
+            return iter.next().getPath();
+        }
+        return "";
+    }
+
+    private String getQuestionnairePathFromQuestionPath(String questionPath)
+    {
+        String[] questionPathArray = questionPath.split("/");
+        return String.join("/", Arrays.copyOfRange(questionPathArray, 0, 3));
+    }
+
+    @SuppressWarnings("checkstyle:MultipleStringLiterals")
+    private void processClarityToCardsMapping(ResourceResolver resolver, Resource mapping) throws RepositoryException
+    {
+        /*
+         * This method needs to populate:
+         *   - this.columns
+         *   - this.questionnaireToQuestions
+         *   - this.questionnaireToSubjectType
+         *   - this.questionnaireToSubjectID
+         */
+
+        String subjectIDColumn = resolver.resolve("/apps/cards/clarityImport").getValueMap().get("subjectIDColumn", "");
+
+        // Populate this.columns
+        for (Resource child : mapping.getChildren()) {
+            this.columns.add(child.getValueMap().get("sqlColumn", ""));
         }
 
-        // Add properties to mapping
-        String questionnaire = properties.get(QUESTIONNAIRE_PROP, "");
-        List<QuestionInformation> questionnaireList = new LinkedList<QuestionInformation>();
-        String subjectType = properties.get(SUBJECT_TYPE_PROP, "");
-        String subjectID = properties.get("subjectIDColumn", "");
-        for (String propertyName : properties.keySet()) {
-            String questionPath = properties.get(propertyName, "");
-            Resource question = resolver.resolve(questionPath);
-            if (QUESTIONNAIRE_PROP.equals(propertyName)
-                || SUBJECT_TYPE_PROP.equals(propertyName)
-                || question.isResourceType(Resource.RESOURCE_TYPE_NON_EXISTING)) {
-                continue;
+        // Populate this.questionnaireToSubjectType
+        Resource questionnaires = resolver.resolve("/Questionnaires");
+        for (Resource questionnaire : questionnaires.getChildren()) {
+            String questionnairePath = questionnaire.getPath();
+            String[] subjectTypesRefs = questionnaire.getValueMap().get("requiredSubjectTypes", String[].class);
+            for (int i = 0; i < subjectTypesRefs.length; i++) {
+                this.questionnaireToSubjectType.put(questionnairePath,
+                    getSubjectTypePath(resolver, subjectTypesRefs[i]));
+            }
+        }
+
+        /*
+         * Populate this.questionnaireToSubjectID, starting with a blank for all questionnaires,
+         * this will be filled in later
+         */
+        Iterator<Map.Entry<String, String>> questionnairesIterator =
+            this.questionnaireToSubjectType.entrySet().iterator();
+
+        while (questionnairesIterator.hasNext()) {
+            Map.Entry<String, String> questionnaireToSubject = questionnairesIterator.next();
+            String questionnairePath = questionnaireToSubject.getKey();
+            this.questionnaireToSubjectID.put(questionnairePath, "");
+        }
+
+        // Populate this.questionnaireToQuestions
+        for (Resource child : mapping.getChildren()) {
+            String questionPath = child.getValueMap().get("question", "");
+            String questionnairePath = this.getQuestionnairePathFromQuestionPath(questionPath);
+            String sqlColumn = child.getValueMap().get("sqlColumn", "");
+            QuestionInformation thisQuestion = new QuestionInformation(
+                questionPath,
+                this.getQuestionType(resolver.resolve(questionPath)),
+                questionnairePath,
+                sqlColumn
+            );
+
+            if (!this.questionnaireToQuestions.containsKey(questionnairePath)) {
+                this.questionnaireToQuestions.put(questionnairePath, new LinkedList<QuestionInformation>());
             }
 
-            QuestionType qType = this.getQuestionType(question);
-            LOGGER.info(propertyName + " found with question type: " + qType.name());
+            this.questionnaireToQuestions.get(questionnairePath).add(thisQuestion);
 
-            QuestionInformation questionInformation =
-                new QuestionInformation(questionPath, qType, questionnaire, propertyName);
-            questionnaireList.add(questionInformation);
-            this.columns.add(propertyName);
-        }
-        this.questionnaireToQuestions.put(questionnaire, questionnaireList);
-        this.questionnaireToSubjectType.put(questionnaire, subjectType);
-        this.questionnaireToSubjectID.put(questionnaire, subjectID);
-
-        // Recurse on children
-        for (Resource child : mapping.getChildren()) {
-            getMappingRecursive(resolver, child);
+            // Populate this.questionnaireToSubjectID, actually filling in the values this time
+            if (subjectIDColumn.equals(sqlColumn)) {
+                this.questionnaireToSubjectID.put(questionnairePath, subjectIDColumn);
+            }
         }
     }
 
@@ -221,6 +265,53 @@ public class ClarityImportTask implements Runnable
         return QuestionType.STRING;
     }
 
+    private String generateClarityQuery() throws LoginException
+    {
+        Map<String, String> sqlColumns = new HashMap<>();
+        String queryString = "";
+        String subjectIDColumn = "";
+        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
+
+            // Get the /apps/cards/clarityImport JCR node
+            Resource clarityImportConfigNode = resolver.getResource("/apps/cards/clarityImport");
+
+            // Read the "subjectIDColumn value of this node
+            subjectIDColumn = clarityImportConfigNode.getValueMap().get("subjectIDColumn", "");
+
+            // ... save it to the sqlColums hashmap
+            sqlColumns.put(subjectIDColumn, "text");
+
+            // Iterate through all the children of clarityImportConfigNode
+            for (Resource child : clarityImportConfigNode.getChildren()) {
+                String sqlColumn = child.getValueMap().get("sqlColumn", "");
+                String question = child.getValueMap().get("question", "");
+                String dataType = resolver.getResource(question).getValueMap().get("dataType", "");
+                sqlColumns.put(sqlColumn, dataType);
+            }
+        } catch (LoginException e) {
+            throw e;
+        }
+        LOGGER.warn("generateClarityQuery() --> {}", sqlColumns);
+        queryString = "SELECT ";
+        Iterator<Map.Entry<String, String>> columnsIterator = sqlColumns.entrySet().iterator();
+        while (columnsIterator.hasNext()) {
+            Map.Entry<String, String> col = columnsIterator.next();
+            if ("date".equals(col.getValue())) {
+                queryString += "FORMAT(" + col.getKey() + ", 'yyyy-MM-dd HH:mm:ss') AS " + col.getKey();
+            } else {
+                queryString += col.getKey();
+            }
+            if (columnsIterator.hasNext()) {
+                queryString += ", ";
+            }
+        }
+        queryString += " FROM path.CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS";
+        queryString += " WHERE CAST(LoadTime AS DATE) = CAST(GETDATE() AS DATE)";
+        queryString += " ORDER BY " + subjectIDColumn + " ASC;";
+        LOGGER.warn("queryString = {}", queryString);
+        return queryString;
+    }
+
     @Override
     public void run()
     {
@@ -231,10 +322,19 @@ public class ClarityImportTask implements Runnable
             + "encrypt=" + System.getenv("CLARITY_SQL_ENCRYPT") + ";";
 
         // Connect via SQL to the server
-        String query = "SELECT PAT_MRN, EMAIL_ADDRESS, FORMAT(ENTRY_TIME, 'yyyy-MM-dd HH:mm:ss') AS ENTRY_TIME,"
-            + " DISCH_DEPT_NAME, EMAIL_CONSENT_YN, LoadTime FROM path.CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS"
-            + " WHERE CAST(LoadTime AS DATE) = CAST(GETDATE() AS DATE)"
-            + " ORDER BY PAT_MRN ASC;";
+
+        /*
+         * Build this query based on the "sqlColumn" values of the cards:clarityQuestionMapping nodes and the
+         * "subjectIDColumn" value of the /apps/cards/clarityImport node.
+         */
+        String query;
+        try {
+            query = generateClarityQuery();
+        } catch (LoginException e) {
+            LOGGER.error("Failed to generate Clarity SQL query");
+            return;
+        }
+
         try (Connection connection = DriverManager.getConnection(connectionUrl);
             PreparedStatement statement = connection.prepareStatement(query);
             ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
@@ -381,6 +481,7 @@ public class ClarityImportTask implements Runnable
         final String questionnairePath, final Resource subjectParent) throws PersistenceException, RepositoryException,
         SQLException
     {
+        LOGGER.warn("Calling getSubjectForResult with questionnairePath={}", questionnairePath);
         String subjectID = this.questionnaireToSubjectID.get(questionnairePath);
         subjectID = "".equals(subjectID) ? UUID.randomUUID().toString() : result.getString(subjectID);
 
