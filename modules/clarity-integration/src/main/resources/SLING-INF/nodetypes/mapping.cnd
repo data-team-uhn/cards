@@ -21,7 +21,8 @@
 <cards = 'https://cards.uhndata.io/'>
 
 //-----------------------------------------------------------------------------
-// Nodetype for data query handling
+// Nodetypes for configuring how data from the Clarity SQL database will be imported into CARDS
+
 [cards:clarityPatientMapping] > sling:Folder
   // Attributes:
   query
