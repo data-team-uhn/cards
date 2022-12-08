@@ -291,7 +291,7 @@ public class ClarityImportTask implements Runnable
         } catch (LoginException e) {
             throw e;
         }
-        LOGGER.warn("generateClarityQuery() --> {}", sqlColumns);
+
         queryString = "SELECT ";
         Iterator<Map.Entry<String, String>> columnsIterator = sqlColumns.entrySet().iterator();
         while (columnsIterator.hasNext()) {
@@ -308,7 +308,7 @@ public class ClarityImportTask implements Runnable
         queryString += " FROM path.CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS";
         queryString += " WHERE CAST(LoadTime AS DATE) = CAST(GETDATE() AS DATE)";
         queryString += " ORDER BY " + subjectIDColumn + " ASC;";
-        LOGGER.warn("queryString = {}", queryString);
+
         return queryString;
     }
 
@@ -481,7 +481,6 @@ public class ClarityImportTask implements Runnable
         final String questionnairePath, final Resource subjectParent) throws PersistenceException, RepositoryException,
         SQLException
     {
-        LOGGER.warn("Calling getSubjectForResult with questionnairePath={}", questionnairePath);
         String subjectID = this.questionnaireToSubjectID.get(questionnairePath);
         subjectID = "".equals(subjectID) ? UUID.randomUUID().toString() : result.getString(subjectID);
 
