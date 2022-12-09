@@ -56,7 +56,7 @@ argparser.add_argument('--external_mongo_uri', help='URI of the external MongoDB
 argparser.add_argument('--external_mongo_dbname', help='Database name of the external MongoDB instance. Only valid if --external_mongo is specified.')
 argparser.add_argument('--clarity', help='Enable the clarity-integration CARDS module.', action='store_true')
 argparser.add_argument('--mssql', help='Start up a MS-SQL instance with test data', action='store_true')
-argparser.add_argument('--expose_mssql', help='If --mssql is specified, forward the SQL service to the specified port', type=int)
+argparser.add_argument('--expose_mssql', help='If --mssql is specified, forward the SQL service to the specified port (defaults to 1433 if --expose_mssql is specified without a port parameter)', nargs='?', const=1433, type=int)
 argparser.add_argument('--saml', help='Make the Apache Sling SAML2 Handler OSGi bundle available for SAML-based logins', action='store_true')
 argparser.add_argument('--saml_idp_destination', help='URL to redirect to for SAML logins')
 argparser.add_argument('--saml_cloud_iam_demo', help='Enable SAML authentication with CARDS via the Cloud-IAM.com demo', action='store_true')
