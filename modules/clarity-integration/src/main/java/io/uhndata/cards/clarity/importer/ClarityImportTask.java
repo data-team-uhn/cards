@@ -82,7 +82,7 @@ public class ClarityImportTask implements Runnable
 
     private final Map<String, String> questionnaireToSubjectType;
 
-    private final Map<String, String> questionnaireToSubjectID;
+    private final Map<String, String> questionnaireToSubjectColumnHeader;
 
     private ThreadLocal<List<String>> nodesToCheckin = ThreadLocal.withInitial(LinkedList::new);
 
@@ -149,7 +149,7 @@ public class ClarityImportTask implements Runnable
         this.columns = new LinkedList<>();
         this.questionnaireToQuestions = new HashMap<>();
         this.questionnaireToSubjectType = new HashMap<>();
-        this.questionnaireToSubjectID = new HashMap<>();
+        this.questionnaireToSubjectColumnHeader = new HashMap<>();
 
         // Convert our input mapping node to a mapping from column->question
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
@@ -185,7 +185,7 @@ public class ClarityImportTask implements Runnable
          *   - this.columns
          *   - this.questionnaireToQuestions
          *   - this.questionnaireToSubjectType
-         *   - this.questionnaireToSubjectID
+         *   - this.questionnaireToSubjectColumnHeader
          */
 
         String subjectIDColumn = resolver.resolve("/apps/cards/clarityImport").getValueMap().get("subjectIDColumn", "");
@@ -207,7 +207,7 @@ public class ClarityImportTask implements Runnable
         }
 
         /*
-         * Populate this.questionnaireToSubjectID, starting with a blank for all questionnaires,
+         * Populate this.questionnaireToSubjectColumnHeader, starting with a blank for all questionnaires,
          * this will be filled in later
          */
         Iterator<Map.Entry<String, String>> questionnairesIterator =
@@ -216,7 +216,7 @@ public class ClarityImportTask implements Runnable
         while (questionnairesIterator.hasNext()) {
             Map.Entry<String, String> questionnaireToSubject = questionnairesIterator.next();
             String questionnairePath = questionnaireToSubject.getKey();
-            this.questionnaireToSubjectID.put(questionnairePath, "");
+            this.questionnaireToSubjectColumnHeader.put(questionnairePath, "");
         }
 
         // Populate this.questionnaireToQuestions
@@ -237,9 +237,9 @@ public class ClarityImportTask implements Runnable
 
             this.questionnaireToQuestions.get(questionnairePath).add(thisQuestion);
 
-            // Populate this.questionnaireToSubjectID, actually filling in the values this time
+            // Populate this.questionnaireToSubjectColumnHeader, actually filling in the values this time
             if (subjectIDColumn.equals(sqlColumn)) {
-                this.questionnaireToSubjectID.put(questionnairePath, subjectIDColumn);
+                this.questionnaireToSubjectColumnHeader.put(questionnairePath, subjectIDColumn);
             }
         }
     }
@@ -481,8 +481,13 @@ public class ClarityImportTask implements Runnable
         final String questionnairePath, final Resource subjectParent) throws PersistenceException, RepositoryException,
         SQLException
     {
-        String subjectID = this.questionnaireToSubjectID.get(questionnairePath);
-        subjectID = "".equals(subjectID) ? UUID.randomUUID().toString() : result.getString(subjectID);
+        /*
+         * If an identifier for this created subject can be derived from this SQL row (ResultSet result),
+         * use it, otherwise, generate a random UUID and use that for the identifier of the subject.
+         */
+        String subjectColumnHeader = this.questionnaireToSubjectColumnHeader.get(questionnairePath);
+        String subjectID = "".equals(subjectColumnHeader)
+            ? UUID.randomUUID().toString() : result.getString(subjectColumnHeader);
 
         Resource newSubject = null;
         String newSubjectType = this.questionnaireToSubjectType.get(questionnairePath);
