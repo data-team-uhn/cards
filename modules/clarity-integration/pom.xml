@@ -45,9 +45,6 @@
           <instructions>
             <Include-Resource>{maven-resources}</Include-Resource>
             <Sling-Nodetypes>SLING-INF/nodetypes/mapping.cnd</Sling-Nodetypes>
-            <Sling-Initial-Content>
-              SLING-INF/content/mapping.xml;path:=/apps/cards/clarityImport;overwrite:=true,
-            </Sling-Initial-Content>
             <!-- This is required to let the SQLDriver class actually be accessible from this module -->
             <DynamicImport-Package>*</DynamicImport-Package>
           </instructions>
