@@ -57,7 +57,7 @@ public class ClarityImportEndpoint extends SlingSafeMethodsServlet
     {
         // Ensure that this can only be run when logged in as admin
         final String remoteUser = request.getRemoteUser();
-        if (!"admin".equals(remoteUser.toLowerCase(Locale.ROOT))) {
+        if (remoteUser == null || !"admin".equals(remoteUser.toLowerCase(Locale.ROOT))) {
             // admin login required
             writeError(403, "Only admin can perform this operation.", response);
             return;
