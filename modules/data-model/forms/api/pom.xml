@@ -62,5 +62,9 @@
       <groupId>javax.jcr</groupId>
       <artifactId>jcr</artifactId>
     </dependency>
+    <dependency>
+      <groupId>javax.json</groupId>
+      <artifactId>javax.json-api</artifactId>
+    </dependency>
   </dependencies>
 </project>
