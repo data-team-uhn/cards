@@ -322,21 +322,8 @@ public class ClarityImportTask implements Runnable
             + "encrypt=" + System.getenv("CLARITY_SQL_ENCRYPT") + ";";
 
         // Connect via SQL to the server
-
-        /*
-         * Build this query based on the "sqlColumn" values of the cards:clarityQuestionMapping nodes and the
-         * "subjectIDColumn" value of the /apps/cards/clarityImport node.
-         */
-        String query;
-        try {
-            query = generateClarityQuery();
-        } catch (LoginException e) {
-            LOGGER.error("Failed to generate Clarity SQL query");
-            return;
-        }
-
         try (Connection connection = DriverManager.getConnection(connectionUrl);
-            PreparedStatement statement = connection.prepareStatement(query);
+            PreparedStatement statement = connection.prepareStatement(generateClarityQuery());
             ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
             final Session session = resolver.adaptTo(Session.class);
             this.versionManager.set(session.getWorkspace().getVersionManager());
@@ -376,6 +363,13 @@ public class ClarityImportTask implements Runnable
             LOGGER.error("Error during Clarity import: {}", e.getMessage(), e);
         } catch (PersistenceException e) {
             LOGGER.error("Error during Clarity import: {}", e.getMessage(), e);
+        } finally {
+            // Cleanup all ThreadLocals
+            this.nodesToCheckin.remove();
+            this.versionManager.remove();
+            this.previousPatientId.remove();
+            this.previousPatientResource.remove();
+            this.createdPatientInformation.remove();
         }
     }
 
