@@ -355,9 +355,7 @@ public abstract class AbstractFormToStringSerializer
             this.definitionUuids = definition.values().stream()
                 .filter(value -> ValueType.OBJECT.equals(value.getValueType()))
                 .map(JsonValue::asJsonObject)
-                .filter(value -> value.containsKey(PRIMARY_TYPE_KEY)
-                    && ("cards:Section".equals(value.getString(PRIMARY_TYPE_KEY))
-                    || "cards:Question".equals(value.getString(PRIMARY_TYPE_KEY))))
+                .filter(value -> value.containsKey(UUID_KEY))
                 .map(value -> value.getString(UUID_KEY))
                 .collect(Collectors.toList());
         }
