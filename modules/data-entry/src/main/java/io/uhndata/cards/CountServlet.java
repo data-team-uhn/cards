@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -34,6 +35,7 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 import javax.json.Json;
+import javax.json.JsonObjectBuilder;
 import javax.json.stream.JsonGenerator;
 import javax.servlet.Servlet;
 
@@ -77,6 +79,13 @@ public class CountServlet extends PaginationServlet
             throws IOException, IllegalArgumentException
     {
         try {
+            // Ensure that this can only be run when logged in as admin
+            final String remoteUser = request.getRemoteUser();
+            if (!"admin".equals(remoteUser.toLowerCase(Locale.ROOT))) {
+                // admin login required
+                writeError(403, "Only admin can perform this operation.", response);
+                return;
+            }
             final ResourceResolver resolver = request.getResourceResolver();
             final Session session = resolver.adaptTo(Session.class);
 
@@ -204,4 +213,15 @@ public class CountServlet extends PaginationServlet
         return count;
     }
 
+    private void writeError(final int status, final String message, final SlingHttpServletResponse response)
+            throws IOException
+    {
+        final JsonObjectBuilder json = Json.createObjectBuilder();
+        json.add("status", "error");
+        json.add("error", message);
+
+        response.setStatus(status);
+        response.setContentType("application/json;charset=UTF-8");
+        response.getWriter().write(json.build().toString());
+    }
 }
