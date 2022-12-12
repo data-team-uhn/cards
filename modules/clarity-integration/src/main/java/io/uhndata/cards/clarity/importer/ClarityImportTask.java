@@ -72,12 +72,6 @@ public class ClarityImportTask implements Runnable
 
     private static final String VALUE_PROP = "value";
 
-    /** Sling property name for the value field on an Answer node. */
-    private static final String STATUS_FIELD_PROP = "statusFlags";
-
-    /** Empty status flags value. */
-    private static final String[] STATUS_FLAGS = new String[0];
-
     private final List<String> columns;
 
     private final Map<String, List<QuestionInformation>> questionnaireToQuestions;
@@ -402,7 +396,6 @@ public class ClarityImportTask implements Runnable
         QuestionType qType = entry.type;
         Map<String, Object> props = new HashMap<>();
         props.put("question", resolver.resolve(entry.getQuestion()).adaptTo(Node.class));
-        props.put(ClarityImportTask.STATUS_FIELD_PROP, ClarityImportTask.STATUS_FLAGS);
 
         if (qType == QuestionType.STRING) {
             props.put(ClarityImportTask.PRIMARY_TYPE_PROP, "cards:TextAnswer");
