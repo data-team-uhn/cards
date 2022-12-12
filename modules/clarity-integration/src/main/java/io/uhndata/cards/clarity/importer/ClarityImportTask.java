@@ -60,6 +60,8 @@ public class ClarityImportTask implements Runnable
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClarityImportTask.class);
 
+    private static final String MAPPING_CONFIG = "/apps/cards/clarityImport";
+
     private static final String SUBJECT_TYPE_PROP = "subjectType";
 
     private static final String QUESTIONNAIRE_PROP = "questionnaire";
@@ -142,7 +144,7 @@ public class ClarityImportTask implements Runnable
     /** Provides access to resources. */
     private final ResourceResolverFactory resolverFactory;
 
-    ClarityImportTask(final ResourceResolverFactory resolverFactory, Resource mapping)
+    ClarityImportTask(final ResourceResolverFactory resolverFactory)
     {
         this.resolverFactory = resolverFactory;
 
@@ -153,7 +155,7 @@ public class ClarityImportTask implements Runnable
 
         // Convert our input mapping node to a mapping from column->question
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
-            processClarityToCardsMapping(resolver, mapping);
+            processClarityToCardsMapping(resolver, resolver.resolve(MAPPING_CONFIG));
         } catch (RepositoryException e) {
             LOGGER.error("Error reading mapping: {}", e.getMessage(), e);
         } catch (LoginException e) {
