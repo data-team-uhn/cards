@@ -441,8 +441,9 @@ public interface FormUtils
      * Serialize the value(s) stored in an Answer.
      *
      * @param property a property of Answer node, may be {@code null}
-     * @return the {@code JsonValue} or values stored in the answer; {@code null} may be returned if no
-     *         value is stored in the answer or in case of exception caught in serialization process
+     * @return a {@code JsonValue} holding the value or values stored in the answer; this may be a single value or an
+     *         array of values, or {@code JsonValue.NULL} if no value is stored in the answer or in case of exception
+     *         caught in the serialization process
      */
     JsonValue serializeProperty(Property property);
 }
