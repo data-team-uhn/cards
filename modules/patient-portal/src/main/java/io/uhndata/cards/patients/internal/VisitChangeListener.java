@@ -130,17 +130,19 @@ public class VisitChangeListener implements ResourceChangeListener
                 return;
             }
             this.rrp.push(localResolver);
-            final Node subject = this.formUtils.getSubject(form);
-            final String subjectType = this.subjectTypeUtils.getLabel(this.subjectUtils.getType(subject));
             final Node questionnaire = this.formUtils.getQuestionnaire(form);
+            final Node subject = this.formUtils.getSubject(form);
 
             if (isVisitInformation(questionnaire)) {
                 // Create any forms that need to be created for this visit
                 handleVisitInformationForm(form, subject, questionnaire, session);
-            } else if ("Visit".equals(subjectType)) {
-                // Not a new visit information form, but it is a form for a visit.
-                // Check if all forms for the current visit are complete.
-                handleVisitDataForm(subject, session);
+            } else {
+                final String subjectType = this.subjectTypeUtils.getLabel(this.subjectUtils.getType(subject));
+                if ("Visit".equals(subjectType)) {
+                    // Not a new visit information form, but it is a form for a visit.
+                    // Check if all forms for the current visit are complete.
+                    handleVisitDataForm(subject, session);
+                }
             }
             this.rrp.pop();
         } catch (final LoginException e) {
@@ -437,7 +439,6 @@ public class VisitChangeListener implements ResourceChangeListener
      * @param visitDate the data of the visit being checked
      * @param questionnaires the list of questionnaires for the visit being checked, along with their completion status
      * @param questionnaireSetInfo the current questionnaireSet. This will be modified by removing key-value pairs
-     * @throws RepositoryException if iterating the patient's visits fails
      */
     private void removeQuestionnairesFromVisit(final VisitInformation visitInformation, final Calendar visitDate,
         final Map<String, Boolean> questionnaires, final QuestionnaireSetInfo questionnaireSetInfo)
@@ -637,22 +638,10 @@ public class VisitChangeListener implements ResourceChangeListener
      */
     private static boolean isVisitInformation(final Node questionnaire)
     {
-        return isSpecificQuestionnaire(questionnaire, "/Questionnaires/Visit information");
-    }
-
-    /**
-     * Check if a questionnaire is the questionnaire specified by the provided path.
-     *
-     * @param questionnaire the questionnaire to check
-     * @param questionnairePath the path to the desired questionnaire
-     * @return {@code true} if the questionnaire is indeed the questionnaire specified by path
-     */
-    private static boolean isSpecificQuestionnaire(final Node questionnaire, final String questionnairePath)
-    {
         try {
-            return questionnaire != null && questionnairePath.equals(questionnaire.getPath());
+            return questionnaire != null && "/Questionnaires/Visit information".equals(questionnaire.getPath());
         } catch (final RepositoryException e) {
-            LOGGER.warn("Failed check if form is of questionnaire type {}: {}", questionnairePath, e.getMessage(), e);
+            LOGGER.warn("Failed check if form is Visit Information Form: {}", e.getMessage(), e);
             return false;
         }
     }
@@ -766,11 +755,9 @@ public class VisitChangeListener implements ResourceChangeListener
                 int frequencyPeriod;
                 if (CONFLICT_ANY.equals(this.conflictMode)) {
                     frequencyPeriod = 0;
-                    for (final QuestionnaireRef ref : this.members.values()) {
-                        if (ref.getFrequency() > frequencyPeriod) {
-                            frequencyPeriod = ref.getFrequency();
-                        }
-                    }
+                    frequencyPeriod = this.members.values().stream()
+                        .map(ref -> ref.getFrequency())
+                        .max(Integer::compare).get();
                 } else if (this.conflicts.containsKey(questionnaireIdentifier)) {
                     frequencyPeriod = this.conflicts.get(questionnaireIdentifier);
                 } else {
