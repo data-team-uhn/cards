@@ -140,7 +140,7 @@ let ConditionalValueInput = (props) => {
   }
 
   useEffect(() => {
-    if (isReference && reader && !variables) {
+    if (reader && !variables) {
       setVariables(reader);
     }
   }, [reader]);
