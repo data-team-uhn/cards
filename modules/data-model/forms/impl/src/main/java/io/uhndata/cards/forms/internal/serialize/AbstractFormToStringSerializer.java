@@ -375,13 +375,11 @@ public abstract class AbstractFormToStringSerializer
 
         private String getDefinitionUuid(JsonObject json)
         {
-            final String uuid;
+            String uuid = "";
             if (json.containsKey(SECTION_KEY)) {
                 uuid = json.getJsonObject(SECTION_KEY).getString(UUID_KEY);
             } else if (json.containsKey(QUESTION_KEY)) {
                 uuid = json.getJsonObject(QUESTION_KEY).getString(UUID_KEY);
-            } else {
-                uuid = "";
             }
             return uuid;
         }
