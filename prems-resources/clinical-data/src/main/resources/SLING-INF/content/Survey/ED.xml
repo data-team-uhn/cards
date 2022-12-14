@@ -59,11 +59,6 @@
             <type>Long</type>
         </property>
         <property>
-            <name>frequency</name>
-            <value>26</value>
-            <type>Long</type>
-        </property>
-        <property>
             <name>view</name>
             <value>
 [

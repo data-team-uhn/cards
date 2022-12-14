@@ -752,9 +752,8 @@ public class VisitChangeListener implements ResourceChangeListener
         {
             // Treat default as any listed case
             for (final String questionnaireIdentifier : questionnaires.keySet()) {
-                int frequencyPeriod;
+                int frequencyPeriod = 0;
                 if (CONFLICT_ANY.equals(this.conflictMode)) {
-                    frequencyPeriod = 0;
                     frequencyPeriod = this.members.values().stream()
                         .map(ref -> ref.getFrequency())
                         .max(Integer::compare).get();
