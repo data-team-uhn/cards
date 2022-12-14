@@ -58,7 +58,7 @@ let EditDialog = (props) => {
   try {
     hints = require(`./${type}-hints.json`);
   } catch (e) {
-    console.log(`Failed to locate hints file ${type}-hints.json`)
+    // do nothing
   }
   
 
