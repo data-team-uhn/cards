@@ -19,80 +19,110 @@
 
 <node>
   <name>clarityImport</name>
-  <primaryNodeType>cards:clarityPatientMapping</primaryNodeType>
-  <property>
-    <name>subjectIDColumn</name>
-    <value>PAT_MRN</value>
-    <type>String</type>
-  </property>
+  <primaryNodeType>sling:Folder</primaryNodeType>
   <node>
-    <name>00000001</name>
-    <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
+    <name>Patient</name>
+    <primaryNodeType>cards:claritySubjectMapping</primaryNodeType>
     <property>
-      <name>sqlColumn</name>
+      <name>subjectIDColumn</name>
       <value>PAT_MRN</value>
       <type>String</type>
     </property>
     <property>
-      <name>question</name>
-      <value>/Questionnaires/Patient information/mrn</value>
+      <name>subjectType</name>
+      <value>/SubjectTypes/Patient</value>
       <type>String</type>
     </property>
-  </node>
-  <node>
-    <name>00000002</name>
-    <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
-    <property>
-      <name>sqlColumn</name>
-      <value>EMAIL_ADDRESS</value>
-      <type>String</type>
-    </property>
-    <property>
-      <name>question</name>
-      <value>/Questionnaires/Patient information/email</value>
-      <type>String</type>
-    </property>
-  </node>
-  <node>
-    <name>00000003</name>
-    <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
-    <property>
-      <name>sqlColumn</name>
-      <value>EMAIL_CONSENT_YN</value>
-      <type>String</type>
-    </property>
-    <property>
-      <name>question</name>
-      <value>/Questionnaires/Patient information/email_ok</value>
-      <type>String</type>
-    </property>
-  </node>
-  <node>
-    <name>00000004</name>
-    <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
-    <property>
-      <name>sqlColumn</name>
-      <value>DISCH_DEPT_NAME</value>
-      <type>String</type>
-    </property>
-    <property>
-      <name>question</name>
-      <value>/Questionnaires/Visit information/clinic</value>
-      <type>String</type>
-    </property>
-  </node>
-  <node>
-    <name>00000005</name>
-    <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
-    <property>
-      <name>sqlColumn</name>
-      <value>ENTRY_TIME</value>
-      <type>String</type>
-    </property>
-    <property>
-      <name>question</name>
-      <value>/Questionnaires/Visit information/time</value>
-      <type>String</type>
-    </property>
+    <node>
+      <name>questions</name>
+      <primaryNodeType>sling:Folder</primaryNodeType>
+      <node>
+        <name>00000001</name>
+        <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
+        <property>
+          <name>sqlColumn</name>
+          <value>PAT_MRN</value>
+          <type>String</type>
+        </property>
+        <property>
+          <name>question</name>
+          <value>/Questionnaires/Patient information/mrn</value>
+          <type>String</type>
+        </property>
+      </node>
+      <node>
+        <name>00000002</name>
+        <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
+        <property>
+          <name>sqlColumn</name>
+          <value>EMAIL_ADDRESS</value>
+          <type>String</type>
+        </property>
+        <property>
+          <name>question</name>
+          <value>/Questionnaires/Patient information/email</value>
+          <type>String</type>
+        </property>
+      </node>
+      <node>
+        <name>00000003</name>
+        <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
+        <property>
+          <name>sqlColumn</name>
+          <value>EMAIL_CONSENT_YN</value>
+          <type>String</type>
+        </property>
+        <property>
+          <name>question</name>
+          <value>/Questionnaires/Patient information/email_ok</value>
+          <type>String</type>
+        </property>
+      </node>
+    </node>
+    <node>
+      <name>childSubjects</name>
+      <primaryNodeType>sling:Folder</primaryNodeType>
+      <node>
+        <name>Visit</name>
+        <primaryNodeType>cards:claritySubjectMapping</primaryNodeType>
+        <property>
+          <name>subjectType</name>
+          <value>/SubjectTypes/Patient/Visit</value>
+          <type>String</type>
+        </property>
+        <node>
+          <name>questions</name>
+          <primaryNodeType>sling:Folder</primaryNodeType>
+          <node>
+            <name>00000001</name>
+            <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
+            <property>
+              <name>sqlColumn</name>
+              <value>DISCH_DEPT_NAME</value>
+              <type>String</type>
+            </property>
+            <property>
+              <name>question</name>
+              <value>/Questionnaires/Visit information/clinic</value>
+              <type>String</type>
+            </property>
+          </node>
+          <node>
+            <name>00000002</name>
+            <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
+            <property>
+              <name>sqlColumn</name>
+              <value>ENTRY_TIME</value>
+              <type>String</type>
+            </property>
+            <property>
+              <name>question</name>
+              <value>/Questionnaires/Visit information/time</value>
+              <type>String</type>
+            </property>
+          </node>
+        </node>
+      </node>
+    </node>
   </node>
 </node>

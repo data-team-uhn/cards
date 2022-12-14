@@ -23,15 +23,16 @@
 //-----------------------------------------------------------------------------
 // Nodetypes for configuring how data from the Clarity SQL database will be imported into CARDS
 
-[cards:clarityPatientMapping] > sling:Folder
+[cards:claritySubjectMapping] > sling:Folder
   // Attributes:
   query
 
-  - subjectIDColumn (STRING) mandatory
+  - subjectIDColumn (STRING)
+  - subjectType (STRING)
 
   // Properties:
   // Hardcode the resource type
-  - sling:resourceType (STRING) = "cards/clarityPatientMapping" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/claritySubjectMapping" mandatory autocreated protected
 
   // Hardcode the resource supertype
   - sling:resourceSuperType (STRING) = "cards/clarityMapping" mandatory autocreated protected
