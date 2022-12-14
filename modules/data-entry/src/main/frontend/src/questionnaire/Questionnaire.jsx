@@ -66,6 +66,12 @@ let Questionnaire = (props) => {
   let pageNameWriter = usePageNameWriterContext();
   let changeQuestionnaireContext = useQuestionnaireWriterContext();
 
+  let updateContext = (data) => {
+    let vars = [];
+    findQuestions(data, vars);
+    changeQuestionnaireContext(vars);
+  }
+
   let handleError = (response) => {
     setError(response);
     setData({});
@@ -86,9 +92,7 @@ let Questionnaire = (props) => {
   // When the questionnaire data is fetched, we inform the QuestionnaireContext
   useEffect(() => {
     if (data) {
-      let vars = [];
-      findQuestions(data, vars);
-      changeQuestionnaireContext(vars);
+      updateContext(data);
     }
   }, [data]);
 
@@ -155,7 +159,7 @@ let Questionnaire = (props) => {
           entryName={questionnaireTitle}
           entryType="Questionnaire"
           variant="icon"
-          onComplete={() => history.replace(baseUrl)}
+          onComplete={ () => { updateContext(); history.replace(baseUrl);} }
         />
       </div>
   )
@@ -196,7 +200,9 @@ let Questionnaire = (props) => {
                 disableDelete
                 data={data}
                 classes={classes}
-                onFieldsChanged={(newData) => newData?.title && setQuestionnaireTitle(newData.title)}
+                onFieldsChanged={(newData) => { newData?.title && setQuestionnaireTitle(newData.title);
+                                                updateContext(newData);
+                                              }}
                 onActionDone={()=>{}}
                 menuProps={{isMainAction: true}}
               />
@@ -491,6 +497,24 @@ let QuestionnaireEntry = (props) => {
   let [ entryData, setEntryData ] = useState(data);
   let [ doHighlight, setDoHighlight ] = useState(data.doHighlight);
 
+  let changeQuestionnaireContext = useQuestionnaireWriterContext();
+
+  let updateContext = (data) => {
+    let vars = [];
+    findQuestions({data: data}, vars);
+    changeQuestionnaireContext(vars);
+  }
+
+  let findQuestions = (json, result) =>  {
+    Object.entries(json || {}).forEach(([k,e]) => {
+      if (e?.['jcr:primaryType'] == "cards:Question") {
+        result.push({name: e['@name'], text: e['text']});
+      } else if (typeof(e) == 'object') {
+        findQuestions(e, result);
+      }
+    })
+  }
+
   let spec = require(`../questionnaireEditor/${model}`)[0];
 
   // If this entry type has any children by default, they should be specified in the `//CHILDREN` field
@@ -540,7 +564,7 @@ let QuestionnaireEntry = (props) => {
     if (newData) {
       setEntryData(newData);
       setDoHighlight(true);
-      onFieldsChanged && onFieldsChanged(newData);
+      onFieldsChanged ? onFieldsChanged(newData) : updateContext(newData);
     } else {
       // Try to reload the data from the server
       // If it fails, pass it up to the parent
@@ -554,6 +578,7 @@ let QuestionnaireEntry = (props) => {
   let onCreated = (newData) => {
     setEntryData({});
     setEntryData(newData);
+    updateContext(newData);
   }
 
   let renderFields = (options) => (<>
