@@ -159,7 +159,7 @@ let Questionnaire = (props) => {
           entryName={questionnaireTitle}
           entryType="Questionnaire"
           variant="icon"
-          onComplete={ () => { updateContext(); history.replace(baseUrl);} }
+          onComplete={() => history.replace(baseUrl)}
         />
       </div>
   )
