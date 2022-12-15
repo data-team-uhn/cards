@@ -52,6 +52,16 @@ let _stripCardsNamespace = str => str.replaceAll(/^cards:/g, "");
 
 export const QUESTIONNAIRE_ITEM_NAMES = ENTRY_TYPES.map(type => _stripCardsNamespace(type));
 
+let findQuestions = (json, result) =>  {
+  Object.entries(json || {}).forEach(([k,e]) => {
+    if (e?.['jcr:primaryType'] == "cards:Question") {
+      result.push({name: e['@name'], text: e['text']});
+    } else if (typeof(e) == 'object') {
+      findQuestions(e, result);
+    }
+  })
+}
+
 // GUI for displaying details about a questionnaire.
 let Questionnaire = (props) => {
   let { id, classes } = props;
@@ -128,16 +138,6 @@ let Questionnaire = (props) => {
       window.removeEventListener("beforeunload", performCheckIn);
     });
   }, []);
-
-  let findQuestions = (json, result) =>  {
-    Object.entries(json || {}).forEach(([k,e]) => {
-      if (e?.['jcr:primaryType'] == "cards:Question") {
-        result.push({name: e['@name'], text: e['text']});
-      } else if (typeof(e) == 'object') {
-        findQuestions(e, result);
-      }
-    })
-  }
 
   let questionnaireMenu = (
       <div className={classes.actionsMenu}>
@@ -503,16 +503,6 @@ let QuestionnaireEntry = (props) => {
     let vars = [];
     findQuestions({data: data}, vars);
     changeQuestionnaireContext((oldContext) => ([ ...oldContext, ...vars ]));
-  }
-
-  let findQuestions = (json, result) =>  {
-    Object.entries(json || {}).forEach(([k,e]) => {
-      if (e?.['jcr:primaryType'] == "cards:Question") {
-        result.push({name: e['@name'], text: e['text']});
-      } else if (typeof(e) == 'object') {
-        findQuestions(e, result);
-      }
-    })
   }
 
   let spec = require(`../questionnaireEditor/${model}`)[0];
