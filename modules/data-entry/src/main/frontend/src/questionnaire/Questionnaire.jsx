@@ -502,7 +502,7 @@ let QuestionnaireEntry = (props) => {
   let updateContext = (data) => {
     let vars = [];
     findQuestions({data: data}, vars);
-    changeQuestionnaireContext(vars);
+    changeQuestionnaireContext((oldContext) => ([ ...oldContext, ...vars ]));
   }
 
   let findQuestions = (json, result) =>  {
