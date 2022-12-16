@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -118,9 +119,8 @@ public class CountServlet extends PaginationServlet
      *
      * @param response the HTTP response
      * @throws IOException if failed or interrupted I/O operation
-     * @throws RepositoryException if accessing the repository fails
      */
-    protected void writeEmptyResponse(final SlingHttpServletResponse response) throws IOException, RepositoryException
+    private void writeEmptyResponse(final SlingHttpServletResponse response) throws IOException
     {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -152,13 +152,15 @@ public class CountServlet extends PaginationServlet
         final Writer out = response.getWriter();
         try (JsonGenerator jsonGen = Json.createGenerator(out)) {
             jsonGen.writeStartObject();
-            long count = getCount(query, request);
-            jsonGen.write("count", count);
-            createFormsQueryCacheNode(session, count, filters.get(FilterType.CHILD));
-            try {
-                session.save();
-            } catch (final RepositoryException e) {
-                LOGGER.error("Failed to commit formsQueryCache: {}", e.getMessage(), e);
+            Map.Entry<Long, Boolean> countSuccess = getCountSuccess(query, request);
+            jsonGen.write("count", countSuccess.getKey());
+            if (countSuccess.getValue()) {
+                createFormsQueryCacheNode(session, countSuccess.getKey(), filters.get(FilterType.CHILD));
+                try {
+                    session.save();
+                } catch (final RepositoryException e) {
+                    LOGGER.error("Failed to commit formsQueryCache: {}", e.getMessage(), e);
+                }
             }
             jsonGen.writeEnd().flush();
         }
@@ -191,10 +193,13 @@ public class CountServlet extends PaginationServlet
      * @param query the query to execute
      * @param request the current request
      * @return a long-typed number of the number of Resources with the specified parameters
+     * and executing status of the query
      */
-    private long getCount(final Query query, final SlingHttpServletRequest request)
+    private Map.Entry<Long, Boolean> getCountSuccess(final Query query, final SlingHttpServletRequest request)
     {
+        Map.Entry<Long, Boolean> countSuccess;
         long count = 0;
+        boolean success = true;
 
         // Execute the query
         try {
@@ -207,10 +212,12 @@ public class CountServlet extends PaginationServlet
                 results.next();
             }
         } catch (RepositoryException e) {
-            //
+            success = false;
+        } finally {
+            countSuccess = new HashMap.SimpleEntry<>(count, success);
         }
 
-        return count;
+        return countSuccess;
     }
 
     private void writeError(final int status, final String message, final SlingHttpServletResponse response)
