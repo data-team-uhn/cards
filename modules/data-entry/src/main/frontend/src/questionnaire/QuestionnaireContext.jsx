@@ -31,11 +31,10 @@ const QuestionnaireWriterContext = React.createContext();
  */
 export function QuestionnaireProvider(props) {
   const [questions, setQuestions] = React.useState(DEFAULT_STATE);
-  const {additionalFormData, ...rest} = props
 
   return (
     <QuestionnaireReaderContext.Provider value={questions}>
-      <QuestionnaireWriterContext.Provider value={setQuestions} {...rest}/>
+      <QuestionnaireWriterContext.Provider value={setQuestions} {...props}/>
     </QuestionnaireReaderContext.Provider>
     );
 }
