@@ -41,7 +41,6 @@ import MoreIcon from '@mui/icons-material/MoreHoriz';
 
 import EditDialog from "./EditDialog";
 import DeleteButton from "../dataHomepage/DeleteButton.jsx";
-import { useQuestionnaireWriterContext } from "../questionnaire/QuestionnaireContext";
 
 import { camelCaseToWords }  from "./LabeledField";
 
@@ -140,31 +139,6 @@ let QuestionnaireItemCard = (props) => {
 
   const styles = useStyles();
 
-  let changeQuestionnaireContext = useQuestionnaireWriterContext();
-
-  let updateContext = (data) => {
-    let questionNames = [];
-    findQuestionsNames({data: data}, questionNames);
-    changeQuestionnaireContext((oldContext) => {
-        let newContext = oldContext;
-        questionNames.map(name => {
-            const index = newContext.findIndex(x => x.name == name);
-            newContext.splice(index, 1);
-        });
-        return newContext;
-    });
-  }
-
-  let findQuestionsNames = (json, result) =>  {
-    Object.entries(json || {}).forEach(([k,e]) => {
-      if (e?.['jcr:primaryType'] == "cards:Question") {
-        result.push(e['@name']);
-      } else if (typeof(e) == 'object') {
-        findQuestionsNames(e, result);
-      }
-    })
-  }
-
   let cardClasses = [styles.root];
   if (isCollapsed) {
     cardClasses.push(styles.collapsed);
@@ -236,7 +210,7 @@ let QuestionnaireItemCard = (props) => {
                entryPath={data["@path"]}
                entryName={title || data[titleField] || data["@name"]}
                entryType={formattedType.toLowerCase()}
-               onComplete={() => { updateContext(data); onActionDone(); }}
+               onComplete={onActionDone}
             />
             }
             {!disableCollapse &&

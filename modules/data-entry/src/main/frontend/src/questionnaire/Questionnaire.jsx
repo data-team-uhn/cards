@@ -55,7 +55,7 @@ export const QUESTIONNAIRE_ITEM_NAMES = ENTRY_TYPES.map(type => _stripCardsNames
 let findQuestions = (json, result = []) =>  {
   Object.entries(json || {}).forEach(([k,e]) => {
     if (e?.['jcr:primaryType'] == "cards:Question") {
-      result.push({name: e['@name'], text: e['text']});
+      result.push({id: e['jcr:uuid'], name: e['@name'], text: e['text']});
     } else if (typeof(e) == 'object') {
       findQuestions(e, result);
     }
@@ -501,7 +501,27 @@ let QuestionnaireEntry = (props) => {
 
   let updateContext = (data) => {
     let vars = findQuestions({data: data});
-    changeQuestionnaireContext((oldContext) => ([ ...oldContext, ...vars ]));
+    changeQuestionnaireContext((oldContext) => {
+       let newContext = oldContext || [];
+       vars.forEach(v => {
+         const index = newContext.findIndex(x => x.id == v.id);
+         if (index >= 0) {
+           newContext.splice(index, 1, v);
+         } else {
+           newContext.push(v);
+         }
+       });
+       return newContext;
+    });
+  }
+
+  let removeFromContext = (id) => {
+    changeQuestionnaireContext((oldContext) => {
+      let newContext = oldContext || [];
+      const index = newContext.findIndex(x => x.id == id);
+      newContext.splice(index, 1);
+      return newContext;
+    });
   }
 
   let spec = require(`../questionnaireEditor/${model}`)[0];
@@ -548,7 +568,7 @@ let QuestionnaireEntry = (props) => {
       .forEach(v => menuItems.push(...Object.keys(v.entries)));
   }
 
-  let reloadData = (newData) => {
+  let handleDataChange = (newData) => {
     // There's new data to load, display and highlight it:
     if (newData) {
       setEntryData(newData);
@@ -556,11 +576,16 @@ let QuestionnaireEntry = (props) => {
       onFieldsChanged ? onFieldsChanged(newData) : updateContext(newData);
     } else {
       // Try to reload the data from the server
-      // If it fails, pass it up to the parent
       fetch(`${data["@path"]}.deep.json`)
         .then(response => response.ok ? response.json() : Promise.reject(response))
-        .then(json => reloadData(json))
-        .catch(() => onActionDone());
+        .then(json => handleDataChange(json))
+        .catch(() => {
+           // If it fails, it's because we deleted an item
+           // Update the context to remove the deleted item
+           removeFromContext(`${data['jcr:uuid']}`);
+           // Then pass it up to the parent
+           onActionDone();
+        });
     }
   }
 
@@ -595,7 +620,7 @@ let QuestionnaireEntry = (props) => {
             />
             : undefined
         }
-        onActionDone={reloadData}
+        onActionDone={handleDataChange}
         model={model}
         {...rest}
     >
@@ -603,7 +628,7 @@ let QuestionnaireEntry = (props) => {
         <QuestionnaireItemSet
           data={entryData}
           classes={classes}
-          onActionDone={reloadData}
+          onActionDone={handleDataChange}
           models={childModels}
         >
           <Grid item className={FIELDS_CLASS_NAME}>{renderFields()}</Grid>
