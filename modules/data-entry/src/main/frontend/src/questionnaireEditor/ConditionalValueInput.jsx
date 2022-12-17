@@ -84,7 +84,7 @@ let ConditionalValueInput = (props) => {
   let [ variables, setVariables ] = useState();
   let [ error, setError ] = useState();
 
-  let reader = useQuestionnaireReaderContext();
+  let questions = useQuestionnaireReaderContext();
 
   let path = (data?.['@path'] || props.path) + `/${objectKey}`;
 
@@ -140,10 +140,10 @@ let ConditionalValueInput = (props) => {
   }
 
   useEffect(() => {
-    if (reader && !variables) {
-      setVariables(reader);
+    if (questions && !variables) {
+      setVariables(questions);
     }
-  }, [reader]);
+  }, [questions]);
 
   // Input for adding a new value
   let textField = (label, params) => (
@@ -276,13 +276,13 @@ let ConditionalValue = (props) => {
   }
 
   let isReference = data?.[objectKey]?.isReference;
-  let reader = useQuestionnaireReaderContext();
+  let questions = useQuestionnaireReaderContext();
 
   useEffect(() => {
-    if (isReference && reader && !variables) {
-      setVariables(reader);
+    if (isReference && questions && !variables) {
+      setVariables(questions);
     }
-  }, [reader]);
+  }, [questions]);
 
   return (
     values.map(value => (
