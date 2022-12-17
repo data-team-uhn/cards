@@ -46,13 +46,13 @@ import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import QuestionnaireItemCard from "../questionnaireEditor/QuestionnaireItemCard";
 import ResourceHeader from "./ResourceHeader";
 import QuestionnairePreview from "./QuestionnairePreview";
-import { useQuestionnaireWriterContext } from "./QuestionnaireContext";
+import { QuestionnaireProvider, useQuestionnaireWriterContext } from "./QuestionnaireContext";
 
 let _stripCardsNamespace = str => str.replaceAll(/^cards:/g, "");
 
 export const QUESTIONNAIRE_ITEM_NAMES = ENTRY_TYPES.map(type => _stripCardsNamespace(type));
 
-let findQuestions = (json, result) =>  {
+let findQuestions = (json, result = []) =>  {
   Object.entries(json || {}).forEach(([k,e]) => {
     if (e?.['jcr:primaryType'] == "cards:Question") {
       result.push({name: e['@name'], text: e['text']});
@@ -60,6 +60,7 @@ let findQuestions = (json, result) =>  {
       findQuestions(e, result);
     }
   })
+  return result;
 }
 
 // GUI for displaying details about a questionnaire.
@@ -74,13 +75,6 @@ let Questionnaire = (props) => {
   let history = useHistory();
 
   let pageNameWriter = usePageNameWriterContext();
-  let changeQuestionnaireContext = useQuestionnaireWriterContext();
-
-  let updateContext = (data) => {
-    let vars = [];
-    findQuestions(data, vars);
-    changeQuestionnaireContext(vars);
-  }
 
   let handleError = (response) => {
     setError(response);
@@ -98,13 +92,6 @@ let Questionnaire = (props) => {
   useEffect(() => {
     fetchData();
   }, []);
-
-  // When the questionnaire data is fetched, we inform the QuestionnaireContext
-  useEffect(() => {
-    if (data) {
-      updateContext(data);
-    }
-  }, [data]);
 
   useEffect(() => {
     setQuestionnaireTitle(data?.title || decodeURI(id));
@@ -196,16 +183,16 @@ let Questionnaire = (props) => {
                 contentOffset={props.contentOffset}
               />
             :
-              <QuestionnaireContents
-                disableDelete
-                data={data}
-                classes={classes}
-                onFieldsChanged={(newData) => { newData?.title && setQuestionnaireTitle(newData.title);
-                                                updateContext(newData);
-                                              }}
-                onActionDone={()=>{}}
-                menuProps={{isMainAction: true}}
-              />
+              <QuestionnaireProvider>
+                <QuestionnaireContents
+                  disableDelete
+                  data={data}
+                  classes={classes}
+                  onFieldsChanged={(newData) => newData?.title && setQuestionnaireTitle(newData.title)}
+                  onActionDone={()=>{}}
+                  menuProps={{isMainAction: true}}
+                />
+              </QuestionnaireProvider>
             }
           </Grid>
         </Grid>
@@ -349,7 +336,20 @@ QuestionnaireItemSet.propTypes = {
 };
 
 // Questionnaire contents: properties + entries
-let QuestionnaireContents = (props) => <QuestionnaireEntry {...props} />;
+let QuestionnaireContents = (props) => {
+  let { data } = props;
+
+  let changeQuestionnaireContext = useQuestionnaireWriterContext();
+
+  useEffect(() => {
+    // Load initial data
+    changeQuestionnaireContext(findQuestions(data));
+    // Clear context when unmounting component
+    return (() => changeQuestionnaireContext([]));
+  }, []);
+
+  return <QuestionnaireEntry {...props} />;
+};
 
 QuestionnaireContents.propTypes = {
   onActionDone: PropTypes.func,
@@ -500,8 +500,7 @@ let QuestionnaireEntry = (props) => {
   let changeQuestionnaireContext = useQuestionnaireWriterContext();
 
   let updateContext = (data) => {
-    let vars = [];
-    findQuestions({data: data}, vars);
+    let vars = findQuestions({data: data});
     changeQuestionnaireContext((oldContext) => ([ ...oldContext, ...vars ]));
   }
 
