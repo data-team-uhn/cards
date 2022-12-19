@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -152,15 +151,13 @@ public class CountServlet extends PaginationServlet
         final Writer out = response.getWriter();
         try (JsonGenerator jsonGen = Json.createGenerator(out)) {
             jsonGen.writeStartObject();
-            Map.Entry<Long, Boolean> countSuccess = getCountSuccess(query, request);
-            jsonGen.write("count", countSuccess.getKey());
-            if (countSuccess.getValue()) {
-                createFormsQueryCacheNode(session, countSuccess.getKey(), filters.get(FilterType.CHILD));
-                try {
-                    session.save();
-                } catch (final RepositoryException e) {
-                    LOGGER.error("Failed to commit formsQueryCache: {}", e.getMessage(), e);
-                }
+            long count = getCount(query, request, response);
+            jsonGen.write("count", count);
+            createFormsQueryCacheNode(session, count, filters.get(FilterType.CHILD));
+            try {
+                session.save();
+            } catch (final RepositoryException e) {
+                LOGGER.error("Failed to commit formsQueryCache: {}", e.getMessage(), e);
             }
             jsonGen.writeEnd().flush();
         }
@@ -193,13 +190,11 @@ public class CountServlet extends PaginationServlet
      * @param query the query to execute
      * @param request the current request
      * @return a long-typed number of the number of Resources with the specified parameters
-     * and executing status of the query
      */
-    private Map.Entry<Long, Boolean> getCountSuccess(final Query query, final SlingHttpServletRequest request)
+    private long getCount(final Query query, final SlingHttpServletRequest request,
+                          final SlingHttpServletResponse response) throws IOException
     {
-        Map.Entry<Long, Boolean> countSuccess;
         long count = 0;
-        boolean success = true;
 
         // Execute the query
         try {
@@ -212,12 +207,10 @@ public class CountServlet extends PaginationServlet
                 results.next();
             }
         } catch (RepositoryException e) {
-            success = false;
-        } finally {
-            countSuccess = new HashMap.SimpleEntry<>(count, success);
+            writeEmptyResponse(response);
         }
 
-        return countSuccess;
+        return count;
     }
 
     private void writeError(final int status, final String message, final SlingHttpServletResponse response)
