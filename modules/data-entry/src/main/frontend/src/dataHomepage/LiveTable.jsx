@@ -74,7 +74,10 @@ function LiveTable(props) {
     customUrl ?
       new URL(customUrl, window.location.origin)
     :
-      new URL(window.location.pathname.substring(window.location.pathname.lastIndexOf("/")) + ".paginate", window.location.origin)
+      new URL(
+        ((s) => s.substring(s.lastIndexOf("/")))(window.location.pathname.replace(/\/$/, "")).concat(".paginate"),
+        window.location.origin
+      )
   );
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
