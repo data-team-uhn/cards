@@ -21,13 +21,11 @@ import React, { useState, useEffect } from "react";
 
 import {
   Button,
-  MobileStepper,
-  useMediaQuery
+  MobileStepper
 } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
 
-import { useTheme } from '@mui/material/styles';
 import PropTypes from "prop-types";
 import { SECTION_TYPES, ENTRY_TYPES } from "./FormEntry";
 import QuestionnaireStyle from "./QuestionnaireStyle";
@@ -62,9 +60,6 @@ function FormPagination (props) {
   let questionIndex = 0;
   let pagesResults = {};
   let pagesArray = [];
-
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
   useEffect(() => {
     setPagesCallback(null);
@@ -149,16 +144,18 @@ function FormPagination (props) {
     setActivePage(nextPage);
   }
 
-  if (saveInProgress && pendingSubmission) {
-    setPendingSubmission(false);
-    if (activePage === lastValidPage() && direction === DIRECTION_NEXT) {
-      setSavedLastPage(true);
-      onDone && onDone();
-    } else {
-      setSavedLastPage(false);
-      handlePageChange();
+  useEffect(() => {
+    if (saveInProgress && pendingSubmission) {
+      setPendingSubmission(false);
+      if (activePage === lastValidPage() && direction === DIRECTION_NEXT) {
+        setSavedLastPage(true);
+        onDone && onDone();
+      } else {
+        setSavedLastPage(false);
+        handlePageChange();
+      }
     }
-  }
+  }, [saveInProgress, pendingSubmission]);
 
   let saveButton =
     <Button
@@ -187,7 +184,7 @@ function FormPagination (props) {
       // Change the color of the back bar
       LinearProgressProps={isBack ? {classes: {barColorPrimary: classes.formStepperTopBar}}: null}
       // Hide the backround of the front bar to segment of back bar
-      className={`${classes.formStepper} ${isBack && classes.formStepperBottom} ${!fullScreen && classes.formStepperFullScreen}`}
+      className={`${classes.formStepper} ${isBack ? classes.formStepperTop : classes.formStepperBottom}`}
       classes={isBack ? null : {progress:classes.formStepperBottomBackground}}
       // base 0 to base 1, plus 1 for the "current page" region
       steps={lastValidPage() + 2}
@@ -214,10 +211,10 @@ function FormPagination (props) {
     paginationEnabled ?
     lastValidPage() > 0 ?
       <React.Fragment>
-        {/* Back bar to show a different colored current page section*/}
-        {stepper(false)}
         {/* Front bar to color completed pages differently from current page */}
         {stepper(true)}
+        {/* Back bar to show a different colored current page section*/}
+        {stepper(false)}
       </React.Fragment>
     :
       saveButton
