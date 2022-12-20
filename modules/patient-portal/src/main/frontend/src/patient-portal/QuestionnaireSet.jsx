@@ -52,9 +52,6 @@ import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js"
 const useStyles = makeStyles(theme => ({
   mainContainer: {
     margin: theme.spacing(2),
-    "& #cards-resource-footer .MuiMobileStepper-progress" : {
-      width: "100%",
-    },
   },
   screen : {
     alignItems: "center",
