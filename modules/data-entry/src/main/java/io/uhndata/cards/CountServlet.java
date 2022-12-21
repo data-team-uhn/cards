@@ -190,6 +190,7 @@ public class CountServlet extends PaginationServlet
      * @param query the query to execute
      * @param request the current request
      * @return a long-typed number of the number of Resources with the specified parameters
+     * @throws IOException if failed or interrupted I/O operation
      */
     private long getCount(final Query query, final SlingHttpServletRequest request,
                           final SlingHttpServletResponse response) throws IOException
