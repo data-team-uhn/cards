@@ -441,7 +441,7 @@ const questionnaireStyle = theme => ({
         position: "relative",
     },
     formStepperTop: {
-        bottom: "16px",
+        bottom: theme.spacing(2),
     },
     formStepperBottom: {
         background: "transparent",
