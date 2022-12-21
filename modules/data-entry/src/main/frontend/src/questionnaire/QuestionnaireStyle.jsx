@@ -426,8 +426,6 @@ const questionnaireStyle = theme => ({
         marginLeft: theme.spacing(0)
     },
     formFooter: {
-        bottom: theme.spacing(0),
-        zIndex: 1000,
         position: "relative",
         maxHeight: "68px",
         "& .MuiMobileStepper-progress" : {
