@@ -21,7 +21,8 @@ import React, { useState, useEffect } from "react";
 
 import {
   Button,
-  MobileStepper
+  Grid,
+  LinearProgress
 } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
@@ -47,7 +48,7 @@ class Page {
  * Component that displays a page of a Form.
  */
 function FormPagination (props) {
-  let { classes, saveInProgress, lastSaveStatus, setPagesCallback, paginationEnabled, enableSave, onDone, doneLabel, questionnaireData } = props;
+  let { classes, enabled, saveInProgress, lastSaveStatus, setPagesCallback, enableSave, onDone, doneLabel, questionnaireData } = props;
 
   let [ savedLastPage, setSavedLastPage ] = useState(false);
   let [ pendingSubmission, setPendingSubmission ] = useState(false);
@@ -71,16 +72,16 @@ function FormPagination (props) {
             });
     setPages(pagesArray);
     setPagesCallback(pagesResults);
-  }, [questionnaireData, activePage, paginationEnabled]);
+  }, [questionnaireData, activePage, enabled]);
 
   let addPage = (entryDefinition) => {
-    if (paginationEnabled) {
+    if (enabled) {
       let page;
       if (!SECTION_TYPES.includes(entryDefinition["jcr:primaryType"]) && previousEntryType && !SECTION_TYPES.includes(previousEntryType)) {
         page = pagesArray[pagesArray.length - 1];
         questionIndex++;
       } else {
-        page = new Page(!paginationEnabled || activePage == pagesArray.length);
+        page = new Page(!enabled || activePage == pagesArray.length);
         pagesArray.push(page);
         questionIndex = 0;
       }
@@ -161,9 +162,8 @@ function FormPagination (props) {
     <Button
       type="submit"
       variant="contained"
-      color="primary"
       disabled={saveInProgress}
-      className={classes.paginationButton}
+      className={classes.saveButton}
       onClick={handleNext}
     >
       {
@@ -175,56 +175,57 @@ function FormPagination (props) {
       (doneLabel || 'Save')}
     </Button>
 
-  let stepper = (isBack) =>
-    <MobileStepper
-      variant="progress"
-      // Offset back bar 1 to create a "current page" region.
-      // If the final page has been saved, progress the front bar to complete
-      activeStep={activePage + (isBack ? 1 : (lastSaveStatus && savedLastPage ? 1 : 0))}
-      // Change the color of the back bar
-      LinearProgressProps={isBack ? {classes: {barColorPrimary: classes.formStepperTopBar}}: null}
-      // Hide the backround of the front bar to segment of back bar
-      className={`${classes.formStepper} ${isBack ? classes.formStepperTop : classes.formStepperBottom}`}
-      classes={isBack ? null : {progress:classes.formStepperBottomBackground}}
-      // base 0 to base 1, plus 1 for the "current page" region
-      steps={lastValidPage() + 2}
-      nextButton={saveButton}
-      backButton={
-        lastValidPage() > 0
-          ? <Button
-              type="submit"
-              // Don't disable until form submission started
-              disabled={(activePage === 0 && !pendingSubmission)
-                || saveInProgress
-                || lastSaveStatus === false}
-              onClick={handleBack}
-              className={classes.paginationButton}
-              variant="outlined"
-            >
-              Back
-            </Button>
-          : null
-      }
-    />
+  let backButton =
+    <Button
+      type="submit"
+      variant="outlined"
+      // Don't disable until form submission started
+      disabled={(activePage === 0 && !pendingSubmission)
+        || saveInProgress
+        || lastSaveStatus === false}
+      className={classes.backButton}
+      onClick={handleBack}
+    >
+      Back
+    </Button>
 
   return (
-    paginationEnabled ?
-    lastValidPage() > 0 ?
-      <React.Fragment>
-        {/* Front bar to color completed pages differently from current page */}
-        {stepper(true)}
-        {/* Back bar to show a different colored current page section*/}
-        {stepper(false)}
-      </React.Fragment>
-    :
-      saveButton
+    enabled
+    ?
+      lastValidPage() > 0
+      ?
+        <Grid container
+          spacing={0}
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+          id="cards-resource-footer"
+          className={classes.formFooter}
+        >
+          <Grid item xs={2}>
+            { backButton }
+          </Grid>
+          <Grid item xs={8}>
+            <LinearProgress
+              classes={{bar2Buffer: classes.topProgressBar, dashed: classes.bottomProgressBar}}
+              variant="buffer"
+              valueBuffer={(activePage + 1) / (lastValidPage() + 1) * 100}
+              value={(activePage + (lastSaveStatus && savedLastPage ? 1 : 0)) / (lastValidPage() + 1) * 100}
+            />
+          </Grid>
+          <Grid item xs={2}>
+            { saveButton }
+          </Grid>
+        </Grid>
+      :
+        saveButton
     : null
   );
 };
 
 FormPagination.propTypes = {
   enableSave: PropTypes.bool,
-  paginationEnabled: PropTypes.bool,
+  enabled: PropTypes.bool,
   questionnaireData: PropTypes.object.isRequired,
   setPagesCallback: PropTypes.func.isRequired,
   lastSaveStatus: PropTypes.bool,
@@ -233,7 +234,7 @@ FormPagination.propTypes = {
 
 FormPagination.defaultProps = {
   enableSave: true,
-  paginationEnabled: true,
+  enabled: true,
   saveInProgress: false,
   lastSaveStatus: true
 };

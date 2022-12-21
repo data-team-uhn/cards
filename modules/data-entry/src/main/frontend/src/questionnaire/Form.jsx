@@ -508,17 +508,15 @@ function Form (props) {
         {/* FormPagination must be called regardless of whether paginationEnabled is true or false,
             because it is what populates the contents of the form.
             However, it should only be displayed to the user in edit mode when paginationEnabled is true. */}
-        <Grid item xs={12} className={paginationEnabled ? classes.formFooter : classes.hiddenFooter} id="cards-resource-footer">
-          <FormPagination
-              saveInProgress={saveInProgress}
-              lastSaveStatus={lastSaveStatus}
-              paginationEnabled={paginationEnabled}
-              questionnaireData={data.questionnaire}
-              setPagesCallback={setPages}
-              onDone={() => { setEndReached(true) }}
-              doneLabel={doneLabel}
-          />
-        </Grid>
+        <FormPagination
+          saveInProgress={saveInProgress}
+          lastSaveStatus={lastSaveStatus}
+          enabled={paginationEnabled}
+          questionnaireData={data.questionnaire}
+          setPagesCallback={setPages}
+          onDone={() => { setEndReached(true) }}
+          doneLabel={doneLabel}
+        />
         { !paginationEnabled && !disableButton &&
         <Grid item xs={false} className={classes.formBottom}>
           <div className={classes.mainPageAction}>
