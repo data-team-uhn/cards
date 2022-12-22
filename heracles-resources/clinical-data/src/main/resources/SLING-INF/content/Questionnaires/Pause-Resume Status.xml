@@ -38,29 +38,105 @@
 		<type>Reference</type>
 	</property>
 	<node>
-		<name>index</name>
-		<primaryNodeType>cards:Section</primaryNodeType>
+		<name>pause_resume_index</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
 		<property>
-			<name>label</name>
-			<value>Index</value>
+			<name>text</name>
+			<value>Pause/Resume Pair ID</value>
 			<type>String</type>
 		</property>
+		<property>
+			<name>dataType</name>
+			<value>text</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>entryMode</name>
+			<value>readOnly</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
+	</node>
+	<node>
+		<name>enrollment_status</name>
+		<primaryNodeType>cards:Question</primaryNodeType>
+		<property>
+			<name>text</name>
+			<value>Participant status</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>dataType</name>
+			<value>text</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>displayMode</name>
+			<value>list</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>entryMode</name>
+			<value>readOnly</value>
+			<type>String</type>
+		</property>
+		<property>
+			<name>maxAnswers</name>
+			<value>1</value>
+			<type>Long</type>
+		</property>
 		<node>
-			<name>pause_resume_index</name>
+			<name>paused</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>label</name>
+				<value>Paused</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>paused</value>
+				<type>String</type>
+			</property>
+		</node>
+		<node>
+			<name>resumed</name>
+			<primaryNodeType>cards:AnswerOption</primaryNodeType>
+			<property>
+				<name>label</name>
+				<value>Resumed</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>value</name>
+				<value>resumed</value>
+				<type>String</type>
+			</property>
+		</node>
+	</node>
+	<node>
+		<name>pauseSection</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<node>
+			<name>pause_date</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Pause/Resume Pair ID</value>
+				<value>Effective Date</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>dataType</name>
-				<value>text</value>
+				<value>date</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>entryMode</name>
-				<value>readOnly</value>
+				<name>dateFormat</name>
+				<value>MM/dd/yyyy</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -74,21 +150,12 @@
 				<type>Long</type>
 			</property>
 		</node>
-	</node>
-	<node>
-		<name>status</name>
-		<primaryNodeType>cards:Section</primaryNodeType>
-		<property>
-			<name>label</name>
-			<value>Status</value>
-			<type>String</type>
-		</property>
 		<node>
-			<name>enrollment_status</name>
+			<name>pause_reason</name>
 			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
 				<name>text</name>
-				<value>Participant status</value>
+				<value>Reason for pausing</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -98,12 +165,7 @@
 			</property>
 			<property>
 				<name>displayMode</name>
-				<value>list</value>
-				<type>String</type>
-			</property>
-			<property>
-				<name>entryMode</name>
-				<value>readOnly</value>
+				<value>list+input</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -117,338 +179,223 @@
 				<type>Long</type>
 			</property>
 			<node>
-				<name>paused</name>
+				<name>Covid-19 Concerns</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Paused</value>
+					<value>Covid-19 Concerns</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>paused</value>
+					<value>Covid-19 Concerns</value>
 					<type>String</type>
 				</property>
 			</node>
 			<node>
-				<name>resumed</name>
+				<name>Personal Illness</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Resumed</value>
+					<value>Personal Illness</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>resumed</value>
+					<value>Personal Illness</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Personal Injury</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Personal Injury</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Personal Injury</value>
+					<type>String</type>
+				</property>
+			</node>
+			<node>
+				<name>Familly Illness_Injury</name>
+				<primaryNodeType>cards:AnswerOption</primaryNodeType>
+				<property>
+					<name>label</name>
+					<value>Familly Illness/Injury</value>
+					<type>String</type>
+				</property>
+				<property>
+					<name>value</name>
+					<value>Familly Illness_Injury</value>
 					<type>String</type>
 				</property>
 			</node>
 		</node>
 		<node>
-			<name>pauseSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
+			<name>pause_comment</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
 			<property>
-				<name>label</name>
-				<value>Status</value>
+				<name>text</name>
+				<value>Comment</value>
 				<type>String</type>
 			</property>
-			<node>
-				<name>pause_date</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Effective Date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Date paused</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dateFormat</name>
-					<value>MM/dd/yyyy</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>pause_reason</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Reason</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Reason for pausing</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>displayMode</name>
-					<value>list+input</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<node>
-					<name>Covid-19 Concerns</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Covid-19 Concerns</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Covid-19 Concerns</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>Personal Illness</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Personal Illness</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Personal Illness</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>Personal Injury</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Personal Injury</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Personal Injury</value>
-						<type>String</type>
-					</property>
-				</node>
-				<node>
-					<name>Familly Illness_Injury</name>
-					<primaryNodeType>cards:AnswerOption</primaryNodeType>
-					<property>
-						<name>label</name>
-						<value>Familly Illness/Injury</value>
-						<type>String</type>
-					</property>
-					<property>
-						<name>value</name>
-						<value>Familly Illness_Injury</value>
-						<type>String</type>
-					</property>
-				</node>
-			</node>
-			<node>
-				<name>pause_comment</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
-				<property>
-					<name>text</name>
-					<value>Comment</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>description</name>
-					<value>Any additional information regarding pausing</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-			</node>
-			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
-				<property>
-					<name>comparator</name>
-					<value>=</value>
-					<type>String</type>
-				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>enrollment_status</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>paused</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-			</node>
+			<property>
+				<name>description</name>
+				<value>Any additional information regarding pausing</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
 		</node>
 		<node>
-			<name>resumeSection</name>
-			<primaryNodeType>cards:Section</primaryNodeType>
+			<name>condition</name>
+			<primaryNodeType>cards:Conditional</primaryNodeType>
 			<property>
-				<name>label</name>
-				<value>Status</value>
+				<name>comparator</name>
+				<value>=</value>
 				<type>String</type>
 			</property>
 			<node>
-				<name>resume_date</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
+				<name>operandA</name>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
-					<name>text</name>
-					<value>Effective Date</value>
+					<name>value</name>
+					<values>
+						<value>enrollment_status</value>
+					</values>
 					<type>String</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>Date resumed</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dataType</name>
-					<value>date</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>dateFormat</name>
-					<value>MM/dd/yyyy</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
-				</property>
-				<property>
-					<name>minAnswers</name>
-					<value>1</value>
-					<type>Long</type>
+					<name>isReference</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 			</node>
 			<node>
-				<name>resume_comment</name>
-				<primaryNodeType>cards:Question</primaryNodeType>
+				<name>operandB</name>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
-					<name>text</name>
-					<value>Comment</value>
+					<name>value</name>
+					<values>
+						<value>paused</value>
+					</values>
 					<type>String</type>
 				</property>
 				<property>
-					<name>description</name>
-					<value>Any additional information regarding resuming</value>
+					<name>isReference</name>
+					<value>False</value>
+					<type>Boolean</type>
+				</property>
+			</node>
+		</node>
+	</node>
+	<node>
+		<name>resumeSection</name>
+		<primaryNodeType>cards:Section</primaryNodeType>
+		<node>
+			<name>resume_date</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Effective Date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>date</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dateFormat</name>
+				<value>MM/dd/yyyy</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+			<property>
+				<name>minAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+		</node>
+		<node>
+			<name>resume_comment</name>
+			<primaryNodeType>cards:Question</primaryNodeType>
+			<property>
+				<name>text</name>
+				<value>Comment</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>description</name>
+				<value>Any additional information regarding resuming</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>dataType</name>
+				<value>text</value>
+				<type>String</type>
+			</property>
+			<property>
+				<name>maxAnswers</name>
+				<value>1</value>
+				<type>Long</type>
+			</property>
+		</node>
+		<node>
+			<name>condition</name>
+			<primaryNodeType>cards:Conditional</primaryNodeType>
+			<property>
+				<name>comparator</name>
+				<value>=</value>
+				<type>String</type>
+			</property>
+			<node>
+				<name>operandA</name>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
+				<property>
+					<name>value</name>
+					<values>
+						<value>enrollment_status</value>
+					</values>
 					<type>String</type>
 				</property>
 				<property>
-					<name>dataType</name>
-					<value>text</value>
-					<type>String</type>
-				</property>
-				<property>
-					<name>maxAnswers</name>
-					<value>1</value>
-					<type>Long</type>
+					<name>isReference</name>
+					<value>True</value>
+					<type>Boolean</type>
 				</property>
 			</node>
 			<node>
-				<name>condition</name>
-				<primaryNodeType>cards:Conditional</primaryNodeType>
+				<name>operandB</name>
+				<primaryNodeType>cards:ConditionalValue</primaryNodeType>
 				<property>
-					<name>comparator</name>
-					<value>=</value>
+					<name>value</name>
+					<values>
+						<value>resumed</value>
+					</values>
 					<type>String</type>
 				</property>
-				<node>
-					<name>operandA</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>enrollment_status</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>True</value>
-						<type>Boolean</type>
-					</property>
-				</node>
-				<node>
-					<name>operandB</name>
-					<primaryNodeType>cards:ConditionalValue</primaryNodeType>
-					<property>
-						<name>value</name>
-						<values>
-							<value>resumed</value>
-						</values>
-						<type>String</type>
-					</property>
-					<property>
-						<name>isReference</name>
-						<value>False</value>
-						<type>Boolean</type>
-					</property>
-				</node>
+				<property>
+					<name>isReference</name>
+					<value>False</value>
+					<type>Boolean</type>
+				</property>
 			</node>
 		</node>
 	</node>
