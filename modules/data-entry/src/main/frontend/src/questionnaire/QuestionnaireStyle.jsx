@@ -427,16 +427,16 @@ const questionnaireStyle = theme => ({
     },
     formFooter: {
         position: "relative",
-        maxHeight: "68px",
-        "& .MuiMobileStepper-progress" : {
-          width: "100%",
-        },
     },
     hiddenFooter: {
         display: "none",
     },
     formStepper: {
         position: "relative",
+        margin: theme.spacing(0, -2),
+        "& .MuiMobileStepper-progress" : {
+          width: "100%",
+        },
     },
     formStepperBottomBackground: {
         background: "transparent",
