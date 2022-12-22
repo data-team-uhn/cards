@@ -449,10 +449,10 @@ const questionnaireStyle = theme => ({
         backgroundColor: theme.palette.secondary.main,
     },
     bufferProgressBar: {
-      backgroundColor: theme.palette.primary.light,
-      opacity: "0.5",
-      animation: "none",
-      backgroundImage: "none",
+        backgroundColor: theme.palette.primary.light,
+        opacity: "0.5",
+        animation: "none",
+        backgroundImage: "none",
     },
     actionsMenu: {
         border: "1px solid " + theme.palette.divider,
