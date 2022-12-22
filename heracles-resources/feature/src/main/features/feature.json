@@ -81,7 +81,8 @@
   "configurations":{
     "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~heracles":{
       "user.mapping":[
-        "io.uhndata.cards.heracles-backend=[sling-readall]"
+        "io.uhndata.cards.heracles-backend=[sling-readall]",
+        "io.uhndata.cards.heracles-backend:PauseResumeEditor=[sling-readall]"
       ]
     }
   }
