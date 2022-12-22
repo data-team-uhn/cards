@@ -187,60 +187,20 @@ public class PauseResumeFormEditor extends DefaultEditor
     private void saveFormStatus(NodeState after, int formCount, Node latestForm)
     {
         final Node questionnaire = this.formUtils.getQuestionnaire(after);
-        final Node idQuestion = this.questionnaireUtils.getQuestion(questionnaire, "index/pause_resume_index");
+        final Node idQuestion = this.questionnaireUtils.getQuestion(questionnaire, "pause_resume_index");
         if (formCount % 2 == 1) {
             // Odd number of existing pause-resume forms: This new form must be a resume form
             String id = String.valueOf(this.formUtils.getValue(this.formUtils.getAnswer(latestForm, idQuestion)));
-            this.setID(id, questionnaire);
-            this.setStatus("resumed", questionnaire);
+            this.createAnswer(questionnaire, "pause_resume_index", id);
+            this.createAnswer(questionnaire, "enrollment_status", "resumed");
         } else {
             // Even number of existing pause-resume forms: This new form must be a pause form
-            this.setID(null, questionnaire);
-            this.setStatus("paused", questionnaire);
+            this.createAnswer(questionnaire, "pause_resume_index", null);
+            this.createAnswer(questionnaire, "enrollment_status", "paused");
         }
     }
 
-    private void setID(final String id, final Node questionnaire)
-    {
-        NodeBuilder section = this.createAnswerSection(this.currentNodeBuilder, questionnaire, "index");
-        if (section != null) {
-            this.createAnswer(section, questionnaire, "index/pause_resume_index", id);
-        }
-    }
-
-    private void setStatus(final String status, final Node questionnaire)
-    {
-        NodeBuilder section = this.createAnswerSection(this.currentNodeBuilder, questionnaire, "status");
-        if (section != null) {
-            this.createAnswer(section, questionnaire, "status/enrollment_status", status);
-        }
-    }
-
-    private NodeBuilder createAnswerSection(final NodeBuilder parent, final Node questionnaire,
-        final String sectionName)
-    {
-        String sectionUUID;
-        try {
-            sectionUUID = questionnaire.getNode(sectionName).getProperty("jcr:uuid").getString();
-        } catch (RepositoryException e) {
-            LOGGER.error("Could not create section " + sectionName, e);
-            return null;
-        }
-        NodeBuilder node = parent.setChildNode(UUID.randomUUID().toString());
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        node.setProperty("jcr:created", dateFormat.format(new Date()), Type.DATE);
-        node.setProperty("jcr:createdBy", this.rrp.getThreadResourceResolver().getUserID(), Type.NAME);
-        // Section must be created before primary type
-        node.setProperty(FormUtils.SECTION_PROPERTY, sectionUUID, Type.REFERENCE);
-        node.setProperty("jcr:primaryType", FormUtils.ANSWER_SECTION_NODETYPE, Type.NAME);
-        node.setProperty("sling:resourceSuperType", "cards/Resource", Type.STRING);
-        node.setProperty("sling:resourceType", FormUtils.ANSWER_SECTION_RESOURCE, Type.STRING);
-        node.setProperty("statusFlags", Collections.emptyList(), Type.STRINGS);
-        return node;
-    }
-
-    private Node createAnswer(final NodeBuilder parent, final Node questionnaire, final String questionPath,
-        final String value)
+    private Node createAnswer(final Node questionnaire, final String questionPath, final String value)
     {
         final String uuid = UUID.randomUUID().toString();
         String questionUUID;
@@ -251,7 +211,7 @@ public class PauseResumeFormEditor extends DefaultEditor
             LOGGER.error("Could not create question " + questionPath, e);
             return null;
         }
-        NodeBuilder node = parent.setChildNode(uuid);
+        NodeBuilder node = this.currentNodeBuilder.setChildNode(uuid);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         node.setProperty("jcr:created", dateFormat.format(new Date()), Type.DATE);
         node.setProperty("jcr:createdBy", this.rrp.getThreadResourceResolver().getUserID(), Type.NAME);
@@ -261,7 +221,7 @@ public class PauseResumeFormEditor extends DefaultEditor
         node.setProperty("sling:resourceType", "cards/TextAnswer", Type.STRING);
         node.setProperty("statusFlags", Collections.emptyList(), Type.STRINGS);
         // If no calue is specified, set the value to be an ID
-        node.setProperty("value", value == null ? uuid.substring(0, 8) : value, Type.STRING);
+        node.setProperty("value", value == null ? uuid : value, Type.STRING);
         return null;
     }
 
