@@ -200,9 +200,9 @@ function FormPagination (props) {
           activeStep={activePage + (lastSaveStatus && savedLastPage ? 1 : 0)}
           // Change the color of the back bar
           LinearProgressProps={{ 
-              classes: { barColorPrimary: classes.formStepperTopBar,
-                         bar2Buffer: classes.completedProgressBar,
-                         dashed: classes.bufferProgressBar
+              classes: {
+                         bar2Buffer: classes.formStepperBufferBar,
+                         dashed: classes.formStepperBackgroundBar
                        },
               variant: "buffer",
               valueBuffer: (activePage + 1) / (lastValidPage() + 1) * 100
