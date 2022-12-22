@@ -426,21 +426,29 @@ const questionnaireStyle = theme => ({
         marginLeft: theme.spacing(0)
     },
     formFooter: {
-        padding: theme.spacing(2),
-        paddingLeft: theme.spacing(5),
-        backgroundColor: "transparent",
+        position: "relative",
+        maxHeight: "68px",
+        "& .MuiMobileStepper-progress" : {
+          width: "100%",
+        },
     },
-    topProgressBar: {
-        backgroundColor: theme.palette.secondary.main,
+    hiddenFooter: {
+        display: "none",
     },
-    saveButton: {
-        margin: theme.spacing(1),
+    formStepper: {
+        position: "relative",
     },
-    backButton: {
+    formStepperBottomBackground: {
+        background: "transparent",
+    },
+    paginationButton: {
         float: "right",
         margin: theme.spacing(1),
     },
-    bottomProgressBar: {
+    completedProgressBar: {
+        backgroundColor: theme.palette.secondary.main,
+    },
+    bufferProgressBar: {
       backgroundColor: theme.palette.primary.light,
       opacity: "0.5",
       animation: "none",

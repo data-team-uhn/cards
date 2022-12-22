@@ -21,8 +21,7 @@ import React, { useState, useEffect } from "react";
 
 import {
   Button,
-  Grid,
-  LinearProgress
+  MobileStepper
 } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
@@ -163,7 +162,7 @@ function FormPagination (props) {
       type="submit"
       variant="contained"
       disabled={saveInProgress}
-      className={classes.saveButton}
+      className={classes.paginationButton}
       onClick={handleNext}
     >
       {
@@ -183,7 +182,7 @@ function FormPagination (props) {
       disabled={(activePage === 0 && !pendingSubmission)
         || saveInProgress
         || lastSaveStatus === false}
-      className={classes.backButton}
+      className={classes.paginationButton}
       onClick={handleBack}
     >
       Back
@@ -194,29 +193,28 @@ function FormPagination (props) {
     ?
       lastValidPage() > 0
       ?
-        <Grid container
-          spacing={0}
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-          id="cards-resource-footer"
-          className={classes.formFooter}
-        >
-          <Grid item xs={2}>
-            { backButton }
-          </Grid>
-          <Grid item xs={8}>
-            <LinearProgress
-              classes={{bar2Buffer: classes.topProgressBar, dashed: classes.bottomProgressBar}}
-              variant="buffer"
-              valueBuffer={(activePage + 1) / (lastValidPage() + 1) * 100}
-              value={(activePage + (lastSaveStatus && savedLastPage ? 1 : 0)) / (lastValidPage() + 1) * 100}
-            />
-          </Grid>
-          <Grid item xs={2}>
-            { saveButton }
-          </Grid>
-        </Grid>
+        <MobileStepper
+          variant="progress"
+          // Offset back bar 1 to create a "current page" region.
+          // If the final page has been saved, progress the front bar to complete
+          activeStep={activePage + (lastSaveStatus && savedLastPage ? 1 : 0)}
+          // Change the color of the back bar
+          LinearProgressProps={{ 
+              classes: { barColorPrimary: classes.formStepperTopBar,
+                         bar2Buffer: classes.completedProgressBar,
+                         dashed: classes.bufferProgressBar
+                       },
+              variant: "buffer",
+              valueBuffer: (activePage + 1) / (lastValidPage() + 1) * 100
+          }}
+          // Hide the backround of the front bar to segment of back bar
+          className={classes.formStepper}
+          classes={{progress: classes.formStepperBottomBackground}}
+          // base 0 to base 1, plus 1 for the "current page" region
+          steps={lastValidPage() + 2}
+          nextButton={saveButton}
+          backButton={backButton}
+        />
       :
         saveButton
     : null
