@@ -148,14 +148,12 @@ public class PauseResumeFormEditor extends DefaultEditor
 
         // Count the number of pause resume forms and record the most recent one
         final Node subject = this.formUtils.getSubject(after);
-        int formCount = 0;
         Node latestForm = null;
-        Calendar latestFormDate = null;
         try {
+            Calendar latestFormDate = null;
             for (final PropertyIterator forms = subject.getReferences("subject"); forms.hasNext();) {
                 final Node referencedForm = forms.nextProperty().getParent();
                 if (isPauseResumeForm(referencedForm)) {
-                    formCount++;
                     Calendar referencedDate = referencedForm.getProperty("jcr:created").getDate();
                     if (!referencedDate.equals(newDate)
                         && (latestFormDate == null || referencedDate.after(latestFormDate))) {
@@ -165,7 +163,7 @@ public class PauseResumeFormEditor extends DefaultEditor
                 }
             }
 
-            this.saveFormStatus(after, formCount, latestForm);
+            this.saveFormStatus(after, latestForm);
         } catch (final RepositoryException e) {
             LOGGER.error(e.getMessage(), e);
         }
@@ -184,17 +182,22 @@ public class PauseResumeFormEditor extends DefaultEditor
         return newDate;
     }
 
-    private void saveFormStatus(NodeState after, int formCount, Node latestForm)
+    private void saveFormStatus(NodeState after, Node latestForm)
     {
         final Node questionnaire = this.formUtils.getQuestionnaire(after);
         final Node idQuestion = this.questionnaireUtils.getQuestion(questionnaire, "pause_resume_index");
-        if (formCount % 2 == 1) {
-            // Odd number of existing pause-resume forms: This new form must be a resume form
+        final Node statusQuestion = this.questionnaireUtils.getQuestion(questionnaire, "enrollment_status");
+        String status = "";
+        if (latestForm != null) {
+            status = String.valueOf(this.formUtils.getValue(this.formUtils.getAnswer(latestForm, statusQuestion)));
+        }
+        if ("paused".equals(status)) {
+            // New form must be a resume form
             String id = String.valueOf(this.formUtils.getValue(this.formUtils.getAnswer(latestForm, idQuestion)));
             this.createAnswer(questionnaire, "pause_resume_index", id);
             this.createAnswer(questionnaire, "enrollment_status", "resumed");
         } else {
-            // Even number of existing pause-resume forms: This new form must be a pause form
+            // Default, New form must be a pause form
             this.createAnswer(questionnaire, "pause_resume_index", null);
             this.createAnswer(questionnaire, "enrollment_status", "paused");
         }
