@@ -1,0 +1,68 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one
+//  or more contributor license agreements.  See the NOTICE file
+//  distributed with this work for additional information
+//  regarding copyright ownership.  The ASF licenses this file
+//  to you under the Apache License, Version 2.0 (the
+//  "License"); you may not use this file except in compliance
+//  with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing,
+//  software distributed under the License is distributed on an
+//  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+//  KIND, either express or implied.  See the License for the
+//  specific language governing permissions and limitations
+//  under the License.
+//
+
+<sling = 'http://sling.apache.org/jcr/sling/1.0'>
+<cards = 'https://cards.uhndata.io/'>
+
+//-----------------------------------------------------------------------------
+//
+// Email templates
+//
+// An email template node must have:
+// - sender address
+// - sender name
+// - subject
+// - html part
+// - plaintext part
+// - properties referencing question nodes that will be looked up for the
+//   current subject and used for rendering the email body
+// - properties referencing JCR properties whose values will be used for
+//   rendering the email body
+// - properties with simple text values to be used for rendering the email body
+// - children of type nt:file that will be attached as inline content
+//
+// Use io.uhndata.cards.emailnotifications.EmailTemplate.builder(Node, ResourceResolver)
+// to turn a node into a Java email template object.
+//
+// Use io.uhndata.cards.emailnotifications.EmailUtils.sendNotificationHtmlEmail(Email, MailService)
+// to send an actual email.
+//
+//-----------------------------------------------------------------------------
+[cards:EmailTemplate] > sling:Folder
+  // Attributes:
+  // We can use the homepage in a query
+  query
+
+  // Properties:
+  // Hardcode the resource type
+  - sling:resourceType (STRING) = "cards/EmailTemplate" mandatory autocreated protected
+  // Hardcode the resource supertype
+  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
+  // Email sender address and name
+  - senderAddress (String) mandatory
+  - senderName (String) mandatory
+  // Email subject
+  - subject (String) mandatory
+  // Other properties
+  - * (*)
+  // Body templates
+  + bodyTemplate.html (nt:file)
+  + bodyTemplate.txt (nt:file)
+  // Other attachments to include inline
+  + * (nt:file)
