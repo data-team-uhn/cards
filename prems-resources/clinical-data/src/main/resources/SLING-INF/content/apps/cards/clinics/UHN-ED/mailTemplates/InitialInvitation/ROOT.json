@@ -1,0 +1,8 @@
+{
+  "jcr:primaryType": "cards:EmailTemplate",
+  "senderAddress": "yourexperience@uhn.ca",
+  "senderName": "Your Experience",
+  "subject": "YOUR EXPERIENCE at UHN - Tell us how we did",
+  "first_name": "/Questionnaires/Patient information/first_name",
+  "last_name": "/Questionnaires/Patient information/last_name"
+}

@@ -1,0 +1,137 @@
+<!doctype html>
+<html>
+  <head>
+    <title>UHN Canadian Patient Experience Survey</title>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      .body {
+        max-width: 600px;
+        margin: 32px auto;
+        padding: 0 16px;
+        font-family: Arial, Helvetica, sans-serif;
+        color: #333;
+        line-height: 1.5em;
+      }
+      a {
+        color: #0b6bb5;
+      }
+      p {
+        margin: 1em 0;
+      }
+      hr {
+        margin: 2em 0;
+        opacity: .3;
+      }
+      img {
+        max-width: 100%;
+      }
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .header img {
+        max-width: 45% !important;
+      }
+      .note {
+        opacity: .6;
+        font-size: small;
+        border: 1px solid #ddd;
+        background: #f5f5f5;
+        padding: 0 2em;
+        border-radius: 6px;
+      }
+      .web-address {
+        font-weight: bold;
+        word-break: break-all;
+      }
+      .note hr {
+        margin: 0;
+      }
+      .signature {
+        font-style: italic;
+      }
+      .surveylink {
+        text-align: center;
+        padding: 2em 0;
+      }
+      .surveylink a {
+        color: white !important;
+        background-color: #0b6bb5;
+        font-weight: bold;
+        padding: 1em;
+        border-radius: 6px;
+        text-decoration: none !important;
+        width: fit-content;
+        margin: auto;
+      }
+      .footer {
+        text-align: center;
+        font-size: small;
+      }
+    </style>
+  </head>
+  <body><div class="body">
+    <div class="header">
+      <img alt="UHN Logo" src="cid:UHN-Logo.png"/>
+      <img alt="Your Experience Logo" src="cid:YE-Logo.png"/>
+    </div>
+    <hr/>
+    <p>Dear ${first_name} ${last_name},</p>
+    <p>
+      You are receiving this email because you have recently been discharged from a University Health Network (UHN) hospital.
+    </p>
+    <p>
+      <strong>We’d like to hear about your experience while you were a patient in UHN’s Emergency Department</strong>. Your opinions are valuable to us.
+      Your responses will be anonymous and will be used to help UHN continuously improve the quality of care patients receive. 
+    </p>
+    <p class="surveylink">
+      <a href="${surveysLink}">Complete the survey</a>
+    </p>
+    <p>
+      Completing this survey is voluntary. Your responses will not be shared with the care
+      team and answering will not impact future care you receive at UHN.
+    </p>
+    <p>
+      The questionnaire contains 11 questions and will take about 5-10 minutes to complete.
+    </p>
+    <p>
+      <strong>The survey will be available until ${expirationDate}. Please do not delay.</strong>
+    </p>
+
+    <div class="note">
+      <p>
+        If the button does not work for you, please copy this web address and paste it in your web browser's address bar:
+        <br/>
+        <span class="web-address">${surveysLink}</span>
+      </p>
+      <hr/>
+      <p>
+        The survey will not load if you are using Internet Explorer. Please use another web browser, such as Edge, Chrome, or Firefox.
+      </p>
+    </div>
+    <p>
+      If you have any questions, concerns, or wish to be removed from the survey, please contact us at yourexperience@uhn.ca.
+      You can also <a href="${unsubscribeLink}">unsubscribe</a> from all further emails from <strong>Your Experience</strong>.
+    </p>
+    <p>
+      Thank you for your time and help. Your effort will help us provide better care to all our patients and ensure
+it is reflective of UHN’s <a href="https://www.uhn.ca/corporate/AboutUHN/Quality_Patient_Safety/Pages/patient_values.aspx">Patient Declaration of Values</a>.
+    </p>
+
+    <p>
+      Best regards,<br/>
+      <span class="signature">The Patient Experience Team</span><br/>
+      <span class="signature">University Health Network</span>
+    </p>
+    <div class="footer">
+      <hr/>
+      <a href="https://www.uhn.ca/corporate/AboutUHN/Quality_Patient_Safety/Pages/patient_values.aspx">
+        <img alt="Patient Experience Logo" src="cid:PE-Logo.png"/>
+      </a>
+      <p>University Health Network</p>
+      <p><a href="${unsubscribeLink}">Unsubscribe from further emails from <strong>Your Experience</strong></a></p>
+    </div>
+  </div></body>
+</html>

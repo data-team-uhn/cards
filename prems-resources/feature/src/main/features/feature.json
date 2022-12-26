@@ -45,76 +45,60 @@
         "create service user proms-import-backend"
       ]
     },
-    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~TWEDInitialInvitationTask":{
-      "name": "CPESInitialNotificationsTask",
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~CPES-InitialInvitationTask":{
+      "name": "CPES-InitialNotificationsTask",
       "metricName": "Initial Emails Sent",
       "clinicId": "/Survey/ClinicMapping/2075099",
-      "emailSubject": "YOUR EXPERIENCE at UHN - Tell us how we did",
-      "plainTextEmailTemplatePath": "/apps/cards/clinics/CPES/mailTemplates/invitation.txt",
-      "htmlEmailTemplatePath": "/apps/cards/clinics/CPES/mailTemplates/invitation.html",
+      "emailConfiguration": "/apps/cards/clinics/CPES/mailTemplates/InitialInvitation",
       "daysToVisit": -7
     },
-    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~TWEDReminderNotificationsTask":{
-      "name": "CPESReminderNotificationsTask",
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~CPES-ReminderNotificationsTask":{
+      "name": "CPES-ReminderNotificationsTask",
       "metricName": "Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/2075099",
-      "emailSubject": "Reminder: YOUR EXPERIENCE at UHN - Tell us how we did",
-      "plainTextEmailTemplatePath": "/apps/cards/clinics/CPES/mailTemplates/reminder.txt",
-      "htmlEmailTemplatePath": "/apps/cards/clinics/CPES/mailTemplates/reminder.html",
+      "emailConfiguration": "/apps/cards/clinics/CPES/mailTemplates/ReminderNotification",
       "daysToVisit": -14
     },
-    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~TWIPInitialInvitationTask":{
-      "name": "UHNIPInitialNotificationsTask",
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-IP-InitialInvitationTask":{
+      "name": "UHN-IP-InitialInvitationsTask",
       "metricName": "Initial Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-1792626663",
-      "emailSubject": "YOUR EXPERIENCE at UHN - Tell us how we did",
-      "plainTextEmailTemplatePath": "/apps/cards/clinics/UHN-IP/mailTemplates/invitation.txt",
-      "htmlEmailTemplatePath": "/apps/cards/clinics/UHN-IP/mailTemplates/invitation.html",
+      "emailConfiguration": "/apps/cards/clinics/UHN-IP/mailTemplates/InitialInvitation",
       "daysToVisit": -7
     },
-    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~TWIPReminderNotificationsTask":{
-      "name": "UHNIPReminderNotificationsTask",
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-IP-ReminderNotificationsTask":{
+      "name": "UHN-IP-ReminderNotificationsTask",
       "metricName": "Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-1792626663",
-      "emailSubject": "Reminder: YOUR EXPERIENCE at UHN - Tell us how we did",
-      "plainTextEmailTemplatePath": "/apps/cards/clinics/UHN-IP/mailTemplates/reminder.txt",
-      "htmlEmailTemplatePath": "/apps/cards/clinics/UHN-IP/mailTemplates/reminder.html",
+      "emailConfiguration": "/apps/cards/clinics/UHN-IP/mailTemplates/ReminderNotification",
       "daysToVisit": -14
     },
-    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~TGHEDInitialInvitationTask":{
-      "name": "UHNEDInitialNotificationsTask",
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-ED-InitialInvitationTask":{
+      "name": "UHN-ED-InitialInvitationsTask",
       "metricName": "Initial Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-1792626799",
-      "emailSubject": "YOUR EXPERIENCE at UHN - Tell us how we did",
-      "plainTextEmailTemplatePath": "/apps/cards/clinics/UHN-ED/mailTemplates/invitation.txt",
-      "htmlEmailTemplatePath": "/apps/cards/clinics/UHN-ED/mailTemplates/invitation.html",
+      "emailConfiguration": "/apps/cards/clinics/UHN-ED/mailTemplates/InitialInvitation",
       "daysToVisit": -7
     },
-    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~TGHEDReminderNotificationsTask":{
-      "name": "UHNEDReminderNotificationsTask",
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-ED-ReminderNotificationsTask":{
+      "name": "UHN-ED-ReminderNotificationsTask",
       "metricName": "Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-1792626799",
-      "emailSubject": "Reminder: YOUR EXPERIENCE at UHN - Tell us how we did",
-      "plainTextEmailTemplatePath": "/apps/cards/clinics/UHN-ED/mailTemplates/reminder.txt",
-      "htmlEmailTemplatePath": "/apps/cards/clinics/UHN-ED/mailTemplates/reminder.html",
+      "emailConfiguration": "/apps/cards/clinics/UHN-ED/mailTemplates/ReminderNotification",
       "daysToVisit": -14
     },
-    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~TGHIPInitialInvitationTask":{
-      "name": "UHNEDIPInitialNotificationsTask",
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-EDIP-InitialInvitationTask":{
+      "name": "UHN-EDIP-InitialInvitationsTask",
       "metricName": "Initial Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-432465800",
-      "emailSubject": "YOUR EXPERIENCE at UHN - Tell us how we did",
-      "plainTextEmailTemplatePath": "/apps/cards/clinics/UHN-EDIP/mailTemplates/invitation.txt",
-      "htmlEmailTemplatePath": "/apps/cards/clinics/UHN-EDIP/mailTemplates/invitation.html",
+      "emailConfiguration": "/apps/cards/clinics/UHN-EDIP/mailTemplates/InitialInvitation",
       "daysToVisit": -7
     },
-    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~TGHIPReminderNotificationsTask":{
-      "name": "UHNEDIPReminderNotificationsTask",
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-EDIP-ReminderNotificationsTask":{
+      "name": "UHN-EDIP-ReminderNotificationsTask",
       "metricName": "Reminder Emails Sent",
       "clinicId": "/Survey/ClinicMapping/-432465800",
-      "emailSubject": "Reminder: YOUR EXPERIENCE at UHN - Tell us how we did",
-      "plainTextEmailTemplatePath": "/apps/cards/clinics/UHN-EDIP/mailTemplates/reminder.txt",
-      "htmlEmailTemplatePath": "/apps/cards/clinics/UHN-EDIP/mailTemplates/reminder.html",
+      "emailConfiguration": "/apps/cards/clinics/UHN-EDIP/mailTemplates/ReminderNotification",
       "daysToVisit": -14
     }
   }
