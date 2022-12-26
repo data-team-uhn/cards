@@ -16,7 +16,16 @@
  */
 package io.uhndata.cards.patients.emailnotifications;
 
+import java.io.IOException;
+import java.util.Map;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+
 import org.apache.commons.lang3.StringUtils;
+import org.apache.sling.api.resource.LoginException;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.commons.messaging.mail.MailService;
 import org.apache.sling.commons.scheduler.ScheduleOptions;
@@ -33,12 +42,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.auth.token.TokenManager;
+import io.uhndata.cards.emailnotifications.EmailTemplate;
+import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.metrics.Metrics;
 import io.uhndata.cards.patients.api.PatientAccessConfiguration;
 import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 
 @Designate(ocd = AppointmentEmailNotificationsFactory.Config.class, factory = true)
 @Component(configurationPolicy = ConfigurationPolicy.REQUIRE)
+@SuppressWarnings("checkstyle:ClassFanOutComplexity")
 public final class AppointmentEmailNotificationsFactory
 {
     /** Default log. */
@@ -59,6 +71,9 @@ public final class AppointmentEmailNotificationsFactory
     /** The MailService for sending notification emails to patients. */
     @Reference
     private MailService mailService;
+
+    @Reference
+    private FormUtils formUtils;
 
     /** The TokenManager for generating patient-access tokens. */
     @Reference
@@ -82,21 +97,14 @@ public final class AppointmentEmailNotificationsFactory
             description = "Clinic mapping path for this clinic (eg. /Survey/ClinicMapping/123456789)")
         String clinicId();
 
-        @AttributeDefinition(name = "Email Subject Line", description = "Email Subject Line")
-        String emailSubject();
-
-        @AttributeDefinition(name = "Plaintext Email Template JCR Path",
-            description = "Plaintext Email Template JCR Path")
-        String plainTextEmailTemplatePath();
-
-        @AttributeDefinition(name = "HTML Email Template JCR Path", description = "HTML Email Template JCR Path")
-        String htmlEmailTemplatePath();
+        @AttributeDefinition(name = "Email configuration node",
+            description = "JCR Node of type cards:emailTemplate where details about the email will be stored")
+        String emailConfiguration();
 
         @AttributeDefinition(
             name = "Days to the visit",
-            description =
-                "Days to the visit - positive if the visit is in the future, negative if the visit is in the past"
-        )
+            description = "Days to the visit - positive if the visit is in the future, "
+                + "negative if the visit is in the past")
         int daysToVisit();
     }
 
@@ -116,10 +124,9 @@ public final class AppointmentEmailNotificationsFactory
 
         // Instantiate the Runnable
         final Runnable notificationsJob = new GeneralNotificationsTask(this.resolverFactory, this.resolverProvider,
-            this.tokenManager,
-            this.mailService, this.patientAccessConfiguration, config.name(), config.clinicId(), config.emailSubject(),
-            config.plainTextEmailTemplatePath(), config.htmlEmailTemplatePath(),
-            config.daysToVisit());
+            this.tokenManager, this.mailService, this.formUtils, this.patientAccessConfiguration, config.name(),
+            config.clinicId(),
+            buildTemplate(config.emailConfiguration()), config.daysToVisit());
 
         try {
             this.scheduler.schedule(notificationsJob, notificationsOptions);
@@ -129,8 +136,7 @@ public final class AppointmentEmailNotificationsFactory
                 "Failed to schedule Appointment Email Notifications Task: {}. {}",
                 config.name(),
                 e.getMessage(),
-                e
-            );
+                e);
         }
     }
 
@@ -144,5 +150,22 @@ public final class AppointmentEmailNotificationsFactory
         } else {
             LOGGER.error("Failed to unschedule {}", jobName);
         }
+    }
+
+    private EmailTemplate buildTemplate(final String configurationNodePath)
+    {
+        try (ResourceResolver rr = this.resolverFactory
+            .getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "EmailNotifications"))) {
+            final Session session = rr.adaptTo(Session.class);
+            final Node configuration = session.getNode(configurationNodePath);
+            return EmailTemplate.builder(configuration, rr).build();
+        } catch (LoginException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (RepositoryException | IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
     }
 }

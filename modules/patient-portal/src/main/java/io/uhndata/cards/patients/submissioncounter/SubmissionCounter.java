@@ -36,6 +36,8 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.forms.api.FormUtils;
+
 @Designate(ocd = SubmissionCounter.Config.class, factory = true)
 @Component(configurationPolicy = ConfigurationPolicy.REQUIRE)
 public final class SubmissionCounter
@@ -50,6 +52,9 @@ public final class SubmissionCounter
     /** Provides access to resources. */
     @Reference
     private ResourceResolverFactory resolverFactory;
+
+    @Reference
+    private FormUtils formUtils;
 
     private ResourceResolver resolver;
 
@@ -93,7 +98,7 @@ public final class SubmissionCounter
             listenerParams.put("submissionCounterName", config.name());
             listenerParams.put("submittedFlagUUID", submittedFlagUUID);
             listenerParams.put("linkingSubjectType", config.linkingSubjectType());
-            EventListener myEventListener = new SubmissionEventListener(this.resolverFactory,
+            EventListener myEventListener = new SubmissionEventListener(this.formUtils, this.resolverFactory,
                 this.resolver, listenerParams);
 
             this.session = this.resolver.adaptTo(Session.class);

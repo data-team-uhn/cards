@@ -23,6 +23,8 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.commons.messaging.mail.MailService;
 
 import io.uhndata.cards.auth.token.TokenManager;
+import io.uhndata.cards.emailnotifications.EmailTemplate;
+import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.metrics.Metrics;
 import io.uhndata.cards.patients.api.PatientAccessConfiguration;
 import io.uhndata.cards.utils.ThreadResourceResolverProvider;
@@ -30,56 +32,46 @@ import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 public class GeneralNotificationsTask extends AbstractEmailNotification implements Runnable
 {
     private String taskName;
+
     private String clinicId;
-    private String emailSubject;
-    private String plainTemplatePath;
-    private String htmlTemplatePath;
+
+    private EmailTemplate emailTemplate;
+
     private int daysToVisit;
 
     /*
      * Task that sends email notifications as per the configuration parameters.
-     *
      * @param resolverFactory a ResourceResolverFactory object that can be used for accessing the JCR
-     * @param tokenManager a TokenManager object that can be used for generating user authentication tokens,
-     * to provide authorization links in emails
-     *
+     * @param tokenManager a TokenManager object that can be used for generating user authentication tokens, to provide
+     * authorization links in emails
      * @param mailService a MailService object that can be used for sending emails
+     * @param formUtils form utilities service that can be used to interact with form nodes
      * @param taskName the name associated with the performance metrics gathered from this task
-     * @param clinicId the clinic ID that identifies the clinic for which notifications should be sent about
-     * (or null for all clinics)
-     *
-     * @param emailSubject the subject line of the email notifications
-     * @param plainTemplatePath the name of the plain text email template associated with the Visit's clinic,
-     * if clinicId is null, otherwise the absolute JCR path to the template.
-     *
-     * @param htmlTemplatePath the name of the HTML email template associated with the Visit's clinic,
-     * if clinicId is null, otherwise the absolute JCR path to the template.
-     *
-     * @param daysToVisit the difference in days between now and the day of the appointment.
-     * Positive values if the appointment is in the future, negative values if the appointment is in the past.
+     * @param clinicId the clinic ID that identifies the clinic for which notifications should be sent about (or null
+     * for all clinics)
+     * @param emailTemplate the template for the email notifications
+     * @param daysToVisit the difference in days between now and the day of the appointment. Positive values if the
+     * appointment is in the future, negative values if the appointment is in the past.
      */
-    @SuppressWarnings({ "checkstyle:ParameterNumber" })
-    GeneralNotificationsTask(final ResourceResolverFactory resolverFactory,
+    @SuppressWarnings("checkstyle:ParameterNumber")
+    public GeneralNotificationsTask(final ResourceResolverFactory resolverFactory,
         final ThreadResourceResolverProvider resolverProvider,
         final TokenManager tokenManager, final MailService mailService,
+        final FormUtils formUtils,
         final PatientAccessConfiguration patientAccessConfiguration, final String taskName,
-        final String clinicId, final String emailSubject, final String plainTemplatePath,
-        final String htmlTemplatePath, final int daysToVisit)
+        final String clinicId, final EmailTemplate emailTemplate, final int daysToVisit)
     {
-        super(resolverFactory, resolverProvider, tokenManager, mailService, patientAccessConfiguration);
+        super(resolverFactory, resolverProvider, tokenManager, mailService, formUtils, patientAccessConfiguration);
         this.taskName = taskName;
         this.clinicId = clinicId;
-        this.emailSubject = emailSubject;
-        this.plainTemplatePath = plainTemplatePath;
-        this.htmlTemplatePath = htmlTemplatePath;
+        this.emailTemplate = emailTemplate;
         this.daysToVisit = daysToVisit;
     }
 
     @Override
     public void run()
     {
-        long emailsSent = sendNotification(this.daysToVisit, this.plainTemplatePath, this.htmlTemplatePath,
-            this.emailSubject, this.clinicId);
+        long emailsSent = sendNotification(this.daysToVisit, this.emailTemplate, this.clinicId);
         Metrics.increment(this.resolverFactory, this.taskName, emailsSent);
     }
 }
