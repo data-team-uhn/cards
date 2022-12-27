@@ -46,10 +46,22 @@ import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import QuestionnaireItemCard from "../questionnaireEditor/QuestionnaireItemCard";
 import ResourceHeader from "./ResourceHeader";
 import QuestionnairePreview from "./QuestionnairePreview";
+import { QuestionnaireProvider, useQuestionnaireWriterContext } from "./QuestionnaireContext";
 
 let _stripCardsNamespace = str => str.replaceAll(/^cards:/g, "");
 
 export const QUESTIONNAIRE_ITEM_NAMES = ENTRY_TYPES.map(type => _stripCardsNamespace(type));
+
+let findQuestions = (json, result = []) =>  {
+  Object.entries(json || {}).forEach(([k,e]) => {
+    if (e?.['jcr:primaryType'] == "cards:Question") {
+      result.push({id: e['jcr:uuid'], name: e['@name'], text: e['text']});
+    } else if (typeof(e) == 'object') {
+      findQuestions(e, result);
+    }
+  })
+  return result;
+}
 
 // GUI for displaying details about a questionnaire.
 let Questionnaire = (props) => {
@@ -76,9 +88,10 @@ let Questionnaire = (props) => {
       .catch(handleError);
   };
 
-  if (!data) {
+  // First, fetch the questionnaire data
+  useEffect(() => {
     fetchData();
-  }
+  }, []);
 
   useEffect(() => {
     setQuestionnaireTitle(data?.title || decodeURI(id));
@@ -170,14 +183,16 @@ let Questionnaire = (props) => {
                 contentOffset={props.contentOffset}
               />
             :
-              <QuestionnaireContents
-                disableDelete
-                data={data}
-                classes={classes}
-                onFieldsChanged={(newData) => newData?.title && setQuestionnaireTitle(newData.title)}
-                onActionDone={()=>{}}
-                menuProps={{isMainAction: true}}
-              />
+              <QuestionnaireProvider>
+                <QuestionnaireContents
+                  disableDelete
+                  data={data}
+                  classes={classes}
+                  onFieldsChanged={(newData) => newData?.title && setQuestionnaireTitle(newData.title)}
+                  onActionDone={()=>{}}
+                  menuProps={{isMainAction: true}}
+                />
+              </QuestionnaireProvider>
             }
           </Grid>
         </Grid>
@@ -321,7 +336,20 @@ QuestionnaireItemSet.propTypes = {
 };
 
 // Questionnaire contents: properties + entries
-let QuestionnaireContents = (props) => <QuestionnaireEntry {...props} />;
+let QuestionnaireContents = (props) => {
+  let { data } = props;
+
+  let changeQuestionnaireContext = useQuestionnaireWriterContext();
+
+  useEffect(() => {
+    // Load initial data
+    changeQuestionnaireContext(findQuestions(data));
+    // Clear context when unmounting component
+    return (() => changeQuestionnaireContext([]));
+  }, []);
+
+  return <QuestionnaireEntry {...props} />;
+};
 
 QuestionnaireContents.propTypes = {
   onActionDone: PropTypes.func,
@@ -469,6 +497,33 @@ let QuestionnaireEntry = (props) => {
   let [ entryData, setEntryData ] = useState(data);
   let [ doHighlight, setDoHighlight ] = useState(data.doHighlight);
 
+  let changeQuestionnaireContext = useQuestionnaireWriterContext();
+
+  let updateContext = (data) => {
+    let vars = findQuestions({data: data});
+    changeQuestionnaireContext((oldContext) => {
+       let newContext = oldContext || [];
+       vars.forEach(v => {
+         const index = newContext.findIndex(x => x.id == v.id);
+         if (index >= 0) {
+           newContext.splice(index, 1, v);
+         } else {
+           newContext.push(v);
+         }
+       });
+       return newContext;
+    });
+  }
+
+  let removeFromContext = (id) => {
+    changeQuestionnaireContext((oldContext) => {
+      let newContext = oldContext || [];
+      const index = newContext.findIndex(x => x.id == id);
+      newContext.splice(index, 1);
+      return newContext;
+    });
+  }
+
   let spec = require(`../questionnaireEditor/${model}`)[0];
 
   // If this entry type has any children by default, they should be specified in the `//CHILDREN` field
@@ -513,25 +568,31 @@ let QuestionnaireEntry = (props) => {
       .forEach(v => menuItems.push(...Object.keys(v.entries)));
   }
 
-  let reloadData = (newData) => {
+  let handleDataChange = (newData) => {
     // There's new data to load, display and highlight it:
     if (newData) {
       setEntryData(newData);
       setDoHighlight(true);
-      onFieldsChanged && onFieldsChanged(newData);
+      onFieldsChanged ? onFieldsChanged(newData) : updateContext(newData);
     } else {
       // Try to reload the data from the server
-      // If it fails, pass it up to the parent
       fetch(`${data["@path"]}.deep.json`)
         .then(response => response.ok ? response.json() : Promise.reject(response))
-        .then(json => reloadData(json))
-        .catch(() => onActionDone());
+        .then(json => handleDataChange(json))
+        .catch(() => {
+           // If it fails, it's because we deleted an item
+           // Update the context to remove the deleted item
+           removeFromContext(`${data['jcr:uuid']}`);
+           // Then pass it up to the parent
+           onActionDone();
+        });
     }
   }
 
   let onCreated = (newData) => {
     setEntryData({});
     setEntryData(newData);
+    updateContext(newData);
   }
 
   let renderFields = (options) => (<>
@@ -559,7 +620,7 @@ let QuestionnaireEntry = (props) => {
             />
             : undefined
         }
-        onActionDone={reloadData}
+        onActionDone={handleDataChange}
         model={model}
         {...rest}
     >
@@ -567,7 +628,7 @@ let QuestionnaireEntry = (props) => {
         <QuestionnaireItemSet
           data={entryData}
           classes={classes}
-          onActionDone={reloadData}
+          onActionDone={handleDataChange}
           models={childModels}
         >
           <Grid item className={FIELDS_CLASS_NAME}>{renderFields()}</Grid>
