@@ -498,6 +498,9 @@ let QuestionnaireEntry = (props) => {
   let [ menuItems, setMenuItems ] = useState([]);
   let [ doHighlight, setDoHighlight ] = useState(data.doHighlight);
 
+  // --------------------------------------------------------------
+  // Questionnaire context manipulation
+
   let changeQuestionnaireContext = useQuestionnaireWriterContext();
 
   let updateContext = (data) => {
@@ -524,6 +527,9 @@ let QuestionnaireEntry = (props) => {
       return newContext;
     });
   }
+
+  // -------------------------------------------------------------
+  // Find child item specifications
 
   let spec = require(`../questionnaireEditor/${model}`)[0];
 
@@ -576,6 +582,10 @@ let QuestionnaireEntry = (props) => {
     }
   }, [entryData, childModels]);
 
+  // -------------------------------------------------------------
+  // Handle data updates (field changes, child item creation or
+  // deletion)
+
   let handleDataChange = (newData) => {
     // There's new data to load, display and highlight it:
     if (newData) {
@@ -602,6 +612,9 @@ let QuestionnaireEntry = (props) => {
     setEntryData(newData);
     updateContext(newData);
   }
+
+  // -------------------------------------------------------------
+  // Rendering
 
   let renderFields = (options) => (<>
     <LabeledField name={`${type}Id`} {...options}>{entryData["@name"]}</LabeledField>
