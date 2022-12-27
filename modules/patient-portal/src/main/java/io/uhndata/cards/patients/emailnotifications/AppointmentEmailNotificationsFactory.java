@@ -157,14 +157,30 @@ public final class AppointmentEmailNotificationsFactory
         try (ResourceResolver rr = this.resolverFactory
             .getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "EmailNotifications"))) {
             final Session session = rr.adaptTo(Session.class);
+            // Sometimes the notification is activated before the template node is imported
+            // If that is the case, wait a little bit and try again
+            for (int i = 0; i < 10; ++i) {
+                if (session.nodeExists(configurationNodePath)) {
+                    break;
+                } else {
+                    try {
+                        Thread.sleep(10_000);
+                    } catch (InterruptedException e) {
+                        // We're not expecting any interruptions
+                    }
+                }
+            }
+            if (!session.nodeExists(configurationNodePath)) {
+                throw new IllegalStateException(
+                    "Configured email template " + configurationNodePath + " was not found");
+            }
             final Node configuration = session.getNode(configurationNodePath);
             return EmailTemplate.builder(configuration, rr).build();
         } catch (LoginException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOGGER.warn("Missing rights configuration for Email Notifications");
         } catch (RepositoryException | IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOGGER.warn("Failed to read the email configuration: {}", e.getMessage(), e);
+            throw new IllegalStateException();
         }
         return null;
     }
