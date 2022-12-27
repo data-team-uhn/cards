@@ -107,7 +107,7 @@ function QuestionnairePreview (props) {
       </FormProvider>
       <Grid item xs={12} className={classes.formFooter} id="cards-resource-footer">
         <FormPagination
-            paginationEnabled={paginationEnabled}
+            enabled={paginationEnabled}
             questionnaireData={data}
             setPagesCallback={setPages}
             enableSave={false}
