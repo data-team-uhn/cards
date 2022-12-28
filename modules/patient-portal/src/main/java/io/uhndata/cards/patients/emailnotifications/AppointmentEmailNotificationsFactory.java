@@ -50,7 +50,6 @@ import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 
 @Designate(ocd = AppointmentEmailNotificationsFactory.Config.class, factory = true)
 @Component(configurationPolicy = ConfigurationPolicy.REQUIRE)
-@SuppressWarnings("checkstyle:ClassFanOutComplexity")
 public final class AppointmentEmailNotificationsFactory
 {
     /** Default log. */
