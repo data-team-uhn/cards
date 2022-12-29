@@ -495,7 +495,11 @@ ConditionalGroup.defaultProps = {
 let QuestionnaireEntry = (props) => {
   let { onActionDone, onFieldsChanged, data, type, titleField, model, classes, menuProps, ...rest } = props;
   let [ entryData, setEntryData ] = useState(data);
+  let [ menuItems, setMenuItems ] = useState([]);
   let [ doHighlight, setDoHighlight ] = useState(data.doHighlight);
+
+  // --------------------------------------------------------------
+  // Questionnaire context manipulation
 
   let changeQuestionnaireContext = useQuestionnaireWriterContext();
 
@@ -524,6 +528,9 @@ let QuestionnaireEntry = (props) => {
     });
   }
 
+  // -------------------------------------------------------------
+  // Find child item specifications
+
   let spec = require(`../questionnaireEditor/${model}`)[0];
 
   // If this entry type has any children by default, they should be specified in the `//CHILDREN` field
@@ -550,23 +557,34 @@ let QuestionnaireEntry = (props) => {
     // look for overrides deeper
     .find(([key, value]) => findChildrenSpec(key, value));
 
-  // Add the child types to the menu
-  let menuItems = childModels && Object.keys(childModels).filter(k => typeof(childModels[k]) != "object");
+  // -------------------------------------------------------------
+  // Determine the menu items for creating children, based on the
+  // `//CHILDREN` spec and whether the maximum allowed for each
+  // child type was reached
 
-  // Some child entries may be configured to have a maximum number of entries
-  // (for example, only one conditional or conditional group per section)
-  // Exclude from the creation menu any entries corresponding to child types
-  // for which maximum of that type has been reached
-  if (childModels) {
-    Object.values(childModels)
-      .filter(v => {
-        if (typeof(v) != "object" || typeof(v?.entries) != "object") return false;
-        if (!v.hasOwnProperty("max")) return true;
-        let entryTypes = Object.keys(v.entries).map(e => `cards:${e}`);
-        return (Object.values(data).filter(e => entryTypes?.includes(e['jcr:primaryType'])).length < v.max);
-      })
-      .forEach(v => menuItems.push(...Object.keys(v.entries)));
-  }
+  useEffect(() => {
+    // Add the child types to the menu
+    setMenuItems(Object.keys(childModels || {}).filter(k => typeof(childModels[k]) != "object"));
+
+    // Some child entries may be configured to have a maximum number of entries
+    // (for example, only one conditional or conditional group per section)
+    // Exclude from the creation menu any entries corresponding to child types
+    // for which maximum of that type has been reached
+    if (childModels) {
+      Object.values(childModels)
+        .filter(v => {
+          if (typeof(v) != "object" || typeof(v?.entries) != "object") return false;
+          if (!v.hasOwnProperty("max")) return true;
+          let entryTypes = Object.keys(v.entries).map(e => `cards:${e}`);
+          return (Object.values(entryData).filter(e => entryTypes?.includes(e['jcr:primaryType'])).length < v.max);
+        })
+        .forEach(v => setMenuItems(items => [...(items || []), ...Object.keys(v.entries)]));
+    }
+  }, [entryData, childModels]);
+
+  // -------------------------------------------------------------
+  // Handle data updates (field changes, child item creation or
+  // deletion)
 
   let handleDataChange = (newData) => {
     // There's new data to load, display and highlight it:
@@ -594,6 +612,9 @@ let QuestionnaireEntry = (props) => {
     setEntryData(newData);
     updateContext(newData);
   }
+
+  // -------------------------------------------------------------
+  // Rendering
 
   let renderFields = (options) => (<>
     <LabeledField name={`${type}Id`} {...options}>{entryData["@name"]}</LabeledField>
