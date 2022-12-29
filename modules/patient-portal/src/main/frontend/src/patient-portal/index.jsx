@@ -25,13 +25,10 @@ import { appTheme } from "../themePalette.jsx";
 import QuestionnaireSet from "./QuestionnaireSet.jsx";
 import PatientIdentification from "./PatientIdentification.jsx";
 import Footer from "./Footer.jsx";
-import ErrorPage from "../components/ErrorPage.jsx";
 
 import { DEFAULT_INSTRUCTIONS, SURVEY_INSTRUCTIONS_PATH } from "./SurveyInstructionsConfiguration.jsx"
 
 const CONFIG = "/Survey/PatientIdentification.json";
-const TOKENLESS_AUTH_ENABLED_PROP = "tokenlessAuthEnabled";
-const AUTH_TOKEN_PARAM = "auth_token";
 
 function PatientPortalHomepage (props) {
   // Current user and associated subject
@@ -40,7 +37,6 @@ function PatientPortalHomepage (props) {
   // Patient Survey UI texts from Patient Portal Survey Instructions
   const [ surveyInstructions, setSurveyInstructions ] = useState();
   const [ accessConfig, setAccessConfig ] = useState({});
-  const [ unableToProceed, setUnableToProceed ] = useState();
 
   // Fetch saved settings for Patient Portal Survey Instructions
   useEffect(() => {
@@ -56,18 +52,12 @@ function PatientPortalHomepage (props) {
       });
   }, []);
 
-  // Fetch tokenless auth
+  // Fetch the patient access configuration
   useEffect(() => {
     fetch(CONFIG)
       .then((response) => response.ok ? response.json() : Promise.reject(response))
       .then((json) => {
         setAccessConfig(json);
-
-        let auth_token = new URLSearchParams(window.location.search).get(AUTH_TOKEN_PARAM);
-        if (!(json[TOKENLESS_AUTH_ENABLED_PROP] || auth_token)) {
-          // The user cannot continue without an authentication token
-          setUnableToProceed(true);
-        }
       });
   }, []);
 
@@ -84,24 +74,9 @@ function PatientPortalHomepage (props) {
     setSubject(p?.subject);
   }
 
-  if (unableToProceed) {
-    let appName = document.querySelector('meta[name="title"]')?.content;
-    let message = surveyInstructions?.welcomeMessage?.replaceAll("APP_NAME", appName) || '';
-    message = `${message}\n\n### To fill out surveys, please follow the personalized link that was emailed to you.`;
-    return (<>
-      <ErrorPage
-        sx={{maxWidth: 500, margin: "0 auto"}}
-        title=""
-        message={message}
-        messageColor="textPrimary"
-      />
-      <Footer/>
-    </>)
-  }
-
   if (!subject) {
     return (<>
-      <PatientIdentification onSuccess={onPatientIdentified} displayText={displayText}/>
+      <PatientIdentification onSuccess={onPatientIdentified} displayText={displayText} config={accessConfig}/>
       <Footer />
     </>);
   }

@@ -426,36 +426,30 @@ const questionnaireStyle = theme => ({
         marginLeft: theme.spacing(0)
     },
     formFooter: {
-        position: "sticky",
-        bottom: theme.spacing(0),
-        zIndex: 1000,
-        maxHeight: "68px",
-        marginTop: theme.spacing(5),
+        position: "relative",
     },
     hiddenFooter: {
         display: "none",
     },
     formStepper: {
-        position: "fixed",
-        bottom: theme.spacing(2),
-        right: theme.spacing(5),
-        left: theme.spacing(5),
-    },
-    formStepperFullScreen: {
-        left: theme.spacing(37.5),
-    },
-    formStepperBottom: {
-        background: "transparent",
-    },
-    formStepperBottomBackground: {
-        background: "transparent",
-    },
-    formStepperTopBar: {
-        backgroundColor: theme.palette.secondary.main,
+        position: "relative",
+        margin: theme.spacing(0, -2),
+        "& .MuiMobileStepper-progress" : {
+          width: "100%",
+        },
     },
     paginationButton: {
         float: "right",
         margin: theme.spacing(1),
+    },
+    formStepperBufferBar: {
+        backgroundColor: theme.palette.secondary.main,
+    },
+    formStepperBackgroundBar: {
+        backgroundColor: theme.palette.primary.light,
+        opacity: "0.5",
+        animation: "none",
+        backgroundImage: "none",
     },
     actionsMenu: {
         border: "1px solid " + theme.palette.divider,

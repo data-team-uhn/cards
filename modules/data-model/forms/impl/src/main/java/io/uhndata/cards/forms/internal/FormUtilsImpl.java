@@ -16,6 +16,11 @@
  */
 package io.uhndata.cards.forms.internal;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.LinkedHashMap;
@@ -31,7 +36,11 @@ import javax.jcr.PropertyIterator;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonValue;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.oak.api.PropertyState;
 import org.apache.jackrabbit.oak.api.Type;
@@ -339,6 +348,11 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
         Object result = null;
         try {
             switch (value.getType()) {
+                case PropertyType.BINARY:
+                    // We're supposed to be transforming raw bytes into an Unicode string;
+                    // ISO 8859-1 is a subset of Unicode
+                    result = IOUtils.toString(value.getBinary().getStream(), StandardCharsets.ISO_8859_1);
+                    break;
                 case PropertyType.BOOLEAN:
                     result = value.getBoolean();
                     break;
@@ -357,7 +371,7 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
                 default:
                     result = value.getString();
             }
-        } catch (final RepositoryException e) {
+        } catch (final RepositoryException | IOException e) {
             // Shouldn't happen
         }
         return result;
@@ -448,6 +462,24 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
             // Not expected
         }
         return result.values();
+    }
+
+    @Override
+    public JsonValue serializeProperty(final Property property)
+    {
+        if (property == null) {
+            return JsonValue.NULL;
+        }
+        try {
+            if (property.isMultiple()) {
+                return serializeMultiValuedProperty(property);
+            } else {
+                return serializeSingleValuedProperty(property);
+            }
+        } catch (RepositoryException e) {
+            // Not found or not accessible, just return null
+        }
+        return JsonValue.NULL;
     }
 
     private Node findNode(final Node parent, final String property, final String value)
@@ -548,5 +580,87 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
                 findAnswersInForm(otherForm, question, result);
             }
         }
+    }
+
+    private JsonValue serializeSingleValuedProperty(final Property property)
+        throws RepositoryException
+    {
+        final Value value = property.getValue();
+        JsonValue result = null;
+
+        switch (property.getType()) {
+            case PropertyType.BINARY:
+                result = serializeInputStream(value.getBinary().getStream());
+                break;
+            case PropertyType.BOOLEAN:
+                result = value.getBoolean() ? JsonValue.TRUE : JsonValue.FALSE;
+                break;
+            case PropertyType.DATE:
+                result = serializeDate(value.getDate());
+                break;
+            case PropertyType.DOUBLE:
+                result = Json.createValue(value.getDouble());
+                break;
+            case PropertyType.LONG:
+                result = Json.createValue(value.getLong());
+                break;
+            case PropertyType.DECIMAL:
+                // Send as string to prevent losing precision
+            default:
+                result = Json.createValue(value.getString());
+                break;
+        }
+        return result;
+    }
+
+    private JsonValue serializeMultiValuedProperty(final Property property)
+        throws RepositoryException
+    {
+        final JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+
+        for (Value value : property.getValues()) {
+            switch (property.getType()) {
+                case PropertyType.BINARY:
+                    arrayBuilder.add(serializeInputStream(value.getBinary().getStream()));
+                    break;
+                case PropertyType.BOOLEAN:
+                    arrayBuilder.add(value.getBoolean());
+                    break;
+                case PropertyType.DATE:
+                    arrayBuilder.add(serializeDate(value.getDate()));
+                    break;
+                case PropertyType.DOUBLE:
+                    arrayBuilder.add(value.getDouble());
+                    break;
+                case PropertyType.LONG:
+                    arrayBuilder.add(value.getLong());
+                    break;
+                case PropertyType.DECIMAL:
+                    // Send decimals as string to prevent losing precision
+                default:
+                    arrayBuilder.add(value.getString());
+                    break;
+            }
+        }
+        return arrayBuilder.build();
+    }
+
+    private JsonValue serializeDate(final Calendar value)
+    {
+        // Use the ISO 8601 date+time format
+        final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        sdf.setTimeZone(value.getTimeZone());
+        return Json.createValue(sdf.format(value.getTime()));
+    }
+
+    private JsonValue serializeInputStream(final InputStream value)
+    {
+        try {
+            // We're supposed to be transforming raw bytes into an Unicode string; ISO 8859-1 is a subset of Unicode
+            return Json.createValue(IOUtils.toString(value, StandardCharsets.ISO_8859_1));
+        } catch (IOException e) {
+            // return null
+        }
+        return JsonValue.NULL;
     }
 }

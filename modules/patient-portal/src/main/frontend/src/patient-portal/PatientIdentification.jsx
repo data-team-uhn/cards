@@ -20,6 +20,7 @@ import React, { useState, useEffect }  from 'react';
 
 import {
   Button,
+  CircularProgress,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -38,6 +39,7 @@ import makeStyles from '@mui/styles/makeStyles';
 import CloseIcon from '@mui/icons-material/Close';
 import AppointmentIcon from '@mui/icons-material/Event';
 
+import ErrorPage from "../components/ErrorPage.jsx";
 import ToUDialog from "./ToUDialog.jsx";
 
 import DropdownsDatePicker from "../components/DropdownsDatePicker.jsx";
@@ -111,7 +113,7 @@ const useStyles = makeStyles(theme => ({
 // This just makes sure that the correct person accessed the application.
 function PatientIdentification(props) {
   // Callback for reporting successful authentication
-  const { onSuccess, displayText } = props;
+  const { config, onSuccess, displayText } = props;
 
   // The values entered by the user
   const [ dob, setDob ] = useState();
@@ -119,6 +121,8 @@ function PatientIdentification(props) {
   const [ hc, setHc ] = useState();
 
   // Internal state
+  // Flag specifying that the required authentication token is missing, so the user cannot be identified
+  const [ canAuthenticate, setCanAuthenticate ] = useState();
   // Holds an error message for display
   const [ error, setError ] = useState();
   // Returned from the server after successful validation of the authentication,
@@ -141,7 +145,7 @@ function PatientIdentification(props) {
     return str?.toUpperCase().replaceAll(/[^A-Z0-9]*/g, "") || "";
   }
 
-  const sendFetch = (requestData, onError) => {
+  const validateCredentials = (requestData, onError) => {
     fetch("/Survey.validateCredentials", {
       "method": "POST",
       "body": requestData
@@ -163,16 +167,6 @@ function PatientIdentification(props) {
       });
   }
 
-  const checkBypass = () => {
-    // Check if we are given a token and can bypass patient identification
-    let authToken = window.location.search ? new URLSearchParams(window.location.search).get("auth_token") : "";
-    if (authToken) {
-      let requestData = new FormData();
-      requestData.append("auth_token", authToken);
-      sendFetch(requestData, () => {});
-    }
-  }
-
   const identify = () => {
     if (!dob || !mrn && !hc) {
       return null;
@@ -183,7 +177,7 @@ function PatientIdentification(props) {
     hc && requestData.append("health_card", hc);
     visit && requestData.append("visit", visit);
 
-    sendFetch(requestData, (error) => setError(error.statusText || "Invalid credentials"));
+    validateCredentials(requestData, (error) => setError(error.statusText || "Invalid credentials"));
   }
 
   // On submitting the patient login form, make a request to identify the patient
@@ -199,11 +193,21 @@ function PatientIdentification(props) {
     identify();
   }
 
+  // ------------------------------------------------------------------------------------
+  // When the configuration that specifies if the auth token is required is loaded,
+  // process the auth_token accordingly
   useEffect(() => {
-    // When we first load, check to see if the user is authenticated and the patient identification check is disabled
-    checkBypass();
-  }, []);
+    let auth_token = new URLSearchParams(window.location.search).get("auth_token");
+    setCanAuthenticate(!!(config?.tokenlessAuthEnabled || auth_token));
+    // If an auth token is provided, use it to initiate the authentication process
+    if (auth_token) {
+      let requestData = new FormData();
+      requestData.append("auth_token", auth_token);
+      validateCredentials(requestData, () => {});
+    }
+  }, [config?.tokenlessAuthEnabled]);
 
+  // Once a visit is selected, finalize the identification
   useEffect(() => {
     if (!visit || !visitList) return;
     // When the user selects a visit from the visit list, clear the list and
@@ -235,6 +239,18 @@ function PatientIdentification(props) {
 
   let appName = document.querySelector('meta[name="title"]')?.content;
   let welcomeMessage = displayText('welcomeMessage')?.replaceAll("APP_NAME", appName);
+
+  if (!canAuthenticate) {
+    let message = `${welcomeMessage || ""}\n\n### To fill out surveys, please follow the personalized link that was emailed to you.`;
+    return (
+      <ErrorPage
+        sx={{maxWidth: 500, margin: "0 auto"}}
+        title=""
+        message={message}
+        messageColor="textPrimary"
+      />
+    )
+  }
 
   return (<>
     <ToUDialog
@@ -283,12 +299,27 @@ function PatientIdentification(props) {
            <img src={document.querySelector('meta[name="logoLight"]').content} className={classes.logo} alt="logo" />
          </Grid>
 
-         {/* If we haven't authenticated and retrieved the visit list for this patient yet,
+         { /* If we don't have the authentication token yet or we don't need the identification form,
+             display the welcome message and a circular progress while we wait for the next step */ }
+
+         { (typeof(canAuthenticate) == "undefined" || !config?.PIIAuthRequired) ?
+
+         <>
+         { welcomeMessage &&
+           <Grid item xs={12} className={classes.description}>
+             <FormattedText>{welcomeMessage}</FormattedText>
+           </Grid>
+         }
+         <Grid item xs={12} className={classes.description}>
+            <CircularProgress />
+         </Grid>
+         </>
+
+         : (!visitList || showTou || touCleared === false) ?
+
+         /* If we haven't authenticated and retrieved the visit list for this patient yet,
              or if the Terms of Use were declined after identification,
-             display the identification form */}
-
-         { (!visitList || showTou || touCleared === false) ?
-
+             display the identification form */
          <>
          { welcomeMessage &&
            <Grid item xs={12} className={classes.description}>

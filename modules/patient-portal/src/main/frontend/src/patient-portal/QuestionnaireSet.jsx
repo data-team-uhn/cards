@@ -89,6 +89,10 @@ const useStyles = makeStyles(theme => ({
     alignItems: "stretch",
     justify: "space-between",
     flexWrap: "nowrap",
+    "& form" : {
+      maxWidth: "780px",
+      margin: "auto",
+    },
   },
 }));
 
