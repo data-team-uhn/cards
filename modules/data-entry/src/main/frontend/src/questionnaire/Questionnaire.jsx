@@ -608,7 +608,6 @@ let QuestionnaireEntry = (props) => {
   }
 
   let onCreated = (newData) => {
-    setEntryData({});
     setEntryData(newData);
     updateContext(newData);
   }

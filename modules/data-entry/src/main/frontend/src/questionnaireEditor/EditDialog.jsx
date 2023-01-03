@@ -95,7 +95,6 @@ let EditDialog = (props) => {
 
     } else {
       // If the entry doesn't exist, create it
-      let newData = data;
       var request_data = new FormData(event.currentTarget);
       request_data.append('jcr:primaryType', primaryType);
       fetchWithReLogin(globalLoginDisplay,
@@ -109,13 +108,11 @@ let EditDialog = (props) => {
             setLastSaveStatus(true);
 
             // Fetch and propagate back data with appended newly created item to highlight & focus on it
-            fetch(`${data['@path']}/${targetId}.deep.json`)
+            fetchWithReLogin(globalLoginDisplay, `${data['@path']}.deep.json`)
               .then((response) => response.ok ? response.json() : Promise.reject(response))
               .then((json) => {
-                let item = json;
-                item.doHighlight = true;
-                newData = data;
-                newData[targetId] = item;
+                let newData = json;
+                newData[targetId].doHighlight = true;
                 setSaveInProgress(false);
                 setOpen(false);
                 onSaved && onSaved(newData);
