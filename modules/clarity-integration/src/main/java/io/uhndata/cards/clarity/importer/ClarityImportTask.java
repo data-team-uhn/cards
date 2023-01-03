@@ -72,6 +72,8 @@ public class ClarityImportTask implements Runnable
 
     private static final String VALUE_PROP = "value";
 
+    private String topLevelSubjectColName;
+
     private final List<String> columns;
 
     private final Map<String, List<QuestionInformation>> questionnaireToQuestions;
@@ -79,6 +81,8 @@ public class ClarityImportTask implements Runnable
     private final Map<String, String> questionnaireToSubjectType;
 
     private final Map<String, String> questionnaireToSubjectColumnHeader;
+
+    private final Map<String, String> sqlColumnToDataType;
 
     private ThreadLocal<List<String>> nodesToCheckin = ThreadLocal.withInitial(LinkedList::new);
 
@@ -146,9 +150,12 @@ public class ClarityImportTask implements Runnable
         this.questionnaireToQuestions = new HashMap<>();
         this.questionnaireToSubjectType = new HashMap<>();
         this.questionnaireToSubjectColumnHeader = new HashMap<>();
+        this.sqlColumnToDataType = new HashMap<>();
+        this.topLevelSubjectColName = "";
 
         // Convert our input mapping node to a mapping from column->question
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
+            populateQuestionnaireToSubjectType(resolver);
             processClarityToCardsMapping(resolver, resolver.resolve(MAPPING_CONFIG));
         } catch (RepositoryException e) {
             LOGGER.error("Error reading mapping: {}", e.getMessage(), e);
@@ -173,24 +180,8 @@ public class ClarityImportTask implements Runnable
         return String.join("/", Arrays.copyOfRange(questionPathArray, 0, 3));
     }
 
-    @SuppressWarnings("checkstyle:MultipleStringLiterals")
-    private void processClarityToCardsMapping(ResourceResolver resolver, Resource mapping) throws RepositoryException
+    private void populateQuestionnaireToSubjectType(ResourceResolver resolver) throws RepositoryException
     {
-        /*
-         * This method needs to populate:
-         *   - this.columns
-         *   - this.questionnaireToQuestions
-         *   - this.questionnaireToSubjectType
-         *   - this.questionnaireToSubjectColumnHeader
-         */
-
-        String subjectIDColumn = resolver.resolve("/apps/cards/clarityImport").getValueMap().get("subjectIDColumn", "");
-
-        // Populate this.columns
-        for (Resource child : mapping.getChildren()) {
-            this.columns.add(child.getValueMap().get("sqlColumn", ""));
-        }
-
         // Populate this.questionnaireToSubjectType
         Resource questionnaires = resolver.resolve("/Questionnaires");
         for (Resource questionnaire : questionnaires.getChildren()) {
@@ -201,41 +192,59 @@ public class ClarityImportTask implements Runnable
                     getSubjectTypePath(resolver, subjectTypesRefs[i]));
             }
         }
+    }
 
-        /*
-         * Populate this.questionnaireToSubjectColumnHeader, starting with a blank for all questionnaires,
-         * this will be filled in later
-         */
-        Iterator<Map.Entry<String, String>> questionnairesIterator =
-            this.questionnaireToSubjectType.entrySet().iterator();
-
-        while (questionnairesIterator.hasNext()) {
-            Map.Entry<String, String> questionnaireToSubject = questionnairesIterator.next();
-            String questionnairePath = questionnaireToSubject.getKey();
-            this.questionnaireToSubjectColumnHeader.put(questionnairePath, "");
-        }
-
-        // Populate this.questionnaireToQuestions
+    @SuppressWarnings("checkstyle:MultipleStringLiterals")
+    private void processClarityToCardsMapping(ResourceResolver resolver, Resource mapping) throws RepositoryException
+    {
         for (Resource child : mapping.getChildren()) {
-            String questionPath = child.getValueMap().get("question", "");
-            String questionnairePath = this.getQuestionnairePathFromQuestionPath(questionPath);
-            String sqlColumn = child.getValueMap().get("sqlColumn", "");
-            QuestionInformation thisQuestion = new QuestionInformation(
-                questionPath,
-                this.getQuestionType(resolver.resolve(questionPath)),
-                questionnairePath,
-                sqlColumn
-            );
+            if (!"cards:claritySubjectMapping".equals(child.getValueMap().get("jcr:primaryType", ""))) {
+                continue;
+            }
+            String subjectType = child.getValueMap().get("subjectType", "");
+            String subjectIDColumn = child.getValueMap().get("subjectIDColumn", "");
 
-            if (!this.questionnaireToQuestions.containsKey(questionnairePath)) {
-                this.questionnaireToQuestions.put(questionnairePath, new LinkedList<QuestionInformation>());
+            if ("".equals(this.topLevelSubjectColName)) {
+                this.topLevelSubjectColName = subjectIDColumn;
             }
 
-            this.questionnaireToQuestions.get(questionnairePath).add(thisQuestion);
+            // Handle the questions associated with this Subject
+            Resource subjectQuestions = child.getChild("questions");
+            if (subjectQuestions != null) {
+                for (Resource questionMapping : subjectQuestions.getChildren()) {
+                    String questionPath = questionMapping.getValueMap().get("question", "");
+                    String sqlColumn = questionMapping.getValueMap().get("sqlColumn", "");
 
-            // Populate this.questionnaireToSubjectColumnHeader, actually filling in the values this time
-            if (subjectIDColumn.equals(sqlColumn)) {
-                this.questionnaireToSubjectColumnHeader.put(questionnairePath, subjectIDColumn);
+                    // Populate this.columns
+                    this.columns.add(sqlColumn);
+
+                    // Populate this.sqlColumnToDataType
+                    this.sqlColumnToDataType.put(sqlColumn,
+                        resolver.getResource(questionPath).getValueMap().get("dataType", ""));
+
+                    // Populate this.questionnaireToQuestions
+                    String questionnairePath = this.getQuestionnairePathFromQuestionPath(questionPath);
+                    QuestionInformation thisQuestion = new QuestionInformation(
+                        questionPath,
+                        this.getQuestionType(resolver.resolve(questionPath)),
+                        questionnairePath,
+                        sqlColumn
+                    );
+                    if (!this.questionnaireToQuestions.containsKey(questionnairePath)) {
+                        this.questionnaireToQuestions.put(questionnairePath, new LinkedList<QuestionInformation>());
+                    }
+                    // TODO: Should we somehow ensure that thisQuestion is not added more than once ???
+                    this.questionnaireToQuestions.get(questionnairePath).add(thisQuestion);
+
+                    // Populate this.questionnaireToSubjectColumnHeader
+                    this.questionnaireToSubjectColumnHeader.put(questionnairePath, subjectIDColumn);
+                }
+            }
+
+            // Do this same process for all nodes under childSubjects
+            Resource childSubjects = child.getChild("childSubjects");
+            if (childSubjects != null) {
+                processClarityToCardsMapping(resolver, childSubjects);
             }
         }
     }
@@ -261,35 +270,10 @@ public class ClarityImportTask implements Runnable
         return QuestionType.STRING;
     }
 
-    private String generateClarityQuery() throws LoginException
+    private String generateClarityQuery()
     {
-        Map<String, String> sqlColumns = new HashMap<>();
-        String queryString = "";
-        String subjectIDColumn = "";
-        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
-
-            // Get the /apps/cards/clarityImport JCR node
-            Resource clarityImportConfigNode = resolver.getResource("/apps/cards/clarityImport");
-
-            // Read the "subjectIDColumn value of this node
-            subjectIDColumn = clarityImportConfigNode.getValueMap().get("subjectIDColumn", "");
-
-            // ... save it to the sqlColums hashmap
-            sqlColumns.put(subjectIDColumn, "text");
-
-            // Iterate through all the children of clarityImportConfigNode
-            for (Resource child : clarityImportConfigNode.getChildren()) {
-                String sqlColumn = child.getValueMap().get("sqlColumn", "");
-                String question = child.getValueMap().get("question", "");
-                String dataType = resolver.getResource(question).getValueMap().get("dataType", "");
-                sqlColumns.put(sqlColumn, dataType);
-            }
-        } catch (LoginException e) {
-            throw e;
-        }
-
-        queryString = "SELECT ";
-        Iterator<Map.Entry<String, String>> columnsIterator = sqlColumns.entrySet().iterator();
+        String queryString = "SELECT ";
+        Iterator<Map.Entry<String, String>> columnsIterator = this.sqlColumnToDataType.entrySet().iterator();
         while (columnsIterator.hasNext()) {
             Map.Entry<String, String> col = columnsIterator.next();
             if ("date".equals(col.getValue())) {
@@ -303,7 +287,7 @@ public class ClarityImportTask implements Runnable
         }
         queryString += " FROM path.CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS";
         queryString += " WHERE CAST(LoadTime AS DATE) = CAST(GETDATE() AS DATE)";
-        queryString += " ORDER BY " + subjectIDColumn + " ASC;";
+        queryString += " ORDER BY " + this.topLevelSubjectColName + " ASC;";
 
         return queryString;
     }
