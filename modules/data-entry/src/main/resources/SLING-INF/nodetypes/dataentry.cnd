@@ -62,25 +62,25 @@
   - showTotalRows (BOOLEAN) = 'true'
 
 //-----------------------------------------------------------------------------
-[cards:FormsQueryCache] > sling:Folder, mix:referenceable, mix:versionable, mix:lastModified
+[cards:QueryCache] > nt:unstructured
   // Attributes
 
-  // We can use forms in a query.
+  // We can query the cache for saved counts.
   query
 
   // Properties
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "cards/FormsQueryCache" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/QueryCache" mandatory autocreated protected
 
-  // Hardcode the resource supertype: each form is a resource.
+  // Hardcode the resource supertype: each queryCache is a resource.
   - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
 
   // Children
 
 //-----------------------------------------------------------------------------
-// The homepage for the FormsQueryCache space.
-[cards:FormsQueryCacheHomepage] > sling:Folder
+// The homepage for the QueryCache space.
+[cards:QueryCacheHomepage] > sling:Folder
   // Attributes:
 
   // We can use this homepage in a query.
@@ -89,12 +89,10 @@
   // Properties:
 
   // Hardcode the resource type.
-  - sling:resourceType (STRING) = "cards/FormsQueryCacheHomepage" mandatory autocreated protected
+  - sling:resourceType (STRING) = "cards/QueryCacheHomepage" mandatory autocreated protected
 
-  // Hardcode the resource supertype: the FormsQueryCacheHomepage is a resource homepage.
+  // Hardcode the resource supertype: the QueryCacheHomepage is a resource homepage.
   - sling:resourceSuperType (STRING) = "cards/ResourceHomepage" mandatory autocreated protected
 
-  // Set a default title.
-  - title (String) = "Data" mandatory autocreated
-
   // Children
+  + * (cards:QueryCache)
