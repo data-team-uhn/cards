@@ -54,6 +54,13 @@
               "formatted" : {},
               "hidden": {}
             }
+          },
+          "autocreated": {
+            "displayMode" : {
+              "input" : {},
+              "formatted" : {},
+              "hidden": {}
+            }
           }
         }
       },
@@ -93,6 +100,13 @@
           },
           "reference": {
             "question": "string",
+            "displayMode" : {
+              "input" : {},
+              "formatted" : {},
+              "hidden": {}
+            }
+          },
+          "autocreated": {
             "displayMode" : {
               "input" : {},
               "formatted" : {},
@@ -153,6 +167,13 @@
               "formatted" : {},
               "hidden": {}
             }
+          },
+          "autocreated": {
+            "displayMode" : {
+              "input" : {},
+              "formatted" : {},
+              "hidden": {}
+            }
           }
         }
       },
@@ -208,6 +229,13 @@
               "formatted" : {},
               "hidden": {}
             }
+          },
+          "autocreated": {
+            "displayMode" : {
+              "input" : {},
+              "formatted" : {},
+              "hidden": {}
+            }
           }
         }
       },
@@ -244,6 +272,13 @@
           },
           "reference": {
             "question": "string",
+            "displayMode" : {
+              "input" : {},
+              "formatted" : {},
+              "hidden": {}
+            }
+          },
+          "autocreated": {
             "displayMode" : {
               "input" : {},
               "formatted" : {},
@@ -307,6 +342,13 @@
               "formatted" : {},
               "hidden": {}
             }
+          },
+          "autocreated": {
+            "displayMode" : {
+              "input" : {},
+              "formatted" : {},
+              "hidden": {}
+            }
           }
         }
       },
@@ -348,6 +390,13 @@
               "formatted" : {},
               "hidden": {}
             }
+          },
+          "autocreated": {
+            "displayMode" : {
+              "input" : {},
+              "formatted" : {},
+              "hidden": {}
+            }
           }
         }
       },
@@ -370,6 +419,13 @@
           },
           "reference": {
             "question": "string",
+            "displayMode" : {
+              "input" : {},
+              "formatted" : {},
+              "hidden": {}
+            }
+          },
+          "autocreated": {
             "displayMode" : {
               "input" : {},
               "formatted" : {},
