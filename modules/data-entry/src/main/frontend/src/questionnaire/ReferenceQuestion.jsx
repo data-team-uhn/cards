@@ -18,10 +18,10 @@
 //
 
 import AnswerComponentManager from "./AnswerComponentManager";
-import StyledReadOnlyQuestion from './ReadOnlyQuestion';
+import AutocreatedQuestion from './AutocreatedQuestion';
 
 AnswerComponentManager.registerAnswerComponent((definition) => {
   if (definition.entryMode === "reference") {
-    return [StyledReadOnlyQuestion, 80];
+    return [AutocreatedQuestion, 80];
   }
 });

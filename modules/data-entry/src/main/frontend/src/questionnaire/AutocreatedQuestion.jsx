@@ -30,14 +30,10 @@ import QuestionnaireStyle from './QuestionnaireStyle';
 import { useFormWriterContext } from "./FormContext";
 
 
-// Component that displays a reference question of any type.
-//
-// Mandatory props:
-// text: the question to be displayed
-// dataType: the type of answer to be displayed
+// Component that displays an autocreated question of any type.
 //
 // Other options are passed to the <question> widget
-let ReadOnlyQuestion = (props) => {
+let AutocreatedQuestion = (props) => {
   const { existingAnswer, classes, pageActive, questionName} = props;
   const { unitOfMeasurement, displayMode } = {...props.questionDefinition, ...props};
 
@@ -97,7 +93,7 @@ let ReadOnlyQuestion = (props) => {
   )
 }
 
-ReadOnlyQuestion.propTypes = {
+AutocreatedQuestion.propTypes = {
   classes: PropTypes.object.isRequired,
   questionDefinition: PropTypes.shape({
     text: PropTypes.string.isRequired,
@@ -107,11 +103,11 @@ ReadOnlyQuestion.propTypes = {
   }).isRequired
 };
 
-const StyledReadOnlyQuestion = withStyles(QuestionnaireStyle)(ReadOnlyQuestion);
-export default StyledReadOnlyQuestion;
+const StyledAutocreatedQuestion = withStyles(QuestionnaireStyle)(AutocreatedQuestion);
+export default StyledAutocreatedQuestion;
 
 AnswerComponentManager.registerAnswerComponent((definition) => {
-  if (definition.entryMode === "readOnly") {
-    return [StyledReadOnlyQuestion, 80];
+  if (definition.entryMode === "autocreated") {
+    return [StyledAutocreatedQuestion, 80];
   }
 });
