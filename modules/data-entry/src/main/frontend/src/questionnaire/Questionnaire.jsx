@@ -523,7 +523,9 @@ let QuestionnaireEntry = (props) => {
     changeQuestionnaireContext((oldContext) => {
       let newContext = oldContext || [];
       const index = newContext.findIndex(x => x.id == id);
-      newContext.splice(index, 1);
+      if (index >= 0) {
+        newContext.splice(index, 1);
+      }
       return newContext;
     });
   }
