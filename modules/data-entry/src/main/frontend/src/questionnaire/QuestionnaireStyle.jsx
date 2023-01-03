@@ -564,7 +564,7 @@ const questionnaireStyle = theme => ({
     },
     focusedQuestionnaireItem: {
       "&.MuiCard-root, > .MuiCard-root" : {
-        border: `2px solid ${theme.palette.primary.main}`,
+        outline: `2px solid ${theme.palette.primary.main}`,
       },
     },
     fileResourceAnswerList: {
