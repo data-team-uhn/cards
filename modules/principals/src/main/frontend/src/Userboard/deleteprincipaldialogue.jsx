@@ -52,7 +52,7 @@ class DeletePrincipalDialogue extends React.Component {
                 onClose={() => this.props.handleClose()}
             >
                 <DialogTitle>
-                  <Typography variant="h6">Delete {this.props.name}</Typography>
+                  Delete {this.props.name}
                 </DialogTitle>
                 <DialogContent>
                     <Typography variant="body1">Are you sure you want to delete {this.props.type} {this.props.name}?</Typography>

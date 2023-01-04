@@ -58,9 +58,6 @@ fetchWithReLogin(globalLoginDisplay, APIKEY_SERVLET_URL)
 }
 
 const useStyles = makeStyles(theme => ({
-  dialogTitle: {
-    marginRight: theme.spacing(5)
-  },
   vocabularyAction: {
     margin: theme.spacing(1)
   },

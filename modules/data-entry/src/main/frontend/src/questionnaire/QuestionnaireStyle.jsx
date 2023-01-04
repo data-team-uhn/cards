@@ -492,15 +492,6 @@ const questionnaireStyle = theme => ({
     NCRLoadingIndicator: {
         disable: "flex"
     },
-    closeButton: {
-        position: 'absolute',
-        right: theme.spacing(1),
-        top: theme.spacing(1),
-        color: theme.palette.grey[500]
-    },
-    dialogTitle: {
-        marginRight: theme.spacing(5)
-    },
     dialogContentWithTable: {
         padding: 0,
         "& .MuiPaper-root": {

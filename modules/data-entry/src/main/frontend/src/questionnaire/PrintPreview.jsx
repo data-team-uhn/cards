@@ -210,8 +210,8 @@ function PrintPreview(props) {
       >
         { (title || subtitle) &&
         <DialogTitle>
-          { title && <Typography variant="h4">{title}</Typography> }
-          { subtitle && <Typography variant="overline" color="textSecondary">{subtitle}</Typography> }
+          { title && <Typography component="div" variant="h4">{title}</Typography> }
+          { subtitle && <Typography component="div" variant="overline" color="textSecondary">{subtitle}</Typography> }
         </DialogTitle>
         }
         <DialogContent dividers>
