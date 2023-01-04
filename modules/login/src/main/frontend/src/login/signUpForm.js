@@ -19,6 +19,7 @@
 import React from 'react';
 import {
     Button,
+    Grid,
     TextField,
     Tooltip,
     Typography
@@ -118,12 +119,15 @@ class FormFields extends React.Component {
           required
 
         />
-        { !loginOnSuccess &&
-          <Button variant="outlined" size="small" onClick={handleReset} className={classes.submit + " " + classes.closeButton}>Close</Button>
-        }
-        {!isValid ?
-          // Render hover over and button
-          <React.Fragment>
+        <Grid container direction="row" justifyContent="flex-end" alignItems="center" className={classes.actions}>
+          { !loginOnSuccess &&
+            <Grid item>
+              <Button variant="outlined" size="small" onClick={handleReset} className={classes.submit + " " + classes.closeButton}>Close</Button>
+            </Grid>
+          }
+          <Grid item>
+          {!isValid ?
+            // Render tooltip and button
             <Tooltip title="You must fill in all fields.">
               <div>
                 { loginOnSuccess ?
@@ -132,13 +136,15 @@ class FormFields extends React.Component {
                 }
               </div>
             </Tooltip>
-          </React.Fragment> :
-          // Else just render the button
-          ( loginOnSuccess ?
-            <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit} fullWidth >Submit</Button> :
-            <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit + " " + classes.closeButton} size="small">Submit</Button>
-          )
-        }
+            :
+            // Else just render the button
+            ( loginOnSuccess ?
+              <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit} fullWidth >Submit</Button> :
+              <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit + " " + classes.closeButton} size="small">Submit</Button>
+            )
+          }
+          </Grid>
+        </Grid>
       </form>
     );
   }
