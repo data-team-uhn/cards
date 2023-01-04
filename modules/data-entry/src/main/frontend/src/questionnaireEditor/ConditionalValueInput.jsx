@@ -41,6 +41,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import EditorInput from "./EditorInput";
 import QuestionComponentManager from "./QuestionComponentManager";
 import ValueComponentManager from "./ValueComponentManager";
+import { useQuestionnaireReaderContext } from "../questionnaire/QuestionnaireContext";
 
 const useStyles = makeStyles(theme => ({
   referenceToggle: {
@@ -83,8 +84,9 @@ let ConditionalValueInput = (props) => {
   let [ variables, setVariables ] = useState();
   let [ error, setError ] = useState();
 
+  let questions = useQuestionnaireReaderContext();
+
   let path = (data?.['@path'] || props.path) + `/${objectKey}`;
-  let parentQuestionnaire = /(\/Questionnaires\/([^.\/]+))(.)*/.exec(path)[1];
 
   const classes = useStyles();
 
@@ -138,32 +140,10 @@ let ConditionalValueInput = (props) => {
   }
 
   useEffect(() => {
-    if (isReference && !variables) {
-      fetch(`${parentQuestionnaire}.deep.json`)
-        .then((response) => response.ok ? response.json() : Promise.reject(response))
-        .then(loadVariableNames)
-        .catch(() => {
-           setError("Cannot load question identifiers");
-           setVariables([]);
-        })
+    if (questions && !variables) {
+      setVariables(questions);
     }
-  }, [isReference]);
-
-  let loadVariableNames = (json) => {
-    let vars = [];
-    findQuestions(json, vars);
-    setVariables(vars);
-  }
-
-  let findQuestions = (json, result) =>  {
-    Object.entries(json || {}).forEach(([k,e]) => {
-      if (e?.['jcr:primaryType'] == "cards:Question") {
-        result.push({name: e['@name'], text: e['text']});
-      } else if (typeof(e) == 'object') {
-        findQuestions(e, result);
-      }
-    })
-  }
+  }, [questions]);
 
   // Input for adding a new value
   let textField = (label, params) => (
@@ -289,46 +269,30 @@ let ConditionalValue = (props) => {
   let { objectKey, data } = props;
   let [ variables, setVariables ] = useState();
 
-  let parentQuestionnaire = /(\/Questionnaires\/([^.\/]+))(.)*/.exec(data['@path'])[1];
+  let values = data[objectKey]?.value || [];
+
+  if (values.length == 0) {
+	return null;
+  }
+
+  let isReference = data?.[objectKey]?.isReference;
+  let questions = useQuestionnaireReaderContext();
 
   useEffect(() => {
-    if (data?.[objectKey]?.isReference && !variables) {
-      fetch(`${parentQuestionnaire}.deep.json`)
-        .then((response) => response.ok ? response.json() : Promise.reject(response))
-        .then(loadVariableNames)
-        .catch(() => {
-           setVariables([]);
-        })
+    if (isReference && questions && !variables) {
+      setVariables(questions);
     }
-  }, []);
-
-  let loadVariableNames = (json) => {
-    let vars = [];
-    findQuestions(json, vars);
-    setVariables(vars);
-  }
-
-  let findQuestions = (json, result) =>  {
-    Object.entries(json || {}).forEach(([k,e]) => {
-      if (e?.['jcr:primaryType'] == "cards:Question") {
-        result.push({name: e['@name'], text: e['text']});
-      } else if (typeof(e) == 'object') {
-        findQuestions(e, result);
-      }
-    })
-  }
+  }, [questions]);
 
   return (
-    data?.[objectKey]?.value?.length > 0
-    ? data[objectKey].value.map(value => (
+    values.map(value => (
       <ListItemText
         style={{marginTop: 0}}
         key={value}
         primary={value}
-        secondary={data?.[objectKey]?.isReference && variables?.find(v => v.name == value)?.text}
+        secondary={isReference && variables?.find(v => v.name == value)?.text}
       />
     ))
-    : null
   );
 }
 

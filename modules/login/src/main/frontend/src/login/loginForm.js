@@ -166,6 +166,7 @@ class SignIn extends React.Component {
             {this.state.failedLogin && <Alert severity="error">{this.state.failedLogin}</Alert>}
 
             <form
+              method="post"
               className={classes.form}
               onSubmit={(event)=> {
                 event.preventDefault();

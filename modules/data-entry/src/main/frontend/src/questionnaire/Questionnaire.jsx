@@ -46,10 +46,22 @@ import { usePageNameWriterContext } from "../themePage/Page.jsx";
 import QuestionnaireItemCard from "../questionnaireEditor/QuestionnaireItemCard";
 import ResourceHeader from "./ResourceHeader";
 import QuestionnairePreview from "./QuestionnairePreview";
+import { QuestionnaireProvider, useQuestionnaireWriterContext } from "./QuestionnaireContext";
 
 let _stripCardsNamespace = str => str.replaceAll(/^cards:/g, "");
 
 export const QUESTIONNAIRE_ITEM_NAMES = ENTRY_TYPES.map(type => _stripCardsNamespace(type));
+
+let findQuestions = (json, result = []) =>  {
+  Object.entries(json || {}).forEach(([k,e]) => {
+    if (e?.['jcr:primaryType'] == "cards:Question") {
+      result.push({id: e['jcr:uuid'], name: e['@name'], text: e['text']});
+    } else if (typeof(e) == 'object') {
+      findQuestions(e, result);
+    }
+  })
+  return result;
+}
 
 // GUI for displaying details about a questionnaire.
 let Questionnaire = (props) => {
@@ -76,9 +88,10 @@ let Questionnaire = (props) => {
       .catch(handleError);
   };
 
-  if (!data) {
+  // First, fetch the questionnaire data
+  useEffect(() => {
     fetchData();
-  }
+  }, []);
 
   useEffect(() => {
     setQuestionnaireTitle(data?.title || decodeURI(id));
@@ -170,14 +183,16 @@ let Questionnaire = (props) => {
                 contentOffset={props.contentOffset}
               />
             :
-              <QuestionnaireContents
-                disableDelete
-                data={data}
-                classes={classes}
-                onFieldsChanged={(newData) => newData?.title && setQuestionnaireTitle(newData.title)}
-                onActionDone={()=>{}}
-                menuProps={{isMainAction: true}}
-              />
+              <QuestionnaireProvider>
+                <QuestionnaireContents
+                  disableDelete
+                  data={data}
+                  classes={classes}
+                  onFieldsChanged={(newData) => newData?.title && setQuestionnaireTitle(newData.title)}
+                  onActionDone={()=>{}}
+                  menuProps={{isMainAction: true}}
+                />
+              </QuestionnaireProvider>
             }
           </Grid>
         </Grid>
@@ -321,7 +336,20 @@ QuestionnaireItemSet.propTypes = {
 };
 
 // Questionnaire contents: properties + entries
-let QuestionnaireContents = (props) => <QuestionnaireEntry {...props} />;
+let QuestionnaireContents = (props) => {
+  let { data } = props;
+
+  let changeQuestionnaireContext = useQuestionnaireWriterContext();
+
+  useEffect(() => {
+    // Load initial data
+    changeQuestionnaireContext(findQuestions(data));
+    // Clear context when unmounting component
+    return (() => changeQuestionnaireContext([]));
+  }, []);
+
+  return <QuestionnaireEntry {...props} />;
+};
 
 QuestionnaireContents.propTypes = {
   onActionDone: PropTypes.func,
@@ -467,7 +495,41 @@ ConditionalGroup.defaultProps = {
 let QuestionnaireEntry = (props) => {
   let { onActionDone, onFieldsChanged, data, type, titleField, model, classes, menuProps, ...rest } = props;
   let [ entryData, setEntryData ] = useState(data);
+  let [ menuItems, setMenuItems ] = useState([]);
   let [ doHighlight, setDoHighlight ] = useState(data.doHighlight);
+
+  // --------------------------------------------------------------
+  // Questionnaire context manipulation
+
+  let changeQuestionnaireContext = useQuestionnaireWriterContext();
+
+  let updateContext = (data) => {
+    let vars = findQuestions({data: data});
+    changeQuestionnaireContext((oldContext) => {
+       let newContext = oldContext || [];
+       vars.forEach(v => {
+         const index = newContext.findIndex(x => x.id == v.id);
+         if (index >= 0) {
+           newContext.splice(index, 1, v);
+         } else {
+           newContext.push(v);
+         }
+       });
+       return newContext;
+    });
+  }
+
+  let removeFromContext = (id) => {
+    changeQuestionnaireContext((oldContext) => {
+      let newContext = oldContext || [];
+      const index = newContext.findIndex(x => x.id == id);
+      newContext.splice(index, 1);
+      return newContext;
+    });
+  }
+
+  // -------------------------------------------------------------
+  // Find child item specifications
 
   let spec = require(`../questionnaireEditor/${model}`)[0];
 
@@ -495,44 +557,63 @@ let QuestionnaireEntry = (props) => {
     // look for overrides deeper
     .find(([key, value]) => findChildrenSpec(key, value));
 
-  // Add the child types to the menu
-  let menuItems = childModels && Object.keys(childModels).filter(k => typeof(childModels[k]) != "object");
+  // -------------------------------------------------------------
+  // Determine the menu items for creating children, based on the
+  // `//CHILDREN` spec and whether the maximum allowed for each
+  // child type was reached
 
-  // Some child entries may be configured to have a maximum number of entries
-  // (for example, only one conditional or conditional group per section)
-  // Exclude from the creation menu any entries corresponding to child types
-  // for which maximum of that type has been reached
-  if (childModels) {
-    Object.values(childModels)
-      .filter(v => {
-        if (typeof(v) != "object" || typeof(v?.entries) != "object") return false;
-        if (!v.hasOwnProperty("max")) return true;
-        let entryTypes = Object.keys(v.entries).map(e => `cards:${e}`);
-        return (Object.values(data).filter(e => entryTypes?.includes(e['jcr:primaryType'])).length < v.max);
-      })
-      .forEach(v => menuItems.push(...Object.keys(v.entries)));
-  }
+  useEffect(() => {
+    // Add the child types to the menu
+    setMenuItems(Object.keys(childModels || {}).filter(k => typeof(childModels[k]) != "object"));
 
-  let reloadData = (newData) => {
+    // Some child entries may be configured to have a maximum number of entries
+    // (for example, only one conditional or conditional group per section)
+    // Exclude from the creation menu any entries corresponding to child types
+    // for which maximum of that type has been reached
+    if (childModels) {
+      Object.values(childModels)
+        .filter(v => {
+          if (typeof(v) != "object" || typeof(v?.entries) != "object") return false;
+          if (!v.hasOwnProperty("max")) return true;
+          let entryTypes = Object.keys(v.entries).map(e => `cards:${e}`);
+          return (Object.values(entryData).filter(e => entryTypes?.includes(e['jcr:primaryType'])).length < v.max);
+        })
+        .forEach(v => setMenuItems(items => [...(items || []), ...Object.keys(v.entries)]));
+    }
+  }, [entryData, childModels]);
+
+  // -------------------------------------------------------------
+  // Handle data updates (field changes, child item creation or
+  // deletion)
+
+  let handleDataChange = (newData) => {
     // There's new data to load, display and highlight it:
     if (newData) {
       setEntryData(newData);
       setDoHighlight(true);
-      onFieldsChanged && onFieldsChanged(newData);
+      onFieldsChanged ? onFieldsChanged(newData) : updateContext(newData);
     } else {
       // Try to reload the data from the server
-      // If it fails, pass it up to the parent
       fetch(`${data["@path"]}.deep.json`)
         .then(response => response.ok ? response.json() : Promise.reject(response))
-        .then(json => reloadData(json))
-        .catch(() => onActionDone());
+        .then(json => handleDataChange(json))
+        .catch(() => {
+           // If it fails, it's because we deleted an item
+           // Update the context to remove the deleted item
+           removeFromContext(`${data['jcr:uuid']}`);
+           // Then pass it up to the parent
+           onActionDone();
+        });
     }
   }
 
   let onCreated = (newData) => {
-    setEntryData({});
     setEntryData(newData);
+    updateContext(newData);
   }
+
+  // -------------------------------------------------------------
+  // Rendering
 
   let renderFields = (options) => (<>
     <LabeledField name={`${type}Id`} {...options}>{entryData["@name"]}</LabeledField>
@@ -559,7 +640,7 @@ let QuestionnaireEntry = (props) => {
             />
             : undefined
         }
-        onActionDone={reloadData}
+        onActionDone={handleDataChange}
         model={model}
         {...rest}
     >
@@ -567,7 +648,7 @@ let QuestionnaireEntry = (props) => {
         <QuestionnaireItemSet
           data={entryData}
           classes={classes}
-          onActionDone={reloadData}
+          onActionDone={handleDataChange}
           models={childModels}
         >
           <Grid item className={FIELDS_CLASS_NAME}>{renderFields()}</Grid>

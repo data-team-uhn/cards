@@ -67,13 +67,13 @@ export default class QueryMatchingUtils {
       while (uncoveredWords.length) {
         let maxWordsCovered = 0;
         let crtMax = null;
-        for (var item in matchList) {
+        Object.keys(matchList).forEach(item => {
           let crtCover = matchList[item].filter(w => uncoveredWords.includes(w));
           if (crtCover.length > maxWordsCovered) {
             maxWordsCovered = crtCover.length;
             crtMax = item;
           }
-        }
+        });
         if (crtMax) {
           setCover.push(crtMax);
           uncoveredWords = uncoveredWords.filter(w => !matchList[crtMax].includes(w));

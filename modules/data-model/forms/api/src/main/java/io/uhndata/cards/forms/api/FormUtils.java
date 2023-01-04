@@ -20,6 +20,8 @@ import java.util.Collection;
 import java.util.EnumSet;
 
 import javax.jcr.Node;
+import javax.jcr.Property;
+import javax.json.JsonValue;
 
 import org.apache.jackrabbit.oak.spi.state.NodeBuilder;
 import org.apache.jackrabbit.oak.spi.state.NodeState;
@@ -434,4 +436,14 @@ public interface FormUtils
      *         value is stored in the answer
      */
     Object getValue(NodeState answer);
+
+    /**
+     * Serialize the value(s) stored in an Answer.
+     *
+     * @param property a property of Answer node, may be {@code null}
+     * @return a {@code JsonValue} holding the value or values stored in the answer; this may be a single value or an
+     *         array of values, or {@code JsonValue.NULL} if no value is stored in the answer or in case of exception
+     *         caught in the serialization process
+     */
+    JsonValue serializeProperty(Property property);
 }
