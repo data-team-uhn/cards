@@ -27,6 +27,7 @@ import { Delete, Close } from "@mui/icons-material";
 
 import QuestionnaireStyle from "../questionnaire/QuestionnaireStyle.jsx";
 import { fetchWithReLogin, GlobalLoginContext } from "../login/loginDialogue.js";
+import ErrorDialog from "../components/ErrorDialog.jsx";
 
 /**
  * A component that renders an icon to open a dialog to delete an entry.
@@ -162,17 +163,9 @@ function DeleteButton(props) {
 
   return (
     <React.Fragment>
-      <Dialog open={errorOpen} onClose={closeError}>
-        <DialogTitle>
-          <Typography variant="h6" color="error" className={classes.dialogTitle}>Error</Typography>
-          <IconButton onClick={closeError} className={classes.closeButton} size="large">
-            <Close />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent>
-            <Typography variant="body1">{errorMessage}</Typography>
-        </DialogContent>
-      </Dialog>
+      <ErrorDialog open={errorOpen} onClose={closeError}>
+        <Typography variant="body1">{errorMessage}</Typography>
+      </ErrorDialog>
       <Dialog open={open} onClose={closeDialog}>
         <DialogTitle>
         <Typography variant="h6">Delete {entryLabel ? entryLabel.concat(' ') : ''}{entryName}{deleteRecursive ? " and dependent items": null }</Typography>

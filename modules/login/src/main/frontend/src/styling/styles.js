@@ -68,18 +68,6 @@ const styles = theme => ({
     marginLeft: theme.spacing(2),
     marginBottom: theme.spacing(2)
   },
-  dialogTitle: {
-    padding: theme.spacing(2,0,2,3)
-  },
-  errorDialogTitle: {
-    marginRight: theme.spacing(5)
-  },
-  errorCloseButton: {
-    position: 'absolute',
-    right: theme.spacing(1),
-    top: theme.spacing(1),
-    color: theme.palette.grey[500]
-  },
 });
 
 export default styles;

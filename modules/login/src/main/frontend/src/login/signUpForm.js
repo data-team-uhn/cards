@@ -19,19 +19,15 @@
 import React from 'react';
 import {
     Button,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    IconButton,
     TextField,
     Tooltip,
     Typography
 } from '@mui/material';
 import withStyles from '@mui/styles/withStyles';
-import { Close } from "@mui/icons-material";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
+import ErrorDialog from "../components/ErrorDialog";
 import styles from "../styling/styles";
 
 class FormFields extends React.Component {
@@ -262,17 +258,9 @@ class SignUpForm extends React.Component {
     // Hooks only work inside functional components
     return (
       <React.Fragment>
-        <Dialog open={this.state.errorOpen} onClose={() => this.setState({errorOpen: false})}>
-          <DialogTitle>
-            <Typography variant="h6" color="error" className={classes.errorDialogTitle}>Error</Typography>
-            <IconButton size="large" onClick={() => this.setState({errorOpen: false})} className={classes.errorCloseButton}>
-              <Close />
-            </IconButton>
-          </DialogTitle>
-          <DialogContent>
-            <Typography variant="body1">{this.state.errorMsg}</Typography>
-          </DialogContent>
-        </Dialog>
+        <ErrorDialog open={this.state.errorOpen} onClose={() => this.setState({errorOpen: false})}>
+          <Typography variant="body1">{this.state.errorMsg}</Typography>
+        </ErrorDialog>
         <div className={classes.main}>
           <Formik
             render={props => <FormFieldsComponent {...props} />}
