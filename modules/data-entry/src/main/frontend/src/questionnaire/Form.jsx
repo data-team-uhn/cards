@@ -512,7 +512,7 @@ function Form (props) {
           <FormPagination
               saveInProgress={saveInProgress}
               lastSaveStatus={lastSaveStatus}
-              paginationEnabled={paginationEnabled}
+              enabled={paginationEnabled}
               questionnaireData={data.questionnaire}
               setPagesCallback={setPages}
               onDone={() => { setEndReached(true) }}
