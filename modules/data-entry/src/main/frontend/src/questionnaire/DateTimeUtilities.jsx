@@ -116,8 +116,8 @@ export default class DateTimeUtilities {
     let truncateTo = 'second';
     for (let [formatSpecifier, targetPrecision] of Object.entries(truncate)) {
       if (toFormat.indexOf(formatSpecifier) < 0 && ("H" != formatSpecifier || toFormat.indexOf("h") < 0)) {
-	    truncateTo = targetPrecision;
-	  }
+        truncateTo = targetPrecision;
+      }
     }
 
     return(new_date.startOf(truncateTo));
@@ -271,6 +271,6 @@ export default class DateTimeUtilities {
   }
 
   static formatIsMeridiem(dateFormat) {
-	return typeof(dateFormat) === "string" && dateFormat.includes(this.hourMeridiemTag) && dateFormat.includes("a");
+    return typeof(dateFormat) === "string" && dateFormat.includes(this.hourMeridiemTag) && dateFormat.includes("a");
   }
 }
