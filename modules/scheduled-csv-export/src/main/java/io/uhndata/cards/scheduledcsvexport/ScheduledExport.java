@@ -56,6 +56,11 @@ public class ScheduledExport
             return;
         }
         final ExportConfigDefinition configDef = newConfig.getConfig();
+        if (configDef == null) {
+            LOGGER.error("Unknown configuration.");
+            return;
+        }
+
         LOGGER.debug("Added csv export configuration {}", configDef.name());
         final String schedule = configDef.export_schedule();
         final ScheduleOptions options = this.scheduler.EXPR(schedule);

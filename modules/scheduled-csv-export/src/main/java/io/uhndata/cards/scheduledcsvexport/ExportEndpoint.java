@@ -75,6 +75,12 @@ public class ExportEndpoint extends SlingSafeMethodsServlet
                 .filter(c -> configName.equals(c.getConfig().name()))
                 .map(ExportConfig::getConfig)
                 .findFirst().orElse(null);
+        if (config == null) {
+            response.setStatus(404);
+            out.write("Unknown configuration.");
+            return;
+        }
+
         final Runnable exportJob = new ExportTask(this.resolverFactory, config.frequency_in_days(),
                 config.questionnaires_to_be_exported(), config.save_path(), config.enable_label());
         final Thread thread = new Thread(exportJob);
