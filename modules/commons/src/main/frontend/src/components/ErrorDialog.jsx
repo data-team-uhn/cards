@@ -31,6 +31,19 @@ import makeStyles from '@mui/styles/makeStyles';
 
 import CloseIcon from '@mui/icons-material/Close';
 
+
+const useStyles = makeStyles(theme => ({
+  titleBar: {
+    color: theme.palette.error.main,
+    paddingRight: theme.spacing(5),
+  },
+  closeButton: {
+    position: 'absolute',
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+  },
+}));
+
 // Component that renders an Error Dialog with a red title and a close button
 //
 // Props:
@@ -47,19 +60,6 @@ import CloseIcon from '@mui/icons-material/Close';
 //    Saving failed due to an unknown error.
 // </ErrorDialog>
 //
-
-const useStyles = makeStyles(theme => ({
-  titleBar: {
-    color: theme.palette.error.main,
-    paddingRight: theme.spacing(5),
-  },
-  closeButton: {
-    position: 'absolute',
-    right: theme.spacing(1),
-    top: theme.spacing(1),
-  },
-}));
-
 const ErrorDialog = (props) => {
   const { title, children, onClose, ...rest } = props;
 
