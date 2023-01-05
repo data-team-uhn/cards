@@ -59,14 +59,13 @@ public class ScheduledExport
         LOGGER.debug("Added csv export configuration {}", configDef.name());
         final String schedule = configDef.export_schedule();
         final ScheduleOptions options = this.scheduler.EXPR(schedule);
-        options.name(SCHEDULER_JOB_PREFIX + newConfig.getConfig().name());
+        options.name(SCHEDULER_JOB_PREFIX + configDef.name());
         options.canRunConcurrently(true);
 
         final Runnable csvExportJob;
         csvExportJob =
-                new ExportTask(this.resolverFactory, newConfig.getConfig().frequency_in_days(),
-                        newConfig.getConfig().questionnaires_to_be_exported(), newConfig.getConfig().save_path(),
-                        newConfig.getConfig().enable_label());
+                new ExportTask(this.resolverFactory, configDef.frequency_in_days(),
+                        configDef.questionnaires_to_be_exported(), configDef.save_path(), configDef.enable_label());
         try {
             this.scheduler.schedule(csvExportJob, options);
         } catch (final Exception e) {
