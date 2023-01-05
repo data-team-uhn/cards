@@ -2,7 +2,7 @@
   "jcr:primaryType": "cards:EmailTemplate",
   "senderAddress": "yourexperience@uhn.ca",
   "senderName": "Your Experience",
-  "subject": "Reminder: YOUR EXPERIENCE at UHN - Tell us how we did",
+  "subject": "UHN Canadian Patient Experience Survey",
   "first_name": "/Questionnaires/Patient information/first_name",
   "last_name": "/Questionnaires/Patient information/last_name"
 }
