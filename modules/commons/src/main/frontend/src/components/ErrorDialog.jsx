@@ -32,7 +32,6 @@ import makeStyles from '@mui/styles/makeStyles';
 import CloseIcon from '@mui/icons-material/Close';
 
 // Component that renders an Error Dialog with a red title and a close button
-// the screen becomes more narrow than the specified width
 //
 // Props:
 // title: String specifying the title of the dialog. Defaults to "Error".
