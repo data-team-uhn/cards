@@ -19,8 +19,19 @@
 
 package io.uhndata.cards.patients.emailnotifications;
 
+import java.io.IOException;
+import java.util.Map;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+
+import org.apache.sling.api.resource.LoginException;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.commons.messaging.mail.MailService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.auth.token.TokenManager;
 import io.uhndata.cards.emailnotifications.EmailTemplate;
@@ -31,13 +42,17 @@ import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 
 public class GeneralNotificationsTask extends AbstractEmailNotification implements Runnable
 {
-    private String taskName;
+    private static final Logger LOGGER = LoggerFactory.getLogger(GeneralNotificationsTask.class);
 
-    private String clinicId;
+    private final String taskName;
+
+    private final String clinicId;
+
+    private final String emailTemplatePath;
 
     private EmailTemplate emailTemplate;
 
-    private int daysToVisit;
+    private final int daysToVisit;
 
     /*
      * Task that sends email notifications as per the configuration parameters.
@@ -59,19 +74,56 @@ public class GeneralNotificationsTask extends AbstractEmailNotification implemen
         final TokenManager tokenManager, final MailService mailService,
         final FormUtils formUtils,
         final PatientAccessConfiguration patientAccessConfiguration, final String taskName,
-        final String clinicId, final EmailTemplate emailTemplate, final int daysToVisit)
+        final String clinicId, final String emailTemplatePath, final int daysToVisit)
     {
         super(resolverFactory, resolverProvider, tokenManager, mailService, formUtils, patientAccessConfiguration);
         this.taskName = taskName;
         this.clinicId = clinicId;
-        this.emailTemplate = emailTemplate;
+        this.emailTemplatePath = emailTemplatePath;
         this.daysToVisit = daysToVisit;
     }
 
     @Override
     public void run()
     {
+        if (this.emailTemplate == null) {
+            this.emailTemplate = buildTemplate(this.emailTemplatePath);
+        }
         long emailsSent = sendNotification(this.daysToVisit, this.emailTemplate, this.clinicId);
         Metrics.increment(this.resolverFactory, this.taskName, emailsSent);
+    }
+
+    private EmailTemplate buildTemplate(final String configurationNodePath)
+    {
+        try (ResourceResolver rr = this.resolverFactory
+            .getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "EmailNotifications"))) {
+            final Session session = rr.adaptTo(Session.class);
+            // Sometimes the notification is activated before the template node is imported
+            // If that is the case, wait a little bit and try again
+            for (int i = 0; i < 10; ++i) {
+                if (session.nodeExists(configurationNodePath)) {
+                    break;
+                } else {
+                    try {
+                        Thread.sleep(10_000);
+                        session.refresh(false);
+                    } catch (InterruptedException e) {
+                        // We're not expecting any interruptions
+                    }
+                }
+            }
+            if (!session.nodeExists(configurationNodePath)) {
+                throw new IllegalStateException(
+                    "Configured email template " + configurationNodePath + " was not found");
+            }
+            final Node configuration = session.getNode(configurationNodePath);
+            return EmailTemplate.builder(configuration, rr).build();
+        } catch (LoginException e) {
+            LOGGER.warn("Missing rights configuration for Email Notifications");
+        } catch (RepositoryException | IOException e) {
+            LOGGER.warn("Failed to read the email configuration: {}", e.getMessage(), e);
+            throw new IllegalStateException();
+        }
+        return null;
     }
 }
