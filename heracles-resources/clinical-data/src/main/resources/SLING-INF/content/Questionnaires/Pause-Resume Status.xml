@@ -226,7 +226,7 @@
 				</property>
 			</node>
 			<node>
-				<name>Familly Illness_Injury</name>
+				<name>Family Illness_Injury</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
