@@ -505,8 +505,9 @@ export function NewSubjectDialog (props) {
         newTypes.push("");
         return newTypes;
       });
-      setNewSubjectPopperOpen(true);
+
       setSelectParentPopperOpen(false);
+      setNewSubjectPopperOpen(true);
     });
   }
 
