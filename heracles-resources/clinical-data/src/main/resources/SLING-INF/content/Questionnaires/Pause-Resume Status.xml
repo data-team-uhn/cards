@@ -226,16 +226,16 @@
 				</property>
 			</node>
 			<node>
-				<name>Familly Illness_Injury</name>
+				<name>Family Illness_Injury</name>
 				<primaryNodeType>cards:AnswerOption</primaryNodeType>
 				<property>
 					<name>label</name>
-					<value>Familly Illness/Injury</value>
+					<value>Family Illness/Injury</value>
 					<type>String</type>
 				</property>
 				<property>
 					<name>value</name>
-					<value>Familly Illness_Injury</value>
+					<value>Family Illness_Injury</value>
 					<type>String</type>
 				</property>
 			</node>
