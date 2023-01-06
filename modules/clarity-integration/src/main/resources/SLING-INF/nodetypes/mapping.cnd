@@ -37,6 +37,19 @@
   // Hardcode the resource supertype
   - sling:resourceSuperType (STRING) = "cards/clarityMapping" mandatory autocreated protected
 
+[cards:clarityQuestionnaireMapping] > sling:Folder
+  // Attributes:
+  query
+
+  - updatesExisting (BOOLEAN) = false mandatory autocreated
+
+  // Properties:
+  // Hardcode the resource type
+  - sling:resourceType (STRING) = "cards/clarityQuestionnaireMapping" mandatory autocreated protected
+
+  // Hardcode the resource supertype
+  - sling:resourceSuperType (STRING) = "cards/clarityMapping" mandatory autocreated protected
+
 [cards:clarityQuestionMapping] > nt:unstructured
   // Attributes:
   query

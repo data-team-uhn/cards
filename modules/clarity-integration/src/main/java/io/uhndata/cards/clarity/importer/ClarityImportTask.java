@@ -26,7 +26,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -72,27 +71,11 @@ public class ClarityImportTask implements Runnable
 
     private static final String VALUE_PROP = "value";
 
-    private String topLevelSubjectColName;
-
-    private final List<String> columns;
-
-    private final Map<String, List<QuestionInformation>> questionnaireToQuestions;
-
-    private final Map<String, String> questionnaireToSubjectType;
-
-    private final Map<String, String> questionnaireToSubjectColumnHeader;
-
     private final Map<String, String> sqlColumnToDataType;
 
     private ThreadLocal<List<String>> nodesToCheckin = ThreadLocal.withInitial(LinkedList::new);
 
     private ThreadLocal<VersionManager> versionManager = new ThreadLocal<>();
-
-    private ThreadLocal<String> previousPatientId = new ThreadLocal<>();
-
-    private ThreadLocal<Resource> previousPatientResource = new ThreadLocal<>();
-
-    private ThreadLocal<Boolean> createdPatientInformation = new ThreadLocal<>();
 
     private enum QuestionType
     {
@@ -102,43 +85,6 @@ public class ClarityImportTask implements Runnable
         CLINIC
     }
 
-    /** Storage class for information about a question. */
-    private class QuestionInformation
-    {
-        private String question;
-        private QuestionType type;
-        private String questionnaire;
-        private String colName;
-
-        QuestionInformation(String question, QuestionType type, String questionnaire, String colName)
-        {
-            this.question = question;
-            this.type = type;
-            this.questionnaire = questionnaire;
-            this.colName = colName;
-        }
-
-        public String getQuestion()
-        {
-            return this.question;
-        }
-
-        public QuestionType getType()
-        {
-            return this.type;
-        }
-
-        public String getQuestionnaire()
-        {
-            return this.questionnaire;
-        }
-
-        public String getColName()
-        {
-            return this.colName;
-        }
-    }
-
     /** Provides access to resources. */
     private final ResourceResolverFactory resolverFactory;
 
@@ -146,51 +92,15 @@ public class ClarityImportTask implements Runnable
     {
         this.resolverFactory = resolverFactory;
 
-        this.columns = new LinkedList<>();
-        this.questionnaireToQuestions = new HashMap<>();
-        this.questionnaireToSubjectType = new HashMap<>();
-        this.questionnaireToSubjectColumnHeader = new HashMap<>();
         this.sqlColumnToDataType = new HashMap<>();
-        this.topLevelSubjectColName = "";
 
         // Convert our input mapping node to a mapping from column->question
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
-            populateQuestionnaireToSubjectType(resolver);
             processClarityToCardsMapping(resolver, resolver.resolve(MAPPING_CONFIG));
         } catch (RepositoryException e) {
             LOGGER.error("Error reading mapping: {}", e.getMessage(), e);
         } catch (LoginException e) {
             LOGGER.error("Could not find service user while reading mapping: {}", e.getMessage(), e);
-        }
-    }
-
-    private String getSubjectTypePath(final ResourceResolver resolver, final String subjectTypeUuid)
-    {
-        final Iterator<Resource> iter = resolver.findResources(
-            "SELECT * FROM [cards:SubjectType] as st WHERE st.'jcr:uuid'='" + subjectTypeUuid + "'", "JCR-SQL2");
-        if (iter.hasNext()) {
-            return iter.next().getPath();
-        }
-        return "";
-    }
-
-    private String getQuestionnairePathFromQuestionPath(String questionPath)
-    {
-        String[] questionPathArray = questionPath.split("/");
-        return String.join("/", Arrays.copyOfRange(questionPathArray, 0, 3));
-    }
-
-    private void populateQuestionnaireToSubjectType(ResourceResolver resolver) throws RepositoryException
-    {
-        // Populate this.questionnaireToSubjectType
-        Resource questionnaires = resolver.resolve("/Questionnaires");
-        for (Resource questionnaire : questionnaires.getChildren()) {
-            String questionnairePath = questionnaire.getPath();
-            String[] subjectTypesRefs = questionnaire.getValueMap().get("requiredSubjectTypes", String[].class);
-            for (int i = 0; i < subjectTypesRefs.length; i++) {
-                this.questionnaireToSubjectType.put(questionnairePath,
-                    getSubjectTypePath(resolver, subjectTypesRefs[i]));
-            }
         }
     }
 
@@ -204,40 +114,18 @@ public class ClarityImportTask implements Runnable
             String subjectType = child.getValueMap().get("subjectType", "");
             String subjectIDColumn = child.getValueMap().get("subjectIDColumn", "");
 
-            if ("".equals(this.topLevelSubjectColName)) {
-                this.topLevelSubjectColName = subjectIDColumn;
-            }
-
             // Handle the questions associated with this Subject
-            Resource subjectQuestions = child.getChild("questions");
-            if (subjectQuestions != null) {
-                for (Resource questionMapping : subjectQuestions.getChildren()) {
-                    String questionPath = questionMapping.getValueMap().get("question", "");
-                    String sqlColumn = questionMapping.getValueMap().get("sqlColumn", "");
+            Resource subjectQuestionnaires = child.getChild("questionnaires");
+            if (subjectQuestionnaires != null) {
+                for (Resource questionnaireMapping : subjectQuestionnaires.getChildren()) {
+                    for (Resource questionMapping : questionnaireMapping.getChildren()) {
+                        String questionPath = questionMapping.getValueMap().get("question", "");
+                        String sqlColumn = questionMapping.getValueMap().get("sqlColumn", "");
 
-                    // Populate this.columns
-                    this.columns.add(sqlColumn);
-
-                    // Populate this.sqlColumnToDataType
-                    this.sqlColumnToDataType.put(sqlColumn,
-                        resolver.getResource(questionPath).getValueMap().get("dataType", ""));
-
-                    // Populate this.questionnaireToQuestions
-                    String questionnairePath = this.getQuestionnairePathFromQuestionPath(questionPath);
-                    QuestionInformation thisQuestion = new QuestionInformation(
-                        questionPath,
-                        this.getQuestionType(resolver.resolve(questionPath)),
-                        questionnairePath,
-                        sqlColumn
-                    );
-                    if (!this.questionnaireToQuestions.containsKey(questionnairePath)) {
-                        this.questionnaireToQuestions.put(questionnairePath, new LinkedList<QuestionInformation>());
+                        // Populate this.sqlColumnToDataType
+                        this.sqlColumnToDataType.put(sqlColumn,
+                            resolver.getResource(questionPath).getValueMap().get("dataType", ""));
                     }
-                    // TODO: Should we somehow ensure that thisQuestion is not added more than once ???
-                    this.questionnaireToQuestions.get(questionnairePath).add(thisQuestion);
-
-                    // Populate this.questionnaireToSubjectColumnHeader
-                    this.questionnaireToSubjectColumnHeader.put(questionnairePath, subjectIDColumn);
                 }
             }
 
@@ -286,10 +174,127 @@ public class ClarityImportTask implements Runnable
             }
         }
         queryString += " FROM path.CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS";
-        queryString += " WHERE CAST(LoadTime AS DATE) = CAST(GETDATE() AS DATE)";
-        queryString += " ORDER BY " + this.topLevelSubjectColName + " ASC;";
+        queryString += " WHERE CAST(LoadTime AS DATE) = CAST(GETDATE() AS DATE);";
 
         return queryString;
+    }
+
+    private String sqlResultsToString(ResultSet results) throws SQLException
+    {
+        String ret = "";
+        Iterator<Map.Entry<String, String>> columnsIterator = this.sqlColumnToDataType.entrySet().iterator();
+        while (columnsIterator.hasNext()) {
+            Map.Entry<String, String> col = columnsIterator.next();
+            ret += col.getKey() + " = " + results.getString(col.getKey());
+            if (columnsIterator.hasNext()) {
+                ret += ", ";
+            }
+        }
+        return ret;
+    }
+
+    @SuppressWarnings({
+        "checkstyle:CyclomaticComplexity",
+        "checkstyle:ExecutableStatementCount",
+        "checkstyle:JavaNCSS",
+        "checkstyle:MultipleStringLiterals",
+        "checkstyle:NPathComplexity"
+    })
+    private void walkThroughClarityImport(ResourceResolver resolver, Resource node, ResultSet sqlRow,
+        String subjectPath, Resource subjectParent) throws ParseException, PersistenceException,
+            RepositoryException, SQLException
+    {
+        for (Resource child : node.getChildren()) {
+            String childNodeType = child.getValueMap().get("jcr:primaryType", "");
+            if ("cards:claritySubjectMapping".equals(childNodeType)) {
+                String subjectNodeType = child.getValueMap().get("subjectType", "");
+                String subjectIDColumnLabel = child.getValueMap().get("subjectIDColumn", "");
+                String subjectIDColumnValue;
+                if (!"".equals(subjectIDColumnLabel)) {
+                    subjectIDColumnValue = sqlRow.getString(subjectIDColumnLabel);
+                } else {
+                    subjectIDColumnValue = UUID.randomUUID().toString();
+                }
+
+                Resource newSubjectParent = getOrCreateSubject(subjectIDColumnValue,
+                    subjectNodeType, resolver, resolver.resolve(subjectPath));
+                String newSubjectPath = newSubjectParent.getPath();
+                resolver.commit();
+
+                // Iterate through all Questionnaires that are to be created
+                Resource questionnaires = child.getChild("questionnaires");
+                if (questionnaires != null) {
+                    for (Resource questionnaire : questionnaires.getChildren()) {
+                        boolean updatesExisting = questionnaire.getValueMap().get("updatesExisting", false);
+                        Resource formNode = getFormForSubject(resolver, "/Questionnaires/" + questionnaire.getName(),
+                            newSubjectPath);
+                        if (updatesExisting && (formNode != null)) {
+                            LOGGER.warn("Updating a Questionnaire ({}) for this subject", questionnaire.getName());
+                            formNode.adaptTo(Node.class).getSession().getWorkspace().getVersionManager().checkout(
+                                formNode.getPath());
+                            for (Resource questionMapping : questionnaire.getChildren()) {
+                                String questionPath = questionMapping.getValueMap().get("question", "");
+                                String sqlColumn = questionMapping.getValueMap().get("sqlColumn", "");
+                                String answerValue = sqlRow.getString(sqlColumn);
+                                QuestionType qType = this.getQuestionType(resolver.resolve(questionPath));
+                                replaceFormAnswer(resolver, formNode,
+                                    generateAnswerNodeProperties(resolver, qType, questionPath, answerValue));
+                            }
+                            // Perform a JCR check-in to this cards:Form node once the import is completed
+                            this.nodesToCheckin.get().add(formNode.getPath());
+                        } else {
+                            LOGGER.warn("Creating a Questionnaire ({}) for this subject", questionnaire.getName());
+
+                            formNode = createForm(resolver, "/Questionnaires/" + questionnaire.getName(),
+                                newSubjectPath);
+
+                            // Attach all the Answer nodes to it
+                            for (Resource questionMapping : questionnaire.getChildren()) {
+                                String questionPath = questionMapping.getValueMap().get("question", "");
+                                String sqlColumn = questionMapping.getValueMap().get("sqlColumn", "");
+                                String answerValue = sqlRow.getString(sqlColumn);
+                                QuestionType qType = this.getQuestionType(resolver.resolve(questionPath));
+                                LOGGER.warn("Questionnaire has {} = {} with type: {}",
+                                    questionPath, answerValue, qType);
+                                // Create the node here!
+                                try {
+                                    resolver.create(formNode, UUID.randomUUID().toString(),
+                                        generateAnswerNodeProperties(resolver, qType, questionPath,
+                                            answerValue));
+                                } catch (ParseException e) {
+                                    LOGGER.error("Failed to create answer node due to ParseException");
+                                    LOGGER.error("{}", e);
+                                } catch (PersistenceException e) {
+                                    LOGGER.error("Failed to create answer node due to PersistanceException");
+                                    LOGGER.error("{}", e);
+                                }
+                            }
+
+                            // Commit the changes to the JCR
+                            resolver.commit();
+
+                            // Perform a JCR check-in to this cards:Form node once the import is completed
+                            this.nodesToCheckin.get().add(formNode.getPath());
+                        }
+                    }
+                }
+
+                // Recursively go through the childSubjects
+                Resource childSubjects = child.getChild("childSubjects");
+                if (childSubjects != null) {
+                    walkThroughClarityImport(resolver, childSubjects, sqlRow, newSubjectPath, newSubjectParent);
+                }
+            }
+        }
+    }
+
+    private void createFormsAndSubjects(ResourceResolver resolver, ResultSet sqlRow)
+        throws ParseException, PersistenceException, RepositoryException, SQLException
+    {
+        Resource clarityImportNode = resolver.resolve("/apps/cards/clarityImport");
+
+        // Recursively move down clarityImportNode
+        walkThroughClarityImport(resolver, clarityImportNode, sqlRow, "/Subjects", resolver.resolve("/Subjects"));
     }
 
     @Override
@@ -315,16 +320,10 @@ public class ClarityImportTask implements Runnable
             while (results.next()) {
                 LOGGER.info("Entry found: " + results.getString("PAT_MRN"));
                 Resource subjectParent = resolver.resolve("/Subjects");
-                for (Map.Entry<String, List<QuestionInformation>> entry
-                    : this.questionnaireToQuestions.entrySet()) {
-                    String questionnaire = entry.getKey();
-                    try {
-                        subjectParent = createNodeFromEntry(resolver, results, entry.getValue(),
-                            questionnaire, subjectParent, formsHomepage);
-                    } catch (ParseException e) {
-                        LOGGER.warn("Failed to process a Clarity SQL row.");
-                    }
-                }
+                LOGGER.warn("Creating Subjects and Forms for the SQL entry: {}", sqlResultsToString(results));
+
+                // Create the Subjects and Forms as is needed
+                createFormsAndSubjects(resolver, results);
             }
 
             session.save();
@@ -342,14 +341,13 @@ public class ClarityImportTask implements Runnable
         } catch (RepositoryException e) {
             LOGGER.error("Error during Clarity import: {}", e.getMessage(), e);
         } catch (PersistenceException e) {
-            LOGGER.error("Error during Clarity import: {}", e.getMessage(), e);
+            LOGGER.error("PersistenceException while importing data to JCR");
+        } catch (ParseException e) {
+            LOGGER.error("ParseException while importing data to JCR");
         } finally {
             // Cleanup all ThreadLocals
             this.nodesToCheckin.remove();
             this.versionManager.remove();
-            this.previousPatientId.remove();
-            this.previousPatientResource.remove();
-            this.createdPatientInformation.remove();
         }
     }
 
@@ -374,177 +372,41 @@ public class ClarityImportTask implements Runnable
         }
     }
 
-    private Map<String, Object> generateAnswerNodeProperties(final ResourceResolver resolver,
-        final QuestionInformation entry, final ResultSet result) throws ParseException, SQLException
+    private Map<String, Object> generateAnswerNodeProperties(final ResourceResolver resolver, final QuestionType qType,
+        final String questionPath, final String answerValue) throws ParseException
     {
-        QuestionType qType = entry.type;
         Map<String, Object> props = new HashMap<>();
-        props.put("question", resolver.resolve(entry.getQuestion()).adaptTo(Node.class));
+        props.put("question", resolver.resolve(questionPath).adaptTo(Node.class));
 
         if (qType == QuestionType.STRING) {
             props.put(ClarityImportTask.PRIMARY_TYPE_PROP, "cards:TextAnswer");
-            String thisEntry = result.getString(entry.getColName());
-            props.put(ClarityImportTask.VALUE_PROP, thisEntry == null ? "" : thisEntry);
+            props.put(ClarityImportTask.VALUE_PROP, answerValue == null ? "" : answerValue);
         } else if (qType == QuestionType.DATE) {
             props.put(ClarityImportTask.PRIMARY_TYPE_PROP, "cards:DateAnswer");
             SimpleDateFormat clarityDateFormat = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
-            Date date = clarityDateFormat.parse(result.getString(entry.getColName()));
+            Date date = clarityDateFormat.parse(answerValue);
             if (date != null) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(date);
                 props.put(ClarityImportTask.VALUE_PROP, calendar);
             } else {
-                LOGGER.warn(entry.getColName() + " is null");
+                LOGGER.warn("Could not parse date");
             }
         } else if (qType == QuestionType.BOOLEAN) {
             // Note that the MS-SQL database doesn't save booleans as true/false
             // So instead we have to check if it is Yes or No
             props.put(ClarityImportTask.PRIMARY_TYPE_PROP, "cards:BooleanAnswer");
-            props.put(ClarityImportTask.VALUE_PROP, "Yes".equals(result.getString(entry.getColName())) ? 1 : 0);
+            props.put(ClarityImportTask.VALUE_PROP, "Yes".equals(answerValue) ? 1 : 0);
         } else if (qType == QuestionType.CLINIC) {
             // This is similar to a string, except we transform the output to look at the ClinicMapping node
             props.put(ClarityImportTask.PRIMARY_TYPE_PROP, "cards:TextAnswer");
-            String thisEntry = result.getString(entry.getColName());
             props.put(ClarityImportTask.VALUE_PROP,
-                thisEntry == null ? "" : "/Survey/ClinicMapping/" + String.valueOf(thisEntry.hashCode()));
+                answerValue == null ? "" : "/Survey/ClinicMapping/" + String.valueOf(answerValue));
         } else {
             LOGGER.warn("Unsupported question type: " + qType);
         }
 
         return props;
-    }
-
-    private Resource getUpdatableForm(final ResourceResolver resolver, final Resource questionnaire,
-        final Resource subject) throws RepositoryException
-    {
-        final String questionnairePath = questionnaire.getPath();
-        Resource newForm = null;
-        if ("/Questionnaires/Patient information".equals(questionnairePath)) {
-            // Let's see if there is a Patient information Form already in existance for this Patient subject
-            String questionnaireUUID = questionnaire.getValueMap().get("jcr:uuid", "");
-            String newSubjectUUID = subject.getValueMap().get("jcr:uuid", "");
-
-            final Iterator<Resource> matchingFormResourceIter = resolver.findResources(
-                "SELECT * FROM [cards:Form] as form WHERE form.'questionnaire'='"
-                + questionnaireUUID + "' AND form.'subject'='" + newSubjectUUID + "'",
-                "JCR-SQL2");
-
-            if (matchingFormResourceIter.hasNext()) {
-                Resource matchingPatientInformation = matchingFormResourceIter.next();
-
-                // Use matchingPatientInformation as newForm instead of creating a new one
-                matchingPatientInformation.adaptTo(Node.class).getSession().getWorkspace().getVersionManager().checkout(
-                    matchingPatientInformation.getPath());
-
-                newForm = matchingPatientInformation;
-            }
-        }
-        return newForm;
-    }
-
-    private boolean formAlreadyCreated(final Resource subject, final String questionnairePath)
-    {
-        if ("/Questionnaires/Patient information".equals(questionnairePath) && this.createdPatientInformation.get()) {
-            return true;
-        }
-        return false;
-    }
-
-    private Resource getSubjectForResult(final ResourceResolver resolver, final ResultSet result,
-        final String questionnairePath, final Resource subjectParent) throws PersistenceException, RepositoryException,
-        SQLException
-    {
-        /*
-         * If an identifier for this created subject can be derived from this SQL row (ResultSet result),
-         * use it, otherwise, generate a random UUID and use that for the identifier of the subject.
-         */
-        String subjectColumnHeader = this.questionnaireToSubjectColumnHeader.get(questionnairePath);
-        String subjectID = "".equals(subjectColumnHeader)
-            ? UUID.randomUUID().toString() : result.getString(subjectColumnHeader);
-
-        Resource newSubject = null;
-        String newSubjectType = this.questionnaireToSubjectType.get(questionnairePath);
-        if ("/SubjectTypes/Patient".equals(newSubjectType) && subjectID.equals(this.previousPatientId.get())) {
-            newSubject = this.previousPatientResource.get();
-        } else {
-            newSubject = getOrCreateSubject(subjectID, this.questionnaireToSubjectType.get(questionnairePath),
-                resolver, subjectParent);
-
-            if ("/SubjectTypes/Patient".equals(newSubjectType)) {
-                this.previousPatientId.set(subjectID);
-                this.previousPatientResource.set(newSubject);
-                this.createdPatientInformation.set(false);
-            }
-        }
-        return newSubject;
-    }
-
-    private void markFormAsCreated(String questionnairePath)
-    {
-        if ("/Questionnaires/Patient information".equals(questionnairePath)) {
-            this.createdPatientInformation.set(true);
-        }
-    }
-
-    /**
-     * Create a subject/Form/answer nodes for the given ResultSet.
-     *
-     * @param resolver ResourceResolver to use
-     * @param result ResultSet with entry details
-     * @param questionnaireQuestions List of all questions for this result set
-     * @param questionnairePath Path to the questionnaire to fill out
-     * @param subjectParent the parent subject for the new subject to create (if needed)
-     * @param formsHomepage the /Forms node
-     * @return The Subject resource created. The form and answers will point to this.
-     */
-    private Resource createNodeFromEntry(final ResourceResolver resolver, final ResultSet result,
-        final List<QuestionInformation> questionnaireQuestions, final String questionnairePath,
-        final Resource subjectParent, final Resource formsHomepage)
-        throws ParseException, PersistenceException, RepositoryException, SQLException
-    {
-
-        // Get a Subject Resource for this result - retrieving it if it exists, creating it if it doesn't
-        Resource subject = getSubjectForResult(resolver, result, questionnairePath, subjectParent);
-
-        /*
-         * If a Form has already been created for this Subject (eg. this is another row for the same patient and we do
-         * not (and should not!) create a new Patient information Form.
-         */
-        if (formAlreadyCreated(subject, questionnairePath)) {
-            return subject;
-        }
-
-        // Create a Node corresponding to the Form
-        Resource questionnaire = resolver.resolve(questionnairePath);
-        Resource form = getUpdatableForm(resolver, questionnaire, subject);
-
-        boolean updatingOldForm = false;
-        if (form == null) {
-            form = resolver.create(formsHomepage, UUID.randomUUID().toString(), Map.of(
-                ClarityImportTask.PRIMARY_TYPE_PROP, "cards:Form",
-                "questionnaire", questionnaire.adaptTo(Node.class),
-                "subject", subject.adaptTo(Node.class)));
-        } else {
-            updatingOldForm = true;
-        }
-
-        this.nodesToCheckin.get().add(form.getPath());
-
-        // Create an Answer for each QuestionInformation in our result set
-        for (QuestionInformation entry : questionnaireQuestions) {
-            Map<String, Object> props = generateAnswerNodeProperties(resolver, entry, result);
-
-            // If a Form already existed, update its child answer nodes instead of creating new ones
-            if (updatingOldForm) {
-                replaceFormAnswer(resolver, form, props);
-            } else {
-                resolver.create(form, UUID.randomUUID().toString(), props);
-            }
-        }
-
-        markFormAsCreated(questionnairePath);
-
-        return subject;
     }
 
     /**
@@ -559,26 +421,68 @@ public class ClarityImportTask implements Runnable
     private Resource getOrCreateSubject(final String identifier, final String subjectTypePath,
         final ResourceResolver resolver, final Resource parent) throws RepositoryException, PersistenceException
     {
+        LOGGER.warn("Running getOrCreateSubject for a subject with an identifier of {}", identifier);
         String subjectMatchQuery = String.format(
-            "SELECT * FROM [cards:Subject] as subject WHERE subject.'identifier'='%s'", identifier);
+            "SELECT * FROM [cards:Subject] as subject WHERE subject.'identifier'='%s' option (index tag property)",
+                identifier);
+        resolver.refresh();
         final Iterator<Resource> subjectResourceIter = resolver.findResources(subjectMatchQuery, "JCR-SQL2");
         if (subjectResourceIter.hasNext()) {
+            LOGGER.warn("Subject already exists - therefore, getting it");
             final Resource subjectResource = subjectResourceIter.next();
             this.versionManager.get().checkout(subjectResource.getPath());
             this.nodesToCheckin.get().add(subjectResource.getPath());
             return subjectResource;
         } else {
+            LOGGER.warn("Subject does not already exist - therefore, creating it");
             Resource parentResource = parent;
             if (parentResource == null) {
                 parentResource = resolver.getResource("/Subjects/");
             }
             final Resource patientType = resolver.getResource(subjectTypePath);
-            final Resource newSubject = resolver.create(parentResource, UUID.randomUUID().toString(), Map.of(
+            final Resource newSubject = resolver.create(parentResource, identifier, Map.of(
                 ClarityImportTask.PRIMARY_TYPE_PROP, "cards:Subject",
                 "identifier", identifier,
                 "type", patientType.adaptTo(Node.class)));
             this.nodesToCheckin.get().add(newSubject.getPath());
             return newSubject;
         }
+    }
+
+    private Resource createForm(ResourceResolver resolver, String questionnairePath, String subjectPath)
+        throws PersistenceException
+    {
+        Resource questionnaire = resolver.resolve(questionnairePath);
+        Resource subject = resolver.resolve(subjectPath);
+        return resolver.create(resolver.resolve("/Forms"), UUID.randomUUID().toString(), Map.of(
+                ClarityImportTask.PRIMARY_TYPE_PROP, "cards:Form",
+                "questionnaire", questionnaire.adaptTo(Node.class),
+                "subject", subject.adaptTo(Node.class)));
+    }
+
+    private Resource getFormForSubject(ResourceResolver resolver, String questionnairePath, String subjectPath)
+    {
+        // Get the jcr:uuid associated with questionnairePath
+        String questionnaireUUID = resolver.resolve(questionnairePath).getValueMap().get("jcr:uuid", "");
+
+        // Get the jcr:uuid associated with subjectPath
+        String subjectUUID = resolver.resolve(subjectPath).getValueMap().get("jcr:uuid", "");
+
+        // Query for a cards:Form node with the specified questionnaire and subject
+        String formMatchQuery = String.format(
+            "SELECT * FROM [cards:Form] as form WHERE"
+            + " form.'subject'='%s'"
+            + " AND form.'questionnaire'='%s'"
+            + " option (index tag property)",
+            subjectUUID,
+            questionnaireUUID);
+
+        resolver.refresh();
+        final Iterator<Resource> formResourceIter = resolver.findResources(formMatchQuery, "JCR-SQL2");
+        if (formResourceIter.hasNext()) {
+            return formResourceIter.next();
+        }
+
+        return null;
     }
 }
