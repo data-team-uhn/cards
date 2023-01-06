@@ -19,7 +19,7 @@
 
 import React, { useState, useEffect } from "react";
 
-import { TextField } from "@mui/material";
+import { TextField, Typography } from "@mui/material";
 
 import withStyles from '@mui/styles/withStyles';
 
@@ -84,11 +84,13 @@ function DateQuestion(props) {
   const isMeridiem = DateTimeUtilities.formatIsMeridiem(dateFormat);
   const PickerComponent = hasTime ? DateTimePicker : DatePicker;
 
+  const rangeErrorMessage = "Invalid date range: end date should be after the start date";
+
   useEffect(() => {
     // Determine if the end date is earlier than the start date
-    if (displayedDate && displayedEndDate && displayedEndDate < displayedDate) {
+    if (isRange && displayedDate && displayedEndDate && displayedEndDate < displayedDate) {
       setError(true);
-      setErrorMessage("Invalid date range");
+      setErrorMessage(rangeErrorMessage);
     }
   }, [displayedDate, displayedEndDate]);
 
@@ -136,8 +138,8 @@ function DateQuestion(props) {
             variant="standard"
             className={classes.textField}
             {...params}
-            error={error && (!!date?.invalid || isEnd)}
-            helperText={error && (!!date?.invalid || isEnd) ? errorMessage : null}
+            error={!isRange && error && !!date?.invalid}
+            helperText={!isRange && error && !!date?.invalid ? errorMessage : null}
             onBlur={(event) => { if (date?.invalid) {
                                    setError(true);
                                    setErrorMessage("Invalid date: "  + date.invalid.explanation);
@@ -173,6 +175,16 @@ function DateQuestion(props) {
       currentAnswers={DateTimeUtilities.isAnswerComplete(outputAnswers, type) ? 1 : 0}
       {...props}
       >
+      { isRange && error &&
+        <Typography
+          component="p"
+          color="error"
+          className={classes.answerInstructions}
+          variant="caption"
+        >
+          { errorMessage }
+        </Typography>
+      }
       {pageActive &&
         <div className={isRange ? classes.range : ''}>
           {getDateField(false, displayedDate)}
@@ -180,7 +192,7 @@ function DateQuestion(props) {
           isRange &&
           <React.Fragment>
             <span className="separator">&mdash;</span>
-            {getDateField(true, displayedEndDate)}
+            { getDateField(true, displayedEndDate) }
           </React.Fragment>
           }
         </div>

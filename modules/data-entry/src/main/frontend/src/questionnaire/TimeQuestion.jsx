@@ -64,11 +64,8 @@ function TimeQuestion(props) {
   const [errorMessage, setErrorMessage] = useState(defaultErrorMessage);
   const views = DateTimeUtilities.getPickerViews(dateFormat);
   const isHourMinuteSeconds = DateTimeUtilities.formatIsHourMinuteSeconds(dateFormat);
-  const isMinuteSeconds = DateTimeUtilities.formatIsMinuteSeconds(dateFormat);
-  const defaultLower = isHourMinuteSeconds ? "00:00:00" : "00:00";
-  const defaultUpper = isHourMinuteSeconds ? "23:59:59" : isMinuteSeconds ? "59:59" : "23:59";
-  const maxTime = DateTime.fromFormat(upperLimit || defaultUpper, dateFormat);
-  const minTime = DateTime.fromFormat(lowerLimit || defaultLower, dateFormat);
+  const maxTime = upperLimit ? DateTime.fromFormat(upperLimit, dateFormat) : null;
+  const minTime = lowerLimit ? DateTime.fromFormat(lowerLimit, dateFormat) : null;
 
   // Error check existing answers when first loading the page
   if (existingAnswer && existingAnswer[1].value && DateTime.fromFormat(existingAnswer[1].value, dateFormat).invalid) {
@@ -107,7 +104,7 @@ function TimeQuestion(props) {
                   helperText={error ? errorMessage : null}
                   onBlur={(event) => { if (selectedTime?.invalid) {
                                           setError(true);
-                                          setErrorMessage("Invalid date: "  + selectedTime.invalid.explanation);
+                                          setErrorMessage("Invalid time: "  + selectedTime.invalid.explanation);
                                        }
                          }}
                   InputProps={{
