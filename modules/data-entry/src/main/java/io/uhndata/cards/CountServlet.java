@@ -198,6 +198,12 @@ public class CountServlet extends PaginationServlet
                 LOGGER.error("Failed to set node property: {}", e.getMessage(), e);
             }
         }));
+
+        Map<String, String> fieldParameters = getSanitizedFieldParameters(request);
+        if (!fieldParameters.isEmpty() && !fieldParameters.get(FIELDNAME).isBlank()) {
+            node.setProperty(fieldParameters.get(FIELDNAME) + fieldParameters.get(FIELDCOMPARATOR),
+                    fieldParameters.get(FIELDVALUE));
+        }
     }
 
     /**

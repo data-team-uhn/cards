@@ -79,6 +79,10 @@ import org.slf4j.LoggerFactory;
     selectors = { "paginate" })
 public class PaginationServlet extends SlingSafeMethodsServlet
 {
+
+    protected static final String FIELDNAME = "fieldname";
+    protected static final String FIELDCOMPARATOR = "fieldcomparator";
+    protected static final String FIELDVALUE = "fieldvalue";
     private static final Logger LOGGER = LoggerFactory.getLogger(PaginationServlet.class);
 
     private static final long serialVersionUID = -6068156942302219324L;
@@ -359,15 +363,13 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         }
 
         // Exact condition on parent node; \ and ' must be escaped. The value must be wrapped in 's
-        final String fieldname = this.sanitizeValue(request.getParameter("fieldname"));
-        final String fieldvalue = this.sanitizeValue(request.getParameter("fieldvalue"));
-        final String fieldcomparator = this.sanitizeComparator(request.getParameter("fieldcomparator"));
-        if (StringUtils.isNotBlank(fieldname)) {
+        Map<String, String> fieldParameters = getSanitizedFieldParameters(request);
+        if (StringUtils.isNotBlank(fieldParameters.get(FIELDNAME))) {
             query.append(String.format(
                 " and n.'%s'%s'%s'",
-                fieldname,
-                fieldcomparator,
-                fieldvalue));
+                    fieldParameters.get(FIELDNAME),
+                    fieldParameters.get(FIELDCOMPARATOR),
+                    fieldParameters.get(FIELDVALUE)));
         }
 
         // TODO, if more request options are required: convert includeAllStatus into a request mode
@@ -375,7 +377,8 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         final boolean includeAllStatus = Boolean.parseBoolean(request.getParameter("includeallstatus"));
         // Only display `INCOMPLETE` forms if we are explicitly checking the status of forms,
         // or if the user requested forms with all statuses
-        if (!("statusFlags".equals(fieldname) || includeAllStatus || nodeType.equals(SUBJECT_IDENTIFIER))) {
+        if (!("statusFlags".equals(fieldParameters.get(FIELDNAME)) || includeAllStatus
+                || nodeType.equals(SUBJECT_IDENTIFIER))) {
             query.append(" and not n.'statusFlags'='INCOMPLETE'");
         }
 
@@ -393,6 +396,22 @@ public class PaginationServlet extends SlingSafeMethodsServlet
         String finalquery = query.toString();
         LOGGER.debug("Computed final query: {}", finalquery);
         return finalquery;
+    }
+
+    /**
+     * Get from the request field parameters, sanitize and parse them into a collection.
+     *
+     * @param request the current request
+     * @return a map from field parameter name to field parameter value
+     */
+    protected Map<String, String> getSanitizedFieldParameters(final SlingHttpServletRequest request)
+    {
+        Map<String, String> sanitizedFilterParameters = new HashMap<>();
+        sanitizedFilterParameters.put(FIELDNAME, this.sanitizeValue(request.getParameter(FIELDNAME)));
+        sanitizedFilterParameters.put(FIELDVALUE, this.sanitizeValue(request.getParameter(FIELDVALUE)));
+        sanitizedFilterParameters.put(FIELDCOMPARATOR, this.sanitizeComparator(request.getParameter(FIELDCOMPARATOR)));
+
+        return sanitizedFilterParameters;
     }
 
     /**
