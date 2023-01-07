@@ -47,7 +47,7 @@ import io.uhndata.cards.subjects.api.SubjectUtils;
  */
 public class ReferenceAnswersEditor extends AnswersEditor
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ComputedAnswersEditor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReferenceAnswersEditor.class);
 
     private final SubjectUtils subjectUtils;
 
