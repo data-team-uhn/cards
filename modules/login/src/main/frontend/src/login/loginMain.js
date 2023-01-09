@@ -17,18 +17,18 @@
 //  under the License.
 //
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import MainLoginComponent from './loginMainComponent';
 import PageStart from '../PageStart';
 import { appTheme } from "../themePalette.jsx";
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 
-ReactDOM.render(
+const root = createRoot(document.getElementById('main-login-container'));
+root.render(
   <StyledEngineProvider injectFirst>
     <ThemeProvider theme={appTheme}>
       <PageStart extensionsName="LoginPageStart" />
       <MainLoginComponent selfContained redirectOnLogin={true} />
     </ThemeProvider>
-  </StyledEngineProvider>,
-  document.getElementById('main-login-container')
+  </StyledEngineProvider>
 );

@@ -28,7 +28,7 @@ import {
 import makeStyles from '@mui/styles/makeStyles';
 import withStyles from '@mui/styles/withStyles';
 
-import NumberFormat from 'react-number-format';
+import { NumericFormat } from 'react-number-format';
 
 import PropTypes from "prop-types";
 
@@ -460,7 +460,7 @@ export const NumberFormatCustom = forwardRef(function NumberFormatCustom(
   const { inputRef, onChange, ...other } = props;
 
   return (
-    <NumberFormat
+    <NumericFormat
       {...other}
       getInputRef={ref}
       onValueChange={values => {

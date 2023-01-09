@@ -17,7 +17,7 @@
 //  under the License.
 //
 import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from 'react-dom/client';
 import { Paper, Grid, Button, Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import Alert from '@mui/material/Alert';
@@ -149,13 +149,13 @@ function Unsubscribe (props) {
   );
 }
 
-ReactDOM.render(
+const root = createRoot(document.querySelector('#patient-portal-unsubscribe-container'));
+root.render(
   <StyledEngineProvider injectFirst>
     <ThemeProvider theme={appTheme}>
       <Unsubscribe />
     </ThemeProvider>
-  </StyledEngineProvider>,
-  document.querySelector('#patient-portal-unsubscribe-container')
+  </StyledEngineProvider>
 );
 
 export default Unsubscribe;

@@ -17,7 +17,7 @@
 //  under the License.
 //
 import React, { useState, useEffect } from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from 'react-dom/client';
 import { Router, Route, Redirect, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
@@ -92,7 +92,8 @@ function PatientPortalHomepage (props) {
 
 const hist = createBrowserHistory();
 hist.listen(({action, location}) => window.dispatchEvent(new Event("beforeunload")));
-ReactDOM.render(
+const root = createRoot(document.querySelector('#patient-portal-container'));
+root.render(
   <StyledEngineProvider injectFirst>
     <ThemeProvider theme={portalTheme}>
       <Router history={hist}>
@@ -102,8 +103,7 @@ ReactDOM.render(
         </Switch>
       </Router>
     </ThemeProvider>
-  </StyledEngineProvider>,
-  document.querySelector('#patient-portal-container')
+  </StyledEngineProvider>
 );
 
 export default PatientPortalHomepage;
