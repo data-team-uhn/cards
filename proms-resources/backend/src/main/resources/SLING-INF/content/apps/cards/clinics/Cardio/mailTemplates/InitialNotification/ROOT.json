@@ -1,0 +1,7 @@
+{
+  "jcr:primaryType": "cards:EmailTemplate",
+  "senderAddress": "data.pro@uhn.ca",
+  "senderName": "UHN DATA-PRO",
+  "subject": "Welcome to DATAPRO: Answer your Pre-Appointment Questions",
+  "time": "/Questionnaires/Visit information/time"
+}

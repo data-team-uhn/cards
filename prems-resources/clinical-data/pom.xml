@@ -57,6 +57,7 @@
               SLING-INF/content/libs/cards/conf/AppName.json;path:=/libs/cards/conf/AppName;overwrite:=true,
               SLING-INF/content/libs/cards/conf/ThemeColor.json;path:=/libs/cards/conf/ThemeColor;overwrite:=true,
               SLING-INF/content/apps/cards/config/CopyAnswers;path:=/apps/cards/config/CopyAnswers;overwriteProperties:=true;uninstall:=true,
+              SLING-INF/content/apps/cards/mailTemplates;path:=/apps/cards/mailTemplates;overwrite:=true,
               SLING-INF/content/apps/cards/clinics/CPES/mailTemplates;path:=/apps/cards/clinics/CPES/mailTemplates;overwrite:=true,
               SLING-INF/content/apps/cards/clinics/UHN-ED/mailTemplates;path:=/apps/cards/clinics/UHN-ED/mailTemplates;overwrite:=true,
               SLING-INF/content/apps/cards/clinics/UHN-IP/mailTemplates;path:=/apps/cards/clinics/UHN-IP/mailTemplates;overwrite:=true,

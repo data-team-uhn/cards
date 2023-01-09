@@ -97,6 +97,21 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
     }
 
     @Override
+    public Node getForm(final Node answer)
+    {
+        try {
+            Node parent = answer;
+            while (parent != null && !isForm(parent)) {
+                parent = parent.getParent();
+            }
+            return parent;
+        } catch (RepositoryException e) {
+            // Not expected, or the session user doesn't have access to it
+        }
+        return null;
+    }
+
+    @Override
     public Node getQuestionnaire(final Node form)
     {
         return isForm(form) ? getReferencedNode(form, QUESTIONNAIRE_PROPERTY) : null;
@@ -148,6 +163,14 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
     public Node getSubject(final NodeState form)
     {
         return isForm(form) ? this.subjects.getSubject(getSubjectIdentifier(form)) : null;
+    }
+
+    @Override
+    public Node getSubject(final Node form, final String subjectTypePath)
+    {
+        return isForm(form)
+            ? getReferencedNodeOfType(form, RELATED_SUBJECTS_PROPERTY, subjectTypePath, SubjectUtils.TYPE_PROPERTY)
+            : null;
     }
 
     @Override
