@@ -193,12 +193,8 @@ public class ClarityImportTask implements Runnable
             if ("cards:claritySubjectMapping".equals(configChildNodeType)) {
                 String subjectNodeType = configChildNode.getValueMap().get(SUBJECT_TYPE_PROP, "");
                 String subjectIDColumnLabel = configChildNode.getValueMap().get("subjectIDColumn", "");
-                String subjectIDColumnValue;
-                if (!"".equals(subjectIDColumnLabel)) {
-                    subjectIDColumnValue = sqlRow.getString(subjectIDColumnLabel);
-                } else {
-                    subjectIDColumnValue = UUID.randomUUID().toString();
-                }
+                String subjectIDColumnValue = (!"".equals(subjectIDColumnLabel))
+                    ? sqlRow.getString(subjectIDColumnLabel) : UUID.randomUUID().toString();
 
                 Resource newSubjectParent = getOrCreateSubject(subjectIDColumnValue,
                     subjectNodeType, resolver, resolver.resolve(subjectPath));
