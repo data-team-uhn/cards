@@ -196,8 +196,7 @@ public class ClarityImportTask implements Runnable
 
     @SuppressWarnings({
         "checkstyle:CyclomaticComplexity",
-        "checkstyle:ExecutableStatementCount",
-        "checkstyle:JavaNCSS"
+        "checkstyle:ExecutableStatementCount"
     })
     private void walkThroughClarityImport(ResourceResolver resolver, Resource node, ResultSet sqlRow,
         String subjectPath, Resource subjectParent) throws ParseException, PersistenceException,
