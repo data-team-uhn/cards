@@ -214,8 +214,7 @@ public class ClarityImportTask implements Runnable
                             newSubjectPath);
                         if (updatesExisting && (formNode != null)) {
                             // Update the answers to an existing Form
-                            formNode.adaptTo(Node.class).getSession().getWorkspace().getVersionManager().checkout(
-                                formNode.getPath());
+                            this.versionManager.get().checkout(formNode.getPath());
                             for (Resource questionMapping : questionnaire.getChildren()) {
                                 String questionPath = questionMapping.getValueMap().get(QUESTION_PROP, "");
                                 String sqlColumn = questionMapping.getValueMap().get("sqlColumn", "");
