@@ -180,20 +180,6 @@ public class ClarityImportTask implements Runnable
         return queryString;
     }
 
-    private String sqlResultsToString(ResultSet results) throws SQLException
-    {
-        String ret = "";
-        Iterator<Map.Entry<String, String>> columnsIterator = this.sqlColumnToDataType.entrySet().iterator();
-        while (columnsIterator.hasNext()) {
-            Map.Entry<String, String> col = columnsIterator.next();
-            ret += col.getKey() + " = " + results.getString(col.getKey());
-            if (columnsIterator.hasNext()) {
-                ret += ", ";
-            }
-        }
-        return ret;
-    }
-
     @SuppressWarnings({
         "checkstyle:CyclomaticComplexity",
         "checkstyle:ExecutableStatementCount"
@@ -305,9 +291,7 @@ public class ClarityImportTask implements Runnable
 
             Resource formsHomepage = resolver.resolve("/Forms");
             while (results.next()) {
-                LOGGER.info("Entry found: " + results.getString("PAT_MRN"));
                 Resource subjectParent = resolver.resolve("/Subjects");
-                LOGGER.warn("Creating Subjects and Forms for the SQL entry: {}", sqlResultsToString(results));
 
                 // Create the Subjects and Forms as is needed
                 createFormsAndSubjects(resolver, results);
@@ -408,20 +392,17 @@ public class ClarityImportTask implements Runnable
     private Resource getOrCreateSubject(final String identifier, final String subjectTypePath,
         final ResourceResolver resolver, final Resource parent) throws RepositoryException, PersistenceException
     {
-        LOGGER.warn("Running getOrCreateSubject for a subject with an identifier of {}", identifier);
         String subjectMatchQuery = String.format(
             "SELECT * FROM [cards:Subject] as subject WHERE subject.'identifier'='%s' option (index tag property)",
                 identifier);
         resolver.refresh();
         final Iterator<Resource> subjectResourceIter = resolver.findResources(subjectMatchQuery, "JCR-SQL2");
         if (subjectResourceIter.hasNext()) {
-            LOGGER.warn("Subject already exists - therefore, getting it");
             final Resource subjectResource = subjectResourceIter.next();
             this.versionManager.get().checkout(subjectResource.getPath());
             this.nodesToCheckin.get().add(subjectResource.getPath());
             return subjectResource;
         } else {
-            LOGGER.warn("Subject does not already exist - therefore, creating it");
             Resource parentResource = parent;
             if (parentResource == null) {
                 parentResource = resolver.getResource("/Subjects/");
