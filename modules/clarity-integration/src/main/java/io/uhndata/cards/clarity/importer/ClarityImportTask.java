@@ -184,15 +184,15 @@ public class ClarityImportTask implements Runnable
         "checkstyle:CyclomaticComplexity",
         "checkstyle:ExecutableStatementCount"
     })
-    private void walkThroughClarityImport(ResourceResolver resolver, Resource node, ResultSet sqlRow,
+    private void walkThroughClarityImport(ResourceResolver resolver, Resource configNode, ResultSet sqlRow,
         String subjectPath, Resource subjectParent) throws ParseException, PersistenceException,
             RepositoryException, SQLException
     {
-        for (Resource child : node.getChildren()) {
-            String childNodeType = child.getValueMap().get(PRIMARY_TYPE_PROP, "");
-            if ("cards:claritySubjectMapping".equals(childNodeType)) {
-                String subjectNodeType = child.getValueMap().get(SUBJECT_TYPE_PROP, "");
-                String subjectIDColumnLabel = child.getValueMap().get("subjectIDColumn", "");
+        for (Resource configChildNode : configNode.getChildren()) {
+            String configChildNodeType = configChildNode.getValueMap().get(PRIMARY_TYPE_PROP, "");
+            if ("cards:claritySubjectMapping".equals(configChildNodeType)) {
+                String subjectNodeType = configChildNode.getValueMap().get(SUBJECT_TYPE_PROP, "");
+                String subjectIDColumnLabel = configChildNode.getValueMap().get("subjectIDColumn", "");
                 String subjectIDColumnValue;
                 if (!"".equals(subjectIDColumnLabel)) {
                     subjectIDColumnValue = sqlRow.getString(subjectIDColumnLabel);
@@ -206,7 +206,7 @@ public class ClarityImportTask implements Runnable
                 resolver.commit();
 
                 // Iterate through all Questionnaires that are to be created
-                Resource questionnaires = child.getChild("questionnaires");
+                Resource questionnaires = configChildNode.getChild("questionnaires");
                 if (questionnaires != null) {
                     for (Resource questionnaire : questionnaires.getChildren()) {
                         boolean updatesExisting = questionnaire.getValueMap().get("updatesExisting", false);
@@ -252,7 +252,7 @@ public class ClarityImportTask implements Runnable
                 }
 
                 // Recursively go through the childSubjects
-                Resource childSubjects = child.getChild("childSubjects");
+                Resource childSubjects = configChildNode.getChild("childSubjects");
                 if (childSubjects != null) {
                     walkThroughClarityImport(resolver, childSubjects, sqlRow, newSubjectPath, newSubjectParent);
                 }
