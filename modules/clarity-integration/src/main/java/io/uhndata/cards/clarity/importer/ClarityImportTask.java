@@ -180,10 +180,28 @@ public class ClarityImportTask implements Runnable
         return queryString;
     }
 
-    @SuppressWarnings({
-        "checkstyle:CyclomaticComplexity",
-        "checkstyle:ExecutableStatementCount"
-    })
+    private void updateExistingForm(ResourceResolver resolver, Resource formNode,
+        Resource questionnaire, ResultSet sqlRow) throws ParseException, RepositoryException, SQLException
+    {
+        this.versionManager.get().checkout(formNode.getPath());
+        for (Resource questionMapping : questionnaire.getChildren()) {
+            replaceFormAnswer(resolver, formNode,
+                generateAnswerNodeProperties(resolver, questionMapping, sqlRow));
+        }
+        // Perform a JCR check-in to this cards:Form node once the import is completed
+        this.nodesToCheckin.get().add(formNode.getPath());
+    }
+
+    private void populateEmptyForm(ResourceResolver resolver, Resource formNode,
+        Resource questionnaire, ResultSet sqlRow) throws ParseException, PersistenceException, SQLException
+    {
+        for (Resource questionMapping : questionnaire.getChildren()) {
+            // Create the answer node in the JCR
+            resolver.create(formNode, UUID.randomUUID().toString(),
+                generateAnswerNodeProperties(resolver, questionMapping, sqlRow));
+        }
+    }
+
     private void walkThroughClarityImport(ResourceResolver resolver, Resource configNode, ResultSet sqlRow,
         String subjectPath, Resource subjectParent) throws ParseException, PersistenceException,
             RepositoryException, SQLException
@@ -210,24 +228,14 @@ public class ClarityImportTask implements Runnable
                             newSubjectPath);
                         if (updatesExisting && (formNode != null)) {
                             // Update the answers to an existing Form
-                            this.versionManager.get().checkout(formNode.getPath());
-                            for (Resource questionMapping : questionnaire.getChildren()) {
-                                replaceFormAnswer(resolver, formNode,
-                                    generateAnswerNodeProperties(resolver, questionMapping, sqlRow));
-                            }
-                            // Perform a JCR check-in to this cards:Form node once the import is completed
-                            this.nodesToCheckin.get().add(formNode.getPath());
+                            updateExistingForm(resolver, formNode, questionnaire, sqlRow);
                         } else {
                             // Create a new Form
                             formNode = createForm(resolver, "/Questionnaires/" + questionnaire.getName(),
                                 newSubjectPath);
 
                             // Attach all the Answer nodes to it
-                            for (Resource questionMapping : questionnaire.getChildren()) {
-                                // Create the answer node in the JCR
-                                resolver.create(formNode, UUID.randomUUID().toString(),
-                                    generateAnswerNodeProperties(resolver, questionMapping, sqlRow));
-                            }
+                            populateEmptyForm(resolver, formNode, questionnaire, sqlRow);
 
                             // Commit the changes to the JCR
                             resolver.commit();
