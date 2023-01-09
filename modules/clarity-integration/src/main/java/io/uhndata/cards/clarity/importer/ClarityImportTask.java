@@ -104,6 +104,7 @@ public class ClarityImportTask implements Runnable
         }
     }
 
+    @SuppressWarnings("checkstyle:MultipleStringLiterals")
     private void processClarityToCardsMapping(ResourceResolver resolver, Resource mapping) throws RepositoryException
     {
         for (Resource child : mapping.getChildren()) {
@@ -252,18 +253,10 @@ public class ClarityImportTask implements Runnable
                                 String sqlColumn = questionMapping.getValueMap().get("sqlColumn", "");
                                 String answerValue = sqlRow.getString(sqlColumn);
                                 QuestionType qType = this.getQuestionType(resolver.resolve(questionPath));
-                                // Create the node here!
-                                try {
-                                    resolver.create(formNode, UUID.randomUUID().toString(),
-                                        generateAnswerNodeProperties(resolver, qType, questionPath,
-                                            answerValue));
-                                } catch (ParseException e) {
-                                    LOGGER.error("Failed to create answer node due to ParseException");
-                                    LOGGER.error("{}", e);
-                                } catch (PersistenceException e) {
-                                    LOGGER.error("Failed to create answer node due to PersistanceException");
-                                    LOGGER.error("{}", e);
-                                }
+
+                                // Create the answer node in the JCR
+                                resolver.create(formNode, UUID.randomUUID().toString(), generateAnswerNodeProperties(
+                                    resolver, qType, questionPath, answerValue));
                             }
 
                             // Commit the changes to the JCR
