@@ -228,7 +228,7 @@ public class ClarityImportTask implements Runnable
                         Resource formNode = getFormForSubject(resolver, "/Questionnaires/" + questionnaire.getName(),
                             newSubjectPath);
                         if (updatesExisting && (formNode != null)) {
-                            LOGGER.warn("Updating a Questionnaire ({}) for this subject", questionnaire.getName());
+                            // Update the answers to an existing Form
                             formNode.adaptTo(Node.class).getSession().getWorkspace().getVersionManager().checkout(
                                 formNode.getPath());
                             for (Resource questionMapping : questionnaire.getChildren()) {
@@ -242,8 +242,7 @@ public class ClarityImportTask implements Runnable
                             // Perform a JCR check-in to this cards:Form node once the import is completed
                             this.nodesToCheckin.get().add(formNode.getPath());
                         } else {
-                            LOGGER.warn("Creating a Questionnaire ({}) for this subject", questionnaire.getName());
-
+                            // Create a new Form
                             formNode = createForm(resolver, "/Questionnaires/" + questionnaire.getName(),
                                 newSubjectPath);
 
@@ -253,8 +252,6 @@ public class ClarityImportTask implements Runnable
                                 String sqlColumn = questionMapping.getValueMap().get("sqlColumn", "");
                                 String answerValue = sqlRow.getString(sqlColumn);
                                 QuestionType qType = this.getQuestionType(resolver.resolve(questionPath));
-                                LOGGER.warn("Questionnaire has {} = {} with type: {}",
-                                    questionPath, answerValue, qType);
                                 // Create the node here!
                                 try {
                                     resolver.create(formNode, UUID.randomUUID().toString(),
