@@ -63,6 +63,8 @@ public class ClarityImportTask implements Runnable
 
     private static final String SUBJECT_TYPE_PROP = "subjectType";
 
+    private static final String QUESTION_PROP = "question";
+
     private static final String QUESTIONNAIRE_PROP = "questionnaire";
 
     private static final String DATA_TYPE_PROP = "dataType";
@@ -104,7 +106,6 @@ public class ClarityImportTask implements Runnable
         }
     }
 
-    @SuppressWarnings("checkstyle:MultipleStringLiterals")
     private void processClarityToCardsMapping(ResourceResolver resolver, Resource mapping) throws RepositoryException
     {
         for (Resource child : mapping.getChildren()) {
@@ -119,7 +120,7 @@ public class ClarityImportTask implements Runnable
             if (subjectQuestionnaires != null) {
                 for (Resource questionnaireMapping : subjectQuestionnaires.getChildren()) {
                     for (Resource questionMapping : questionnaireMapping.getChildren()) {
-                        String questionPath = questionMapping.getValueMap().get("question", "");
+                        String questionPath = questionMapping.getValueMap().get(QUESTION_PROP, "");
                         String sqlColumn = questionMapping.getValueMap().get("sqlColumn", "");
 
                         // Populate this.sqlColumnToDataType
@@ -197,7 +198,6 @@ public class ClarityImportTask implements Runnable
         "checkstyle:CyclomaticComplexity",
         "checkstyle:ExecutableStatementCount",
         "checkstyle:JavaNCSS",
-        "checkstyle:MultipleStringLiterals",
         "checkstyle:NPathComplexity"
     })
     private void walkThroughClarityImport(ResourceResolver resolver, Resource node, ResultSet sqlRow,
@@ -233,7 +233,7 @@ public class ClarityImportTask implements Runnable
                             formNode.adaptTo(Node.class).getSession().getWorkspace().getVersionManager().checkout(
                                 formNode.getPath());
                             for (Resource questionMapping : questionnaire.getChildren()) {
-                                String questionPath = questionMapping.getValueMap().get("question", "");
+                                String questionPath = questionMapping.getValueMap().get(QUESTION_PROP, "");
                                 String sqlColumn = questionMapping.getValueMap().get("sqlColumn", "");
                                 String answerValue = sqlRow.getString(sqlColumn);
                                 QuestionType qType = this.getQuestionType(resolver.resolve(questionPath));
@@ -249,7 +249,7 @@ public class ClarityImportTask implements Runnable
 
                             // Attach all the Answer nodes to it
                             for (Resource questionMapping : questionnaire.getChildren()) {
-                                String questionPath = questionMapping.getValueMap().get("question", "");
+                                String questionPath = questionMapping.getValueMap().get(QUESTION_PROP, "");
                                 String sqlColumn = questionMapping.getValueMap().get("sqlColumn", "");
                                 String answerValue = sqlRow.getString(sqlColumn);
                                 QuestionType qType = this.getQuestionType(resolver.resolve(questionPath));
@@ -343,9 +343,9 @@ public class ClarityImportTask implements Runnable
     private void replaceFormAnswer(final ResourceResolver resolver, final Resource form,
         final Map<String, Object> props) throws RepositoryException
     {
-        final String questionUUID = ((Node) props.get("question")).getIdentifier();
+        final String questionUUID = ((Node) props.get(QUESTION_PROP)).getIdentifier();
         for (Resource answer : form.getChildren()) {
-            String thisAnswersQuestionUUID = answer.getValueMap().get("question", "");
+            String thisAnswersQuestionUUID = answer.getValueMap().get(QUESTION_PROP, "");
             if (questionUUID.equals(thisAnswersQuestionUUID)) {
                 // Now, copy the value from the props Map into the cards:Answer JCR node
                 Object newValue = props.get(ClarityImportTask.VALUE_PROP);
@@ -365,7 +365,7 @@ public class ClarityImportTask implements Runnable
         final String questionPath, final String answerValue) throws ParseException
     {
         Map<String, Object> props = new HashMap<>();
-        props.put("question", resolver.resolve(questionPath).adaptTo(Node.class));
+        props.put(QUESTION_PROP, resolver.resolve(questionPath).adaptTo(Node.class));
 
         if (qType == QuestionType.STRING) {
             props.put(ClarityImportTask.PRIMARY_TYPE_PROP, "cards:TextAnswer");
