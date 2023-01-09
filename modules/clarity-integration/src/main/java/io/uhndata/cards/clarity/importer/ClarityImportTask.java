@@ -291,8 +291,6 @@ public class ClarityImportTask implements Runnable
 
             Resource formsHomepage = resolver.resolve("/Forms");
             while (results.next()) {
-                Resource subjectParent = resolver.resolve("/Subjects");
-
                 // Create the Subjects and Forms as is needed
                 createFormsAndSubjects(resolver, results);
             }
