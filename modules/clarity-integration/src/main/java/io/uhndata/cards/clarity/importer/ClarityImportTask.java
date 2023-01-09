@@ -104,7 +104,6 @@ public class ClarityImportTask implements Runnable
         }
     }
 
-    @SuppressWarnings("checkstyle:MultipleStringLiterals")
     private void processClarityToCardsMapping(ResourceResolver resolver, Resource mapping) throws RepositoryException
     {
         for (Resource child : mapping.getChildren()) {
