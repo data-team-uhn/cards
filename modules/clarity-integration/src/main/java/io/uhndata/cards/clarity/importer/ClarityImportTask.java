@@ -216,12 +216,8 @@ public class ClarityImportTask implements Runnable
                             // Update the answers to an existing Form
                             this.versionManager.get().checkout(formNode.getPath());
                             for (Resource questionMapping : questionnaire.getChildren()) {
-                                String questionPath = questionMapping.getValueMap().get(QUESTION_PROP, "");
-                                String sqlColumn = questionMapping.getValueMap().get("sqlColumn", "");
-                                String answerValue = sqlRow.getString(sqlColumn);
-                                QuestionType qType = this.getQuestionType(resolver.resolve(questionPath));
                                 replaceFormAnswer(resolver, formNode,
-                                    generateAnswerNodeProperties(resolver, qType, questionPath, answerValue));
+                                    generateAnswerNodeProperties(resolver, questionMapping, sqlRow));
                             }
                             // Perform a JCR check-in to this cards:Form node once the import is completed
                             this.nodesToCheckin.get().add(formNode.getPath());
@@ -232,14 +228,9 @@ public class ClarityImportTask implements Runnable
 
                             // Attach all the Answer nodes to it
                             for (Resource questionMapping : questionnaire.getChildren()) {
-                                String questionPath = questionMapping.getValueMap().get(QUESTION_PROP, "");
-                                String sqlColumn = questionMapping.getValueMap().get("sqlColumn", "");
-                                String answerValue = sqlRow.getString(sqlColumn);
-                                QuestionType qType = this.getQuestionType(resolver.resolve(questionPath));
-
                                 // Create the answer node in the JCR
-                                resolver.create(formNode, UUID.randomUUID().toString(), generateAnswerNodeProperties(
-                                    resolver, qType, questionPath, answerValue));
+                                resolver.create(formNode, UUID.randomUUID().toString(),
+                                    generateAnswerNodeProperties(resolver, questionMapping, sqlRow));
                             }
 
                             // Commit the changes to the JCR
@@ -375,6 +366,16 @@ public class ClarityImportTask implements Runnable
         }
 
         return props;
+    }
+
+    private Map<String, Object> generateAnswerNodeProperties(final ResourceResolver resolver,
+        final Resource questionMapping, final ResultSet sqlRow) throws ParseException, SQLException
+    {
+        String questionPath = questionMapping.getValueMap().get(QUESTION_PROP, "");
+        String sqlColumn = questionMapping.getValueMap().get("sqlColumn", "");
+        String answerValue = sqlRow.getString(sqlColumn);
+        QuestionType qType = this.getQuestionType(resolver.resolve(questionPath));
+        return generateAnswerNodeProperties(resolver, qType, questionPath, answerValue);
     }
 
     /**
