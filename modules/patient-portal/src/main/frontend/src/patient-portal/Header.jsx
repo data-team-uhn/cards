@@ -66,6 +66,7 @@ const useStyles = makeStyles(theme => ({
   fullSize : {
     paddingTop: theme.spacing(5),
     maxWidth: "780px",
+    width: `calc(100% - ${theme.spacing(5)})`,
     margin: "auto",
     "&.MuiToolbar-root > .MuiTypography-root" : {
       zoom: 1.2,
