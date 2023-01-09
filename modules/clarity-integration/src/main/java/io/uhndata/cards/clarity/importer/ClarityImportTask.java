@@ -109,10 +109,10 @@ public class ClarityImportTask implements Runnable
     private void processClarityToCardsMapping(ResourceResolver resolver, Resource mapping) throws RepositoryException
     {
         for (Resource child : mapping.getChildren()) {
-            if (!"cards:claritySubjectMapping".equals(child.getValueMap().get("jcr:primaryType", ""))) {
+            if (!"cards:claritySubjectMapping".equals(child.getValueMap().get(PRIMARY_TYPE_PROP, ""))) {
                 continue;
             }
-            String subjectType = child.getValueMap().get("subjectType", "");
+            String subjectType = child.getValueMap().get(SUBJECT_TYPE_PROP, "");
             String subjectIDColumn = child.getValueMap().get("subjectIDColumn", "");
 
             // Handle the questions associated with this Subject
@@ -125,7 +125,7 @@ public class ClarityImportTask implements Runnable
 
                         // Populate this.sqlColumnToDataType
                         this.sqlColumnToDataType.put(sqlColumn,
-                            resolver.getResource(questionPath).getValueMap().get("dataType", ""));
+                            resolver.getResource(questionPath).getValueMap().get(DATA_TYPE_PROP, ""));
                     }
                 }
             }
@@ -189,9 +189,9 @@ public class ClarityImportTask implements Runnable
             RepositoryException, SQLException
     {
         for (Resource child : node.getChildren()) {
-            String childNodeType = child.getValueMap().get("jcr:primaryType", "");
+            String childNodeType = child.getValueMap().get(PRIMARY_TYPE_PROP, "");
             if ("cards:claritySubjectMapping".equals(childNodeType)) {
-                String subjectNodeType = child.getValueMap().get("subjectType", "");
+                String subjectNodeType = child.getValueMap().get(SUBJECT_TYPE_PROP, "");
                 String subjectIDColumnLabel = child.getValueMap().get("subjectIDColumn", "");
                 String subjectIDColumnValue;
                 if (!"".equals(subjectIDColumnLabel)) {
@@ -421,7 +421,7 @@ public class ClarityImportTask implements Runnable
         Resource subject = resolver.resolve(subjectPath);
         return resolver.create(resolver.resolve("/Forms"), UUID.randomUUID().toString(), Map.of(
                 ClarityImportTask.PRIMARY_TYPE_PROP, "cards:Form",
-                "questionnaire", questionnaire.adaptTo(Node.class),
+                QUESTIONNAIRE_PROP, questionnaire.adaptTo(Node.class),
                 "subject", subject.adaptTo(Node.class)));
     }
 
