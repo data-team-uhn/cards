@@ -20,6 +20,7 @@
 
 import argparse
 import random
+import string
 import datetime
 
 argparser = argparse.ArgumentParser()
@@ -63,6 +64,8 @@ IF OBJECT_ID('path.CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS', 'U') IS NOT NULL
 
 CREATE TABLE [path].[CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS] (
     PAT_MRN varchar(102) NULL,
+    PAT_FIRST_NAME varchar(255) NULL,
+    PAT_LAST_NAME varchar(255) NULL,
     EMAIL_ADDRESS varchar(255) NULL,
     ENTRY_TIME datetime2 NULL,
     DISCH_DEPT_NAME varchar(254) NULL,
@@ -77,6 +80,8 @@ CREATE TABLE [path].[CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS] (
 # Insert test data
 for i in range(args.n):
     mrn = random.randint(0, 9999999)
+    first_name = "".join([random.choice(string.ascii_lowercase) for n in range(random.randint(5, 10))])
+    last_name = "".join([random.choice(string.ascii_lowercase) for n in range(random.randint(5, 10))])
     email = 'test' + str(mrn) + '@test.com'
     entry_time = args.basedate - datetime.timedelta(seconds=random.randint(0, args.time_spread_seconds))
     entry_time_str = entry_time.strftime('%Y-%m-%d %H:%M:%S')
@@ -84,9 +89,9 @@ for i in range(args.n):
     email_consent_yn = random.choice(['Yes', 'No'])
 
     args.file.write("INSERT INTO [path].[CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS]")
-    args.file.write("\t(PAT_MRN, EMAIL_ADDRESS, ENTRY_TIME, DISCH_DEPT_NAME, EMAIL_CONSENT_YN, LoadTime)\n")
+    args.file.write("\t(PAT_MRN, PAT_FIRST_NAME, PAT_LAST_NAME, EMAIL_ADDRESS, ENTRY_TIME, DISCH_DEPT_NAME, EMAIL_CONSENT_YN, LoadTime)\n")
     args.file.write("\tVALUES\n")
-    args.file.write("\t(%07d, '%s', '%s', '%s', '%s', CAST(GETDATE() AS DATE))\n"
-        % (mrn, email, entry_time_str, disch_dept_name, email_consent_yn))
+    args.file.write("\t(%07d, '%s', '%s', '%s', '%s', '%s', '%s', CAST(GETDATE() AS DATE))\n"
+        % (mrn, first_name, last_name, email, entry_time_str, disch_dept_name, email_consent_yn))
 
 args.file.close()

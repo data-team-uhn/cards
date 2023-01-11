@@ -63,6 +63,34 @@
           <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
           <property>
             <name>sqlColumn</name>
+            <value>PAT_FIRST_NAME</value>
+            <type>String</type>
+          </property>
+          <property>
+            <name>question</name>
+            <value>/Questionnaires/Patient information/first_name</value>
+            <type>String</type>
+          </property>
+        </node>
+        <node>
+          <name>00000003</name>
+          <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
+          <property>
+            <name>sqlColumn</name>
+            <value>PAT_LAST_NAME</value>
+            <type>String</type>
+          </property>
+          <property>
+            <name>question</name>
+            <value>/Questionnaires/Patient information/last_name</value>
+            <type>String</type>
+          </property>
+        </node>
+        <node>
+          <name>00000004</name>
+          <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
+          <property>
+            <name>sqlColumn</name>
             <value>EMAIL_ADDRESS</value>
             <type>String</type>
           </property>
@@ -73,7 +101,7 @@
           </property>
         </node>
         <node>
-          <name>00000003</name>
+          <name>00000005</name>
           <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
           <property>
             <name>sqlColumn</name>
