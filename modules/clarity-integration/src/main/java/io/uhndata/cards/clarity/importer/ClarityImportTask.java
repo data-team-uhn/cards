@@ -286,32 +286,11 @@ public class ClarityImportTask implements Runnable
         }
     }
 
-    private void debugWalkLocalConfig(ClaritySubjectMapping subjectMapping)
-    {
-        for (ClaritySubjectMapping childSubjectMapping : subjectMapping.childSubjects) {
-            LOGGER.warn("FOUND LOCAL CHILD SUBJECT {} OF TYPE {}",
-                childSubjectMapping.path, childSubjectMapping.subjectType);
-            for (ClarityQuestionnaireMapping questionnaireMapping : childSubjectMapping.questionnaires) {
-                LOGGER.warn("THIS SUBJECT HAS A QUESTIONNAIRE {} (updatesExisting={})", questionnaireMapping.name,
-                    questionnaireMapping.updatesExisting);
-                for (ClarityQuestionMapping questionMapping : questionnaireMapping.questions) {
-                    LOGGER.warn("THIS QUESTIONNAIRE HAS A QUESTION {} OF TYPE {} THAT MAPS {} TO {}",
-                        questionMapping.name, questionMapping.questionType, questionMapping.sqlColumn,
-                        questionMapping.question);
-                }
-            }
-            debugWalkLocalConfig(childSubjectMapping);
-        }
-    }
-
     private void walkThroughLocalConfig(ResourceResolver resolver, ResultSet sqlRow,
         ClaritySubjectMapping subjectMapping, Resource subjectParent)
         throws ParseException, PersistenceException, RepositoryException, SQLException
     {
         for (ClaritySubjectMapping childSubjectMapping : subjectMapping.childSubjects) {
-            LOGGER.warn("CREATING SUBJECT FROM LOCAL CHILD SUBJECT {} OF TYPE {}",
-                childSubjectMapping.path, childSubjectMapping.subjectType);
-
             // Get or create the subject
             String subjectNodeType = childSubjectMapping.subjectType;
             String subjectIDColumnLabel = childSubjectMapping.subjectIdColumn;
@@ -323,9 +302,6 @@ public class ClarityImportTask implements Runnable
             resolver.commit();
 
             for (ClarityQuestionnaireMapping questionnaireMapping : childSubjectMapping.questionnaires) {
-                LOGGER.warn("THIS SUBJECT HAS A QUESTIONNAIRE {} (updatesExisting={})", questionnaireMapping.name,
-                    questionnaireMapping.updatesExisting);
-
                 boolean updatesExisting = questionnaireMapping.updatesExisting;
                 Resource formNode = getFormForSubject(resolver, questionnaireMapping.getQuestionnaireResource(resolver),
                     newSubjectParent);
@@ -346,12 +322,6 @@ public class ClarityImportTask implements Runnable
 
                     // Perform a JCR check-in to this cards:Form node once the import is completed
                     this.nodesToCheckin.get().add(formNode.getPath());
-                }
-
-                for (ClarityQuestionMapping questionMapping : questionnaireMapping.questions) {
-                    LOGGER.warn("THIS QUESTIONNAIRE HAS A QUESTION {} OF TYPE {} THAT MAPS {} TO {}",
-                        questionMapping.name, questionMapping.questionType, questionMapping.sqlColumn,
-                        questionMapping.question);
                 }
             }
             walkThroughLocalConfig(resolver, sqlRow, childSubjectMapping, newSubjectParent);
@@ -388,8 +358,6 @@ public class ClarityImportTask implements Runnable
 
             populateClarityImportConfiguration(resolver, resolver.resolve(MAPPING_CONFIG),
                 this.clarityImportConfiguration.get());
-
-            debugWalkLocalConfig(this.clarityImportConfiguration.get());
 
             // Generate and perform the query
             PreparedStatement statement = connection.prepareStatement(generateClarityQuery());
