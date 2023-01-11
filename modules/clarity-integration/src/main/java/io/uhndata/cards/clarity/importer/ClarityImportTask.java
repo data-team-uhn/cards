@@ -73,11 +73,13 @@ public class ClarityImportTask implements Runnable
 
     private static final String VALUE_PROP = "value";
 
-    private final Map<String, String> sqlColumnToDataType;
+    private ThreadLocal<Map<String, String>> sqlColumnToDataType = new ThreadLocal<>();
 
     private ThreadLocal<List<String>> nodesToCheckin = ThreadLocal.withInitial(LinkedList::new);
 
     private ThreadLocal<VersionManager> versionManager = new ThreadLocal<>();
+
+    private ThreadLocal<ClaritySubjectMapping> clarityImportConfiguration = new ThreadLocal<>();
 
     private enum QuestionType
     {
@@ -87,55 +89,82 @@ public class ClarityImportTask implements Runnable
         CLINIC
     }
 
+    private class ClaritySubjectMapping
+    {
+        private String name;
+        private String path;
+        private String subjectIdColumn;
+        private String subjectType;
+        private List<ClaritySubjectMapping> childSubjects;
+        private List<ClarityQuestionnaireMapping> questionnaires;
+
+        ClaritySubjectMapping(String name, String subjectIdColumn, String subjectType)
+        {
+            this.name = name;
+            this.path = "";
+            this.subjectIdColumn = subjectIdColumn;
+            this.subjectType = subjectType;
+            this.childSubjects = new LinkedList<>();
+            this.questionnaires = new LinkedList<>();
+        }
+
+        private void addChildSubject(ClaritySubjectMapping mapping)
+        {
+            this.childSubjects.add(mapping);
+        }
+
+        private void addQuestionnaire(ClarityQuestionnaireMapping mapping)
+        {
+            this.questionnaires.add(mapping);
+        }
+    }
+
+    private class ClarityQuestionnaireMapping
+    {
+        private String name;
+        private boolean updatesExisting;
+        private List<ClarityQuestionMapping> questions;
+
+        ClarityQuestionnaireMapping(String name, boolean updatesExisting)
+        {
+            this.name = name;
+            this.updatesExisting = updatesExisting;
+            this.questions = new LinkedList<>();
+        }
+
+        private void addQuestion(ClarityQuestionMapping mapping)
+        {
+            this.questions.add(mapping);
+        }
+
+        private Resource getQuestionnaireResource(ResourceResolver resolver)
+        {
+            return resolver.resolve("/Questionnaires/" + this.name);
+        }
+    }
+
+    private class ClarityQuestionMapping
+    {
+        private String name;
+        private String question;
+        private String sqlColumn;
+        private QuestionType questionType;
+
+        ClarityQuestionMapping(String name, String question, String sqlColumn, QuestionType questionType)
+        {
+            this.name = name;
+            this.question = question;
+            this.sqlColumn = sqlColumn;
+            this.questionType = questionType;
+        }
+    }
+
     /** Provides access to resources. */
     private final ResourceResolverFactory resolverFactory;
 
     ClarityImportTask(final ResourceResolverFactory resolverFactory)
     {
         this.resolverFactory = resolverFactory;
-
-        this.sqlColumnToDataType = new HashMap<>();
-
-        // Convert our input mapping node to a mapping from column->question
-        try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
-            processClarityToCardsMapping(resolver, resolver.resolve(MAPPING_CONFIG));
-        } catch (RepositoryException e) {
-            LOGGER.error("Error reading mapping: {}", e.getMessage(), e);
-        } catch (LoginException e) {
-            LOGGER.error("Could not find service user while reading mapping: {}", e.getMessage(), e);
-        }
-    }
-
-    private void processClarityToCardsMapping(ResourceResolver resolver, Resource mapping) throws RepositoryException
-    {
-        for (Resource child : mapping.getChildren()) {
-            if (!"cards:claritySubjectMapping".equals(child.getValueMap().get(PRIMARY_TYPE_PROP, ""))) {
-                continue;
-            }
-            String subjectType = child.getValueMap().get(SUBJECT_TYPE_PROP, "");
-            String subjectIDColumn = child.getValueMap().get("subjectIDColumn", "");
-
-            // Handle the questions associated with this Subject
-            Resource subjectQuestionnaires = child.getChild("questionnaires");
-            if (subjectQuestionnaires != null) {
-                for (Resource questionnaireMapping : subjectQuestionnaires.getChildren()) {
-                    for (Resource questionMapping : questionnaireMapping.getChildren()) {
-                        String questionPath = questionMapping.getValueMap().get(QUESTION_PROP, "");
-                        String sqlColumn = questionMapping.getValueMap().get("sqlColumn", "");
-
-                        // Populate this.sqlColumnToDataType
-                        this.sqlColumnToDataType.put(sqlColumn,
-                            resolver.getResource(questionPath).getValueMap().get(DATA_TYPE_PROP, ""));
-                    }
-                }
-            }
-
-            // Do this same process for all nodes under childSubjects
-            Resource childSubjects = child.getChild("childSubjects");
-            if (childSubjects != null) {
-                processClarityToCardsMapping(resolver, childSubjects);
-            }
-        }
     }
 
     /***
@@ -162,7 +191,7 @@ public class ClarityImportTask implements Runnable
     private String generateClarityQuery()
     {
         String queryString = "SELECT ";
-        Iterator<Map.Entry<String, String>> columnsIterator = this.sqlColumnToDataType.entrySet().iterator();
+        Iterator<Map.Entry<String, String>> columnsIterator = this.sqlColumnToDataType.get().entrySet().iterator();
         while (columnsIterator.hasNext()) {
             Map.Entry<String, String> col = columnsIterator.next();
             if ("date".equals(col.getValue())) {
@@ -181,10 +210,11 @@ public class ClarityImportTask implements Runnable
     }
 
     private void updateExistingForm(ResourceResolver resolver, Resource formNode,
-        Resource questionnaire, ResultSet sqlRow) throws ParseException, RepositoryException, SQLException
+        ClarityQuestionnaireMapping questionnaireMapping, ResultSet sqlRow)
+        throws ParseException, RepositoryException, SQLException
     {
         this.versionManager.get().checkout(formNode.getPath());
-        for (Resource questionMapping : questionnaire.getChildren()) {
+        for (ClarityQuestionMapping questionMapping : questionnaireMapping.questions) {
             replaceFormAnswer(resolver, formNode,
                 generateAnswerNodeProperties(resolver, questionMapping, sqlRow));
         }
@@ -193,75 +223,147 @@ public class ClarityImportTask implements Runnable
     }
 
     private void populateEmptyForm(ResourceResolver resolver, Resource formNode,
-        Resource questionnaire, ResultSet sqlRow) throws ParseException, PersistenceException, SQLException
+        ClarityQuestionnaireMapping questionnaireMapping, ResultSet sqlRow)
+        throws ParseException, PersistenceException, SQLException
     {
-        for (Resource questionMapping : questionnaire.getChildren()) {
+        for (ClarityQuestionMapping questionMapping : questionnaireMapping.questions) {
             // Create the answer node in the JCR
             resolver.create(formNode, UUID.randomUUID().toString(),
                 generateAnswerNodeProperties(resolver, questionMapping, sqlRow));
         }
     }
 
-    private void walkThroughClarityImport(ResourceResolver resolver, Resource configNode, ResultSet sqlRow,
-        String subjectPath, Resource subjectParent) throws ParseException, PersistenceException,
-            RepositoryException, SQLException
+    private void populateClarityImportConfiguration(ResourceResolver resolver, Resource configNode,
+        ClaritySubjectMapping clarityConf)
     {
         for (Resource configChildNode : configNode.getChildren()) {
             String configChildNodeType = configChildNode.getValueMap().get(PRIMARY_TYPE_PROP, "");
             if ("cards:claritySubjectMapping".equals(configChildNodeType)) {
                 String subjectNodeType = configChildNode.getValueMap().get(SUBJECT_TYPE_PROP, "");
                 String subjectIDColumnLabel = configChildNode.getValueMap().get("subjectIDColumn", "");
-                String subjectIDColumnValue = (!"".equals(subjectIDColumnLabel))
-                    ? sqlRow.getString(subjectIDColumnLabel) : UUID.randomUUID().toString();
 
-                Resource newSubjectParent = getOrCreateSubject(subjectIDColumnValue,
-                    subjectNodeType, resolver, resolver.resolve(subjectPath));
-                String newSubjectPath = newSubjectParent.getPath();
-                resolver.commit();
+                // Add this cards:claritySubjectMapping to the local Java data structures
+                ClaritySubjectMapping claritySubjectMapping = new ClaritySubjectMapping(configChildNode.getName(),
+                    subjectIDColumnLabel, subjectNodeType);
+                claritySubjectMapping.path = clarityConf.path + "/" + claritySubjectMapping.name;
 
                 // Iterate through all Questionnaires that are to be created
                 Resource questionnaires = configChildNode.getChild("questionnaires");
                 if (questionnaires != null) {
+                    // Add the questionnaires associated with this subject to the local Java data structures
                     for (Resource questionnaire : questionnaires.getChildren()) {
                         boolean updatesExisting = questionnaire.getValueMap().get("updatesExisting", false);
-                        Resource formNode = getFormForSubject(resolver, "/Questionnaires/" + questionnaire.getName(),
-                            newSubjectPath);
-                        if (updatesExisting && (formNode != null)) {
-                            // Update the answers to an existing Form
-                            updateExistingForm(resolver, formNode, questionnaire, sqlRow);
-                        } else {
-                            // Create a new Form
-                            formNode = createForm(resolver, "/Questionnaires/" + questionnaire.getName(),
-                                newSubjectPath);
+                        ClarityQuestionnaireMapping clarityQuestionnaireMapping = new ClarityQuestionnaireMapping(
+                            questionnaire.getName(), updatesExisting);
 
-                            // Attach all the Answer nodes to it
-                            populateEmptyForm(resolver, formNode, questionnaire, sqlRow);
+                        for (Resource questionMapping : questionnaire.getChildren()) {
+                            // Add the questions associated with this questionnaire to the local Java data structures
+                            String questionPath = questionMapping.getValueMap().get(QUESTION_PROP, "");
+                            String sqlColumn = questionMapping.getValueMap().get("sqlColumn", "");
+                            Resource questionResource = resolver.resolve(questionPath);
+                            QuestionType qType = this.getQuestionType(questionResource);
+                            ClarityQuestionMapping clarityQuestionMapping = new ClarityQuestionMapping(
+                                questionMapping.getName(), questionPath, sqlColumn, qType);
+                            clarityQuestionnaireMapping.addQuestion(clarityQuestionMapping);
 
-                            // Commit the changes to the JCR
-                            resolver.commit();
-
-                            // Perform a JCR check-in to this cards:Form node once the import is completed
-                            this.nodesToCheckin.get().add(formNode.getPath());
+                            // Populate this.sqlColumnToDataType
+                            this.sqlColumnToDataType.get().put(sqlColumn,
+                                questionResource.getValueMap().get(DATA_TYPE_PROP, ""));
                         }
+                        claritySubjectMapping.addQuestionnaire(clarityQuestionnaireMapping);
                     }
                 }
 
                 // Recursively go through the childSubjects
                 Resource childSubjects = configChildNode.getChild("childSubjects");
                 if (childSubjects != null) {
-                    walkThroughClarityImport(resolver, childSubjects, sqlRow, newSubjectPath, newSubjectParent);
+                    populateClarityImportConfiguration(resolver, childSubjects, claritySubjectMapping);
+                }
+
+                // Attach claritySubjectMapping as a child of clarityConf
+                clarityConf.addChildSubject(claritySubjectMapping);
+            }
+        }
+    }
+
+    private void debugWalkLocalConfig(ClaritySubjectMapping subjectMapping)
+    {
+        for (ClaritySubjectMapping childSubjectMapping : subjectMapping.childSubjects) {
+            LOGGER.warn("FOUND LOCAL CHILD SUBJECT {} OF TYPE {}",
+                childSubjectMapping.path, childSubjectMapping.subjectType);
+            for (ClarityQuestionnaireMapping questionnaireMapping : childSubjectMapping.questionnaires) {
+                LOGGER.warn("THIS SUBJECT HAS A QUESTIONNAIRE {} (updatesExisting={})", questionnaireMapping.name,
+                    questionnaireMapping.updatesExisting);
+                for (ClarityQuestionMapping questionMapping : questionnaireMapping.questions) {
+                    LOGGER.warn("THIS QUESTIONNAIRE HAS A QUESTION {} OF TYPE {} THAT MAPS {} TO {}",
+                        questionMapping.name, questionMapping.questionType, questionMapping.sqlColumn,
+                        questionMapping.question);
                 }
             }
+            debugWalkLocalConfig(childSubjectMapping);
+        }
+    }
+
+    private void walkThroughLocalConfig(ResourceResolver resolver, ResultSet sqlRow,
+        ClaritySubjectMapping subjectMapping, Resource subjectParent)
+        throws ParseException, PersistenceException, RepositoryException, SQLException
+    {
+        for (ClaritySubjectMapping childSubjectMapping : subjectMapping.childSubjects) {
+            LOGGER.warn("CREATING SUBJECT FROM LOCAL CHILD SUBJECT {} OF TYPE {}",
+                childSubjectMapping.path, childSubjectMapping.subjectType);
+
+            // Get or create the subject
+            String subjectNodeType = childSubjectMapping.subjectType;
+            String subjectIDColumnLabel = childSubjectMapping.subjectIdColumn;
+            String subjectIDColumnValue = (!"".equals(subjectIDColumnLabel))
+                ? sqlRow.getString(subjectIDColumnLabel) : UUID.randomUUID().toString();
+
+            Resource newSubjectParent = getOrCreateSubject(subjectIDColumnValue,
+                subjectNodeType, resolver, subjectParent);
+            resolver.commit();
+
+            for (ClarityQuestionnaireMapping questionnaireMapping : childSubjectMapping.questionnaires) {
+                LOGGER.warn("THIS SUBJECT HAS A QUESTIONNAIRE {} (updatesExisting={})", questionnaireMapping.name,
+                    questionnaireMapping.updatesExisting);
+
+                boolean updatesExisting = questionnaireMapping.updatesExisting;
+                Resource formNode = getFormForSubject(resolver, questionnaireMapping.getQuestionnaireResource(resolver),
+                    newSubjectParent);
+
+                if (updatesExisting && (formNode != null)) {
+                    // Update the answers to an existing Form
+                    updateExistingForm(resolver, formNode, questionnaireMapping, sqlRow);
+                } else {
+                    // Create a new Form
+                    formNode = createForm(resolver, questionnaireMapping.getQuestionnaireResource(resolver),
+                        newSubjectParent);
+
+                    // Attach all the Answer nodes to it
+                    populateEmptyForm(resolver, formNode, questionnaireMapping, sqlRow);
+
+                    // Commit the changes to the JCR
+                    resolver.commit();
+
+                    // Perform a JCR check-in to this cards:Form node once the import is completed
+                    this.nodesToCheckin.get().add(formNode.getPath());
+                }
+
+                for (ClarityQuestionMapping questionMapping : questionnaireMapping.questions) {
+                    LOGGER.warn("THIS QUESTIONNAIRE HAS A QUESTION {} OF TYPE {} THAT MAPS {} TO {}",
+                        questionMapping.name, questionMapping.questionType, questionMapping.sqlColumn,
+                        questionMapping.question);
+                }
+            }
+            walkThroughLocalConfig(resolver, sqlRow, childSubjectMapping, newSubjectParent);
         }
     }
 
     private void createFormsAndSubjects(ResourceResolver resolver, ResultSet sqlRow)
         throws ParseException, PersistenceException, RepositoryException, SQLException
     {
-        Resource clarityImportNode = resolver.resolve("/apps/cards/clarityImport");
-
-        // Recursively move down clarityImportNode
-        walkThroughClarityImport(resolver, clarityImportNode, sqlRow, "/Subjects", resolver.resolve("/Subjects"));
+        // Recursively move down the local Clarity Import configuration tree
+        walkThroughLocalConfig(resolver, sqlRow, this.clarityImportConfiguration.get(),
+            resolver.resolve("/Subjects"));
     }
 
     @Override
@@ -275,15 +377,24 @@ public class ClarityImportTask implements Runnable
 
         // Connect via SQL to the server
         try (Connection connection = DriverManager.getConnection(connectionUrl);
-            PreparedStatement statement = connection.prepareStatement(generateClarityQuery());
             ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
+
             final Session session = resolver.adaptTo(Session.class);
             this.versionManager.set(session.getWorkspace().getVersionManager());
 
-            // Perform the query
+            this.clarityImportConfiguration.set(new ClaritySubjectMapping("", "", ""));
+
+            this.sqlColumnToDataType.set(new HashMap<>());
+
+            populateClarityImportConfiguration(resolver, resolver.resolve(MAPPING_CONFIG),
+                this.clarityImportConfiguration.get());
+
+            debugWalkLocalConfig(this.clarityImportConfiguration.get());
+
+            // Generate and perform the query
+            PreparedStatement statement = connection.prepareStatement(generateClarityQuery());
             ResultSet results = statement.executeQuery();
 
-            Resource formsHomepage = resolver.resolve("/Forms");
             while (results.next()) {
                 // Create the Subjects and Forms as is needed
                 createFormsAndSubjects(resolver, results);
@@ -311,6 +422,8 @@ public class ClarityImportTask implements Runnable
             // Cleanup all ThreadLocals
             this.nodesToCheckin.remove();
             this.versionManager.remove();
+            this.clarityImportConfiguration.remove();
+            this.sqlColumnToDataType.remove();
         }
     }
 
@@ -373,12 +486,12 @@ public class ClarityImportTask implements Runnable
     }
 
     private Map<String, Object> generateAnswerNodeProperties(final ResourceResolver resolver,
-        final Resource questionMapping, final ResultSet sqlRow) throws ParseException, SQLException
+        final ClarityQuestionMapping questionMapping, final ResultSet sqlRow) throws ParseException, SQLException
     {
-        String questionPath = questionMapping.getValueMap().get(QUESTION_PROP, "");
-        String sqlColumn = questionMapping.getValueMap().get("sqlColumn", "");
+        String questionPath = questionMapping.question;
+        String sqlColumn = questionMapping.sqlColumn;
         String answerValue = sqlRow.getString(sqlColumn);
-        QuestionType qType = this.getQuestionType(resolver.resolve(questionPath));
+        QuestionType qType = questionMapping.questionType;
         return generateAnswerNodeProperties(resolver, qType, questionPath, answerValue);
     }
 
@@ -419,24 +532,23 @@ public class ClarityImportTask implements Runnable
         }
     }
 
-    private Resource createForm(ResourceResolver resolver, String questionnairePath, String subjectPath)
+    private Resource createForm(ResourceResolver resolver, Resource questionnaire, Resource subject)
         throws PersistenceException
     {
-        Resource questionnaire = resolver.resolve(questionnairePath);
-        Resource subject = resolver.resolve(subjectPath);
         return resolver.create(resolver.resolve("/Forms"), UUID.randomUUID().toString(), Map.of(
                 ClarityImportTask.PRIMARY_TYPE_PROP, "cards:Form",
                 QUESTIONNAIRE_PROP, questionnaire.adaptTo(Node.class),
                 "subject", subject.adaptTo(Node.class)));
     }
 
-    private Resource getFormForSubject(ResourceResolver resolver, String questionnairePath, String subjectPath)
+    private Resource getFormForSubject(ResourceResolver resolver, Resource questionnaireResource,
+        Resource subjectResource)
     {
         // Get the jcr:uuid associated with questionnairePath
-        String questionnaireUUID = resolver.resolve(questionnairePath).getValueMap().get("jcr:uuid", "");
+        String questionnaireUUID = questionnaireResource.getValueMap().get("jcr:uuid", "");
 
         // Get the jcr:uuid associated with subjectPath
-        String subjectUUID = resolver.resolve(subjectPath).getValueMap().get("jcr:uuid", "");
+        String subjectUUID = subjectResource.getValueMap().get("jcr:uuid", "");
 
         // Query for a cards:Form node with the specified questionnaire and subject
         String formMatchQuery = String.format(
