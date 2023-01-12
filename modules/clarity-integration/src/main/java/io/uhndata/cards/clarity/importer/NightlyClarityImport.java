@@ -74,7 +74,7 @@ public class NightlyClarityImport
     @Deactivate
     private void deactivate()
     {
-        LOGGER.debug("Deactivated Clarity Importer");
+        LOGGER.info("Deactivated Clarity Importer");
         this.scheduler.unschedule(SCHEDULER_JOB_PREFIX);
     }
 }
