@@ -29,9 +29,6 @@ public @interface ClarityImportConfigDefinition
     /** Cron-readable import schedule. */
     String NIGHTLY_IMPORT_SCHEDULE = "0 0 0 * * ? *";
 
-    @AttributeDefinition(name = "Name", description = "Configuration name")
-    String name();
-
     @AttributeDefinition(name = "Import schedule", description = "Cron-readable import schedule")
     String nightly_import_schedule() default NIGHTLY_IMPORT_SCHEDULE;
 }

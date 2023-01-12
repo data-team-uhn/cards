@@ -19,26 +19,25 @@
 
 package io.uhndata.cards.clarity.importer;
 
-import java.util.List;
-
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.commons.scheduler.ScheduleOptions;
 import org.apache.sling.commons.scheduler.Scheduler;
-import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
+import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Component(immediate = true)
+@Designate(ocd = ClarityImportConfigDefinition.class)
 public class NightlyClarityImport
 {
     /** Default log. */
     private static final Logger LOGGER = LoggerFactory.getLogger(NightlyClarityImport.class);
 
-    private static final String SCHEDULER_JOB_PREFIX = "NightlyClarityImport-";
+    private static final String SCHEDULER_JOB_PREFIX = "NightlyClarityImport";
 
     /** Provides access to resources. */
     @Reference
@@ -48,19 +47,17 @@ public class NightlyClarityImport
     @Reference
     private Scheduler scheduler;
 
-    @Reference(policyOption = ReferencePolicyOption.GREEDY, bind = "configAdded", unbind = "configRemoved")
-    private volatile List<ClarityImportConfig> configs;
-
-    public void configAdded(final ClarityImportConfig newConfig)
+    @Activate
+    protected void activate(final ClarityImportConfigDefinition config)
     {
         if (this.scheduler == null) {
             return;
         }
 
-        LOGGER.debug("Added clarity importer configuration {}", newConfig.getConfig().name());
-        final String nightlyClarityImportSchedule = newConfig.getConfig().nightly_import_schedule();
+        LOGGER.warn("Activated Clarity Importer configuration");
+        final String nightlyClarityImportSchedule = config.nightly_import_schedule();
         final ScheduleOptions options = this.scheduler.EXPR(nightlyClarityImportSchedule);
-        options.name(SCHEDULER_JOB_PREFIX + newConfig.getConfig().name());
+        options.name(SCHEDULER_JOB_PREFIX);
         options.canRunConcurrently(true);
 
         final Runnable importJob;
@@ -70,21 +67,14 @@ public class NightlyClarityImport
                 this.scheduler.schedule(importJob, options);
             }
         } catch (final Exception e) {
-            LOGGER.error("NightlyTorchImport Failed to schedule: {}", e.getMessage(), e);
+            LOGGER.error("NightlyClarityImport Failed to schedule: {}", e.getMessage(), e);
         }
     }
 
-    public void configRemoved(final ClarityImportConfig removedConfig)
+    @Deactivate
+    private void deactivate()
     {
-        LOGGER.debug("Removed torch importer config {}", removedConfig.getConfig().name());
-        this.scheduler.unschedule(SCHEDULER_JOB_PREFIX + removedConfig.getConfig().name());
-    }
-
-    @Activate
-    protected void activate(final ComponentContext componentContext) throws Exception
-    {
-        // Re-activate all the configurations; if some have been already activated, that's OK, the scheduler will simply
-        // update each job.
-        this.configs.forEach(this::configAdded);
+        LOGGER.debug("Deactivated Clarity Importer");
+        this.scheduler.unschedule(SCHEDULER_JOB_PREFIX);
     }
 }
