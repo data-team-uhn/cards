@@ -21,7 +21,7 @@
     <name>TermsOfUse</name>
     <property>
         <name>title</name>
-        <value>YOUR EXPERIENCE Terms of Use and Privacy Policy</value>
+        <value>Your Experience Terms of Use and Privacy Policy</value>
         <type>String</type>
     </property>
     <property>
