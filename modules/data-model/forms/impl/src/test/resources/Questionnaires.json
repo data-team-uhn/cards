@@ -1,0 +1,37 @@
+{
+  "jcr:primaryType": "cards:Questionnaire",
+  "title": "Test Questionnaire",
+  "description": "A test questionnaire",
+  "section_1": {
+    "jcr:primaryType": "cards:Section",
+    "label": "Section 1",
+    "question_1": {
+      "jcr:primaryType": "cards:Question",
+      "text": "Date Question",
+      "dataType": "date",
+      "dateFormat": "yyyy-MM-dd"
+    },
+    "question_2": {
+      "jcr:primaryType": "cards:Question",
+      "text": "Options Question",
+      "dataType": "text",
+      "displayMode": "list",
+      "o1": {
+        "jcr:primaryType": "cards:AnswerOption",
+        "label": "Option 1",
+        "value": "O1"
+      },
+      "o2": {
+        "jcr:primaryType": "cards:AnswerOption",
+        "label": "Option 2",
+        "value": "O2"
+      }
+    },
+    "question_3": {
+      "jcr:primaryType": "cards:Question",
+      "text": "Boolean Question",
+      "dataType": "boolean"
+    }
+  }
+}
+
