@@ -37,7 +37,7 @@ public class NightlyClarityImport
     /** Default log. */
     private static final Logger LOGGER = LoggerFactory.getLogger(NightlyClarityImport.class);
 
-    private static final String SCHEDULER_JOB_PREFIX = "NightlyClarityImport";
+    private static final String SCHEDULER_JOB_NAME = "NightlyClarityImport";
 
     /** Provides access to resources. */
     @Reference
@@ -57,7 +57,7 @@ public class NightlyClarityImport
         LOGGER.info("Activated Clarity Importer configuration");
         final String nightlyClarityImportSchedule = config.nightly_import_schedule();
         final ScheduleOptions options = this.scheduler.EXPR(nightlyClarityImportSchedule);
-        options.name(SCHEDULER_JOB_PREFIX);
+        options.name(SCHEDULER_JOB_NAME);
         options.canRunConcurrently(true);
 
         final Runnable importJob;
@@ -75,6 +75,6 @@ public class NightlyClarityImport
     private void deactivate()
     {
         LOGGER.info("Deactivated Clarity Importer");
-        this.scheduler.unschedule(SCHEDULER_JOB_PREFIX);
+        this.scheduler.unschedule(SCHEDULER_JOB_NAME);
     }
 }
