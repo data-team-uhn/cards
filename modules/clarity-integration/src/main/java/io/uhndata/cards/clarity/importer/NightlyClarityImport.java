@@ -54,7 +54,7 @@ public class NightlyClarityImport
             return;
         }
 
-        LOGGER.warn("Activated Clarity Importer configuration");
+        LOGGER.info("Activated Clarity Importer configuration");
         final String nightlyClarityImportSchedule = config.nightly_import_schedule();
         final ScheduleOptions options = this.scheduler.EXPR(nightlyClarityImportSchedule);
         options.name(SCHEDULER_JOB_PREFIX);
