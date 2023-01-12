@@ -45,6 +45,8 @@
               SLING-INF/content/Survey/AIP.xml;path:=/Survey/AIP;overwrite:=true,
               SLING-INF/content/Survey/EDIP.xml;path:=/Survey/EDIP;overwrite:=true,
               SLING-INF/content/Survey/CPES.xml;path:=/Survey/CPES;overwrite:=true,
+              SLING-INF/content/Survey/Rehab.xml;path:=/Survey/Rehab;overwrite:=true,
+              SLING-INF/content/Survey/Rehab2.xml;path:=/Survey/Rehab2;overwrite:=true,
               SLING-INF/content/Survey/ClinicMapping.xml;path:=/Survey/ClinicMapping;overwrite:=true,
               SLING-INF/content/Survey/PatientIdentification.xml;path:=/Survey/PatientIdentification;overwrite:=true,
               SLING-INF/content/Survey/TermsOfUse.xml;path:=/Survey/TermsOfUse;overwrite:=true,
