@@ -24,13 +24,14 @@ import org.apache.sling.commons.scheduler.ScheduleOptions;
 import org.apache.sling.commons.scheduler.Scheduler;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component(immediate = true)
+@Component(configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true)
 @Designate(ocd = ClarityImportConfigDefinition.class)
 public class NightlyClarityImport
 {
@@ -54,8 +55,14 @@ public class NightlyClarityImport
             return;
         }
 
-        LOGGER.info("Activated Clarity Importer configuration");
+        LOGGER.info("Activating Clarity Importer configuration");
+
         final String nightlyClarityImportSchedule = config.nightly_import_schedule();
+        if ("".equals(nightlyClarityImportSchedule)) {
+            LOGGER.error("Failed to schedule NightlyClarityImport because a cron schedule was not given.");
+            return;
+        }
+
         final ScheduleOptions options = this.scheduler.EXPR(nightlyClarityImportSchedule);
         options.name(SCHEDULER_JOB_NAME);
         options.canRunConcurrently(true);
@@ -65,6 +72,7 @@ public class NightlyClarityImport
         try {
             if (importJob != null) {
                 this.scheduler.schedule(importJob, options);
+                LOGGER.info("Activated Clarity Importer configuration");
             }
         } catch (final Exception e) {
             LOGGER.error("NightlyClarityImport Failed to schedule: {}", e.getMessage(), e);
