@@ -51,7 +51,7 @@
     "react-to-print": "2.14.4",
     "material-table": "^2.0.3",
     "material-ui-dropzone": "3.5.0",
-    "luxon": "2.4.0",
+    "luxon": "3.2.1",
     "prop-types": "15.7.2",
     "uuid": "8.3.1",
     "@uiw/react-md-editor": "3.4.7"

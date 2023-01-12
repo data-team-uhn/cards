@@ -40,7 +40,7 @@
     "@mui/styles": "5.8.0",
     "google-palette": "1.1.0",
     "material-table": "2.0.3",
-    "luxon": "2.4.0",
+    "luxon": "3.2.1",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
     "react-router-dom": "5.2.0",
