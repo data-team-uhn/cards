@@ -339,6 +339,8 @@ public class ClarityImportTask implements Runnable
     @Override
     public void run()
     {
+        LOGGER.info("Running ClarityImportTask");
+
         String connectionUrl =
             "jdbc:sqlserver://" + System.getenv("CLARITY_SQL_SERVER") + ";"
             + "user=" + System.getenv("CLARITY_SQL_USERNAME") + ";"
