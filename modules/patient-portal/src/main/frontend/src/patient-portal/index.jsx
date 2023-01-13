@@ -38,6 +38,20 @@ function PatientPortalHomepage (props) {
   const [ surveyInstructions, setSurveyInstructions ] = useState();
   const [ accessConfig, setAccessConfig ] = useState({});
 
+  // Sign the patient out when leaving the page
+  useEffect(() => {
+    window.addEventListener("beforeunload", signout, true);
+    // When component unmounts:
+    return (() => {
+      // cleanup event handler
+      window.removeEventListener("beforeunload", signout, true);
+    });
+  }, []);
+
+  let signout = () => {
+    fetch('/system/sling/logout');
+  }
+
   // Fetch saved settings for Patient Portal Survey Instructions
   useEffect(() => {
     fetch(`${SURVEY_INSTRUCTIONS_PATH}.json`)

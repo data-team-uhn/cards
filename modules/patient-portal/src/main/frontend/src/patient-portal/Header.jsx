@@ -78,7 +78,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function Header (props) {
-  const { title, greeting, progress, subtitle, step } = props;
+  const { title, greeting, withSignout, progress, subtitle, step } = props;
 
   const classes = useStyles();
 
@@ -108,7 +108,9 @@ function Header (props) {
           </div>
           <Breadcrumbs separator = "·">
             {greeting && <span className={classes.greeting}>{ greeting }</span>}
-            <Link href="/system/sling/logout" underline="hover" onClick={(event) => {event.preventDefault(); window.location = "/system/sling/logout?resource=" + encodeURIComponent(window.location.pathname);}}>Sign out</Link>
+            {withSignout &&
+              <Link href="/system/sling/logout" underline="hover" onClick={(event) => {event.preventDefault(); window.location = "/system/sling/logout?resource=" + encodeURIComponent(window.location.pathname);}}>Sign out</Link>
+            }
           </Breadcrumbs>
         </Toolbar>
       </Collapse>
