@@ -91,7 +91,7 @@ for i in range(args.n):
     args.file.write("INSERT INTO [path].[CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS]")
     args.file.write("\t(PAT_MRN, PAT_FIRST_NAME, PAT_LAST_NAME, EMAIL_ADDRESS, ENTRY_TIME, DISCH_DEPT_NAME, EMAIL_CONSENT_YN, LoadTime)\n")
     args.file.write("\tVALUES\n")
-    args.file.write("\t(%07d, '%s', '%s', '%s', '%s', '%s', '%s', CAST(GETDATE() AS DATE))\n"
+    args.file.write("\t(%07d, '%s', '%s', '%s', '%s', '%s', '%s', CAST(GETDATE()-1 AS DATE))\n"
         % (mrn, first_name, last_name, email, entry_time_str, disch_dept_name, email_consent_yn))
 
 args.file.close()

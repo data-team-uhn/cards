@@ -204,7 +204,7 @@ public class ClarityImportTask implements Runnable
             }
         }
         queryString += " FROM path.CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS";
-        queryString += " WHERE CAST(LoadTime AS DATE) = CAST(GETDATE() AS DATE);";
+        queryString += " WHERE CAST(LoadTime AS DATE) = CAST(GETDATE()-1 AS DATE);";
 
         return queryString;
     }
