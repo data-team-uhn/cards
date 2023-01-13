@@ -706,7 +706,7 @@ if args.adminer:
   yaml_obj['services']['adminer']['ports'] = ["127.0.0.1:{}:8080".format(args.adminer_port)]
 
 if args.mssql:
-  print("Configuring service: ms-sql")  
+  print("Configuring service: ms-sql")
   yaml_obj['services']['mssql'] = {}
   yaml_obj['services']['mssql']['image'] = 'mcr.microsoft.com/mssql/server:2022-latest'
   yaml_obj['services']['mssql']['networks'] = {}
