@@ -26,6 +26,17 @@
         <type>String</type>
     </property>
     <property>
+        <name>intro</name>
+        <value>
+Please answer some questions about your recent emergency visit at:
+
+### @{visit.location}
+
+Do not include any other hospital stays in your answers.
+        </value>
+        <type>String</type>
+    </property>
+    <property>
         <name>frequencyIgnoreClinic</name>
         <value>True</value>
         <type>Boolean</type>

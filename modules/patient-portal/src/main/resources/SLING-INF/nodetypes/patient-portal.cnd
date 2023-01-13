@@ -104,6 +104,9 @@
   // Mandatory, each QuestionnaireSet must have a name.
   - name (string) mandatory
 
+  // An optional intro text about the survey to guide the patient
+  - intro (string)
+
   // An emergency contact for the clinic
   - emergencyContact (string)
 

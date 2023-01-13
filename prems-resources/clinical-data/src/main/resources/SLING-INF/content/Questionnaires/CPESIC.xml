@@ -83,12 +83,12 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>Please answer the questions about your recent stay at the hospital named below. Do not include any other hospital stays in your answers.</value>
+				<value>Hospital</value>
 				<type>String</type>
 			</property>
 			<property>
 				<name>displayMode</name>
-				<value>formatted</value>
+				<value>hidden</value>
 				<type>String</type>
 			</property>
 			<property>
@@ -2300,7 +2300,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>text</name>
-				<value>Please answer the following questions about your stay at the hospital named below. Do not include any other hospital stays in your answers.</value>
+				<value> </value>
 				<type>String</type>
 			</property>
 			<property>
@@ -2310,12 +2310,12 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>entryMode</name>
-				<value>reference</value>
+				<value>computed</value>
 				<type>String</type>
 			</property>
 			<property>
-				<name>question</name>
-				<value>/Questionnaires/Visit information/location</value>
+				<name>expression</name>
+				<value>return "Please answer the following questions about your stay at **" + @{cpesic_hospital} + "**. Do not include any other hospital stays in your answers."</value>
 				<type>String</type>
 			</property>
 		</node>

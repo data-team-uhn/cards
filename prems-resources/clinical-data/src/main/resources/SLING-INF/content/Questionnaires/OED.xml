@@ -52,12 +52,12 @@
 		</property>
 		<property>
 			<name>text</name>
-			<value>Please answer the questions about your recent emergency visit at the hospital named below. Do not include any other hospital stays in your answers.</value>
+			<value>Hospital</value>
 			<type>String</type>
 		</property>
 		<property>
 			<name>displayMode</name>
-			<value>formatted</value>
+			<value>hidden</value>
 			<type>String</type>
 		</property>
 		<property>
