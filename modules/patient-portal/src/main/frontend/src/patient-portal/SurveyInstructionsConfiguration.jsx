@@ -33,7 +33,8 @@ import { camelCaseToWords } from "../questionnaireEditor/LabeledField.jsx";
 export const SURVEY_INSTRUCTIONS_PATH = "/Survey/SurveyInstructions";
 export const DEFAULT_INSTRUCTIONS = {
   noEventsMessage: "We could not find any pending surveys to fill out.",
-  noSurveysMessage: "You have no pending surveys to fill out."
+  noSurveysMessage: "You have no pending surveys to fill out.",
+  surveyDraftInfo: "If you close your browser window before finishing the survey, your answers will be automatically saved. You can return to the survey to complete and submit it by following the link you received in your invitation email."
 };
 
 const useStyles = makeStyles(theme => ({
@@ -53,7 +54,7 @@ function SurveyInstructionsConfiguration() {
   const labels = {
     welcomeMessage: ["welcomeMessage"],
     eventSelectionScreen: ["noEventsMessage", "eventSelectionMessage"],
-    startScreen: [ "enableStartScreen", "eventLabel", "noSurveysMessage", "surveyIntro" ],
+    startScreen: [ "enableStartScreen", "eventLabel", "noSurveysMessage", "surveyIntro", "surveyDraftInfo" ],
     summaryScreen: [ "disclaimer", "summaryInstructions", "interpretationInstructions" ]
   };
 

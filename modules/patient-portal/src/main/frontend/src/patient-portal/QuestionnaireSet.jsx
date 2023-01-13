@@ -567,10 +567,11 @@ function QuestionnaireSet(props) {
       </ListItem>
     ))}
     </List>,
+    nextQuestionnaire && <Fab variant="extended" color="primary" onClick={launchNextForm} key="welcome-action">Begin</Fab>,
     <Typography paragraph key="expiry-message" color="textSecondary">
         {expiryDate()}
     </Typography>,
-    nextQuestionnaire && <Fab variant="extended" color="primary" onClick={launchNextForm} key="welcome-action">Begin</Fab>
+    displayText("surveyDraftInfo", Typography, {paragraph: true, key: "draft-info"}),
   ];
 
   let formScreen = [
