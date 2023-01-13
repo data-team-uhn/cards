@@ -480,13 +480,14 @@ function QuestionnaireSet(props) {
   }
 
   let appointmentAlert = () => {
+    const eventLabel = displayText("eventLabel", AlertTitle);
     const time = appointmentDate();
     let location = getVisitInformation("location");
     let provider = getVisitInformation("provider");
     provider = provider && provider.length > 1 ? provider.join(", ") : provider;
-    return (time || location || provider) ?
+    return (eventLabel && (time || location || provider)) ?
       <Alert severity="info">
-        {displayText("eventLabel", AlertTitle)}
+        {eventLabel}
         {time ? <> {time} </> : null}
         {location ? <> at {location}</> : null}
         {provider ? <> with {provider}</> : null}
