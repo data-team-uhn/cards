@@ -22,7 +22,7 @@
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
-		<value>Canadian Patient Experiences Survey — Inpatient Care</value>
+		<value>Canadian Patient Experiences Survey</value>
 		<type>String</type>
 	</property>
 	<property>
