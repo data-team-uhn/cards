@@ -53,7 +53,7 @@ Completing this survey is voluntary, and your name and contact information will 
     </property>
     <property>
         <name>enableStartScreen</name>
-        <value>False</value>
+        <value>True</value>
         <type>Boolean</type>
     </property>
     <property>
