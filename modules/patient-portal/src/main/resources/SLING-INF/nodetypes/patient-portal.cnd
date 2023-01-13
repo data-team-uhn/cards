@@ -39,9 +39,6 @@
   // Hardcode the resource type.
   - sling:resourceType (STRING) = "cards/QuestionnaireConflict" mandatory autocreated protected
 
-  // Hardcode the resource supertype.
-  - sling:resourceSuperType (STRING) = "cards/Resource" mandatory autocreated protected
-
   // A questionnaire path
   // Mandatory, each QuestionnaireConflict must point to a questionnaire.
   - questionnaire (reference) mandatory
@@ -114,6 +111,9 @@
   - frequencyIgnoreClinic (boolean)
 
   // How any questionnaires not included in this set should be checked for conflicts
+  // Supported values are:
+  // "anyListed" (default): Only conflict with questionnaires listed as a cards:QuestionnaireConflict
+  // "any": Conflict with any questionnaires
   - conflictMode (STRING)
 
   // Any forms which should prevent this questionnaire set from being created if present

@@ -725,7 +725,9 @@ public class VisitChangeListener implements ResourceChangeListener
 
     private static final class QuestionnaireSetInfo
     {
+        // Conflict with any questionnaire
         private static final String CONFLICT_ANY = "any";
+        // Only conflict with questionnaires included in the map of conflicts
         private static final String CONFLICT_ANY_LISTED = "anyListed";
         private final Map<String, Integer> conflicts;
         private final Map<String, QuestionnaireRef> members;
