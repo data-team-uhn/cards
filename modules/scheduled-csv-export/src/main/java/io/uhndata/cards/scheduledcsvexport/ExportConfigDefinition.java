@@ -45,11 +45,11 @@ public @interface ExportConfigDefinition
     String export_schedule() default NIGHTLY_EXPORT_SCHEDULE;
 
     @AttributeDefinition(name = "Questionnaires to be exported",
-            description = "List of questionnaires specified to be exported periodically")
+            description = "List of questionnaires specified to be exported periodically, as full paths")
     String[] questionnaires_to_be_exported();
 
     @AttributeDefinition(name = "Save path",
-            description = "The local path to the directory where exported survey CSV files are to be saved")
+            description = "The local disk path to the directory where exported survey CSV files are to be saved")
     String save_path() default SAVE_PATH;
 
     @AttributeDefinition(
