@@ -47,7 +47,7 @@ class Page {
  * Component that displays a page of a Form.
  */
 function FormPagination (props) {
-  let { classes, enabled, saveInProgress, lastSaveStatus, setPagesCallback, enableSave, onDone, doneLabel, questionnaireData } = props;
+  let { classes, enabled, variant, saveInProgress, lastSaveStatus, setPagesCallback, enableSave, onDone, doneLabel, questionnaireData } = props;
 
   let [ savedLastPage, setSavedLastPage ] = useState(false);
   let [ pendingSubmission, setPendingSubmission ] = useState(false);
@@ -194,7 +194,7 @@ function FormPagination (props) {
       lastValidPage() > 0
       ?
         <MobileStepper
-          variant="progress"
+          variant={variant}
           // Offset back bar 1 to create a "current page" region.
           // If the final page has been saved, progress the front bar to complete
           activeStep={activePage + (lastSaveStatus && savedLastPage ? 1 : 0)}
@@ -224,6 +224,7 @@ function FormPagination (props) {
 FormPagination.propTypes = {
   enableSave: PropTypes.bool,
   enabled: PropTypes.bool,
+  variant: PropTypes.oneOf(['progress', 'dots', 'text']),
   questionnaireData: PropTypes.object.isRequired,
   setPagesCallback: PropTypes.func.isRequired,
   lastSaveStatus: PropTypes.bool,
@@ -233,6 +234,7 @@ FormPagination.propTypes = {
 FormPagination.defaultProps = {
   enableSave: true,
   enabled: true,
+  variant: "progress",
   saveInProgress: false,
   lastSaveStatus: true
 };
