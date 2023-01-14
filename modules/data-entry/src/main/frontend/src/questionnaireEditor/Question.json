@@ -68,8 +68,12 @@
         "minAnswers": {"0":{}, "1":{}},
         "yesLabel": "string",
         "noLabel": "string",
-        "enableUnknown": "boolean",
-        "unknownLabel": "string",
+        "enableUnknown": {
+           "true" : {
+             "unknownLabel": "string"
+           },
+           "false" : {}
+        },
         "compact" : "boolean",
         "entryMode": {
           "user": {
