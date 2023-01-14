@@ -22,7 +22,7 @@
 	<primaryNodeType>cards:Questionnaire</primaryNodeType>
 	<property>
 		<name>title</name>
-		<value>UHN Patient Experience Inpatient Survey - Short Form</value>
+		<value>UHN Patient Experience Inpatient Survey</value>
 		<type>String</type>
 	</property>
 	<property>
