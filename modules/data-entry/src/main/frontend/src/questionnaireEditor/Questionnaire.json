@@ -15,6 +15,11 @@
     "description" : "markdown",
     "maxPerSubject": "long",
     "paginate": "boolean",
+    "paginationVariant" : {
+       "progress" : {},
+       "dots": {},
+       "text" : {}
+    },
     "requiredSubjectTypes": {
       "type": "list",
       "primaryType": "cards:SubjectType",
