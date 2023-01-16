@@ -521,11 +521,8 @@ function QuestionnaireSet(props) {
       diffString("hours", diffStrings, diffs);
       diffString("minutes", diffStrings, diffs);
 
-      if (diffStrings.length > 1) {
-        result = " and " + diffStrings.pop();
-      }
       if (diffStrings.length > 0) {
-        result = " This survey link will expire in " + diffStrings.join(", ") + result + ".";
+        result = " This survey link will expire in " + diffStrings[0] + ".";
       }
     } else {
       // Visit date could not be retrieved, this token will expire 1 hour from creation.
