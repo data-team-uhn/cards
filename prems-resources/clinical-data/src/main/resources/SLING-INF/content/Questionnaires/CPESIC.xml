@@ -2315,7 +2315,7 @@ Your response to this survey is voluntary but will provide us with important inf
 			</property>
 			<property>
 				<name>expression</name>
-				<value>return "Please answer the following questions about your stay at **" + @{cpesic_hospital} + "**. Do not include any other hospital stays in your answers."</value>
+				<value>return "Please answer the following questions about your stay at **" + @{cpesic_hospital:-UHN} + "**. Do not include any other hospital stays in your answers."</value>
 				<type>String</type>
 			</property>
 		</node>
