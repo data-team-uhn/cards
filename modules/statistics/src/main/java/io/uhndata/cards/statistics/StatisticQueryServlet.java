@@ -388,22 +388,6 @@ public class StatisticQueryServlet extends SlingAllMethodsServlet
     }
 
     /**
-     * No Split: Get all answers that have a given question filled out.
-     *
-     * @param question The question node that the answers is to
-     * @param resolver A reference to a ResourceResolver
-     * @return An iterator of Resources that are Nodes of answers to the given question
-     */
-    private Iterator<Resource> getAnswersToQuestion(Node question, ResourceResolver resolver) throws RepositoryException
-    {
-        final StringBuilder query =
-            // We select all answers that answer our question
-            new StringBuilder("select n from [cards:Answer] as n where n.'question'='"
-                + question.getIdentifier() + "'");
-        return resolver.findResources(query.toString(), Query.JCR_SQL2);
-    }
-
-    /**
      * No Split: Filter the given iterator of resources to only include resources whose parent is a Form, and whose
      * Subject (or an ancestor)'s type is equal to the given subjectType.
      *

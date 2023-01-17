@@ -86,9 +86,6 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
 
     private static final String VALUE = "value";
 
-    /** The name of the request parameter that may hold a login token. */
-    private static final String TOKEN_REQUEST_PARAMETER = "auth_token";
-
     @Reference
     private ResourceResolverFactory resolverFactory;
 
@@ -253,7 +250,6 @@ public class ValidateCredentialsServlet extends SlingAllMethodsServlet
             "JCR-SQL2");
         while (results.hasNext()) {
             Node patientInformationForm = results.next().adaptTo(Node.class);
-            String path = patientInformationForm.getPath();
 
             // Check if the DOB matches
             if (validatePatient(request, null, session,
