@@ -80,11 +80,11 @@ public class ExportTask implements Runnable
         }
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
             for (String questionnaire : this.questionnairesToBeExported) {
-                final File csvFile = new File(this.savePath + "/ExportedForms_" + questionnaire + "_"
+                final File csvFile = new File(this.savePath + "/ExportedForms_" + questionnaire.replace("/", "_") + "_"
                     + timePeriod + ".csv");
                 try (FileWriter writer = new FileWriter(csvFile)) {
                     final String csvPath = String.format(
-                        "/Questionnaires/" + questionnaire + "%s.data.dataFilter:modifiedAfter=%s.dataFilter:"
+                        questionnaire + "%s.data.dataFilter:modifiedAfter=%s.dataFilter:"
                             + "modifiedBefore=%s.csv",
                         labelsParameter, modifiedAfterDate, modifiedBeforeDate);
                     final CSVString csv = resolver.resolve(csvPath).adaptTo(CSVString.class);
