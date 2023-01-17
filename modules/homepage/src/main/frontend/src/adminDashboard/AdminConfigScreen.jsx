@@ -207,7 +207,7 @@ function AdminConfigScreen(props) {
           { /* Confirmation dialog for resetting the changes */ }
           <Dialog className={classes.confirmationDialog} open={resetConfirmationPending}>
             <DialogTitle>
-              <Typography variant="h6" color="error" className={classes.dialogTitle}>Confirm configuration reset</Typography>
+              Confirm configuration reset
             </DialogTitle>
             <DialogContent>
               <FormattedText>

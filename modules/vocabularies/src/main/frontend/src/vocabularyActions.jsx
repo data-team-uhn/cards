@@ -20,35 +20,17 @@
 import React, { useEffect, useContext } from "react";
 
 import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  IconButton,
   Typography
 } from "@mui/material";
 
-import makeStyles from '@mui/styles/makeStyles';
-
-import CloseIcon from "@mui/icons-material/Close";
-
 import VocabularyDetails from "./vocabularyDetails"
 import VocabularyAction from "./vocabularyAction"
+import ErrorDialog from "./components/ErrorDialog";
 import { fetchWithReLogin, GlobalLoginContext } from "./login/loginDialogue.js";
 
 const vocabLinks = require('./vocabularyLinks.json');
 const Phase = require("./phaseCodes.json");
 
-const useStyles = makeStyles(theme => ({
-  closeButton: {
-    position: 'absolute',
-    right: theme.spacing(1),
-    top: theme.spacing(1),
-    color: theme.palette.grey[500]
-  },
-  title: {
-    marginRight: theme.spacing(5)
-  }
-}));
 
 /*
   This function keeps track of the state of the current vocabulary. It also keeps track of any error messages needed to be displayed.
@@ -62,8 +44,6 @@ export default function VocabularyActions(props) {
   const [errorMessage, setErrorMessage] = React.useState("");
 
   const [phase, setPhase] = React.useState(initPhase);
-
-  const classes = useStyles();
 
   const globalLoginDisplay = useContext(GlobalLoginContext);
 
@@ -144,22 +124,11 @@ export default function VocabularyActions(props) {
           vocabulary={vocabulary}
           type={props.type}
         />
-        <Dialog open={error} onClose={handleClose}>
-
-          <DialogTitle>
-            <Typography variant="h6" color="error" className={classes.title}>Failed to {action}</Typography>
-            <IconButton onClick={handleClose} className={classes.closeButton} size="large">
-              <CloseIcon />
-            </IconButton>
-          </DialogTitle>
-
-          <DialogContent dividers>
-            <Typography variant="h6">{vocabulary.name}</Typography>
-            <Typography variant="subtitle2" gutterBottom>Version: {vocabulary.version}</Typography>
-            <Typography paragraph color="error">{errorMessage}</Typography>
-          </DialogContent>
-
-        </Dialog>
+        <ErrorDialog title={`Failed to ${action}`} open={error} onClose={handleClose}>
+          <Typography variant="h6">{vocabulary.name}</Typography>
+          <Typography variant="subtitle2" gutterBottom>Version: {vocabulary.version}</Typography>
+          <Typography paragraph color="error">{errorMessage}</Typography>
+        </ErrorDialog>
       </React.Fragment>
   );
 }

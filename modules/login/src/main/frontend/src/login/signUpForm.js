@@ -19,19 +19,16 @@
 import React from 'react';
 import {
     Button,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    IconButton,
+    Grid,
     TextField,
     Tooltip,
     Typography
 } from '@mui/material';
 import withStyles from '@mui/styles/withStyles';
-import { Close } from "@mui/icons-material";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
+import ErrorDialog from "../components/ErrorDialog";
 import styles from "../styling/styles";
 
 class FormFields extends React.Component {
@@ -122,12 +119,15 @@ class FormFields extends React.Component {
           required
 
         />
-        { !loginOnSuccess &&
-          <Button variant="outlined" size="small" onClick={handleReset} className={classes.submit + " " + classes.closeButton}>Close</Button>
-        }
-        {!isValid ?
-          // Render hover over and button
-          <React.Fragment>
+        <Grid container direction="row" justifyContent="flex-end" alignItems="center" className={classes.actions}>
+          { !loginOnSuccess &&
+            <Grid item>
+              <Button variant="outlined" size="small" onClick={handleReset} className={classes.submit + " " + classes.closeButton}>Close</Button>
+            </Grid>
+          }
+          <Grid item>
+          {!isValid ?
+            // Render tooltip and button
             <Tooltip title="You must fill in all fields.">
               <div>
                 { loginOnSuccess ?
@@ -136,13 +136,15 @@ class FormFields extends React.Component {
                 }
               </div>
             </Tooltip>
-          </React.Fragment> :
-          // Else just render the button
-          ( loginOnSuccess ?
-            <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit} fullWidth >Submit</Button> :
-            <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit + " " + classes.closeButton} size="small">Submit</Button>
-          )
-        }
+            :
+            // Else just render the button
+            ( loginOnSuccess ?
+              <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit} fullWidth >Submit</Button> :
+              <Button type="submit" variant="contained" color="primary" disabled={!isValid} className={classes.submit + " " + classes.closeButton} size="small">Submit</Button>
+            )
+          }
+          </Grid>
+        </Grid>
       </form>
     );
   }
@@ -262,17 +264,9 @@ class SignUpForm extends React.Component {
     // Hooks only work inside functional components
     return (
       <React.Fragment>
-        <Dialog open={this.state.errorOpen} onClose={() => this.setState({errorOpen: false})}>
-          <DialogTitle>
-            <Typography variant="h6" color="error" className={classes.errorDialogTitle}>Error</Typography>
-            <IconButton size="large" onClick={() => this.setState({errorOpen: false})} className={classes.errorCloseButton}>
-              <Close />
-            </IconButton>
-          </DialogTitle>
-          <DialogContent>
-            <Typography variant="body1">{this.state.errorMsg}</Typography>
-          </DialogContent>
-        </Dialog>
+        <ErrorDialog open={this.state.errorOpen} onClose={() => this.setState({errorOpen: false})}>
+          <Typography variant="body1">{this.state.errorMsg}</Typography>
+        </ErrorDialog>
         <div className={classes.main}>
           <Formik
             render={props => <FormFieldsComponent {...props} />}
