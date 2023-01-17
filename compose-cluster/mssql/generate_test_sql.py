@@ -67,8 +67,9 @@ CREATE TABLE [path].[CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS] (
     PAT_FIRST_NAME varchar(255) NULL,
     PAT_LAST_NAME varchar(255) NULL,
     EMAIL_ADDRESS varchar(255) NULL,
-    ENTRY_TIME datetime2 NULL,
+    HOSP_DISCHARGE_DTTM datetime2 NULL,
     DISCH_DEPT_NAME varchar(254) NULL,
+    DISCH_LOC_NAME varchar(254) NULL,
     EMAIL_CONSENT_YN varchar(3),
     LoadTime datetime2 NULL
 );
@@ -76,6 +77,41 @@ CREATE TABLE [path].[CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS] (
 -- Insert test data
 '''
 )
+
+HOSPITALS_TO_DEPARTMENTS = {}
+HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'] = []
+HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-4MA Cardiovascular Surgery")
+HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-4MB Cardiovascular Surgery")
+HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-5MB Cardiology")
+HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-6MA MOT/Nephrology")
+HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-6MB Thoracic Surgery/Respirology")
+HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-7MA Multi Organ Transplant Unit TG-7MB Multi Organ Transplant Unit")
+HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-ES 10 Surgical Oncology")
+HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-ES 6 General Medicine")
+HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-ES 9 General Surgery")
+HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-ES13 General Medicine")
+HOSPITALS_TO_DEPARTMENTS['Toronto General Hospital'].append("TG-ES14 General Medicine")
+
+HOSPITALS_TO_DEPARTMENTS['Toronto Western Hospital'] = []
+HOSPITALS_TO_DEPARTMENTS['Toronto Western Hospital'].append("TW-3B Fell Pavilion")
+HOSPITALS_TO_DEPARTMENTS['Toronto Western Hospital'].append("TW-4B Fell Pavilion")
+HOSPITALS_TO_DEPARTMENTS['Toronto Western Hospital'].append("TW-5A Fell Pavilion")
+HOSPITALS_TO_DEPARTMENTS['Toronto Western Hospital'].append("TW-5B Fell Pavilion")
+HOSPITALS_TO_DEPARTMENTS['Toronto Western Hospital'].append("TW-6A Fell Pavilion")
+HOSPITALS_TO_DEPARTMENTS['Toronto Western Hospital'].append("TW-8A Fell Pavilion")
+HOSPITALS_TO_DEPARTMENTS['Toronto Western Hospital'].append("TW-8B Fell Pavilion")
+HOSPITALS_TO_DEPARTMENTS['Toronto Western Hospital'].append("TW-9A Fell Pavilion")
+HOSPITALS_TO_DEPARTMENTS['Toronto Western Hospital'].append("TW-9B Fell Pavilion")
+
+HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'] = []
+HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-14A Leukemia/Lymphoma")
+HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-14B Bone Marrow Transplant")
+HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-15A Leukemia & Lymphoma Unit")
+HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-15B BMT & Leukemia/Lymphoma")
+HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-15C Auto Transplant Unit")
+HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-17A Breast, Gyn, GI & GU")
+HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-17B Head & Neck, Sarc & Lung")
+HOSPITALS_TO_DEPARTMENTS['Princess Margaret Cancer Centre'].append("PM-18B Short Term Care")
 
 # Insert test data
 for i in range(args.n):
@@ -85,13 +121,14 @@ for i in range(args.n):
     email = 'test' + str(mrn) + '@test.com'
     entry_time = args.basedate - datetime.timedelta(seconds=random.randint(0, args.time_spread_seconds))
     entry_time_str = entry_time.strftime('%Y-%m-%d %H:%M:%S')
-    disch_dept_name = random.choice(['TG-EMERGENCY', 'TW-EMERGENCY'])
+    disch_dept_location = random.choice(list(HOSPITALS_TO_DEPARTMENTS.keys()))
+    disch_dept_name = random.choice(HOSPITALS_TO_DEPARTMENTS[disch_dept_location])
     email_consent_yn = random.choice(['Yes', 'No'])
 
     args.file.write("INSERT INTO [path].[CL_EP_IP_EMAIL_CONSENT_IN_LAST_7_DAYS]")
-    args.file.write("\t(PAT_MRN, PAT_FIRST_NAME, PAT_LAST_NAME, EMAIL_ADDRESS, ENTRY_TIME, DISCH_DEPT_NAME, EMAIL_CONSENT_YN, LoadTime)\n")
+    args.file.write("\t(PAT_MRN, PAT_FIRST_NAME, PAT_LAST_NAME, EMAIL_ADDRESS, HOSP_DISCHARGE_DTTM, DISCH_DEPT_NAME, DISCH_LOC_NAME, EMAIL_CONSENT_YN, LoadTime)\n")
     args.file.write("\tVALUES\n")
-    args.file.write("\t(%07d, '%s', '%s', '%s', '%s', '%s', '%s', CAST(GETDATE()-1 AS DATE))\n"
-        % (mrn, first_name, last_name, email, entry_time_str, disch_dept_name, email_consent_yn))
+    args.file.write("\t(%07d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', CAST(GETDATE()-1 AS DATE))\n"
+        % (mrn, first_name, last_name, email, entry_time_str, disch_dept_name, disch_dept_location, email_consent_yn))
 
 args.file.close()
