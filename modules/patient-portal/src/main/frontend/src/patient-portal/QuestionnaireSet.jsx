@@ -680,6 +680,7 @@ function QuestionnaireSet(props) {
       <Header
         title={title}
         greeting={username}
+        withSignout={!!(config?.PIIAuthRequired)}
         progress={progress}
         subtitle={questionnaires[questionnaireIds[crtStep]]?.title}
         step={stepIndicator(crtStep, true)}
