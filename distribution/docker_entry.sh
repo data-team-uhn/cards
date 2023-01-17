@@ -53,6 +53,8 @@ fi
 
 [[ "${CARDS_PROJECT}" == 'cards4proms' || "${CARDS_PROJECT}" == 'cards4prems' ]] && SMTPS_ENABLED="true"
 
+[[ "${CARDS_PROJECT}" == 'cards4prems' ]] && CSV_EXPORT_ENABLED="true"
+
 if [ ! -z $DEV ]
 then
   featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards/${PROJECT_VERSION}/slingosgifeature/composum"
@@ -172,6 +174,12 @@ fi
 if [[ "$SAML_AUTH_ENABLED" == "true" ]]
 then
   featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-saml-support/${PROJECT_VERSION}/slingosgifeature/base -C io.dropwizard.metrics:metrics-core:ALL -f mvn:io.uhndata.cards/cards-fetch-requires-saml-login/${PROJECT_VERSION}/slingosgifeature"
+fi
+
+#Should the scheduled-csv-export module be loaded?
+if [[ "$CSV_EXPORT_ENABLED" == "true" ]]
+then
+  featureFlagString="$featureFlagString -f mvn:io.uhndata.cards/cards-scheduled-csv-export/${PROJECT_VERSION}/slingosgifeature"
 fi
 
 if [[ "$SMTPS_LOCALHOST_PROXY" == "true" ]]

@@ -277,6 +277,14 @@ do
           PERMISSIONS="trusted"
         fi
       fi
+      if [[ ${PROJECT} == 'cards4prems' ]]
+      then
+        # cards4prems requires the scheduled-csv-export module, make sure it's enabled
+        ARGS[$ARGS_LENGTH]=-f
+        ARGS_LENGTH=${ARGS_LENGTH}+1
+        ARGS[$ARGS_LENGTH]=mvn:io.uhndata.cards/cards-scheduled-csv-export/${CARDS_VERSION}/slingosgifeature
+        ARGS_LENGTH=${ARGS_LENGTH}+1
+      fi
     done
     ARGS[$i]=${ARGS[$i]#,}
   elif [[ ${ARGS[$i]} == '--permissions' ]]
@@ -315,6 +323,13 @@ do
     ARGS[$ARGS_LENGTH]=-f
     ARGS_LENGTH=${ARGS_LENGTH}+1
     ARGS[$ARGS_LENGTH]=mvn:io.uhndata.cards/cards-modules-test-forms/${CARDS_VERSION}/slingosgifeature
+    ARGS_LENGTH=${ARGS_LENGTH}+1
+  elif [[ ${ARGS[$i]} == '--csv_export' ]]
+  then
+    unset ARGS[$i]
+    ARGS[$ARGS_LENGTH]=-f
+    ARGS_LENGTH=${ARGS_LENGTH}+1
+    ARGS[$ARGS_LENGTH]=mvn:io.uhndata.cards/cards-scheduled-csv-export/${CARDS_VERSION}/slingosgifeature
     ARGS_LENGTH=${ARGS_LENGTH}+1
   elif [[ ${ARGS[$i]} == '--saml' ]]
   then
