@@ -55,6 +55,7 @@ function SurveyInstructionsConfiguration() {
     welcomeMessage: ["welcomeMessage"],
     eventSelectionScreen: ["noEventsMessage", "eventSelectionMessage"],
     startScreen: [ "enableStartScreen", "eventLabel", "noSurveysMessage", "surveyIntro", "surveyDraftInfo" ],
+    reviewScreen: ["enableReviewScreen"],
     summaryScreen: [ "disclaimer", "summaryInstructions", "interpretationInstructions" ]
   };
 

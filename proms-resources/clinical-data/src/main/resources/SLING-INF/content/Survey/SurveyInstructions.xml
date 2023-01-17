@@ -60,6 +60,11 @@ If routine service evaluations or research projects are undertaken, your respons
         <type>Boolean</type>
     </property>
     <property>
+        <name>enableReviewScreen</name>
+        <value>True</value>
+        <type>Boolean</type>
+    </property>
+    <property>
         <name>surveyIntro</name>
         <value>Tell us about your symptoms prior to your appointment.</value>
         <type>String</type>

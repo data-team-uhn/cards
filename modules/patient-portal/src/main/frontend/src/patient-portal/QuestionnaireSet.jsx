@@ -217,12 +217,19 @@ function QuestionnaireSet(props) {
     }
   }, [subjectDataLoadCount]);
 
-  // When the user lands on a completed visit that has not been submitted, proceed to reviewing their forms
+  // When the user lands on a completed visit that has not been submitted, proceed to the last step
   useEffect(() => {
     if(isComplete && !isSubmitted && questionnaireIds?.length > 0 && crtStep == -1) {
       setCrtStep(questionnaireIds.length)
     }
   }, [isComplete, isSubmitted])
+
+  // At the last step, if the configuration specifies to skip the review, automatically submit
+  useEffect(() => {
+    if (isComplete && !isSubmitted && endReached && !config?.enableReviewScreen) {
+      onSubmit();
+    }
+  }, [isComplete, isSubmitted, endReached, config?.enableReviewScreen]);
 
   const loadExistingData = () => {
     setComplete(undefined);
@@ -586,14 +593,18 @@ function QuestionnaireSet(props) {
           disableHeader
           questionnaireAddons={nextQuestionnaire?.questionnaireAddons}
           doneIcon={nextQuestionnaire ? <NextStepIcon /> : <DoneIcon />}
-          doneLabel={nextQuestionnaire ? `${nextQuestionnaire?.alias}` : "Review"}
+          doneLabel={nextQuestionnaire ? `${nextQuestionnaire?.alias}` : config?.enableReviewScreen ? "Review" : "Submit my answers"}
           onDone={nextQuestionnaire ? launchNextForm : nextStep}
           doneButtonStyle={{position: "relative", right: 0, bottom: "unset", textAlign: "center"}}
           contentOffset={contentOffset || 0}
         />
   ];
 
-  let reviewScreen = [
+  let reviewScreen = !config?.enableReviewScreen ? [
+    <Grid alignItems="center" justifyContent="center">
+      <Grid item><CircularProgress/></Grid>
+    </Grid>
+  ] : [
     <Typography variant="h4">Please review your answers</Typography>,
     <Typography paragraph>You can update the answers for each survey and continue to this review screen before final submission.</Typography>,
     <Grid container direction="column" spacing={8}>
@@ -691,7 +702,7 @@ function QuestionnaireSet(props) {
         subtitle={questionnaires[questionnaireIds[crtStep]]?.title}
         step={stepIndicator(crtStep, true)}
       />
-      <QuestionnaireSetScreen className={classes[screenType]}>
+      <QuestionnaireSetScreen className={classes[screenType]} key="screen">
         {
           crtStep == -1 ? welcomeScreen :
           crtStep < questionnaireIds.length ? formScreen :
