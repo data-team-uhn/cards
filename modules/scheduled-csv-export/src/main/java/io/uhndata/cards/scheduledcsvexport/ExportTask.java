@@ -45,13 +45,17 @@ public class ExportTask implements Runnable
 
     /** Provides access to resources. */
     private final ResourceResolverFactory resolverFactory;
+
     private final int frequencyInDays;
+
     private final List<String> questionnairesToBeExported;
+
     private final String savePath;
+
     private final boolean enableLabels;
 
     ExportTask(final ResourceResolverFactory resolverFactory, int frequencyInDays, String[] questionnairesToBeExported,
-               String savePath, boolean enableLabels)
+        String savePath, boolean enableLabels)
     {
         this.resolverFactory = resolverFactory;
         this.frequencyInDays = frequencyInDays;
@@ -77,11 +81,12 @@ public class ExportTask implements Runnable
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
             for (String questionnaire : this.questionnairesToBeExported) {
                 final File csvFile = new File(this.savePath + "/ExportedForms_" + questionnaire + "_"
-                        + timePeriod + ".csv");
+                    + timePeriod + ".csv");
                 try (FileWriter writer = new FileWriter(csvFile)) {
                     final String csvPath = String.format(
-                            "/Questionnaires/" + questionnaire + "%s.data.dataFilter:modifiedAfter=%s.dataFilter:"
-                                    + "modifiedBefore=%s.csv", labelsParameter, modifiedAfterDate, modifiedBeforeDate);
+                        "/Questionnaires/" + questionnaire + "%s.data.dataFilter:modifiedAfter=%s.dataFilter:"
+                            + "modifiedBefore=%s.csv",
+                        labelsParameter, modifiedAfterDate, modifiedBeforeDate);
                     final CSVString csv = resolver.resolve(csvPath).adaptTo(CSVString.class);
                     writer.write(csv.toString());
                 } catch (IOException e) {

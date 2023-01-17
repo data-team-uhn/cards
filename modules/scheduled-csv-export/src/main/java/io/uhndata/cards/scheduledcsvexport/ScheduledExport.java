@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 public class ScheduledExport
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ScheduledExport.class);
+
     private static final String SCHEDULER_JOB_PREFIX = "ScheduledExport-CSV-";
 
     @Reference
@@ -69,8 +70,8 @@ public class ScheduledExport
 
         final Runnable csvExportJob;
         csvExportJob =
-                new ExportTask(this.resolverFactory, configDef.frequency_in_days(),
-                        configDef.questionnaires_to_be_exported(), configDef.save_path(), configDef.enable_label());
+            new ExportTask(this.resolverFactory, configDef.frequency_in_days(),
+                configDef.questionnaires_to_be_exported(), configDef.save_path(), configDef.enable_label());
         try {
             this.scheduler.schedule(csvExportJob, options);
         } catch (final Exception e) {

@@ -37,13 +37,13 @@ import org.osgi.service.component.annotations.Reference;
 
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(
-        resourceTypes = { "cards/SubjectsHomepage" },
-        methods = { "GET" },
-        selectors = {"csvExport"})
+    resourceTypes = { "cards/SubjectsHomepage" },
+    methods = { "GET" },
+    selectors = { "csvExport" })
 public class ExportEndpoint extends SlingSafeMethodsServlet
 {
-
     private static final long serialVersionUID = -2619333182443055173L;
+
     private static final String ADMIN = "admin";
 
     @Reference
@@ -57,10 +57,10 @@ public class ExportEndpoint extends SlingSafeMethodsServlet
     {
         final Writer out = response.getWriter();
 
-        //Ensure that this can only be run when logged in as admin
+        // Ensure that this can only be run when logged in as admin
         final String remoteUser = request.getRemoteUser();
         if (remoteUser == null || !remoteUser.toLowerCase(Locale.ROOT).equals(ADMIN)) {
-            //admin login required
+            // admin login required
             response.setStatus(403);
             out.write("Only admin can perform this operation.");
             return;
@@ -72,9 +72,9 @@ public class ExportEndpoint extends SlingSafeMethodsServlet
             return;
         }
         final ExportConfigDefinition config = this.configs.stream()
-                .filter(c -> configName.equals(c.getConfig().name()))
-                .map(ExportConfig::getConfig)
-                .findFirst().orElse(null);
+            .filter(c -> configName.equals(c.getConfig().name()))
+            .map(ExportConfig::getConfig)
+            .findFirst().orElse(null);
         if (config == null) {
             response.setStatus(404);
             out.write("Unknown configuration.");
@@ -82,11 +82,10 @@ public class ExportEndpoint extends SlingSafeMethodsServlet
         }
 
         final Runnable exportJob = new ExportTask(this.resolverFactory, config.frequency_in_days(),
-                config.questionnaires_to_be_exported(), config.save_path(), config.enable_label());
+            config.questionnaires_to_be_exported(), config.save_path(), config.enable_label());
         final Thread thread = new Thread(exportJob);
         thread.start();
         response.setStatus(200);
         out.write("CSV export started");
     }
-
 }
