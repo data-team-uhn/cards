@@ -143,7 +143,7 @@
               </property>
               <property>
                 <name>question</name>
-                <value>/Questionnaires/Visit information/clinic</value>
+                <value>/Questionnaires/Visit information/provider</value>
                 <type>String</type>
               </property>
             </node>
