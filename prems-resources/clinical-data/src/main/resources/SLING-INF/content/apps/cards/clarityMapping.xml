@@ -152,7 +152,7 @@
               <primaryNodeType>cards:clarityQuestionMapping</primaryNodeType>
               <property>
                 <name>sqlColumn</name>
-                <value>ENTRY_TIME</value>
+                <value>HOSP_DISCHARGE_DTTM</value>
                 <type>String</type>
               </property>
               <property>
