@@ -418,11 +418,30 @@ public class ClarityImportTask implements Runnable
         }
     }
 
+    /*
+     * If the corresponding cards:Question has a maxAnswers value != 1
+     * set the "value" property of this answer node to a single-element list
+     * containing only the type-casted answer value.
+     */
+    private Map<String, Object> fixAnswerMultiValues(Map<String, Object> props, Resource questionResource)
+    {
+        int maxAnswers = questionResource.getValueMap().get("maxAnswers", 1);
+        Object valuePropValue = props.get(ClarityImportTask.VALUE_PROP);
+        if ((maxAnswers != 1) && (valuePropValue != null)) {
+            // Make this value a single element "multi-valued" property
+            Object[] multiValues = {valuePropValue};
+            props.put(ClarityImportTask.VALUE_PROP, multiValues);
+        }
+        return props;
+    }
+
     private Map<String, Object> generateAnswerNodeProperties(final ResourceResolver resolver, final QuestionType qType,
         final String questionPath, final String answerValue) throws ParseException
     {
         Map<String, Object> props = new HashMap<>();
-        props.put(QUESTION_PROP, resolver.resolve(questionPath).adaptTo(Node.class));
+        Resource questionResource = resolver.resolve(questionPath);
+
+        props.put(QUESTION_PROP, questionResource.adaptTo(Node.class));
 
         if (qType == QuestionType.STRING) {
             props.put(ClarityImportTask.PRIMARY_TYPE_PROP, "cards:TextAnswer");
@@ -451,6 +470,9 @@ public class ClarityImportTask implements Runnable
         } else {
             LOGGER.warn("Unsupported question type: " + qType);
         }
+
+        // Fix any instances where VALUE should be transformed into [VALUE]
+        props = fixAnswerMultiValues(props, questionResource);
 
         return props;
     }
