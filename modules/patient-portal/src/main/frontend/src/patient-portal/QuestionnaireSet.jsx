@@ -272,12 +272,13 @@ function QuestionnaireSet(props) {
 
     // Map the relevant questionnaire info
     let data = {};
-    Object.values(json || {})
-      .filter(value => value['jcr:primaryType'] == 'cards:QuestionnaireRef')
-      .forEach(value => {
+    Object.entries(json || {})
+      .filter(([key, value]) => value['jcr:primaryType'] == 'cards:QuestionnaireRef')
+      .forEach(([key, value]) => {
         let addons = Object.values(value).filter(filterValue => ENTRY_TYPES.includes(filterValue['jcr:primaryType']));
         data[value.questionnaire['@name']] = {
-          'title': value.questionnaire?.title || value.questionnaire?.['@name'],
+          'title': value.questionnaire?.title || key,
+          'alias': key,
           '@path': value.questionnaire?.['@path'],
           '@name': value.questionnaire?.['@name'],
           'hasInterpretation': hasInterpretation(value.questionnaire) || addons.some(hasInterpretation),
@@ -585,7 +586,7 @@ function QuestionnaireSet(props) {
           disableHeader
           questionnaireAddons={nextQuestionnaire?.questionnaireAddons}
           doneIcon={nextQuestionnaire ? <NextStepIcon /> : <DoneIcon />}
-          doneLabel={nextQuestionnaire ? `Continue to ${nextQuestionnaire?.title}` : "Review"}
+          doneLabel={nextQuestionnaire ? `Continue to ${nextQuestionnaire?.alias}` : "Review"}
           onDone={nextQuestionnaire ? launchNextForm : nextStep}
           doneButtonStyle={{position: "relative", right: 0, bottom: "unset", textAlign: "center"}}
           contentOffset={contentOffset || 0}

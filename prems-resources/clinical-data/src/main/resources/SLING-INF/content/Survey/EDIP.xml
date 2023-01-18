@@ -47,7 +47,7 @@ Do not include any other hospital stays in your answers.
         <type>String</type>
     </property>
     <node>
-        <name>Step1</name>
+        <name>ED Survey</name>
         <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
         <property>
             <name>questionnaire</name>
@@ -95,7 +95,7 @@ Do not include any other hospital stays in your answers.
         </property>
     </node>
     <node>
-        <name>Step2</name>
+        <name>Inpatient Survey</name>
         <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
         <property>
             <name>questionnaire</name>
