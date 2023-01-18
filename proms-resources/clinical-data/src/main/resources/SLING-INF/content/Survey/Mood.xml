@@ -26,7 +26,7 @@
         <type>String</type>
     </property>
     <node>
-        <name>Step1</name>
+        <name>SF12</name>
         <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
         <property>
             <name>questionnaire</name>
@@ -74,7 +74,7 @@
         </property>
     </node>
     <node>
-        <name>Step2</name>
+        <name>PHQ9</name>
         <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
         <property>
             <name>questionnaire</name>
@@ -212,7 +212,7 @@
         </node>
     </node>
     <node>
-        <name>Step3</name>
+        <name>GAD7</name>
         <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
         <property>
             <name>questionnaire</name>
@@ -299,7 +299,7 @@
         </node>
     </node>
     <node>
-        <name>Step4</name>
+        <name>AUDITC</name>
         <primaryNodeType>cards:QuestionnaireRef</primaryNodeType>
         <property>
             <name>questionnaire</name>
