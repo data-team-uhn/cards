@@ -69,7 +69,7 @@ const useStyles = makeStyles(theme => ({
     "& > .MuiGrid-item" : {
       paddingLeft: 0,
     },
-    "& h4, h6" : {
+    "& h4, h6, .MuiTypography-paragraph" : {
       textAlign: "center",
     }
   },
@@ -102,8 +102,9 @@ function QuestionnaireSet(props) {
 
   // Identifier of the questionnaire set used for the visit
   const [ id, setId ] = useState();
-  // Questionnaire set title, to display to the patient user
+  // Questionnaire set title and intro text, to display to the patient user
   const [ title, setTitle ] = useState();
+  const [ intro, setIntro ] = useState();
   // Map questionnaire id -> title, path and optional time estimate (in minutes) for filling it out
   const [ questionnaires, setQuestionnaires ] = useState();
   // The ids of the questionnaires in this set, in the order they must be filled in
@@ -265,8 +266,9 @@ function QuestionnaireSet(props) {
   }
 
   let parseQuestionnaireSet = (json) => {
-    // Extract the title
+    // Extract the title and intro
     setTitle(json.name);
+    setIntro(json.intro || "");
 
     // Map the relevant questionnaire info
     let data = {};
@@ -480,13 +482,14 @@ function QuestionnaireSet(props) {
   }
 
   let appointmentAlert = () => {
+    const eventLabel = displayText("eventLabel", AlertTitle);
     const time = appointmentDate();
     let location = getVisitInformation("location");
     let provider = getVisitInformation("provider");
     provider = provider && provider.length > 1 ? provider.join(", ") : provider;
-    return (time || location || provider) ?
+    return (eventLabel && (time || location || provider)) ?
       <Alert severity="info">
-        {displayText("eventLabel", AlertTitle)}
+        {eventLabel}
         {time ? <> {time} </> : null}
         {location ? <> at {location}</> : null}
         {provider ? <> with {provider}</> : null}
@@ -518,11 +521,8 @@ function QuestionnaireSet(props) {
       diffString("hours", diffStrings, diffs);
       diffString("minutes", diffStrings, diffs);
 
-      if (diffStrings.length > 1) {
-        result = " and " + diffStrings.pop();
-      }
       if (diffStrings.length > 0) {
-        result = " This survey link will expire in " + diffStrings.join(", ") + result + ".";
+        result = " This survey link will expire in " + diffStrings[0] + ".";
       }
     } else {
       // Visit date could not be retrieved, this token will expire 1 hour from creation.
@@ -532,12 +532,17 @@ function QuestionnaireSet(props) {
     return result;
   }
 
-  let withWelcomeMessage = !(config?.PIIAuthRequired);
-  let appName = document.querySelector('meta[name="title"]')?.content;
-  let welcomeMessageTemplate = displayText('welcomeMessage');
-  let welcomeMessage = withWelcomeMessage && welcomeMessageTemplate ?
-    <FormattedText>{ welcomeMessageTemplate.replaceAll("APP_NAME", appName) }</FormattedText>
-    : "";
+  // The questionnaire set intro may reference data from the visit information form, with default values
+  // For example @{visit.location:-UHN} specifies that the `location` field needs to be displayed,
+  // and it should default to "UHN" if the field is empty.
+  let pattern = /@\{visit\.([a-zA-z0-9_]*)(\:\-(.+))?\}/g;
+  // First, find the field name and default value
+  // It is necessary to find them separately first, as we need to call a function on the field name to
+  // obtain its value for replacement, and this won't work in one go directly in `replaceAll`, as
+  // the function will end up being called before the matching groups are identified.
+  let pieces = pattern.exec(intro);
+  // Replace the occurrence of the pattern with the value
+  let introMessage = intro.replaceAll(pattern, getVisitInformation(pieces?.[1]) || pieces?.[2] || "");
 
   let closeButton = <Fab key="close-button" variant="extended" color="primary" onClick={
       () => window.location = "/system/sling/logout?resource=" + encodeURIComponent(window.location.pathname)
@@ -551,9 +556,8 @@ function QuestionnaireSet(props) {
     closeButton,
   ] : [
     <Typography variant="h4" key="welcome-greeting">{ greet(username) }</Typography>,
-    welcomeMessage,
     appointmentAlert(),
-    displayText("surveyIntro", Typography, {paragraph: true, key: "welcome-message"}),
+    introMessage ? <FormattedText paragraph>{introMessage}</FormattedText> : displayText("surveyIntro", Typography, {paragraph: true, key: "welcome-message"}),
     <List key="welcome-surveys">
     { (questionnaireIds || []).map((q, i) => (
       <ListItem key={q+"Welcome"}>
@@ -566,10 +570,11 @@ function QuestionnaireSet(props) {
       </ListItem>
     ))}
     </List>,
+    nextQuestionnaire && <Fab variant="extended" color="primary" onClick={launchNextForm} key="welcome-action">Begin</Fab>,
     <Typography paragraph key="expiry-message" color="textSecondary">
         {expiryDate()}
     </Typography>,
-    nextQuestionnaire && <Fab variant="extended" color="primary" onClick={launchNextForm} key="welcome-action">Begin</Fab>
+    displayText("surveyDraftInfo", FormattedText, {paragraph: true, variant: "caption", key: "draft-info"}),
   ];
 
   let formScreen = [
