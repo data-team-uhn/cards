@@ -30,7 +30,7 @@
         <value>
 Please answer some questions about your recent emergency visit at:
 
-### @{visit.location}
+**@{visit.location}**
 
 Do not include any other hospital stays in your answers.
         </value>

@@ -69,7 +69,7 @@ const useStyles = makeStyles(theme => ({
     "& > .MuiGrid-item" : {
       paddingLeft: 0,
     },
-    "& h3, h4, h6, .MuiTypography-paragraph" : {
+    "& h4, h6, .MuiTypography-paragraph" : {
       textAlign: "center",
     }
   },
