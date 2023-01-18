@@ -47,7 +47,7 @@ class Page {
  * Component that displays a page of a Form.
  */
 function FormPagination (props) {
-  let { classes, enabled, variant, saveInProgress, lastSaveStatus, setPagesCallback, enableSave, onDone, doneLabel, questionnaireData } = props;
+  let { classes, enabled, variant, saveInProgress, lastSaveStatus, setPagesCallback, enableSave, onDone, doneLabel, doneIcon, questionnaireData } = props;
 
   let [ savedLastPage, setSavedLastPage ] = useState(false);
   let [ pendingSubmission, setPendingSubmission ] = useState(false);
@@ -159,6 +159,7 @@ function FormPagination (props) {
 
   let saveButton =
     <Button
+      startIcon={activePage === lastValidPage() ? doneIcon : undefined}
       type="submit"
       variant="contained"
       disabled={saveInProgress}
