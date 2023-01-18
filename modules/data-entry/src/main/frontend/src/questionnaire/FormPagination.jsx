@@ -210,8 +210,8 @@ function FormPagination (props) {
           // Hide the backround of the front bar to segment of back bar
           className={classes.formStepper}
           classes={{progress: classes.formStepperBottomBackground}}
-          // base 0 to base 1, plus 1 for the "current page" region
-          steps={lastValidPage() + 2}
+          // base 0 to base 1, plus 1 for the "current page" region when variant is "progress"
+          steps={lastValidPage() + 1 + (variant == "progress" ? 1 : 0)}
           nextButton={saveButton}
           backButton={backButton}
         />
