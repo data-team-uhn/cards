@@ -126,6 +126,11 @@ function QuestionnaireSet(props) {
   const [ visitInformation, setVisitInformation ] = useState();
   // Did the user make it to the last screen?
   const [ endReached, setEndReached ] = useState();
+  // Configuration specifying if the patient sees a review
+  // screen after completing the surveys.
+  // It can be set globally in Survey Instructions,
+  // and overridden by each QuestionnaireSet definition.
+  const [ enableReviewScreen, setEnableReviewScreen ] = useState();
   // Is the user reviewing an already complete form?
   const [ reviewMode, setReviewMode ] = useState(false);
   // Has the user submitted their answers?
@@ -155,6 +160,11 @@ function QuestionnaireSet(props) {
   const isFormComplete = (questionnaireId) => {
     return subjectData?.[questionnaireId] && !subjectData[questionnaireId].statusFlags?.includes("INCOMPLETE");
   }
+
+  // If the `enableReviewScreen` state is not already defined, initialize it with the value passed via config
+  useEffect(() => {
+    typeof(enableReviewScreen) != "undefined" && setEnableReviewScreen(config?.enableReviewScreen);
+  }, [config?.enableReviewScreen]);
 
   // Determine the screen type (and style) based on the step number
   useEffect(() => {
@@ -226,10 +236,10 @@ function QuestionnaireSet(props) {
 
   // At the last step, if the configuration specifies to skip the review, automatically submit
   useEffect(() => {
-    if (isComplete && !isSubmitted && endReached && !config?.enableReviewScreen) {
+    if (isComplete && !isSubmitted && endReached && !enableReviewScreen) {
       onSubmit();
     }
-  }, [isComplete, isSubmitted, endReached, config?.enableReviewScreen]);
+  }, [isComplete, isSubmitted, endReached, enableReviewScreen]);
 
   const loadExistingData = () => {
     setComplete(undefined);
@@ -276,6 +286,8 @@ function QuestionnaireSet(props) {
     // Extract the title and intro
     setTitle(json.name);
     setIntro(json.intro || "");
+    // If the questionnaire set specifies a value for `enableReviewScreen`, overwrite the curently stored value
+    typeof(json.enableReviewScreen) != "undefined" && setEnableReviewScreen(json.enableReviewScreen);
 
     // Map the relevant questionnaire info
     let data = {};
@@ -593,14 +605,14 @@ function QuestionnaireSet(props) {
           disableHeader
           questionnaireAddons={nextQuestionnaire?.questionnaireAddons}
           doneIcon={nextQuestionnaire ? <NextStepIcon /> : <DoneIcon />}
-          doneLabel={nextQuestionnaire ? `${nextQuestionnaire?.alias}` : config?.enableReviewScreen ? "Review" : "Submit my answers"}
+          doneLabel={nextQuestionnaire ? `${nextQuestionnaire?.alias}` : enableReviewScreen ? "Review" : "Submit my answers"}
           onDone={nextQuestionnaire ? launchNextForm : nextStep}
           doneButtonStyle={{position: "relative", right: 0, bottom: "unset", textAlign: "center"}}
           contentOffset={contentOffset || 0}
         />
   ];
 
-  let reviewScreen = !config?.enableReviewScreen ? [
+  let reviewScreen = !enableReviewScreen ? [
     <Grid alignItems="center" justifyContent="center">
       <Grid item><CircularProgress/></Grid>
     </Grid>
