@@ -390,7 +390,7 @@ function QuestionnaireSet(props) {
 
   let stepIndicator = (step, withTotal) => {
     return (
-      step >=0 && step < questionnaireIds?.length ?
+      step >=0 && (!withTotal || questionnaireIds?.length > 1) && step < questionnaireIds?.length ?
       <Avatar className={classes.stepIndicator}>{step + 1}{withTotal ? ("/" + questionnaireIds?.length) : ""}</Avatar>
       : <></>);
   }
