@@ -438,6 +438,9 @@ const questionnaireStyle = theme => ({
           width: "100%",
         },
     },
+    only_next: {
+        marginLeft: 0,
+    },
     paginationButton: {
         float: "right",
         margin: theme.spacing(1),

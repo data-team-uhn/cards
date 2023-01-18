@@ -1,4 +1,5 @@
 {
-  "maxPerSubject" : "The maximum number of forms of this type allowed for a specific subject"
+  "maxPerSubject" : "The maximum number of forms of this type allowed for a specific subject",
+  "paginationMode": "How the user can navigate between the questionnaire pages:\n* **back_next** displays both a Back and a Next button, allowing navigation back and forth;\n* **only_next** displays only the Next button, permitting movement only forward."
 }
 
