@@ -14,11 +14,15 @@
     "title" : "string",
     "description" : "markdown",
     "maxPerSubject": "long",
-    "paginate": "boolean",
-    "paginationVariant" : {
-       "progress" : {},
-       "dots": {},
-       "text" : {}
+    "paginate": {
+      "true" : {
+        "paginationVariant" : {
+          "progress" : {},
+          "dots": {},
+          "text" : {}
+        }
+      },
+      "false" : {}
     },
     "requiredSubjectTypes": {
       "type": "list",
