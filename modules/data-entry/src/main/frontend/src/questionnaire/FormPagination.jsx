@@ -188,6 +188,8 @@ function FormPagination (props) {
       Back
     </Button>
 
+  let progressAdjustment = (condition) => (condition && variant == "progress" ? 1 : 0);
+
   return (
     enabled
     ?
@@ -197,7 +199,7 @@ function FormPagination (props) {
           variant={variant}
           // Offset back bar 1 to create a "current page" region.
           // If the final page has been saved, progress the front bar to complete
-          activeStep={activePage + (lastSaveStatus && savedLastPage ? 1 : 0)}
+          activeStep={activePage + progressAdjustment(lastSaveStatus && savedLastPage)}
           // Change the color of the back bar
           LinearProgressProps={{ 
               classes: {
@@ -211,7 +213,7 @@ function FormPagination (props) {
           className={classes.formStepper}
           classes={{progress: classes.formStepperBottomBackground}}
           // base 0 to base 1, plus 1 for the "current page" region when variant is "progress"
-          steps={lastValidPage() + 1 + (variant == "progress" ? 1 : 0)}
+          steps={lastValidPage() + 1 + progressAdjustment(true)}
           nextButton={saveButton}
           backButton={backButton}
         />
