@@ -163,7 +163,7 @@ function QuestionnaireSet(props) {
 
   // If the `enableReviewScreen` state is not already defined, initialize it with the value passed via config
   useEffect(() => {
-    typeof(enableReviewScreen) != "undefined" && setEnableReviewScreen(config?.enableReviewScreen);
+    typeof(enableReviewScreen) == "undefined" && setEnableReviewScreen(config?.enableReviewScreen);
   }, [config?.enableReviewScreen]);
 
   // Determine the screen type (and style) based on the step number

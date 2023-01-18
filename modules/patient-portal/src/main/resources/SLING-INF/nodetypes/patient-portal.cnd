@@ -108,7 +108,7 @@
   - intro (string)
 
   // An optional setting whether to show a review screen after survey completion
-  // Optional, defaults to the global setting
+  // Optional, defaults to the global setting for the patient portal
   - enableReviewScreen (boolean)
 
   // An emergency contact for the clinic
