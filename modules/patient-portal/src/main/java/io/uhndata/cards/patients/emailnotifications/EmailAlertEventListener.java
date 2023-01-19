@@ -68,6 +68,8 @@ public final class EmailAlertEventListener implements EventListener
 
     private String clinicEmailProperty;
 
+    private String emailFromAddress;
+
     private EmailTemplate template;
 
     public EmailAlertEventListener(ResourceResolverFactory rrf, FormUtils formUtils,
@@ -86,9 +88,10 @@ public final class EmailAlertEventListener implements EventListener
         this.clinicIdLink = listenerParams.get("clinicIdLink");
         this.clinicsJcrPath = listenerParams.get("clinicsJcrPath");
         this.clinicEmailProperty = listenerParams.get("clinicEmailProperty");
+        this.emailFromAddress = listenerParams.get("emailFromAddress");
 
         this.template = EmailTemplate.builder().withSubject("DATAPRO Alert: " + this.alertName)
-            .withSender(this.alertDescription, this.alertName).build();
+            .withSender(this.emailFromAddress, this.alertName).build();
     }
 
     private String getModifedValueNodePath(Event thisEvent) throws RepositoryException

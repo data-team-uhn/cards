@@ -101,6 +101,9 @@ public final class EmailFormAlerts
         @AttributeDefinition(name = "Clinic Email Property",
             description = "Property of the Clinic definition where the emergency contact is stored")
         String clinicEmailProperty() default "emergencyContact";
+
+        @AttributeDefinition(name = "From Email", description = "The email address which this email originates from")
+        String emailFromAddress() default "";
     }
 
     @Activate
@@ -132,6 +135,7 @@ public final class EmailFormAlerts
             listenerParams.put("clinicIdLink", config.clinicIdLink());
             listenerParams.put("clinicsJcrPath", config.clinicsJcrPath());
             listenerParams.put("clinicEmailProperty", config.clinicEmailProperty());
+            listenerParams.put("emailFromAddress", config.emailFromAddress());
             EventListener myEventListener = new EmailAlertEventListener(
                 this.resolverFactory, this.formUtils, this.mailService, listenerParams);
 
