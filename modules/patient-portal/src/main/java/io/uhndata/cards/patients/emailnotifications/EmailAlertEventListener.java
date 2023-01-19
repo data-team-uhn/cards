@@ -202,13 +202,13 @@ public final class EmailAlertEventListener implements EventListener
                 case "=":
                     return this.triggerOperand.equals(String.valueOf(value));
                 case ">":
-                    return Double.parseDouble(this.triggerOperand) > ((Number) value).doubleValue();
+                    return ((Number) value).doubleValue() > Double.parseDouble(this.triggerOperand);
                 case ">=":
-                    return Double.parseDouble(this.triggerOperand) >= ((Number) value).doubleValue();
+                    return ((Number) value).doubleValue() >= Double.parseDouble(this.triggerOperand);
                 case "<":
-                    return Double.parseDouble(this.triggerOperand) < ((Number) value).doubleValue();
+                    return ((Number) value).doubleValue() < Double.parseDouble(this.triggerOperand);
                 case "<=":
-                    return Double.parseDouble(this.triggerOperand) <= ((Number) value).doubleValue();
+                    return ((Number) value).doubleValue() <= Double.parseDouble(this.triggerOperand);
                 case "is not empty":
                     return value != null && !String.valueOf(value).isEmpty();
                 case "is empty":
