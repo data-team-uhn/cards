@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package io.uhndata.cards.patients.emailnotifications;
+package io.uhndata.cards.patients.internal;
 
 import java.time.ZonedDateTime;
 import java.util.Iterator;
@@ -58,7 +58,7 @@ public class UnsubmittedFormsCleanupTask implements Runnable
      * @param resolverFactory a valid ResourceResolverFactory providing access to resources
      * @param patientAccessConfiguration details on patient authentication for token lifetime purposes
      */
-    public UnsubmittedFormsCleanupTask(final ResourceResolverFactory resolverFactory,
+    UnsubmittedFormsCleanupTask(final ResourceResolverFactory resolverFactory,
         final PatientAccessConfiguration patientAccessConfiguration)
     {
         this.resolverFactory = resolverFactory;

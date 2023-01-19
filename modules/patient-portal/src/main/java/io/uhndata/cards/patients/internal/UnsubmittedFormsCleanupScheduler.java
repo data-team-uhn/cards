@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package io.uhndata.cards.proms.internal.cleanup;
+package io.uhndata.cards.patients.internal;
 
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.commons.scheduler.ScheduleOptions;
@@ -30,7 +30,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.patients.api.PatientAccessConfiguration;
-import io.uhndata.cards.patients.emailnotifications.UnsubmittedFormsCleanupTask;
 
 /**
  * Schedule the cleanup of unsubmitted past forms every midnight.
