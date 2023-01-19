@@ -404,7 +404,7 @@ public final class FormUtilsImpl extends AbstractNodeUtils implements FormUtils
     public Node getAnswer(final Node form, final Node question)
     {
         try {
-            if (isForm(form)) {
+            if (isForm(form) && this.questionnaires.isQuestion(question)) {
                 return findNode(form, QUESTION_PROPERTY, question.getIdentifier());
             }
         } catch (final RepositoryException e) {
