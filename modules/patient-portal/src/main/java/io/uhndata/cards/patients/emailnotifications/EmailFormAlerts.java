@@ -93,7 +93,7 @@ public final class EmailFormAlerts
 
         @AttributeDefinition(name = "Clinic ID Link", description = "Response associated with the"
             + " subject of Linking Subject Type that associates it with a clinic")
-        String clinicIdLink() default "/Questionnaires/Visit information/surveys";
+        String clinicIdLink() default "/Questionnaires/Visit information/clinic";
 
         @AttributeDefinition(name = "Clinics JCR Path")
         String clinicsJcrPath() default "/Survey";
