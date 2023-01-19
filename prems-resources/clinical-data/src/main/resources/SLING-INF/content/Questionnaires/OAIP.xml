@@ -1397,7 +1397,7 @@
 			</property>
 			<property>
 				<name>text</name>
-				<value>What else would you like to say about this inpatient experience?</value>
+				<value>What else would you like to say about this experience?</value>
 				<type>String</type>
 			</property>
 			<property>
