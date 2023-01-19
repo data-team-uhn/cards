@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package io.uhndata.cards.proms.internal.cleanup;
+package io.uhndata.cards.patients.emailnotifications;
 
 import java.time.ZonedDateTime;
 import java.util.Iterator;
@@ -33,6 +33,8 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.patients.api.PatientAccessConfiguration;
+
 /**
  * Periodically remove visit data forms (except the Visit Information itself) belonging to past visits that haven't been
  * submitted by the patient.
@@ -42,18 +44,25 @@ import org.slf4j.LoggerFactory;
  */
 public class UnsubmittedFormsCleanupTask implements Runnable
 {
+
     /** Default log. */
     private static final Logger LOGGER = LoggerFactory.getLogger(UnsubmittedFormsCleanupTask.class);
 
     /** Provides access to resources. */
     private final ResourceResolverFactory resolverFactory;
 
+    /** Grab details on patient authentication for token lifetime purposes. */
+    private final PatientAccessConfiguration patientAccessConfiguration;
+
     /**
      * @param resolverFactory a valid ResourceResolverFactory providing access to resources
+     * @param patientAccessConfiguration details on patient authentication for token lifetime purposes
      */
-    UnsubmittedFormsCleanupTask(final ResourceResolverFactory resolverFactory)
+    public UnsubmittedFormsCleanupTask(final ResourceResolverFactory resolverFactory,
+        final PatientAccessConfiguration patientAccessConfiguration)
     {
         this.resolverFactory = resolverFactory;
+        this.patientAccessConfiguration = patientAccessConfiguration;
     }
 
     @Override
@@ -68,7 +77,7 @@ public class UnsubmittedFormsCleanupTask implements Runnable
                 (String) resolver.getResource("/Questionnaires/Visit information/time").getValueMap().get("jcr:uuid");
             final String submitted = (String) resolver
                 .getResource("/Questionnaires/Visit information/surveys_submitted").getValueMap().get("jcr:uuid");
-
+            final int configTime = this.patientAccessConfiguration.getAllowedPostVisitCompletionTime();
             // Query:
             final Iterator<Resource> resources = resolver.findResources(String.format(
                 // select the data forms
@@ -89,7 +98,7 @@ public class UnsubmittedFormsCleanupTask implements Runnable
                     + "  and (submitted.value <> 1 OR submitted.value IS NULL)"
                     // exclude the Visit Information form itself
                     + "  and dataForm.questionnaire <> '%1$s'",
-                visitInformationQuestionnaire, time, submitted, ZonedDateTime.now()),
+                visitInformationQuestionnaire, time, submitted, ZonedDateTime.now().minusDays(configTime)),
                 Query.JCR_SQL2);
             resources.forEachRemaining(form -> {
                 try {
