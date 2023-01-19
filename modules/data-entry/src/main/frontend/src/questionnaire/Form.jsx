@@ -515,6 +515,7 @@ function Form (props) {
               setPagesCallback={setPages}
               onDone={() => { setEndReached(true) }}
               doneLabel={doneLabel}
+              doneIcon={doneIcon}
           />
         </Grid>
         { !paginationEnabled && !disableButton &&
