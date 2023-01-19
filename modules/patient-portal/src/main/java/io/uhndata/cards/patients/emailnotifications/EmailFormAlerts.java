@@ -121,19 +121,11 @@ public final class EmailFormAlerts
                 return;
             }
 
-            // Get the UUID associated with config.alertingQuestionPath()
-            final String alertingQuestionUUID = this.resolver.getResource(
-                config.alertingQuestionPath()).getValueMap().get("jcr:uuid", "");
-
-            if ("".equals(alertingQuestionUUID)) {
-                return;
-            }
-
             Map<String, String> listenerParams = new HashMap<>();
             listenerParams.put("alertName", config.name());
             listenerParams.put("submittedFlagUUID", submittedFlagUUID);
             listenerParams.put("linkingSubjectType", config.linkingSubjectType());
-            listenerParams.put("alertingQuestionUUID", alertingQuestionUUID);
+            listenerParams.put("alertingQuestionPath", config.alertingQuestionPath());
             listenerParams.put("triggerOperator", config.triggerOperator());
             listenerParams.put("triggerOperand", config.triggerOperand());
             listenerParams.put("alertDescription", config.alertDescription());

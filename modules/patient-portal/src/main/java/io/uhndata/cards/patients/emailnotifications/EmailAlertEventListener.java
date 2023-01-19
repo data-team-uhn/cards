@@ -54,7 +54,7 @@ public final class EmailAlertEventListener implements EventListener
 
     private String linkingSubjectType;
 
-    private String alertingQuestionUUID;
+    private String alertingQuestionPath;
 
     private String triggerOperator;
 
@@ -79,7 +79,7 @@ public final class EmailAlertEventListener implements EventListener
         this.alertName = listenerParams.get("alertName");
         this.submittedFlagUUID = listenerParams.get("submittedFlagUUID");
         this.linkingSubjectType = listenerParams.get("linkingSubjectType");
-        this.alertingQuestionUUID = listenerParams.get("alertingQuestionUUID");
+        this.alertingQuestionPath = listenerParams.get("alertingQuestionPath");
         this.triggerOperator = listenerParams.get("triggerOperator");
         this.triggerOperand = listenerParams.get("triggerOperand");
         this.alertDescription = listenerParams.get("alertDescription");
@@ -157,7 +157,7 @@ public final class EmailAlertEventListener implements EventListener
                  * button whose setting caused this event to occur.
                  */
                 Collection<Node> answers = this.formUtils.findAllSubjectRelatedAnswers(formRelatedSubject,
-                    session.getNode(this.alertingQuestionUUID),
+                    session.getNode(this.alertingQuestionPath),
                     EnumSet.of(FormUtils.SearchType.SUBJECT_FORMS, FormUtils.SearchType.DESCENDANTS_FORMS));
 
                 for (Node answer : answers) {
