@@ -162,9 +162,11 @@ public abstract class AbstractFormToStringSerializer
         final Map<String, Integer> sectionCounts)
     {
         final JsonObject definition;
-        if (answerSectionJson.containsKey("questionnaire")) {
+        if (answerSectionJson.containsKey("questionnaire")
+            && answerSectionJson.get("questionnaire").getValueType() == ValueType.OBJECT) {
             definition = answerSectionJson.getJsonObject("questionnaire");
-        } else if (answerSectionJson.containsKey(SECTION_KEY)) {
+        } else if (answerSectionJson.containsKey(SECTION_KEY)
+            && answerSectionJson.get(SECTION_KEY).getValueType() == ValueType.OBJECT) {
             definition = answerSectionJson.getJsonObject(SECTION_KEY);
         } else {
             definition = Json.createObjectBuilder().build();
@@ -377,9 +379,11 @@ public abstract class AbstractFormToStringSerializer
         {
             String uuid = "";
             if (json.containsKey(SECTION_KEY)) {
-                uuid = json.getJsonObject(SECTION_KEY).getString(UUID_KEY);
+                uuid = json.get(SECTION_KEY).getValueType() == ValueType.OBJECT
+                    ? json.getJsonObject(SECTION_KEY).getString(UUID_KEY) : json.getString(SECTION_KEY);
             } else if (json.containsKey(QUESTION_KEY)) {
-                uuid = json.getJsonObject(QUESTION_KEY).getString(UUID_KEY);
+                uuid = json.get(QUESTION_KEY).getValueType() == ValueType.OBJECT
+                    ? json.getJsonObject(QUESTION_KEY).getString(UUID_KEY) : json.getString(QUESTION_KEY);
             }
             return uuid;
         }
