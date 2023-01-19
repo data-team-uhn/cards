@@ -30,7 +30,6 @@ import java.util.Set;
 
 import javax.jcr.query.Query;
 import javax.json.JsonArray;
-import javax.json.JsonException;
 import javax.json.JsonObject;
 import javax.json.JsonString;
 import javax.json.JsonValue;
@@ -381,21 +380,5 @@ public class QuestionnaireToCsvProcessor implements ResourceCSVProcessor
         } else {
             return value.toString();
         }
-    }
-
-    /**
-     * Retrieves the display mode specified for a question or section, if any.
-     *
-     * @param elementJson a JSON serialization of a question or section
-     * @return the display mode as String, e.g. hidden, default, header, footer, summary.
-     */
-    private String getDisplayMode(final JsonObject elementJson)
-    {
-        try {
-            return (elementJson.getString("displayMode"));
-        } catch (JsonException | NullPointerException ex) {
-            // Not there, return
-        }
-        return null;
     }
 }
