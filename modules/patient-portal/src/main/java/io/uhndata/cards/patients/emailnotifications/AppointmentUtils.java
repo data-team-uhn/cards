@@ -179,33 +179,6 @@ public final class AppointmentUtils
         return clinicId;
     }
 
-    private static boolean isValidClinicNameChar(char c)
-    {
-        /*
-         * Python's string.ascii_letters + Python's string.digits + Blank spaces + Underscores
-         */
-        final String allowedChars = ""
-            + "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-            + "0123456789"
-            + " "
-            + "_";
-
-        if (allowedChars.indexOf(c) >= 0) {
-            return true;
-        }
-        return false;
-    }
-
-    private static boolean isValidClinicName(String clinicName)
-    {
-        for (int i = 0; i < clinicName.length(); i++) {
-            if (!isValidClinicNameChar(clinicName.charAt(i))) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     /**
      * Returns the cards:QuestionnaireSet JCR Resource associated with the formRelatedSubject or null if no such
      * associated Resource can be found.
@@ -219,22 +192,17 @@ public final class AppointmentUtils
     public static Node getValidClinicNode(FormUtils formUtils, Node formRelatedSubject,
         String clinicIdLink, String clinicsJcrPath)
     {
-        String clinicId = getQuestionAnswerForSubject(
+        String clinicNodePath = getQuestionAnswerForSubject(
             formUtils,
             formRelatedSubject,
             clinicIdLink,
             TEXT_ANSWER,
             EMPTY);
 
-        if (EMPTY.equals(clinicId)) {
+        if (EMPTY.equals(clinicNodePath)) {
             return null;
         }
 
-        if (!isValidClinicName(clinicId)) {
-            return null;
-        }
-
-        String clinicNodePath = clinicsJcrPath.replaceAll("/$", "") + "/" + clinicId;
         try {
             return formRelatedSubject.getSession().getNode(clinicNodePath);
         } catch (RepositoryException e) {
