@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package io.uhndata.cards.proms.internal.cleanup;
+package io.uhndata.cards.patients.internal;
 
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.commons.scheduler.ScheduleOptions;
@@ -28,6 +28,8 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.uhndata.cards.patients.api.PatientAccessConfiguration;
 
 /**
  * Schedule the cleanup of unsubmitted past forms every midnight.
@@ -47,6 +49,10 @@ public class UnsubmittedFormsCleanupScheduler
     @Reference
     private ResourceResolverFactory resolverFactory;
 
+    /** Grab details on patient authentication for token lifetime purposes. */
+    @Reference
+    private PatientAccessConfiguration patientAccessConfiguration;
+
     /** The scheduler for rescheduling jobs. */
     @Reference
     private Scheduler scheduler;
@@ -60,7 +66,8 @@ public class UnsubmittedFormsCleanupScheduler
             options.name(SCHEDULER_JOB_NAME);
             options.canRunConcurrently(false);
 
-            final Runnable cleanupJob = new UnsubmittedFormsCleanupTask(this.resolverFactory);
+            final Runnable cleanupJob = new UnsubmittedFormsCleanupTask(this.resolverFactory,
+                this.patientAccessConfiguration);
             this.scheduler.schedule(cleanupJob, options);
         } catch (final Exception e) {
             LOGGER.error("UnsubmittedFormsCleanup failed to schedule: {}", e.getMessage(), e);
