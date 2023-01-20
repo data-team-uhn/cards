@@ -98,7 +98,7 @@ public class UnsubmittedFormsCleanupTask implements Runnable
                     + "  and (submitted.value <> 1 OR submitted.value IS NULL)"
                     // exclude the Visit Information form itself
                     + "  and dataForm.questionnaire <> '%1$s'",
-                visitInformationQuestionnaire, time, submitted, ZonedDateTime.now().minusDays(configTime)),
+                visitInformationQuestionnaire, time, submitted, ZonedDateTime.now().minusDays(delay)),
                 Query.JCR_SQL2);
             resources.forEachRemaining(form -> {
                 try {
