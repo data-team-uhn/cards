@@ -82,7 +82,10 @@ function PatientPortalHomepage (props) {
   }
 
   return (<>
-    <QuestionnaireSet subject={subject} username={username} displayText={displayText} config={{...accessConfig, enableStartScreen: surveyInstructions?.enableStartScreen}} />
+    <QuestionnaireSet subject={subject} username={username} displayText={displayText} config={{
+      ...accessConfig,
+      ...surveyInstructions
+    }} />
     <Footer />
   </>);
 }

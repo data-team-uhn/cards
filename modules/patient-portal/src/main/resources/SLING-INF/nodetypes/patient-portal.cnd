@@ -107,6 +107,10 @@
   // An optional intro text about the survey to guide the patient
   - intro (string)
 
+  // An optional setting whether to show a review screen after survey completion
+  // Optional, defaults to the global setting for the patient portal
+  - enableReviewScreen (boolean)
+
   // An emergency contact for the clinic
   - emergencyContact (string)
 
