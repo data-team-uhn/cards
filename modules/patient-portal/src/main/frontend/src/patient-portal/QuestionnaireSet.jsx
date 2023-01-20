@@ -38,6 +38,7 @@ import AlertTitle from '@mui/material/AlertTitle';
 import NextStepIcon from '@mui/icons-material/ChevronRight';
 import DoneIcon from '@mui/icons-material/Done';
 import WarningIcon from '@mui/icons-material/Warning';
+import SurveyIcon from '@mui/icons-material/Assignment';
 
 import { DateTime } from "luxon";
 
@@ -390,7 +391,7 @@ function QuestionnaireSet(props) {
 
   let stepIndicator = (step, withTotal) => {
     return (
-      step >=0 && (!withTotal || questionnaireIds?.length > 1) && step < questionnaireIds?.length ?
+      step >=0 && questionnaireIds?.length > 1 && step < questionnaireIds?.length ?
       <Avatar className={classes.stepIndicator}>{step + 1}{withTotal ? ("/" + questionnaireIds?.length) : ""}</Avatar>
       : <></>);
   }
@@ -453,6 +454,8 @@ function QuestionnaireSet(props) {
         setError(`Failed to check in form with error code ${response.status}: ${response.statusText}`);
       });
   }
+
+  let surveyIndicator = <Avatar className={classes.stepIndicator}><SurveyIcon /></Avatar>;
 
   let doneIndicator = <Avatar className={classes.doneIndicator}><DoneIcon /></Avatar>;
 
@@ -561,7 +564,7 @@ function QuestionnaireSet(props) {
     <List key="welcome-surveys">
     { (questionnaireIds || []).map((q, i) => (
       <ListItem key={q+"Welcome"}>
-        <ListItemAvatar>{isFormComplete(q) ? doneIndicator : stepIndicator(i)}</ListItemAvatar>
+        <ListItemAvatar>{isFormComplete(q) ? doneIndicator : questionnaireIds.length == 1 ? surveyIndicator : stepIndicator(i)}</ListItemAvatar>
         <ListItemText
           primary={questionnaires[q]?.title}
           secondary={!isFormComplete(q) && (displayEstimate(q)
