@@ -61,7 +61,7 @@ import io.uhndata.cards.forms.internal.FormUtilsImpl;
 import io.uhndata.cards.subjects.api.SubjectUtils;
 
 /**
- * Unit tests for {@link OboParser}.
+ * Unit tests for {@link FormUtilsImpl}.
  *
  * @version $Id$
  */

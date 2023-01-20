@@ -39,7 +39,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import io.uhndata.cards.forms.internal.QuestionnaireUtilsImpl;
 
 /**
- * Unit tests for {@link OboParser}.
+ * Unit tests for {@link QuestionnaireUtilsImpl}.
  *
  * @version $Id$
  */
