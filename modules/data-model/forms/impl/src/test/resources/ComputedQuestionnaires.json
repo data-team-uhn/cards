@@ -1,0 +1,102 @@
+{
+  "jcr:primaryType": "cards:Questionnaire",
+  "title": "Test Computed Questionnaire",
+  "description": "A test computed questionnaire",
+  "question_1": {
+    "jcr:primaryType": "cards:Question",
+    "text": "Long Question",
+    "dataType": "long"
+  },
+  "question_2": {
+    "jcr:primaryType": "cards:Question",
+    "text": "Long Question",
+    "dataType": "long"
+  },
+  "question_3": {
+    "jcr:primaryType": "cards:Question",
+    "text": "Boolean Question",
+    "dataType": "boolean"
+  },
+  "question_4": {
+    "jcr:primaryType": "cards:Question",
+    "text": "Long Computed Question",
+    "dataType": "long",
+    "expression": "return (@{question_3:-true} ? @{question_1:-200} + @{question_2:-100} : @{question_1})",
+    "entryMode": "computed"
+  },
+  "from_double_to_computed_section": {
+    "jcr:primaryType": "cards:Section",
+    "label": "Section From Double",
+    "double_question": {
+      "jcr:primaryType": "cards:Question",
+      "text": "Double Question",
+      "dataType": "double"
+    },
+    "double_long_computed_question": {
+      "jcr:primaryType": "cards:Question",
+      "text": "Double Computed Question",
+      "dataType": "double",
+      "expression": "return @{double_question:-100.0}",
+      "entryMode": "computed"
+    },
+    "double_computed_question": {
+      "jcr:primaryType": "cards:Question",
+      "text": "Double Computed Question",
+      "dataType": "double",
+      "expression": "return @{double_question:-100.7}",
+      "entryMode": "computed"
+    }
+  },
+  "from_long_to_computed_section": {
+    "jcr:primaryType": "cards:Section",
+    "label": "Section From Long",
+    "long_question": {
+      "jcr:primaryType": "cards:Question",
+      "text": "Long Question",
+      "dataType": "long"
+    },
+    "computed_question": {
+      "jcr:primaryType": "cards:Question",
+      "text": "Computed Question",
+      "dataType": "computed",
+      "expression": "return @{long_question:-100}"
+    }
+  },
+  "from_decimal_to_computed_section": {
+    "jcr:primaryType": "cards:Section",
+    "label": "Section From Decimal",
+    "decimal_question": {
+      "jcr:primaryType": "cards:Question",
+      "text": "Decimal Question",
+      "dataType": "decimal"
+    },
+    "computed_question": {
+      "jcr:primaryType": "cards:Question",
+      "text": "Decimal Computed Question",
+      "dataType": "computed",
+      "expression": "return @{decimal_question:-100.0}"
+    }
+  },
+  "from_text_to_computed_section": {
+    "jcr:primaryType": "cards:Section",
+    "label": "Section From Text",
+    "text_question": {
+      "jcr:primaryType": "cards:Question",
+      "text": "text Question",
+      "dataType": "text"
+    },
+    "number_computed_question": {
+      "jcr:primaryType": "cards:Question",
+      "text": "Computed Question",
+      "dataType": "computed",
+      "expression": "return @{text_question:-100}"
+    },
+    "date_computed_question": {
+      "jcr:primaryType": "cards:Question",
+      "text": "Computed Question",
+      "dataType": "computed",
+      "expression": "return @{text_question:-2023-01-01}"
+    }
+  }
+}
+
