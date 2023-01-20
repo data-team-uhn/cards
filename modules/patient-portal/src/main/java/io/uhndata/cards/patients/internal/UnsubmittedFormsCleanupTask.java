@@ -77,7 +77,7 @@ public class UnsubmittedFormsCleanupTask implements Runnable
                 (String) resolver.getResource("/Questionnaires/Visit information/time").getValueMap().get("jcr:uuid");
             final String submitted = (String) resolver
                 .getResource("/Questionnaires/Visit information/surveys_submitted").getValueMap().get("jcr:uuid");
-            final int configTime = this.patientAccessConfiguration.getAllowedPostVisitCompletionTime();
+            final int delay = this.patientAccessConfiguration.getAllowedPostVisitCompletionTime();
             // Query:
             final Iterator<Resource> resources = resolver.findResources(String.format(
                 // select the data forms
