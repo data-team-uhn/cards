@@ -104,8 +104,10 @@ abstract class AbstractEmailNotification
         final Map<String, Object> parameters =
             Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, "EmailNotifications");
         long emailsSent = 0;
+        boolean mustPopResolver = false;
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(parameters)) {
             this.resolverProvider.push(resolver);
+            mustPopResolver = true;
             final Session session = resolver.adaptTo(Session.class);
             NodeIterator appointmentResults = AppointmentUtils.getAppointmentsForDay(session,
                 dateToQuery, clinicId);
@@ -145,7 +147,9 @@ abstract class AbstractEmailNotification
         } catch (LoginException | RepositoryException e) {
             LOGGER.warn("Failed to results.next().getPath()");
         } finally {
-            this.resolverProvider.pop();
+            if (mustPopResolver) {
+                this.resolverProvider.pop();
+            }
         }
         return emailsSent;
     }

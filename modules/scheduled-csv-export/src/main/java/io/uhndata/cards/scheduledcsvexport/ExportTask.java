@@ -37,6 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.serialize.CSVString;
+import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 
 public class ExportTask implements Runnable
 {
@@ -46,6 +47,8 @@ public class ExportTask implements Runnable
     /** Provides access to resources. */
     private final ResourceResolverFactory resolverFactory;
 
+    private final ThreadResourceResolverProvider rrp;
+
     private final int frequencyInDays;
 
     private final List<String> questionnairesToBeExported;
@@ -54,10 +57,12 @@ public class ExportTask implements Runnable
 
     private final boolean enableLabels;
 
-    ExportTask(final ResourceResolverFactory resolverFactory, int frequencyInDays, String[] questionnairesToBeExported,
+    ExportTask(final ResourceResolverFactory resolverFactory, final ThreadResourceResolverProvider rrp,
+        int frequencyInDays, String[] questionnairesToBeExported,
         String savePath, boolean enableLabels)
     {
         this.resolverFactory = resolverFactory;
+        this.rrp = rrp;
         this.frequencyInDays = frequencyInDays;
         this.questionnairesToBeExported = new ArrayList<>(Arrays.asList(questionnairesToBeExported));
         this.savePath = savePath;
@@ -78,7 +83,10 @@ public class ExportTask implements Runnable
             final String endModificationDate = simpleDateFormat.format(getPastDate(1));
             timePeriod = modifiedAfterDate + "_" + endModificationDate;
         }
+        boolean mustPopResolver = false;
         try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(null)) {
+            this.rrp.push(resolver);
+            mustPopResolver = true;
             for (String questionnaire : this.questionnairesToBeExported) {
                 final File csvFile = new File(this.savePath + "/ExportedForms_" + questionnaire.replace("/", "_") + "_"
                     + timePeriod + ".csv");
@@ -95,7 +103,12 @@ public class ExportTask implements Runnable
             }
         } catch (LoginException e) {
             LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
+        } finally {
+            if (mustPopResolver) {
+                this.rrp.pop();
+            }
         }
+
     }
 
     private Date getPastDate(int numberOfDaysAgo)

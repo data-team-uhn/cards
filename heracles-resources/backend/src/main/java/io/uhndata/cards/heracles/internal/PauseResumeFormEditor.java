@@ -126,9 +126,11 @@ public class PauseResumeFormEditor extends DefaultEditor
             return;
         }
 
+        boolean mustPopResolver = false;
         try (ResourceResolver localResolver = this.rrf
             .getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "PauseResumeEditor"))) {
             this.rrp.push(localResolver);
+            mustPopResolver = true;
 
             if (!isPauseResumeForm(after)) {
                 return;
@@ -138,9 +140,10 @@ public class PauseResumeFormEditor extends DefaultEditor
         } catch (final LoginException e) {
             LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
         } finally {
-            this.rrp.pop();
+            if (mustPopResolver) {
+                this.rrp.pop();
+            }
         }
-
     }
 
     private void processForm(NodeState after)

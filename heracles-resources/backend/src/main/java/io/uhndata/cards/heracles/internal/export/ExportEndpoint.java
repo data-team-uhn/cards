@@ -34,6 +34,8 @@ import org.apache.sling.servlets.annotations.SlingServletResourceTypes;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import io.uhndata.cards.utils.ThreadResourceResolverProvider;
+
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(
     resourceTypes = { "cards/SubjectsHomepage" },
@@ -44,6 +46,9 @@ public class ExportEndpoint extends SlingSafeMethodsServlet
 
     @Reference
     private ResourceResolverFactory resolverFactory;
+
+    @Reference
+    private ThreadResourceResolverProvider rrp;
 
     @Override
     public void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException
@@ -66,8 +71,8 @@ public class ExportEndpoint extends SlingSafeMethodsServlet
             : (dateLowerBound != null && dateUpperBound == null) ? "manualAfter" : "manualToday";
 
         final Runnable exportJob = ("manualToday".equals(exportRunMode))
-            ? new ExportTask(this.resolverFactory, exportRunMode)
-            : new ExportTask(this.resolverFactory, exportRunMode, dateLowerBound, dateUpperBound);
+            ? new ExportTask(this.resolverFactory, this.rrp, exportRunMode)
+            : new ExportTask(this.resolverFactory, this.rrp, exportRunMode, dateLowerBound, dateUpperBound);
         final Thread thread = new Thread(exportJob);
         thread.start();
         out.write("S3 export started");

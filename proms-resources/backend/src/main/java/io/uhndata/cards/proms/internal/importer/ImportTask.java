@@ -214,15 +214,20 @@ public class ImportTask implements Runnable
 
             // Create the storage object and store every patient/visit
             final JsonArray data = response.getJsonObject("data").getJsonArray("patientsByDateAndClinic");
+            boolean mustPopResolver = false;
             try (ResourceResolver resolver = this.resolverFactory.getServiceResourceResolver(
                 Map.of(ResourceResolverFactory.SUBSERVICE, "TorchImporter"))) {
                 this.rrp.push(resolver);
+                mustPopResolver = true;
                 final PatientLocalStorage storage = new PatientLocalStorage(resolver, startDate, endDate,
                     this.providerIDs, this.providerRoles, this.queryDates);
 
                 data.forEach(storage::store);
                 importedAppointmentsCount += storage.getCountAppointmentsCreated();
-                this.rrp.pop();
+            } finally {
+                if (mustPopResolver) {
+                    this.rrp.pop();
+                }
             }
         } catch (final Exception e) {
             LOGGER.error("Failed to query server: {}", e.getMessage(), e);

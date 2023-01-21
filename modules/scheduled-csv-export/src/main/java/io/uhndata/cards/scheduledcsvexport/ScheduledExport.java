@@ -32,6 +32,8 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.utils.ThreadResourceResolverProvider;
+
 @Component(immediate = true)
 public class ScheduledExport
 {
@@ -41,6 +43,9 @@ public class ScheduledExport
 
     @Reference
     private ResourceResolverFactory resolverFactory;
+
+    @Reference
+    private ThreadResourceResolverProvider rrp;
 
     @Reference
     private Scheduler scheduler;
@@ -70,7 +75,7 @@ public class ScheduledExport
 
         final Runnable csvExportJob;
         csvExportJob =
-            new ExportTask(this.resolverFactory, configDef.frequency_in_days(),
+            new ExportTask(this.resolverFactory, this.rrp, configDef.frequency_in_days(),
                 configDef.questionnaires_to_be_exported(), configDef.save_path(), configDef.enable_label());
         try {
             this.scheduler.schedule(csvExportJob, options);

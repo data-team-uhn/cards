@@ -117,6 +117,7 @@ public class VisitChangeListener implements ResourceChangeListener
     private void handleEvent(final ResourceChange event)
     {
         // Acquire a service session with the right privileges for accessing visits and their forms
+        boolean mustPopResolver = false;
         try (ResourceResolver localResolver = this.resolverFactory
             .getServiceResourceResolver(Map.of(ResourceResolverFactory.SUBSERVICE, "VisitFormsPreparation"))) {
             // Get the information needed from the triggering form
@@ -130,6 +131,7 @@ public class VisitChangeListener implements ResourceChangeListener
                 return;
             }
             this.rrp.push(localResolver);
+            mustPopResolver = true;
             final Node questionnaire = this.formUtils.getQuestionnaire(form);
             final Node subject = this.formUtils.getSubject(form);
 
@@ -144,11 +146,14 @@ public class VisitChangeListener implements ResourceChangeListener
                     handleVisitDataForm(subject, session);
                 }
             }
-            this.rrp.pop();
         } catch (final LoginException e) {
             LOGGER.warn("Failed to get service session: {}", e.getMessage(), e);
         } catch (final RepositoryException e) {
             LOGGER.error(e.getMessage(), e);
+        } finally {
+            if (mustPopResolver) {
+                this.rrp.pop();
+            }
         }
     }
 

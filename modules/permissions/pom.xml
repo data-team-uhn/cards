@@ -41,6 +41,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>cards-utils</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
       <groupId>javax.jcr</groupId>
       <artifactId>jcr</artifactId>
     </dependency>

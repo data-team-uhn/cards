@@ -33,11 +33,11 @@ import javax.json.JsonValue;
 
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
+import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 
 /**
  * Adds a label to Answer Option nodes for resource questions in a questionnaire's JSON.
@@ -49,7 +49,7 @@ public class ResourceOptionsLabelProcessor extends AbstractResourceLabelProcesso
 {
     /** Provides access to resources. */
     @Reference
-    private ResourceResolverFactory resolverFactory;
+    private ThreadResourceResolverProvider rrp;
 
     @Override
     public boolean canProcess(Resource resource)
@@ -99,7 +99,7 @@ public class ResourceOptionsLabelProcessor extends AbstractResourceLabelProcesso
                 valueLabelMap.put(valueProp.getString(), valueProp.getString());
             }
 
-            ResourceResolver resolver = this.resolverFactory.getThreadResourceResolver();
+            ResourceResolver resolver = this.rrp.getThreadResourceResolver();
             if (resolver != null) {
                 // Populate the labels in the map
                 for (String value : new LinkedHashSet<>(valueLabelMap.keySet())) {
