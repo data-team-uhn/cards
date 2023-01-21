@@ -22,6 +22,10 @@
             "start-order":"2"
         },
         {
+            "id":"${project.groupId}:cards-resolver-provider:${project.version}",
+            "start-order":"15"
+        },
+        {
             "id":"${project.groupId}:cards-data-model-subjects-api:${project.version}",
             "start-order":"25"
         },

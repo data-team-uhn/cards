@@ -29,7 +29,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.uhndata.cards.utils.ThreadResourceResolverProvider;
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 @Component(immediate = true)
 public class NightlyWebhookBackup

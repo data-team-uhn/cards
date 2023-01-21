@@ -45,7 +45,7 @@ import io.uhndata.cards.emailnotifications.EmailTemplate;
 import io.uhndata.cards.emailnotifications.EmailUtils;
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.patients.api.PatientAccessConfiguration;
-import io.uhndata.cards.utils.ThreadResourceResolverProvider;
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 import jakarta.mail.MessagingException;
 
 abstract class AbstractEmailNotification

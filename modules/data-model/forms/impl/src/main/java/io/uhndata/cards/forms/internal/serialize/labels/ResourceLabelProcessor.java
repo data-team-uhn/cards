@@ -34,8 +34,8 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
-import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 
 /**
  * Fills in the human-readable question answer for resource questions with the value of the resource node property

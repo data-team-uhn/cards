@@ -36,8 +36,8 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 import io.uhndata.cards.serialize.CSVString;
-import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 
 public class ExportTask implements Runnable
 {

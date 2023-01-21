@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.uhndata.cards.utils.internal;
+package io.uhndata.cards.resolverProvider.internal;
 
 import java.util.Stack;
 
@@ -26,7 +26,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
-import io.uhndata.cards.utils.ThreadResourceResolverProvider;
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 /**
  * Thread-inheritable implementation for {@link ThreadResourceResolverProvider}.

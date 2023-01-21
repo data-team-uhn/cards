@@ -51,9 +51,9 @@ import org.osgi.service.component.annotations.Reference;
 
 import io.uhndata.cards.forms.api.FormUtils;
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 import io.uhndata.cards.spi.AbstractNodeUtils;
 import io.uhndata.cards.subjects.api.SubjectUtils;
-import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 
 /**
  * Basic utilities for working with Form data.

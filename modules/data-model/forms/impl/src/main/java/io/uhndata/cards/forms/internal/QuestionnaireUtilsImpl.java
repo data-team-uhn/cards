@@ -24,8 +24,8 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import io.uhndata.cards.forms.api.QuestionnaireUtils;
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 import io.uhndata.cards.spi.AbstractNodeUtils;
-import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 
 @Component
 public final class QuestionnaireUtilsImpl extends AbstractNodeUtils implements QuestionnaireUtils

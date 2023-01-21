@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
 
 import io.uhndata.cards.httprequests.HttpRequests;
 import io.uhndata.cards.httprequests.HttpResponse;
-import io.uhndata.cards.utils.ThreadResourceResolverProvider;
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 public class WebhookBackupTask implements Runnable
 {

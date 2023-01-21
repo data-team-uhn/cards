@@ -126,6 +126,11 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>cards-resolver-provider</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>cards-permissions</artifactId>
       <version>${project.version}</version>
       <scope>runtime</scope>

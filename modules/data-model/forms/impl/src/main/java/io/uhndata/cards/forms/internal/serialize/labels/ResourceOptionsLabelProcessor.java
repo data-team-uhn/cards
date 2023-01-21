@@ -36,8 +36,8 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 import io.uhndata.cards.serialize.spi.ResourceJsonProcessor;
-import io.uhndata.cards.utils.ThreadResourceResolverProvider;
 
 /**
  * Adds a label to Answer Option nodes for resource questions in a questionnaire's JSON.

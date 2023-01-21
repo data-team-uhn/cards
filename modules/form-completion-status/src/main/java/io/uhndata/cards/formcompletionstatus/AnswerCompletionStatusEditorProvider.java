@@ -36,7 +36,7 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 
 import io.uhndata.cards.formcompletionstatus.spi.AnswerValidator;
 import io.uhndata.cards.forms.api.FormUtils;
-import io.uhndata.cards.utils.ThreadResourceResolverProvider;
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 /**
  * A {@link EditorProvider} returning {@link AnswerCompletionStatusEditor}.

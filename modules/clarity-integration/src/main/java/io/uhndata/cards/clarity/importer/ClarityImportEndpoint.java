@@ -39,7 +39,7 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 
 import io.uhndata.cards.clarity.importer.spi.ClarityDataProcessor;
-import io.uhndata.cards.utils.ThreadResourceResolverProvider;
+import io.uhndata.cards.resolverProvider.ThreadResourceResolverProvider;
 
 @Component(service = { Servlet.class })
 @SlingServletResourceTypes(
