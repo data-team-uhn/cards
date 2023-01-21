@@ -130,6 +130,27 @@
       "clinicId": "/Survey/ClinicMapping/-432465800",
       "emailConfiguration": "/apps/cards/clinics/UHN-EDIP/mailTemplates/ReminderNotification",
       "daysToVisit": -11
+    },
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-Rehab-InitialInvitationTask":{
+      "name": "UHN-Rehab-InitialInvitationsTask",
+      "metricName": "Initial Emails Sent",
+      "clinicId": "/Survey/ClinicMapping/78840662",
+      "emailConfiguration": "/apps/cards/clinics/UHN-Rehab/mailTemplates/InitialInvitation",
+      "daysToVisit": -7
+    },
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-Rehab-Reminder1NotificationsTask":{
+      "name": "UHN-Rehab-Reminder1NotificationsTask",
+      "metricName": "Reminder Emails Sent",
+      "clinicId": "/Survey/ClinicMapping/78840662",
+      "emailConfiguration": "/apps/cards/clinics/UHN-Rehab/mailTemplates/ReminderNotification",
+      "daysToVisit": -9
+    },
+    "io.uhndata.cards.patients.emailnotifications.AppointmentEmailNotificationsFactory~UHN-Rehab-Reminder2NotificationsTask":{
+      "name": "UHN-Rehab-Reminder2NotificationsTask",
+      "metricName": "Reminder Emails Sent",
+      "clinicId": "/Survey/ClinicMapping/78840662",
+      "emailConfiguration": "/apps/cards/clinics/UHN-Rehab/mailTemplates/ReminderNotification",
+      "daysToVisit": -11
     }
   }
 }
